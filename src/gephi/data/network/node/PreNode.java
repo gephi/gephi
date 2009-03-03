@@ -13,6 +13,8 @@ import gephi.data.network.edge.VirtualEdge;
 import gephi.data.network.edge.PreEdge.EdgeType;
 import gephi.data.network.node.treelist.PreNodeTreeList;
 import gephi.data.network.node.treelist.PreNodeTreeList.AVLNode;
+import gephi.data.network.sight.Sight;
+import javax.script.SimpleScriptContext;
 
 /**
  * Node of the tree. Maintained in a global order tree, the node is build on a <b>pre/post/size/level</b> pane.
@@ -41,8 +43,6 @@ public class PreNode implements AVLItem
 	public PreNode parent;
 	public int level;
 	public int post;
-	public int space;
-	public boolean enabled=false;
 	
 	public AVLNode avlNode;
 	
@@ -57,7 +57,8 @@ public class PreNode implements AVLItem
 	
 	//private Node node;
 	
-	private IntegerAVLTree viewTree;
+	private SimpleAVLTree sightTree;
+    public boolean enabled;
 	
 	public PreNode(int pre, int size, int level, PreNode parent)
 	{
@@ -73,7 +74,7 @@ public class PreNode implements AVLItem
 		virtualEdgesIN = new DytsEdgeTree(this);
 		virtualEdgesOUT = new DytsEdgeTree(this);
 		
-		viewTree = new IntegerAVLTree();
+		sightTree = new SimpleAVLTree();
 		
 		//node = new Node();
 		//node.setPreNode(this);
@@ -106,6 +107,21 @@ public class PreNode implements AVLItem
 	{
 		this.pre = pre;
 	}
+
+    public void addSight(Sight sight)
+    {
+        sightTree.add(sight);
+    }
+
+    public void removeSight(Sight sight)
+    {
+        sightTree.remove(sight);
+    }
+
+    public boolean isInSight(Sight sight)
+    {
+       return sightTree.contains(sight);
+    }
 	
 	public DytsEdge getVirtualEdge(PreEdge physicalEdge, int forwardPre)
 	{
@@ -150,21 +166,6 @@ public class PreNode implements AVLItem
 	public boolean isLeaf()
 	{
 		return size==0;
-	}
-	
-	public boolean hasView(int view)
-	{
-		return viewTree.contains(view);
-	}
-	
-	public void addView(int view)
-	{
-		viewTree.add(view);
-	}
-	
-	public void removeView(int view)
-	{
-		viewTree.remove(view);
 	}
 	
 	public ForwardEdgeTree getForwardEdges()

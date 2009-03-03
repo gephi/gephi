@@ -7,7 +7,8 @@ import gephi.data.network.avl.param.ParamAVLIterator;
 import gephi.data.network.avl.typed.PreNodeAVLTree;
 import gephi.data.network.edge.PreEdge.EdgeType;
 import gephi.data.network.node.PreNode;
-import gephi.data.network.node.treelist.SingleViewTreeIterator;
+import gephi.data.network.node.treelist.SingleTreeIterator;
+import gephi.data.network.sight.Sight;
 
 public class EdgeProcessing {
 
@@ -20,9 +21,9 @@ public class EdgeProcessing {
 		preEdgeIterator = new ParamAVLIterator<PreEdge>();
 	}
 	
-	public void clearVirtualEdges()
+	public void clearVirtualEdges(Sight sight)
 	{
-		SingleViewTreeIterator enabledNodes = new SingleViewTreeIterator(treeStructure);
+		SingleTreeIterator enabledNodes = new SingleTreeIterator(treeStructure, sight);
 		while(enabledNodes.hasNext())
 		{
 			PreNode currentNode = enabledNodes.next();
@@ -31,19 +32,19 @@ public class EdgeProcessing {
 		}
 	}
 	
-	public void processInducedEdges()
+	public void processInducedEdges(Sight sight)
 	{
 		
-		SingleViewTreeIterator enabledNodes = new SingleViewTreeIterator(treeStructure);
+		SingleTreeIterator enabledNodes = new SingleTreeIterator(treeStructure, sight);
 		while(enabledNodes.hasNext())
 		{
 			PreNode currentNode = enabledNodes.next();
-			processInducedEdges(currentNode);
+			processInducedEdges(currentNode, sight);
 		}
 		
 	}
 	
-	public void processInducedEdges(PreNode currentNode)
+	public void processInducedEdges(PreNode currentNode, Sight sight)
 	{
 		if(currentNode.isLeaf())
 		{
@@ -56,7 +57,7 @@ public class EdgeProcessing {
 					PreEdge edge = preEdgeIterator.next();
 					PreNode edgeNode = edge.maxNode;
 					
-					if(edgeNode.pre > currentNode.pre && edgeNode.space==currentNode.space)
+					if(edgeNode.pre > currentNode.pre && edgeNode.isInSight(sight))
 					{
 						if(edgeNode.enabled)
 						{
@@ -99,7 +100,7 @@ public class EdgeProcessing {
 						PreEdge edge = preEdgeIterator.next();
 						PreNode edgeNode = edge.maxNode;
 						
-						if(edgeNode.pre > clusterEnd && edgeNode.space== currentNode.space && !checkDouble(edgeNode,currentNode.pre, edge))
+						if(edgeNode.pre > clusterEnd && edgeNode.isInSight(sight) && !checkDouble(edgeNode,currentNode.pre, edge))
 						{
 							if(edgeNode.enabled)
 							{
@@ -141,7 +142,7 @@ public class EdgeProcessing {
 		currentNode.reinitTrace();
 	}
 	
-	public void processLocalInducedEdges(PreNode currentNode)
+	public void processLocalInducedEdges(PreNode currentNode, Sight sight)
 	{
 		if(currentNode.isLeaf())
 		{
@@ -154,7 +155,7 @@ public class EdgeProcessing {
 					PreEdge edge = preEdgeIterator.next();
 					PreNode edgeNode = edge.maxNode;
 					
-					if(edgeNode.pre > currentNode.pre && edgeNode.space==currentNode.space)
+					if(edgeNode.pre > currentNode.pre && edgeNode.isInSight(sight))
 					{
 						if(edgeNode.enabled)
 						{
@@ -197,7 +198,7 @@ public class EdgeProcessing {
 						PreEdge edge = preEdgeIterator.next();
 						PreNode edgeNode = edge.maxNode;
 						
-						if(edgeNode.pre > clusterEnd && edgeNode.space== currentNode.space && !checkDouble(edgeNode,currentNode.pre, edge))
+						if(edgeNode.pre > clusterEnd && edgeNode.isInSight(sight) && !checkDouble(edgeNode,currentNode.pre, edge))
 						{
 							if(edgeNode.enabled)
 							{
@@ -236,7 +237,7 @@ public class EdgeProcessing {
 		currentNode.reinitTrace();
 	}
 	
-	public void reprocessInducedEdges(Iterable<PreNode> enabledNodes, PreNode center)
+	public void reprocessInducedEdges(Iterable<PreNode> enabledNodes, PreNode center, Sight sight)
 	{
 		int centerLimit = center.pre+center.size;
 		ParamAVLIterator<PreEdge> preEdgeIterator = new ParamAVLIterator<PreEdge>();
@@ -253,7 +254,7 @@ public class EdgeProcessing {
 						PreEdge edge = preEdgeIterator.next();
 						PreNode edgeNode = edge.maxNode;
 						
-						if(edgeNode.pre > center.pre && edgeNode.pre <= centerLimit && edgeNode.space==currentNode.space)
+						if(edgeNode.pre > center.pre && edgeNode.pre <= centerLimit && edgeNode.isInSight(sight))
 						{
 							if(edgeNode.enabled)
 							{
@@ -295,7 +296,7 @@ public class EdgeProcessing {
 						{
 							PreEdge edge = preEdgeIterator.next();
 							PreNode edgeNode = edge.maxNode;
-							if(edgeNode.pre > center.pre && edgeNode.pre <= centerLimit && edgeNode.space==currentNode.space && !checkDouble(edgeNode, currentNode.pre, edge))
+							if(edgeNode.pre > center.pre && edgeNode.pre <= centerLimit && edgeNode.isInSight(sight) && !checkDouble(edgeNode, currentNode.pre, edge))
 							{
 								if(edgeNode.enabled)
 								{

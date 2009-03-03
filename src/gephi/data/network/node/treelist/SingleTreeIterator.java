@@ -5,6 +5,7 @@ import gephi.data.network.avl.ResetableIterator;
 import gephi.data.network.node.PreNode;
 import gephi.data.network.node.treelist.PreNodeTreeList.AVLNode;
 
+import gephi.data.network.sight.Sight;
 import java.util.Iterator;
 
 /**
@@ -13,20 +14,24 @@ import java.util.Iterator;
  * @author Mathieu Bastian
  * @see PreNodeTreeList
  */
-public class SingleViewTreeIterator implements Iterator<PreNode>, ResetableIterator {
+public class SingleTreeIterator implements Iterator<PreNode>, ResetableIterator {
 	
 	protected int treeSize;
 	protected PreNodeTreeList treeList;
 	protected int nextIndex;
 	protected int diffIndex;;
 	protected AVLNode currentNode;
+
+    protected Sight sight;
 	
-	public SingleViewTreeIterator(TreeStructure treeStructure)
+	public SingleTreeIterator(TreeStructure treeStructure, Sight sight)
 	{
 		this.treeList = treeStructure.getTree();
 		nextIndex=0;
 		diffIndex=2;
 		treeSize = treeList.size();
+
+        this.sight = sight;
 	}
 	
 	public void reset()
@@ -45,15 +50,26 @@ public class SingleViewTreeIterator implements Iterator<PreNode>, ResetableItera
 			}
 			else
 			{
-				currentNode=currentNode.next();
+				currentNode = currentNode.next();
 			}
 
-			while(!currentNode.value.enabled)
+			while(!currentNode.value.enabled || !currentNode.value.isInSight(sight))
 			{
-				++nextIndex;
-				if(nextIndex >= treeSize)
-					return false;
-				currentNode=currentNode.next();
+				if(currentNode.value.enabled)
+				{
+					nextIndex = currentNode.value.pre+1+currentNode.value.size;
+					if(nextIndex >= treeSize)
+						return false;
+					currentNode = treeList.root.get(nextIndex);
+				}
+				else
+				{
+					++nextIndex;
+					if(nextIndex >= treeSize)
+						return false;
+					currentNode=currentNode.next();
+				}
+
 			}
 			return true;
 		}
@@ -69,4 +85,8 @@ public class SingleViewTreeIterator implements Iterator<PreNode>, ResetableItera
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}
+
+     public void setSight(Sight sight) {
+        this.sight = sight;
+    }
 }

@@ -22,6 +22,8 @@ package gephi.data.network.tree.importer;
 
 import gephi.data.network.TreeStructure;
 import gephi.data.network.node.PreNode;
+import gephi.data.network.sight.Sight;
+import gephi.data.network.sight.SightManager;
 
 public class RecursiveTreeImporter {
 
@@ -30,10 +32,13 @@ public class RecursiveTreeImporter {
 	int treeHeight;
 	PreNode root;
 	public int levelLimit=10;
-	
+	private Sight sight;
+
 	public RecursiveTreeImporter(TreeStructure tree)
 	{
 		this.treeStructure = tree;
+        SightManager sightManager = new SightManager();
+        sight = sightManager.createSight();
 	}
 	
 	public void initImport()
@@ -98,7 +103,7 @@ public class RecursiveTreeImporter {
 			p.getPost();
 			if(p.size==0)
 				p.enabled = true;
-			p.space=0;
+			p.addSight(sight);
 		}
 	}
 }

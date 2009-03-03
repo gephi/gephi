@@ -34,6 +34,7 @@ import gephi.data.network.edge.PreEdge;
 import gephi.data.network.edge.VirtualEdge;
 import gephi.data.network.edge.PreEdge.EdgeType;
 import gephi.data.network.node.PreNode;
+import gephi.data.network.sight.Sight;
 import gephi.data.network.tree.iterators.DescendantAxisIterator;
 
 public class Dyts {
@@ -49,7 +50,7 @@ public class Dyts {
 		edgeProcessing = new EdgeProcessing(treeStructure);
 	}
 	
-	public void expand(PreNode node)
+	public void expand(PreNode node, Sight sight)
 	{
 		PreNodeAVLTree nodeToReprocess = new PreNodeAVLTree();
 		
@@ -65,13 +66,13 @@ public class Dyts {
 		
 		//Reprocess edge-hosting neighbour
 		edgeProcessing.appendEdgeHostingNeighbours(node, nodeToReprocess, node.pre);
-		edgeProcessing.reprocessInducedEdges(nodeToReprocess, node);
+		edgeProcessing.reprocessInducedEdges(nodeToReprocess, node, sight);
 		
 		//Process induced edges of direct children
 		for(int i=node.pre+1;i<=node.pre+node.size;)
 		{
 			child = treeStructure.getNodeAt(i);
-			edgeProcessing.processLocalInducedEdges(child);
+			edgeProcessing.processLocalInducedEdges(child, sight);
 			i+=child.size+1;
 		}
 		
@@ -80,7 +81,7 @@ public class Dyts {
 		edgeProcessing.clearVirtualEdges(node);
 	}
 	
-	public void retract(PreNode parent)
+	public void retract(PreNode parent, Sight sight)
 	{
 		PreNodeAVLTree nodeToReprocess = new PreNodeAVLTree();
 		
@@ -98,8 +99,8 @@ public class Dyts {
 			i+=child.size+1;
 		}
 		
-		edgeProcessing.reprocessInducedEdges(nodeToReprocess, parent);
-		edgeProcessing.processLocalInducedEdges(parent);
+		edgeProcessing.reprocessInducedEdges(nodeToReprocess, parent,sight);
+		edgeProcessing.processLocalInducedEdges(parent, sight);
 		
 		for(int i=parent.pre+1;i<=parent.pre+parent.size;)
 		{
@@ -161,7 +162,7 @@ public class Dyts {
 		treeStructure.deleteDescendantAndSelf(node);
 	}
 	
-	public void deleteNodes(PreNode[] nodes)
+	/*public void deleteNodes(PreNode[] nodes)
 	{
 		for(PreNode node : nodes)
 		{
@@ -212,7 +213,7 @@ public class Dyts {
 				node.preTrace=1;
 			}
 		}
-	}
+	}*/
 	
 	public void addNode(PreNode node)		//We assume parent is well defined
 	{

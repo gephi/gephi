@@ -2,9 +2,9 @@ package gephi.data.network.tree.iterators;
 
 import gephi.data.network.TreeStructure;
 import gephi.data.network.node.PreNode;
-import gephi.data.network.node.treelist.SingleViewTreeIterator;
+import gephi.data.network.node.treelist.SingleTreeIterator;
 
-public class AncestorAxisIterator extends SingleViewTreeIterator 
+public class AncestorAxisIterator extends SingleTreeIterator
 {
 	protected PreNode[] contextNodes;
 	protected PreNode nextContextNode;
@@ -17,7 +17,7 @@ public class AncestorAxisIterator extends SingleViewTreeIterator
 	protected TreeStructure treeStructure;
 	public AncestorAxisIterator(TreeStructure treeStructure, PreNode[] contextNodes)
 	{
-		super(treeStructure);
+		super(treeStructure,null);
 		this.contextNodes = contextNodes;
 		PreNode contextNode = contextNodes[0];
 		currentPre = contextNode.parent.pre;

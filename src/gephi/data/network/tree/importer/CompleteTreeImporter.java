@@ -2,9 +2,11 @@ package gephi.data.network.tree.importer;
 
 import gephi.data.network.TreeStructure;
 import gephi.data.network.node.PreNode;
+import gephi.data.network.sight.Sight;
+import gephi.data.network.sight.SightManager;
 
 /**
- * Hierarchical graph importer. Must inmport the complete tree.
+ * Hierarchical graph importer. Must import the complete tree.
  * 
  * @author Mathieu Bastian
  */
@@ -17,10 +19,13 @@ public class CompleteTreeImporter {
 	PreNode lastPos;
 	int treeHeight;
 	int currentPre=0;
+    Sight sight;
 	
 	public CompleteTreeImporter(TreeStructure tree)
 	{
 		this.treeStructure = tree;
+        SightManager sightManager = new SightManager();
+        sight = sightManager.createSight();
 	}
 	
 	/**
@@ -99,7 +104,7 @@ public class CompleteTreeImporter {
 			p.getPost();
 			if(p.size==0)
 				p.enabled = true;
-			p.space=0;
+			p.addSight(sight);
 		}
 	}
 }

@@ -21,28 +21,52 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package gephi.data.network.node.treelist;
 
 import gephi.data.network.TreeStructure;
+import gephi.data.network.node.PreNode;
 
-public class ManualViewSpaceTreeIterator extends ManualViewTreeIterator 
+import gephi.data.network.sight.Sight;
+import java.util.Iterator;
+
+public class ManualTreeIterator implements Iterator<PreNode>
 {
-	protected int space;
+	protected int treeSize;
+	protected PreNodeTreeList treeList;
+	protected PreNode next;
+	protected int nextIndex = 0;
+	protected PreNode pointer;
+
+    protected Sight sight;
 	
-	public ManualViewSpaceTreeIterator(TreeStructure treeStructure, int space)
+	public ManualTreeIterator(TreeStructure treeStructure, Sight sight)
 	{
-		super(treeStructure);
-		this.space = space;
+		this.treeList = treeStructure.getTree();
+		treeSize = treeList.size();
+		pointer = treeList.get(0);
+
+        this.sight = sight;
 	}
 	
 	@Override
-	public boolean hasNext() 
+	public boolean hasNext()
 	{
 		if(nextIndex >= treeSize)
 			return false;
 		
-		while(nextIndex < treeSize && !pointer.enabled && pointer.space==space)
+		while(nextIndex < treeSize && !pointer.enabled && pointer.isInSight(sight))
 		{
 			pointer = pointer.avlNode.next().value;
 			nextIndex++;
 		}
 		return true;
+	}
+	
+	@Override
+	public PreNode next()
+	{
+		return pointer;
+	}
+	
+	@Override
+	public void remove() {
+		throw new UnsupportedOperationException();
 	}
 }

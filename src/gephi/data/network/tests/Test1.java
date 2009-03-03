@@ -27,8 +27,9 @@ import gephi.data.network.edge.VirtualEdge;
 import gephi.data.network.edge.PreEdge.EdgeType;
 import gephi.data.network.node.PreNode;
 import gephi.data.network.node.treelist.PreNodeTreeList;
-import gephi.data.network.node.treelist.SingleViewSpaceTreeIterator;
-import gephi.data.network.node.treelist.SingleViewTreeIterator;
+import gephi.data.network.node.treelist.SingleTreeIterator;
+import gephi.data.network.sight.SightManager;
+import gephi.data.network.sight.Sight;
 import gephi.data.network.space.SpaceCache;
 import gephi.data.network.tree.importer.CompleteTreeImporter;
 import gephi.data.network.tree.importer.RecursiveTreeImporter;
@@ -42,6 +43,8 @@ import gephi.data.network.viz.ControlPanel.ActionType;
 public class Test1 {
 
 	private Dyts dyts;
+    private SightManager sightManager = new SightManager();
+    private Sight sightZero;
 	
 	public Test1()
 	{
@@ -56,7 +59,9 @@ public class Test1 {
 		importGraph(importer, NUMBER_SIBLINGS, true);
 		shuffleEnable(treeStructure);
 		System.out.println("Tree size : "+treeStructure.getTreeSize());
-		
+
+        sightZero = sightManager.getSight(1);
+
 		//treeStructure.showTreeAsTable();
 		
 		//testAVLRemove();
@@ -201,7 +206,7 @@ public class Test1 {
 			
 			//Tree
 			bench.startSubject(0);
-			SingleViewTreeIterator treeIterator = new SingleViewTreeIterator(treeStructure);
+			SingleTreeIterator treeIterator = new SingleTreeIterator(treeStructure,sightZero);
 			int c1 = 0;
 			for(;treeIterator.hasNext();)
 			{
@@ -217,7 +222,7 @@ public class Test1 {
 			
 			//Space iterator
 			bench.startSubject(1);
-			SingleViewSpaceTreeIterator treeIterator = new SingleViewSpaceTreeIterator(treeStructure,0);
+			SingleTreeIterator treeIterator = new SingleTreeIterator(treeStructure,sightZero);
 			int c1 = 0;
 			for(;treeIterator.hasNext();)
 			{
@@ -294,7 +299,7 @@ public class Test1 {
 		{
 			//Space iterator
 			
-			SingleViewSpaceTreeIterator treeIterator = new SingleViewSpaceTreeIterator(treeStructure,0);
+			SingleTreeIterator treeIterator = new SingleTreeIterator(treeStructure,sightZero);
 			int c1 = 0;
 			for(;treeIterator.hasNext();)
 			{
@@ -346,7 +351,7 @@ public class Test1 {
 		bench.startSubject(0);
 		for(int t=0;t<1000;t++)
 		{
-			SpaceDescendantAxisIterator itr = new SpaceDescendantAxisIterator(treeStructure,0,contextNodes);
+			SpaceDescendantAxisIterator itr = new SpaceDescendantAxisIterator(treeStructure,sightZero,contextNodes);
 			int c1=0;
 			for(;itr.hasNext();){
 				PreNode p = itr.next();
@@ -478,7 +483,7 @@ public class Test1 {
 		for(int i=0;i<20;i++)
 		{
 			bench.startSubject(0);
-			edgeProcessing.processInducedEdges();
+			edgeProcessing.processInducedEdges(sightZero);
 			bench.stopSubject(0);
 		}
 		
@@ -486,7 +491,7 @@ public class Test1 {
 		for(int i=0;i<20;i++)
 		{
 			bench.startSubject(1);
-			SingleViewTreeIterator itr = new SingleViewTreeIterator(treeStructure);
+			SingleTreeIterator itr = new SingleTreeIterator(treeStructure,sightZero);
 			for(;itr.hasNext();)
 			{
 				PreNode node = itr.next();
@@ -568,13 +573,13 @@ public class Test1 {
 		
 		Benchmarking bench2 = new Benchmarking(1, 1);
 		bench2.startSubject(0);
-		edgeProcessing.processInducedEdges();
+		edgeProcessing.processInducedEdges(sightZero);
 		bench2.stopSubject(0);
 		bench2.showResults();
 		
 		//Prepare comparaison
 		LinkedList<PreNode> list = new LinkedList<PreNode>();
-		SingleViewTreeIterator itr = new SingleViewTreeIterator(treeStructure);
+		SingleTreeIterator itr = new SingleTreeIterator(treeStructure,sightZero);
 		while(itr.hasNext())
 		{
 			PreNode node = itr.next();
@@ -590,7 +595,7 @@ public class Test1 {
 		for(int i=0;i<30;i++)
 		{
 			bench.startSubject(0);
-			SpaceEdgesOutIterator itr2 = new SpaceEdgesOutIterator(treeStructure, 0);
+			SpaceEdgesOutIterator itr2 = new SpaceEdgesOutIterator(treeStructure, sightZero);
 			while(itr2.hasNext())
 			{
 				VirtualEdge e = itr2.next();
@@ -619,7 +624,7 @@ public class Test1 {
 			RandomEdgesGenerator generator = new RandomEdgesGenerator(treeStructure);
 			generator.generatPhysicalEdges(20);
 			EdgeProcessing edgeProcessing = new EdgeProcessing(treeStructure);
-			edgeProcessing.processInducedEdges();
+			edgeProcessing.processInducedEdges(sightZero);
 		}
 		
 		treeviz.showTree(treeStructure);
@@ -629,7 +634,7 @@ public class Test1 {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				int number = treeviz.getControlPanel().getExpandContractNumber();
-				 dyts.expand(treeStructure.getNodeAt(number));
+				 dyts.expand(treeStructure.getNodeAt(number),sightZero);
 				 treeviz.showTree(treeStructure);
 			}
 		});
@@ -639,7 +644,7 @@ public class Test1 {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				int number = treeviz.getControlPanel().getExpandContractNumber();
-				 dyts.retract(treeStructure.getNodeAt(number));
+				 dyts.retract(treeStructure.getNodeAt(number),sightZero);
 				 treeviz.showTree(treeStructure);
 			}
 		});
@@ -676,7 +681,7 @@ public class Test1 {
 					int pre = numbers[i];
 					tab[i] = treeStructure.getNodeAt(pre);
 				}
-				 dyts.deleteNodes(tab);
+				 //dyts.deleteNodes(tab);
 				 treeviz.showTree(treeStructure);
 			}
 		});
@@ -743,7 +748,7 @@ public class Test1 {
 		RandomEdgesGenerator generator = new RandomEdgesGenerator(treeStructure);
 		generator.generatPhysicalEdges(100000);
 		EdgeProcessing edgeProcessing = new EdgeProcessing(treeStructure);
-		edgeProcessing.processInducedEdges();
+		edgeProcessing.processInducedEdges(sightZero);
 		
 		Benchmarking bench = new Benchmarking(1,20);
 		
@@ -791,7 +796,7 @@ public class Test1 {
 		RandomEdgesGenerator generator = new RandomEdgesGenerator(treeStructure);
 		generator.generatPhysicalEdges(20);
 		EdgeProcessing edgeProcessing = new EdgeProcessing(treeStructure);
-		edgeProcessing.processInducedEdges();
+		edgeProcessing.processInducedEdges(sightZero);
 		
 		PreNode[] tab = new PreNode[10];
 		for(int i=0;i<10;i++)
@@ -800,7 +805,7 @@ public class Test1 {
 			tab[i] = treeStructure.getNodeAt(pre);
 		}
 		
-		dyts.deleteNodes(tab);
+		//dyts.deleteNodes(tab);
 		treeStructure.showTreeAsTable();
 		treeViz.showTree(treeStructure);
 		
@@ -811,7 +816,7 @@ public class Test1 {
 		RandomEdgesGenerator generator = new RandomEdgesGenerator(treeStructure);
 		List<PreEdge> edgeList = generator.generatPhysicalEdges(300000);
 		EdgeProcessing edgeProcessing = new EdgeProcessing(treeStructure);
-		edgeProcessing.processInducedEdges();
+		edgeProcessing.processInducedEdges(sightZero);
 		
 		int edgeCount = edgeList.size();
 		
@@ -1197,7 +1202,7 @@ public class Test1 {
 			
 			//Process
 			benchmarking.startSubject(i, treeStructure.getTreeSize());
-			edgeProcessing.processInducedEdges();
+			edgeProcessing.processInducedEdges(sightZero);
 			benchmarking.stopSubject(i, 0);
 			
 			numSibling+=siblingStep;

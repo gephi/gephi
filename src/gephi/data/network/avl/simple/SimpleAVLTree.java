@@ -283,14 +283,19 @@ public class SimpleAVLTree implements Iterable<AVLItem> {
 		this.count++;
 		return true;
 	}
-
-	public boolean remove(AVLItem item)
+    
+    public boolean remove(AVLItem item)
 	{
+        return this.remove(item.getNumber());
+    }
+
+    public boolean remove(int number)
+    {
 		SimpleAVLNode p = this.root;
 
 		while (p != null)
 		{
-			int c = item.getNumber() - p.item.getNumber();
+			int c = number - p.item.getNumber();
 
 			if (c < 0)
 			{
@@ -742,6 +747,31 @@ public class SimpleAVLTree implements Iterable<AVLItem> {
 		return false;
 	}
 
+    public AVLItem get(int number)
+	{
+		SimpleAVLNode p = this.root;
+
+		while (p != null)
+		{
+			int c = number - p.item.getNumber();
+
+			if (c < 0)
+			{
+				p = p.left;
+			}
+			else if (c > 0)
+			{
+				p = p.right;
+			}
+			else
+			{
+				return p.item;
+			}
+		}
+
+		return null;
+	}
+
 	public void clear()
 	{
 		this.root = null;
@@ -786,7 +816,7 @@ public class SimpleAVLTree implements Iterable<AVLItem> {
 
 		public SimpleAVLIterator()
 		{
-
+            
 		}
 
 		public SimpleAVLIterator(SimpleAVLNode node)

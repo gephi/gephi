@@ -27,7 +27,9 @@ import gephi.data.network.TreeStructure;
 import gephi.data.network.avl.param.ParamAVLIterator;
 import gephi.data.network.edge.VirtualEdge;
 import gephi.data.network.node.PreNode;
-import gephi.data.network.node.treelist.SingleViewSpaceTreeIterator;
+import gephi.data.network.node.treelist.SingleTreeIterator;
+import gephi.data.network.sight.Sight;
+
 
 /**
  * Edge Iterator for <b>OUT</b> edges of the tree. Use a {@link SingleViewSpaceTreeIterator} for getting edges
@@ -37,14 +39,14 @@ import gephi.data.network.node.treelist.SingleViewSpaceTreeIterator;
  */
 public class SpaceEdgesOutIterator implements Iterator<VirtualEdge> {
 
-	protected SingleViewSpaceTreeIterator spaceTreeIterator;
+	protected SingleTreeIterator treeIterator;
 	protected ParamAVLIterator<VirtualEdge> edgeIterator;
 	protected PreNode currentNode;
 	protected VirtualEdge pointer;
 	
-	public SpaceEdgesOutIterator(TreeStructure treeStructure, int space)
+	public SpaceEdgesOutIterator(TreeStructure treeStructure, Sight sight)
 	{
-		spaceTreeIterator= new SingleViewSpaceTreeIterator(treeStructure, space);
+		treeIterator= new SingleTreeIterator(treeStructure, sight);
 		edgeIterator = new ParamAVLIterator<VirtualEdge>();
 	}
 	
@@ -53,9 +55,9 @@ public class SpaceEdgesOutIterator implements Iterator<VirtualEdge> {
 	{
 		while(!edgeIterator.hasNext())
 		{
-			if(spaceTreeIterator.hasNext())
+			if(treeIterator.hasNext())
 			{
-				currentNode = spaceTreeIterator.next();
+				currentNode = treeIterator.next();
 				edgeIterator.setNode(currentNode.getVirtualEdgesOUT());
 			}
 			else
