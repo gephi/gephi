@@ -48,19 +48,17 @@ public class Test1 {
 	
 	public Test1()
 	{
-		
+        sightZero = sightManager.createSight();
 		
 		dyts = new Dyts();
 		
 		TreeStructure treeStructure = dyts.getTreeStructure();
-		CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure,sightManager);
+		CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure,sightZero);
 		//RecursiveTreeImporter importer = new RecursiveTreeImporter(treeStructure);
 		
 		importGraph(importer, NUMBER_SIBLINGS, true);
 		shuffleEnable(treeStructure);
 		System.out.println("Tree size : "+treeStructure.getTreeSize());
-
-        sightZero = sightManager.getSight(1);
 
         TreeViz treeViz = new TreeViz(sightZero);
 
@@ -1128,7 +1126,7 @@ public class Test1 {
 		int numAdd=10000;
 		
 		TreeStructure treeStructure = new TreeStructure();
-		CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure,sightManager);
+		CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure,sightZero);
 		importGraph(importer, 100, false);
 		
 		for(int i=0;i<100;i++)
@@ -1193,7 +1191,7 @@ public class Test1 {
 		{
 			//Create TreeStructure
 			TreeStructure treeStructure = new TreeStructure();
-			CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure,sightManager);
+			CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure,sightZero);
 			importGraph(importer, numSibling, false);
 			shuffleEnable(treeStructure);
 			
