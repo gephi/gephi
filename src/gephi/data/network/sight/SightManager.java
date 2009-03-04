@@ -37,6 +37,7 @@ public class SightManager {
     public Sight createSight()
     {
         Sight sight = new Sight(getSightCounter());
+        sightCounter++;
         sightTree.add(sight);
         return sight;
     }

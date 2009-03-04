@@ -21,10 +21,9 @@ public class CompleteTreeImporter {
 	int currentPre=0;
     Sight sight;
 	
-	public CompleteTreeImporter(TreeStructure tree)
+	public CompleteTreeImporter(TreeStructure tree, SightManager sightManager)
 	{
 		this.treeStructure = tree;
-        SightManager sightManager = new SightManager();
         sight = sightManager.createSight();
 	}
 	

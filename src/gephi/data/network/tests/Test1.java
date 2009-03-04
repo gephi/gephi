@@ -53,7 +53,7 @@ public class Test1 {
 		dyts = new Dyts();
 		
 		TreeStructure treeStructure = dyts.getTreeStructure();
-		CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure);
+		CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure,sightManager);
 		//RecursiveTreeImporter importer = new RecursiveTreeImporter(treeStructure);
 		
 		importGraph(importer, NUMBER_SIBLINGS, true);
@@ -84,7 +84,7 @@ public class Test1 {
 		//testPhysicalEdgesIterator(treeStructure);
 		//testVirtualEdgesIterator(treeStructure);
 		//testReprocessInducesEdges(treeStructure, treeViz);
-		//testComplete(treeStructure, treeViz, true);
+		testComplete(treeStructure, treeViz, true);
 		//testDeleteNode(treeStructure);
 		//testDeleteNodes(treeStructure, treeViz);
 		//testDeleteEdges(treeStructure);
@@ -93,7 +93,7 @@ public class Test1 {
 		//testScenario2(treeStructure);
 		//testScenario3(treeStructure);
 		//testScenario4(treeStructure);
-		testScenario5();
+		//testScenario5();
 		//testScenario6();
 	}
 	
@@ -1126,7 +1126,7 @@ public class Test1 {
 		int numAdd=10000;
 		
 		TreeStructure treeStructure = new TreeStructure();
-		CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure);
+		CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure,sightManager);
 		importGraph(importer, 100, false);
 		
 		for(int i=0;i<100;i++)
@@ -1191,7 +1191,7 @@ public class Test1 {
 		{
 			//Create TreeStructure
 			TreeStructure treeStructure = new TreeStructure();
-			CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure);
+			CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure,sightManager);
 			importGraph(importer, numSibling, false);
 			shuffleEnable(treeStructure);
 			
