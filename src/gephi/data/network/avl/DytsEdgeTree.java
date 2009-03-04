@@ -25,6 +25,7 @@ import gephi.data.network.avl.param.ParamAVLTree;
 import gephi.data.network.edge.DytsEdge;
 import gephi.data.network.edge.VirtualEdge;
 import gephi.data.network.node.PreNode;
+import gephi.data.network.sight.Sight;
 
 /**
  * Special type of tree which knows his {@link PreNode} owner. The {@link AVLItemAccessor} always return
@@ -40,11 +41,13 @@ import gephi.data.network.node.PreNode;
 public class DytsEdgeTree extends ParamAVLTree<DytsEdge> {
 
 	private PreNode owner;
+    private Sight sight;
 	
-	public DytsEdgeTree(PreNode owner)
+	public DytsEdgeTree(PreNode owner, Sight sight)
 	{
 		super();
 		this.owner = owner;
+        this.sight = sight;
 		setAccessor(new DytsEdgeAVLItemAccessor());
 	}
 	
@@ -58,4 +61,9 @@ public class DytsEdgeTree extends ParamAVLTree<DytsEdge> {
 				return item.getPreNodeFrom().getNumber();
 		}
 	}
+
+    public Sight getSight()
+    {
+        return sight;
+    }
 }

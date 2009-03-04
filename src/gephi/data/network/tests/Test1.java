@@ -36,7 +36,7 @@ import gephi.data.network.tree.importer.RecursiveTreeImporter;
 import gephi.data.network.tree.iterators.AncestorAxisIterator;
 import gephi.data.network.tree.iterators.DescendantAxisIterator;
 import gephi.data.network.tree.iterators.SpaceDescendantAxisIterator;
-import gephi.data.network.tree.iterators.edges.SpaceEdgesOutIterator;
+import gephi.data.network.tree.iterators.edges.EdgesOutIterator;
 import gephi.data.network.viz.TreeViz;
 import gephi.data.network.viz.ControlPanel.ActionType;
 
@@ -48,7 +48,7 @@ public class Test1 {
 	
 	public Test1()
 	{
-		TreeViz treeViz = new TreeViz();
+		
 		
 		dyts = new Dyts();
 		
@@ -61,6 +61,8 @@ public class Test1 {
 		System.out.println("Tree size : "+treeStructure.getTreeSize());
 
         sightZero = sightManager.getSight(1);
+
+        TreeViz treeViz = new TreeViz(sightZero);
 
 		//treeStructure.showTreeAsTable();
 		
@@ -583,7 +585,7 @@ public class Test1 {
 		while(itr.hasNext())
 		{
 			PreNode node = itr.next();
-			for(int i=0;i<node.getVirtualEdgesOUT().getCount();i++)
+			for(int i=0;i<node.getVirtualEdgesOUT(sightZero).getCount();i++)
 			{
 				list.add(node);
 			}
@@ -595,7 +597,7 @@ public class Test1 {
 		for(int i=0;i<30;i++)
 		{
 			bench.startSubject(0);
-			SpaceEdgesOutIterator itr2 = new SpaceEdgesOutIterator(treeStructure, sightZero);
+			EdgesOutIterator itr2 = new EdgesOutIterator(treeStructure, sightZero);
 			while(itr2.hasNext())
 			{
 				VirtualEdge e = itr2.next();
@@ -1139,8 +1141,8 @@ public class Test1 {
 			{
 				node.getBackwardEdges().clear();
 				node.getForwardEdges().clear();
-				node.getVirtualEdgesIN().clear();
-				node.getVirtualEdgesOUT().clear();
+				node.getVirtualEdgesIN(sightZero).clear();
+				node.getVirtualEdgesOUT(sightZero).clear();
 			}
 		
 			bench.startSubject(i,numEdges);

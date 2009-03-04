@@ -27,8 +27,8 @@ public class EdgeProcessing {
 		while(enabledNodes.hasNext())
 		{
 			PreNode currentNode = enabledNodes.next();
-			currentNode.getVirtualEdgesIN().clear();
-			currentNode.getVirtualEdgesOUT().clear();
+			currentNode.getVirtualEdgesIN(sight).clear();
+			currentNode.getVirtualEdgesOUT(sight).clear();
 		}
 	}
 	
@@ -63,7 +63,7 @@ public class EdgeProcessing {
 						{
 							//Link between two leafs
 							//System.out.println("Lien entre 2 feuilles. "+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
-							createEdge(edge, currentNode, edgeNode);
+							createEdge(edge, currentNode, edgeNode,sight);
 						}
 						else
 						{
@@ -74,7 +74,7 @@ public class EdgeProcessing {
 								
 								//Link between a leaf and a cluster
 								//System.out.println("Lien entre une feuille et un cluster. "+currentNode.pre+" "+edge.edgeType+" "+clusterAncestor.pre);
-								VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor);
+								VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor,sight);
 								
 								//Set the trace
 								clusterAncestor.preTrace = currentNode.pre;
@@ -106,7 +106,7 @@ public class EdgeProcessing {
 							{
 								//Link between two leafs
 								//System.out.println("Lien entre 1 cluster et une feuille "+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
-								VirtualEdge newEdge = createEdge(edge, currentNode, edgeNode);
+								VirtualEdge newEdge = createEdge(edge, currentNode, edgeNode,sight);
 								
 								//Set the trace
 								edgeNode.preTrace = currentNode.pre;
@@ -121,7 +121,7 @@ public class EdgeProcessing {
 									
 									//Link between a leaf and a cluster
 									//System.out.println("Lien entre un cluster et un cluster. "+currentNode.pre+" "+edge.edgeType+" "+clusterAncestor.pre);
-									VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor);
+									VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor,sight);
 									
 									//Set the trace
 									edgeNode.preTrace = currentNode.pre;
@@ -161,7 +161,7 @@ public class EdgeProcessing {
 						{
 							//Link between two leafs
 							//System.out.println("Lien entre 2 feuilles. "+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
-							createEdge(edge, currentNode, edgeNode);
+							createEdge(edge, currentNode, edgeNode,sight);
 						}
 						else
 						{
@@ -172,7 +172,7 @@ public class EdgeProcessing {
 								
 								//Link between a leaf and a cluster
 								//System.out.println("Lien entre une feuille et un cluster. "+currentNode.pre+" "+edge.edgeType+" "+clusterAncestor.pre);
-								VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor);
+								VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor,sight);
 								
 								//Set the trace
 								clusterAncestor.preTrace = currentNode.pre;
@@ -204,7 +204,7 @@ public class EdgeProcessing {
 							{
 								//Link between two leafs
 								//System.out.println("Lien entre 1 cluster et une feuille"+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
-								VirtualEdge newEdge = createEdge(edge, currentNode, edgeNode);
+								VirtualEdge newEdge = createEdge(edge, currentNode, edgeNode,sight);
 								
 								//Set the trace
 								edgeNode.preTrace = currentNode.pre;
@@ -219,7 +219,7 @@ public class EdgeProcessing {
 									
 									//Link between a leaf and a cluster
 									//System.out.println("Lien entre un cluster et un cluster. "+currentNode.pre+" "+edge.edgeType+" "+clusterAncestor.pre);
-									VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor);
+									VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor,sight);
 									
 									//Set the trace
 									//edgeNode.preTrace = currentNode.pre;
@@ -260,7 +260,7 @@ public class EdgeProcessing {
 							{
 								//Link between two leafs
 								//System.out.println("Lien entre 2 feuilles. "+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
-								createEdge(edge, currentNode, edgeNode);
+								createEdge(edge, currentNode, edgeNode,sight);
 							}
 							else
 							{
@@ -271,7 +271,7 @@ public class EdgeProcessing {
 									
 									//Link between a leaf and a cluster
 									//System.out.println("Lien entre une feuille et un cluster. "+currentNode.pre+" "+edge.edgeType+" "+clusterAncestor.pre);
-									VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor);
+									VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor,sight);
 									
 									//Set the trace
 									clusterAncestor.preTrace = currentNode.pre;
@@ -302,7 +302,7 @@ public class EdgeProcessing {
 								{
 									//Link between two leafs
 									//System.out.println("Lien entre 1 cluster et une feuille"+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
-									VirtualEdge newEdge = createEdge(edge, currentNode, edgeNode);
+									VirtualEdge newEdge = createEdge(edge, currentNode, edgeNode,sight);
 									
 									//Set the trace
 									edgeNode.preTrace = currentNode.pre;
@@ -317,7 +317,7 @@ public class EdgeProcessing {
 										
 										//Link between a leaf and a cluster
 										//System.out.println("Lien entre un cluster et un cluster. "+currentNode.pre+" "+edge.edgeType+" "+clusterAncestor.pre);
-										VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor);
+										VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor,sight);
 										
 										//Set the trace
 										clusterAncestor.preTrace = currentNode.pre;
@@ -354,7 +354,7 @@ public class EdgeProcessing {
 	
 	
 	
-	private VirtualEdge createEdge(PreEdge edge, PreNode currentNode, PreNode edgeNode)
+	private VirtualEdge createEdge(PreEdge edge, PreNode currentNode, PreNode edgeNode, Sight sight)
 	{
 		VirtualEdge newEdge = null;
 		
@@ -362,24 +362,24 @@ public class EdgeProcessing {
 		{
 			newEdge = new VirtualEdge(edgeNode, currentNode);
 			newEdge.addPhysicalEdge(edge);
-			edgeNode.getVirtualEdgesOUT().add(newEdge);
-			currentNode.getVirtualEdgesIN().add(newEdge);
+			edgeNode.getVirtualEdgesOUT(sight).add(newEdge);
+			currentNode.getVirtualEdgesIN(sight).add(newEdge);
 		}
 		else if(edge.edgeType == EdgeType.OUT)
 		{
 			newEdge = new VirtualEdge(currentNode, edgeNode);
 			newEdge.addPhysicalEdge(edge);
-			edgeNode.getVirtualEdgesIN().add(newEdge);
-			currentNode.getVirtualEdgesOUT().add(newEdge);
+			edgeNode.getVirtualEdgesIN(sight).add(newEdge);
+			currentNode.getVirtualEdgesOUT(sight).add(newEdge);
 		}
 		return newEdge;
 	}
 	
-	public void appendEdgeHostingNeighbours(PreNode node, PreNodeAVLTree physicalNeighbours, int preLimit)
+	public void appendEdgeHostingNeighbours(PreNode node, PreNodeAVLTree physicalNeighbours, int preLimit, Sight sight)
 	{
-		if(node.getVirtualEdgesIN().getCount()> 0)
+		if(node.getVirtualEdgesIN(sight).getCount()> 0)
 		{
-			for(DytsEdge e : node.getVirtualEdgesIN())
+			for(DytsEdge e : node.getVirtualEdgesIN(sight))
 			{
 				PreNode neighbour = e.getPreNodeFrom();
 				if(neighbour.pre < preLimit)
@@ -387,9 +387,9 @@ public class EdgeProcessing {
 			}
 		}
 		
-		if(node.getVirtualEdgesOUT().getCount()> 0)
+		if(node.getVirtualEdgesOUT(sight).getCount()> 0)
 		{
-			for(DytsEdge e : node.getVirtualEdgesOUT())
+			for(DytsEdge e : node.getVirtualEdgesOUT(sight))
 			{
 				PreNode neighbour = e.getPreNodeTo();
 				if(neighbour.pre < preLimit)
@@ -398,28 +398,28 @@ public class EdgeProcessing {
 		}
 	}
 	
-	public void clearVirtualEdges(PreNode node)
+	public void clearVirtualEdges(PreNode node, Sight sight)
 	{
-		if(node.getVirtualEdgesIN().getCount()> 0)
+		if(node.getVirtualEdgesIN(sight).getCount()> 0)
 		{
-			for(DytsEdge n : node.getVirtualEdgesIN())
+			for(DytsEdge n : node.getVirtualEdgesIN(sight))
 			{
-				n.getPreNodeFrom().getVirtualEdgesOUT().remove(n);
+				n.getPreNodeFrom().getVirtualEdgesOUT(sight).remove(n);
 				n.getPreNodeFrom().reinitTrace();
 			}
 			
-			node.getVirtualEdgesIN().clear();
+			node.getVirtualEdgesIN(sight).clear();
 		}
 		
-		if(node.getVirtualEdgesOUT().getCount()> 0)
+		if(node.getVirtualEdgesOUT(sight).getCount()> 0)
 		{
-			for(DytsEdge n : node.getVirtualEdgesOUT())
+			for(DytsEdge n : node.getVirtualEdgesOUT(sight))
 			{
-				n.getPreNodeTo().getVirtualEdgesIN().remove(n);
+				n.getPreNodeTo().getVirtualEdgesIN(sight).remove(n);
 				n.getPreNodeTo().reinitTrace();
 			}
 			
-			node.getVirtualEdgesOUT().clear();
+			node.getVirtualEdgesOUT(sight).clear();
 		}
 	}
 	
@@ -446,22 +446,22 @@ public class EdgeProcessing {
 		}
 	}
 	
-	public VirtualEdge createVirtualEdge(PreEdge physicalEdge, PreNode minParent, PreNode maxParent)
+	public VirtualEdge createVirtualEdge(PreEdge physicalEdge, PreNode minParent, PreNode maxParent, Sight sight)
 	{
 		VirtualEdge virtualEdge=null;
 		if(physicalEdge.edgeType == EdgeType.IN)
 		{
 			virtualEdge = new VirtualEdge(maxParent, minParent);
 			virtualEdge.addPhysicalEdge(physicalEdge);
-			maxParent.getVirtualEdgesOUT().add(virtualEdge);
-			minParent.getVirtualEdgesIN().add(virtualEdge);
+			maxParent.getVirtualEdgesOUT(sight).add(virtualEdge);
+			minParent.getVirtualEdgesIN(sight).add(virtualEdge);
 		}
 		else
 		{
 			virtualEdge = new VirtualEdge(minParent, maxParent);
 			virtualEdge.addPhysicalEdge(physicalEdge);
-			maxParent.getVirtualEdgesIN().add(virtualEdge);
-			minParent.getVirtualEdgesOUT().add(virtualEdge);
+			maxParent.getVirtualEdgesIN(sight).add(virtualEdge);
+			minParent.getVirtualEdgesOUT(sight).add(virtualEdge);
 		}
 		return virtualEdge;
 	}

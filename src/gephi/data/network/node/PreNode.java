@@ -3,6 +3,8 @@ package gephi.data.network.node;
 import gephi.data.network.avl.ForwardEdgeTree;
 import gephi.data.network.avl.BackwardEdgeTree;
 import gephi.data.network.avl.DytsEdgeTree;
+import gephi.data.network.avl.param.AVLItemAccessor;
+import gephi.data.network.avl.param.ParamAVLTree;
 import gephi.data.network.avl.simple.AVLItem;
 import gephi.data.network.avl.simple.SimpleAVLTree;
 import gephi.data.network.avl.typed.IntegerAVLTree;
@@ -51,9 +53,12 @@ public class PreNode implements AVLItem
 	public int preTrace = -1;
 	public int preTraceType=0;
 	public VirtualEdge lastEdge;
-	
-	private DytsEdgeTree virtualEdgesIN;
-	private DytsEdgeTree virtualEdgesOUT;
+
+    private ParamAVLTree<DytsEdgeTree> virtualEdgesTreesIN;
+    private ParamAVLTree<DytsEdgeTree> virtualEdgesTreesOUT;
+
+	//private DytsEdgeTree virtualEdgesIN;
+	//private DytsEdgeTree virtualEdgesOUT;
 	
 	//private Node node;
 	
@@ -71,9 +76,23 @@ public class PreNode implements AVLItem
 		forwardEdges = new ForwardEdgeTree();
 		backwardEdges = new BackwardEdgeTree();
 		
-		virtualEdgesIN = new DytsEdgeTree(this);
-		virtualEdgesOUT = new DytsEdgeTree(this);
-		
+		//virtualEdgesIN = new DytsEdgeTree(this);
+		//virtualEdgesOUT = new DytsEdgeTree(this);
+
+        virtualEdgesTreesIN = new ParamAVLTree<DytsEdgeTree>(new AVLItemAccessor<DytsEdgeTree>()
+        {
+            public int getNumber(DytsEdgeTree item) {
+                return item.getSight().getNumber();
+            }
+        });
+
+        virtualEdgesTreesOUT = new ParamAVLTree<DytsEdgeTree>(new AVLItemAccessor<DytsEdgeTree>()
+        {
+            public int getNumber(DytsEdgeTree item) {
+                return item.getSight().getNumber();
+            }
+        });
+
 		sightTree = new SimpleAVLTree();
 		
 		//node = new Node();
@@ -123,23 +142,23 @@ public class PreNode implements AVLItem
        return sightTree.contains(sight);
     }
 	
-	public DytsEdge getVirtualEdge(PreEdge physicalEdge, int forwardPre)
+	public DytsEdge getVirtualEdge(PreEdge physicalEdge, int forwardPre, Sight sight)
 	{
 		if(physicalEdge.edgeType==EdgeType.IN)
-			return virtualEdgesIN.getItem(forwardPre);
+            return virtualEdgesTreesIN.getItem(sight.getNumber()).getItem(forwardPre);
 		else
-			return virtualEdgesOUT.getItem(forwardPre);
+            return virtualEdgesTreesOUT.getItem(sight.getNumber()).getItem(forwardPre);
 	}	
 	
-	public void removeVirtualEdge(VirtualEdge edge)
+	public void removeVirtualEdge(VirtualEdge edge, Sight sight)
 	{
 		if(edge.getPreNodeFrom()==this)
 		{
-			virtualEdgesOUT.remove(edge);
+            virtualEdgesTreesOUT.getItem(sight.getNumber()).remove(edge);
 		}
 		else
 		{
-			virtualEdgesIN.remove(edge);
+            virtualEdgesTreesIN.getItem(sight.getNumber()).remove(edge);
 		}
 	}
 
@@ -200,12 +219,26 @@ public class PreNode implements AVLItem
 		return backwardEdges;
 	}
 
-	public DytsEdgeTree getVirtualEdgesIN() {
-		return virtualEdgesIN;
+	public DytsEdgeTree getVirtualEdgesIN(Sight sight) {
+		DytsEdgeTree tree = virtualEdgesTreesIN.getItem(sight.getNumber());
+        if(tree==null)
+        {
+            //Create tree
+            tree = new DytsEdgeTree(this, sight);
+            virtualEdgesTreesIN.add(tree);
+        }
+        return tree;
 	}
 
-	public DytsEdgeTree getVirtualEdgesOUT() {
-		return virtualEdgesOUT;
+	public DytsEdgeTree getVirtualEdgesOUT(Sight sight) {
+        DytsEdgeTree tree = virtualEdgesTreesOUT.getItem(sight.getNumber());
+        if(tree==null)
+        {
+            //Create tree
+            tree = new DytsEdgeTree(this, sight);
+            virtualEdgesTreesOUT.add(tree);
+        }
+        return tree;
 	}
 	
 	

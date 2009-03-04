@@ -2,6 +2,7 @@ package gephi.data.network.viz;
 
 import gephi.data.network.TreeStructure;
 
+import gephi.data.network.sight.Sight;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -23,10 +24,12 @@ public class TreeViz extends JFrame {
 	private JPanel panel;
 	private TreeStructure treeStructure;
 	private ControlPanel controlPanel;
+    private Sight sight;
 	
-	public TreeViz()
+	public TreeViz(Sight sight)
 	{
 		super("DYTS");
+        this.sight = sight;
 		desktopPane = new JDesktopPane();
 		desktopPane.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
 		setContentPane(desktopPane);
@@ -79,7 +82,7 @@ public class TreeViz extends JFrame {
 			ScrollPane s = new ScrollPane();
 			s.setSize(100,100);
 			panel.add(s, BorderLayout.CENTER);
-			canvas = new JCanvas(tree);
+			canvas = new JCanvas(tree, sight);
 			canvas.setSize(2000,3000);
 			s.add(canvas);
 			

@@ -37,14 +37,15 @@ import gephi.data.network.sight.Sight;
  * 
  * @author Mathieu Bastian
  */
-public class SpaceEdgesOutIterator implements Iterator<VirtualEdge> {
+public class EdgesOutIterator implements Iterator<VirtualEdge> {
 
 	protected SingleTreeIterator treeIterator;
 	protected ParamAVLIterator<VirtualEdge> edgeIterator;
 	protected PreNode currentNode;
 	protected VirtualEdge pointer;
-	
-	public SpaceEdgesOutIterator(TreeStructure treeStructure, Sight sight)
+	protected Sight sight;
+
+	public EdgesOutIterator(TreeStructure treeStructure, Sight sight)
 	{
 		treeIterator= new SingleTreeIterator(treeStructure, sight);
 		edgeIterator = new ParamAVLIterator<VirtualEdge>();
@@ -58,7 +59,7 @@ public class SpaceEdgesOutIterator implements Iterator<VirtualEdge> {
 			if(treeIterator.hasNext())
 			{
 				currentNode = treeIterator.next();
-				edgeIterator.setNode(currentNode.getVirtualEdgesOUT());
+				edgeIterator.setNode(currentNode.getVirtualEdgesOUT(sight));
 			}
 			else
 				return false;

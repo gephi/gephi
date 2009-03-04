@@ -7,6 +7,7 @@ import gephi.data.network.edge.VirtualEdge;
 import gephi.data.network.edge.PreEdge.EdgeType;
 import gephi.data.network.node.PreNode;
 
+import gephi.data.network.sight.Sight;
 import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -29,10 +30,12 @@ public class JCanvas extends Canvas
 	static final int CIRLE_WIDTH=5;
 	
 	TreeStructure treeStructure;
+    Sight mainSight;
 	  
-	JCanvas(TreeStructure treeStructure) 
+	JCanvas(TreeStructure treeStructure, Sight sight)
 	{ 
 		super();
+        this.mainSight = sight;
 		this.treeStructure = treeStructure;
 	}
 	  
@@ -92,7 +95,7 @@ public class JCanvas extends Canvas
 			
 			g2d.setColor(Color.GRAY);
 			
-			for(DytsEdge e : p.getVirtualEdgesOUT())
+			for(DytsEdge e : p.getVirtualEdgesOUT(mainSight))
 			{
 				VirtualEdge edge = (VirtualEdge)e;
 				PreNode dest = edge.getPreNodeTo();
