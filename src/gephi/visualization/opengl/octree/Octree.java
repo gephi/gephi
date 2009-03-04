@@ -21,8 +21,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package gephi.visualization.opengl.octree;
 
+import com.sun.opengl.util.BufferUtil;
+import gephi.data.network.avl.param.ParamAVLTree;
 import gephi.data.network.avl.simple.SimpleAVLTree;
+import gephi.visualization.opengl.Object3d;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import javax.media.opengl.GL;
 
 /**
  *
@@ -37,50 +44,96 @@ public class Octree
 	public static byte CLASS_3 = 3;
 
     //Attributes
-    private int objectsID;
+    private int objectsIDs;
     private int maxDepth;
     private int classesCount;
 
     //Octant
 	private Octant root;
-    private SimpleAVLTree leaves;
+    private ParamAVLTree<Octant> leaves;
+
+    //States
+    private List<Octant> visibleLeaves;
 
     public Octree()
     {
-        leaves = new SimpleAVLTree();
+        leaves = new ParamAVLTree<Octant>();
+        visibleLeaves = new ArrayList<Octant>();
     }
 
-    public void addLeaf(Octant leaf)
+    public void addObject(int classID, Object3d obj)
+    {
+        root.addObject(classID, obj);
+    }
+
+    public void removeObject(int classID, Object3d obj)
+    {
+        root.removeObject(classID, obj);
+    }
+
+    public void updateVisibleOctant(GL gl)
+	{
+
+
+		//Switch to OpenGL select mode
+		int capacity = 1*4*leaves.getCount();      //Each object take in maximium : 4 * name stack depth
+		IntBuffer hitsBuffer = BufferUtil.newIntBuffer(capacity);
+		gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
+		gl.glRenderMode(GL.GL_SELECT);
+		gl.glInitNames();
+		gl.glPushName(0);
+
+		//Draw the nodes cube in the select buffer
+		for(Octant n : leaves)
+		{
+			gl.glLoadName(n.getNumber());
+			n.displayOctreeNode(gl);
+		}
+		int nbRecords = gl.glRenderMode(GL.GL_RENDER);
+
+		visibleLeaves.clear();
+
+		//Get the hits and add the nodes' objects to the array
+		for(int i=0; i< nbRecords; i++)
+		{
+			int hit = hitsBuffer.get(i*4+3) - 1; 		//-1 Because of the glPushName(0)
+
+			Octant nodeHit = leaves.getItem(hit);
+			visibleLeaves.add(nodeHit);
+		}
+
+	}
+
+    public void displayOctree(GL gl)
+	{
+		gl.glColor3i(0, 0, 0);
+		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
+		root.displayOctreeNode(gl);
+		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
+
+	}
+
+    void addLeaf(Octant leaf)
     {
         leaves.add(leaf);
     }
 
-    public void removeLeaf(Octant leaf)
+    void removeLeaf(Octant leaf)
     {
         leaves.add(leaf);
     }
 
-    public void addObject()
-    {
-
-    }
-
-    public void removeObject()
-    {
-
-    }
-
-    public int getClassesCount() {
+    int getClassesCount() {
         return classesCount;
     }
     
-    public int getMaxDepth()
+    int getMaxDepth()
     {
         return maxDepth;
     }
 
-    public int getNextObjectID()
+    int getNextObjectID()
     {
-        return objectsID++;
+        return objectsIDs++;
     }
 }

@@ -856,7 +856,7 @@ public class IntegerAVLTree {
 			return true;
 		}
 
-		public Integer next() {
+		public int next() {
 			return current;
 		}
 

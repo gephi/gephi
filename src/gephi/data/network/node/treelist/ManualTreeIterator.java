@@ -51,7 +51,7 @@ public class ManualTreeIterator implements Iterator<PreNode>
 		if(nextIndex >= treeSize)
 			return false;
 		
-		while(nextIndex < treeSize && !pointer.enabled && pointer.isInSight(sight))
+		while(nextIndex < treeSize && !pointer.isEnabled(sight) && pointer.isInSight(sight))
 		{
 			pointer = pointer.avlNode.next().value;
 			nextIndex++;

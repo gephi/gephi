@@ -59,7 +59,7 @@ public class EdgeProcessing {
 					
 					if(edgeNode.pre > currentNode.pre && edgeNode.isInSight(sight))
 					{
-						if(edgeNode.enabled)
+						if(edgeNode.isEnabled(sight))
 						{
 							//Link between two leafs
 							//System.out.println("Lien entre 2 feuilles. "+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
@@ -67,7 +67,7 @@ public class EdgeProcessing {
 						}
 						else
 						{
-							PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode);
+							PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode,sight);
 							if(clusterAncestor!=null && !checkDouble(clusterAncestor, currentNode.pre, edge))
 							{
 								//The linked node is a cluster and has never been visited from this leaf
@@ -102,7 +102,7 @@ public class EdgeProcessing {
 						
 						if(edgeNode.pre > clusterEnd && edgeNode.isInSight(sight) && !checkDouble(edgeNode,currentNode.pre, edge))
 						{
-							if(edgeNode.enabled)
+							if(edgeNode.isEnabled(sight))
 							{
 								//Link between two leafs
 								//System.out.println("Lien entre 1 cluster et une feuille "+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
@@ -114,7 +114,7 @@ public class EdgeProcessing {
 							}
 							else
 							{
-								PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode);
+								PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode,sight);
 								if(clusterAncestor!=null && !checkDouble(clusterAncestor, currentNode.pre, edge))
 								{
 									//The linked node is a cluster and has never been visited from this leaf
@@ -157,7 +157,7 @@ public class EdgeProcessing {
 					
 					if(edgeNode.pre > currentNode.pre && edgeNode.isInSight(sight))
 					{
-						if(edgeNode.enabled)
+						if(edgeNode.isEnabled(sight))
 						{
 							//Link between two leafs
 							//System.out.println("Lien entre 2 feuilles. "+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
@@ -165,7 +165,7 @@ public class EdgeProcessing {
 						}
 						else
 						{
-							PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode);
+							PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode,sight);
 							if(clusterAncestor!=null && !checkDouble(clusterAncestor, currentNode.pre, edge))
 							{
 								//The linked node is a cluster and has never been visited from this leaf
@@ -200,7 +200,7 @@ public class EdgeProcessing {
 						
 						if(edgeNode.pre > clusterEnd && edgeNode.isInSight(sight) && !checkDouble(edgeNode,currentNode.pre, edge))
 						{
-							if(edgeNode.enabled)
+							if(edgeNode.isEnabled(sight))
 							{
 								//Link between two leafs
 								//System.out.println("Lien entre 1 cluster et une feuille"+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
@@ -212,7 +212,7 @@ public class EdgeProcessing {
 							}
 							else
 							{
-								PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode);
+								PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode,sight);
 								if(clusterAncestor!=null && !checkDouble(clusterAncestor, currentNode.pre, edge))
 								{
 									//The linked node is a cluster and has never been visited from this leaf
@@ -256,7 +256,7 @@ public class EdgeProcessing {
 						
 						if(edgeNode.pre > center.pre && edgeNode.pre <= centerLimit && edgeNode.isInSight(sight))
 						{
-							if(edgeNode.enabled)
+							if(edgeNode.isEnabled(sight))
 							{
 								//Link between two leafs
 								//System.out.println("Lien entre 2 feuilles. "+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
@@ -264,7 +264,7 @@ public class EdgeProcessing {
 							}
 							else
 							{
-								PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode);
+								PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode,sight);
 								if(clusterAncestor!=null && !checkDouble(clusterAncestor, currentNode.pre, edge))
 								{
 									//The linked node is a cluster and has never been visited from this leaf
@@ -298,7 +298,7 @@ public class EdgeProcessing {
 							PreNode edgeNode = edge.maxNode;
 							if(edgeNode.pre > center.pre && edgeNode.pre <= centerLimit && edgeNode.isInSight(sight) && !checkDouble(edgeNode, currentNode.pre, edge))
 							{
-								if(edgeNode.enabled)
+								if(edgeNode.isEnabled(sight))
 								{
 									//Link between two leafs
 									//System.out.println("Lien entre 1 cluster et une feuille"+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
@@ -310,7 +310,7 @@ public class EdgeProcessing {
 								}
 								else
 								{
-									PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode);
+									PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode,sight);
 									if(clusterAncestor!=null && !checkDouble(clusterAncestor, currentNode.pre, edge))
 									{
 										//The linked node is a cluster and has never been visited from this leaf

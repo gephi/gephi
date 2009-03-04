@@ -113,7 +113,7 @@ public class JCanvas extends Canvas
 	
 	private void drawShape(Graphics2D g, PreNode p, int x, int y)
 	{		
-		if(p.enabled)
+		if(p.isEnabled(mainSight))
 			g.setColor(Color.BLACK);
 		else
 			g.setColor(Color.WHITE);

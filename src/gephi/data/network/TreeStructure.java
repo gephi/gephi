@@ -5,6 +5,7 @@ import gephi.data.network.avl.typed.PreNodeAVLTree.PreNodeAVLIterator;
 import gephi.data.network.node.PreNode;
 import gephi.data.network.node.treelist.PreNodeTreeList;
 
+import gephi.data.network.sight.Sight;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,10 +43,10 @@ public class TreeStructure
 		return tree.get(pre);
 	}
 	
-	public PreNode getEnabledAncestorOrSelf(PreNode node)
+	public PreNode getEnabledAncestorOrSelf(PreNode node, Sight sight)
 	{
 		PreNode parent = node;
-		while(!parent.enabled)
+		while(!parent.isEnabled(sight))
 		{
 			parent = parent.parent;
 			if(parent==null || parent.pre==0)
@@ -54,10 +55,10 @@ public class TreeStructure
 		return parent;
 	}
 	
-	public PreNode getEnabledAncestor(PreNode node)
+	public PreNode getEnabledAncestor(PreNode node, Sight sight)
 	{
 		PreNode parent = node.parent;
-		while(!parent.enabled)
+		while(!parent.isEnabled(sight))
 		{
 			if(parent.pre==0)
 				return null;
@@ -126,19 +127,19 @@ public class TreeStructure
 	{
 		for(PreNode p : tree)
 		{
-			p.enabled=false;
+			p.setAllEnabled(false);
 		}
 	}
 	
 	public void showTreeAsTable()
 	{
-		System.out.println("pre\tsize\tlevel\tparent\tpost\tenabled\tpreTrace");
+		System.out.println("pre\tsize\tlevel\tparent\tpost\tpreTrace");
 		System.out.println("-------------------------------------------------------");
 		
 		int pre=0;
 		for(PreNode p : tree)
 		{
-			System.out.println(p.pre+"\t"+p.size+"\t"+p.level+"\t"+p.parent+"\t"+p.post+"\t"+p.enabled+"\t"+p.preTrace);
+			System.out.println(p.pre+"\t"+p.size+"\t"+p.level+"\t"+p.parent+"\t"+p.post+"\t"+p.preTrace);
 			pre++;
 		}
 	}

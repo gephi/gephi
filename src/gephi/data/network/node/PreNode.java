@@ -8,6 +8,7 @@ import gephi.data.network.avl.param.ParamAVLTree;
 import gephi.data.network.avl.simple.AVLItem;
 import gephi.data.network.avl.simple.SimpleAVLTree;
 import gephi.data.network.avl.typed.IntegerAVLTree;
+import gephi.data.network.avl.typed.SightAVLTree;
 import gephi.data.network.edge.DytsEdge;
 import gephi.data.network.edge.EdgeProcessing;
 import gephi.data.network.edge.PreEdge;
@@ -62,8 +63,7 @@ public class PreNode implements AVLItem
 	
 	//private Node node;
 	
-	private SimpleAVLTree sightTree;
-    public boolean enabled;
+	private SightAVLTree sightTree;
 	
 	public PreNode(int pre, int size, int level, PreNode parent)
 	{
@@ -93,7 +93,7 @@ public class PreNode implements AVLItem
             }
         });
 
-		sightTree = new SimpleAVLTree();
+		sightTree = new SightAVLTree();
 		
 		//node = new Node();
 		//node.setPreNode(this);
@@ -129,7 +129,7 @@ public class PreNode implements AVLItem
 
     public void addSight(Sight sight)
     {
-        sightTree.add(sight);
+        sightTree.add(sight,false);
     }
 
     public void removeSight(Sight sight)
@@ -140,6 +140,21 @@ public class PreNode implements AVLItem
     public boolean isInSight(Sight sight)
     {
        return sightTree.contains(sight);
+    }
+
+    public boolean isEnabled(Sight sight)
+    {
+        return sightTree.isEnabled(sight);
+    }
+
+    public void setEnabled(Sight sight, boolean enabled)
+    {
+        sightTree.setEnabled(sight, enabled);
+    }
+
+    public void setAllEnabled(boolean enabled)
+    {
+        sightTree.setAllEnabled(enabled);
     }
 	
 	public DytsEdge getVirtualEdge(PreEdge physicalEdge, int forwardPre, Sight sight)

@@ -102,7 +102,7 @@ public class CompleteTreeImporter {
 		{
 			p.getPost();
 			if(p.size==0)
-				p.enabled = true;
+				p.setEnabled(sight, true);
 			p.addSight(sight);
 		}
 	}

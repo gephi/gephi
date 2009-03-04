@@ -59,7 +59,7 @@ public class Dyts {
 		for(int i=node.pre+1;i<=node.pre+node.size;)
 		{
 			child = treeStructure.getNodeAt(i);
-			child.enabled = true;
+			child.setEnabled(sight, true);
 			
 			i+=child.size+1;
 		}
@@ -77,7 +77,7 @@ public class Dyts {
 		}
 		
 		//Clean current node
-		node.enabled = false;
+		node.setEnabled(sight,false);
 		edgeProcessing.clearVirtualEdges(node, sight);
 	}
 	
@@ -86,14 +86,14 @@ public class Dyts {
 		PreNodeAVLTree nodeToReprocess = new PreNodeAVLTree();
 		
 		//Enable node
-		parent.enabled = true;
+		parent.setEnabled(sight, true);
 		
 		//Disable children
 		PreNode child = null;
 		for(int i=parent.pre+1;i<=parent.pre+parent.size;)
 		{
 			child = treeStructure.getNodeAt(i);
-			child.enabled = false;
+			child.setEnabled(sight,false);
 			edgeProcessing.appendEdgeHostingNeighbours(child, nodeToReprocess, parent.pre, sight);
 			
 			i+=child.size+1;
@@ -114,7 +114,7 @@ public class Dyts {
 	
 	public void deleteNode(PreNode node)
 	{
-		PreNode enabledAncestor = treeStructure.getEnabledAncestor(node);
+		/*PreNode enabledAncestor = treeStructure.getEnabledAncestor(node);
 		ParamAVLIterator<PreEdge> iterator=null;
 		
 		int nodeSize = node.getPre()+node.size;
@@ -159,7 +159,7 @@ public class Dyts {
 			}
 		}
 		
-		treeStructure.deleteDescendantAndSelf(node);
+		treeStructure.deleteDescendantAndSelf(node);*/
 	}
 	
 	/*public void deleteNodes(PreNode[] nodes)
@@ -228,7 +228,7 @@ public class Dyts {
 	
 	public void addEdge(PreEdge edge)
 	{
-		PreNode minNode = edge.minNode;
+		/*PreNode minNode = edge.minNode;
 		PreNode maxNode = edge.maxNode;
 		
 		//Add physical edges
@@ -241,7 +241,7 @@ public class Dyts {
 		
 		if(minParent!=null && maxParent!=null && minParent!=maxParent)
 		{
-			/*DytsEdge dytsEdge = minParent.getVirtualEdge(edge, maxParent.getPre());
+			DytsEdge dytsEdge = minParent.getVirtualEdge(edge, maxParent.getPre());
 			if(dytsEdge!=null)
 			{
 				VirtualEdge virtualEdge = (VirtualEdge)dytsEdge;
@@ -251,13 +251,13 @@ public class Dyts {
 			{
 				//Create the virtual edge
 				edgeProcessing.createVirtualEdge(edge, minParent, maxParent);
-			}*/
-		}
+			}
+		}*/
 	}
 	
 	public void delEdge(PreEdge edge)
 	{
-		PreNode minNode = edge.minNode;
+		/*PreNode minNode = edge.minNode;
 		PreNode maxNode = edge.maxNode;
 		
 		//Delete physical edges
@@ -271,7 +271,7 @@ public class Dyts {
 		if(minParent!=null && maxParent!=null && minParent!=maxParent)
 		{
 			//Get the virtual edge which represent the physical
-			/*DytsEdge dytsEdge = minParent.getVirtualEdge(edge, maxParent.getPre());
+			DytsEdge dytsEdge = minParent.getVirtualEdge(edge, maxParent.getPre());
 			if(dytsEdge!=null)
 			{
 				VirtualEdge virtualEdge = (VirtualEdge)dytsEdge;
@@ -283,8 +283,8 @@ public class Dyts {
 					minParent.removeVirtualEdge(virtualEdge);
 					maxParent.removeVirtualEdge(virtualEdge);
 				}
-			}*/
-		}
+			}
+		}*/
 	}
 
 	public TreeStructure getTreeStructure() {

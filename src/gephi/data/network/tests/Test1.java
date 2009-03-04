@@ -157,7 +157,7 @@ public class Test1 {
 	{
 		for(PreNode p : treeStructure.getTree())
 		{
-			p.enabled = false;
+			p.setEnabled(sightZero, false);
 		}
 		
 		for(int i=1;i<treeStructure.getTreeSize();i++)
@@ -166,12 +166,12 @@ public class Test1 {
 			if(enabled==0)
 			{
 				PreNode n = treeStructure.getNodeAt(i);
-				n.enabled = false;
+				n.setEnabled(sightZero, false);
 			}
 			else if(enabled==1)
 			{
 				PreNode n = treeStructure.getNodeAt(i);
-				n.enabled = true;
+				n.setEnabled(sightZero, true);
 				i+=n.size;
 			}
 		}
@@ -184,7 +184,7 @@ public class Test1 {
 		int enabled=0;
 		for(PreNode p : treeStructure.getTree())
 		{
-			if(p.enabled)
+			if(p.isEnabled(sightZero))
 			{
 				enabled++;
 				linkedList.add(new PreNode(p.pre,0,0,null));
@@ -194,7 +194,7 @@ public class Test1 {
 		List<PreNode> arrayList = new ArrayList<PreNode>();
 		for(PreNode p : treeStructure.getTree())
 		{
-			if(p.enabled)
+			if(p.isEnabled(sightZero))
 			{
 				arrayList.add(new PreNode(p.pre,0,0,null));
 			}
@@ -344,7 +344,7 @@ public class Test1 {
 				i--;
 			else
 			{
-				contextNodes[i].enabled = true;
+				contextNodes[i].setEnabled(sightZero, true);
 				System.out.println(contextNodes[i].pre);
 			}
 				
@@ -357,7 +357,7 @@ public class Test1 {
 			int c1=0;
 			for(;itr.hasNext();){
 				PreNode p = itr.next();
-				p.enabled=true;
+				p.setEnabled(sightZero, true);
 				c1++;
 			}
 			//System.out.println("c1 : "+c1);
@@ -386,7 +386,7 @@ public class Test1 {
 		{
 			contextNodes[i] = treeStructure.getNodeAt(randomTab[randomTab.length-i-1]);
 			
-			contextNodes[i].enabled = true;			
+			contextNodes[i].setEnabled(sightZero, true);
 		}
 		
 		
@@ -400,7 +400,7 @@ public class Test1 {
 			for(;itr.hasNext();)
 			{
 				PreNode p = itr.next();
-				p.enabled=true;
+				p.setEnabled(sightZero, true);
 				//System.out.println("--> "+p.pre);
 				c1++;
 			}
@@ -990,7 +990,7 @@ public class Test1 {
 				int preRandom = (int)(Math.random()*treeStructure.getTreeSize());
 				PreNode parent = treeStructure.getNodeAt(preRandom);
 				PreNode newNode = new PreNode(0,0,0,parent);
-				newNode.enabled=true;
+				newNode.setEnabled(sightZero, true);
 				set.add(preRandom);
 				randomNodes[j] = newNode;
 			}
@@ -1059,7 +1059,7 @@ public class Test1 {
 				int preRandom = (int)(Math.random()*treeStructure.getTreeSize());
 				PreNode parent = treeStructure.getNodeAt(preRandom);
 				PreNode newNode = new PreNode(0,0,0,parent);
-				newNode.enabled=true;
+				newNode.setEnabled(sightZero, true);
 				set.add(preRandom);
 				randomNodes[j] = newNode;
 			}

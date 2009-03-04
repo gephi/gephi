@@ -53,9 +53,9 @@ public class SingleTreeIterator implements Iterator<PreNode>, ResetableIterator 
 				currentNode = currentNode.next();
 			}
 
-			while(!currentNode.value.enabled || !currentNode.value.isInSight(sight))
+			while(!currentNode.value.isEnabled(sight) || !currentNode.value.isInSight(sight))
 			{
-				if(currentNode.value.enabled)
+				if(currentNode.value.isEnabled(sight))
 				{
 					nextIndex = currentNode.value.pre+1+currentNode.value.size;
 					if(nextIndex >= treeSize)
