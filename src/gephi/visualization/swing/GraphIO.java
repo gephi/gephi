@@ -5,6 +5,7 @@
 
 package gephi.visualization.swing;
 
+import gephi.visualization.events.VizEventManager;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -16,4 +17,8 @@ import java.awt.event.MouseWheelListener;
  */
 public interface GraphIO extends MouseListener, MouseWheelListener, MouseMotionListener, KeyListener {
 
+    public float[] getMousePosition();
+
+    public void setVizEventManager(VizEventManager vizEventManager);
+    public VizEventManager getVizEventManager();
 }

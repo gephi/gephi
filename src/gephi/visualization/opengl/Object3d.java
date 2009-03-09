@@ -18,29 +18,48 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package gephi.visualization.opengl;
 
 import gephi.data.network.avl.simple.AVLItem;
+import gephi.visualization.Renderable;
+import gephi.visualization.opengl.gleem.linalg.Vec3f;
 import gephi.visualization.opengl.octree.Octant;
+import javax.media.opengl.GL;
+import javax.media.opengl.glu.GLU;
 
 /**
  *
  * @author Mathieu
  */
-public abstract class Object3d implements AVLItem {
+public abstract class Object3d<ObjectType extends Renderable> implements AVLItem {
 
     private int ID;
-    private Octant octant;
+
+    //Architecture
+    protected Octant octant;
+    protected ObjectType obj;
+
+    //Graphical data
+    protected float viewportX;
+    protected float viewportY;
+    protected float viewportZ;
+    protected float viewportRadius;
+
+    //Flags
+    protected boolean selected;
 
     public abstract int[] octreePosition(float centerX, float centerY, float centerZ, float size);
+	public abstract boolean isInOctreeLeaf(Octant leaf);
+	public abstract void display(GL gl, GLU glu);
+	public abstract boolean selectionTest(Vec3f distanceFromMouse, float selectionSize);
+	public abstract float getCollisionDistance(double angle);
+	public abstract String toSVG();
 
     public int getNumber() {
         return ID;
     }
 
-    public void setID(int ID)
-    {
+    public void setID(int ID) {
         this.ID = ID;
     }
 
@@ -51,4 +70,54 @@ public abstract class Object3d implements AVLItem {
     public void setOctant(Octant octant) {
         this.octant = octant;
     }
+
+    public ObjectType getObj() {
+        return obj;
+    }
+
+    public void setObj(ObjectType obj) {
+        this.obj = obj;
+    }
+
+    public float getViewportRadius() {
+        return viewportRadius;
+    }
+
+    public void setViewportRadius(float viewportRadius) {
+        this.viewportRadius = viewportRadius;
+    }
+
+    public float getViewportX() {
+        return viewportX;
+    }
+
+    public void setViewportX(float viewportX) {
+        this.viewportX = viewportX;
+    }
+
+    public float getViewportY() {
+        return viewportY;
+    }
+
+    public void setViewportY(float viewportY) {
+        this.viewportY = viewportY;
+    }
+
+    public float getViewportZ() {
+        return viewportZ;
+    }
+
+    public void setViewportZ(float viewportZ) {
+        this.viewportZ = viewportZ;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    
 }

@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package gephi.visualization.swing;
 
+import gephi.visualization.events.VizEventManager;
+import gephi.visualization.opengl.AbstractEngine;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.event.KeyEvent;
@@ -38,7 +40,9 @@ import javax.swing.SwingUtilities;
 public class StandardGraphIO implements GraphIO {
 
     protected GraphDrawable graphDrawable;
-
+    protected AbstractEngine engine;
+    protected VizEventManager vizEventManager;
+    
     //Listeners data
     protected float[] rightButtonMoving;
 	protected float[] leftButtonMoving;
@@ -50,9 +54,10 @@ public class StandardGraphIO implements GraphIO {
 	protected boolean draggingEnable=false;
 	protected boolean dragging = false;
 
-    public StandardGraphIO(GraphDrawable graphDrawable)
+    public StandardGraphIO(GraphDrawable graphDrawable, AbstractEngine engine)
     {
         this.graphDrawable = graphDrawable;
+        this.engine = engine;
     }
 
     public void startMouseListening()
@@ -80,17 +85,20 @@ public class StandardGraphIO implements GraphIO {
 			rightButtonMoving[0] = x;
 			rightButtonMoving[1] = y;
 			graphDrawable.graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+            vizEventManager.mouseRightPress();
 		}
 		else if(SwingUtilities.isMiddleMouseButton(e))
 		{
 			middleButtonMoving[0] = x;
 			middleButtonMoving[1] = y;
 			graphDrawable.graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+            vizEventManager.mouseMiddlePress();
 		}
 		else if(SwingUtilities.isLeftMouseButton(e))
 		{
 			leftButtonMoving[0] = x;
 			leftButtonMoving[1] = y;
+            vizEventManager.mouseLeftPress();
 		}
 	}
 
@@ -110,7 +118,7 @@ public class StandardGraphIO implements GraphIO {
 		if(dragging)
 		{
 			dragging = false;
-			//newEngine.stopDrag();
+            vizEventManager.stopDrag();
 		}
 		else
 		{
@@ -139,7 +147,7 @@ public class StandardGraphIO implements GraphIO {
 		mousePosition[0] = x;
 		mousePosition[1] =  graphDrawable.viewport.get(3)-y;
 
-
+        vizEventManager.mouseMove();
 	}
 
 	/**
@@ -149,12 +157,16 @@ public class StandardGraphIO implements GraphIO {
 	{
 		if(SwingUtilities.isLeftMouseButton(e))
 		{
-
+            vizEventManager.mouseLeftClick();
 		}
 		else if(SwingUtilities.isRightMouseButton(e))
 		{
-
+            vizEventManager.mouseRightClick();
 		}
+        else if(SwingUtilities.isMiddleMouseButton(e))
+        {
+            vizEventManager.mouseMiddleClick();
+        }
 	}
 
     public void mouseDragged(MouseEvent e) {
@@ -206,10 +218,10 @@ public class StandardGraphIO implements GraphIO {
 				if(!dragging) {
 					//Start drag
 					dragging = true;
-					//newEngine.startDrag();
+                    vizEventManager.startDrag();
 				}
 
-				//newEngine.mouseDrag();
+				vizEventManager.drag();
 
 				leftButtonMoving[0] = x;
 				leftButtonMoving[1] = y;
@@ -219,8 +231,7 @@ public class StandardGraphIO implements GraphIO {
 
     public void mouseWheelMoved(MouseWheelEvent e) {
 
-		//float[] graphLimits = newEngine.getGraphLimits();
-        float[] graphLimits=null;
+        float[] graphLimits = engine.getGraphLimits();
 		float graphWidth = Math.abs(graphLimits[1]-graphLimits[0]);
 		float graphHeight = Math.abs(graphLimits[3]-graphLimits[2]);
 
@@ -267,4 +278,19 @@ public class StandardGraphIO implements GraphIO {
         
     }
 
+    public VizEventManager getVizEventManager() {
+        return vizEventManager;
+    }
+
+    public void setVizEventManager(VizEventManager vizEventManager) {
+        if(vizEventManager==null)
+        {
+            throw new NullPointerException("The instance of VizEventManager cannot be null");
+        }
+        this.vizEventManager = vizEventManager;
+    }
+
+    public float[] getMousePosition() {
+        return mousePosition;
+    }
 }

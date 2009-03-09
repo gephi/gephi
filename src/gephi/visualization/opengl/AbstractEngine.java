@@ -1,0 +1,145 @@
+/*
+Copyright 2008 WebAtlas
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package gephi.visualization.opengl;
+
+import java.awt.Component;
+import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import gephi.visualization.NodeInitializer;
+import gephi.visualization.Renderable;
+import gephi.visualization.swing.GraphDrawable;
+import gephi.visualization.swing.GraphIO;
+
+import javax.media.opengl.GL;
+import javax.media.opengl.glu.GLU;
+import javax.swing.undo.UndoableEditSupport;
+
+/**
+ * Abstract graphic engine. Real graphic engines inherit from this class and can use the common functionalities.
+ *
+ * @author Mathieu Bastian
+ */
+public abstract class AbstractEngine {
+
+	
+
+	//Architecture
+	protected GraphDrawable graphDrawable;
+    protected GraphIO graphIO;
+    
+	//User config
+	
+
+	//GraphLimits
+	protected float graphLimits[]        = new float[4];;
+
+	//AddRemove
+
+	public AbstractEngine(GraphDrawable graphDrawable, GraphIO graphIO)
+	{
+		this.graphDrawable = graphDrawable;
+		this.graphIO = graphIO;
+	}
+
+	public abstract void beforeDisplay(GL gl, GLU glu);
+	public abstract void display(GL gl, GLU glu);
+	public abstract void afterDisplay(GL gl, GLU glu);
+
+	public abstract void initEngine(GL gl, GLU glu);
+
+
+	public abstract void cameraHasBeenMoved();
+	public abstract void mouseMove();
+	public abstract void mouseDrag();
+	public abstract void startDrag();
+	public abstract void stopDrag();
+	public abstract void mouseClick();
+
+
+	public abstract void refreshGraphLimits();
+
+	public abstract List<? extends NodeInitializer> getNodeInitializers();
+	public abstract NodeInitializer getCurrentNodeInitializer();
+
+	
+
+	public float cameraDistance(Object3d object)
+	{
+        float[] cameraLocation = graphDrawable.getCameraLocation();
+		double distance = Math.sqrt(Math.pow((double)object.obj.getX() - cameraLocation[0],2d) +
+				Math.pow((double)object.obj.getY() - cameraLocation[1],2d) +
+				Math.pow((double)object.obj.getZ() - cameraLocation[2],2d));
+		object.setViewportZ((float)distance);
+
+		return (float)distance - object.obj.getRadius();
+	}
+
+	protected void setViewportPosition(Object3d object)
+	{
+		double[] res = graphDrawable.myGluProject(object.obj.getX(), object.obj.getY(), object.obj.getZ());
+		object.setViewportX((float)res[0]);
+		object.setViewportY((float)res[1]);
+		res = graphDrawable.myGluProject(object.obj.getX()+object.obj.getRadius(), object.obj.getY(),object.obj.getZ());
+		float rad = Math.abs((float)res[0] - object.getViewportX() );
+		object.setViewportRadius(rad);
+	}
+
+	protected boolean isUnderMouse(Object3d obj)
+	{
+		double x1 = graphIO.getMousePosition()[0];
+		double y1 = graphIO.getMousePosition()[1];
+
+		double x2 = obj.getViewportX();
+		double y2 = obj.getViewportY();
+
+		double xDist = Math.abs(x2-x1);
+		double yDist = Math.abs(y2-y1);
+
+		double distance = Math.sqrt(xDist*xDist + yDist*yDist);
+		//Point3d d = new Point3d(xDist, yDist, distance);
+
+		//return selectionModel.getCurrentArea().mouseTest(d, obj);
+        return false;
+    }
+
+    public IntBuffer getViewportBuffer()
+	{
+		return graphDrawable.viewport;
+	}
+
+	public DoubleBuffer getProjectionMatrix()
+	{
+		return graphDrawable.projMatrix;
+	}
+
+	public GraphDrawable getGraphDrawable() {
+		return graphDrawable;
+	}
+
+	public float[] getGraphLimits() {
+		return graphLimits;
+	}
+}

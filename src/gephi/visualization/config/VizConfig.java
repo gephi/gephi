@@ -29,13 +29,62 @@ import java.awt.Color;
  */
 public class VizConfig
 {
-    private int antialiasing=4;
-    private boolean lineSmooth=true;
-    private boolean lineSmoothNicest=true;
-    private boolean pointSmooth=true;
-    private boolean blending=true;
-    private boolean lighting=true;
-    private Color backgroundColor=Color.WHITE;
+    public static enum DisplayConfig
+	{
+		DISPLAY_ALL, DISPLAY_NODES_ONLY
+	}
+    private int antialiasing                        =4;
+    private boolean lineSmooth                      =true;
+    private boolean lineSmoothNicest                =true;
+    private boolean pointSmooth                     =true;
+    private boolean blending                        =true;
+    private boolean lighting                        =true;
+    private Color backgroundColor                   =Color.WHITE;
+    private float[] defaultCameraPosition           = {0f,0f,80f};
+    protected float[] nodeSelectedColor             = { 1f,1f,1f};
+
+    public DisplayConfig getDisplayConfig() {
+        return displayConfig;
+    }
+
+    public float getEdgeAlpha() {
+        return edgeAlpha;
+    }
+
+    public float[] getEdgeBothSelectedColor() {
+        return edgeBothSelectedColor;
+    }
+
+    public float[] getEdgeInSelectedColor() {
+        return edgeInSelectedColor;
+    }
+
+    public float[] getEdgeOutSelectedColor() {
+        return edgeOutSelectedColor;
+    }
+
+    public float[] getEdgesColor() {
+        return edgesColor;
+    }
+
+    public float[] getNodeSelectedColor() {
+        return nodeSelectedColor;
+    }
+	protected float[] edgeInSelectedColor           = { 1f,0f,0f};
+	protected float[] edgeOutSelectedColor          = { 1f,1f,0f};
+	protected float[] edgeBothSelectedColor         = { 0f,0f,0f};
+	protected DisplayConfig displayConfig           =DisplayConfig.DISPLAY_ALL;
+	protected float[] edgesColor                    = null;
+	protected float edgeAlpha                       =1f;
+
+    public float[] getDefaultCameraPosition() {
+        return defaultCameraPosition;
+    }
+
+    public float[] getDefaultCameraTarget() {
+        return defaultCameraTarget;
+    }
+    private float[] defaultCameraTarget             = {0f,0f,0f};
 
     public Color getBackgroundColor() {
         return backgroundColor;

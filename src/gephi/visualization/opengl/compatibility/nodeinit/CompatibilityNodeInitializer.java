@@ -17,27 +17,25 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
-package gephi.visualization.swing;
+ */
+package gephi.visualization.opengl.compatibility.nodeinit;
 
-import gephi.visualization.config.VizConfig;
-import java.awt.Component;
+import javax.media.opengl.GL;
+import javax.media.opengl.glu.GLU;
+import javax.media.opengl.glu.GLUquadric;
 
-import java.awt.Cursor;
-import javax.media.opengl.GLCanvas;
+import gephi.visualization.NodeInitializer;
+import gephi.visualization.Renderable;
+import gephi.visualization.opengl.Object3d;
 
-public class GraphCanvas extends GraphDrawable {
-
-	private GLCanvas glCanvas;
-
-	public GraphCanvas(VizConfig config)
-	{
-        super(config);
-		glCanvas = new GLCanvas(getCaps());
-		super.initDrawable(glCanvas);
-		
-		//Basic init
-		graphComponent = (Component)glCanvas;
-        graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	}
+/**
+ * Specialized initilizer interface adapted to the {@link CompatibilityEngine} processes.
+ *
+ * @author Mathieu Bastian
+ */
+public interface CompatibilityNodeInitializer extends NodeInitializer
+{
+	public void chooseModel(Object3d<Renderable> obj);
+	public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr);
+	public void initFromOpenGLThread();
 }

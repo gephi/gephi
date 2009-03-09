@@ -18,26 +18,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
-package gephi.visualization.swing;
+package gephi.visualization.nodeinit;
 
-import gephi.visualization.config.VizConfig;
-import java.awt.Component;
 
-import java.awt.Cursor;
-import javax.media.opengl.GLCanvas;
+import gephi.visualization.NodeInitializer;
 
-public class GraphCanvas extends GraphDrawable {
+public abstract class NodeSphereInitializer implements NodeInitializer{
 
-	private GLCanvas glCanvas;
+	@Override
+	public String getName() {
+		return "nodeInitializer_Sphere_name";
+	}
 
-	public GraphCanvas(VizConfig config)
-	{
-        super(config);
-		glCanvas = new GLCanvas(getCaps());
-		super.initDrawable(glCanvas);
-		
-		//Basic init
-		graphComponent = (Component)glCanvas;
-        graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+	@Override
+	public String toString() {
+		return getName();
 	}
 }

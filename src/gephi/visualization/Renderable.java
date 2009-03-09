@@ -17,27 +17,30 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
-package gephi.visualization.swing;
+ */
 
-import gephi.visualization.config.VizConfig;
-import java.awt.Component;
+package gephi.visualization;
 
-import java.awt.Cursor;
-import javax.media.opengl.GLCanvas;
+import gephi.visualization.opengl.Object3d;
 
-public class GraphCanvas extends GraphDrawable {
+/**
+ *
+ * @author Mathieu Bastian
+ */
+public interface Renderable {
+    public float getX();
+	public float getY();
+	public float getZ();
+	public void setX(float x);
+	public void setY(float y);
+	public void setZ(float z);
+	public float getRadius();
+	public float getSize();
+	public float getR();
+	public float getG();
+	public float getB();
+	public float[] getDragDistanceFromMouse();
 
-	private GLCanvas glCanvas;
-
-	public GraphCanvas(VizConfig config)
-	{
-        super(config);
-		glCanvas = new GLCanvas(getCaps());
-		super.initDrawable(glCanvas);
-		
-		//Basic init
-		graphComponent = (Component)glCanvas;
-        graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	}
+    public Object3d getObject3d();
+    public void setObject3d(Object3d obj);
 }

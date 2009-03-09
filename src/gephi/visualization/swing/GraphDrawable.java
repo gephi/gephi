@@ -22,6 +22,7 @@ package gephi.visualization.swing;
 
 import gephi.visualization.config.VizConfig;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.nio.DoubleBuffer;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
@@ -34,6 +35,7 @@ public class GraphDrawable extends GLAbstractListener {
 
     protected Component graphComponent;
     protected float[] cameraLocation;
+
     protected float[] cameraTarget;
     protected double[] draggingMarker;//The drag mesure for a moving of 1 to the viewport
     protected double rotationX;
@@ -41,7 +43,18 @@ public class GraphDrawable extends GLAbstractListener {
     public GraphDrawable(VizConfig vizConfig) {
         super();
         this.vizConfig = vizConfig;
+
+        cameraLocation = vizConfig.getDefaultCameraPosition();
+        cameraTarget = vizConfig.getDefaultCameraTarget();
     }
+
+    @Override
+    protected void init(GL gl)
+    {
+         graphComponent.setCursor(Cursor.getDefaultCursor());
+    }
+
+
 
     public void refreshDraggingMarker() {
         //Refresh dragging marker
@@ -70,6 +83,7 @@ public class GraphDrawable extends GLAbstractListener {
 
     @Override
     protected void reshape3DScene(GL gl) {
+        glu.gluLookAt(cameraLocation[0],cameraLocation[1],cameraLocation[2],cameraTarget[0],cameraTarget[1],cameraTarget[2],0,1,0);
     }
 
     @Override
@@ -156,5 +170,21 @@ public class GraphDrawable extends GLAbstractListener {
         out[3] = m.get(3) * in[0] + m.get(7) * in[1] + m.get(11) * in[2] + m.get(15) * in[3];
 
         return out;
+    }
+
+    public float[] getCameraLocation() {
+        return cameraLocation;
+    }
+
+    public void setCameraLocation(float[] cameraLocation) {
+        this.cameraLocation = cameraLocation;
+    }
+
+    public float[] getCameraTarget() {
+        return cameraTarget;
+    }
+
+    public void setCameraTarget(float[] cameraTarget) {
+        this.cameraTarget = cameraTarget;
     }
 }

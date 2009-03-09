@@ -21,9 +21,10 @@ public abstract class GLAbstractListener implements GLEventListener {
 	protected static final GLU glu = new GLU();
 	private static final boolean DEBUG = true;
 
-	private float viewField = 30.0f;
-	private float nearDistance = 1.0f;
-	private float farDistance = 100000f;
+    private volatile boolean resizing=false;
+	private final float viewField = 30.0f;
+	private final float nearDistance = 1.0f;
+	private final float farDistance = 100000f;
 	private double aspectRatio = 0;
 
 	public DoubleBuffer projMatrix = BufferUtil.newDoubleBuffer(16);
@@ -35,6 +36,7 @@ public abstract class GLAbstractListener implements GLEventListener {
 		drawable.addGLEventListener(this);
 	}
 
+    protected abstract void init(GL gl);
 	protected abstract void render3DScene(GL gl, GLU glu);
 	protected abstract void reshape3DScene(GL gl);
 
@@ -157,55 +159,61 @@ public abstract class GLAbstractListener implements GLEventListener {
 		GraphicalConfiguration graphicalConfiguration = new GraphicalConfiguration();
 		graphicalConfiguration.checkGeneralCompatibility(gl);
 
+        resizing=false;
 		initConfig(gl);
+        init(gl);
 	}
 
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		GL gl = drawable.getGL();
-
+        render3DScene(gl, glu);
 	}
 
 
-	public void reshape(GLAutoDrawable drawable,
-			int x, int y, int width, int height)
+	public void reshape(GLAutoDrawable drawable,int x, int y, int width, int height)
 	{
-		if(viewport.get(2)==width && viewport.get(3)==height)//NO need
-			return;
+        if(!resizing)
+        {
+            resizing=true;
+            if(viewport.get(2)==width && viewport.get(3)==height)//NO need
+                return;
 
-		int viewportW=0, viewportH=0, viewportX=width, viewportY=height;
+            int viewportW=0, viewportH=0, viewportX=width, viewportY=height;
 
-		aspectRatio = (double)width / (double)height;
-		viewportH = height;
-		viewportW = (int) (height * aspectRatio);
-		if (viewportW > width) {
-			viewportW = width;
-			viewportH = (int) (width * (1 / aspectRatio));
-		}
-		viewportX = ((width-viewportW) / 2);
-		viewportY = ((height-viewportH) / 2);
+            aspectRatio = (double)width / (double)height;
+            viewportH = height;
+            viewportW = (int) (height * aspectRatio);
+            if (viewportW > width) {
+                viewportW = width;
+                viewportH = (int) (width * (1 / aspectRatio));
+            }
+            viewportX = ((width-viewportW) / 2);
+            viewportY = ((height-viewportH) / 2);
 
-		GL gl = drawable.getGL();
+            GL gl = drawable.getGL();
 
-		gl.glViewport(viewportX, viewportY, viewportW, viewportH);
-		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport);//Update viewport buffer
+            gl.glViewport(viewportX, viewportY, viewportW, viewportH);
+            gl.glGetIntegerv(GL.GL_VIEWPORT, viewport);//Update viewport buffer
 
-		gl.glMatrixMode(GL.GL_PROJECTION);
-		gl.glLoadIdentity();
-		glu.gluPerspective(viewField, aspectRatio, nearDistance, farDistance);
-		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projMatrix);//Update projection buffer
+            gl.glMatrixMode(GL.GL_PROJECTION);
+            gl.glLoadIdentity();
+            glu.gluPerspective(viewField, aspectRatio, nearDistance, farDistance);
+            gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projMatrix);//Update projection buffer
 
 
-		gl.glMatrixMode(GL.GL_MODELVIEW);
-		gl.glLoadIdentity();
+            gl.glMatrixMode(GL.GL_MODELVIEW);
+            gl.glLoadIdentity();
 
-		reshape3DScene(drawable.getGL());
+            reshape3DScene(drawable.getGL());
 
-		if (DEBUG) {
-			System.err.println("GL_VENDOR: " + gl.glGetString(GL.GL_VENDOR));
-			System.err.println("GL_RENDERER: " + gl.glGetString(GL.GL_RENDERER));
-			System.err.println("GL_VERSION: " + gl.glGetString(GL.GL_VERSION));
-		}
+            if (DEBUG) {
+                System.err.println("GL_VENDOR: " + gl.glGetString(GL.GL_VENDOR));
+                System.err.println("GL_RENDERER: " + gl.glGetString(GL.GL_RENDERER));
+                System.err.println("GL_VERSION: " + gl.glGetString(GL.GL_VERSION));
+            }
+            resizing = false;
+        }
 	}
 
 	public GL getGL()

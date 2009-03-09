@@ -44,7 +44,7 @@ public class Tester extends JFrame {
         setVisible(true);
 
         VizCommander commander = new VizCommander();
-        GraphDrawable drawable = commander.createCanvas();
+        GraphDrawable drawable = commander.createPanel();
         drawable.graphComponent.setPreferredSize( new Dimension(400, 400));
         container.add(drawable.graphComponent, BorderLayout.CENTER);
         container.addNotify();

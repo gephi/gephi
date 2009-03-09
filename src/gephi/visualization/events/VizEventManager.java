@@ -17,27 +17,27 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
-package gephi.visualization.swing;
+ */
 
-import gephi.visualization.config.VizConfig;
-import java.awt.Component;
+package gephi.visualization.events;
 
-import java.awt.Cursor;
-import javax.media.opengl.GLCanvas;
+/**
+ *
+ * @author Mathieu
+ */
+public interface VizEventManager {
 
-public class GraphCanvas extends GraphDrawable {
+    public void startDrag();
+    public void drag();
+    public void stopDrag();
 
-	private GLCanvas glCanvas;
+    public void mouseLeftPress();
+    public void mouseRightPress();
+    public void mouseMiddlePress();
 
-	public GraphCanvas(VizConfig config)
-	{
-        super(config);
-		glCanvas = new GLCanvas(getCaps());
-		super.initDrawable(glCanvas);
-		
-		//Basic init
-		graphComponent = (Component)glCanvas;
-        graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	}
+    public void mouseLeftClick();
+    public void mouseRightClick();
+    public void mouseMiddleClick();
+
+    public void mouseMove();
 }

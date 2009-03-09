@@ -43,6 +43,7 @@ public class Octant implements AVLItem
     //Coordinates
 	private float size;
 	private float posX;
+
 	private float posY;
 	private float posZ;
     private int depth;
@@ -175,5 +176,21 @@ public class Octant implements AVLItem
 
     public int getNumber() {
         return octantID;
+    }
+
+    public float getPosX() {
+        return posX;
+    }
+
+    public float getPosY() {
+        return posY;
+    }
+
+    public float getPosZ() {
+        return posZ;
+    }
+
+    public float getSize() {
+        return size;
     }
 }

@@ -50,12 +50,12 @@ public class GraphPanel extends GraphDrawable {
 		};
 		//gljPanel.setOpaque(false);
 		graphComponent = gljPanel;
+        gljPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
 		super.initDrawable(gljPanel);
 
 		//Basic panel init
-		gljPanel.setLayout(null);
-		gljPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		gljPanel.setLayout(null);	
 	}
 
 
