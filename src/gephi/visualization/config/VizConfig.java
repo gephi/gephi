@@ -39,8 +39,9 @@ public class VizConfig
     private boolean pointSmooth                     =true;
     private boolean blending                        =true;
     private boolean lighting                        =true;
+    private boolean material                        =true;
     private Color backgroundColor                   =Color.WHITE;
-    private float[] defaultCameraPosition           = {0f,0f,80f};
+    private float[] defaultCameraPosition           = {0f,0f,900f};
     protected float[] nodeSelectedColor             = { 1f,1f,1f};
 
     public DisplayConfig getDisplayConfig() {
@@ -112,5 +113,9 @@ public class VizConfig
 
     public int getAntialiasing() {
         return antialiasing;
+    }
+
+    public boolean isMaterial() {
+        return material;
     }
 }

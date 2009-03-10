@@ -42,16 +42,16 @@ public class NodeSphereObject extends Object3d<Renderable> {
 
     @Override
     public int[] octreePosition(float centerX, float centerY, float centerZ, float size) {
-        float radius = obj.getRadius();
+        //float radius = obj.getRadius();
         int index = 0;
 
-        if (obj.getY() + radius < centerY) {
+        if (obj.getY() < centerY) {
             index += 4;
         }
-        if (obj.getZ() - radius > centerZ) {
+        if (obj.getZ() > centerZ) {
             index += 2;
         }
-        if (obj.getX() + radius < centerX) {
+        if (obj.getX() < centerX) {
             index += 1;
         }
 

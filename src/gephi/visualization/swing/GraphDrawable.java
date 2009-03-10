@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package gephi.visualization.swing;
 
 import gephi.visualization.config.VizConfig;
+import gephi.visualization.opengl.AbstractEngine;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.nio.DoubleBuffer;
@@ -34,10 +35,11 @@ import javax.media.opengl.glu.GLU;
 public class GraphDrawable extends GLAbstractListener {
 
     protected Component graphComponent;
-    protected float[] cameraLocation;
+    protected AbstractEngine engine;
 
+    protected float[] cameraLocation;
     protected float[] cameraTarget;
-    protected double[] draggingMarker;//The drag mesure for a moving of 1 to the viewport
+    protected double[] draggingMarker       = new double[2];//The drag mesure for a moving of 1 to the viewport
     protected double rotationX;
 
     public GraphDrawable(VizConfig vizConfig) {
@@ -52,8 +54,14 @@ public class GraphDrawable extends GLAbstractListener {
     protected void init(GL gl)
     {
          graphComponent.setCursor(Cursor.getDefaultCursor());
+         gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, modelMatrix);
+         engine.initEngine(gl, glu);
+         
+         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+         gl.glLoadIdentity();
+		 glu.gluLookAt(cameraLocation[0],cameraLocation[1],cameraLocation[2],cameraTarget[0],cameraTarget[1],cameraTarget[2],0,1,0);
+         gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
     }
-
 
 
     public void refreshDraggingMarker() {
@@ -89,7 +97,9 @@ public class GraphDrawable extends GLAbstractListener {
     @Override
     protected void render3DScene(GL gl, GLU glu) {
 
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+        engine.display(gl, glu);
+
+       /* gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
 		glu.gluLookAt(cameraLocation[0],cameraLocation[1],cameraLocation[2],cameraTarget[0],cameraTarget[1],cameraTarget[2],0,1,0);
 
@@ -130,7 +140,7 @@ public class GraphDrawable extends GLAbstractListener {
         gl.glVertex3f(1.0f, -1.0f, 1.0f);	// Bottom Left Of The Quad (Right)
         gl.glVertex3f(1.0f, -1.0f, -1.0f);	// Bottom Right Of The Quad (Right)
         gl.glEnd();			// End Drawing The Cube
-
+        */
     }
 
     public void display() {
@@ -186,5 +196,9 @@ public class GraphDrawable extends GLAbstractListener {
 
     public void setCameraTarget(float[] cameraTarget) {
         this.cameraTarget = cameraTarget;
+    }
+
+    public void setEngine(AbstractEngine engine) {
+        this.engine = engine;
     }
 }

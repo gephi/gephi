@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import gephi.visualization.NodeInitializer;
 import gephi.visualization.Renderable;
+import gephi.visualization.events.VizEventManager;
 import gephi.visualization.swing.GraphDrawable;
 import gephi.visualization.swing.GraphIO;
 
@@ -49,6 +50,7 @@ public abstract class AbstractEngine {
 	//Architecture
 	protected GraphDrawable graphDrawable;
     protected GraphIO graphIO;
+    protected VizEventManager vizEventManager;
     
 	//User config
 	
@@ -142,4 +144,14 @@ public abstract class AbstractEngine {
 	public float[] getGraphLimits() {
 		return graphLimits;
 	}
+
+    public VizEventManager getVizEventManager() {
+        return vizEventManager;
+    }
+
+    public void setVizEventManager(VizEventManager vizEventManager) {
+        this.vizEventManager = vizEventManager;
+    }
+
+    
 }

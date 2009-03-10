@@ -47,6 +47,7 @@ public abstract class Object3d<ObjectType extends Renderable> implements AVLItem
 
     //Flags
     protected boolean selected;
+    public long markTime=0;
 
     public abstract int[] octreePosition(float centerX, float centerY, float centerZ, float size);
 	public abstract boolean isInOctreeLeaf(Octant leaf);

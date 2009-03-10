@@ -132,6 +132,8 @@ public abstract class GLAbstractListener implements GLEventListener {
 		// gl.glEnable(GL.GL_ALPHA_TEST);
 		//gl.glAlphaFunc(GL.GL_GREATER, 0);
 
+        //Material
+        gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
 
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		gl.glEnable(GL.GL_NORMALIZE);
@@ -167,6 +169,8 @@ public abstract class GLAbstractListener implements GLEventListener {
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		GL gl = drawable.getGL();
+        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+
         render3DScene(gl, glu);
 	}
 

@@ -44,20 +44,20 @@ public class StandardGraphIO implements GraphIO {
     protected VizEventManager vizEventManager;
     
     //Listeners data
-    protected float[] rightButtonMoving;
-	protected float[] leftButtonMoving;
-	protected float[] middleButtonMoving;
-    protected float[] mousePosition;
-	protected float[] mouseDrag;
+    protected float[] rightButtonMoving         = {-1f,0f,0f};
+	protected float[] leftButtonMoving          = {-1f,0f,0f};
+	protected float[] middleButtonMoving        = {-1f,0f,0f};
+    protected float[] mousePosition             = new float[2];
+	protected float[] mouseDrag                 = new float[2];
 
     //Flags
-	protected boolean draggingEnable=false;
+	protected boolean draggingEnable=true;
 	protected boolean dragging = false;
 
-    public StandardGraphIO(GraphDrawable graphDrawable, AbstractEngine engine)
+    public StandardGraphIO(GraphDrawable graphDrawable)
     {
         this.graphDrawable = graphDrawable;
-        this.engine = engine;
+        startMouseListening();
     }
 
     public void startMouseListening()
@@ -292,5 +292,9 @@ public class StandardGraphIO implements GraphIO {
 
     public float[] getMousePosition() {
         return mousePosition;
+    }
+
+    public void setEngine(AbstractEngine engine) {
+        this.engine = engine;
     }
 }

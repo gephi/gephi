@@ -127,16 +127,16 @@ public class StandardVizEventManager implements VizEventManager {
          pool.submit(dragRunnable);
     }
 
-    protected WeakReference<VizEventListener>[] startDragArray;
-    protected WeakReference<VizEventListener>[] dragArray;
-    protected WeakReference<VizEventListener>[] stopDragArray;
-    protected WeakReference<VizEventListener>[] mouseLeftPressArray;
-    protected WeakReference<VizEventListener>[] mouseMiddlePressArray;
-    protected WeakReference<VizEventListener>[] mouseRightPressArray;
-    protected WeakReference<VizEventListener>[] mouseLeftClickArray;
-    protected WeakReference<VizEventListener>[] mouseMiddleClickArray;
-    protected WeakReference<VizEventListener>[] mouseRightClickArray;
-    protected WeakReference<VizEventListener>[] mouseMoveArray;
+    protected WeakReference<VizEventListener>[] startDragArray              = new WeakReference[0];
+    protected WeakReference<VizEventListener>[] dragArray                   = new WeakReference[0];
+    protected WeakReference<VizEventListener>[] stopDragArray               = new WeakReference[0];
+    protected WeakReference<VizEventListener>[] mouseLeftPressArray         = new WeakReference[0];
+    protected WeakReference<VizEventListener>[] mouseMiddlePressArray       = new WeakReference[0];
+    protected WeakReference<VizEventListener>[] mouseRightPressArray        = new WeakReference[0];
+    protected WeakReference<VizEventListener>[] mouseLeftClickArray         = new WeakReference[0];
+    protected WeakReference<VizEventListener>[] mouseMiddleClickArray       = new WeakReference[0];
+    protected WeakReference<VizEventListener>[] mouseRightClickArray        = new WeakReference[0];
+    protected WeakReference<VizEventListener>[] mouseMoveArray              = new WeakReference[0];
 
     private void fireVizEvent(VizEvent event, WeakReference<VizEventListener>[] array) {
         for (int i = 0; i < array.length; i++) {
@@ -282,6 +282,8 @@ public class StandardVizEventManager implements VizEventManager {
                 j++;
             }
         }
+        newArray[j] = listener;
+        
         return newArray;
     }
 

@@ -22,11 +22,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package gephi.visualization.opengl.octree;
 
 import com.sun.opengl.util.BufferUtil;
+import gephi.data.network.avl.ResetableIterator;
+import gephi.data.network.avl.param.AVLItemAccessor;
 import gephi.data.network.avl.param.ParamAVLTree;
 import gephi.data.network.avl.simple.SimpleAVLTree;
 import gephi.visualization.opengl.Object3d;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import javax.media.opengl.GL;
@@ -52,13 +55,31 @@ public class Octree
 	private Octant root;
     private ParamAVLTree<Octant> leaves;
 
+    //Iterator
+    private List<OctreeIterator> objectIterators;
+
     //States
     private List<Octant> visibleLeaves;
 
-    public Octree()
+    public Octree(int maxDepth, int size, int nbClasses)
     {
-        leaves = new ParamAVLTree<Octant>();
+        this.maxDepth = maxDepth;
+        this.classesCount = nbClasses;
+
+        leaves = new ParamAVLTree<Octant>(new AVLItemAccessor<Octant>()
+        {
+            public int getNumber(Octant item) {
+                return item.getNumber();
+            }
+        });
         visibleLeaves = new ArrayList<Octant>();
+
+        objectIterators = new ArrayList<OctreeIterator>(nbClasses);
+        for(int i=0; i< nbClasses; i++)
+            objectIterators.add(new OctreeIterator(visibleLeaves, i));
+
+        float dis = size/(float)Math.pow(2, maxDepth+1);
+		root = new Octant(this, 0,dis, dis, dis, size);
     }
 
     public void addObject(int classID, Object3d obj)
@@ -73,8 +94,6 @@ public class Octree
 
     public void updateVisibleOctant(GL gl)
 	{
-
-
 		//Switch to OpenGL select mode
 		int capacity = 1*4*leaves.getCount();      //Each object take in maximium : 4 * name stack depth
 		IntBuffer hitsBuffer = BufferUtil.newIntBuffer(capacity);
@@ -96,12 +115,19 @@ public class Octree
 		//Get the hits and add the nodes' objects to the array
 		for(int i=0; i< nbRecords; i++)
 		{
-			int hit = hitsBuffer.get(i*4+3) - 1; 		//-1 Because of the glPushName(0)
+			int hit = hitsBuffer.get(i*4+3); 		//-1 Because of the glPushName(0)
 
 			Octant nodeHit = leaves.getItem(hit);
 			visibleLeaves.add(nodeHit);
 		}
 
+	}
+
+    public Iterator<Object3d> getObjectIterator(int classID)
+	{
+		OctreeIterator itr = objectIterators.get(classID);
+        itr.reset();
+        return itr;
 	}
 
     public void displayOctree(GL gl)
@@ -135,5 +161,48 @@ public class Octree
     int getNextObjectID()
     {
         return objectsIDs++;
+    }
+
+    private static class OctreeIterator implements Iterator<Object3d>, ResetableIterator
+    {
+        private int i;
+        private int classID;
+        private List<Octant> visibleLeaves;
+        private Iterator<Object3d> currentIterator;
+
+        public OctreeIterator(List<Octant> visibleLeaves, int classID)
+        {
+            this.visibleLeaves = visibleLeaves;
+            this.classID = classID;
+        }
+
+        public void reset()
+        {
+            currentIterator=null;
+            i=0;
+        }
+
+        public boolean hasNext() {
+           if(currentIterator==null || !currentIterator.hasNext())
+           {
+               if(i<visibleLeaves.size())
+               {
+                    currentIterator = visibleLeaves.get(i).iterator(classID);
+                    i++;
+                    if(currentIterator.hasNext())
+                        return true;
+               }
+               return false;
+           }
+           return true;
+        }
+
+        public Object3d next() {
+            return currentIterator.next();
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException("Not supported.");
+        }
     }
 }

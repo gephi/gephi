@@ -20,11 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package gephi.visualization.opengl.octree;
-
 import gephi.data.network.avl.simple.AVLItem;
-import gephi.data.network.avl.simple.SimpleAVLTree;
 import gephi.visualization.opengl.Object3d;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.media.opengl.GL;
 
@@ -43,7 +42,6 @@ public class Octant implements AVLItem
     //Coordinates
 	private float size;
 	private float posX;
-
 	private float posY;
 	private float posZ;
     private int depth;
@@ -54,7 +52,7 @@ public class Octant implements AVLItem
     private Octant[] children;
 
     //Objects
-    private List<SimpleAVLTree> objectClasses;
+    private List<MonoObject3dAVLTree> objectClasses;
 
 	public Octant(Octree octree, int depth, float posX, float posY, float posZ, float size)
 	{
@@ -64,11 +62,7 @@ public class Octant implements AVLItem
 		this.posZ = posZ;
         this.depth = depth;
 		this.octree = octree;
-        this.octantID = OctantIDs++;
-
-        objectClasses = new ArrayList<SimpleAVLTree>(octree.getClassesCount());
-		for(int i=0; i< octree.getClassesCount(); i++)
-			objectClasses.add(new SimpleAVLTree());
+        this.octantID = OctantIDs++; 
     }
 
     public void addObject(int classID, Object3d obj)
@@ -81,11 +75,18 @@ public class Octant implements AVLItem
 
         if(depth == octree.getMaxDepth())
         {
+            //First item add - Initialize
             if(objectsCount==0)
+            {
                 octree.addLeaf(this);
+                
+                objectClasses = new ArrayList<MonoObject3dAVLTree>(octree.getClassesCount());
+                for(int i=0; i< octree.getClassesCount(); i++)
+                    objectClasses.add(new MonoObject3dAVLTree());
+            }
 
             //Get the list
-			SimpleAVLTree objectClass = this.objectClasses.get(classID);
+			MonoObject3dAVLTree objectClass = this.objectClasses.get(classID);
 
             //Set Octant
 			obj.setOctant(this);
@@ -107,7 +108,7 @@ public class Octant implements AVLItem
     public void removeObject(int classID, Object3d obj)
     {
         //Get the list
-		SimpleAVLTree objectClass = this.objectClasses.get(classID);
+		MonoObject3dAVLTree objectClass = this.objectClasses.get(classID);
 
 		if(objectClass.remove(obj))
 			objectsCount--;
@@ -115,6 +116,7 @@ public class Octant implements AVLItem
         if(objectsCount==0)
         {
             //Remove leaf
+            octree.removeLeaf(this);
         }
 
     }
@@ -136,9 +138,15 @@ public class Octant implements AVLItem
         children = new Octant[] {o1, o2, o3, o4, o5, o6, o7, o8 };
     }
 
+    public Iterator<Object3d> iterator(int classID)
+    {
+        MonoObject3dAVLTree objectClass = this.objectClasses.get(classID);
+        return objectClass.iterator();
+    }
+
     public void displayOctreeNode(GL gl)
 	{
-		if(children==null)
+		if(children==null && depth==octree.getMaxDepth() && objectsCount>0)
 		{
 			float quantum = size/2;
 			gl.glBegin(GL.GL_QUAD_STRIP);
@@ -165,7 +173,7 @@ public class Octant implements AVLItem
 			gl.glVertex3f(posX+quantum, posY-quantum,posZ+quantum);
 			gl.glEnd();
 		}
-		else
+		else if(children!=null)
 		{
 			for(Octant o : children)
 			{
