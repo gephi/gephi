@@ -31,6 +31,10 @@ import java.util.List;
 import gephi.visualization.NodeInitializer;
 import gephi.visualization.Renderable;
 import gephi.visualization.events.VizEventManager;
+import gephi.visualization.opengl.gleem.linalg.Vec3d;
+import gephi.visualization.opengl.gleem.linalg.Vec3f;
+import gephi.visualization.selection.Point;
+import gephi.visualization.selection.SelectionArea;
 import gephi.visualization.swing.GraphDrawable;
 import gephi.visualization.swing.GraphIO;
 
@@ -51,6 +55,7 @@ public abstract class AbstractEngine {
 	protected GraphDrawable graphDrawable;
     protected GraphIO graphIO;
     protected VizEventManager vizEventManager;
+    protected SelectionArea currentSelectionArea = new Point();
     
 	//User config
 	
@@ -104,6 +109,7 @@ public abstract class AbstractEngine {
 		double[] res = graphDrawable.myGluProject(object.obj.getX(), object.obj.getY(), object.obj.getZ());
 		object.setViewportX((float)res[0]);
 		object.setViewportY((float)res[1]);
+
 		res = graphDrawable.myGluProject(object.obj.getX()+object.obj.getRadius(), object.obj.getY(),object.obj.getZ());
 		float rad = Math.abs((float)res[0] - object.getViewportX() );
 		object.setViewportRadius(rad);
@@ -121,10 +127,9 @@ public abstract class AbstractEngine {
 		double yDist = Math.abs(y2-y1);
 
 		double distance = Math.sqrt(xDist*xDist + yDist*yDist);
-		//Point3d d = new Point3d(xDist, yDist, distance);
+		Vec3f d = new Vec3f((float)xDist, (float)yDist, (float)distance);
 
-		//return selectionModel.getCurrentArea().mouseTest(d, obj);
-        return false;
+		return currentSelectionArea.mouseTest(d, obj);
     }
 
     public IntBuffer getViewportBuffer()

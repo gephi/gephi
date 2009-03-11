@@ -28,6 +28,7 @@ import gephi.visualization.opengl.compatibility.nodeinit.CompatibilityNodeInitia
 import gephi.visualization.opengl.compatibility.nodeinit.CompatibilityNodeSphereInitializer;
 import gephi.visualization.opengl.compatibility.nodeobjects.NodeSphereObject;
 import gephi.visualization.opengl.octree.Octree;
+import gephi.visualization.selection.SelectionArea;
 import gephi.visualization.swing.GraphDrawable;
 import gephi.visualization.swing.GraphIO;
 import java.nio.FloatBuffer;
@@ -82,10 +83,14 @@ public class CompatibilityEngine extends AbstractEngine
     @Override
     public void display(GL gl, GLU glu) {
        octree.updateVisibleOctant(gl);
+       octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
+       mouseMove();
+
        for(Iterator<Object3d> itr = octree.getObjectIterator(Octree.CLASS_0);itr.hasNext();)
         {
             Object3d  obj = itr.next();
 			currentNodeInitializers.chooseModel(obj);
+            setViewportPosition(obj);
 		}
        long startTime = System.currentTimeMillis();
        if(listEnable_0)
@@ -122,7 +127,19 @@ public class CompatibilityEngine extends AbstractEngine
 
     @Override
     public void mouseMove() {
-        throw new UnsupportedOperationException("Not supported yet.");
+		for(Iterator<Object3d> itr = octree.getSelectedObject0Iterator();itr.hasNext();)
+        {
+            Object3d obj = itr.next();
+             if(isUnderMouse(obj) && currentSelectionArea.select(obj.getObj()))
+             {
+                obj.setSelected(true);
+
+             }
+             else if(currentSelectionArea.unselect(obj.getObj()))
+             {
+                  obj.setSelected(false);
+             }
+        }
     }
 
     @Override

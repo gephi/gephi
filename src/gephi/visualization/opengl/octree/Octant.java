@@ -18,8 +18,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package gephi.visualization.opengl.octree;
+
 import gephi.data.network.avl.simple.AVLItem;
 import gephi.visualization.opengl.Object3d;
 import java.util.ArrayList;
@@ -31,155 +31,145 @@ import javax.media.opengl.GL;
  *
  * @author Mathieu
  */
-public class Octant implements AVLItem
-{
+public class Octant implements AVLItem {
     //Static
-    private static int OctantIDs=0;
+
+    private static int OctantIDs = 0;
 
     //Octree
     private Octree octree;
 
     //Coordinates
-	private float size;
-	private float posX;
-	private float posY;
-	private float posZ;
+    private float size;
+    private float posX;
+    private float posY;
+    private float posZ;
     private int depth;
 
     //Attributes
     private final int octantID;
-    private int objectsCount=0;
+    private int objectsCount = 0;
     private Octant[] children;
 
     //Objects
     private List<MonoObject3dAVLTree> objectClasses;
 
-	public Octant(Octree octree, int depth, float posX, float posY, float posZ, float size)
-	{
-		this.size = size;
-		this.posX = posX;
-		this.posY = posY;
-		this.posZ = posZ;
+    public Octant(Octree octree, int depth, float posX, float posY, float posZ, float size) {
+        this.size = size;
+        this.posX = posX;
+        this.posY = posY;
+        this.posZ = posZ;
         this.depth = depth;
-		this.octree = octree;
-        this.octantID = OctantIDs++; 
+        this.octree = octree;
+        this.octantID = OctantIDs++;
     }
 
-    public void addObject(int classID, Object3d obj)
-    {
-        if(children==null && depth < octree.getMaxDepth())
-        {
+    public void addObject(int classID, Object3d obj) {
+        if (children == null && depth < octree.getMaxDepth()) {
             //Create children
             subdivide();
         }
 
-        if(depth == octree.getMaxDepth())
-        {
+        if (depth == octree.getMaxDepth()) {
             //First item add - Initialize
-            if(objectsCount==0)
-            {
+            if (objectsCount == 0) {
                 octree.addLeaf(this);
-                
+
                 objectClasses = new ArrayList<MonoObject3dAVLTree>(octree.getClassesCount());
-                for(int i=0; i< octree.getClassesCount(); i++)
+                for (int i = 0; i < octree.getClassesCount(); i++) {
                     objectClasses.add(new MonoObject3dAVLTree());
+                }
             }
 
             //Get the list
-			MonoObject3dAVLTree objectClass = this.objectClasses.get(classID);
+            MonoObject3dAVLTree objectClass = this.objectClasses.get(classID);
 
             //Set Octant
-			obj.setOctant(this);
+            obj.setOctant(this);
 
-			//Add at this node
+            //Add at this node
             obj.setID(octree.getNextObjectID());
-			objectClass.add(obj);
-			objectsCount++;
-        }
-        else
-        {
-            for(int index : obj.octreePosition(posX, posY, posZ, size))
-			{
-				children[index].addObject(classID, obj);
-			}
+            objectClass.add(obj);
+            objectsCount++;
+        } else {
+            for (int index : obj.octreePosition(posX, posY, posZ, size)) {
+                children[index].addObject(classID, obj);
+            }
         }
     }
 
-    public void removeObject(int classID, Object3d obj)
-    {
+    public void removeObject(int classID, Object3d obj) {
         //Get the list
-		MonoObject3dAVLTree objectClass = this.objectClasses.get(classID);
+        MonoObject3dAVLTree objectClass = this.objectClasses.get(classID);
 
-		if(objectClass.remove(obj))
-			objectsCount--;
+        if (objectClass.remove(obj)) {
+            objectsCount--;
+        }
 
-        if(objectsCount==0)
-        {
+        if (objectsCount == 0) {
             //Remove leaf
             octree.removeLeaf(this);
         }
 
     }
 
-    public void subdivide()
-	{
-		float quantum = size/4;
-		float newSize = size/2;
-		Octant o1 = new Octant(octree,depth+1,posX+quantum, posY+quantum, posZ-quantum, newSize);
-		Octant o2 = new Octant(octree,depth+1,posX-quantum, posY+quantum, posZ-quantum, newSize);
-		Octant o3 = new Octant(octree,depth+1,posX+quantum, posY+quantum, posZ+quantum, newSize);
-		Octant o4 = new Octant(octree,depth+1,posX-quantum, posY+quantum, posZ+quantum, newSize);
+    public void subdivide() {
+        float quantum = size / 4;
+        float newSize = size / 2;
+        Octant o1 = new Octant(octree, depth + 1, posX + quantum, posY + quantum, posZ - quantum, newSize);
+        Octant o2 = new Octant(octree, depth + 1, posX - quantum, posY + quantum, posZ - quantum, newSize);
+        Octant o3 = new Octant(octree, depth + 1, posX + quantum, posY + quantum, posZ + quantum, newSize);
+        Octant o4 = new Octant(octree, depth + 1, posX - quantum, posY + quantum, posZ + quantum, newSize);
 
-		Octant o5 = new Octant(octree,depth+1,posX+quantum, posY-quantum, posZ-quantum, newSize);
-		Octant o6 = new Octant(octree,depth+1,posX-quantum, posY-quantum, posZ-quantum, newSize);
-		Octant o7 = new Octant(octree,depth+1,posX+quantum, posY-quantum, posZ+quantum, newSize);
-		Octant o8 = new Octant(octree,depth+1,posX-quantum, posY-quantum, posZ+quantum, newSize);
+        Octant o5 = new Octant(octree, depth + 1, posX + quantum, posY - quantum, posZ - quantum, newSize);
+        Octant o6 = new Octant(octree, depth + 1, posX - quantum, posY - quantum, posZ - quantum, newSize);
+        Octant o7 = new Octant(octree, depth + 1, posX + quantum, posY - quantum, posZ + quantum, newSize);
+        Octant o8 = new Octant(octree, depth + 1, posX - quantum, posY - quantum, posZ + quantum, newSize);
 
-        children = new Octant[] {o1, o2, o3, o4, o5, o6, o7, o8 };
+        children = new Octant[]{o1, o2, o3, o4, o5, o6, o7, o8};
     }
 
-    public Iterator<Object3d> iterator(int classID)
-    {
+    public Iterator<Object3d> iterator(int classID) {
         MonoObject3dAVLTree objectClass = this.objectClasses.get(classID);
         return objectClass.iterator();
     }
 
-    public void displayOctreeNode(GL gl)
-	{
-		if(children==null && depth==octree.getMaxDepth() && objectsCount>0)
-		{
-			float quantum = size/2;
-			gl.glBegin(GL.GL_QUAD_STRIP);
-			gl.glVertex3f(posX+quantum,posY+quantum, posZ+quantum);
-			gl.glVertex3f(posX+quantum,posY-quantum, posZ+quantum);
-			gl.glVertex3f(posX+quantum,posY+quantum, posZ-quantum);
-			gl.glVertex3f(posX+quantum,posY-quantum, posZ-quantum);
-			gl.glVertex3f(posX-quantum,posY+quantum, posZ-quantum);
-			gl.glVertex3f(posX-quantum,posY-quantum, posZ-quantum);
-			gl.glVertex3f(posX-quantum,posY+quantum, posZ+quantum);
-			gl.glVertex3f(posX-quantum,posY-quantum, posZ+quantum);
-			gl.glVertex3f(posX+quantum,posY+quantum, posZ+quantum);
-			gl.glVertex3f(posX+quantum,posY-quantum, posZ+quantum);
-			gl.glEnd();
-			gl.glBegin(GL.GL_QUADS);
-			gl.glVertex3f(posX-quantum, posY+quantum,posZ-quantum);
-			gl.glVertex3f(posX-quantum, posY+quantum,posZ+quantum);
-			gl.glVertex3f(posX+quantum, posY+quantum,posZ+quantum);
-			gl.glVertex3f(posX+quantum, posY+quantum,posZ-quantum);
+    public void displayOctreeNode(GL gl) {
+        /*if(children==null && depth==octree.getMaxDepth() && objectsCount>0)
+        {*/
 
-			gl.glVertex3f(posX-quantum, posY-quantum,posZ+quantum);
-			gl.glVertex3f(posX-quantum, posY-quantum,posZ-quantum);
-			gl.glVertex3f(posX+quantum, posY-quantum,posZ-quantum);
-			gl.glVertex3f(posX+quantum, posY-quantum,posZ+quantum);
-			gl.glEnd();
-		}
-		else if(children!=null)
-		{
-			for(Octant o : children)
-			{
-				o.displayOctreeNode(gl);
-			}
-		}
+        float quantum = size / 2;
+        gl.glBegin(GL.GL_QUAD_STRIP);
+        gl.glVertex3f(posX + quantum, posY + quantum, posZ + quantum);
+        gl.glVertex3f(posX + quantum, posY - quantum, posZ + quantum);
+        gl.glVertex3f(posX + quantum, posY + quantum, posZ - quantum);
+        gl.glVertex3f(posX + quantum, posY - quantum, posZ - quantum);
+        gl.glVertex3f(posX - quantum, posY + quantum, posZ - quantum);
+        gl.glVertex3f(posX - quantum, posY - quantum, posZ - quantum);
+        gl.glVertex3f(posX - quantum, posY + quantum, posZ + quantum);
+        gl.glVertex3f(posX - quantum, posY - quantum, posZ + quantum);
+        gl.glVertex3f(posX + quantum, posY + quantum, posZ + quantum);
+        gl.glVertex3f(posX + quantum, posY - quantum, posZ + quantum);
+        gl.glEnd();
+        gl.glBegin(GL.GL_QUADS);
+        gl.glVertex3f(posX - quantum, posY + quantum, posZ - quantum);
+        gl.glVertex3f(posX - quantum, posY + quantum, posZ + quantum);
+        gl.glVertex3f(posX + quantum, posY + quantum, posZ + quantum);
+        gl.glVertex3f(posX + quantum, posY + quantum, posZ - quantum);
+
+        gl.glVertex3f(posX - quantum, posY - quantum, posZ + quantum);
+        gl.glVertex3f(posX - quantum, posY - quantum, posZ - quantum);
+        gl.glVertex3f(posX + quantum, posY - quantum, posZ - quantum);
+        gl.glVertex3f(posX + quantum, posY - quantum, posZ + quantum);
+        gl.glEnd();
+    /*}
+    else if(children!=null)
+    {
+    for(Octant o : children)
+    {
+    o.displayOctreeNode(gl);
+    }
+    }*/
     }
 
     public int getNumber() {

@@ -93,6 +93,7 @@ public class GraphDrawable extends GLAbstractListener {
     @Override
     protected void reshape3DScene(GL gl) {
         glu.gluLookAt(cameraLocation[0],cameraLocation[1],cameraLocation[2],cameraTarget[0],cameraTarget[1],cameraTarget[2],0,1,0);
+        gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, modelMatrix);
     }
 
     @Override
@@ -168,7 +169,7 @@ public class GraphDrawable extends GLAbstractListener {
         out2[2] /= out2[3];
         res[0] = viewport.get(0) + (out2[0] + 1) * viewport.get(2) / 2;
         res[1] = viewport.get(1) + viewport.get(3) * (out2[1] + 1) / 2;
-
+       
         return res;
     }
 

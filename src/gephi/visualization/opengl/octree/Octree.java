@@ -65,8 +65,8 @@ public class Octree
     private OctreeIterator selectedObject0Iterator;
 
     //States
-    private List<Octant> visibleLeaves;
-    private List<Octant> selectedLeaves;
+    protected List<Octant> visibleLeaves;
+    protected List<Octant> selectedLeaves;
 
     public Octree(GraphDrawable drawable, int maxDepth, int size, int nbClasses)
     {
@@ -193,13 +193,21 @@ public class Octree
         return itr;
 	}
 
+    public OctreeIterator getSelectedObject0Iterator() {
+        selectedObject0Iterator.reset();
+        return selectedObject0Iterator;
+    }
+    
+
     public void displayOctree(GL gl)
 	{
-		gl.glColor3i(0, 0, 0);
+		//gl.glColor3f(1, 0.5f, 0.5f);
 		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
-		root.displayOctreeNode(gl);
+		for(Octant o : visibleLeaves)
+        {
+            o.displayOctreeNode(gl);
+        }
 		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
-
 	}
 
     void addLeaf(Octant leaf)
