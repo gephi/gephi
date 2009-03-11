@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.nio.DoubleBuffer;
 import javax.media.opengl.GL;
+import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.glu.GLU;
 
 /**

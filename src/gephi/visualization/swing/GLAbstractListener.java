@@ -21,6 +21,9 @@ public abstract class GLAbstractListener implements GLEventListener {
 	protected static final GLU glu = new GLU();
 	private static final boolean DEBUG = true;
 
+    private long startTime=0;
+	protected float fps;
+
     private volatile boolean resizing=false;
 	private final float viewField = 30.0f;
 	private final float nearDistance = 1.0f;
@@ -168,6 +171,14 @@ public abstract class GLAbstractListener implements GLEventListener {
 
 	@Override
 	public void display(GLAutoDrawable drawable) {
+        if(startTime==0)
+			startTime = System.currentTimeMillis()-1;
+
+		long endTime = System.currentTimeMillis();
+		long tpsEcoule = endTime - startTime;
+		startTime = endTime;
+		fps = (int)(1000.0f / tpsEcoule);
+
 		GL gl = drawable.getGL();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
@@ -232,5 +243,10 @@ public abstract class GLAbstractListener implements GLEventListener {
 
     public void setVizConfig(VizConfig vizConfig) {
         this.vizConfig = vizConfig;
+    }
+
+    public GLAutoDrawable getGLAutoDrawable()
+    {
+        return drawable;
     }
 }

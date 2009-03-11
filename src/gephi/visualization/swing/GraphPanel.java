@@ -76,6 +76,6 @@ public class GraphPanel extends GraphDrawable {
 	private void render2DForeground(Graphics2D g)
 	{
 		g.setColor(Color.red);
-		//g.drawString(""+fps, 10, 15);
+		g.drawString(""+fps, 10, 15);
 	}
 }

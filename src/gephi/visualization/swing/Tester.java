@@ -28,6 +28,7 @@ import gephi.visualization.events.VizEvent;
 import gephi.visualization.events.VizEventListener;
 import gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import gephi.visualization.opengl.octree.Octree;
+import gephi.visualization.scheduler.Scheduler;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -77,7 +78,7 @@ public class Tester extends JFrame {
 
         //Engine
         ArrayList<Node> nodeList = new ArrayList<Node>();
-        for(int i=0;i<10;i++)
+        for(int i=0;i<100;i++)
         {
             Node n = new Node();
             n.size=3;
@@ -93,7 +94,8 @@ public class Tester extends JFrame {
         container.validate();
         container.remove(label);
         drawable.display();
-
+        Scheduler scheduler = new Scheduler(drawable,engine);
+        scheduler.start();
         
     }
 

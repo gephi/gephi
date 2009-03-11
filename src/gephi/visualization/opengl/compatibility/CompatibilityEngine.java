@@ -57,7 +57,7 @@ public class CompatibilityEngine extends AbstractEngine
         super(graphDrawable,graphIO);
 
         //Init
-        octree = new Octree(5,1000,3);
+        octree = new Octree(graphDrawable,5,1000,3);
         nodeInitializers = new ArrayList<CompatibilityNodeInitializer>();
         nodeInitializers.add(new CompatibilityNodeSphereInitializer(this));
 

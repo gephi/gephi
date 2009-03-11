@@ -27,12 +27,14 @@ import gephi.data.network.avl.param.AVLItemAccessor;
 import gephi.data.network.avl.param.ParamAVLTree;
 import gephi.data.network.avl.simple.SimpleAVLTree;
 import gephi.visualization.opengl.Object3d;
+import gephi.visualization.swing.GraphDrawable;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import javax.media.opengl.GL;
+import javax.media.opengl.glu.GLU;
 
 /**
  *
@@ -46,6 +48,9 @@ public class Octree
 	public static byte CLASS_2 = 2;
 	public static byte CLASS_3 = 3;
 
+    //Architecture
+    private GraphDrawable drawable;
+
     //Attributes
     private int objectsIDs;
     private int maxDepth;
@@ -57,12 +62,15 @@ public class Octree
 
     //Iterator
     private List<OctreeIterator> objectIterators;
+    private OctreeIterator selectedObject0Iterator;
 
     //States
     private List<Octant> visibleLeaves;
+    private List<Octant> selectedLeaves;
 
-    public Octree(int maxDepth, int size, int nbClasses)
+    public Octree(GraphDrawable drawable, int maxDepth, int size, int nbClasses)
     {
+        this.drawable = drawable;
         this.maxDepth = maxDepth;
         this.classesCount = nbClasses;
 
@@ -73,6 +81,9 @@ public class Octree
             }
         });
         visibleLeaves = new ArrayList<Octant>();
+        selectedLeaves = new ArrayList<Octant>();
+
+        selectedObject0Iterator = new OctreeIterator(selectedLeaves, 0);
 
         objectIterators = new ArrayList<OctreeIterator>(nbClasses);
         for(int i=0; i< nbClasses; i++)
@@ -123,6 +134,58 @@ public class Octree
 
 	}
 
+    public void updateSelectedOctant(GL gl, GLU glu, float[] mousePosition, float[] pickRectangle)
+    {
+        //Start Picking mode
+		int capacity = 1*4*visibleLeaves.size();      //Each object take in maximium : 4 * name stack depth
+		IntBuffer hitsBuffer = BufferUtil.newIntBuffer(capacity);
+
+		gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
+		gl.glRenderMode(GL.GL_SELECT);
+
+		gl.glInitNames();
+		gl.glPushName(0);
+
+		gl.glMatrixMode(GL.GL_PROJECTION);
+		gl.glPushMatrix();
+		gl.glLoadIdentity();
+
+		glu.gluPickMatrix(mousePosition[0],mousePosition[1],pickRectangle[0],pickRectangle[1],drawable.viewport);
+		gl.glMultMatrixd(drawable.projMatrix);
+
+		gl.glMatrixMode(GL.GL_MODELVIEW);
+
+		//Draw the nodes' cube int the select buffer
+		int hitName=1;
+		for(Octant node : visibleLeaves)
+		{
+			gl.glLoadName(hitName);
+			node.displayOctreeNode(gl);
+			hitName++;
+		}
+
+		//Restoring the original projection matrix
+		gl.glMatrixMode(GL.GL_PROJECTION);
+		gl.glPopMatrix();
+		gl.glMatrixMode(GL.GL_MODELVIEW);
+		gl.glFlush();
+
+		//Returning to normal rendering mode
+		int nbRecords = gl.glRenderMode(GL.GL_RENDER);
+
+		//Clean previous selection
+		selectedLeaves.clear();
+
+		//Get the hits and put the node under selection in the selectionArray
+		for(int i=0; i< nbRecords; i++)
+		{
+			int hit = hitsBuffer.get(i*4+3) - 1; 		//-1 Because of the glPushName(0)
+
+			Octant nodeHit = visibleLeaves.get(hit);
+            selectedLeaves.add(nodeHit);
+		}
+    }
+
     public Iterator<Object3d> getObjectIterator(int classID)
 	{
 		OctreeIterator itr = objectIterators.get(classID);
@@ -167,12 +230,12 @@ public class Octree
     {
         private int i;
         private int classID;
-        private List<Octant> visibleLeaves;
+        private List<Octant> octants;
         private Iterator<Object3d> currentIterator;
 
-        public OctreeIterator(List<Octant> visibleLeaves, int classID)
+        public OctreeIterator(List<Octant> octants, int classID)
         {
-            this.visibleLeaves = visibleLeaves;
+            this.octants = octants;
             this.classID = classID;
         }
 
@@ -185,9 +248,9 @@ public class Octree
         public boolean hasNext() {
            if(currentIterator==null || !currentIterator.hasNext())
            {
-               if(i<visibleLeaves.size())
+               if(i<octants.size())
                {
-                    currentIterator = visibleLeaves.get(i).iterator(classID);
+                    currentIterator = octants.get(i).iterator(classID);
                     i++;
                     if(currentIterator.hasNext())
                         return true;
