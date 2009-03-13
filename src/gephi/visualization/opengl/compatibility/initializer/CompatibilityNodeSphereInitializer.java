@@ -18,15 +18,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package gephi.visualization.opengl.compatibility.nodeinit;
+package gephi.visualization.opengl.compatibility.initializer;
 
+import gephi.data.network.Node;
 import gephi.visualization.Renderable;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JPanel;
 
-import gephi.visualization.nodeinit.NodeSphereInitializer;
+import gephi.visualization.initializer.NodeSphereInitializer;
 import gephi.visualization.opengl.AbstractEngine;
 import gephi.visualization.opengl.Object3d;
 import gephi.visualization.opengl.compatibility.CompatibilityEngine;
@@ -53,18 +54,19 @@ public class CompatibilityNodeSphereInitializer extends NodeSphereInitializer im
 	}
 
 	@Override
-	public Object3d<Renderable> initNodeObject(Renderable n)
+	public Object3d initObject(Renderable n)
 	{
 		NodeSphereObject obj = new NodeSphereObject();
-		obj.setObj(n);
+		obj.setObj((Node)n);
 		obj.setSelected(false);
 		
 		chooseModel(obj);
 		return obj;
 	}
 
+
 	@Override
-	public void chooseModel(Object3d<Renderable> object3d)
+	public void chooseModel(Object3d<Node> object3d)
 	{
 		NodeSphereObject obj = (NodeSphereObject)object3d;
 

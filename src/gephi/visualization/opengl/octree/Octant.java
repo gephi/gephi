@@ -20,7 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package gephi.visualization.opengl.octree;
 
+import gephi.data.network.avl.param.AVLItemAccessor;
+import gephi.data.network.avl.param.ParamAVLTree;
 import gephi.data.network.avl.simple.AVLItem;
+import gephi.data.network.avl.simple.SimpleAVLTree;
 import gephi.visualization.opengl.Object3d;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -52,7 +55,7 @@ public class Octant implements AVLItem {
     private Octant[] children;
 
     //Objects
-    private List<MonoObject3dAVLTree> objectClasses;
+    private List<ParamAVLTree<Object3d>> objectClasses;
 
     public Octant(Octree octree, int depth, float posX, float posY, float posZ, float size) {
         this.size = size;
@@ -75,14 +78,20 @@ public class Octant implements AVLItem {
             if (objectsCount == 0) {
                 octree.addLeaf(this);
 
-                objectClasses = new ArrayList<MonoObject3dAVLTree>(octree.getClassesCount());
+                objectClasses = new ArrayList<ParamAVLTree<Object3d>>(octree.getClassesCount());
                 for (int i = 0; i < octree.getClassesCount(); i++) {
-                    objectClasses.add(new MonoObject3dAVLTree());
+                    objectClasses.add(new ParamAVLTree<Object3d>(new AVLItemAccessor<Object3d>()
+                    {
+
+                        public int getNumber(Object3d item) {
+                            return item.getNumber();
+                        }
+                    }));
                 }
             }
 
             //Get the list
-            MonoObject3dAVLTree objectClass = this.objectClasses.get(classID);
+            ParamAVLTree<Object3d> objectClass = this.objectClasses.get(classID);
 
             //Set Octant
             obj.setOctant(this);
@@ -100,7 +109,7 @@ public class Octant implements AVLItem {
 
     public void removeObject(int classID, Object3d obj) {
         //Get the list
-        MonoObject3dAVLTree objectClass = this.objectClasses.get(classID);
+        ParamAVLTree<Object3d> objectClass = this.objectClasses.get(classID);
 
         if (objectClass.remove(obj)) {
             objectsCount--;
@@ -130,8 +139,7 @@ public class Octant implements AVLItem {
     }
 
     public Iterator<Object3d> iterator(int classID) {
-        MonoObject3dAVLTree objectClass = this.objectClasses.get(classID);
-        return objectClass.iterator();
+        return this.objectClasses.get(classID).iterator();
     }
 
     public void displayOctreeNode(GL gl) {

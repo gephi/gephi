@@ -21,11 +21,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package gephi.visualization.swing;
 
 import gephi.data.network.Node;
-import gephi.visualization.NodeInitializer;
+import gephi.visualization.initializer.NodeInitializer;
 import gephi.visualization.config.VizCommander;
 import gephi.visualization.events.StandardVizEventManager;
 import gephi.visualization.events.VizEvent;
 import gephi.visualization.events.VizEventListener;
+import gephi.visualization.initializer.Object3dInitializer;
 import gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import gephi.visualization.opengl.octree.Octree;
 import gephi.visualization.scheduler.Scheduler;
@@ -78,16 +79,16 @@ public class Tester extends JFrame {
 
         //Engine
         ArrayList<Node> nodeList = new ArrayList<Node>();
-        for(int i=0;i<100;i++)
+        for(int i=0;i<10000;i++)
         {
             Node n = new Node();
             n.size=3;
             nodeList.add(n);
         }
-        NodeInitializer nodeInit = engine.getCurrentNodeInitializer();
+        Object3dInitializer nodeInit = engine.getObject3dClasses()[0].getCurrentObject3dInitializer();
         for(Node n : nodeList)
         {
-            engine.octree.addObject(0, nodeInit.initNodeObject(n));
+            engine.octree.addObject(0, nodeInit.initObject(n));
         }
         container.add(drawable.graphComponent, BorderLayout.CENTER);
         container.addNotify();

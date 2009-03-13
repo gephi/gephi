@@ -18,24 +18,30 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package gephi.visualization.opengl.compatibility.nodeinit;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.glu.GLU;
-import javax.media.opengl.glu.GLUquadric;
+package gephi.visualization.initializer;
 
-import gephi.visualization.NodeInitializer;
-import gephi.visualization.Renderable;
+import gephi.data.network.Node;
+import gephi.visualization.*;
+import gephi.visualization.initializer.Object3dInitializer;
+import javax.swing.JPanel;
+
+import gephi.visualization.opengl.AbstractEngine;
 import gephi.visualization.opengl.Object3d;
 
 /**
- * Specialized initilizer interface adapted to the {@link CompatibilityEngine} processes.
+ * Interface for classes which wants to create graphic node {@link Object3d}. Because node objects may be too
+ * various to only propose a Node object interface it is possible to create different initializers.
+ * <p>
+ * The initializer is responsible of the object creation and maintenance. Different functionalities
+ * like LOD or texturing can be done in initializers, with the cooperation if the engine.
+ * <p>
+ * This interface is also designed in order to be implemented in plugins.
  *
  * @author Mathieu Bastian
+ * @see AbstractEngine
  */
-public interface CompatibilityNodeInitializer extends NodeInitializer
+public interface NodeInitializer extends Object3dInitializer
 {
-	public void chooseModel(Object3d<Renderable> obj);
-	public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr);
-	public void initFromOpenGLThread();
+
 }

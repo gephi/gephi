@@ -18,12 +18,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
-package gephi.visualization.nodeinit;
+package gephi.visualization.initializer;
 
 
-import gephi.visualization.NodeInitializer;
-
-public abstract class NodeSphereInitializer implements NodeInitializer{
+public abstract class NodeSphereInitializer implements NodeInitializer {
 
 	@Override
 	public String getName() {

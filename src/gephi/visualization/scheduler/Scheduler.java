@@ -27,6 +27,9 @@ import gephi.visualization.swing.GraphDrawable;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -52,8 +55,35 @@ public class Scheduler {
         this.engine = engine;
     }
 
+    private ThreadPoolExecutor modelExecutor = new ThreadPoolExecutor(0, 4,  60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+    private Runnable modelSegment0;
+    private Runnable modelSegment1;
+    private Runnable modelSegment2;
+    private Runnable modelSegment3;
+
+
+
+   
+
     public void start()
     {
+        /*final int skip = 10;
+        new Thread("Bienator's Animator") {
+            @Override
+            public void run() {
+                System.out.println("start");
+                while(true) {
+
+                    graphDrawable.display();
+                    graphDrawable.getGLAutoDrawable().swapBuffers();
+
+                    for(int i = 0; i < skip; i++) {
+                        graphDrawable.getGLAutoDrawable().swapBuffers();
+                    }
+                }
+            }
+        }.start();*/
+
        //BetterFPSAnimator animator = new BetterFPSAnimator(graphDrawable, 30);
        //animator.start();
 
@@ -78,4 +108,52 @@ public class Scheduler {
     {
 
     }
+
+    public class RunnableSegment
+	{
+		boolean enabled=false;
+		boolean requireOpenGLThread;
+		Runnable runnable;
+		ThreadPoolExecutor executor;
+		Semaphore semaphore;
+
+		public RunnableSegment(ThreadPoolExecutor executor, Semaphore semaphore, Runnable runnable, boolean requireOpenGLThread)
+		{
+			this.runnable = runnable;
+			this.executor = executor;
+			this.semaphore = semaphore;
+			this.requireOpenGLThread = requireOpenGLThread;
+		}
+
+		public void executeIfNeeded()
+		{
+			if(enabled)
+			{
+				executor.execute(runnable);
+				setEnabled(false);
+
+			}
+			else
+			{
+				semaphore.release();
+			}
+		}
+
+		public void executeIfNeededInOpenGL()
+		{
+			if(enabled)
+			{
+				runnable.run();
+				setEnabled(false);
+			}
+		}
+
+		public synchronized void setEnabled(boolean enabled)
+		{
+			this.enabled = enabled;
+		}
+
+
+	}
+
 }

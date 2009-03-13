@@ -26,6 +26,7 @@ import gephi.data.network.avl.ResetableIterator;
 import gephi.data.network.avl.param.AVLItemAccessor;
 import gephi.data.network.avl.param.ParamAVLTree;
 import gephi.data.network.avl.simple.SimpleAVLTree;
+import gephi.visualization.opengl.AbstractEngine;
 import gephi.visualization.opengl.Object3d;
 import gephi.visualization.swing.GraphDrawable;
 import java.nio.IntBuffer;
@@ -42,14 +43,10 @@ import javax.media.opengl.glu.GLU;
  */
 public class Octree
 {
-    //Static
-    public static byte CLASS_0 = 0;
-	public static byte CLASS_1 = 1;
-	public static byte CLASS_2 = 2;
-	public static byte CLASS_3 = 3;
 
     //Architecture
     private GraphDrawable drawable;
+    private AbstractEngine engine;
 
     //Attributes
     private int objectsIDs;
@@ -61,16 +58,15 @@ public class Octree
     private ParamAVLTree<Octant> leaves;
 
     //Iterator
-    private List<OctreeIterator> objectIterators;
-    private OctreeIterator selectedObject0Iterator;
 
     //States
     protected List<Octant> visibleLeaves;
     protected List<Octant> selectedLeaves;
 
-    public Octree(GraphDrawable drawable, int maxDepth, int size, int nbClasses)
+    public Octree(AbstractEngine engine, int maxDepth, int size, int nbClasses)
     {
-        this.drawable = drawable;
+        this.engine = engine;
+        this.drawable = engine.getGraphDrawable();
         this.maxDepth = maxDepth;
         this.classesCount = nbClasses;
 
@@ -82,12 +78,6 @@ public class Octree
         });
         visibleLeaves = new ArrayList<Octant>();
         selectedLeaves = new ArrayList<Octant>();
-
-        selectedObject0Iterator = new OctreeIterator(selectedLeaves, 0);
-
-        objectIterators = new ArrayList<OctreeIterator>(nbClasses);
-        for(int i=0; i< nbClasses; i++)
-            objectIterators.add(new OctreeIterator(visibleLeaves, i));
 
         float dis = size/(float)Math.pow(2, maxDepth+1);
 		root = new Octant(this, 0,dis, dis, dis, size);
@@ -188,14 +178,11 @@ public class Octree
 
     public Iterator<Object3d> getObjectIterator(int classID)
 	{
-		OctreeIterator itr = objectIterators.get(classID);
-        itr.reset();
-        return itr;
+        return new OctreeIterator(visibleLeaves, classID);
 	}
 
-    public OctreeIterator getSelectedObject0Iterator() {
-        selectedObject0Iterator.reset();
-        return selectedObject0Iterator;
+    public OctreeIterator getSelectedObjectIterator(int classID) {
+        return new OctreeIterator(selectedLeaves, classID);
     }
     
 

@@ -21,6 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package gephi.visualization.opengl;
 
+import gephi.visualization.objects.Object3dClassLibrary;
+import gephi.visualization.objects.Object3dClass;
+import gephi.visualization.objects.StandardObject3dClassLibrary;
 import java.awt.Component;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
@@ -28,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import gephi.visualization.NodeInitializer;
+import gephi.visualization.initializer.NodeInitializer;
 import gephi.visualization.Renderable;
 import gephi.visualization.events.VizEventManager;
 import gephi.visualization.opengl.gleem.linalg.Vec3d;
@@ -56,9 +59,7 @@ public abstract class AbstractEngine {
     protected GraphIO graphIO;
     protected VizEventManager vizEventManager;
     protected SelectionArea currentSelectionArea = new Point();
-    
-	//User config
-	
+    protected Object3dClassLibrary objectClassLibrary = new StandardObject3dClassLibrary();
 
 	//GraphLimits
 	protected float graphLimits[]        = new float[4];;
@@ -69,6 +70,7 @@ public abstract class AbstractEngine {
 	{
 		this.graphDrawable = graphDrawable;
 		this.graphIO = graphIO;
+        initObject3dClass();
 	}
 
 	public abstract void beforeDisplay(GL gl, GLU glu);
@@ -77,7 +79,7 @@ public abstract class AbstractEngine {
 
 	public abstract void initEngine(GL gl, GLU glu);
 
-
+    public abstract void lod();
 	public abstract void cameraHasBeenMoved();
 	public abstract void mouseMove();
 	public abstract void mouseDrag();
@@ -87,11 +89,9 @@ public abstract class AbstractEngine {
 
 
 	public abstract void refreshGraphLimits();
-
-	public abstract List<? extends NodeInitializer> getNodeInitializers();
-	public abstract NodeInitializer getCurrentNodeInitializer();
-
-	
+    public abstract void initObject3dClass();
+    public abstract Object3dClass[] getObject3dClasses();
+    
 
 	public float cameraDistance(Object3d object)
 	{
@@ -131,6 +131,7 @@ public abstract class AbstractEngine {
 
 		return currentSelectionArea.mouseTest(d, obj);
     }
+
 
     public IntBuffer getViewportBuffer()
 	{

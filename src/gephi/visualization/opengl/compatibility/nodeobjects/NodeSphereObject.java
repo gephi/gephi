@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package gephi.visualization.opengl.compatibility.nodeobjects;
 
+import gephi.data.network.Node;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 
@@ -35,7 +36,7 @@ import gephi.visualization.opengl.octree.Octant;
  * @author Mathieu Bastian
  * @see CompatibilityEngine
  */
-public class NodeSphereObject extends Object3d<Renderable> {
+public class NodeSphereObject extends Object3d<Node> {
 
     public int modelType;
     private Octant octant;
