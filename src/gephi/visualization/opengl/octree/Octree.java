@@ -24,6 +24,7 @@ package gephi.visualization.opengl.octree;
 import com.sun.opengl.util.BufferUtil;
 import gephi.data.network.avl.ResetableIterator;
 import gephi.data.network.avl.param.AVLItemAccessor;
+import gephi.data.network.avl.param.ParamAVLIterator;
 import gephi.data.network.avl.param.ParamAVLTree;
 import gephi.data.network.avl.simple.SimpleAVLTree;
 import gephi.visualization.opengl.AbstractEngine;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 
@@ -58,6 +60,7 @@ public class Octree
     private ParamAVLTree<Octant> leaves;
 
     //Iterator
+    ConcurrentLinkedQueue<OctreeIterator> iteratorQueue;
 
     //States
     protected List<Octant> visibleLeaves;
@@ -78,6 +81,12 @@ public class Octree
         });
         visibleLeaves = new ArrayList<Octant>();
         selectedLeaves = new ArrayList<Octant>();
+
+        iteratorQueue = new ConcurrentLinkedQueue<OctreeIterator>();
+        iteratorQueue.add(new OctreeIterator());
+        iteratorQueue.add(new OctreeIterator());
+        iteratorQueue.add(new OctreeIterator());
+        iteratorQueue.add(new OctreeIterator());
 
         float dis = size/(float)Math.pow(2, maxDepth+1);
 		root = new Octant(this, 0,dis, dis, dis, size);
@@ -178,11 +187,15 @@ public class Octree
 
     public Iterator<Object3d> getObjectIterator(int classID)
 	{
-        return new OctreeIterator(visibleLeaves, classID);
+        OctreeIterator itr = borrowIterator();
+        itr.reset(visibleLeaves, classID);
+        return itr;
 	}
 
     public OctreeIterator getSelectedObjectIterator(int classID) {
-        return new OctreeIterator(selectedLeaves, classID);
+       OctreeIterator itr = borrowIterator();
+        itr.reset(selectedLeaves, classID);
+        return itr;
     }
     
 
@@ -221,42 +234,68 @@ public class Octree
         return objectsIDs++;
     }
 
-    private static class OctreeIterator implements Iterator<Object3d>, ResetableIterator
+    private OctreeIterator borrowIterator()
     {
-        private int i;
+        System.out.println("borrow iterator");
+        OctreeIterator itr =  iteratorQueue.poll();
+        if(itr==null)
+            System.err.println("Octree iterator starved");
+        return itr;
+    }
+
+    private void returnIterator(OctreeIterator iterator)
+    {
+        System.out.println("return iterator");
+        iteratorQueue.add(iterator);
+
+    }
+
+
+    private class OctreeIterator implements Iterator<Object3d>, ResetableIterator
+    {
+        private int i=0;
         private int classID;
         private List<Octant> octants;
-        private Iterator<Object3d> currentIterator;
+        private ParamAVLIterator<Object3d> octantIterator;
+
+        public OctreeIterator()
+        {
+            octantIterator = new ParamAVLIterator<Object3d>();
+        }
 
         public OctreeIterator(List<Octant> octants, int classID)
         {
+            this();
             this.octants = octants;
-            this.classID = classID;
+            this.classID = classID;     
         }
 
-        public void reset()
+        public void reset(List<Octant> octants, int classID)
         {
-            currentIterator=null;
+            this.octants = octants;
+            this.classID = classID;
             i=0;
         }
 
         public boolean hasNext() {
-           if(currentIterator==null || !currentIterator.hasNext())
+           if(!octantIterator.hasNext())
            {
-               if(i<octants.size())
+               while(i<octants.size())
                {
-                    currentIterator = octants.get(i).iterator(classID);
+                    octantIterator.setNode(octants.get(i).getTree(classID));
                     i++;
-                    if(currentIterator.hasNext())
+                    if(octantIterator.hasNext())
                         return true;
                }
+               returnIterator(this);
                return false;
            }
            return true;
         }
 
         public Object3d next() {
-            return currentIterator.next();
+            Object3d obj = octantIterator.next();
+            return obj;
         }
 
         public void remove() {

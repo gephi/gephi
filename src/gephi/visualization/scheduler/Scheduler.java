@@ -23,7 +23,9 @@ package gephi.visualization.scheduler;
 
 import com.sun.opengl.util.FPSAnimator;
 import gephi.visualization.opengl.AbstractEngine;
+import gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import gephi.visualization.swing.GraphDrawable;
+import java.util.Iterator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -32,6 +34,8 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -87,8 +91,8 @@ public class Scheduler {
        //BetterFPSAnimator animator = new BetterFPSAnimator(graphDrawable, 30);
        //animator.start();
 
-       SimpleFPSAnimator simpleFPSAnimator = new SimpleFPSAnimator(graphDrawable, 30);
-       simpleFPSAnimator.start();
+       //SimpleFPSAnimator simpleFPSAnimator = new SimpleFPSAnimator(graphDrawable, 30);
+       //simpleFPSAnimator.start();
 
         //FPSAnimator fPSAnimator = new FPSAnimator(graphDrawable.getGLAutoDrawable(),30,true);
         //fPSAnimator.start();
@@ -102,6 +106,7 @@ public class Scheduler {
         };
         long delay = (long) (1000.0f / (float) 45);
 		displayExecutor.scheduleWithFixedDelay(displayCall, 0, delay, TimeUnit.MILLISECONDS);*/
+
     }
 
     public void stop()

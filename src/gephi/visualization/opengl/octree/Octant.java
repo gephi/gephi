@@ -142,6 +142,11 @@ public class Octant implements AVLItem {
         return this.objectClasses.get(classID).iterator();
     }
 
+    public ParamAVLTree<Object3d> getTree(int classID)
+    {
+        return objectClasses.get(classID);
+    }
+
     public void displayOctreeNode(GL gl) {
         /*if(children==null && depth==octree.getMaxDepth() && objectsCount>0)
         {*/
