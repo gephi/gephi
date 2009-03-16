@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package gephi.visualization.opengl.compatibility.nodeobjects;
+package gephi.visualization.opengl.compatibility.objects;
 
 import gephi.data.network.Edge;
 import gephi.data.network.Node;

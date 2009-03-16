@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package gephi.visualization.swing;
 
+import gephi.data.network.Edge;
 import gephi.data.network.Node;
 import gephi.visualization.VizController;
 import gephi.visualization.initializer.NodeInitializer;
@@ -76,7 +77,7 @@ public class Tester extends JFrame {
 
         //Engine
         ArrayList<Node> nodeList = new ArrayList<Node>();
-        for(int i=0;i<10000;i++)
+        for(int i=0;i<100;i++)
         {
             Node n = new Node();
             n.size=3;
@@ -86,6 +87,14 @@ public class Tester extends JFrame {
         for(Node n : nodeList)
         {
             engine.octree.addObject(0, nodeInit.initObject(n));
+        }
+        Object3dInitializer edgeInit = engine.getObject3dClasses()[1].getCurrentObject3dInitializer();
+        for(int i=0;i<500;i++)
+        {
+            Node source = nodeList.get((int)(Math.random()*nodeList.size()));
+            Node target = nodeList.get((int)(Math.random()*nodeList.size()));
+            Edge edge = new Edge(source,target);
+            engine.octree.addObject(1, edgeInit.initObject(edge));
         }
         container.add(drawable.graphComponent, BorderLayout.CENTER);
         container.addNotify();

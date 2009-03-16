@@ -22,12 +22,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package gephi.visualization.opengl.compatibility.initializer;
 
 import gephi.data.network.Edge;
-import gephi.data.network.Node;
 import gephi.visualization.Renderable;
-import gephi.visualization.opengl.AbstractEngine;
 import gephi.visualization.opengl.Object3d;
-import gephi.visualization.opengl.compatibility.CompatibilityEngine;
-import gephi.visualization.opengl.compatibility.objects.Arrow3dObject;
+import gephi.visualization.opengl.compatibility.objects.Edge3dObject;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
@@ -37,36 +34,24 @@ import javax.swing.JPanel;
  *
  * @author Mathieu
  */
-public class CompatibilityArrowInitializer implements CompatibilityObject3dInitializer<Node> {
-
-    private CompatibilityEngine engine;
-
-	public CompatibilityArrowInitializer(AbstractEngine engine)
-	{
-		this.engine = (CompatibilityEngine)engine;
-	}
+public class CompatibilityEdgeInitializer implements CompatibilityObject3dInitializer<Edge> {
 
     @Override
     public Object3d initObject(Renderable n) {
         Edge e = (Edge)n;
 
-        Arrow3dObject arrow = new Arrow3dObject(e);
-		arrow.setObj(e.getSource());
-        arrow.setOctant(e.getSource().getObject3d().getOctant());
+        Edge3dObject edge = new Edge3dObject();
+        edge.setObj(e);
 
-        return arrow;
+        return edge;
     }
 
-    public void chooseModel(Object3d<Node> obj) {
-       float distance = engine.cameraDistance(obj) + obj.getObj().getRadius();	//Radius is added to cancel the cameraDistance diff
-       if(distance < 100)
-            obj.mark = false;
-       else
-           obj.mark = true;
+    public void chooseModel(Object3d<Edge> obj) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr) {
-        return ptr;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void initFromOpenGLThread() {

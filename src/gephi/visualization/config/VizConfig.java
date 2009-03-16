@@ -41,7 +41,7 @@ public class VizConfig
     private boolean lighting                        =true;
     private boolean material                        =true;
     private Color backgroundColor                   =Color.WHITE;
-    private float[] defaultCameraPosition           = {0f,0f,900f};
+    private float[] defaultCameraPosition           = {0f,0f,5000f};
     protected float[] nodeSelectedColor             = { 1f,1f,1f};
     protected boolean selectionEnable               = true;
     protected boolean draggingEnable                = true;

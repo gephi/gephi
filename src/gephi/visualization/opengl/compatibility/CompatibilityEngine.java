@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package gephi.visualization.opengl.compatibility;
 
+import gephi.visualization.Renderable;
 import gephi.visualization.VizController;
 import gephi.visualization.initializer.NodeInitializer;
 import gephi.visualization.objects.Object3dClass;
@@ -28,7 +29,8 @@ import gephi.visualization.opengl.Object3d;
 import gephi.visualization.opengl.compatibility.initializer.CompatibilityNodeInitializer;
 import gephi.visualization.opengl.compatibility.initializer.CompatibilityNodeSphereInitializer;
 import gephi.visualization.opengl.compatibility.initializer.CompatibilityObject3dInitializer;
-import gephi.visualization.opengl.compatibility.nodeobjects.NodeSphereObject;
+import gephi.visualization.opengl.compatibility.objects.NodeSphereObject;
+import gephi.visualization.opengl.gleem.linalg.Vec3f;
 import gephi.visualization.opengl.octree.Octree;
 import gephi.visualization.scheduler.Scheduler;
 import gephi.visualization.selection.SelectionArea;
@@ -64,26 +66,23 @@ public class CompatibilityEngine extends AbstractEngine {
         super();
 
         //Init
-        octree = new Octree(5, 1000, 3);
+        octree = new Octree(5, 10000, 3);
     }
 
     @Override
-    public void initArchitecture()
-    {
+    public void initArchitecture() {
         super.initArchitecture();
-        scheduler = (CompatibilityScheduler)VizController.getInstance().getScheduler();
+        scheduler = (CompatibilityScheduler) VizController.getInstance().getScheduler();
         octree.initArchitecture();
         vizEventManager = VizController.getInstance().getVizEventManager();
     }
 
-   public void updateSelection(GL gl,GLU glu)
-   {
-       octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
-   }
+    public void updateSelection(GL gl, GLU glu) {
+        octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
+    }
 
     @Override
     public void beforeDisplay(GL gl, GLU glu) {
-        
     }
 
     @Override
@@ -94,8 +93,30 @@ public class CompatibilityEngine extends AbstractEngine {
             object3dClasses[CLASS_NODE].getCurrentObject3dInitializer().chooseModel(obj);
             setViewportPosition(obj);
         }
+
         long startTime = System.currentTimeMillis();
-        if (object3dClasses[0].isEnabled()) {
+
+        if (object3dClasses[CLASS_EDGE].isEnabled()) {
+            gl.glDisable(GL.GL_LIGHTING);
+            //gl.glDisable(GL.GL_BLEND);
+            //gl.glBegin(GL.GL_LINES);
+            gl.glBegin(GL.GL_TRIANGLES);
+            for (Iterator<Object3d> itr = octree.getObjectIterator(CLASS_EDGE); itr.hasNext();) {
+                Object3d obj = itr.next();
+                Renderable renderable = obj.getObj();
+
+                if (obj.markTime != startTime) {
+                    obj.display(gl, glu);
+                    obj.markTime = startTime;
+                }
+            }
+            gl.glEnd();
+            gl.glEnable(GL.GL_LIGHTING);
+            //gl.glEnable(GL.GL_BLEND);
+        }
+
+        //Node
+        if (object3dClasses[CLASS_NODE].isEnabled()) {
             for (Iterator<Object3d> itr = octree.getObjectIterator(CLASS_NODE); itr.hasNext();) {
                 Object3d obj = itr.next();
                 if (obj.markTime != startTime) {
@@ -104,17 +125,73 @@ public class CompatibilityEngine extends AbstractEngine {
                 }
             }
         }
-        octree.displayOctree(gl);
+        //octree.displayOctree(gl);
+/*
+
+        float x1 = -140f;
+        float x2 = 200f;
+        float y1 = 56;
+        float y2 = 150;
+        float z1 = 0;
+        float z2 = 0;
+        float t=3f;
+
+        gl.glBegin(GL.GL_POINTS);
+        gl.glVertex3f(x1, y1, z1);
+        gl.glVertex3f(x2, y2, z2);
+        gl.glEnd();
+
+
+        float distance = (float)Math.sqrt(Math.pow((double)x1 - x2,2d) +
+				Math.pow((double)y1 - y2,2d) +
+				Math.pow((double)z1 - z2,2d));
+        double anglez = Math.atan2(y2 - y1, x2 - x1);
+
+        gl.glPushMatrix();
+
+        gl.glTranslatef(x1+(float)Math.cos(anglez)*distance/2f, y1+(float)Math.sin(anglez)*distance/2f, 1);
+        gl.glRotatef((float)Math.toDegrees(anglez), 0, 0, 1);
+        gl.glScalef(distance/2f, 1f, 0f);
+        
+        
+        //gl.glRotatef((float)Math.toDegrees(anglez), 0, 0, 1);
+        //gl.glTranslatef(x1, 0, 0);
+        //gl.glScalef(distance, 1f, 0f);
+        
+        
+        gl.glBegin(GL.GL_TRIANGLE_STRIP);
+        gl.glVertex3f(1, 1, 0);
+        gl.glVertex3f(-1, 1,0);
+        gl.glVertex3f(1, -1, 0);
+        gl.glVertex3f(-1,-1, 0);
+        gl.glEnd();
+
+        gl.glPopMatrix();
+
+        //Reference
+        double angle = Math.atan2(y2 - y1, x2 - x1);
+        float t2sina1 =(float)( t / 2 * Math.sin(angle));
+        float t2cosa1 = (float)( t / 2 * Math.cos(angle));
+        float t2sina2 = (float)( t / 2 * Math.sin(angle));
+        float t2cosa2 = (float)( t / 2 * Math.cos(angle));
+
+        gl.glColor3i(255, 0, 0);
+        gl.glBegin(GL.GL_TRIANGLES);
+        gl.glVertex2f(x1 + t2sina1, y1 - t2cosa1+20);
+        gl.glVertex2f(x2 + t2sina2, y2 - t2cosa2+20);
+        gl.glVertex2f(x2 - t2sina2, y2 + t2cosa2+20);
+        gl.glVertex2f(x2 - t2sina2, y2 + t2cosa2+20);
+        gl.glVertex2f(x1 - t2sina1, y1 + t2cosa1+20);
+        gl.glVertex2f(x1 + t2sina1, y1 - t2cosa1+20);
+        gl.glEnd();*/
     }
 
-     @Override
+    @Override
     public void afterDisplay(GL gl, GLU glu) {
-        
     }
 
     @Override
     public void cameraHasBeenMoved(GL gl, GLU glu) {
-        
     }
 
     @Override
@@ -132,24 +209,21 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public void mouseDrag() {
         float[] drag = graphIO.getMouseDrag();
-		for(Object3d obj : selectedObjects)
-		{
-			float[] mouseDistance = obj.getDragDistanceFromMouse();
-			obj.getObj().setX(drag[0]+mouseDistance[0]);
-			obj.getObj().setY(drag[1]+mouseDistance[1]);
-		}
+        for (Object3d obj : selectedObjects) {
+            float[] mouseDistance = obj.getDragDistanceFromMouse();
+            obj.getObj().setX(drag[0] + mouseDistance[0]);
+            obj.getObj().setY(drag[1] + mouseDistance[1]);
+        }
     }
-
     private ConcurrentLinkedQueue<Object3d> selectedObjects = new ConcurrentLinkedQueue<Object3d>();
 
     @Override
     public void mouseMove() {
 
-        List<Object3d> newSelectedObjects   =null;
-        List<Object3d> unSelectedObjects    =null;
+        List<Object3d> newSelectedObjects = null;
+        List<Object3d> unSelectedObjects = null;
 
-        if(vizEventManager.hasSelectionListeners())
-        {
+        if (vizEventManager.hasSelectionListeners()) {
             newSelectedObjects = new ArrayList<Object3d>();
             unSelectedObjects = new ArrayList<Object3d>();
         }
@@ -162,8 +236,9 @@ public class CompatibilityEngine extends AbstractEngine {
                     if (!obj.isSelected()) {
                         //New selected
                         obj.setSelected(true);
-                         if(vizEventManager.hasSelectionListeners())
+                        if (vizEventManager.hasSelectionListeners()) {
                             newSelectedObjects.add(obj);
+                        }
                         selectedObjects.add(obj);
                     }
                     obj.markTime = markTime;
@@ -186,26 +261,23 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void refreshGraphLimits() {
-       
     }
 
     @Override
     public void startDrag() {
         float x = graphIO.getMouseDrag()[0];
-		float y = graphIO.getMouseDrag()[1];
+        float y = graphIO.getMouseDrag()[1];
 
-		for (Iterator<Object3d> itr = selectedObjects.iterator(); itr.hasNext();)
-		{
-			Object3d o = itr.next();
-			float[] tab = o.getDragDistanceFromMouse();
-			tab[0] = o.getObj().getX() - x;
-			tab[1] = o.getObj().getY() -y;
-		}
+        for (Iterator<Object3d> itr = selectedObjects.iterator(); itr.hasNext();) {
+            Object3d o = itr.next();
+            float[] tab = o.getDragDistanceFromMouse();
+            tab[0] = o.getObj().getX() - x;
+            tab[1] = o.getObj().getY() - y;
+        }
     }
 
     @Override
     public void stopDrag() {
-        
     }
 
     private void initDisplayLists(GL gl, GLU glu) {
@@ -240,7 +312,6 @@ public class CompatibilityEngine extends AbstractEngine {
             ptr = newPtr;
         }
 
-
         //Fin
 
         // Sphere with a texture
@@ -272,6 +343,8 @@ public class CompatibilityEngine extends AbstractEngine {
         selectableClasses = new CompatibilityObject3dClass[0];
 
         object3dClasses[0].setEnabled(true);
+        object3dClasses[1].setEnabled(true);
+
 
         //LOD
         ArrayList<Object3dClass> classList = new ArrayList<Object3dClass>();
@@ -296,8 +369,7 @@ public class CompatibilityEngine extends AbstractEngine {
         return object3dClasses;
     }
 
-    public Scheduler getScheduler()
-    {
+    public Scheduler getScheduler() {
         return scheduler;
     }
 }

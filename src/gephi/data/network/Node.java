@@ -42,8 +42,9 @@ public class Node implements Renderable
 
     public Node()
 	{
-		x = ((float)Math.random())*200-100.0f;
-		y = ((float)Math.random())*200-100.0f;
+		x = ((float)Math.random())*2000-1000.0f;
+		y = ((float)Math.random())*2000-1000.0f;
+        z = ((float)Math.random())*100-100.0f;
 	}
 
     public float getB() {

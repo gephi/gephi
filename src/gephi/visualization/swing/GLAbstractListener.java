@@ -139,6 +139,9 @@ public abstract class GLAbstractListener implements GLEventListener {
         //Material
         gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
 
+        //
+        gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
+
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		gl.glEnable(GL.GL_NORMALIZE);
 		gl.glEnable(GL.GL_COLOR_MATERIAL);

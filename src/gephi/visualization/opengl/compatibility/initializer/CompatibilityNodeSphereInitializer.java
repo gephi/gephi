@@ -31,7 +31,7 @@ import gephi.visualization.initializer.NodeSphereInitializer;
 import gephi.visualization.opengl.AbstractEngine;
 import gephi.visualization.opengl.Object3d;
 import gephi.visualization.opengl.compatibility.CompatibilityEngine;
-import gephi.visualization.opengl.compatibility.nodeobjects.NodeSphereObject;
+import gephi.visualization.opengl.compatibility.objects.NodeSphereObject;
 
 /**
  * Default initializer for the nodes. The class draw sphere objects and manage a LOD system.
