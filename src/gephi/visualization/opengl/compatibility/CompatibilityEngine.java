@@ -73,6 +73,7 @@ public class CompatibilityEngine extends AbstractEngine {
         super.initArchitecture();
         scheduler = (CompatibilityScheduler)VizController.getInstance().getScheduler();
         octree.initArchitecture();
+        vizEventManager = VizController.getInstance().getVizEventManager();
     }
 
    public void updateSelection(GL gl,GLU glu)
@@ -130,15 +131,28 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void mouseDrag() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        float[] drag = graphIO.getMouseDrag();
+		for(Object3d obj : selectedObjects)
+		{
+			float[] mouseDistance = obj.getDragDistanceFromMouse();
+			obj.getObj().setX(drag[0]+mouseDistance[0]);
+			obj.getObj().setY(drag[1]+mouseDistance[1]);
+		}
     }
+
     private ConcurrentLinkedQueue<Object3d> selectedObjects = new ConcurrentLinkedQueue<Object3d>();
 
     @Override
     public void mouseMove() {
 
-        List<Object3d> newSelectedObjects = new ArrayList<Object3d>();
-        List<Object3d> unSelectedObjects = new ArrayList<Object3d>();
+        List<Object3d> newSelectedObjects   =null;
+        List<Object3d> unSelectedObjects    =null;
+
+        if(vizEventManager.hasSelectionListeners())
+        {
+            newSelectedObjects = new ArrayList<Object3d>();
+            unSelectedObjects = new ArrayList<Object3d>();
+        }
 
         long markTime = System.currentTimeMillis();
         for (Object3dClass objClass : selectableClasses) {
@@ -148,12 +162,13 @@ public class CompatibilityEngine extends AbstractEngine {
                     if (!obj.isSelected()) {
                         //New selected
                         obj.setSelected(true);
-                        newSelectedObjects.add(obj);
+                         if(vizEventManager.hasSelectionListeners())
+                            newSelectedObjects.add(obj);
                         selectedObjects.add(obj);
                     }
                     obj.markTime = markTime;
                 } else if (currentSelectionArea.unselect(obj.getObj())) {
-                    if (obj.isSelected()) {
+                    if (vizEventManager.hasSelectionListeners() && obj.isSelected()) {
                         unSelectedObjects.add(obj);
                     }
                 }

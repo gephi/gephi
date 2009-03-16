@@ -52,4 +52,5 @@ public interface Scheduler {
     public void requireUpdateVisible();
     public void requireUpdateSelection();
     public void requireStartDrag();
+    public void requireDrag();
 }

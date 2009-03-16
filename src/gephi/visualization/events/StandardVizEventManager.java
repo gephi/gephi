@@ -39,7 +39,7 @@ public class StandardVizEventManager implements VizEventManager {
 
     public StandardVizEventManager()
     {
-        pool = new ThreadPoolExecutor(0, 1,  60L, TimeUnit.SECONDS,new LinkedBlockingDeque<Runnable>(1));
+        pool = new ThreadPoolExecutor(0, 1,  60L, TimeUnit.SECONDS,new LinkedBlockingDeque<Runnable>(10));
 
         //Init Cached Runnable
         dragRunnable = new Runnable() {
@@ -145,6 +145,10 @@ public class StandardVizEventManager implements VizEventManager {
                 weakListener.get().vizEvent(event);
             }
         }
+    }
+
+    public boolean hasSelectionListeners() {
+        return dragArray.length > 0;
     }
 
     public synchronized void fireVizEvent(VizEvent.Type type) {

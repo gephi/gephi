@@ -99,6 +99,8 @@ public class GraphDrawable extends GLAbstractListener implements VizArchitecture
         gl.glLoadIdentity();
 		glu.gluLookAt(cameraLocation[0],cameraLocation[1],cameraLocation[2],cameraTarget[0],cameraTarget[1],cameraTarget[2],0,1,0);
 		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, modelMatrix);
+
+        refreshDraggingMarker();
     }
 
     @Override

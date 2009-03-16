@@ -40,4 +40,6 @@ public interface VizEventManager {
     public void mouseMiddleClick();
 
     public void mouseMove();
+
+    public boolean hasSelectionListeners();
 }

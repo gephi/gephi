@@ -52,6 +52,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     AtomicBoolean mouseMoved        = new AtomicBoolean();
     AtomicBoolean objectsMoved      = new AtomicBoolean();
     AtomicBoolean startDrag         = new AtomicBoolean();
+    AtomicBoolean drag              = new AtomicBoolean();
 
     //Architeture
 	private GraphDrawable graphDrawable;
@@ -84,6 +85,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     private Semaphore pool2Semaphore            = new Semaphore(0);
     private Runnable selectionSegment;
     private Runnable startDragSegment;
+    private Runnable dragSegment;
     private Runnable refreshLimitsSegment;
 
     private void initPools()
@@ -133,10 +135,6 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
             public void run() {
                 engine.mouseMove();
-
-                //Drag
-                if(startDrag.getAndSet(false))
-                    pool2.execute(startDragSegment);
             }
         };
 
@@ -147,10 +145,19 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
             }
         };
 
-        startDragSegment = new Runnable() {
+        dragSegment = new Runnable() {
 
             public void run() {
-                engine.startDrag();
+
+                 //Drag
+                if(startDrag.getAndSet(false))
+                {
+                    engine.startDrag();
+                }
+                if(drag.getAndSet(false))
+                {
+                    engine.mouseDrag();
+                }
             }
         };
     }
@@ -180,7 +187,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
         int pool2Permit=0;
         if(mouseMoved.get())
             pool2Permit++;
-        if(startDrag.get())
+        else if(startDrag.get() || drag.get())
             pool2Permit++;
 
         if(objectsMoved.getAndSet(false))
@@ -209,6 +216,10 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
         {
             engine.updateSelection(gl, glu);
             pool2.execute(selectionSegment);
+        }
+        else if(startDrag.get() || drag.get())
+        {
+            pool2.execute(dragSegment);
         }
 
 
@@ -250,5 +261,10 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     public void requireStartDrag()
     {
         startDrag.set(true);
+    }
+
+    public void requireDrag()
+    {
+        drag.set(true);
     }
 }

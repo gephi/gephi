@@ -219,7 +219,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
 		if(leftButtonMoving[0] != -1)
 		{
-			if(draggingEnable)
+			if(vizConfig.isDraggingEnable())
 			{
 				//Remet à jour aussi la mousePosition pendant le drag, notamment pour coller quand drag released
 				mousePosition[0] = x;
@@ -236,6 +236,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 				}
 
 				vizEventManager.drag();
+                engine.getScheduler().requireDrag();
 
 				leftButtonMoving[0] = x;
 				leftButtonMoving[1] = y;
