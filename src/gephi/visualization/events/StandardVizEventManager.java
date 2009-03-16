@@ -36,6 +36,8 @@ public class StandardVizEventManager implements VizEventManager {
     //Cached Runnable
     protected Runnable dragRunnable;
     protected Runnable mouseMoveRunnable;
+    protected boolean mouseMoveRunning=false;
+    protected boolean mouseDragRunning=false;
 
     public StandardVizEventManager()
     {
@@ -45,12 +47,14 @@ public class StandardVizEventManager implements VizEventManager {
         dragRunnable = new Runnable() {
             public void run() {
                fireVizEvent(VizEvent.Type.DRAG);
+               mouseDragRunning=false;
             }
         };
 
         mouseMoveRunnable = new Runnable() {
             public void run() {
                 fireVizEvent(VizEvent.Type.MOUSE_MOVE);
+                mouseMoveRunning=false;
             }
         };
     }
@@ -88,7 +92,8 @@ public class StandardVizEventManager implements VizEventManager {
     }
 
     public void mouseMove() {
-         pool.submit(mouseMoveRunnable);
+        if(!mouseMoveRunning)
+            pool.submit(mouseMoveRunnable);
     }
 
     public void mouseRightClick() {
@@ -124,7 +129,8 @@ public class StandardVizEventManager implements VizEventManager {
     }
 
     public void drag() {
-         pool.submit(dragRunnable);
+        if(!mouseDragRunning)
+            pool.submit(dragRunnable);
     }
 
     protected WeakReference<VizEventListener>[] startDragArray              = new WeakReference[0];

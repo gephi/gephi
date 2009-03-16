@@ -161,7 +161,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 		mousePosition[1] =  graphDrawable.viewport.get(3)-y;
 
         engine.getScheduler().requireUpdateSelection();
-        vizEventManager.mouseMove(); 
+        vizEventManager.mouseMove();
 	}
 
 	/**
