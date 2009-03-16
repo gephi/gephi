@@ -42,6 +42,7 @@ public abstract class GLAbstractListener implements GLEventListener {
     protected abstract void init(GL gl);
 	protected abstract void render3DScene(GL gl, GLU glu);
 	protected abstract void reshape3DScene(GL gl);
+    protected abstract void setCameraPosition(GL gl, GLU glu);
 
 	protected GLCapabilities getCaps() {
 		GLCapabilities caps = new GLCapabilities();

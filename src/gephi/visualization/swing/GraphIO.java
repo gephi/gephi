@@ -18,9 +18,7 @@ import java.awt.event.MouseWheelListener;
 public interface GraphIO extends MouseListener, MouseWheelListener, MouseMotionListener, KeyListener {
 
     public float[] getMousePosition();
+    public float[] getMouseDrag();
     public void startMouseListening();
     public void stopMouseListening();
-
-    public void setVizEventManager(VizEventManager vizEventManager);
-    public VizEventManager getVizEventManager();
 }

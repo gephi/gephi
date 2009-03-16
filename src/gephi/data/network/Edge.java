@@ -19,26 +19,23 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package gephi.visualization.config;
-
-import gephi.visualization.swing.GraphCanvas;
-import gephi.visualization.swing.GraphPanel;
+package gephi.data.network;
 
 /**
  *
  * @author Mathieu
  */
-public class VizCommander {
+public class Edge {
+    private Node source;
+    private Node target;
 
-    public GraphCanvas createCanvas()
-    {
-        GraphCanvas canvas = new GraphCanvas();
-        return canvas;
+    public Node getSource() {
+        return source;
     }
 
-    public GraphPanel createPanel()
-    {
-        GraphPanel panel = new GraphPanel();
-        return panel;
+    public Node getTarget() {
+        return target;
     }
+
+    
 }

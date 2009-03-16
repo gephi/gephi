@@ -27,6 +27,8 @@ import gephi.data.network.avl.param.AVLItemAccessor;
 import gephi.data.network.avl.param.ParamAVLIterator;
 import gephi.data.network.avl.param.ParamAVLTree;
 import gephi.data.network.avl.simple.SimpleAVLTree;
+import gephi.visualization.VizArchitecture;
+import gephi.visualization.VizController;
 import gephi.visualization.opengl.AbstractEngine;
 import gephi.visualization.opengl.Object3d;
 import gephi.visualization.swing.GraphDrawable;
@@ -43,7 +45,7 @@ import javax.media.opengl.glu.GLU;
  *
  * @author Mathieu
  */
-public class Octree
+public class Octree implements VizArchitecture
 {
 
     //Architecture
@@ -54,6 +56,7 @@ public class Octree
     private int objectsIDs;
     private int maxDepth;
     private int classesCount;
+    private int size;
 
     //Octant
 	private Octant root;
@@ -66,12 +69,17 @@ public class Octree
     protected List<Octant> visibleLeaves;
     protected List<Octant> selectedLeaves;
 
-    public Octree(AbstractEngine engine, int maxDepth, int size, int nbClasses)
+    public Octree(int maxDepth, int size, int nbClasses)
     {
-        this.engine = engine;
-        this.drawable = engine.getGraphDrawable();
         this.maxDepth = maxDepth;
         this.classesCount = nbClasses;
+        this.size = size;
+    }
+
+    public void initArchitecture()
+    {
+        this.engine = VizController.getInstance().getEngine();
+        this.drawable = VizController.getInstance().getDrawable();
 
         leaves = new ParamAVLTree<Octant>(new AVLItemAccessor<Octant>()
         {
@@ -88,7 +96,7 @@ public class Octree
         iteratorQueue.add(new OctreeIterator());
         iteratorQueue.add(new OctreeIterator());
 
-        float dis = size/(float)Math.pow(2, maxDepth+1);
+        float dis = size/(float)Math.pow(2, this.maxDepth+1);
 		root = new Octant(this, 0,dis, dis, dis, size);
     }
 
@@ -236,7 +244,6 @@ public class Octree
 
     private OctreeIterator borrowIterator()
     {
-        System.out.println("borrow iterator");
         OctreeIterator itr =  iteratorQueue.poll();
         if(itr==null)
             System.err.println("Octree iterator starved");
@@ -245,7 +252,6 @@ public class Octree
 
     private void returnIterator(OctreeIterator iterator)
     {
-        System.out.println("return iterator");
         iteratorQueue.add(iterator);
 
     }

@@ -59,6 +59,7 @@ public class CompatibilityNodeSphereInitializer extends NodeSphereInitializer im
 		NodeSphereObject obj = new NodeSphereObject();
 		obj.setObj((Node)n);
 		obj.setSelected(false);
+        obj.setDragDistanceFromMouse(new float[2]);
 		
 		chooseModel(obj);
 		return obj;

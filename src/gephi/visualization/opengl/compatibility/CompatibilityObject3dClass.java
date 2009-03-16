@@ -23,8 +23,11 @@ package gephi.visualization.opengl.compatibility;
 
 import gephi.visualization.initializer.Object3dInitializer;
 import gephi.visualization.objects.Object3dClass;
+import gephi.visualization.opengl.AbstractEngine;
+import gephi.visualization.opengl.Object3d;
 import gephi.visualization.opengl.compatibility.initializer.CompatibilityObject3dInitializer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -33,15 +36,23 @@ import java.util.List;
  */
 public class CompatibilityObject3dClass extends Object3dClass {
 
-    private CompatibilityObject3dInitializer currentObject3dInitializer;
-
     //Initializer
+    private CompatibilityObject3dInitializer currentObject3dInitializer;
     private List<CompatibilityObject3dInitializer> object3dInitializers;
 
     public CompatibilityObject3dClass(String name, boolean lod, boolean selectable)
     {
         super(name, lod, selectable);
         object3dInitializers = new ArrayList<CompatibilityObject3dInitializer>();
+    }
+
+    public void lod(Iterator<Object3d> iterator)
+    {
+        for(;iterator.hasNext();)
+        {
+            Object3d obj = iterator.next();
+            currentObject3dInitializer.chooseModel(obj);
+        }
     }
 
     public void addObjectInitializer(Object3dInitializer object3dInitializer)

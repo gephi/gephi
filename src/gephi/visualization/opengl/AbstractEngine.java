@@ -33,9 +33,12 @@ import java.util.LinkedList;
 import java.util.List;
 import gephi.visualization.initializer.NodeInitializer;
 import gephi.visualization.Renderable;
+import gephi.visualization.VizArchitecture;
+import gephi.visualization.VizController;
 import gephi.visualization.events.VizEventManager;
 import gephi.visualization.opengl.gleem.linalg.Vec3d;
 import gephi.visualization.opengl.gleem.linalg.Vec3f;
+import gephi.visualization.scheduler.Scheduler;
 import gephi.visualization.selection.Point;
 import gephi.visualization.selection.SelectionArea;
 import gephi.visualization.swing.GraphDrawable;
@@ -50,28 +53,28 @@ import javax.swing.undo.UndoableEditSupport;
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractEngine {
+public abstract class AbstractEngine implements VizArchitecture {
 
 	
-
 	//Architecture
 	protected GraphDrawable graphDrawable;
     protected GraphIO graphIO;
     protected VizEventManager vizEventManager;
     protected SelectionArea currentSelectionArea = new Point();
-    protected Object3dClassLibrary objectClassLibrary = new StandardObject3dClassLibrary();
+    protected Object3dClassLibrary objectClassLibrary;
 
 	//GraphLimits
 	protected float graphLimits[]        = new float[4];;
 
 	//AddRemove
 
-	public AbstractEngine(GraphDrawable graphDrawable, GraphIO graphIO)
-	{
-		this.graphDrawable = graphDrawable;
-		this.graphIO = graphIO;
+    public void initArchitecture()
+    {
+        this.graphDrawable = VizController.getInstance().getDrawable();
+		this.graphIO = VizController.getInstance().getGraphIO();
+        this.objectClassLibrary = VizController.getInstance().getObject3dClassLibrary();
         initObject3dClass();
-	}
+    }
 
 	public abstract void beforeDisplay(GL gl, GLU glu);
 	public abstract void display(GL gl, GLU glu);
@@ -79,13 +82,13 @@ public abstract class AbstractEngine {
 
 	public abstract void initEngine(GL gl, GLU glu);
 
-    public abstract void lod();
-	public abstract void cameraHasBeenMoved();
+	public abstract void cameraHasBeenMoved(GL gl, GLU glu);
 	public abstract void mouseMove();
 	public abstract void mouseDrag();
 	public abstract void startDrag();
 	public abstract void stopDrag();
 	public abstract void mouseClick();
+    public abstract Scheduler getScheduler();
 
 
 	public abstract void refreshGraphLimits();
@@ -143,21 +146,7 @@ public abstract class AbstractEngine {
 		return graphDrawable.projMatrix;
 	}
 
-	public GraphDrawable getGraphDrawable() {
-		return graphDrawable;
-	}
-
 	public float[] getGraphLimits() {
 		return graphLimits;
 	}
-
-    public VizEventManager getVizEventManager() {
-        return vizEventManager;
-    }
-
-    public void setVizEventManager(VizEventManager vizEventManager) {
-        this.vizEventManager = vizEventManager;
-    }
-
-    
 }

@@ -24,6 +24,7 @@ package gephi.visualization.objects;
 import gephi.visualization.opengl.AbstractEngine;
 import gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import gephi.visualization.opengl.compatibility.CompatibilityObject3dClass;
+import gephi.visualization.opengl.compatibility.initializer.CompatibilityArrowInitializer;
 import gephi.visualization.opengl.compatibility.initializer.CompatibilityNodeSphereInitializer;
 
 /**
@@ -43,8 +44,9 @@ public class StandardObject3dClassLibrary implements Object3dClassLibrary
 
 
         object3dClasses[1] = new CompatibilityObject3dClass("EDGE", false, false);
-        object3dClasses[2] = new CompatibilityObject3dClass("ARROW", true, false);
 
+        object3dClasses[2] = new CompatibilityObject3dClass("ARROW", true, false);
+        object3dClasses[2].addObjectInitializer(new CompatibilityArrowInitializer(engine));
         return object3dClasses;
     }
 }

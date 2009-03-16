@@ -21,6 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package gephi.visualization.swing;
 
+import gephi.visualization.VizArchitecture;
+import gephi.visualization.VizController;
+import gephi.visualization.config.VizConfig;
 import gephi.visualization.events.VizEventManager;
 import gephi.visualization.opengl.AbstractEngine;
 import java.awt.Component;
@@ -37,11 +40,12 @@ import javax.swing.SwingUtilities;
  *
  * @author Mathieu
  */
-public class StandardGraphIO implements GraphIO {
+public class StandardGraphIO implements GraphIO, VizArchitecture {
 
     protected GraphDrawable graphDrawable;
     protected AbstractEngine engine;
     protected VizEventManager vizEventManager;
+    protected VizConfig vizConfig;
     
     //Listeners data
     protected float[] rightButtonMoving         = {-1f,0f,0f};
@@ -54,17 +58,26 @@ public class StandardGraphIO implements GraphIO {
 	protected boolean draggingEnable=true;
 	protected boolean dragging = false;
 
-    public StandardGraphIO(GraphDrawable graphDrawable)
-    {
-        this.graphDrawable = graphDrawable;
+    @Override
+    public void initArchitecture() {
+        this.graphDrawable = VizController.getInstance().getDrawable();
+        this.engine = VizController.getInstance().getEngine();
+        this.vizEventManager = VizController.getInstance().getVizEventManager();
+        this.vizConfig = VizController.getInstance().getVizConfig();
         startMouseListening();
     }
 
     public void startMouseListening()
     {
-        graphDrawable.graphComponent.addMouseListener(this);
-		graphDrawable.graphComponent.addMouseWheelListener(this);
-		graphDrawable.graphComponent.addMouseMotionListener(this);
+        if(vizConfig.isCameraControlEnable())
+        {
+            graphDrawable.graphComponent.addMouseListener(this);
+            graphDrawable.graphComponent.addMouseWheelListener(this);
+        }
+
+        if(vizConfig.isSelectionEnable())
+            graphDrawable.graphComponent.addMouseMotionListener(this);
+        
 	}
 
 	public void stopMouseListening()
@@ -87,7 +100,7 @@ public class StandardGraphIO implements GraphIO {
 			graphDrawable.graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
             vizEventManager.mouseRightPress();
 		}
-		else if(SwingUtilities.isMiddleMouseButton(e))
+		else if(vizConfig.isRotatingEnable() && SwingUtilities.isMiddleMouseButton(e))
 		{
 			middleButtonMoving[0] = x;
 			middleButtonMoving[1] = y;
@@ -147,7 +160,8 @@ public class StandardGraphIO implements GraphIO {
 		mousePosition[0] = x;
 		mousePosition[1] =  graphDrawable.viewport.get(3)-y;
 
-        vizEventManager.mouseMove();
+        engine.getScheduler().requireUpdateSelection();
+        vizEventManager.mouseMove(); 
 	}
 
 	/**
@@ -187,7 +201,7 @@ public class StandardGraphIO implements GraphIO {
 
 			rightButtonMoving[0] = x;
 			rightButtonMoving[1] = y;
-			graphDrawable.cameraMoved();
+			engine.getScheduler().requireUpdateVisible();
 		}
 
 		if(middleButtonMoving[0] != -1)
@@ -199,8 +213,7 @@ public class StandardGraphIO implements GraphIO {
 				middleButtonMoving[1] = y;
 
 				graphDrawable.cameraLocation[1] = graphDrawable.cameraLocation[1] - Math.abs(graphDrawable.cameraLocation[2]-graphDrawable.cameraTarget[2])*(float)Math.sin(Math.toRadians(angleY));
-
-				graphDrawable.cameraMoved();
+                engine.getScheduler().requireUpdateVisible();
 			}
 		}
 
@@ -219,6 +232,7 @@ public class StandardGraphIO implements GraphIO {
 					//Start drag
 					dragging = true;
                     vizEventManager.startDrag();
+                    engine.getScheduler().requireStartDrag();
 				}
 
 				vizEventManager.drag();
@@ -259,7 +273,8 @@ public class StandardGraphIO implements GraphIO {
 
 			graphDrawable.cameraLocation[1] += moveY;
 			graphDrawable.cameraLocation[2] += moveZ;
-			graphDrawable.cameraMoved();
+			graphDrawable.rotationX = (float)Math.atan(((graphDrawable.cameraLocation[1]-graphDrawable.cameraTarget[1])/(graphDrawable.cameraLocation[2]-graphDrawable.cameraTarget[2])));
+            engine.getScheduler().requireUpdateVisible();
 		}
 	}
 
@@ -278,23 +293,11 @@ public class StandardGraphIO implements GraphIO {
         
     }
 
-    public VizEventManager getVizEventManager() {
-        return vizEventManager;
-    }
-
-    public void setVizEventManager(VizEventManager vizEventManager) {
-        if(vizEventManager==null)
-        {
-            throw new NullPointerException("The instance of VizEventManager cannot be null");
-        }
-        this.vizEventManager = vizEventManager;
-    }
-
     public float[] getMousePosition() {
         return mousePosition;
     }
 
-    public void setEngine(AbstractEngine engine) {
-        this.engine = engine;
+    public float[] getMouseDrag() {
+        return mouseDrag;
     }
 }

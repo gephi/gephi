@@ -20,8 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package gephi.visualization.swing;
 
+import gephi.visualization.VizArchitecture;
+import gephi.visualization.VizController;
 import gephi.visualization.config.VizConfig;
 import gephi.visualization.opengl.AbstractEngine;
+import gephi.visualization.scheduler.Scheduler;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.nio.DoubleBuffer;
@@ -33,35 +36,37 @@ import javax.media.opengl.glu.GLU;
  *
  * @author Mathieu
  */
-public class GraphDrawable extends GLAbstractListener {
+public class GraphDrawable extends GLAbstractListener implements VizArchitecture {
 
     protected Component graphComponent;
     protected AbstractEngine engine;
+    protected Scheduler scheduler;
 
     protected float[] cameraLocation;
     protected float[] cameraTarget;
     protected double[] draggingMarker       = new double[2];//The drag mesure for a moving of 1 to the viewport
     protected double rotationX;
 
-    public GraphDrawable(VizConfig vizConfig) {
+    public GraphDrawable() {
         super();
-        this.vizConfig = vizConfig;
+        this.vizConfig = VizController.getInstance().getVizConfig();
+    }
+
+    public void initArchitecture() {
+       this.engine = VizController.getInstance().getEngine();
+       this.scheduler = VizController.getInstance().getScheduler();
 
         cameraLocation = vizConfig.getDefaultCameraPosition();
         cameraTarget = vizConfig.getDefaultCameraTarget();
     }
 
+
+
     @Override
     protected void init(GL gl)
     {
          graphComponent.setCursor(Cursor.getDefaultCursor());
-         gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, modelMatrix);
          engine.initEngine(gl, glu);
-         
-         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-         gl.glLoadIdentity();
-		 glu.gluLookAt(cameraLocation[0],cameraLocation[1],cameraLocation[2],cameraTarget[0],cameraTarget[1],cameraTarget[2],0,1,0);
-         gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
     }
 
 
@@ -87,19 +92,24 @@ public class GraphDrawable extends GLAbstractListener {
 
     }
 
-    protected void cameraMoved() {
+    @Override
+    public void setCameraPosition(GL gl, GLU glu) {
+
+        //Refresh rotation angle
+        gl.glLoadIdentity();
+		glu.gluLookAt(cameraLocation[0],cameraLocation[1],cameraLocation[2],cameraTarget[0],cameraTarget[1],cameraTarget[2],0,1,0);
+		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, modelMatrix);
     }
 
     @Override
     protected void reshape3DScene(GL gl) {
-        glu.gluLookAt(cameraLocation[0],cameraLocation[1],cameraLocation[2],cameraTarget[0],cameraTarget[1],cameraTarget[2],0,1,0);
-        gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, modelMatrix);
+        setCameraPosition(gl, glu);
     }
 
     @Override
     protected void render3DScene(GL gl, GLU glu) {
 
-        engine.display(gl, glu);
+        scheduler.display(gl,glu);
 
        /* gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
@@ -200,7 +210,9 @@ public class GraphDrawable extends GLAbstractListener {
         this.cameraTarget = cameraTarget;
     }
 
-    public void setEngine(AbstractEngine engine) {
-        this.engine = engine;
+    public Component getGraphComponent() {
+        return graphComponent;
     }
+
+    
 }

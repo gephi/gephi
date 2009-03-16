@@ -30,9 +30,9 @@ public class GraphCanvas extends GraphDrawable {
 
 	private GLCanvas glCanvas;
 
-	public GraphCanvas(VizConfig config)
+	public GraphCanvas()
 	{
-        super(config);
+        super();
 		glCanvas = new GLCanvas(getCaps());
 		super.initDrawable(glCanvas);
 		

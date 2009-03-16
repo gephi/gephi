@@ -36,129 +36,20 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.media.opengl.GL;
+import javax.media.opengl.glu.GLU;
 
 /**
  *
  * @author Mathieu
  */
-public class Scheduler {
+public interface Scheduler {
 
-    //Architeture
-	private GraphDrawable graphDrawable;
-	private AbstractEngine engine;
+    public void start();
+    public void stop();
+    public void display(GL gl, GLU glu);
 
-	//Executor
-	private ScheduledExecutorService displayExecutor;
-
-    //States
-    AtomicBoolean animating         = new AtomicBoolean();
-
-    public Scheduler(GraphDrawable drawable, AbstractEngine engine)
-    {
-        this.graphDrawable = drawable;
-        this.engine = engine;
-    }
-
-    private ThreadPoolExecutor modelExecutor = new ThreadPoolExecutor(0, 4,  60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
-    private Runnable modelSegment0;
-    private Runnable modelSegment1;
-    private Runnable modelSegment2;
-    private Runnable modelSegment3;
-
-
-
-   
-
-    public void start()
-    {
-        /*final int skip = 10;
-        new Thread("Bienator's Animator") {
-            @Override
-            public void run() {
-                System.out.println("start");
-                while(true) {
-
-                    graphDrawable.display();
-                    graphDrawable.getGLAutoDrawable().swapBuffers();
-
-                    for(int i = 0; i < skip; i++) {
-                        graphDrawable.getGLAutoDrawable().swapBuffers();
-                    }
-                }
-            }
-        }.start();*/
-
-       //BetterFPSAnimator animator = new BetterFPSAnimator(graphDrawable, 30);
-       //animator.start();
-
-       //SimpleFPSAnimator simpleFPSAnimator = new SimpleFPSAnimator(graphDrawable, 30);
-       //simpleFPSAnimator.start();
-
-        //FPSAnimator fPSAnimator = new FPSAnimator(graphDrawable.getGLAutoDrawable(),30,true);
-        //fPSAnimator.start();
-
-       /*displayExecutor = Executors.newSingleThreadScheduledExecutor();
-        Runnable displayCall = new Runnable() {
-
-            public void run() {
-                graphDrawable.display();
-            }
-        };
-        long delay = (long) (1000.0f / (float) 45);
-		displayExecutor.scheduleWithFixedDelay(displayCall, 0, delay, TimeUnit.MILLISECONDS);*/
-
-    }
-
-    public void stop()
-    {
-
-    }
-
-    public class RunnableSegment
-	{
-		boolean enabled=false;
-		boolean requireOpenGLThread;
-		Runnable runnable;
-		ThreadPoolExecutor executor;
-		Semaphore semaphore;
-
-		public RunnableSegment(ThreadPoolExecutor executor, Semaphore semaphore, Runnable runnable, boolean requireOpenGLThread)
-		{
-			this.runnable = runnable;
-			this.executor = executor;
-			this.semaphore = semaphore;
-			this.requireOpenGLThread = requireOpenGLThread;
-		}
-
-		public void executeIfNeeded()
-		{
-			if(enabled)
-			{
-				executor.execute(runnable);
-				setEnabled(false);
-
-			}
-			else
-			{
-				semaphore.release();
-			}
-		}
-
-		public void executeIfNeededInOpenGL()
-		{
-			if(enabled)
-			{
-				runnable.run();
-				setEnabled(false);
-			}
-		}
-
-		public synchronized void setEnabled(boolean enabled)
-		{
-			this.enabled = enabled;
-		}
-
-
-	}
-
+    public void requireUpdateVisible();
+    public void requireUpdateSelection();
+    public void requireStartDrag();
 }

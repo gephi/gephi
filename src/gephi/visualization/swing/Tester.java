@@ -21,12 +21,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package gephi.visualization.swing;
 
 import gephi.data.network.Node;
+import gephi.visualization.VizController;
 import gephi.visualization.initializer.NodeInitializer;
 import gephi.visualization.config.VizCommander;
 import gephi.visualization.events.StandardVizEventManager;
 import gephi.visualization.events.VizEvent;
 import gephi.visualization.events.VizEventListener;
+import gephi.visualization.events.VizEventManager;
 import gephi.visualization.initializer.Object3dInitializer;
+import gephi.visualization.opengl.AbstractEngine;
 import gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import gephi.visualization.opengl.octree.Octree;
 import gephi.visualization.scheduler.Scheduler;
@@ -57,17 +60,11 @@ public class Tester extends JFrame {
         setSize(new Dimension(600,600));
         setVisible(true);
 
-        VizCommander commander = new VizCommander();
-        GraphDrawable drawable = commander.createPanel();
-        drawable.graphComponent.setPreferredSize( new Dimension(600, 600));
-        
-        StandardGraphIO graphIO = new StandardGraphIO(drawable);
-        CompatibilityEngine engine = new CompatibilityEngine(drawable, graphIO);
-        graphIO.setEngine(engine);
-        drawable.setEngine(engine);
-        StandardVizEventManager vizEventManager = new StandardVizEventManager();
-        graphIO.setVizEventManager(vizEventManager);
-        engine.setVizEventManager(vizEventManager);
+       VizController.getInstance().initInstances();
+       VizEventManager vizEventManager = VizController.getInstance().getVizEventManager();
+       CompatibilityEngine engine = (CompatibilityEngine)VizController.getInstance().getEngine();
+       GraphDrawable drawable = VizController.getInstance().getDrawable();
+       
         VizEvent.Type[] types = {VizEvent.Type.DRAG,VizEvent.Type.MOUSE_LEFT_PRESS,VizEvent.Type.MOUSE_MOVE,VizEvent.Type.MOUSE_RIGHT_CLICK};
         listener = new VizEventListener() {
 
@@ -75,7 +72,7 @@ public class Tester extends JFrame {
                System.out.println(event.getType());
             }
         };
-        vizEventManager.addListener(listener,types );
+        //vizEventManager.addListener(listener,types );
 
         //Engine
         ArrayList<Node> nodeList = new ArrayList<Node>();
@@ -95,9 +92,7 @@ public class Tester extends JFrame {
         container.validate();
         container.remove(label);
         drawable.display();
-        Scheduler scheduler = new Scheduler(drawable,engine);
-        scheduler.start();
-        
+        engine.getScheduler().start();
     }
 
     public static void main(String[] args) {

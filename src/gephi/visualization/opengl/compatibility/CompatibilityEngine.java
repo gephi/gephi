@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package gephi.visualization.opengl.compatibility;
 
+import gephi.visualization.VizController;
 import gephi.visualization.initializer.NodeInitializer;
 import gephi.visualization.objects.Object3dClass;
 import gephi.visualization.opengl.AbstractEngine;
@@ -29,6 +30,7 @@ import gephi.visualization.opengl.compatibility.initializer.CompatibilityNodeSph
 import gephi.visualization.opengl.compatibility.initializer.CompatibilityObject3dInitializer;
 import gephi.visualization.opengl.compatibility.nodeobjects.NodeSphereObject;
 import gephi.visualization.opengl.octree.Octree;
+import gephi.visualization.scheduler.Scheduler;
 import gephi.visualization.selection.SelectionArea;
 import gephi.visualization.swing.GraphDrawable;
 import gephi.visualization.swing.GraphIO;
@@ -51,39 +53,40 @@ public class CompatibilityEngine extends AbstractEngine {
     private static final int CLASS_EDGE = 1;
     private static final int CLASS_ARROW = 2;
     public Octree octree;
+    private CompatibilityScheduler scheduler;
 
     //User config
     protected CompatibilityObject3dClass[] object3dClasses;
     protected CompatibilityObject3dClass[] lodClasses;
     protected CompatibilityObject3dClass[] selectableClasses;
 
-    public CompatibilityEngine(GraphDrawable graphDrawable, GraphIO graphIO) {
-        super(graphDrawable, graphIO);
+    public CompatibilityEngine() {
+        super();
 
         //Init
-        octree = new Octree(this, 5, 1000, 3);
+        octree = new Octree(5, 1000, 3);
     }
 
     @Override
-    public void afterDisplay(GL gl, GLU glu) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void initArchitecture()
+    {
+        super.initArchitecture();
+        scheduler = (CompatibilityScheduler)VizController.getInstance().getScheduler();
+        octree.initArchitecture();
     }
+
+   public void updateSelection(GL gl,GLU glu)
+   {
+       octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
+   }
 
     @Override
     public void beforeDisplay(GL gl, GLU glu) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void cameraHasBeenMoved() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
     }
 
     @Override
     public void display(GL gl, GLU glu) {
-        octree.updateVisibleOctant(gl);
-        octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
-        mouseMove();
 
         for (Iterator<Object3d> itr = octree.getObjectIterator(CLASS_NODE); itr.hasNext();) {
             Object3d obj = itr.next();
@@ -103,9 +106,21 @@ public class CompatibilityEngine extends AbstractEngine {
         octree.displayOctree(gl);
     }
 
+     @Override
+    public void afterDisplay(GL gl, GLU glu) {
+        
+    }
+
+    @Override
+    public void cameraHasBeenMoved(GL gl, GLU glu) {
+        
+    }
+
     @Override
     public void initEngine(final GL gl, final GLU glu) {
         initDisplayLists(gl, glu);
+        scheduler.cameraMoved.set(true);
+        scheduler.mouseMoved.set(true);
     }
 
     @Override
@@ -155,56 +170,27 @@ public class CompatibilityEngine extends AbstractEngine {
     }
 
     @Override
-    public void lod() {
-
-        //Change model with distance and set viewport position
-
-        for (CompatibilityObject3dClass objClass : lodClasses) {
-            for (Iterator<Object3d> itr = octree.getObjectIterator(objClass.getClassId()); itr.hasNext();) {
-                Object3d obj = itr.next();
-                objClass.getCurrentObject3dInitializer().chooseModel(obj);
-
-            }
-
-
-            //Arrows enabled
-            if (object3dClasses[CLASS_NODE].isEnabled()) {
-                for (Iterator<Object3d> itr = octree.getObjectIterator(CLASS_ARROW); itr.hasNext();) {
-                    Object3d arrowObject = itr.next();
-
-                    /*
-                    //If the nodeTo is in a certain form
-                    Node3dObject nodeToObject = ((Node3dObject)((NodeInSpace)arrowObject.object).getObject3d());
-                    if(nodeToObject.modelType >= SHAPE_SPHERE16)
-                    arrowObject.mark=true;
-                    else
-                    arrowObject.mark=false;
-                     */
-
-                    float distance = cameraDistance(arrowObject) + arrowObject.getObj().getRadius();	//Radius is added to cancel the cameraDistance diff
-                    if (distance < 100) {
-                        //arrowObject.mark = false;
-                    } else {
-                        //arrowObject.mark = true;
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     public void refreshGraphLimits() {
-        throw new UnsupportedOperationException("Not supported yet.");
+       
     }
 
     @Override
     public void startDrag() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        float x = graphIO.getMouseDrag()[0];
+		float y = graphIO.getMouseDrag()[1];
+
+		for (Iterator<Object3d> itr = selectedObjects.iterator(); itr.hasNext();)
+		{
+			Object3d o = itr.next();
+			float[] tab = o.getDragDistanceFromMouse();
+			tab[0] = o.getObj().getX() - x;
+			tab[1] = o.getObj().getY() -y;
+		}
     }
 
     @Override
     public void stopDrag() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
     }
 
     private void initDisplayLists(GL gl, GLU glu) {
@@ -295,5 +281,8 @@ public class CompatibilityEngine extends AbstractEngine {
         return object3dClasses;
     }
 
-    
+    public Scheduler getScheduler()
+    {
+        return scheduler;
+    }
 }

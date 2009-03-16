@@ -43,6 +43,10 @@ public class VizConfig
     private Color backgroundColor                   =Color.WHITE;
     private float[] defaultCameraPosition           = {0f,0f,900f};
     protected float[] nodeSelectedColor             = { 1f,1f,1f};
+    protected boolean selectionEnable               = true;
+    protected boolean draggingEnable                = true;
+    protected boolean cameraControlEnable           = true;
+    protected boolean rotatingEnable                = true;
 
     public DisplayConfig getDisplayConfig() {
         return displayConfig;
@@ -117,5 +121,21 @@ public class VizConfig
 
     public boolean isMaterial() {
         return material;
+    }
+
+    public boolean isCameraControlEnable() {
+        return cameraControlEnable;
+    }
+
+    public boolean isDraggingEnable() {
+        return draggingEnable;
+    }
+
+    public boolean isRotatingEnable() {
+        return rotatingEnable;
+    }
+
+    public boolean isSelectionEnable() {
+        return selectionEnable;
     }
 }

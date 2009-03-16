@@ -32,9 +32,9 @@ public class GraphPanel extends GraphDrawable {
 
 	private GLJPanel gljPanel;
 
-	public GraphPanel(VizConfig config)
+	public GraphPanel()
 	{
-		super(config);
+		super();
 
 		//Init GLJPanel as the drawable
 		gljPanel = new GLJPanel(getCaps(),null,null)

@@ -44,10 +44,12 @@ public abstract class Object3d<ObjectType extends Renderable> implements AVLItem
     protected float viewportY;
     protected float viewportZ;
     protected float viewportRadius;
+    protected float[] dragDistance;
 
     //Flags
     protected boolean selected;
     public long markTime=0;
+    public boolean mark=false;
 
     public abstract int[] octreePosition(float centerX, float centerY, float centerZ, float size);
 	public abstract boolean isInOctreeLeaf(Octant leaf);
@@ -120,5 +122,13 @@ public abstract class Object3d<ObjectType extends Renderable> implements AVLItem
         this.selected = selected;
     }
 
-    
+    public float[] getDragDistanceFromMouse()
+    {
+        return dragDistance;
+    }
+
+    public void setDragDistanceFromMouse(float[] dragDistance)
+    {
+        this.dragDistance = dragDistance;
+    }
 }
