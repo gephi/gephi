@@ -99,4 +99,9 @@ public class Edge implements Renderable {
 
     public void setZ(float z) {
     }
+
+    public void setCardinal(float cardinal)
+    {
+        this.cardinal = cardinal;
+    }
 }

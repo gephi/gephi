@@ -24,6 +24,7 @@ import gephi.visualization.VizArchitecture;
 import gephi.visualization.VizController;
 import gephi.visualization.config.VizConfig;
 import gephi.visualization.opengl.AbstractEngine;
+import gephi.visualization.opengl.gleem.linalg.Vec3f;
 import gephi.visualization.scheduler.Scheduler;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -46,6 +47,7 @@ public class GraphDrawable extends GLAbstractListener implements VizArchitecture
     protected float[] cameraTarget;
     protected double[] draggingMarker       = new double[2];//The drag mesure for a moving of 1 to the viewport
     protected double rotationX;
+    protected Vec3f cameraVector            = new Vec3f();
 
     public GraphDrawable() {
         super();
@@ -99,7 +101,7 @@ public class GraphDrawable extends GLAbstractListener implements VizArchitecture
         gl.glLoadIdentity();
 		glu.gluLookAt(cameraLocation[0],cameraLocation[1],cameraLocation[2],cameraTarget[0],cameraTarget[1],cameraTarget[2],0,1,0);
 		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, modelMatrix);
-
+        cameraVector.set(cameraTarget[0]-cameraLocation[0], cameraTarget[1]-cameraLocation[1], cameraTarget[2]-cameraLocation[2]);
         refreshDraggingMarker();
     }
 
@@ -216,5 +218,8 @@ public class GraphDrawable extends GLAbstractListener implements VizArchitecture
         return graphComponent;
     }
 
-    
+    public Vec3f getCameraVector()
+    {
+        return cameraVector;
+    }
 }

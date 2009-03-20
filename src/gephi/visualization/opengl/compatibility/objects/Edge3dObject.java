@@ -24,10 +24,13 @@ package gephi.visualization.opengl.compatibility.objects;
 import com.sun.opengl.util.BufferUtil;
 import gephi.data.network.Edge;
 import gephi.data.network.Node;
+import gephi.visualization.VizController;
+import gephi.visualization.opengl.AbstractEngine;
 import gephi.visualization.opengl.Object3d;
 import gephi.visualization.opengl.gleem.linalg.Vec3d;
 import gephi.visualization.opengl.gleem.linalg.Vec3f;
 import gephi.visualization.opengl.octree.Octant;
+import gephi.visualization.swing.GraphDrawable;
 import java.nio.FloatBuffer;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
@@ -38,8 +41,17 @@ import javax.media.opengl.glu.GLU;
  */
 public class Edge3dObject extends Object3d<Edge>
 {
+    private static float CARDINAL_DIV=30f;  //Set the size of edges according to cardinal
+
 	//Un arc est ajouté dans l'octant de son noeud source et destination. Il n'est donc pas affiché
 	//lorsque aucun des deux octant n'est affiché.
+    private Vec3f cameraVector;
+
+
+    public Edge3dObject()
+    {
+        cameraVector = VizController.getInstance().getDrawable().getCameraVector();
+    }
 
 	@Override
 	public int[] octreePosition(float centerX, float centerY, float centerZ,  float size)
@@ -123,14 +135,47 @@ public class Edge3dObject extends Object3d<Edge>
         float y2 = obj.getTarget().getY();
         float z1 = obj.getSource().getZ();
         float z2 = obj.getTarget().getZ();
-        float t1=0.5f;
-        float t2=0.5f;
+        float t1=obj.getSource().getSize()/CARDINAL_DIV;
+        float t2=obj.getSource().getSize()/CARDINAL_DIV;
 
-        double angle = Math.atan2(y2 - y1, x2 - x1);
-        float t2sina1 =(float)( t1 / 2 * Math.sin(angle));
-        float t2cosa1 = (float)( t1 / 2 * Math.cos(angle));
-        float t2sina2 = (float)( t2 / 2 * Math.sin(angle));
-        float t2cosa2 = (float)( t2 / 2 * Math.cos(angle));
+        //Vec3f edgeVector = new Vec3f(x2 - x1,y2 - y1,z2 - z1);
+        //Vec3f cameraVector = new Vec3f(drawable.getCameraLocation()[0] - (x2 - x1)/2f,drawable.getCameraLocation()[1] - (y2 - y1)/2f,drawable.getCameraLocation()[2] - (z2 - z1)/2f);
+        //Vec3f sideVector = edgeVector.cross(cameraVector);
+        //sideVector.normalize();
+
+        float edgeVectorX = x2 - x1;
+        float edgeVectorY = y2 - y1;
+        float edgeVectorZ = z2 - z1;
+        
+        float sideVectorX = edgeVectorY*cameraVector.z() - edgeVectorZ*cameraVector.y();
+        float sideVectorY = edgeVectorZ*cameraVector.x() - edgeVectorX*cameraVector.z();
+        float sideVectorZ = edgeVectorX*cameraVector.y() - edgeVectorY*cameraVector.x();
+        float norm = (float)Math.sqrt(sideVectorX * sideVectorX + sideVectorY * sideVectorY + sideVectorZ * sideVectorZ);
+        sideVectorX /= norm;
+        sideVectorY /= norm;
+        sideVectorZ /= norm;
+
+        float x1Thick=sideVectorX/2f*t1;
+        float x2Thick=sideVectorX/2f*t2;
+        float y1Thick=sideVectorY/2f*t1;
+        float y2Thick=sideVectorY/2f*t2;
+        float z1Thick=sideVectorZ/2f*t1;
+        float z2Thick=sideVectorZ/2f*t2;
+
+		gl.glVertex3f(x1+x1Thick, y1+y1Thick, z1+z1Thick);
+		gl.glVertex3f(x1-x1Thick, y1-y1Thick, z1-z1Thick);
+		gl.glVertex3f(x2-x2Thick, y2-y2Thick, z2-z2Thick);
+        gl.glVertex3f(x2-x2Thick, y2-y2Thick, z2-z2Thick);
+		gl.glVertex3f(x2+x2Thick, y2+y2Thick, z2+z2Thick);
+        gl.glVertex3f(x1+x1Thick, y1+y1Thick, z1+z1Thick);
+
+        /*double angle = Math.atan2(y2 - y1, x2 - x1);
+        double sin = 2*Math.sin(angle);
+        double cos = 2*Math.cos(angle);
+        float t2sina1 =(float)( t1 / sin);
+        float t2cosa1 = (float)( t1 / cos);
+        float t2sina2 = (float)( t2 / sin);
+        float t2cosa2 = (float)( t2 / cos);
 
 
         gl.glVertex3f(x1 + t2sina1, y1 - t2cosa1,z1);
@@ -147,7 +192,7 @@ public class Edge3dObject extends Object3d<Edge>
         float y2 = obj.getTarget().getY();
         float z1 = 0;
         float z2 = 0;
-        float t=0.1f;
+//        float t=0.1f;
 
         float distance = (float)Math.sqrt(Math.pow((double)x1 - x2,2d) +
 				Math.pow((double)y1 - y2,2d) +

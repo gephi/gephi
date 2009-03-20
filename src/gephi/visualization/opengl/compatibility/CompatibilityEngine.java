@@ -98,17 +98,20 @@ public class CompatibilityEngine extends AbstractEngine {
 
         if (object3dClasses[CLASS_EDGE].isEnabled()) {
             gl.glDisable(GL.GL_LIGHTING);
+            //gl.glLineWidth(obj.getObj().getSize());
             //gl.glDisable(GL.GL_BLEND);
             //gl.glBegin(GL.GL_LINES);
+            //gl.glBegin(GL.GL_QUADS);
             gl.glBegin(GL.GL_TRIANGLES);
             for (Iterator<Object3d> itr = octree.getObjectIterator(CLASS_EDGE); itr.hasNext();) {
                 Object3d obj = itr.next();
                 Renderable renderable = obj.getObj();
-
+                
                 if (obj.markTime != startTime) {
                     obj.display(gl, glu);
                     obj.markTime = startTime;
                 }
+
             }
             gl.glEnd();
             gl.glEnable(GL.GL_LIGHTING);
@@ -125,7 +128,7 @@ public class CompatibilityEngine extends AbstractEngine {
                 }
             }
         }
-        //octree.displayOctree(gl);
+        octree.displayOctree(gl);
 /*
 
         float x1 = -140f;
