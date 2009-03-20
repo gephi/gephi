@@ -117,7 +117,7 @@ public class CompatibilityEngine extends AbstractEngine {
             gl.glEnable(GL.GL_LIGHTING);
             //gl.glEnable(GL.GL_BLEND);
         }
-
+        gl.glColor3i(0, 0, 0);
         //Node
         if (object3dClasses[CLASS_NODE].isEnabled()) {
             for (Iterator<Object3d> itr = octree.getObjectIterator(CLASS_NODE); itr.hasNext();) {
@@ -128,6 +128,22 @@ public class CompatibilityEngine extends AbstractEngine {
                 }
             }
         }
+
+        //Arrows
+        if(object3dClasses[CLASS_ARROW].isEnabled())
+        {
+			gl.glBegin(GL.GL_TRIANGLES);
+			for(Iterator<Object3d> itr = octree.getObjectIterator(CLASS_ARROW);itr.hasNext();)
+			{
+				Object3d obj = itr.next();
+                if (obj.markTime != startTime) {
+                    obj.display(gl, glu);
+                    obj.markTime = startTime;
+                }
+			}
+			gl.glEnd();
+        }
+
         octree.displayOctree(gl);
 /*
 
@@ -347,7 +363,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
         object3dClasses[0].setEnabled(true);
         object3dClasses[1].setEnabled(true);
-
+        object3dClasses[2].setEnabled(true);
 
         //LOD
         ArrayList<Object3dClass> classList = new ArrayList<Object3dClass>();

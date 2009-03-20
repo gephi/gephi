@@ -102,7 +102,10 @@ public class Octree implements VizArchitecture
 
     public void addObject(int classID, Object3d obj)
     {
-        root.addObject(classID, obj);
+        if(obj.getOctant()!=null)
+            obj.getOctant().addObject(classID, obj);
+        else
+            root.addObject(classID, obj);
     }
 
     public void removeObject(int classID, Object3d obj)

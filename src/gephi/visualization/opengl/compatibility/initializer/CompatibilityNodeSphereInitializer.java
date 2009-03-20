@@ -60,7 +60,8 @@ public class CompatibilityNodeSphereInitializer extends NodeSphereInitializer im
 		obj.setObj((Node)n);
 		obj.setSelected(false);
         obj.setDragDistanceFromMouse(new float[2]);
-		
+		n.setObject3d(obj);
+        
 		chooseModel(obj);
 		return obj;
 	}

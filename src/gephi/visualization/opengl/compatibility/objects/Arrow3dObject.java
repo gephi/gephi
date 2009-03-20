@@ -23,6 +23,7 @@ package gephi.visualization.opengl.compatibility.objects;
 
 import gephi.data.network.Edge;
 import gephi.data.network.Node;
+import gephi.visualization.VizController;
 import gephi.visualization.opengl.Object3d;
 import gephi.visualization.opengl.gleem.linalg.Vec3d;
 import gephi.visualization.opengl.gleem.linalg.Vec3f;
@@ -36,16 +37,20 @@ import javax.media.opengl.glu.GLU;
  */
 public class Arrow3dObject extends Object3d<Node> {
 
+    private static float ARROW_WIDTH=1.5f;
+    private static float ARROW_HEIGHT=4.5f;
 	private Edge edge;
+    private Vec3f cameraVector;
 
     public Arrow3dObject()
     {
         super();
+        cameraVector = VizController.getInstance().getDrawable().getCameraVector();
     }
 
 	public Arrow3dObject(Edge edge)
 	{
-        super();
+        this();
 		this.edge = edge;
 	}
 
@@ -54,32 +59,29 @@ public class Arrow3dObject extends Object3d<Node> {
 		Node nodeFrom = edge.getSource();
 		Node nodeTo = edge.getTarget();
 
-		Vec3d edgeVector = new Vec3d(nodeTo.x - nodeFrom.x,nodeTo.y - nodeFrom.y,nodeTo.z - nodeFrom.z);
-		Vec3d p2 = new Vec3d(0,0,1);
-		edgeVector.normalize();
-		Vec3d normale = edgeVector.cross(p2);
-
-		float arrowWidth=0.15f;
-		float arrowHeight=0.45f;
+		Vec3f edgeVector = new Vec3f(nodeTo.x - nodeFrom.x,nodeTo.y - nodeFrom.y,nodeTo.z - nodeFrom.z);
+        edgeVector.normalize();
+		Vec3f sideVector = edgeVector.cross(cameraVector);
+        sideVector.normalize();
 
 		double angle = Math.atan2(nodeTo.y-nodeFrom.y,nodeTo.x-nodeFrom.x);
 		float collisionDistance = nodeTo.getObject3d().getCollisionDistance(angle);
-		double collisionDistanceX = collisionDistance*Math.cos(angle);
-		double collisionDistanceY = collisionDistance*Math.sin(angle);
 
-		Vec3d point1 = new Vec3d(
-				nodeTo.x-(edgeVector.x()*arrowHeight)+(normale.x()*arrowWidth)-collisionDistanceX,
-				nodeTo.y-(edgeVector.y()*arrowHeight)+(normale.y()*arrowWidth)-collisionDistanceY,
-				nodeTo.z-(edgeVector.z()*arrowHeight)+(normale.z()*arrowWidth));
-		Vec3d point2 = new Vec3d(
-				nodeTo.x-(edgeVector.x()*arrowHeight)+(normale.x()*-arrowWidth)-collisionDistanceX,
-				nodeTo.y-(edgeVector.y()*arrowHeight)+(normale.y()*-arrowWidth)-collisionDistanceY,
-				nodeTo.z-(edgeVector.z()*arrowHeight)+(normale.z()*-arrowWidth));
+        float x2 = nodeTo.x;
+        float y2 = nodeTo.y;
+        float z2 = nodeTo.z;
 
-		//gl.glColor3f(nodeFrom.r, nodeFrom.g, nodeFrom.b);
-		gl.glVertex3d(point1.x(), point1.y(), point1.z());
-		gl.glVertex3d(point2.x(), point2.y(), point2.z());
-		gl.glVertex3d(nodeTo.x-collisionDistanceX, nodeTo.y-collisionDistanceY, nodeTo.z);
+        float targetX = x2 - edgeVector.x()*collisionDistance;
+        float targetY = y2 - edgeVector.y()*collisionDistance;
+        float targetZ = z2 - edgeVector.z()*collisionDistance;
+
+        float baseX = targetX - edgeVector.x()*ARROW_HEIGHT;
+        float baseY = targetY - edgeVector.y()*ARROW_HEIGHT;
+        float baseZ = targetZ - edgeVector.z()*ARROW_HEIGHT;
+
+        gl.glVertex3d(baseX+sideVector.x()*ARROW_WIDTH, baseY+sideVector.y()*ARROW_WIDTH, baseZ+sideVector.z()*ARROW_WIDTH);
+		gl.glVertex3d(baseX-sideVector.x()*ARROW_WIDTH, baseY-sideVector.y()*ARROW_WIDTH, baseZ-sideVector.z()*ARROW_WIDTH);
+		gl.glVertex3d(targetX, targetY, targetZ);
 	}
 
 	@Override
@@ -114,14 +116,12 @@ public class Arrow3dObject extends Object3d<Node> {
 
 	@Override
 	public void setOctant(Octant octant) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public Octant getOctant() {
-		// TODO Auto-generated method stub
-		return null;
+		return obj.getObject3d().getOctant();
 	}
 
 }

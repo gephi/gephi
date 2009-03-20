@@ -51,8 +51,7 @@ public class CompatibilityArrowInitializer implements CompatibilityObject3dIniti
         Edge e = (Edge)n;
 
         Arrow3dObject arrow = new Arrow3dObject(e);
-		arrow.setObj(e.getSource());
-        arrow.setOctant(e.getSource().getObject3d().getOctant());
+		arrow.setObj(e.getTarget());
 
         return arrow;
     }
