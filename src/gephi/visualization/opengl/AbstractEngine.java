@@ -55,6 +55,8 @@ import javax.swing.undo.UndoableEditSupport;
  */
 public abstract class AbstractEngine implements VizArchitecture {
 
+    //Enums
+     public enum Limits {MIN_X, MAX_X, MIN_Y, MAX_Y, MIN_Z, MAX_Z};
 	
 	//Architecture
 	protected GraphDrawable graphDrawable;
@@ -64,9 +66,20 @@ public abstract class AbstractEngine implements VizArchitecture {
     protected Object3dClassLibrary objectClassLibrary;
 
 	//GraphLimits
-	protected float graphLimits[]        = new float[4];;
+	protected float limits[]        = new float[6];
 
 	//AddRemove
+
+    public AbstractEngine()
+    {
+        //Init limits
+        limits[Limits.MIN_X.ordinal()] = Float.POSITIVE_INFINITY;
+        limits[Limits.MAX_X.ordinal()] = Float.NEGATIVE_INFINITY;
+        limits[Limits.MIN_Y.ordinal()] = Float.POSITIVE_INFINITY;
+        limits[Limits.MAX_Y.ordinal()] = Float.NEGATIVE_INFINITY;
+        limits[Limits.MIN_Z.ordinal()] = Float.POSITIVE_INFINITY;
+        limits[Limits.MAX_Z.ordinal()] = Float.NEGATIVE_INFINITY;
+    }
 
     public void initArchitecture()
     {
@@ -147,6 +160,6 @@ public abstract class AbstractEngine implements VizArchitecture {
 	}
 
 	public float[] getGraphLimits() {
-		return graphLimits;
+		return limits;
 	}
 }

@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package gephi.visualization.swing;
 
+import com.sun.opengl.util.BufferUtil;
 import gephi.visualization.VizArchitecture;
 import gephi.visualization.VizController;
 import gephi.visualization.config.VizConfig;
@@ -84,7 +85,7 @@ public class GraphDrawable extends GLAbstractListener implements VizArchitecture
         System.out.print(draggingMarker[0]);*/
 
         double[] v = {0, 0, 0, 1.0};
-        double[] v2 = {1.0, 1.0, 0, 1.0};
+        double[] v2 = {1.0, 1.0, 1, 1.0};
 
         double[] d = myGluProject(v);
         double[] d2 = myGluProject(v2);
@@ -93,6 +94,7 @@ public class GraphDrawable extends GLAbstractListener implements VizArchitecture
         draggingMarker[1] = d[1] - d2[1];
 
     }
+
 
     @Override
     public void setCameraPosition(GL gl, GLU glu) {
@@ -196,6 +198,13 @@ public class GraphDrawable extends GLAbstractListener implements VizArchitecture
         out[3] = m.get(3) * in[0] + m.get(7) * in[1] + m.get(11) * in[2] + m.get(15) * in[3];
 
         return out;
+    }
+
+    public double[] gluUnProject(float x, float y, float z)
+    {
+        DoubleBuffer buffer = BufferUtil.newDoubleBuffer(3);
+        glu.gluUnProject(x, y, z, modelMatrix, projMatrix, viewport, projMatrix);
+        return new double[] {buffer.get(0),buffer.get(1),buffer.get(2)};
     }
 
     public float[] getCameraLocation() {

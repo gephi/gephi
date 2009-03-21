@@ -26,6 +26,7 @@ import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import java.awt.Polygon;
 import javax.media.opengl.GLJPanel;
 
 public class GraphPanel extends GraphDrawable {
@@ -49,6 +50,7 @@ public class GraphPanel extends GraphDrawable {
 
 		};
 		//gljPanel.setOpaque(false);
+        
 		graphComponent = gljPanel;
         gljPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
@@ -77,5 +79,17 @@ public class GraphPanel extends GraphDrawable {
 	{
 		g.setColor(Color.red);
 		g.drawString(""+fps, 10, 15);
+
+        int[] xP = new int[4];
+        xP[0] = (int)engine.getGraphLimits()[0];
+        xP[1] = (int)engine.getGraphLimits()[0];
+        xP[2] = (int)engine.getGraphLimits()[1];
+        xP[3] = (int)engine.getGraphLimits()[1];
+        int[] yP = new int[4];
+        yP[0] = viewport.get(3) - (int)engine.getGraphLimits()[2];
+        yP[1] = viewport.get(3) - (int)engine.getGraphLimits()[3];
+        yP[2] = viewport.get(3) - (int)engine.getGraphLimits()[3];
+        yP[3] = viewport.get(3) - (int)engine.getGraphLimits()[2];
+        g.drawPolygon(xP,yP,4);
 	}
 }

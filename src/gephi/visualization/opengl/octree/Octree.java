@@ -30,6 +30,7 @@ import gephi.data.network.avl.simple.SimpleAVLTree;
 import gephi.visualization.VizArchitecture;
 import gephi.visualization.VizController;
 import gephi.visualization.opengl.AbstractEngine;
+import gephi.visualization.opengl.AbstractEngine.Limits;
 import gephi.visualization.opengl.Object3d;
 import gephi.visualization.swing.GraphDrawable;
 import java.nio.IntBuffer;
@@ -47,7 +48,6 @@ import javax.media.opengl.glu.GLU;
  */
 public class Octree implements VizArchitecture
 {
-
     //Architecture
     private GraphDrawable drawable;
     private AbstractEngine engine;
@@ -57,7 +57,6 @@ public class Octree implements VizArchitecture
     private int maxDepth;
     private int classesCount;
     private int size;
-    private Octant closestOctant;
 
     //Octant
 	private Octant root;
@@ -116,6 +115,9 @@ public class Octree implements VizArchitecture
 
     public void updateVisibleOctant(GL gl)
 	{
+        //Limits
+        refreshLimits();
+
 		//Switch to OpenGL select mode
 		int capacity = 1*4*leaves.getCount();      //Each object take in maximium : 4 * name stack depth
 		IntBuffer hitsBuffer = BufferUtil.newIntBuffer(capacity);
@@ -135,17 +137,17 @@ public class Octree implements VizArchitecture
 		visibleLeaves.clear();
 
 		//Get the hits and add the nodes' objects to the array
-        int depth=Integer.MAX_VALUE;
-        int minDepth=0;
+        //int depth=Integer.MAX_VALUE;
+        //int minDepth=0;
 		for(int i=0; i< nbRecords; i++)
 		{
 			int hit = hitsBuffer.get(i*4+3); 		//-1 Because of the glPushName(0)
-            int minZ = hitsBuffer.get(i*4+1);
-            if(minZ < depth)
-            {
-                depth=minZ;
-                minDepth=hit;
-            }
+            //int minZ = hitsBuffer.get(i*4+1);
+            //if(minZ < depth)
+            //{
+            //    depth=minZ;
+             //   minDepth=hit;
+            //}
 
 			Octant nodeHit = leaves.getItem(hit);
 			visibleLeaves.add(nodeHit);
@@ -242,6 +244,8 @@ public class Octree implements VizArchitecture
 
     private void refreshLimits()
     {
+        float[] limits = engine.getGraphLimits();
+
         float minX = Float.POSITIVE_INFINITY;
         float maxX = Float.NEGATIVE_INFINITY;
         float minY = Float.POSITIVE_INFINITY;
@@ -249,15 +253,59 @@ public class Octree implements VizArchitecture
         float minZ = Float.POSITIVE_INFINITY;
         float maxZ = Float.NEGATIVE_INFINITY;
 
-        for(Octant o : visibleLeaves)
+        for(Octant o : leaves)
         {
-            minX = Math.min(minX, o.getPosX()-o.getSize());
-            maxX = Math.max(maxX, o.getPosX()+o.getSize());
-            minY = Math.min(minY, o.getPosY()-o.getSize());
-            maxY = Math.max(maxY, o.getPosY()+o.getSize());
-            minZ = Math.min(minZ, o.getPosZ()-o.getSize());
-            maxZ = Math.max(maxZ, o.getPosZ()+o.getSize());
+            float size = o.getSize()/2f;
+            minX = Math.min(minX, o.getPosX()-size);
+            maxX = Math.max(maxX, o.getPosX()+size);
+            minY = Math.min(minY, o.getPosY()-size);
+            maxY = Math.max(maxY, o.getPosY()+size);
+            minZ = Math.min(minZ, o.getPosZ()-size);
+            maxZ = Math.max(maxZ, o.getPosZ()+size);
         }
+
+        float viewportMinX = Float.POSITIVE_INFINITY;
+        float viewportMaxX = Float.NEGATIVE_INFINITY;
+        float viewportMinY = Float.POSITIVE_INFINITY;
+        float viewportMaxY = Float.NEGATIVE_INFINITY;
+        double[] point;
+
+        point = drawable.myGluProject(minX, minY, minZ);        //bottom far left
+        viewportMinX = (float)Math.min(viewportMinX, point[0]);
+        viewportMinY = (float)Math.min(viewportMinY, point[1]);
+
+        point = drawable.myGluProject(minX, minY, maxZ);        //bottom near left
+        viewportMinX = (float)Math.min(viewportMinX, point[0]);
+        viewportMinY = (float)Math.min(viewportMinY, point[1]);
+
+        point = drawable.myGluProject(minX, maxY, maxZ);        //up near left
+        viewportMinX = (float)Math.min(viewportMinX, point[0]);
+        viewportMaxY = (float)Math.max(viewportMaxY, point[1]);
+
+        point = drawable.myGluProject(maxX, minY, maxZ);        //bottom near right
+        viewportMaxX = (float)Math.max(viewportMaxX, point[0]);
+        viewportMinY = (float)Math.min(viewportMinY, point[1]);
+
+        point = drawable.myGluProject(maxX, minY, minZ);        //bottom far right
+        viewportMaxX = (float)Math.max(viewportMaxX, point[0]);
+        viewportMinY = (float)Math.min(viewportMinY, point[1]);
+
+        point = drawable.myGluProject(maxX, maxY, minZ);        //up far right
+        viewportMaxX = (float)Math.max(viewportMaxX, point[0]);
+        viewportMaxY = (float)Math.max(viewportMaxY, point[1]);
+
+        point = drawable.myGluProject(maxX, maxY, maxZ);        //up near right
+        viewportMaxX = (float)Math.max(viewportMaxX, point[0]);
+        viewportMaxY = (float)Math.max(viewportMaxY, point[1]);
+
+        point = drawable.myGluProject(minX, maxY, minZ);        //up far left
+        viewportMinX = (float)Math.min(viewportMinX, point[0]);
+        viewportMinY = (float)Math.min(viewportMinY, point[1]);
+
+        limits[Limits.MIN_X.ordinal()] = viewportMinX;
+        limits[Limits.MAX_X.ordinal()] = viewportMaxX;
+        limits[Limits.MIN_Y.ordinal()] = viewportMinY;
+        limits[Limits.MAX_Y.ordinal()] = viewportMaxY;
     }
 
     int getClassesCount() {
