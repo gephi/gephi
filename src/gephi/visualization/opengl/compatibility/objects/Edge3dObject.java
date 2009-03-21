@@ -41,7 +41,7 @@ import javax.media.opengl.glu.GLU;
  */
 public class Edge3dObject extends Object3d<Edge>
 {
-    private static float CARDINAL_DIV=30f;  //Set the size of edges according to cardinal
+    private static float CARDINAL_DIV=10f;  //Set the size of edges according to cardinal
 
 	//Un arc est ajouté dans l'octant de son noeud source et destination. Il n'est donc pas affiché
 	//lorsque aucun des deux octant n'est affiché.
@@ -161,6 +161,8 @@ public class Edge3dObject extends Object3d<Edge>
         float y2Thick=sideVectorY/2f*t2;
         float z1Thick=sideVectorZ/2f*t1;
         float z2Thick=sideVectorZ/2f*t2;
+
+        gl.glColor4f(obj.r, obj.g, obj.b, obj.a);
 
 		gl.glVertex3f(x1+x1Thick, y1+y1Thick, z1+z1Thick);
 		gl.glVertex3f(x1-x1Thick, y1-y1Thick, z1-z1Thick);

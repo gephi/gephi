@@ -79,6 +79,8 @@ public class Arrow3dObject extends Object3d<Node> {
         float baseY = targetY - edgeVector.y()*ARROW_HEIGHT;
         float baseZ = targetZ - edgeVector.z()*ARROW_HEIGHT;
 
+        gl.glColor4f(edge.r, edge.g, edge.b, edge.a);
+        
         gl.glVertex3d(baseX+sideVector.x()*ARROW_WIDTH, baseY+sideVector.y()*ARROW_WIDTH, baseZ+sideVector.z()*ARROW_WIDTH);
 		gl.glVertex3d(baseX-sideVector.x()*ARROW_WIDTH, baseY-sideVector.y()*ARROW_WIDTH, baseZ-sideVector.z()*ARROW_WIDTH);
 		gl.glVertex3d(targetX, targetY, targetZ);

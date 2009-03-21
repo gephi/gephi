@@ -76,9 +76,9 @@ public class NodeSphereObject extends Object3d<Node> {
         gl.glTranslatef(obj.getX(), obj.getY(), obj.getZ());
         gl.glScalef(size, size, size);
         if (selected) {
-            gl.glColor4f(1f, 1f, 1f, 1f);
+            gl.glColor4f(1f, 1f, 1f, obj.a);
         } else {
-            gl.glColor4f(obj.getR(), obj.getG(), obj.getB(), 1f);
+            gl.glColor4f(obj.b, obj.g, obj.b, obj.a);
         }
         gl.glCallList(modelType);
         gl.glPopMatrix();

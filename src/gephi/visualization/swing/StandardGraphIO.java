@@ -26,6 +26,7 @@ import gephi.visualization.VizController;
 import gephi.visualization.config.VizConfig;
 import gephi.visualization.events.VizEventManager;
 import gephi.visualization.opengl.AbstractEngine;
+import gephi.visualization.opengl.gleem.linalg.Vec3f;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.event.KeyEvent;
@@ -246,7 +247,51 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
     public void mouseWheelMoved(MouseWheelEvent e) {
 
-        float[] graphLimits = engine.getGraphLimits();
+        //Attributes
+        float[] cameraTarget = graphDrawable.getCameraTarget();
+        float way = -e.getUnitsToScroll()/Math.abs(e.getUnitsToScroll());
+        Vec3f cameraVector = graphDrawable.getCameraVector().copy();
+
+        float step=1/10f*way;
+
+        float mouseX = mousePosition[0]-graphDrawable.viewport.get(2)/2f;
+        float mouseY = mousePosition[1]-graphDrawable.viewport.get(3)/2f;
+        
+        mouseX *= -graphDrawable.draggingMarker[0];
+        mouseY *= -graphDrawable.draggingMarker[1];
+        mouseX += cameraTarget[0];
+        mouseY += cameraTarget[1];
+        System.out.println(mouseX+"   "+mouseY);
+
+        Vec3f stepVec = cameraVector.times(step);
+
+        graphDrawable.cameraLocation[0] += stepVec.x();
+        graphDrawable.cameraLocation[1] += stepVec.y();
+        graphDrawable.cameraLocation[2] += stepVec.z();
+
+        // graphDrawable.cameraTarget[0] += stepVec.x();
+        //graphDrawable.cameraTarget[1] += stepVec.y();
+        //graphDrawable.cameraTarget[2] += stepVec.z();
+
+        
+
+        Vec3f mouseTarget = new Vec3f(mouseX, mouseY, graphDrawable.cameraTarget[2]);
+        mouseTarget.normalize();
+        cameraVector.normalize();
+        Vec3f normalPlan = mouseTarget.cross(cameraVector);
+        //Vec3f disVec = stepVec.cross(normalPlan);
+        Vec3f disVec = new Vec3f(mouseX-cameraTarget[0], mouseY-cameraTarget[1], 0);
+
+        graphDrawable.cameraLocation[0] += disVec.x();
+        graphDrawable.cameraLocation[1] += disVec.y();
+        graphDrawable.cameraLocation[2] += disVec.z();
+
+        graphDrawable.cameraTarget[0] += disVec.x();
+        graphDrawable.cameraTarget[1] += disVec.y();
+        graphDrawable.cameraTarget[2] += disVec.z();
+        engine.getScheduler().requireUpdateVisible();
+        
+       /* float[] graphLimits = engine.getGraphLimits();
 		float graphWidth = Math.abs(graphLimits[1]-graphLimits[0]);
 		float graphHeight = Math.abs(graphLimits[3]-graphLimits[2]);
 
@@ -276,7 +321,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 			graphDrawable.cameraLocation[2] += moveZ;
 			graphDrawable.rotationX = (float)Math.atan(((graphDrawable.cameraLocation[1]-graphDrawable.cameraTarget[1])/(graphDrawable.cameraLocation[2]-graphDrawable.cameraTarget[2])));
             engine.getScheduler().requireUpdateVisible();
-		}
+		}*/
 	}
 
     public void keyPressed(KeyEvent e)

@@ -57,6 +57,7 @@ public class Octree implements VizArchitecture
     private int maxDepth;
     private int classesCount;
     private int size;
+    private Octant closestOctant;
 
     //Octant
 	private Octant root;
@@ -134,14 +135,22 @@ public class Octree implements VizArchitecture
 		visibleLeaves.clear();
 
 		//Get the hits and add the nodes' objects to the array
+        int depth=Integer.MAX_VALUE;
+        int minDepth=0;
 		for(int i=0; i< nbRecords; i++)
 		{
 			int hit = hitsBuffer.get(i*4+3); 		//-1 Because of the glPushName(0)
+            int minZ = hitsBuffer.get(i*4+1);
+            if(minZ < depth)
+            {
+                depth=minZ;
+                minDepth=hit;
+            }
 
 			Octant nodeHit = leaves.getItem(hit);
 			visibleLeaves.add(nodeHit);
 		}
-
+        //System.out.println(minDepth);
 	}
 
     public void updateSelectedOctant(GL gl, GLU glu, float[] mousePosition, float[] pickRectangle)
@@ -203,7 +212,7 @@ public class Octree implements VizArchitecture
         return itr;
 	}
 
-    public OctreeIterator getSelectedObjectIterator(int classID) {
+    public Iterator<Object3d> getSelectedObjectIterator(int classID) {
        OctreeIterator itr = borrowIterator();
         itr.reset(selectedLeaves, classID);
         return itr;
@@ -229,6 +238,26 @@ public class Octree implements VizArchitecture
     void removeLeaf(Octant leaf)
     {
         leaves.add(leaf);
+    }
+
+    private void refreshLimits()
+    {
+        float minX = Float.POSITIVE_INFINITY;
+        float maxX = Float.NEGATIVE_INFINITY;
+        float minY = Float.POSITIVE_INFINITY;
+        float maxY = Float.NEGATIVE_INFINITY;
+        float minZ = Float.POSITIVE_INFINITY;
+        float maxZ = Float.NEGATIVE_INFINITY;
+
+        for(Octant o : visibleLeaves)
+        {
+            minX = Math.min(minX, o.getPosX()-o.getSize());
+            maxX = Math.max(maxX, o.getPosX()+o.getSize());
+            minY = Math.min(minY, o.getPosY()-o.getSize());
+            maxY = Math.max(maxY, o.getPosY()+o.getSize());
+            minZ = Math.min(minZ, o.getPosZ()-o.getSize());
+            maxZ = Math.max(maxZ, o.getPosZ()+o.getSize());
+        }
     }
 
     int getClassesCount() {

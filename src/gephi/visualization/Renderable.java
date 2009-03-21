@@ -39,6 +39,7 @@ public interface Renderable {
 	public float getR();
 	public float getG();
 	public float getB();
+    public float getA();
 
     public Object3d getObject3d();
     public void setObject3d(Object3d obj);

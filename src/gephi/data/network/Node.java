@@ -33,6 +33,7 @@ public class Node implements Renderable
     public float x;
 	public float y;
 	public float z;
+    public float a = 0.5f;
 	public float r = 0f;
 	public float g = 0f;
 	public float b = 0f;
@@ -44,7 +45,7 @@ public class Node implements Renderable
 	{
 		x = ((float)Math.random())*2000-1000.0f;
 		y = ((float)Math.random())*2000-1000.0f;
-        //z = ((float)Math.random())*100-100.0f;
+        z = ((float)Math.random())*100-100.0f;
 	}
 
     public float getB() {
@@ -65,6 +66,10 @@ public class Node implements Renderable
 
     public float getR() {
        return r;
+    }
+
+    public float getA() {
+        return a;
     }
 
     public float getRadius() {

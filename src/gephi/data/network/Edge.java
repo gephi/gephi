@@ -34,6 +34,7 @@ public class Edge implements Renderable {
     public float r = 0f;
     public float g = 0f;
     public float b = 0f;
+    public float a = 0.5f;
     private float cardinal = 1f;
     private Object3d object3d;
 
@@ -65,6 +66,10 @@ public class Edge implements Renderable {
 
     public float getB() {
         return b;
+    }
+
+    public float getA() {
+        return a;
     }
 
     public float getRadius() {
