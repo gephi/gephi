@@ -65,21 +65,7 @@ public abstract class AbstractEngine implements VizArchitecture {
     protected SelectionArea currentSelectionArea = new Point();
     protected Object3dClassLibrary objectClassLibrary;
 
-	//GraphLimits
-	protected float limits[]        = new float[6];
-
 	//AddRemove
-
-    public AbstractEngine()
-    {
-        //Init limits
-        limits[Limits.MIN_X.ordinal()] = Float.POSITIVE_INFINITY;
-        limits[Limits.MAX_X.ordinal()] = Float.NEGATIVE_INFINITY;
-        limits[Limits.MIN_Y.ordinal()] = Float.POSITIVE_INFINITY;
-        limits[Limits.MAX_Y.ordinal()] = Float.NEGATIVE_INFINITY;
-        limits[Limits.MIN_Z.ordinal()] = Float.POSITIVE_INFINITY;
-        limits[Limits.MAX_Z.ordinal()] = Float.NEGATIVE_INFINITY;
-    }
 
     public void initArchitecture()
     {
@@ -157,9 +143,5 @@ public abstract class AbstractEngine implements VizArchitecture {
 	public DoubleBuffer getProjectionMatrix()
 	{
 		return graphDrawable.projMatrix;
-	}
-
-	public float[] getGraphLimits() {
-		return limits;
 	}
 }

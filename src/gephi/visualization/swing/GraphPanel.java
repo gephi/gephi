@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package gephi.visualization.swing;
 
+import gephi.visualization.GraphLimits;
+import gephi.visualization.VizController;
 import gephi.visualization.config.VizConfig;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -80,16 +82,17 @@ public class GraphPanel extends GraphDrawable {
 		g.setColor(Color.red);
 		g.drawString(""+fps, 10, 15);
 
+        GraphLimits limits = VizController.getInstance().getLimits();
         int[] xP = new int[4];
-        xP[0] = (int)engine.getGraphLimits()[0];
-        xP[1] = (int)engine.getGraphLimits()[0];
-        xP[2] = (int)engine.getGraphLimits()[1];
-        xP[3] = (int)engine.getGraphLimits()[1];
+        xP[0] = limits.getMinXviewport();
+        xP[1] = limits.getMinXviewport();
+        xP[2] = limits.getMaxXviewport();
+        xP[3] = limits.getMaxXviewport();
         int[] yP = new int[4];
-        yP[0] = viewport.get(3) - (int)engine.getGraphLimits()[2];
-        yP[1] = viewport.get(3) - (int)engine.getGraphLimits()[3];
-        yP[2] = viewport.get(3) - (int)engine.getGraphLimits()[3];
-        yP[3] = viewport.get(3) - (int)engine.getGraphLimits()[2];
+        yP[0] = viewport.get(3) - limits.getMinYviewport();
+        yP[1] = viewport.get(3) - limits.getMaxYviewport();
+        yP[2] = viewport.get(3) - limits.getMaxYviewport();
+        yP[3] = viewport.get(3) - limits.getMinYviewport();
         g.drawPolygon(xP,yP,4);
 	}
 }

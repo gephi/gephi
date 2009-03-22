@@ -64,6 +64,7 @@ public class VizController {
     private GraphIO graphIO;
     private VizEventManager vizEventManager;
     private Object3dClassLibrary object3dClassLibrary;
+    private GraphLimits limits;
 
     public void initInstances()
     {
@@ -76,6 +77,7 @@ public class VizController {
         vizEventManager = new StandardVizEventManager();
         scheduler = new CompatibilityScheduler();
         object3dClassLibrary = new StandardObject3dClassLibrary();
+        limits = new GraphLimits();
 
         drawable = commander.createPanel();
         drawable.getGraphComponent().setPreferredSize( new Dimension(600, 600));
@@ -111,6 +113,10 @@ public class VizController {
 
     public VizEventManager getVizEventManager() {
         return vizEventManager;
+    }
+
+    public GraphLimits getLimits() {
+        return limits;
     }
     
     

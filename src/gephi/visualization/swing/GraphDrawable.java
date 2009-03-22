@@ -70,6 +70,7 @@ public class GraphDrawable extends GLAbstractListener implements VizArchitecture
     {
          graphComponent.setCursor(Cursor.getDefaultCursor());
          engine.initEngine(gl, glu);
+         VizController.getInstance().getGraphIO().startMouseListening();
     }
 
 
@@ -85,7 +86,7 @@ public class GraphDrawable extends GLAbstractListener implements VizArchitecture
         System.out.print(draggingMarker[0]);*/
 
         double[] v = {0, 0, 0, 1.0};
-        double[] v2 = {1.0, 1.0, 1, 1.0};
+        double[] v2 = {1.0, 1.0, 0, 1.0};
 
         double[] d = myGluProject(v);
         double[] d2 = myGluProject(v2);

@@ -86,10 +86,11 @@ public class VizConfig
         return defaultCameraPosition;
     }
 
+    private float[] defaultCameraTarget             = {0f,0f,0f};
     public float[] getDefaultCameraTarget() {
         return defaultCameraTarget;
     }
-    private float[] defaultCameraTarget             = {0f,0f,0f};
+    
 
     public Color getBackgroundColor() {
         return backgroundColor;

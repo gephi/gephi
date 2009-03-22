@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package gephi.visualization.swing;
 
+import gephi.visualization.GraphLimits;
 import gephi.visualization.VizArchitecture;
 import gephi.visualization.VizController;
 import gephi.visualization.config.VizConfig;
@@ -45,10 +46,12 @@ import javax.swing.SwingUtilities;
  */
 public class StandardGraphIO implements GraphIO, VizArchitecture {
 
+    //Architecture
     protected GraphDrawable graphDrawable;
     protected AbstractEngine engine;
     protected VizEventManager vizEventManager;
     protected VizConfig vizConfig;
+    protected GraphLimits limits;
     
     //Listeners data
     protected float[] rightButtonMoving         = {-1f,0f,0f};
@@ -67,11 +70,12 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         this.engine = VizController.getInstance().getEngine();
         this.vizEventManager = VizController.getInstance().getVizEventManager();
         this.vizConfig = VizController.getInstance().getVizConfig();
-        startMouseListening();
+        this.limits = VizController.getInstance().getLimits();
     }
 
     public void startMouseListening()
     {
+        stopMouseListening();
         if(vizConfig.isCameraControlEnable())
         {
             graphDrawable.graphComponent.addMouseListener(this);
@@ -250,41 +254,53 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     public void mouseWheelMoved(MouseWheelEvent e) {
 
         //Attributes
-        float[] cameraTarget = graphDrawable.getCameraTarget();
         float way = -e.getUnitsToScroll()/Math.abs(e.getUnitsToScroll());
         Vec3f cameraVector = graphDrawable.getCameraVector().copy();
+        float cameraLocation[] = graphDrawable.getCameraLocation();
+        float cameraTarget[] = graphDrawable.getCameraTarget();
 
-        float step=1/10f*way;
+        //Distance
+        float distance = limits.getDistanceFromPoint(cameraLocation[0], cameraLocation[1], cameraLocation[2]);
+        float distanceRatio = MathUtil.clamp(2*distance/10000f,0f,2f);
+        float coeff = (float)(Math.exp(distanceRatio-2)*2.2-0.295);      //exp(x-2)*2.2-0.3
+        float step = way * (10f+1000*coeff);
+        if(way==-1) { step *= 3; }
+        float stepRatio = step/distance;
+        
+        //Get mouse position within the clipping plane
+        float mouseX = MathUtil.clamp(mousePosition[0], limits.getMinXviewport(), limits.getMaxXviewport());
+        float mouseY = MathUtil.clamp(mousePosition[1], limits.getMinYviewport(), limits.getMaxYviewport());
+        mouseX = mouseX-graphDrawable.viewport.get(2)/2f;       //Set to centric coordinates
+        mouseY = mouseY-graphDrawable.viewport.get(3)/2f;
 
-        float mouseX = mousePosition[0]-graphDrawable.viewport.get(2)/2f;
-        float mouseY = mousePosition[1]-graphDrawable.viewport.get(3)/2f;
-
-
+        //Transform in 3d coordinates
         mouseX /= -graphDrawable.draggingMarker[0];
         mouseY /= -graphDrawable.draggingMarker[1];
-        //mouseX += cameraTarget[0];
-        //mouseY += cameraTarget[1];
-        System.out.println(mouseX+"   "+mouseY);
 
+        //Set stepVector for zooming, direction of camera and norm of step
+        cameraVector.normalize();
         Vec3f stepVec = cameraVector.times(step);
 
-        graphDrawable.cameraLocation[0] += stepVec.x();
-        graphDrawable.cameraLocation[1] += stepVec.y();
-        graphDrawable.cameraLocation[2] += stepVec.z();
+        cameraLocation[0] += stepVec.x();
+        cameraLocation[1] += stepVec.y();
+        cameraLocation[2] += stepVec.z();
+        cameraLocation[2] = MathUtil.clamp(cameraLocation[2], 1f, Float.POSITIVE_INFINITY);
+        //System.out.println("camera: "+graphDrawable.cameraLocation[2]);
 
-
+        //Displacement of camera according to mouse position. Clamped to graph limits
         Vec3f disVec = new Vec3f(mouseX, mouseY, 0);
-        disVec.scale(step);
+        disVec.scale(stepRatio);
+        //System.out.println(disVec.x()+"    "+disVec.y()+"     "+disVec.z());
 
-        graphDrawable.cameraLocation[0] += disVec.x();
-        graphDrawable.cameraLocation[1] += disVec.y();
-        graphDrawable.cameraLocation[2] += disVec.z();
+        cameraLocation[0] += disVec.x();
+        cameraLocation[1] += disVec.y();
+        cameraLocation[2] += disVec.z();
 
-        graphDrawable.cameraTarget[0] += disVec.x();
-        graphDrawable.cameraTarget[1] += disVec.y();
-        graphDrawable.cameraTarget[2] += disVec.z();
-       //clampCameraToLimits();
-        
+        cameraTarget[0] += disVec.x();
+        cameraTarget[1] += disVec.y();
+        cameraTarget[2] += disVec.z();
+
+        //Refresh
         engine.getScheduler().requireUpdateVisible();
         
        /* float[] graphLimits = engine.getGraphLimits();
@@ -319,20 +335,6 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             engine.getScheduler().requireUpdateVisible();
 		}*/
 	}
-
-    private void clampCameraToLimits()
-    {
-        float[] limits = engine.getGraphLimits();
-        
-        graphDrawable.cameraLocation[0] = MathUtil.clamp(graphDrawable.cameraLocation[0],limits[Limits.MIN_X.ordinal()] , limits[Limits.MAX_X.ordinal()]);
-        graphDrawable.cameraLocation[1] = MathUtil.clamp(graphDrawable.cameraLocation[1],limits[Limits.MIN_Y.ordinal()] , limits[Limits.MAX_Y.ordinal()]);
-        //graphDrawable.cameraLocation[2] = MathUtil.clamp(graphDrawable.cameraLocation[2],limits[Limits.MIN_Z.ordinal()] , limits[Limits.MAX_Z.ordinal()]);
-
-        graphDrawable.cameraTarget[0] = MathUtil.clamp(graphDrawable.cameraTarget[0],limits[Limits.MIN_X.ordinal()] , limits[Limits.MAX_X.ordinal()]);
-        graphDrawable.cameraTarget[1] = MathUtil.clamp(graphDrawable.cameraTarget[1],limits[Limits.MIN_Y.ordinal()] , limits[Limits.MAX_Y.ordinal()]);
-        //graphDrawable.cameraTarget[2] = MathUtil.clamp(graphDrawable.cameraTarget[2],limits[Limits.MIN_Z.ordinal()] , limits[Limits.MAX_Z.ordinal()]);
-
-    }
 
     public void keyPressed(KeyEvent e)
 	{
