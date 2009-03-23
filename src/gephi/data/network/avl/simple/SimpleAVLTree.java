@@ -883,7 +883,7 @@ public class SimpleAVLTree implements Iterable<AVLItem> {
 		}
 
 		public void remove() {
-			throw new UnsupportedOperationException();	
+			SimpleAVLTree.this.remove(current);
 		}
 	}
 }

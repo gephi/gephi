@@ -29,14 +29,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class SimpleFPSAnimator extends Thread {
 
+    private Scheduler scheduler;
     private GraphDrawable drawable;
     private long delay;
     private AtomicBoolean animating;
     private final Object lock = new Object();
 
-    public SimpleFPSAnimator(GraphDrawable drawble, int fps) {
+    public SimpleFPSAnimator(Scheduler scheduler, GraphDrawable drawble, int fps) {
         super("SimpleFPSAnimator");
         this.drawable = drawble;
+        this.scheduler = scheduler;
         this.animating = new AtomicBoolean();
 
         setFps(fps);
@@ -49,6 +51,7 @@ public class SimpleFPSAnimator extends Thread {
         try {
             while (animating.get()) {
                 long startTime = System.currentTimeMillis();
+                scheduler.updatePosition();
                 drawable.display();
                 long timeout;
                 while ((timeout = delay - System.currentTimeMillis() + startTime) > 0) {

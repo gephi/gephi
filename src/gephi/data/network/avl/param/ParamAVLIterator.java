@@ -34,6 +34,7 @@ import java.util.Iterator;
  */
 public class ParamAVLIterator<Item> implements Iterator<Item>, ResetableIterator {
 
+    private ParamAVLTree tree;
 	private ParamAVLNode<Item> next;
 	private Item current;
 	
@@ -51,6 +52,7 @@ public class ParamAVLIterator<Item> implements Iterator<Item>, ResetableIterator
 	public ParamAVLIterator(ParamAVLTree tree)
 	{
 		this(tree.root);
+        this.tree = tree;
 	}
 	
 	
@@ -107,6 +109,6 @@ public class ParamAVLIterator<Item> implements Iterator<Item>, ResetableIterator
 	}
 	
 	public void remove() {
-		throw new UnsupportedOperationException();	
+        tree.remove(current);   //TODO Optimize, remove in O(1) instead of O(ln(n))
 	}
 }

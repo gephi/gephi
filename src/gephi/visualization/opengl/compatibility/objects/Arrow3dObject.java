@@ -95,7 +95,7 @@ public class Arrow3dObject extends Object3d<Node> {
 	@Override
 	public boolean isInOctreeLeaf(Octant leaf)
 	{
-		return obj.getObject3d().getOctant()==octant;
+		return obj.getObject3d().getOctant()==leaf;
 	}
 
 	@Override

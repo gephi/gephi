@@ -64,9 +64,9 @@ public class NodeSphereObject extends Object3d<Node> {
         if (Math.abs(obj.getX() - leaf.getPosX()) > (leaf.getSize() / 2 - obj.getRadius()) ||
                 Math.abs(obj.getY() - leaf.getPosY()) > (leaf.getSize() / 2 - obj.getRadius()) ||
                 Math.abs(obj.getZ() - leaf.getPosZ()) > (leaf.getSize() / 2 - obj.getRadius())) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     @Override

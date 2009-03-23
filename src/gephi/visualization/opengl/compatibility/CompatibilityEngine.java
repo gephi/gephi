@@ -297,6 +297,15 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void stopDrag() {
+        scheduler.requireUpdatePosition();
+    }
+
+    @Override
+    public void updateObjectsPosition() {
+         for (Object3dClass objClass : object3dClasses) {
+             if(objClass.isEnabled())
+                octree.updateObjectsPosition(objClass.getClassId());
+         }
     }
 
     private void initDisplayLists(GL gl, GLU glu) {

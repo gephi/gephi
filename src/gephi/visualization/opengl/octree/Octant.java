@@ -28,6 +28,7 @@ import gephi.visualization.opengl.Object3d;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.media.opengl.GL;
 
 /**
@@ -35,8 +36,8 @@ import javax.media.opengl.GL;
  * @author Mathieu
  */
 public class Octant implements AVLItem {
+    
     //Static
-
     private static int OctantIDs = 0;
 
     //Octree
@@ -53,6 +54,7 @@ public class Octant implements AVLItem {
     private final int octantID;
     private int objectsCount = 0;
     private Octant[] children;
+    private AtomicBoolean updateFlag    = new AtomicBoolean();
 
     //Objects
     private List<ParamAVLTree<Object3d>> objectClasses;
@@ -204,4 +206,20 @@ public class Octant implements AVLItem {
     public float getSize() {
         return size;
     }
+
+    public boolean isRequiringUpdatePosition()
+    {
+        return updateFlag.get();
+    }
+
+    public void requireUpdatePosition()
+    {
+        updateFlag.set(true);
+    }
+
+    public void resetUpdatePositionFlag()
+    {
+        updateFlag.set(false);
+    }
+
 }

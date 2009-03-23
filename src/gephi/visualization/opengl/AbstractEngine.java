@@ -89,7 +89,7 @@ public abstract class AbstractEngine implements VizArchitecture {
 	public abstract void mouseClick();
     public abstract Scheduler getScheduler();
 
-
+    public abstract void updateObjectsPosition();
 	public abstract void refreshGraphLimits();
     public abstract void initObject3dClass();
     public abstract Object3dClass[] getObject3dClasses();

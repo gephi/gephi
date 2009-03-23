@@ -66,11 +66,14 @@ public class Octree implements VizArchitecture
     private ParamAVLTree<Octant> leaves;
 
     //Iterator
-    ConcurrentLinkedQueue<OctreeIterator> iteratorQueue;
+    private ConcurrentLinkedQueue<OctreeIterator> iteratorQueue;
 
     //States
     protected List<Octant> visibleLeaves;
     protected List<Octant> selectedLeaves;
+
+    //Utils
+    protected ParamAVLIterator<Object3d> updatePositionIterator = new ParamAVLIterator<Object3d>();
 
     public Octree(int maxDepth, int size, int nbClasses)
     {
@@ -133,6 +136,7 @@ public class Octree implements VizArchitecture
 		//Draw the nodes cube in the select buffer
 		for(Octant n : leaves)
 		{
+            n.resetUpdatePositionFlag();        //Profit from the loop to do this, because this method is always after updating position
 			gl.glLoadName(n.getNumber());
 			n.displayOctreeNode(gl);
 		}
@@ -188,8 +192,9 @@ public class Octree implements VizArchitecture
 
 		//Draw the nodes' cube int the select buffer
 		int hitName=1;
-		for(Octant node : visibleLeaves)
+		for(int i=0;i<visibleLeaves.size();i++)
 		{
+            Octant node = visibleLeaves.get(i);
 			gl.glLoadName(hitName);
 			node.displayOctreeNode(gl);
 			hitName++;
@@ -215,6 +220,27 @@ public class Octree implements VizArchitecture
 			Octant nodeHit = visibleLeaves.get(hit);
             selectedLeaves.add(nodeHit);
 		}
+    }
+
+    public void updateObjectsPosition(int classID)
+    {
+        for(Octant o : leaves)
+		{
+            if(o.isRequiringUpdatePosition())
+            {
+                for(updatePositionIterator.setNode(o.getTree(classID));updatePositionIterator.hasNext();)
+                {
+                    Object3d obj = updatePositionIterator.next();
+                    if(!obj.isInOctreeLeaf(o))
+                    {
+                        o.removeObject(classID, obj);
+                        obj.setOctant(null);
+                        addObject(classID, obj);
+                    }
+                }
+
+            }
+        }
     }
 
     public Iterator<Object3d> getObjectIterator(int classID)
@@ -249,7 +275,7 @@ public class Octree implements VizArchitecture
 
     void removeLeaf(Octant leaf)
     {
-        leaves.add(leaf);
+        leaves.remove(leaf);
     }
 
     private void refreshLimits()
@@ -417,7 +443,7 @@ public class Octree implements VizArchitecture
         }
 
         public void remove() {
-            throw new UnsupportedOperationException("Not supported.");
+            octantIterator.remove();
         }
     }
 }

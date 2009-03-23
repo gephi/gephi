@@ -138,6 +138,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 		if(dragging)
 		{
 			dragging = false;
+            engine.getScheduler().requireStopDrag();
             vizEventManager.stopDrag();
 		}
 		else

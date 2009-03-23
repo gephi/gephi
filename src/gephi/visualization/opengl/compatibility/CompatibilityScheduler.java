@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package gephi.visualization.opengl.compatibility;
 
 import gephi.visualization.VizArchitecture;
@@ -47,16 +46,17 @@ import javax.media.opengl.glu.GLU;
 public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
     //States
-    AtomicBoolean animating         = new AtomicBoolean();
-    AtomicBoolean cameraMoved       = new AtomicBoolean();
-    AtomicBoolean mouseMoved        = new AtomicBoolean();
-    AtomicBoolean objectsMoved      = new AtomicBoolean();
-    AtomicBoolean startDrag         = new AtomicBoolean();
-    AtomicBoolean drag              = new AtomicBoolean();
+    AtomicBoolean animating = new AtomicBoolean();
+    AtomicBoolean cameraMoved = new AtomicBoolean();
+    AtomicBoolean mouseMoved = new AtomicBoolean();
+    AtomicBoolean objectsMoved = new AtomicBoolean();
+    AtomicBoolean startDrag = new AtomicBoolean();
+    AtomicBoolean drag = new AtomicBoolean();
+    AtomicBoolean stopDrag = new AtomicBoolean();
 
     //Architeture
-	private GraphDrawable graphDrawable;
-	private CompatibilityEngine engine;
+    private GraphDrawable graphDrawable;
+    private CompatibilityEngine engine;
 
     //Current GL
     private GL gl;
@@ -64,69 +64,64 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
     //Animator
     private SimpleFPSAnimator simpleFPSAnimator;
-
-
-	//Executor
-	private ScheduledExecutorService displayExecutor;
-
+    //Executor
+    private ScheduledExecutorService displayExecutor;
 
     public void initArchitecture() {
         this.graphDrawable = VizController.getInstance().getDrawable();
-        this.engine = (CompatibilityEngine)VizController.getInstance().getEngine();
+        this.engine = (CompatibilityEngine) VizController.getInstance().getEngine();
         initPools();
         init();
     }
-
     private ThreadPoolExecutor pool1;
     private ThreadPoolExecutor pool2;
-
-    private List<Runnable> modelSegments        = new ArrayList<Runnable>();
-    private Semaphore pool1Semaphore            = new Semaphore(0);
-    private Semaphore pool2Semaphore            = new Semaphore(0);
+    private List<Runnable> modelSegments = new ArrayList<Runnable>();
+    private Semaphore pool1Semaphore = new Semaphore(0);
+    private Semaphore pool2Semaphore = new Semaphore(0);
     private Runnable selectionSegment;
     private Runnable startDragSegment;
     private Runnable dragSegment;
     private Runnable refreshLimitsSegment;
 
-    private void initPools()
-    {
-        pool1 = new ThreadPoolExecutor(0, 4,  60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>())
-        {
-			@Override
-			protected void afterExecute(Runnable r, Throwable t) {
-				super.afterExecute(r, t);
-				pool1Semaphore.release();
-			}
+    private void initPools() {
+        pool1 = new ThreadPoolExecutor(0, 4, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>()) {
 
-			@Override
-			public void execute(Runnable command) {
-				super.execute(command);
-			}
-		};
+            @Override
+            protected void afterExecute(Runnable r, Throwable t) {
+                super.afterExecute(r, t);
+                pool1Semaphore.release();
+            }
 
-        pool2 = new ThreadPoolExecutor(0, 4,  60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>())
-        {
-			@Override
-			protected void afterExecute(Runnable r, Throwable t) {
-				super.afterExecute(r, t);
-				pool2Semaphore.release();
-			}
+            @Override
+            public void execute(Runnable command) {
+                super.execute(command);
+            }
+        };
 
-			@Override
-			public void execute(Runnable command) {
-				super.execute(command);
-			}
-		};
+        pool2 = new ThreadPoolExecutor(0, 4, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>()) {
+
+            @Override
+            protected void afterExecute(Runnable r, Throwable t) {
+                super.afterExecute(r, t);
+                pool2Semaphore.release();
+            }
+
+            @Override
+            public void execute(Runnable command) {
+                super.execute(command);
+            }
+        };
     }
 
-    public void init()
-    {
-        for(final CompatibilityObject3dClass objClass : engine.lodClasses)
-        {
+
+    public void init() {
+        for (final CompatibilityObject3dClass objClass : engine.lodClasses) {
             modelSegments.add(new Runnable() {
+
                 public void run() {
-                    if(objClass.isEnabled())
+                    if (objClass.isEnabled()) {
                         objClass.lod(engine.octree.getObjectIterator(objClass.getClassId()));
+                    }
                 }
             });
         }
@@ -141,7 +136,6 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
         refreshLimitsSegment = new Runnable() {
 
             public void run() {
-                
             }
         };
 
@@ -149,122 +143,131 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
             public void run() {
 
-                 //Drag
-                if(startDrag.getAndSet(false))
+                //Drag
+                if(stopDrag.getAndSet(false))
                 {
+                    engine.stopDrag();
+                }
+                if (startDrag.getAndSet(false)) {
                     engine.startDrag();
                 }
-                if(drag.getAndSet(false))
-                {
+                if (drag.getAndSet(false)) {
                     engine.mouseDrag();
                 }
             }
         };
     }
 
-
-
-    public void start()
-    {
-       simpleFPSAnimator = new SimpleFPSAnimator(graphDrawable, 30);
-       simpleFPSAnimator.start();
+    @Override
+    public void start() {
+        simpleFPSAnimator = new SimpleFPSAnimator(this, graphDrawable, 30);
+        simpleFPSAnimator.start();
 
     }
 
-    public void stop()
-    {
+    @Override
+    public void stop() {
         simpleFPSAnimator.shutdown();
     }
 
-
-    public void display(GL gl, GLU glu)
-    {
+    @Override
+    public void display(GL gl, GLU glu) {
         this.gl = gl;
         this.glu = glu;
 
         //Calculate permits
-        int pool1Permit=0;
-        int pool2Permit=0;
-        if(mouseMoved.get())
+        int pool1Permit = 0;
+        int pool2Permit = 0;
+        if (mouseMoved.get()) {
             pool2Permit++;
-        else if(startDrag.get() || drag.get())
+        } else if (drag.get() || startDrag.get() || stopDrag.get()) {
             pool2Permit++;
-
-        if(objectsMoved.getAndSet(false))
-        {
-            engine.refreshGraphLimits();
         }
 
-        if(cameraMoved.getAndSet(false))
-        {
+        if (cameraMoved.getAndSet(false)) {
             graphDrawable.setCameraPosition(gl, glu);
 
             pool1Permit = modelSegments.size();
             engine.octree.updateVisibleOctant(gl);
-             //Objects iterators in octree are ready
+            //Objects iterators in octree are ready
 
             //Task MODEL
-            for(int i=0;i<modelSegments.size();i++)
-            {
+            for (int i = 0; i < modelSegments.size(); i++) {
                 Runnable r = modelSegments.get(i);
                 pool1.execute(r);
             }
         }
 
         //Task SELECTED
-        if(mouseMoved.getAndSet(false))
-        {
+        if (mouseMoved.getAndSet(false)) {
             engine.updateSelection(gl, glu);
             pool2.execute(selectionSegment);
-        }
-        else if(startDrag.get() || drag.get())
-        {
+        } else if (drag.get() || startDrag.get() || stopDrag.get()) {
             pool2.execute(dragSegment);
         }
 
 
         //Task AFTERSELECTION
-        
 
-        try
-        {
-            if(pool1Permit>0)
+
+        try {
+            if (pool1Permit > 0) {
                 pool1Semaphore.acquire(pool1Permit);
-        } catch(Exception e){
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         //Display
         engine.beforeDisplay(gl, glu);
         engine.display(gl, glu);
         engine.afterDisplay(gl, glu);
 
-        try
-        {
-            if(pool2Permit>0)
+        try {
+            if (pool2Permit > 0) {
                 pool2Semaphore.acquire(pool2Permit);
-        } catch(Exception e){
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void requireUpdateVisible()
-    {
+    @Override
+    public void updatePosition() {
+        if (objectsMoved.getAndSet(false)) {
+            engine.updateObjectsPosition();
+            cameraMoved.set(true);
+        }
+    }
+
+    @Override
+    public void requireUpdateVisible() {
         cameraMoved.set(true);
     }
 
-    public void requireUpdateSelection()
-    {
+    @Override
+    public void requireUpdateSelection() {
         mouseMoved.set(true);
     }
 
-    public void requireStartDrag()
-    {
+    @Override
+    public void requireStartDrag() {
         startDrag.set(true);
     }
 
-    public void requireDrag()
-    {
+    @Override
+    public void requireDrag() {
         drag.set(true);
+    }
+
+    @Override
+    public void requireStopDrag() {
+        stopDrag.set(true);
+    }
+
+    @Override
+    public void requireUpdatePosition()
+    {
+        objectsMoved.set(true);
     }
 }

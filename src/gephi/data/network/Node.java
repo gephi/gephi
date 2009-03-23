@@ -98,14 +98,25 @@ public class Node implements Renderable
 
     public void setX(float x) {
        this.x = x;
+       updatePositionFlag();
     }
 
     public void setY(float y) {
        this.y = y;
+       updatePositionFlag();
     }
 
     public void setZ(float z) {
        this.z = z;
+       updatePositionFlag();
+    }
+
+    private void updatePositionFlag()
+    {
+        if(object3d!=null && object3d.getOctant()!=null)
+        {
+            object3d.getOctant().requireUpdatePosition();
+        }
     }
 
 }

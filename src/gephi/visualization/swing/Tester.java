@@ -22,6 +22,9 @@ package gephi.visualization.swing;
 
 import gephi.data.network.Edge;
 import gephi.data.network.Node;
+import gephi.data.network.avl.param.AVLItemAccessor;
+import gephi.data.network.avl.param.ParamAVLTree;
+import gephi.data.network.avl.simple.AVLItem;
 import gephi.visualization.VizController;
 import gephi.visualization.initializer.NodeInitializer;
 import gephi.visualization.config.VizCommander;
@@ -40,6 +43,8 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Label;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
@@ -51,7 +56,8 @@ public class Tester extends JFrame {
 
     private VizEventListener listener;
 
-    public Tester() {
+    public Tester() 
+    {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         Container container = getContentPane();
         container.setLayout(new BorderLayout());

@@ -47,10 +47,13 @@ public interface Scheduler {
 
     public void start();
     public void stop();
+    public void updatePosition();
     public void display(GL gl, GLU glu);
 
     public void requireUpdateVisible();
     public void requireUpdateSelection();
     public void requireStartDrag();
     public void requireDrag();
+    public void requireStopDrag();
+    public void requireUpdatePosition();
 }
