@@ -40,7 +40,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     //Architecture
     protected AbstractEngine engine;
 
-    private AtomicBoolean update = new AtomicBoolean(false);
+    private AtomicBoolean update = new AtomicBoolean(true);
 
     @Override
     public void initArchitecture() {
@@ -49,7 +49,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
     public void updateWorld() {
         updateNodes();
-        //updateEdges();
+        updateEdges();
     }
 
     private ArrayList<Node> nodeList = new ArrayList<Node>();
@@ -60,7 +60,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
          //Remove nodes
         if(nodeList.size()>0)
         {
-            for(int i=0;i<15;i++)
+            for(int i=0;i<10;i++)
             {
                 Node n = nodeList.remove((int)Math.random()*nodeList.size());
                 engine.removeObject(AbstractEngine.CLASS_NODE, n.getObject3d());
@@ -68,7 +68,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         }
 
         //Add nodes
-        for(int i=0;i<25;i++)
+        for(int i=0;i<15;i++)
         {
             Node n = new Node();
             nodeList.add(n);
@@ -78,23 +78,37 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
     }
 
+    private ArrayList<Edge> edgeList = new ArrayList<Edge>();
     private void updateEdges()
     {
         Object3dInitializer edgeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_EDGE].getCurrentObject3dInitializer();
         Object3dInitializer arrowInit = engine.getObject3dClasses()[AbstractEngine.CLASS_ARROW].getCurrentObject3dInitializer();
+
+        //Remove
+        if(edgeList.size()>0)
+        {
+            for(int i=0;i<40;i++)
+            {
+                Edge e = edgeList.remove((int)Math.random()*edgeList.size());
+                engine.removeObject(AbstractEngine.CLASS_EDGE, e.getObject3d());
+            }
+        }
+
+        //Add
         for(int i=0;i<50;i++)
         {
             Node source = nodeList.get((int)(Math.random()*nodeList.size()));
             Node target = nodeList.get((int)(Math.random()*nodeList.size()));
             Edge edge = new Edge(source,target);
             edge.setCardinal((float)(Math.random()*1f)+1);
+            edgeList.add(edge);
             engine.addObject(AbstractEngine.CLASS_EDGE, edgeInit.initObject(edge));
-            engine.addObject(AbstractEngine.CLASS_ARROW, arrowInit.initObject(edge));
+            //engine.addObject(AbstractEngine.CLASS_ARROW, arrowInit.initObject(edge));
         }
     }
 
     public boolean requireUpdate() {
-        return update.getAndSet(false);
+        return update.getAndSet(true);
     }
     
 }

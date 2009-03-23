@@ -42,7 +42,8 @@ public class CompatibilityEdgeInitializer implements CompatibilityObject3dInitia
 
         Edge3dObject edge = new Edge3dObject();
         edge.setObj(e);
-
+        e.setObject3d(edge);
+        
         return edge;
     }
 
