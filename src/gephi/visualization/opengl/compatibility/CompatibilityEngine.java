@@ -233,6 +233,11 @@ public class CompatibilityEngine extends AbstractEngine
     }
 
     @Override
+    public void removeObject(int classID, Object3d obj) {
+        octree.removeObject(classID, obj);
+    }
+
+    @Override
     public void mouseClick() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

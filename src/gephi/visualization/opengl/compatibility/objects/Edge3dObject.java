@@ -51,6 +51,7 @@ public class Edge3dObject extends Object3d<Edge>
     public Edge3dObject()
     {
         cameraVector = VizController.getInstance().getDrawable().getCameraVector();
+        octants = new Octant[2];
     }
 
 	@Override
@@ -118,7 +119,18 @@ public class Edge3dObject extends Object3d<Edge>
 		Node nodeFrom = obj.getSource();
 		Node nodeTo = obj.getTarget();
 
-        return nodeFrom.getObject3d().getOctant()==leaf || nodeTo.getObject3d().getOctant()==leaf;
+        if(octants[0] == leaf)
+        {
+            if(octants[0]!=nodeFrom.getObject3d().getOctants()[0])      //0 = nodeFrom
+                return false;
+        }
+        else
+        {
+             if(octants[1]!=nodeTo.getObject3d().getOctants()[0])      //1 = nodeTo
+                return false;
+        }
+
+        return true;
 	}
 
 
@@ -238,13 +250,28 @@ public class Edge3dObject extends Object3d<Edge>
 
 	@Override
 	public void setOctant(Octant octant) {
-		// TODO Auto-generated method stub
-
+		if(obj.getSource().getObject3d().getOctants()[0]==octant)
+        {
+            octants[0]=octant;
+        }
+        else
+        {
+            octants[1] = octant;
+        }
 	}
 
-	@Override
-	public Octant getOctant() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public void resetOctant(Octant octant)
+    {
+        /*if(octants[0]==octant)
+        {
+            octants[0] = null;
+        }
+        if(octants[1]==octant)
+        {
+            octants[1] = null;
+        }*/
+        octants[0] = null;
+        octants[1] = null;
+    }
 }

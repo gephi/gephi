@@ -40,7 +40,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     //Architecture
     protected AbstractEngine engine;
 
-    private AtomicBoolean update = new AtomicBoolean(true);
+    private AtomicBoolean update = new AtomicBoolean(false);
 
     @Override
     public void initArchitecture() {
@@ -49,13 +49,23 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
     public void updateWorld() {
         updateNodes();
-        updateEdges();
+        //updateEdges();
     }
 
     private ArrayList<Node> nodeList = new ArrayList<Node>();
     private void updateNodes()
     {
         Object3dInitializer nodeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_NODE].getCurrentObject3dInitializer();
+
+         //Remove nodes
+        if(nodeList.size()>0)
+        {
+            for(int i=0;i<15;i++)
+            {
+                Node n = nodeList.remove((int)Math.random()*nodeList.size());
+                engine.removeObject(AbstractEngine.CLASS_NODE, n.getObject3d());
+            }
+        }
 
         //Add nodes
         for(int i=0;i<25;i++)
@@ -65,6 +75,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             n.size=3;
             engine.addObject(AbstractEngine.CLASS_NODE, nodeInit.initObject(n));
         }
+
     }
 
     private void updateEdges()
@@ -83,7 +94,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     }
 
     public boolean requireUpdate() {
-        return update.getAndSet(true);
+        return update.getAndSet(false);
     }
     
 }

@@ -113,9 +113,9 @@ public class Node implements Renderable
 
     private void updatePositionFlag()
     {
-        if(object3d!=null && object3d.getOctant()!=null)
+        if(object3d!=null && object3d.getOctants()!=null)
         {
-            object3d.getOctant().requireUpdatePosition();
+            object3d.getOctants()[0].requireUpdatePosition();
         }
     }
 

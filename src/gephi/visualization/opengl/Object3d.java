@@ -33,10 +33,10 @@ import javax.media.opengl.glu.GLU;
  */
 public abstract class Object3d<ObjectType extends Renderable> implements AVLItem {
 
-    private int ID;
+    private int ID = -1;
 
     //Architecture
-    protected Octant octant;
+    protected Octant[] octants;
     protected ObjectType obj;
 
     //Graphical data
@@ -63,15 +63,22 @@ public abstract class Object3d<ObjectType extends Renderable> implements AVLItem
     }
 
     public void setID(int ID) {
-        this.ID = ID;
+        if(this.ID==-1)
+            this.ID = ID;
     }
 
-    public Octant getOctant() {
-        return octant;
+    public Octant[] getOctants() {
+        return octants;
     }
 
     public void setOctant(Octant octant) {
-        this.octant = octant;
+        this.octants[0] = octant;
+    }
+
+    public void resetOctant(Octant octant)
+    {
+        if(this.octants!=null)
+            this.octants[0]=null;
     }
 
     public ObjectType getObj() {

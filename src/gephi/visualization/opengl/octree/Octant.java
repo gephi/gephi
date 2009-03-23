@@ -100,8 +100,8 @@ public class Octant implements AVLItem {
 
             //Add at this node
             obj.setID(octree.getNextObjectID());
-            objectClass.add(obj);
-            objectsCount++;
+            if(objectClass.add(obj))
+                objectsCount++;
         } else {
             for (int index : obj.octreePosition(posX, posY, posZ, size)) {
                 children[index].addObject(classID, obj);

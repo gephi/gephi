@@ -25,6 +25,7 @@ import gephi.data.network.Node;
 import gephi.data.network.avl.param.AVLItemAccessor;
 import gephi.data.network.avl.param.ParamAVLTree;
 import gephi.data.network.avl.simple.AVLItem;
+import gephi.data.network.avl.simple.SimpleAVLTree;
 import gephi.visualization.VizController;
 import gephi.visualization.initializer.NodeInitializer;
 import gephi.visualization.config.VizCommander;
@@ -82,7 +83,7 @@ public class Tester extends JFrame {
         //vizEventManager.addListener(listener,types );
 
         //Engine
-        /*ArrayList<Node> nodeList = new ArrayList<Node>();
+        ArrayList<Node> nodeList = new ArrayList<Node>();
         for(int i=0;i<20;i++)
         {
             Node n = new Node();
@@ -104,7 +105,7 @@ public class Tester extends JFrame {
             //edge.setCardinal((float)(Math.random()*1f)+1);
             engine.octree.addObject(1, edgeInit.initObject(edge));
             engine.octree.addObject(2, arrowInit.initObject(edge));
-        }*/
+        }
         container.add(drawable.graphComponent, BorderLayout.CENTER);
         container.addNotify();
         container.validate();

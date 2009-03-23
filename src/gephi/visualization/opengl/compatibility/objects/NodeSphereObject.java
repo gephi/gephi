@@ -39,7 +39,11 @@ import gephi.visualization.opengl.octree.Octant;
 public class NodeSphereObject extends Object3d<Node> {
 
     public int modelType;
-    private Octant octant;
+
+    public NodeSphereObject()
+    {
+        octants = new Octant[1];
+    }
 
     @Override
     public int[] octreePosition(float centerX, float centerY, float centerZ, float size) {
@@ -100,15 +104,5 @@ public class NodeSphereObject extends Object3d<Node> {
     @Override
     public String toSVG() {
         return null;
-    }
-
-    @Override
-    public void setOctant(Octant octant) {
-        this.octant = octant;
-    }
-
-    @Override
-    public Octant getOctant() {
-        return octant;
     }
 }

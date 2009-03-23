@@ -109,15 +109,31 @@ public class Octree implements VizArchitecture
 
     public void addObject(int classID, Object3d obj)
     {
-        if(obj.getOctant()!=null)
-            obj.getOctant().addObject(classID, obj);
-        else
+        Octant[] octants = obj.getOctants();
+        boolean manualAdd=true;
+        for(int i=0;i<octants.length;i++)
+        {
+            Octant o = obj.getOctants()[i];
+            if(o!=null)
+            {
+                o.addObject(classID, obj);
+                manualAdd=false;
+            }
+        }
+
+        if(manualAdd)
             root.addObject(classID, obj);
     }
 
     public void removeObject(int classID, Object3d obj)
     {
-        root.removeObject(classID, obj);
+        Octant[] octants = obj.getOctants();
+        for(int i=0;i<octants.length;i++)
+        {
+            Octant o = obj.getOctants()[i];
+            if(o!=null)
+                octants[i].removeObject(classID, obj);
+        }
     }
 
     public void updateVisibleOctant(GL gl)
@@ -234,7 +250,7 @@ public class Octree implements VizArchitecture
                     if(!obj.isInOctreeLeaf(o))
                     {
                         o.removeObject(classID, obj);
-                        obj.setOctant(null);
+                        obj.resetOctant(o);
                         addObject(classID, obj);
                     }
                 }
