@@ -49,11 +49,8 @@ import javax.media.opengl.glu.GLUquadric;
  *
  * @author Mathieu
  */
-public class CompatibilityEngine extends AbstractEngine {
-
-    private static final int CLASS_NODE = 0;
-    private static final int CLASS_EDGE = 1;
-    private static final int CLASS_ARROW = 2;
+public class CompatibilityEngine extends AbstractEngine
+{
     public Octree octree;
     private CompatibilityScheduler scheduler;
 
@@ -79,6 +76,16 @@ public class CompatibilityEngine extends AbstractEngine {
 
     public void updateSelection(GL gl, GLU glu) {
         octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
+    }
+
+    @Override
+    public boolean updateWorld() {
+        if(dataBridge.requireUpdate())
+        {
+            dataBridge.updateWorld();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -218,6 +225,11 @@ public class CompatibilityEngine extends AbstractEngine {
         initDisplayLists(gl, glu);
         scheduler.cameraMoved.set(true);
         scheduler.mouseMoved.set(true);
+    }
+
+    @Override
+    public void addObject(int classID, Object3d obj) {
+        octree.addObject(classID, obj);
     }
 
     @Override

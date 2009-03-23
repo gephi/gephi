@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package gephi.visualization;
 
+import gephi.visualization.bridge.DHNSDataBridge;
+import gephi.visualization.bridge.DataBridge;
 import gephi.visualization.config.VizCommander;
 import gephi.visualization.config.VizConfig;
 import gephi.visualization.events.StandardVizEventManager;
@@ -65,6 +67,7 @@ public class VizController {
     private VizEventManager vizEventManager;
     private Object3dClassLibrary object3dClassLibrary;
     private GraphLimits limits;
+    private DataBridge dataBridge;
 
     public void initInstances()
     {
@@ -78,6 +81,7 @@ public class VizController {
         scheduler = new CompatibilityScheduler();
         object3dClassLibrary = new StandardObject3dClassLibrary();
         limits = new GraphLimits();
+        dataBridge = new DHNSDataBridge();
 
         drawable = commander.createPanel();
         drawable.getGraphComponent().setPreferredSize( new Dimension(600, 600));
@@ -85,6 +89,7 @@ public class VizController {
         engine.initArchitecture();
         ((CompatibilityScheduler)scheduler).initArchitecture();
         ((StandardGraphIO)graphIO).initArchitecture();
+        ((DHNSDataBridge)dataBridge).initArchitecture();
     }
 
     public GraphDrawable getDrawable() {
@@ -118,6 +123,8 @@ public class VizController {
     public GraphLimits getLimits() {
         return limits;
     }
-    
-    
+
+    public DataBridge getDataBridge() {
+        return dataBridge;
+    }
 }

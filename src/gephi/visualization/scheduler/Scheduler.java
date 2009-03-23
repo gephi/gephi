@@ -48,6 +48,7 @@ public interface Scheduler {
     public void start();
     public void stop();
     public void updatePosition();
+    public void updateWorld();
     public void display(GL gl, GLU glu);
 
     public void requireUpdateVisible();

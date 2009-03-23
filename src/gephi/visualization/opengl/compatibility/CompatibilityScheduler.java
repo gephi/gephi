@@ -232,6 +232,14 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
         }
     }
 
+    public void updateWorld() {
+        if(engine.updateWorld())
+        {
+            cameraMoved.set(true);
+            mouseMoved.set(true);
+        }
+    }
+
     @Override
     public void updatePosition() {
         if (objectsMoved.getAndSet(false)) {

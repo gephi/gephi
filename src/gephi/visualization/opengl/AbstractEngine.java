@@ -35,6 +35,7 @@ import gephi.visualization.initializer.NodeInitializer;
 import gephi.visualization.Renderable;
 import gephi.visualization.VizArchitecture;
 import gephi.visualization.VizController;
+import gephi.visualization.bridge.DataBridge;
 import gephi.visualization.events.VizEventManager;
 import gephi.visualization.opengl.gleem.linalg.Vec3d;
 import gephi.visualization.opengl.gleem.linalg.Vec3f;
@@ -56,14 +57,18 @@ import javax.swing.undo.UndoableEditSupport;
 public abstract class AbstractEngine implements VizArchitecture {
 
     //Enums
-     public enum Limits {MIN_X, MAX_X, MIN_Y, MAX_Y, MIN_Z, MAX_Z};
-	
+    public enum Limits {MIN_X, MAX_X, MIN_Y, MAX_Y, MIN_Z, MAX_Z};
+	public static final int CLASS_NODE = 0;
+    public static final int CLASS_EDGE = 1;
+    public static final int CLASS_ARROW = 2;
+
 	//Architecture
 	protected GraphDrawable graphDrawable;
     protected GraphIO graphIO;
     protected VizEventManager vizEventManager;
     protected SelectionArea currentSelectionArea = new Point();
     protected Object3dClassLibrary objectClassLibrary;
+    protected DataBridge dataBridge;
 
 	//AddRemove
 
@@ -72,6 +77,7 @@ public abstract class AbstractEngine implements VizArchitecture {
         this.graphDrawable = VizController.getInstance().getDrawable();
 		this.graphIO = VizController.getInstance().getGraphIO();
         this.objectClassLibrary = VizController.getInstance().getObject3dClassLibrary();
+        this.dataBridge = VizController.getInstance().getDataBridge();
         initObject3dClass();
     }
 
@@ -89,7 +95,9 @@ public abstract class AbstractEngine implements VizArchitecture {
 	public abstract void mouseClick();
     public abstract Scheduler getScheduler();
 
+    public abstract void addObject(int classID, Object3d obj);
     public abstract void updateObjectsPosition();
+    public abstract boolean updateWorld();
 	public abstract void refreshGraphLimits();
     public abstract void initObject3dClass();
     public abstract Object3dClass[] getObject3dClasses();

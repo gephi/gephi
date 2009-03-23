@@ -51,6 +51,7 @@ public class SimpleFPSAnimator extends Thread {
         try {
             while (animating.get()) {
                 long startTime = System.currentTimeMillis();
+                scheduler.updateWorld();
                 scheduler.updatePosition();
                 drawable.display();
                 long timeout;
