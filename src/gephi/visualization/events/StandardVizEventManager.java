@@ -193,6 +193,7 @@ public class StandardVizEventManager implements VizEventManager {
         }
     }
 
+    @Override
     public synchronized void addListener(VizEventListener listener, VizEvent.Type[] types) {
         WeakReference<VizEventListener> weakListener = new WeakReference<VizEventListener>(listener);
         for (VizEvent.Type eventType : types) {
@@ -235,6 +236,7 @@ public class StandardVizEventManager implements VizEventManager {
         }
     }
 
+    @Override
     public synchronized void removeListener(VizEventListener listener, VizEvent.Type[] types) {
         for (VizEvent.Type eventType : types) {
             try {

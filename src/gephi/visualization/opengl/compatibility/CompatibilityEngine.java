@@ -248,7 +248,8 @@ public class CompatibilityEngine extends AbstractEngine
 
     @Override
     public void mouseClick() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Object3d[] objArray =  selectedObjects.toArray(new Object3d[0]);
+        eventBridge.mouseClick(objArray);
     }
 
     @Override

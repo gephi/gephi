@@ -260,6 +260,7 @@ public class PreNode implements AVLItem
 	public Node initNodeInstance()
     {
         node = new Node();
+        node.setPreNode(this);
         return node;
     }
 

@@ -27,6 +27,9 @@ package gephi.visualization.events;
  */
 public interface VizEventManager {
 
+    public void addListener(VizEventListener listener, VizEvent.Type[] types);
+    public void removeListener(VizEventListener listener, VizEvent.Type[] types);
+
     public void startDrag();
     public void drag();
     public void stopDrag();

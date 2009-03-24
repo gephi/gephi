@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package gephi.data.network;
 
+import gephi.data.network.node.PreNode;
 import gephi.visualization.Renderable;
 import gephi.visualization.opengl.Object3d;
 
@@ -40,6 +41,7 @@ public class Node implements Renderable
 	public float size = 1f;
 
     private Object3d object3d;
+    private PreNode preNode;
 
     public Node()
 	{
@@ -119,4 +121,11 @@ public class Node implements Renderable
         }
     }
 
+    public PreNode getPreNode() {
+        return preNode;
+    }
+
+    public void setPreNode(PreNode preNode) {
+        this.preNode = preNode;
+    }
 }

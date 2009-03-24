@@ -179,6 +179,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 	{
 		if(SwingUtilities.isLeftMouseButton(e))
 		{
+            engine.getScheduler().requireMouseClick();
             vizEventManager.mouseLeftClick();
 		}
 		else if(SwingUtilities.isRightMouseButton(e))

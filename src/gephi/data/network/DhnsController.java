@@ -78,4 +78,8 @@ public class DhnsController {
     public TreeStructure getTreeStructure() {
         return treeStructure;
     }
+
+    public Dhns getDhns() {
+        return dhns;
+    }
 }

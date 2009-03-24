@@ -53,6 +53,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     AtomicBoolean startDrag = new AtomicBoolean();
     AtomicBoolean drag = new AtomicBoolean();
     AtomicBoolean stopDrag = new AtomicBoolean();
+    AtomicBoolean mouseClick = new AtomicBoolean();
 
     //Architeture
     private GraphDrawable graphDrawable;
@@ -82,6 +83,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     private Runnable startDragSegment;
     private Runnable dragSegment;
     private Runnable refreshLimitsSegment;
+    private Runnable mouseClickSegment;
 
     private void initPools() {
         pool1 = new ThreadPoolExecutor(0, 4, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>()) {
@@ -156,6 +158,12 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
                 }
             }
         };
+
+        mouseClickSegment = new Runnable() {
+            public void run() {
+                engine.mouseClick();
+            }
+        };
     }
 
     @Override
@@ -183,6 +191,8 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
         } else if (drag.get() || startDrag.get() || stopDrag.get()) {
             pool2Permit++;
         }
+        if(mouseClick.get())
+            pool2Permit++;
 
         if (cameraMoved.getAndSet(false)) {
             graphDrawable.setCameraPosition(gl, glu);
@@ -208,7 +218,10 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
 
         //Task AFTERSELECTION
-
+        if(mouseClick.getAndSet(false))
+        {
+            pool2.execute(mouseClickSegment);
+        }
 
         try {
             if (pool1Permit > 0) {
@@ -278,4 +291,10 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     {
         objectsMoved.set(true);
     }
+
+    @Override
+    public void requireMouseClick() {
+        mouseClick.set(true);
+    }
+
 }

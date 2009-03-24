@@ -57,4 +57,5 @@ public interface Scheduler {
     public void requireDrag();
     public void requireStopDrag();
     public void requireUpdatePosition();
+    public void requireMouseClick();
 }
