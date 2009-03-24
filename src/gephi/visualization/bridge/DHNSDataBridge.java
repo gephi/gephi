@@ -23,12 +23,16 @@ package gephi.visualization.bridge;
 
 import gephi.data.network.Edge;
 import gephi.data.network.Node;
+import gephi.data.network.node.PreNode;
+import gephi.data.network.reader.MainReader;
 import gephi.visualization.VizArchitecture;
 import gephi.visualization.VizController;
 import gephi.visualization.initializer.Object3dInitializer;
 import gephi.visualization.objects.Object3dClass;
 import gephi.visualization.opengl.AbstractEngine;
+import gephi.visualization.opengl.Object3d;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -39,12 +43,13 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
     //Architecture
     protected AbstractEngine engine;
-
+    protected MainReader reader;
     private AtomicBoolean update = new AtomicBoolean(true);
 
     @Override
     public void initArchitecture() {
        this.engine = VizController.getInstance().getEngine();
+       this.reader = new MainReader();
     }
 
     public void updateWorld() {
@@ -52,63 +57,30 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         updateEdges();
     }
 
-    private ArrayList<Node> nodeList = new ArrayList<Node>();
+
     private void updateNodes()
     {
         Object3dInitializer nodeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_NODE].getCurrentObject3dInitializer();
 
-         //Remove nodes
-        if(nodeList.size()>0)
+        Iterator<PreNode> itr = reader.getNodes();
+        for(;itr.hasNext();itr.next())
         {
-            for(int i=0;i<10;i++)
-            {
-                Node n = nodeList.remove((int)Math.random()*nodeList.size());
-                engine.removeObject(AbstractEngine.CLASS_NODE, n.getObject3d());
-            }
-        }
+            PreNode preNode = itr.next();
+            Node n = preNode.initNodeInstance();
+            n.size = 10f;
 
-        //Add nodes
-        for(int i=0;i<15;i++)
-        {
-            Node n = new Node();
-            nodeList.add(n);
-            n.size=3;
-            engine.addObject(AbstractEngine.CLASS_NODE, nodeInit.initObject(n));
+            Object3d obj = nodeInit.initObject(n);
+            engine.addObject(AbstractEngine.CLASS_NODE, obj);
         }
-
     }
 
-    private ArrayList<Edge> edgeList = new ArrayList<Edge>();
     private void updateEdges()
     {
-        Object3dInitializer edgeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_EDGE].getCurrentObject3dInitializer();
-        Object3dInitializer arrowInit = engine.getObject3dClasses()[AbstractEngine.CLASS_ARROW].getCurrentObject3dInitializer();
 
-        //Remove
-        if(edgeList.size()>0)
-        {
-            for(int i=0;i<40;i++)
-            {
-                Edge e = edgeList.remove((int)Math.random()*edgeList.size());
-                engine.removeObject(AbstractEngine.CLASS_EDGE, e.getObject3d());
-            }
-        }
-
-        //Add
-        for(int i=0;i<50;i++)
-        {
-            Node source = nodeList.get((int)(Math.random()*nodeList.size()));
-            Node target = nodeList.get((int)(Math.random()*nodeList.size()));
-            Edge edge = new Edge(source,target);
-            edge.setCardinal((float)(Math.random()*1f)+1);
-            edgeList.add(edge);
-            engine.addObject(AbstractEngine.CLASS_EDGE, edgeInit.initObject(edge));
-            engine.addObject(AbstractEngine.CLASS_ARROW, arrowInit.initObject(edge));
-        }
     }
 
     public boolean requireUpdate() {
-        return update.getAndSet(true);
+        return update.getAndSet(false);
     }
     
 }

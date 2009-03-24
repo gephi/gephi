@@ -106,4 +106,71 @@ public class CompleteTreeImporter {
 			p.addSight(sight);
 		}
 	}
+
+    public void importGraph(int numSibling, boolean random)
+    {
+        initImport();
+
+		int counter = 0;
+
+		for(int i=0;i<numSibling;i++)
+		{
+			counter++;
+
+			addSibling(counter);
+			addChild();
+
+			int rand = numSibling;
+			if(random)
+				rand = (int)(Math.random()*numSibling+1);
+
+			for(int j=0;j<rand;j++)
+			{
+				counter++;
+
+				addSibling(counter);
+				addChild();
+
+				int rand2 = numSibling;
+				if(random)
+					rand2 = (int)(Math.random()*numSibling+1);
+
+				for(int k=0;k<rand2;k++)
+				{
+					counter++;
+					addSibling(counter);
+				}
+
+				closeChild();
+			}
+
+			closeChild();
+		}
+
+		endImport();
+    }
+
+    public void shuffleEnable()
+	{
+		for(PreNode p : treeStructure.getTree())
+		{
+			p.setEnabled(sight, false);
+		}
+
+		for(int i=1;i<treeStructure.getTreeSize();i++)
+		{
+			int enabled = (int)Math.round(Math.random());
+			if(enabled==0)
+			{
+				PreNode n = treeStructure.getNodeAt(i);
+				n.setEnabled(sight, false);
+			}
+			else if(enabled==1)
+			{
+				PreNode n = treeStructure.getNodeAt(i);
+				n.setEnabled(sight, true);
+				i+=n.size;
+			}
+		}
+	}
 }

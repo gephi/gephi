@@ -23,6 +23,8 @@ package gephi.data.network;
 
 import gephi.data.network.sight.Sight;
 import gephi.data.network.sight.SightManager;
+import gephi.data.network.tree.importer.CompleteTreeImporter;
+import gephi.visualization.VizController;
 
 /**
  *
@@ -30,16 +32,50 @@ import gephi.data.network.sight.SightManager;
  */
 public class DhnsController {
 
+    private static DhnsController instance;
+
+	private DhnsController()
+	{ }
+
+	public synchronized static DhnsController getInstance()
+	{
+		if(instance == null)
+		{
+			instance = new DhnsController();
+		}
+		return instance;
+	}
+
+    //Architecture
     private Dhns dhns;
     private TreeStructure treeStructure;
     private Sight mainSight;
     private SightManager sightManager;
 
-    public DhnsController()
+    public void initInstances()
     {
         sightManager = new SightManager();
         dhns = new Dhns();
         treeStructure = dhns.getTreeStructure();
         mainSight = sightManager.createSight();
+
+        importFakeGraph();
+    }
+
+    private void importFakeGraph()
+    {
+        CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure,mainSight);
+
+		importer.importGraph(10, true);
+		importer.shuffleEnable();
+        System.out.println("Tree size : "+treeStructure.getTreeSize());
+    }
+
+    public Sight getMainSight() {
+        return mainSight;
+    }
+
+    public TreeStructure getTreeStructure() {
+        return treeStructure;
     }
 }

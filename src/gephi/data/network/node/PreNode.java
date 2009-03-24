@@ -1,5 +1,6 @@
 package gephi.data.network.node;
 
+import gephi.data.network.Node;
 import gephi.data.network.avl.ForwardEdgeTree;
 import gephi.data.network.avl.BackwardEdgeTree;
 import gephi.data.network.avl.DytsEdgeTree;
@@ -61,7 +62,7 @@ public class PreNode implements AVLItem
 	//private DytsEdgeTree virtualEdgesIN;
 	//private DytsEdgeTree virtualEdgesOUT;
 	
-	//private Node node;
+	private Node node;
 	
 	private SightAVLTree sightTree;
 	
@@ -256,5 +257,9 @@ public class PreNode implements AVLItem
         return tree;
 	}
 	
-	
+	public Node initNodeInstance()
+    {
+        node = new Node();
+        return node;
+    }
 }
