@@ -45,12 +45,11 @@ public class Edge3dObject extends Object3d<Edge>
 
 	//Un arc est ajouté dans l'octant de son noeud source et destination. Il n'est donc pas affiché
 	//lorsque aucun des deux octant n'est affiché.
-    private Vec3f cameraVector;
-
+    private float[] cameraLocation;
 
     public Edge3dObject()
     {
-        cameraVector = VizController.getInstance().getDrawable().getCameraVector();
+        cameraLocation = VizController.getInstance().getDrawable().getCameraLocation();
         octants = new Octant[2];
     }
 
@@ -150,22 +149,44 @@ public class Edge3dObject extends Object3d<Edge>
         float t1=obj.getSource().getSize()/CARDINAL_DIV;
         float t2=obj.getSource().getSize()/CARDINAL_DIV;
 
+        //CameraVector, from camera location to any point on the line
+        float cameraVectorX = x1 - cameraLocation[0];
+        float cameraVectorY = y1 - cameraLocation[1];
+        float cameraVectorZ = z1 - cameraLocation[2];
+        /*float cameraVectorX = cameraVector.x();
+        float cameraVectorY = cameraVector.y();
+        float cameraVectorZ = cameraVector.z();*/
+
+        //This code has been replaced by followinf more efficient
         //Vec3f edgeVector = new Vec3f(x2 - x1,y2 - y1,z2 - z1);
         //Vec3f cameraVector = new Vec3f(drawable.getCameraLocation()[0] - (x2 - x1)/2f,drawable.getCameraLocation()[1] - (y2 - y1)/2f,drawable.getCameraLocation()[2] - (z2 - z1)/2f);
         //Vec3f sideVector = edgeVector.cross(cameraVector);
         //sideVector.normalize();
 
+        //Vector line
         float edgeVectorX = x2 - x1;
         float edgeVectorY = y2 - y1;
         float edgeVectorZ = z2 - z1;
-        
-        float sideVectorX = edgeVectorY*cameraVector.z() - edgeVectorZ*cameraVector.y();
-        float sideVectorY = edgeVectorZ*cameraVector.x() - edgeVectorX*cameraVector.z();
-        float sideVectorZ = edgeVectorX*cameraVector.y() - edgeVectorY*cameraVector.x();
+
+        //Cross product
+        float sideVectorX = edgeVectorY*cameraVectorZ - edgeVectorZ*cameraVectorY;
+        float sideVectorY = edgeVectorZ*cameraVectorX - edgeVectorX*cameraVectorZ;
+        float sideVectorZ = edgeVectorX*cameraVectorY - edgeVectorY*cameraVectorX;
+
+        //Normalize
         float norm = (float)Math.sqrt(sideVectorX * sideVectorX + sideVectorY * sideVectorY + sideVectorZ * sideVectorZ);
-        sideVectorX /= norm;
-        sideVectorY /= norm;
-        sideVectorZ /= norm;
+        if (norm > 0f) // Avoid divizion by zero if cameraVector & sideVector colinear
+        {
+            sideVectorX /= norm;
+            sideVectorY /= norm;
+            sideVectorZ /= norm;
+        }
+        else
+        {
+            sideVectorX = 0f;
+            sideVectorY = 0f;
+            sideVectorZ = 0f;
+        }
 
         float x1Thick=sideVectorX/2f*t1;
         float x2Thick=sideVectorX/2f*t2;

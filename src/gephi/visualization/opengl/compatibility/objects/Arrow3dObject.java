@@ -40,12 +40,12 @@ public class Arrow3dObject extends Object3d<Node> {
     private static float ARROW_WIDTH=1.5f;
     private static float ARROW_HEIGHT=4.5f;
 	private Edge edge;
-    private Vec3f cameraVector;
+    private float[] cameraLocation;
 
     public Arrow3dObject()
     {
         super();
-        cameraVector = VizController.getInstance().getDrawable().getCameraVector();
+        cameraLocation = VizController.getInstance().getDrawable().getCameraLocation();
     }
 
 	public Arrow3dObject(Edge edge)
@@ -59,11 +59,11 @@ public class Arrow3dObject extends Object3d<Node> {
 		Node nodeFrom = edge.getSource();
 		Node nodeTo = edge.getTarget();
 
+        //Edge vector
 		Vec3f edgeVector = new Vec3f(nodeTo.x - nodeFrom.x,nodeTo.y - nodeFrom.y,nodeTo.z - nodeFrom.z);
         edgeVector.normalize();
-		Vec3f sideVector = edgeVector.cross(cameraVector);
-        sideVector.normalize();
-
+		
+        //Get collision distance between nodeTo and arrow point
 		double angle = Math.atan2(nodeTo.y-nodeFrom.y,nodeTo.x-nodeFrom.x);
 		float collisionDistance = nodeTo.getObject3d().getCollisionDistance(angle);
 
@@ -71,16 +71,25 @@ public class Arrow3dObject extends Object3d<Node> {
         float y2 = nodeTo.y;
         float z2 = nodeTo.z;
 
+        //Point of the arrow
         float targetX = x2 - edgeVector.x()*collisionDistance;
         float targetY = y2 - edgeVector.y()*collisionDistance;
         float targetZ = z2 - edgeVector.z()*collisionDistance;
 
+        //Base of the arrow
         float baseX = targetX - edgeVector.x()*ARROW_HEIGHT;
         float baseY = targetY - edgeVector.y()*ARROW_HEIGHT;
         float baseZ = targetZ - edgeVector.z()*ARROW_HEIGHT;
 
+        //Camera vector
+        Vec3f cameraVector = new Vec3f(targetX - cameraLocation[0],targetY - cameraLocation[1], targetZ - cameraLocation[2]);
+
+        //Side vector
+        Vec3f sideVector = edgeVector.cross(cameraVector);
+        sideVector.normalize();
+
+        //Draw the triangle
         gl.glColor4f(edge.r, edge.g, edge.b, edge.a);
-        
         gl.glVertex3d(baseX+sideVector.x()*ARROW_WIDTH, baseY+sideVector.y()*ARROW_WIDTH, baseZ+sideVector.z()*ARROW_WIDTH);
 		gl.glVertex3d(baseX-sideVector.x()*ARROW_WIDTH, baseY-sideVector.y()*ARROW_WIDTH, baseZ-sideVector.z()*ARROW_WIDTH);
 		gl.glVertex3d(targetX, targetY, targetZ);

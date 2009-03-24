@@ -68,7 +68,7 @@ public class DhnsController {
     {
         CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure,mainSight);
 
-		importer.importGraph(10, true);
+		importer.importGraph(30, true);
 		importer.shuffleEnable();
         System.out.println("Tree size : "+treeStructure.getTreeSize());
     }

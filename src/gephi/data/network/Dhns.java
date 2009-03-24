@@ -54,7 +54,7 @@ public class Dhns {
     public void init(Sight sight)
     {
         RandomEdgesGenerator generator = new RandomEdgesGenerator(treeStructure);
-		List<PreEdge> edgeList = generator.generatPhysicalEdges(10);
+		List<PreEdge> edgeList = generator.generatPhysicalEdges(100);
         edgeProcessing.processInducedEdges(sight);
     }
 	
