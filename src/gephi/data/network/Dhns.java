@@ -35,6 +35,7 @@ import gephi.data.network.edge.VirtualEdge;
 import gephi.data.network.edge.PreEdge.EdgeType;
 import gephi.data.network.node.PreNode;
 import gephi.data.network.sight.Sight;
+import gephi.data.network.tests.RandomEdgesGenerator;
 import gephi.data.network.tree.iterators.DescendantAxisIterator;
 
 public class Dhns {
@@ -49,6 +50,13 @@ public class Dhns {
 		treeStructure = new TreeStructure();
 		edgeProcessing = new EdgeProcessing(treeStructure);
 	}
+
+    public void init(Sight sight)
+    {
+        RandomEdgesGenerator generator = new RandomEdgesGenerator(treeStructure);
+		List<PreEdge> edgeList = generator.generatPhysicalEdges(10);
+        edgeProcessing.processInducedEdges(sight);
+    }
 	
 	public void expand(PreNode node, Sight sight)
 	{

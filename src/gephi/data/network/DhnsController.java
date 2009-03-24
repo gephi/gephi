@@ -60,6 +60,8 @@ public class DhnsController {
         mainSight = sightManager.createSight();
 
         importFakeGraph();
+
+        dhns.init(mainSight);
     }
 
     private void importFakeGraph()

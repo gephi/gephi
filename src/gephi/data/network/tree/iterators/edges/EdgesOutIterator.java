@@ -49,6 +49,7 @@ public class EdgesOutIterator implements Iterator<VirtualEdge> {
 	{
 		treeIterator= new SingleTreeIterator(treeStructure, sight);
 		edgeIterator = new ParamAVLIterator<VirtualEdge>();
+        this.sight = sight;
 	}
 	
 	@Override
@@ -65,7 +66,7 @@ public class EdgesOutIterator implements Iterator<VirtualEdge> {
 				return false;
 		}
 		
-		//pointer = edgeIterator.next();
+		pointer = edgeIterator.next();
 		return true;
 	}
 	

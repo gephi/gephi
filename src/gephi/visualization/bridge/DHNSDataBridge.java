@@ -23,6 +23,7 @@ package gephi.visualization.bridge;
 
 import gephi.data.network.Edge;
 import gephi.data.network.Node;
+import gephi.data.network.edge.VirtualEdge;
 import gephi.data.network.node.PreNode;
 import gephi.data.network.reader.MainReader;
 import gephi.visualization.VizArchitecture;
@@ -93,7 +94,27 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
     private void updateEdges()
     {
+        Object3dInitializer edgeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_EDGE].getCurrentObject3dInitializer();
 
+        Iterator<VirtualEdge> itr = reader.getEdges();
+        for(;itr.hasNext();itr.next())
+        {
+            VirtualEdge virtualEdge = itr.next();
+            Edge edge = virtualEdge.getEdge();
+            if(edge==null)
+            {
+                edge = virtualEdge.initEdgeInstance();
+            }
+
+            Object3d obj = edge.getObject3d();
+            if(obj==null)
+            {
+                //Object3d is null, ADD
+                obj = edgeInit.initObject(edge);
+                engine.addObject(AbstractEngine.CLASS_EDGE, obj);
+            }
+            obj.setCacheMarker(cacheMarker);
+        }
     }
 
     public boolean requireUpdate() {

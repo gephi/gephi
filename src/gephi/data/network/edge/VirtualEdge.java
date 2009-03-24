@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package gephi.data.network.edge;
 
+import gephi.data.network.Edge;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class VirtualEdge implements DhnsEdge {
 	protected PreNode preNodeTo;
 	protected float cardinal=0f;
 	protected SimpleAVLTree physicalEdges;
+    protected Edge edge;
 	
 	public VirtualEdge(PreNode preNodeFrom, PreNode preNodeTo)
 	{
@@ -85,4 +87,18 @@ public class VirtualEdge implements DhnsEdge {
 	public void setCardinal(float cardinal) {
 		this.cardinal = cardinal;
 	}
+
+    public Edge initEdgeInstance()
+    {
+        edge = new Edge(preNodeFrom.getNode(), preNodeTo.getNode());
+        return edge;
+    }
+
+    public Edge getEdge() {
+        return edge;
+    }
+
+    public void setEdge(Edge edge) {
+        this.edge = edge;
+    }
 }

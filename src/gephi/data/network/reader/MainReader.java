@@ -23,9 +23,11 @@ package gephi.data.network.reader;
 
 import gephi.data.network.DhnsController;
 import gephi.data.network.TreeStructure;
+import gephi.data.network.edge.VirtualEdge;
 import gephi.data.network.node.PreNode;
 import gephi.data.network.node.treelist.SingleTreeIterator;
 import gephi.data.network.sight.Sight;
+import gephi.data.network.tree.iterators.edges.EdgesOutIterator;
 import java.util.Iterator;
 
 /**
@@ -42,5 +44,15 @@ public class MainReader {
 
         SingleTreeIterator treeIterator = new SingleTreeIterator(treeStructure, mainSight);
         return treeIterator;
+    }
+
+    public Iterator<VirtualEdge> getEdges()
+    {
+        DhnsController controller = DhnsController.getInstance();
+        TreeStructure treeStructure = controller.getTreeStructure();
+        Sight mainSight = controller.getMainSight();
+
+        EdgesOutIterator edgesIterator = new EdgesOutIterator(treeStructure, mainSight);
+        return edgesIterator;
     }
 }
