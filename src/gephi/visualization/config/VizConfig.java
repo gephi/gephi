@@ -47,6 +47,7 @@ public class VizConfig
     protected boolean draggingEnable                = true;
     protected boolean cameraControlEnable           = true;
     protected boolean rotatingEnable                = true;
+    protected boolean directedEdges                 = true;
 
     public DisplayConfig getDisplayConfig() {
         return displayConfig;
@@ -138,5 +139,9 @@ public class VizConfig
 
     public boolean isSelectionEnable() {
         return selectionEnable;
+    }
+
+    public boolean isDirectedEdges() {
+        return directedEdges;
     }
 }

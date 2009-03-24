@@ -28,6 +28,7 @@ import gephi.data.network.node.PreNode;
 import gephi.data.network.reader.MainReader;
 import gephi.visualization.VizArchitecture;
 import gephi.visualization.VizController;
+import gephi.visualization.config.VizConfig;
 import gephi.visualization.initializer.Object3dInitializer;
 import gephi.visualization.objects.Object3dClass;
 import gephi.visualization.opengl.AbstractEngine;
@@ -46,6 +47,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     protected AbstractEngine engine;
     protected MainReader reader;
     private AtomicBoolean update = new AtomicBoolean(true);
+    private VizConfig vizConfig;
 
     //Attributes
     private int cacheMarker = 0;
@@ -54,6 +56,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     public void initArchitecture() {
        this.engine = VizController.getInstance().getEngine();
        this.reader = new MainReader();
+       this.vizConfig = VizController.getInstance().getVizConfig();
     }
 
     public void updateWorld() {
@@ -95,6 +98,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     private void updateEdges()
     {
         Object3dInitializer edgeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_EDGE].getCurrentObject3dInitializer();
+        Object3dInitializer arrowInit = engine.getObject3dClasses()[AbstractEngine.CLASS_ARROW].getCurrentObject3dInitializer();
 
         Iterator<VirtualEdge> itr = reader.getEdges();
         for(;itr.hasNext();itr.next())
@@ -112,6 +116,12 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                 //Object3d is null, ADD
                 obj = edgeInit.initObject(edge);
                 engine.addObject(AbstractEngine.CLASS_EDGE, obj);
+                if(vizConfig.isDirectedEdges())
+                {
+                    Object3d arrowObj = arrowInit.initObject(edge);
+                    engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
+                    arrowObj.setCacheMarker(cacheMarker);
+                }
             }
             obj.setCacheMarker(cacheMarker);
         }

@@ -126,4 +126,12 @@ public class Arrow3dObject extends Object3d<Node> {
 		return obj.getObject3d().getOctants();
 	}
 
+    @Override
+    public boolean isCacheMatching(int cacheMarker) {
+        if(edge.getObject3d()!=null)
+        {
+            return edge.getObject3d().isCacheMatching(cacheMarker);
+        }
+        return false;
+    }
 }
