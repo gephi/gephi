@@ -262,4 +262,9 @@ public class PreNode implements AVLItem
         node = new Node();
         return node;
     }
+
+    public Node getNode()
+    {
+        return node;
+    }
 }

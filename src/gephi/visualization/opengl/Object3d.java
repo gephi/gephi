@@ -34,6 +34,7 @@ import javax.media.opengl.glu.GLU;
 public abstract class Object3d<ObjectType extends Renderable> implements AVLItem {
 
     private int ID = -1;
+    private int cacheMarker;
 
     //Architecture
     protected Octant[] octants;
@@ -137,5 +138,15 @@ public abstract class Object3d<ObjectType extends Renderable> implements AVLItem
     public void setDragDistanceFromMouse(float[] dragDistance)
     {
         this.dragDistance = dragDistance;
+    }
+
+    public void setCacheMarker(int cacheMarker)
+    {
+        this.cacheMarker = cacheMarker;
+    }
+
+    public boolean isCacheMatching(int cacheMarker)
+    {
+        return cacheMarker==this.cacheMarker;
     }
 }

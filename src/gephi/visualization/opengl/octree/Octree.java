@@ -60,6 +60,7 @@ public class Octree implements VizArchitecture
     private int maxDepth;
     private int classesCount;
     private int size;
+    private int cacheMarker;
 
     //Octant
 	private Octant root;
@@ -74,6 +75,7 @@ public class Octree implements VizArchitecture
 
     //Utils
     protected ParamAVLIterator<Object3d> updatePositionIterator = new ParamAVLIterator<Object3d>();
+    protected ParamAVLIterator<Object3d> cleanObjectsIterator = new ParamAVLIterator<Object3d>();
 
     public Octree(int maxDepth, int size, int nbClasses)
     {
@@ -236,6 +238,21 @@ public class Octree implements VizArchitecture
 			Octant nodeHit = visibleLeaves.get(hit);
             selectedLeaves.add(nodeHit);
 		}
+    }
+
+    public void cleanDeletedObjects(int classID)
+    {
+        for(Octant o : leaves)
+		{
+            for(cleanObjectsIterator.setNode(o.getTree(classID));cleanObjectsIterator.hasNext();)
+            {
+                Object3d obj = cleanObjectsIterator.next();
+                if(!obj.isCacheMatching(cacheMarker))
+                {
+                    removeObject(classID, obj);
+                }
+            }
+        }
     }
 
     public void updateObjectsPosition(int classID)
@@ -410,6 +427,9 @@ public class Octree implements VizArchitecture
 
     }
 
+    public void setCacheMarker(int cacheMarker) {
+        this.cacheMarker = cacheMarker;
+    }
 
     private class OctreeIterator implements Iterator<Object3d>, ResetableIterator
     {

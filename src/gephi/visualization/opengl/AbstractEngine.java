@@ -97,6 +97,7 @@ public abstract class AbstractEngine implements VizArchitecture {
 
     public abstract void addObject(int classID, Object3d obj);
     public abstract void removeObject(int classID, Object3d obj);
+    public abstract void worldUpdated(int cacheMarker);
     public abstract void updateObjectsPosition();
     public abstract boolean updateWorld();
 	public abstract void refreshGraphLimits();

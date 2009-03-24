@@ -46,6 +46,9 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     protected MainReader reader;
     private AtomicBoolean update = new AtomicBoolean(true);
 
+    //Attributes
+    private int cacheMarker = 0;
+
     @Override
     public void initArchitecture() {
        this.engine = VizController.getInstance().getEngine();
@@ -53,8 +56,11 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     }
 
     public void updateWorld() {
+        cacheMarker++;
         updateNodes();
         updateEdges();
+        
+        engine.worldUpdated(cacheMarker);
     }
 
 
@@ -66,11 +72,22 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         for(;itr.hasNext();itr.next())
         {
             PreNode preNode = itr.next();
-            Node n = preNode.initNodeInstance();
-            n.size = 10f;
+            Node node=preNode.getNode();
+            if(node==null)
+            {
+                node = preNode.initNodeInstance();
+            }
 
-            Object3d obj = nodeInit.initObject(n);
-            engine.addObject(AbstractEngine.CLASS_NODE, obj);
+            Object3d obj = node.getObject3d();
+            if(obj==null)
+            {
+                //Object3d is null, ADD
+                obj = nodeInit.initObject(node);
+                engine.addObject(AbstractEngine.CLASS_NODE, obj);
+            }
+            obj.setCacheMarker(cacheMarker);
+
+            node.size = 10f;
         }
     }
 
@@ -80,7 +97,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     }
 
     public boolean requireUpdate() {
-        return update.getAndSet(false);
+        return update.getAndSet(true);
     }
     
 }

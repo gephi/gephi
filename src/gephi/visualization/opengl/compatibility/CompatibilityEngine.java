@@ -51,7 +51,7 @@ import javax.media.opengl.glu.GLUquadric;
  */
 public class CompatibilityEngine extends AbstractEngine
 {
-    public Octree octree;
+    Octree octree;
     private CompatibilityScheduler scheduler;
 
     //User config
@@ -89,6 +89,15 @@ public class CompatibilityEngine extends AbstractEngine
     }
 
     @Override
+    public void worldUpdated(int cacheMarker) {
+        octree.setCacheMarker(cacheMarker);
+        for (Object3dClass objClass : object3dClasses) {
+             if(objClass.isEnabled())
+                octree.cleanDeletedObjects(objClass.getClassId());
+         }
+    }
+
+    @Override
     public void beforeDisplay(GL gl, GLU glu) {
     }
 
@@ -112,7 +121,7 @@ public class CompatibilityEngine extends AbstractEngine
             gl.glBegin(GL.GL_TRIANGLES);
             for (Iterator<Object3d> itr = octree.getObjectIterator(CLASS_EDGE); itr.hasNext();) {
                 Object3d obj = itr.next();
-                Renderable renderable = obj.getObj();
+                //Renderable renderable = obj.getObj();
                 
                 if (obj.markTime != startTime) {
                     obj.display(gl, glu);
