@@ -30,7 +30,6 @@ import gephi.data.network.node.treelist.PreNodeTreeList;
 import gephi.data.network.node.treelist.SingleTreeIterator;
 import gephi.data.network.sight.SightManager;
 import gephi.data.network.sight.Sight;
-import gephi.data.network.space.SpaceCache;
 import gephi.data.network.tree.importer.CompleteTreeImporter;
 import gephi.data.network.tree.importer.RecursiveTreeImporter;
 import gephi.data.network.tree.iterators.AncestorAxisIterator;
@@ -291,7 +290,7 @@ public class Test1 {
 	
 	public void testSpaceCache(TreeStructure treeStructure)
 	{		
-		SpaceCache spaceCache = new SpaceCache(treeStructure, 0);
+		/*SpaceCache spaceCache = new SpaceCache(treeStructure, 0);
 		
 		Benchmarking bench = new Benchmarking(2, 1);
 		bench.startSubject(0);
@@ -324,7 +323,7 @@ public class Test1 {
 		}
 		bench.stopSubject(1);
 		
-		bench.showResults();
+		bench.showResults();*/
 	}
 	
 	public void testDescendentAxis(TreeStructure treeStructure)

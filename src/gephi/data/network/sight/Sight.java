@@ -33,10 +33,12 @@ public class Sight implements AVLItem
 {
     private final int number;
     private SimpleAVLTree children;
+    private SightCache sightCache;
 
     public Sight(int number)
     {
         this.number=number;
+        this.sightCache = new SightCache(this);
     }
 
     public int getNumber() {
@@ -64,5 +66,13 @@ public class Sight implements AVLItem
     public Iterator<AVLItem> getChildrenIterator()
     {
         return children.iterator();
+    }
+
+    public SightCache getSightCache() {
+        return sightCache;
+    }
+
+    public void setSightCache(SightCache sightCache) {
+        this.sightCache = sightCache;
     }
 }

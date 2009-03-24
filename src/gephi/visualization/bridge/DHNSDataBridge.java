@@ -46,7 +46,6 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     //Architecture
     protected AbstractEngine engine;
     protected MainReader reader;
-    private AtomicBoolean update = new AtomicBoolean(true);
     private VizConfig vizConfig;
 
     //Attributes
@@ -61,8 +60,11 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
     public void updateWorld() {
         cacheMarker++;
-        updateNodes();
-        updateEdges();
+        if(reader.requireNodeUpdate())
+            updateNodes();
+
+        if(reader.requireEdgeUpdate())
+            updateEdges();
         
         engine.worldUpdated(cacheMarker);
     }
@@ -128,7 +130,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     }
 
     public boolean requireUpdate() {
-        return update.getAndSet(true);
+        return reader.requireUpdate();
     }
     
 }

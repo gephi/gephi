@@ -87,6 +87,8 @@ public class Dhns {
 		//Clean current node
 		node.setEnabled(sight,false);
 		edgeProcessing.clearVirtualEdges(node, sight);
+
+        sight.getSightCache().reset();
 	}
 	
 	public void retract(PreNode parent, Sight sight)

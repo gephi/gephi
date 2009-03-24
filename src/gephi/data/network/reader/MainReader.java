@@ -36,23 +36,36 @@ import java.util.Iterator;
  */
 public class MainReader {
 
-    public Iterator<PreNode> getNodes()
+    private Sight currentSight;
+
+    public MainReader()
     {
         DhnsController controller = DhnsController.getInstance();
-        TreeStructure treeStructure = controller.getTreeStructure();
-        Sight mainSight = controller.getMainSight();
+        currentSight = controller.getMainSight();
+    }
 
-        SingleTreeIterator treeIterator = new SingleTreeIterator(treeStructure, mainSight);
-        return treeIterator;
+    public Iterator<PreNode> getNodes()
+    {
+        return currentSight.getSightCache().getNodeIterator();
     }
 
     public Iterator<VirtualEdge> getEdges()
     {
-        DhnsController controller = DhnsController.getInstance();
-        TreeStructure treeStructure = controller.getTreeStructure();
-        Sight mainSight = controller.getMainSight();
+        return currentSight.getSightCache().getEdgeIterator();
+    }
 
-        EdgesOutIterator edgesIterator = new EdgesOutIterator(treeStructure, mainSight);
-        return edgesIterator;
+    public boolean requireUpdate()
+    {
+        return requireNodeUpdate() || requireEdgeUpdate();
+    }
+
+    public boolean requireNodeUpdate()
+    {
+        return currentSight.getSightCache().requireNodeUpdate();
+    }
+
+    public boolean requireEdgeUpdate()
+    {
+        return currentSight.getSightCache().requireEdgeUpdate();
     }
 }
