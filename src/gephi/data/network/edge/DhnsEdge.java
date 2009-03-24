@@ -23,7 +23,7 @@ package gephi.data.network.edge;
 import gephi.data.network.edge.PreEdge.EdgeType;
 import gephi.data.network.node.PreNode;
 
-public interface DytsEdge 
+public interface DhnsEdge
 {
 	public PreNode getPreNodeFrom();
 	public void setPreNodeFrom(PreNode preNodeFrom);

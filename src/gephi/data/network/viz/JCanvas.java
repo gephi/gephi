@@ -1,7 +1,7 @@
 package gephi.data.network.viz;
 
 import gephi.data.network.TreeStructure;
-import gephi.data.network.edge.DytsEdge;
+import gephi.data.network.edge.DhnsEdge;
 import gephi.data.network.edge.PreEdge;
 import gephi.data.network.edge.VirtualEdge;
 import gephi.data.network.edge.PreEdge.EdgeType;
@@ -95,7 +95,7 @@ public class JCanvas extends Canvas
 			
 			g2d.setColor(Color.GRAY);
 			
-			for(DytsEdge e : p.getVirtualEdgesOUT(mainSight))
+			for(DhnsEdge e : p.getVirtualEdgesOUT(mainSight))
 			{
 				VirtualEdge edge = (VirtualEdge)e;
 				PreNode dest = edge.getPreNodeTo();

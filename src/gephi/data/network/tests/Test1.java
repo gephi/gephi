@@ -16,7 +16,7 @@ import java.util.TreeSet;
 import javax.swing.AbstractAction;
 
 import gephi.data.network.Benchmarking;
-import gephi.data.network.Dyts;
+import gephi.data.network.Dhns;
 import gephi.data.network.TreeStructure;
 import gephi.data.network.avl.BackwardEdgeTree;
 import gephi.data.network.avl.simple.SimpleAVLTree;
@@ -42,7 +42,7 @@ import gephi.data.network.viz.ControlPanel.ActionType;
 
 public class Test1 {
 
-	private Dyts dyts;
+	private Dhns dyts;
     private SightManager sightManager = new SightManager();
     private Sight sightZero;
 	
@@ -50,7 +50,7 @@ public class Test1 {
 	{
         sightZero = sightManager.createSight();
 		
-		dyts = new Dyts();
+		dyts = new Dhns();
 		
 		TreeStructure treeStructure = dyts.getTreeStructure();
 		CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure,sightZero);

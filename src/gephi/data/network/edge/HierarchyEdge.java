@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import gephi.data.network.edge.PreEdge.EdgeType;
 import gephi.data.network.node.PreNode;
 
-public class HierarchyEdge implements DytsEdge 
+public class HierarchyEdge implements DhnsEdge
 {
 	protected PreNode preNodeFrom;
 	protected PreNode preNodeTo;

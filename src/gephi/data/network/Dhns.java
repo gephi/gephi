@@ -27,8 +27,8 @@ import gephi.data.network.avl.DytsEdgeTree;
 import gephi.data.network.avl.param.ParamAVLIterator;
 import gephi.data.network.avl.param.ParamAVLTree;
 import gephi.data.network.avl.typed.PreNodeAVLTree;
-import gephi.data.network.config.DDNSConfig;
-import gephi.data.network.edge.DytsEdge;
+import gephi.data.network.config.DHNSConfig;
+import gephi.data.network.edge.DhnsEdge;
 import gephi.data.network.edge.EdgeProcessing;
 import gephi.data.network.edge.PreEdge;
 import gephi.data.network.edge.VirtualEdge;
@@ -37,15 +37,15 @@ import gephi.data.network.node.PreNode;
 import gephi.data.network.sight.Sight;
 import gephi.data.network.tree.iterators.DescendantAxisIterator;
 
-public class Dyts {
+public class Dhns {
 
-	private DDNSConfig config;
+	private DHNSConfig config;
 	private TreeStructure treeStructure;
 	private EdgeProcessing edgeProcessing;
 	
-	public Dyts()
+	public Dhns()
 	{
-		config = new DDNSConfig();
+		config = new DHNSConfig();
 		treeStructure = new TreeStructure();
 		edgeProcessing = new EdgeProcessing(treeStructure);
 	}

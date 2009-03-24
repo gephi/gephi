@@ -103,7 +103,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             edge.setCardinal((float)(Math.random()*1f)+1);
             edgeList.add(edge);
             engine.addObject(AbstractEngine.CLASS_EDGE, edgeInit.initObject(edge));
-            //engine.addObject(AbstractEngine.CLASS_ARROW, arrowInit.initObject(edge));
+            engine.addObject(AbstractEngine.CLASS_ARROW, arrowInit.initObject(edge));
         }
     }
 

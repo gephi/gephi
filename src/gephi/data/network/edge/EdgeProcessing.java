@@ -379,7 +379,7 @@ public class EdgeProcessing {
 	{
 		if(node.getVirtualEdgesIN(sight).getCount()> 0)
 		{
-			for(DytsEdge e : node.getVirtualEdgesIN(sight))
+			for(DhnsEdge e : node.getVirtualEdgesIN(sight))
 			{
 				PreNode neighbour = e.getPreNodeFrom();
 				if(neighbour.pre < preLimit)
@@ -389,7 +389,7 @@ public class EdgeProcessing {
 		
 		if(node.getVirtualEdgesOUT(sight).getCount()> 0)
 		{
-			for(DytsEdge e : node.getVirtualEdgesOUT(sight))
+			for(DhnsEdge e : node.getVirtualEdgesOUT(sight))
 			{
 				PreNode neighbour = e.getPreNodeTo();
 				if(neighbour.pre < preLimit)
@@ -402,7 +402,7 @@ public class EdgeProcessing {
 	{
 		if(node.getVirtualEdgesIN(sight).getCount()> 0)
 		{
-			for(DytsEdge n : node.getVirtualEdgesIN(sight))
+			for(DhnsEdge n : node.getVirtualEdgesIN(sight))
 			{
 				n.getPreNodeFrom().getVirtualEdgesOUT(sight).remove(n);
 				n.getPreNodeFrom().reinitTrace();
@@ -413,7 +413,7 @@ public class EdgeProcessing {
 		
 		if(node.getVirtualEdgesOUT(sight).getCount()> 0)
 		{
-			for(DytsEdge n : node.getVirtualEdgesOUT(sight))
+			for(DhnsEdge n : node.getVirtualEdgesOUT(sight))
 			{
 				n.getPreNodeTo().getVirtualEdgesIN(sight).remove(n);
 				n.getPreNodeTo().reinitTrace();

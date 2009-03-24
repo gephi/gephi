@@ -22,7 +22,7 @@ package gephi.data.network.avl;
 
 import gephi.data.network.avl.param.AVLItemAccessor;
 import gephi.data.network.avl.param.ParamAVLTree;
-import gephi.data.network.edge.DytsEdge;
+import gephi.data.network.edge.DhnsEdge;
 import gephi.data.network.edge.VirtualEdge;
 import gephi.data.network.node.PreNode;
 import gephi.data.network.sight.Sight;
@@ -38,7 +38,7 @@ import gephi.data.network.sight.Sight;
  * 
  * @author Mathieu Bastian
  */
-public class DytsEdgeTree extends ParamAVLTree<DytsEdge> {
+public class DytsEdgeTree extends ParamAVLTree<DhnsEdge> {
 
 	private PreNode owner;
     private Sight sight;
@@ -51,10 +51,10 @@ public class DytsEdgeTree extends ParamAVLTree<DytsEdge> {
 		setAccessor(new DytsEdgeAVLItemAccessor());
 	}
 	
-	private class DytsEdgeAVLItemAccessor implements AVLItemAccessor<DytsEdge>
+	private class DytsEdgeAVLItemAccessor implements AVLItemAccessor<DhnsEdge>
 	{
 		@Override
-		public int getNumber(DytsEdge item) {
+		public int getNumber(DhnsEdge item) {
 			if(item.getPreNodeFrom()==owner)
 				return item.getPreNodeTo().getNumber();
 			else

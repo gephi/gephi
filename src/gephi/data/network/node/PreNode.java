@@ -9,7 +9,7 @@ import gephi.data.network.avl.simple.AVLItem;
 import gephi.data.network.avl.simple.SimpleAVLTree;
 import gephi.data.network.avl.typed.IntegerAVLTree;
 import gephi.data.network.avl.typed.SightAVLTree;
-import gephi.data.network.edge.DytsEdge;
+import gephi.data.network.edge.DhnsEdge;
 import gephi.data.network.edge.EdgeProcessing;
 import gephi.data.network.edge.PreEdge;
 import gephi.data.network.edge.VirtualEdge;
@@ -157,7 +157,7 @@ public class PreNode implements AVLItem
         sightTree.setAllEnabled(enabled);
     }
 	
-	public DytsEdge getVirtualEdge(PreEdge physicalEdge, int forwardPre, Sight sight)
+	public DhnsEdge getVirtualEdge(PreEdge physicalEdge, int forwardPre, Sight sight)
 	{
 		if(physicalEdge.edgeType==EdgeType.IN)
             return virtualEdgesTreesIN.getItem(sight.getNumber()).getItem(forwardPre);

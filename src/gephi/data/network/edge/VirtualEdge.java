@@ -27,7 +27,7 @@ import gephi.data.network.avl.simple.SimpleAVLTree;
 import gephi.data.network.edge.PreEdge.EdgeType;
 import gephi.data.network.node.PreNode;
 
-public class VirtualEdge implements DytsEdge {
+public class VirtualEdge implements DhnsEdge {
 
 	protected PreNode preNodeFrom;
 	protected PreNode preNodeTo;

@@ -1,11 +1,11 @@
 package gephi.data.network.config;
 
-public class DDNSConfig 
+public class DHNSConfig
 {
 	public enum ViewType {SINGLE, HIERARCHY};
 	private ViewType viewType;
 
-	public DDNSConfig()
+	public DHNSConfig()
 	{
 		viewType = ViewType.SINGLE;
 	}
