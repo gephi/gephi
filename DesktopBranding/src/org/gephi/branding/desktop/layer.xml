@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<filesystem>
+    <attr name="Menu\File\Separator2.instance\position" intvalue="100"/>
+    <attr name="Menu\File\org-netbeans-core-actions-SystemExit.instance\position" intvalue="400"/>
+    <folder name="Menu">
+        <folder name="Edit">
+        </folder>
+        <folder name="File">
+            <file name="Separator2_1.instance" url="Separator2_1.instance">
+                <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                <attr name="position" intvalue="300"/>
+            </file>
+            <file name="Separator3.instance_hidden"/>
+            <file name="Separator4.instance_hidden"/>
+            <file name="org-openide-actions-PageSetupAction.instance_hidden"/>
+            <file name="org-openide-actions-PrintAction.instance_hidden"/>
+            <file name="org-openide-actions-SaveAction.instance_hidden"/>
+            <file name="org-openide-actions-SaveAllAction.instance_hidden"/>
+            <file name="org-openide-actions-SaveAsAction.shadow_hidden"/>
+            <file name="org-gephi-branding-desktop-actions-NewProject.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.actions.Bundle"/>
+                <attr name="delegate" newvalue="org.gephi.branding.desktop.actions.NewProject"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.actions.Bundle#CTL_NewProject"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" stringvalue="false"/>
+                <attr name="position" intvalue="200"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-SaveProject.instance">
+            </file>
+        </folder>
+        <file name="GoTo_hidden"/>
+        <folder name="View">
+            <file name="Separator1.instance_hidden"/>
+            <file name="org-netbeans-core-actions-HTMLViewAction.instance_hidden"/>
+            <file name="org-netbeans-core-actions-LogAction.shadow_hidden"/>
+        </folder>
+        <folder name="Window">
+            <file name="CloneDocumentAction.shadow_hidden"/>
+            <file name="CloseAllButThisAction.shadow_hidden"/>
+            <file name="CloseAllDocumentsAction.shadow_hidden"/>
+            <file name="DocumentsAction.shadow_hidden"/>
+            <file name="ProgressListAction.shadow_hidden"/>
+            <file name="Separator5.instance_hidden"/>
+            <file name="SwitchToRecentDocumentAction.shadow_hidden"/>
+            <file name="org-netbeans-core-actions-GlobalPropertiesAction.shadow_hidden"/>
+        </folder>
+    </folder>
+</filesystem>
