@@ -84,6 +84,7 @@ public class Projects implements Lookup.Provider, Serializable {
 
     public void setCurrentProject(Project currentProject) {
         this.currentProject = currentProject;
-        currentProject.setStatus(Status.OPEN);
+        if(currentProject!=null)
+            currentProject.setStatus(Status.OPEN);
     }
 }

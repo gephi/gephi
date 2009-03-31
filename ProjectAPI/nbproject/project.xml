@@ -7,11 +7,27 @@
             <suite-component/>
             <module-dependencies>
                 <dependency>
+                    <code-name-base>org.openide.filesystems</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>7.13.1.1.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.openide.loaders</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>7.2.3</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.nodes</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>7.7.3.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -25,6 +41,7 @@
             </module-dependencies>
             <public-packages>
                 <package>org.gephi.project.api</package>
+                <package>org.gephi.project.filetype</package>
             </public-packages>
         </data>
     </configuration>

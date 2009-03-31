@@ -9,7 +9,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.gephi.project.api.Project;
 import org.gephi.project.filetype.io.GephiReader;
-import org.gephi.project.filetype.io.GephiWriter;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataNode;
@@ -21,7 +20,6 @@ import org.openide.nodes.Children;
 import org.openide.util.Lookup;
 import org.w3c.dom.Document;
 
-
 public class GephiDataObject extends MultiDataObject {
 
     public GephiDataObject(FileObject pf, MultiFileLoader loader) throws DataObjectExistsException, IOException {
@@ -31,21 +29,20 @@ public class GephiDataObject extends MultiDataObject {
 
     public Project load()
     {
-        FileObject fileObject = getPrimaryFile();
-        if(FileUtil.isArchiveFile(fileObject))
-        {
-            fileObject = FileUtil.getArchiveRoot(fileObject);
-            fileObject = fileObject.getChildren()[0];
-        }
-
         try
         {
+            FileObject fileObject = getPrimaryFile();
+            if(FileUtil.isArchiveFile(fileObject))
+            {
+                fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
+            }
+
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(fileObject.getInputStream());
+
             GephiReader gephiReader = new GephiReader();
             return gephiReader.readAll(doc.getDocumentElement());
-           
         }
         catch(Exception e)
         {
@@ -54,17 +51,9 @@ public class GephiDataObject extends MultiDataObject {
         return null;
     }
 
-    public void save(Project project)
+    public void save()
     {
-        try
-        {
-            GephiWriter gephiWriter = new GephiWriter();
-            gephiWriter.writeAll(project);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
+
     }
 
     @Override
@@ -76,6 +65,4 @@ public class GephiDataObject extends MultiDataObject {
     public Lookup getLookup() {
         return getCookieSet().getLookup();
     }
-
-
 }

@@ -55,7 +55,8 @@ class ProjectChildren extends Children.Keys<Workspace> implements LookupListener
 
     @Override
     protected void addNotify() {
-        setKeys(project.getWorkspaces());
+        if(project.getWorkspaces()!=null)
+            setKeys(project.getWorkspaces());
     }
 
     public void resultChanged(LookupEvent lookupEvent) {

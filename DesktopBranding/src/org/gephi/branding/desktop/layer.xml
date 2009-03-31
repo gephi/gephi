@@ -41,8 +41,8 @@
                 <attr name="noIconInMenu" stringvalue="false"/>
                 <attr name="position" intvalue="200"/>
             </file>
-            <file name="org-gephi-branding-desktop-actions-SaveProject.instance">
-            </file>
+            <file name="org-gephi-branding-desktop-actions-SaveProject.instance" />
+            <file name="org-gephi-branding-desktop-actions-SaveAsProject.instance" />
         </folder>
         <file name="GoTo_hidden"/>
         <folder name="View">

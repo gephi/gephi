@@ -27,6 +27,7 @@ import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.project.api.Workspace;
+
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -44,6 +45,7 @@ public class Project implements Lookup.Provider, Serializable {
     //Atributes
     private String name;
     private Status status = Status.CLOSED;
+    //private GephiDataObject dataObject;
 
     //Workspaces
     private transient List<Workspace> workspaces = new ArrayList<Workspace>();
@@ -128,5 +130,19 @@ public class Project implements Lookup.Provider, Serializable {
         {
             listener.stateChanged(event);
         }
+    }
+
+    /*public GephiDataObject getDataObject() {
+        return dataObject;
+    }
+
+    public void setDataObject(GephiDataObject dataObject) {
+        this.dataObject = dataObject;
+        fireChangeEvent();
+    }*/
+
+    public boolean hasFile()
+    {
+        return true;
     }
 }

@@ -22,7 +22,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
+import org.gephi.project.api.Project;
+import org.gephi.project.api.ProjectController;
 import org.openide.util.HelpCtx;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.SystemAction;
 
@@ -44,8 +47,22 @@ public class SaveProject extends SystemAction {
 
     @Override
     public void actionPerformed(ActionEvent ev) {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        Project project = pc.getCurrentProject();
+        if(project.hasFile())
+        {
+            save();
+        }
+        else
+        {
+            SaveAsProject action = new SaveAsProject();
+            action.actionPerformed(null);
+        }
 
     }
 
-
+    private void save()
+    {
+        
+    }
 }

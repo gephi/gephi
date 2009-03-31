@@ -1,0 +1,105 @@
+/*
+Copyright 2008 WebAtlas
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.gephi.branding.desktop.actions;
+
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import org.gephi.ui.utils.DialogFileFilter;
+import org.openide.util.HelpCtx;
+import org.openide.util.NbBundle;
+import org.openide.util.actions.SystemAction;
+
+/**
+ *
+ * @author Mathieu
+ */
+public class SaveAsProject extends SystemAction {
+
+    @Override
+    public String getName() {
+        return NbBundle.getMessage(SaveProject.class, "CTL_SaveAsProject");
+    }
+
+    @Override
+    public HelpCtx getHelpCtx() {
+        return null;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent ev) {
+
+        try
+        {
+            saveAs();
+        }
+        catch(IOException e)
+        {
+            Logger.getLogger(SaveAsProject.class.getName()).throwing(getClass().getName(), "saveAs", e);
+        }
+
+    }
+
+    private void saveAs() throws IOException
+    {
+        DialogFileFilter filter = new DialogFileFilter(NbBundle.getMessage(SaveAsProject.class, "SaveAsProject_filechooser_filter"));
+        filter.addExtension(".gephi");
+
+        final JFileChooser chooser = new JFileChooser();
+        chooser.addChoosableFileFilter(filter);
+
+        int returnFile = chooser.showSaveDialog(null);
+
+        if (returnFile == JFileChooser.APPROVE_OPTION) {
+
+            File file = chooser.getSelectedFile();
+
+
+            if (!file.getPath().endsWith(".gephi")) {
+                file = new File(file.getPath() + ".gephi");
+            }
+
+            if (!file.exists()) {
+                if (!file.createNewFile()) {
+                    String failMsg = NbBundle.getMessage(
+                            SaveAsProject.class,
+                            "SaveAsProject_SaveFailed", new Object[]{file.getPath()});
+                    JOptionPane.showMessageDialog(null, failMsg);
+                    return;
+                }
+
+            } else {
+                String overwriteMsg = NbBundle.getMessage(
+                        SaveAsProject.class,
+                        "SaveAsProject_Overwrite", new Object[]{file.getPath()});
+
+                if (JOptionPane.showConfirmDialog(null, overwriteMsg) != JOptionPane.OK_OPTION) {
+                    return;
+                }
+            }
+
+
+        }
+    }
+}

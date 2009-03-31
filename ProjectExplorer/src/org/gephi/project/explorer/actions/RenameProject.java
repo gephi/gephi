@@ -45,7 +45,7 @@ public class RenameProject extends AbstractAction {
 
     public void actionPerformed(ActionEvent e) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-
+        
         String s = (String) JOptionPane.showInputDialog(
                 null,
                 "",

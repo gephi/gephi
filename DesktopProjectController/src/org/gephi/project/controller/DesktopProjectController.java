@@ -18,9 +18,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.project.controller;
 
+import org.gephi.branding.desktop.actions.SaveAsProject;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Projects;
@@ -29,7 +29,10 @@ import org.openide.util.actions.SystemAction;
 import org.gephi.branding.desktop.actions.SaveProject;
 import org.gephi.project.api.Project.Status;
 import org.gephi.project.filetype.GephiDataObject;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.loaders.DataObject;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -39,35 +42,54 @@ public class DesktopProjectController implements ProjectController {
 
     private Projects projects = new Projects();
 
-    public DesktopProjectController()
-    {
+    public DesktopProjectController() {
         //Actions
         disableAction(SaveProject.class);
+        disableAction(SaveAsProject.class);
     }
 
     public void newProject() {
-       projects.addProject(new Project());
+        closeCurrentProject();
+        Project project = new Project();
+        projects.addProject(project);
+        openProject(project);
     }
 
-    public void loadProject(DataObject dataObject)
+    public void loadProject(DataObject dataObject) {
+        GephiDataObject gephiDataObject = (GephiDataObject) dataObject;
+        Project project = gephiDataObject.load();
+        if (project != null) {
+            projects.addProject(project);
+            enableAction(SaveAsProject.class);
+        }
+    }
+
+    public void closeCurrentProject()
     {
-         GephiDataObject gephiDataObject = (GephiDataObject)dataObject;
-         Project project = gephiDataObject.load();
-         if(project!=null)
-         {
-             projects.addProject(project);
-         }
+        if(projects.getCurrentProject()!=null)
+        {
+            closeProject(projects.getCurrentProject());
+        }
     }
 
     public void closeProject(Project project) {
+
+        NotifyDescriptor d = new NotifyDescriptor.Confirmation(
+                NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_message"),
+                NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_title"),
+                NotifyDescriptor.YES_NO_OPTION);
+        if (DialogDisplayer.getDefault().notify(d) == NotifyDescriptor.YES_OPTION) {
+            // really do it...
+        }
+
         project.setStatus(Status.CLOSED);
         disableAction(SaveProject.class);
+        disableAction(SaveAsProject.class);
+        projects.setCurrentProject(null);
     }
 
-    public void removeProject(Project project)
-    {
-        if(projects.getCurrentProject()==project)
-        {
+    public void removeProject(Project project) {
+        if (projects.getCurrentProject() == project) {
             closeProject(project);
         }
         projects.removeProject(project);
@@ -77,8 +99,7 @@ public class DesktopProjectController implements ProjectController {
         return projects;
     }
 
-    public void setProjects(Projects projects)
-    {
+    public void setProjects(Projects projects) {
         this.projects = projects;
     }
 
@@ -89,35 +110,37 @@ public class DesktopProjectController implements ProjectController {
 
     public void deleteWorkspace(Workspace workspace) {
         workspace.getProject().removeWorkspace(workspace);
+        enableAction(SaveProject.class);
     }
 
     public void openProject(Project project) {
-        if(projects.getCurrentProject()!=null)
-        {
+        if (projects.getCurrentProject() != null) {
             closeProject(projects.getCurrentProject());
         }
         projects.setCurrentProject(project);
+        enableAction(SaveAsProject.class);
     }
 
     public Project getCurrentProject() {
         return projects.getCurrentProject();
     }
 
-    public void enableAction(Class clazz)
-    {
-        SystemAction action = SystemAction.get(clazz);
-        if(action!=null)
-            action.setEnabled(true);
-    }
-
-    public void disableAction(Class clazz)
-    {
-        SystemAction action = SystemAction.get(clazz);
-        if(action!=null)
-            action.setEnabled(false);
-    }
-
     public void renameProject(Project project, String name) {
         project.setName(name);
+        enableAction(SaveProject.class);
+    }
+
+    public void enableAction(Class clazz) {
+        SystemAction action = SystemAction.get(clazz);
+        if (action != null) {
+            action.setEnabled(true);
+        }
+    }
+
+    public void disableAction(Class clazz) {
+        SystemAction action = SystemAction.get(clazz);
+        if (action != null) {
+            action.setEnabled(false);
+        }
     }
 }

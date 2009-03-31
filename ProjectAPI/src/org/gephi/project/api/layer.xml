@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
 <filesystem>
-    <folder name="Actions">
-        <folder name="Edit">
-            <file name="org-gephi-project-filetype-GephiOpenAction.instance"/>
-        </folder>
-    </folder>
     <folder name="Loaders">
         <folder name="application">
             <folder name="gephi">
                 <folder name="Actions">
-                    <file name="org-gephi-project-filetype-GephiOpenAction.shadow">
-                        <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-project-filetype-GephiOpenAction.instance"/>
-                        <attr name="position" intvalue="0"/>
-                    </file>
                     <file name="org-openide-actions-CopyAction.instance">
                         <attr name="position" intvalue="300"/>
                     </file>
@@ -64,7 +55,6 @@
                         <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/gephi/project/filetype/icon16.png"/>
                         <attr name="dataObjectClass" stringvalue="org.gephi.project.filetype.GephiDataObject"/>
                         <attr name="instanceCreate" methodvalue="org.openide.loaders.DataLoaderPool.factory"/>
-                        <!--<attr name="instanceCreate" methodvalue="org.gephi.project.filetype.GephiDataLoader"/>-->
                         <attr name="mimeType" stringvalue="application/gephi"/>
                     </file>
                 </folder>
@@ -74,14 +64,14 @@
     <folder name="Services">
         <folder name="MIMEResolver">
             <file name="GephiResolver.xml" url="GephiResolver.xml">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.project.filetype.Bundle"/>
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.project.api.Bundle"/>
             </file>
         </folder>
     </folder>
     <folder name="Templates">
         <folder name="Other">
             <file name="GephiTemplate.gephi" url="GephiTemplate.gephi">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.project.filetype.Bundle"/>
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.project.api.Bundle"/>
                 <attr name="template" boolvalue="true"/>
             </file>
         </folder>
