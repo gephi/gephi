@@ -28,6 +28,8 @@ import org.gephi.project.api.Workspace;
 import org.openide.util.actions.SystemAction;
 import org.gephi.branding.desktop.actions.SaveProject;
 import org.gephi.project.api.Project.Status;
+import org.gephi.project.filetype.GephiDataObject;
+import org.openide.loaders.DataObject;
 
 /**
  *
@@ -45,6 +47,16 @@ public class DesktopProjectController implements ProjectController {
 
     public void newProject() {
        projects.addProject(new Project());
+    }
+
+    public void loadProject(DataObject dataObject)
+    {
+         GephiDataObject gephiDataObject = (GephiDataObject)dataObject;
+         Project project = gephiDataObject.load();
+         if(project!=null)
+         {
+             projects.addProject(project);
+         }
     }
 
     public void closeProject(Project project) {

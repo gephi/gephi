@@ -46,6 +46,8 @@ public class Projects implements Lookup.Provider, Serializable {
 
     public Projects()
     {
+        ic = new InstanceContent();
+        lookup = new AbstractLookup(ic);
     }
 
     public void addProject(Project project) {

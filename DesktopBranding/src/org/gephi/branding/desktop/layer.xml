@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
 <filesystem>
     <attr name="Menu\File\Separator2.instance\position" intvalue="100"/>
     <attr name="Menu\File\org-netbeans-core-actions-SystemExit.instance\position" intvalue="400"/>
+    <folder name="Actions">
+        <folder name="Edit">
+            <file name="org-gephi-branding-desktop-actions-OpenProject.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
+                <attr name="delegate" newvalue="org.gephi.branding.desktop.actions.OpenProject"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.actions.Bundle#CTL_OpenProject"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" stringvalue="false"/>
+            </file>
+        </folder>
+    </folder>
     <folder name="Menu">
         <folder name="Edit">
         </folder>
@@ -13,6 +24,10 @@
             </file>
             <file name="Separator3.instance_hidden"/>
             <file name="Separator4.instance_hidden"/>
+            <file name="org-gephi-branding-desktop-actions-OpenProject.shadow">
+                <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-OpenProject.instance"/>
+                <attr name="position" intvalue="150"/>
+            </file>
             <file name="org-openide-actions-PageSetupAction.instance_hidden"/>
             <file name="org-openide-actions-PrintAction.instance_hidden"/>
             <file name="org-openide-actions-SaveAction.instance_hidden"/>

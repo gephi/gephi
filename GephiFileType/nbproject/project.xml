@@ -3,7 +3,7 @@
     <type>org.netbeans.modules.apisupport.project</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
-            <code-name-base>org.gephi.branding.desktop</code-name-base>
+            <code-name-base>org.gephi.project.filetype</code-name-base>
             <suite-component/>
             <module-dependencies>
                 <dependency>
@@ -48,7 +48,7 @@
                 </dependency>
             </module-dependencies>
             <public-packages>
-                <package>org.gephi.branding.desktop.actions</package>
+                <package>org.gephi.project.filetype</package>
             </public-packages>
         </data>
     </configuration>

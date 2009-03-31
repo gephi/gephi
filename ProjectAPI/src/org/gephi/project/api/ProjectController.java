@@ -6,6 +6,7 @@
 package org.gephi.project.api;
 
 import org.gephi.project.api.Workspace;
+import org.openide.loaders.DataObject;
 
 /**
  *
@@ -14,6 +15,7 @@ import org.gephi.project.api.Workspace;
 public interface ProjectController {
 
     public void newProject();
+    public void loadProject(DataObject dataObject);
     public void closeProject(Project project);
     public void removeProject(Project project);
     public Projects getProjects();
