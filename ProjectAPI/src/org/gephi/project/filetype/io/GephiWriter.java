@@ -26,6 +26,7 @@ import java.util.Calendar;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.gephi.project.api.Project;
+import org.gephi.project.api.Workspace;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -55,6 +56,9 @@ public class GephiWriter {
         doc = createDocument();
 
 		Element root = writeCore();
+        Element projectE = writeProject(project);
+
+        root.appendChild(projectE);
 		doc.appendChild(root);
 
 		return doc;
@@ -63,7 +67,7 @@ public class GephiWriter {
     public Element writeCore() throws Exception
 	{
 		Element root = doc.createElement("gephiFile");
-		root.setAttribute("version", "1.0");
+		root.setAttribute("version", "0.7");
 		root.appendChild(doc.createComment("File saved from Gephi 0.7"));
 
 		//Core
@@ -92,4 +96,29 @@ public class GephiWriter {
 
 		return root;
 	}
+
+    public Element writeProject(Project project) throws Exception
+    {
+        Element projectE = doc.createElement("project");
+		projectE.setAttribute("name", project.getName());
+
+        //Workspaces
+        Element workspacesE = doc.createElement("workspaces");
+        for(Workspace ws : project.getWorkspaces())
+        {
+            workspacesE.appendChild(writeWorkspace(ws));
+        }
+        projectE.appendChild(workspacesE);
+
+        return projectE;
+    }
+
+    public Element writeWorkspace(Workspace workspace) throws Exception
+    {
+        Element workspaceE = doc.createElement("workspace");
+        workspaceE.setAttribute("name", workspace.getName());
+        workspaceE.setAttribute("status", workspace.getStatus().toString());
+
+        return workspaceE;
+    }
 }

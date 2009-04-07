@@ -82,7 +82,7 @@ public class DesktopProjectController implements ProjectController {
             // really do it...
         }
 
-        project.setStatus(Status.CLOSED);
+        project.setClosedStatus();
         disableAction(SaveProject.class);
         disableAction(SaveAsProject.class);
         projects.setCurrentProject(null);
@@ -101,6 +101,7 @@ public class DesktopProjectController implements ProjectController {
 
     public void setProjects(Projects projects) {
         this.projects = projects;
+        projects.refreshProjects();
     }
 
     public Workspace newWorkspace(Project project) {
@@ -133,6 +134,7 @@ public class DesktopProjectController implements ProjectController {
             closeProject(projects.getCurrentProject());
         }
         projects.setCurrentProject(project);
+        project.setOpenStatus();
         enableAction(SaveAsProject.class);
     }
 
@@ -173,6 +175,7 @@ public class DesktopProjectController implements ProjectController {
 
     public void disableAction(Class clazz) {
         SystemAction action = SystemAction.get(clazz);
+        
         if (action != null) {
             action.setEnabled(false);
         }

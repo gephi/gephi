@@ -26,15 +26,19 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 import org.gephi.project.api.Project;
+import org.gephi.project.api.Workspace;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  *
  * @author Mathieu
  */
 public class GephiReader {
-    
-    public Project readAll(Element root) throws Exception
+
+    private Project project;
+
+    public Project readAll(Element root, Project project) throws Exception
     {
         //XPath
 		XPathFactory factory = XPathFactory.newInstance();
@@ -44,16 +48,49 @@ public class GephiReader {
 		readCore(xpath, root);
 
 		//Project
-		XPathExpression exp = xpath.compile("./project[@version=\"1.0\"]");
-
-        return new Project();
+        this.project = project;
+		XPathExpression exp = xpath.compile("./project");
+        Element projectE = (Element)exp.evaluate(root,XPathConstants.NODE);
+        readProject(xpath, projectE);
+        return project;
     }
 
     public void readCore(XPath xpath, Element root) throws Exception
 	{
-		XPathExpression exp = xpath.compile("./core[@version=\"1.0\"]");
+		XPathExpression exp = xpath.compile("./core");
 		Element coreE = (Element)exp.evaluate(root,XPathConstants.NODE);
         int max = Integer.parseInt(coreE.getAttribute("tasks"));
         System.out.println(max);
 	}
+
+    public void readProject(XPath xpath, Element projectE) throws Exception
+    {
+        project.setName(projectE.getAttribute("name"));
+
+		//WorkSpaces
+		XPathExpression exp = xpath.compile("./workspaces/workspace");
+		NodeList workSpaceList = (NodeList)exp.evaluate(projectE,XPathConstants.NODESET);
+
+		for(int i=0; i< workSpaceList.getLength(); i++)
+		{
+			Element workspaceE = (Element)workSpaceList.item(i);
+            Workspace workspace = readWorkSpace(xpath, workspaceE);
+		}
+    }
+
+    public Workspace readWorkSpace(XPath xpath, Element workspaceE) throws Exception
+	{
+		Workspace workspace = project.newWorkspace();
+
+		//Name
+		workspace.setName(workspaceE.getAttribute("name"));
+        workspace.setStatus(Workspace.Status.valueOf(workspaceE.getAttribute("status")));
+
+        //Current workspace
+        if(workspace.isOpen())
+            project.setCurrentWorkspace(workspace);
+
+        return workspace;
+    }
+
 }

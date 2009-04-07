@@ -66,6 +66,11 @@ public class Workspace {
         return name;
     }
 
+    public Status getStatus()
+    {
+        return status;
+    }
+
     public void setName(String name)
     {
         this.name = name;

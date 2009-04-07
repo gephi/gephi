@@ -28,6 +28,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.project.api.Workspace;
 
+import org.gephi.project.filetype.GephiDataObject;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -39,16 +40,16 @@ import org.openide.util.lookup.InstanceContent;
  */
 public class Project implements Lookup.Provider, Serializable {
 
-    public enum Status { OPEN, CLOSED, INVALID};
+    public enum Status {NEW, OPEN, CLOSED, INVALID};
     private static int count=0;
 
     //Atributes
     private String name;
     private Status status = Status.CLOSED;
-    //private GephiDataObject dataObject;
+    private GephiDataObject dataObject;
 
     //Workspaces
-    private transient List<Workspace> workspaces = new ArrayList<Workspace>();
+    private transient List<Workspace> workspaces;
     private transient Workspace currentWorkspace;
    
     //Lookup
@@ -59,6 +60,9 @@ public class Project implements Lookup.Provider, Serializable {
     public Project()
     {
         name = "Project "+(count++);
+        instanceContent = new InstanceContent();
+        lookup = new AbstractLookup(instanceContent);
+        workspaces = new ArrayList<Workspace>();
     }
 
     public List<Workspace> getWorkspaces() {
@@ -67,6 +71,8 @@ public class Project implements Lookup.Provider, Serializable {
 
     public Workspace newWorkspace()
     {
+        if(workspaces==null)
+            workspaces = new ArrayList<Workspace>();
         Workspace workspace = new Workspace();
         workspace.setProject(this);
         workspaces.add(workspace);
@@ -105,18 +111,31 @@ public class Project implements Lookup.Provider, Serializable {
         return status==Status.OPEN;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setOpenStatus()
+    {
+        this.status = Status.OPEN;
+        fireChangeEvent();
+    }
+
+    public void setClosedStatus()
+    {
+        this.status = Status.CLOSED;
+        fireChangeEvent();
+    }
+
+    public void setNewStatus()
+    {
+        this.status = Status.NEW;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
         fireChangeEvent();
     }
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-        fireChangeEvent();
     }
 
     public void addChangeListener(ChangeListener listener)
@@ -141,14 +160,14 @@ public class Project implements Lookup.Provider, Serializable {
         }
     }
 
-    /*public GephiDataObject getDataObject() {
+    public GephiDataObject getDataObject() {
         return dataObject;
     }
 
     public void setDataObject(GephiDataObject dataObject) {
         this.dataObject = dataObject;
         fireChangeEvent();
-    }*/
+    }
 
     public boolean hasFile()
     {

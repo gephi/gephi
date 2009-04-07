@@ -50,6 +50,14 @@ public class Projects implements Lookup.Provider, Serializable {
         lookup = new AbstractLookup(ic);
     }
 
+    public void refreshProjects()
+    {
+        for(Project project : projects)
+        {
+            
+        }
+    }
+
     public void addProject(Project project) {
         projects.add(project);
         ic.add(project);
@@ -84,7 +92,5 @@ public class Projects implements Lookup.Provider, Serializable {
 
     public void setCurrentProject(Project currentProject) {
         this.currentProject = currentProject;
-        if(currentProject!=null)
-            currentProject.setStatus(Status.OPEN);
     }
 }

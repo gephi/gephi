@@ -3,6 +3,8 @@
 <filesystem>
     <attr name="Menu\File\Separator2.instance\position" intvalue="100"/>
     <attr name="Menu\File\org-netbeans-core-actions-SystemExit.instance\position" intvalue="800"/>
+    <attr name="Menu\Window\ProjectAction.shadow\position" intvalue="250"/>
+    <attr name="Menu\Window\org-netbeans-core-windows-actions-ResetWindowsAction.shadow\position" intvalue="2750"/>
     <folder name="Actions">
     </folder>
     <folder name="Menu">
@@ -59,6 +61,10 @@
             <file name="CloseAllDocumentsAction.shadow_hidden"/>
             <file name="DocumentsAction.shadow_hidden"/>
             <file name="ProgressListAction.shadow_hidden"/>
+            <file name="Separator4_1.instance" url="Separator4_1.instance">
+                <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                <attr name="position" intvalue="2925"/>
+            </file>
             <file name="Separator5.instance_hidden"/>
             <file name="SwitchToRecentDocumentAction.shadow_hidden"/>
             <file name="org-netbeans-core-actions-GlobalPropertiesAction.shadow_hidden"/>
