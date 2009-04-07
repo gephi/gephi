@@ -19,33 +19,38 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.gephi.project.explorer.actions;
-
-
-import org.gephi.project.explorer.*;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import org.gephi.project.api.ProjectController;
-import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
+package org.gephi.importer.api;
 
 /**
  *
  * @author Mathieu
  */
-public class AddProject extends AbstractAction {
+public class FileType
+{
+    private String[] extensions;
+    private String name;
 
-    public AddProject()
+    public FileType(String extension, String name)
     {
-        putValue(Action.NAME, NbBundle.getMessage(ProjectsNode.class, "ProjectsNode_addProject"));
+        this.extensions = new String[] {extension};
+        this.name = name;
     }
 
-    public void actionPerformed(ActionEvent e) {
-       ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-       pc.newProject();
+    public FileType(String[] extensions, String name)
+    {
+        this.extensions = extensions;
+        this.name = name;
     }
 
+    public String getExtension() {
+        return extensions[0];
+    }
 
+    public String[] getExtensions() {
+        return extensions;
+    }
 
+    public String getName() {
+        return name;
+    }
 }

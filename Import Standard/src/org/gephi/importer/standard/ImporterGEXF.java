@@ -19,33 +19,25 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.gephi.project.explorer.actions;
+package org.gephi.importer.standard;
 
-
-import org.gephi.project.explorer.*;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import org.gephi.project.api.ProjectController;
-import org.openide.util.Lookup;
+import org.gephi.importer.api.FileType;
+import org.gephi.importer.api.Importer;
+import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
 
 /**
  *
  * @author Mathieu
  */
-public class AddProject extends AbstractAction {
+public class ImporterGEXF implements Importer {
 
-    public AddProject()
-    {
-        putValue(Action.NAME, NbBundle.getMessage(ProjectsNode.class, "ProjectsNode_addProject"));
+    public FileType[] getFileTypes() {
+        FileType ft = new FileType(".gexf", NbBundle.getMessage(getClass(), "fileType_GEXF_Name"));
+        return new FileType[] {ft};
     }
 
-    public void actionPerformed(ActionEvent e) {
-       ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-       pc.newProject();
+     public boolean isMatchingImporter(FileObject fileObject) {
+        return fileObject.hasExt("gexf");
     }
-
-
-
 }

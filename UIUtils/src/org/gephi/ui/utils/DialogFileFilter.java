@@ -90,6 +90,17 @@ public class DialogFileFilter extends javax.swing.filechooser.FileFilter
 		extensions.add(extension);
 	}
 
+    public void addExtensions(String[] extension){
+		if(extension == null)
+		{
+            Logger.getLogger(DialogFileFilter.class.getName()).throwing(getClass().getName(), "addExtensions", new NullPointerException("Description cannot be null."));
+		}
+		for(int i=0;i<extension.length;i++)
+        {
+            extensions.add(extension[i]);
+        }
+	}
+
 	public void removeExtension(String extension)
 	{
 		extensions.remove(extension);

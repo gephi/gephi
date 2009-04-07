@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.explorer;
 
+import java.awt.Image;
 import java.util.Collection;
 import javax.swing.event.ChangeEvent;
 import org.gephi.project.explorer.actions.AddWorkspace;
@@ -33,6 +34,7 @@ import org.gephi.project.explorer.actions.RemoveProject;
 import org.gephi.project.explorer.actions.RenameProject;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -77,6 +79,7 @@ public class ProjectNode extends AbstractNode implements ChangeListener {
     public String getDisplayName() {
         return project.getName();
     }
+
 
     @Override
     public Action[] getActions(boolean context) {
