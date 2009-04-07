@@ -28,6 +28,7 @@ import org.gephi.importer.api.ImportException;
 import org.gephi.importer.api.Importer;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -49,16 +50,17 @@ public class DesktopImportController implements ImportController {
     {
         Importer im = getMatchingImporter(fileObject);
         if(im==null)
-            throw new ImportException("Impossible to find a compatible Importer.\nThe file format is not supported.");
+            throw new ImportException(NbBundle.getMessage(getClass(), "error_no_matching_importer"));
 
+        
     }
 
     private Importer getMatchingImporter(FileObject fileObject)
     {
          for(Importer im : importers)
         {
-             //if(im.isMatchingImporter(fileObject))
-                //return im;
+             if(im.isMatchingImporter(fileObject))
+                return im;
         }
         return null;
     }
