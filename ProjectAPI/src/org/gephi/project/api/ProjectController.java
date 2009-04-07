@@ -21,9 +21,10 @@ public interface ProjectController {
     public void removeProject(Project project);
     public Projects getProjects();
     public void setProjects(Projects projects);
-    public void newWorkspace(Project project);
+    public Workspace newWorkspace(Project project);
     public void deleteWorkspace(Workspace workspace);
     public void openProject(Project project);
     public Project getCurrentProject();
     public void renameProject(Project project, String name);
+    public Workspace importFile();
 }

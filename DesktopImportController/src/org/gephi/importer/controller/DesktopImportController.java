@@ -26,6 +26,8 @@ import org.gephi.importer.api.FileType;
 import org.gephi.importer.api.ImportController;
 import org.gephi.importer.api.ImportException;
 import org.gephi.importer.api.Importer;
+import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -52,7 +54,8 @@ public class DesktopImportController implements ImportController {
         if(im==null)
             throw new ImportException(NbBundle.getMessage(getClass(), "error_no_matching_importer"));
 
-        
+        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+        Workspace workspace = projectController.importFile();
     }
 
     private Importer getMatchingImporter(FileObject fileObject)

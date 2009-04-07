@@ -103,9 +103,16 @@ public class DesktopProjectController implements ProjectController {
         this.projects = projects;
     }
 
-    public void newWorkspace(Project project) {
-        project.newWorkspace();
+    public Workspace newWorkspace(Project project) {
+        Workspace ws = project.newWorkspace();
         enableAction(SaveProject.class);
+        return ws;
+    }
+
+    public Workspace importFile() {
+        if(projects.getCurrentProject()==null)
+            newProject();
+        return newWorkspace(projects.getCurrentProject());
     }
 
     public void deleteWorkspace(Workspace workspace) {
