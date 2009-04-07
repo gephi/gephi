@@ -49,6 +49,7 @@ public class Project implements Lookup.Provider, Serializable {
 
     //Workspaces
     private transient List<Workspace> workspaces = new ArrayList<Workspace>();
+    private transient Workspace currentWorkspace;
    
     //Lookup
     private transient InstanceContent instanceContent;
@@ -77,6 +78,14 @@ public class Project implements Lookup.Provider, Serializable {
     {
         workspaces.remove(workspace);
         instanceContent.remove(workspace);
+    }
+
+    public Workspace getCurrentWorkspace() {
+        return currentWorkspace;
+    }
+
+    public void setCurrentWorkspace(Workspace currentWorkspace) {
+        this.currentWorkspace = currentWorkspace;
     }
 
    public String toString() {

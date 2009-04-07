@@ -1,5 +1,10 @@
 package org.gephi.project.api;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 /*
 Copyright 2008 WebAtlas
 Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
@@ -20,31 +25,32 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
-
 /**
  *
  * @author Mathieu
  */
 public class Workspace {
-   private static int count = 0;
-   private final int index;
-   private Project project;
 
-    public Workspace()
-    {
-         index = count++;
+    public enum Status { OPEN, CLOSED, INVALID};
+    private static int count = 0;
+    private Project project;
+    private String name;
+    private Status status = Status.CLOSED;
+
+    //Lookup
+    private transient List<ChangeListener> listeners;
+
+    public Workspace() {
+        this("Workspace "+(count++));
     }
 
-    public Workspace(int index)
-    {
-        this.index = index;
+    public Workspace(String name) {
+        this.name = name;
     }
 
     @Override
     public String toString() {
-        return "Workspace "+index;
+        return name;
     }
 
     public void setProject(Project project) {
@@ -53,5 +59,48 @@ public class Workspace {
 
     public Project getProject() {
         return project;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+        fireChangeEvent();
+    }
+
+     public void setStatus(Status status) {
+        this.status = status;
+        fireChangeEvent();
+    }
+
+     public boolean isOpen()
+     {
+         return status==Status.OPEN;
+     }
+
+    public void addChangeListener(ChangeListener listener)
+    {
+        if(listeners==null)
+            listeners = new ArrayList<ChangeListener>();
+        listeners.add(listener);
+    }
+
+    public void removeChangeListener(ChangeListener listener)
+    {
+        if(listeners!=null)
+            listeners.remove(listener);
+    }
+
+    public void fireChangeEvent()
+    {
+        ChangeEvent event = new ChangeEvent(this);
+        for(ChangeListener listener : listeners)
+        {
+            listener.stateChanged(event);
+        }
     }
 }

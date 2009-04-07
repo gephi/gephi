@@ -112,10 +112,18 @@ public class DesktopProjectController implements ProjectController {
     public Workspace importFile() {
         if(projects.getCurrentProject()==null)
             newProject();
-        return newWorkspace(projects.getCurrentProject());
+        Workspace ws = newWorkspace(projects.getCurrentProject());
+        setCurrentWorkspace(ws);
+        return ws;
     }
 
     public void deleteWorkspace(Workspace workspace) {
+        if(getCurrentWorkspace()==workspace)
+        {
+            workspace.setStatus(Workspace.Status.CLOSED);
+            getCurrentProject().setCurrentWorkspace(workspace);
+        }
+
         workspace.getProject().removeWorkspace(workspace);
         enableAction(SaveProject.class);
     }
@@ -132,8 +140,27 @@ public class DesktopProjectController implements ProjectController {
         return projects.getCurrentProject();
     }
 
+    public Workspace getCurrentWorkspace() {
+        if(getCurrentProject()!=null)
+            return getCurrentProject().getCurrentWorkspace();
+        return null;
+    }
+
+    public void setCurrentWorkspace(Workspace workspace) {
+        if(getCurrentWorkspace()!=null)
+            getCurrentWorkspace().setStatus(Workspace.Status.CLOSED);
+        getCurrentProject().setCurrentWorkspace(workspace);
+        workspace.setStatus(Workspace.Status.OPEN);
+        enableAction(SaveProject.class);
+    }
+
     public void renameProject(Project project, String name) {
         project.setName(name);
+        enableAction(SaveProject.class);
+    }
+
+    public void renameWorkspace(Workspace workspace, String name) {
+        workspace.setName(name);
         enableAction(SaveProject.class);
     }
 

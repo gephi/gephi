@@ -23,15 +23,22 @@ package org.gephi.project.explorer;
 
 import org.gephi.project.explorer.actions.CloseWorkspace;
 import javax.swing.Action;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
+import org.gephi.project.explorer.actions.OpenWorkspace;
+import org.gephi.project.explorer.actions.RenameWorkspace;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.util.Lookup;
+import org.openide.util.WeakListeners;
 
 /**
  *
  * @author Mathieu
  */
-public class WorkspaceNode extends AbstractNode {
+public class WorkspaceNode extends AbstractNode implements ChangeListener {
 
     private Workspace workspace;
 
@@ -39,6 +46,25 @@ public class WorkspaceNode extends AbstractNode {
     {
         super(Children.LEAF);
         this.workspace = workspace;
+
+      //Add Workspace Listener
+        workspace.addChangeListener(WeakListeners.change(this, workspace));
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        if(pc.getCurrentWorkspace()==workspace)
+        {
+            //Current
+        }
+        else
+        {
+            //Not current
+        }
+
+        //Workspace name
+        setDisplayName(workspace.getName());
     }
 
     @Override
@@ -48,6 +74,6 @@ public class WorkspaceNode extends AbstractNode {
 
     @Override
     public Action[] getActions(boolean context) {
-        return new Action[]{new CloseWorkspace(workspace)};
+        return new Action[]{new OpenWorkspace(workspace),new CloseWorkspace(workspace), new RenameWorkspace(workspace)};
     }
 }

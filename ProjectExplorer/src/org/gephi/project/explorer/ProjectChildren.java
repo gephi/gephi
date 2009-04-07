@@ -61,8 +61,8 @@ class ProjectChildren extends Children.Keys<Workspace> implements LookupListener
 
     public void resultChanged(LookupEvent lookupEvent) {
         Lookup.Result<Workspace> r = (Lookup.Result<Workspace>) lookupEvent.getSource();
-         Collection<? extends Workspace> c = r.allInstances();
-         setKeys(c);
+        Collection<? extends Workspace> c = r.allInstances();
+        setKeys(c);
     }
 
 }
