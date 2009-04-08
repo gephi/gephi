@@ -60,9 +60,15 @@ public class Project implements Lookup.Provider, Serializable {
     public Project()
     {
         name = "Project "+(count++);
+        init();
+    }
+
+    public void init()
+    {
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         workspaces = new ArrayList<Workspace>();
+        listeners = new ArrayList<ChangeListener>();
     }
 
     public List<Workspace> getWorkspaces() {
@@ -99,11 +105,6 @@ public class Project implements Lookup.Provider, Serializable {
    }
 
     public Lookup getLookup() {
-        if(lookup==null)
-        {
-            instanceContent = new InstanceContent();
-            lookup = new AbstractLookup(instanceContent);
-        }
         return lookup;
     }
 
@@ -140,15 +141,12 @@ public class Project implements Lookup.Provider, Serializable {
 
     public void addChangeListener(ChangeListener listener)
     {
-        if(listeners==null)
-            listeners = new ArrayList<ChangeListener>();
         listeners.add(listener);
     }
 
     public void removeChangeListener(ChangeListener listener)
     {
-        if(listeners!=null)
-            listeners.remove(listener);
+        listeners.remove(listener);
     }
 
     public void fireChangeEvent()

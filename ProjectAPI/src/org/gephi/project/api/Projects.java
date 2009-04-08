@@ -54,7 +54,7 @@ public class Projects implements Lookup.Provider, Serializable {
     {
         for(Project project : projects)
         {
-            
+            project.init();
         }
     }
 

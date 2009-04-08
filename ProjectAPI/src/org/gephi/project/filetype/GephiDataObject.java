@@ -8,6 +8,7 @@ import java.io.IOException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.gephi.project.api.Project;
+import org.gephi.project.filetype.io.GephiFormatException;
 import org.gephi.project.filetype.io.GephiReader;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -56,7 +57,9 @@ public class GephiDataObject extends MultiDataObject {
         }
         catch(Exception ex)
         {
-           NotifyDescriptor.Message e = new NotifyDescriptor.Message(ex.getMessage(),NotifyDescriptor.WARNING_MESSAGE);
+           GephiFormatException exception = new GephiFormatException(ex);
+           exception.printStackTrace();
+           NotifyDescriptor.Message e = new NotifyDescriptor.Message(exception.getMessage(),NotifyDescriptor.WARNING_MESSAGE);
            DialogDisplayer.getDefault().notifyLater(e);
         }
         return null;
