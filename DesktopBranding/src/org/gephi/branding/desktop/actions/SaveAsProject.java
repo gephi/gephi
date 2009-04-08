@@ -26,8 +26,14 @@ import java.io.IOException;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import org.gephi.project.api.ProjectController;
 import org.gephi.ui.utils.DialogFileFilter;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
+import org.openide.loaders.DataObject;
+import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.SystemAction;
 
@@ -99,7 +105,19 @@ public class SaveAsProject extends SystemAction {
                 }
             }
 
+            file = FileUtil.normalizeFile(file);
+            FileObject fileObject = FileUtil.toFileObject(file);
 
+            try {
+
+                DataObject dataObject = DataObject.find(fileObject);
+                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+                pc.saveProject(dataObject);
+
+            } catch(Exception e)
+            {
+                Exceptions.printStackTrace(e);
+            }
         }
     }
 }

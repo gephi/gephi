@@ -13,6 +13,7 @@ import org.gephi.ui.utils.DialogFileFilter;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -43,7 +44,7 @@ public final class OpenProject implements ActionListener {
                 pc.loadProject(doe);
 
             } catch (Exception ew) {
-                ew.printStackTrace();
+                Exceptions.printStackTrace(ew);
             }
         }
     }

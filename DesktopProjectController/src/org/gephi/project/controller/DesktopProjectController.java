@@ -64,6 +64,17 @@ public class DesktopProjectController implements ProjectController {
         }
     }
 
+    public void saveProject(DataObject dataObject) {
+        GephiDataObject gephiDataObject = (GephiDataObject) dataObject;
+        Project project = getCurrentProject();
+        project.setDataObject(gephiDataObject);
+        gephiDataObject.setProject(project);
+        gephiDataObject.save();
+        
+        disableAction(SaveProject.class);
+    }
+
+
     public void closeCurrentProject()
     {
         if(projects.getCurrentProject()!=null)
@@ -102,6 +113,8 @@ public class DesktopProjectController implements ProjectController {
     public void setProjects(Projects projects) {
         this.projects = projects;
         projects.refreshProjects();
+        if(getCurrentProject()!=null)
+            enableAction(SaveAsProject.class);
     }
 
     public Workspace newWorkspace(Project project) {

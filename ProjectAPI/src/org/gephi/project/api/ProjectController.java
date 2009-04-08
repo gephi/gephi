@@ -16,6 +16,7 @@ public interface ProjectController {
 
     public void newProject();
     public void loadProject(DataObject dataObject);
+    public void saveProject(DataObject dataObject);
     public void closeProject(Project project);
     public void closeCurrentProject();
     public void removeProject(Project project);
