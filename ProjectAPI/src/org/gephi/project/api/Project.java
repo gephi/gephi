@@ -69,6 +69,19 @@ public class Project implements Lookup.Provider, Serializable {
         lookup = new AbstractLookup(instanceContent);
         workspaces = new ArrayList<Workspace>();
         listeners = new ArrayList<ChangeListener>();
+
+        if(dataObject!=null)
+        {
+            if(dataObject.isValid())
+            {
+                dataObject.setProject(this);
+                dataObject.load();
+            }
+            else
+            {
+                this.status = Status.INVALID;
+            }
+        }
     }
 
     public List<Workspace> getWorkspaces() {
@@ -169,6 +182,6 @@ public class Project implements Lookup.Provider, Serializable {
 
     public boolean hasFile()
     {
-        return true;
+        return dataObject!=null;
     }
 }

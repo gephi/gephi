@@ -38,7 +38,7 @@ public class Workspace {
     private Status status = Status.CLOSED;
 
     //Lookup
-    private transient List<ChangeListener> listeners;
+    private transient List<ChangeListener> listeners = new ArrayList<ChangeListener>();;
 
     public Workspace() {
         this("Workspace "+(count++));
@@ -89,15 +89,12 @@ public class Workspace {
 
     public void addChangeListener(ChangeListener listener)
     {
-        if(listeners==null)
-            listeners = new ArrayList<ChangeListener>();
         listeners.add(listener);
     }
 
     public void removeChangeListener(ChangeListener listener)
     {
-        if(listeners!=null)
-            listeners.remove(listener);
+        listeners.remove(listener);
     }
 
     public void fireChangeEvent()

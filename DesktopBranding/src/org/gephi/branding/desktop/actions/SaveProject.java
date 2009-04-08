@@ -51,18 +51,12 @@ public class SaveProject extends SystemAction {
         Project project = pc.getCurrentProject();
         if(project.hasFile())
         {
-            save();
+            pc.saveProject(project);
         }
         else
         {
-            SaveAsProject action = new SaveAsProject();
-            action.actionPerformed(null);
+            SystemAction.get(SaveAsProject.class).actionPerformed(null);
         }
 
-    }
-
-    private void save()
-    {
-        
     }
 }

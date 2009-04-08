@@ -74,6 +74,11 @@ public class DesktopProjectController implements ProjectController {
         disableAction(SaveProject.class);
     }
 
+    public void saveProject(Project project) {
+
+       project.getDataObject().save();
+       disableAction(SaveProject.class);
+    }
 
     public void closeCurrentProject()
     {
