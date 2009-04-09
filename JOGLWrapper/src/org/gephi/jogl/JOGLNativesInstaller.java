@@ -1,69 +1,67 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+Copyright 2008 WebAtlas
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.jogl;
 
 import java.io.File;
 import java.text.MessageFormat;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
-import org.netbeans.api.java.classpath.ClassPath;
-import org.netbeans.api.java.classpath.GlobalPathRegistry;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.Repository;
-
+import org.openide.modules.InstalledFileLocator;
+import org.openide.modules.ModuleInstall;
 
 /**
- *
- * @author Mathieu
+ * Manages the JOGL natives loading. Thanks to Michael Bien, Lilian Chamontin and Kenneth Russell.
+ * 
+ * @author Mathieu Bastan
  */
-public class JOGLWrapper {
+public class JOGLNativesInstaller extends ModuleInstall {
 
-    private static JOGLWrapper instance;
-
-    public static synchronized JOGLWrapper getInstance() {
-        if (instance == null) {
-            instance = new JOGLWrapper();
-        }
-        return instance;
-    }
-
-    //--------------------------------------
-    private boolean isInitOk = false;
     private NativeLibInfo nativeLibInfo;    //Compatible nativeLibInfo with OS/Arch
 
-    private JOGLWrapper() {
-        init();
+    public void restored() {
+        if (findCompatibleOsAndArch()) {
+
+            String nativeArch = nativeLibInfo.getSubDirectoryPath();
+            File joglDistFolder = InstalledFileLocator.getDefault().locate("modules/lib/" + nativeArch, null, false);
+            if (joglDistFolder != null) {
+                loadNatives(joglDistFolder);
+            } else {
+                System.err.println("Init failed: Impossible to locate natives for " + nativeArch + ".");
+            }
+        }
     }
 
-    private void init()
-    {
+    //=============================================================
+    //=============================================================
+    private boolean findCompatibleOsAndArch() {
         String osName = System.getProperty("os.name");
         String osArch = System.getProperty("os.arch");
         if (checkOSAndArch(osName, osArch)) {
-            this.isInitOk = true;
+            return true;
         } else {
             System.err.println("Init failed : Unsupported os / arch ( " + osName + " / " + osArch + " )");
         }
-
-        //
-        //ClassPath.
-        File file = FileUtil.normalizeFile(new File("JOGLWrapper/release/modules/lib"));
-        FileObject fo = FileUtil.toFileObject(file);
-
-        ClassPath cp = ClassPath.getClassPath(fo, ClassPath.COMPILE);
-        
-        System.out.println(fo.getPath());
-       /*File f = FileUtil.toFile(Repository.getDefault().getDefaultFileSystem().getRoot());
-        System.out.println(f.getPath());
-        String subDirectory = nativeLibInfo.getSubDirectoryPath();*/
+        return false;
     }
 
-    private boolean checkOSAndArch(String osName, String osArch) {
+    boolean checkOSAndArch(String osName, String osArch) {
         for (int i = 0; i < allNativeLibInfo.length; i++) {
             NativeLibInfo info = allNativeLibInfo[i];
             if (info.matchesOSAndArch(osName, osArch)) {
@@ -146,7 +144,7 @@ public class JOGLWrapper {
         } catch (UnsatisfiedLinkError ex) {
             // should be safe to continue as long as the native is loaded by any loader
             if (ex.getMessage().indexOf("already loaded") == -1) {
-                Logger.getLogger(JOGLWrapper.class.getName()).severe("Unable to load " + nativeLibName);
+                System.err.println("Unable to load " + nativeLibName);
                 throw ex;
             }
         }
@@ -201,8 +199,7 @@ public class JOGLWrapper {
             return (!isMacOS() && !osName.equals("win"));
         }
 
-        public String getSubDirectoryPath()
-        {
+        public String getSubDirectoryPath() {
             return osNameAndArchPair;
         }
     }
@@ -222,9 +219,4 @@ public class JOGLWrapper {
         new NativeLibInfo("sunos", "amd64", "solaris-amd64", "lib", ".so"),
         new NativeLibInfo("sunos", "x86_64", "solaris-amd64", "lib", ".so")
     };
-    
-    // Library names computed once the jar comes down.
-    // The signatures of these native libraries are checked before
-    // installing them.
-    private String[] nativeLibNames;
 }

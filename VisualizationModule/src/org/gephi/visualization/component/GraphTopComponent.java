@@ -18,13 +18,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.visualization.component;
 
 import java.awt.BorderLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
-import org.gephi.jogl.JOGLWrapper;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.swing.GraphDrawable;
@@ -41,13 +39,10 @@ final class GraphTopComponent extends TopComponent {
     private static GraphTopComponent instance;
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
-
     private static final String PREFERRED_ID = "GraphTopComponent";
 
     private GraphTopComponent() {
         initComponents();
-
-        //JOGLWrapper.getInstance();
 
         setName(NbBundle.getMessage(GraphTopComponent.class, "CTL_GraphTopComponent"));
         setToolTipText(NbBundle.getMessage(GraphTopComponent.class, "HINT_GraphTopComponent"));
@@ -84,11 +79,10 @@ final class GraphTopComponent extends TopComponent {
         waitingLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         add(waitingLabel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel waitingLabel;
     // End of variables declaration//GEN-END:variables
+
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
      * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
