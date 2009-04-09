@@ -6,8 +6,16 @@ package org.gephi.jogl;
 
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
+import org.netbeans.api.java.classpath.ClassPath;
+import org.netbeans.api.java.classpath.GlobalPathRegistry;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
+import org.openide.filesystems.Repository;
+
 
 /**
  *
@@ -26,11 +34,14 @@ public class JOGLWrapper {
 
     //--------------------------------------
     private boolean isInitOk = false;
+    private NativeLibInfo nativeLibInfo;    //Compatible nativeLibInfo with OS/Arch
 
     private JOGLWrapper() {
+        init();
     }
 
-    private void init() {
+    private void init()
+    {
         String osName = System.getProperty("os.name");
         String osArch = System.getProperty("os.arch");
         if (checkOSAndArch(osName, osArch)) {
@@ -38,6 +49,18 @@ public class JOGLWrapper {
         } else {
             System.err.println("Init failed : Unsupported os / arch ( " + osName + " / " + osArch + " )");
         }
+
+        //
+        //ClassPath.
+        File file = FileUtil.normalizeFile(new File("JOGLWrapper/release/modules/lib"));
+        FileObject fo = FileUtil.toFileObject(file);
+
+        ClassPath cp = ClassPath.getClassPath(fo, ClassPath.COMPILE);
+        
+        System.out.println(fo.getPath());
+       /*File f = FileUtil.toFile(Repository.getDefault().getDefaultFileSystem().getRoot());
+        System.out.println(f.getPath());
+        String subDirectory = nativeLibInfo.getSubDirectoryPath();*/
     }
 
     private boolean checkOSAndArch(String osName, String osArch) {
@@ -177,6 +200,11 @@ public class JOGLWrapper {
         public boolean mayNeedDRIHack() {
             return (!isMacOS() && !osName.equals("win"));
         }
+
+        public String getSubDirectoryPath()
+        {
+            return osNameAndArchPair;
+        }
     }
     private static final NativeLibInfo[] allNativeLibInfo = {
         new NativeLibInfo("win", "x86", "windows-i586", "", ".dll"),
@@ -194,7 +222,7 @@ public class JOGLWrapper {
         new NativeLibInfo("sunos", "amd64", "solaris-amd64", "lib", ".so"),
         new NativeLibInfo("sunos", "x86_64", "solaris-amd64", "lib", ".so")
     };
-    private NativeLibInfo nativeLibInfo;
+    
     // Library names computed once the jar comes down.
     // The signatures of these native libraries are checked before
     // installing them.

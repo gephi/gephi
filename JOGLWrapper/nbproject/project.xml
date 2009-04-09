@@ -5,7 +5,33 @@
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
             <code-name-base>org.gephi.jogl</code-name-base>
             <suite-component/>
-            <module-dependencies/>
+            <module-dependencies>
+                <dependency>
+                    <code-name-base>org.netbeans.api.java.classpath</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <release-version>1</release-version>
+                        <specification-version>1.18.2</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.filesystems</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>7.13.1.1.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.util</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>7.18.1.1</specification-version>
+                    </run-dependency>
+                </dependency>
+            </module-dependencies>
             <public-packages>
                 <package>com.sun.gluegen.runtime</package>
                 <package>com.sun.opengl.cg</package>
@@ -26,6 +52,7 @@
                 <package>com.sun.opengl.util.texture.spi</package>
                 <package>javax.media.opengl</package>
                 <package>javax.media.opengl.glu</package>
+                <package>org.gephi.jogl</package>
             </public-packages>
             <class-path-extension>
                 <runtime-relative-path>ext/jogl.jar</runtime-relative-path>

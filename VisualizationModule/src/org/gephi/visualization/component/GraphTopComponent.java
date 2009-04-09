@@ -24,6 +24,7 @@ package org.gephi.visualization.component;
 import java.awt.BorderLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
+import org.gephi.jogl.JOGLWrapper;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.swing.GraphDrawable;
@@ -45,6 +46,8 @@ final class GraphTopComponent extends TopComponent {
 
     private GraphTopComponent() {
         initComponents();
+
+        //JOGLWrapper.getInstance();
 
         setName(NbBundle.getMessage(GraphTopComponent.class, "CTL_GraphTopComponent"));
         setToolTipText(NbBundle.getMessage(GraphTopComponent.class, "HINT_GraphTopComponent"));
