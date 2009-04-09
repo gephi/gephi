@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>org.gephi.datastructure</code-name-base>
+            <suite-component/>
+            <module-dependencies/>
+            <public-packages>
+                <package>org.gephi.datastructure.avl</package>
+                <package>org.gephi.datastructure.avl.param</package>
+                <package>org.gephi.datastructure.avl.simple</package>
+            </public-packages>
+        </data>
+    </configuration>
+</project>

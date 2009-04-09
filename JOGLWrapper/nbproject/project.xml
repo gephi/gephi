@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>org.gephi.jogl</code-name-base>
+            <suite-component/>
+            <module-dependencies/>
+            <public-packages>
+                <package>com.sun.gluegen.runtime</package>
+                <package>com.sun.opengl.cg</package>
+                <package>com.sun.opengl.impl</package>
+                <package>com.sun.opengl.impl.error</package>
+                <package>com.sun.opengl.impl.glue</package>
+                <package>com.sun.opengl.impl.macosx</package>
+                <package>com.sun.opengl.impl.mipmap</package>
+                <package>com.sun.opengl.impl.nurbs</package>
+                <package>com.sun.opengl.impl.packrect</package>
+                <package>com.sun.opengl.impl.registry</package>
+                <package>com.sun.opengl.impl.tessellator</package>
+                <package>com.sun.opengl.impl.windows</package>
+                <package>com.sun.opengl.impl.x11</package>
+                <package>com.sun.opengl.util</package>
+                <package>com.sun.opengl.util.j2d</package>
+                <package>com.sun.opengl.util.texture</package>
+                <package>com.sun.opengl.util.texture.spi</package>
+                <package>javax.media.opengl</package>
+                <package>javax.media.opengl.glu</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/jogl.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jogl.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gluegen-rt.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gluegen-rt.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>

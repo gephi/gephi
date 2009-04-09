@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.jogl
+OpenIDE-Module-Localizing-Bundle: org/gephi/jogl/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

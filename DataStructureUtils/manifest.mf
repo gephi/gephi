@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.datastructure
+OpenIDE-Module-Localizing-Bundle: org/gephi/datastructure/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
