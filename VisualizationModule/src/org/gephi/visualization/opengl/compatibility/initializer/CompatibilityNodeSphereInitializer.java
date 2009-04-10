@@ -82,7 +82,6 @@ public class CompatibilityNodeSphereInitializer extends NodeSphereInitializer im
         // Diamond display list
         SHAPE_DIAMOND = ptr + 1;
         gl.glNewList(SHAPE_DIAMOND, GL.GL_COMPILE);
-        gl.glCallList(ptr);
         glu.gluSphere(quadric, 0.5f, 4, 2);
         gl.glEndList();
         //End

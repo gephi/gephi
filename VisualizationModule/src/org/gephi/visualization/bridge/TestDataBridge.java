@@ -24,9 +24,12 @@ package org.gephi.visualization.bridge;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeImpl;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeImpl;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.Object3dImpl;
 import org.gephi.visualization.api.initializer.Object3dInitializer;
 import org.gephi.visualization.opengl.AbstractEngine;
 
@@ -54,7 +57,7 @@ public class TestDataBridge implements DataBridge {
     private ArrayList<Node> nodeList = new ArrayList<Node>();
     private void updateNodes()
     {
-       /* Object3dInitializer nodeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_NODE].getCurrentObject3dInitializer();
+        Object3dInitializer nodeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_NODE].getCurrentObject3dInitializer();
 
          //Remove nodes
         if(nodeList.size()>0)
@@ -62,25 +65,25 @@ public class TestDataBridge implements DataBridge {
             for(int i=0;i<10;i++)
             {
                 Node n = nodeList.remove((int)Math.random()*nodeList.size());
-                engine.removeObject(AbstractEngine.CLASS_NODE, n.getObject3d());
+                engine.removeObject(AbstractEngine.CLASS_NODE, (Object3dImpl)n.getObject3d());
             }
         }
 
         //Add nodes
         for(int i=0;i<15;i++)
         {
-            Node n = new Node();
+            NodeImpl n = new NodeImpl();
             nodeList.add(n);
-            n.size=3;
+            n.setSize(3f);
             engine.addObject(AbstractEngine.CLASS_NODE, nodeInit.initObject(n));
-        }*/
+        }
 
     }
 
     private ArrayList<Edge> edgeList = new ArrayList<Edge>();
     private void updateEdges()
     {
-        /*Object3dInitializer edgeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_EDGE].getCurrentObject3dInitializer();
+        Object3dInitializer edgeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_EDGE].getCurrentObject3dInitializer();
         Object3dInitializer arrowInit = engine.getObject3dClasses()[AbstractEngine.CLASS_ARROW].getCurrentObject3dInitializer();
 
         //Remove
@@ -89,7 +92,7 @@ public class TestDataBridge implements DataBridge {
             for(int i=0;i<40;i++)
             {
                 Edge e = edgeList.remove((int)Math.random()*edgeList.size());
-                engine.removeObject(AbstractEngine.CLASS_EDGE, e.getObject3d());
+                engine.removeObject(AbstractEngine.CLASS_EDGE, (Object3dImpl)e.getObject3d());
             }
         }
 
@@ -98,12 +101,12 @@ public class TestDataBridge implements DataBridge {
         {
             Node source = nodeList.get((int)(Math.random()*nodeList.size()));
             Node target = nodeList.get((int)(Math.random()*nodeList.size()));
-            Edge edge = new Edge(source,target);
+            EdgeImpl edge = new EdgeImpl(source,target);
             edge.setCardinal((float)(Math.random()*1f)+1);
             edgeList.add(edge);
             engine.addObject(AbstractEngine.CLASS_EDGE, edgeInit.initObject(edge));
-            engine.addObject(AbstractEngine.CLASS_ARROW, arrowInit.initObject(edge));
-        }*/
+            //engine.addObject(AbstractEngine.CLASS_ARROW, arrowInit.initObject(edge));
+        }
     }
 
     public boolean requireUpdate() {

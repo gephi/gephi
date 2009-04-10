@@ -43,6 +43,8 @@ public interface Renderable {
 
     public float getSize();
 
+    public void setSize(float size);
+
     public float r();
 
     public float g();
