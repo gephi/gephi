@@ -32,8 +32,8 @@ import org.gephi.visualization.api.GraphIO;
 import org.gephi.visualization.api.VizEventManager;
 import org.gephi.visualization.config.VizConfig;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.opengl.gleem.linalg.MathUtil;
-import org.gephi.visualization.opengl.gleem.linalg.Vec3f;
+import org.gephi.visualization.gleem.linalg.MathUtil;
+import org.gephi.visualization.gleem.linalg.Vec3f;
 
 /**
  *
@@ -42,7 +42,7 @@ import org.gephi.visualization.opengl.gleem.linalg.Vec3f;
 public class StandardGraphIO implements GraphIO, VizArchitecture {
 
     //Architecture
-    protected GraphDrawable graphDrawable;
+    protected GraphDrawableImpl graphDrawable;
     protected AbstractEngine engine;
     protected VizEventManager vizEventManager;
     protected VizConfig vizConfig;

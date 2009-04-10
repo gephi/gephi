@@ -37,8 +37,8 @@ import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.api.Object3dImpl;
-import org.gephi.visualization.opengl.gleem.linalg.Vec3f;
-import org.gephi.visualization.swing.GraphDrawable;
+import org.gephi.visualization.gleem.linalg.Vec3f;
+import org.gephi.visualization.swing.GraphDrawableImpl;
 
 /**
  *
@@ -47,7 +47,7 @@ import org.gephi.visualization.swing.GraphDrawable;
 public class Octree implements VizArchitecture {
     //Architecture
 
-    private GraphDrawable drawable;
+    private GraphDrawableImpl drawable;
     private AbstractEngine engine;
     private GraphLimits limits;
 
@@ -188,8 +188,8 @@ public class Octree implements VizArchitecture {
         gl.glPushMatrix();
         gl.glLoadIdentity();
 
-        glu.gluPickMatrix(mousePosition[0], mousePosition[1], pickRectangle[0], pickRectangle[1], drawable.viewport);
-        gl.glMultMatrixd(drawable.projMatrix);
+        glu.gluPickMatrix(mousePosition[0], mousePosition[1], pickRectangle[0], pickRectangle[1], drawable.getViewport());
+        gl.glMultMatrixd(drawable.getProjectionMatrix());
 
         gl.glMatrixMode(GL.GL_MODELVIEW);
 

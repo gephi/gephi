@@ -24,19 +24,21 @@ import com.sun.opengl.util.BufferUtil;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.GraphDrawable;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.opengl.gleem.linalg.Vec3f;
+import org.gephi.visualization.gleem.linalg.Vec3f;
 import org.gephi.visualization.api.Scheduler;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class GraphDrawable extends GLAbstractListener implements VizArchitecture {
+public class GraphDrawableImpl extends GLAbstractListener implements VizArchitecture, GraphDrawable {
 
     protected Component graphComponent;
     protected AbstractEngine engine;
@@ -44,10 +46,9 @@ public class GraphDrawable extends GLAbstractListener implements VizArchitecture
     protected float[] cameraLocation;
     protected float[] cameraTarget;
     protected double[] draggingMarker = new double[2];//The drag mesure for a moving of 1 to the viewport
-    protected double rotationX;
     protected Vec3f cameraVector = new Vec3f();
 
-    public GraphDrawable() {
+    public GraphDrawableImpl() {
         super();
         this.vizConfig = VizController.getInstance().getVizConfig();
     }
@@ -221,5 +222,29 @@ public class GraphDrawable extends GLAbstractListener implements VizArchitecture
 
     public Vec3f getCameraVector() {
         return cameraVector;
+    }
+
+    public int getViewportHeight() {
+        return viewport.get(3);
+    }
+
+    public int getViewportWidth() {
+        return viewport.get(2);
+    }
+
+    public double getDraggingMarkerX() {
+        return draggingMarker[0];
+    }
+
+    public double getDraggingMarkerY() {
+        return draggingMarker[1];
+    }
+
+    public DoubleBuffer getProjectionMatrix() {
+       return projMatrix;
+    }
+
+    public IntBuffer getViewport() {
+        return viewport;
     }
 }

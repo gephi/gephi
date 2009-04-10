@@ -37,7 +37,7 @@
  * WARRANTY OF FITNESS FOR SUCH USES.
  */
 
-package org.gephi.visualization.opengl.gleem.linalg;
+package org.gephi.visualization.gleem.linalg;
 
 /** Arbitrary-size single-precision matrix class. Currently very
     simple and only supports a few needed operations. */

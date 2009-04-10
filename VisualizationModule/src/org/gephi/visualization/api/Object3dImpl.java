@@ -25,7 +25,7 @@ import javax.media.opengl.glu.GLU;
 import org.gephi.datastructure.avl.simple.AVLItem;
 import org.gephi.graph.api.Object3d;
 import org.gephi.graph.api.Renderable;
-import org.gephi.visualization.opengl.gleem.linalg.Vec3f;
+import org.gephi.visualization.gleem.linalg.Vec3f;
 import org.gephi.visualization.opengl.octree.Octant;
 
 /**

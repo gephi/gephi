@@ -54,7 +54,7 @@ public class Tester extends JFrame {
         VizController.getInstance().initInstances();
         VizEventManager vizEventManager = VizController.getInstance().getVizEventManager();
         CompatibilityEngine engine = (CompatibilityEngine) VizController.getInstance().getEngine();
-        GraphDrawable drawable = VizController.getInstance().getDrawable();
+        GraphDrawableImpl drawable = VizController.getInstance().getDrawable();
 
         VizEvent.Type[] types = {VizEvent.Type.DRAG, VizEvent.Type.MOUSE_LEFT_PRESS, VizEvent.Type.MOUSE_MOVE, VizEvent.Type.MOUSE_RIGHT_CLICK};
         listener = new VizEventListener() {

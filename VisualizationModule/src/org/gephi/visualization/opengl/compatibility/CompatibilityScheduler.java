@@ -34,7 +34,7 @@ import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.Scheduler;
 import org.gephi.visualization.scheduler.SimpleFPSAnimator;
-import org.gephi.visualization.swing.GraphDrawable;
+import org.gephi.visualization.swing.GraphDrawableImpl;
 
 /**
  *
@@ -53,7 +53,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     AtomicBoolean mouseClick = new AtomicBoolean();
 
     //Architeture
-    private GraphDrawable graphDrawable;
+    private GraphDrawableImpl graphDrawable;
     private CompatibilityEngine engine;
 
     //Current GL

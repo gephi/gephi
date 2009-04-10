@@ -29,7 +29,7 @@ import javax.media.opengl.GLCanvas;
  *
  * @author Mathieu Bastian
  */
-public class GraphCanvas extends GraphDrawable {
+public class GraphCanvas extends GraphDrawableImpl {
 
     private GLCanvas glCanvas;
 

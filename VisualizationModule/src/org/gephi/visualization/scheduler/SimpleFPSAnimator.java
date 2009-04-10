@@ -22,7 +22,7 @@ package org.gephi.visualization.scheduler;
 
 import org.gephi.visualization.api.Scheduler;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.gephi.visualization.swing.GraphDrawable;
+import org.gephi.visualization.swing.GraphDrawableImpl;
 
 /**
  *
@@ -31,12 +31,12 @@ import org.gephi.visualization.swing.GraphDrawable;
 public class SimpleFPSAnimator extends Thread {
 
     private Scheduler scheduler;
-    private GraphDrawable drawable;
+    private GraphDrawableImpl drawable;
     private long delay;
     private AtomicBoolean animating;
     private final Object lock = new Object();
 
-    public SimpleFPSAnimator(Scheduler scheduler, GraphDrawable drawble, int fps) {
+    public SimpleFPSAnimator(Scheduler scheduler, GraphDrawableImpl drawble, int fps) {
         super("SimpleFPSAnimator");
         this.drawable = drawble;
         this.scheduler = scheduler;

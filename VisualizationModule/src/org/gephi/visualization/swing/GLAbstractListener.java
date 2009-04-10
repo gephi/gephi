@@ -30,9 +30,9 @@ public abstract class GLAbstractListener implements GLEventListener {
     private final float nearDistance = 1.0f;
     private final float farDistance = 100000f;
     private double aspectRatio = 0;
-    public DoubleBuffer projMatrix = BufferUtil.newDoubleBuffer(16);
-    public DoubleBuffer modelMatrix = BufferUtil.newDoubleBuffer(16);
-    public IntBuffer viewport = BufferUtil.newIntBuffer(4);
+    protected DoubleBuffer projMatrix = BufferUtil.newDoubleBuffer(16);
+    protected DoubleBuffer modelMatrix = BufferUtil.newDoubleBuffer(16);
+    protected IntBuffer viewport = BufferUtil.newIntBuffer(4);
 
     protected void initDrawable(GLAutoDrawable drawable) {
         this.drawable = drawable;

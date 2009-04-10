@@ -32,13 +32,13 @@ import org.gephi.visualization.api.GraphIO;
 import org.gephi.visualization.api.VizEventManager;
 import org.gephi.visualization.objects.Object3dClass;
 import org.gephi.visualization.objects.Object3dClassLibrary;
-import org.gephi.visualization.opengl.gleem.linalg.Vec3f;
+import org.gephi.visualization.gleem.linalg.Vec3f;
 import org.gephi.visualization.api.Scheduler;
 import org.gephi.visualization.selection.Point;
 import org.gephi.visualization.api.selection.SelectionArea;
 import org.gephi.visualization.bridge.DataBridge;
 import org.gephi.visualization.bridge.EventBridge;
-import org.gephi.visualization.swing.GraphDrawable;
+import org.gephi.visualization.swing.GraphDrawableImpl;
 
 /**
  * Abstract graphic engine. Real graphic engines inherit from this class and can use the common functionalities.
@@ -57,7 +57,7 @@ public abstract class AbstractEngine implements VizArchitecture {
     public static final int CLASS_ARROW = 2;
 
     //Architecture
-    protected GraphDrawable graphDrawable;
+    protected GraphDrawableImpl graphDrawable;
     protected GraphIO graphIO;
     protected VizEventManager vizEventManager;
     protected SelectionArea currentSelectionArea = new Point();
@@ -147,13 +147,5 @@ public abstract class AbstractEngine implements VizArchitecture {
         Vec3f d = new Vec3f((float) xDist, (float) yDist, (float) distance);
 
         return currentSelectionArea.mouseTest(d, obj);
-    }
-
-    public IntBuffer getViewportBuffer() {
-        return graphDrawable.viewport;
-    }
-
-    public DoubleBuffer getProjectionMatrix() {
-        return graphDrawable.projMatrix;
     }
 }

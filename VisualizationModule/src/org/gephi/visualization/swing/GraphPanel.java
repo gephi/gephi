@@ -33,7 +33,7 @@ import org.gephi.visualization.VizController;
  *
  * @author Mathieu Bastian
  */
-public class GraphPanel extends GraphDrawable {
+public class GraphPanel extends GraphDrawableImpl {
 
     private GLJPanel gljPanel;
 

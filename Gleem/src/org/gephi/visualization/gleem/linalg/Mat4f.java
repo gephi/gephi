@@ -37,7 +37,7 @@
  * WARRANTY OF FITNESS FOR SUCH USES.
  */
 
-package org.gephi.visualization.opengl.gleem.linalg;
+package org.gephi.visualization.gleem.linalg;
 
 /** A (very incomplete) 4x4 matrix class. Representation assumes
     multiplication by column vectors on the right. */

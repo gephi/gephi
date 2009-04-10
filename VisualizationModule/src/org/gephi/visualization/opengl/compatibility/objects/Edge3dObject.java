@@ -26,7 +26,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.Object3dImpl;
-import org.gephi.visualization.opengl.gleem.linalg.Vec3f;
+import org.gephi.visualization.gleem.linalg.Vec3f;
 import org.gephi.visualization.opengl.octree.Octant;
 
 /**

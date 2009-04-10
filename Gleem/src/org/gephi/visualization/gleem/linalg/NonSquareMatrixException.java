@@ -37,17 +37,17 @@
  * WARRANTY OF FITNESS FOR SUCH USES.
  */
 
-package org.gephi.visualization.opengl.gleem.linalg;
+package org.gephi.visualization.gleem.linalg;
 
-/** Thrown to indicate a mismatch of dimensionality of a matrix or
-    vector. */
+/** Thrown to indicate a non-square matrix during an operation
+    requiring one. */
 
-public class DimensionMismatchException extends RuntimeException {
-  public DimensionMismatchException() {
+public class NonSquareMatrixException extends RuntimeException {
+  public NonSquareMatrixException() {
     super();
   }
 
-  public DimensionMismatchException(String msg) {
+  public NonSquareMatrixException(String msg) {
     super(msg);
   }
 }

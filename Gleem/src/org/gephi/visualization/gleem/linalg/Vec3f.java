@@ -37,7 +37,7 @@
  * WARRANTY OF FITNESS FOR SUCH USES.
  */
 
-package org.gephi.visualization.opengl.gleem.linalg;
+package org.gephi.visualization.gleem.linalg;
 
 /** 3-element single-precision vector */
 

@@ -37,7 +37,7 @@
  * WARRANTY OF FITNESS FOR SUCH USES.
  */
 
-package org.gephi.visualization.opengl.gleem.linalg;
+package org.gephi.visualization.gleem.linalg;
 
 /** This differs from the Plane class in that it maintains an origin
     and orthonormal U, V axes in the plane so that it can project a 3D

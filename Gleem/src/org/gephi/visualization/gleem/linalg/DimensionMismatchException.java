@@ -37,17 +37,17 @@
  * WARRANTY OF FITNESS FOR SUCH USES.
  */
 
-package org.gephi.visualization.opengl.gleem.linalg;
+package org.gephi.visualization.gleem.linalg;
 
-/** Thrown to indicate a singular matrix during an inversion or
-    related operation. */
+/** Thrown to indicate a mismatch of dimensionality of a matrix or
+    vector. */
 
-public class SingularMatrixException extends RuntimeException {
-  public SingularMatrixException() {
+public class DimensionMismatchException extends RuntimeException {
+  public DimensionMismatchException() {
     super();
   }
 
-  public SingularMatrixException(String msg) {
+  public DimensionMismatchException(String msg) {
     super(msg);
   }
 }

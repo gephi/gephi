@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.util.logging.Logger;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
-import org.gephi.visualization.swing.GraphDrawable;
+import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -51,7 +51,7 @@ final class GraphTopComponent extends TopComponent {
         //Init
         VizController.getInstance().initInstances();
         CompatibilityEngine engine = (CompatibilityEngine) VizController.getInstance().getEngine();
-        GraphDrawable drawable = VizController.getInstance().getDrawable();
+        GraphDrawableImpl drawable = VizController.getInstance().getDrawable();
 
         add(drawable.getGraphComponent(), BorderLayout.CENTER);
 

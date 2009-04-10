@@ -35,7 +35,7 @@ import org.gephi.visualization.api.Scheduler;
 import org.gephi.visualization.bridge.DataBridge;
 import org.gephi.visualization.bridge.EventBridge;
 import org.gephi.visualization.bridge.TestDataBridge;
-import org.gephi.visualization.swing.GraphDrawable;
+import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.gephi.visualization.swing.StandardGraphIO;
 
 /**
@@ -57,7 +57,7 @@ public class VizController {
     }
 
     //Architecture
-    private GraphDrawable drawable;
+    private GraphDrawableImpl drawable;
     private AbstractEngine engine;
     private Scheduler scheduler;
     private VizConfig vizConfig;
@@ -94,7 +94,7 @@ public class VizController {
         dataBridge.initArchitecture();
     }
 
-    public GraphDrawable getDrawable() {
+    public GraphDrawableImpl getDrawable() {
         return drawable;
     }
 
