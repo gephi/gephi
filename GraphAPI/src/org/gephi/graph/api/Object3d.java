@@ -26,5 +26,5 @@ package org.gephi.graph.api;
  * @author Mathieu Bastian
  */
 public interface Object3d<ObjectType extends Renderable> {
-
+    public boolean isSelected();
 }

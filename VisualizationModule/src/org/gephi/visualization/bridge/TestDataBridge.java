@@ -70,7 +70,7 @@ public class TestDataBridge implements DataBridge {
         }
 
         //Add nodes
-        for(int i=0;i<15;i++)
+        for(int i=0;i<1500;i++)
         {
             NodeImpl n = new NodeImpl();
             nodeList.add(n);
@@ -89,7 +89,7 @@ public class TestDataBridge implements DataBridge {
         //Remove
         if(edgeList.size()>0)
         {
-            for(int i=0;i<40;i++)
+            for(int i=0;i<4000;i++)
             {
                 Edge e = edgeList.remove((int)Math.random()*edgeList.size());
                 engine.removeObject(AbstractEngine.CLASS_EDGE, (Object3dImpl)e.getObject3d());
@@ -110,7 +110,7 @@ public class TestDataBridge implements DataBridge {
     }
 
     public boolean requireUpdate() {
-        return update.getAndSet(true);
+        return update.getAndSet(false);
     }
     
 }

@@ -53,6 +53,8 @@ public interface Renderable {
 
     public float alpha();
 
+    public void setAlpha(float alpha);
+
     public Object3d getObject3d();
 
     public void setObject3d(Object3d obj);

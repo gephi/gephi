@@ -248,6 +248,11 @@ public class Edge3dObject extends Object3dImpl<Edge> {
     }
 
     @Override
+    public boolean isSelected() {
+        return obj.getSource().getObject3d().isSelected() || obj.getTarget().getObject3d().isSelected();
+    }
+
+    @Override
     public String toSVG() {
         // TODO Auto-generated method stub
         return null;

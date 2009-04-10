@@ -33,6 +33,7 @@ import org.gephi.visualization.api.objects.Object3dClass;
 import org.gephi.visualization.api.objects.Object3dClassLibrary;
 import org.gephi.visualization.gleem.linalg.Vec3f;
 import org.gephi.visualization.api.Scheduler;
+import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.selection.Point;
 import org.gephi.visualization.api.selection.SelectionArea;
 import org.gephi.visualization.bridge.DataBridge;
@@ -63,6 +64,7 @@ public abstract class AbstractEngine implements Engine,VizArchitecture {
     protected Object3dClassLibrary objectClassLibrary;
     protected DataBridge dataBridge;
     protected EventBridge eventBridge;
+    protected VizConfig vizConfig;
 
     //AddRemove
     public void initArchitecture() {
@@ -71,6 +73,7 @@ public abstract class AbstractEngine implements Engine,VizArchitecture {
         this.objectClassLibrary = VizController.getInstance().getObject3dClassLibrary();
         this.dataBridge = VizController.getInstance().getDataBridge();
         this.eventBridge = VizController.getInstance().getEventBridge();
+        this.vizConfig = VizController.getInstance().getVizConfig();
         initObject3dClass();
     }
 

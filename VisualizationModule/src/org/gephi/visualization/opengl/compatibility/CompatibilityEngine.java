@@ -35,6 +35,7 @@ import org.gephi.visualization.api.Object3dImpl;
 import org.gephi.visualization.api.initializer.CompatibilityObject3dInitializer;
 import org.gephi.visualization.opengl.octree.Octree;
 import org.gephi.visualization.api.Scheduler;
+import org.gephi.visualization.api.VizConfig.DisplayConfig;
 import org.gephi.visualization.api.objects.CompatibilityObject3dClass;
 
 /**
@@ -53,17 +54,17 @@ public class CompatibilityEngine extends AbstractEngine {
 
     public CompatibilityEngine() {
         super();
-
-        //Init
-        octree = new Octree(5, 10000, 3);
     }
 
     @Override
     public void initArchitecture() {
         super.initArchitecture();
         scheduler = (CompatibilityScheduler) VizController.getInstance().getScheduler();
-        octree.initArchitecture();
         vizEventManager = VizController.getInstance().getVizEventManager();
+
+        //Init
+        octree = new Octree(vizConfig.getOctreeDepth(), vizConfig.getOctreeWidth(), 3);
+        octree.initArchitecture();
     }
 
     public void updateSelection(GL gl, GLU glu) {
@@ -111,28 +112,64 @@ public class CompatibilityEngine extends AbstractEngine {
             //gl.glBegin(GL.GL_LINES);
             //gl.glBegin(GL.GL_QUADS);
             gl.glBegin(GL.GL_TRIANGLES);
-            for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_EDGE); itr.hasNext();) {
-                Object3dImpl obj = itr.next();
-                //Renderable renderable = obj.getObj();
 
-                if (obj.markTime != startTime) {
-                    obj.display(gl, glu);
-                    obj.markTime = startTime;
+            if (vizConfig.getDisplayConfig() == DisplayConfig.DISPLAY_ALL) {
+                //Normal mode, all edges rendered
+                for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_EDGE); itr.hasNext();) {
+                    Object3dImpl obj = itr.next();
+                    //Renderable renderable = obj.getObj();
+
+                    if (obj.markTime != startTime) {
+                        obj.display(gl, glu);
+                        obj.markTime = startTime;
+                    }
+
                 }
-
+            } else if (vizConfig.getDisplayConfig() == DisplayConfig.DISPLAY_NODES_EDGES) {
+                //Only edges on selected nodes are rendered
+                for (Iterator<Object3dImpl> itr = octree.getSelectedObjectIterator(CLASS_EDGE); itr.hasNext();) {
+                    Object3dImpl obj = itr.next();
+                    if (obj.isSelected() && obj.markTime != startTime) {
+                        obj.display(gl, glu);
+                        obj.markTime = startTime;
+                    }
+                }
+            } else if (vizConfig.getDisplayConfig() == DisplayConfig.DISPLAY_ALPHA) {
+                //Selected edges are rendered with 1f alpha, half otherwise
+                for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_EDGE); itr.hasNext();) {
+                    Object3dImpl obj = itr.next();
+                    if (obj.markTime != startTime) {
+                        obj.getObj().setAlpha(obj.isSelected() ? 1f : 0.2f);
+                        obj.display(gl, glu);
+                        obj.markTime = startTime;
+                    }
+                }
             }
             gl.glEnd();
             gl.glEnable(GL.GL_LIGHTING);
         //gl.glEnable(GL.GL_BLEND);
         }
-        gl.glColor3i(0, 0, 0);
+
         //Node
         if (object3dClasses[CLASS_NODE].isEnabled()) {
-            for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_NODE); itr.hasNext();) {
-                Object3dImpl obj = itr.next();
-                if (obj.markTime != startTime) {
-                    obj.display(gl, glu);
-                    obj.markTime = startTime;
+            if (vizConfig.getDisplayConfig() == DisplayConfig.DISPLAY_ALPHA) {
+                 //Selected nodes are rendered with 1f alpha, half otherwise
+                for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_NODE); itr.hasNext();) {
+                    Object3dImpl obj = itr.next();
+                    if (obj.markTime != startTime) {
+                        obj.getObj().setAlpha(obj.isSelected() ? 1f : 0.2f);
+                        obj.display(gl, glu);
+                        obj.markTime = startTime;
+                    }
+                }
+            } else {
+                //Mode normal
+                for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_NODE); itr.hasNext();) {
+                    Object3dImpl obj = itr.next();
+                    if (obj.markTime != startTime) {
+                        obj.display(gl, glu);
+                        obj.markTime = startTime;
+                    }
                 }
             }
         }
@@ -387,6 +424,7 @@ public class CompatibilityEngine extends AbstractEngine {
         object3dClasses = objectClassLibrary.createObjectClassesCompatibility(this);
         lodClasses = new CompatibilityObject3dClass[0];
         selectableClasses = new CompatibilityObject3dClass[0];
+
 
         object3dClasses[0].setEnabled(true);
         object3dClasses[1].setEnabled(true);

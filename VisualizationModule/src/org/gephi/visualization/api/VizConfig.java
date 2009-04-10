@@ -30,7 +30,7 @@ public class VizConfig {
 
     public static enum DisplayConfig {
 
-        DISPLAY_ALL, DISPLAY_NODES_ONLY
+        DISPLAY_ALL, DISPLAY_NODES_ONLY, DISPLAY_NODES_EDGES, DISPLAY_ALPHA
     }
     private int antialiasing = 4;
     private boolean lineSmooth = true;
@@ -48,6 +48,15 @@ public class VizConfig {
     protected boolean rotatingEnable = true;
     protected boolean directedEdges = true;
     protected boolean showFPS = true;
+    protected float[] edgeInSelectedColor = {1f, 0f, 0f};
+    protected float[] edgeOutSelectedColor = {1f, 1f, 0f};
+    protected float[] edgeBothSelectedColor = {0f, 0f, 0f};
+    protected DisplayConfig displayConfig = DisplayConfig.DISPLAY_ALPHA;
+    protected float[] edgesColor = null;
+    protected float edgeAlpha = 1f;
+    protected int octreeDepth = 5;
+    protected int octreeWidth = 10000;
+
 
     public DisplayConfig getDisplayConfig() {
         return displayConfig;
@@ -76,12 +85,6 @@ public class VizConfig {
     public float[] getNodeSelectedColor() {
         return nodeSelectedColor;
     }
-    protected float[] edgeInSelectedColor = {1f, 0f, 0f};
-    protected float[] edgeOutSelectedColor = {1f, 1f, 0f};
-    protected float[] edgeBothSelectedColor = {0f, 0f, 0f};
-    protected DisplayConfig displayConfig = DisplayConfig.DISPLAY_ALL;
-    protected float[] edgesColor = null;
-    protected float edgeAlpha = 1f;
 
     public float[] getDefaultCameraPosition() {
         return defaultCameraPosition;
@@ -146,5 +149,13 @@ public class VizConfig {
 
     public boolean isShowFPS() {
         return showFPS;
+    }
+
+    public int getOctreeDepth() {
+        return octreeDepth;
+    }
+
+    public int getOctreeWidth() {
+        return octreeWidth;
     }
 }

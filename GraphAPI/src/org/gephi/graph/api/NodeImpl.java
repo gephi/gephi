@@ -96,6 +96,10 @@ public class NodeImpl implements Node{
         return alpha;
     }
 
+    public void setAlpha(float alpha) {
+        this.alpha = alpha;
+    }
+
     public Object3d getObject3d() {
         return obj;
     }
