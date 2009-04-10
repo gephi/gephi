@@ -21,17 +21,16 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.opengl;
 
 import org.gephi.visualization.api.Object3dImpl;
-import java.nio.DoubleBuffer;
-import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.Engine;
 import org.gephi.visualization.api.GraphIO;
 import org.gephi.visualization.api.VizEventManager;
-import org.gephi.visualization.objects.Object3dClass;
-import org.gephi.visualization.objects.Object3dClassLibrary;
+import org.gephi.visualization.api.objects.Object3dClass;
+import org.gephi.visualization.api.objects.Object3dClassLibrary;
 import org.gephi.visualization.gleem.linalg.Vec3f;
 import org.gephi.visualization.api.Scheduler;
 import org.gephi.visualization.selection.Point;
@@ -45,7 +44,7 @@ import org.gephi.visualization.swing.GraphDrawableImpl;
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractEngine implements VizArchitecture {
+public abstract class AbstractEngine implements Engine,VizArchitecture {
 
     //Enums
     public enum Limits {

@@ -10,7 +10,7 @@ import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.config.GraphicalConfiguration;
-import org.gephi.visualization.config.VizConfig;
+import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.Lighting;
 
 /**

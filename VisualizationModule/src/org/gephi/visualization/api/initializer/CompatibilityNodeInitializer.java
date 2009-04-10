@@ -22,9 +22,6 @@ package org.gephi.visualization.api.initializer;
 
 
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.Object3d;
-import org.gephi.visualization.api.initializer.CompatibilityObject3dInitializer;
-import org.gephi.visualization.api.initializer.NodeInitializer;
 import org.gephi.visualization.api.Object3dImpl;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 

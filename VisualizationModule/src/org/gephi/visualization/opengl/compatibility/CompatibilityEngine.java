@@ -29,12 +29,13 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.objects.Object3dClass;
+import org.gephi.visualization.api.objects.Object3dClass;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.api.Object3dImpl;
 import org.gephi.visualization.api.initializer.CompatibilityObject3dInitializer;
 import org.gephi.visualization.opengl.octree.Octree;
 import org.gephi.visualization.api.Scheduler;
+import org.gephi.visualization.api.objects.CompatibilityObject3dClass;
 
 /**
  *

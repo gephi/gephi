@@ -20,8 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.objects;
 
+import org.gephi.visualization.api.objects.Object3dClassLibrary;
+import org.gephi.visualization.api.objects.CompatibilityObject3dClass;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.opengl.compatibility.CompatibilityObject3dClass;
 import org.gephi.visualization.opengl.compatibility.initializer.CompatibilityArrowInitializer;
 import org.gephi.visualization.opengl.compatibility.initializer.CompatibilityEdgeInitializer;
 import org.gephi.visualization.opengl.compatibility.initializer.CompatibilityNodeSphereInitializer;
@@ -31,6 +32,7 @@ import org.gephi.visualization.opengl.compatibility.initializer.CompatibilityNod
  * @author Mathieu Bastian
  */
 public class StandardObject3dClassLibrary implements Object3dClassLibrary {
+
 
     public CompatibilityObject3dClass[] createObjectClassesCompatibility(AbstractEngine engine) {
         CompatibilityObject3dClass[] object3dClasses = new CompatibilityObject3dClass[3];

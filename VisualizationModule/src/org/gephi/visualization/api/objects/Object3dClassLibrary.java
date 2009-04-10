@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.gephi.visualization.objects;
+package org.gephi.visualization.api.objects;
 
+import org.gephi.visualization.api.objects.CompatibilityObject3dClass;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.opengl.compatibility.CompatibilityObject3dClass;
 
 /**
  *

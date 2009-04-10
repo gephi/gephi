@@ -75,6 +75,7 @@
             <public-packages>
                 <package>org.gephi.visualization.api</package>
                 <package>org.gephi.visualization.api.initializer</package>
+                <package>org.gephi.visualization.api.objects</package>
                 <package>org.gephi.visualization.api.selection</package>
             </public-packages>
         </data>

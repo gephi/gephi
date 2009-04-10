@@ -18,13 +18,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.visualization.opengl.compatibility;
+package org.gephi.visualization.api.objects;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.gephi.visualization.api.initializer.Object3dInitializer;
-import org.gephi.visualization.objects.Object3dClass;
+import org.gephi.visualization.api.objects.Object3dClass;
 import org.gephi.visualization.api.Object3dImpl;
 import org.gephi.visualization.api.initializer.CompatibilityObject3dInitializer;
 
