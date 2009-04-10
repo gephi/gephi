@@ -83,7 +83,7 @@ public class VizController {
         //eventBridge = new DHNSEventBridge();
         dataBridge = new TestDataBridge();
 
-        drawable = commander.createPanel();
+        drawable = commander.createCanvas();
         drawable.getGraphComponent().setPreferredSize(new Dimension(600, 600));
         drawable.initArchitecture();
         engine.initArchitecture();

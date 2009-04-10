@@ -70,8 +70,11 @@ public class GraphPanel extends GraphDrawableImpl {
     }
 
     private void render2DForeground(Graphics2D g) {
-        g.setColor(Color.red);
-        g.drawString("" + fps, 10, 15);
+        if(vizConfig.isShowFPS())
+        {
+            g.setColor(Color.LIGHT_GRAY);
+            g.drawString("" + fps, 10, 15);
+        }
 
         GraphLimits limits = VizController.getInstance().getLimits();
         int[] xP = new int[4];
@@ -84,6 +87,7 @@ public class GraphPanel extends GraphDrawableImpl {
         yP[1] = viewport.get(3) - limits.getMaxYviewport();
         yP[2] = viewport.get(3) - limits.getMaxYviewport();
         yP[3] = viewport.get(3) - limits.getMinYviewport();
+        g.setColor(Color.red);
         g.drawPolygon(xP, yP, 4);
     }
 }

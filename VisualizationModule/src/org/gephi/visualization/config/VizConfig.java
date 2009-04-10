@@ -47,6 +47,7 @@ public class VizConfig {
     protected boolean cameraControlEnable = true;
     protected boolean rotatingEnable = true;
     protected boolean directedEdges = true;
+    protected boolean showFPS = true;
 
     public DisplayConfig getDisplayConfig() {
         return displayConfig;
@@ -141,5 +142,9 @@ public class VizConfig {
 
     public boolean isDirectedEdges() {
         return directedEdges;
+    }
+
+    public boolean isShowFPS() {
+        return showFPS;
     }
 }

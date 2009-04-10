@@ -185,6 +185,11 @@ public abstract class GLAbstractListener implements GLEventListener {
                 return;
             }
 
+            if(height==0)
+                height=1;
+            if(width==0)
+                width=1;
+
             int viewportW = 0, viewportH = 0, viewportX = width, viewportY = height;
 
             aspectRatio = (double) width / (double) height;

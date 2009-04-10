@@ -20,10 +20,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.swing;
 
+import com.sun.opengl.util.GLUT;
 import java.awt.Component;
 
 import java.awt.Cursor;
+import javax.media.opengl.GL;
+import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
+import javax.media.opengl.glu.GLU;
+import javax.swing.JPopupMenu;
+import javax.swing.ToolTipManager;
+
 
 /**
  *
@@ -32,6 +39,7 @@ import javax.media.opengl.GLCanvas;
 public class GraphCanvas extends GraphDrawableImpl {
 
     private GLCanvas glCanvas;
+    private GLUT glut = new GLUT();
 
     public GraphCanvas() {
         super();
@@ -41,5 +49,35 @@ public class GraphCanvas extends GraphDrawableImpl {
         //Basic init
         graphComponent = (Component) glCanvas;
         graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        //False lets the components appear on top of the canvas
+        JPopupMenu.setDefaultLightWeightPopupEnabled(false);
+        ToolTipManager.sharedInstance().setLightWeightPopupEnabled(false);
+    }
+
+    @Override
+    protected void render3DScene(GL gl, GLU glu) {
+        if(vizConfig.isShowFPS())
+        {
+            gl.glPushMatrix();
+            gl.glLoadIdentity();
+            gl.glMatrixMode(gl.GL_PROJECTION);
+            gl.glPushMatrix();
+            gl.glLoadIdentity();
+
+            gl.glGetIntegerv(gl.GL_VIEWPORT, viewport);
+            glu.gluOrtho2D(0, viewport.get(2), viewport.get(3), 0);
+            gl.glDepthFunc(gl.GL_ALWAYS);
+            gl.glColor3i(192, 192, 192);
+            gl.glRasterPos2f(10, 15);
+
+            glut.glutBitmapString(GLUT.BITMAP_HELVETICA_10, ""+fps);
+
+            gl.glDepthFunc(gl.GL_LESS);
+            gl.glPopMatrix();
+            gl.glMatrixMode(gl.GL_MODELVIEW);
+            gl.glPopMatrix();
+        }
+        super.render3DScene(gl, glu);
     }
 }

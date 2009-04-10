@@ -55,8 +55,8 @@ final class GraphTopComponent extends TopComponent {
 
         add(drawable.getGraphComponent(), BorderLayout.CENTER);
 
-        addNotify();
-        validate();
+        //addNotify();
+        //validate();
         remove(waitingLabel);
         drawable.display();
         engine.getScheduler().start();
