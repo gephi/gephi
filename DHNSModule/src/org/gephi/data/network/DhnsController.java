@@ -1,0 +1,82 @@
+/*
+Copyright 2008 WebAtlas
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.gephi.data.network;
+
+import org.gephi.data.network.tree.TreeStructure;
+import org.gephi.data.network.sight.Sight;
+import org.gephi.data.network.sight.SightManager;
+import org.gephi.data.network.tree.importer.CompleteTreeImporter;
+
+/**
+ *
+ * @author Mathieu Bastian
+ */
+public class DhnsController {
+
+    private static DhnsController instance;
+
+    private DhnsController() {
+    }
+
+    public synchronized static DhnsController getInstance() {
+        if (instance == null) {
+            instance = new DhnsController();
+        }
+        return instance;
+    }
+
+    //Architecture
+    private Dhns dhns;
+    private TreeStructure treeStructure;
+    private Sight mainSight;
+    private SightManager sightManager;
+
+    public void initInstances() {
+        sightManager = new SightManager();
+        dhns = new Dhns();
+        treeStructure = dhns.getTreeStructure();
+        mainSight = sightManager.createSight();
+
+        importFakeGraph();
+
+        dhns.init(mainSight);
+    }
+
+    private void importFakeGraph() {
+        CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure, mainSight);
+
+        importer.importGraph(30, true);
+        importer.shuffleEnable();
+        System.out.println("Tree size : " + treeStructure.getTreeSize());
+    }
+
+    public Sight getMainSight() {
+        return mainSight;
+    }
+
+    public TreeStructure getTreeStructure() {
+        return treeStructure;
+    }
+
+    public Dhns getDhns() {
+        return dhns;
+    }
+}
