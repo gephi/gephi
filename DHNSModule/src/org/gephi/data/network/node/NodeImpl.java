@@ -26,77 +26,104 @@ import org.gephi.graph.api.Object3d;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class NodeImpl implements Node {
 
+    protected float x;
+	protected float y;
+	protected float z;
+	protected String label="";
+	protected float r = 0f;
+	protected float g = 0f;
+	protected float b = 0f;
+    protected float alpha = 1f;
+	protected float size = 1f;
+    protected Object3d obj;
+
+    //Impl
+    protected PreNode preNode;
+
+    public NodeImpl()
+    {
+        x = ((float)Math.random())*2000-1000.0f;
+		y = ((float)Math.random())*2000-1000.0f;
+    }
+
     public float x() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return x;
     }
 
     public float y() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return y;
     }
 
     public float z() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return z;
     }
 
     public void setX(float x) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.x = x;
     }
 
     public void setY(float y) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.y = y;
     }
 
     public void setZ(float z) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.z = z;
     }
 
     public float getRadius() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return size;
     }
 
     public float getSize() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return size;
     }
 
     public void setSize(float size) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.size = size;
     }
 
     public float r() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return r;
     }
 
     public float g() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return g;
     }
 
     public float b() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return b;
     }
 
     public float alpha() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return alpha;
     }
 
     public void setAlpha(float alpha) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.alpha = alpha;
     }
 
     public Object3d getObject3d() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return obj;
     }
 
     public void setObject3d(Object3d obj) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.obj = obj;
     }
 
-    public void setPreNode(PreNode preNode)
-    {
-        
+    public int getIndex() {
+        return preNode.getPre();
+    }
+
+    public PreNode getPreNode() {
+        return preNode;
+    }
+
+    public void setPreNode(PreNode preNode) {
+        this.preNode = preNode;
     }
 
 }

@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.network.edge;
 
 import org.gephi.data.network.node.PreNode;
+import org.gephi.graph.api.Edge;
 
 /**
  *
@@ -54,5 +55,9 @@ public class HierarchyEdge implements DhnsEdge {
     @Override
     public void setPreNodeTo(PreNode preNodeTo) {
         this.preNodeTo = preNodeTo;
+    }
+
+    public Edge getEdge() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

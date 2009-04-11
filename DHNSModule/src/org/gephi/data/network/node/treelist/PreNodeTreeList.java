@@ -322,10 +322,8 @@ public class PreNodeTreeList extends AbstractList<PreNode> implements Iterable<P
                     currentParent = currentParent.parent;
                     counter++;
 
-                    if (counter > 10000) {
-                        System.out.println("Boucle infinie " + currentParent.value.level);
-                        System.exit(1);
-                    }
+                    //TODO Remove This assert
+                    assert counter < 10000;
                 }
                 value.pre = index;
                 value.getPost();

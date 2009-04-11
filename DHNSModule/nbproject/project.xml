@@ -23,7 +23,10 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages/>
+            <public-packages>
+                <package>org.gephi.data.network.api</package>
+                <package>org.gephi.data.network.reader</package>
+            </public-packages>
         </data>
     </configuration>
 </project>

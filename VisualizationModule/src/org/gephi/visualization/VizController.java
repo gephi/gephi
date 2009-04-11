@@ -32,9 +32,9 @@ import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.opengl.compatibility.CompatibilityScheduler;
 import org.gephi.visualization.api.Scheduler;
+import org.gephi.visualization.bridge.DHNSDataBridge;
 import org.gephi.visualization.bridge.DataBridge;
 import org.gephi.visualization.bridge.EventBridge;
-import org.gephi.visualization.bridge.TestDataBridge;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.gephi.visualization.swing.StandardGraphIO;
 
@@ -79,9 +79,9 @@ public class VizController {
         scheduler = new CompatibilityScheduler();
         object3dClassLibrary = new StandardObject3dClassLibrary();
         limits = new GraphLimits();
-        //dataBridge = new DHNSDataBridge();
+        dataBridge = new DHNSDataBridge();
         //eventBridge = new DHNSEventBridge();
-        dataBridge = new TestDataBridge();
+        //dataBridge = new TestDataBridge();
 
         drawable = commander.createCanvas();
         drawable.getGraphComponent().setPreferredSize(new Dimension(600, 600));

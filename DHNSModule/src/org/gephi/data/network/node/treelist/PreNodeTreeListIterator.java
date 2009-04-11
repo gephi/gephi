@@ -49,7 +49,6 @@ public class PreNodeTreeListIterator implements Iterator<PreNode> {
      * @param fromIndex  the index to start at
      */
     public PreNodeTreeListIterator(PreNodeTreeList treeList, int fromIndex) throws IndexOutOfBoundsException {
-        super();
         this.treeList = treeList;
         this.nextIndex = fromIndex;
     }

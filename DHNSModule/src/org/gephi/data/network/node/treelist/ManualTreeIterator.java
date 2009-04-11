@@ -31,7 +31,6 @@ public class ManualTreeIterator implements Iterator<PreNode>
 {
 	protected int treeSize;
 	protected PreNodeTreeList treeList;
-	protected PreNode next;
 	protected int nextIndex = 0;
 	protected PreNode pointer;
 

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.gephi.data.network.Dhns;
 import org.gephi.data.network.DhnsController;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.edge.VirtualEdge;
@@ -41,6 +42,7 @@ import org.gephi.data.network.edge.iterators.EdgesOutIterator;
 public class SightCache {
 
     private Sight sight;
+    private Dhns dhns;
 
     //States
     private AtomicBoolean resetNode         = new AtomicBoolean(true);
@@ -50,15 +52,15 @@ public class SightCache {
     private List<PreNode> nodeCache         = new ArrayList<PreNode>();
     private List<VirtualEdge> edgeCache     = new ArrayList<VirtualEdge>();
     
-    public SightCache(Sight sight)
+    public SightCache(Dhns dhns, Sight sight)
     {
+        this.dhns = dhns;
         this.sight = sight;
     }
 
     public Iterator<PreNode> getNodeIterator()
     {
-        DhnsController controller = DhnsController.getInstance();
-        TreeStructure treeStructure = controller.getTreeStructure();
+        TreeStructure treeStructure = dhns.getTreeStructure();
         if(resetNode.getAndSet(false))
 		{
 			nodeCache.clear();
@@ -72,8 +74,7 @@ public class SightCache {
 
     public Iterator<VirtualEdge> getEdgeIterator()
     {
-        DhnsController controller = DhnsController.getInstance();
-        TreeStructure treeStructure = controller.getTreeStructure();
+        TreeStructure treeStructure = dhns.getTreeStructure();
         if(resetEdge.getAndSet(false))
 		{
 			edgeCache.clear();

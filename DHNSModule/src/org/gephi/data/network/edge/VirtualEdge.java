@@ -90,6 +90,8 @@ public class VirtualEdge implements DhnsEdge {
     }
 
     public Edge getEdge() {
+        if(edge==null)
+            initEdgeInstance();
         return edge;
     }
 

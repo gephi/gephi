@@ -398,4 +398,9 @@ public class EdgeProcessing {
         }
         return virtualEdge;
     }
+
+    public void buildHierarchyViewMode(Sight sight)
+    {
+        SingleTreeIterator enabledNodes = new SingleTreeIterator(treeStructure, sight);
+    }
 }

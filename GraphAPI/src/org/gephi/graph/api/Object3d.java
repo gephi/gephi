@@ -27,4 +27,6 @@ package org.gephi.graph.api;
  */
 public interface Object3d<ObjectType extends Renderable> {
     public boolean isSelected();
+    public void setCacheMarker(int cacheMarker);
+    public boolean isCacheMatching(int cacheMarker);
 }

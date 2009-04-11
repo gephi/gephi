@@ -27,20 +27,33 @@ import org.gephi.data.network.edge.EdgeProcessing;
 import org.gephi.data.network.edge.PreEdge;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.sight.Sight;
+import org.gephi.data.network.sight.SightManager;
+import org.gephi.data.network.tree.importer.CompleteTreeImporter;
 
 public class Dhns {
 
     private DHNSConfig config;
     private TreeStructure treeStructure;
     private EdgeProcessing edgeProcessing;
+    private SightManager sightManager;
 
     public Dhns() {
         config = new DHNSConfig();
         treeStructure = new TreeStructure();
         edgeProcessing = new EdgeProcessing(treeStructure);
+        sightManager = new SightManager(this);
     }
 
     public void init(Sight sight) {
+        importFakeGraph();
+    }
+
+    private void importFakeGraph() {
+        CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure, sightManager.getMainSight());
+
+        importer.importGraph(30, true);
+        importer.shuffleEnable();
+        System.out.println("Tree size : " + treeStructure.getTreeSize());
     }
 
     public void expand(PreNode node, Sight sight) {
@@ -223,10 +236,10 @@ public class Dhns {
 
         if(minParent!=null && maxParent!=null && minParent!=maxParent)
         {
-        DhnsEdge dytsEdge = minParent.getVirtualEdge(edge, maxParent.getPre());
-        if(dytsEdge!=null)
+        DhnsEdge dhnsEdge = minParent.getVirtualEdge(edge, maxParent.getPre());
+        if(dhnsEdge!=null)
         {
-        VirtualEdge virtualEdge = (VirtualEdge)dytsEdge;
+        VirtualEdge virtualEdge = (VirtualEdge)dhnsEdge;
         virtualEdge.addPhysicalEdge(edge);
         }
         else
@@ -252,10 +265,10 @@ public class Dhns {
         if(minParent!=null && maxParent!=null && minParent!=maxParent)
         {
         //Get the virtual edge which represent the physical
-        DytsEdge dytsEdge = minParent.getVirtualEdge(edge, maxParent.getPre());
-        if(dytsEdge!=null)
+        DhnsEdge dhnsEdge = minParent.getVirtualEdge(edge, maxParent.getPre());
+        if(dhnsEdge!=null)
         {
-        VirtualEdge virtualEdge = (VirtualEdge)dytsEdge;
+        VirtualEdge virtualEdge = (VirtualEdge)dhnsEdge;
         virtualEdge.removePhysicalEdge(edge);
 
         //If the virtual edge no more contain physical edges, remove it
@@ -270,5 +283,10 @@ public class Dhns {
 
     public TreeStructure getTreeStructure() {
         return treeStructure;
+    }
+
+    public SightManager getSightManager()
+    {
+        return sightManager;
     }
 }

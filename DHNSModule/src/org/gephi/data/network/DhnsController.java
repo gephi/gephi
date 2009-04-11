@@ -33,9 +33,6 @@ public class DhnsController {
 
     private static DhnsController instance;
 
-    private DhnsController() {
-    }
-
     public synchronized static DhnsController getInstance() {
         if (instance == null) {
             instance = new DhnsController();
@@ -45,35 +42,11 @@ public class DhnsController {
 
     //Architecture
     private Dhns dhns;
-    private TreeStructure treeStructure;
-    private Sight mainSight;
-    private SightManager sightManager;
 
-    public void initInstances() {
-        sightManager = new SightManager();
+
+    private DhnsController() {
         dhns = new Dhns();
-        treeStructure = dhns.getTreeStructure();
-        mainSight = sightManager.createSight();
 
-        importFakeGraph();
-
-        dhns.init(mainSight);
-    }
-
-    private void importFakeGraph() {
-        CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure, mainSight);
-
-        importer.importGraph(30, true);
-        importer.shuffleEnable();
-        System.out.println("Tree size : " + treeStructure.getTreeSize());
-    }
-
-    public Sight getMainSight() {
-        return mainSight;
-    }
-
-    public TreeStructure getTreeStructure() {
-        return treeStructure;
     }
 
     public Dhns getDhns() {

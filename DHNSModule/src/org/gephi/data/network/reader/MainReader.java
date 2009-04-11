@@ -21,7 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.network.reader;
 
 import java.util.Iterator;
+import org.gephi.data.network.Dhns;
 import org.gephi.data.network.DhnsController;
+import org.gephi.data.network.api.EdgeWrap;
+import org.gephi.data.network.api.NodeWrap;
 import org.gephi.data.network.edge.VirtualEdge;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.sight.Sight;
@@ -36,14 +39,16 @@ public class MainReader {
 
     public MainReader() {
         DhnsController controller = DhnsController.getInstance();
-        currentSight = controller.getMainSight();
+        Dhns dhns = controller.getDhns();
+        currentSight = dhns.getSightManager().getMainSight();
+        dhns.init(currentSight);
     }
 
-    public Iterator<PreNode> getNodes() {
+    public Iterator<? extends NodeWrap> getNodes() {
         return currentSight.getSightCache().getNodeIterator();
     }
 
-    public Iterator<VirtualEdge> getEdges() {
+    public Iterator<? extends EdgeWrap> getEdges() {
         return currentSight.getSightCache().getEdgeIterator();
     }
 

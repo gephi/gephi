@@ -36,7 +36,6 @@ public class Sight implements AVLItem {
 
     public Sight(int number) {
         this.number = number;
-        this.sightCache = new SightCache(this);
     }
 
     public int getNumber() {

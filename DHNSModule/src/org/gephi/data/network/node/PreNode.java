@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network.node;
 
+import org.gephi.data.network.api.NodeWrap;
 import org.gephi.data.network.utils.avl.BackwardEdgeTree;
 import org.gephi.data.network.utils.avl.DhnsEdgeTree;
 import org.gephi.data.network.utils.avl.ForwardEdgeTree;
@@ -56,7 +57,7 @@ import org.gephi.datastructure.avl.simple.AVLItem;
  * @see PreNodeTreeList
  * @see EdgeProcessing
  */
-public class PreNode implements AVLItem {
+public class PreNode implements AVLItem, NodeWrap {
 
     public int pre;
     public int size;
@@ -126,10 +127,6 @@ public class PreNode implements AVLItem {
 
     public int getPre() {
         return avlNode.getIndex();
-    }
-
-    public void setPre(int pre) {
-        this.pre = pre;
     }
 
     public void addSight(Sight sight) {
@@ -204,13 +201,6 @@ public class PreNode implements AVLItem {
         return backwardEdges.getCount();
     }
 
-    /*public Node getNode() {
-    return node;
-    }
-
-    public void setNode(Node node) {
-    this.node = node;
-    }*/
     @Override
     public int getNumber() {
         return getPre();
@@ -247,6 +237,8 @@ public class PreNode implements AVLItem {
     }
 
     public NodeImpl getNode() {
+        if(node==null)
+            initNodeInstance();
         return node;
     }
 }

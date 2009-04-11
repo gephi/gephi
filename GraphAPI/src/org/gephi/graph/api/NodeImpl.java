@@ -108,4 +108,8 @@ public class NodeImpl implements Node{
         this.obj = obj;
     }
 
+    public int getIndex() {
+        return 0;
+    }
+
 }
