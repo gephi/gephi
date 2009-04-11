@@ -21,10 +21,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.jogl;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import javax.swing.SwingUtilities;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.modules.InstalledFileLocator;
 import org.openide.modules.ModuleInstall;
+import org.openide.util.Exceptions;
+import org.openide.util.NbBundle;
 
 /**
  * Manages the JOGL natives loading. Thanks to Michael Bien, Lilian Chamontin and Kenneth Russell.
@@ -34,16 +39,16 @@ import org.openide.modules.ModuleInstall;
 public class JOGLNativesInstaller extends ModuleInstall {
 
     private NativeLibInfo nativeLibInfo;    //Compatible nativeLibInfo with OS/Arch
+    private boolean exitOnFatalError = true;
 
     public void restored() {
         if (findCompatibleOsAndArch()) {
-
             String nativeArch = nativeLibInfo.getSubDirectoryPath();
             File joglDistFolder = InstalledFileLocator.getDefault().locate("modules/lib/" + nativeArch, null, false);
             if (joglDistFolder != null) {
-                loadNatives(joglDistFolder);
+               loadNatives(joglDistFolder);
             } else {
-                System.err.println("Init failed: Impossible to locate natives for " + nativeArch + ".");
+                fatalError(String.format(NbBundle.getMessage(JOGLNativesInstaller.class, "JOGLNativesInstaller_error1"), new Object[]{nativeArch}));
             }
         }
     }
@@ -56,7 +61,7 @@ public class JOGLNativesInstaller extends ModuleInstall {
         if (checkOSAndArch(osName, osArch)) {
             return true;
         } else {
-            System.err.println("Init failed : Unsupported os / arch ( " + osName + " / " + osArch + " )");
+            fatalError(String.format(NbBundle.getMessage(JOGLNativesInstaller.class, "JOGLNativesInstaller_error2"), new Object[]{osName, osArch}));
         }
         return false;
     }
@@ -73,68 +78,67 @@ public class JOGLNativesInstaller extends ModuleInstall {
     }
 
     private void loadNatives(final File nativeLibDir) {
-        // back to the EDT
-        SwingUtilities.invokeLater(new Runnable() {
+        try {
+            // back to the EDT
+            SwingUtilities.invokeAndWait(new Runnable() {
 
-            public void run() {
-                System.out.println("Loading native libraries");
-
-                // disable JOGL and GlueGen runtime library loading from elsewhere
-                com.sun.opengl.impl.NativeLibLoader.disableLoading();
-                com.sun.gluegen.runtime.NativeLibLoader.disableLoading();
-
-                // Open GlueGen runtime library optimistically. Note that
-                // currently we do not need this on any platform except X11
-                // ones, because JOGL doesn't use the GlueGen NativeLibrary
-                // class anywhere except the DRIHack class, but if for
-                // example we add JOAL support then we will need this on
-                // every platform.
-                loadLibrary(nativeLibDir, "gluegen-rt");
-
-                Class driHackClass = null;
-                if (nativeLibInfo.mayNeedDRIHack()) {
-                    // Run the DRI hack
-                    try {
-                        driHackClass = Class.forName("com.sun.opengl.impl.x11.DRIHack");
-                        driHackClass.getMethod("begin", new Class[]{}).invoke(null, new Object[]{});
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                // Load core JOGL native library
-                loadLibrary(nativeLibDir, "jogl");
-
-                if (nativeLibInfo.mayNeedDRIHack()) {
-                    // End DRI hack
-                    try {
-                        driHackClass.getMethod("end", new Class[]{}).invoke(null, new Object[]{});
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                if (!nativeLibInfo.isMacOS()) { // borrowed from NativeLibLoader
-                    // Must pre-load JAWT on all non-Mac platforms to
-                    // ensure references from jogl_awt shared object
-                    // will succeed since JAWT shared object isn't in
-                    // default library path
-                    try {
-                        System.loadLibrary("jawt");
-                    } catch (UnsatisfiedLinkError ex) {
-                        // Accessibility technologies load JAWT themselves; safe to continue
-                        // as long as JAWT is loaded by any loader
-                        if (ex.getMessage().indexOf("already loaded") == -1) {
-                            System.err.println("Unable to load JAWT");
-                            throw ex;
+                public void run() {
+                    System.out.println("Loading native libraries");
+                    // disable JOGL and GlueGen runtime library loading from elsewhere
+                    com.sun.opengl.impl.NativeLibLoader.disableLoading();
+                    com.sun.gluegen.runtime.NativeLibLoader.disableLoading();
+                    // Open GlueGen runtime library optimistically. Note that
+                    // currently we do not need this on any platform except X11
+                    // ones, because JOGL doesn't use the GlueGen NativeLibrary
+                    // class anywhere except the DRIHack class, but if for
+                    // example we add JOAL support then we will need this on
+                    // every platform.
+                    loadLibrary(nativeLibDir, "gluegen-rt");
+                    Class driHackClass = null;
+                    if (nativeLibInfo.mayNeedDRIHack()) {
+                        // Run the DRI hack
+                        try {
+                            driHackClass = Class.forName("com.sun.opengl.impl.x11.DRIHack");
+                            driHackClass.getMethod("begin", new Class[]{}).invoke(null, new Object[]{});
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
+                    // Load core JOGL native library
+                    loadLibrary(nativeLibDir, "jogl");
+                    if (nativeLibInfo.mayNeedDRIHack()) {
+                        // End DRI hack
+                        try {
+                            driHackClass.getMethod("end", new Class[]{}).invoke(null, new Object[]{});
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (!nativeLibInfo.isMacOS()) {
+                        // borrowed from NativeLibLoader
+                        // Must pre-load JAWT on all non-Mac platforms to
+                        // ensure references from jogl_awt shared object
+                        // will succeed since JAWT shared object isn't in
+                        // default library path
+                        try {
+                            System.loadLibrary("jawt");
+                        } catch (UnsatisfiedLinkError ex) {
+                            // Accessibility technologies load JAWT themselves; safe to continue
+                            // as long as JAWT is loaded by any loader
+                            if (ex.getMessage().indexOf("already loaded") == -1) {
+                                fatalError(String.format(NbBundle.getMessage(JOGLNativesInstaller.class, "JOGLNativesInstaller_error3"), new Object[]{}));
+                            }
+                        }
+                    }
+                    // Load AWT-specific native code
+                    loadLibrary(nativeLibDir, "jogl_awt");
                 }
-
-                // Load AWT-specific native code
-                loadLibrary(nativeLibDir, "jogl_awt");
-            }
-        });
+            });
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (InvocationTargetException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     private void loadLibrary(File installDir, String libName) {
@@ -144,9 +148,17 @@ public class JOGLNativesInstaller extends ModuleInstall {
         } catch (UnsatisfiedLinkError ex) {
             // should be safe to continue as long as the native is loaded by any loader
             if (ex.getMessage().indexOf("already loaded") == -1) {
-                System.err.println("Unable to load " + nativeLibName);
-                throw ex;
+                fatalError(String.format(NbBundle.getMessage(JOGLNativesInstaller.class, "JOGLNativesInstaller_error4"), new Object[]{nativeLibName}));
             }
+        }
+    }
+
+    private void fatalError(String error) {
+        Exception ex = new Exception(error);
+        NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
+        DialogDisplayer.getDefault().notify(e);
+        if (exitOnFatalError) {
+            System.exit(1);
         }
     }
 
