@@ -33,7 +33,7 @@ public class SightManager {
 
     private int sightCounter = 1;
     private SimpleAVLTree sightTree = new SimpleAVLTree();
-    private Sight mainSight;
+    private SightImpl mainSight;
     private Dhns dhns;
 
     public SightManager(Dhns dhns)
@@ -41,22 +41,22 @@ public class SightManager {
         this.dhns = dhns;
     }
 
-    public Sight getMainSight()
+    public SightImpl getMainSight()
     {
         if(mainSight==null)
             mainSight = createSight();
         return mainSight;
     }
 
-    public Sight createSight() {
-        Sight sight = new Sight(getSightCounter());
+    public SightImpl createSight() {
+        SightImpl sight = new SightImpl(getSightCounter());
         sight.setSightCache(new SightCache(dhns, sight));
         sightCounter++;
         sightTree.add(sight);
         return sight;
     }
 
-    public void removeSight(Sight sight) {
+    public void removeSight(SightImpl sight) {
         sightTree.remove(sight);
     }
 
@@ -64,8 +64,8 @@ public class SightManager {
         sightTree.remove(number);
     }
 
-    public Sight getSight(int number) {
-        return (Sight) sightTree.get(number);
+    public SightImpl getSight(int number) {
+        return (SightImpl) sightTree.get(number);
     }
 
     public Iterator<AVLItem> getSightIterator() {

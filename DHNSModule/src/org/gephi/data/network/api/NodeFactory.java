@@ -18,38 +18,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.data.network;
 
-import org.gephi.data.network.tree.TreeStructure;
-import org.gephi.data.network.sight.Sight;
-import org.gephi.data.network.sight.SightManager;
-import org.gephi.data.network.tree.importer.CompleteTreeImporter;
+package org.gephi.data.network.api;
+
+import org.gephi.data.network.node.NodeImpl;
+import org.gephi.graph.api.Node;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class DhnsController {
+public class NodeFactory {
 
-    private static DhnsController instance;
-
-    public synchronized static DhnsController getInstance() {
-        if (instance == null) {
-            instance = new DhnsController();
-        }
-        return instance;
-    }
-
-    //Architecture
-    private Dhns dhns;
-
-
-    private DhnsController() {
-        dhns = new Dhns();
-
-    }
-
-    public Dhns getDhns() {
-        return dhns;
+    public static Node createNode()
+    {
+        return new NodeImpl();
     }
 }

@@ -31,6 +31,7 @@ public class HierarchyEdge implements DhnsEdge {
 
     protected PreNode preNodeFrom;
     protected PreNode preNodeTo;
+    protected Edge edge;
 
     public HierarchyEdge(PreNode preNodeFrom, PreNode preNodeTo) {
         this.preNodeFrom = preNodeFrom;
@@ -57,7 +58,18 @@ public class HierarchyEdge implements DhnsEdge {
         this.preNodeTo = preNodeTo;
     }
 
+     public Edge initEdgeInstance() {
+        edge = new EdgeImpl(preNodeFrom.getNode(), preNodeTo.getNode());
+        return edge;
+    }
+
     public Edge getEdge() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if(edge==null)
+            initEdgeInstance();
+        return edge;
+    }
+
+    public void setEdge(Edge edge) {
+        this.edge = edge;
     }
 }

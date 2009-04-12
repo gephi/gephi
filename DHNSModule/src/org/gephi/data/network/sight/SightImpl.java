@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.network.sight;
 
 import java.util.Iterator;
+import org.gephi.data.network.api.Sight;
 import org.gephi.datastructure.avl.simple.AVLItem;
 import org.gephi.datastructure.avl.simple.SimpleAVLTree;
 
@@ -28,13 +29,13 @@ import org.gephi.datastructure.avl.simple.SimpleAVLTree;
  *
  * @author Mathieu Bastian
  */
-public class Sight implements AVLItem {
+public class SightImpl implements Sight {
 
     private final int number;
     private SimpleAVLTree children;
     private SightCache sightCache;
 
-    public Sight(int number) {
+    public SightImpl(int number) {
         this.number = number;
     }
 
@@ -42,14 +43,14 @@ public class Sight implements AVLItem {
         return number;
     }
 
-    public void addChildren(Sight child) {
+    public void addChildren(SightImpl child) {
         if (children == null) {
             children = new SimpleAVLTree();
         }
         children.add(child);
     }
 
-    public void removeChildren(Sight child) {
+    public void removeChildren(SightImpl child) {
         if (children != null) {
             children.remove(child);
         }

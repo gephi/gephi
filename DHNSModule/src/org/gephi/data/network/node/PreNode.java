@@ -32,7 +32,7 @@ import org.gephi.data.network.edge.PreEdge.EdgeType;
 import org.gephi.data.network.edge.VirtualEdge;
 import org.gephi.data.network.node.treelist.PreNodeTreeList;
 import org.gephi.data.network.node.treelist.PreNodeTreeList.AVLNode;
-import org.gephi.data.network.sight.Sight;
+import org.gephi.data.network.sight.SightImpl;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.datastructure.avl.simple.AVLItem;
@@ -106,13 +106,11 @@ public class PreNode implements AVLItem, NodeWrap {
         });
 
         sightTree = new SightAVLTree();
-
-    //node = new Node();
-    //node.setPreNode(this);
     }
 
-    public void getPost() {
+    public int getPost() {
         this.post = pre - level + size;
+        return post;
     }
 
     public String toString() {
@@ -129,23 +127,23 @@ public class PreNode implements AVLItem, NodeWrap {
         return avlNode.getIndex();
     }
 
-    public void addSight(Sight sight) {
+    public void addSight(SightImpl sight) {
         sightTree.add(sight, false);
     }
 
-    public void removeSight(Sight sight) {
+    public void removeSight(SightImpl sight) {
         sightTree.remove(sight);
     }
 
-    public boolean isInSight(Sight sight) {
+    public boolean isInSight(SightImpl sight) {
         return sightTree.contains(sight);
     }
 
-    public boolean isEnabled(Sight sight) {
+    public boolean isEnabled(SightImpl sight) {
         return sightTree.isEnabled(sight);
     }
 
-    public void setEnabled(Sight sight, boolean enabled) {
+    public void setEnabled(SightImpl sight, boolean enabled) {
         sightTree.setEnabled(sight, enabled);
     }
 
@@ -153,7 +151,7 @@ public class PreNode implements AVLItem, NodeWrap {
         sightTree.setAllEnabled(enabled);
     }
 
-    public DhnsEdge getVirtualEdge(PreEdge physicalEdge, int forwardPre, Sight sight) {
+    public DhnsEdge getVirtualEdge(PreEdge physicalEdge, int forwardPre, SightImpl sight) {
         if (physicalEdge.edgeType == EdgeType.IN) {
             return virtualEdgesTreesIN.getItem(sight.getNumber()).getItem(forwardPre);
         } else {
@@ -161,7 +159,7 @@ public class PreNode implements AVLItem, NodeWrap {
         }
     }
 
-    public void removeVirtualEdge(VirtualEdge edge, Sight sight) {
+    public void removeVirtualEdge(VirtualEdge edge, SightImpl sight) {
         if (edge.getPreNodeFrom() == this) {
             virtualEdgesTreesOUT.getItem(sight.getNumber()).remove(edge);
         } else {
@@ -210,7 +208,7 @@ public class PreNode implements AVLItem, NodeWrap {
         return backwardEdges;
     }
 
-    public DhnsEdgeTree getVirtualEdgesIN(Sight sight) {
+    public DhnsEdgeTree getVirtualEdgesIN(SightImpl sight) {
         DhnsEdgeTree tree = virtualEdgesTreesIN.getItem(sight.getNumber());
         if (tree == null) {
             //Create tree
@@ -220,7 +218,7 @@ public class PreNode implements AVLItem, NodeWrap {
         return tree;
     }
 
-    public DhnsEdgeTree getVirtualEdgesOUT(Sight sight) {
+    public DhnsEdgeTree getVirtualEdgesOUT(SightImpl sight) {
         DhnsEdgeTree tree = virtualEdgesTreesOUT.getItem(sight.getNumber());
         if (tree == null) {
             //Create tree

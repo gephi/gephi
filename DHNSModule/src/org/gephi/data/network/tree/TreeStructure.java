@@ -22,7 +22,7 @@ package org.gephi.data.network.tree;
 
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.node.treelist.PreNodeTreeList;
-import org.gephi.data.network.sight.Sight;
+import org.gephi.data.network.sight.SightImpl;
 
 public class TreeStructure {
 
@@ -51,7 +51,7 @@ public class TreeStructure {
         return tree.get(pre);
     }
 
-    public PreNode getEnabledAncestorOrSelf(PreNode node, Sight sight) {
+    public PreNode getEnabledAncestorOrSelf(PreNode node, SightImpl sight) {
         PreNode parent = node;
         while (!parent.isEnabled(sight)) {
             parent = parent.parent;
@@ -62,7 +62,7 @@ public class TreeStructure {
         return parent;
     }
 
-    public PreNode getEnabledAncestor(PreNode node, Sight sight) {
+    public PreNode getEnabledAncestor(PreNode node, SightImpl sight) {
         PreNode parent = node.parent;
         while (!parent.isEnabled(sight)) {
             if (parent.pre == 0) {

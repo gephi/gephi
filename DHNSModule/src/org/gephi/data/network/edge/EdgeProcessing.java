@@ -23,9 +23,12 @@ package org.gephi.data.network.edge;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.utils.avl.PreNodeAVLTree;
 import org.gephi.data.network.edge.PreEdge.EdgeType;
+import org.gephi.data.network.node.NodeImpl;
 import org.gephi.data.network.node.PreNode;
+import org.gephi.data.network.node.treelist.SightTreeIterator;
 import org.gephi.data.network.node.treelist.SingleTreeIterator;
-import org.gephi.data.network.sight.Sight;
+import org.gephi.data.network.sight.SightImpl;
+import org.gephi.data.network.utils.avl.DhnsEdgeTree;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 
 /**
@@ -42,7 +45,7 @@ public class EdgeProcessing {
         preEdgeIterator = new ParamAVLIterator<PreEdge>();
     }
 
-    public void clearVirtualEdges(Sight sight) {
+    public void clearVirtualEdges(SightImpl sight) {
         SingleTreeIterator enabledNodes = new SingleTreeIterator(treeStructure, sight);
         while (enabledNodes.hasNext()) {
             PreNode currentNode = enabledNodes.next();
@@ -51,7 +54,7 @@ public class EdgeProcessing {
         }
     }
 
-    public void processInducedEdges(Sight sight) {
+    public void processInducedEdges(SightImpl sight) {
 
         SingleTreeIterator enabledNodes = new SingleTreeIterator(treeStructure, sight);
         while (enabledNodes.hasNext()) {
@@ -61,7 +64,7 @@ public class EdgeProcessing {
 
     }
 
-    public void processInducedEdges(PreNode currentNode, Sight sight) {
+    public void processInducedEdges(PreNode currentNode, SightImpl sight) {
         if (currentNode.isLeaf()) {
             if (currentNode.countForwardEdges() > 0) {
                 //Leaf
@@ -140,7 +143,7 @@ public class EdgeProcessing {
         currentNode.reinitTrace();
     }
 
-    public void processLocalInducedEdges(PreNode currentNode, Sight sight) {
+    public void processLocalInducedEdges(PreNode currentNode, SightImpl sight) {
         if (currentNode.isLeaf()) {
             if (currentNode.countForwardEdges() > 0) {
                 //Leaf
@@ -216,7 +219,7 @@ public class EdgeProcessing {
         currentNode.reinitTrace();
     }
 
-    public void reprocessInducedEdges(Iterable<PreNode> enabledNodes, PreNode center, Sight sight) {
+    public void reprocessInducedEdges(Iterable<PreNode> enabledNodes, PreNode center, SightImpl sight) {
         int centerLimit = center.pre + center.size;
         ParamAVLIterator<PreEdge> preEdgeIterator = new ParamAVLIterator<PreEdge>();
         for (PreNode currentNode : enabledNodes) {
@@ -308,7 +311,7 @@ public class EdgeProcessing {
         return false;
     }
 
-    private VirtualEdge createEdge(PreEdge edge, PreNode currentNode, PreNode edgeNode, Sight sight) {
+    private VirtualEdge createEdge(PreEdge edge, PreNode currentNode, PreNode edgeNode, SightImpl sight) {
         VirtualEdge newEdge = null;
 
         if (edge.edgeType == EdgeType.IN) {
@@ -325,7 +328,7 @@ public class EdgeProcessing {
         return newEdge;
     }
 
-    public void appendEdgeHostingNeighbours(PreNode node, PreNodeAVLTree physicalNeighbours, int preLimit, Sight sight) {
+    public void appendEdgeHostingNeighbours(PreNode node, PreNodeAVLTree physicalNeighbours, int preLimit, SightImpl sight) {
         if (node.getVirtualEdgesIN(sight).getCount() > 0) {
             for (DhnsEdge e : node.getVirtualEdgesIN(sight)) {
                 PreNode neighbour = e.getPreNodeFrom();
@@ -345,7 +348,7 @@ public class EdgeProcessing {
         }
     }
 
-    public void clearVirtualEdges(PreNode node, Sight sight) {
+    public void clearVirtualEdges(PreNode node, SightImpl sight) {
         if (node.getVirtualEdgesIN(sight).getCount() > 0) {
             for (DhnsEdge n : node.getVirtualEdgesIN(sight)) {
                 n.getPreNodeFrom().getVirtualEdgesOUT(sight).remove(n);
@@ -383,7 +386,7 @@ public class EdgeProcessing {
         }
     }
 
-    public VirtualEdge createVirtualEdge(PreEdge physicalEdge, PreNode minParent, PreNode maxParent, Sight sight) {
+    public VirtualEdge createVirtualEdge(PreEdge physicalEdge, PreNode minParent, PreNode maxParent, SightImpl sight) {
         VirtualEdge virtualEdge = null;
         if (physicalEdge.edgeType == EdgeType.IN) {
             virtualEdge = new VirtualEdge(maxParent, minParent);
@@ -399,8 +402,21 @@ public class EdgeProcessing {
         return virtualEdge;
     }
 
-    public void buildHierarchyViewMode(Sight sight)
+    public void buildHierarchyViewMode(SightImpl sight)
     {
-        SingleTreeIterator enabledNodes = new SingleTreeIterator(treeStructure, sight);
+        SightTreeIterator enabledNodes = new SightTreeIterator(treeStructure, sight);
+        for(;enabledNodes.hasNext();)
+        {
+            PreNode n = enabledNodes.next();
+            NodeImpl ni = n.getNode();
+            ni.setX(n.getPre()*50);
+            ni.setY(n.getPost()*50);
+            if(n.parent!=null)
+            {
+                DhnsEdgeTree edgeTree = n.parent.getVirtualEdgesOUT(sight);
+                HierarchyEdge he = new HierarchyEdge(n.parent, n);
+                edgeTree.add(he);
+            }
+        }
     }
 }

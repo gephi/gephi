@@ -18,16 +18,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.gephi.data.network.api;
 
-package org.gephi.graph.api;
+import org.gephi.data.network.edge.EdgeImpl;
+import org.gephi.data.network.node.NodeImpl;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Node;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Object3d<ObjectType extends Renderable> {
-    public boolean isSelected();
-    public void setCacheMarker(int cacheMarker);
-    public boolean isCacheMatching(int cacheMarker);
-    public ObjectType getObj();
+public class EdgeFactory {
+
+    public static Edge createEdge(Node source, Node target) {
+        return new EdgeImpl((NodeImpl) source, (NodeImpl) target);
+    }
 }

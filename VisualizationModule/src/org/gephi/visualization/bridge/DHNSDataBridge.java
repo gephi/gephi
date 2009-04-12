@@ -24,7 +24,8 @@ package org.gephi.visualization.bridge;
 import java.util.Iterator;
 import org.gephi.data.network.api.EdgeWrap;
 import org.gephi.data.network.api.NodeWrap;
-import org.gephi.data.network.reader.MainReader;
+import org.gephi.data.network.api.Reader;
+import org.gephi.data.network.controller.DhnsController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Object3d;
@@ -40,13 +41,13 @@ import org.gephi.visualization.opengl.AbstractEngine;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
     //Architecture
     protected AbstractEngine engine;
-    protected MainReader reader;
+    protected Reader reader;
     private VizConfig vizConfig;
 
     //Attributes
@@ -55,7 +56,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     @Override
     public void initArchitecture() {
        this.engine = VizController.getInstance().getEngine();
-       this.reader = new MainReader();
+       this.reader = DhnsController.getInstance().getReader();
        this.vizConfig = VizController.getInstance().getVizConfig();
     }
 
@@ -76,7 +77,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         Object3dInitializer nodeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_NODE].getCurrentObject3dInitializer();
 
         Iterator<? extends NodeWrap> itr = reader.getNodes();
-        for(;itr.hasNext();itr.next())
+        for(;itr.hasNext();)
         {
             NodeWrap preNode = itr.next();
             Node node=preNode.getNode();
@@ -110,6 +111,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             {
                 //Object3d is null, ADD
                 obj = edgeInit.initObject(edge);
+
                 engine.addObject(AbstractEngine.CLASS_EDGE, (Object3dImpl)obj);
                 if(vizConfig.isDirectedEdges())
                 {

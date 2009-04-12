@@ -22,24 +22,20 @@ package org.gephi.data.network.reader;
 
 import java.util.Iterator;
 import org.gephi.data.network.Dhns;
-import org.gephi.data.network.DhnsController;
 import org.gephi.data.network.api.EdgeWrap;
 import org.gephi.data.network.api.NodeWrap;
-import org.gephi.data.network.edge.VirtualEdge;
-import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.sight.Sight;
+import org.gephi.data.network.api.Reader;
+import org.gephi.data.network.sight.SightImpl;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class MainReader {
+public class MainReader implements Reader {
 
-    private Sight currentSight;
+    private SightImpl currentSight;
 
-    public MainReader() {
-        DhnsController controller = DhnsController.getInstance();
-        Dhns dhns = controller.getDhns();
+    public MainReader(Dhns dhns) {
         currentSight = dhns.getSightManager().getMainSight();
         dhns.init(currentSight);
     }

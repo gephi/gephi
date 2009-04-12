@@ -23,22 +23,22 @@ package org.gephi.data.network.node.treelist;
 
 import java.util.Iterator;
 import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.sight.Sight;
+import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.tree.TreeStructure;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class CompleteTreeIterator implements Iterator<PreNode> {
+public class SightTreeIterator implements Iterator<PreNode> {
 
     protected int treeSize;
 	protected int nextIndex = 0;
 	protected PreNode pointer;
 
-    protected Sight sight;
+    protected SightImpl sight;
 
-    public CompleteTreeIterator(TreeStructure treeStructure, Sight sight)
+    public SightTreeIterator(TreeStructure treeStructure, SightImpl sight)
     {
         PreNodeTreeList treeList = treeStructure.getTree();
 		treeSize = treeList.size();

@@ -23,7 +23,7 @@ package org.gephi.data.network.node.treelist;
 import java.util.Iterator;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.sight.Sight;
+import org.gephi.data.network.sight.SightImpl;
 
 
 
@@ -34,9 +34,9 @@ public class ManualTreeIterator implements Iterator<PreNode>
 	protected int nextIndex = 0;
 	protected PreNode pointer;
 
-    protected Sight sight;
+    protected SightImpl sight;
 	
-	public ManualTreeIterator(TreeStructure treeStructure, Sight sight)
+	public ManualTreeIterator(TreeStructure treeStructure, SightImpl sight)
 	{
 		this.treeList = treeStructure.getTree();
 		treeSize = treeList.size();

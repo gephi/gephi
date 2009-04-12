@@ -51,7 +51,7 @@ public class VizConfig {
     protected float[] edgeInSelectedColor = {1f, 0f, 0f};
     protected float[] edgeOutSelectedColor = {1f, 1f, 0f};
     protected float[] edgeBothSelectedColor = {0f, 0f, 0f};
-    protected DisplayConfig displayConfig = DisplayConfig.DISPLAY_ALPHA;
+    protected DisplayConfig displayConfig = DisplayConfig.DISPLAY_ALL;
     protected float[] edgesColor = null;
     protected float edgeAlpha = 1f;
     protected int octreeDepth = 5;

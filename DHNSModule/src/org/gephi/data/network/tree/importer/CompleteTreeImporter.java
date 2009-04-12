@@ -22,7 +22,7 @@ package org.gephi.data.network.tree.importer;
 
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.sight.Sight;
+import org.gephi.data.network.sight.SightImpl;
 
 /**
  * Hierarchical graph importer. Must import the complete tree.
@@ -38,9 +38,9 @@ public class CompleteTreeImporter {
     PreNode lastPos;
     int treeHeight;
     int currentPre = 0;
-    Sight sight;
+    SightImpl sight;
 
-    public CompleteTreeImporter(TreeStructure tree, Sight sight) {
+    public CompleteTreeImporter(TreeStructure tree, SightImpl sight) {
         this.treeStructure = tree;
         this.sight = sight;
     }

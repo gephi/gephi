@@ -20,13 +20,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network;
 
+import org.gephi.data.network.api.FreeModifier;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.utils.avl.PreNodeAVLTree;
 import org.gephi.data.network.config.DHNSConfig;
 import org.gephi.data.network.edge.EdgeProcessing;
 import org.gephi.data.network.edge.PreEdge;
+import org.gephi.data.network.modifier.FreeModifierImpl;
 import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.sight.Sight;
+import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.sight.SightManager;
 import org.gephi.data.network.tree.importer.CompleteTreeImporter;
 
@@ -44,19 +46,21 @@ public class Dhns {
         sightManager = new SightManager(this);
     }
 
-    public void init(Sight sight) {
+    public void init(SightImpl sight) {
         importFakeGraph();
+        treeStructure.showTreeAsTable();
     }
 
     private void importFakeGraph() {
         CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure, sightManager.getMainSight());
 
-        importer.importGraph(30, true);
-        importer.shuffleEnable();
+        importer.importGraph(5, true);
+        //importer.shuffleEnable();
         System.out.println("Tree size : " + treeStructure.getTreeSize());
+        edgeProcessing.buildHierarchyViewMode(sightManager.getMainSight());
     }
 
-    public void expand(PreNode node, Sight sight) {
+    public void expand(PreNode node, SightImpl sight) {
         PreNodeAVLTree nodeToReprocess = new PreNodeAVLTree();
 
         //Enable children
@@ -86,7 +90,7 @@ public class Dhns {
         sight.getSightCache().reset();
     }
 
-    public void retract(PreNode parent, Sight sight) {
+    public void retract(PreNode parent, SightImpl sight) {
         PreNodeAVLTree nodeToReprocess = new PreNodeAVLTree();
 
         //Enable node
@@ -288,5 +292,10 @@ public class Dhns {
     public SightManager getSightManager()
     {
         return sightManager;
+    }
+
+    public DHNSConfig getConfig()
+    {
+        return config;
     }
 }

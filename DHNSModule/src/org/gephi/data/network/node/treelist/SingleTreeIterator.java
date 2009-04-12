@@ -24,7 +24,7 @@ import java.util.Iterator;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.node.treelist.PreNodeTreeList.AVLNode;
-import org.gephi.data.network.sight.Sight;
+import org.gephi.data.network.sight.SightImpl;
 import org.gephi.datastructure.avl.ResetableIterator;
 
 /**
@@ -41,9 +41,9 @@ public class SingleTreeIterator implements Iterator<PreNode>, ResetableIterator 
     protected int diffIndex;
     ;
     protected AVLNode currentNode;
-    protected Sight sight;
+    protected SightImpl sight;
 
-    public SingleTreeIterator(TreeStructure treeStructure, Sight sight) {
+    public SingleTreeIterator(TreeStructure treeStructure, SightImpl sight) {
         this.treeList = treeStructure.getTree();
         nextIndex = 0;
         diffIndex = 2;
@@ -96,7 +96,7 @@ public class SingleTreeIterator implements Iterator<PreNode>, ResetableIterator 
         throw new UnsupportedOperationException();
     }
 
-    public void setSight(Sight sight) {
+    public void setSight(SightImpl sight) {
         this.sight = sight;
     }
 }

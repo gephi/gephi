@@ -25,7 +25,7 @@
             </module-dependencies>
             <public-packages>
                 <package>org.gephi.data.network.api</package>
-                <package>org.gephi.data.network.reader</package>
+                <package>org.gephi.data.network.controller</package>
             </public-packages>
         </data>
     </configuration>

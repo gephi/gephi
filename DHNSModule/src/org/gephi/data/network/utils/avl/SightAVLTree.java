@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.network.utils.avl;
 
 import java.util.Iterator;
-import org.gephi.data.network.sight.Sight;
+import org.gephi.data.network.sight.SightImpl;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.datastructure.avl.simple.SimpleAVLTree;
 
@@ -33,12 +33,12 @@ import org.gephi.datastructure.avl.simple.SimpleAVLTree;
  *
  * @author Mathieu Bastian
  */
-public class SightAVLTree implements Iterable<Sight> {
+public class SightAVLTree implements Iterable<SightImpl> {
 
     protected SightAVLNode root;
     protected int count;
 
-    public boolean add(Sight item, boolean enabled) {
+    public boolean add(SightImpl item, boolean enabled) {
         SightAVLNode p = this.root;
 
         if (p == null) {
@@ -239,7 +239,7 @@ public class SightAVLTree implements Iterable<Sight> {
         return true;
     }
 
-    public boolean remove(Sight item) {
+    public boolean remove(SightImpl item) {
         SightAVLNode p = this.root;
 
         while (p != null) {
@@ -575,7 +575,7 @@ public class SightAVLTree implements Iterable<Sight> {
         return false;
     }
 
-    public boolean contains(Sight item) {
+    public boolean contains(SightImpl item) {
         SightAVLNode p = this.root;
 
         while (p != null) {
@@ -593,7 +593,7 @@ public class SightAVLTree implements Iterable<Sight> {
         return false;
     }
 
-    public Sight get(int number) {
+    public SightImpl get(int number) {
         SightAVLNode p = this.root;
 
         while (p != null) {
@@ -611,7 +611,7 @@ public class SightAVLTree implements Iterable<Sight> {
         return null;
     }
 
-    public boolean isEnabled(Sight sight) {
+    public boolean isEnabled(SightImpl sight) {
         SightAVLNode p = this.root;
 
         while (p != null) {
@@ -629,7 +629,7 @@ public class SightAVLTree implements Iterable<Sight> {
         return false;
     }
 
-    public void setEnabled(Sight sight, boolean enabled) {
+    public void setEnabled(SightImpl sight, boolean enabled) {
         SightAVLNode p = this.root;
 
         while (p != null) {
@@ -707,15 +707,15 @@ public class SightAVLTree implements Iterable<Sight> {
         SightAVLNode left;
         SightAVLNode right;
         int balance;
-        Sight item;
+        SightImpl item;
         boolean enabled;
 
-        public SightAVLNode(Sight item, boolean enabled) {
+        public SightAVLNode(SightImpl item, boolean enabled) {
             this.item = item;
             this.enabled = enabled;
         }
 
-        public SightAVLNode(Sight item, SightAVLNode parent, boolean enabled) {
+        public SightAVLNode(SightImpl item, SightAVLNode parent, boolean enabled) {
             this.item = item;
             this.parent = parent;
             this.enabled = enabled;
@@ -728,10 +728,10 @@ public class SightAVLTree implements Iterable<Sight> {
      *
      * @author Mathieu Bastian
      */
-    public class SightAVLIterator implements Iterator<Sight>, ResetableIterator {
+    public class SightAVLIterator implements Iterator<SightImpl>, ResetableIterator {
 
         private SightAVLNode next;
-        private Sight current;
+        private SightImpl current;
 
         public SightAVLIterator() {
         }
@@ -782,7 +782,7 @@ public class SightAVLTree implements Iterable<Sight> {
             return true;
         }
 
-        public Sight next() {
+        public SightImpl next() {
             return current;
         }
 

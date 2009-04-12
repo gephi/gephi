@@ -22,7 +22,7 @@ package org.gephi.data.network.utils.avl;
 
 import org.gephi.data.network.edge.DhnsEdge;
 import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.sight.Sight;
+import org.gephi.data.network.sight.SightImpl;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 
@@ -40,9 +40,9 @@ import org.gephi.datastructure.avl.param.ParamAVLTree;
 public class DhnsEdgeTree extends ParamAVLTree<DhnsEdge> {
 
     private PreNode owner;
-    private Sight sight;
+    private SightImpl sight;
 
-    public DhnsEdgeTree(PreNode owner, Sight sight) {
+    public DhnsEdgeTree(PreNode owner, SightImpl sight) {
         super();
         this.owner = owner;
         this.sight = sight;
@@ -61,7 +61,7 @@ public class DhnsEdgeTree extends ParamAVLTree<DhnsEdge> {
         }
     }
 
-    public Sight getSight() {
+    public SightImpl getSight() {
         return sight;
     }
 }

@@ -21,11 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.network.edge.iterators;
 
 import java.util.Iterator;
+import org.gephi.data.network.edge.DhnsEdge;
 import org.gephi.data.network.tree.TreeStructure;
-import org.gephi.data.network.edge.VirtualEdge;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.node.treelist.SingleTreeIterator;
-import org.gephi.data.network.sight.Sight;
+import org.gephi.data.network.sight.SightImpl;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 
 /**
@@ -34,17 +34,17 @@ import org.gephi.datastructure.avl.param.ParamAVLIterator;
  * 
  * @author Mathieu Bastian
  */
-public class EdgesOutIterator implements Iterator<VirtualEdge> {
+public class EdgesOutIterator implements Iterator<DhnsEdge> {
 
     protected SingleTreeIterator treeIterator;
-    protected ParamAVLIterator<VirtualEdge> edgeIterator;
+    protected ParamAVLIterator<DhnsEdge> edgeIterator;
     protected PreNode currentNode;
-    protected VirtualEdge pointer;
-    protected Sight sight;
+    protected DhnsEdge pointer;
+    protected SightImpl sight;
 
-    public EdgesOutIterator(TreeStructure treeStructure, Sight sight) {
+    public EdgesOutIterator(TreeStructure treeStructure, SightImpl sight) {
         treeIterator = new SingleTreeIterator(treeStructure, sight);
-        edgeIterator = new ParamAVLIterator<VirtualEdge>();
+        edgeIterator = new ParamAVLIterator<DhnsEdge>();
         this.sight = sight;
     }
 
@@ -64,7 +64,7 @@ public class EdgesOutIterator implements Iterator<VirtualEdge> {
     }
 
     @Override
-    public VirtualEdge next() {
+    public DhnsEdge next() {
         return pointer;
     }
 
