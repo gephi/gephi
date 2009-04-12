@@ -112,4 +112,8 @@ public class NodeImpl implements Node{
         return 0;
     }
 
+    public int getLevel() {
+        return 0;
+    }
+
 }

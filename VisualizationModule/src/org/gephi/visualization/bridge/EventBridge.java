@@ -13,6 +13,6 @@ import org.gephi.graph.api.Object3d;
 public interface EventBridge {
 
     public void initEvents();
-
+    public void initArchitecture();
     public void mouseClick(Object3d[] clickedObjects);
 }

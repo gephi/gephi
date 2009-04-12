@@ -22,27 +22,26 @@ package org.gephi.data.network;
 
 import org.gephi.data.network.api.FreeModifier;
 import org.gephi.data.network.tree.TreeStructure;
-import org.gephi.data.network.utils.avl.PreNodeAVLTree;
 import org.gephi.data.network.config.DHNSConfig;
-import org.gephi.data.network.edge.EdgeProcessing;
 import org.gephi.data.network.edge.PreEdge;
-import org.gephi.data.network.modifier.FreeModifierImpl;
+import org.gephi.data.network.mode.FreeMode;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.sight.SightManager;
 import org.gephi.data.network.tree.importer.CompleteTreeImporter;
+import org.gephi.data.network.utils.RandomEdgesGenerator;
 
 public class Dhns {
 
     private DHNSConfig config;
     private TreeStructure treeStructure;
-    private EdgeProcessing edgeProcessing;
+    private FreeMode freeMode;
     private SightManager sightManager;
 
     public Dhns() {
         config = new DHNSConfig();
         treeStructure = new TreeStructure();
-        edgeProcessing = new EdgeProcessing(treeStructure);
+        freeMode = new FreeMode(this);
         sightManager = new SightManager(this);
     }
 
@@ -55,66 +54,15 @@ public class Dhns {
         CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure, sightManager.getMainSight());
 
         importer.importGraph(5, true);
-        //importer.shuffleEnable();
+        importer.shuffleEnable();
         System.out.println("Tree size : " + treeStructure.getTreeSize());
-        edgeProcessing.buildHierarchyViewMode(sightManager.getMainSight());
+        RandomEdgesGenerator reg = new RandomEdgesGenerator(treeStructure);
+        reg.generatPhysicalEdges(20);
+        freeMode.init();
     }
 
-    public void expand(PreNode node, SightImpl sight) {
-        PreNodeAVLTree nodeToReprocess = new PreNodeAVLTree();
 
-        //Enable children
-        PreNode child = null;
-        for (int i = node.pre + 1; i <= node.pre + node.size;) {
-            child = treeStructure.getNodeAt(i);
-            child.setEnabled(sight, true);
-
-            i += child.size + 1;
-        }
-
-        //Reprocess edge-hosting neighbour
-        edgeProcessing.appendEdgeHostingNeighbours(node, nodeToReprocess, node.pre, sight);
-        edgeProcessing.reprocessInducedEdges(nodeToReprocess, node, sight);
-
-        //Process induced edges of direct children
-        for (int i = node.pre + 1; i <= node.pre + node.size;) {
-            child = treeStructure.getNodeAt(i);
-            edgeProcessing.processLocalInducedEdges(child, sight);
-            i += child.size + 1;
-        }
-
-        //Clean current node
-        node.setEnabled(sight, false);
-        edgeProcessing.clearVirtualEdges(node, sight);
-
-        sight.getSightCache().reset();
-    }
-
-    public void retract(PreNode parent, SightImpl sight) {
-        PreNodeAVLTree nodeToReprocess = new PreNodeAVLTree();
-
-        //Enable node
-        parent.setEnabled(sight, true);
-
-        //Disable children
-        PreNode child = null;
-        for (int i = parent.pre + 1; i <= parent.pre + parent.size;) {
-            child = treeStructure.getNodeAt(i);
-            child.setEnabled(sight, false);
-            edgeProcessing.appendEdgeHostingNeighbours(child, nodeToReprocess, parent.pre, sight);
-
-            i += child.size + 1;
-        }
-
-        edgeProcessing.reprocessInducedEdges(nodeToReprocess, parent, sight);
-        edgeProcessing.processLocalInducedEdges(parent, sight);
-
-        for (int i = parent.pre + 1; i <= parent.pre + parent.size;) {
-            child = treeStructure.getNodeAt(i);
-            edgeProcessing.clearVirtualEdges(child, sight);
-            i += child.size + 1;
-        }
-    }
+    
 
     public void deleteNode(PreNode node) {
         /*PreNode enabledAncestor = treeStructure.getEnabledAncestor(node);
@@ -297,5 +245,10 @@ public class Dhns {
     public DHNSConfig getConfig()
     {
         return config;
+    }
+
+    public FreeModifier getFreeModifier()
+    {
+        return freeMode;
     }
 }

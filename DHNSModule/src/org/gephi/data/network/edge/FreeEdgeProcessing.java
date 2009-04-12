@@ -23,6 +23,7 @@ package org.gephi.data.network.edge;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.utils.avl.PreNodeAVLTree;
 import org.gephi.data.network.edge.PreEdge.EdgeType;
+import org.gephi.data.network.mode.EdgeProcessing;
 import org.gephi.data.network.node.NodeImpl;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.node.treelist.SightTreeIterator;
@@ -35,17 +36,21 @@ import org.gephi.datastructure.avl.param.ParamAVLIterator;
  *
  * @author Mathieu Bastian
  */
-public class EdgeProcessing {
+public class FreeEdgeProcessing implements EdgeProcessing {
 
     private TreeStructure treeStructure;
     private ParamAVLIterator<PreEdge> preEdgeIterator;
 
-    public EdgeProcessing(TreeStructure treeStructure) {
+    public FreeEdgeProcessing(TreeStructure treeStructure) {
         this.treeStructure = treeStructure;
         preEdgeIterator = new ParamAVLIterator<PreEdge>();
     }
 
-    public void clearVirtualEdges(SightImpl sight) {
+    public void init(SightImpl sightImpl) {
+        processInducedEdges(sightImpl);
+    }
+
+    public void clear(SightImpl sight) {
         SingleTreeIterator enabledNodes = new SingleTreeIterator(treeStructure, sight);
         while (enabledNodes.hasNext()) {
             PreNode currentNode = enabledNodes.next();
@@ -402,17 +407,14 @@ public class EdgeProcessing {
         return virtualEdge;
     }
 
-    public void buildHierarchyViewMode(SightImpl sight)
-    {
+    public void buildHierarchyViewMode(SightImpl sight) {
         SightTreeIterator enabledNodes = new SightTreeIterator(treeStructure, sight);
-        for(;enabledNodes.hasNext();)
-        {
+        for (; enabledNodes.hasNext();) {
             PreNode n = enabledNodes.next();
             NodeImpl ni = n.getNode();
-            ni.setX(n.getPre()*50);
-            ni.setY(n.getPost()*50);
-            if(n.parent!=null)
-            {
+            ni.setX(n.getPre() * 50);
+            ni.setY(n.getPost() * 50);
+            if (n.parent != null) {
                 DhnsEdgeTree edgeTree = n.parent.getVirtualEdgesOUT(sight);
                 HierarchyEdge he = new HierarchyEdge(n.parent, n);
                 edgeTree.add(he);

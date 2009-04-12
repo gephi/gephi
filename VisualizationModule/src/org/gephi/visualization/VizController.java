@@ -90,9 +90,8 @@ public class VizController {
         engine.initArchitecture();
         ((CompatibilityScheduler) scheduler).initArchitecture();
         ((StandardGraphIO) graphIO).initArchitecture();
-        //((DHNSDataBridge) dataBridge).initArchitecture();
-        //((DHNSEventBridge) eventBridge).initArchitecture();
         dataBridge.initArchitecture();
+        eventBridge.initArchitecture();
     }
 
     public GraphDrawableImpl getDrawable() {

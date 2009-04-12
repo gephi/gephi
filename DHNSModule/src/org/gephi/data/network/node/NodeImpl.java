@@ -126,4 +126,9 @@ public class NodeImpl implements Node {
         this.preNode = preNode;
     }
 
+    public int getLevel()
+    {
+        return preNode.level;
+    }
+
 }

@@ -24,7 +24,7 @@ import org.gephi.data.network.*;
 import org.gephi.data.network.api.FreeModifier;
 import org.gephi.data.network.api.Reader;
 import org.gephi.data.network.api.Sight;
-import org.gephi.data.network.modifier.FreeModifierImpl;
+import org.gephi.data.network.mode.FreeMode;
 import org.gephi.data.network.reader.MainReader;
 
 /**
@@ -63,7 +63,7 @@ public class DhnsController {
 
     public FreeModifier getFreeModifier()
     {
-        return new FreeModifierImpl();
+        return dhns.getFreeModifier();
     }
 
     

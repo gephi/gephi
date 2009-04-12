@@ -26,7 +26,7 @@ import org.gephi.data.network.utils.avl.DhnsEdgeTree;
 import org.gephi.data.network.utils.avl.ForwardEdgeTree;
 import org.gephi.data.network.utils.avl.SightAVLTree;
 import org.gephi.data.network.edge.DhnsEdge;
-import org.gephi.data.network.edge.EdgeProcessing;
+import org.gephi.data.network.edge.FreeEdgeProcessing;
 import org.gephi.data.network.edge.PreEdge;
 import org.gephi.data.network.edge.PreEdge.EdgeType;
 import org.gephi.data.network.edge.VirtualEdge;

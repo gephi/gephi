@@ -28,4 +28,5 @@ package org.gephi.graph.api;
 public interface Node extends Renderable {
 
     public int getIndex();
+    public int getLevel();
 }

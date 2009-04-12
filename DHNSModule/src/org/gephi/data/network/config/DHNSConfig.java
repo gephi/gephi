@@ -29,7 +29,7 @@ public class DHNSConfig {
     private ViewType viewType;
 
     public DHNSConfig() {
-        viewType = ViewType.HIERARCHY;
+        viewType = ViewType.SINGLE;
     }
 
     public ViewType getViewType() {
