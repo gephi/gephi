@@ -61,165 +61,19 @@ public class Dhns {
         freeMode.init();
     }
 
-
-    
-
-    public void deleteNode(PreNode node) {
-        /*PreNode enabledAncestor = treeStructure.getEnabledAncestor(node);
-        ParamAVLIterator<PreEdge> iterator=null;
-
-        int nodeSize = node.getPre()+node.size;
-        for(int i=node.pre;i<=nodeSize;i++)		//Children & Self
-        {
-        PreNode child = treeStructure.getNodeAt(i);
-        if(enabledAncestor==null)
-        {
-        //if(child.enabled)
-        //	edgeProcessing.clearVirtualEdges(child, sight);		//Clear virtual edges
-        //edgeProcessing.clearPhysicalEdges(child);
-        }
-        else
-        {
-        boolean hasBackwardEdges = child.countBackwardEdges() > 0;
-        boolean hasForwardEdges = child.countForwardEdges() > 0;
-
-        if(iterator==null && (hasForwardEdges || hasBackwardEdges))
-        iterator = new ParamAVLIterator<PreEdge>();
-
-        //Delete Backward edges
-        if(hasBackwardEdges)
-        {
-        iterator.setNode(child.getBackwardEdges());
-        for(;iterator.hasNext();)
-        {
-        PreEdge edge = iterator.next();
-        delEdge(edge);
-        }
-        }
-
-        //Delete Forward edges
-        if(hasForwardEdges)
-        {
-        iterator.setNode(child.getForwardEdges());
-        for(;iterator.hasNext();)
-        {
-        PreEdge edge = iterator.next();
-        delEdge(edge);
-        }
-        }
-        }
-        }
-
-        treeStructure.deleteDescendantAndSelf(node);*/
-    }
-
-    /*public void deleteNodes(PreNode[] nodes)
-    {
-    for(PreNode node : nodes)
-    {
-    if(node.preTrace!=1)
-    {
-    boolean childOrSelfEnabled=false;
-
-    if(node.size > 0)
-    {
-    int nodeSize = node.pre+node.size;
-    for(int i=node.pre+1;i<=nodeSize;i++)		//Children
-    {
-    PreNode child = treeStructure.getNodeAt(i);
-    if(child.enabled)
-    {
-    edgeProcessing.clearVirtualEdges(child);		//Clear virual edges
-    childOrSelfEnabled=true;
-    }
-
-    edgeProcessing.clearPhysicalEdges(child);
-    child.preTrace=1;
-    }
-    }
-
-    if(node.enabled)
-    {
-    edgeProcessing.clearVirtualEdges(node);
-    childOrSelfEnabled=true;
-    }
-
-    edgeProcessing.clearPhysicalEdges(node);
-    treeStructure.deleteDescendantAndSelf(node);
-
-    if(!childOrSelfEnabled)
-    {
-    PreNode parent = treeStructure.getEnabledAncestor(node);
-    if(parent!=null)
-    {
-    //Reprocess parent
-    edgeProcessing.clearVirtualEdges(parent);
-    PreNodeAVLTree nodeToReprocess = new PreNodeAVLTree();
-    edgeProcessing.appendEdgeHostingNeighbours(parent, nodeToReprocess, parent.pre);
-    edgeProcessing.reprocessInducedEdges(nodeToReprocess, parent);
-    edgeProcessing.processLocalInducedEdges(parent);
-    }
-    }
-
-    node.preTrace=1;
-    }
-    }
-    }*/
-    public void addNode(PreNode node) //We assume parent is well defined
-    {
-        treeStructure.insertAsChild(node, node.parent);
-
-    }
-
-    public void addNodes(PreNode[] nodes) {
-    }
-
-    public void addEdge(PreEdge edge) {
-        /*PreNode minNode = edge.minNode;
-        PreNode maxNode = edge.maxNode;
-
-        //Add physical edges
-        minNode.getForwardEdges().add(edge);
-        maxNode.getBackwardEdges().add(edge);
-
-        //Get nodes' parent
-        PreNode minParent = treeStructure.getEnabledAncestorOrSelf(minNode);
-        PreNode maxParent = treeStructure.getEnabledAncestorOrSelf(maxNode);
-
-        if(minParent!=null && maxParent!=null && minParent!=maxParent)
-        {
-        DhnsEdge dhnsEdge = minParent.getVirtualEdge(edge, maxParent.getPre());
-        if(dhnsEdge!=null)
-        {
-        VirtualEdge virtualEdge = (VirtualEdge)dhnsEdge;
-        virtualEdge.addPhysicalEdge(edge);
-        }
-        else
-        {
-        //Create the virtual edge
-        edgeProcessing.createVirtualEdge(edge, minParent, maxParent);
-        }
-        }*/
-    }
-
-    
-
     public TreeStructure getTreeStructure() {
         return treeStructure;
     }
 
-    public SightManager getSightManager()
-    {
+    public SightManager getSightManager() {
         return sightManager;
     }
 
-    public DHNSConfig getConfig()
-    {
+    public DHNSConfig getConfig() {
         return config;
     }
 
-    public FreeModifier getFreeModifier()
-    {
+    public FreeModifier getFreeModifier() {
         return freeMode;
     }
 }
