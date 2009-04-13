@@ -28,6 +28,7 @@ import org.gephi.data.network.Dhns;
 import org.gephi.data.network.api.FreeModifier;
 import org.gephi.data.network.config.DHNSConfig.ViewType;
 import org.gephi.data.network.edge.DhnsEdge;
+import org.gephi.data.network.edge.EdgeImpl;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.node.treelist.SingleTreeIterator;
@@ -90,11 +91,28 @@ public class SightCache {
     private void fakeNodeUpdate()
     {
         FreeModifier mod = dhns.getFreeModifier();
-        for(int i=0;i<10;i++)
+        for(int i=0;i<3;i++)
         {
             NodeImpl n = new NodeImpl();
             mod.addNode(n, dhns.getTreeStructure().getRoot().getNode());
             n.getPreNode().setEnabled(sight, true);
+        }
+    }
+
+    private void fakeEdgeUpdate()
+    {
+        FreeModifier mod = dhns.getFreeModifier();
+        for(int i=0;i<10;i++)
+        {
+            PreNode n1 = nodeCache.get((int)(Math.random()*nodeCache.size()-1)+1);
+            PreNode n2 = nodeCache.get((int)(Math.random()*nodeCache.size()-1)+1);
+            if(n1!=n2)
+            {
+                EdgeImpl edge = new EdgeImpl(n1.getNode(), n2.getNode());
+                mod.addEdge(edge);
+            }
+
+            
         }
     }
 
@@ -107,7 +125,8 @@ public class SightCache {
     }
 
     public Iterator<DhnsEdge> getEdgeIterator() {
-        if (resetEdge.getAndSet(false)) {
+        if (resetEdge.getAndSet(true)) {
+            fakeEdgeUpdate();
             resetEdges();
         }
         return edgeCache.iterator();

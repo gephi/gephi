@@ -152,21 +152,19 @@ public class PreNode implements AVLItem, NodeWrap {
         sightTree.setAllEnabled(enabled);
     }
 
-    public SightAVLIterator getSightIterator()
-    {
+    public SightAVLIterator getSightIterator() {
         return sightTree.iterator();
     }
 
-    public boolean hasSights()
-    {
-        return sightTree.getCount()>0;
+    public boolean hasSights() {
+        return sightTree.getCount() > 0;
     }
 
     public DhnsEdge getVirtualEdge(PreEdge physicalEdge, int forwardPre, SightImpl sight) {
         if (physicalEdge.edgeType == EdgeType.IN) {
-            return virtualEdgesTreesIN.getItem(sight.getNumber()).getItem(forwardPre);
+            return getVirtualEdgesIN(sight).getItem(forwardPre);
         } else {
-            return virtualEdgesTreesOUT.getItem(sight.getNumber()).getItem(forwardPre);
+            return getVirtualEdgesOUT(sight).getItem(forwardPre);
         }
     }
 
@@ -246,13 +244,13 @@ public class PreNode implements AVLItem, NodeWrap {
     }
 
     public NodeImpl getNode() {
-        if(node==null)
+        if (node == null) {
             initNodeInstance();
+        }
         return node;
     }
 
-    public void setNode(NodeImpl node)
-    {
+    public void setNode(NodeImpl node) {
         this.node = node;
         node.setPreNode(this);
     }
