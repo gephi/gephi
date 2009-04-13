@@ -25,15 +25,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.gephi.data.network.Dhns;
+import org.gephi.data.network.api.FreeModifier;
 import org.gephi.data.network.config.DHNSConfig.ViewType;
 import org.gephi.data.network.edge.DhnsEdge;
 import org.gephi.data.network.tree.TreeStructure;
-import org.gephi.data.network.edge.VirtualEdge;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.node.treelist.SingleTreeIterator;
 import org.gephi.data.network.utils.CachedIterator;
 import org.gephi.data.network.edge.iterators.EdgesOutIterator;
 import org.gephi.data.network.edge.iterators.HierarchyEdgesIterator;
+import org.gephi.data.network.node.NodeImpl;
 import org.gephi.data.network.node.treelist.SightTreeIterator;
 
 /**
@@ -58,37 +59,57 @@ public class SightCache {
         this.sight = sight;
     }
 
-    public Iterator<PreNode> getNodeIterator() {
+    private void resetNodes() {
         TreeStructure treeStructure = dhns.getTreeStructure();
-        if (resetNode.getAndSet(false)) {
-            nodeCache.clear();
-            Iterator<PreNode> treeIterator=null;
-            if (dhns.getConfig().getViewType().equals(ViewType.SINGLE)) {
-                treeIterator = new SingleTreeIterator(treeStructure, sight);
-            } else if(dhns.getConfig().getViewType().equals(ViewType.HIERARCHY)) {
-                treeIterator = new SightTreeIterator(treeStructure, sight);
-            }
-            CachedIterator<PreNode> cacheIterator = new CachedIterator<PreNode>(treeIterator, nodeCache);
-            return cacheIterator;
+        nodeCache.clear();
+        Iterator<PreNode> treeIterator = null;
+        if (dhns.getConfig().getViewType().equals(ViewType.SINGLE)) {
+            treeIterator = new SingleTreeIterator(treeStructure, sight);
+        } else if (dhns.getConfig().getViewType().equals(ViewType.HIERARCHY)) {
+            treeIterator = new SightTreeIterator(treeStructure, sight);
         }
+        CachedIterator<PreNode> cacheIterator = new CachedIterator<PreNode>(treeIterator, nodeCache);
+        for (; cacheIterator.hasNext(); cacheIterator.next()) {
+        }      //Write cache
+    }
 
+    private void resetEdges() {
+        TreeStructure treeStructure = dhns.getTreeStructure();
+        edgeCache.clear();
+        Iterator<DhnsEdge> edgesIterator = null;
+        if (dhns.getConfig().getViewType().equals(ViewType.SINGLE)) {
+            edgesIterator = new EdgesOutIterator(treeStructure, sight);
+        } else if (dhns.getConfig().getViewType().equals(ViewType.HIERARCHY)) {
+            edgesIterator = new HierarchyEdgesIterator(treeStructure, sight);
+        }
+        CachedIterator<DhnsEdge> cacheIterator = new CachedIterator<DhnsEdge>(edgesIterator, edgeCache);
+        for (; cacheIterator.hasNext(); cacheIterator.next()) {
+        }
+    }
+
+    private void fakeNodeUpdate()
+    {
+        FreeModifier mod = dhns.getFreeModifier();
+        for(int i=0;i<10;i++)
+        {
+            NodeImpl n = new NodeImpl();
+            mod.addNode(n, dhns.getTreeStructure().getRoot().getNode());
+            n.getPreNode().setEnabled(sight, true);
+        }
+    }
+
+    public Iterator<PreNode> getNodeIterator() {
+        if (resetNode.getAndSet(true)) {
+            fakeNodeUpdate();
+            resetNodes();
+        }
         return nodeCache.iterator();
     }
 
     public Iterator<DhnsEdge> getEdgeIterator() {
-        TreeStructure treeStructure = dhns.getTreeStructure();
         if (resetEdge.getAndSet(false)) {
-            edgeCache.clear();
-            Iterator<DhnsEdge> edgesIterator=null;
-            if (dhns.getConfig().getViewType().equals(ViewType.SINGLE)) {
-                edgesIterator = new EdgesOutIterator(treeStructure, sight);
-            } else if(dhns.getConfig().getViewType().equals(ViewType.HIERARCHY)) {
-                edgesIterator = new HierarchyEdgesIterator(treeStructure, sight);
-            }
-            CachedIterator<DhnsEdge> cacheIterator = new CachedIterator<DhnsEdge>(edgesIterator, edgeCache);
-            return cacheIterator;
+            resetEdges();
         }
-
         return edgeCache.iterator();
     }
 

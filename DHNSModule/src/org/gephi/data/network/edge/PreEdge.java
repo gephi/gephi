@@ -20,17 +20,19 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network.edge;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import org.gephi.data.network.api.EdgeWrap;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.datastructure.avl.simple.AVLItem;
+import org.gephi.graph.api.Edge;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class PreEdge implements AVLItem {
+public class PreEdge implements AVLItem, EdgeWrap {
 
-    private static int AUTO_ID = 0;
-
+    private static AtomicInteger AUTO_ID = new AtomicInteger();
     public enum EdgeType {
 
         IN(1),
@@ -45,21 +47,41 @@ public class PreEdge implements AVLItem {
     public PreNode maxNode;
     public EdgeType edgeType;
     public int cardinal = 1;
-    public int ID = PreEdge.AUTO_ID++;
+    public int ID = PreEdge.AUTO_ID.incrementAndGet();
+
+    private Edge edge;
 
     public PreEdge(EdgeType edgeType, PreNode minNode, PreNode maxNode) {
-        if (minNode.pre > maxNode.pre) {
-            this.minNode = maxNode;
-            this.maxNode = minNode;
-        } else {
-            this.minNode = minNode;
-            this.maxNode = maxNode;
-        }
+        this.minNode = minNode;
+        this.maxNode = maxNode;
         this.edgeType = edgeType;
+    }
+
+    public PreEdge(PreNode source, PreNode target) {
+        if (source.getPre() > target.getPre()) {
+            this.minNode = target;
+            this.maxNode = source;
+            this.edgeType = EdgeType.IN;
+        }
+        else
+        {
+            this.minNode = source;
+            this.maxNode = target;
+            this.edgeType = EdgeType.OUT;
+        }
     }
 
     @Override
     public int getNumber() {
         return ID;
+    }
+
+    public Edge getEdge() {
+        return edge;
+    }
+
+    public void setEdge(Edge edge)
+    {
+        this.edge = edge;
     }
 }

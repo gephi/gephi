@@ -26,13 +26,14 @@ import org.gephi.data.network.utils.avl.DhnsEdgeTree;
 import org.gephi.data.network.utils.avl.ForwardEdgeTree;
 import org.gephi.data.network.utils.avl.SightAVLTree;
 import org.gephi.data.network.edge.DhnsEdge;
-import org.gephi.data.network.edge.FreeEdgeProcessing;
 import org.gephi.data.network.edge.PreEdge;
 import org.gephi.data.network.edge.PreEdge.EdgeType;
 import org.gephi.data.network.edge.VirtualEdge;
+import org.gephi.data.network.mode.EdgeProcessing;
 import org.gephi.data.network.node.treelist.PreNodeTreeList;
 import org.gephi.data.network.node.treelist.PreNodeTreeList.AVLNode;
 import org.gephi.data.network.sight.SightImpl;
+import org.gephi.data.network.utils.avl.SightAVLTree.SightAVLIterator;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.datastructure.avl.simple.AVLItem;
@@ -151,6 +152,16 @@ public class PreNode implements AVLItem, NodeWrap {
         sightTree.setAllEnabled(enabled);
     }
 
+    public SightAVLIterator getSightIterator()
+    {
+        return sightTree.iterator();
+    }
+
+    public boolean hasSights()
+    {
+        return sightTree.getCount()>0;
+    }
+
     public DhnsEdge getVirtualEdge(PreEdge physicalEdge, int forwardPre, SightImpl sight) {
         if (physicalEdge.edgeType == EdgeType.IN) {
             return virtualEdgesTreesIN.getItem(sight.getNumber()).getItem(forwardPre);
@@ -238,5 +249,11 @@ public class PreNode implements AVLItem, NodeWrap {
         if(node==null)
             initNodeInstance();
         return node;
+    }
+
+    public void setNode(NodeImpl node)
+    {
+        this.node = node;
+        node.setPreNode(this);
     }
 }

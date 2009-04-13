@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.visualization.bridge;
 
 import java.util.Iterator;
@@ -34,10 +33,8 @@ import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.Object3dImpl;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.initializer.Object3dInitializer;
+import org.gephi.visualization.api.objects.Object3dClass;
 import org.gephi.visualization.opengl.AbstractEngine;
-
-
-
 
 /**
  *
@@ -55,39 +52,47 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
     @Override
     public void initArchitecture() {
-       this.engine = VizController.getInstance().getEngine();
-       this.reader = DhnsController.getInstance().getReader();
-       this.vizConfig = VizController.getInstance().getVizConfig();
+        this.engine = VizController.getInstance().getEngine();
+        this.reader = DhnsController.getInstance().getReader();
+        this.vizConfig = VizController.getInstance().getVizConfig();
     }
 
     public void updateWorld() {
         cacheMarker++;
-        if(reader.requireNodeUpdate())
-            updateNodes();
 
-        if(reader.requireEdgeUpdate())
+        Object3dClass[] object3dClasses = engine.getObject3dClasses();
+
+        Object3dClass nodeClass = object3dClasses[AbstractEngine.CLASS_NODE];
+        if (nodeClass.isEnabled() && reader.requireNodeUpdate()) {
+            updateNodes();
+            nodeClass.setCacheMarker(cacheMarker);
+        }
+
+        Object3dClass edgeClass = object3dClasses[AbstractEngine.CLASS_EDGE];
+        if (edgeClass.isEnabled() && reader.requireEdgeUpdate()) {
             updateEdges();
-        
+            edgeClass.setCacheMarker(cacheMarker);
+            if (vizConfig.isDirectedEdges()) {
+                object3dClasses[AbstractEngine.CLASS_ARROW].setCacheMarker(cacheMarker);
+            }
+        }
+
         engine.worldUpdated(cacheMarker);
     }
 
-
-    private void updateNodes()
-    {
+    private void updateNodes() {
         Object3dInitializer nodeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_NODE].getCurrentObject3dInitializer();
 
         Iterator<? extends NodeWrap> itr = reader.getNodes();
-        for(;itr.hasNext();)
-        {
+        for (; itr.hasNext();) {
             NodeWrap preNode = itr.next();
-            Node node=preNode.getNode();
+            Node node = preNode.getNode();
 
             Object3d obj = node.getObject3d();
-            if(obj==null)
-            {
+            if (obj == null) {
                 //Object3d is null, ADD
                 obj = nodeInit.initObject(node);
-                engine.addObject(AbstractEngine.CLASS_NODE, (Object3dImpl)obj);
+                engine.addObject(AbstractEngine.CLASS_NODE, (Object3dImpl) obj);
             }
             obj.setCacheMarker(cacheMarker);
 
@@ -95,28 +100,24 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         }
     }
 
-    private void updateEdges()
-    {
+    private void updateEdges() {
         Object3dInitializer edgeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_EDGE].getCurrentObject3dInitializer();
         Object3dInitializer arrowInit = engine.getObject3dClasses()[AbstractEngine.CLASS_ARROW].getCurrentObject3dInitializer();
 
         Iterator<? extends EdgeWrap> itr = reader.getEdges();
-        for(;itr.hasNext();itr.next())
-        {
+        for (; itr.hasNext();) {
             EdgeWrap virtualEdge = itr.next();
             Edge edge = virtualEdge.getEdge();
 
             Object3d obj = edge.getObject3d();
-            if(obj==null)
-            {
+            if (obj == null) {
                 //Object3d is null, ADD
                 obj = edgeInit.initObject(edge);
 
-                engine.addObject(AbstractEngine.CLASS_EDGE, (Object3dImpl)obj);
-                if(vizConfig.isDirectedEdges())
-                {
+                engine.addObject(AbstractEngine.CLASS_EDGE, (Object3dImpl) obj);
+                if (vizConfig.isDirectedEdges()) {
                     Object3d arrowObj = arrowInit.initObject(edge);
-                    engine.addObject(AbstractEngine.CLASS_ARROW, (Object3dImpl)arrowObj);
+                    engine.addObject(AbstractEngine.CLASS_ARROW, (Object3dImpl) arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);
                 }
             }
@@ -127,5 +128,4 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     public boolean requireUpdate() {
         return reader.requireUpdate();
     }
-    
 }

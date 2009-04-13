@@ -41,8 +41,8 @@ public class Dhns {
     public Dhns() {
         config = new DHNSConfig();
         treeStructure = new TreeStructure();
-        freeMode = new FreeMode(this);
         sightManager = new SightManager(this);
+        freeMode = new FreeMode(this);
     }
 
     public void init(SightImpl sight) {
@@ -202,36 +202,7 @@ public class Dhns {
         }*/
     }
 
-    public void delEdge(PreEdge edge) {
-        /*PreNode minNode = edge.minNode;
-        PreNode maxNode = edge.maxNode;
-
-        //Delete physical edges
-        minNode.getForwardEdges().remove(edge);
-        maxNode.getBackwardEdges().remove(edge);
-
-        //Get nodes' parent
-        PreNode minParent = treeStructure.getEnabledAncestorOrSelf(minNode);
-        PreNode maxParent = treeStructure.getEnabledAncestorOrSelf(maxNode);
-
-        if(minParent!=null && maxParent!=null && minParent!=maxParent)
-        {
-        //Get the virtual edge which represent the physical
-        DhnsEdge dhnsEdge = minParent.getVirtualEdge(edge, maxParent.getPre());
-        if(dhnsEdge!=null)
-        {
-        VirtualEdge virtualEdge = (VirtualEdge)dhnsEdge;
-        virtualEdge.removePhysicalEdge(edge);
-
-        //If the virtual edge no more contain physical edges, remove it
-        if(virtualEdge.isEmpty())
-        {
-        minParent.removeVirtualEdge(virtualEdge);
-        maxParent.removeVirtualEdge(virtualEdge);
-        }
-        }
-        }*/
-    }
+    
 
     public TreeStructure getTreeStructure() {
         return treeStructure;

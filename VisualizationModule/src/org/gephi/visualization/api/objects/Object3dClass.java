@@ -33,6 +33,7 @@ public abstract class Object3dClass {
     private final String name;
     private int classId;
     private boolean enabled;
+    private int cacheMarker;
 
     //Config
     private boolean lod;
@@ -77,6 +78,15 @@ public abstract class Object3dClass {
         this.enabled = enabled;
     }
 
+    public int getCacheMarker() {
+        return cacheMarker;
+    }
+
+    public void setCacheMarker(int cacheMarker) {
+        this.cacheMarker = cacheMarker;
+    }
+
+    
     //STATIC
     private synchronized static int getNumber() {
         return IDS++;

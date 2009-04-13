@@ -17,7 +17,7 @@ public interface FreeModifier {
 
     public void retract(Node node, Sight sight);
 
-    public void addNode(Node node);
+    public void addNode(Node node, Node parent);
 
     public void deleteNode(Node node);
 

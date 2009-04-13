@@ -84,7 +84,7 @@ public class CompatibilityEngine extends AbstractEngine {
     public void worldUpdated(int cacheMarker) {
         octree.setCacheMarker(cacheMarker);
         for (Object3dClass objClass : object3dClasses) {
-            if (objClass.isEnabled()) {
+            if (objClass.getCacheMarker()==cacheMarker) {
                 octree.cleanDeletedObjects(objClass.getClassId());
             }
         }
