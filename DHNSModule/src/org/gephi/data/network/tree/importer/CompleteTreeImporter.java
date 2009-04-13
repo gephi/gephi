@@ -109,10 +109,10 @@ public class CompleteTreeImporter {
 
         for (PreNode p : treeStructure.getTree()) {
             p.getPost();
+            p.addSight(sight);
             if (p.size == 0) {
                 p.setEnabled(sight, true);
             }
-            p.addSight(sight);
         }
     }
 

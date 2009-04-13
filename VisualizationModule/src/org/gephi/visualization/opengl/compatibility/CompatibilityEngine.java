@@ -28,6 +28,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
+import org.gephi.data.network.controller.DhnsController;
+import org.gephi.data.network.potato.Potato;
+import org.gephi.data.network.potato.PotatoBuilder;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.objects.Object3dClass;
 import org.gephi.visualization.opengl.AbstractEngine;
@@ -246,6 +249,32 @@ public class CompatibilityEngine extends AbstractEngine {
     gl.glVertex2f(x1 - t2sina1, y1 + t2cosa1+20);
     gl.glVertex2f(x1 + t2sina1, y1 - t2cosa1+20);
     gl.glEnd();*/
+
+        PotatoBuilder potatoBuilder = DhnsController.getInstance().getPotatoBuilder();
+        for(Potato p : potatoBuilder.getPotatoes())
+        {
+            gl.glBegin(GL.GL_TRIANGLES);
+            for(Potato.Triangle triangles : p.getTriangles())
+            {
+                float[] array = triangles.array;
+                gl.glVertex2f(array[0], array[1]);
+                gl.glVertex2f(array[2], array[3]);
+                gl.glVertex2f(array[4], array[5]);
+            }
+            gl.glEnd();
+
+            gl.glBegin(GL.GL_QUADS);
+            for(Potato.Square squares : p.getSquares())
+            {
+                float[] array = squares.array;
+
+                gl.glVertex2f(array[0], array[1]);
+                gl.glVertex2f(array[2], array[3]);
+                gl.glVertex2f(array[4], array[5]);
+                gl.glVertex2f(array[6], array[7]);
+            }
+            gl.glEnd();
+        }
     }
 
     @Override

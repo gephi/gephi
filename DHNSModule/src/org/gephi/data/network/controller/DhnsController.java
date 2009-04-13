@@ -25,6 +25,7 @@ import org.gephi.data.network.api.FreeModifier;
 import org.gephi.data.network.api.Reader;
 import org.gephi.data.network.api.Sight;
 import org.gephi.data.network.mode.FreeMode;
+import org.gephi.data.network.potato.PotatoBuilder;
 import org.gephi.data.network.reader.MainReader;
 
 /**
@@ -66,5 +67,9 @@ public class DhnsController {
         return dhns.getFreeModifier();
     }
 
+    public PotatoBuilder getPotatoBuilder()
+    {
+        return dhns.getPotatoBuilder();
+    }
     
 }

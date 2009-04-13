@@ -20,12 +20,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.data.network.api.FreeModifier;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.config.DHNSConfig;
-import org.gephi.data.network.edge.PreEdge;
 import org.gephi.data.network.mode.FreeMode;
 import org.gephi.data.network.node.PreNode;
+import org.gephi.data.network.node.treelist.SingleTreeIterator;
+import org.gephi.data.network.potato.Potato;
+import org.gephi.data.network.potato.PotatoBuilder;
+import org.gephi.data.network.potato.PotatoRender;
 import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.sight.SightManager;
 import org.gephi.data.network.tree.importer.CompleteTreeImporter;
@@ -37,6 +42,7 @@ public class Dhns {
     private TreeStructure treeStructure;
     private FreeMode freeMode;
     private SightManager sightManager;
+    private PotatoBuilder potatoBuilder;
 
     public Dhns() {
         config = new DHNSConfig();
@@ -53,13 +59,33 @@ public class Dhns {
     private void importFakeGraph() {
         CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure, sightManager.getMainSight());
 
-        importer.importGraph(5, true);
-        importer.shuffleEnable();
+        importer.importGraph(2, true);
+        //importer.shuffleEnable();
         System.out.println("Tree size : " + treeStructure.getTreeSize());
-        RandomEdgesGenerator reg = new RandomEdgesGenerator(treeStructure);
-        reg.generatPhysicalEdges(20);
+        treeStructure.showTreeAsTable();
+
+        potatoBuilder = new PotatoBuilder(this);
+        List<PreNode> enabledNodes = new ArrayList<PreNode>();
+        SingleTreeIterator itr = new SingleTreeIterator(treeStructure, sightManager.getMainSight());
+        for(;itr.hasNext();)
+        {
+            PreNode enabledNode = itr.next();
+            enabledNodes.add(enabledNode);
+            System.out.println("Enabled : "+enabledNode);
+        }
+        potatoBuilder.buildPotatoes(enabledNodes);
+        PotatoRender render = new PotatoRender();
+        for(Potato p : potatoBuilder.getPotatoes())
+        {
+            render.cookPotato(p);
+        }
+
+        /*RandomEdgesGenerator reg = new RandomEdgesGenerator(treeStructure);
+        reg.generatPhysicalEdges(20);*/
         freeMode.init();
     }
+
+    
 
     public TreeStructure getTreeStructure() {
         return treeStructure;
@@ -75,5 +101,9 @@ public class Dhns {
 
     public FreeModifier getFreeModifier() {
         return freeMode;
+    }
+
+    public PotatoBuilder getPotatoBuilder() {
+        return potatoBuilder;
     }
 }

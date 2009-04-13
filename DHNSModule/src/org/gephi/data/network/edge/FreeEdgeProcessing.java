@@ -47,7 +47,8 @@ public class FreeEdgeProcessing implements EdgeProcessing {
     }
 
     public void init(SightImpl sightImpl) {
-        processInducedEdges(sightImpl);
+        //processInducedEdges(sightImpl);
+        buildHierarchyViewMode(sightImpl);
     }
 
     public void clear(SightImpl sight) {

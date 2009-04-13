@@ -118,7 +118,7 @@ public class SightCache {
 
     public Iterator<PreNode> getNodeIterator() {
         if (resetNode.getAndSet(true)) {
-            fakeNodeUpdate();
+            //fakeNodeUpdate();
             resetNodes();
         }
         return nodeCache.iterator();
@@ -126,7 +126,7 @@ public class SightCache {
 
     public Iterator<DhnsEdge> getEdgeIterator() {
         if (resetEdge.getAndSet(true)) {
-            fakeEdgeUpdate();
+            //fakeEdgeUpdate();
             resetEdges();
         }
         return edgeCache.iterator();
