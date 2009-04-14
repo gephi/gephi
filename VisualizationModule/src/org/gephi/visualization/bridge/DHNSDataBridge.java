@@ -84,6 +84,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         Object3dInitializer nodeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_NODE].getCurrentObject3dInitializer();
 
         Iterator<? extends NodeWrap> itr = reader.getNodes();
+        System.out.println("Bridge update nodes");
         for (; itr.hasNext();) {
             NodeWrap preNode = itr.next();
             Node node = preNode.getNode();
@@ -105,6 +106,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         Object3dInitializer arrowInit = engine.getObject3dClasses()[AbstractEngine.CLASS_ARROW].getCurrentObject3dInitializer();
 
         Iterator<? extends EdgeWrap> itr = reader.getEdges();
+        System.out.println("Bridge update edges");
         for (; itr.hasNext();) {
             EdgeWrap virtualEdge = itr.next();
             Edge edge = virtualEdge.getEdge();

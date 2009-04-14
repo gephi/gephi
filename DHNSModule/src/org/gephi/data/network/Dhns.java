@@ -20,17 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.gephi.data.network.api.FreeModifier;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.config.DHNSConfig;
 import org.gephi.data.network.mode.FreeMode;
-import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.node.treelist.SingleTreeIterator;
-import org.gephi.data.network.potato.Potato;
 import org.gephi.data.network.potato.PotatoBuilder;
-import org.gephi.data.network.potato.PotatoRender;
 import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.sight.SightManager;
 import org.gephi.data.network.tree.importer.CompleteTreeImporter;
@@ -43,6 +40,9 @@ public class Dhns {
     private FreeMode freeMode;
     private SightManager sightManager;
     private PotatoBuilder potatoBuilder;
+
+    //Locking
+    private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
     public Dhns() {
         config = new DHNSConfig();
@@ -64,7 +64,7 @@ public class Dhns {
         System.out.println("Tree size : " + treeStructure.getTreeSize());
         treeStructure.showTreeAsTable();
 
-        potatoBuilder = new PotatoBuilder(this);
+        /*potatoBuilder = new PotatoBuilder(this);
         List<PreNode> enabledNodes = new ArrayList<PreNode>();
         SingleTreeIterator itr = new SingleTreeIterator(treeStructure, sightManager.getMainSight());
         for(;itr.hasNext();)
@@ -78,10 +78,10 @@ public class Dhns {
         for(Potato p : potatoBuilder.getPotatoes())
         {
             render.cookPotato(p);
-        }
+        }*/
 
-        /*RandomEdgesGenerator reg = new RandomEdgesGenerator(treeStructure);
-        reg.generatPhysicalEdges(20);*/
+        RandomEdgesGenerator reg = new RandomEdgesGenerator(treeStructure);
+        reg.generatPhysicalEdges(20);
         freeMode.init();
     }
 
@@ -105,5 +105,16 @@ public class Dhns {
 
     public PotatoBuilder getPotatoBuilder() {
         return potatoBuilder;
+    }
+
+    //Locking
+    public Lock getReadLock()
+    {
+        return readWriteLock.readLock();
+    }
+
+    public Lock getWriteLock()
+    {
+        return readWriteLock.writeLock();
     }
 }

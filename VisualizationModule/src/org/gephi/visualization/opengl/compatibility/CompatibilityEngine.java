@@ -250,7 +250,7 @@ public class CompatibilityEngine extends AbstractEngine {
     gl.glVertex2f(x1 + t2sina1, y1 - t2cosa1+20);
     gl.glEnd();*/
 
-        PotatoBuilder potatoBuilder = DhnsController.getInstance().getPotatoBuilder();
+        /*PotatoBuilder potatoBuilder = DhnsController.getInstance().getPotatoBuilder();
         for(Potato p : potatoBuilder.getPotatoes())
         {
             gl.glBegin(GL.GL_TRIANGLES);
@@ -274,7 +274,7 @@ public class CompatibilityEngine extends AbstractEngine {
                 gl.glVertex2f(array[6], array[7]);
             }
             gl.glEnd();
-        }
+        }*/
     }
 
     @Override

@@ -79,4 +79,9 @@ public class SightManager {
     public void setSightCounter(int sightCounter) {
         this.sightCounter = sightCounter;
     }
+
+    public void updateSight(SightImpl sight)
+    {
+        sight.getSightCache().reset();
+    }
 }

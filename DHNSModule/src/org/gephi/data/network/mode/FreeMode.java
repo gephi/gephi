@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network.mode;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.gephi.data.network.Dhns;
 import org.gephi.data.network.api.FreeModifier;
 import org.gephi.data.network.api.Sight;
@@ -50,6 +52,8 @@ public class FreeMode implements Mode, FreeModifier {
     private FreeEdgeProcessing edgeProcessing;
     private TreeStructure treeStructure;
     private SightManager sightManager;
+    //Executor
+    ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public FreeMode(Dhns dhns) {
         this.dhns = dhns;
@@ -69,19 +73,53 @@ public class FreeMode implements Mode, FreeModifier {
             ni.setY(n.getPost() * 50);
         }
         edgeProcessing.init(sightManager.getMainSight());
+        sightManager.getMainSight().getSightCache().reset();
     }
 
-    public void expand(Node node, Sight sight) {
+    public void expand(final Node node, final Sight sight) {
+        executor.execute(new Runnable() {
+
+            public void run() {
+                expandBlock(node, sight);
+            }
+        });
+    }
+
+    public void expandBlock(Node node, Sight sight) {
+        dhns.getWriteLock().lock();
         if (node.getLevel() < treeStructure.treeHeight) {
             expand(((NodeImpl) node).getPreNode(), (SightImpl) sight);
+            sightManager.updateSight((SightImpl)sight);
         }
+        dhns.getWriteLock().unlock();
     }
 
-    public void retract(Node node, Sight sight) {
+    public void retract(final Node node, final Sight sight) {
+        executor.execute(new Runnable() {
+
+            public void run() {
+                retractBlock(node, sight);
+            }
+        });
+    }
+
+    public void retractBlock(Node node, Sight sight) {
+        dhns.getWriteLock().lock();
         retract(((NodeImpl) node).getPreNode(), (SightImpl) sight);
+        dhns.getWriteLock().unlock();
     }
 
-    public void addNode(Node node, Node parent) {
+    public void addNode(final Node node, final Node parent) {
+        executor.execute(new Runnable() {
+
+            public void run() {
+                addNodeBlock(node, parent);
+            }
+        });
+    }
+
+    public void addNodeBlock(Node node, Node parent) {
+        dhns.getWriteLock().lock();
         PreNode parentNode;
         if (parent == null) {
             parentNode = treeStructure.getRoot();
@@ -93,23 +131,56 @@ public class FreeMode implements Mode, FreeModifier {
         preNode.addSight(sightManager.getMainSight());
 
         addNode(preNode);
+        dhns.getWriteLock().unlock();
     }
 
-    public void deleteNode(Node node) {
+    public void deleteNode(final Node node) {
+        executor.execute(new Runnable() {
+
+            public void run() {
+                deleteNodeBlock(node);
+            }
+        });
+    }
+
+    public void deleteNodeBlock(Node node) {
+        dhns.getWriteLock().lock();
         deleteNode(((NodeImpl) node).getPreNode());
+        dhns.getWriteLock().unlock();
     }
 
-    public void addEdge(Edge edge) {
+    public void addEdge(final Edge edge) {
+        executor.execute(new Runnable() {
+
+            public void run() {
+                addEdgeBlock(edge);
+            }
+        });
+    }
+
+    public void addEdgeBlock(Edge edge) {
+        dhns.getWriteLock().lock();
         EdgeImpl edgeImpl = (EdgeImpl) edge;
         PreEdge preEdge = new PreEdge(edgeImpl.getSource().getPreNode(), edgeImpl.getTarget().getPreNode());
         preEdge.setEdge(edge);
 
         addEdge(preEdge);
+        dhns.getWriteLock().unlock();
     }
 
-    public void deleteEdge(Edge edge) {
+    public void deleteEdge(final Edge edge) {
+        executor.execute(new Runnable() {
+
+            public void run() {
+                deleteEdgeBlock(edge);
+            }
+        });
+    }
+
+    public void deleteEdgeBlock(Edge edge) {
+        dhns.getWriteLock().lock();
         EdgeImpl edgeImpl = (EdgeImpl) edge;
-        
+        dhns.getWriteLock().unlock();
     }
 
     //------------------------------------------
@@ -139,8 +210,6 @@ public class FreeMode implements Mode, FreeModifier {
         //Clean current node
         preNode.setEnabled(sightImpl, false);
         edgeProcessing.clearVirtualEdges(preNode, sightImpl);
-
-        sightImpl.getSightCache().reset();
     }
 
     private void retract(PreNode parent, SightImpl sight) {
@@ -173,7 +242,7 @@ public class FreeMode implements Mode, FreeModifier {
         treeStructure.insertAsChild(node, node.parent);
     }
 
-    public void addEdge(PreEdge edge) {
+    private void addEdge(PreEdge edge) {
         PreNode minNode = edge.minNode;
         PreNode maxNode = edge.maxNode;
 
