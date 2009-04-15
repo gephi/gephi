@@ -43,10 +43,14 @@ public class PotatoRender {
     }
 
     private void loadConfig() {
-        NB_SUBDIVISIONS=2;
-        RAYON=0.5f;
-        INFLUENCE=0.79f;
-        RAYON_INFLUENCE_MAX=1.5f;
+        NB_SUBDIVISIONS = 4;
+        RAYON = 25f;
+        INFLUENCE = 1f;
+        RAYON_INFLUENCE_MAX = 100f;
+        /*NB_SUBDIVISIONS = 2;
+        RAYON = 0.5f;
+        INFLUENCE = 0.79f;
+        RAYON_INFLUENCE_MAX = 1.5f;*/
         INTER = RAYON * Math.sqrt(2.0) / NB_SUBDIVISIONS;
     }
 
@@ -120,7 +124,7 @@ public class PotatoRender {
             Node node = pn.getNode();
 
             //DESSINE LE DISQUE MINIMAL AUTOUR DU NOEUD
-            createCircle().circle(node.x(), node.y(), RAYON);
+            //createCircle().circle(node.x(), node.y(), RAYON);
 
 
             //DESSINE LA ZONE D'INFLUENCE AUTOUR DU NOEUD
@@ -194,21 +198,29 @@ public class PotatoRender {
                         fbl = calculBlob(LEFT, BOTTOM, node);
                         if (fbl >= INFLUENCE) {
                             bl = true;
+                        } else {
+                            bl = false;
                         }
 
                         fbr = calculBlob(RIGHT, BOTTOM, node);
                         if (fbr >= INFLUENCE) {
                             br = true;
+                        } else {
+                            br = false;
                         }
 
                         ftr = calculBlob(RIGHT, TOP, node);
                         if (ftr >= INFLUENCE) {
                             tr = true;
+                        } else {
+                            tr = false;
                         }
 
                         ftl = calculBlob(LEFT, TOP, node);
                         if (ftl >= INFLUENCE) {
                             tl = true;
+                        } else {
+                            tl = false;
                         }
 
                         if (!bl && !br && !tr && !tl) //aucune influence, il ne faut rien colorier
@@ -245,7 +257,7 @@ public class PotatoRender {
                         /* En fonction des poids de chaque sommet on dessine le carré différement*/
                         if (actifs == 4) {
                             /* Les 4 sommets dedans*/
-                            createSquare().square(LEFTf, BOTTOMf, RIGHTf, BOTTOMf, RIGHTf, TOPf, LEFTf, TOPf);
+                            //createSquare().square(LEFTf, BOTTOMf, RIGHTf, BOTTOMf, RIGHTf, TOPf, LEFTf, TOPf);
                         } else if (actifs == 3) {
                             /* 3 points dedans */
                             /* dessin d'un carré avec une corne en moins  */
@@ -253,31 +265,27 @@ public class PotatoRender {
 
                             if (!bl) {
                                 //Fan
-                                Potato.TriangleFan fan = createTriangleFan(3);
-                                fan.triangle(p1x, p1y, p2x, p2y, RIGHTf, BOTTOMf);
-                                fan.triangle(p1x, p1y, RIGHTf, BOTTOMf, RIGHTf, TOPf);
-                                fan.triangle(p1x, p1y, RIGHTf, TOPf, LEFTf, TOPf);
+                                //createTriangle().triangle(p1x, p1y, p2x, p2y, RIGHTf, BOTTOMf);
+                                //createTriangle().triangle(p1x, p1y, RIGHTf, BOTTOMf, RIGHTf, TOPf);
+                                //createTriangle().triangle(p1x, p1y, RIGHTf, TOPf, LEFTf, TOPf);
 
                             } else if (!br) {
                                 //Fan
-                                Potato.TriangleFan fan = createTriangleFan(3);
-                                fan.triangle(LEFTf, BOTTOMf, p2x, p2y, p3x, p3y);
-                                fan.triangle(LEFTf, BOTTOMf, p3x, p3y, RIGHTf, TOPf);
-                                fan.triangle(LEFTf, BOTTOMf, RIGHTf, TOPf, LEFTf, TOPf);
+                                //createTriangle().triangle(LEFTf, BOTTOMf, p2x, p2y, p3x, p3y);
+                                //createTriangle().triangle(LEFTf, BOTTOMf, p3x, p3y, RIGHTf, TOPf);
+                                //createTriangle().triangle(LEFTf, BOTTOMf, RIGHTf, TOPf, LEFTf, TOPf);
 
                             } else if (!tr) {
                                 //Fan
-                                Potato.TriangleFan fan = createTriangleFan(3);
-                                fan.triangle(p3x, p3y, p4x, p4y, LEFTf, TOPf);
-                                fan.triangle(p3x, p3y, LEFTf, TOPf, LEFTf, BOTTOMf);
-                                fan.triangle(p3x, p3y, LEFTf, BOTTOMf, RIGHTf, BOTTOMf);
+                                //createTriangle().triangle(p3x, p3y, p4x, p4y, LEFTf, TOPf);
+                                //createTriangle().triangle(p3x, p3y, LEFTf, TOPf, LEFTf, BOTTOMf);
+                                //createTriangle().triangle(p3x, p3y, LEFTf, BOTTOMf, RIGHTf, BOTTOMf);
 
                             } else if (!tl) {
                                 //Fan
-                                Potato.TriangleFan fan = createTriangleFan(3);
-                                fan.triangle(p4x, p4y, p1x, p1y, LEFTf, BOTTOMf);
-                                fan.triangle(p4x, p4y, LEFTf, BOTTOMf, RIGHTf, BOTTOMf);
-                                fan.triangle(p4x, p4y, RIGHTf, BOTTOMf, RIGHTf, TOPf);
+                                //createTriangle().triangle(p4x, p4y, p1x, p1y, LEFTf, BOTTOMf);
+                                //createTriangle().triangle(p4x, p4y, LEFTf, BOTTOMf, RIGHTf, BOTTOMf);
+                                //createTriangle().triangle(p4x, p4y, RIGHTf, BOTTOMf, RIGHTf, TOPf);
 
                             }
 
@@ -285,53 +293,51 @@ public class PotatoRender {
                         } else if (actifs == 2) { /* 2 points d'activé*/
                             if (bl == tl) {
                                 if (bl) {
-                                    createSquare().square(p2x, p2y, p4x, p4y, LEFTf, TOPf, LEFTf, BOTTOMf);
+                                    //createSquare().square(p2x, p2y, p4x, p4y, LEFTf, TOPf, LEFTf, BOTTOMf);
 
                                 } else {
-                                    createSquare().square(p2x, p2y, RIGHTf, BOTTOMf, RIGHTf, TOPf, p4x, p4y);
+                                    //createSquare().square(p2x, p2y, RIGHTf, BOTTOMf, RIGHTf, TOPf, p4x, p4y);
 
                                 }
                             } else if (bl == br) {
                                 if (bl) {
-                                    createSquare().square(LEFTf, BOTTOMf, RIGHTf, BOTTOMf, p3x, p3y, p1x, p1y);
+                                    //createSquare().square(LEFTf, BOTTOMf, RIGHTf, BOTTOMf, p3x, p3y, p1x, p1y);
 
                                 } else {
-                                    createSquare().square(p3x, p3y, RIGHTf, TOPf, LEFTf, TOPf, p1x, p1y);
+                                    //createSquare().square(p3x, p3y, RIGHTf, TOPf, LEFTf, TOPf, p1x, p1y);
 
                                 }
                             } else {
                                 if (bl == tr && !bl) {
                                     //Fan
-                                    Potato.TriangleFan fan = createTriangleFan(4);
-                                    fan.triangle(p1x, p1y, p2x, p2y, RIGHTf, BOTTOMf);
-                                    fan.triangle(p1x, p1y, RIGHTf, BOTTOMf, p3x, p3y);
-                                    fan.triangle(p1x, p1y, p3x, p3y, p4x, p4y);
-                                    fan.triangle(p1x, p1y, p4x, p4y, LEFTf, TOPf);
+                                    //createTriangle().triangle(p1x, p1y, p2x, p2y, RIGHTf, BOTTOMf);
+                                    //createTriangle().triangle(p1x, p1y, RIGHTf, BOTTOMf, p3x, p3y);
+                                    //createTriangle().triangle(p1x, p1y, p3x, p3y, p4x, p4y);
+                                    //createTriangle().triangle(p1x, p1y, p4x, p4y, LEFTf, TOPf);
 
                                 } else {
                                     //Fan
-                                    Potato.TriangleFan fan = createTriangleFan(4);
-                                    fan.triangle(LEFTf, BOTTOMf, p2x, p2y, p3x, p3y);
-                                    fan.triangle(LEFTf, BOTTOMf, p3x, p3y, RIGHTf, TOPf);
-                                    fan.triangle(LEFTf, BOTTOMf, RIGHTf, TOPf, p4x, p4y);
-                                    fan.triangle(LEFTf, BOTTOMf, p4x, p4y, p1x, p1y);
+                                    //createTriangle().triangle(LEFTf, BOTTOMf, p2x, p2y, p3x, p3y);
+                                    //createTriangle().triangle(LEFTf, BOTTOMf, p3x, p3y, RIGHTf, TOPf);
+                                    //createTriangle().triangle(LEFTf, BOTTOMf, RIGHTf, TOPf, p4x, p4y);
+                                    //createTriangle().triangle(LEFTf, BOTTOMf, p4x, p4y, p1x, p1y);
 
                                 }
                             }
                         } else if (actifs == 1) {
                             /* juste un sommet dans le blob*/
                             if (bl) {
-                                createTriangle().triangle(p1x, p1y, LEFTf, BOTTOMf, p2x, p2y);
+                                //createTriangle().triangle(p1x, p1y, LEFTf, BOTTOMf, p2x, p2y);
 
                             } else if (br) {
-                                createTriangle().triangle(p2x, p2y, RIGHTf, BOTTOMf, p3x, p3y);
+                                //createTriangle().triangle(p2x, p2y, RIGHTf, BOTTOMf, p3x, p3y);
 
                             } else if (tr) {
 
-                                createTriangle().triangle(p3x, p3y, RIGHTf, TOPf, p4x, p4y);
+                                //createTriangle().triangle(p3x, p3y, RIGHTf, TOPf, p4x, p4y);
 
                             } else if (tl) {
-                                createTriangle().triangle(p4x, p4y, LEFTf, TOPf, p1x, p1y);
+                                //createTriangle().triangle(p4x, p4y, LEFTf, TOPf, p1x, p1y);
 
                             }
                         }
@@ -345,32 +351,21 @@ public class PotatoRender {
         }
     }
 
-
-    public Potato.TriangleFan createTriangleFan(int size)
-    {
-        Potato.TriangleFan t = new Potato.TriangleFan(size);
-        potato.trianglesFan.add(t);
-        return t;
-    }
-
-    public Potato.Triangle createTriangle()
-    {
-        Potato.Triangle t= new Potato.Triangle();
+    /*public Potato.Triangle createTriangle() {
+        Potato.Triangle t = new Potato.Triangle();
         potato.triangles.add(t);
         return t;
     }
 
-    public Potato.Square createSquare()
-    {
+    public Potato.Square createSquare() {
         Potato.Square s = new Potato.Square();
         potato.squares.add(s);
         return s;
     }
 
-    public Potato.Circle createCircle()
-    {
+    public Potato.Circle createCircle() {
         Potato.Circle c = new Potato.Circle();
         potato.circles.add(c);
         return c;
-    }
+    }*/
 }

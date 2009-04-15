@@ -32,6 +32,7 @@ import org.gephi.data.network.edge.VirtualEdge;
 import org.gephi.data.network.mode.EdgeProcessing;
 import org.gephi.data.network.node.treelist.PreNodeTreeList;
 import org.gephi.data.network.node.treelist.PreNodeTreeList.AVLNode;
+import org.gephi.data.network.potato.Potato;
 import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.utils.avl.SightAVLTree.SightAVLIterator;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
@@ -78,6 +79,7 @@ public class PreNode implements AVLItem, NodeWrap {
     //private DhnsEdgeTree virtualEdgesOUT;
     private NodeImpl node;
     private SightAVLTree sightTree;
+    private Potato potato;
 
     public PreNode(int pre, int size, int level, PreNode parent) {
         this.pre = pre;
@@ -253,5 +255,13 @@ public class PreNode implements AVLItem, NodeWrap {
     public void setNode(NodeImpl node) {
         this.node = node;
         node.setPreNode(this);
+    }
+
+    public Potato getPotato() {
+        return potato;
+    }
+
+    public void setPotato(Potato potato) {
+        this.potato = potato;
     }
 }

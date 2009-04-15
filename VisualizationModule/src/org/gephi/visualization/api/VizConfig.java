@@ -39,6 +39,7 @@ public class VizConfig {
     private boolean blending = true;
     private boolean lighting = true;
     private boolean material = true;
+    private boolean wireFrame = false;
     private Color backgroundColor = Color.WHITE;
     private float[] defaultCameraPosition = {0f, 0f, 5000f};
     protected float[] nodeSelectedColor = {1f, 1f, 1f};
@@ -157,5 +158,9 @@ public class VizConfig {
 
     public int getOctreeWidth() {
         return octreeWidth;
+    }
+
+    public boolean isWireFrame() {
+        return wireFrame;
     }
 }

@@ -21,42 +21,58 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.network.reader;
 
 import java.util.Iterator;
-import org.gephi.data.network.Dhns;
 import org.gephi.data.network.api.EdgeWrap;
 import org.gephi.data.network.api.NodeWrap;
 import org.gephi.data.network.api.Reader;
+import org.gephi.data.network.sight.SightCacheContent;
 import org.gephi.data.network.sight.SightImpl;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class MainReader implements Reader {
+public class AsyncReader implements Reader {
 
-    private SightImpl currentSight;
+    private SightImpl sight;
 
-    public MainReader(Dhns dhns) {
-        currentSight = dhns.getSightManager().getMainSight();
-        dhns.init(currentSight);
+    //Versionning
+    private SightCacheContent cacheContent;
+    private int currentNodeVersion = -1;
+    private int currentEdgeVersion = -1;
+
+    public AsyncReader(SightImpl sight) {
+        this.sight = sight;
     }
 
     public Iterator<? extends NodeWrap> getNodes() {
-        return currentSight.getSightCache().getNodeIterator();
+        currentNodeVersion = cacheContent.getNodeVersion();
+        return cacheContent.getNodeCache().iterator();
     }
 
     public Iterator<? extends EdgeWrap> getEdges() {
-        return currentSight.getSightCache().getEdgeIterator();
+        currentEdgeVersion = cacheContent.getEdgeVersion();
+        return cacheContent.getEdgeCache().iterator();
     }
 
     public boolean requireUpdate() {
-        return requireNodeUpdate() || requireEdgeUpdate();
+        cacheContent = sight.getSightCache().getCacheContent();
+        if (cacheContent.getNodeVersion() > currentNodeVersion || cacheContent.getEdgeVersion() > currentEdgeVersion) {
+            return true;
+        }
+        return false;
     }
 
     public boolean requireNodeUpdate() {
-        return currentSight.getSightCache().requireNodeUpdate();
+        if (cacheContent.getNodeVersion() > currentNodeVersion) {
+            return true;
+        }
+        return false;
     }
 
     public boolean requireEdgeUpdate() {
-        return currentSight.getSightCache().requireEdgeUpdate();
+        if (cacheContent.getEdgeVersion() > currentEdgeVersion) {
+            return true;
+        }
+        return false;
     }
 }

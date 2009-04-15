@@ -24,9 +24,8 @@ import org.gephi.data.network.*;
 import org.gephi.data.network.api.FreeModifier;
 import org.gephi.data.network.api.Reader;
 import org.gephi.data.network.api.Sight;
-import org.gephi.data.network.mode.FreeMode;
-import org.gephi.data.network.potato.PotatoBuilder;
-import org.gephi.data.network.reader.MainReader;
+import org.gephi.data.network.reader.AsyncReader;
+
 
 /**
  *
@@ -59,17 +58,12 @@ public class DhnsController {
 
     public Reader getReader()
     {
-        return new MainReader(dhns);
+        return new AsyncReader(dhns.getSightManager().getMainSight());
     }
 
     public FreeModifier getFreeModifier()
     {
         return dhns.getFreeModifier();
-    }
-
-    public PotatoBuilder getPotatoBuilder()
-    {
-        return dhns.getPotatoBuilder();
     }
     
 }

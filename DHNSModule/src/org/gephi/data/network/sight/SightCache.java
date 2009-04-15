@@ -51,24 +51,25 @@ public class SightCache {
 
     private SightImpl sight;
     private Dhns dhns;
+    private SightManager manager;
 
     //States
     private AtomicBoolean orderResetNode = new AtomicBoolean();
     private AtomicBoolean orderResetEdge = new AtomicBoolean();
-    private AtomicBoolean newDataReady = new AtomicBoolean();
 
     //Cache
-    private AtomicReference<CacheContent> cache;
+    private AtomicReference<SightCacheContent> cache;
 
     //Executor
     private ExecutorService resetExecutor;
     private ExecutorService tasksExecutor;
-    private CompletionService<CacheContent> completionService;
+    private CompletionService<SightCacheContent> completionService;
 
     public SightCache(Dhns dhns, SightImpl sight) {
-        this.dhns = dhns;
         this.sight = sight;
-        this.cache = new AtomicReference<CacheContent>(new CacheContent());
+        this.dhns = dhns;
+        this.manager = dhns.getSightManager();
+        this.cache = new AtomicReference<SightCacheContent>(new SightCacheContent());
 
         //Executors
         resetExecutor = Executors.newSingleThreadExecutor();
@@ -76,51 +77,8 @@ public class SightCache {
         completionService = new ExecutorCompletionService(tasksExecutor);
     }
 
-    /*private void fakeNodeUpdate() {
-    FreeModifier mod = dhns.getFreeModifier();
-    for (int i = 0; i < 3; i++) {
-    NodeImpl n = new NodeImpl();
-    mod.addNode(n, dhns.getTreeStructure().getRoot().getNode());
-    n.getPreNode().setEnabled(sight, true);
-    }
-    }
-
-    private void fakeEdgeUpdate() {
-    FreeModifier mod = dhns.getFreeModifier();
-    for (int i = 0; i < 10; i++) {
-    PreNode n1 = nodeCache.get((int) (Math.random() * nodeCache.size() - 1) + 1);
-    PreNode n2 = nodeCache.get((int) (Math.random() * nodeCache.size() - 1) + 1);
-    if (n1 != n2) {
-    EdgeImpl edge = new EdgeImpl(n1.getNode(), n2.getNode());
-    mod.addEdge(edge);
-    }
-    }
-    }*/
-    public Iterator<PreNode> getNodeIterator() {
-        return cache.get().nodeCache.iterator();
-    }
-
-    public Iterator<DhnsEdge> getEdgeIterator() {
-        return cache.get().edgeCache.iterator();
-    }
-
-    private int i=0;
-    public boolean requireNodeUpdate() {
-        if(newDataReady.get())
-        {
-            i=1;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean requireEdgeUpdate() {
-        if(i==1 && newDataReady.getAndSet(false))
-        {
-            i=0;
-            return true;
-        }
-        return false;
+    public SightCacheContent getCacheContent() {
+        return cache.get();
     }
 
     public void reset() {
@@ -134,30 +92,27 @@ public class SightCache {
 
             public void run() {
                 System.out.println("reset Task");
-                boolean nodeTask = false, edgeTask = false;
                 int tasks = 0;
 
                 //Submit tasks
                 if (orderResetNode.getAndSet(false)) {
-                    nodeTask = true;
                     tasks++;
                     completionService.submit(new resetNodesCallable());
                 }
 
                 if (orderResetEdge.getAndSet(false)) {
-                    edgeTask = true;
                     tasks++;
                     completionService.submit(new resetEdgesCallable());
                 }
 
                 //New cacheContent
-                CacheContent cacheContent = new CacheContent(cache.get());
+                SightCacheContent cacheContent = new SightCacheContent(cache.get());
 
                 //Wait for completion of all tasks
                 for (int i = 0; i < tasks; i++) {
                     try {
-                        Future<CacheContent> f = completionService.take();
-                        CacheContent taskContent = f.get();
+                        Future<SightCacheContent> f = completionService.take();
+                        SightCacheContent taskContent = f.get();
                         cacheContent.appendContent(taskContent);
                     } catch (ExecutionException ex) {
                         ex.printStackTrace();
@@ -168,20 +123,13 @@ public class SightCache {
 
                 //Swap ref
                 cache.set(cacheContent);
-                newDataReady.set(true);
-                /*if (nodeTask) {
-                    newNodesReady.set(true);
-                }
-                if (edgeTask) {
-                    newEdgesReady.set(true);
-                }*/
             }
         });
     }
 
-    private class resetNodesCallable implements Callable<CacheContent> {
+    private class resetNodesCallable implements Callable<SightCacheContent> {
 
-        public CacheContent call() throws Exception {
+        public SightCacheContent call() throws Exception {
             System.out.println("reset Nodes call");
             TreeStructure treeStructure = dhns.getTreeStructure();
             List<PreNode> nodeCache = new ArrayList<PreNode>();
@@ -199,13 +147,13 @@ public class SightCache {
             }      //Write cache
 
             dhns.getReadLock().unlock();
-            return new CacheContent(nodeCache, null);
+            return new SightCacheContent(nodeCache, null);
         }
     }
 
-    private class resetEdgesCallable implements Callable<CacheContent> {
+    private class resetEdgesCallable implements Callable<SightCacheContent> {
 
-        public CacheContent call() throws Exception {
+        public SightCacheContent call() throws Exception {
             System.out.println("reset Edges call");
             TreeStructure treeStructure = dhns.getTreeStructure();
             List<DhnsEdge> edgeCache = new ArrayList<DhnsEdge>();
@@ -223,38 +171,7 @@ public class SightCache {
             }
 
             dhns.getReadLock().unlock();
-            return new CacheContent(null, edgeCache);
-        }
-    }
-
-    private class CacheContent {
-
-        private List<PreNode> nodeCache;
-        private List<DhnsEdge> edgeCache;
-
-        public CacheContent() {
-            this.nodeCache = new ArrayList<PreNode>();
-            this.edgeCache = new ArrayList<DhnsEdge>();
-        }
-
-        public CacheContent(CacheContent instance) {
-            this.nodeCache = instance.nodeCache;
-            this.edgeCache = instance.edgeCache;
-        }
-
-        public CacheContent(List<PreNode> nodeCache, List<DhnsEdge> edgeCache) {
-            this.nodeCache = nodeCache;
-            this.edgeCache = edgeCache;
-        }
-
-        public void appendContent(CacheContent newContent) {
-            if (newContent.nodeCache != null) {
-                this.nodeCache = newContent.nodeCache;
-            }
-
-            if (newContent.edgeCache != null) {
-                this.edgeCache = newContent.edgeCache;
-            }
+            return new SightCacheContent(null, edgeCache);
         }
     }
 }

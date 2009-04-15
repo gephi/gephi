@@ -30,7 +30,7 @@ import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import org.gephi.data.network.controller.DhnsController;
 import org.gephi.data.network.potato.Potato;
-import org.gephi.data.network.potato.PotatoBuilder;
+import org.gephi.data.network.potato.PotatoCooker;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.objects.Object3dClass;
 import org.gephi.visualization.opengl.AbstractEngine;
@@ -190,7 +190,7 @@ public class CompatibilityEngine extends AbstractEngine {
             gl.glEnd();
         }
 
-        octree.displayOctree(gl);
+        //octree.displayOctree(gl);
     /*
 
     float x1 = -140f;
@@ -250,16 +250,19 @@ public class CompatibilityEngine extends AbstractEngine {
     gl.glVertex2f(x1 + t2sina1, y1 - t2cosa1+20);
     gl.glEnd();*/
 
-        /*PotatoBuilder potatoBuilder = DhnsController.getInstance().getPotatoBuilder();
+        /*DhnsController.getInstance().updatePotatoes();
+
+        gl.glColor3f(0.2f,0.2f,0.2f);
+        PotatoBuilder potatoBuilder = DhnsController.getInstance().getPotatoBuilder();
         for(Potato p : potatoBuilder.getPotatoes())
         {
             gl.glBegin(GL.GL_TRIANGLES);
             for(Potato.Triangle triangles : p.getTriangles())
             {
                 float[] array = triangles.array;
-                gl.glVertex2f(array[0], array[1]);
-                gl.glVertex2f(array[2], array[3]);
-                gl.glVertex2f(array[4], array[5]);
+                gl.glVertex3f(array[0], array[1],0f);
+                gl.glVertex3f(array[2], array[3],0f);
+                gl.glVertex3f(array[4], array[5],0f);
             }
             gl.glEnd();
 
@@ -274,6 +277,17 @@ public class CompatibilityEngine extends AbstractEngine {
                 gl.glVertex2f(array[6], array[7]);
             }
             gl.glEnd();
+
+            for(Potato.Circle circle : p.getCircles())
+            {
+                gl.glPushMatrix();
+				gl.glTranslatef(circle.x,circle.y,0f);
+				GLUquadric quadric = glu.gluNewQuadric();
+				glu.gluDisk(quadric,0f, circle.rayon, 20, 20);
+				glu.gluQuadricDrawStyle(quadric, GLU.GLU_FILL);
+				glu.gluDeleteQuadric(quadric);
+                gl.glPopMatrix();
+            }
         }*/
     }
 

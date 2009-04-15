@@ -30,7 +30,7 @@ import org.gephi.data.network.tree.TreeStructure;
  *
  * @author Mathieu
  */
-public class PotatoBuilder {
+public class PotatoCooker {
 
     //Use
     private List<PreNode> contextNodes;
@@ -48,20 +48,17 @@ public class PotatoBuilder {
     //Result
     private List<Potato> potatoes;
 
-    public PotatoBuilder(Dhns dhns) {
+    public PotatoCooker(Dhns dhns) {
         this.treeStructure = dhns.getTreeStructure();
         this.potatoes = new ArrayList<Potato>();
     }
 
-    public void buildPotatoes(List<PreNode> enabledNodes) {
+    public void cookPotatoes(List<PreNode> enabledNodes) {
         potatoes.clear();
 
         //Condition
-        if (enabledNodes.isEmpty()) {
-            return;
-        }
-
-        //Init
+        if (!enabledNodes.isEmpty()) {
+            //Init
         contextNodes = enabledNodes;
         currentContextIndex = contextNodes.size() - 1;
         pointer = nextContextNode();
@@ -78,6 +75,7 @@ public class PotatoBuilder {
 
         //Result
         orderResults();
+        }
     }
 
     private void cook() {
@@ -110,8 +108,7 @@ public class PotatoBuilder {
             pointer = treeStructure.getNodeAt(currentPre);
             currentPre = pointer.parent.pre;
 
-            potato.setMaster(pointer);
-            potato.print();
+            potato.setNode(pointer);
             potatoes.add(potato);
 
             //Refresh
