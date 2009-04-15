@@ -39,9 +39,19 @@ public class EdgeImpl implements Edge {
     protected float cardinal = 1f;
     private Object3d obj;
 
+    //Impl
+    private DhnsEdge dhnsEdge;
+
     public EdgeImpl(NodeImpl source, NodeImpl target) {
         this.source = source;
         this.target = target;
+    }
+
+    public EdgeImpl(DhnsEdge edge)
+    {
+        this.source = edge.getPreNodeFrom().getNode();
+        this.target = edge.getPreNodeTo().getNode();
+        this.dhnsEdge = edge;
     }
 
     public NodeImpl getSource() {
@@ -118,5 +128,9 @@ public class EdgeImpl implements Edge {
 
     public void setCardinal(float cardinal) {
         this.cardinal = cardinal;
+    }
+
+    public DhnsEdge getDhnsEdge() {
+        return dhnsEdge;
     }
 }

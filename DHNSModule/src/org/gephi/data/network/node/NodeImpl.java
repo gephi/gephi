@@ -24,8 +24,11 @@ import java.util.Iterator;
 import org.gephi.graph.api.EdgeWrap;
 import org.gephi.graph.api.Sight;
 import org.gephi.data.network.edge.DhnsEdge;
+import org.gephi.data.network.edge.EdgeImpl;
+import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.utils.avl.DhnsEdgeTree;
 import org.gephi.datastructure.avl.param.MultiParamAVLIterator;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Object3d;
 
@@ -152,6 +155,14 @@ public class NodeImpl implements Node {
 
     public Iterable<? extends EdgeWrap> getEdges(Sight sight) {
         return new InOutEdgesIterable(preNode.getVirtualEdgesIN(sight), preNode.getVirtualEdgesOUT(sight));
+    }
+
+    public boolean containsEdge(Edge edge) {
+        DhnsEdge dhnsEdge = ((EdgeImpl) edge).getDhnsEdge();
+        SightImpl sight = dhnsEdge.getSight();
+        boolean in = preNode.getVirtualEdgesIN(sight).contains(dhnsEdge);
+        boolean out = preNode.getVirtualEdgesOUT(sight).contains(dhnsEdge);
+        return in | out;
     }
 
     /**

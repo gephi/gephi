@@ -321,12 +321,12 @@ public class FreeEdgeProcessing implements EdgeProcessing {
         VirtualEdge newEdge = null;
 
         if (edge.edgeType == EdgeType.IN) {
-            newEdge = new VirtualEdge(edgeNode, currentNode);
+            newEdge = new VirtualEdge(edgeNode, currentNode, sight);
             newEdge.addPhysicalEdge(edge);
             edgeNode.getVirtualEdgesOUT(sight).add(newEdge);
             currentNode.getVirtualEdgesIN(sight).add(newEdge);
         } else if (edge.edgeType == EdgeType.OUT) {
-            newEdge = new VirtualEdge(currentNode, edgeNode);
+            newEdge = new VirtualEdge(currentNode, edgeNode, sight);
             newEdge.addPhysicalEdge(edge);
             edgeNode.getVirtualEdgesIN(sight).add(newEdge);
             currentNode.getVirtualEdgesOUT(sight).add(newEdge);
@@ -395,12 +395,12 @@ public class FreeEdgeProcessing implements EdgeProcessing {
     public VirtualEdge createVirtualEdge(PreEdge physicalEdge, PreNode minParent, PreNode maxParent, SightImpl sight) {
         VirtualEdge virtualEdge = null;
         if (physicalEdge.edgeType == EdgeType.IN) {
-            virtualEdge = new VirtualEdge(maxParent, minParent);
+            virtualEdge = new VirtualEdge(maxParent, minParent,sight);
             virtualEdge.addPhysicalEdge(physicalEdge);
             maxParent.getVirtualEdgesOUT(sight).add(virtualEdge);
             minParent.getVirtualEdgesIN(sight).add(virtualEdge);
         } else {
-            virtualEdge = new VirtualEdge(minParent, maxParent);
+            virtualEdge = new VirtualEdge(minParent, maxParent,sight);
             virtualEdge.addPhysicalEdge(physicalEdge);
             maxParent.getVirtualEdgesIN(sight).add(virtualEdge);
             minParent.getVirtualEdgesOUT(sight).add(virtualEdge);
@@ -417,7 +417,7 @@ public class FreeEdgeProcessing implements EdgeProcessing {
             ni.setY(n.getPost() * 50);
             if (n.parent != null) {
                 DhnsEdgeTree edgeTree = n.parent.getVirtualEdgesOUT(sight);
-                HierarchyEdge he = new HierarchyEdge(n.parent, n);
+                HierarchyEdge he = new HierarchyEdge(n.parent, n,sight);
                 edgeTree.add(he);
             }
         }

@@ -22,6 +22,7 @@ package org.gephi.data.network.edge;
 
 import org.gephi.graph.api.EdgeWrap;
 import org.gephi.data.network.node.PreNode;
+import org.gephi.data.network.sight.SightImpl;
 
 /**
  *
@@ -36,4 +37,6 @@ public interface DhnsEdge extends EdgeWrap {
     public PreNode getPreNodeTo();
 
     public void setPreNodeTo(PreNode preNodeTo);
+
+    public SightImpl getSight();
 }

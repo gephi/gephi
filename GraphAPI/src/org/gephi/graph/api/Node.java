@@ -39,4 +39,6 @@ public interface Node extends Renderable {
     public int getInDegree(Sight sight);
 
     public int getOutDegree(Sight sight);
+
+    public boolean containsEdge(Edge edge);
 }

@@ -37,8 +37,6 @@ import org.gephi.data.network.potato.Potato;
 import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.utils.avl.DhnsEdgeSightTree;
 import org.gephi.data.network.utils.avl.SightAVLTree.SightAVLIterator;
-import org.gephi.datastructure.avl.param.AVLItemAccessor;
-import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.datastructure.avl.simple.AVLItem;
 
 /**
@@ -77,8 +75,6 @@ public class PreNode implements AVLItem, NodeWrap {
     private DhnsEdgeSightTree dhnsEdgesTreesIN;
     private DhnsEdgeSightTree dhnsEdgesTreesOUT;
 
-    //private DhnsEdgeTree virtualEdgesIN;
-    //private DhnsEdgeTree virtualEdgesOUT;
     private NodeImpl node;
     private SightAVLTree sightTree;
     private Potato potato;
