@@ -24,9 +24,7 @@ package org.gephi.visualization.bridge;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.EdgeImpl;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeImpl;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.Object3dImpl;
@@ -72,10 +70,10 @@ public class TestDataBridge implements DataBridge {
         //Add nodes
         for(int i=0;i<1500;i++)
         {
-            NodeImpl n = new NodeImpl();
+            /*NodeImpl n = new NodeImpl();
             nodeList.add(n);
             n.setSize(3f);
-            engine.addObject(AbstractEngine.CLASS_NODE, nodeInit.initObject(n));
+            engine.addObject(AbstractEngine.CLASS_NODE, nodeInit.initObject(n));*/
         }
 
     }
@@ -99,13 +97,13 @@ public class TestDataBridge implements DataBridge {
         //Add
         for(int i=0;i<50;i++)
         {
-            Node source = nodeList.get((int)(Math.random()*nodeList.size()));
+           /* Node source = nodeList.get((int)(Math.random()*nodeList.size()));
             Node target = nodeList.get((int)(Math.random()*nodeList.size()));
             EdgeImpl edge = new EdgeImpl(source,target);
             edge.setCardinal((float)(Math.random()*1f)+1);
             edgeList.add(edge);
             engine.addObject(AbstractEngine.CLASS_EDGE, edgeInit.initObject(edge));
-            //engine.addObject(AbstractEngine.CLASS_ARROW, arrowInit.initObject(edge));
+            //engine.addObject(AbstractEngine.CLASS_ARROW, arrowInit.initObject(edge));*/
         }
     }
 

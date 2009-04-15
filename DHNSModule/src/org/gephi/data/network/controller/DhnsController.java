@@ -65,7 +65,7 @@ public class DhnsController {
 
     public SyncReader getSyncReader()
     {
-        return new SyncReaderImpl(dhns.getSightManager().getMainSight());
+        return new SyncReaderImpl(dhns, dhns.getSightManager().getMainSight());
     }
 
     public FreeModifier getFreeModifier()

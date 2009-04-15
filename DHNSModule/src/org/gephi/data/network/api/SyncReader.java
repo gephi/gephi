@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.gephi.data.network.api;
 
 import org.gephi.graph.api.NodeWrap;
@@ -15,7 +14,15 @@ import java.util.Iterator;
  */
 public interface SyncReader {
 
-        public Iterator<? extends NodeWrap> getNodes();
+    public void lock();
 
-        public Iterator<? extends EdgeWrap> getEdges();
+    public void unlock();
+
+    public Iterator<? extends NodeWrap> getNodes();
+
+    public Iterator<? extends EdgeWrap> getEdges();
+
+    public int getNodeCount();
+
+    public int getEdgeCount();
 }

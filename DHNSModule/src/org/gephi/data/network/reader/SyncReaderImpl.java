@@ -21,9 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.network.reader;
 
 import java.util.Iterator;
+import org.gephi.data.network.Dhns;
 import org.gephi.graph.api.EdgeWrap;
 import org.gephi.graph.api.NodeWrap;
 import org.gephi.data.network.api.SyncReader;
+import org.gephi.data.network.controller.DhnsController;
 import org.gephi.data.network.sight.SightImpl;
 
 /**
@@ -33,9 +35,26 @@ import org.gephi.data.network.sight.SightImpl;
 public class SyncReaderImpl implements SyncReader {
 
     private SightImpl sight;
+    private Dhns dhns;
+    private boolean locked = false;
 
-    public SyncReaderImpl(SightImpl sight) {
+    public SyncReaderImpl(Dhns dhns, SightImpl sight) {
         this.sight = sight;
+        this.dhns = dhns;
+    }
+
+    public void lock() {
+        if (!locked) {
+            dhns.getReadLock().lock();
+            locked = true;
+        }
+    }
+
+    public void unlock() {
+        if (locked) {
+            dhns.getReadLock().unlock();
+            locked = false;
+        }
     }
 
     public Iterator<? extends NodeWrap> getNodes() {
@@ -44,5 +63,15 @@ public class SyncReaderImpl implements SyncReader {
 
     public Iterator<? extends EdgeWrap> getEdges() {
         return sight.getSightCache().getCacheContent().getEdgeCache().iterator();
+    }
+
+    public int getNodeCount()
+    {
+        return sight.getSightCache().getCacheContent().getNodeCache().size();
+    }
+
+    public int getEdgeCount()
+    {
+        return sight.getSightCache().getCacheContent().getEdgeCache().size();
     }
 }

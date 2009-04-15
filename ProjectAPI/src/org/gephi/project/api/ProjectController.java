@@ -10,7 +10,7 @@ import org.openide.loaders.DataObject;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public interface ProjectController {
 
