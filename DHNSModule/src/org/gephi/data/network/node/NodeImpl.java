@@ -27,9 +27,11 @@ import org.gephi.data.network.edge.DhnsEdge;
 import org.gephi.data.network.edge.EdgeImpl;
 import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.utils.avl.DhnsEdgeTree;
+import org.gephi.data.network.utils.avl.NeighbourIterator;
 import org.gephi.datastructure.avl.param.MultiParamAVLIterator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeWrap;
 import org.gephi.graph.api.Object3d;
 
 /**
@@ -165,6 +167,17 @@ public class NodeImpl implements Node {
         return in | out;
     }
 
+    public boolean hasNeighbour(Node node, Sight sight) {
+        NodeImpl potentialNeighbour = (NodeImpl) node;
+        boolean in = preNode.getVirtualEdgesIN(sight).hasNeighbour(potentialNeighbour.getPreNode());
+        boolean out = preNode.getVirtualEdgesOUT(sight).hasNeighbour(potentialNeighbour.getPreNode());
+        return in | out;
+    }
+
+    public Iterable<? extends NodeWrap> getNeighbours(Sight sight) {
+        return new InOutNeighboursIterable(preNode.getVirtualEdgesIN(sight), preNode.getVirtualEdgesOUT(sight), preNode);
+    }
+
     /**
      * Utility Iterable for returning an Iterable instead of an Iterator in getEdges
      */
@@ -178,8 +191,28 @@ public class NodeImpl implements Node {
             this.tree2 = tree2;
         }
 
-        public Iterator iterator() {
-            return new MultiParamAVLIterator(tree1, tree2);
+        public Iterator<DhnsEdge> iterator() {
+            return new MultiParamAVLIterator<DhnsEdge>(tree1, tree2);
+        }
+    }
+
+     /**
+     * Utility Iterable for returning an Iterable instead of an Iterator in getNeighbours
+     */
+    private static class InOutNeighboursIterable implements Iterable<PreNode> {
+
+        private DhnsEdgeTree tree1;
+        private DhnsEdgeTree tree2;
+        private PreNode preNode;
+
+        public InOutNeighboursIterable(DhnsEdgeTree tree1, DhnsEdgeTree tree2, PreNode preNode) {
+            this.tree1 = tree1;
+            this.tree2 = tree2;
+            this.preNode = preNode;
+        }
+
+        public Iterator<PreNode> iterator() {
+            return new NeighbourIterator(new MultiParamAVLIterator<DhnsEdge>(tree1, tree2), preNode);
         }
     }
 }

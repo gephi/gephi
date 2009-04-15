@@ -51,6 +51,16 @@ public class DhnsEdgeTree extends ParamAVLTree<DhnsEdge> implements AVLItem {
         setAccessor(new DhnsdgeAVLItemAccessor());
     }
 
+    public PreNode getOwner()
+    {
+        return owner;
+    }
+
+    public boolean hasNeighbour(PreNode node)
+    {
+        return getItem(node.getNumber())!=null;
+    }
+
     private class DhnsdgeAVLItemAccessor implements AVLItemAccessor<DhnsEdge> {
 
         @Override

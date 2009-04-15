@@ -41,4 +41,8 @@ public interface Node extends Renderable {
     public int getOutDegree(Sight sight);
 
     public boolean containsEdge(Edge edge);
+
+    public boolean hasNeighbour(Node node, Sight sight);
+
+     public Iterable<? extends NodeWrap> getNeighbours(Sight sight);
 }
