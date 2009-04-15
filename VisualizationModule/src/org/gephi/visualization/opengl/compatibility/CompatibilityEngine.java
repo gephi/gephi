@@ -190,7 +190,7 @@ public class CompatibilityEngine extends AbstractEngine {
             gl.glEnd();
         }
 
-        //octree.displayOctree(gl);
+        octree.displayOctree(gl);
     /*
 
     float x1 = -140f;

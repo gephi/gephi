@@ -20,11 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network.utils.avl;
 
+import org.gephi.graph.api.Sight;
 import org.gephi.data.network.edge.DhnsEdge;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.sight.SightImpl;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
+import org.gephi.datastructure.avl.simple.AVLItem;
 
 /**
  * Special type of tree which knows his {@link PreNode} owner. The {@link AVLItemAccessor} always return
@@ -37,12 +39,12 @@ import org.gephi.datastructure.avl.param.ParamAVLTree;
  * 
  * @author Mathieu Bastian
  */
-public class DhnsEdgeTree extends ParamAVLTree<DhnsEdge> {
+public class DhnsEdgeTree extends ParamAVLTree<DhnsEdge> implements AVLItem {
 
     private PreNode owner;
-    private SightImpl sight;
+    private Sight sight;
 
-    public DhnsEdgeTree(PreNode owner, SightImpl sight) {
+    public DhnsEdgeTree(PreNode owner, Sight sight) {
         super();
         this.owner = owner;
         this.sight = sight;
@@ -60,8 +62,8 @@ public class DhnsEdgeTree extends ParamAVLTree<DhnsEdge> {
             }
         }
     }
-
-    public SightImpl getSight() {
-        return sight;
+    
+    public int getNumber() {
+        return sight.getNumber();
     }
 }

@@ -21,9 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.network.reader;
 
 import java.util.Iterator;
-import org.gephi.data.network.api.EdgeWrap;
-import org.gephi.data.network.api.NodeWrap;
-import org.gephi.data.network.api.Reader;
+import org.gephi.graph.api.EdgeWrap;
+import org.gephi.graph.api.NodeWrap;
+import org.gephi.data.network.api.AsyncReader;
 import org.gephi.data.network.sight.SightCacheContent;
 import org.gephi.data.network.sight.SightImpl;
 
@@ -31,7 +31,7 @@ import org.gephi.data.network.sight.SightImpl;
  *
  * @author Mathieu Bastian
  */
-public class AsyncReader implements Reader {
+public class AsyncReaderImpl implements AsyncReader {
 
     private SightImpl sight;
 
@@ -40,7 +40,7 @@ public class AsyncReader implements Reader {
     private int currentNodeVersion = -1;
     private int currentEdgeVersion = -1;
 
-    public AsyncReader(SightImpl sight) {
+    public AsyncReaderImpl(SightImpl sight) {
         this.sight = sight;
     }
 

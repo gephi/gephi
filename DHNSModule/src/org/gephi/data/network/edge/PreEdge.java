@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.network.edge;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import org.gephi.data.network.api.EdgeWrap;
+import org.gephi.graph.api.EdgeWrap;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.datastructure.avl.simple.AVLItem;
 import org.gephi.graph.api.Edge;

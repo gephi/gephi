@@ -4,6 +4,7 @@
  */
 package org.gephi.data.network.api;
 
+import org.gephi.graph.api.Sight;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 

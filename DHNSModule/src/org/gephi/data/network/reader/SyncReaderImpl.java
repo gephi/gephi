@@ -18,25 +18,31 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.api;
+package org.gephi.data.network.reader;
+
+import java.util.Iterator;
+import org.gephi.graph.api.EdgeWrap;
+import org.gephi.graph.api.NodeWrap;
+import org.gephi.data.network.api.SyncReader;
+import org.gephi.data.network.sight.SightImpl;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Node extends Renderable {
+public class SyncReaderImpl implements SyncReader {
 
-    public int getIndex();
+    private SightImpl sight;
 
-    public int getLevel();
+    public SyncReaderImpl(SightImpl sight) {
+        this.sight = sight;
+    }
 
-    public Iterable<? extends EdgeWrap> getEdges(Sight sight);
+    public Iterator<? extends NodeWrap> getNodes() {
+        return sight.getSightCache().getCacheContent().getNodeCache().iterator();
+    }
 
-    public Iterable<? extends EdgeWrap> getEdgesIn(Sight sight);
-
-    public Iterable<? extends EdgeWrap> getEdgesOut(Sight sight);
-
-    public int getInDegree(Sight sight);
-
-    public int getOutDegree(Sight sight);
+    public Iterator<? extends EdgeWrap> getEdges() {
+        return sight.getSightCache().getCacheContent().getEdgeCache().iterator();
+    }
 }

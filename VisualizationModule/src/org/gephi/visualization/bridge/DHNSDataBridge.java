@@ -21,9 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.bridge;
 
 import java.util.Iterator;
-import org.gephi.data.network.api.EdgeWrap;
-import org.gephi.data.network.api.NodeWrap;
-import org.gephi.data.network.api.Reader;
+import org.gephi.graph.api.EdgeWrap;
+import org.gephi.graph.api.NodeWrap;
+import org.gephi.data.network.api.AsyncReader;
 import org.gephi.data.network.controller.DhnsController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -44,7 +44,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
     //Architecture
     protected AbstractEngine engine;
-    protected Reader reader;
+    protected AsyncReader reader;
     private VizConfig vizConfig;
 
     //Attributes
@@ -53,7 +53,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     @Override
     public void initArchitecture() {
         this.engine = VizController.getInstance().getEngine();
-        this.reader = DhnsController.getInstance().getReader();
+        this.reader = DhnsController.getInstance().getAsyncReader();
         this.vizConfig = VizController.getInstance().getVizConfig();
     }
 

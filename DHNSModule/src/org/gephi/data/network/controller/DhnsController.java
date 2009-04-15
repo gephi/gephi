@@ -22,9 +22,11 @@ package org.gephi.data.network.controller;
 
 import org.gephi.data.network.*;
 import org.gephi.data.network.api.FreeModifier;
-import org.gephi.data.network.api.Reader;
-import org.gephi.data.network.api.Sight;
-import org.gephi.data.network.reader.AsyncReader;
+import org.gephi.data.network.api.AsyncReader;
+import org.gephi.graph.api.Sight;
+import org.gephi.data.network.api.SyncReader;
+import org.gephi.data.network.reader.AsyncReaderImpl;
+import org.gephi.data.network.reader.SyncReaderImpl;
 
 
 /**
@@ -56,9 +58,14 @@ public class DhnsController {
         return dhns.getSightManager().getMainSight();
     }
 
-    public Reader getReader()
+    public AsyncReader getAsyncReader()
     {
-        return new AsyncReader(dhns.getSightManager().getMainSight());
+        return new AsyncReaderImpl(dhns.getSightManager().getMainSight());
+    }
+
+    public SyncReader getSyncReader()
+    {
+        return new SyncReaderImpl(dhns.getSightManager().getMainSight());
     }
 
     public FreeModifier getFreeModifier()

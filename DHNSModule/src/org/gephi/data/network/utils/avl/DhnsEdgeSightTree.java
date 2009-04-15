@@ -18,25 +18,28 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.api;
+
+package org.gephi.data.network.utils.avl;
+
+import org.gephi.datastructure.avl.param.AVLItemAccessor;
+import org.gephi.datastructure.avl.param.ParamAVLTree;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Node extends Renderable {
+public class DhnsEdgeSightTree extends ParamAVLTree<DhnsEdgeTree> {
 
-    public int getIndex();
+    public DhnsEdgeSightTree() {
+        super();
+        setAccessor(new DhnsEdgeSightAVLItemAccessor());
+    }
 
-    public int getLevel();
+    private class DhnsEdgeSightAVLItemAccessor implements AVLItemAccessor<DhnsEdgeTree> {
 
-    public Iterable<? extends EdgeWrap> getEdges(Sight sight);
-
-    public Iterable<? extends EdgeWrap> getEdgesIn(Sight sight);
-
-    public Iterable<? extends EdgeWrap> getEdgesOut(Sight sight);
-
-    public int getInDegree(Sight sight);
-
-    public int getOutDegree(Sight sight);
+        @Override
+        public int getNumber(DhnsEdgeTree item) {
+            return item.getNumber();
+        }
+    }
 }

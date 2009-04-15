@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network.edge;
 
-import org.gephi.data.network.api.EdgeWrap;
+import org.gephi.graph.api.EdgeWrap;
 import org.gephi.data.network.node.PreNode;
 
 /**

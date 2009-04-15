@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.gephi.data.network.Dhns;
 import org.gephi.data.network.api.FreeModifier;
-import org.gephi.data.network.api.Sight;
+import org.gephi.graph.api.Sight;
 import org.gephi.data.network.edge.DhnsEdge;
 import org.gephi.data.network.edge.EdgeImpl;
 import org.gephi.data.network.edge.FreeEdgeProcessing;

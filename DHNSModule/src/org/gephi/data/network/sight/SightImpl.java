@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.network.sight;
 
 import java.util.Iterator;
-import org.gephi.data.network.api.Sight;
+import org.gephi.graph.api.Sight;
 import org.gephi.datastructure.avl.simple.AVLItem;
 import org.gephi.datastructure.avl.simple.SimpleAVLTree;
 

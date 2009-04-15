@@ -56,7 +56,7 @@ public class VizConfig {
     protected float[] edgesColor = null;
     protected float edgeAlpha = 1f;
     protected int octreeDepth = 5;
-    protected int octreeWidth = 10000;
+    protected int octreeWidth = 100000;
 
 
     public DisplayConfig getDisplayConfig() {

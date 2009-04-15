@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.gephi.data.network.api;
+package org.gephi.graph.api;
 
 import org.gephi.datastructure.avl.simple.AVLItem;
 
