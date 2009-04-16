@@ -21,13 +21,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.visualization.bridge;
 
+import org.gephi.data.network.api.DhnsController;
 import org.gephi.data.network.api.FreeModifier;
-import org.gephi.data.network.controller.DhnsController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Object3d;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.opengl.AbstractEngine;
+import org.openide.util.Lookup;
 
 
 /**
@@ -42,7 +43,8 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
 
     @Override
     public void initArchitecture() {
-        this.freeModifier = DhnsController.getInstance().getFreeModifier();
+        DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
+        this.freeModifier = dhnsController.getFreeModifier();
         this.engine = VizController.getInstance().getEngine();
         initEvents();
     }
@@ -59,7 +61,8 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
         {
             Object3d obj = clickedObjects[i];
             Node node = (Node)obj.getObj();
-            freeModifier.expand(node, DhnsController.getInstance().getMainSight());
+            DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
+            freeModifier.expand(node, dhnsController.getMainSight());
         }
 
     }

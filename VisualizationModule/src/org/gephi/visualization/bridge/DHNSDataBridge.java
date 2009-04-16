@@ -24,7 +24,7 @@ import java.util.Iterator;
 import org.gephi.graph.api.EdgeWrap;
 import org.gephi.graph.api.NodeWrap;
 import org.gephi.data.network.api.AsyncReader;
-import org.gephi.data.network.controller.DhnsController;
+import org.gephi.data.network.api.DhnsController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Object3d;
@@ -35,6 +35,7 @@ import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.initializer.Object3dInitializer;
 import org.gephi.visualization.api.objects.Object3dClass;
 import org.gephi.visualization.opengl.AbstractEngine;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -53,7 +54,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     @Override
     public void initArchitecture() {
         this.engine = VizController.getInstance().getEngine();
-        this.reader = DhnsController.getInstance().getAsyncReader();
+        DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
+        this.reader = dhnsController.getAsyncReader();
         this.vizConfig = VizController.getInstance().getVizConfig();
     }
 

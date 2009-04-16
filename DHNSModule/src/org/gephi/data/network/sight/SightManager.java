@@ -20,10 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network.sight;
 
-import java.util.Iterator;
 import org.gephi.data.network.Dhns;
-import org.gephi.datastructure.avl.simple.AVLItem;
-import org.gephi.datastructure.avl.simple.SimpleAVLTree;
+import org.gephi.project.api.Projects;
+import org.openide.util.Lookup;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
@@ -32,13 +32,14 @@ import org.gephi.datastructure.avl.simple.SimpleAVLTree;
 public class SightManager {
 
     private int sightCounter = 1;
-    private SimpleAVLTree sightTree = new SimpleAVLTree();
+    private SightsModel model;
     private SightImpl mainSight;
     private Dhns dhns;
 
     public SightManager(Dhns dhns)
     {
         this.dhns = dhns;
+        this.model = new SightsModel();
     }
 
     public SightImpl getMainSight()
@@ -52,25 +53,13 @@ public class SightManager {
         SightImpl sight = new SightImpl(getSightCounter());
         sight.setSightCache(new SightCache(dhns, sight));
         sightCounter++;
-        sightTree.add(sight);
+        model.addSight(sight);
         return sight;
     }
 
-    public void removeSight(SightImpl sight) {
-        sightTree.remove(sight);
-    }
+   
 
-    public void removeSight(int number) {
-        sightTree.remove(number);
-    }
-
-    public SightImpl getSight(int number) {
-        return (SightImpl) sightTree.get(number);
-    }
-
-    public Iterator<AVLItem> getSightIterator() {
-        return sightTree.iterator();
-    }
+    
 
     public int getSightCounter() {
         return sightCounter;

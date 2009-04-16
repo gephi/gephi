@@ -25,7 +25,7 @@ import org.gephi.data.network.Dhns;
 import org.gephi.graph.api.EdgeWrap;
 import org.gephi.graph.api.NodeWrap;
 import org.gephi.data.network.api.SyncReader;
-import org.gephi.data.network.controller.DhnsController;
+import org.gephi.data.network.controller.DhnsControllerImpl;
 import org.gephi.data.network.sight.SightImpl;
 
 /**

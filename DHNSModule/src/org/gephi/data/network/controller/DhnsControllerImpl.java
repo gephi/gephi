@@ -23,6 +23,7 @@ package org.gephi.data.network.controller;
 import org.gephi.data.network.*;
 import org.gephi.data.network.api.FreeModifier;
 import org.gephi.data.network.api.AsyncReader;
+import org.gephi.data.network.api.DhnsController;
 import org.gephi.graph.api.Sight;
 import org.gephi.data.network.api.SyncReader;
 import org.gephi.data.network.reader.AsyncReaderImpl;
@@ -33,24 +34,15 @@ import org.gephi.data.network.reader.SyncReaderImpl;
  *
  * @author Mathieu Bastian
  */
-public class DhnsController {
-
-    private static DhnsController instance;
-
-    public synchronized static DhnsController getInstance() {
-        if (instance == null) {
-            instance = new DhnsController();
-        }
-        return instance;
-    }
+public class DhnsControllerImpl implements DhnsController {
 
     //Architecture
     private Dhns dhns;
 
 
-    private DhnsController() {
+    public DhnsControllerImpl() {
         dhns = new Dhns();
-
+        System.out.println("instance dhnsCOntroller");
     }
 
     public Sight getMainSight()

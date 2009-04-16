@@ -49,14 +49,15 @@ final class GraphTopComponent extends TopComponent {
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
 
         //Init
+
+
         VizController.getInstance().initInstances();
         CompatibilityEngine engine = (CompatibilityEngine) VizController.getInstance().getEngine();
         GraphDrawableImpl drawable = VizController.getInstance().getDrawable();
 
+        //
         add(drawable.getGraphComponent(), BorderLayout.CENTER);
-
-        //addNotify();
-        //validate();
+        
         remove(waitingLabel);
         drawable.display();
         engine.getScheduler().start();
@@ -121,13 +122,27 @@ final class GraphTopComponent extends TopComponent {
 
     @Override
     public void componentOpened() {
-        // TODO add custom code on component opening
+        System.out.println("dude");
     }
 
     @Override
     public void componentClosed() {
         // TODO add custom code on component closing
     }
+
+    @Override
+    protected void componentActivated() {
+        super.componentActivated();
+        System.out.println("oorjjke");
+    }
+
+    @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        System.out.println("lalala");
+    }
+
+
 
     /** replaces this in object stream */
     @Override

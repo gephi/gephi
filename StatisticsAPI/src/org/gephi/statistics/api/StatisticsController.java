@@ -21,8 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.statistics.api;
 
 import java.util.List;
+import org.gephi.data.network.api.DhnsController;
 import org.gephi.data.network.api.SyncReader;
-import org.gephi.data.network.controller.DhnsController;
 import org.openide.util.Lookup;
 
 /**
@@ -49,7 +49,8 @@ public class StatisticsController {
 
     private void executeStat()
     {
-        SyncReader reader = DhnsController.getInstance().getSyncReader();
+        DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
+        SyncReader reader = dhnsController.getSyncReader();
 
         for(Statistics stats : statistics)
         {
