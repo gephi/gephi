@@ -14,9 +14,9 @@ public interface DhnsController {
 
     public SightManager getSightManager();
 
-    public AsyncReader getAsyncReader();
+    public AsyncReader getAsyncReader(Sight sight);
 
-    public SyncReader getSyncReader();
+    public SyncReader getSyncReader(Sight sight);
 
     public FreeModifier getFreeModifier();
 }

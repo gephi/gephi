@@ -42,22 +42,21 @@ final class SightTopComponent extends TopComponent implements ExplorerManager.Pr
         Utilities.actionsGlobalContext().lookupResult(Node.class).addLookupListener(this);
         //ExplorerUtils.createLookup(manager, getActionMap()).lookupResult(Node.class).addLookupListener(this);
         initExplorer();
-        
-        
+
+
     }
 
     public void resultChanged(LookupEvent ev) {
         Node[] selectedNodes = manager.getSelectedNodes();
-        if(selectedNodes.length>0 && selectedNodes[0] instanceof SightsNode)
-        {
-            SightsNode n = (SightsNode)selectedNodes[0];
-            DhnsController controller = Lookup.getDefault().lookup(DhnsController.class);
-            SightManager sightManager = controller.getSightManager();
-            sightManager.selectSight(n.getSight());
+        if (selectedNodes.length > 0 && selectedNodes[0] instanceof SightsNode) {
+            SightsNode n = (SightsNode) selectedNodes[0];
+            if (n.getSight() != null) {
+                DhnsController controller = Lookup.getDefault().lookup(DhnsController.class);
+                SightManager sightManager = controller.getSightManager();
+                sightManager.selectSight(n.getSight());
+            }
         }
     }
-
-
 
     private void initExplorer() {
         manager.setRootContext(new SightsNode(null));

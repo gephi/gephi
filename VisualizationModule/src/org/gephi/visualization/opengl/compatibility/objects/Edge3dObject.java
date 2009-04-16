@@ -268,7 +268,7 @@ public class Edge3dObject extends Object3dImpl<Edge> {
     }
 
     @Override
-    public void resetOctant(Octant octant) {
+    public void resetOctant() {
         /*if(octants[0]==octant)
         {
         octants[0] = null;
@@ -280,4 +280,11 @@ public class Edge3dObject extends Object3dImpl<Edge> {
         octants[0] = null;
         octants[1] = null;
     }
+
+    @Override
+    public boolean isValid() {
+        return octants[0]!=null || octants[1]!=null;
+    }
+
+
 }

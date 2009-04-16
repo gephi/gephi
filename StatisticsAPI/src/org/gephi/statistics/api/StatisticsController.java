@@ -50,7 +50,8 @@ public class StatisticsController {
     private void executeStat()
     {
         DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-        SyncReader reader = dhnsController.getSyncReader();
+        
+        SyncReader reader = dhnsController.getSyncReader(dhnsController.getSightManager().getSelectedSight());
 
         for(Statistics stats : statistics)
         {

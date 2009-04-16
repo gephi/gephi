@@ -29,6 +29,7 @@ import org.gephi.graph.api.Sight;
 import org.gephi.data.network.api.SyncReader;
 import org.gephi.data.network.reader.AsyncReaderImpl;
 import org.gephi.data.network.reader.SyncReaderImpl;
+import org.gephi.data.network.sight.SightImpl;
 
 
 /**
@@ -49,14 +50,14 @@ public class DhnsControllerImpl implements DhnsController {
         return dhns.getSightManager();
     }
 
-    public AsyncReader getAsyncReader()
+    public AsyncReader getAsyncReader(Sight sight)
     {
-        return new AsyncReaderImpl(dhns.getSightManager().getMainSight());
+        return new AsyncReaderImpl((SightImpl)sight);
     }
 
-    public SyncReader getSyncReader()
+    public SyncReader getSyncReader(Sight sight)
     {
-        return new SyncReaderImpl(dhns, dhns.getSightManager().getMainSight());
+        return new SyncReaderImpl(dhns, (SightImpl)sight);
     }
 
     public FreeModifier getFreeModifier()

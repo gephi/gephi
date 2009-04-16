@@ -40,9 +40,11 @@ public class Arrow3dObject extends Object3dImpl<Node> {
     private Edge edge;
     private float[] cameraLocation;
 
+
     public Arrow3dObject() {
         super();
         cameraLocation = VizController.getInstance().getDrawable().getCameraLocation();
+        octants = new Octant[1];
     }
 
     public Arrow3dObject(Edge edge) {
@@ -122,11 +124,15 @@ public class Arrow3dObject extends Object3dImpl<Node> {
 
     @Override
     public void setOctant(Octant octant) {
+        this.octants[0] = octant;
     }
 
     @Override
     public Octant[] getOctants() {
-        return ((Object3dImpl) obj.getObject3d()).getOctants();
+        Octant[] oc = ((Object3dImpl) obj.getObject3d()).getOctants();
+        if(oc[0]==null)   //The edge has been destroyed
+            oc = this.octants;
+        return oc;
     }
 
     @Override

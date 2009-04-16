@@ -65,13 +65,13 @@ public class FreeMode implements Mode, FreeModifier {
     public void init() {
         SightImpl sight = sightManager.getMainSight();
 
-        SightTreeIterator enabledNodes = new SightTreeIterator(treeStructure, sight);
+        /*SightTreeIterator enabledNodes = new SightTreeIterator(treeStructure, sight);
         for (; enabledNodes.hasNext();) {
             PreNode n = enabledNodes.next();
             NodeImpl ni = n.getNode();
             ni.setX(n.getPre() * 50);
             ni.setY(n.getPost() * 50);
-        }
+        }*/
         edgeProcessing.init(sightManager.getMainSight());
         sightManager.getMainSight().getSightCache().reset();
     }

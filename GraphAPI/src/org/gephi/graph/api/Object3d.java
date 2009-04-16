@@ -30,4 +30,5 @@ public interface Object3d<ObjectType extends Renderable> {
     public void setCacheMarker(int cacheMarker);
     public boolean isCacheMatching(int cacheMarker);
     public ObjectType getObj();
+    public boolean isValid();
 }

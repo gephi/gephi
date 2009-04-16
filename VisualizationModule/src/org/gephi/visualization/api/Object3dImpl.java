@@ -83,7 +83,7 @@ public abstract class Object3dImpl<ObjectType extends Renderable> implements Obj
         this.octants[0] = octant;
     }
 
-    public void resetOctant(Octant octant) {
+    public void resetOctant() {
         if (this.octants != null) {
             this.octants[0] = null;
         }
@@ -152,4 +152,9 @@ public abstract class Object3dImpl<ObjectType extends Renderable> implements Obj
     public boolean isCacheMatching(int cacheMarker) {
         return cacheMarker == this.cacheMarker;
     }
+
+    public boolean isValid() {
+        return octants!=null && octants[0]!=null;
+    }
+
 }

@@ -20,10 +20,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network.sight;
 
+import javax.swing.event.ChangeListener;
 import org.gephi.data.network.Dhns;
 import org.gephi.data.network.api.SightManager;
 import org.gephi.graph.api.Sight;
 import org.openide.util.Lookup;
+import org.openide.util.WeakListeners;
 
 /**
  *
@@ -33,19 +35,21 @@ public class SightManagerImpl implements SightManager {
 
     private int sightCounter = 1;
     private SightsModel model;
-    private SightImpl mainSight;
+    
     private Dhns dhns;
 
     public SightManagerImpl(Dhns dhns) {
         this.dhns = dhns;
         this.model = new SightsModel();
+
+        //Create Main Sight
+        SightImpl mainSight = createSight();
+        model.setMainSight(mainSight);
+        model.setSelectedSight(mainSight);
     }
 
     public SightImpl getMainSight() {
-        if (mainSight == null) {
-            mainSight = createSight();
-        }
-        return mainSight;
+        return model.getMainSight();
     }
 
     public SightImpl createSight() {
@@ -56,12 +60,23 @@ public class SightManagerImpl implements SightManager {
         return sight;
     }
 
+    public void addChangeListener(ChangeListener listener)
+    {
+        model.addChangeListener(WeakListeners.change(listener, model));
+
+    }
+
     public Lookup getModelLookup() {
         return model.getLookup();
     }
 
+    public SightImpl getSelectedSight() {
+        return model.getSelectedSight();
+    }
+
     public void selectSight(Sight sight) {
-        
+        model.setSelectedSight((SightImpl)sight);
+        System.out.println("select Sight"+sight.getNumber());
     }
 
     public int getSightCounter() {

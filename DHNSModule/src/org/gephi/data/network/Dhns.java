@@ -37,6 +37,7 @@ import org.gephi.data.network.potato.PotatoRender;
 import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.sight.SightManagerImpl;
 import org.gephi.data.network.tree.importer.CompleteTreeImporter;
+import org.gephi.data.network.utils.RandomEdgesGenerator;
 
 public class Dhns {
 
@@ -65,13 +66,13 @@ public class Dhns {
     private void importFakeGraph() {
         CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure, sightManager.getMainSight());
 
-        importer.importGraph(5, true);
+        importer.importGraph(20, true);
         //importer.shuffleEnable();
         System.out.println("Tree size : " + treeStructure.getTreeSize());
         //treeStructure.showTreeAsTable();
 
-        /*RandomEdgesGenerator reg = new RandomEdgesGenerator(treeStructure);
-        reg.generatPhysicalEdges(20);*/
+        RandomEdgesGenerator reg = new RandomEdgesGenerator(treeStructure);
+        reg.generatPhysicalEdges(20000);
         freeMode.init();
 
     //updatePotatoes();

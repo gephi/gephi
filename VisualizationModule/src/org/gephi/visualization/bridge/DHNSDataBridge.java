@@ -21,6 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.bridge;
 
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.EdgeWrap;
 import org.gephi.graph.api.NodeWrap;
 import org.gephi.data.network.api.AsyncReader;
@@ -28,6 +31,7 @@ import org.gephi.data.network.api.DhnsController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Object3d;
+import org.gephi.graph.api.Sight;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.Object3dImpl;
@@ -41,12 +45,16 @@ import org.openide.util.Lookup;
  *
  * @author Mathieu Bastian
  */
-public class DHNSDataBridge implements DataBridge, VizArchitecture {
+public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListener {
 
     //Architecture
     protected AbstractEngine engine;
+    protected DhnsController controller;
     protected AsyncReader reader;
     private VizConfig vizConfig;
+
+    //States
+    private AtomicBoolean sightChange = new AtomicBoolean(true);
 
     //Attributes
     private int cacheMarker = 0;
@@ -54,8 +62,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     @Override
     public void initArchitecture() {
         this.engine = VizController.getInstance().getEngine();
-        DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-        this.reader = dhnsController.getAsyncReader();
+        controller = Lookup.getDefault().lookup(DhnsController.class);
+        controller.getSightManager().addChangeListener(this);
         this.vizConfig = VizController.getInstance().getVizConfig();
     }
 
@@ -97,6 +105,10 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                 obj = nodeInit.initObject(node);
                 engine.addObject(AbstractEngine.CLASS_NODE, (Object3dImpl) obj);
             }
+            else if(!obj.isValid())
+            {
+                engine.addObject(AbstractEngine.CLASS_NODE, (Object3dImpl) obj);
+            }
             obj.setCacheMarker(cacheMarker);
 
             node.setSize(10f);
@@ -124,11 +136,36 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                     arrowObj.setCacheMarker(cacheMarker);
                 }
             }
+            else if(!obj.isValid())
+            {
+                engine.addObject(AbstractEngine.CLASS_EDGE, (Object3dImpl) obj);
+                if (vizConfig.isDirectedEdges()) {
+                    Object3d arrowObj = arrowInit.initObject(edge);
+                    engine.addObject(AbstractEngine.CLASS_ARROW, (Object3dImpl) arrowObj);
+                    arrowObj.setCacheMarker(cacheMarker);
+                }
+            }
             obj.setCacheMarker(cacheMarker);
         }
     }
 
     public boolean requireUpdate() {
-        return reader.requireUpdate();
+        //Refresh reader if sight changed
+        if (sightChange.getAndSet(false)) {
+            Sight selectedSight = controller.getSightManager().getSelectedSight();
+            if (selectedSight != null) {
+                //cacheMarker = 0;
+                reader = controller.getAsyncReader(selectedSight);
+            }
+        }
+
+        if (reader != null) {
+            return reader.requireUpdate();
+        }
+        return false;
+    }
+
+    public void stateChanged(ChangeEvent e) {
+        sightChange.set(true);
     }
 }
