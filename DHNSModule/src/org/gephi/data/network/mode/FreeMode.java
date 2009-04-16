@@ -34,7 +34,7 @@ import org.gephi.data.network.node.NodeImpl;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.node.treelist.SightTreeIterator;
 import org.gephi.data.network.sight.SightImpl;
-import org.gephi.data.network.sight.SightManager;
+import org.gephi.data.network.sight.SightManagerImpl;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.utils.avl.PreNodeAVLTree;
 import org.gephi.data.network.utils.avl.SightAVLTree.SightAVLIterator;
@@ -51,7 +51,7 @@ public class FreeMode implements Mode, FreeModifier {
     private Dhns dhns;
     private FreeEdgeProcessing edgeProcessing;
     private TreeStructure treeStructure;
-    private SightManager sightManager;
+    private SightManagerImpl sightManager;
     //Executor
     ExecutorService executor = Executors.newSingleThreadExecutor();
 

@@ -29,9 +29,10 @@ import org.gephi.datastructure.avl.simple.SimpleAVLTree;
  *
  * @author Mathieu Bastian
  */
-public class SightImpl implements Sight {
+public class SightImpl implements Sight, AVLItem {
 
     private final int number;
+    private String name;
     private SimpleAVLTree children;
     private SightCache sightCache;
 
@@ -57,7 +58,9 @@ public class SightImpl implements Sight {
     }
 
     public boolean hasChildren() {
-        return children.getCount() > 0;
+        if(children!=null && children.getCount() > 0)
+            return true;
+        return false;
     }
 
     public Iterator<AVLItem> getChildrenIterator() {
@@ -70,5 +73,24 @@ public class SightImpl implements Sight {
 
     public void setSightCache(SightCache sightCache) {
         this.sightCache = sightCache;
+    }
+
+    public Sight[] getChildren() {
+        Sight[] sightArray = new Sight[children.getCount()];
+        Iterator<AVLItem> itr = children.iterator();
+        for(int i=0;itr.hasNext();i++)
+        {
+            Sight sight = (Sight)itr.next();
+            sightArray[i] = sight;
+        }
+        return sightArray;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

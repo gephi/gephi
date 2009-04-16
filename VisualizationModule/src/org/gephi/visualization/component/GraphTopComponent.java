@@ -122,27 +122,13 @@ final class GraphTopComponent extends TopComponent {
 
     @Override
     public void componentOpened() {
-        System.out.println("dude");
+        
     }
 
     @Override
     public void componentClosed() {
         // TODO add custom code on component closing
     }
-
-    @Override
-    protected void componentActivated() {
-        super.componentActivated();
-        System.out.println("oorjjke");
-    }
-
-    @Override
-    protected void componentShowing() {
-        super.componentShowing();
-        System.out.println("lalala");
-    }
-
-
 
     /** replaces this in object stream */
     @Override

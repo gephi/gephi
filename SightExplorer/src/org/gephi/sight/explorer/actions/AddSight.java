@@ -18,38 +18,30 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.gephi.sight.explorer.actions;
 
-package org.gephi.project.explorer;
-
-import org.gephi.project.explorer.actions.AddProject;
 import javax.swing.Action;
-import org.gephi.project.api.Projects;
-import org.openide.nodes.AbstractNode;
+import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
+import org.gephi.data.network.api.DhnsController;
+import org.gephi.data.network.api.SightManager;
+import org.gephi.sight.explorer.SightsNode;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.actions.SystemAction;
-import org.openide.util.lookup.Lookups;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class ProjectsNode extends AbstractNode {
+public class AddSight extends AbstractAction {
 
-    public ProjectsNode(Projects projects) {
-        super(new ProjectsChildren(projects));
+    public AddSight() {
+        putValue(Action.NAME, NbBundle.getMessage(SightsNode.class, "SightsNode_addSight"));
     }
 
-    @Override
-    public String getDisplayName() {
-        return NbBundle.getMessage(ProjectsNode.class, "ProjectsNode_title");
-
+    public void actionPerformed(ActionEvent e) {
+        DhnsController controller = Lookup.getDefault().lookup(DhnsController.class);
+        SightManager sightManager = controller.getSightManager();
+        sightManager.createSight();
     }
-
-    @Override
-    public Action[] getActions(boolean context) {
-        return new Action[]{new AddProject()};
-    }
-
-
-
 }

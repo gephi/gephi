@@ -62,7 +62,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
             Object3d obj = clickedObjects[i];
             Node node = (Node)obj.getObj();
             DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-            freeModifier.expand(node, dhnsController.getMainSight());
+            freeModifier.expand(node, dhnsController.getSightManager().getMainSight());
         }
 
     }

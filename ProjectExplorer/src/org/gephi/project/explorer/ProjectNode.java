@@ -20,24 +20,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.explorer;
 
-import java.awt.Image;
-import java.util.Collection;
 import javax.swing.event.ChangeEvent;
 import org.gephi.project.explorer.actions.AddWorkspace;
 import javax.swing.Action;
 import javax.swing.event.ChangeListener;
 import org.gephi.project.api.Project;
-import org.gephi.project.api.Workspace;
 import org.gephi.project.explorer.actions.CloseProject;
 import org.gephi.project.explorer.actions.OpenProject;
 import org.gephi.project.explorer.actions.RemoveProject;
 import org.gephi.project.explorer.actions.RenameProject;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
-import org.openide.util.ImageUtilities;
-import org.openide.util.Lookup;
-import org.openide.util.LookupEvent;
-import org.openide.util.LookupListener;
 import org.openide.util.WeakListeners;
 
 /**

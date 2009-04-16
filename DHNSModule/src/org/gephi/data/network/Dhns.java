@@ -35,7 +35,7 @@ import org.gephi.data.network.potato.Potato;
 import org.gephi.data.network.potato.PotatoCooker;
 import org.gephi.data.network.potato.PotatoRender;
 import org.gephi.data.network.sight.SightImpl;
-import org.gephi.data.network.sight.SightManager;
+import org.gephi.data.network.sight.SightManagerImpl;
 import org.gephi.data.network.tree.importer.CompleteTreeImporter;
 
 public class Dhns {
@@ -43,7 +43,7 @@ public class Dhns {
     private DHNSConfig config;
     private TreeStructure treeStructure;
     private FreeMode freeMode;
-    private SightManager sightManager;
+    private SightManagerImpl sightManager;
     private PotatoCooker potatoBuilder;
 
     //Locking
@@ -52,7 +52,7 @@ public class Dhns {
     public Dhns() {
         config = new DHNSConfig();
         treeStructure = new TreeStructure();
-        sightManager = new SightManager(this);
+        sightManager = new SightManagerImpl(this);
         freeMode = new FreeMode(this);
         init(sightManager.getMainSight());
     }
@@ -97,7 +97,7 @@ public class Dhns {
         return treeStructure;
     }
 
-    public SightManager getSightManager() {
+    public SightManagerImpl getSightManager() {
         return sightManager;
     }
 

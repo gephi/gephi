@@ -5,12 +5,15 @@
 
 package org.gephi.graph.api;
 
-import org.gephi.datastructure.avl.simple.AVLItem;
-
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Sight extends AVLItem {
+public interface Sight {
+    public Sight[] getChildren();
+    public boolean hasChildren();
 
+    public int getNumber();
+    public String getName();
+    public void setName(String name);
 }

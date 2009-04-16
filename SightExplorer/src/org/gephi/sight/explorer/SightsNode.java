@@ -19,37 +19,50 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.gephi.project.explorer;
+package org.gephi.sight.explorer;
 
-import org.gephi.project.explorer.actions.AddProject;
 import javax.swing.Action;
-import org.gephi.project.api.Projects;
+import org.gephi.graph.api.Sight;
+import org.gephi.sight.explorer.actions.AddSight;
 import org.openide.nodes.AbstractNode;
+import org.openide.nodes.Children;
 import org.openide.util.NbBundle;
-import org.openide.util.actions.SystemAction;
-import org.openide.util.lookup.Lookups;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class ProjectsNode extends AbstractNode {
+public class SightsNode extends AbstractNode {
 
-    public ProjectsNode(Projects projects) {
-        super(new ProjectsChildren(projects));
+    private Sight sight;
+    private boolean rootNode=false;
+
+    public SightsNode(Sight sight)
+    {
+        super(((sight==null) || (sight!=null && sight.hasChildren()))?(new SightsChildren(sight)):Children.LEAF);
+        this.sight = sight;
+        if(sight==null)
+            rootNode=true;
     }
 
     @Override
     public String getDisplayName() {
-        return NbBundle.getMessage(ProjectsNode.class, "ProjectsNode_title");
-
+        if(rootNode)
+            return "Sights";
+        else
+        {
+            if(sight.getName()!=null)
+                return sight.getName();
+            else
+                return NbBundle.getMessage(SightsNode.class, "SightsNode_default_sight_name")+" "+sight.getNumber();
+        }
     }
 
     @Override
     public Action[] getActions(boolean context) {
-        return new Action[]{new AddProject()};
+        if(rootNode)
+            return new Action[] { new AddSight() };
+        return new Action[] {};
     }
-
-
 
 }

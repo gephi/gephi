@@ -51,7 +51,7 @@ public class SightCache {
 
     private SightImpl sight;
     private Dhns dhns;
-    private SightManager manager;
+    private SightManagerImpl manager;
 
     //States
     private AtomicBoolean orderResetNode = new AtomicBoolean();

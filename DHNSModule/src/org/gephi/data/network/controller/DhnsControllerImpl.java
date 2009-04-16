@@ -24,6 +24,7 @@ import org.gephi.data.network.*;
 import org.gephi.data.network.api.FreeModifier;
 import org.gephi.data.network.api.AsyncReader;
 import org.gephi.data.network.api.DhnsController;
+import org.gephi.data.network.api.SightManager;
 import org.gephi.graph.api.Sight;
 import org.gephi.data.network.api.SyncReader;
 import org.gephi.data.network.reader.AsyncReaderImpl;
@@ -42,12 +43,10 @@ public class DhnsControllerImpl implements DhnsController {
 
     public DhnsControllerImpl() {
         dhns = new Dhns();
-        System.out.println("instance dhnsCOntroller");
     }
 
-    public Sight getMainSight()
-    {
-        return dhns.getSightManager().getMainSight();
+    public SightManager getSightManager() {
+        return dhns.getSightManager();
     }
 
     public AsyncReader getAsyncReader()

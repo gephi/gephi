@@ -5,18 +5,17 @@
 package org.gephi.data.network.api;
 
 import org.gephi.graph.api.Sight;
+import org.openide.util.Lookup;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface DhnsController {
+public interface SightManager {
 
-    public SightManager getSightManager();
+    public Sight createSight();
 
-    public AsyncReader getAsyncReader();
+    public Sight getMainSight();
 
-    public SyncReader getSyncReader();
-
-    public FreeModifier getFreeModifier();
+    public Lookup getModelLookup();
 }
