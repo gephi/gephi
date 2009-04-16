@@ -18,4 +18,6 @@ public interface SightManager {
     public Sight getMainSight();
 
     public Lookup getModelLookup();
+
+    public void selectSight(Sight sight);
 }

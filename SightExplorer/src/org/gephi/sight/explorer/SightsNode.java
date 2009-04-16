@@ -27,6 +27,7 @@ import org.gephi.sight.explorer.actions.AddSight;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
@@ -39,7 +40,7 @@ public class SightsNode extends AbstractNode {
 
     public SightsNode(Sight sight)
     {
-        super(((sight==null) || (sight!=null && sight.hasChildren()))?(new SightsChildren(sight)):Children.LEAF);
+        super(((sight==null) || (sight!=null && sight.hasChildren()))?(new SightsChildren(sight)):Children.LEAF,(sight!=null?Lookups.singleton(sight):null));
         this.sight = sight;
         if(sight==null)
             rootNode=true;
@@ -63,6 +64,11 @@ public class SightsNode extends AbstractNode {
         if(rootNode)
             return new Action[] { new AddSight() };
         return new Action[] {};
+    }
+
+    public Sight getSight()
+    {
+        return sight;
     }
 
 }

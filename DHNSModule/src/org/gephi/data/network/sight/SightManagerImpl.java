@@ -22,6 +22,7 @@ package org.gephi.data.network.sight;
 
 import org.gephi.data.network.Dhns;
 import org.gephi.data.network.api.SightManager;
+import org.gephi.graph.api.Sight;
 import org.openide.util.Lookup;
 
 /**
@@ -35,16 +36,15 @@ public class SightManagerImpl implements SightManager {
     private SightImpl mainSight;
     private Dhns dhns;
 
-    public SightManagerImpl(Dhns dhns)
-    {
+    public SightManagerImpl(Dhns dhns) {
         this.dhns = dhns;
         this.model = new SightsModel();
     }
 
-    public SightImpl getMainSight()
-    {
-        if(mainSight==null)
+    public SightImpl getMainSight() {
+        if (mainSight == null) {
             mainSight = createSight();
+        }
         return mainSight;
     }
 
@@ -56,12 +56,13 @@ public class SightManagerImpl implements SightManager {
         return sight;
     }
 
-   public Lookup getModelLookup()
-   {
-       return model.getLookup();
-   }
-    
-    
+    public Lookup getModelLookup() {
+        return model.getLookup();
+    }
+
+    public void selectSight(Sight sight) {
+        
+    }
 
     public int getSightCounter() {
         return sightCounter;
@@ -71,8 +72,7 @@ public class SightManagerImpl implements SightManager {
         this.sightCounter = sightCounter;
     }
 
-    public void updateSight(SightImpl sight)
-    {
+    public void updateSight(SightImpl sight) {
         sight.getSightCache().reset();
     }
 }

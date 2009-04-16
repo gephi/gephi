@@ -9,9 +9,14 @@ import java.util.logging.Logger;
 import org.gephi.data.network.api.DhnsController;
 import org.gephi.data.network.api.SightManager;
 import org.openide.explorer.ExplorerManager;
+import org.openide.explorer.ExplorerUtils;
 import org.openide.explorer.view.BeanTreeView;
+import org.openide.nodes.Node;
 import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 import org.openide.util.NbBundle;
+import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 //import org.openide.util.Utilities;
@@ -19,7 +24,7 @@ import org.openide.windows.WindowManager;
 /**
  * Top component which displays something.
  */
-final class SightTopComponent extends TopComponent implements ExplorerManager.Provider {
+final class SightTopComponent extends TopComponent implements ExplorerManager.Provider, LookupListener {
 
     private static SightTopComponent instance;
     /** path to the icon used by the component and its open action */
@@ -33,8 +38,26 @@ final class SightTopComponent extends TopComponent implements ExplorerManager.Pr
         setToolTipText(NbBundle.getMessage(SightTopComponent.class, "HINT_SightTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
 
+        associateLookup(ExplorerUtils.createLookup(manager, getActionMap()));
+        Utilities.actionsGlobalContext().lookupResult(Node.class).addLookupListener(this);
+        //ExplorerUtils.createLookup(manager, getActionMap()).lookupResult(Node.class).addLookupListener(this);
         initExplorer();
+        
+        
     }
+
+    public void resultChanged(LookupEvent ev) {
+        Node[] selectedNodes = manager.getSelectedNodes();
+        if(selectedNodes.length>0 && selectedNodes[0] instanceof SightsNode)
+        {
+            SightsNode n = (SightsNode)selectedNodes[0];
+            DhnsController controller = Lookup.getDefault().lookup(DhnsController.class);
+            SightManager sightManager = controller.getSightManager();
+            sightManager.selectSight(n.getSight());
+        }
+    }
+
+
 
     private void initExplorer() {
         manager.setRootContext(new SightsNode(null));
