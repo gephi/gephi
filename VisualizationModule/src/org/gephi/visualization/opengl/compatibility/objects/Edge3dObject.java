@@ -40,6 +40,7 @@ public class Edge3dObject extends Object3dImpl<Edge> {
     //An edge is set in both source node and target node octant. Hence edges are not drawn when none of
     //these octants are visible.
     private float[] cameraLocation;
+    private Object3dImpl arrow;
 
     public Edge3dObject() {
         cameraLocation = VizController.getInstance().getDrawable().getCameraLocation();
@@ -286,5 +287,11 @@ public class Edge3dObject extends Object3dImpl<Edge> {
         return octants[0]!=null || octants[1]!=null;
     }
 
+    public Object3dImpl getArrow() {
+        return arrow;
+    }
 
+    public void setArrow(Object3dImpl arrow) {
+        this.arrow = arrow;
+    }
 }

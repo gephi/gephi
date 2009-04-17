@@ -31,4 +31,5 @@ public interface Object3d<ObjectType extends Renderable> {
     public boolean isCacheMatching(int cacheMarker);
     public ObjectType getObj();
     public boolean isValid();
+    public void updatePositionFlag();
 }

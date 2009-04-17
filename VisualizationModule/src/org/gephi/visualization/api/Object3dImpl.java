@@ -157,4 +157,10 @@ public abstract class Object3dImpl<ObjectType extends Renderable> implements Obj
         return octants!=null && octants[0]!=null;
     }
 
+    public void updatePositionFlag() {
+       if(octants!=null && octants[0]!=null)
+       {
+           octants[0].requireUpdatePosition();
+       }
+    }
 }

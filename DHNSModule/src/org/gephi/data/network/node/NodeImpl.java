@@ -73,14 +73,25 @@ public class NodeImpl implements Node {
 
     public void setX(float x) {
         this.x = x;
+        updatePositionFlag();
     }
 
     public void setY(float y) {
         this.y = y;
+        updatePositionFlag();
     }
 
     public void setZ(float z) {
         this.z = z;
+        updatePositionFlag();
+    }
+
+    private void updatePositionFlag()
+    {
+        if(obj!=null)
+        {
+            obj.updatePositionFlag();
+        }
     }
 
     public float getRadius() {

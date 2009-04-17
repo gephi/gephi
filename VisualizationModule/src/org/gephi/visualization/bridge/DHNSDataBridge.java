@@ -39,6 +39,7 @@ import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.initializer.Object3dInitializer;
 import org.gephi.visualization.api.objects.Object3dClass;
 import org.gephi.visualization.opengl.AbstractEngine;
+import org.gephi.visualization.opengl.compatibility.objects.Edge3dObject;
 import org.openide.util.Lookup;
 
 /**
@@ -131,17 +132,18 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
 
                 engine.addObject(AbstractEngine.CLASS_EDGE, (Object3dImpl) obj);
                 if (vizConfig.isDirectedEdges()) {
-                    Object3d arrowObj = arrowInit.initObject(edge);
-                    engine.addObject(AbstractEngine.CLASS_ARROW, (Object3dImpl) arrowObj);
+                    Object3dImpl arrowObj = arrowInit.initObject(edge);
+                    engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);
+                    ((Edge3dObject)obj).setArrow(arrowObj);
                 }
             }
             else if(!obj.isValid())
             {
                 engine.addObject(AbstractEngine.CLASS_EDGE, (Object3dImpl) obj);
                 if (vizConfig.isDirectedEdges()) {
-                    Object3d arrowObj = arrowInit.initObject(edge);
-                    engine.addObject(AbstractEngine.CLASS_ARROW, (Object3dImpl) arrowObj);
+                    Object3dImpl arrowObj = ((Edge3dObject)obj).getArrow();
+                    engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);
                 }
             }
