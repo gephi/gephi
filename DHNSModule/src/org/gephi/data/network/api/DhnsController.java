@@ -19,4 +19,6 @@ public interface DhnsController {
     public SyncReader getSyncReader(Sight sight);
 
     public FreeModifier getFreeModifier();
+
+    public FlatImporter getFlatImport();
 }

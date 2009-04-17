@@ -130,7 +130,6 @@ public class SightCache {
     private class resetNodesCallable implements Callable<SightCacheContent> {
 
         public SightCacheContent call() throws Exception {
-            System.out.println("reset Nodes call");
             TreeStructure treeStructure = dhns.getTreeStructure();
             List<PreNode> nodeCache = new ArrayList<PreNode>();
             Iterator<PreNode> treeIterator = null;
@@ -146,6 +145,7 @@ public class SightCache {
             for (; cacheIterator.hasNext(); cacheIterator.next()) {
             }      //Write cache
 
+             System.out.println("reset Nodes call: "+nodeCache.size());
             dhns.getReadLock().unlock();
             return new SightCacheContent(nodeCache, null);
         }
@@ -154,7 +154,6 @@ public class SightCache {
     private class resetEdgesCallable implements Callable<SightCacheContent> {
 
         public SightCacheContent call() throws Exception {
-            System.out.println("reset Edges call");
             TreeStructure treeStructure = dhns.getTreeStructure();
             List<DhnsEdge> edgeCache = new ArrayList<DhnsEdge>();
             Iterator<DhnsEdge> edgesIterator = null;
@@ -169,7 +168,7 @@ public class SightCache {
             CachedIterator<DhnsEdge> cacheIterator = new CachedIterator<DhnsEdge>(edgesIterator, edgeCache);
             for (; cacheIterator.hasNext(); cacheIterator.next()) {
             }
-
+            System.out.println("reset Edges call: "+edgeCache.size());
             dhns.getReadLock().unlock();
             return new SightCacheContent(null, edgeCache);
         }

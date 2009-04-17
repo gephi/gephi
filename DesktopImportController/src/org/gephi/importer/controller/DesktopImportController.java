@@ -25,11 +25,19 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import org.gephi.data.network.api.DhnsController;
+import org.gephi.data.network.api.EdgeFactory;
+import org.gephi.data.network.api.FlatImporter;
+import org.gephi.data.network.api.NodeFactory;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Node;
 import org.gephi.importer.api.CustomImporter;
+import org.gephi.importer.api.EdgeDraft;
 import org.gephi.importer.api.FileType;
 import org.gephi.importer.api.ImportController;
 import org.gephi.importer.api.ImportException;
 import org.gephi.importer.api.Importer;
+import org.gephi.importer.api.NodeDraft;
 import org.gephi.importer.api.TextImporter;
 import org.gephi.importer.api.XMLImporter;
 import org.gephi.importer.container.ImportContainerImpl;
@@ -79,7 +87,38 @@ public class DesktopImportController implements ImportController {
 
     private void finishImport(ImportContainerImpl container)
     {
+        DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
+        FlatImporter flatImporter = dhnsController.getFlatImport();
 
+        flatImporter.initImport();
+
+        //Nodes
+        for(NodeDraft node : container.getNodes())
+        {
+            Node n = NodeFactory.createNode();
+            node.setNode(n);
+
+            if(node.getX()!=0)
+                n.setX(node.getX());
+            if(node.getY()!=0)
+                n.setY(node.getY());
+
+            flatImporter.addNode(n);
+        }
+
+        //Edges
+        for(EdgeDraft edge : container.getEdges())
+        {
+            Node nodeSource = edge.getNodeSource().getNode();
+            Node nodeTarget = edge.getNodeTarget().getNode();
+            
+            Edge e = EdgeFactory.createEdge(nodeSource, nodeTarget);
+
+            flatImporter.addEdge(e);
+        }
+
+        flatImporter.finishImport();
+        
     }
 
     private BufferedReader getTextReader(FileObject fileObject) throws ImportException {

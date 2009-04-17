@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.importer.container;
 
+import java.util.Collection;
 import org.gephi.importer.api.*;
 import java.util.HashMap;
 import org.openide.util.NbBundle;
@@ -100,6 +101,16 @@ public class ImportContainerImpl implements ImportContainer {
         }
 
         edgeMap.put(id, edgeDraft);
+    }
+
+    public Collection<NodeDraft> getNodes()
+    {
+        return nodeMap.values();
+    }
+
+    public Collection<EdgeDraft> getEdges()
+    {
+        return edgeMap.values();
     }
 
     private void logger(Exception e) {

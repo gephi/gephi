@@ -4,6 +4,8 @@
  */
 package org.gephi.importer.api;
 
+import java.util.Collection;
+
 /**
  *
  * @author Mathieu Bastian
@@ -17,4 +19,8 @@ public interface ImportContainer {
     public boolean nodeExists(String id);
 
     public void addEdge(EdgeDraft edgeDraft);
+
+    public Collection<NodeDraft> getNodes();
+
+    public Collection<EdgeDraft> getEdges();
 }

@@ -59,8 +59,13 @@ public class Dhns {
     }
 
     public void init(SightImpl sight) {
-        importFakeGraph();
+        //importFakeGraph();
         //treeStructure.showTreeAsTable();
+    }
+
+    public void endImport()
+    {
+        freeMode.init();
     }
 
     private void importFakeGraph() {

@@ -22,6 +22,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.importer.api;
 
 import java.awt.Color;
+import org.gephi.graph.api.Node;
 
 /**
  *
@@ -36,6 +37,9 @@ public class NodeDraft {
     private float size;
     private float x;
     private float y;
+
+    //Result
+    private Node node;
 
     public Color getColor() {
         return color;
@@ -83,5 +87,13 @@ public class NodeDraft {
 
     public void setY(float y) {
         this.y = y;
+    }
+
+    public void setNode(Node node) {
+        this.node = node;
+    }
+
+    public Node getNode() {
+        return node;
     }
 }
