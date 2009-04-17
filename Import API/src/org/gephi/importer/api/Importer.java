@@ -9,10 +9,10 @@ import org.openide.filesystems.FileObject;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public interface Importer {
-
+    
     public FileType[] getFileTypes();
     public boolean isMatchingImporter(FileObject fileObject);
 }

@@ -18,24 +18,153 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.importer.standard;
 
+import java.io.BufferedReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.gephi.importer.api.FileType;
-import org.gephi.importer.api.Importer;
+import org.gephi.importer.api.ImportException;
+import org.gephi.importer.api.TextImporter;
 import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
+ * @author Sebastien Heymann
  */
-public class ImporterGDF implements Importer {
+public class ImporterGDF implements TextImporter {
 
+    private List<String> nodeLines = new ArrayList<String>();
+    private List<String> edgeLines = new ArrayList<String>();
+
+    //Matcher
+    private String[] nodeLineStart;
+    private String[] edgeLineStart;
+
+    public ImporterGDF() {
+        nodeLineStart = new String[]{"nodedef>name", "nodedef> name", "Nodedef>name", "Nodedef> name"};
+        edgeLineStart = new String[]{"edgedef>", "Edgedef>"};
+    }
+
+    public void importData(BufferedReader reader) throws ImportException {
+        try {
+
+            //Verify a node line exists and puts nodes and edges lines in arrays
+            walkFile(reader);
+
+            //Magix regex
+            Pattern pattern = Pattern.compile("(?<=(?:,|^)\")(.*?)(?=(?<=(?:[^\\\\]))\",|\"$)|(?<=(?:,|^)')(.*?)(?=(?<=(?:[^\\\\]))',|'$)|(?<=(?:,|^))(?=[^'\"])(.*?)(?=(?:,|$))|(?<=,)($)");
+
+            //Nodes
+            for (String nodeLine : nodeLines) {
+                Matcher m = pattern.matcher(nodeLine);
+                int count = 0;
+                while (m.find()) {
+                    int start = m.start();
+                    int end = m.end();
+                    if(start!=end)
+                    {
+                        String data = nodeLine.substring(start, end);
+                        data = data.trim();
+                        if(!data.isEmpty() && !data.toLowerCase().equals("null"))
+                        {
+
+                        }
+                    }
+                    count++;
+                }
+            }
+
+            //Edges
+            for (String edgeLine : edgeLines) {
+                Matcher m = pattern.matcher(edgeLine);
+                int count = 0;
+                while (m.find()) {
+                    int start = m.start();
+                    int end = m.end();
+                    if(start!=end)
+                    {
+                        String data = edgeLine.substring(start, end);
+                        data = data.trim();
+                        if(!data.isEmpty() && !data.toLowerCase().equals("null"))
+                        {
+
+                        }
+                    }
+                    count++;
+                }
+            }
+
+        } catch (Exception ex) {
+            if (ex instanceof ImportException) {
+                throw (ImportException) ex;
+            } else {
+                throw new ImportException(this, ex);
+            }
+        }
+
+    }
+
+    private void walkFile(BufferedReader reader) throws Exception {
+        if (reader.ready()) {
+            String firstLine = reader.readLine();
+            if (isNodeFirstLine(firstLine)) {
+                findNodeColumns(firstLine);
+                boolean edgesWalking = false;
+                while (reader.ready()) {
+                    String line = reader.readLine();
+                    if (isEdgeFirstLine(line)) {
+                        edgesWalking = true;
+                        findEdgeColumns(line);
+                    } else {
+                        if (!edgesWalking) {
+                            //Nodes
+                            nodeLines.add(line);
+                        } else {
+                            //Edges
+                            edgeLines.add(line);
+                        }
+                    }
+                }
+            } else {
+                throw new ImportException(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat1"));
+            }
+        } else {
+            throw new ImportException(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat1"));
+        }
+    }
+
+    private void findNodeColumns(String line) {
+    }
+
+    private void findEdgeColumns(String line) {
+    }
+
+    private boolean isNodeFirstLine(String line) {
+        for (String s : nodeLineStart) {
+            if (line.contains(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isEdgeFirstLine(String line) {
+        for (String s : edgeLineStart) {
+            if (line.contains(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".gdf", NbBundle.getMessage(getClass(), "fileType_GDF_Name"));
-        return new FileType[] {ft};
+        return new FileType[]{ft};
     }
 
     public boolean isMatchingImporter(FileObject fileObject) {

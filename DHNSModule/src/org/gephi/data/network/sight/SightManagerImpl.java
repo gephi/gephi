@@ -76,7 +76,6 @@ public class SightManagerImpl implements SightManager {
 
     public void selectSight(Sight sight) {
         model.setSelectedSight((SightImpl)sight);
-        System.out.println("select Sight"+sight.getNumber());
     }
 
     public int getSightCounter() {
