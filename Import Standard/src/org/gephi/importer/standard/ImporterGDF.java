@@ -25,8 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.gephi.importer.api.EdgeDraft;
 import org.gephi.importer.api.FileType;
+import org.gephi.importer.api.ImportContainer;
 import org.gephi.importer.api.ImportException;
+import org.gephi.importer.api.NodeDraft;
 import org.gephi.importer.api.TextImporter;
 import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
@@ -50,7 +53,7 @@ public class ImporterGDF implements TextImporter {
         edgeLineStart = new String[]{"edgedef>", "Edgedef>"};
     }
 
-    public void importData(BufferedReader reader) throws ImportException {
+    public void importData(BufferedReader reader, ImportContainer containter) throws ImportException {
         try {
 
             //Verify a node line exists and puts nodes and edges lines in arrays
@@ -61,42 +64,59 @@ public class ImporterGDF implements TextImporter {
 
             //Nodes
             for (String nodeLine : nodeLines) {
+
+                //Create Node
+                NodeDraft node = new NodeDraft();
+
                 Matcher m = pattern.matcher(nodeLine);
                 int count = 0;
                 while (m.find()) {
                     int start = m.start();
                     int end = m.end();
-                    if(start!=end)
-                    {
+                    if (start != end) {
                         String data = nodeLine.substring(start, end);
                         data = data.trim();
-                        if(!data.isEmpty() && !data.toLowerCase().equals("null"))
-                        {
-
+                        if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
+                            if (count == 0) {
+                                //Id
+                                node.setId(data);
+                            }
                         }
                     }
                     count++;
                 }
+
+                containter.addNode(node);
             }
 
             //Edges
             for (String edgeLine : edgeLines) {
+
+                //Create Edge
+                EdgeDraft edge = new EdgeDraft();
+
                 Matcher m = pattern.matcher(edgeLine);
                 int count = 0;
                 while (m.find()) {
                     int start = m.start();
                     int end = m.end();
-                    if(start!=end)
-                    {
+                    if (start != end) {
                         String data = edgeLine.substring(start, end);
                         data = data.trim();
-                        if(!data.isEmpty() && !data.toLowerCase().equals("null"))
-                        {
-
+                        if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
+                            if (count == 0) {
+                                NodeDraft nodeSource = containter.getNode(data);
+                                edge.setNodeSource(nodeSource);
+                            } else if (count == 1) {
+                                NodeDraft nodeTarget = containter.getNode(data);
+                                edge.setNodeTarget(nodeTarget);
+                            }
                         }
                     }
                     count++;
                 }
+
+                containter.addEdge(edge);
             }
 
         } catch (Exception ex) {

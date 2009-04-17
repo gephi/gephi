@@ -32,6 +32,7 @@ import org.gephi.importer.api.ImportException;
 import org.gephi.importer.api.Importer;
 import org.gephi.importer.api.TextImporter;
 import org.gephi.importer.api.XMLImporter;
+import org.gephi.importer.container.ImportContainerImpl;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.openide.filesystems.FileObject;
@@ -62,13 +63,23 @@ public class DesktopImportController implements ImportController {
 
         ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
         Workspace workspace = projectController.importFile();
+
+        //Create Container
+        ImportContainerImpl container = new ImportContainerImpl();
+
         if (im instanceof XMLImporter) {
         } else if (im instanceof TextImporter) {
             BufferedReader reader = getTextReader(fileObject);
             TextImporter textImporter = (TextImporter)im;
-            textImporter.importData(reader);
+            textImporter.importData(reader,container);
+            finishImport(container);
         } else if (im instanceof CustomImporter) {
         }
+    }
+
+    private void finishImport(ImportContainerImpl container)
+    {
+
     }
 
     private BufferedReader getTextReader(FileObject fileObject) throws ImportException {

@@ -13,5 +13,5 @@ import java.io.BufferedReader;
  */
 public interface TextImporter extends Importer {
 
-    public void importData(BufferedReader reader) throws ImportException;
+    public void importData(BufferedReader reader, ImportContainer containter) throws ImportException;
 }

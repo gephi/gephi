@@ -19,32 +19,16 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.gephi.importer.standard;
-
-import org.gephi.importer.api.FileType;
-import org.gephi.importer.api.ImportContainer;
-import org.gephi.importer.api.ImportException;
-import org.gephi.importer.api.XMLImporter;
-import org.openide.filesystems.FileObject;
-import org.openide.util.NbBundle;
-import org.w3c.dom.Document;
+package org.gephi.importer.container;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class ImporterGEXF implements XMLImporter {
+public class ImportContainerException extends Exception {
 
-    public void importData(Document document, ImportContainer containter) throws ImportException {
-        
-    }
-
-    public FileType[] getFileTypes() {
-        FileType ft = new FileType(".gexf", NbBundle.getMessage(getClass(), "fileType_GEXF_Name"));
-        return new FileType[] {ft};
-    }
-
-     public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("gexf");
+    public ImportContainerException(String message)
+    {
+        super(message);
     }
 }

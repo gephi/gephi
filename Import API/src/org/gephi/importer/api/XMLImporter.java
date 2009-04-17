@@ -13,5 +13,5 @@ import org.w3c.dom.Document;
  */
 public interface XMLImporter extends Importer {
 
-    public void importData(Document document) throws ImportException;
+    public void importData(Document document, ImportContainer containter) throws ImportException;
 }

@@ -13,5 +13,5 @@ import java.io.InputStream;
  */
 public interface CustomImporter {
 
-    public void importData(InputStream stream) throws ImportException;
+    public void importData(InputStream stream, ImportContainer containter) throws ImportException;
 }
