@@ -51,6 +51,12 @@ public interface Renderable {
 
     public float b();
 
+    public void setR(float r);
+
+    public void setG(float g);
+
+    public void setB(float b);
+
     public float alpha();
 
     public void setAlpha(float alpha);

@@ -18,18 +18,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.importer.api;
 
 import java.awt.Color;
+import org.gephi.graph.api.Edge;
 
 /**
  *
  * @author Mathieu Bastian
  */
 public class EdgeDraft {
-    public enum EdgeType { DIRECTED, UNDIRECTED, MUTUAL};
 
+    public enum EdgeType {
+
+        DIRECTED, UNDIRECTED, MUTUAL
+    };
     private String id;
 
     //Topology
@@ -87,5 +90,14 @@ public class EdgeDraft {
 
     public void setNodeTarget(NodeDraft nodeTarget) {
         this.nodeTarget = nodeTarget;
+    }
+
+    public void flushToEdge(Edge edge) {
+        if (color != null) {
+            edge.setR(color.getRed() / 255f);
+            edge.setG(color.getGreen() / 255f);
+            edge.setB(color.getBlue() / 255f);
+        }
+        
     }
 }

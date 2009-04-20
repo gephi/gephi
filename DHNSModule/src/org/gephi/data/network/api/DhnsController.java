@@ -37,4 +37,6 @@ public interface DhnsController {
     public FreeModifier getFreeModifier();
 
     public FlatImporter getFlatImport();
+
+    public Dictionary getDictionary();
 }

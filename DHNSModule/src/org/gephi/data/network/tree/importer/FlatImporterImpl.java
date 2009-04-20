@@ -78,6 +78,8 @@ public class FlatImporterImpl implements FlatImporter {
         currentPre++;
 
         nodeImported++;
+
+        dhns.getDictionary().addNode(p);        //Dico
     }
 
     public void addEdge(Edge edge) {
@@ -88,19 +90,23 @@ public class FlatImporterImpl implements FlatImporter {
         PreNode preNodeSource = source.getPreNode();
         PreNode preNodeTarget = target.getPreNode();
 
+        PreEdge preEdge=null;
         if (preNodeSource.getPre() < preNodeTarget.getPre()) {
             //Edge out to target node
-            PreEdge p = new PreEdge(EdgeType.OUT, preNodeSource, preNodeTarget);
-            preNodeSource.addForwardEdge(p);
-            preNodeTarget.addBackwardEdge(p);
+            preEdge = new PreEdge(EdgeType.OUT, preNodeSource, preNodeTarget);
+            preNodeSource.addForwardEdge(preEdge);
+            preNodeTarget.addBackwardEdge(preEdge);
         } else {
             //Edge in to source node
-            PreEdge p = new PreEdge(EdgeType.IN, preNodeTarget, preNodeSource);
-            preNodeSource.addForwardEdge(p);
-            preNodeTarget.addBackwardEdge(p);
+            preEdge = new PreEdge(EdgeType.IN, preNodeTarget, preNodeSource);
+            preNodeSource.addForwardEdge(preEdge);
+            preNodeTarget.addBackwardEdge(preEdge);
         }
+        preEdge.setEdge(edge);
 
         edgeImported++;
+
+        dhns.getDictionary().addEdge(preEdge);         //Dico
     }
 
     public void finishImport() {

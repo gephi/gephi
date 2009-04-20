@@ -110,6 +110,18 @@ public class EdgeImpl implements Edge {
         return b;
     }
 
+    public void setR(float r) {
+        this.r = r;
+    }
+
+    public void setG(float g) {
+        this.g = g;
+    }
+
+    public void setB(float b) {
+        this.b = b;
+    }
+
     public float alpha() {
         return alpha;
     }

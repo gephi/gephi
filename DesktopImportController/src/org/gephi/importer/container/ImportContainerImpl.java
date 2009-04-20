@@ -103,13 +103,19 @@ public class ImportContainerImpl implements ImportContainer {
         edgeMap.put(id, edgeDraft);
     }
 
-    public Collection<NodeDraft> getNodes()
-    {
+    public void checkNodeLabels() {
+        for (NodeDraft n : nodeMap.values()) {
+            if (n.getLabel() == null || n.getLabel().isEmpty()) {
+                n.setLabel(n.getId());
+            }
+        }
+    }
+
+    public Collection<NodeDraft> getNodes() {
         return nodeMap.values();
     }
 
-    public Collection<EdgeDraft> getEdges()
-    {
+    public Collection<EdgeDraft> getEdges() {
         return edgeMap.values();
     }
 

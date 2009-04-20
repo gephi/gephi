@@ -33,6 +33,7 @@ import org.gephi.graph.api.Edge;
 public class PreEdge implements AVLItem, EdgeWrap {
 
     private static AtomicInteger AUTO_ID = new AtomicInteger();
+
     public enum EdgeType {
 
         IN(1),
@@ -48,7 +49,6 @@ public class PreEdge implements AVLItem, EdgeWrap {
     public EdgeType edgeType;
     public int cardinal = 1;
     public int ID = PreEdge.AUTO_ID.incrementAndGet();
-
     private Edge edge;
 
     public PreEdge(EdgeType edgeType, PreNode minNode, PreNode maxNode) {
@@ -62,9 +62,7 @@ public class PreEdge implements AVLItem, EdgeWrap {
             this.minNode = target;
             this.maxNode = source;
             this.edgeType = EdgeType.IN;
-        }
-        else
-        {
+        } else {
             this.minNode = source;
             this.maxNode = target;
             this.edgeType = EdgeType.OUT;
@@ -80,8 +78,7 @@ public class PreEdge implements AVLItem, EdgeWrap {
         return edge;
     }
 
-    public void setEdge(Edge edge)
-    {
+    public void setEdge(Edge edge) {
         this.edge = edge;
     }
 }

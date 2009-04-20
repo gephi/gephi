@@ -118,6 +118,22 @@ public class NodeImpl implements Node {
         return b;
     }
 
+    public void setR(float r) {
+        this.r = r;
+    }
+
+    public void setG(float g) {
+        this.g = g;
+    }
+
+    public void setB(float b) {
+        this.b = b;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     public float alpha() {
         return alpha;
     }
@@ -136,6 +152,10 @@ public class NodeImpl implements Node {
 
     public int getIndex() {
         return preNode.getPre();
+    }
+
+    public String getLabel() {
+        return label;
     }
 
     public PreNode getPreNode() {

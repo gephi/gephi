@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.importer.api;
 
 import java.awt.Color;
@@ -29,6 +28,7 @@ import org.gephi.graph.api.Node;
  * @author Mathieu Bastian
  */
 public class NodeDraft {
+
     private String id;
     private String label;
 
@@ -37,6 +37,7 @@ public class NodeDraft {
     private float size;
     private float x;
     private float y;
+    private float z;
 
     //Result
     private Node node;
@@ -95,5 +96,31 @@ public class NodeDraft {
 
     public Node getNode() {
         return node;
+    }
+
+    public void flushToNode(Node node) {
+        setNode(node);
+        if (color != null) {
+            node.setR(color.getRed() / 255f);
+            node.setG(color.getGreen() / 255f);
+            node.setB(color.getBlue() / 255f);
+        }
+
+        if(label!=null)
+            node.setLabel(label);
+
+        if (x != 0) {
+            node.setX(x);
+        }
+        if (y != 0) {
+            node.setY(y);
+        }
+        if (z != 0) {
+            node.setZ(z);
+        }
+
+        if (size != 0) {
+            node.setSize(size);
+        }
     }
 }

@@ -28,6 +28,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.gephi.data.network.api.FreeModifier;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.config.DHNSConfig;
+import org.gephi.data.network.dictionary.DictionaryImpl;
 import org.gephi.data.network.mode.FreeMode;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.node.treelist.SingleTreeIterator;
@@ -46,6 +47,7 @@ public class Dhns {
     private FreeMode freeMode;
     private SightManagerImpl sightManager;
     private PotatoCooker potatoBuilder;
+    private DictionaryImpl dictionary;
 
     //Locking
     private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
@@ -55,6 +57,7 @@ public class Dhns {
         treeStructure = new TreeStructure();
         sightManager = new SightManagerImpl(this);
         freeMode = new FreeMode(this);
+        dictionary = new DictionaryImpl();
         init(sightManager.getMainSight());
     }
 
@@ -117,6 +120,10 @@ public class Dhns {
 
     public PotatoCooker getPotatoBuilder() {
         return potatoBuilder;
+    }
+
+    public DictionaryImpl getDictionary() {
+        return dictionary;
     }
 
     //Locking

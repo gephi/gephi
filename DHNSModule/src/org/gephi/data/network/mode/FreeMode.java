@@ -131,6 +131,7 @@ public class FreeMode implements Mode, FreeModifier {
         preNode.addSight(sightManager.getMainSight());
 
         addNode(preNode);
+        dhns.getDictionary().addNode(preNode);      //Dico
         dhns.getWriteLock().unlock();
     }
 
@@ -145,7 +146,9 @@ public class FreeMode implements Mode, FreeModifier {
 
     public void deleteNodeBlock(Node node) {
         dhns.getWriteLock().lock();
-        deleteNode(((NodeImpl) node).getPreNode());
+        NodeImpl nodeImpl = (NodeImpl)node;
+        deleteNode(nodeImpl.getPreNode());
+        dhns.getDictionary().removeNode(nodeImpl.getPreNode());      //Dico
         dhns.getWriteLock().unlock();
     }
 
@@ -165,6 +168,7 @@ public class FreeMode implements Mode, FreeModifier {
         preEdge.setEdge(edge);
 
         addEdge(preEdge);
+        dhns.getDictionary().addEdge(preEdge);     //Dico
         dhns.getWriteLock().unlock();
     }
 
@@ -180,6 +184,7 @@ public class FreeMode implements Mode, FreeModifier {
     public void deleteEdgeBlock(Edge edge) {
         dhns.getWriteLock().lock();
         EdgeImpl edgeImpl = (EdgeImpl) edge;
+        //dhns.getDictionary().removeEdge(edge);
         dhns.getWriteLock().unlock();
     }
 

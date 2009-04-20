@@ -29,6 +29,7 @@ import org.gephi.data.network.api.DhnsController;
 import org.gephi.data.network.api.EdgeFactory;
 import org.gephi.data.network.api.FlatImporter;
 import org.gephi.data.network.api.NodeFactory;
+import org.gephi.dynamic.api.DynamicController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.importer.api.CustomImporter;
@@ -50,7 +51,7 @@ import org.openide.util.NbBundle;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class DesktopImportController implements ImportController {
 
@@ -87,7 +88,11 @@ public class DesktopImportController implements ImportController {
 
     private void finishImport(ImportContainerImpl container)
     {
-        DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
+        container.checkNodeLabels();
+        
+        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+        dynamicController.appendData(container);
+        /*DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
         FlatImporter flatImporter = dhnsController.getFlatImport();
 
         flatImporter.initImport();
@@ -117,7 +122,7 @@ public class DesktopImportController implements ImportController {
             flatImporter.addEdge(e);
         }
 
-        flatImporter.finishImport();
+        flatImporter.finishImport();*/
         
     }
 

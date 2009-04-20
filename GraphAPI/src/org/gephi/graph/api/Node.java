@@ -30,6 +30,10 @@ public interface Node extends Renderable {
 
     public int getLevel();
 
+    public String getLabel();
+
+    public void setLabel(String label);
+
     public Iterable<? extends EdgeWrap> getEdges(Sight sight);
 
     public Iterable<? extends EdgeWrap> getEdgesIn(Sight sight);

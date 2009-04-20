@@ -61,6 +61,9 @@ import org.gephi.datastructure.avl.simple.AVLItem;
  */
 public class PreNode implements AVLItem, NodeWrap {
 
+    private static int IDGen=0;
+    private int ID;
+
     public int pre;
     public int size;
     public PreNode parent;
@@ -80,6 +83,7 @@ public class PreNode implements AVLItem, NodeWrap {
     private Potato potato;
 
     public PreNode(int pre, int size, int level, PreNode parent) {
+        this.ID = PreNode.IDGen++;
         this.pre = pre;
         this.size = size;
         this.level = level;
@@ -250,5 +254,10 @@ public class PreNode implements AVLItem, NodeWrap {
 
     public void setPotato(Potato potato) {
         this.potato = potato;
+    }
+
+    public int getID()
+    {
+        return ID;
     }
 }

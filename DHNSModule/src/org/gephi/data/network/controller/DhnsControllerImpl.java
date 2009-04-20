@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.network.controller;
 
 import org.gephi.data.network.*;
+import org.gephi.data.network.api.Dictionary;
 import org.gephi.data.network.api.FlatImporter;
 import org.gephi.data.network.api.FreeModifier;
 import org.gephi.data.network.api.AsyncReader;
@@ -70,5 +71,8 @@ public class DhnsControllerImpl implements DhnsController {
     public FlatImporter getFlatImport() {
         return new FlatImporterImpl(dhns);
     }
-    
+
+    public Dictionary getDictionary() {
+        return dhns.getDictionary();
+    }    
 }
