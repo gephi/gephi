@@ -27,6 +27,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.gephi.importer.api.ImportContainer;
+import org.gephi.importer.api.ImportController;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -71,6 +74,9 @@ public class NavicrawlerServerSocket {
         serverSocket.close();
     }
 
+    public void dataPushed(ImportContainer importContainer) {
+    }
+
     public void error(Exception e) {
     }
 
@@ -91,7 +97,8 @@ public class NavicrawlerServerSocket {
                     }
                 } else {
                     System.out.println("Data received from socket");
-
+                    ImportController importController = Lookup.getDefault().lookup(ImportController.class);
+                    
                 }
 
                 socket.close();

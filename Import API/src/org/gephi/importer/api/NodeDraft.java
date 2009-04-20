@@ -90,6 +90,14 @@ public class NodeDraft {
         this.y = y;
     }
 
+    public float getZ() {
+        return z;
+    }
+
+    public void setZ(float z) {
+        this.z = z;
+    }
+
     public void setNode(Node node) {
         this.node = node;
     }

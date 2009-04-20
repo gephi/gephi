@@ -18,17 +18,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.importer.api;
 
+import java.io.InputStream;
 import org.openide.filesystems.FileObject;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public interface ImportController {
 
     public FileType[] getFileTypes();
+
     public void doImport(FileObject fileObject) throws ImportException;
+
+    public void doDynamicImport(InputStream stream) throws ImportException;
 }
