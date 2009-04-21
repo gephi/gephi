@@ -20,8 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network.potato;
 
-import org.gephi.data.network.node.NodeImpl;
-import org.gephi.data.network.node.PreNode;
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.graph.api.Node;
 
 /**
@@ -39,8 +40,13 @@ public class PotatoRender {
     private float RAYON;
     private double INTER;
 
+    //Buffer
+    //private FloatBuffer triangleBuffer;
+    private List<float[]> triangleBuffer;
+
     public PotatoRender() {
         loadConfig();
+    //triangleBuffer = FloatBuffer.allocate(50000);
     }
 
     private void loadConfig() {
@@ -118,8 +124,10 @@ public class PotatoRender {
         return (INFLUENCE - Fp) / (Fq - Fp);
     }
 
-    public void cookPotato(PotatoImpl potato) {
+    public void renderPotato(PotatoImpl potato) {
         this.potato = potato;
+        triangleBuffer = new ArrayList<float[]>();
+
         for (Node node : potato.getContent()) {
 
             //DESSINE LE DISQUE MINIMAL AUTOUR DU NOEUD
@@ -256,7 +264,7 @@ public class PotatoRender {
                         /* En fonction des poids de chaque sommet on dessine le carré différement*/
                         if (actifs == 4) {
                             /* Les 4 sommets dedans*/
-                            //createSquare().square(LEFTf, BOTTOMf, RIGHTf, BOTTOMf, RIGHTf, TOPf, LEFTf, TOPf);
+                            createSquare(LEFTf, BOTTOMf, RIGHTf, BOTTOMf, RIGHTf, TOPf, LEFTf, TOPf);
                         } else if (actifs == 3) {
                             /* 3 points dedans */
                             /* dessin d'un carré avec une corne en moins  */
@@ -264,80 +272,66 @@ public class PotatoRender {
 
                             if (!bl) {
                                 //Fan
-                                //createTriangle().triangle(p1x, p1y, p2x, p2y, RIGHTf, BOTTOMf);
-                                //createTriangle().triangle(p1x, p1y, RIGHTf, BOTTOMf, RIGHTf, TOPf);
-                                //createTriangle().triangle(p1x, p1y, RIGHTf, TOPf, LEFTf, TOPf);
-
+                                createTriangle(p1x, p1y, p2x, p2y, RIGHTf, BOTTOMf);
+                                createTriangle(p1x, p1y, RIGHTf, BOTTOMf, RIGHTf, TOPf);
+                                createTriangle(p1x, p1y, RIGHTf, TOPf, LEFTf, TOPf);
                             } else if (!br) {
                                 //Fan
-                                //createTriangle().triangle(LEFTf, BOTTOMf, p2x, p2y, p3x, p3y);
-                                //createTriangle().triangle(LEFTf, BOTTOMf, p3x, p3y, RIGHTf, TOPf);
-                                //createTriangle().triangle(LEFTf, BOTTOMf, RIGHTf, TOPf, LEFTf, TOPf);
-
+                                createTriangle(LEFTf, BOTTOMf, p2x, p2y, p3x, p3y);
+                                createTriangle(LEFTf, BOTTOMf, p3x, p3y, RIGHTf, TOPf);
+                                createTriangle(LEFTf, BOTTOMf, RIGHTf, TOPf, LEFTf, TOPf);
                             } else if (!tr) {
                                 //Fan
-                                //createTriangle().triangle(p3x, p3y, p4x, p4y, LEFTf, TOPf);
-                                //createTriangle().triangle(p3x, p3y, LEFTf, TOPf, LEFTf, BOTTOMf);
-                                //createTriangle().triangle(p3x, p3y, LEFTf, BOTTOMf, RIGHTf, BOTTOMf);
-
+                                createTriangle(p3x, p3y, p4x, p4y, LEFTf, TOPf);
+                                createTriangle(p3x, p3y, LEFTf, TOPf, LEFTf, BOTTOMf);
+                                createTriangle(p3x, p3y, LEFTf, BOTTOMf, RIGHTf, BOTTOMf);
                             } else if (!tl) {
                                 //Fan
-                                //createTriangle().triangle(p4x, p4y, p1x, p1y, LEFTf, BOTTOMf);
-                                //createTriangle().triangle(p4x, p4y, LEFTf, BOTTOMf, RIGHTf, BOTTOMf);
-                                //createTriangle().triangle(p4x, p4y, RIGHTf, BOTTOMf, RIGHTf, TOPf);
-
+                                createTriangle(p4x, p4y, p1x, p1y, LEFTf, BOTTOMf);
+                                createTriangle(p4x, p4y, LEFTf, BOTTOMf, RIGHTf, BOTTOMf);
+                                createTriangle(p4x, p4y, RIGHTf, BOTTOMf, RIGHTf, TOPf);
                             }
 
 
                         } else if (actifs == 2) { /* 2 points d'activé*/
                             if (bl == tl) {
                                 if (bl) {
-                                    //createSquare().square(p2x, p2y, p4x, p4y, LEFTf, TOPf, LEFTf, BOTTOMf);
-
+                                    createSquare(p2x, p2y, p4x, p4y, LEFTf, TOPf, LEFTf, BOTTOMf);
                                 } else {
-                                    //createSquare().square(p2x, p2y, RIGHTf, BOTTOMf, RIGHTf, TOPf, p4x, p4y);
-
+                                    createSquare(p2x, p2y, RIGHTf, BOTTOMf, RIGHTf, TOPf, p4x, p4y);
                                 }
                             } else if (bl == br) {
                                 if (bl) {
-                                    //createSquare().square(LEFTf, BOTTOMf, RIGHTf, BOTTOMf, p3x, p3y, p1x, p1y);
-
+                                    createSquare(LEFTf, BOTTOMf, RIGHTf, BOTTOMf, p3x, p3y, p1x, p1y);
                                 } else {
-                                    //createSquare().square(p3x, p3y, RIGHTf, TOPf, LEFTf, TOPf, p1x, p1y);
-
+                                    createSquare(p3x, p3y, RIGHTf, TOPf, LEFTf, TOPf, p1x, p1y);
                                 }
                             } else {
                                 if (bl == tr && !bl) {
                                     //Fan
-                                    //createTriangle().triangle(p1x, p1y, p2x, p2y, RIGHTf, BOTTOMf);
-                                    //createTriangle().triangle(p1x, p1y, RIGHTf, BOTTOMf, p3x, p3y);
-                                    //createTriangle().triangle(p1x, p1y, p3x, p3y, p4x, p4y);
-                                    //createTriangle().triangle(p1x, p1y, p4x, p4y, LEFTf, TOPf);
-
+                                    createTriangle(p1x, p1y, p2x, p2y, RIGHTf, BOTTOMf);
+                                    createTriangle(p1x, p1y, RIGHTf, BOTTOMf, p3x, p3y);
+                                    createTriangle(p1x, p1y, p3x, p3y, p4x, p4y);
+                                    createTriangle(p1x, p1y, p4x, p4y, LEFTf, TOPf);
                                 } else {
                                     //Fan
-                                    //createTriangle().triangle(LEFTf, BOTTOMf, p2x, p2y, p3x, p3y);
-                                    //createTriangle().triangle(LEFTf, BOTTOMf, p3x, p3y, RIGHTf, TOPf);
-                                    //createTriangle().triangle(LEFTf, BOTTOMf, RIGHTf, TOPf, p4x, p4y);
-                                    //createTriangle().triangle(LEFTf, BOTTOMf, p4x, p4y, p1x, p1y);
-
+                                    createTriangle(LEFTf, BOTTOMf, p2x, p2y, p3x, p3y);
+                                    createTriangle(LEFTf, BOTTOMf, p3x, p3y, RIGHTf, TOPf);
+                                    createTriangle(LEFTf, BOTTOMf, RIGHTf, TOPf, p4x, p4y);
+                                    createTriangle(LEFTf, BOTTOMf, p4x, p4y, p1x, p1y);
                                 }
                             }
                         } else if (actifs == 1) {
                             /* juste un sommet dans le blob*/
                             if (bl) {
-                                //createTriangle().triangle(p1x, p1y, LEFTf, BOTTOMf, p2x, p2y);
-
+                                createTriangle(p1x, p1y, LEFTf, BOTTOMf, p2x, p2y);
                             } else if (br) {
-                                //createTriangle().triangle(p2x, p2y, RIGHTf, BOTTOMf, p3x, p3y);
-
+                                createTriangle(p2x, p2y, RIGHTf, BOTTOMf, p3x, p3y);
                             } else if (tr) {
 
-                                //createTriangle().triangle(p3x, p3y, RIGHTf, TOPf, p4x, p4y);
-
+                                createTriangle(p3x, p3y, RIGHTf, TOPf, p4x, p4y);
                             } else if (tl) {
-                                //createTriangle().triangle(p4x, p4y, LEFTf, TOPf, p1x, p1y);
-
+                                createTriangle(p4x, p4y, LEFTf, TOPf, p1x, p1y);
                             }
                         }
                     }
@@ -348,23 +342,26 @@ public class PotatoRender {
                 }
             }
         }
+
+        //System.out.println("Remaining: "+triangleBuffer.remaining());
+        //triangleBuffer.flip();
+        //System.out.println("Triangles : "+triangleBuffer.size()+ " pour "+potato.countContent());
+        potato.setTriangles(triangleBuffer);
     }
 
-    /*public Potato.Triangle createTriangle() {
-        Potato.Triangle t = new Potato.Triangle();
-        potato.triangles.add(t);
-        return t;
+    public void createTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {
+        /*triangleBuffer.put(x1);
+        triangleBuffer.put(y1);
+        triangleBuffer.put(x2);
+        triangleBuffer.put(y2);
+        triangleBuffer.put(x3);
+        triangleBuffer.put(y3);*/
+        triangleBuffer.add(new float[]{x1, y1, x2, y2, x3, y3});
     }
 
-    public Potato.Square createSquare() {
-        Potato.Square s = new Potato.Square();
-        potato.squares.add(s);
-        return s;
+    public void createSquare(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
+        //GL_QUADS => Top Left -> Top Right -> Bottom Right -> Bottom Left
+        triangleBuffer.add(new float[]{x1, y1, x2, y2, x3, y3});
+        triangleBuffer.add(new float[]{x1, y1, x4, y4, x3, y3});
     }
-
-    public Potato.Circle createCircle() {
-        Potato.Circle c = new Potato.Circle();
-        potato.circles.add(c);
-        return c;
-    }*/
 }

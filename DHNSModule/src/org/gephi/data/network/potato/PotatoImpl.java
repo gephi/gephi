@@ -34,18 +34,25 @@ import org.gephi.graph.api.Potato;
  */
 public class PotatoImpl implements Potato {
 
+    //Manager
+    private PotatoManager manager;
     private PreNode node;
     private List<NodeImpl> content;
 
     //Renderable
     private Object3d object3d;
 
-    public PotatoImpl() {
+    //Display
+    private List<float[]> triangles;
+
+    public PotatoImpl(PotatoManager potatoManager) {
         content = new ArrayList<NodeImpl>();
+        this.manager = potatoManager;
     }
 
     public void setNode(PreNode node) {
         this.node = node;
+        node.setPotato(this);
     }
 
     public void addContent(PreNode content) {
@@ -56,17 +63,27 @@ public class PotatoImpl implements Potato {
         return node;
     }
 
-    public void touchPotato() {
+    public void updatePotato() {
+        manager.renderPotato(this);
     }
 
     public Iterable<? extends Node> getContent() {
         return content;
     }
 
-    public int countPotatoes() {
+    public int countContent() {
         return content.size();
     }
 
+    public List<float[]> getTriangles() {
+        return triangles;
+    }
+
+    public void setTriangles(List<float[]> triangles) {
+        this.triangles = triangles;
+    }
+
+    //Renderable
     public float x() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

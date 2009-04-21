@@ -191,6 +191,7 @@ public class CompatibilityEngine extends AbstractEngine {
         if(object3dClasses[CLASS_POTATO].isEnabled())
         {
             //Triangles
+            gl.glColor3f(0.5f,0.5f,0.5f);
             gl.glBegin(GL.GL_TRIANGLES);
             for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_POTATO); itr.hasNext();) {
                 Object3dImpl obj = itr.next();

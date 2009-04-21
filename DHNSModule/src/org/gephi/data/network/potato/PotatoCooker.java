@@ -35,6 +35,7 @@ public class PotatoCooker {
     //Use
     private List<PreNode> contextNodes;
     private TreeStructure treeStructure;
+    private PotatoManager potatoManager;
 
     //Algo
     private PreNode nextContextNode;
@@ -48,8 +49,9 @@ public class PotatoCooker {
     //Result
     private List<PotatoImpl> potatoes;
 
-    public PotatoCooker(Dhns dhns) {
+    public PotatoCooker(Dhns dhns, PotatoManager manager) {
         this.treeStructure = dhns.getTreeStructure();
+        this.potatoManager = manager;
     }
 
     public void cookPotatoes(List<PreNode> enabledNodes) {
@@ -84,7 +86,7 @@ public class PotatoCooker {
 
     //Use ancestor axis techniques
     private void ancestorAxisWalk() {
-        PotatoImpl potato = new PotatoImpl();
+        PotatoImpl potato = new PotatoImpl(potatoManager);
         potato.addContent(pointer);
 
         while (currentContextIndex >= 0 || currentPre > 0) {
@@ -117,7 +119,7 @@ public class PotatoCooker {
             potatoes.add(potato);
 
             //Refresh
-            potato = new PotatoImpl();
+            potato = new PotatoImpl(potatoManager);
         }
     }
 
@@ -125,7 +127,7 @@ public class PotatoCooker {
         //Delete empty
         for (Iterator<PotatoImpl> itr = potatoes.iterator(); itr.hasNext();) {
             PotatoImpl p = itr.next();
-            if (p.countPotatoes() == 0) {
+            if (p.countContent() == 0) {
                 itr.remove();
             }
         }

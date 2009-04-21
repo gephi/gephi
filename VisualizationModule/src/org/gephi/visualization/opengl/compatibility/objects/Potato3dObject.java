@@ -48,6 +48,8 @@ public class Potato3dObject extends Object3dImpl<Potato> {
                 return item.getNumber();
             }
         });
+
+        potato.updatePotato();
     }
 
     @Override
@@ -60,15 +62,22 @@ public class Potato3dObject extends Object3dImpl<Potato> {
         for (Node node : obj.getContent()) {
             Object3dImpl objImpl = (Object3dImpl) node.getObject3d();
             Octant o = objImpl.getOctants()[0];
-            if(o==leaf)
+            if (o == leaf) {
                 return true;
+            }
         }
         return false;
     }
 
     @Override
     public void display(GL gl, GLU glu) {
-       
+        if (obj.getTriangles() != null) {
+            for (float[] triangle : obj.getTriangles()) {
+                gl.glVertex3f(triangle[0], triangle[1],0f);
+                gl.glVertex3f(triangle[2], triangle[3],0f);
+                gl.glVertex3f(triangle[4], triangle[5],0f);
+            }
+        }
     }
 
     @Override
@@ -110,6 +119,6 @@ public class Potato3dObject extends Object3dImpl<Potato> {
             octantsTree.add(o);
         }
 
-         octants = octantsTree.toArray(new Octant[0]);
+        octants = octantsTree.toArray(new Octant[0]);
     }
 }

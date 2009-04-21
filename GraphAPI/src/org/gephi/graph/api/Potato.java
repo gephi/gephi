@@ -25,6 +25,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.graph.api;
 
+import java.util.List;
+
 /**
  *
  * @author Mathieu Bastian
@@ -32,5 +34,7 @@ package org.gephi.graph.api;
 public interface Potato extends Renderable {
 
     public Iterable<? extends Node> getContent();
-    public int countPotatoes();
+    public int countContent();
+    public void updatePotato();
+    public List<float[]> getTriangles();
 }

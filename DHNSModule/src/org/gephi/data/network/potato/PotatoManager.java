@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.data.network.potato;
 
 import java.util.ArrayList;
@@ -35,16 +34,16 @@ import org.gephi.data.network.sight.SightImpl;
 public class PotatoManager {
 
     private PotatoCooker cooker;
+    private PotatoRender render;
     private Dhns dhns;
 
-    public PotatoManager(Dhns dhns)
-    {
+    public PotatoManager(Dhns dhns) {
         this.dhns = dhns;
-        cooker = new PotatoCooker(dhns);
+        render = new PotatoRender();
+        cooker = new PotatoCooker(dhns, this);
     }
 
-    public List<PotatoImpl> cookPotatoes(SightImpl sight)
-    {
+    public List<PotatoImpl> cookPotatoes(SightImpl sight) {
         List<PreNode> enabledNodes = new ArrayList<PreNode>();
         SingleTreeIterator itr = new SingleTreeIterator(dhns.getTreeStructure(), sight);
         for (; itr.hasNext();) {
@@ -56,5 +55,9 @@ public class PotatoManager {
         List<PotatoImpl> result = cooker.getPotatoes();
 
         return result;
+    }
+
+    public void renderPotato(PotatoImpl potato) {
+        render.renderPotato(potato);
     }
 }

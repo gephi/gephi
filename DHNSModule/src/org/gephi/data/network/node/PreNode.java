@@ -256,10 +256,10 @@ public class PreNode implements AVLItem, NodeWrap {
 
     public void touchPotatoes() {
         if (potato != null) {
-            potato.touchPotato();
+            potato.updatePotato();
         } else {
             if (parent.getPotato() != null) {
-                parent.potato.touchPotato();
+                parent.potato.updatePotato();
             }
         }
     }

@@ -76,13 +76,13 @@ public class Dhns {
     private void importFakeGraph() {
         CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure, sightManager.getMainSight());
 
-        importer.importGraph(20, true);
+        importer.importGraph(15, true);
         //importer.shuffleEnable();
         System.out.println("Tree size : " + treeStructure.getTreeSize());
         //treeStructure.showTreeAsTable();
 
         RandomEdgesGenerator reg = new RandomEdgesGenerator(treeStructure);
-        reg.generatPhysicalEdges(20000);
+        reg.generatPhysicalEdges(10);
         freeMode.init();
 
     
