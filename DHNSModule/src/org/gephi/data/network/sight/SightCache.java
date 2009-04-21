@@ -86,6 +86,7 @@ public class SightCache {
     public void reset() {
         orderResetNode.set(true);
         orderResetEdge.set(true);
+        orderResetPotato.set(true);
         doReset();
     }
 

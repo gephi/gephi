@@ -32,4 +32,5 @@ package org.gephi.graph.api;
 public interface Potato extends Renderable {
 
     public Iterable<? extends Node> getContent();
+    public int countPotatoes();
 }

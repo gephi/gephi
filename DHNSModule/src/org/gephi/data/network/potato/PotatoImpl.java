@@ -63,6 +63,10 @@ public class PotatoImpl implements Potato {
         return content;
     }
 
+    public int countPotatoes() {
+        return content.size();
+    }
+
     public float x() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

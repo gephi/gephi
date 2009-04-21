@@ -110,6 +110,6 @@ public class Potato3dObject extends Object3dImpl<Potato> {
             octantsTree.add(o);
         }
 
-        octants = octantsTree.toArray();
+         octants = octantsTree.toArray(new Octant[0]);
     }
 }

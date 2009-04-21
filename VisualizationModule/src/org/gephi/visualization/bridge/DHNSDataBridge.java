@@ -31,6 +31,7 @@ import org.gephi.data.network.api.DhnsController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Object3d;
+import org.gephi.graph.api.Potato;
 import org.gephi.graph.api.Sight;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
@@ -87,6 +88,12 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
             if (vizConfig.isDirectedEdges()) {
                 object3dClasses[AbstractEngine.CLASS_ARROW].setCacheMarker(cacheMarker);
             }
+        }
+
+        Object3dClass potatoClass = object3dClasses[AbstractEngine.CLASS_POTATO];
+        if (potatoClass.isEnabled() && reader.requirePotatoUpdate()) {
+            updatePotatoes();
+            potatoClass.setCacheMarker(cacheMarker);
         }
 
         engine.worldUpdated(cacheMarker);
@@ -147,9 +154,23 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
         }
     }
 
-    public void updatePotatoes()
-    {
+    public void updatePotatoes() {
+        Object3dInitializer potatoInit = engine.getObject3dClasses()[AbstractEngine.CLASS_POTATO].getCurrentObject3dInitializer();
 
+        Iterator<? extends Potato> itr = reader.getPotatoes();
+        for (; itr.hasNext();) {
+            Potato potato = itr.next();
+
+            Object3d obj = potato.getObject3d();
+            if (obj == null) {
+                //Object3d is null, ADD
+                obj = potatoInit.initObject(potato);
+                engine.addObject(AbstractEngine.CLASS_POTATO, (Object3dImpl) obj);
+            } else if (!obj.isValid()) {
+                engine.addObject(AbstractEngine.CLASS_POTATO, (Object3dImpl) obj);
+            }
+            obj.setCacheMarker(cacheMarker);
+        }
     }
 
     public boolean requireUpdate() {

@@ -59,6 +59,7 @@ public class Dhns {
         sightManager = new SightManagerImpl(this);
         freeMode = new FreeMode(this);
         dictionary = new DictionaryImpl();
+        potatoManager = new PotatoManager(this);
         init(sightManager.getMainSight());
     }
 

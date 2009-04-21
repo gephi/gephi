@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.network.potato;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.gephi.data.network.Dhns;
 import org.gephi.data.network.node.PreNode;
@@ -121,6 +122,13 @@ public class PotatoCooker {
     }
 
     private void orderResults() {
+        //Delete empty
+        for (Iterator<PotatoImpl> itr = potatoes.iterator(); itr.hasNext();) {
+            PotatoImpl p = itr.next();
+            if (p.countPotatoes() == 0) {
+                itr.remove();
+            }
+        }
     }
 
     private PreNode nextContextNode() {
