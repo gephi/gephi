@@ -1,6 +1,7 @@
 package org.gephi.datastructure.avl.param;
 
 import java.util.Iterator;
+import org.gephi.datastructure.avl.simple.AVLItem;
 
 /**
  * Special type of AVL tree which possess a {@link AVLItemAccessor}. It allows to configure the indexes returned
@@ -614,5 +615,17 @@ public class ParamAVLTree<Item> implements Iterable<Item> {
 
     public void setAccessor(AVLItemAccessor<Item> accessor) {
         this.accessor = accessor;
+    }
+
+    public Item[] toArray()
+    {
+        Item[] array = (Item[]) new Object[count];
+        ParamAVLIterator<Item> itr = new ParamAVLIterator<Item>(root);
+        for(int i=0;itr.hasNext();i++)
+        {
+            Item item = itr.next();
+            array[i] = item;
+        }
+        return array;
     }
 }

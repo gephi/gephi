@@ -260,6 +260,7 @@ public class Octree implements VizArchitecture {
                         o.removeObject(classID, obj);
                         obj.resetOctant();
                         addObject(classID, obj);
+                        //TODO break the loop somehow
                     }
                 }
 

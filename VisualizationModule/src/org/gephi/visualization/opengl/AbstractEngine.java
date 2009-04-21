@@ -55,6 +55,7 @@ public abstract class AbstractEngine implements Engine,VizArchitecture {
     public static final int CLASS_NODE = 0;
     public static final int CLASS_EDGE = 1;
     public static final int CLASS_ARROW = 2;
+    public static final int CLASS_POTATO = 3;
 
     //Architecture
     protected GraphDrawableImpl graphDrawable;

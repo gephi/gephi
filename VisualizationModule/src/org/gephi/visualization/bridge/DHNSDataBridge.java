@@ -147,6 +147,11 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
         }
     }
 
+    public void updatePotatoes()
+    {
+
+    }
+
     public boolean requireUpdate() {
         //Refresh reader if sight changed
         if (sightChange.getAndSet(false)) {
