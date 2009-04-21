@@ -37,10 +37,10 @@ import org.gephi.visualization.opengl.octree.Octant;
  */
 public class Potato3dObject extends Object3dImpl<Potato> {
 
+    public int modelType;
     private ParamAVLTree<Octant> octantsTree;
 
     public Potato3dObject(Potato potato) {
-        setObj(potato);
 
         octantsTree = new ParamAVLTree<Octant>(new AVLItemAccessor<Octant>() {
 
@@ -71,11 +71,27 @@ public class Potato3dObject extends Object3dImpl<Potato> {
 
     @Override
     public void display(GL gl, GLU glu) {
-        if (obj.getTriangles() != null) {
+
+        //Disks
+        if (mark && obj.getDisks() != null) {
+            gl.glColor3f(obj.r(), obj.g(), obj.b());
+            for (float[] disk : obj.getDisks()) {
+                gl.glPushMatrix();
+                float size = disk[2];
+                gl.glTranslatef(disk[0], disk[1], 0f);
+                gl.glScalef(size, size, size);
+                gl.glCallList(modelType);
+                gl.glPopMatrix();
+            }
+        }
+
+        //Triangles
+        if (!mark && obj.getTriangles() != null) {
+            gl.glColor3f(obj.r(), obj.g(), obj.b());
             for (float[] triangle : obj.getTriangles()) {
-                gl.glVertex3f(triangle[0], triangle[1],0f);
-                gl.glVertex3f(triangle[2], triangle[3],0f);
-                gl.glVertex3f(triangle[4], triangle[5],0f);
+                gl.glVertex3f(triangle[0], triangle[1], 0f);
+                gl.glVertex3f(triangle[2], triangle[3], 0f);
+                gl.glVertex3f(triangle[4], triangle[5], 0f);
             }
         }
     }

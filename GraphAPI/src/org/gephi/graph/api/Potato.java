@@ -37,4 +37,5 @@ public interface Potato extends Renderable {
     public int countContent();
     public void updatePotato();
     public List<float[]> getTriangles();
+    public List<float[]> getDisks();
 }

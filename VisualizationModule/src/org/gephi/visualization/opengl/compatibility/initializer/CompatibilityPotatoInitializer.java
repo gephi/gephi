@@ -36,10 +36,14 @@ import org.gephi.visualization.opengl.compatibility.objects.Potato3dObject;
  */
 public class CompatibilityPotatoInitializer implements CompatibilityObject3dInitializer<Potato> {
 
+    public int DISK_LOW;
+    public int DISK_HIGH;
+
     public Object3dImpl initObject(Renderable n) {
         Potato potato = (Potato)n;
 
         Potato3dObject obj = new Potato3dObject(potato);
+        obj.modelType = DISK_HIGH;
         obj.setObj(potato);
 
         return obj;
@@ -50,7 +54,26 @@ public class CompatibilityPotatoInitializer implements CompatibilityObject3dInit
     }
 
     public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr) {
-        return ptr;
+
+        //Low res disk
+        DISK_LOW = ptr + 1;
+        gl.glNewList(DISK_LOW, GL.GL_COMPILE);
+        gl.glDisable(GL.GL_LIGHTING);
+        glu.gluDisk(quadric, 0.0, 1.0, 8, 1);
+        gl.glEnable(GL.GL_LIGHTING);
+        gl.glEndList();
+        //End
+
+        //High res disk
+        DISK_HIGH = DISK_LOW + 1;
+        gl.glNewList(DISK_HIGH, GL.GL_COMPILE);
+        gl.glDisable(GL.GL_LIGHTING);
+        glu.gluDisk(quadric, 0.0, 1.0, 32, 2);
+        gl.glEnable(GL.GL_LIGHTING);
+        gl.glEndList();
+        //End
+
+        return DISK_HIGH;
     }
 
     public void initFromOpenGLThread() {

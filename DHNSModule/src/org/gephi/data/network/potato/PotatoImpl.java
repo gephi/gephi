@@ -44,6 +44,7 @@ public class PotatoImpl implements Potato {
 
     //Display
     private List<float[]> triangles;
+    private List<float[]> disks;
 
     public PotatoImpl(PotatoManager potatoManager) {
         content = new ArrayList<NodeImpl>();
@@ -79,8 +80,16 @@ public class PotatoImpl implements Potato {
         return triangles;
     }
 
+    public List<float[]> getDisks() {
+        return disks;
+    }
+
     public void setTriangles(List<float[]> triangles) {
         this.triangles = triangles;
+    }
+
+    public void setDisks(List<float[]> disks) {
+        this.disks = disks;
     }
 
     //Renderable
@@ -121,15 +130,15 @@ public class PotatoImpl implements Potato {
     }
 
     public float r() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return node.getNode().r();
     }
 
     public float g() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return node.getNode().g();
     }
 
     public float b() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return node.getNode().b();
     }
 
     public void setR(float r) {

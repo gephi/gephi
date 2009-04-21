@@ -43,6 +43,7 @@ public class PotatoRender {
     //Buffer
     //private FloatBuffer triangleBuffer;
     private List<float[]> triangleBuffer;
+    private List<float[]> disksBuffer;
 
     public PotatoRender() {
         loadConfig();
@@ -127,12 +128,12 @@ public class PotatoRender {
     public void renderPotato(PotatoImpl potato) {
         this.potato = potato;
         triangleBuffer = new ArrayList<float[]>();
+        disksBuffer = new ArrayList<float[]>();
 
         for (Node node : potato.getContent()) {
 
             //DESSINE LE DISQUE MINIMAL AUTOUR DU NOEUD
-            //createCircle().circle(node.x(), node.y(), RAYON);
-
+            createCircle(node.x(), node.y(), RAYON);
 
             //DESSINE LA ZONE D'INFLUENCE AUTOUR DU NOEUD
             for (int cote = 0; cote < 4; cote++) {
@@ -347,6 +348,7 @@ public class PotatoRender {
         //triangleBuffer.flip();
         //System.out.println("Triangles : "+triangleBuffer.size()+ " pour "+potato.countContent());
         potato.setTriangles(triangleBuffer);
+        potato.setDisks(disksBuffer);
     }
 
     public void createTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {
@@ -363,5 +365,9 @@ public class PotatoRender {
         //GL_QUADS => Top Left -> Top Right -> Bottom Right -> Bottom Left
         triangleBuffer.add(new float[]{x1, y1, x2, y2, x3, y3});
         triangleBuffer.add(new float[]{x1, y1, x4, y4, x3, y3});
+    }
+
+    public void createCircle(float x, float y, float radius) {
+        disksBuffer.add(new float[] {x, y, radius});
     }
 }

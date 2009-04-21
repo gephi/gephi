@@ -84,7 +84,7 @@ public class CompatibilityEngine extends AbstractEngine {
     public void worldUpdated(int cacheMarker) {
         octree.setCacheMarker(cacheMarker);
         for (Object3dClass objClass : object3dClasses) {
-            if (objClass.getCacheMarker()==cacheMarker) {
+            if (objClass.getCacheMarker() == cacheMarker) {
                 octree.cleanDeletedObjects(objClass.getClassId());
             }
         }
@@ -153,7 +153,7 @@ public class CompatibilityEngine extends AbstractEngine {
         //Node
         if (object3dClasses[CLASS_NODE].isEnabled()) {
             if (vizConfig.getDisplayConfig() == DisplayConfig.DISPLAY_ALPHA) {
-                 //Selected nodes are rendered with 1f alpha, half otherwise
+                //Selected nodes are rendered with 1f alpha, half otherwise
                 for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_NODE); itr.hasNext();) {
                     Object3dImpl obj = itr.next();
                     if (obj.markTime != startTime) {
@@ -188,19 +188,30 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
         //Potatoes
-        if(object3dClasses[CLASS_POTATO].isEnabled())
-        {
+        if (object3dClasses[CLASS_POTATO].isEnabled()) {
+            //gl.glDisable(GL.GL_LIGHTING);
+
             //Triangles
-            gl.glColor3f(0.5f,0.5f,0.5f);
             gl.glBegin(GL.GL_TRIANGLES);
+            for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_POTATO); itr.hasNext();) {
+                Object3dImpl obj = itr.next();
+                if (!obj.mark) {
+                    obj.display(gl, glu);
+                    obj.mark = true;
+                }
+            }
+            gl.glEnd();
+
+            //Solid disk
             for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_POTATO); itr.hasNext();) {
                 Object3dImpl obj = itr.next();
                 if (obj.markTime != startTime) {
                     obj.display(gl, glu);
                     obj.markTime = startTime;
+                    obj.mark = false;
                 }
             }
-            gl.glEnd();
+            //gl.glEnable(GL.GL_LIGHTING);
         }
 
         octree.displayOctree(gl);
@@ -263,45 +274,45 @@ public class CompatibilityEngine extends AbstractEngine {
     gl.glVertex2f(x1 + t2sina1, y1 - t2cosa1+20);
     gl.glEnd();*/
 
-        /*DhnsController.getInstance().updatePotatoes();
+    /*DhnsController.getInstance().updatePotatoes();
 
-        gl.glColor3f(0.2f,0.2f,0.2f);
-        PotatoBuilder potatoBuilder = DhnsController.getInstance().getPotatoBuilder();
-        for(Potato p : potatoBuilder.getPotatoes())
-        {
-            gl.glBegin(GL.GL_TRIANGLES);
-            for(Potato.Triangle triangles : p.getTriangles())
-            {
-                float[] array = triangles.array;
-                gl.glVertex3f(array[0], array[1],0f);
-                gl.glVertex3f(array[2], array[3],0f);
-                gl.glVertex3f(array[4], array[5],0f);
-            }
-            gl.glEnd();
+    gl.glColor3f(0.2f,0.2f,0.2f);
+    PotatoBuilder potatoBuilder = DhnsController.getInstance().getPotatoBuilder();
+    for(Potato p : potatoBuilder.getPotatoes())
+    {
+    gl.glBegin(GL.GL_TRIANGLES);
+    for(Potato.Triangle triangles : p.getTriangles())
+    {
+    float[] array = triangles.array;
+    gl.glVertex3f(array[0], array[1],0f);
+    gl.glVertex3f(array[2], array[3],0f);
+    gl.glVertex3f(array[4], array[5],0f);
+    }
+    gl.glEnd();
 
-            gl.glBegin(GL.GL_QUADS);
-            for(Potato.Square squares : p.getSquares())
-            {
-                float[] array = squares.array;
+    gl.glBegin(GL.GL_QUADS);
+    for(Potato.Square squares : p.getSquares())
+    {
+    float[] array = squares.array;
 
-                gl.glVertex2f(array[0], array[1]);
-                gl.glVertex2f(array[2], array[3]);
-                gl.glVertex2f(array[4], array[5]);
-                gl.glVertex2f(array[6], array[7]);
-            }
-            gl.glEnd();
+    gl.glVertex2f(array[0], array[1]);
+    gl.glVertex2f(array[2], array[3]);
+    gl.glVertex2f(array[4], array[5]);
+    gl.glVertex2f(array[6], array[7]);
+    }
+    gl.glEnd();
 
-            for(Potato.Circle circle : p.getCircles())
-            {
-                gl.glPushMatrix();
-				gl.glTranslatef(circle.x,circle.y,0f);
-				GLUquadric quadric = glu.gluNewQuadric();
-				glu.gluDisk(quadric,0f, circle.rayon, 20, 20);
-				glu.gluQuadricDrawStyle(quadric, GLU.GLU_FILL);
-				glu.gluDeleteQuadric(quadric);
-                gl.glPopMatrix();
-            }
-        }*/
+    for(Potato.Circle circle : p.getCircles())
+    {
+    gl.glPushMatrix();
+    gl.glTranslatef(circle.x,circle.y,0f);
+    GLUquadric quadric = glu.gluNewQuadric();
+    glu.gluDisk(quadric,0f, circle.rayon, 20, 20);
+    glu.gluQuadricDrawStyle(quadric, GLU.GLU_FILL);
+    glu.gluDeleteQuadric(quadric);
+    gl.glPopMatrix();
+    }
+    }*/
     }
 
     @Override
@@ -455,6 +466,8 @@ public class CompatibilityEngine extends AbstractEngine {
             int newPtr = cis.initDisplayLists(gl, glu, quadric, ptr);
             ptr = newPtr;
         }
+
+        object3dClasses[CLASS_POTATO].getCurrentObject3dInitializer().initDisplayLists(gl, glu, quadric, ptr);
 
         //Fin
 
