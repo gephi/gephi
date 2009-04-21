@@ -123,6 +123,18 @@ public class Octant implements AVLItem {
 
     }
 
+    public void clear(int classID)
+    {
+        ParamAVLTree<Object3dImpl> tree = getTree(classID);
+        int count = tree.getCount();
+        tree.clear();
+        objectsCount-=count;
+         if (objectsCount == 0) {
+            //Remove leaf
+            octree.removeLeaf(this);
+        }
+    }
+
     public void subdivide() {
         float quantum = size / 4;
         float newSize = size / 2;

@@ -105,9 +105,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
                 //Object3d is null, ADD
                 obj = nodeInit.initObject(node);
                 engine.addObject(AbstractEngine.CLASS_NODE, (Object3dImpl) obj);
-            }
-            else if(!obj.isValid())
-            {
+            } else if (!obj.isValid()) {
                 engine.addObject(AbstractEngine.CLASS_NODE, (Object3dImpl) obj);
             }
             obj.setCacheMarker(cacheMarker);
@@ -135,14 +133,12 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
                     Object3dImpl arrowObj = arrowInit.initObject(edge);
                     engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);
-                    ((Edge3dObject)obj).setArrow(arrowObj);
+                    ((Edge3dObject) obj).setArrow(arrowObj);
                 }
-            }
-            else if(!obj.isValid())
-            {
+            } else if (!obj.isValid()) {
                 engine.addObject(AbstractEngine.CLASS_EDGE, (Object3dImpl) obj);
                 if (vizConfig.isDirectedEdges()) {
-                    Object3dImpl arrowObj = ((Edge3dObject)obj).getArrow();
+                    Object3dImpl arrowObj = ((Edge3dObject) obj).getArrow();
                     engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);
                 }
@@ -158,6 +154,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
             if (selectedSight != null) {
                 //cacheMarker = 0;
                 reader = controller.getAsyncReader(selectedSight);
+                resetClasses();
             }
         }
 
@@ -169,5 +166,13 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
 
     public void stateChanged(ChangeEvent e) {
         sightChange.set(true);
+    }
+
+    private void resetClasses() {
+        for (Object3dClass objClass : engine.getObject3dClasses()) {
+            if (objClass.isEnabled()) {
+                engine.resetObjecClass(objClass);
+            }
+        }
     }
 }

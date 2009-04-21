@@ -314,6 +314,11 @@ public class CompatibilityEngine extends AbstractEngine {
     }
 
     @Override
+    public void resetObjecClass(Object3dClass object3dClass) {
+        octree.resetObjectClass(object3dClass.getClassId());
+    }
+
+    @Override
     public void mouseClick() {
         Object3dImpl[] objArray = selectedObjects.toArray(new Object3dImpl[0]);
         eventBridge.mouseClick(objArray);

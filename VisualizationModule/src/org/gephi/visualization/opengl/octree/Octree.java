@@ -235,6 +235,22 @@ public class Octree implements VizArchitecture {
         }
     }
 
+    public void resetObjectClass(int classID)
+    {
+        for (Octant o : leaves) {
+            ParamAVLTree<Object3dImpl> tree = o.getTree(classID);
+
+            //Reset octants in objects
+            for (cleanObjectsIterator.setNode(tree); cleanObjectsIterator.hasNext();) {
+                Object3dImpl obj = cleanObjectsIterator.next();
+                obj.resetOctant();
+            }
+
+            //Empty the tree
+            o.clear(classID);
+        }
+    }
+
     public void updateObjectsPosition(int classID) {
         for (Octant o : leaves) {
             if (o.isRequiringUpdatePosition()) {
