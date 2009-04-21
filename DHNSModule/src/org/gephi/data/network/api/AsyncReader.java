@@ -23,6 +23,7 @@ package org.gephi.data.network.api;
 import org.gephi.graph.api.NodeWrap;
 import org.gephi.graph.api.EdgeWrap;
 import java.util.Iterator;
+import org.gephi.graph.api.Potato;
 
 /**
  *
@@ -34,9 +35,13 @@ public interface AsyncReader {
 
     public Iterator<? extends EdgeWrap> getEdges();
 
+    public Iterator<? extends Potato> getPotatoes();
+
     public boolean requireUpdate();
 
     public boolean requireNodeUpdate();
 
     public boolean requireEdgeUpdate();
+
+    public boolean requirePotatoUpdate();
 }

@@ -42,6 +42,7 @@ import org.gephi.data.network.utils.CachedIterator;
 import org.gephi.data.network.edge.iterators.EdgesOutIterator;
 import org.gephi.data.network.edge.iterators.HierarchyEdgesIterator;
 import org.gephi.data.network.node.treelist.SightTreeIterator;
+import org.gephi.data.network.potato.PotatoImpl;
 
 /**
  *
@@ -56,6 +57,7 @@ public class SightCache {
     //States
     private AtomicBoolean orderResetNode = new AtomicBoolean();
     private AtomicBoolean orderResetEdge = new AtomicBoolean();
+    private AtomicBoolean orderResetPotato = new AtomicBoolean();
 
     //Cache
     private AtomicReference<SightCacheContent> cache;
@@ -73,7 +75,7 @@ public class SightCache {
 
         //Executors
         resetExecutor = Executors.newSingleThreadExecutor();
-        tasksExecutor = Executors.newFixedThreadPool(2);
+        tasksExecutor = Executors.newFixedThreadPool(3);
         completionService = new ExecutorCompletionService(tasksExecutor);
     }
 
@@ -103,6 +105,11 @@ public class SightCache {
                 if (orderResetEdge.getAndSet(false)) {
                     tasks++;
                     completionService.submit(new resetEdgesCallable());
+                }
+
+                if (orderResetPotato.getAndSet(false)) {
+                    tasks++;
+                    completionService.submit(new resetPotaotesCallable());
                 }
 
                 //New cacheContent
@@ -145,9 +152,9 @@ public class SightCache {
             for (; cacheIterator.hasNext(); cacheIterator.next()) {
             }      //Write cache
 
-             System.out.println("reset Nodes call: "+nodeCache.size());
+            System.out.println("reset Nodes call: " + nodeCache.size());
             dhns.getReadLock().unlock();
-            return new SightCacheContent(nodeCache, null);
+            return new SightCacheContent(nodeCache, null, null);
         }
     }
 
@@ -168,9 +175,23 @@ public class SightCache {
             CachedIterator<DhnsEdge> cacheIterator = new CachedIterator<DhnsEdge>(edgesIterator, edgeCache);
             for (; cacheIterator.hasNext(); cacheIterator.next()) {
             }
-            System.out.println("reset Edges call: "+edgeCache.size());
+            System.out.println("reset Edges call: " + edgeCache.size());
             dhns.getReadLock().unlock();
-            return new SightCacheContent(null, edgeCache);
+            return new SightCacheContent(null, edgeCache, null);
+        }
+    }
+
+    private class resetPotaotesCallable implements Callable<SightCacheContent> {
+
+        public SightCacheContent call() throws Exception {
+            List<PotatoImpl> potatoCache;
+
+            dhns.getReadLock().lock();
+
+            potatoCache = dhns.getPotatoManager().cookPotatoes(sight);
+            System.out.println("reset Potaotes call: " + potatoCache.size());
+            dhns.getReadLock().unlock();
+            return new SightCacheContent(null, null, potatoCache);
         }
     }
 }

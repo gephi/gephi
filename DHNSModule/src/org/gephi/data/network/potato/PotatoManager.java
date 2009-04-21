@@ -18,44 +18,43 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.gephi.data.network.potato;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.gephi.data.network.Dhns;
 import org.gephi.data.network.node.PreNode;
+import org.gephi.data.network.node.treelist.SingleTreeIterator;
+import org.gephi.data.network.sight.SightImpl;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class Potato {
+public class PotatoManager {
 
-    private PreNode node;
-    private List<PreNode> content;
+    private PotatoCooker cooker;
+    private Dhns dhns;
 
-    //Display
-
-    public Potato() {
-        content = new ArrayList<PreNode>();
-    }
-
-    public void setNode(PreNode node) {
-        this.node = node;
-    }
-
-    public void addContent(PreNode content) {
-        this.content.add(content);
-    }
-
-    public PreNode getNode()
+    public PotatoManager(Dhns dhns)
     {
-        return node;
+        this.dhns = dhns;
+        cooker = new PotatoCooker(dhns);
     }
 
-    public List<PreNode> getContent()
+    public List<PotatoImpl> cookPotatoes(SightImpl sight)
     {
-        return content;
-    }
+        List<PreNode> enabledNodes = new ArrayList<PreNode>();
+        SingleTreeIterator itr = new SingleTreeIterator(dhns.getTreeStructure(), sight);
+        for (; itr.hasNext();) {
+            PreNode enabledNode = itr.next();
+            enabledNodes.add(enabledNode);
+        }
 
-   
+        cooker.cookPotatoes(enabledNodes);
+        List<PotatoImpl> result = cooker.getPotatoes();
+
+        return result;
+    }
 }

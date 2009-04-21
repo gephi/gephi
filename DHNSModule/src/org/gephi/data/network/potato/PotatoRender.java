@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network.potato;
 
+import org.gephi.data.network.node.NodeImpl;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.graph.api.Node;
 
@@ -30,7 +31,7 @@ import org.gephi.graph.api.Node;
  */
 public class PotatoRender {
 
-    private Potato potato;
+    private PotatoImpl potato;
     //Config
     private float RAYON_INFLUENCE_MAX;
     private int NB_SUBDIVISIONS;
@@ -102,8 +103,7 @@ public class PotatoRender {
             val = fonctionPotentielle(distanceSphereOrigine);
         }
 
-        for (PreNode pn : potato.getContent()) {
-            Node node2 = pn.getNode();
+        for (Node node2 : potato.getContent()) {
             if (node != node2) {
                 distanceSphere = equationSphere(node2, posx, posy);
                 val += fonctionPotentielle(distanceSphere);
@@ -118,10 +118,9 @@ public class PotatoRender {
         return (INFLUENCE - Fp) / (Fq - Fp);
     }
 
-    public void cookPotato(Potato potato) {
+    public void cookPotato(PotatoImpl potato) {
         this.potato = potato;
-        for (PreNode pn : potato.getContent()) {
-            Node node = pn.getNode();
+        for (Node node : potato.getContent()) {
 
             //DESSINE LE DISQUE MINIMAL AUTOUR DU NOEUD
             //createCircle().circle(node.x(), node.y(), RAYON);

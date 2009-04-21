@@ -24,6 +24,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
+import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeWrap;
 import org.gephi.graph.api.Potato;
 import org.gephi.visualization.api.Object3dImpl;
@@ -56,8 +57,8 @@ public class Potato3dObject extends Object3dImpl<Potato> {
 
     @Override
     public boolean isInOctreeLeaf(Octant leaf) {
-        for (NodeWrap node : obj.getNodes()) {
-            Object3dImpl objImpl = (Object3dImpl) node.getNode().getObject3d();
+        for (Node node : obj.getContent()) {
+            Object3dImpl objImpl = (Object3dImpl) node.getObject3d();
             Octant o = objImpl.getOctants()[0];
             if(o==leaf)
                 return true;
@@ -103,8 +104,8 @@ public class Potato3dObject extends Object3dImpl<Potato> {
         octantsTree.clear();
 
         //Compute
-        for (NodeWrap node : obj.getNodes()) {
-            Object3dImpl objImpl = (Object3dImpl) node.getNode().getObject3d();
+        for (Node node : obj.getContent()) {
+            Object3dImpl objImpl = (Object3dImpl) node.getObject3d();
             Octant o = objImpl.getOctants()[0];
             octantsTree.add(o);
         }

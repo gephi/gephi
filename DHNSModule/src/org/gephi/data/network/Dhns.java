@@ -32,8 +32,9 @@ import org.gephi.data.network.dictionary.DictionaryImpl;
 import org.gephi.data.network.mode.FreeMode;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.node.treelist.SingleTreeIterator;
-import org.gephi.data.network.potato.Potato;
+import org.gephi.data.network.potato.PotatoImpl;
 import org.gephi.data.network.potato.PotatoCooker;
+import org.gephi.data.network.potato.PotatoManager;
 import org.gephi.data.network.potato.PotatoRender;
 import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.sight.SightManagerImpl;
@@ -46,7 +47,7 @@ public class Dhns {
     private TreeStructure treeStructure;
     private FreeMode freeMode;
     private SightManagerImpl sightManager;
-    private PotatoCooker potatoBuilder;
+    private PotatoManager potatoManager;
     private DictionaryImpl dictionary;
 
     //Locking
@@ -62,7 +63,7 @@ public class Dhns {
     }
 
     public void init(SightImpl sight) {
-        //importFakeGraph();
+        importFakeGraph();
         //treeStructure.showTreeAsTable();
     }
 
@@ -83,23 +84,7 @@ public class Dhns {
         reg.generatPhysicalEdges(20000);
         freeMode.init();
 
-    //updatePotatoes();
-    }
-
-    public void updatePotatoes() {
-        potatoBuilder = new PotatoCooker(this);
-        List<PreNode> enabledNodes = new ArrayList<PreNode>();
-        SingleTreeIterator itr = new SingleTreeIterator(treeStructure, sightManager.getMainSight());
-        for (; itr.hasNext();) {
-            PreNode enabledNode = itr.next();
-            enabledNodes.add(enabledNode);
-            System.out.println("Enabled : " + enabledNode);
-        }
-        potatoBuilder.cookPotatoes(enabledNodes);
-        PotatoRender render = new PotatoRender();
-        for (Potato p : potatoBuilder.getPotatoes()) {
-            render.cookPotato(p);
-        }
+    
     }
 
     public TreeStructure getTreeStructure() {
@@ -118,8 +103,8 @@ public class Dhns {
         return freeMode;
     }
 
-    public PotatoCooker getPotatoBuilder() {
-        return potatoBuilder;
+    public PotatoManager getPotatoManager() {
+        return potatoManager;
     }
 
     public DictionaryImpl getDictionary() {

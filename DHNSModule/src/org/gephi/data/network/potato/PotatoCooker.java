@@ -27,8 +27,7 @@ import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.tree.TreeStructure;
 
 /**
- *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class PotatoCooker {
 
@@ -46,20 +45,31 @@ public class PotatoCooker {
     private PreNode pointer;
 
     //Result
-    private List<Potato> potatoes;
+    private List<PotatoImpl> potatoes;
 
     public PotatoCooker(Dhns dhns) {
         this.treeStructure = dhns.getTreeStructure();
-        this.potatoes = new ArrayList<Potato>();
     }
 
     public void cookPotatoes(List<PreNode> enabledNodes) {
-        potatoes.clear();
+        potatoes = new ArrayList<PotatoImpl>();
 
         //Condition
         if (!enabledNodes.isEmpty()) {
             //Init
-        contextNodes = enabledNodes;
+            contextNodes = enabledNodes;
+            initAncestorAxisWalk();
+
+            //Fill potatoes
+            ancestorAxisWalk();
+
+            //Result
+            orderResults();
+        }
+    }
+
+    private void initAncestorAxisWalk() {
+
         currentContextIndex = contextNodes.size() - 1;
         pointer = nextContextNode();
         currentPre = pointer.parent.pre;
@@ -69,17 +79,11 @@ public class PotatoCooker {
             nextPre = nextContextNode.pre;
             nextPost = nextContextNode.post;
         }
-
-        //Fill potatoes
-        cook();
-
-        //Result
-        orderResults();
-        }
     }
 
-    private void cook() {
-        Potato potato = new Potato();
+    //Use ancestor axis techniques
+    private void ancestorAxisWalk() {
+        PotatoImpl potato = new PotatoImpl();
         potato.addContent(pointer);
 
         while (currentContextIndex >= 0 || currentPre > 0) {
@@ -112,13 +116,11 @@ public class PotatoCooker {
             potatoes.add(potato);
 
             //Refresh
-            potato = new Potato();
+            potato = new PotatoImpl();
         }
     }
 
-    private void orderResults()
-    {
-
+    private void orderResults() {
     }
 
     private PreNode nextContextNode() {
@@ -133,8 +135,7 @@ public class PotatoCooker {
         return false;
     }
 
-    public List<Potato> getPotatoes()
-    {
+    public List<PotatoImpl> getPotatoes() {
         return potatoes;
     }
 }

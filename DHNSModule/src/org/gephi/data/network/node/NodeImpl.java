@@ -91,6 +91,7 @@ public class NodeImpl implements Node {
         if(obj!=null)
         {
             obj.updatePositionFlag();
+            preNode.touchPotatoes();
         }
     }
 

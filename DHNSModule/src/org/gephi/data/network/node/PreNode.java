@@ -33,7 +33,7 @@ import org.gephi.data.network.edge.VirtualEdge;
 import org.gephi.data.network.mode.EdgeProcessing;
 import org.gephi.data.network.node.treelist.PreNodeTreeList;
 import org.gephi.data.network.node.treelist.PreNodeTreeList.AVLNode;
-import org.gephi.data.network.potato.Potato;
+import org.gephi.data.network.potato.PotatoImpl;
 import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.utils.avl.DhnsEdgeSightTree;
 import org.gephi.data.network.utils.avl.SightAVLTree.SightAVLIterator;
@@ -61,9 +61,8 @@ import org.gephi.datastructure.avl.simple.AVLItem;
  */
 public class PreNode implements AVLItem, NodeWrap {
 
-    private static int IDGen=0;
+    private static int IDGen = 0;
     private int ID;
-
     public int pre;
     public int size;
     public PreNode parent;
@@ -77,10 +76,9 @@ public class PreNode implements AVLItem, NodeWrap {
     public VirtualEdge lastEdge;
     private DhnsEdgeSightTree dhnsEdgesTreesIN;
     private DhnsEdgeSightTree dhnsEdgesTreesOUT;
-
     private NodeImpl node;
     private SightAVLTree sightTree;
-    private Potato potato;
+    private PotatoImpl potato;
 
     public PreNode(int pre, int size, int level, PreNode parent) {
         this.ID = PreNode.IDGen++;
@@ -248,16 +246,25 @@ public class PreNode implements AVLItem, NodeWrap {
         node.setPreNode(this);
     }
 
-    public Potato getPotato() {
+    public PotatoImpl getPotato() {
         return potato;
     }
 
-    public void setPotato(Potato potato) {
+    public void setPotato(PotatoImpl potato) {
         this.potato = potato;
     }
 
-    public int getID()
-    {
+    public void touchPotatoes() {
+        if (potato != null) {
+            potato.touchPotato();
+        } else {
+            if (parent.getPotato() != null) {
+                parent.potato.touchPotato();
+            }
+        }
+    }
+
+    public int getID() {
         return ID;
     }
 }

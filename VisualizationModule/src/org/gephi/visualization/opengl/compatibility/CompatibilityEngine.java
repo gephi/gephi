@@ -63,7 +63,7 @@ public class CompatibilityEngine extends AbstractEngine {
         vizEventManager = VizController.getInstance().getVizEventManager();
 
         //Init
-        octree = new Octree(vizConfig.getOctreeDepth(), vizConfig.getOctreeWidth(), 3);
+        octree = new Octree(vizConfig.getOctreeDepth(), vizConfig.getOctreeWidth(), object3dClasses.length);
         octree.initArchitecture();
     }
 
@@ -178,6 +178,21 @@ public class CompatibilityEngine extends AbstractEngine {
         if (object3dClasses[CLASS_ARROW].isEnabled()) {
             gl.glBegin(GL.GL_TRIANGLES);
             for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_ARROW); itr.hasNext();) {
+                Object3dImpl obj = itr.next();
+                if (obj.markTime != startTime) {
+                    obj.display(gl, glu);
+                    obj.markTime = startTime;
+                }
+            }
+            gl.glEnd();
+        }
+
+        //Potatoes
+        if(object3dClasses[CLASS_POTATO].isEnabled())
+        {
+            //Triangles
+            gl.glBegin(GL.GL_TRIANGLES);
+            for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_POTATO); itr.hasNext();) {
                 Object3dImpl obj = itr.next();
                 if (obj.markTime != startTime) {
                     obj.display(gl, glu);
@@ -474,6 +489,7 @@ public class CompatibilityEngine extends AbstractEngine {
         object3dClasses[0].setEnabled(true);
         object3dClasses[1].setEnabled(true);
         object3dClasses[2].setEnabled(true);
+        object3dClasses[3].setEnabled(true);
 
         //LOD
         ArrayList<Object3dClass> classList = new ArrayList<Object3dClass>();

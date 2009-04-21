@@ -31,5 +31,5 @@ package org.gephi.graph.api;
  */
 public interface Potato extends Renderable {
 
-    public Iterable<? extends NodeWrap> getNodes();
+    public Iterable<? extends Node> getContent();
 }

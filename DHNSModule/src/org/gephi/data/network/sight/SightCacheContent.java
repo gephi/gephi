@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.gephi.data.network.edge.DhnsEdge;
 import org.gephi.data.network.node.PreNode;
+import org.gephi.data.network.potato.PotatoImpl;
 
 /**
  *
@@ -33,24 +34,30 @@ public class SightCacheContent {
 
     List<PreNode> nodeCache;
     List<DhnsEdge> edgeCache;
+    List<PotatoImpl> potatoCache;
     int nodeVersion = 0;
     int edgeVersion = 0;
+    int potatoVersion = 0;
 
     public SightCacheContent() {
         this.nodeCache = new ArrayList<PreNode>();
         this.edgeCache = new ArrayList<DhnsEdge>();
+        this.potatoCache = new ArrayList<PotatoImpl>();
     }
 
     public SightCacheContent(SightCacheContent instance) {
         this.nodeCache = instance.nodeCache;
         this.edgeCache = instance.edgeCache;
+        this.potatoCache = instance.potatoCache;
         this.nodeVersion = instance.nodeVersion;
         this.edgeVersion = instance.edgeVersion;
+        this.potatoVersion = instance.potatoVersion;
     }
 
-    public SightCacheContent(List<PreNode> nodeCache, List<DhnsEdge> edgeCache) {
-        this.nodeCache = nodeCache;
-        this.edgeCache = edgeCache;
+    public SightCacheContent(List<PreNode> nodes, List<DhnsEdge> edges, List<PotatoImpl> potatoes) {
+        this.nodeCache = nodes;
+        this.edgeCache = edges;
+        this.potatoCache = potatoes;
     }
 
     public void appendContent(SightCacheContent newContent) {
@@ -63,6 +70,11 @@ public class SightCacheContent {
             this.edgeCache = newContent.edgeCache;
             this.edgeVersion++;
         }
+
+        if (newContent.potatoCache != null) {
+            this.potatoCache = newContent.potatoCache;
+            this.potatoVersion++;
+        }
     }
 
     public List<DhnsEdge> getEdgeCache() {
@@ -73,11 +85,19 @@ public class SightCacheContent {
         return nodeCache;
     }
 
+    public List<PotatoImpl> getPotatoCache() {
+        return potatoCache;
+    }
+
     public int getNodeVersion() {
         return nodeVersion;
     }
 
     public int getEdgeVersion() {
         return edgeVersion;
+    }
+
+    public int getPotatoVersion() {
+        return potatoVersion;
     }
 }

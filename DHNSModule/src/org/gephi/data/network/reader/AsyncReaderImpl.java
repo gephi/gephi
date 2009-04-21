@@ -26,6 +26,7 @@ import org.gephi.graph.api.NodeWrap;
 import org.gephi.data.network.api.AsyncReader;
 import org.gephi.data.network.sight.SightCacheContent;
 import org.gephi.data.network.sight.SightImpl;
+import org.gephi.graph.api.Potato;
 
 /**
  *
@@ -39,6 +40,7 @@ public class AsyncReaderImpl implements AsyncReader {
     private SightCacheContent cacheContent;
     private int currentNodeVersion = -1;
     private int currentEdgeVersion = -1;
+    private int currentPotatoVersion = -1;
 
     public AsyncReaderImpl(SightImpl sight) {
         this.sight = sight;
@@ -54,9 +56,15 @@ public class AsyncReaderImpl implements AsyncReader {
         return cacheContent.getEdgeCache().iterator();
     }
 
+    public Iterator<? extends Potato> getPotatoes()
+    {
+        currentPotatoVersion = cacheContent.getPotatoVersion();
+        return cacheContent.getPotatoCache().iterator();
+    }
+
     public boolean requireUpdate() {
         cacheContent = sight.getSightCache().getCacheContent();
-        if (cacheContent.getNodeVersion() > currentNodeVersion || cacheContent.getEdgeVersion() > currentEdgeVersion) {
+        if (cacheContent.getNodeVersion() > currentNodeVersion || cacheContent.getEdgeVersion() > currentEdgeVersion || cacheContent.getPotatoVersion() > currentPotatoVersion) {
             return true;
         }
         return false;
@@ -71,6 +79,13 @@ public class AsyncReaderImpl implements AsyncReader {
 
     public boolean requireEdgeUpdate() {
         if (cacheContent.getEdgeVersion() > currentEdgeVersion) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean requirePotatoUpdate() {
+        if (cacheContent.getPotatoVersion() > currentPotatoVersion) {
             return true;
         }
         return false;
