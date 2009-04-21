@@ -22,6 +22,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datasource.repository.navicrawler;
 
 import org.gephi.datasource.api.Datasource;
+import org.gephi.importer.api.ImportContainer;
 
 /**
  *
@@ -29,4 +30,25 @@ import org.gephi.datasource.api.Datasource;
  */
 public class Navicrawler implements Datasource {
 
+    private NavicrawlerSocketServer server;
+    private int port = 36001;
+
+    private void startServer()
+    {
+        server = new NavicrawlerSocketServer(port)
+        {
+
+            @Override
+            public void dataPushed(ImportContainer importContainer) {
+                
+
+            }
+
+        };
+    }
+
+    private void stopServer()
+	{
+		server.stop();
+	}
 }

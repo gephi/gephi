@@ -35,14 +35,14 @@ import org.openide.util.Lookup;
  *
  * @author Mathieu Bastian
  */
-public class NavicrawlerServerSocket {
+public class NavicrawlerSocketServer {
 
     static final boolean DEBUG = false;
     private ServerSocket serverSocket;
     private boolean running = true;
     private ExecutorService executor;
 
-    public NavicrawlerServerSocket(int port) {
+    public NavicrawlerSocketServer(int port) {
         try {
             executor = Executors.newSingleThreadExecutor();
             serverSocket = new ServerSocket(port);
@@ -98,7 +98,7 @@ public class NavicrawlerServerSocket {
                 } else {
                     System.out.println("Data received from socket");
                     ImportController importController = Lookup.getDefault().lookup(ImportController.class);
-                    
+                    importController.doDynamicImport(socket.getInputStream());
                 }
 
                 socket.close();
