@@ -38,6 +38,7 @@ public class Potato3dObject extends Object3dImpl<Potato> {
 
     public int modelType;
     private ParamAVLTree<Octant> octantsTree;
+    private boolean underMouse=false;
 
     public Potato3dObject(Potato potato) {
 
@@ -105,7 +106,7 @@ public class Potato3dObject extends Object3dImpl<Potato> {
 
     @Override
     public boolean selectionTest(Vecf distanceFromMouse, float selectionSize) {
-        return selected;
+        return underMouse;
     }
 
     @Override
@@ -143,5 +144,13 @@ public class Potato3dObject extends Object3dImpl<Potato> {
         }
 
         octants = octantsTree.toArray(new Octant[0]);
+    }
+
+    public boolean isUnderMouse() {
+        return underMouse;
+    }
+
+    public void setUnderMouse(boolean underMouse) {
+        this.underMouse = underMouse;
     }
 }

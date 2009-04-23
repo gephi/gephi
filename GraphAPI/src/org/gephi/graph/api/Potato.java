@@ -33,6 +33,7 @@ import java.util.List;
  */
 public interface Potato extends Renderable {
 
+    public Node getNode();
     public Iterable<? extends Node> getContent();
     public int countContent();
     public void updatePotato();

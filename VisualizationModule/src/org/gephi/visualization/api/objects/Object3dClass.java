@@ -34,16 +34,19 @@ public abstract class Object3dClass {
     private int classId;
     private boolean enabled;
     private int cacheMarker;
+    private int selectionId=0;
 
     //Config
     private boolean lod;
     private boolean selectable;
+    private boolean clickable;
 
-    public Object3dClass(String name, boolean lod, boolean selectable) {
+    public Object3dClass(String name, boolean lod, boolean selectable, boolean clickable) {
         this.classId = Object3dClass.getNumber();
         this.name = name;
         this.lod = lod;
         this.selectable = selectable;
+        this.clickable = clickable;
     }
 
     public Object3dClass() {
@@ -74,6 +77,10 @@ public abstract class Object3dClass {
         return enabled;
     }
 
+    public boolean isClickable() {
+        return clickable;
+    }
+
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
@@ -86,7 +93,14 @@ public abstract class Object3dClass {
         this.cacheMarker = cacheMarker;
     }
 
-    
+    public int getSelectionId() {
+        return selectionId;
+    }
+
+    public void setSelectionId(int selectionId) {
+        this.selectionId = selectionId;
+    }
+
     //STATIC
     private synchronized static int getNumber() {
         return IDS++;

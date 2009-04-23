@@ -36,7 +36,7 @@ public class PotatoImpl implements Potato {
 
     //Manager
     private PotatoManager manager;
-    private PreNode node;
+    private NodeImpl node;
     private List<NodeImpl> content;
 
     //Renderable
@@ -52,7 +52,7 @@ public class PotatoImpl implements Potato {
     }
 
     public void setNode(PreNode node) {
-        this.node = node;
+        this.node = node.getNode();
         node.setPotato(this);
     }
 
@@ -60,7 +60,7 @@ public class PotatoImpl implements Potato {
         this.content.add(content.getNode());
     }
 
-    public PreNode getNode() {
+    public NodeImpl getNode() {
         return node;
     }
 
@@ -130,15 +130,15 @@ public class PotatoImpl implements Potato {
     }
 
     public float r() {
-        return node.getNode().r();
+        return node.r();
     }
 
     public float g() {
-        return node.getNode().g();
+        return node.g();
     }
 
     public float b() {
-        return node.getNode().b();
+        return node.b();
     }
 
     public void setR(float r) {

@@ -38,8 +38,8 @@ public class CompatibilityObject3dClass extends Object3dClass {
     private CompatibilityObject3dInitializer currentObject3dInitializer;
     private List<CompatibilityObject3dInitializer> object3dInitializers;
 
-    public CompatibilityObject3dClass(String name, boolean lod, boolean selectable) {
-        super(name, lod, selectable);
+    public CompatibilityObject3dClass(String name, boolean lod, boolean selectable, boolean clickable) {
+        super(name, lod, selectable, clickable);
         object3dInitializers = new ArrayList<CompatibilityObject3dInitializer>();
     }
 

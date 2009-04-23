@@ -96,6 +96,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
             potatoClass.setCacheMarker(cacheMarker);
         }
 
+        reader.setUpdated();
         engine.worldUpdated(cacheMarker);
     }
 

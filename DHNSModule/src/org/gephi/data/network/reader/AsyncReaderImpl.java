@@ -47,19 +47,21 @@ public class AsyncReaderImpl implements AsyncReader {
     }
 
     public Iterator<? extends NodeWrap> getNodes() {
-        currentNodeVersion = cacheContent.getNodeVersion();
         return cacheContent.getNodeCache().iterator();
     }
 
     public Iterator<? extends EdgeWrap> getEdges() {
-        currentEdgeVersion = cacheContent.getEdgeVersion();
         return cacheContent.getEdgeCache().iterator();
     }
 
-    public Iterator<? extends Potato> getPotatoes()
-    {
-        currentPotatoVersion = cacheContent.getPotatoVersion();
+    public Iterator<? extends Potato> getPotatoes() {
         return cacheContent.getPotatoCache().iterator();
+    }
+
+    public void setUpdated() {
+        currentNodeVersion = cacheContent.getNodeVersion();
+        currentEdgeVersion = cacheContent.getEdgeVersion();
+        currentPotatoVersion = cacheContent.getPotatoVersion();
     }
 
     public boolean requireUpdate() {

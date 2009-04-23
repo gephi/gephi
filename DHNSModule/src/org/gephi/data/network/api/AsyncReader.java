@@ -37,6 +37,8 @@ public interface AsyncReader {
 
     public Iterator<? extends Potato> getPotatoes();
 
+    public void setUpdated();
+
     public boolean requireUpdate();
 
     public boolean requireNodeUpdate();

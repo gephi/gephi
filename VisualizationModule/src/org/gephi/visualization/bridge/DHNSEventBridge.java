@@ -18,18 +18,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.visualization.bridge;
 
 import org.gephi.data.network.api.DhnsController;
 import org.gephi.data.network.api.FreeModifier;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Object3d;
+import org.gephi.graph.api.Potato;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.objects.Object3dClass;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.openide.util.Lookup;
-
 
 /**
  *
@@ -50,20 +50,32 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     }
 
     @Override
-    public void initEvents()
-    {
-        
+    public void initEvents() {
     }
 
-    public void mouseClick(Object3d[] clickedObjects) {
+    public void mouseClick(Object3dClass objClass, Object3d[] clickedObjects) {
 
-        for(int i=0;i<clickedObjects.length;i++)
-        {
-            Object3d obj = clickedObjects[i];
-            Node node = (Node)obj.getObj();
-            DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-            freeModifier.expand(node, dhnsController.getSightManager().getSelectedSight());
+        switch (objClass.getClassId()) {
+            case AbstractEngine.CLASS_NODE:
+                for (int i = 0; i < clickedObjects.length; i++) {
+                    Object3d obj = clickedObjects[i];
+                    Node node = (Node) obj.getObj();
+                    DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
+                    freeModifier.expand(node, dhnsController.getSightManager().getSelectedSight());
+                }
+                break;
+            case AbstractEngine.CLASS_POTATO:
+                for (int i = 0; i < clickedObjects.length; i++) {
+                    Object3d obj = clickedObjects[i];
+                    Potato potato = (Potato) obj.getObj();
+                    System.out.println("click potato");
+                    DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
+                    //freeModifier.retract(potato.getNode(), dhnsController.getSightManager().getSelectedSight());
+                }
+                break;
         }
+
+
 
     }
 }

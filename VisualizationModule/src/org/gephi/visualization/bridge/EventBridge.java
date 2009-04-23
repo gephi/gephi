@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.bridge;
 
 import org.gephi.graph.api.Object3d;
+import org.gephi.visualization.api.objects.Object3dClass;
 
 /**
  *
@@ -30,5 +31,5 @@ public interface EventBridge {
 
     public void initEvents();
     public void initArchitecture();
-    public void mouseClick(Object3d[] clickedObjects);
+    public void mouseClick(Object3dClass objectClass, Object3d[] clickedObjects);
 }

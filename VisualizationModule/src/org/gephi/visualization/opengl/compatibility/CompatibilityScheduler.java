@@ -228,11 +228,6 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
             e.printStackTrace();
         }
 
-        //Display
-        engine.beforeDisplay(gl, glu);
-        engine.display(gl, glu);
-        engine.afterDisplay(gl, glu);
-
         try {
             if (pool2Permit > 0) {
                 pool2Semaphore.acquire(pool2Permit);
@@ -240,6 +235,11 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        //Display
+        engine.beforeDisplay(gl, glu);
+        engine.display(gl, glu);
+        engine.afterDisplay(gl, glu);
     }
 
     public void updateWorld() {

@@ -34,24 +34,23 @@ import org.gephi.visualization.opengl.compatibility.initializer.CompatibilityPot
  */
 public class StandardObject3dClassLibrary implements Object3dClassLibrary {
 
-
     public CompatibilityObject3dClass[] createObjectClassesCompatibility(AbstractEngine engine) {
         CompatibilityObject3dClass[] object3dClasses = new CompatibilityObject3dClass[4];
 
         //NODE
-        object3dClasses[0] = new CompatibilityObject3dClass("NODE", true, true);
+        object3dClasses[0] = new CompatibilityObject3dClass("NODE", true, true, true);
         object3dClasses[0].addObjectInitializer(new CompatibilityNodeSphereInitializer(engine));
 
         //EDGE
-        object3dClasses[1] = new CompatibilityObject3dClass("EDGE", false, false);
+        object3dClasses[1] = new CompatibilityObject3dClass("EDGE", false, false, false);
         object3dClasses[1].addObjectInitializer(new CompatibilityEdgeInitializer());
 
         //ARROW
-        object3dClasses[2] = new CompatibilityObject3dClass("ARROW", true, false);
+        object3dClasses[2] = new CompatibilityObject3dClass("ARROW", true, false, false);
         object3dClasses[2].addObjectInitializer(new CompatibilityArrowInitializer(engine));
 
         //POTATO
-        object3dClasses[3] = new CompatibilityObject3dClass("POTATO", false, false);
+        object3dClasses[3] = new CompatibilityObject3dClass("POTATO", false, true, true);
         object3dClasses[3].addObjectInitializer(new CompatibilityPotatoInitializer());
         return object3dClasses;
     }

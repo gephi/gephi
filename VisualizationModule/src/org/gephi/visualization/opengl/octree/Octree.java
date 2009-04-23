@@ -292,7 +292,7 @@ public class Octree implements VizArchitecture {
     }
 
     public void displayOctree(GL gl) {
-        //gl.glColor3f(1, 0.5f, 0.5f);
+        gl.glColor3f(1, 0.5f, 0.5f);
         gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
         for (Octant o : visibleLeaves) {
             o.displayOctreeNode(gl);
