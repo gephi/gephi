@@ -25,10 +25,9 @@ import javax.media.opengl.glu.GLU;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeWrap;
 import org.gephi.graph.api.Potato;
 import org.gephi.visualization.api.Object3dImpl;
-import org.gephi.visualization.gleem.linalg.Vec3f;
+import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
 
 /**
@@ -74,7 +73,11 @@ public class Potato3dObject extends Object3dImpl<Potato> {
 
         //Disks
         if (mark && obj.getDisks() != null) {
-            gl.glColor3f(obj.r(), obj.g(), obj.b());
+            if (selected) {
+                gl.glColor3f(0.9f, 0.9f, 0.9f);
+            } else {
+                gl.glColor3f(obj.r(), obj.g(), obj.b());
+            }
             for (float[] disk : obj.getDisks()) {
                 gl.glPushMatrix();
                 float size = disk[2];
@@ -87,7 +90,11 @@ public class Potato3dObject extends Object3dImpl<Potato> {
 
         //Triangles
         if (!mark && obj.getTriangles() != null) {
-            gl.glColor3f(obj.r(), obj.g(), obj.b());
+            if (selected) {
+                gl.glColor3f(0.9f, 0.9f, 0.9f);
+            } else {
+                gl.glColor3f(obj.r(), obj.g(), obj.b());
+            }
             for (float[] triangle : obj.getTriangles()) {
                 gl.glVertex3f(triangle[0], triangle[1], 0f);
                 gl.glVertex3f(triangle[2], triangle[3], 0f);
@@ -97,8 +104,8 @@ public class Potato3dObject extends Object3dImpl<Potato> {
     }
 
     @Override
-    public boolean selectionTest(Vec3f distanceFromMouse, float selectionSize) {
-        return false;
+    public boolean selectionTest(Vecf distanceFromMouse, float selectionSize) {
+        return selected;
     }
 
     @Override

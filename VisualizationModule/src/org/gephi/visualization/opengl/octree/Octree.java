@@ -280,6 +280,17 @@ public class Octree implements VizArchitecture {
         return itr;
     }
 
+    public int countSelectedObjects(int classID)
+    {
+        int res=0;
+        for(int i=0;i<selectedLeaves.size();i++)
+        {
+            Octant o = selectedLeaves.get(i);
+            res+=o.getTree(classID).getCount();
+        }
+        return res;
+    }
+
     public void displayOctree(GL gl) {
         //gl.glColor3f(1, 0.5f, 0.5f);
         gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);

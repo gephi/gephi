@@ -26,7 +26,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.Object3dImpl;
-import org.gephi.visualization.gleem.linalg.Vec3f;
+import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
 
 /**
@@ -237,7 +237,7 @@ public class Edge3dObject extends Object3dImpl<Edge> {
     }
 
     @Override
-    public boolean selectionTest(Vec3f distanceFromMouse, float selectionSize) {
+    public boolean selectionTest(Vecf distanceFromMouse, float selectionSize) {
         // TODO Auto-generated method stub
         return false;
     }

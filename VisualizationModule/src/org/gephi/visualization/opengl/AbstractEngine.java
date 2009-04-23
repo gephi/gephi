@@ -38,6 +38,7 @@ import org.gephi.visualization.selection.Point;
 import org.gephi.visualization.api.selection.SelectionArea;
 import org.gephi.visualization.bridge.DataBridge;
 import org.gephi.visualization.bridge.EventBridge;
+import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 
 /**
@@ -138,18 +139,23 @@ public abstract class AbstractEngine implements Engine,VizArchitecture {
         object.setViewportRadius(rad);
     }
 
+
     protected boolean isUnderMouse(Object3dImpl obj) {
-        double x1 = graphIO.getMousePosition()[0];
-        double y1 = graphIO.getMousePosition()[1];
+        float x1 = graphIO.getMousePosition()[0];
+        float y1 = graphIO.getMousePosition()[1];
+        
+        float x2 = obj.getViewportX();
+        float y2 = obj.getViewportY();
 
-        double x2 = obj.getViewportX();
-        double y2 = obj.getViewportY();
+        float xDist = Math.abs(x2 - x1);
+        float yDist = Math.abs(y2 - y1);
 
-        double xDist = Math.abs(x2 - x1);
-        double yDist = Math.abs(y2 - y1);
+        float distance = (float)Math.sqrt(xDist * xDist + yDist * yDist);
 
-        double distance = Math.sqrt(xDist * xDist + yDist * yDist);
-        Vec3f d = new Vec3f((float) xDist, (float) yDist, (float) distance);
+        Vecf d = new Vecf(5);
+        d.set(0,xDist);
+        d.set(1,yDist);
+        d.set(2,distance);
 
         return currentSelectionArea.mouseTest(d, obj);
     }

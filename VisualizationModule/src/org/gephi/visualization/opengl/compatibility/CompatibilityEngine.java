@@ -20,7 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.compatibility;
 
+import com.sun.opengl.util.BufferUtil;
+import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -52,6 +55,9 @@ public class CompatibilityEngine extends AbstractEngine {
     protected CompatibilityObject3dClass[] lodClasses;
     protected CompatibilityObject3dClass[] selectableClasses;
 
+    //Selection
+    private ConcurrentLinkedQueue<Object3dImpl>[] selectedObjects;
+
     public CompatibilityEngine() {
         super();
     }
@@ -69,6 +75,67 @@ public class CompatibilityEngine extends AbstractEngine {
 
     public void updateSelection(GL gl, GLU glu) {
         octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
+
+        //Potatoes selection
+        if (object3dClasses[CLASS_POTATO].isEnabled()) {
+
+            int potatoCount = octree.countSelectedObjects(CLASS_POTATO);
+            float[] mousePosition = graphIO.getMousePosition();
+            float[] pickRectangle = currentSelectionArea.getSelectionAreaRectancle();
+
+            //Update selection
+            int capacity = 1 * 4 * potatoCount;      //Each object take in maximium : 4 * name stack depth
+            IntBuffer hitsBuffer = BufferUtil.newIntBuffer(capacity);
+
+            gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
+            gl.glRenderMode(GL.GL_SELECT);
+
+            gl.glInitNames();
+            gl.glPushName(0);
+
+            gl.glMatrixMode(GL.GL_PROJECTION);
+            gl.glPushMatrix();
+            gl.glLoadIdentity();
+
+            glu.gluPickMatrix(mousePosition[0], mousePosition[1], pickRectangle[0], pickRectangle[1], graphDrawable.getViewport());
+            gl.glMultMatrixd(graphDrawable.getProjectionMatrix());
+
+            gl.glMatrixMode(GL.GL_MODELVIEW);
+
+            //Draw the nodes' cube int the select buffer
+            int hitName = 1;
+            Object3dImpl[] array = new Object3dImpl[potatoCount];
+            for (Iterator<Object3dImpl> itr = octree.getSelectedObjectIterator(CLASS_POTATO); itr.hasNext();) {
+                Object3dImpl obj = itr.next();
+                obj.setSelected(false);
+                array[hitName - 1] = obj;
+                gl.glLoadName(hitName);
+                obj.mark = false;
+                gl.glBegin(GL.GL_TRIANGLES);
+                obj.display(gl, glu);
+                gl.glEnd();
+                obj.mark = true;
+                obj.display(gl, glu);
+                obj.mark = false;
+                hitName++;
+            }
+
+            //Restoring the original projection matrix
+            gl.glMatrixMode(GL.GL_PROJECTION);
+            gl.glPopMatrix();
+            gl.glMatrixMode(GL.GL_MODELVIEW);
+            gl.glFlush();
+
+            //Returning to normal rendering mode
+            int nbRecords = gl.glRenderMode(GL.GL_RENDER);
+
+            //Get the hits and put the node under selection in the selectionArray
+            for (int i = 0; i < nbRecords; i++) {
+                int hit = hitsBuffer.get(i * 4 + 3) - 1; 		//-1 Because of the glPushName(0)
+                Object3dImpl obj = array[hit];
+                obj.setSelected(true);
+            }
+        }
     }
 
     @Override
@@ -192,6 +259,7 @@ public class CompatibilityEngine extends AbstractEngine {
             //gl.glDisable(GL.GL_LIGHTING);
 
             //Triangles
+            gl.glDisable(GL.GL_LIGHTING);
             gl.glBegin(GL.GL_TRIANGLES);
             for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_POTATO); itr.hasNext();) {
                 Object3dImpl obj = itr.next();
@@ -201,6 +269,7 @@ public class CompatibilityEngine extends AbstractEngine {
                 }
             }
             gl.glEnd();
+            gl.glEnable(GL.GL_LIGHTING);
 
             //Solid disk
             for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_POTATO); itr.hasNext();) {
@@ -211,10 +280,10 @@ public class CompatibilityEngine extends AbstractEngine {
                     obj.mark = false;
                 }
             }
-            //gl.glEnable(GL.GL_LIGHTING);
+        //gl.glEnable(GL.GL_LIGHTING);
         }
 
-        octree.displayOctree(gl);
+    //octree.displayOctree(gl);
     /*
 
     float x1 = -140f;
@@ -347,20 +416,19 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void mouseClick() {
-        Object3dImpl[] objArray = selectedObjects.toArray(new Object3dImpl[0]);
+        Object3dImpl[] objArray = selectedObjects[0].toArray(new Object3dImpl[0]);
         eventBridge.mouseClick(objArray);
     }
 
     @Override
     public void mouseDrag() {
         float[] drag = graphIO.getMouseDrag();
-        for (Object3dImpl obj : selectedObjects) {
+        for (Object3dImpl obj : selectedObjects[0]) {
             float[] mouseDistance = obj.getDragDistanceFromMouse();
             obj.getObj().setX(drag[0] + mouseDistance[0]);
             obj.getObj().setY(drag[1] + mouseDistance[1]);
         }
     }
-    private ConcurrentLinkedQueue<Object3dImpl> selectedObjects = new ConcurrentLinkedQueue<Object3dImpl>();
 
     @Override
     public void mouseMove() {
@@ -374,6 +442,7 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
         long markTime = System.currentTimeMillis();
+        int i = 0;
         for (Object3dClass objClass : selectableClasses) {
             for (Iterator<Object3dImpl> itr = octree.getSelectedObjectIterator(objClass.getClassId()); itr.hasNext();) {
                 Object3dImpl obj = itr.next();
@@ -384,7 +453,7 @@ public class CompatibilityEngine extends AbstractEngine {
                         if (vizEventManager.hasSelectionListeners()) {
                             newSelectedObjects.add(obj);
                         }
-                        selectedObjects.add(obj);
+                        selectedObjects[i].add(obj);
                     }
                     obj.markTime = markTime;
                 } else if (currentSelectionArea.unselect(obj.getObj())) {
@@ -393,14 +462,15 @@ public class CompatibilityEngine extends AbstractEngine {
                     }
                 }
             }
-        }
 
-        for (Iterator<Object3dImpl> itr = selectedObjects.iterator(); itr.hasNext();) {
-            Object3dImpl o = itr.next();
-            if (o.markTime != markTime) {
-                itr.remove();
-                o.setSelected(false);
+            for (Iterator<Object3dImpl> itr = selectedObjects[i].iterator(); itr.hasNext();) {
+                Object3dImpl o = itr.next();
+                if (o.markTime != markTime) {
+                    itr.remove();
+                    o.setSelected(false);
+                }
             }
+            i++;
         }
     }
 
@@ -413,7 +483,7 @@ public class CompatibilityEngine extends AbstractEngine {
         float x = graphIO.getMouseDrag()[0];
         float y = graphIO.getMouseDrag()[1];
 
-        for (Iterator<Object3dImpl> itr = selectedObjects.iterator(); itr.hasNext();) {
+        for (Iterator<Object3dImpl> itr = selectedObjects[0].iterator(); itr.hasNext();) {
             Object3dImpl o = itr.next();
             float[] tab = o.getDragDistanceFromMouse();
             tab[0] = o.getObj().x() - x;
@@ -522,6 +592,12 @@ public class CompatibilityEngine extends AbstractEngine {
             }
         }
         selectableClasses = classList.toArray(selectableClasses);
+
+        //Init selection lists
+        selectedObjects = new ConcurrentLinkedQueue[selectableClasses.length];
+        for (int i = 0; i < selectableClasses.length; i++) {
+            selectedObjects[i] = new ConcurrentLinkedQueue<Object3dImpl>();
+        }
     }
 
     public CompatibilityObject3dClass[] getObject3dClasses() {

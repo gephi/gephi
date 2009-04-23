@@ -25,7 +25,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.api.Object3dImpl;
-import org.gephi.visualization.gleem.linalg.Vec3f;
+import org.gephi.visualization.gleem.linalg.Vecf;
 
 /**
  *
@@ -51,7 +51,7 @@ public class Point implements SelectionArea {
     }
 
     @Override
-    public boolean mouseTest(Vec3f distanceFromMouse, Object3dImpl object) {
+    public boolean mouseTest(Vecf distanceFromMouse, Object3dImpl object) {
         return object.selectionTest(distanceFromMouse, 0);
     }
 

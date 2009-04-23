@@ -196,7 +196,7 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
 
     public double[] gluUnProject(float x, float y, float z) {
         DoubleBuffer buffer = BufferUtil.newDoubleBuffer(3);
-        glu.gluUnProject(x, y, z, modelMatrix, projMatrix, viewport, projMatrix);
+        glu.gluUnProject(x, y, z, modelMatrix, projMatrix, viewport, buffer);
         return new double[]{buffer.get(0), buffer.get(1), buffer.get(2)};
     }
 
@@ -242,6 +242,10 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
 
     public DoubleBuffer getProjectionMatrix() {
        return projMatrix;
+    }
+
+    public DoubleBuffer getModelMatrix() {
+        return modelMatrix;
     }
 
     public IntBuffer getViewport() {

@@ -27,8 +27,8 @@ public abstract class GLAbstractListener implements GLEventListener {
     protected float fps;
     private volatile boolean resizing = false;
     private final float viewField = 30.0f;
-    private final float nearDistance = 1.0f;
-    private final float farDistance = 100000f;
+    public final float nearDistance = 1.0f;
+    public final float farDistance = 100000f;
     private double aspectRatio = 0;
     protected DoubleBuffer projMatrix = BufferUtil.newDoubleBuffer(16);
     protected DoubleBuffer modelMatrix = BufferUtil.newDoubleBuffer(16);

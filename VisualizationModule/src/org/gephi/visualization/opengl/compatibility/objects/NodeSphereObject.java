@@ -24,8 +24,8 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.api.Object3dImpl;
+import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
-import org.gephi.visualization.gleem.linalg.Vec3f;
 import org.gephi.visualization.opengl.octree.Octant;
 
 /**
@@ -87,8 +87,8 @@ public class NodeSphereObject extends Object3dImpl<Node> {
     }
 
     @Override
-    public boolean selectionTest(Vec3f distanceFromMouse, float selectionSize) {
-        if (distanceFromMouse.z() - selectionSize < getViewportRadius()) {
+    public boolean selectionTest(Vecf distanceFromMouse, float selectionSize) {
+        if (distanceFromMouse.get(2) - selectionSize < getViewportRadius()) {
             return true;
         }
         return false;

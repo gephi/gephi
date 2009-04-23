@@ -76,7 +76,7 @@ public class Dhns {
     private void importFakeGraph() {
         CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure, sightManager.getMainSight());
 
-        importer.importGraph(4, false);
+        importer.importGraph(8, false);
         //importer.shuffleEnable();
         System.out.println("Tree size : " + treeStructure.getTreeSize());
         //treeStructure.showTreeAsTable();

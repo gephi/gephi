@@ -25,7 +25,7 @@ import javax.media.opengl.glu.GLU;
 import org.gephi.datastructure.avl.simple.AVLItem;
 import org.gephi.graph.api.Object3d;
 import org.gephi.graph.api.Renderable;
-import org.gephi.visualization.gleem.linalg.Vec3f;
+import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
 
 /**
@@ -59,7 +59,7 @@ public abstract class Object3dImpl<ObjectType extends Renderable> implements Obj
 
     public abstract void display(GL gl, GLU glu);
 
-    public abstract boolean selectionTest(Vec3f distanceFromMouse, float selectionSize);
+    public abstract boolean selectionTest(Vecf distanceFromMouse, float selectionSize);
 
     public abstract float getCollisionDistance(double angle);
 
