@@ -55,97 +55,94 @@ public class PotatoCooker {
     }
 
     public void cookPotatoes(List<PreNode> enabledNodes) {
-        potatoes = new ArrayList<PotatoImpl>();
+
 
         //Condition
         if (!enabledNodes.isEmpty()) {
             //Init
             contextNodes = enabledNodes;
-            initAncestorAxisWalk();
+            resetPotatoes();
+            potatoes = new ArrayList<PotatoImpl>();
 
             //Fill potatoes
-            ancestorAxisWalk();
+            createPotatoes();
 
             //Result
             orderResults();
         }
     }
 
-    private void initAncestorAxisWalk() {
+    private void resetPotatoes() {
+        if (potatoes == null) {
+            return;
+        }
 
-        currentContextIndex = contextNodes.size() - 1;
-        pointer = nextContextNode();
-        currentPre = pointer.parent.pre;
-        currentPost = pointer.post;
-        if (hasNextContextNode()) {
-            nextContextNode = nextContextNode();
-            nextPre = nextContextNode.pre;
-            nextPost = nextContextNode.post;
+        for (int i = 0; i < potatoes.size(); i++) {
+            PotatoImpl potato = potatoes.get(i);
+            potato.getNode().getPreNode().setPotato(null);
         }
     }
 
-    //Use ancestor axis techniques
-    private void ancestorAxisWalk() {
-        PotatoImpl potato = new PotatoImpl(potatoManager);
-        potato.addContent(pointer);
+    private void createPotatoes() {
 
-        while (currentContextIndex >= 0 || currentPre > 0) {
-            while (currentPre < nextPre) {
-                if (nextContextNode != null) {
-                    potato.addContent(nextContextNode);
-                }
+        PreNode currentParent = null;
+        PotatoImpl currentPotato = null;
 
-                if (nextPost < currentPost) {
-                    currentPre = nextContextNode.parent.pre;
-                    currentPost = nextPost;
-                }
+        for (int i = 0; i < contextNodes.size(); i++) {
+            PreNode node = contextNodes.get(i);
+            PreNode parent = node.parent;
 
-                if (hasNextContextNode()) {
-                    nextContextNode = nextContextNode();
-                    nextPre = nextContextNode.pre;
-                    nextPost = nextContextNode.post;
+            if (parent != currentParent) {
+                currentParent = parent;
+
+                if (parent.getPotato() != null) {
+                    currentPotato = parent.getPotato();
                 } else {
-                    //No more context nodes
-                    nextPre = 0;
-                    nextContextNode = null;
+                    //New Potato
+                    currentPotato = new PotatoImpl(potatoManager);
+                    currentPotato.setNode(parent);
+                    potatoes.add(currentPotato);
                 }
 
             }
-
-            pointer = treeStructure.getNodeAt(currentPre);
-            if (pointer.parent == null) {
-                return;
-            }
-            currentPre = pointer.parent.pre;
-
-            potato.setNode(pointer);
-            potatoes.add(potato);
-
-            //Refresh
-            potato = new PotatoImpl(potatoManager);
+            currentPotato.addContent(node);
         }
     }
 
     private void orderResults() {
         //Delete empty
-        for (Iterator<PotatoImpl> itr = potatoes.iterator(); itr.hasNext();) {
-            PotatoImpl p = itr.next();
-            if (p.countContent() == 0) {
-                itr.remove();
+        /*for (Iterator<PotatoImpl> itr = potatoes.iterator(); itr.hasNext();) {
+        PotatoImpl p = itr.next();
+        if (p.countContent() == 0) {
+        itr.remove();
+        }
+        }*/
+
+        //Create potatoes hierarchy
+        int size = potatoes.size();
+        for (int i = 0; i < size; i++) {
+            PotatoImpl potato = potatoes.get(i);
+            PreNode node = potato.getNode().getPreNode();
+            while (node.parent != null && node.parent.parent!=null) {
+                PreNode parent = node.parent;
+                PotatoImpl parentPotato = parent.getPotato();
+                if (parentPotato == null) {
+                    parentPotato = new PotatoImpl(potatoManager);
+                    parentPotato.setNode(parent);
+                    potatoes.add(parentPotato);
+                }
+                parentPotato.addChild(potato);
+                potato.setFather(parentPotato);
+
+                potato = parentPotato;
+                node = parent;
             }
         }
-    }
 
-    private PreNode nextContextNode() {
-        return contextNodes.get(currentContextIndex);
-    }
-
-    private boolean hasNextContextNode() {
-        currentContextIndex--;
-        if (currentContextIndex >= 0) {
-            return true;
+        for (int i = 0; i < potatoes.size(); i++) {
+            PotatoImpl potato = potatoes.get(i);
+            potato.fillContent();
         }
-        return false;
     }
 
     public List<PotatoImpl> getPotatoes() {

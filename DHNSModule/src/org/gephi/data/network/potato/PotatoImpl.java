@@ -20,7 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network.potato;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import org.gephi.data.network.node.NodeImpl;
 import org.gephi.data.network.node.PreNode;
@@ -46,8 +48,13 @@ public class PotatoImpl implements Potato {
     private List<float[]> triangles;
     private List<float[]> disks;
 
+    //Hierarchy
+    private List<PotatoImpl> children;
+    private PotatoImpl father;
+
     public PotatoImpl(PotatoManager potatoManager) {
         content = new ArrayList<NodeImpl>();
+        children = new ArrayList<PotatoImpl>();
         this.manager = potatoManager;
     }
 
@@ -68,12 +75,56 @@ public class PotatoImpl implements Potato {
         manager.renderPotato(this);
     }
 
+    public void updatePotatoHierarchy()
+    {
+        manager.renderPotato(this);
+        PotatoImpl currentFather = father;
+        while(currentFather!=null)
+        {
+            manager.renderPotato(currentFather);
+            currentFather = currentFather.father;
+        }
+    }
+
     public Iterable<? extends Node> getContent() {
         return content;
     }
 
+    public void fillContent() {
+        if (this.content.isEmpty()) {
+            Deque<PotatoImpl> stack = new ArrayDeque<PotatoImpl>();
+
+            stack.push(this);
+            while (!stack.isEmpty()) {
+                PotatoImpl p = stack.pop();
+                if (p.countContent() > 0) {
+                    for (NodeImpl n : p.content) {
+                        this.content.add(n);
+                    }
+                } else {
+                    for (int i = 0; i < p.getChildren().size(); i++) {
+                        PotatoImpl child = p.getChildren().get(i);
+                        stack.push(child);
+                    }
+                }
+            }
+        }
+    }
+
     public int countContent() {
         return content.size();
+    }
+
+    public void addChild(PotatoImpl potato) {
+        children.add(potato);
+    }
+
+    public List<PotatoImpl> getChildren() {
+        return children;
+    }
+
+    public void setFather(PotatoImpl father) {
+        this.father = father;
     }
 
     public List<float[]> getTriangles() {
