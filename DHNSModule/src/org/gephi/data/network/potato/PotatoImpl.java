@@ -127,6 +127,11 @@ public class PotatoImpl implements Potato {
         this.father = father;
     }
 
+    public int getLevel()
+    {
+        return manager.getTreeHeight() - node.getLevel();
+    }
+
     public List<float[]> getTriangles() {
         return triangles;
     }

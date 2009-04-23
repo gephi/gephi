@@ -130,10 +130,12 @@ public class PotatoRender {
         triangleBuffer = new ArrayList<float[]>();
         disksBuffer = new ArrayList<float[]>();
 
+        float rayon = RAYON + potato.getLevel()*10;
+
         for (Node node : potato.getContent()) {
 
             //DESSINE LE DISQUE MINIMAL AUTOUR DU NOEUD
-            createCircle(node.x(), node.y(), RAYON);
+            createCircle(node.x(), node.y(), rayon);
 
             //DESSINE LA ZONE D'INFLUENCE AUTOUR DU NOEUD
             for (int cote = 0; cote < 4; cote++) {
@@ -142,7 +144,7 @@ public class PotatoRender {
 
                 if (cote == 0) //HAUT
                 {
-                    origine_i = node.x() - RAYON * Math.sqrt(2.0) / 2.0;
+                    origine_i = node.x() - rayon * Math.sqrt(2.0) / 2.0;
                     origine_j = node.y();// + RAYON*sqrt(2.0)/2.0;
                     step_i = -INTER;
                     step_j = INTER;
@@ -150,8 +152,8 @@ public class PotatoRender {
                     sens_j = 1;
                 } else if (cote == 1) //BAS
                 {
-                    origine_i = node.x() - RAYON * Math.sqrt(2.0) / 2.0;
-                    origine_j = node.y() - RAYON * Math.sqrt(2.0) / 2.0;
+                    origine_i = node.x() - rayon * Math.sqrt(2.0) / 2.0;
+                    origine_j = node.y() - rayon * Math.sqrt(2.0) / 2.0;
                     step_i = -INTER;
                     step_j = -INTER;
                     sens_i = 1;
@@ -159,8 +161,8 @@ public class PotatoRender {
                     sens_j = 1;
                 } else if (cote == 2) //GAUCHE
                 {
-                    origine_i = node.x() - RAYON * Math.sqrt(2.0) / 2.0;
-                    origine_j = node.y() - RAYON * Math.sqrt(2.0) / 2.0;
+                    origine_i = node.x() - rayon * Math.sqrt(2.0) / 2.0;
+                    origine_j = node.y() - rayon * Math.sqrt(2.0) / 2.0;
                     step_i = -INTER;
                     step_j = -INTER;
                     //sens_i = -1;
@@ -168,8 +170,8 @@ public class PotatoRender {
                     sens_j = 1;
                 } else //DROITE
                 {
-                    origine_i = node.x() + RAYON * Math.sqrt(2.0) / 2.0;
-                    origine_j = node.y() - RAYON * Math.sqrt(2.0) / 2.0;
+                    origine_i = node.x() + rayon * Math.sqrt(2.0) / 2.0;
+                    origine_j = node.y() - rayon * Math.sqrt(2.0) / 2.0;
                     step_i = INTER;
                     step_j = -INTER;
                     sens_i = 1;

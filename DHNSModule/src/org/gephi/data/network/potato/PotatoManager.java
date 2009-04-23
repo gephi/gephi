@@ -60,4 +60,9 @@ public class PotatoManager {
     public void renderPotato(PotatoImpl potato) {
         render.renderPotato(potato);
     }
+
+    public int getTreeHeight()
+    {
+        return dhns.getTreeStructure().treeHeight;
+    }
 }
