@@ -65,13 +65,13 @@ public class FreeMode implements Mode, FreeModifier {
     public void init() {
         SightImpl sight = sightManager.getMainSight();
 
-        /*SightTreeIterator enabledNodes = new SightTreeIterator(treeStructure, sight);
+        SightTreeIterator enabledNodes = new SightTreeIterator(treeStructure, sight);
         for (; enabledNodes.hasNext();) {
-            PreNode n = enabledNodes.next();
-            NodeImpl ni = n.getNode();
-            ni.setX(n.getPre() * 50);
-            ni.setY(n.getPost() * 50);
-        }*/
+        PreNode n = enabledNodes.next();
+        NodeImpl ni = n.getNode();
+        ni.setX(n.getPre() * 50);
+        ni.setY(n.getPost() * 50);
+        }
         edgeProcessing.init(sightManager.getMainSight());
         sightManager.getMainSight().getSightCache().reset();
     }
@@ -89,7 +89,7 @@ public class FreeMode implements Mode, FreeModifier {
         dhns.getWriteLock().lock();
         if (node.getLevel() < treeStructure.treeHeight) {
             expand(((NodeImpl) node).getPreNode(), (SightImpl) sight);
-            sightManager.updateSight((SightImpl)sight);
+            sightManager.updateSight((SightImpl) sight);
         }
         dhns.getWriteLock().unlock();
     }
@@ -105,7 +105,10 @@ public class FreeMode implements Mode, FreeModifier {
 
     public void retractBlock(Node node, Sight sight) {
         dhns.getWriteLock().lock();
-        retract(((NodeImpl) node).getPreNode(), (SightImpl) sight);
+        if (node.getLevel() < treeStructure.treeHeight) {
+            retract(((NodeImpl) node).getPreNode(), (SightImpl) sight);
+            sightManager.updateSight((SightImpl)sight);
+        }
         dhns.getWriteLock().unlock();
     }
 
@@ -146,7 +149,7 @@ public class FreeMode implements Mode, FreeModifier {
 
     public void deleteNodeBlock(Node node) {
         dhns.getWriteLock().lock();
-        NodeImpl nodeImpl = (NodeImpl)node;
+        NodeImpl nodeImpl = (NodeImpl) node;
         deleteNode(nodeImpl.getPreNode());
         dhns.getDictionary().removeNode(nodeImpl.getPreNode());      //Dico
         dhns.getWriteLock().unlock();

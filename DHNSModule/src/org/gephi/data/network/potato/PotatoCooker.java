@@ -113,6 +113,9 @@ public class PotatoCooker {
             }
 
             pointer = treeStructure.getNodeAt(currentPre);
+            if (pointer.parent == null) {
+                return;
+            }
             currentPre = pointer.parent.pre;
 
             potato.setNode(pointer);
