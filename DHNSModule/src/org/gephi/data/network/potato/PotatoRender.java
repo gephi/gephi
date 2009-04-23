@@ -52,7 +52,7 @@ public class PotatoRender {
 
     private void loadConfig() {
         NB_SUBDIVISIONS = 4;
-        RAYON = 25f;
+        RAYON = 15f;
         INFLUENCE = 1f;
         RAYON_INFLUENCE_MAX = 100f;
         /*NB_SUBDIVISIONS = 2;

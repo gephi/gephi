@@ -82,7 +82,7 @@ public class Potato3dObject extends Object3dImpl<Potato> {
             for (float[] disk : obj.getDisks()) {
                 gl.glPushMatrix();
                 float size = disk[2];
-                gl.glTranslatef(disk[0], disk[1], 0f);
+                gl.glTranslatef(disk[0], disk[1], obj.z());
                 gl.glScalef(size, size, size);
                 gl.glCallList(modelType);
                 gl.glPopMatrix();
@@ -97,9 +97,9 @@ public class Potato3dObject extends Object3dImpl<Potato> {
                 gl.glColor3f(obj.r(), obj.g(), obj.b());
             }
             for (float[] triangle : obj.getTriangles()) {
-                gl.glVertex3f(triangle[0], triangle[1], 0f);
-                gl.glVertex3f(triangle[2], triangle[3], 0f);
-                gl.glVertex3f(triangle[4], triangle[5], 0f);
+                gl.glVertex3f(triangle[0], triangle[1], obj.z());
+                gl.glVertex3f(triangle[2], triangle[3], obj.z());
+                gl.glVertex3f(triangle[4], triangle[5], obj.z());
             }
         }
     }

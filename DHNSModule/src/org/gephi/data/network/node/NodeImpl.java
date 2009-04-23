@@ -57,6 +57,9 @@ public class NodeImpl implements Node {
     public NodeImpl() {
         x = ((float) Math.random()) * 2000 - 1000.0f;
         y = ((float) Math.random()) * 2000 - 1000.0f;
+        r = (float) Math.random();
+        g = (float) Math.random();
+        b = (float) Math.random();
     }
 
     public float x() {

@@ -158,7 +158,7 @@ public class PotatoImpl implements Potato {
     }
 
     public float z() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return -getLevel();
     }
 
     public void setX(float x) {
