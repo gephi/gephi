@@ -19,40 +19,48 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.gephi.data.attributes.api;
+package org.gephi.data.attributes.manager;
 
+import org.gephi.data.attributes.AbstractAttributeManager;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.type.StringList;
 
 /**
- * The different type an {@link AttributeColumn} can have.
  *
  * @author Mathieu Bastian
  */
-public enum AttributeType {
+public class IndexedAttributeManager extends AbstractAttributeManager {
 
-    FLOAT(Float.class),
-    DOUBLE(Double.class),
-    INT(Integer.class),
-    LONG(Long.class),
-    BOOLEAN(Boolean.class),
-    STRING(String.class),
-    LIST_STRING(StringList.class);
-    private final Class type;
+    protected DataIndex dataIndex;
 
-    AttributeType(Class type) {
-        this.type = type;
+    public IndexedAttributeManager()
+    {
+        super();
+        dataIndex = new DataIndex();
     }
 
     @Override
-    public String toString() {
-        return type.getSimpleName();
-    }
+	public Object getManagedValue(Object obj, AttributeType attributeType) {
+		switch(attributeType)
+		{
+		case BOOLEAN:
+			return dataIndex.pushData((Boolean)obj);
+		case FLOAT:
+			return dataIndex.pushData((Float)obj);
+		case INT:
+			return dataIndex.pushData((Integer)obj);
+		case STRING:
+			return dataIndex.pushData((String)obj);
+		case LIST_STRING:
+			return dataIndex.pushData((StringList)obj);
+		}
+		return obj;
+	}
 
-    public String getTypeString() {
-        return super.toString();
-    }
 
-    public Class getType() {
-        return type;
-    }
+	@Override
+	public void clear() {
+		super.clear();
+		dataIndex.clear();
+	}
 }

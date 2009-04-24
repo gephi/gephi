@@ -18,13 +18,28 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.gephi.data.attributes.manager;
 
-package org.gephi.data.attributes;
+import org.gephi.data.attributes.AbstractAttributeManager;
+import org.gephi.data.attributes.api.AttributeType;
 
 /**
+ * Specific manager for temporary storing of attributes. This is typically used when new attributes are
+ * imported in the system. No index system is required.
+ * <p>
  *
- * @author Mathieu
+ * @author Mathieu Bastian
+ * @see IndexedAttributeManager
  */
-public class StringList {
+public class TemporaryAttributeManager extends AbstractAttributeManager {
 
+    public TemporaryAttributeManager() {
+        super();
+    }
+
+    @Override
+    public Object getManagedValue(Object obj, AttributeType attributeType) {
+        return obj;
+    }
 }
+

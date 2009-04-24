@@ -22,12 +22,13 @@ package org.gephi.data.attributes;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.gephi.data.attributes.api.AttributeType;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class AbstractAttributeManager {
+public abstract class AbstractAttributeManager {
 
     //Classes
     private ConcurrentMap<String, AbstractAttributeClass> classMap;
@@ -40,5 +41,12 @@ public class AbstractAttributeManager {
         edgeClass = new EdgeAttributeClass();
         classMap.put(nodeClass.name, nodeClass);
         classMap.put(edgeClass.name, edgeClass);
+    }
+
+    public abstract Object getManagedValue(Object obj, AttributeType attributeType);
+
+    public void clear()
+    {
+        
     }
 }
