@@ -18,29 +18,27 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.data.attributes.manager;
 
-import org.gephi.data.attributes.AbstractAttributeManager;
-import org.gephi.data.attributes.api.AttributeType;
+package org.gephi.data.attributes;
+
+import org.gephi.data.attributes.manager.IndexedAttributeManager;
+import org.gephi.data.network.api.DhnsController;
 import org.gephi.data.network.api.SyncReader;
+import org.openide.util.Lookup;
 
 /**
- * Specific manager for temporary storing of attributes. This is typically used when new attributes are
- * imported in the system. No index system is required.
- * <p>
  *
  * @author Mathieu Bastian
- * @see IndexedAttributeManager
  */
-public class TemporaryAttributeManager extends AbstractAttributeManager {
+public class AttributeContollerImpl {
 
-    public TemporaryAttributeManager(SyncReader reader) {
-        super(reader);
-    }
+    private IndexedAttributeManager currentManager;
 
-    @Override
-    public Object getManagedValue(Object obj, AttributeType attributeType) {
-        return obj;
+    public AttributeContollerImpl()
+    {
+        DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
+        SyncReader reader = dhnsController.getSyncReader(dhnsController.getSightManager().getMainSight());
+
+        currentManager = new IndexedAttributeManager(reader);
     }
 }
-

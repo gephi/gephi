@@ -28,6 +28,7 @@ import org.gephi.data.attributes.api.AttributeClass;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.api.AttributeRow;
 
 /**
  *
@@ -36,16 +37,22 @@ import org.gephi.data.attributes.api.AttributeType;
 public abstract class AbstractAttributeClass implements AttributeClass {
 
     protected String name;
+    protected AbstractAttributeManager manager;
 
     //Columns
     protected List<AttributeColumnImpl> columns = new ArrayList<AttributeColumnImpl>();
     protected Map<String, AttributeColumnImpl> columnsMap = new HashMap<String, AttributeColumnImpl>();
 
-    public AbstractAttributeClass(String name) {
+    public AbstractAttributeClass(AbstractAttributeManager manager, String name) {
         this.name = name;
+        this.manager = manager;
     }
 
     public abstract String getName();
+
+    protected abstract void addColumnToData(AttributeColumnImpl column);
+
+    protected abstract void removeColumnFromData(AttributeColumnImpl column);
 
     public synchronized AttributeColumn[] getAttributeColumns() {
         return columns.toArray(new AttributeColumnImpl[]{});
@@ -69,6 +76,17 @@ public abstract class AbstractAttributeClass implements AttributeClass {
         columnsMap.put(id, column);
         if (title != null && !title.equals(id)) {
             columnsMap.put(title, column);
+        }
+    }
+
+    public synchronized void removeAttributeColumn(AttributeColumn column) {
+        //Remove rows values
+
+        //Remove from collections
+        columns.remove(column);
+        columnsMap.remove(column.getId());
+        if (column.getTitle() != null && !column.getTitle().equals(column.getId())) {
+            columnsMap.remove(column.getTitle());
         }
     }
 
@@ -96,8 +114,7 @@ public abstract class AbstractAttributeClass implements AttributeClass {
         return columnsMap.containsKey(title);
     }
 
-    public Object getManagedValue(Object object, AttributeType type)
-    {
-        return object;
+    public Object getManagedValue(Object object, AttributeType type) {
+        return manager.getManagedValue(object, type);
     }
 }

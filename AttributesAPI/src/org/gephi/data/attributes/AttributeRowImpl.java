@@ -22,13 +22,13 @@ package org.gephi.data.attributes;
 
 import java.util.Arrays;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributesRow;
+import org.gephi.data.attributes.api.AttributeRow;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class AttributeRowImpl implements AttributesRow {
+public class AttributeRowImpl implements AttributeRow {
 
     protected AbstractAttributeClass attributeClass;
     protected Object[] values;
@@ -53,7 +53,7 @@ public class AttributeRowImpl implements AttributesRow {
         }
     }
 
-    public void setValues(AttributesRow attributeRow) {
+    public void setValues(AttributeRow attributeRow) {
         setValues(((AttributeRowImpl) attributeRow).values);
     }
 

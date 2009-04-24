@@ -24,15 +24,13 @@ package org.gephi.data.attributes.api;
  *
  * @author Mathieu Bastian
  */
-public interface AttributesRow {
+public interface AttributeRow {
 
     public void reset();
 
     public void setValues(Object[] values);
 
-    public void setValues(AttributesRow attributeRow);
-
-    public void setValue(int index, Object value);
+    public void setValues(AttributeRow attributeRow);
 
     public void setValue(AttributeColumn column, Object value);
 
@@ -40,5 +38,4 @@ public interface AttributesRow {
 
     public Object getValue(String column);
 
-    public Object getValue(int index);
 }

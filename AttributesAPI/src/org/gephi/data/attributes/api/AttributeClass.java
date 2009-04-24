@@ -72,6 +72,12 @@ public interface AttributeClass {
     public void addAttributeColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue);
 
     /**
+     * If exists, remove the column and all rows values.
+     * @param column The column to remove
+     */
+    public void removeAttributeColumn(AttributeColumn column);
+
+    /**
      * Get the column at the current index of <code>null</code> if the index is not valid.
      */
     public AttributeColumn getAttributeColumn(int index);

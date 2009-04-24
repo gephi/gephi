@@ -20,6 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes;
 
+import java.util.Iterator;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeWrap;
 import org.openide.util.NbBundle;
 
 /**
@@ -28,12 +31,28 @@ import org.openide.util.NbBundle;
  */
 public class NodeAttributeClass extends AbstractAttributeClass {
 
-    public NodeAttributeClass() {
-        super("node");
+    public NodeAttributeClass(AbstractAttributeManager manager) {
+        super(manager, "node");
     }
 
     @Override
     public String getName() {
         return NbBundle.getMessage(NodeAttributeClass.class, "NodeAttributeClass_name");
+    }
+
+    @Override
+    protected void addColumnToData(AttributeColumnImpl column) {
+        manager.reader.lock();
+        for(Iterator<? extends NodeWrap> itr = manager.reader.getNodes();itr.hasNext();)
+        {
+            Node node = itr.next().getNode();
+            
+        }
+        manager.reader.unlock();
+    }
+
+    @Override
+    protected void removeColumnFromData(AttributeColumnImpl column) {
+       
     }
 }
