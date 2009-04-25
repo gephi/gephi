@@ -49,6 +49,11 @@ public class DhnsControllerImpl implements DhnsController {
         dhns = new Dhns();
     }
 
+    public Dhns getDhns()
+    {
+        return dhns;
+    }
+
     public SightManager getSightManager() {
         return dhns.getSightManager();
     }

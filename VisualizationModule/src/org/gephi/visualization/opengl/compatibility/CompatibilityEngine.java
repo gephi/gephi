@@ -60,6 +60,9 @@ public class CompatibilityEngine extends AbstractEngine {
     //Selection
     private ConcurrentLinkedQueue<Object3dImpl>[] selectedObjects;
 
+    //State
+    private boolean inited=false;
+
     public CompatibilityEngine() {
         super();
     }
@@ -142,7 +145,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public boolean updateWorld() {
-        if (dataBridge.requireUpdate()) {
+        if (inited && dataBridge.requireUpdate()) {
             dataBridge.updateWorld();
             return true;
         }
@@ -399,6 +402,7 @@ public class CompatibilityEngine extends AbstractEngine {
         initDisplayLists(gl, glu);
         scheduler.cameraMoved.set(true);
         scheduler.mouseMoved.set(true);
+        inited=true;
     }
 
     @Override

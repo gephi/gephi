@@ -51,6 +51,7 @@ public class PotatoImpl implements Potato {
     //Hierarchy
     private List<PotatoImpl> children;
     private PotatoImpl father;
+    private int level = 0;
 
     public PotatoImpl(PotatoManager potatoManager) {
         content = new ArrayList<NodeImpl>();
@@ -75,12 +76,10 @@ public class PotatoImpl implements Potato {
         manager.renderPotato(this);
     }
 
-    public void updatePotatoHierarchy()
-    {
+    public void updatePotatoHierarchy() {
         manager.renderPotato(this);
         PotatoImpl currentFather = father;
-        while(currentFather!=null)
-        {
+        while (currentFather != null) {
             manager.renderPotato(currentFather);
             currentFather = currentFather.father;
         }
@@ -127,9 +126,12 @@ public class PotatoImpl implements Potato {
         this.father = father;
     }
 
-    public int getLevel()
-    {
-        return manager.getTreeHeight() - node.getLevel();
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public List<float[]> getTriangles() {

@@ -37,6 +37,8 @@ public class PotatoManager {
     private PotatoRender render;
     private Dhns dhns;
 
+    private List<PotatoImpl> currentPotatoes;
+
     public PotatoManager(Dhns dhns) {
         this.dhns = dhns;
         render = new PotatoRender();
@@ -52,9 +54,9 @@ public class PotatoManager {
         }
 
         cooker.cookPotatoes(enabledNodes);
-        List<PotatoImpl> result = cooker.getPotatoes();
+        currentPotatoes = cooker.getPotatoes();
 
-        return result;
+        return currentPotatoes;
     }
 
     public void renderPotato(PotatoImpl potato) {
@@ -64,5 +66,21 @@ public class PotatoManager {
     public int getTreeHeight()
     {
         return dhns.getTreeStructure().treeHeight;
+    }
+
+    public PotatoRender getPotatoRender()
+    {
+        return render;
+    }
+
+    public void updatePotatoesRender()
+    {
+        if(currentPotatoes==null)
+            return;
+        
+        for(PotatoImpl p : currentPotatoes)
+        {
+            p.updatePotatoHierarchy();
+        }
     }
 }

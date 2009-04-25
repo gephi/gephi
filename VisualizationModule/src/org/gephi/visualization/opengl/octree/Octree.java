@@ -37,6 +37,7 @@ import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.api.Object3dImpl;
+import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.gleem.linalg.Vec3f;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 
@@ -45,11 +46,12 @@ import org.gephi.visualization.swing.GraphDrawableImpl;
  * @author Mathieu Bastian
  */
 public class Octree implements VizArchitecture {
-    //Architecture
 
+    //Architecture
     private GraphDrawableImpl drawable;
     private AbstractEngine engine;
     private GraphLimits limits;
+    private VizConfig config;
 
     //Attributes
     private int objectsIDs;
@@ -83,6 +85,7 @@ public class Octree implements VizArchitecture {
         this.engine = VizController.getInstance().getEngine();
         this.drawable = VizController.getInstance().getDrawable();
         this.limits = VizController.getInstance().getLimits();
+        this.config = VizController.getInstance().getVizConfig();
 
         leaves = new ParamAVLTree<Octant>(new AVLItemAccessor<Octant>() {
 
@@ -297,7 +300,8 @@ public class Octree implements VizArchitecture {
         for (Octant o : visibleLeaves) {
             o.displayOctreeNode(gl);
         }
-        gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
+        if(!config.isWireFrame())
+            gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
     }
 
     void addLeaf(Octant leaf) {

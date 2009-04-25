@@ -20,8 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -30,12 +28,7 @@ import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.config.DHNSConfig;
 import org.gephi.data.network.dictionary.DictionaryImpl;
 import org.gephi.data.network.mode.FreeMode;
-import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.node.treelist.SingleTreeIterator;
-import org.gephi.data.network.potato.PotatoImpl;
-import org.gephi.data.network.potato.PotatoCooker;
 import org.gephi.data.network.potato.PotatoManager;
-import org.gephi.data.network.potato.PotatoRender;
 import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.sight.SightManagerImpl;
 import org.gephi.data.network.tree.importer.CompleteTreeImporter;
@@ -65,18 +58,17 @@ public class Dhns {
 
     public void init(SightImpl sight) {
         importFakeGraph();
-        //treeStructure.showTreeAsTable();
+    //treeStructure.showTreeAsTable();
     }
 
-    public void endImport()
-    {
+    public void endImport() {
         freeMode.init();
     }
 
     private void importFakeGraph() {
         CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure, sightManager.getMainSight());
 
-        importer.importGraph(2, false);
+        importer.importGraph(3, false);
         //importer.shuffleEnable();
         System.out.println("Tree size : " + treeStructure.getTreeSize());
         //treeStructure.showTreeAsTable();
@@ -85,7 +77,7 @@ public class Dhns {
         reg.generatPhysicalEdges(10);
         freeMode.init();
 
-    
+
     }
 
     public TreeStructure getTreeStructure() {

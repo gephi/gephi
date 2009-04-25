@@ -37,17 +37,11 @@ public class PotatoCooker {
     private TreeStructure treeStructure;
     private PotatoManager potatoManager;
 
-    //Algo
-    private PreNode nextContextNode;
-    private int currentContextIndex = 1;
-    private int currentPre;
-    private int currentPost;
-    private int nextPre = 0;
-    private int nextPost = 0;
-    private PreNode pointer;
-
     //Result
     private List<PotatoImpl> potatoes;
+
+    //Config
+    private int levelLimit=1;
 
     public PotatoCooker(Dhns dhns, PotatoManager manager) {
         this.treeStructure = dhns.getTreeStructure();
@@ -123,12 +117,14 @@ public class PotatoCooker {
         for (int i = 0; i < size; i++) {
             PotatoImpl potato = potatoes.get(i);
             PreNode node = potato.getNode().getPreNode();
-            while (node.parent != null && node.parent.parent!=null) {
+            int level=1;
+            while (node.parent != null && node.parent.parent!=null && level <= levelLimit) {
                 PreNode parent = node.parent;
                 PotatoImpl parentPotato = parent.getPotato();
                 if (parentPotato == null) {
                     parentPotato = new PotatoImpl(potatoManager);
                     parentPotato.setNode(parent);
+                    parentPotato.setLevel(level);
                     potatoes.add(parentPotato);
                 }
                 parentPotato.addChild(potato);
@@ -136,6 +132,7 @@ public class PotatoCooker {
 
                 potato = parentPotato;
                 node = parent;
+                level++;
             }
         }
 
