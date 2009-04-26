@@ -18,15 +18,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.api;
+package org.gephi.layout.api;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface LayoutDataFactory {
+public interface LayoutController {
 
-    public NodeLayoutInterface getNodeLayout(Node node, Sight sight);
-
-    public EdgeLayoutInterface getEdgeLayout(Edge edge, Sight sight);
+    public void executeLayout();
 }

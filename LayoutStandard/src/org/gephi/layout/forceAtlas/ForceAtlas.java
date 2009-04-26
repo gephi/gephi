@@ -72,6 +72,8 @@ public class ForceAtlas extends AbstractForceVector {
         gravity = 30;
         outboundAttractionDistribution = false;
         adjustSizes = false;
+        speed = 1f;
+        cooling=1f;
     }
 
     public boolean testAlgo() {

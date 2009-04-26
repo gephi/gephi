@@ -90,7 +90,7 @@ public class LayoutReaderImpl<T extends NodeLayoutInterface, U extends EdgeLayou
         private int index = -1;
         private boolean inUse = false;
 
-        public NodeLayoutIterable(SightImpl sight,final LayoutDataFactory factory) {
+        public NodeLayoutIterable(final SightImpl sight,final LayoutDataFactory factory) {
             cache = sight.getSightCache();
             iterator = new Iterator<T>() {
 
@@ -106,7 +106,7 @@ public class LayoutReaderImpl<T extends NodeLayoutInterface, U extends EdgeLayou
                     NodeImpl ni =  nodes.get(index).getNode();
                     if(ni.getNodeLayout()==null)
                     {
-                        ni.setNodeLayout(factory.getNodeLayout(ni));
+                        ni.setNodeLayout(factory.getNodeLayout(ni,sight));
                     }
                     return (T)ni.getNodeLayout();
                 }
@@ -124,6 +124,7 @@ public class LayoutReaderImpl<T extends NodeLayoutInterface, U extends EdgeLayou
         public void reset() {
             nodes = cache.getCacheContent().getNodeCache();
             inUse = true;
+            index=-1;
         }
     }
 
@@ -134,7 +135,7 @@ public class LayoutReaderImpl<T extends NodeLayoutInterface, U extends EdgeLayou
         private List<DhnsEdge> edges;
         private int index = -1;
 
-        public EdgeIterable(SightImpl sight,final LayoutDataFactory factory) {
+        public EdgeIterable(final SightImpl sight,final LayoutDataFactory factory) {
             cache = sight.getSightCache();
             iterator = new Iterator<U>() {
 
@@ -146,7 +147,7 @@ public class LayoutReaderImpl<T extends NodeLayoutInterface, U extends EdgeLayou
                     EdgeImpl edge = edges.get(index).getEdge();
                     if(edge.getEdgeLayout()==null)
                     {
-                        edge.setEdgeLayout(factory.getEdgeLayout(edge));
+                        edge.setEdgeLayout(factory.getEdgeLayout(edge,sight));
                     }
                     return (U)edge.getEdgeLayout();
                 }
@@ -163,6 +164,7 @@ public class LayoutReaderImpl<T extends NodeLayoutInterface, U extends EdgeLayou
 
         public void reset() {
             edges = cache.getCacheContent().getEdgeCache();
+            index=-1;
         }
     }
 }

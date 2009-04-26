@@ -18,16 +18,31 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.layout;
 
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeLayoutInterface;
+import org.gephi.graph.api.LayoutDataFactory;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeLayoutInterface;
+import org.gephi.graph.api.Sight;
 import org.gephi.layout.api.Layout;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractForceVector implements Layout<NodeLayout, EdgeLayout> {
+public abstract class AbstractForceVector implements Layout<NodeLayout, EdgeLayout>, LayoutDataFactory {
 
+    public LayoutDataFactory getLayoutDataFactory() {
+        return this;
+    }
 
+    public EdgeLayoutInterface getEdgeLayout(Edge edge, Sight sight) {
+        return new EdgeLayout(edge,sight);
+    }
+
+    public NodeLayoutInterface getNodeLayout(Node node, Sight sight) {
+        return new NodeLayout(node,sight);
+    }
 }

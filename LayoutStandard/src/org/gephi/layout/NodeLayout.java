@@ -42,8 +42,9 @@ public class NodeLayout implements NodeLayoutInterface {
     public boolean fixed = false;
     public float freeze = 0f;
 
-    public NodeLayout(Node node) {
+    public NodeLayout(Node node, Sight sight) {
         this.node = node;
+        this.sight = sight;
     }
 
     public float x() {

@@ -25,6 +25,7 @@ import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.data.network.api.LayoutReader;
 import org.gephi.graph.api.EdgeLayoutInterface;
+import org.gephi.graph.api.LayoutDataFactory;
 import org.gephi.graph.api.NodeLayoutInterface;
 
 /**
@@ -52,4 +53,6 @@ public interface Layout<T extends NodeLayoutInterface ,U extends EdgeLayoutInter
     public void resetPropertiesValues();
 
     public JPanel getPanel();
+
+    public LayoutDataFactory getLayoutDataFactory();
 }
