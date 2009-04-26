@@ -24,6 +24,7 @@ import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.sight.SightImpl;
 import org.gephi.datastructure.avl.simple.SimpleAVLTree;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeLayoutInterface;
 import org.gephi.graph.api.Sight;
 
 /**
@@ -36,7 +37,7 @@ public class VirtualEdge implements DhnsEdge {
     protected PreNode preNodeTo;
     protected float cardinal = 0f;
     protected SimpleAVLTree physicalEdges;
-    protected Edge edge;
+    protected EdgeImpl edge;
     protected SightImpl sight;
 
     public VirtualEdge(PreNode preNodeFrom, PreNode preNodeTo, SightImpl sight) {
@@ -93,14 +94,14 @@ public class VirtualEdge implements DhnsEdge {
         return edge;
     }
 
-    public Edge getEdge() {
+    public EdgeImpl getEdge() {
         if(edge==null)
             initEdgeInstance();
         return edge;
     }
 
     public void setEdge(Edge edge) {
-        this.edge = edge;
+        this.edge = (EdgeImpl)edge;
     }
 
     public SightImpl getSight() {

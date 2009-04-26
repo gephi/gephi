@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network.api;
 
+import org.gephi.graph.api.LayoutDataFactory;
 import org.gephi.graph.api.Sight;
 
 /**
@@ -33,6 +34,8 @@ public interface DhnsController {
     public AsyncReader getAsyncReader(Sight sight);
 
     public SyncReader getSyncReader(Sight sight);
+
+    public LayoutReader getLayoutReader(Sight sight, LayoutDataFactory factory);
 
     public FreeModifier getFreeModifier();
 

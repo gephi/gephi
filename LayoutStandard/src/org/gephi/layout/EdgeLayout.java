@@ -18,39 +18,28 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.api;
+package org.gephi.layout;
+
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeLayoutInterface;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Node extends Renderable {
+public class EdgeLayout implements EdgeLayoutInterface {
 
-    public int getIndex();
+    protected Edge edge;
 
-    public int getLevel();
+    public EdgeLayout(Edge edge) {
+        this.edge = edge;
+    }
 
-    public String getLabel();
+    public NodeLayout getSource() {
+        return (NodeLayout) edge.getSource().getNodeLayout();
+    }
 
-    public void setLabel(String label);
-
-    public Iterable<? extends EdgeWrap> getEdges(Sight sight);
-
-    public Iterable<? extends EdgeWrap> getEdgesIn(Sight sight);
-
-    public Iterable<? extends EdgeWrap> getEdgesOut(Sight sight);
-
-    public int getInDegree(Sight sight);
-
-    public int getOutDegree(Sight sight);
-
-    public boolean containsEdge(Edge edge);
-
-    public boolean hasNeighbour(Node node, Sight sight);
-
-    public Iterable<? extends NodeWrap> getNeighbours(Sight sight);
-
-    public int countNeighbours(Sight sight);
-
-    public NodeLayoutInterface getNodeLayout();
+    public NodeLayout getTarget() {
+        return (NodeLayout) edge.getTarget().getNodeLayout();
+    }
 }

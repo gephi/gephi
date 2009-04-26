@@ -33,7 +33,7 @@ public class HierarchyEdge implements DhnsEdge {
 
     protected PreNode preNodeFrom;
     protected PreNode preNodeTo;
-    protected Edge edge;
+    protected EdgeImpl edge;
     protected Sight sight;
 
     public HierarchyEdge(PreNode preNodeFrom, PreNode preNodeTo, Sight sight) {
@@ -67,14 +67,14 @@ public class HierarchyEdge implements DhnsEdge {
         return edge;
     }
 
-    public Edge getEdge() {
+    public EdgeImpl getEdge() {
         if(edge==null)
             initEdgeInstance();
         return edge;
     }
 
     public void setEdge(Edge edge) {
-        this.edge = edge;
+        this.edge = (EdgeImpl)edge;
     }
 
     public SightImpl getSight() {

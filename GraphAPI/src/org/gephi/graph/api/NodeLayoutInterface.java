@@ -24,33 +24,13 @@ package org.gephi.graph.api;
  *
  * @author Mathieu Bastian
  */
-public interface Node extends Renderable {
+public interface NodeLayoutInterface {
 
-    public int getIndex();
+    public float x();
 
-    public int getLevel();
+    public float y();
 
-    public String getLabel();
+    public float size();
 
-    public void setLabel(String label);
-
-    public Iterable<? extends EdgeWrap> getEdges(Sight sight);
-
-    public Iterable<? extends EdgeWrap> getEdgesIn(Sight sight);
-
-    public Iterable<? extends EdgeWrap> getEdgesOut(Sight sight);
-
-    public int getInDegree(Sight sight);
-
-    public int getOutDegree(Sight sight);
-
-    public boolean containsEdge(Edge edge);
-
-    public boolean hasNeighbour(Node node, Sight sight);
-
-    public Iterable<? extends NodeWrap> getNeighbours(Sight sight);
-
-    public int countNeighbours(Sight sight);
-
-    public NodeLayoutInterface getNodeLayout();
+    public int getNeighboursCount();
 }

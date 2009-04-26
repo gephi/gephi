@@ -22,6 +22,7 @@ package org.gephi.data.network.node;
 
 import java.util.Iterator;
 import org.gephi.graph.api.EdgeWrap;
+import org.gephi.graph.api.NodeLayoutInterface;
 import org.gephi.graph.api.Sight;
 import org.gephi.data.network.edge.DhnsEdge;
 import org.gephi.data.network.edge.EdgeImpl;
@@ -53,6 +54,7 @@ public class NodeImpl implements Node {
 
     //Impl
     protected PreNode preNode;
+    protected NodeLayoutInterface nodeLayout;
 
     public NodeImpl() {
         x = ((float) Math.random()) * 2000 - 1000.0f;
@@ -89,10 +91,8 @@ public class NodeImpl implements Node {
         updatePositionFlag();
     }
 
-    private void updatePositionFlag()
-    {
-        if(obj!=null)
-        {
+    private void updatePositionFlag() {
+        if (obj != null) {
             obj.updatePositionFlag();
             preNode.touchPotatoes();
         }
@@ -174,6 +174,14 @@ public class NodeImpl implements Node {
         return preNode.level;
     }
 
+    public NodeLayoutInterface getNodeLayout() {
+        return nodeLayout;
+    }
+
+    public void setNodeLayout(NodeLayoutInterface nodeLayout) {
+        this.nodeLayout = nodeLayout;
+    }
+
     public int getInDegree(Sight sight) {
         return preNode.getVirtualEdgesIN(sight).getCount();
     }
@@ -213,6 +221,10 @@ public class NodeImpl implements Node {
         return new InOutNeighboursIterable(preNode.getVirtualEdgesIN(sight), preNode.getVirtualEdgesOUT(sight), preNode);
     }
 
+    public int countNeighbours(Sight sight) {
+        return getInDegree(sight) + getOutDegree(sight);
+    }
+
     /**
      * Utility Iterable for returning an Iterable instead of an Iterator in getEdges
      */
@@ -231,7 +243,7 @@ public class NodeImpl implements Node {
         }
     }
 
-     /**
+    /**
      * Utility Iterable for returning an Iterable instead of an Iterator in getNeighbours
      */
     private static class InOutNeighboursIterable implements Iterable<PreNode> {

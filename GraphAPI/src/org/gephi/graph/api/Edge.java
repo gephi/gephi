@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.graph.api;
 
 /**
@@ -26,6 +25,8 @@ package org.gephi.graph.api;
  * @author Mathieu Bastian
  */
 public interface Edge extends Renderable {
+
     public Node getSource();
+
     public Node getTarget();
 }

@@ -18,39 +18,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.api;
+
+package org.gephi.layout;
+
+import org.gephi.layout.api.Layout;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Node extends Renderable {
+public abstract class AbstractForceVector implements Layout<NodeLayout, EdgeLayout> {
 
-    public int getIndex();
 
-    public int getLevel();
-
-    public String getLabel();
-
-    public void setLabel(String label);
-
-    public Iterable<? extends EdgeWrap> getEdges(Sight sight);
-
-    public Iterable<? extends EdgeWrap> getEdgesIn(Sight sight);
-
-    public Iterable<? extends EdgeWrap> getEdgesOut(Sight sight);
-
-    public int getInDegree(Sight sight);
-
-    public int getOutDegree(Sight sight);
-
-    public boolean containsEdge(Edge edge);
-
-    public boolean hasNeighbour(Node node, Sight sight);
-
-    public Iterable<? extends NodeWrap> getNeighbours(Sight sight);
-
-    public int countNeighbours(Sight sight);
-
-    public NodeLayoutInterface getNodeLayout();
 }

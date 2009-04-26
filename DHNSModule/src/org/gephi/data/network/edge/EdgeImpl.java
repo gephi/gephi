@@ -22,6 +22,7 @@ package org.gephi.data.network.edge;
 
 import org.gephi.data.network.node.NodeImpl;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeLayoutInterface;
 import org.gephi.graph.api.Object3d;
 
 /**
@@ -41,14 +42,14 @@ public class EdgeImpl implements Edge {
 
     //Impl
     private DhnsEdge dhnsEdge;
+    private EdgeLayoutInterface edgeLayout;
 
     public EdgeImpl(NodeImpl source, NodeImpl target) {
         this.source = source;
         this.target = target;
     }
 
-    public EdgeImpl(DhnsEdge edge)
-    {
+    public EdgeImpl(DhnsEdge edge) {
         this.source = edge.getPreNodeFrom().getNode();
         this.target = edge.getPreNodeTo().getNode();
         this.dhnsEdge = edge;
@@ -144,5 +145,13 @@ public class EdgeImpl implements Edge {
 
     public DhnsEdge getDhnsEdge() {
         return dhnsEdge;
+    }
+
+    public EdgeLayoutInterface getEdgeLayout() {
+        return edgeLayout;
+    }
+
+    public void setEdgeLayout(EdgeLayoutInterface edgeLayout) {
+        this.edgeLayout = edgeLayout;
     }
 }

@@ -18,39 +18,38 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.api;
+
+package org.gephi.layout.api;
+
+import javax.swing.Icon;
+import javax.swing.JPanel;
+import org.gephi.data.network.api.LayoutReader;
+import org.gephi.graph.api.EdgeLayoutInterface;
+import org.gephi.graph.api.NodeLayoutInterface;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Node extends Renderable {
+public interface Layout<T extends NodeLayoutInterface ,U extends EdgeLayoutInterface> {
 
-    public int getIndex();
+    public String getName();
 
-    public int getLevel();
+    public String getDescription();
 
-    public String getLabel();
+    public Icon getIcon();
 
-    public void setLabel(String label);
+    public boolean testAlgo();
 
-    public Iterable<? extends EdgeWrap> getEdges(Sight sight);
+    public void initAlgo();
 
-    public Iterable<? extends EdgeWrap> getEdgesIn(Sight sight);
+    public void goAlgo(LayoutReader<T,U> reader);
 
-    public Iterable<? extends EdgeWrap> getEdgesOut(Sight sight);
+    public void endAlgo();
 
-    public int getInDegree(Sight sight);
+    public LayoutProperty[] getProperties();
 
-    public int getOutDegree(Sight sight);
+    public void resetPropertiesValues();
 
-    public boolean containsEdge(Edge edge);
-
-    public boolean hasNeighbour(Node node, Sight sight);
-
-    public Iterable<? extends NodeWrap> getNeighbours(Sight sight);
-
-    public int countNeighbours(Sight sight);
-
-    public NodeLayoutInterface getNodeLayout();
+    public JPanel getPanel();
 }
