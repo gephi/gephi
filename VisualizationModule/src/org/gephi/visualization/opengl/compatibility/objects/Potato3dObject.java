@@ -38,7 +38,7 @@ public class Potato3dObject extends Object3dImpl<Potato> {
 
     public int modelType;
     private ParamAVLTree<Octant> octantsTree;
-    private boolean underMouse = false;
+    protected boolean underMouse = false;
 
     public Potato3dObject(Potato potato) {
 
@@ -112,6 +112,13 @@ public class Potato3dObject extends Object3dImpl<Potato> {
                     return false;
                 }
             }
+
+            for(Potato p : obj.getInnerPotatoes())
+            {
+                Potato3dObject po = (Potato3dObject)p.getObject3d();
+                if(po.underMouse)
+                    return false;
+            }
             return true;
         }
         return false;
@@ -156,5 +163,12 @@ public class Potato3dObject extends Object3dImpl<Potato> {
 
     public void setUnderMouse(boolean underMouse) {
         this.underMouse = underMouse;
+    }
+
+    public boolean isParentUnderMouse() {
+        if (obj.getParent() != null && ((Potato3dObject) obj.getParent().getObject3d()).underMouse) {
+            return true;
+        }
+        return false;
     }
 }

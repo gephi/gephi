@@ -72,6 +72,14 @@ public class PotatoImpl implements Potato {
         return node;
     }
 
+    public Potato getParent() {
+        return father;
+    }
+
+    public List<? extends Potato> getInnerPotatoes() {
+        return children;
+    }
+
     public void updatePotato() {
         manager.renderPotato(this);
     }

@@ -138,7 +138,8 @@ public class CompatibilityEngine extends AbstractEngine {
             for (int i = 0; i < nbRecords; i++) {
                 int hit = hitsBuffer.get(i * 4 + 3) - 1; 		//-1 Because of the glPushName(0)
                 Potato3dObject obj = (Potato3dObject)array[hit];
-                obj.setUnderMouse(true);
+                if(!obj.isParentUnderMouse())
+                    obj.setUnderMouse(true);
             }
         }
     }

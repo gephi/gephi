@@ -35,6 +35,8 @@ public interface Potato extends Renderable {
 
     public Node getNode();
     public Iterable<? extends Node> getContent();
+    public Potato getParent();
+    public List<? extends Potato> getInnerPotatoes();
     public int countContent();
     public void updatePotato();
     public List<float[]> getTriangles();

@@ -45,6 +45,7 @@ public class CompatibilityPotatoInitializer implements CompatibilityObject3dInit
         Potato3dObject obj = new Potato3dObject(potato);
         obj.modelType = DISK_HIGH;
         obj.setObj(potato);
+        potato.setObject3d(obj);
 
         return obj;
     }
