@@ -29,5 +29,7 @@ import org.gephi.data.network.api.SyncReader;
  */
 public interface Statistics {
 
+    public String getName();
+
     public void execute(SyncReader synchReader);
 }

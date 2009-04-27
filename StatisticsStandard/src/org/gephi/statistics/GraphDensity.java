@@ -18,11 +18,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.statistics;
 
 import org.gephi.data.network.api.SyncReader;
 import org.gephi.statistics.api.Statistics;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -32,8 +34,14 @@ public class GraphDensity implements Statistics {
 
     public void execute(SyncReader synchReader) {
         int edgesCount = synchReader.getEdgeCount();
-		int nodesCount = synchReader.getNodeCount();
-		float density = (float)edgesCount/(nodesCount*nodesCount-nodesCount);
+        int nodesCount = synchReader.getNodeCount();
+        float density = (float) edgesCount / (nodesCount * nodesCount - nodesCount);
+        NotifyDescriptor.Message msg = new NotifyDescriptor.Message("Density: " + density);
+
+        DialogDisplayer.getDefault().notify(msg);
     }
 
+    public String getName() {
+        return NbBundle.getMessage(GraphDensity.class, "GraphDensity_name");
+    }
 }

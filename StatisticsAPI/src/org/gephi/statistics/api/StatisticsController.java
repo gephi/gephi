@@ -18,46 +18,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.gephi.statistics.api;
 
 import java.util.List;
-import org.gephi.data.network.api.DhnsController;
-import org.gephi.data.network.api.SyncReader;
-import org.openide.util.Lookup;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class StatisticsController {
-    
-    private static StatisticsController instance;
+public interface StatisticsController {
 
-    public synchronized static StatisticsController getInstance() {
-        if (instance == null) {
-            instance = new StatisticsController();
-        }
-        return instance;
-    }
-    //-----------------------
+    public List<Statistics> getStatistics();
 
-    private List<Statistics> statistics;
-
-    private StatisticsController() {
-        statistics.addAll(Lookup.getDefault().lookupAll(Statistics.class));
-    }
-
-    private void executeStat()
-    {
-        DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-        
-        SyncReader reader = dhnsController.getSyncReader(dhnsController.getSightManager().getSelectedSight());
-
-        for(Statistics stats : statistics)
-        {
-            reader.lock();
-            stats.execute(reader);
-            reader.unlock();
-        }
-    }
+    public void execute(Statistics statistics);
 }
