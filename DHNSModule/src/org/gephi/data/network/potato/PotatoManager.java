@@ -22,6 +22,9 @@ package org.gephi.data.network.potato;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.gephi.data.network.Dhns;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.node.treelist.SingleTreeIterator;
@@ -36,13 +39,15 @@ public class PotatoManager {
     private PotatoCooker cooker;
     private PotatoRender render;
     private Dhns dhns;
-
     private List<PotatoImpl> currentPotatoes;
+    private ExecutorService potatoRenderExecutor;
 
     public PotatoManager(Dhns dhns) {
         this.dhns = dhns;
         render = new PotatoRender();
         cooker = new PotatoCooker(dhns, this);
+
+        potatoRenderExecutor = Executors.newSingleThreadExecutor();
     }
 
     public List<PotatoImpl> cookPotatoes(SightImpl sight) {
@@ -59,27 +64,42 @@ public class PotatoManager {
         return currentPotatoes;
     }
 
-    public void renderPotato(PotatoImpl potato) {
-        render.renderPotato(potato);
+    public void renderPotato(final PotatoImpl potato, final boolean propagateAncestors) {
+        Future futur = potato.getDisplayTask();
+        if (futur != null) {
+            futur.cancel(false);
+        }
+
+        futur = potatoRenderExecutor.submit(new Runnable() {
+
+            public void run() {
+                render.renderPotato(potato);
+                if (propagateAncestors) {
+                    PotatoImpl currentFather = potato.getFather();
+                    while (currentFather != null) {
+                        render.renderPotato(currentFather);
+                        currentFather = currentFather.getFather();
+                    }
+                }
+            }
+        });
+        potato.setDisplayTask(futur);
     }
 
-    public int getTreeHeight()
-    {
+    public int getTreeHeight() {
         return dhns.getTreeStructure().treeHeight;
     }
 
-    public PotatoRender getPotatoRender()
-    {
+    public PotatoRender getPotatoRender() {
         return render;
     }
 
-    public void updatePotatoesRender()
-    {
-        if(currentPotatoes==null)
+    public void updatePotatoesRender() {
+        if (currentPotatoes == null) {
             return;
-        
-        for(PotatoImpl p : currentPotatoes)
-        {
+        }
+
+        for (PotatoImpl p : currentPotatoes) {
             p.updatePotatoHierarchy();
         }
     }

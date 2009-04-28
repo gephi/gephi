@@ -31,7 +31,7 @@ import org.gephi.data.network.api.DhnsController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Object3d;
-import org.gephi.graph.api.Potato;
+import org.gephi.data.network.api.Potato;
 import org.gephi.graph.api.Sight;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;

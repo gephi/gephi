@@ -24,7 +24,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JPanel;
-import org.gephi.graph.api.Potato;
+import org.gephi.data.network.api.Potato;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.api.Object3dImpl;
 import org.gephi.visualization.api.initializer.CompatibilityObject3dInitializer;

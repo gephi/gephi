@@ -113,16 +113,19 @@ public class CompatibilityEngine extends AbstractEngine {
             for (Iterator<Object3dImpl> itr = octree.getSelectedObjectIterator(CLASS_POTATO); itr.hasNext();) {
                 Potato3dObject obj = (Potato3dObject)itr.next();
                 obj.setUnderMouse(false);
-                array[hitName - 1] = obj;
-                gl.glLoadName(hitName);
-                obj.mark = false;
-                gl.glBegin(GL.GL_TRIANGLES);
-                obj.display(gl, glu);
-                gl.glEnd();
-                obj.mark = true;
-                obj.display(gl, glu);
-                obj.mark = false;
-                hitName++;
+                if(obj.isDisplayReady())
+                {
+                    array[hitName - 1] = obj;
+                    gl.glLoadName(hitName);
+                    obj.mark = false;
+                    gl.glBegin(GL.GL_TRIANGLES);
+                    obj.display(gl, glu);
+                    gl.glEnd();
+                    obj.mark = true;
+                    obj.display(gl, glu);
+                    obj.mark = false;
+                    hitName++;
+                }
             }
 
             //Restoring the original projection matrix

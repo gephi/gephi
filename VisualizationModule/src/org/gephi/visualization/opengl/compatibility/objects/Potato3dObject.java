@@ -25,7 +25,8 @@ import javax.media.opengl.glu.GLU;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.Potato;
+import org.gephi.data.network.api.Potato;
+import org.gephi.data.network.api.PotatoDisplay;
 import org.gephi.visualization.api.Object3dImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
@@ -39,6 +40,7 @@ public class Potato3dObject extends Object3dImpl<Potato> {
     public int modelType;
     private ParamAVLTree<Octant> octantsTree;
     protected boolean underMouse = false;
+    protected PotatoDisplay display = null;
 
     public Potato3dObject(Potato potato) {
 
@@ -71,35 +73,40 @@ public class Potato3dObject extends Object3dImpl<Potato> {
 
     @Override
     public void display(GL gl, GLU glu) {
-
-        //Disks
-        if (mark && obj.getDisks() != null) {
-            if (selected) {
-                gl.glColor3f(0.9f, 0.9f, 0.9f);
-            } else {
-                gl.glColor3f(obj.r(), obj.g(), obj.b());
-            }
-            for (float[] disk : obj.getDisks()) {
-                gl.glPushMatrix();
-                float size = disk[2];
-                gl.glTranslatef(disk[0], disk[1], obj.z());
-                gl.glScalef(size, size, size);
-                gl.glCallList(modelType);
-                gl.glPopMatrix();
-            }
+        if (mark) {
+            this.display = obj.getDisplay();
         }
 
-        //Triangles
-        if (!mark && obj.getTriangles() != null) {
-            if (selected) {
-                gl.glColor3f(0.9f, 0.9f, 0.9f);
-            } else {
-                gl.glColor3f(obj.r(), obj.g(), obj.b());
+        if (display != null) {
+            //Disks
+            if (mark) {
+                if (selected) {
+                    gl.glColor3f(0.9f, 0.9f, 0.9f);
+                } else {
+                    gl.glColor3f(obj.r(), obj.g(), obj.b());
+                }
+                for (float[] disk : display.getDisks()) {
+                    gl.glPushMatrix();
+                    float size = disk[2];
+                    gl.glTranslatef(disk[0], disk[1], obj.z());
+                    gl.glScalef(size, size, size);
+                    gl.glCallList(modelType);
+                    gl.glPopMatrix();
+                }
             }
-            for (float[] triangle : obj.getTriangles()) {
-                gl.glVertex3f(triangle[0], triangle[1], obj.z());
-                gl.glVertex3f(triangle[2], triangle[3], obj.z());
-                gl.glVertex3f(triangle[4], triangle[5], obj.z());
+
+            //Triangles
+            if (!mark) {
+                if (selected) {
+                    gl.glColor3f(0.9f, 0.9f, 0.9f);
+                } else {
+                    gl.glColor3f(obj.r(), obj.g(), obj.b());
+                }
+                for (float[] triangle : display.getTriangles()) {
+                    gl.glVertex3f(triangle[0], triangle[1], obj.z());
+                    gl.glVertex3f(triangle[2], triangle[3], obj.z());
+                    gl.glVertex3f(triangle[4], triangle[5], obj.z());
+                }
             }
         }
     }
@@ -113,11 +120,11 @@ public class Potato3dObject extends Object3dImpl<Potato> {
                 }
             }
 
-            for(Potato p : obj.getInnerPotatoes())
-            {
-                Potato3dObject po = (Potato3dObject)p.getObject3d();
-                if(po.underMouse)
+            for (Potato p : obj.getInnerPotatoes()) {
+                Potato3dObject po = (Potato3dObject) p.getObject3d();
+                if (po.underMouse) {
                     return false;
+                }
             }
             return true;
         }
@@ -170,5 +177,9 @@ public class Potato3dObject extends Object3dImpl<Potato> {
             return true;
         }
         return false;
+    }
+
+    public boolean isDisplayReady() {
+        return display != null;
     }
 }

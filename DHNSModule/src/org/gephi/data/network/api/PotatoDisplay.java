@@ -18,12 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package org.gephi.graph.api;
+package org.gephi.data.network.api;
 
 import java.util.List;
 
@@ -31,14 +26,21 @@ import java.util.List;
  *
  * @author Mathieu Bastian
  */
-public interface Potato extends Renderable {
+public class PotatoDisplay {
 
-    public Node getNode();
-    public Iterable<? extends Node> getContent();
-    public Potato getParent();
-    public List<? extends Potato> getInnerPotatoes();
-    public int countContent();
-    public void updatePotato();
-    public List<float[]> getTriangles();
-    public List<float[]> getDisks();
+    private List<float[]> triangles;
+    private List<float[]> disks;
+
+    public PotatoDisplay(List<float[]> triangles, List<float[]> disks) {
+        this.triangles = triangles;
+        this.disks = disks;
+    }
+
+    public List<float[]> getDisks() {
+        return disks;
+    }
+
+    public List<float[]> getTriangles() {
+        return triangles;
+    }
 }

@@ -26,7 +26,7 @@ import org.gephi.graph.api.NodeWrap;
 import org.gephi.data.network.api.AsyncReader;
 import org.gephi.data.network.sight.SightCacheContent;
 import org.gephi.data.network.sight.SightImpl;
-import org.gephi.graph.api.Potato;
+import org.gephi.data.network.api.Potato;
 
 /**
  *

@@ -24,7 +24,7 @@ import org.gephi.data.network.api.DhnsController;
 import org.gephi.data.network.api.FreeModifier;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Object3d;
-import org.gephi.graph.api.Potato;
+import org.gephi.data.network.api.Potato;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.objects.Object3dClass;

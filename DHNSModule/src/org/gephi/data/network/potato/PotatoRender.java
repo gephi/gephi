@@ -23,6 +23,7 @@ package org.gephi.data.network.potato;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import org.gephi.data.network.api.PotatoDisplay;
 import org.gephi.graph.api.Node;
 
 /**
@@ -365,8 +366,8 @@ public class PotatoRender {
         //System.out.println("Remaining: "+triangleBuffer.remaining());
         //triangleBuffer.flip();
         //System.out.println("Triangles : "+triangleBuffer.size()+ " pour "+potato.countContent());
-        potato.setTriangles(triangleBuffer);
-        potato.setDisks(disksBuffer);
+        PotatoDisplay display = new PotatoDisplay(triangleBuffer, disksBuffer);
+        potato.setDisplay(display);
     }
 
     public void createTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {

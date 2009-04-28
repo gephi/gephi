@@ -24,11 +24,13 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.concurrent.Future;
+import org.gephi.data.network.api.PotatoDisplay;
 import org.gephi.data.network.node.NodeImpl;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Object3d;
-import org.gephi.graph.api.Potato;
+import org.gephi.data.network.api.Potato;
 
 /**
  *
@@ -45,8 +47,8 @@ public class PotatoImpl implements Potato {
     private Object3d object3d;
 
     //Display
-    private List<float[]> triangles;
-    private List<float[]> disks;
+    private PotatoDisplay display;
+    private Future displayTask;
 
     //Hierarchy
     private List<PotatoImpl> children;
@@ -81,16 +83,12 @@ public class PotatoImpl implements Potato {
     }
 
     public void updatePotato() {
-        manager.renderPotato(this);
+        manager.renderPotato(this, false);
     }
 
     public void updatePotatoHierarchy() {
-        manager.renderPotato(this);
-        PotatoImpl currentFather = father;
-        while (currentFather != null) {
-            manager.renderPotato(currentFather);
-            currentFather = currentFather.father;
-        }
+        manager.renderPotato(this, true);
+
     }
 
     public Iterable<? extends Node> getContent() {
@@ -134,6 +132,10 @@ public class PotatoImpl implements Potato {
         this.father = father;
     }
 
+    public PotatoImpl getFather() {
+        return father;
+    }
+
     public int getLevel() {
         return level;
     }
@@ -142,20 +144,20 @@ public class PotatoImpl implements Potato {
         this.level = level;
     }
 
-    public List<float[]> getTriangles() {
-        return triangles;
+    public PotatoDisplay getDisplay() {
+        return display;
     }
 
-    public List<float[]> getDisks() {
-        return disks;
+    public void setDisplay(PotatoDisplay display) {
+        this.display = display;
     }
 
-    public void setTriangles(List<float[]> triangles) {
-        this.triangles = triangles;
+    public Future getDisplayTask() {
+        return displayTask;
     }
 
-    public void setDisks(List<float[]> disks) {
-        this.disks = disks;
+    public void setDisplayTask(Future displayTask) {
+        this.displayTask = displayTask;
     }
 
     //Renderable
