@@ -20,11 +20,24 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network.potato;
 
-import java.nio.FloatBuffer;
+import java.awt.Color;
+import java.awt.Polygon;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.PathIterator;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import org.gephi.data.network.api.PotatoDisplay;
 import org.gephi.graph.api.Node;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -35,10 +48,10 @@ public class PotatoRender {
 
     private PotatoImpl potato;
     //Config
-    private float RAYON_INFLUENCE_MAX=60f;
-    private int NB_SUBDIVISIONS=2;
-    private float INFLUENCE=0.79f;
-    private float RAYON=4f;
+    private float RAYON_INFLUENCE_MAX = 60f;
+    private int NB_SUBDIVISIONS = 2;
+    private float INFLUENCE = 0.79f;
+    private float RAYON = 4f;
     private double INTER;
 
     //Buffer
@@ -366,6 +379,7 @@ public class PotatoRender {
         //System.out.println("Remaining: "+triangleBuffer.remaining());
         //triangleBuffer.flip();
         //System.out.println("Triangles : "+triangleBuffer.size()+ " pour "+potato.countContent());
+        //computePolygon();
         PotatoDisplay display = new PotatoDisplay(triangleBuffer, disksBuffer);
         potato.setDisplay(display);
     }
@@ -388,5 +402,91 @@ public class PotatoRender {
 
     public void createCircle(float x, float y, float radius) {
         disksBuffer.add(new float[]{x, y, radius});
+    }
+
+    public void computePolygon() {
+        Area area = new Area();
+        for (int i = 0; i < triangleBuffer.size(); i++) {
+            float[] t = triangleBuffer.get(i);
+            Shape s = new Polygon(new int[]{(int) t[0], (int) t[2], (int) t[4]}, new int[]{(int) t[1], (int) t[3], (int) t[5]}, 3);
+            area.add(new Area(s));
+        }
+
+        for (int i = 0; i < disksBuffer.size(); i++) {
+            float[] d = disksBuffer.get(i);
+            Ellipse2D disk = new Ellipse2D.Float(d[0] - d[2], d[1] - d[2], d[2] * 2, d[2] * 2);
+            area.add(new Area(disk));
+        }
+
+        StringBuilder builder = new StringBuilder();
+        PathIterator itr = area.getPathIterator(new AffineTransform());
+        double[] coords = new double[6];
+
+        String svg = "<?xml version=\"1.0\" standalone=\"no\"?><!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">" +
+                "<svg stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"800\" height=\"600\" xmlns=\"http://www.w3.org/2000/svg\">";
+
+        while (!itr.isDone()) {
+            int element = itr.currentSegment(coords);
+            switch (element) {
+                case PathIterator.SEG_CLOSE:
+                    builder.append("Z ");
+                    break;
+                case PathIterator.SEG_CUBICTO:
+                    builder.append("C ");
+                    data(coords, 6, builder);
+                    break;
+                case PathIterator.SEG_LINETO:
+                    builder.append("L ");
+                    data(coords, 2, builder);
+                    break;
+                case PathIterator.SEG_MOVETO:
+                    builder.append("M ");
+                    data(coords, 2, builder);
+                    break;
+                case PathIterator.SEG_QUADTO:
+                    builder.append("Q ");
+                    data(coords, 4, builder);
+                    break;
+                default:
+                    throw new IllegalStateException("Unknown path element " + element);
+            }
+            itr.next();
+        }
+        builder.setLength(builder.length() - 1);
+
+        String path = builder.toString();
+        svg+=String.format("<path%s%s d='%s'/>%n", formatColor(Color.RED,"stroke"), formatColor(Color.BLUE, "fill"), path);
+        svg+="</svg>";
+        
+        File file = new File("o" + it + ".svg");
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            OutputStreamWriter writer = new OutputStreamWriter(out, Charset.forName("UTF-8"));
+            BufferedWriter fw = new BufferedWriter(writer);
+            fw.write(svg);
+            fw.close();
+        } catch (Exception e) {
+            Exceptions.printStackTrace(e);
+        }
+        it++;
+
+    }
+    private int it = 0;
+
+    private void data(double[] data, int length, StringBuilder builder) {
+        for (int i = 0; i <
+                length; i++) {
+            builder.append(String.format(Locale.US, "%f", data[i])).append(" ");
+        }
+    }
+
+    private static String formatColor(Color color, String prefix) {
+        if (color == null) {
+            return " " + prefix + "-opacity='0'";
+        } else {
+            return String.format(Locale.US,
+                    " %1$s-opacity='%5$f' %1$s='#%2$02x%3$02x%4$02x'", prefix, color.getRed(), color.getGreen(), color.getBlue(),
+                    color.getAlpha() / 256.);
+        }
     }
 }
