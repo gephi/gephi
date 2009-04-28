@@ -42,4 +42,6 @@ public interface DhnsController {
     public FlatImporter getFlatImport();
 
     public Dictionary getDictionary();
+
+    public String getPotatoesSVG();
 }

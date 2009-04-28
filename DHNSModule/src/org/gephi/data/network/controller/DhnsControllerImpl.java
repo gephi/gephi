@@ -87,5 +87,10 @@ public class DhnsControllerImpl implements DhnsController {
 
     public Dictionary getDictionary() {
         return dhns.getDictionary();
-    }    
+    }
+
+    public String getPotatoesSVG()
+    {
+        return dhns.getPotatoManager().getPotatoesSVG();
+    }
 }

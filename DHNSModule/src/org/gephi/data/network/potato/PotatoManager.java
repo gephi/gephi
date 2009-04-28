@@ -103,4 +103,9 @@ public class PotatoManager {
             p.updatePotatoHierarchy();
         }
     }
+
+    public String getPotatoesSVG()
+    {
+        return render.computePolygon(currentPotatoes);
+    }
 }

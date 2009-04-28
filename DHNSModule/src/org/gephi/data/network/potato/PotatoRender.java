@@ -404,80 +404,78 @@ public class PotatoRender {
         disksBuffer.add(new float[]{x, y, radius});
     }
 
-    public void computePolygon() {
-        Area area = new Area();
-        for (int i = 0; i < triangleBuffer.size(); i++) {
-            float[] t = triangleBuffer.get(i);
-            Shape s = new Polygon(new int[]{(int) t[0], (int) t[2], (int) t[4]}, new int[]{(int) t[1], (int) t[3], (int) t[5]}, 3);
-            area.add(new Area(s));
-        }
-
-        for (int i = 0; i < disksBuffer.size(); i++) {
-            float[] d = disksBuffer.get(i);
-            Ellipse2D disk = new Ellipse2D.Float(d[0] - d[2], d[1] - d[2], d[2] * 2, d[2] * 2);
-            area.add(new Area(disk));
-        }
-
-        StringBuilder builder = new StringBuilder();
-        PathIterator itr = area.getPathIterator(new AffineTransform());
-        double[] coords = new double[6];
+    public String computePolygon(List<PotatoImpl> potatoes) {
 
         String svg = "<?xml version=\"1.0\" standalone=\"no\"?><!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">" +
                 "<svg stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"800\" height=\"600\" xmlns=\"http://www.w3.org/2000/svg\">";
 
-        while (!itr.isDone()) {
-            int element = itr.currentSegment(coords);
-            switch (element) {
-                case PathIterator.SEG_CLOSE:
-                    builder.append("Z ");
-                    break;
-                case PathIterator.SEG_CUBICTO:
-                    builder.append("C ");
-                    data(coords, 6, builder);
-                    break;
-                case PathIterator.SEG_LINETO:
-                    builder.append("L ");
-                    data(coords, 2, builder);
-                    break;
-                case PathIterator.SEG_MOVETO:
-                    builder.append("M ");
-                    data(coords, 2, builder);
-                    break;
-                case PathIterator.SEG_QUADTO:
-                    builder.append("Q ");
-                    data(coords, 4, builder);
-                    break;
-                default:
-                    throw new IllegalStateException("Unknown path element " + element);
+        for (PotatoImpl pot : potatoes) {
+
+            List<float[]> triangleBuffer = pot.getDisplay().getTriangles();
+            List<float[]> disksBuffer = pot.getDisplay().getDisks();
+
+            Area area = new Area();
+            for (int i = 0; i < triangleBuffer.size(); i++) {
+                float[] t = triangleBuffer.get(i);
+                Shape s = new Polygon(new int[]{(int) t[0], (int) t[2], (int) t[4]}, new int[]{(int) t[1], (int) t[3], (int) t[5]}, 3);
+                area.add(new Area(s));
             }
-            itr.next();
-        }
-        builder.setLength(builder.length() - 1);
 
-        String path = builder.toString();
-        svg+=String.format("<path%s%s d='%s'/>%n", formatColor(Color.RED,"stroke"), formatColor(Color.BLUE, "fill"), path);
-        svg+="</svg>";
-        
-        File file = new File("o" + it + ".svg");
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            OutputStreamWriter writer = new OutputStreamWriter(out, Charset.forName("UTF-8"));
-            BufferedWriter fw = new BufferedWriter(writer);
-            fw.write(svg);
-            fw.close();
-        } catch (Exception e) {
-            Exceptions.printStackTrace(e);
-        }
-        it++;
+            for (int i = 0; i < disksBuffer.size(); i++) {
+                float[] d = disksBuffer.get(i);
+                Ellipse2D disk = new Ellipse2D.Float(d[0] - d[2], d[1] - d[2], d[2] * 2, d[2] * 2);
+                area.add(new Area(disk));
+            }
 
+            StringBuilder builder = new StringBuilder();
+            PathIterator itr = area.getPathIterator(new AffineTransform());
+            double[] coords = new double[6];
+
+            while (!itr.isDone()) {
+                int element = itr.currentSegment(coords);
+                switch (element) {
+                    case PathIterator.SEG_CLOSE:
+                        builder.append("Z ");
+                        break;
+                    case PathIterator.SEG_CUBICTO:
+                        builder.append("C ");
+                        data(coords, 6, builder);
+                        break;
+                    case PathIterator.SEG_LINETO:
+                        builder.append("L ");
+                        data(coords, 2, builder);
+                        break;
+                    case PathIterator.SEG_MOVETO:
+                        builder.append("M ");
+                        data(coords, 2, builder);
+                        break;
+                    case PathIterator.SEG_QUADTO:
+                        builder.append("Q ");
+                        data(coords, 4, builder);
+                        break;
+                    default:
+                        throw new IllegalStateException("Unknown path element " + element);
+                }
+                itr.next();
+            }
+            builder.setLength(builder.length() - 1);
+
+            String path = builder.toString();
+            svg += String.format("<path%s%s d='%s'/>%n", formatColor(pot.r(),pot.g(),pot.b(),1f, "stroke"), formatColor(pot.r(),pot.g(),pot.b(),0.5f, "fill"), path);
+        }
+        svg += "</svg>";
+        return svg;
     }
-    private int it = 0;
 
     private void data(double[] data, int length, StringBuilder builder) {
         for (int i = 0; i <
                 length; i++) {
             builder.append(String.format(Locale.US, "%f", data[i])).append(" ");
         }
+    }
+
+    private static String formatColor(float r, float g, float b, float a, String prefix) {
+        return formatColor(new Color(r, g, b, a), prefix);
     }
 
     private static String formatColor(Color color, String prefix) {
