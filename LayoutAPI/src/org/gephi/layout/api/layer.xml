@@ -23,7 +23,9 @@
             <file name="LayoutTopComponent.settings" url="LayoutTopComponentSettings.xml"/>
         </folder>
         <folder name="Modes">
-            <folder name="leftSlidingSide">
+            
+            <file name="layoutmode.wsmode" url="layoutWsmode.xml"/>
+            <folder name="layoutmode">
                 <file name="LayoutTopComponent.wstcref" url="LayoutTopComponentWstcref.xml"/>
             </folder>
         </folder>

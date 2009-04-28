@@ -23,8 +23,8 @@
             <file name="DataExplorerTopComponent.settings" url="DataExplorerTopComponentSettings.xml"/>
         </folder>
         <folder name="Modes">
-            <folder name="editor">
-                <file name="DataExplorerTopComponent.wstcref" url="DataExplorerTopComponentWstcref.xml"/>
+            <folder name="graphmode">
+                <file name="DataExplorerTopComponent.wstcref" url="GraphTopComponentWstcref.xml"/>
             </folder>
         </folder>
     </folder>

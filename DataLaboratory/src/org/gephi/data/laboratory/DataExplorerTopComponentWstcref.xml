@@ -3,5 +3,5 @@
 <tc-ref version="2.0" >
     <module name="org.gephi.data.laboratory" spec="1.0"/>
     <tc-id id="DataExplorerTopComponent"/>
-    <state opened="false"/>
+    <state opened="true"/>
 </tc-ref>

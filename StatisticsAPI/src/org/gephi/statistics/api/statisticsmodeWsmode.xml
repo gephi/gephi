@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mode version="2.3">
+    <name unique="statisticsmode" />
+  <kind type="editor" />
+  <state type="joined" />
+  <constraints>
+    <path orientation="horizontal" number="0" weight="0.25"/>
+    <path orientation="vertical" number="0" weight="0.3916083916083916"/>
+  </constraints>
+  <bounds x="0" y="0" width="0" height="0" />
+  <frame state="0"/>
+    <active-tc  id="StatisticsTopComponent" />
+    <empty-behavior permanent="false"/>
+</mode>

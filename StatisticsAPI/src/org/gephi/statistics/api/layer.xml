@@ -23,9 +23,11 @@
             <file name="StatisticsTopComponent.settings" url="StatisticsTopComponentSettings.xml"/>
         </folder>
         <folder name="Modes">
-            <folder name="properties">
+            
+            <folder name="statisticsmode">
                 <file name="StatisticsTopComponent.wstcref" url="StatisticsTopComponentWstcref.xml"/>
             </folder>
+            <file name="statisticsmode.wsmode" url="statisticsmodeWsmode.xml"/>
         </folder>
     </folder>
 </filesystem>
