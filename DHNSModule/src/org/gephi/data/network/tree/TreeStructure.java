@@ -127,13 +127,14 @@ public class TreeStructure {
         }
     }
 
-    public void showTreeAsTable() {
-        System.out.println("pre\tsize\tlevel\tparent\tpost\tpreTrace");
+    public void showTreeAsTable(SightImpl sight) {
+        System.out.println("pre\tsize\tlevel\tparent\tpost\tpreTrace\tenabled");
         System.out.println("-------------------------------------------------------");
 
         int pre = 0;
         for (PreNode p : tree) {
-            System.out.println(p.pre + "\t" + p.size + "\t" + p.level + "\t" + p.parent + "\t" + p.post + "\t" + p.preTrace);
+            boolean enabled = p.isEnabled(sight);
+            System.out.println(p.pre + "\t" + p.size + "\t" + p.level + "\t" + p.parent + "\t" + p.post + "\t" + p.preTrace + "\t" + enabled);
             pre++;
         }
     }

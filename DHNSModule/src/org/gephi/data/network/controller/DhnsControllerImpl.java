@@ -26,6 +26,7 @@ import org.gephi.data.network.api.FlatImporter;
 import org.gephi.data.network.api.FreeModifier;
 import org.gephi.data.network.api.AsyncReader;
 import org.gephi.data.network.api.DhnsController;
+import org.gephi.data.network.api.HierarchyImporter;
 import org.gephi.data.network.api.LayoutReader;
 import org.gephi.data.network.api.SightManager;
 import org.gephi.graph.api.Sight;
@@ -35,6 +36,7 @@ import org.gephi.data.network.reader.LayoutReaderImpl;
 import org.gephi.data.network.reader.SyncReaderImpl;
 import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.tree.importer.FlatImporterImpl;
+import org.gephi.data.network.tree.importer.HierarchyImporterImpl;
 import org.gephi.graph.api.LayoutDataFactory;
 
 
@@ -81,8 +83,12 @@ public class DhnsControllerImpl implements DhnsController {
         return dhns.getFreeModifier();
     }
 
-    public FlatImporter getFlatImport() {
+    public FlatImporter getFlatImporter() {
         return new FlatImporterImpl(dhns);
+    }
+
+    public HierarchyImporter getHierarchyImporter() {
+        return new HierarchyImporterImpl(dhns);
     }
 
     public Dictionary getDictionary() {

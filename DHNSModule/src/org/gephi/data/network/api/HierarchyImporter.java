@@ -20,30 +20,24 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network.api;
 
-import org.gephi.graph.api.LayoutDataFactory;
-import org.gephi.graph.api.Sight;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Node;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface DhnsController {
+public interface HierarchyImporter {
 
-    public SightManager getSightManager();
+    public void initImport();
 
-    public AsyncReader getAsyncReader(Sight sight);
+    public void addChild();
 
-    public SyncReader getSyncReader(Sight sight);
+    public void closeChild();
 
-    public LayoutReader getLayoutReader(Sight sight, LayoutDataFactory factory);
+    public void addSibling(Node node);
 
-    public FreeModifier getFreeModifier();
+    public void addEdge(Edge edge);
 
-    public FlatImporter getFlatImporter();
-
-    public HierarchyImporter getHierarchyImporter();
-
-    public Dictionary getDictionary();
-
-    public String getPotatoesSVG();
+    public void finishImport();
 }

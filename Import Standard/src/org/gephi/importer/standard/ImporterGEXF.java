@@ -67,7 +67,16 @@ public class ImporterGEXF implements XMLImporter {
                 int nodeId = Integer.parseInt(nodeE.getAttribute("id"));
                 node.setId(String.valueOf(nodeId));
 
-                containter.addNode(node);
+                //Parent
+                if (!nodeE.getAttribute("pid").isEmpty() && !nodeE.getAttribute("pid").equals("0")) {
+                    int parentId = Integer.parseInt(nodeE.getAttribute("pid"));
+                    containter.addNode(node, containter.getNode(String.valueOf(parentId)));
+                }
+                else
+                {
+                    containter.addNode(node);
+                }
+                
 
 
                 //Node properties
@@ -117,7 +126,10 @@ public class ImporterGEXF implements XMLImporter {
 
                 NodeDraft nodeSource = containter.getNode(String.valueOf(edgeSource));
                 NodeDraft nodeTarget = containter.getNode(String.valueOf(edgeTarget));
-
+                if(nodeSource==null || nodeTarget==null)
+                {
+                    throw new NullPointerException(edgeSource+"  "+edgeTarget);
+                }
                 edge.setNodeSource(nodeSource);
                 edge.setNodeTarget(nodeTarget);
 

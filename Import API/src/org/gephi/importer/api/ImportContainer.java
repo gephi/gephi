@@ -39,4 +39,8 @@ public interface ImportContainer {
     public Collection<NodeDraft> getNodes();
 
     public Collection<EdgeDraft> getEdges();
+
+    public boolean hasHierarchy();
+
+    public void addNode(NodeDraft node, NodeDraft parent);
 }

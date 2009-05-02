@@ -107,7 +107,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
         for (; itr.hasNext();) {
             NodeWrap preNode = itr.next();
             Node node = preNode.getNode();
-
+            
             Object3d obj = node.getObject3d();
             if (obj == null) {
                 //Object3d is null, ADD
@@ -117,8 +117,6 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
                 engine.addObject(AbstractEngine.CLASS_NODE, (Object3dImpl) obj);
             }
             obj.setCacheMarker(cacheMarker);
-
-            node.setSize(10f);
         }
     }
 

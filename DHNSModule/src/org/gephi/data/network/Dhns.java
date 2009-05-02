@@ -57,24 +57,25 @@ public class Dhns {
     }
 
     public void init(SightImpl sight) {
-        importFakeGraph();
+       importFakeGraph();
     //treeStructure.showTreeAsTable();
     }
 
     public void endImport() {
         freeMode.init();
+        //treeStructure.showTreeAsTable(sightManager.getMainSight());
     }
 
     private void importFakeGraph() {
         CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure, sightManager.getMainSight());
 
-        importer.importGraph(3, false);
+        importer.importGraph(5, true);
         //importer.shuffleEnable();
         System.out.println("Tree size : " + treeStructure.getTreeSize());
         //treeStructure.showTreeAsTable();
 
         RandomEdgesGenerator reg = new RandomEdgesGenerator(treeStructure);
-        reg.generatPhysicalEdges(10);
+        reg.generatPhysicalEdges(300);
         freeMode.init();
 
 

@@ -24,6 +24,7 @@ import org.gephi.data.network.api.DhnsController;
 import org.gephi.data.network.api.Dictionary;
 import org.gephi.data.network.api.EdgeFactory;
 import org.gephi.data.network.api.FlatImporter;
+import org.gephi.data.network.api.HierarchyImporter;
 import org.gephi.data.network.api.NodeFactory;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.graph.api.Edge;
@@ -43,34 +44,84 @@ public class DynamicControllerImpl implements DynamicController {
         DhnsController controller = Lookup.getDefault().lookup(DhnsController.class);
         Dictionary dico = controller.getDictionary();
 
-        FlatImporter flatImporter = controller.getFlatImport();
-        flatImporter.initImport();
+        if (container.hasHierarchy()) {
 
-        //Nodes
-        for (NodeDraft nodeDraft : container.getNodes()) {
-            Node existingNode = dico.getNode(nodeDraft.getLabel());
-            if (existingNode == null) {
-                existingNode = NodeFactory.createNode();
-                nodeDraft.flushToNode(existingNode);
+            HierarchyImporter hierarchyImporter = controller.getHierarchyImporter();
+            hierarchyImporter.initImport();
 
-                flatImporter.addNode(existingNode);
+
+            //Nodes - HACK
+            for(NodeDraft nodeDraft : container.getNodes())
+            {
+                if(nodeDraft.getChildren().size()>0)
+                {
+                    Node n = NodeFactory.createNode();
+                    nodeDraft.flushToNode(n);
+
+                    hierarchyImporter.addSibling(n);
+                    hierarchyImporter.addChild();
+                    for(NodeDraft child : nodeDraft.getChildren())
+                    {
+                        Node nc = NodeFactory.createNode();
+                        child.flushToNode(nc);
+                        hierarchyImporter.addSibling(nc);
+                    }
+                    hierarchyImporter.closeChild();
+                }
+                else if(!nodeDraft.hasParent)
+                {
+                   // Node a = NodeFactory.createNode();
+                    //nodeDraft.flushToNode(a);
+
+                    //hierarchyImporter.addSibling(a);
+                }
             }
+
+            //Edges
+            /*for (EdgeDraft edgeDraft : container.getEdges()) {
+                Node nodeSource = edgeDraft.getNodeSource().getNode();
+                Node nodeTarget = edgeDraft.getNodeTarget().getNode();
+                
+                Edge existingEdge = dico.getEdge(nodeSource, nodeTarget);
+                if (existingEdge == null) {
+                    existingEdge = EdgeFactory.createEdge(nodeSource, nodeTarget);
+                    edgeDraft.flushToEdge(existingEdge);
+
+                    hierarchyImporter.addEdge(existingEdge);
+                }
+            }*/
+            hierarchyImporter.finishImport();
+
+        } else {
+            FlatImporter flatImporter = controller.getFlatImporter();
+            flatImporter.initImport();
+
+            //Nodes
+            for (NodeDraft nodeDraft : container.getNodes()) {
+                Node existingNode = dico.getNode(nodeDraft.getLabel());
+                if (existingNode == null) {
+                    existingNode = NodeFactory.createNode();
+                    nodeDraft.flushToNode(existingNode);
+
+                    flatImporter.addNode(existingNode);
+                }
+            }
+
+            //Edges
+            for (EdgeDraft edgeDraft : container.getEdges()) {
+                Node nodeSource = edgeDraft.getNodeSource().getNode();
+                Node nodeTarget = edgeDraft.getNodeTarget().getNode();
+
+                Edge existingEdge = dico.getEdge(nodeSource, nodeTarget);
+                if (existingEdge == null) {
+                    existingEdge = EdgeFactory.createEdge(nodeSource, nodeTarget);
+                    edgeDraft.flushToEdge(existingEdge);
+
+                    flatImporter.addEdge(existingEdge);
+                }
+            }
+
+            flatImporter.finishImport();
         }
-
-        //Edges
-        for (EdgeDraft edgeDraft : container.getEdges()) {
-            Node nodeSource = edgeDraft.getNodeSource().getNode();
-            Node nodeTarget = edgeDraft.getNodeTarget().getNode();
-
-            Edge existingEdge = dico.getEdge(nodeSource, nodeTarget);
-            if (existingEdge == null) {
-                existingEdge = EdgeFactory.createEdge(nodeSource, nodeTarget);
-                edgeDraft.flushToEdge(existingEdge);
-
-                flatImporter.addEdge(existingEdge);
-            } 
-        }
-
-        flatImporter.finishImport();
     }
 }

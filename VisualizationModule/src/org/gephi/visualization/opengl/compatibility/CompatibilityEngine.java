@@ -469,7 +469,7 @@ public class CompatibilityEngine extends AbstractEngine {
                         }
                         selectedObjects[i].add(obj);
                     }
-                    obj.markTime = markTime;
+                    obj.selectionMark = markTime;
                 } else if (currentSelectionArea.unselect(obj.getObj())) {
                     if (vizEventManager.hasSelectionListeners() && obj.isSelected()) {
                         unSelectedObjects.add(obj);
@@ -479,7 +479,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
             for (Iterator<Object3dImpl> itr = selectedObjects[i].iterator(); itr.hasNext();) {
                 Object3dImpl o = itr.next();
-                if (o.markTime != markTime) {
+                if (o.selectionMark != markTime) {
                     itr.remove();
                     o.setSelected(false);
                 }

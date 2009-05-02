@@ -51,6 +51,7 @@ public abstract class Object3dImpl<ObjectType extends Renderable> implements Obj
     //Flags
     protected boolean selected;
     public long markTime = 0;
+    public long selectionMark = 0;
     public boolean mark = false;
 
     public abstract int[] octreePosition(float centerX, float centerY, float centerZ, float size);

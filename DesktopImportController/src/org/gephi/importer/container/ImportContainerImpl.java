@@ -38,6 +38,9 @@ public class ImportContainerImpl implements ImportContainer {
     private HashMap<String, NodeDraft> nodeMap;
     private HashMap<String, EdgeDraft> edgeMap;
 
+    //States
+    private boolean hasHierarchy=false;
+
     public ImportContainerImpl() {
         parameters = new ImportContainerParameters();
         nodeMap = new HashMap<String, NodeDraft>();
@@ -109,6 +112,18 @@ public class ImportContainerImpl implements ImportContainer {
                 n.setLabel(n.getId());
             }
         }
+    }
+
+    public boolean hasHierarchy() {
+        return hasHierarchy;
+    }
+
+    public void addNode(NodeDraft node, NodeDraft parent) {
+        addNode(node);
+        parent.addChild(node);
+        node.hasParent=true;
+
+        hasHierarchy=true;
     }
 
     public Collection<NodeDraft> getNodes() {

@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.importer.api;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.graph.api.Node;
 
 /**
@@ -31,6 +33,8 @@ public class NodeDraft {
 
     private String id;
     private String label;
+    private List<NodeDraft> children = new ArrayList();
+    public boolean hasParent=false;
 
     //Viz attributes
     private Color color;
@@ -106,6 +110,16 @@ public class NodeDraft {
         return node;
     }
 
+    public void addChild(NodeDraft child)
+    {
+        children.add(child);
+    }
+
+    public List<NodeDraft> getChildren()
+    {
+        return children;
+    }
+
     public void flushToNode(Node node) {
         setNode(node);
         if (color != null) {
@@ -118,13 +132,13 @@ public class NodeDraft {
             node.setLabel(label);
 
         if (x != 0) {
-            node.setX(x);
+            node.setX(x*13);
         }
         if (y != 0) {
-            node.setY(y);
+            node.setY(y*13);
         }
         if (z != 0) {
-            node.setZ(z);
+            node.setZ(z*13);
         }
 
         if (size != 0) {

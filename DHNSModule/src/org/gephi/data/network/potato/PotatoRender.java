@@ -62,7 +62,7 @@ public class PotatoRender {
     public PotatoRender() {
     }
 
-    private void loadConfig() {
+    private void loadConfig(Node node) {
         NB_SUBDIVISIONS = 4;
 
         switch (potato.getLevel()) {
@@ -84,7 +84,13 @@ public class PotatoRender {
 
         }
 
+        //float score = node.getSize() + 10*potato.getLevel();
+        //RAYON = score*0.7f+10;
+        //INFLUENCE = 1-score*0.019f;
+        //RAYON_INFLUENCE_MAX = score*3 + 50f;
+
         INTER = RAYON * Math.sqrt(2.0) / NB_SUBDIVISIONS;
+        //System.out.println("potatorender "+potato.getNode().getIndex()+"   score="+score);
     }
 
     public void setConfig(float radius, float radius_max, float influence) {
@@ -158,12 +164,12 @@ public class PotatoRender {
 
     public void renderPotato(PotatoImpl potato) {
         this.potato = potato;
-        loadConfig();
+        
         triangleBuffer = new ArrayList<float[]>();
         disksBuffer = new ArrayList<float[]>();
 
         for (Node node : potato.getContent()) {
-
+            loadConfig(node);
             //DESSINE LE DISQUE MINIMAL AUTOUR DU NOEUD
             createCircle(node.x(), node.y(), RAYON);
 
@@ -382,6 +388,7 @@ public class PotatoRender {
         //computePolygon();
         PotatoDisplay display = new PotatoDisplay(triangleBuffer, disksBuffer);
         potato.setDisplay(display);
+        System.out.println("potatorender "+potato.getNode().getIndex());
     }
 
     public void createTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {

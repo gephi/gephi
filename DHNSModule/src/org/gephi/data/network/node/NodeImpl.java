@@ -62,6 +62,8 @@ public class NodeImpl implements Node {
         r = (float) Math.random();
         g = (float) Math.random();
         b = (float) Math.random();
+        //size= 10f;
+        size = ((float)Math.random()) * 20 + 10;
     }
 
     public float x() {
