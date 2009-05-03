@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.importer.api.EdgeDraft;
 import org.gephi.importer.api.FileType;
 import org.gephi.importer.api.ImportContainer;
@@ -47,6 +49,10 @@ public class ImporterGDF implements TextImporter {
     //Matcher
     private String[] nodeLineStart;
     private String[] edgeLineStart;
+
+    //Columns
+    private GDFColumn[] nodeColumns;
+    private GDFColumn[] edgeColumns;
 
     public ImporterGDF() {
         nodeLineStart = new String[]{"nodedef>name", "nodedef> name", "Nodedef>name", "Nodedef> name"};
@@ -80,6 +86,8 @@ public class ImporterGDF implements TextImporter {
                             if (count == 0) {
                                 //Id
                                 node.setId(data);
+                            } else if (count < nodeColumns.length) {
+                                setNodeData(node,nodeColumns[count], data);
                             }
                         }
                     }
@@ -110,6 +118,10 @@ public class ImporterGDF implements TextImporter {
                             } else if (count == 1) {
                                 NodeDraft nodeTarget = containter.getNode(data);
                                 edge.setNodeTarget(nodeTarget);
+                            }
+                            else if(count < edgeColumns.length)
+                            {
+                                setEdgeData(edge, edgeColumns[count], data);
                             }
                         }
                     }
@@ -158,10 +170,123 @@ public class ImporterGDF implements TextImporter {
         }
     }
 
-    private void findNodeColumns(String line) {
+    private void findNodeColumns(String line) throws ImportException {
+        String[] columns = line.split(",");
+        nodeColumns = new GDFColumn[columns.length - 1];
+
+        for (int i = 1; i < columns.length; i++) {
+            String columnString = columns[i];
+            String typeString;
+            String columnName;
+            AttributeType type = AttributeType.STRING;
+            try {
+                typeString = columnString.substring(columnString.lastIndexOf(" ")).toLowerCase();
+                columnName = columnString.substring(0, columnString.lastIndexOf(" "));
+            } catch (IndexOutOfBoundsException e) {
+                throw new ImportException(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat2"));
+            }
+
+            if (typeString.isEmpty() || columnName.isEmpty()) {
+                throw new ImportException(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat2"));
+            }
+
+            if (typeString.equals("varchar")) {
+                type = AttributeType.STRING;
+            } else if (typeString.equals("bool")) {
+                type = AttributeType.BOOLEAN;
+            } else if (typeString.equals("integer")) {
+                type = AttributeType.INT;
+            } else if (typeString.equals("tinyint")) {
+                type = AttributeType.INT;
+            } else if (typeString.equals("int")) {
+                type = AttributeType.INT;
+            } else if (typeString.equals("double")) {
+                type = AttributeType.DOUBLE;
+            } else if (typeString.equals("float")) {
+                type = AttributeType.FLOAT;
+            }
+
+            if (columnName.equals("x")) {
+                nodeColumns[i - 1] = new GDFColumn(GDFColumn.NodeGuessColumn.X);
+            } else if (columnName.equals("y")) {
+                nodeColumns[i - 1] = new GDFColumn(GDFColumn.NodeGuessColumn.Y);
+            } else if (columnName.equals("visible")) {
+                nodeColumns[i - 1] = new GDFColumn(GDFColumn.NodeGuessColumn.VISIBLE);
+            } else if (columnName.equals("color")) {
+                nodeColumns[i - 1] = new GDFColumn(GDFColumn.NodeGuessColumn.COLOR);
+            } else if (columnName.equals("fixed")) {
+                nodeColumns[i - 1] = new GDFColumn(GDFColumn.NodeGuessColumn.FIXED);
+            } else if (columnName.equals("style")) {
+                nodeColumns[i - 1] = new GDFColumn(GDFColumn.NodeGuessColumn.STYLE);
+            } else if (columnName.equals("width")) {
+                nodeColumns[i - 1] = new GDFColumn(GDFColumn.NodeGuessColumn.WIDTH);
+            } else if (columnName.equals("height")) {
+                nodeColumns[i - 1] = new GDFColumn(GDFColumn.NodeGuessColumn.HEIGHT);
+            } else if (columnName.equals("label")) {
+                nodeColumns[i - 1] = new GDFColumn(GDFColumn.NodeGuessColumn.LABEL);
+            } else if (columnName.equals("labelvisible")) {
+                nodeColumns[i - 1] = new GDFColumn(GDFColumn.NodeGuessColumn.LABELVISIBLE);
+            } else {
+                nodeColumns[i - 1] = new GDFColumn(columnName, type);
+            }
+
+        }
     }
 
-    private void findEdgeColumns(String line) {
+    private void findEdgeColumns(String line) throws ImportException {
+        String[] columns = line.split(",");
+        edgeColumns = new GDFColumn[columns.length - 2];
+
+        for (int i = 2; i < columns.length; i++) {
+            String columnString = columns[i];
+            String typeString;
+            String columnName;
+            AttributeType type = AttributeType.STRING;
+            try {
+                typeString = columnString.substring(columnString.lastIndexOf(" ")).toLowerCase();
+                columnName = columnString.substring(0, columnString.lastIndexOf(" "));
+            } catch (IndexOutOfBoundsException e) {
+                throw new ImportException(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat2"));
+            }
+
+            if (typeString.isEmpty() || columnName.isEmpty()) {
+                throw new ImportException(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat2"));
+            }
+
+            if (typeString.equals("varchar")) {
+                type = AttributeType.STRING;
+            } else if (typeString.equals("bool")) {
+                type = AttributeType.BOOLEAN;
+            } else if (typeString.equals("integer")) {
+                type = AttributeType.INT;
+            } else if (typeString.equals("tinyint")) {
+                type = AttributeType.INT;
+            } else if (typeString.equals("int")) {
+                type = AttributeType.INT;
+            } else if (typeString.equals("double")) {
+                type = AttributeType.DOUBLE;
+            } else if (typeString.equals("float")) {
+                type = AttributeType.FLOAT;
+            }
+
+            if (columnName.equals("color")) {
+                edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.COLOR);
+            } else if (columnName.equals("fixed")) {
+                edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.DIRECTED);
+            } else if (columnName.equals("style")) {
+                edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.WEIGHT);
+            } else if (columnName.equals("width")) {
+                edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.WIDTH);
+            } else if (columnName.equals("height")) {
+                edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.VISIBLE);
+            } else if (columnName.equals("label")) {
+                edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.LABEL);
+            } else if (columnName.equals("labelvisible")) {
+                edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.LABELVISIBLE);
+            } else {
+                edgeColumns[i - 2] = new GDFColumn(columnName, type);
+            }
+        }
     }
 
     private boolean isNodeFirstLine(String line) {
@@ -180,6 +305,126 @@ public class ImporterGDF implements TextImporter {
             }
         }
         return false;
+    }
+
+    private void setNodeData(NodeDraft node, GDFColumn column, String data) throws ImportException {
+        if (column.getNodeColumn() != null) {
+            try
+            {
+            switch (column.getNodeColumn()) {
+                case COLOR:
+                    String[] rgb = data.split(",");
+                    if (rgb.length == 3) {
+                        node.setColor(rgb[0], rgb[1], rgb[2]);
+                    }
+                    break;
+                case FIXED:
+                    node.setFixed(Boolean.parseBoolean(data));
+                    break;
+                case HEIGHT:
+                    break;
+                case WIDTH:
+                    node.setSize(Float.parseFloat(data));
+                    break;
+                case LABEL:
+                    node.setLabel(data);
+                    break;
+                case LABELVISIBLE:
+                    node.setLabelVisible(Boolean.parseBoolean(data));
+                    break;
+                case VISIBLE:
+                    node.setVisible(Boolean.parseBoolean(data));
+                    break;
+            }
+            } catch(Exception e)
+            {
+                String message = String.format(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3"), column.getNodeColumn(),data);
+                throw new ImportException(message);
+            }
+        }
+        else if(column.getAttributeColumn()!=null)
+        {
+
+        }
+    }
+
+    private void setEdgeData(EdgeDraft edge, GDFColumn column, String data) throws ImportException
+    {
+        if (column.getNodeColumn() != null) {
+            try
+            {
+            switch (column.getEdgeColumn()) {
+                case COLOR:
+                    String[] rgb = data.split(",");
+                    if (rgb.length == 3) {
+                        edge.setColor(rgb[0], rgb[1], rgb[2]);
+                    }
+                    break;
+                case VISIBLE:
+                    edge.setVisible(Boolean.parseBoolean(data));
+                    break;
+                case WEIGHT:
+                    break;
+                case DIRECTED:
+                    edge.setDirected(Boolean.parseBoolean(data));
+                    break;
+                case LABEL:
+                    edge.setLabel(data);
+                    break;
+                case LABELVISIBLE:
+                    edge.setLabelVisible(Boolean.parseBoolean(data));
+                    break;
+            }
+            } catch(Exception e)
+            {
+                String message = String.format(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3"), column.getNodeColumn(),data);
+                throw new ImportException(message);
+            }
+        }
+        else if(column.getAttributeColumn()!=null)
+        {
+
+        }
+    }
+
+    private static class GDFColumn {
+
+        public enum NodeGuessColumn {
+
+            X, Y, VISIBLE, FIXED, STYLE, COLOR, WIDTH, HEIGHT, LABEL, LABELVISIBLE
+        };
+
+        public enum EdgeGuessColumn {
+
+            VISIBLE, COLOR, WEIGHT, WIDTH, DIRECTED, LABEL, LABELVISIBLE
+        };
+        private AttributeColumn column;
+        private NodeGuessColumn nodeColumn;
+        private EdgeGuessColumn edgeColumn;
+
+        public GDFColumn(NodeGuessColumn column) {
+            this.nodeColumn = column;
+        }
+
+        public GDFColumn(EdgeGuessColumn column) {
+            this.edgeColumn = column;
+        }
+
+        public GDFColumn(String columnName, AttributeType type) {
+        }
+
+        public NodeGuessColumn getNodeColumn() {
+            return nodeColumn;
+        }
+
+        public EdgeGuessColumn getEdgeColumn() {
+            return edgeColumn;
+        }
+
+        public AttributeColumn getAttributeColumn()
+        {
+            return column;
+        }
     }
 
     public FileType[] getFileTypes() {

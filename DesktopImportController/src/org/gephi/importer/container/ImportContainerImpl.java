@@ -21,8 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.importer.container;
 
 import java.util.Collection;
+import org.gephi.data.attributes.api.AttributeManager;
 import org.gephi.importer.api.*;
 import java.util.HashMap;
+import org.gephi.data.attributes.api.AttributeController;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -41,10 +44,14 @@ public class ImportContainerImpl implements ImportContainer {
     //States
     private boolean hasHierarchy=false;
 
+    //Attributes
+    private AttributeManager attributeManager;
+
     public ImportContainerImpl() {
         parameters = new ImportContainerParameters();
         nodeMap = new HashMap<String, NodeDraft>();
         edgeMap = new HashMap<String, EdgeDraft>();
+        attributeManager = Lookup.getDefault().lookup(AttributeController.class).getTemporaryAttributeManager();
     }
 
     public void addNode(NodeDraft nodeDraft) {
@@ -133,7 +140,7 @@ public class ImportContainerImpl implements ImportContainer {
     public Collection<EdgeDraft> getEdges() {
         return edgeMap.values();
     }
-
+    
     private void logger(Exception e) {
         System.err.println(e.getMessage());
     }

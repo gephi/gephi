@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.data.attributes;
 
+import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeManager;
 import org.gephi.data.attributes.manager.IndexedAttributeManager;
 import org.gephi.data.network.api.DhnsController;
 import org.gephi.data.network.api.SyncReader;
@@ -30,7 +32,7 @@ import org.openide.util.Lookup;
  *
  * @author Mathieu Bastian
  */
-public class AttributeContollerImpl {
+public class AttributeContollerImpl implements AttributeController {
 
     private IndexedAttributeManager currentManager;
 
@@ -41,4 +43,9 @@ public class AttributeContollerImpl {
 
         currentManager = new IndexedAttributeManager(reader);
     }
+
+    public AttributeManager getTemporaryAttributeManager() {
+        return currentManager;
+    }
+
 }

@@ -34,7 +34,7 @@ public class NodeDraft {
     private String id;
     private String label;
     private List<NodeDraft> children = new ArrayList();
-    public boolean hasParent=false;
+    public boolean hasParent = false;
 
     //Viz attributes
     private Color color;
@@ -42,6 +42,9 @@ public class NodeDraft {
     private float x;
     private float y;
     private float z;
+    private boolean labelVisible;
+    private boolean visible;
+    private boolean fixed;
 
     //Result
     private Node node;
@@ -52,6 +55,23 @@ public class NodeDraft {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public void setColor(String r, String g, String b) {
+        setColor(Integer.parseInt(r),Integer.parseInt(g),Integer.parseInt(b));
+    }
+
+    public void setColor(float r, float g, float b)
+    {
+        r = Math.max(Math.min(r, 1f),0f);
+        g = Math.max(Math.min(g, 1f),0f);
+        b = Math.max(Math.min(b, 1f),0f);
+        this.color = new Color(r, g, b);
+    }
+
+    public void setColor(int r, int g, int b)
+    {
+        setColor(r/255f,g/255f,b/255f);
     }
 
     public String getId() {
@@ -102,6 +122,30 @@ public class NodeDraft {
         this.z = z;
     }
 
+    public boolean isFixed() {
+        return fixed;
+    }
+
+    public void setFixed(boolean fixed) {
+        this.fixed = fixed;
+    }
+
+    public boolean isLabelVisible() {
+        return labelVisible;
+    }
+
+    public void setLabelVisible(boolean labelVisible) {
+        this.labelVisible = labelVisible;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
     public void setNode(Node node) {
         this.node = node;
     }
@@ -110,13 +154,11 @@ public class NodeDraft {
         return node;
     }
 
-    public void addChild(NodeDraft child)
-    {
+    public void addChild(NodeDraft child) {
         children.add(child);
     }
 
-    public List<NodeDraft> getChildren()
-    {
+    public List<NodeDraft> getChildren() {
         return children;
     }
 
@@ -128,17 +170,18 @@ public class NodeDraft {
             node.setB(color.getBlue() / 255f);
         }
 
-        if(label!=null)
+        if (label != null) {
             node.setLabel(label);
+        }
 
         if (x != 0) {
-            node.setX(x*13);
+            node.setX(x * 13);
         }
         if (y != 0) {
-            node.setY(y*13);
+            node.setY(y * 13);
         }
         if (z != 0) {
-            node.setZ(z*13);
+            node.setZ(z * 13);
         }
 
         if (size != 0) {

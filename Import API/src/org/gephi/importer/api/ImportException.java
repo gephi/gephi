@@ -66,8 +66,8 @@ public class ImportException extends Exception {
         params[1] = cause.getClass().getSimpleName();
         params[2] = cause.getLocalizedMessage();
         params[3] = cause.getStackTrace()[0].getLineNumber();
-
-        return NbBundle.getMessage(getClass(), "importException_message", params);
+        String msg = String.format(NbBundle.getMessage(getClass(), "importException_message"), params);
+        return msg;
 	}
 
 }

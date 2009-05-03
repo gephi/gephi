@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.importer.api;
 
 import java.util.Collection;
+import org.gephi.data.attributes.api.AttributeManager;
 
 /**
  *

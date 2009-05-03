@@ -34,6 +34,7 @@ public class EdgeDraft {
         DIRECTED, UNDIRECTED, MUTUAL
     };
     private String id;
+    private String label;
 
     //Topology
     private NodeDraft nodeSource;
@@ -43,6 +44,8 @@ public class EdgeDraft {
 
     //Viz
     private Color color;
+    private boolean labelVisible;
+    private boolean visible;
 
     public float getCardinal() {
         return cardinal;
@@ -60,12 +63,57 @@ public class EdgeDraft {
         this.color = color;
     }
 
-    public EdgeType getEdgeType() {
-        return edgeType;
+    public void setColor(String r, String g, String b) {
+        setColor(Integer.parseInt(r),Integer.parseInt(g),Integer.parseInt(b));
     }
 
-    public void setEdgeType(EdgeType edgeType) {
-        this.edgeType = edgeType;
+    public void setColor(float r, float g, float b)
+    {
+        r = Math.max(Math.min(r, 1f),0f);
+        g = Math.max(Math.min(g, 1f),0f);
+        b = Math.max(Math.min(b, 1f),0f);
+        this.color = new Color(r, g, b);
+    }
+
+    public void setColor(int r, int g, int b)
+    {
+        setColor(r/255f,g/255f,b/255f);
+    }
+    
+    public boolean isLabelVisible() {
+        return labelVisible;
+    }
+
+    public void setLabelVisible(boolean labelVisible) {
+        this.labelVisible = labelVisible;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    public void setDirected(boolean directed) {
+        if (directed) {
+            this.edgeType = EdgeType.DIRECTED;
+        } else {
+            this.edgeType = EdgeType.UNDIRECTED;
+        }
+    }
+
+    public boolean isDirected() {
+        return edgeType == EdgeType.DIRECTED;
     }
 
     public String getId() {
@@ -98,6 +146,6 @@ public class EdgeDraft {
             edge.setG(color.getGreen() / 255f);
             edge.setB(color.getBlue() / 255f);
         }
-        
+
     }
 }

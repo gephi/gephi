@@ -22,6 +22,8 @@ package org.gephi.data.attributes;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeManager;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.network.api.SyncReader;
 
@@ -29,7 +31,7 @@ import org.gephi.data.network.api.SyncReader;
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractAttributeManager {
+public abstract class AbstractAttributeManager implements AttributeManager {
 
     //Classes
     private ConcurrentMap<String, AbstractAttributeClass> classMap;
@@ -54,4 +56,18 @@ public abstract class AbstractAttributeManager {
     {
         
     }
+
+    public AttributeClass getNodeClass() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public AttributeClass getEdgeClass() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public AttributeClass getClass(String name) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    
 }
