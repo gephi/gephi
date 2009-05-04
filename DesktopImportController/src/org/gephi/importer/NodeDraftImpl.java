@@ -27,6 +27,7 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.graph.api.Node;
 import org.gephi.importer.api.NodeDraft;
+import org.gephi.importer.container.ImportContainerImpl;
 
 /**
  *
@@ -34,6 +35,10 @@ import org.gephi.importer.api.NodeDraft;
  */
 public class NodeDraftImpl implements NodeDraft {
 
+    //Architecture
+    private ImportContainerImpl container;
+
+    //Basic
     private String id;
     private String label;
     private List<NodeDraftImpl> children = new ArrayList();
@@ -50,10 +55,14 @@ public class NodeDraftImpl implements NodeDraft {
     private boolean fixed;
 
     //Attributes
-    private List<AttributeValue> attributeValues         = new ArrayList<AttributeValue>();
+    private List<AttributeValue> attributeValues = new ArrayList<AttributeValue>();
 
     //Result
     private Node node;
+
+    public NodeDraftImpl(ImportContainerImpl container) {
+        this.container = container;
+    }
 
     public Color getColor() {
         return color;
@@ -159,12 +168,12 @@ public class NodeDraftImpl implements NodeDraft {
     }
 
     public void addAttributeValue(AttributeColumn column, Object value) {
-
-        
+        AttributeValue attValue = container.getFactory().newValue(column, value);
+        attributeValues.add(attValue);
     }
 
     public void addChild(NodeDraft child) {
-        children.add((NodeDraftImpl)child);
+        children.add((NodeDraftImpl) child);
     }
 
     public List<NodeDraftImpl> getChildren() {

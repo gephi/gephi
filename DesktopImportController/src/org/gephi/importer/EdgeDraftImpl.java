@@ -20,11 +20,16 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.importer;
 
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.importer.NodeDraftImpl;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.graph.api.Edge;
 import org.gephi.importer.api.EdgeDraft;
 import org.gephi.importer.api.NodeDraft;
+import org.gephi.importer.container.ImportContainerImpl;
 
 /**
  *
@@ -36,6 +41,10 @@ public class EdgeDraftImpl implements EdgeDraft {
 
         DIRECTED, UNDIRECTED, MUTUAL
     };
+    //Architecture
+    private ImportContainerImpl container;
+
+    //Basic
     private String id;
     private String label;
 
@@ -49,6 +58,13 @@ public class EdgeDraftImpl implements EdgeDraft {
     private Color color;
     private boolean labelVisible;
     private boolean visible;
+
+    //Attributes
+    private List<AttributeValue> attributeValues = new ArrayList<AttributeValue>();
+
+    public EdgeDraftImpl(ImportContainerImpl container) {
+        this.container = container;
+    }
 
     public float getCardinal() {
         return cardinal;
@@ -67,22 +83,20 @@ public class EdgeDraftImpl implements EdgeDraft {
     }
 
     public void setColor(String r, String g, String b) {
-        setColor(Integer.parseInt(r),Integer.parseInt(g),Integer.parseInt(b));
+        setColor(Integer.parseInt(r), Integer.parseInt(g), Integer.parseInt(b));
     }
 
-    public void setColor(float r, float g, float b)
-    {
-        r = Math.max(Math.min(r, 1f),0f);
-        g = Math.max(Math.min(g, 1f),0f);
-        b = Math.max(Math.min(b, 1f),0f);
+    public void setColor(float r, float g, float b) {
+        r = Math.max(Math.min(r, 1f), 0f);
+        g = Math.max(Math.min(g, 1f), 0f);
+        b = Math.max(Math.min(b, 1f), 0f);
         this.color = new Color(r, g, b);
     }
 
-    public void setColor(int r, int g, int b)
-    {
-        setColor(r/255f,g/255f,b/255f);
+    public void setColor(int r, int g, int b) {
+        setColor(r / 255f, g / 255f, b / 255f);
     }
-    
+
     public boolean isLabelVisible() {
         return labelVisible;
     }
@@ -132,7 +146,7 @@ public class EdgeDraftImpl implements EdgeDraft {
     }
 
     public void setNodeSource(NodeDraft nodeSource) {
-        this.nodeSource = (NodeDraftImpl)nodeSource;
+        this.nodeSource = (NodeDraftImpl) nodeSource;
     }
 
     public NodeDraftImpl getNodeTarget() {
@@ -140,7 +154,12 @@ public class EdgeDraftImpl implements EdgeDraft {
     }
 
     public void setNodeTarget(NodeDraft nodeTarget) {
-        this.nodeTarget = (NodeDraftImpl)nodeTarget;
+        this.nodeTarget = (NodeDraftImpl) nodeTarget;
+    }
+
+    public void addAttributeValue(AttributeColumn column, Object value) {
+        AttributeValue attValue = container.getFactory().newValue(column, value);
+        attributeValues.add(attValue);
     }
 
     public void flushToEdge(Edge edge) {

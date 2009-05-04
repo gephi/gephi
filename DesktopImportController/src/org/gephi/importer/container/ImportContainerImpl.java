@@ -45,7 +45,7 @@ public class ImportContainerImpl implements ImportContainer {
     private HashMap<String, EdgeDraftImpl> edgeMap;
 
     //States
-    private boolean hasHierarchy=false;
+    private boolean hasHierarchy = false;
 
     //Attributes
     private AttributeFactory attributeFactory;
@@ -60,7 +60,7 @@ public class ImportContainerImpl implements ImportContainer {
     }
 
     public void addNode(NodeDraft nodeDraft) {
-        NodeDraftImpl nodeDraftImpl = (NodeDraftImpl)nodeDraft;
+        NodeDraftImpl nodeDraftImpl = (NodeDraftImpl) nodeDraft;
         if (nodeDraftImpl.getId() == null) {
             logger(new ImportContainerException("ImportContainerException_MissingNodeId"));
         }
@@ -92,7 +92,7 @@ public class ImportContainerImpl implements ImportContainer {
     }
 
     public void addEdge(EdgeDraft edgeDraft) {
-        EdgeDraftImpl edgeDraftImpl = (EdgeDraftImpl)edgeDraft;
+        EdgeDraftImpl edgeDraftImpl = (EdgeDraftImpl) edgeDraft;
         if (edgeDraftImpl.getNodeSource() == null) {
             String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_MissingNodeSource");
             logger(new ImportContainerException(message));
@@ -133,12 +133,12 @@ public class ImportContainerImpl implements ImportContainer {
     }
 
     public void addNode(NodeDraft node, NodeDraft parent) {
-        NodeDraftImpl nodeImpl = (NodeDraftImpl)node;
+        NodeDraftImpl nodeImpl = (NodeDraftImpl) node;
         addNode(node);
         parent.addChild(node);
-        nodeImpl.hasParent=true;
+        nodeImpl.hasParent = true;
 
-        hasHierarchy=true;
+        hasHierarchy = true;
     }
 
     public Collection<? extends NodeDraft> getNodes() {
@@ -150,14 +150,22 @@ public class ImportContainerImpl implements ImportContainer {
     }
 
     public NodeDraft newNodeDraft() {
-        return new NodeDraftImpl();
+        return new NodeDraftImpl(this);
     }
 
     public EdgeDraft newEdgeDraft() {
-        return new EdgeDraftImpl();
+        return new EdgeDraftImpl(this);
     }
-    
+
+    public AttributeManager getAttributeManager() {
+        return attributeManager;
+    }
+
     private void logger(Exception e) {
         System.err.println(e.getMessage());
+    }
+
+    public AttributeFactory getFactory() {
+        return attributeFactory;
     }
 }

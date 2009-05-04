@@ -62,21 +62,22 @@ public abstract class AbstractAttributeClass implements AttributeClass {
         return columns.size();
     }
 
-    public void addAttributeColumn(String id, AttributeType type) {
-        addAttributeColumn(id, id, type, AttributeOrigin.DATA, null);
+    public AttributeColumn addAttributeColumn(String id, AttributeType type) {
+        return addAttributeColumn(id, id, type, AttributeOrigin.DATA, null);
     }
 
-    public void addAttributeColumn(String id, AttributeType type, AttributeOrigin origin) {
-        addAttributeColumn(id, id, type, origin, null);
+    public AttributeColumn addAttributeColumn(String id, AttributeType type, AttributeOrigin origin) {
+        return addAttributeColumn(id, id, type, origin, null);
     }
 
-    public synchronized void addAttributeColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue) {
+    public synchronized AttributeColumn addAttributeColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue) {
         AttributeColumnImpl column = new AttributeColumnImpl(columns.size(), id, title, type, origin, defaultValue);
         columns.add(column);
         columnsMap.put(id, column);
         if (title != null && !title.equals(id)) {
             columnsMap.put(title, column);
         }
+        return column;
     }
 
     public synchronized void removeAttributeColumn(AttributeColumn column) {

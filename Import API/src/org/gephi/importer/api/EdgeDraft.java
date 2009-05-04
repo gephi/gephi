@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.importer.api;
 
 import java.awt.Color;
+import org.gephi.data.attributes.api.AttributeColumn;
 
 /**
  *
@@ -51,4 +52,6 @@ public interface EdgeDraft {
     public void setNodeSource(NodeDraft nodeSource);
 
     public void setNodeTarget(NodeDraft nodeTarget);
+
+    public void addAttributeValue(AttributeColumn column, Object value);
 }

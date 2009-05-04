@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.gephi.data.attributes.api.AttributeClass;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.importer.api.FileType;
@@ -43,6 +44,10 @@ import org.openide.util.NbBundle;
  */
 public class ImporterGDF implements TextImporter {
 
+    //Container
+    ImportContainer container;
+
+    //Extract
     private List<String> nodeLines = new ArrayList<String>();
     private List<String> edgeLines = new ArrayList<String>();
 
@@ -60,6 +65,7 @@ public class ImporterGDF implements TextImporter {
     }
 
     public void importData(BufferedReader reader, ImportContainer container) throws ImportException {
+        this.container = container;
         try {
 
             //Verify a node line exists and puts nodes and edges lines in arrays
@@ -87,7 +93,7 @@ public class ImporterGDF implements TextImporter {
                                 //Id
                                 node.setId(data);
                             } else if (count < nodeColumns.length) {
-                                setNodeData(node,nodeColumns[count], data);
+                                setNodeData(node, nodeColumns[count], data);
                             }
                         }
                     }
@@ -118,9 +124,7 @@ public class ImporterGDF implements TextImporter {
                             } else if (count == 1) {
                                 NodeDraft nodeTarget = container.getNode(data);
                                 edge.setNodeTarget(nodeTarget);
-                            }
-                            else if(count < edgeColumns.length)
-                            {
+                            } else if (count < edgeColumns.length) {
                                 setEdgeData(edge, edgeColumns[count], data);
                             }
                         }
@@ -227,7 +231,9 @@ public class ImporterGDF implements TextImporter {
             } else if (columnName.equals("labelvisible")) {
                 nodeColumns[i - 1] = new GDFColumn(GDFColumn.NodeGuessColumn.LABELVISIBLE);
             } else {
-                nodeColumns[i - 1] = new GDFColumn(columnName, type);
+                AttributeClass nodeClass = container.getAttributeManager().getEdgeClass();
+                AttributeColumn newColumn = nodeClass.addAttributeColumn(columnName, type);
+                nodeColumns[i - 1] = new GDFColumn(newColumn);
             }
 
         }
@@ -284,7 +290,9 @@ public class ImporterGDF implements TextImporter {
             } else if (columnName.equals("labelvisible")) {
                 edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.LABELVISIBLE);
             } else {
-                edgeColumns[i - 2] = new GDFColumn(columnName, type);
+                AttributeClass edgeClass = container.getAttributeManager().getEdgeClass();
+                AttributeColumn newColumn = edgeClass.addAttributeColumn(columnName, type);
+                edgeColumns[i - 2] = new GDFColumn(newColumn);
             }
         }
     }
@@ -309,81 +317,72 @@ public class ImporterGDF implements TextImporter {
 
     private void setNodeData(NodeDraft node, GDFColumn column, String data) throws ImportException {
         if (column.getNodeColumn() != null) {
-            try
-            {
-            switch (column.getNodeColumn()) {
-                case COLOR:
-                    String[] rgb = data.split(",");
-                    if (rgb.length == 3) {
-                        node.setColor(rgb[0], rgb[1], rgb[2]);
-                    }
-                    break;
-                case FIXED:
-                    node.setFixed(Boolean.parseBoolean(data));
-                    break;
-                case HEIGHT:
-                    break;
-                case WIDTH:
-                    node.setSize(Float.parseFloat(data));
-                    break;
-                case LABEL:
-                    node.setLabel(data);
-                    break;
-                case LABELVISIBLE:
-                    node.setLabelVisible(Boolean.parseBoolean(data));
-                    break;
-                case VISIBLE:
-                    node.setVisible(Boolean.parseBoolean(data));
-                    break;
-            }
-            } catch(Exception e)
-            {
-                String message = String.format(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3"), column.getNodeColumn(),data);
+            try {
+                switch (column.getNodeColumn()) {
+                    case COLOR:
+                        String[] rgb = data.split(",");
+                        if (rgb.length == 3) {
+                            node.setColor(rgb[0], rgb[1], rgb[2]);
+                        }
+                        break;
+                    case FIXED:
+                        node.setFixed(Boolean.parseBoolean(data));
+                        break;
+                    case HEIGHT:
+                        break;
+                    case WIDTH:
+                        node.setSize(Float.parseFloat(data));
+                        break;
+                    case LABEL:
+                        node.setLabel(data);
+                        break;
+                    case LABELVISIBLE:
+                        node.setLabelVisible(Boolean.parseBoolean(data));
+                        break;
+                    case VISIBLE:
+                        node.setVisible(Boolean.parseBoolean(data));
+                        break;
+                }
+            } catch (Exception e) {
+                String message = String.format(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3"), column.getNodeColumn(), data);
                 throw new ImportException(message);
             }
-        }
-        else if(column.getAttributeColumn()!=null)
-        {
-
+        } else if (column.getAttributeColumn() != null) {
+            node.addAttributeValue(column.getAttributeColumn(), data);
         }
     }
 
-    private void setEdgeData(EdgeDraft edge, GDFColumn column, String data) throws ImportException
-    {
+    private void setEdgeData(EdgeDraft edge, GDFColumn column, String data) throws ImportException {
         if (column.getNodeColumn() != null) {
-            try
-            {
-            switch (column.getEdgeColumn()) {
-                case COLOR:
-                    String[] rgb = data.split(",");
-                    if (rgb.length == 3) {
-                        edge.setColor(rgb[0], rgb[1], rgb[2]);
-                    }
-                    break;
-                case VISIBLE:
-                    edge.setVisible(Boolean.parseBoolean(data));
-                    break;
-                case WEIGHT:
-                    break;
-                case DIRECTED:
-                    edge.setDirected(Boolean.parseBoolean(data));
-                    break;
-                case LABEL:
-                    edge.setLabel(data);
-                    break;
-                case LABELVISIBLE:
-                    edge.setLabelVisible(Boolean.parseBoolean(data));
-                    break;
-            }
-            } catch(Exception e)
-            {
-                String message = String.format(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3"), column.getNodeColumn(),data);
+            try {
+                switch (column.getEdgeColumn()) {
+                    case COLOR:
+                        String[] rgb = data.split(",");
+                        if (rgb.length == 3) {
+                            edge.setColor(rgb[0], rgb[1], rgb[2]);
+                        }
+                        break;
+                    case VISIBLE:
+                        edge.setVisible(Boolean.parseBoolean(data));
+                        break;
+                    case WEIGHT:
+                        break;
+                    case DIRECTED:
+                        edge.setDirected(Boolean.parseBoolean(data));
+                        break;
+                    case LABEL:
+                        edge.setLabel(data);
+                        break;
+                    case LABELVISIBLE:
+                        edge.setLabelVisible(Boolean.parseBoolean(data));
+                        break;
+                }
+            } catch (Exception e) {
+                String message = String.format(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3"), column.getNodeColumn(), data);
                 throw new ImportException(message);
             }
-        }
-        else if(column.getAttributeColumn()!=null)
-        {
-
+        } else if (column.getAttributeColumn() != null) {
+            edge.addAttributeValue(column.getAttributeColumn(), data);
         }
     }
 
@@ -410,7 +409,8 @@ public class ImporterGDF implements TextImporter {
             this.edgeColumn = column;
         }
 
-        public GDFColumn(String columnName, AttributeType type) {
+        public GDFColumn(AttributeColumn column) {
+            this.column = column;
         }
 
         public NodeGuessColumn getNodeColumn() {
@@ -421,8 +421,7 @@ public class ImporterGDF implements TextImporter {
             return edgeColumn;
         }
 
-        public AttributeColumn getAttributeColumn()
-        {
+        public AttributeColumn getAttributeColumn() {
             return column;
         }
     }

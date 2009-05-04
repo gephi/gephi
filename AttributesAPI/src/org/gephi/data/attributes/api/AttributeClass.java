@@ -49,7 +49,7 @@ public interface AttributeClass {
      * @param id The identifier of the column.
      * @param type The type of the column.
      */
-    public void addAttributeColumn(String id, AttributeType type);
+    public AttributeColumn addAttributeColumn(String id, AttributeType type);
 
     /**
      * Create and add a new column to this class.
@@ -59,7 +59,7 @@ public interface AttributeClass {
      * @param type The type of the column.
      * @param origin The origin of the column.
      */
-    public void addAttributeColumn(String id, AttributeType type, AttributeOrigin origin);
+    public AttributeColumn addAttributeColumn(String id, AttributeType type, AttributeOrigin origin);
 
     /**
      * Create and add a new column to this class.
@@ -69,7 +69,7 @@ public interface AttributeClass {
      * @param origin The origin of the column.
      * @param defaultValue The default value of the column.
      */
-    public void addAttributeColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue);
+    public AttributeColumn addAttributeColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue);
 
     /**
      * If exists, remove the column and all rows values.
