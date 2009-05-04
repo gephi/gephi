@@ -6,9 +6,13 @@
 package org.gephi.data.laboratory;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
+import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.NodeTableModel;
 import org.openide.explorer.view.TreeTableView;
+import org.openide.nodes.Node;
+import org.openide.nodes.PropertySupport;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -17,7 +21,7 @@ import org.openide.windows.WindowManager;
 /**
  * Top component which displays something.
  */
-final class DataExplorerTopComponent extends TopComponent {
+final class DataExplorerTopComponent extends TopComponent implements ExplorerManager.Provider {
 
     private static DataExplorerTopComponent instance;
     /** path to the icon used by the component and its open action */
@@ -25,22 +29,35 @@ final class DataExplorerTopComponent extends TopComponent {
 
     private static final String PREFERRED_ID = "DataExplorerTopComponent";
 
+    //Manager
+    private ExplorerManager nodeManager;
+
     //TableModel
-    private NodeTableModel nodeModel;
-    private NodeTableModel edgeModel;
+    private NodeTableModel nodeModel        = new NodeTableModel();
+    private NodeTableModel edgeModel        = new NodeTableModel();
 
     private DataExplorerTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(DataExplorerTopComponent.class, "CTL_DataExplorerTopComponent"));
         setToolTipText(NbBundle.getMessage(DataExplorerTopComponent.class, "HINT_DataExplorerTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
+
+        initNodesView();
     }
 
     private void initNodesView()
     {
+        nodeManager = new ExplorerManager();
+        nodeManager.setRootContext(new NodeNode(null));
 
-        nodeModel = new NodeTableModel();
 
+        Node.Property[] prop = new Node.Property[1];
+        prop[0] = new AttributeProperty("ours");
+        nodeModel.setProperties(prop);
+
+        Node[] nodes = new Node[1];
+        nodes[0] = new NodeNode(null);
+        nodeModel.setNodes(nodes);
 
     }
 
@@ -54,9 +71,9 @@ final class DataExplorerTopComponent extends TopComponent {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         nodesPanel = new javax.swing.JPanel();
-        nodesView = new TreeTableView();
+        nodesView = new TreeTableView(nodeModel);
         edgesPanel = new javax.swing.JPanel();
-        edgesView = new TreeTableView();
+        edgesView = new TreeTableView(edgeModel);
 
         setLayout(new java.awt.BorderLayout());
 
@@ -92,6 +109,8 @@ final class DataExplorerTopComponent extends TopComponent {
         }
         return instance;
     }
+
+    
 
     /**
      * Obtain the DataExplorerTopComponent instance. Never call {@link #getDefault} directly!
@@ -138,12 +157,35 @@ final class DataExplorerTopComponent extends TopComponent {
         return PREFERRED_ID;
     }
 
+    public ExplorerManager getExplorerManager() {
+        return nodeManager;
+    }
+
     final static class ResolvableHelper implements Serializable {
 
         private static final long serialVersionUID = 1L;
 
         public Object readResolve() {
             return DataExplorerTopComponent.getDefault();
+        }
+    }
+
+    public class AttributeProperty extends PropertySupport.ReadOnly {
+
+        private final String description;
+
+        @SuppressWarnings("unchecked")
+        public AttributeProperty(String description) {
+            super("main_description", String.class, "Description", "Description tooltip");
+            this.description = description;
+
+            this.setValue("TreeColumnTTV", Boolean.TRUE); // main tree column
+            this.setValue("ComparableColumnTTV", Boolean.TRUE); // sortable
+            this.setValue("SortingColumnTTV", Boolean.FALSE); // initially not sorted
+        }
+
+        public Object getValue() throws IllegalAccessException, InvocationTargetException {
+            return description;
         }
     }
 }
