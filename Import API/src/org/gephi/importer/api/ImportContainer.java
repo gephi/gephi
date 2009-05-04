@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.importer.api;
 
 import java.util.Collection;
-import org.gephi.data.attributes.api.AttributeManager;
 
 /**
  *
@@ -37,9 +36,13 @@ public interface ImportContainer {
 
     public void addEdge(EdgeDraft edgeDraft);
 
-    public Collection<NodeDraft> getNodes();
+    public Collection<? extends NodeDraft> getNodes();
 
-    public Collection<EdgeDraft> getEdges();
+    public Collection<? extends EdgeDraft> getEdges();
+
+    public NodeDraft newNodeDraft();
+
+    public EdgeDraft newEdgeDraft();
 
     public boolean hasHierarchy();
 

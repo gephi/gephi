@@ -18,44 +18,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.importer.api;
 
-import java.awt.Color;
+package org.gephi.data.attributes;
+
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeFactory;
+import org.gephi.data.attributes.api.AttributeValue;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface NodeDraft {
+public class AttributeFactoryImpl implements AttributeFactory {
 
-    public void setColor(Color color);
+    public AttributeValue newValue(AttributeColumn column, Object value) {
+        return new AttributeValueImpl(column, value);
+    }
 
-    public void setColor(String r, String g, String b);
-
-    public void setColor(float r, float g, float b);
-
-    public void setColor(int r, int g, int b);
-
-    public void setId(String id);
-
-    public void setLabel(String label);
-
-    public void setSize(float size);
-
-    public void setX(float x);
-
-    public void setY(float y);
-
-    public void setZ(float z);
-
-    public void setFixed(boolean fixed);
-
-    public void setLabelVisible(boolean labelVisible);
-
-    public void setVisible(boolean visible);
-
-    public void addAttributeValue(AttributeColumn column, Object value);
-
-    public void addChild(NodeDraft child);
 }

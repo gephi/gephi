@@ -22,6 +22,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes;
 
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeFactory;
 import org.gephi.data.attributes.api.AttributeManager;
 import org.gephi.data.attributes.manager.IndexedAttributeManager;
 import org.gephi.data.network.api.DhnsController;
@@ -35,12 +36,14 @@ import org.openide.util.Lookup;
 public class AttributeContollerImpl implements AttributeController {
 
     private IndexedAttributeManager currentManager;
+    private AttributeFactoryImpl factory;
 
     public AttributeContollerImpl()
     {
         DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
         SyncReader reader = dhnsController.getSyncReader(dhnsController.getSightManager().getMainSight());
 
+        factory = new AttributeFactoryImpl();
         currentManager = new IndexedAttributeManager(reader);
     }
 
@@ -48,4 +51,7 @@ public class AttributeContollerImpl implements AttributeController {
         return currentManager;
     }
 
+    public AttributeFactory factory() {
+        return factory;
+    }
 }

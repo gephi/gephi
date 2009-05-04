@@ -24,16 +24,9 @@ package org.gephi.data.attributes.api;
  *
  * @author Mathieu Bastian
  */
-public interface AttributeRow {
+public interface AttributeValue {
 
-    public void reset();
+    public AttributeColumn getColumn();
 
-    public void setValues(AttributeRow attributeRow);
-
-    public void setValue(AttributeColumn column, Object value);
-
-    public Object getValue(AttributeColumn column);
-
-    public Object getValue(String column);
-
+    public Object getValue();
 }

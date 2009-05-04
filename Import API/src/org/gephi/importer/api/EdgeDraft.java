@@ -21,131 +21,34 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.importer.api;
 
 import java.awt.Color;
-import org.gephi.graph.api.Edge;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class EdgeDraft {
+public interface EdgeDraft {
 
-    public enum EdgeType {
+    public void setCardinal(float cardinal);
 
-        DIRECTED, UNDIRECTED, MUTUAL
-    };
-    private String id;
-    private String label;
+    public void setColor(Color color);
 
-    //Topology
-    private NodeDraft nodeSource;
-    private NodeDraft nodeTarget;
-    private float cardinal;
-    private EdgeType edgeType;
+    public void setColor(String r, String g, String b);
 
-    //Viz
-    private Color color;
-    private boolean labelVisible;
-    private boolean visible;
+    public void setColor(float r, float g, float b);
 
-    public float getCardinal() {
-        return cardinal;
-    }
+    public void setColor(int r, int g, int b);
 
-    public void setCardinal(float cardinal) {
-        this.cardinal = cardinal;
-    }
+    public void setLabelVisible(boolean labelVisible);
 
-    public Color getColor() {
-        return color;
-    }
+    public void setLabel(String label);
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
+    public void setVisible(boolean visible);
 
-    public void setColor(String r, String g, String b) {
-        setColor(Integer.parseInt(r),Integer.parseInt(g),Integer.parseInt(b));
-    }
+    public void setDirected(boolean directed);
 
-    public void setColor(float r, float g, float b)
-    {
-        r = Math.max(Math.min(r, 1f),0f);
-        g = Math.max(Math.min(g, 1f),0f);
-        b = Math.max(Math.min(b, 1f),0f);
-        this.color = new Color(r, g, b);
-    }
+    public void setId(String id);
 
-    public void setColor(int r, int g, int b)
-    {
-        setColor(r/255f,g/255f,b/255f);
-    }
-    
-    public boolean isLabelVisible() {
-        return labelVisible;
-    }
+    public void setNodeSource(NodeDraft nodeSource);
 
-    public void setLabelVisible(boolean labelVisible) {
-        this.labelVisible = labelVisible;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public boolean isVisible() {
-        return visible;
-    }
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
-    public void setDirected(boolean directed) {
-        if (directed) {
-            this.edgeType = EdgeType.DIRECTED;
-        } else {
-            this.edgeType = EdgeType.UNDIRECTED;
-        }
-    }
-
-    public boolean isDirected() {
-        return edgeType == EdgeType.DIRECTED;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public NodeDraft getNodeSource() {
-        return nodeSource;
-    }
-
-    public void setNodeSource(NodeDraft nodeSource) {
-        this.nodeSource = nodeSource;
-    }
-
-    public NodeDraft getNodeTarget() {
-        return nodeTarget;
-    }
-
-    public void setNodeTarget(NodeDraft nodeTarget) {
-        this.nodeTarget = nodeTarget;
-    }
-
-    public void flushToEdge(Edge edge) {
-        if (color != null) {
-            edge.setR(color.getRed() / 255f);
-            edge.setG(color.getGreen() / 255f);
-            edge.setB(color.getBlue() / 255f);
-        }
-
-    }
+    public void setNodeTarget(NodeDraft nodeTarget);
 }

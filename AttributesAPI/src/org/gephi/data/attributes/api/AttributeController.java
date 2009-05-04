@@ -27,4 +27,6 @@ package org.gephi.data.attributes.api;
 public interface AttributeController {
 
     public AttributeManager getTemporaryAttributeManager();
+
+    public AttributeFactory factory();
 }

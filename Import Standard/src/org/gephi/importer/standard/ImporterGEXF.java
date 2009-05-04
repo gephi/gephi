@@ -61,7 +61,7 @@ public class ImporterGEXF implements XMLImporter {
             //Nodes
             for (int i = 0; i < nodeListE.getLength(); i++) {
                 Element nodeE = (Element) nodeListE.item(i);
-                NodeDraft node = new NodeDraft();
+                NodeDraft node = containter.newNodeDraft();
 
                 //Id
                 int nodeId = Integer.parseInt(nodeE.getAttribute("id"));
@@ -112,7 +112,7 @@ public class ImporterGEXF implements XMLImporter {
             for (int i = 0; i < edgeListE.getLength(); i++) {
                 Element edgeE = (Element) edgeListE.item(i);
 
-                EdgeDraft edge = new EdgeDraft();
+                EdgeDraft edge = containter.newEdgeDraft();
 
                 //Id
                 if (!edgeE.getAttribute("id").isEmpty()) {

@@ -27,10 +27,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.importer.api.EdgeDraft;
 import org.gephi.importer.api.FileType;
 import org.gephi.importer.api.ImportContainer;
 import org.gephi.importer.api.ImportException;
+import org.gephi.importer.api.EdgeDraft;
 import org.gephi.importer.api.NodeDraft;
 import org.gephi.importer.api.TextImporter;
 import org.openide.filesystems.FileObject;
@@ -59,7 +59,7 @@ public class ImporterGDF implements TextImporter {
         edgeLineStart = new String[]{"edgedef>", "Edgedef>"};
     }
 
-    public void importData(BufferedReader reader, ImportContainer containter) throws ImportException {
+    public void importData(BufferedReader reader, ImportContainer container) throws ImportException {
         try {
 
             //Verify a node line exists and puts nodes and edges lines in arrays
@@ -72,7 +72,7 @@ public class ImporterGDF implements TextImporter {
             for (String nodeLine : nodeLines) {
 
                 //Create Node
-                NodeDraft node = new NodeDraft();
+                NodeDraft node = container.newNodeDraft();
 
                 Matcher m = pattern.matcher(nodeLine);
                 int count = 0;
@@ -94,14 +94,14 @@ public class ImporterGDF implements TextImporter {
                     count++;
                 }
 
-                containter.addNode(node);
+                container.addNode(node);
             }
 
             //Edges
             for (String edgeLine : edgeLines) {
 
                 //Create Edge
-                EdgeDraft edge = new EdgeDraft();
+                EdgeDraft edge = container.newEdgeDraft();
 
                 Matcher m = pattern.matcher(edgeLine);
                 int count = 0;
@@ -113,10 +113,10 @@ public class ImporterGDF implements TextImporter {
                         data = data.trim();
                         if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
                             if (count == 0) {
-                                NodeDraft nodeSource = containter.getNode(data);
+                                NodeDraft nodeSource = container.getNode(data);
                                 edge.setNodeSource(nodeSource);
                             } else if (count == 1) {
-                                NodeDraft nodeTarget = containter.getNode(data);
+                                NodeDraft nodeTarget = container.getNode(data);
                                 edge.setNodeTarget(nodeTarget);
                             }
                             else if(count < edgeColumns.length)
@@ -128,7 +128,7 @@ public class ImporterGDF implements TextImporter {
                     count++;
                 }
 
-                containter.addEdge(edge);
+                container.addEdge(edge);
             }
 
         } catch (Exception ex) {

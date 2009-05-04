@@ -20,11 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.importer.container;
 
+import org.gephi.importer.EdgeDraftImpl;
+import org.gephi.importer.NodeDraftImpl;
 import java.util.Collection;
 import org.gephi.data.attributes.api.AttributeManager;
 import org.gephi.importer.api.*;
 import java.util.HashMap;
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeFactory;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -38,42 +41,45 @@ public class ImportContainerImpl implements ImportContainer {
     private ImportContainerParameters parameters;
 
     //Maps
-    private HashMap<String, NodeDraft> nodeMap;
-    private HashMap<String, EdgeDraft> edgeMap;
+    private HashMap<String, NodeDraftImpl> nodeMap;
+    private HashMap<String, EdgeDraftImpl> edgeMap;
 
     //States
     private boolean hasHierarchy=false;
 
     //Attributes
+    private AttributeFactory attributeFactory;
     private AttributeManager attributeManager;
 
     public ImportContainerImpl() {
         parameters = new ImportContainerParameters();
-        nodeMap = new HashMap<String, NodeDraft>();
-        edgeMap = new HashMap<String, EdgeDraft>();
+        nodeMap = new HashMap<String, NodeDraftImpl>();
+        edgeMap = new HashMap<String, EdgeDraftImpl>();
+        attributeFactory = Lookup.getDefault().lookup(AttributeController.class).factory();
         attributeManager = Lookup.getDefault().lookup(AttributeController.class).getTemporaryAttributeManager();
     }
 
     public void addNode(NodeDraft nodeDraft) {
-        if (nodeDraft.getId() == null) {
+        NodeDraftImpl nodeDraftImpl = (NodeDraftImpl)nodeDraft;
+        if (nodeDraftImpl.getId() == null) {
             logger(new ImportContainerException("ImportContainerException_MissingNodeId"));
         }
 
-        if (nodeMap.containsKey(nodeDraft.getId())) {
+        if (nodeMap.containsKey(nodeDraftImpl.getId())) {
             switch (parameters.nodeDoublePolicy) {
                 case IGNORE:
                     return;
                 case UNKNOWN:
-                    String message = String.format(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_nodeExist", nodeDraft.getId()));
+                    String message = String.format(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_nodeExist", nodeDraftImpl.getId()));
                     logger(new ImportContainerException(message));
             }
         }
 
-        nodeMap.put(nodeDraft.getId(), nodeDraft);
+        nodeMap.put(nodeDraftImpl.getId(), nodeDraftImpl);
     }
 
-    public NodeDraft getNode(String id) {
-        NodeDraft node = nodeMap.get(id);
+    public NodeDraftImpl getNode(String id) {
+        NodeDraftImpl node = nodeMap.get(id);
         if (node == null) {
             String message = String.format(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_UnknowNodeId", id));
             logger(new ImportContainerException(message));
@@ -86,21 +92,22 @@ public class ImportContainerImpl implements ImportContainer {
     }
 
     public void addEdge(EdgeDraft edgeDraft) {
-        if (edgeDraft.getNodeSource() == null) {
+        EdgeDraftImpl edgeDraftImpl = (EdgeDraftImpl)edgeDraft;
+        if (edgeDraftImpl.getNodeSource() == null) {
             String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_MissingNodeSource");
             logger(new ImportContainerException(message));
         }
-        if (edgeDraft.getNodeTarget() == null) {
+        if (edgeDraftImpl.getNodeTarget() == null) {
             String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_MissingNodeTarget");
             logger(new ImportContainerException(message));
         }
 
-        String id = edgeDraft.getId();
+        String id = edgeDraftImpl.getId();
         if (id == null) {
-            id = edgeDraft.getNodeSource().getId() + " - " + edgeDraft.getNodeTarget().getId();
+            id = edgeDraftImpl.getNodeSource().getId() + " - " + edgeDraftImpl.getNodeTarget().getId();
         }
 
-        if (edgeMap.containsKey(edgeDraft.getId())) {
+        if (edgeMap.containsKey(edgeDraftImpl.getId())) {
             switch (parameters.edgeDoublePolicy) {
                 case IGNORE:
                     return;
@@ -110,11 +117,11 @@ public class ImportContainerImpl implements ImportContainer {
             }
         }
 
-        edgeMap.put(id, edgeDraft);
+        edgeMap.put(id, edgeDraftImpl);
     }
 
     public void checkNodeLabels() {
-        for (NodeDraft n : nodeMap.values()) {
+        for (NodeDraftImpl n : nodeMap.values()) {
             if (n.getLabel() == null || n.getLabel().isEmpty()) {
                 n.setLabel(n.getId());
             }
@@ -126,19 +133,28 @@ public class ImportContainerImpl implements ImportContainer {
     }
 
     public void addNode(NodeDraft node, NodeDraft parent) {
+        NodeDraftImpl nodeImpl = (NodeDraftImpl)node;
         addNode(node);
         parent.addChild(node);
-        node.hasParent=true;
+        nodeImpl.hasParent=true;
 
         hasHierarchy=true;
     }
 
-    public Collection<NodeDraft> getNodes() {
+    public Collection<? extends NodeDraft> getNodes() {
         return nodeMap.values();
     }
 
-    public Collection<EdgeDraft> getEdges() {
+    public Collection<? extends EdgeDraft> getEdges() {
         return edgeMap.values();
+    }
+
+    public NodeDraft newNodeDraft() {
+        return new NodeDraftImpl();
+    }
+
+    public EdgeDraft newEdgeDraft() {
+        return new EdgeDraftImpl();
     }
     
     private void logger(Exception e) {

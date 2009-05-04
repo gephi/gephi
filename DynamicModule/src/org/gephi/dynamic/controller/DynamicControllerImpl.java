@@ -29,9 +29,7 @@ import org.gephi.data.network.api.NodeFactory;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
-import org.gephi.importer.api.EdgeDraft;
 import org.gephi.importer.api.ImportContainer;
-import org.gephi.importer.api.NodeDraft;
 import org.openide.util.Lookup;
 
 /**
@@ -41,7 +39,7 @@ import org.openide.util.Lookup;
 public class DynamicControllerImpl implements DynamicController {
 
     public void appendData(ImportContainer container) {
-        DhnsController controller = Lookup.getDefault().lookup(DhnsController.class);
+        /*DhnsController controller = Lookup.getDefault().lookup(DhnsController.class);
         Dictionary dico = controller.getDictionary();
 
         if (container.hasHierarchy()) {
@@ -51,7 +49,7 @@ public class DynamicControllerImpl implements DynamicController {
 
 
             //Nodes - HACK
-            for(NodeDraft nodeDraft : container.getNodes())
+            for(NodeDraftImpl nodeDraft : container.getNodes())
             {
                 if(nodeDraft.getChildren().size()>0)
                 {
@@ -60,7 +58,7 @@ public class DynamicControllerImpl implements DynamicController {
 
                     hierarchyImporter.addSibling(n);
                     hierarchyImporter.addChild();
-                    for(NodeDraft child : nodeDraft.getChildren())
+                    for(NodeDraftImpl child : nodeDraft.getChildren())
                     {
                         Node nc = NodeFactory.createNode();
                         child.flushToNode(nc);
@@ -75,7 +73,7 @@ public class DynamicControllerImpl implements DynamicController {
 
                     //hierarchyImporter.addSibling(a);
                 }
-            }
+            }*/
 
             //Edges
             /*for (EdgeDraft edgeDraft : container.getEdges()) {
@@ -90,14 +88,14 @@ public class DynamicControllerImpl implements DynamicController {
                     hierarchyImporter.addEdge(existingEdge);
                 }
             }*/
-            hierarchyImporter.finishImport();
+            /*hierarchyImporter.finishImport();
 
         } else {
             FlatImporter flatImporter = controller.getFlatImporter();
             flatImporter.initImport();
 
             //Nodes
-            for (NodeDraft nodeDraft : container.getNodes()) {
+            for (NodeDraftImpl nodeDraft : container.getNodes()) {
                 Node existingNode = dico.getNode(nodeDraft.getLabel());
                 if (existingNode == null) {
                     existingNode = NodeFactory.createNode();
@@ -122,6 +120,6 @@ public class DynamicControllerImpl implements DynamicController {
             }
 
             flatImporter.finishImport();
-        }
+        }*/
     }
 }

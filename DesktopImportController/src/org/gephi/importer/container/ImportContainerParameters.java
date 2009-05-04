@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.importer.container;
 
-import org.gephi.importer.api.EdgeDraft;
+import org.gephi.importer.EdgeDraftImpl;
 
 /**
  *
@@ -32,5 +32,5 @@ public class ImportContainerParameters {
     public enum DoublePolicy { UNKNOWN, IGNORE, REPLACE };
     DoublePolicy nodeDoublePolicy = DoublePolicy.UNKNOWN;
     DoublePolicy edgeDoublePolicy = DoublePolicy.UNKNOWN;
-    EdgeDraft.EdgeType defaultEdgeType = EdgeDraft.EdgeType.DIRECTED;
+    EdgeDraftImpl.EdgeType defaultEdgeType = EdgeDraftImpl.EdgeType.DIRECTED;
 }
