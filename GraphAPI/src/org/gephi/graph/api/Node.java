@@ -53,4 +53,8 @@ public interface Node extends Renderable {
     public int countNeighbours();
 
     public NodeLayoutInterface getNodeLayout();
+
+    public int getChildrenCount();
+
+    public Node getChildAt(int index);
 }

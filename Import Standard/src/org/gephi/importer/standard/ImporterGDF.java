@@ -93,7 +93,7 @@ public class ImporterGDF implements TextImporter {
                                 //Id
                                 node.setId(data);
                             } else if (count < nodeColumns.length) {
-                                setNodeData(node, nodeColumns[count], data);
+                                setNodeData(node, nodeColumns[count-1], data);
                             }
                         }
                     }
@@ -125,7 +125,7 @@ public class ImporterGDF implements TextImporter {
                                 NodeDraft nodeTarget = container.getNode(data);
                                 edge.setNodeTarget(nodeTarget);
                             } else if (count < edgeColumns.length) {
-                                setEdgeData(edge, edgeColumns[count], data);
+                                setEdgeData(edge, edgeColumns[count-2], data);
                             }
                         }
                     }

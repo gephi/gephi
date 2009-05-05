@@ -21,29 +21,51 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.data.laboratory;
 
-import java.util.Collection;
-import org.gephi.data.attributes.api.AttributeColumn;
+import java.awt.Color;
+import javax.swing.Icon;
 import org.gephi.graph.api.Node;
-import org.openide.nodes.Children;
+import org.netbeans.swing.outline.RenderDataProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class NodeChildren extends Children.Keys {
+public class NodeRenderer implements RenderDataProvider {
 
-    private Node graphNode;
-    private Collection<? extends AttributeColumn> attributesColumns;
 
-    public NodeChildren(Node node, Collection<? extends AttributeColumn> attributeColumns)
-    {
-        this.graphNode = node;
-        this.attributesColumns = attributeColumns;
+
+    @Override
+    public java.awt.Color getBackground(Object o) {
+        return null;
     }
 
     @Override
-    protected org.openide.nodes.Node[] createNodes(Object key) {
-        return new org.openide.nodes.Node[] {new NodeNode(graphNode,attributesColumns)};
+    public String getDisplayName(Object o) {
+        if(o instanceof NodeTreeModel.RootNode)
+        {
+            return "root";
+        }
+        return ((Node)o).getLabel();
     }
 
+    @Override
+    public java.awt.Color getForeground(Object o) {
+        return null;
+    }
+
+    @Override
+    public javax.swing.Icon getIcon(Object o) {
+        return null;
+
+    }
+
+    @Override
+    public String getTooltipText(Object o) {
+        return "";
+    }
+
+    @Override
+    public boolean isHtmlDisplayName(Object o) {
+        return false;
+    }
 }

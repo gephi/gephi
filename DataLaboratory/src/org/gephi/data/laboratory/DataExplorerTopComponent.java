@@ -4,17 +4,20 @@
  */
 package org.gephi.data.laboratory;
 
+import java.io.File;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.logging.Logger;
+import javax.swing.tree.TreeModel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
-import org.openide.explorer.ExplorerManager;
-import org.openide.explorer.view.NodeTableModel;
-import org.openide.explorer.view.TreeTableView;
+import org.gephi.data.network.api.DhnsController;
+import org.gephi.data.network.api.SyncReader;
+import org.gephi.graph.api.NodeWrap;
+import org.netbeans.swing.outline.DefaultOutlineModel;
+import org.netbeans.swing.outline.OutlineModel;
 import org.openide.nodes.Node;
-import org.openide.nodes.PropertySupport;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -26,7 +29,7 @@ import org.openide.windows.WindowManager;
 /**
  * Top component which displays something.
  */
-final class DataExplorerTopComponent extends TopComponent implements ExplorerManager.Provider, LookupListener {
+final class DataExplorerTopComponent extends TopComponent implements LookupListener {
 
     private enum ClassDisplayed {
 
@@ -36,12 +39,6 @@ final class DataExplorerTopComponent extends TopComponent implements ExplorerMan
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "DataExplorerTopComponent";
-
-    //Manager
-    private ExplorerManager nodeManager;
-
-    //TableModel
-    private NodeTableModel tableModel = new NodeTableModel();
 
     //Lookup
     final Lookup.Result<AttributeColumn> nodeColumnsResult;
@@ -67,25 +64,30 @@ final class DataExplorerTopComponent extends TopComponent implements ExplorerMan
 
     private void initNodesView() {
         try {
-            nodeManager = new ExplorerManager();
-            nodeManager.setRootContext(new NodeNode(null));
-
-            //Attributes columns
-            Collection<? extends AttributeColumn> attributeColumns = nodeColumnsResult.allInstances();
-            Node.Property[] properties = new Node.Property[1+attributeColumns.size()];
-            properties[0] = new PropertyPropety("id", "ID", "id",true);
-            int count = 1;
-            for (AttributeColumn col : attributeColumns) {
-                properties[count] = new AttributeProperty(col);
+            //Nodes from DHNS
+            SyncReader reader = Lookup.getDefault().lookup(DhnsController.class).getSyncReader();
+            reader.lock();
+            org.gephi.graph.api.Node[] nodes = new org.gephi.graph.api.Node[reader.getNodeCount()];
+            int count=0;
+            for(Iterator<? extends NodeWrap> itr = reader.getNodes();itr.hasNext();)
+            {
+                org.gephi.graph.api.Node n = itr.next().getNode();
+                nodes[count] = n;
                 count++;
             }
+            reader.unlock();
 
-            //Set Model
-            tableModel.setProperties(properties);
+             //Attributes columns
+            Collection<? extends AttributeColumn> attributeColumns = nodeColumnsResult.allInstances();
+            AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
 
-            Node[] nodes = new Node[1];
-            nodes[0] = new NodeNode(null);
-            tableModel.setNodes(nodes);
+            //Outline models
+            TreeModel treeMdl = new NodeTreeModel(nodes);
+            OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new NodeRowModel(cols), true);
+            outline1.setRootVisible(false);
+            outline1.setRenderDataProvider(new NodeRenderer());
+            outline1.setModel(mdl);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -113,7 +115,8 @@ final class DataExplorerTopComponent extends TopComponent implements ExplorerMan
         controlPanel = new javax.swing.JPanel();
         nodesButton = new javax.swing.JButton();
         edgesButton = new javax.swing.JButton();
-        treeTableView = new TreeTableView(tableModel);
+        jScrollPane1 = new javax.swing.JScrollPane();
+        outline1 = new org.netbeans.swing.outline.Outline();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -152,7 +155,10 @@ final class DataExplorerTopComponent extends TopComponent implements ExplorerMan
         );
 
         add(controlPanel, java.awt.BorderLayout.PAGE_START);
-        add(treeTableView, java.awt.BorderLayout.CENTER);
+
+        jScrollPane1.setViewportView(outline1);
+
+        add(jScrollPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     private void nodesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nodesButtonActionPerformed
@@ -167,8 +173,9 @@ final class DataExplorerTopComponent extends TopComponent implements ExplorerMan
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel controlPanel;
     private javax.swing.JButton edgesButton;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton nodesButton;
-    private javax.swing.JScrollPane treeTableView;
+    private org.netbeans.swing.outline.Outline outline1;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -228,56 +235,12 @@ final class DataExplorerTopComponent extends TopComponent implements ExplorerMan
         return PREFERRED_ID;
     }
 
-    public ExplorerManager getExplorerManager() {
-        return nodeManager;
-    }
-
     final static class ResolvableHelper implements Serializable {
 
         private static final long serialVersionUID = 1L;
 
         public Object readResolve() {
             return DataExplorerTopComponent.getDefault();
-        }
-    }
-
-    public class AttributeProperty extends PropertySupport.ReadOnly {
-
-        private final String description;
-
-        @SuppressWarnings("unchecked")
-        public AttributeProperty(AttributeColumn attColumn) {
-            super(attColumn.getId(), String.class, attColumn.getTitle(), "Description tooltip");
-            this.description = attColumn.getTitle();
-
-            this.setValue("ComparableColumnTTV", Boolean.TRUE); // sortable
-            this.setValue("SortingColumnTTV", Boolean.FALSE); // initially not sorted
-        }
-
-        public Object getValue() throws IllegalAccessException, InvocationTargetException {
-            return description;
-        }
-    }
-
-    public class PropertyPropety extends PropertySupport.ReadOnly
-    {
-        private final String description;
-
-        @SuppressWarnings("unchecked")
-        public PropertyPropety(String name, String displayName, String description, boolean main) {
-            super(name, String.class, displayName, description);
-            this.description = name;
-
-            if(main)
-            {
-                this.setValue("TreeColumnTTV", Boolean.TRUE); // main tree column
-            }
-            this.setValue("ComparableColumnTTV", Boolean.TRUE); // sortable
-            this.setValue("SortingColumnTTV", Boolean.FALSE); // initially not sorted
-        }
-
-        public Object getValue() throws IllegalAccessException, InvocationTargetException {
-            return description;
         }
     }
 }

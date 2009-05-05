@@ -224,6 +224,14 @@ public class NodeImpl implements Node {
         return getInDegree() + getOutDegree();
     }
 
+    public int getChildrenCount() {
+        return 0;
+    }
+
+    public Node getChildAt(int index) {
+        return null;
+    }
+
     /**
      * Utility Iterable for returning an Iterable instead of an Iterator in getEdges
      */

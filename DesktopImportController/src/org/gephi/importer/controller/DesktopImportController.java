@@ -31,12 +31,20 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.gephi.dynamic.api.DynamicController;
+import org.gephi.data.network.api.DhnsController;
+import org.gephi.data.network.api.EdgeFactory;
+import org.gephi.data.network.api.FlatImporter;
+import org.gephi.data.network.api.NodeFactory;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Node;
+import org.gephi.importer.NodeDraftImpl;
 import org.gephi.importer.api.CustomImporter;
+import org.gephi.importer.api.EdgeDraft;
 import org.gephi.importer.api.FileType;
 import org.gephi.importer.api.ImportController;
 import org.gephi.importer.api.ImportException;
 import org.gephi.importer.api.Importer;
+import org.gephi.importer.api.NodeDraft;
 import org.gephi.importer.api.TextImporter;
 import org.gephi.importer.api.XMLImporter;
 import org.gephi.importer.container.ImportContainerImpl;
@@ -44,7 +52,6 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.w3c.dom.Document;
@@ -82,7 +89,7 @@ public class DesktopImportController implements ImportController {
 
         if (im instanceof XMLImporter) {
             Document document = getDocument(fileObject);
-            XMLImporter xmLImporter = (XMLImporter)im;
+            XMLImporter xmLImporter = (XMLImporter) im;
             xmLImporter.importData(document, container);
             finishImport(container);
         } else if (im instanceof TextImporter) {
@@ -96,42 +103,39 @@ public class DesktopImportController implements ImportController {
 
     private void finishImport(ImportContainerImpl container) {
         container.checkNodeLabels();
-
+        /*
         DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-        dynamicController.appendData(container);
-    /*DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-    FlatImporter flatImporter = dhnsController.getFlatImport();
+        dynamicController.appendData(container);*/
+        DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
+        FlatImporter flatImporter = dhnsController.getFlatImporter();
 
-    flatImporter.initImport();
+        flatImporter.initImport();
 
-    //Nodes
-    for(NodeDraft node : container.getNodes())
-    {
-    Node n = NodeFactory.createNode();
-    node.setNode(n);
+        //Nodes
+        for (NodeDraft node : container.getNodes()) {
+            Node n = NodeFactory.createNode();
+            NodeDraftImpl im = (NodeDraftImpl)node;
+            im.flushToNode(n);
 
-    if(node.getX()!=0)
-    n.setX(node.getX());
-    if(node.getY()!=0)
-    n.setY(node.getY());
+            flatImporter.addNode(n);
+        }
+/*
+        //Edges
+        for (EdgeDraft edge : container.getEdges()) {
+            Node nodeSource = edge.getNodeSource().getNode();
+            Node nodeTarget = edge.getNodeTarget().getNode();
 
-    flatImporter.addNode(n);
-    }
+            Edge e = EdgeFactory.createEdge(nodeSource, nodeTarget);
 
-    //Edges
-    for(EdgeDraft edge : container.getEdges())
-    {
-    Node nodeSource = edge.getNodeSource().getNode();
-    Node nodeTarget = edge.getNodeTarget().getNode();
+            flatImporter.addEdge(e);
+        }*/
 
-    Edge e = EdgeFactory.createEdge(nodeSource, nodeTarget);
-
-    flatImporter.addEdge(e);
-    }
-
-    flatImporter.finishImport();*/
+        flatImporter.finishImport();
+        
 
     }
+
+
 
     private BufferedReader getTextReader(FileObject fileObject) throws ImportException {
         File file = FileUtil.toFile(fileObject);
