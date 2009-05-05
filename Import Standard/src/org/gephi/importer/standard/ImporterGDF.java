@@ -231,7 +231,7 @@ public class ImporterGDF implements TextImporter {
             } else if (columnName.equals("labelvisible")) {
                 nodeColumns[i - 1] = new GDFColumn(GDFColumn.NodeGuessColumn.LABELVISIBLE);
             } else {
-                AttributeClass nodeClass = container.getAttributeManager().getEdgeClass();
+                AttributeClass nodeClass = container.getAttributeManager().getNodeClass();
                 AttributeColumn newColumn = nodeClass.addAttributeColumn(columnName, type);
                 nodeColumns[i - 1] = new GDFColumn(newColumn);
             }

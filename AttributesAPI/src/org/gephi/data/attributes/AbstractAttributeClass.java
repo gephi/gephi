@@ -28,16 +28,22 @@ import org.gephi.data.attributes.api.AttributeClass;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.data.attributes.api.AttributeRow;
+import org.openide.util.Lookup;
+import org.openide.util.lookup.AbstractLookup;
+import org.openide.util.lookup.InstanceContent;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractAttributeClass implements AttributeClass {
+public abstract class AbstractAttributeClass implements AttributeClass, Lookup.Provider {
 
     protected String name;
     protected AbstractAttributeManager manager;
+
+    //Lookup
+    protected AbstractLookup lookup;
+    protected InstanceContent instanceContent;
 
     //Columns
     protected List<AttributeColumnImpl> columns = new ArrayList<AttributeColumnImpl>();
@@ -46,6 +52,8 @@ public abstract class AbstractAttributeClass implements AttributeClass {
     public AbstractAttributeClass(AbstractAttributeManager manager, String name) {
         this.name = name;
         this.manager = manager;
+        this.instanceContent = new InstanceContent();
+        this.lookup = new AbstractLookup(instanceContent);
     }
 
     public abstract String getName();
@@ -77,6 +85,7 @@ public abstract class AbstractAttributeClass implements AttributeClass {
         if (title != null && !title.equals(id)) {
             columnsMap.put(title, column);
         }
+        instanceContent.add(column);
         return column;
     }
 
@@ -89,6 +98,7 @@ public abstract class AbstractAttributeClass implements AttributeClass {
         if (column.getTitle() != null && !column.getTitle().equals(column.getId())) {
             columnsMap.remove(column.getTitle());
         }
+        instanceContent.remove(column);
     }
 
     public synchronized AttributeColumn getAttributeColumn(int index) {
@@ -113,6 +123,10 @@ public abstract class AbstractAttributeClass implements AttributeClass {
 
     public synchronized boolean hasAttributeColumn(String title) {
         return columnsMap.containsKey(title);
+    }
+
+    public Lookup getLookup() {
+        return lookup;
     }
 
     public Object getManagedValue(Object object, AttributeType type) {

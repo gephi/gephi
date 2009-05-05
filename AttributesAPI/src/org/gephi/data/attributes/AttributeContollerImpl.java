@@ -47,6 +47,14 @@ public class AttributeContollerImpl implements AttributeController {
         currentManager = new IndexedAttributeManager(reader);
     }
 
+    public Lookup getNodeColumnsLookup() {
+        return currentManager.getClassLookup("node");
+    }
+
+    public Lookup getEdgeColumnsLookup() {
+        return currentManager.getClassLookup("edge");
+    }
+
     public AttributeManager getTemporaryAttributeManager() {
         return currentManager;
     }

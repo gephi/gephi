@@ -26,6 +26,7 @@ import org.gephi.data.attributes.api.AttributeClass;
 import org.gephi.data.attributes.api.AttributeManager;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.network.api.SyncReader;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -57,12 +58,17 @@ public abstract class AbstractAttributeManager implements AttributeManager {
         
     }
 
+    public Lookup getClassLookup(String className)
+    {
+        return classMap.get(className).getLookup();
+    }
+
     public AttributeClass getNodeClass() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return nodeClass;
     }
 
     public AttributeClass getEdgeClass() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return edgeClass;
     }
 
     public AttributeClass getClass(String name) {

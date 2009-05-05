@@ -2,17 +2,22 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.gephi.data.laboratory;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.logging.Logger;
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeController;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.NodeTableModel;
 import org.openide.explorer.view.TreeTableView;
 import org.openide.nodes.Node;
 import org.openide.nodes.PropertySupport;
+import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -21,20 +26,29 @@ import org.openide.windows.WindowManager;
 /**
  * Top component which displays something.
  */
-final class DataExplorerTopComponent extends TopComponent implements ExplorerManager.Provider {
+final class DataExplorerTopComponent extends TopComponent implements ExplorerManager.Provider, LookupListener {
 
+    private enum ClassDisplayed {
+
+        NODE, EDGE
+    };
     private static DataExplorerTopComponent instance;
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
-
     private static final String PREFERRED_ID = "DataExplorerTopComponent";
 
     //Manager
     private ExplorerManager nodeManager;
 
     //TableModel
-    private NodeTableModel nodeModel        = new NodeTableModel();
-    private NodeTableModel edgeModel        = new NodeTableModel();
+    private NodeTableModel tableModel = new NodeTableModel();
+
+    //Lookup
+    final Lookup.Result<AttributeColumn> nodeColumnsResult;
+    final Lookup.Result<AttributeColumn> edgeColumnsResult;
+
+    //States
+    ClassDisplayed classDisplayed = ClassDisplayed.NODE;
 
     private DataExplorerTopComponent() {
         initComponents();
@@ -42,23 +56,50 @@ final class DataExplorerTopComponent extends TopComponent implements ExplorerMan
         setToolTipText(NbBundle.getMessage(DataExplorerTopComponent.class, "HINT_DataExplorerTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
 
+        //Init lookups
+        AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
+        nodeColumnsResult = attributeController.getNodeColumnsLookup().lookupResult(AttributeColumn.class);
+        edgeColumnsResult = attributeController.getNodeColumnsLookup().lookupResult(AttributeColumn.class);
+        nodeColumnsResult.addLookupListener(this);
+        edgeColumnsResult.addLookupListener(this);
         initNodesView();
     }
 
-    private void initNodesView()
-    {
-        nodeManager = new ExplorerManager();
-        nodeManager.setRootContext(new NodeNode(null));
+    private void initNodesView() {
+        try {
+            nodeManager = new ExplorerManager();
+            nodeManager.setRootContext(new NodeNode(null));
 
+            //Attributes columns
+            Collection<? extends AttributeColumn> attributeColumns = nodeColumnsResult.allInstances();
+            Node.Property[] properties = new Node.Property[1+attributeColumns.size()];
+            properties[0] = new PropertyPropety("id", "ID", "id",true);
+            int count = 1;
+            for (AttributeColumn col : attributeColumns) {
+                properties[count] = new AttributeProperty(col);
+                count++;
+            }
 
-        Node.Property[] prop = new Node.Property[1];
-        prop[0] = new AttributeProperty("ours");
-        nodeModel.setProperties(prop);
+            //Set Model
+            tableModel.setProperties(properties);
 
-        Node[] nodes = new Node[1];
-        nodes[0] = new NodeNode(null);
-        nodeModel.setNodes(nodes);
+            Node[] nodes = new Node[1];
+            nodes[0] = new NodeNode(null);
+            tableModel.setNodes(nodes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    private void initEdgesView() {
+    }
+
+    public void resultChanged(LookupEvent ev) {
+        if (classDisplayed.equals(ClassDisplayed.NODE)) {
+            initNodesView();
+        } else {
+            initEdgesView();
+        }
     }
 
     /** This method is called from within the constructor to
@@ -69,35 +110,67 @@ final class DataExplorerTopComponent extends TopComponent implements ExplorerMan
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        nodesPanel = new javax.swing.JPanel();
-        nodesView = new TreeTableView(nodeModel);
-        edgesPanel = new javax.swing.JPanel();
-        edgesView = new TreeTableView(edgeModel);
+        controlPanel = new javax.swing.JPanel();
+        nodesButton = new javax.swing.JButton();
+        edgesButton = new javax.swing.JButton();
+        treeTableView = new TreeTableView(tableModel);
 
         setLayout(new java.awt.BorderLayout());
 
-        nodesPanel.setLayout(new java.awt.BorderLayout());
-        nodesPanel.add(nodesView, java.awt.BorderLayout.CENTER);
+        org.openide.awt.Mnemonics.setLocalizedText(nodesButton, org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.nodesButton.text")); // NOI18N
+        nodesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nodesButtonActionPerformed(evt);
+            }
+        });
 
-        jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.nodesPanel.TabConstraints.tabTitle"), nodesPanel); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(edgesButton, org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.edgesButton.text")); // NOI18N
+        edgesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                edgesButtonActionPerformed(evt);
+            }
+        });
 
-        edgesPanel.setLayout(new java.awt.BorderLayout());
-        edgesPanel.add(edgesView, java.awt.BorderLayout.CENTER);
+        javax.swing.GroupLayout controlPanelLayout = new javax.swing.GroupLayout(controlPanel);
+        controlPanel.setLayout(controlPanelLayout);
+        controlPanelLayout.setHorizontalGroup(
+            controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(controlPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(nodesButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(edgesButton)
+                .addContainerGap(260, Short.MAX_VALUE))
+        );
+        controlPanelLayout.setVerticalGroup(
+            controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controlPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nodesButton)
+                    .addComponent(edgesButton)))
+        );
 
-        jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.edgesPanel.TabConstraints.tabTitle"), edgesPanel); // NOI18N
-
-        add(jTabbedPane1, java.awt.BorderLayout.CENTER);
+        add(controlPanel, java.awt.BorderLayout.PAGE_START);
+        add(treeTableView, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void nodesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nodesButtonActionPerformed
+        classDisplayed = ClassDisplayed.NODE;
+        initNodesView();
+    }//GEN-LAST:event_nodesButtonActionPerformed
 
+    private void edgesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edgesButtonActionPerformed
+        classDisplayed = ClassDisplayed.EDGE;
+        initEdgesView();
+    }//GEN-LAST:event_edgesButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel edgesPanel;
-    private javax.swing.JScrollPane edgesView;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JPanel nodesPanel;
-    private javax.swing.JScrollPane nodesView;
+    private javax.swing.JPanel controlPanel;
+    private javax.swing.JButton edgesButton;
+    private javax.swing.JButton nodesButton;
+    private javax.swing.JScrollPane treeTableView;
     // End of variables declaration//GEN-END:variables
+
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
      * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
@@ -109,8 +182,6 @@ final class DataExplorerTopComponent extends TopComponent implements ExplorerMan
         }
         return instance;
     }
-
-    
 
     /**
      * Obtain the DataExplorerTopComponent instance. Never call {@link #getDefault} directly!
@@ -175,11 +246,32 @@ final class DataExplorerTopComponent extends TopComponent implements ExplorerMan
         private final String description;
 
         @SuppressWarnings("unchecked")
-        public AttributeProperty(String description) {
-            super("main_description", String.class, "Description", "Description tooltip");
-            this.description = description;
+        public AttributeProperty(AttributeColumn attColumn) {
+            super(attColumn.getId(), String.class, attColumn.getTitle(), "Description tooltip");
+            this.description = attColumn.getTitle();
 
-            this.setValue("TreeColumnTTV", Boolean.TRUE); // main tree column
+            this.setValue("ComparableColumnTTV", Boolean.TRUE); // sortable
+            this.setValue("SortingColumnTTV", Boolean.FALSE); // initially not sorted
+        }
+
+        public Object getValue() throws IllegalAccessException, InvocationTargetException {
+            return description;
+        }
+    }
+
+    public class PropertyPropety extends PropertySupport.ReadOnly
+    {
+        private final String description;
+
+        @SuppressWarnings("unchecked")
+        public PropertyPropety(String name, String displayName, String description, boolean main) {
+            super(name, String.class, displayName, description);
+            this.description = name;
+
+            if(main)
+            {
+                this.setValue("TreeColumnTTV", Boolean.TRUE); // main tree column
+            }
             this.setValue("ComparableColumnTTV", Boolean.TRUE); // sortable
             this.setValue("SortingColumnTTV", Boolean.FALSE); // initially not sorted
         }

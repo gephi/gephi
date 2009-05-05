@@ -61,11 +61,12 @@ public class ImportException extends Exception {
 		String sourceName="";
 		sourceName = source.getClass().getName();
 
-        Object[] params = new Object[4];
+        Object[] params = new Object[5];
         params[0] = sourceName;
         params[1] = cause.getClass().getSimpleName();
         params[2] = cause.getLocalizedMessage();
-        params[3] = cause.getStackTrace()[0].getLineNumber();
+        params[3] = cause.getStackTrace()[0].getClassName();
+        params[4] = cause.getStackTrace()[0].getLineNumber();
         String msg = String.format(NbBundle.getMessage(getClass(), "importException_message"), params);
         return msg;
 	}
