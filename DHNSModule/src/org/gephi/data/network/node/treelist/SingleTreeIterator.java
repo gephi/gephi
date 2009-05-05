@@ -62,11 +62,11 @@ public class SingleTreeIterator implements Iterator<PreNode>, ResetableIterator 
             }
 
             while (!currentNode.value.isEnabled()) {
-                nextIndex = currentNode.value.pre + 1 + currentNode.value.size;
+                ++nextIndex;
                 if (nextIndex >= treeSize) {
                     return false;
                 }
-                currentNode = treeList.root.get(nextIndex);
+                currentNode = currentNode.next();
             }
             return true;
         }

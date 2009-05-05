@@ -65,6 +65,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
         this.engine = VizController.getInstance().getEngine();
         controller = Lookup.getDefault().lookup(DhnsController.class);
         //controller.getSightManager().addChangeListener(this);
+        reader = controller.getAsyncReader();
+        //resetClasses();
         this.vizConfig = VizController.getInstance().getVizConfig();
     }
 
@@ -173,18 +175,9 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
 
     public boolean requireUpdate() {
         //Refresh reader if sight changed
-        /*if (sightChange.getAndSet(false)) {
-            Sight selectedSight = controller.getSightManager().getSelectedSight();
-            if (selectedSight != null) {
-                //cacheMarker = 0;
-                reader = controller.getAsyncReader(selectedSight);
-                resetClasses();
-            }
-        }
-
         if (reader != null) {
             return reader.requireUpdate();
-        }*/
+        }
         return false;
     }
 
@@ -195,7 +188,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
     private void resetClasses() {
         for (Object3dClass objClass : engine.getObject3dClasses()) {
             if (objClass.isEnabled()) {
-                engine.resetObjecClass(objClass);
+                engine.resetObjectClass(objClass);
             }
         }
     }

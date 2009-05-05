@@ -420,7 +420,7 @@ public class CompatibilityEngine extends AbstractEngine {
     }
 
     @Override
-    public void resetObjecClass(Object3dClass object3dClass) {
+    public void resetObjectClass(Object3dClass object3dClass) {
         octree.resetObjectClass(object3dClass.getClassId());
     }
 

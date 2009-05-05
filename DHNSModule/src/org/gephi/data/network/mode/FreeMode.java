@@ -67,6 +67,7 @@ public class FreeMode implements Mode, FreeModifier {
         ni.setY(n.getPost() * 50);
         }*/
         edgeProcessing.init();
+        dhns.getNetworkCache().reset();
     //sightManager.getMainSight().getSightCache().reset();
     }
 

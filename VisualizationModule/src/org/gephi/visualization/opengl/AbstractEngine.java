@@ -117,7 +117,10 @@ public abstract class AbstractEngine implements Engine,VizArchitecture {
 
     public abstract Object3dClass[] getObject3dClasses();
 
-    public abstract void resetObjecClass(Object3dClass object3dClass);
+    /**
+     * Reset contents of octree for the given class
+     */
+    public abstract void resetObjectClass(Object3dClass object3dClass);
 
     public float cameraDistance(Object3dImpl object) {
         float[] cameraLocation = graphDrawable.getCameraLocation();

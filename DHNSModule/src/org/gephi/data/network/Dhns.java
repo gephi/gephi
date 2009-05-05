@@ -52,11 +52,12 @@ public class Dhns {
         dictionary = new DictionaryImpl();
         potatoManager = new PotatoManager(this);
         networkCache = new NetworkCache(this);
+        init();
     }
 
     public void init() {
        importFakeGraph();
-    //treeStructure.showTreeAsTable();
+       treeStructure.showTreeAsTable();
     }
 
     public void endImport() {
