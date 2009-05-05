@@ -26,7 +26,7 @@ package org.gephi.graph.api;
  */
 public interface LayoutDataFactory {
 
-    public NodeLayoutInterface getNodeLayout(Node node, Sight sight);
+    public NodeLayoutInterface getNodeLayout(Node node);
 
-    public EdgeLayoutInterface getEdgeLayout(Edge edge, Sight sight);
+    public EdgeLayoutInterface getEdgeLayout(Edge edge);
 }

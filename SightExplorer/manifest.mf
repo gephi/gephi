@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module: org.gephi.sight.explorer
-OpenIDE-Module-Layer: org/gephi/sight/explorer/layer.xml
-OpenIDE-Module-Localizing-Bundle: org/gephi/sight/explorer/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
-

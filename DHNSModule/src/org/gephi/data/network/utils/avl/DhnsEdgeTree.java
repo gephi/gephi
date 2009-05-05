@@ -20,13 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network.utils.avl;
 
-import org.gephi.graph.api.Sight;
 import org.gephi.data.network.edge.DhnsEdge;
 import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.sight.SightImpl;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
-import org.gephi.datastructure.avl.simple.AVLItem;
 
 /**
  * Special type of tree which knows his {@link PreNode} owner. The {@link AVLItemAccessor} always return
@@ -39,26 +36,22 @@ import org.gephi.datastructure.avl.simple.AVLItem;
  * 
  * @author Mathieu Bastian
  */
-public class DhnsEdgeTree extends ParamAVLTree<DhnsEdge> implements AVLItem {
+public class DhnsEdgeTree extends ParamAVLTree<DhnsEdge> {
 
     private PreNode owner;
-    private Sight sight;
 
-    public DhnsEdgeTree(PreNode owner, Sight sight) {
+    public DhnsEdgeTree(PreNode owner) {
         super();
         this.owner = owner;
-        this.sight = sight;
         setAccessor(new DhnsdgeAVLItemAccessor());
     }
 
-    public PreNode getOwner()
-    {
+    public PreNode getOwner() {
         return owner;
     }
 
-    public boolean hasNeighbour(PreNode node)
-    {
-        return getItem(node.getNumber())!=null;
+    public boolean hasNeighbour(PreNode node) {
+        return getItem(node.getNumber()) != null;
     }
 
     private class DhnsdgeAVLItemAccessor implements AVLItemAccessor<DhnsEdge> {
@@ -71,9 +64,5 @@ public class DhnsEdgeTree extends ParamAVLTree<DhnsEdge> implements AVLItem {
                 return item.getPreNodeFrom().getNumber();
             }
         }
-    }
-    
-    public int getNumber() {
-        return sight.getNumber();
     }
 }

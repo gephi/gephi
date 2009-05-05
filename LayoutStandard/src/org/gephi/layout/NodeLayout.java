@@ -22,7 +22,6 @@ package org.gephi.layout;
 
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeLayoutInterface;
-import org.gephi.graph.api.Sight;
 
 /**
  *
@@ -32,7 +31,6 @@ public class NodeLayout implements NodeLayoutInterface {
 
     //Architecture
     public Node node;
-    private Sight sight;
 
     //Data
     public float dx = 0;
@@ -42,9 +40,8 @@ public class NodeLayout implements NodeLayoutInterface {
     public boolean fixed = false;
     public float freeze = 0f;
 
-    public NodeLayout(Node node, Sight sight) {
+    public NodeLayout(Node node) {
         this.node = node;
-        this.sight = sight;
     }
 
     public float x() {
@@ -68,6 +65,6 @@ public class NodeLayout implements NodeLayoutInterface {
     }
 
     public int getNeighboursCount() {
-        return node.countNeighbours(sight);
+        return node.countNeighbours();
     }
 }

@@ -25,7 +25,6 @@ import org.gephi.data.network.edge.DhnsEdge;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.node.treelist.SingleTreeIterator;
-import org.gephi.data.network.sight.SightImpl;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 
 /**
@@ -40,12 +39,10 @@ public class EdgesOutIterator implements Iterator<DhnsEdge> {
     protected ParamAVLIterator<DhnsEdge> edgeIterator;
     protected PreNode currentNode;
     protected DhnsEdge pointer;
-    protected SightImpl sight;
 
-    public EdgesOutIterator(TreeStructure treeStructure, SightImpl sight) {
-        treeIterator = new SingleTreeIterator(treeStructure, sight);
+    public EdgesOutIterator(TreeStructure treeStructure) {
+        treeIterator = new SingleTreeIterator(treeStructure);
         edgeIterator = new ParamAVLIterator<DhnsEdge>();
-        this.sight = sight;
     }
 
     @Override
@@ -53,7 +50,7 @@ public class EdgesOutIterator implements Iterator<DhnsEdge> {
         while (!edgeIterator.hasNext()) {
             if (treeIterator.hasNext()) {
                 currentNode = treeIterator.next();
-                edgeIterator.setNode(currentNode.getVirtualEdgesOUT(sight));
+                edgeIterator.setNode(currentNode.getDhnsEdgesOUT());
             } else {
                 return false;
             }

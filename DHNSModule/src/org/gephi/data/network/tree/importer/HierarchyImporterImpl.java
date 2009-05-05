@@ -28,7 +28,6 @@ import org.gephi.data.network.edge.PreEdge;
 import org.gephi.data.network.edge.PreEdge.EdgeType;
 import org.gephi.data.network.node.NodeImpl;
 import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -41,7 +40,6 @@ public class HierarchyImporterImpl implements HierarchyImporter {
 
     private Dhns dhns;
     private TreeStructure treeStructure;
-    private SightImpl sight;
 
     //Tree
     private int currentLevel;
@@ -58,7 +56,6 @@ public class HierarchyImporterImpl implements HierarchyImporter {
     public HierarchyImporterImpl(Dhns dhns) {
         this.dhns = dhns;
         this.treeStructure = dhns.getTreeStructure();
-        this.sight = dhns.getSightManager().getMainSight();
     }
 
     /**
@@ -67,7 +64,6 @@ public class HierarchyImporterImpl implements HierarchyImporter {
     public void initImport() {
         dhns.getWriteLock().lock();
         PreNode root = new PreNode(0, 0, 0, null);
-        root.addSight(sight);
         treeStructure.insertAtEnd(root);
         treeStructure.setRoot(root);
         currentLevel = 1;
@@ -98,7 +94,6 @@ public class HierarchyImporterImpl implements HierarchyImporter {
         //Node
         NodeImpl nodeImpl = (NodeImpl) node;
         p.setNode(nodeImpl);
-        p.addSight(sight);
         
         //Insert
         treeStructure.insertAtEnd(p);
@@ -137,7 +132,7 @@ public class HierarchyImporterImpl implements HierarchyImporter {
             p.getPost();
             
             if (p.size == 0) {
-                p.setEnabled(sight, true);
+                p.setEnabled(true);
             }
         }
 

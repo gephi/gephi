@@ -42,7 +42,7 @@ public class StatisticsControllerImpl implements StatisticsController {
     public void execute(Statistics statistics) {
         DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
 
-        SyncReader reader = dhnsController.getSyncReader(dhnsController.getSightManager().getSelectedSight());
+        SyncReader reader = dhnsController.getSyncReader();
 
         reader.lock();
         statistics.execute(reader);

@@ -24,7 +24,6 @@ import java.util.Iterator;
 import org.gephi.data.network.edge.DhnsEdge;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.node.treelist.SightTreeIterator;
-import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 
@@ -38,12 +37,10 @@ public class HierarchyEdgesIterator implements Iterator<DhnsEdge> {
     protected ParamAVLIterator<DhnsEdge> edgeIterator;
     protected PreNode currentNode;
     protected DhnsEdge pointer;
-    protected SightImpl sight;
 
-    public HierarchyEdgesIterator(TreeStructure treeStructure, SightImpl sight) {
-        treeIterator = new SightTreeIterator(treeStructure, sight);
+    public HierarchyEdgesIterator(TreeStructure treeStructure) {
+        treeIterator = new SightTreeIterator(treeStructure);
         edgeIterator = new ParamAVLIterator<DhnsEdge>();
-        this.sight = sight;
     }
 
     @Override
@@ -51,7 +48,7 @@ public class HierarchyEdgesIterator implements Iterator<DhnsEdge> {
         while (!edgeIterator.hasNext()) {
             if (treeIterator.hasNext()) {
                 currentNode = treeIterator.next();
-                edgeIterator.setNode(currentNode.getVirtualEdgesOUT(sight));
+                edgeIterator.setNode(currentNode.getDhnsEdgesOUT());
             } else {
                 return false;
             }

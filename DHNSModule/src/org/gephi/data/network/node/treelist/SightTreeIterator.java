@@ -21,58 +21,16 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.data.network.node.treelist;
 
-import java.util.Iterator;
-import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.tree.TreeStructure;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class SightTreeIterator implements Iterator<PreNode> {
+public class SightTreeIterator extends PreNodeTreeListIterator {
 
-    protected int treeSize;
-	protected int nextIndex = 0;
-	protected PreNode pointer;
-
-    protected SightImpl sight;
-
-    public SightTreeIterator(TreeStructure treeStructure, SightImpl sight)
+    public SightTreeIterator(TreeStructure treeStructure)
     {
-        PreNodeTreeList treeList = treeStructure.getTree();
-		treeSize = treeList.size();
-		pointer = treeList.get(0);
-
-        this.sight = sight;
+        super(treeStructure.getTree());
     }
-
-    @Override
-	public boolean hasNext()
-	{
-		if(nextIndex >= treeSize)
-			return false;
-
-		while(nextIndex < treeSize && !pointer.isInSight(sight))
-		{
-			pointer = pointer.avlNode.next().value;
-			nextIndex++;
-		}
-		return true;
-	}
-
-	@Override
-	public PreNode next()
-	{
-        PreNode res = pointer;
-        nextIndex++;
-        if(nextIndex < treeSize)
-            pointer = pointer.avlNode.next().value;
-		return res;
-	}
-
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
 }

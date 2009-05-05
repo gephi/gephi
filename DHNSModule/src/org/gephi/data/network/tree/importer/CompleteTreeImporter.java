@@ -22,7 +22,6 @@ package org.gephi.data.network.tree.importer;
 
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.sight.SightImpl;
 
 /**
  * Hierarchical graph importer. Must import the complete tree.
@@ -38,11 +37,9 @@ public class CompleteTreeImporter {
     PreNode lastPos;
     int treeHeight;
     int currentPre = 0;
-    SightImpl sight;
 
-    public CompleteTreeImporter(TreeStructure tree, SightImpl sight) {
+    public CompleteTreeImporter(TreeStructure tree) {
         this.treeStructure = tree;
-        this.sight = sight;
     }
 
     /**
@@ -109,9 +106,8 @@ public class CompleteTreeImporter {
 
         for (PreNode p : treeStructure.getTree()) {
             p.getPost();
-            p.addSight(sight);
             if (p.size == 0) {
-                p.setEnabled(sight, true);
+                p.setEnabled(true);
             }
         }
     }
@@ -159,17 +155,17 @@ public class CompleteTreeImporter {
 
     public void shuffleEnable() {
         for (PreNode p : treeStructure.getTree()) {
-            p.setEnabled(sight, false);
+            p.setEnabled(false);
         }
 
         for (int i = 1; i < treeStructure.getTreeSize(); i++) {
             int enabled = (int) Math.round(Math.random());
             if (enabled == 0) {
                 PreNode n = treeStructure.getNodeAt(i);
-                n.setEnabled(sight, false);
+                n.setEnabled(false);
             } else if (enabled == 1) {
                 PreNode n = treeStructure.getNodeAt(i);
-                n.setEnabled(sight, true);
+                n.setEnabled(true);
                 i += n.size;
             }
         }

@@ -32,7 +32,6 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Object3d;
 import org.gephi.data.network.api.Potato;
-import org.gephi.graph.api.Sight;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.Object3dImpl;
@@ -65,7 +64,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
     public void initArchitecture() {
         this.engine = VizController.getInstance().getEngine();
         controller = Lookup.getDefault().lookup(DhnsController.class);
-        controller.getSightManager().addChangeListener(this);
+        //controller.getSightManager().addChangeListener(this);
         this.vizConfig = VizController.getInstance().getVizConfig();
     }
 
@@ -174,7 +173,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
 
     public boolean requireUpdate() {
         //Refresh reader if sight changed
-        if (sightChange.getAndSet(false)) {
+        /*if (sightChange.getAndSet(false)) {
             Sight selectedSight = controller.getSightManager().getSelectedSight();
             if (selectedSight != null) {
                 //cacheMarker = 0;
@@ -185,7 +184,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
 
         if (reader != null) {
             return reader.requireUpdate();
-        }
+        }*/
         return false;
     }
 

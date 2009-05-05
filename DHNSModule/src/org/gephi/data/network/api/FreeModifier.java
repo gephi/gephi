@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.network.api;
 
-import org.gephi.graph.api.Sight;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
@@ -30,9 +29,9 @@ import org.gephi.graph.api.Node;
  */
 public interface FreeModifier {
 
-    public void expand(Node node, Sight sight);
+    public void expand(Node node);
 
-    public void retract(Node node, Sight sight);
+    public void retract(Node node);
 
     public void addNode(Node node, Node parent);
 

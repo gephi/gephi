@@ -28,13 +28,10 @@ import org.gephi.data.network.api.AsyncReader;
 import org.gephi.data.network.api.DhnsController;
 import org.gephi.data.network.api.HierarchyImporter;
 import org.gephi.data.network.api.LayoutReader;
-import org.gephi.data.network.api.SightManager;
-import org.gephi.graph.api.Sight;
 import org.gephi.data.network.api.SyncReader;
 import org.gephi.data.network.reader.AsyncReaderImpl;
 import org.gephi.data.network.reader.LayoutReaderImpl;
 import org.gephi.data.network.reader.SyncReaderImpl;
-import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.tree.importer.FlatImporterImpl;
 import org.gephi.data.network.tree.importer.HierarchyImporterImpl;
 import org.gephi.graph.api.LayoutDataFactory;
@@ -59,23 +56,19 @@ public class DhnsControllerImpl implements DhnsController {
         return dhns;
     }
 
-    public SightManager getSightManager() {
-        return dhns.getSightManager();
+    public AsyncReader getAsyncReader()
+    {
+        return new AsyncReaderImpl(dhns);
     }
 
-    public AsyncReader getAsyncReader(Sight sight)
+    public SyncReader getSyncReader()
     {
-        return new AsyncReaderImpl((SightImpl)sight);
+        return new SyncReaderImpl(dhns);
     }
 
-    public SyncReader getSyncReader(Sight sight)
+    public LayoutReader getLayoutReader(LayoutDataFactory factory)
     {
-        return new SyncReaderImpl(dhns, (SightImpl)sight);
-    }
-
-    public LayoutReader getLayoutReader(Sight sight, LayoutDataFactory factory)
-    {
-        return new LayoutReaderImpl(dhns, (SightImpl)sight, factory);
+        return new LayoutReaderImpl(dhns, factory);
     }
 
     public FreeModifier getFreeModifier()

@@ -28,8 +28,7 @@ import org.gephi.data.network.edge.DhnsEdge;
 import org.gephi.data.network.edge.EdgeImpl;
 import org.gephi.data.network.node.NodeImpl;
 import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.sight.SightCache;
-import org.gephi.data.network.sight.SightImpl;
+import org.gephi.data.network.cache.NetworkCache;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeLayoutInterface;
 import org.gephi.graph.api.NodeLayoutInterface;
@@ -47,10 +46,10 @@ public class LayoutReaderImpl<T extends NodeLayoutInterface, U extends EdgeLayou
     private NodeLayoutIterable nodeIterable2;
     private EdgeIterable edgeIterable;
 
-    public LayoutReaderImpl(Dhns dhns, SightImpl sight,LayoutDataFactory factory) {
-        nodeIterable1 = new NodeLayoutIterable(sight,factory);
-        nodeIterable2 = new NodeLayoutIterable(sight,factory);
-        edgeIterable = new EdgeIterable(sight,factory);
+    public LayoutReaderImpl(Dhns dhns, LayoutDataFactory factory) {
+        nodeIterable1 = new NodeLayoutIterable(dhns, factory);
+        nodeIterable2 = new NodeLayoutIterable(dhns, factory);
+        edgeIterable = new EdgeIterable(dhns, factory);
     }
 
     public void lock() {
@@ -85,13 +84,13 @@ public class LayoutReaderImpl<T extends NodeLayoutInterface, U extends EdgeLayou
     private static class NodeLayoutIterable<T extends NodeLayoutInterface> implements Iterable<T> {
 
         private Iterator<T> iterator;
-        private SightCache cache;
+        private NetworkCache cache;
         private List<PreNode> nodes;
         private int index = -1;
         private boolean inUse = false;
 
-        public NodeLayoutIterable(final SightImpl sight,final LayoutDataFactory factory) {
-            cache = sight.getSightCache();
+        public NodeLayoutIterable(final Dhns dhns, final LayoutDataFactory factory) {
+            cache = dhns.getNetworkCache();
             iterator = new Iterator<T>() {
 
                 public boolean hasNext() {
@@ -106,7 +105,7 @@ public class LayoutReaderImpl<T extends NodeLayoutInterface, U extends EdgeLayou
                     NodeImpl ni =  nodes.get(index).getNode();
                     if(ni.getNodeLayout()==null)
                     {
-                        ni.setNodeLayout(factory.getNodeLayout(ni,sight));
+                        ni.setNodeLayout(factory.getNodeLayout(ni));
                     }
                     return (T)ni.getNodeLayout();
                 }
@@ -131,12 +130,12 @@ public class LayoutReaderImpl<T extends NodeLayoutInterface, U extends EdgeLayou
     private static class EdgeIterable<U extends EdgeLayoutInterface> implements Iterable<U> {
 
         private Iterator<U> iterator;
-        private SightCache cache;
+        private NetworkCache cache;
         private List<DhnsEdge> edges;
         private int index = -1;
 
-        public EdgeIterable(final SightImpl sight,final LayoutDataFactory factory) {
-            cache = sight.getSightCache();
+        public EdgeIterable(final Dhns dhns,final LayoutDataFactory factory) {
+            cache = dhns.getNetworkCache();
             iterator = new Iterator<U>() {
 
                 public boolean hasNext() {
@@ -147,7 +146,7 @@ public class LayoutReaderImpl<T extends NodeLayoutInterface, U extends EdgeLayou
                     EdgeImpl edge = edges.get(index).getEdge();
                     if(edge.getEdgeLayout()==null)
                     {
-                        edge.setEdgeLayout(factory.getEdgeLayout(edge,sight));
+                        edge.setEdgeLayout(factory.getEdgeLayout(edge));
                     }
                     return (U)edge.getEdgeLayout();
                 }

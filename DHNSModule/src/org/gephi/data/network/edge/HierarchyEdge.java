@@ -21,9 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.network.edge;
 
 import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.sight.SightImpl;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Sight;
 
 /**
  *
@@ -34,12 +32,10 @@ public class HierarchyEdge implements DhnsEdge {
     protected PreNode preNodeFrom;
     protected PreNode preNodeTo;
     protected EdgeImpl edge;
-    protected Sight sight;
 
-    public HierarchyEdge(PreNode preNodeFrom, PreNode preNodeTo, Sight sight) {
+    public HierarchyEdge(PreNode preNodeFrom, PreNode preNodeTo) {
         this.preNodeFrom = preNodeFrom;
         this.preNodeTo = preNodeTo;
-        this.sight = sight;
     }
 
     @Override
@@ -75,9 +71,5 @@ public class HierarchyEdge implements DhnsEdge {
 
     public void setEdge(Edge edge) {
         this.edge = (EdgeImpl)edge;
-    }
-
-    public SightImpl getSight() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -28,7 +28,6 @@ import org.gephi.data.network.node.NodeImpl;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.node.treelist.SightTreeIterator;
 import org.gephi.data.network.node.treelist.SingleTreeIterator;
-import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.utils.avl.DhnsEdgeTree;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 
@@ -46,31 +45,30 @@ public class FreeEdgeProcessing implements EdgeProcessing {
         preEdgeIterator = new ParamAVLIterator<PreEdge>();
     }
 
-    public void init(SightImpl sightImpl) {
-        processInducedEdges(sightImpl);
+    public void init() {
+        processInducedEdges();
         //buildHierarchyViewMode(sightImpl);
     }
 
-    public void clear(SightImpl sight) {
-        SingleTreeIterator enabledNodes = new SingleTreeIterator(treeStructure, sight);
+    public void clear() {
+        SingleTreeIterator enabledNodes = new SingleTreeIterator(treeStructure);
         while (enabledNodes.hasNext()) {
             PreNode currentNode = enabledNodes.next();
-            currentNode.getVirtualEdgesIN(sight).clear();
-            currentNode.getVirtualEdgesOUT(sight).clear();
+            currentNode.clearDhnsEdges();
         }
     }
 
-    public void processInducedEdges(SightImpl sight) {
+    public void processInducedEdges() {
 
-        SingleTreeIterator enabledNodes = new SingleTreeIterator(treeStructure, sight);
+        SingleTreeIterator enabledNodes = new SingleTreeIterator(treeStructure);
         while (enabledNodes.hasNext()) {
             PreNode currentNode = enabledNodes.next();
-            processInducedEdges(currentNode, sight);
+            processInducedEdges(currentNode);
         }
 
     }
 
-    public void processInducedEdges(PreNode currentNode, SightImpl sight) {
+    public void processInducedEdges(PreNode currentNode) {
         if (currentNode.isLeaf()) {
             if (currentNode.countForwardEdges() > 0) {
                 //Leaf
@@ -79,19 +77,19 @@ public class FreeEdgeProcessing implements EdgeProcessing {
                     PreEdge edge = preEdgeIterator.next();
                     PreNode edgeNode = edge.maxNode;
 
-                    if (edgeNode.pre > currentNode.pre && edgeNode.isInSight(sight)) {
-                        if (edgeNode.isEnabled(sight)) {
+                    if (edgeNode.pre > currentNode.pre) {
+                        if (edgeNode.isEnabled()) {
                             //Link between two leafs
                             //System.out.println("Lien entre 2 feuilles. "+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
-                            createEdge(edge, currentNode, edgeNode, sight);
+                            createEdge(edge, currentNode, edgeNode);
                         } else {
-                            PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode, sight);
+                            PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode);
                             if (clusterAncestor != null && !checkDouble(clusterAncestor, currentNode.pre, edge)) {
                                 //The linked node is a cluster and has never been visited from this leaf
 
                                 //Link between a leaf and a cluster
                                 //System.out.println("Lien entre une feuille et un cluster. "+currentNode.pre+" "+edge.edgeType+" "+clusterAncestor.pre);
-                                VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor, sight);
+                                VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor);
 
                                 //Set the trace
                                 clusterAncestor.preTrace = currentNode.pre;
@@ -112,23 +110,23 @@ public class FreeEdgeProcessing implements EdgeProcessing {
                         PreEdge edge = preEdgeIterator.next();
                         PreNode edgeNode = edge.maxNode;
 
-                        if (edgeNode.pre > clusterEnd && edgeNode.isInSight(sight) && !checkDouble(edgeNode, currentNode.pre, edge)) {
-                            if (edgeNode.isEnabled(sight)) {
+                        if (edgeNode.pre > clusterEnd && !checkDouble(edgeNode, currentNode.pre, edge)) {
+                            if (edgeNode.isEnabled()) {
                                 //Link between two leafs
                                 //System.out.println("Lien entre 1 cluster et une feuille "+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
-                                VirtualEdge newEdge = createEdge(edge, currentNode, edgeNode, sight);
+                                VirtualEdge newEdge = createEdge(edge, currentNode, edgeNode);
 
                                 //Set the trace
                                 edgeNode.preTrace = currentNode.pre;
                                 edgeNode.lastEdge = newEdge;
                             } else {
-                                PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode, sight);
+                                PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode);
                                 if (clusterAncestor != null && !checkDouble(clusterAncestor, currentNode.pre, edge)) {
                                     //The linked node is a cluster and has never been visited from this leaf
 
                                     //Link between a leaf and a cluster
                                     //System.out.println("Lien entre un cluster et un cluster. "+currentNode.pre+" "+edge.edgeType+" "+clusterAncestor.pre);
-                                    VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor, sight);
+                                    VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor);
 
                                     //Set the trace
                                     edgeNode.preTrace = currentNode.pre;
@@ -149,7 +147,7 @@ public class FreeEdgeProcessing implements EdgeProcessing {
         currentNode.reinitTrace();
     }
 
-    public void processLocalInducedEdges(PreNode currentNode, SightImpl sight) {
+    public void processLocalInducedEdges(PreNode currentNode) {
         if (currentNode.isLeaf()) {
             if (currentNode.countForwardEdges() > 0) {
                 //Leaf
@@ -158,19 +156,19 @@ public class FreeEdgeProcessing implements EdgeProcessing {
                     PreEdge edge = preEdgeIterator.next();
                     PreNode edgeNode = edge.maxNode;
 
-                    if (edgeNode.pre > currentNode.pre && edgeNode.isInSight(sight)) {
-                        if (edgeNode.isEnabled(sight)) {
+                    if (edgeNode.pre > currentNode.pre) {
+                        if (edgeNode.isEnabled()) {
                             //Link between two leafs
                             //System.out.println("Lien entre 2 feuilles. "+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
-                            createEdge(edge, currentNode, edgeNode, sight);
+                            createEdge(edge, currentNode, edgeNode);
                         } else {
-                            PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode, sight);
+                            PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode);
                             if (clusterAncestor != null && !checkDouble(clusterAncestor, currentNode.pre, edge)) {
                                 //The linked node is a cluster and has never been visited from this leaf
 
                                 //Link between a leaf and a cluster
                                 //System.out.println("Lien entre une feuille et un cluster. "+currentNode.pre+" "+edge.edgeType+" "+clusterAncestor.pre);
-                                VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor, sight);
+                                VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor);
 
                                 //Set the trace
                                 clusterAncestor.preTrace = currentNode.pre;
@@ -191,23 +189,23 @@ public class FreeEdgeProcessing implements EdgeProcessing {
                         PreEdge edge = preEdgeIterator.next();
                         PreNode edgeNode = edge.maxNode;
 
-                        if (edgeNode.pre > clusterEnd && edgeNode.isInSight(sight) && !checkDouble(edgeNode, currentNode.pre, edge)) {
-                            if (edgeNode.isEnabled(sight)) {
+                        if (edgeNode.pre > clusterEnd && !checkDouble(edgeNode, currentNode.pre, edge)) {
+                            if (edgeNode.isEnabled()) {
                                 //Link between two leafs
                                 //System.out.println("Lien entre 1 cluster et une feuille"+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
-                                VirtualEdge newEdge = createEdge(edge, currentNode, edgeNode, sight);
+                                VirtualEdge newEdge = createEdge(edge, currentNode, edgeNode);
 
                                 //Set the trace
                                 edgeNode.preTrace = currentNode.pre;
                                 edgeNode.lastEdge = newEdge;
                             } else {
-                                PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode, sight);
+                                PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode);
                                 if (clusterAncestor != null && !checkDouble(clusterAncestor, currentNode.pre, edge)) {
                                     //The linked node is a cluster and has never been visited from this leaf
 
                                     //Link between a leaf and a cluster
                                     //System.out.println("Lien entre un cluster et un cluster. "+currentNode.pre+" "+edge.edgeType+" "+clusterAncestor.pre);
-                                    VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor, sight);
+                                    VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor);
 
                                     //Set the trace
                                     //edgeNode.preTrace = currentNode.pre;
@@ -225,7 +223,7 @@ public class FreeEdgeProcessing implements EdgeProcessing {
         currentNode.reinitTrace();
     }
 
-    public void reprocessInducedEdges(Iterable<PreNode> enabledNodes, PreNode center, SightImpl sight) {
+    public void reprocessInducedEdges(Iterable<PreNode> enabledNodes, PreNode center) {
         int centerLimit = center.pre + center.size;
         ParamAVLIterator<PreEdge> preEdgeIterator = new ParamAVLIterator<PreEdge>();
         for (PreNode currentNode : enabledNodes) {
@@ -237,19 +235,19 @@ public class FreeEdgeProcessing implements EdgeProcessing {
                         PreEdge edge = preEdgeIterator.next();
                         PreNode edgeNode = edge.maxNode;
 
-                        if (edgeNode.pre > center.pre && edgeNode.pre <= centerLimit && edgeNode.isInSight(sight)) {
-                            if (edgeNode.isEnabled(sight)) {
+                        if (edgeNode.pre > center.pre && edgeNode.pre <= centerLimit) {
+                            if (edgeNode.isEnabled()) {
                                 //Link between two leafs
                                 //System.out.println("Lien entre 2 feuilles. "+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
-                                createEdge(edge, currentNode, edgeNode, sight);
+                                createEdge(edge, currentNode, edgeNode);
                             } else {
-                                PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode, sight);
+                                PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode);
                                 if (clusterAncestor != null && !checkDouble(clusterAncestor, currentNode.pre, edge)) {
                                     //The linked node is a cluster and has never been visited from this leaf
 
                                     //Link between a leaf and a cluster
                                     //System.out.println("Lien entre une feuille et un cluster. "+currentNode.pre+" "+edge.edgeType+" "+clusterAncestor.pre);
-                                    VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor, sight);
+                                    VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor);
 
                                     //Set the trace
                                     clusterAncestor.preTrace = currentNode.pre;
@@ -269,23 +267,23 @@ public class FreeEdgeProcessing implements EdgeProcessing {
                         while (preEdgeIterator.hasNext()) {
                             PreEdge edge = preEdgeIterator.next();
                             PreNode edgeNode = edge.maxNode;
-                            if (edgeNode.pre > center.pre && edgeNode.pre <= centerLimit && edgeNode.isInSight(sight) && !checkDouble(edgeNode, currentNode.pre, edge)) {
-                                if (edgeNode.isEnabled(sight)) {
+                            if (edgeNode.pre > center.pre && edgeNode.pre <= centerLimit && !checkDouble(edgeNode, currentNode.pre, edge)) {
+                                if (edgeNode.isEnabled()) {
                                     //Link between two leafs
                                     //System.out.println("Lien entre 1 cluster et une feuille"+currentNode.pre+" "+edge.edgeType+" "+edgeNode.pre);
-                                    VirtualEdge newEdge = createEdge(edge, currentNode, edgeNode, sight);
+                                    VirtualEdge newEdge = createEdge(edge, currentNode, edgeNode);
 
                                     //Set the trace
                                     edgeNode.preTrace = currentNode.pre;
                                     edgeNode.lastEdge = newEdge;
                                 } else {
-                                    PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode, sight);
+                                    PreNode clusterAncestor = treeStructure.getEnabledAncestorOrSelf(edgeNode);
                                     if (clusterAncestor != null && !checkDouble(clusterAncestor, currentNode.pre, edge)) {
                                         //The linked node is a cluster and has never been visited from this leaf
 
                                         //Link between a leaf and a cluster
                                         //System.out.println("Lien entre un cluster et un cluster. "+currentNode.pre+" "+edge.edgeType+" "+clusterAncestor.pre);
-                                        VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor, sight);
+                                        VirtualEdge newEdge = createEdge(edge, currentNode, clusterAncestor);
 
                                         //Set the trace
                                         clusterAncestor.preTrace = currentNode.pre;
@@ -317,26 +315,26 @@ public class FreeEdgeProcessing implements EdgeProcessing {
         return false;
     }
 
-    private VirtualEdge createEdge(PreEdge edge, PreNode currentNode, PreNode edgeNode, SightImpl sight) {
+    private VirtualEdge createEdge(PreEdge edge, PreNode currentNode, PreNode edgeNode) {
         VirtualEdge newEdge = null;
 
         if (edge.edgeType == EdgeType.IN) {
-            newEdge = new VirtualEdge(edgeNode, currentNode, sight);
+            newEdge = new VirtualEdge(edgeNode, currentNode);
             newEdge.addPhysicalEdge(edge);
-            edgeNode.getVirtualEdgesOUT(sight).add(newEdge);
-            currentNode.getVirtualEdgesIN(sight).add(newEdge);
+            edgeNode.addDhnsEdgeOUT(newEdge);
+            currentNode.addDhnsEdgeIN(newEdge);
         } else if (edge.edgeType == EdgeType.OUT) {
-            newEdge = new VirtualEdge(currentNode, edgeNode, sight);
+            newEdge = new VirtualEdge(currentNode, edgeNode);
             newEdge.addPhysicalEdge(edge);
-            edgeNode.getVirtualEdgesIN(sight).add(newEdge);
-            currentNode.getVirtualEdgesOUT(sight).add(newEdge);
+            edgeNode.addDhnsEdgeIN(newEdge);
+            currentNode.addDhnsEdgeOUT(newEdge);
         }
         return newEdge;
     }
 
-    public void appendEdgeHostingNeighbours(PreNode node, PreNodeAVLTree physicalNeighbours, int preLimit, SightImpl sight) {
-        if (node.getVirtualEdgesIN(sight).getCount() > 0) {
-            for (DhnsEdge e : node.getVirtualEdgesIN(sight)) {
+    public void appendEdgeHostingNeighbours(PreNode node, PreNodeAVLTree physicalNeighbours, int preLimit) {
+        if (node.countDhnsEdgeIN() > 0) {
+            for (DhnsEdge e : node.getDhnsEdgesIN()) {
                 PreNode neighbour = e.getPreNodeFrom();
                 if (neighbour.pre < preLimit) {
                     physicalNeighbours.add(neighbour);
@@ -344,8 +342,8 @@ public class FreeEdgeProcessing implements EdgeProcessing {
             }
         }
 
-        if (node.getVirtualEdgesOUT(sight).getCount() > 0) {
-            for (DhnsEdge e : node.getVirtualEdgesOUT(sight)) {
+        if (node.countDhnsEdgeOUT() > 0) {
+            for (DhnsEdge e : node.getDhnsEdgesOUT()) {
                 PreNode neighbour = e.getPreNodeTo();
                 if (neighbour.pre < preLimit) {
                     physicalNeighbours.add(neighbour);
@@ -354,23 +352,23 @@ public class FreeEdgeProcessing implements EdgeProcessing {
         }
     }
 
-    public void clearVirtualEdges(PreNode node, SightImpl sight) {
-        if (node.getVirtualEdgesIN(sight).getCount() > 0) {
-            for (DhnsEdge n : node.getVirtualEdgesIN(sight)) {
-                n.getPreNodeFrom().getVirtualEdgesOUT(sight).remove(n);
+    public void clearVirtualEdges(PreNode node) {
+        if (node.countDhnsEdgeIN() > 0) {
+            for (DhnsEdge n : node.getDhnsEdgesIN()) {
+                n.getPreNodeFrom().removeDhnsEdgeOUT(n);
                 n.getPreNodeFrom().reinitTrace();
             }
 
-            node.getVirtualEdgesIN(sight).clear();
+            node.clearDhnsEdgesIN();
         }
 
-        if (node.getVirtualEdgesOUT(sight).getCount() > 0) {
-            for (DhnsEdge n : node.getVirtualEdgesOUT(sight)) {
-                n.getPreNodeTo().getVirtualEdgesIN(sight).remove(n);
+        if (node.countDhnsEdgeOUT() > 0) {
+            for (DhnsEdge n : node.getDhnsEdgesOUT()) {
+                n.getPreNodeTo().removeDhnsEdgeIN(n);
                 n.getPreNodeTo().reinitTrace();
             }
 
-            node.getVirtualEdgesOUT(sight).clear();
+            node.clearDhnsEdgesOUT();
         }
     }
 
@@ -392,32 +390,32 @@ public class FreeEdgeProcessing implements EdgeProcessing {
         }
     }
 
-    public VirtualEdge createVirtualEdge(PreEdge physicalEdge, PreNode minParent, PreNode maxParent, SightImpl sight) {
+    public VirtualEdge createVirtualEdge(PreEdge physicalEdge, PreNode minParent, PreNode maxParent) {
         VirtualEdge virtualEdge = null;
         if (physicalEdge.edgeType == EdgeType.IN) {
-            virtualEdge = new VirtualEdge(maxParent, minParent,sight);
+            virtualEdge = new VirtualEdge(maxParent, minParent);
             virtualEdge.addPhysicalEdge(physicalEdge);
-            maxParent.getVirtualEdgesOUT(sight).add(virtualEdge);
-            minParent.getVirtualEdgesIN(sight).add(virtualEdge);
+            maxParent.addDhnsEdgeOUT(virtualEdge);
+            minParent.addDhnsEdgeIN(virtualEdge);
         } else {
-            virtualEdge = new VirtualEdge(minParent, maxParent,sight);
+            virtualEdge = new VirtualEdge(minParent, maxParent);
             virtualEdge.addPhysicalEdge(physicalEdge);
-            maxParent.getVirtualEdgesIN(sight).add(virtualEdge);
-            minParent.getVirtualEdgesOUT(sight).add(virtualEdge);
+            maxParent.addDhnsEdgeIN(virtualEdge);
+            minParent.addDhnsEdgeOUT(virtualEdge);
         }
         return virtualEdge;
     }
 
-    public void buildHierarchyViewMode(SightImpl sight) {
-        SightTreeIterator enabledNodes = new SightTreeIterator(treeStructure, sight);
+    public void buildHierarchyViewMode() {
+        SightTreeIterator enabledNodes = new SightTreeIterator(treeStructure);
         for (; enabledNodes.hasNext();) {
             PreNode n = enabledNodes.next();
             NodeImpl ni = n.getNode();
             ni.setX(n.getPre() * 50);
             ni.setY(n.getPost() * 50);
             if (n.parent != null) {
-                DhnsEdgeTree edgeTree = n.parent.getVirtualEdgesOUT(sight);
-                HierarchyEdge he = new HierarchyEdge(n.parent, n,sight);
+                DhnsEdgeTree edgeTree = n.parent.getDhnsEdgesOUT();
+                HierarchyEdge he = new HierarchyEdge(n.parent, n);
                 edgeTree.add(he);
             }
         }

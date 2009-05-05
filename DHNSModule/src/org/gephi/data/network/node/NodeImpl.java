@@ -23,10 +23,8 @@ package org.gephi.data.network.node;
 import java.util.Iterator;
 import org.gephi.graph.api.EdgeWrap;
 import org.gephi.graph.api.NodeLayoutInterface;
-import org.gephi.graph.api.Sight;
 import org.gephi.data.network.edge.DhnsEdge;
 import org.gephi.data.network.edge.EdgeImpl;
-import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.utils.avl.DhnsEdgeTree;
 import org.gephi.data.network.utils.avl.NeighbourIterator;
 import org.gephi.datastructure.avl.param.MultiParamAVLIterator;
@@ -63,7 +61,7 @@ public class NodeImpl implements Node {
         g = (float) Math.random();
         b = (float) Math.random();
         //size= 10f;
-        size = ((float)Math.random()) * 20 + 10;
+        size = ((float) Math.random()) * 20 + 10;
     }
 
     public float x() {
@@ -184,47 +182,46 @@ public class NodeImpl implements Node {
         this.nodeLayout = nodeLayout;
     }
 
-    public int getInDegree(Sight sight) {
-        return preNode.getVirtualEdgesIN(sight).getCount();
+    public int getInDegree() {
+        return preNode.countDhnsEdgeIN();
     }
 
-    public int getOutDegree(Sight sight) {
-        return preNode.getVirtualEdgesOUT(sight).getCount();
+    public int getOutDegree() {
+        return preNode.countDhnsEdgeOUT();
     }
 
-    public Iterable<? extends EdgeWrap> getEdgesOut(Sight sight) {
-        return preNode.getVirtualEdgesOUT(sight);
+    public Iterable<? extends EdgeWrap> getEdgesOut() {
+        return preNode.getDhnsEdgesOUT();
     }
 
-    public Iterable<? extends EdgeWrap> getEdgesIn(Sight sight) {
-        return preNode.getVirtualEdgesIN(sight);
+    public Iterable<? extends EdgeWrap> getEdgesIn() {
+        return preNode.getDhnsEdgesIN();
     }
 
-    public Iterable<? extends EdgeWrap> getEdges(Sight sight) {
-        return new InOutEdgesIterable(preNode.getVirtualEdgesIN(sight), preNode.getVirtualEdgesOUT(sight));
+    public Iterable<? extends EdgeWrap> getEdges() {
+        return new InOutEdgesIterable(preNode.getDhnsEdgesIN(), preNode.getDhnsEdgesOUT());
     }
 
     public boolean containsEdge(Edge edge) {
         DhnsEdge dhnsEdge = ((EdgeImpl) edge).getDhnsEdge();
-        SightImpl sight = dhnsEdge.getSight();
-        boolean in = preNode.getVirtualEdgesIN(sight).contains(dhnsEdge);
-        boolean out = preNode.getVirtualEdgesOUT(sight).contains(dhnsEdge);
+        boolean in = preNode.getDhnsEdgesIN().contains(dhnsEdge);
+        boolean out = preNode.getDhnsEdgesOUT().contains(dhnsEdge);
         return in | out;
     }
 
-    public boolean hasNeighbour(Node node, Sight sight) {
+    public boolean hasNeighbour(Node node) {
         NodeImpl potentialNeighbour = (NodeImpl) node;
-        boolean in = preNode.getVirtualEdgesIN(sight).hasNeighbour(potentialNeighbour.getPreNode());
-        boolean out = preNode.getVirtualEdgesOUT(sight).hasNeighbour(potentialNeighbour.getPreNode());
+        boolean in = preNode.getDhnsEdgesIN().hasNeighbour(potentialNeighbour.getPreNode());
+        boolean out = preNode.getDhnsEdgesOUT().hasNeighbour(potentialNeighbour.getPreNode());
         return in | out;
     }
 
-    public Iterable<? extends NodeWrap> getNeighbours(Sight sight) {
-        return new InOutNeighboursIterable(preNode.getVirtualEdgesIN(sight), preNode.getVirtualEdgesOUT(sight), preNode);
+    public Iterable<? extends NodeWrap> getNeighbours() {
+        return new InOutNeighboursIterable(preNode.getDhnsEdgesIN(), preNode.getDhnsEdgesOUT(), preNode);
     }
 
-    public int countNeighbours(Sight sight) {
-        return getInDegree(sight) + getOutDegree(sight);
+    public int countNeighbours() {
+        return getInDegree() + getOutDegree();
     }
 
     /**

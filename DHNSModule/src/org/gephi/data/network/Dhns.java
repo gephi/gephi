@@ -29,8 +29,7 @@ import org.gephi.data.network.config.DHNSConfig;
 import org.gephi.data.network.dictionary.DictionaryImpl;
 import org.gephi.data.network.mode.FreeMode;
 import org.gephi.data.network.potato.PotatoManager;
-import org.gephi.data.network.sight.SightImpl;
-import org.gephi.data.network.sight.SightManagerImpl;
+import org.gephi.data.network.cache.NetworkCache;
 import org.gephi.data.network.tree.importer.CompleteTreeImporter;
 import org.gephi.data.network.utils.RandomEdgesGenerator;
 
@@ -39,9 +38,9 @@ public class Dhns {
     private DHNSConfig config;
     private TreeStructure treeStructure;
     private FreeMode freeMode;
-    private SightManagerImpl sightManager;
     private PotatoManager potatoManager;
     private DictionaryImpl dictionary;
+    private NetworkCache networkCache;
 
     //Locking
     private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
@@ -49,14 +48,13 @@ public class Dhns {
     public Dhns() {
         config = new DHNSConfig();
         treeStructure = new TreeStructure();
-        sightManager = new SightManagerImpl(this);
         freeMode = new FreeMode(this);
         dictionary = new DictionaryImpl();
         potatoManager = new PotatoManager(this);
-        init(sightManager.getMainSight());
+        networkCache = new NetworkCache(this);
     }
 
-    public void init(SightImpl sight) {
+    public void init() {
        importFakeGraph();
     //treeStructure.showTreeAsTable();
     }
@@ -67,7 +65,7 @@ public class Dhns {
     }
 
     private void importFakeGraph() {
-        CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure, sightManager.getMainSight());
+        CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure);
 
         importer.importGraph(5, true);
         //importer.shuffleEnable();
@@ -85,10 +83,6 @@ public class Dhns {
         return treeStructure;
     }
 
-    public SightManagerImpl getSightManager() {
-        return sightManager;
-    }
-
     public DHNSConfig getConfig() {
         return config;
     }
@@ -103,6 +97,10 @@ public class Dhns {
 
     public DictionaryImpl getDictionary() {
         return dictionary;
+    }
+
+    public NetworkCache getNetworkCache() {
+        return networkCache;
     }
 
     //Locking

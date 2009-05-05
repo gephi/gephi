@@ -26,7 +26,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.gephi.data.network.api.DhnsController;
 import org.gephi.data.network.api.LayoutReader;
-import org.gephi.graph.api.Sight;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutController;
 import org.openide.util.Lookup;
@@ -58,8 +57,7 @@ public class LayoutControllerImpl implements LayoutController {
                 layout.resetPropertiesValues();
 
                 DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-                Sight sight = dhnsController.getSightManager().getSelectedSight();
-                LayoutReader reader = dhnsController.getLayoutReader(sight, layout.getLayoutDataFactory());
+                LayoutReader reader = dhnsController.getLayoutReader(layout.getLayoutDataFactory());
 
                 while (true) {
                     layout.goAlgo(reader);

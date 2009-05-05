@@ -18,18 +18,30 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.gephi.data.laboratory;
 
-package org.gephi.graph.api;
+import org.gephi.graph.api.Node;
+import org.openide.nodes.AbstractNode;
+import org.openide.nodes.Children;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Sight {
-    public Sight[] getChildren();
-    public boolean hasChildren();
+public class NodeNode extends AbstractNode {
 
-    public int getNumber();
-    public String getName();
-    public void setName(String name);
+    private Node graphNode;
+
+    public NodeNode(Node node) {
+        super(((node == null) || (node != null && false)) ? (new NodeChildren(node)) : Children.LEAF);
+        this.graphNode = node;
+    }
+
+    @Override
+    public String getDisplayName() {
+        if (graphNode != null) {
+            return graphNode.getLabel();
+        }
+        return "root";
+    }
 }

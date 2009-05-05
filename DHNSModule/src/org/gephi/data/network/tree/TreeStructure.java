@@ -22,7 +22,6 @@ package org.gephi.data.network.tree;
 
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.node.treelist.PreNodeTreeList;
-import org.gephi.data.network.sight.SightImpl;
 
 public class TreeStructure {
 
@@ -51,9 +50,9 @@ public class TreeStructure {
         return tree.get(pre);
     }
 
-    public PreNode getEnabledAncestorOrSelf(PreNode node, SightImpl sight) {
+    public PreNode getEnabledAncestorOrSelf(PreNode node) {
         PreNode parent = node;
-        while (!parent.isEnabled(sight)) {
+        while (!parent.isEnabled()) {
             parent = parent.parent;
             if (parent == null || parent.pre == 0) {
                 return null;
@@ -62,9 +61,9 @@ public class TreeStructure {
         return parent;
     }
 
-    public PreNode getEnabledAncestor(PreNode node, SightImpl sight) {
+    public PreNode getEnabledAncestor(PreNode node) {
         PreNode parent = node.parent;
-        while (!parent.isEnabled(sight)) {
+        while (!parent.isEnabled()) {
             if (parent.pre == 0) {
                 return null;
             }
@@ -121,20 +120,13 @@ public class TreeStructure {
         }
     }
 
-    public void resetAllEnabled() {
-        for (PreNode p : tree) {
-            p.setAllEnabled(false);
-        }
-    }
-
-    public void showTreeAsTable(SightImpl sight) {
+    public void showTreeAsTable() {
         System.out.println("pre\tsize\tlevel\tparent\tpost\tpreTrace\tenabled");
         System.out.println("-------------------------------------------------------");
 
         int pre = 0;
         for (PreNode p : tree) {
-            boolean enabled = p.isEnabled(sight);
-            System.out.println(p.pre + "\t" + p.size + "\t" + p.level + "\t" + p.parent + "\t" + p.post + "\t" + p.preTrace + "\t" + enabled);
+            System.out.println(p.pre + "\t" + p.size + "\t" + p.level + "\t" + p.parent + "\t" + p.post + "\t" + p.preTrace + "\t" + p.isEnabled());
             pre++;
         }
     }

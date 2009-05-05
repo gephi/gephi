@@ -24,7 +24,6 @@ import java.util.Iterator;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.node.treelist.PreNodeTreeList.AVLNode;
-import org.gephi.data.network.sight.SightImpl;
 import org.gephi.datastructure.avl.ResetableIterator;
 
 /**
@@ -41,15 +40,12 @@ public class SingleTreeIterator implements Iterator<PreNode>, ResetableIterator 
     protected int diffIndex;
     ;
     protected AVLNode currentNode;
-    protected SightImpl sight;
 
-    public SingleTreeIterator(TreeStructure treeStructure, SightImpl sight) {
+    public SingleTreeIterator(TreeStructure treeStructure) {
         this.treeList = treeStructure.getTree();
         nextIndex = 0;
         diffIndex = 2;
         treeSize = treeList.size();
-
-        this.sight = sight;
     }
 
     public void reset() {
@@ -65,21 +61,12 @@ public class SingleTreeIterator implements Iterator<PreNode>, ResetableIterator 
                 currentNode = currentNode.next();
             }
 
-            while (!currentNode.value.isEnabled(sight) || !currentNode.value.isInSight(sight)) {
-                if (currentNode.value.isEnabled(sight)) {
-                    nextIndex = currentNode.value.pre + 1 + currentNode.value.size;
-                    if (nextIndex >= treeSize) {
-                        return false;
-                    }
-                    currentNode = treeList.root.get(nextIndex);
-                } else {
-                    ++nextIndex;
-                    if (nextIndex >= treeSize) {
-                        return false;
-                    }
-                    currentNode = currentNode.next();
+            while (!currentNode.value.isEnabled()) {
+                nextIndex = currentNode.value.pre + 1 + currentNode.value.size;
+                if (nextIndex >= treeSize) {
+                    return false;
                 }
-
+                currentNode = treeList.root.get(nextIndex);
             }
             return true;
         }
@@ -94,9 +81,5 @@ public class SingleTreeIterator implements Iterator<PreNode>, ResetableIterator 
 
     public void remove() {
         throw new UnsupportedOperationException();
-    }
-
-    public void setSight(SightImpl sight) {
-        this.sight = sight;
     }
 }

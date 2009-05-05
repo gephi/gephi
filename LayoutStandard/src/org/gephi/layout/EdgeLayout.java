@@ -22,7 +22,6 @@ package org.gephi.layout;
 
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeLayoutInterface;
-import org.gephi.graph.api.Sight;
 
 /**
  *
@@ -32,7 +31,7 @@ public class EdgeLayout implements EdgeLayoutInterface {
 
     protected Edge edge;
 
-    public EdgeLayout(Edge edge, Sight sight) {
+    public EdgeLayout(Edge edge) {
         this.edge = edge;
     }
 

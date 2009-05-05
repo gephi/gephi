@@ -41,7 +41,7 @@ public class AttributeContollerImpl implements AttributeController {
     public AttributeContollerImpl()
     {
         DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-        SyncReader reader = dhnsController.getSyncReader(dhnsController.getSightManager().getMainSight());
+        SyncReader reader = dhnsController.getSyncReader();
 
         factory = new AttributeFactoryImpl();
         currentManager = new IndexedAttributeManager(reader);

@@ -27,7 +27,6 @@ import org.gephi.data.network.edge.PreEdge;
 import org.gephi.data.network.edge.PreEdge.EdgeType;
 import org.gephi.data.network.node.NodeImpl;
 import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.sight.SightImpl;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -42,7 +41,6 @@ public class FlatImporterImpl implements FlatImporter {
     private Dhns dhns;
     private TreeStructure treeStructure;
     private PreNode root;
-    private SightImpl sight;
 
     //Stats
     private int nodeImported = 0;
@@ -51,7 +49,6 @@ public class FlatImporterImpl implements FlatImporter {
     public FlatImporterImpl(Dhns dhns) {
         this.dhns = dhns;
         this.treeStructure = dhns.getTreeStructure();
-        this.sight = dhns.getSightManager().getMainSight();
     }
 
     public void initImport() {
@@ -66,8 +63,7 @@ public class FlatImporterImpl implements FlatImporter {
     public void addNode(Node node) {
         PreNode p = new PreNode(currentPre, 0, 0, root);
         p.getPost();
-        p.addSight(sight);
-        p.setEnabled(sight, true);
+        p.setEnabled(true);
 
         //Node
         NodeImpl nodeImpl = (NodeImpl) node;
@@ -112,8 +108,7 @@ public class FlatImporterImpl implements FlatImporter {
     public void finishImport() {
         //root
         root.getPost();
-        root.addSight(sight);
-        root.setEnabled(sight, false);
+        root.setEnabled(false);
 
         dhns.getWriteLock().unlock();
         dhns.endImport();

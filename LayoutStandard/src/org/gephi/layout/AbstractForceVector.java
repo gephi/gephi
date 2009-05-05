@@ -25,7 +25,6 @@ import org.gephi.graph.api.EdgeLayoutInterface;
 import org.gephi.graph.api.LayoutDataFactory;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeLayoutInterface;
-import org.gephi.graph.api.Sight;
 import org.gephi.layout.api.Layout;
 
 /**
@@ -38,11 +37,11 @@ public abstract class AbstractForceVector implements Layout<NodeLayout, EdgeLayo
         return this;
     }
 
-    public EdgeLayoutInterface getEdgeLayout(Edge edge, Sight sight) {
-        return new EdgeLayout(edge,sight);
+    public EdgeLayoutInterface getEdgeLayout(Edge edge) {
+        return new EdgeLayout(edge);
     }
 
-    public NodeLayoutInterface getNodeLayout(Node node, Sight sight) {
-        return new NodeLayout(node,sight);
+    public NodeLayoutInterface getNodeLayout(Node node) {
+        return new NodeLayout(node);
     }
 }

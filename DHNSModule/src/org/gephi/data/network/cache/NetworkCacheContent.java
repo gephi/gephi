@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.data.network.sight;
+package org.gephi.data.network.cache;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import org.gephi.data.network.potato.PotatoImpl;
  *
  * @author Mathieu Bastian
  */
-public class SightCacheContent {
+public class NetworkCacheContent {
 
     List<PreNode> nodeCache;
     List<DhnsEdge> edgeCache;
@@ -39,13 +39,13 @@ public class SightCacheContent {
     int edgeVersion = 0;
     int potatoVersion = 0;
 
-    public SightCacheContent() {
+    public NetworkCacheContent() {
         this.nodeCache = new ArrayList<PreNode>();
         this.edgeCache = new ArrayList<DhnsEdge>();
         this.potatoCache = new ArrayList<PotatoImpl>();
     }
 
-    public SightCacheContent(SightCacheContent instance) {
+    public NetworkCacheContent(NetworkCacheContent instance) {
         this.nodeCache = instance.nodeCache;
         this.edgeCache = instance.edgeCache;
         this.potatoCache = instance.potatoCache;
@@ -54,13 +54,13 @@ public class SightCacheContent {
         this.potatoVersion = instance.potatoVersion;
     }
 
-    public SightCacheContent(List<PreNode> nodes, List<DhnsEdge> edges, List<PotatoImpl> potatoes) {
+    public NetworkCacheContent(List<PreNode> nodes, List<DhnsEdge> edges, List<PotatoImpl> potatoes) {
         this.nodeCache = nodes;
         this.edgeCache = edges;
         this.potatoCache = potatoes;
     }
 
-    public void appendContent(SightCacheContent newContent) {
+    public void appendContent(NetworkCacheContent newContent) {
         if (newContent.nodeCache != null) {
             this.nodeCache = newContent.nodeCache;
             this.nodeVersion++;

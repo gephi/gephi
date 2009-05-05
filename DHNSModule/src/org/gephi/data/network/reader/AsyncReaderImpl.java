@@ -21,11 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.network.reader;
 
 import java.util.Iterator;
+import org.gephi.data.network.Dhns;
 import org.gephi.graph.api.EdgeWrap;
 import org.gephi.graph.api.NodeWrap;
 import org.gephi.data.network.api.AsyncReader;
-import org.gephi.data.network.sight.SightCacheContent;
-import org.gephi.data.network.sight.SightImpl;
+import org.gephi.data.network.cache.NetworkCacheContent;
 import org.gephi.data.network.api.Potato;
 
 /**
@@ -34,16 +34,16 @@ import org.gephi.data.network.api.Potato;
  */
 public class AsyncReaderImpl implements AsyncReader {
 
-    private SightImpl sight;
+    private Dhns dhns;
 
     //Versionning
-    private SightCacheContent cacheContent;
+    private NetworkCacheContent cacheContent;
     private int currentNodeVersion = -1;
     private int currentEdgeVersion = -1;
     private int currentPotatoVersion = -1;
 
-    public AsyncReaderImpl(SightImpl sight) {
-        this.sight = sight;
+    public AsyncReaderImpl(Dhns dhns) {
+        this.dhns = dhns;
     }
 
     public Iterator<? extends NodeWrap> getNodes() {
@@ -65,7 +65,7 @@ public class AsyncReaderImpl implements AsyncReader {
     }
 
     public boolean requireUpdate() {
-        cacheContent = sight.getSightCache().getCacheContent();
+        cacheContent = dhns.getNetworkCache().getCacheContent();
         if (cacheContent.getNodeVersion() > currentNodeVersion || cacheContent.getEdgeVersion() > currentEdgeVersion || cacheContent.getPotatoVersion() > currentPotatoVersion) {
             return true;
         }

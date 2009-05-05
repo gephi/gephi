@@ -24,7 +24,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.gephi.data.network.Dhns;
 import org.gephi.data.network.api.FreeModifier;
-import org.gephi.graph.api.Sight;
 import org.gephi.data.network.edge.DhnsEdge;
 import org.gephi.data.network.edge.EdgeImpl;
 import org.gephi.data.network.edge.FreeEdgeProcessing;
@@ -32,12 +31,8 @@ import org.gephi.data.network.edge.PreEdge;
 import org.gephi.data.network.edge.VirtualEdge;
 import org.gephi.data.network.node.NodeImpl;
 import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.node.treelist.SightTreeIterator;
-import org.gephi.data.network.sight.SightImpl;
-import org.gephi.data.network.sight.SightManagerImpl;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.utils.avl.PreNodeAVLTree;
-import org.gephi.data.network.utils.avl.SightAVLTree.SightAVLIterator;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -51,19 +46,18 @@ public class FreeMode implements Mode, FreeModifier {
     private Dhns dhns;
     private FreeEdgeProcessing edgeProcessing;
     private TreeStructure treeStructure;
-    private SightManagerImpl sightManager;
+
     //Executor
     ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public FreeMode(Dhns dhns) {
         this.dhns = dhns;
         this.treeStructure = dhns.getTreeStructure();
-        this.sightManager = dhns.getSightManager();
         edgeProcessing = new FreeEdgeProcessing(treeStructure);
     }
 
     public void init() {
-        SightImpl sight = sightManager.getMainSight();
+
 
         /*SightTreeIterator enabledNodes = new SightTreeIterator(treeStructure, sight);
         for (; enabledNodes.hasNext();) {
@@ -72,42 +66,42 @@ public class FreeMode implements Mode, FreeModifier {
         ni.setX(n.getPre() * 50);
         ni.setY(n.getPost() * 50);
         }*/
-        edgeProcessing.init(sightManager.getMainSight());
-        sightManager.getMainSight().getSightCache().reset();
+        edgeProcessing.init();
+    //sightManager.getMainSight().getSightCache().reset();
     }
 
-    public void expand(final Node node, final Sight sight) {
+    public void expand(final Node node) {
         executor.execute(new Runnable() {
 
             public void run() {
-                expandBlock(node, sight);
+                expandBlock(node);
             }
         });
     }
 
-    public void expandBlock(Node node, Sight sight) {
+    public void expandBlock(Node node) {
         dhns.getWriteLock().lock();
         if (node.getLevel() < treeStructure.treeHeight) {
-            expand(((NodeImpl) node).getPreNode(), (SightImpl) sight);
-            sightManager.updateSight((SightImpl) sight);
+            expand(((NodeImpl) node).getPreNode());
+        //sightManager.updateSight((SightImpl) sight);
         }
         dhns.getWriteLock().unlock();
     }
 
-    public void retract(final Node node, final Sight sight) {
+    public void retract(final Node node) {
         executor.execute(new Runnable() {
 
             public void run() {
-                retractBlock(node, sight);
+                retractBlock(node);
             }
         });
     }
 
-    public void retractBlock(Node node, Sight sight) {
+    public void retractBlock(Node node) {
         dhns.getWriteLock().lock();
         if (node.getLevel() < treeStructure.treeHeight) {
-            retract(((NodeImpl) node).getPreNode(), (SightImpl) sight);
-            sightManager.updateSight((SightImpl)sight);
+            retract(((NodeImpl) node).getPreNode());
+        //sightManager.updateSight((SightImpl)sight);
         }
         dhns.getWriteLock().unlock();
     }
@@ -131,7 +125,6 @@ public class FreeMode implements Mode, FreeModifier {
         }
         PreNode preNode = new PreNode(0, 0, 0, parentNode);
         preNode.setNode((NodeImpl) node);
-        preNode.addSight(sightManager.getMainSight());
 
         addNode(preNode);
         dhns.getDictionary().addNode(preNode);      //Dico
@@ -192,56 +185,56 @@ public class FreeMode implements Mode, FreeModifier {
     }
 
     //------------------------------------------
-    private void expand(PreNode preNode, SightImpl sightImpl) {
+    private void expand(PreNode preNode) {
         PreNodeAVLTree nodeToReprocess = new PreNodeAVLTree();
 
         //Enable children
         PreNode child = null;
         for (int i = preNode.pre + 1; i <= preNode.pre + preNode.size;) {
             child = treeStructure.getNodeAt(i);
-            child.setEnabled(sightImpl, true);
+            child.setEnabled(true);
 
             i += child.size + 1;
         }
 
         //Reprocess edge-hosting neighbour
-        edgeProcessing.appendEdgeHostingNeighbours(preNode, nodeToReprocess, preNode.pre, sightImpl);
-        edgeProcessing.reprocessInducedEdges(nodeToReprocess, preNode, sightImpl);
+        edgeProcessing.appendEdgeHostingNeighbours(preNode, nodeToReprocess, preNode.pre);
+        edgeProcessing.reprocessInducedEdges(nodeToReprocess, preNode);
 
         //Process induced edges of direct children
         for (int i = preNode.pre + 1; i <= preNode.pre + preNode.size;) {
             child = treeStructure.getNodeAt(i);
-            edgeProcessing.processLocalInducedEdges(child, sightImpl);
+            edgeProcessing.processLocalInducedEdges(child);
             i += child.size + 1;
         }
 
         //Clean current node
-        preNode.setEnabled(sightImpl, false);
-        edgeProcessing.clearVirtualEdges(preNode, sightImpl);
+        preNode.setEnabled(false);
+        edgeProcessing.clearVirtualEdges(preNode);
     }
 
-    private void retract(PreNode parent, SightImpl sight) {
+    private void retract(PreNode parent) {
         PreNodeAVLTree nodeToReprocess = new PreNodeAVLTree();
 
         //Enable node
-        parent.setEnabled(sight, true);
+        parent.setEnabled(true);
 
         //Disable children
         PreNode child = null;
         for (int i = parent.pre + 1; i <= parent.pre + parent.size;) {
             child = treeStructure.getNodeAt(i);
-            child.setEnabled(sight, false);
-            edgeProcessing.appendEdgeHostingNeighbours(child, nodeToReprocess, parent.pre, sight);
+            child.setEnabled(false);
+            edgeProcessing.appendEdgeHostingNeighbours(child, nodeToReprocess, parent.pre);
 
             i += child.size + 1;
         }
 
-        edgeProcessing.reprocessInducedEdges(nodeToReprocess, parent, sight);
-        edgeProcessing.processLocalInducedEdges(parent, sight);
+        edgeProcessing.reprocessInducedEdges(nodeToReprocess, parent);
+        edgeProcessing.processLocalInducedEdges(parent);
 
         for (int i = parent.pre + 1; i <= parent.pre + parent.size;) {
             child = treeStructure.getNodeAt(i);
-            edgeProcessing.clearVirtualEdges(child, sight);
+            edgeProcessing.clearVirtualEdges(child);
             i += child.size + 1;
         }
     }
@@ -259,26 +252,18 @@ public class FreeMode implements Mode, FreeModifier {
         maxNode.getBackwardEdges().add(edge);
 
         //Virtual edges
-        if (minNode.hasSights() && maxNode.hasSights()) {
-            //Common sight
-            for (SightAVLIterator itr = minNode.getSightIterator(); itr.hasNext();) {
-                SightImpl sight = itr.next();
-                if (maxNode.isInSight(sight)) {
-                    //Get nodes' parent
-                    PreNode minParent = treeStructure.getEnabledAncestorOrSelf(minNode, sight);
-                    PreNode maxParent = treeStructure.getEnabledAncestorOrSelf(maxNode, sight);
+        //Get nodes' parent
+        PreNode minParent = treeStructure.getEnabledAncestorOrSelf(minNode);
+        PreNode maxParent = treeStructure.getEnabledAncestorOrSelf(maxNode);
 
-                    if (minParent != null && maxParent != null && minParent != maxParent) {
-                        DhnsEdge dhnsEdge = minParent.getVirtualEdge(edge, maxParent.getPre(), sight);
-                        if (dhnsEdge != null) {
-                            VirtualEdge virtualEdge = (VirtualEdge) dhnsEdge;
-                            virtualEdge.addPhysicalEdge(edge);
-                        } else {
-                            //Create the virtual edge
-                            edgeProcessing.createVirtualEdge(edge, minParent, maxParent, sight);
-                        }
-                    }
-                }
+        if (minParent != null && maxParent != null && minParent != maxParent) {
+            DhnsEdge dhnsEdge = minParent.getVirtualEdge(edge, maxParent.getPre());
+            if (dhnsEdge != null) {
+                VirtualEdge virtualEdge = (VirtualEdge) dhnsEdge;
+                virtualEdge.addPhysicalEdge(edge);
+            } else {
+                //Create the virtual edge
+                edgeProcessing.createVirtualEdge(edge, minParent, maxParent);
             }
         }
     }
@@ -326,32 +311,26 @@ public class FreeMode implements Mode, FreeModifier {
         PreNode minNode = edge.minNode;
         PreNode maxNode = edge.maxNode;
 
-        if (minNode.hasSights() && maxNode.hasSights()) {
-            //Common sight
-            for (SightAVLIterator itr = minNode.getSightIterator(); itr.hasNext();) {
-                SightImpl sight = itr.next();
-                if (maxNode.isInSight(sight)) {
-                    //Nodes share the same sight, they may have virtual edge
-                    PreNode minParent = treeStructure.getEnabledAncestorOrSelf(minNode, sight);
-                    PreNode maxParent = treeStructure.getEnabledAncestorOrSelf(maxNode, sight);
 
-                    if (minParent != null && maxParent != null && minParent != maxParent) {
+        //Nodes share the same sight, they may have virtual edge
+        PreNode minParent = treeStructure.getEnabledAncestorOrSelf(minNode);
+        PreNode maxParent = treeStructure.getEnabledAncestorOrSelf(maxNode);
 
-                        DhnsEdge dhnsEdge = minParent.getVirtualEdge(edge, maxParent.getPre(), sight);
+        if (minParent != null && maxParent != null && minParent != maxParent) {
 
-                        if (dhnsEdge != null) {
-                            VirtualEdge virtualEdge = (VirtualEdge) dhnsEdge;
-                            virtualEdge.removePhysicalEdge(edge);
+            DhnsEdge dhnsEdge = minParent.getVirtualEdge(edge, maxParent.getPre());
 
-                            if (virtualEdge.isEmpty()) {    //No more physical edges represents the virtual edges
-                                minParent.removeVirtualEdge(virtualEdge, sight);
-                                maxParent.removeVirtualEdge(virtualEdge, sight);
-                            }
-                        }
-                    }
+            if (dhnsEdge != null) {
+                VirtualEdge virtualEdge = (VirtualEdge) dhnsEdge;
+                virtualEdge.removePhysicalEdge(edge);
+
+                if (virtualEdge.isEmpty()) {    //No more physical edges represents the virtual edges
+                    minParent.removeVirtualEdge(virtualEdge);
+                    maxParent.removeVirtualEdge(virtualEdge);
                 }
             }
         }
+
 
         //Delete physical edges
         minNode.getForwardEdges().remove(edge);

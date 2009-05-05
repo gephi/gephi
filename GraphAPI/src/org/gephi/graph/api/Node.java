@@ -34,23 +34,23 @@ public interface Node extends Renderable {
 
     public void setLabel(String label);
 
-    public Iterable<? extends EdgeWrap> getEdges(Sight sight);
+    public Iterable<? extends EdgeWrap> getEdges();
 
-    public Iterable<? extends EdgeWrap> getEdgesIn(Sight sight);
+    public Iterable<? extends EdgeWrap> getEdgesIn();
 
-    public Iterable<? extends EdgeWrap> getEdgesOut(Sight sight);
+    public Iterable<? extends EdgeWrap> getEdgesOut();
 
-    public int getInDegree(Sight sight);
+    public int getInDegree();
 
-    public int getOutDegree(Sight sight);
+    public int getOutDegree();
 
     public boolean containsEdge(Edge edge);
 
-    public boolean hasNeighbour(Node node, Sight sight);
+    public boolean hasNeighbour(Node node);
 
-    public Iterable<? extends NodeWrap> getNeighbours(Sight sight);
+    public Iterable<? extends NodeWrap> getNeighbours();
 
-    public int countNeighbours(Sight sight);
+    public int countNeighbours();
 
     public NodeLayoutInterface getNodeLayout();
 }

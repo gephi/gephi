@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.data.network.sight;
+package org.gephi.data.network.cache;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -48,11 +48,9 @@ import org.gephi.data.network.potato.PotatoImpl;
  *
  * @author Mathieu Bastian
  */
-public class SightCache {
+public class NetworkCache {
 
-    private SightImpl sight;
     private Dhns dhns;
-    private SightManagerImpl manager;
 
     //States
     private AtomicBoolean orderResetNode = new AtomicBoolean();
@@ -60,18 +58,16 @@ public class SightCache {
     private AtomicBoolean orderResetPotato = new AtomicBoolean();
 
     //Cache
-    private AtomicReference<SightCacheContent> cache;
+    private AtomicReference<NetworkCacheContent> cache;
 
     //Executor
     private ExecutorService resetExecutor;
     private ExecutorService tasksExecutor;
-    private CompletionService<SightCacheContent> completionService;
+    private CompletionService<NetworkCacheContent> completionService;
 
-    public SightCache(Dhns dhns, SightImpl sight) {
-        this.sight = sight;
+    public NetworkCache(Dhns dhns) {
         this.dhns = dhns;
-        this.manager = dhns.getSightManager();
-        this.cache = new AtomicReference<SightCacheContent>(new SightCacheContent());
+        this.cache = new AtomicReference<NetworkCacheContent>(new NetworkCacheContent());
 
         //Executors
         resetExecutor = Executors.newSingleThreadExecutor();
@@ -79,7 +75,7 @@ public class SightCache {
         completionService = new ExecutorCompletionService(tasksExecutor);
     }
 
-    public SightCacheContent getCacheContent() {
+    public NetworkCacheContent getCacheContent() {
         return cache.get();
     }
 
@@ -116,13 +112,13 @@ public class SightCache {
                 }
 
                 //New cacheContent
-                SightCacheContent cacheContent = new SightCacheContent(cache.get());
+                NetworkCacheContent cacheContent = new NetworkCacheContent(cache.get());
 
                 //Wait for completion of all tasks
                 for (int i = 0; i < tasks; i++) {
                     try {
-                        Future<SightCacheContent> f = completionService.take();
-                        SightCacheContent taskContent = f.get();
+                        Future<NetworkCacheContent> f = completionService.take();
+                        NetworkCacheContent taskContent = f.get();
                         cacheContent.appendContent(taskContent);
                     } catch (ExecutionException ex) {
                         ex.printStackTrace();
@@ -137,9 +133,9 @@ public class SightCache {
         });
     }
 
-    private class resetNodesCallable implements Callable<SightCacheContent> {
+    private class resetNodesCallable implements Callable<NetworkCacheContent> {
 
-        public SightCacheContent call() throws Exception {
+        public NetworkCacheContent call() throws Exception {
             TreeStructure treeStructure = dhns.getTreeStructure();
             List<PreNode> nodeCache = new ArrayList<PreNode>();
             Iterator<PreNode> treeIterator = null;
@@ -147,9 +143,9 @@ public class SightCache {
             dhns.getReadLock().lock();
 
             if (dhns.getConfig().getViewType().equals(ViewType.SINGLE)) {
-                treeIterator = new SingleTreeIterator(treeStructure, sight);
+                treeIterator = new SingleTreeIterator(treeStructure);
             } else if (dhns.getConfig().getViewType().equals(ViewType.HIERARCHY)) {
-                treeIterator = new SightTreeIterator(treeStructure, sight);
+                treeIterator = new SightTreeIterator(treeStructure);
             }
             CachedIterator<PreNode> cacheIterator = new CachedIterator<PreNode>(treeIterator, nodeCache);
             for (; cacheIterator.hasNext(); cacheIterator.next()) {
@@ -157,13 +153,13 @@ public class SightCache {
 
             System.out.println("reset Nodes call: " + nodeCache.size());
             dhns.getReadLock().unlock();
-            return new SightCacheContent(nodeCache, null, null);
+            return new NetworkCacheContent(nodeCache, null, null);
         }
     }
 
-    private class resetEdgesCallable implements Callable<SightCacheContent> {
+    private class resetEdgesCallable implements Callable<NetworkCacheContent> {
 
-        public SightCacheContent call() throws Exception {
+        public NetworkCacheContent call() throws Exception {
             TreeStructure treeStructure = dhns.getTreeStructure();
             List<DhnsEdge> edgeCache = new ArrayList<DhnsEdge>();
             Iterator<DhnsEdge> edgesIterator = null;
@@ -171,30 +167,30 @@ public class SightCache {
             dhns.getReadLock().lock();
 
             if (dhns.getConfig().getViewType().equals(ViewType.SINGLE)) {
-                edgesIterator = new EdgesOutIterator(treeStructure, sight);
+                edgesIterator = new EdgesOutIterator(treeStructure);
             } else if (dhns.getConfig().getViewType().equals(ViewType.HIERARCHY)) {
-                edgesIterator = new HierarchyEdgesIterator(treeStructure, sight);
+                edgesIterator = new HierarchyEdgesIterator(treeStructure);
             }
             CachedIterator<DhnsEdge> cacheIterator = new CachedIterator<DhnsEdge>(edgesIterator, edgeCache);
             for (; cacheIterator.hasNext(); cacheIterator.next()) {
             }
             System.out.println("reset Edges call: " + edgeCache.size());
             dhns.getReadLock().unlock();
-            return new SightCacheContent(null, edgeCache, null);
+            return new NetworkCacheContent(null, edgeCache, null);
         }
     }
 
-    private class resetPotaotesCallable implements Callable<SightCacheContent> {
+    private class resetPotaotesCallable implements Callable<NetworkCacheContent> {
 
-        public SightCacheContent call() throws Exception {
+        public NetworkCacheContent call() throws Exception {
             List<PotatoImpl> potatoCache;
 
             dhns.getReadLock().lock();
 
-            potatoCache = dhns.getPotatoManager().cookPotatoes(sight);
+            potatoCache = dhns.getPotatoManager().cookPotatoes();
             System.out.println("reset Potaotes call: " + potatoCache.size());
             dhns.getReadLock().unlock();
-            return new SightCacheContent(null, null, potatoCache);
+            return new NetworkCacheContent(null, null, potatoCache);
         }
     }
 }

@@ -19,27 +19,27 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.gephi.data.network.utils.avl;
+package org.gephi.data.laboratory;
 
-import org.gephi.datastructure.avl.param.AVLItemAccessor;
-import org.gephi.datastructure.avl.param.ParamAVLTree;
+import org.gephi.graph.api.Node;
+import org.openide.nodes.Children;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class DhnsEdgeSightTree extends ParamAVLTree<DhnsEdgeTree> {
+public class NodeChildren extends Children.Keys {
 
-    public DhnsEdgeSightTree() {
-        super();
-        setAccessor(new DhnsEdgeSightAVLItemAccessor());
+    private Node graphNode;
+
+    public NodeChildren(Node node)
+    {
+        this.graphNode = node;
     }
 
-    private class DhnsEdgeSightAVLItemAccessor implements AVLItemAccessor<DhnsEdgeTree> {
-
-        @Override
-        public int getNumber(DhnsEdgeTree item) {
-            return item.getNumber();
-        }
+    @Override
+    protected org.openide.nodes.Node[] createNodes(Object key) {
+        return new org.openide.nodes.Node[] {new NodeNode(graphNode)};
     }
+
 }

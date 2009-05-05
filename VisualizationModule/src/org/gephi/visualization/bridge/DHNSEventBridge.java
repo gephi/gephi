@@ -61,7 +61,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
                     Object3d obj = clickedObjects[i];
                     Node node = (Node) obj.getObj();
                     DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-                    freeModifier.expand(node, dhnsController.getSightManager().getSelectedSight());
+                    freeModifier.expand(node);
                 }
                 break;
             case AbstractEngine.CLASS_POTATO:
@@ -69,7 +69,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
                     Object3d obj = clickedObjects[i];
                     Potato potato = (Potato) obj.getObj();
                     DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-                    freeModifier.retract(potato.getNode(), dhnsController.getSightManager().getSelectedSight());
+                    freeModifier.retract(potato.getNode());
                 }
                 break;
         }

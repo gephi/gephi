@@ -21,11 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.network.edge;
 
 import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.sight.SightImpl;
 import org.gephi.datastructure.avl.simple.SimpleAVLTree;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.EdgeLayoutInterface;
-import org.gephi.graph.api.Sight;
 
 /**
  *
@@ -38,13 +35,11 @@ public class VirtualEdge implements DhnsEdge {
     protected float cardinal = 0f;
     protected SimpleAVLTree physicalEdges;
     protected EdgeImpl edge;
-    protected SightImpl sight;
 
-    public VirtualEdge(PreNode preNodeFrom, PreNode preNodeTo, SightImpl sight) {
+    public VirtualEdge(PreNode preNodeFrom, PreNode preNodeTo) {
         this.preNodeFrom = preNodeFrom;
         this.preNodeTo = preNodeTo;
         this.physicalEdges = new SimpleAVLTree();
-        this.sight = sight;
     }
 
     public void addPhysicalEdge(PreEdge preEdge) {
@@ -102,9 +97,5 @@ public class VirtualEdge implements DhnsEdge {
 
     public void setEdge(Edge edge) {
         this.edge = (EdgeImpl)edge;
-    }
-
-    public SightImpl getSight() {
-        return sight;
     }
 }

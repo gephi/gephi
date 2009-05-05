@@ -25,8 +25,6 @@ import org.gephi.data.network.Dhns;
 import org.gephi.graph.api.EdgeWrap;
 import org.gephi.graph.api.NodeWrap;
 import org.gephi.data.network.api.SyncReader;
-import org.gephi.data.network.controller.DhnsControllerImpl;
-import org.gephi.data.network.sight.SightImpl;
 
 /**
  *
@@ -34,12 +32,10 @@ import org.gephi.data.network.sight.SightImpl;
  */
 public class SyncReaderImpl implements SyncReader {
 
-    private SightImpl sight;
     private Dhns dhns;
     private boolean locked = false;
 
-    public SyncReaderImpl(Dhns dhns, SightImpl sight) {
-        this.sight = sight;
+    public SyncReaderImpl(Dhns dhns) {
         this.dhns = dhns;
     }
 
@@ -58,20 +54,20 @@ public class SyncReaderImpl implements SyncReader {
     }
 
     public Iterator<? extends NodeWrap> getNodes() {
-        return sight.getSightCache().getCacheContent().getNodeCache().iterator();
+        return dhns.getNetworkCache().getCacheContent().getNodeCache().iterator();
     }
 
     public Iterator<? extends EdgeWrap> getEdges() {
-        return sight.getSightCache().getCacheContent().getEdgeCache().iterator();
+        return dhns.getNetworkCache().getCacheContent().getEdgeCache().iterator();
     }
 
     public int getNodeCount()
     {
-        return sight.getSightCache().getCacheContent().getNodeCache().size();
+        return dhns.getNetworkCache().getCacheContent().getNodeCache().size();
     }
 
     public int getEdgeCount()
     {
-        return sight.getSightCache().getCacheContent().getEdgeCache().size();
+        return dhns.getNetworkCache().getCacheContent().getEdgeCache().size();
     }
 }

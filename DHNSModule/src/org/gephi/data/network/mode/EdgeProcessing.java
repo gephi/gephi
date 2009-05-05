@@ -18,16 +18,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.data.network.mode;
-
-import org.gephi.data.network.sight.SightImpl;
 
 /**
  *
  * @author Mathieu Bastian
  */
 public interface EdgeProcessing {
-    public void init(SightImpl sight);
-    public void clear(SightImpl sight);
+
+    public void init();
+
+    public void clear();
 }
