@@ -37,6 +37,7 @@ import org.gephi.data.network.api.FlatImporter;
 import org.gephi.data.network.api.NodeFactory;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.gephi.importer.EdgeDraftImpl;
 import org.gephi.importer.NodeDraftImpl;
 import org.gephi.importer.api.CustomImporter;
 import org.gephi.importer.api.EdgeDraft;
@@ -121,16 +122,16 @@ public class DesktopImportController implements ImportController {
 
             flatImporter.addNode(n);
         }
-/*
+
         //Edges
         for (EdgeDraft edge : container.getEdges()) {
-            Node nodeSource = edge.getNodeSource().getNode();
-            Node nodeTarget = edge.getNodeTarget().getNode();
+            Node nodeSource = ((EdgeDraftImpl)edge).getNodeSource().getNode();
+            Node nodeTarget = ((EdgeDraftImpl)edge).getNodeTarget().getNode();
 
             Edge e = EdgeFactory.createEdge(nodeSource, nodeTarget);
 
             flatImporter.addEdge(e);
-        }*/
+        }
 
         flatImporter.finishImport();
         
