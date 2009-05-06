@@ -32,7 +32,7 @@ import org.gephi.datastructure.avl.ResetableIterator;
  * @author Mathieu Bastian
  * @see PreNodeTreeList
  */
-public class SingleTreeIterator implements Iterator<PreNode>, ResetableIterator {
+public class VisibleTreeIterator implements Iterator<PreNode>, ResetableIterator {
 
     protected int treeSize;
     protected PreNodeTreeList treeList;
@@ -41,7 +41,7 @@ public class SingleTreeIterator implements Iterator<PreNode>, ResetableIterator 
     
     protected AVLNode currentNode;
 
-    public SingleTreeIterator(TreeStructure treeStructure) {
+    public VisibleTreeIterator(TreeStructure treeStructure) {
         this.treeList = treeStructure.getTree();
         nextIndex = 0;
         diffIndex = 2;

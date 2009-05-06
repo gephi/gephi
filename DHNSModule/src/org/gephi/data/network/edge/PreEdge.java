@@ -81,4 +81,18 @@ public class PreEdge implements AVLItem, EdgeWrap {
     public void setEdge(Edge edge) {
         this.edge = edge;
     }
+
+    public PreNode getSource() {
+        if (edgeType == EdgeType.IN) {
+            return maxNode;
+        }
+        return minNode;
+    }
+
+    public PreNode getTarget() {
+        if (edgeType == edgeType.IN) {
+            return minNode;
+        }
+        return maxNode;
+    }
 }

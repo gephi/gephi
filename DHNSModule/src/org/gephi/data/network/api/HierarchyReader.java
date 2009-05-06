@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.data.network.api;
 
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
 /**
@@ -36,6 +37,8 @@ public interface HierarchyReader {
     public boolean hasChildren(Node node);
 
     public Node[] getChildren(Node node);
+
+    public Edge[] getEdges();
 
     public void unlock();
 }

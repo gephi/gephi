@@ -24,7 +24,7 @@ import java.util.Iterator;
 import org.gephi.data.network.edge.DhnsEdge;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.node.treelist.SingleTreeIterator;
+import org.gephi.data.network.node.treelist.VisibleTreeIterator;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 
 /**
@@ -35,13 +35,13 @@ import org.gephi.datastructure.avl.param.ParamAVLIterator;
  */
 public class EdgesOutIterator implements Iterator<DhnsEdge> {
 
-    protected SingleTreeIterator treeIterator;
+    protected VisibleTreeIterator treeIterator;
     protected ParamAVLIterator<DhnsEdge> edgeIterator;
     protected PreNode currentNode;
     protected DhnsEdge pointer;
 
     public EdgesOutIterator(TreeStructure treeStructure) {
-        treeIterator = new SingleTreeIterator(treeStructure);
+        treeIterator = new VisibleTreeIterator(treeStructure);
         edgeIterator = new ParamAVLIterator<DhnsEdge>();
     }
 

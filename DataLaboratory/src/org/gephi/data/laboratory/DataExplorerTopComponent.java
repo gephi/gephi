@@ -57,7 +57,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         //Init lookups
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
         nodeColumnsResult = attributeController.getNodeColumnsLookup().lookupResult(AttributeColumn.class);
-        edgeColumnsResult = attributeController.getNodeColumnsLookup().lookupResult(AttributeColumn.class);
+        edgeColumnsResult = attributeController.getEdgeColumnsLookup().lookupResult(AttributeColumn.class);
         nodeColumnsResult.addLookupListener(this);
         edgeColumnsResult.addLookupListener(this);
         initNodesView();
@@ -90,6 +90,29 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
     }
 
     private void initEdgesView() {
+        try {
+             //Attributes columns
+            Collection<? extends AttributeColumn> attributeColumns = edgeColumnsResult.allInstances();
+            AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
+
+            //Edges from DHNS
+            HierarchyReader reader = Lookup.getDefault().lookup(DhnsController.class).getHierarchyReader();
+            reader.lock();
+            org.gephi.graph.api.Edge[] edges = reader.getEdges();
+
+            //TreeModel
+            TreeModel treeMdl = new EdgeTreeModel(edges);
+            reader.unlock();
+
+            //Outline
+            OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new EdgeRowModel(cols), true);
+            outline1.setRootVisible(false);
+            outline1.setRenderDataProvider(new EdgeRenderer());
+            outline1.setModel(mdl);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void resultChanged(LookupEvent ev) {

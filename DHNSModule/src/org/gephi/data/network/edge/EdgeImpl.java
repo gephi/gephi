@@ -33,6 +33,7 @@ public class EdgeImpl implements Edge {
 
     private NodeImpl source;
     private NodeImpl target;
+    protected String label="";
     protected float r = 0f;
     protected float g = 0f;
     protected float b = 0f;
@@ -61,6 +62,10 @@ public class EdgeImpl implements Edge {
 
     public NodeImpl getTarget() {
         return target;
+    }
+
+    public String getLabel() {
+        return label;
     }
 
     public float x() {

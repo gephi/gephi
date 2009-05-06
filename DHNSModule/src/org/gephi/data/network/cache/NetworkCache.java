@@ -37,11 +37,11 @@ import org.gephi.data.network.config.DHNSConfig.ViewType;
 import org.gephi.data.network.edge.DhnsEdge;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.node.treelist.SingleTreeIterator;
+import org.gephi.data.network.node.treelist.VisibleTreeIterator;
 import org.gephi.data.network.utils.CachedIterator;
 import org.gephi.data.network.edge.iterators.EdgesOutIterator;
 import org.gephi.data.network.edge.iterators.HierarchyEdgesIterator;
-import org.gephi.data.network.node.treelist.SightTreeIterator;
+import org.gephi.data.network.node.treelist.CompleteTreeIterator;
 import org.gephi.data.network.potato.PotatoImpl;
 
 /**
@@ -143,9 +143,9 @@ public class NetworkCache {
             dhns.getReadLock().lock();
 
             if (dhns.getConfig().getViewType().equals(ViewType.SINGLE)) {
-                treeIterator = new SingleTreeIterator(treeStructure);
+                treeIterator = new VisibleTreeIterator(treeStructure);
             } else if (dhns.getConfig().getViewType().equals(ViewType.HIERARCHY)) {
-                treeIterator = new SightTreeIterator(treeStructure);
+                treeIterator = new CompleteTreeIterator(treeStructure);
             }
             CachedIterator<PreNode> cacheIterator = new CachedIterator<PreNode>(treeIterator, nodeCache);
             for (; cacheIterator.hasNext(); cacheIterator.next()) {

@@ -56,7 +56,7 @@ public class Dhns {
     }
 
     public void init() {
-       importFakeGraph();
+       //importFakeGraph();
        //treeStructure.showTreeAsTable();
     }
 

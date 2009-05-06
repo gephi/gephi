@@ -27,7 +27,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.gephi.data.network.Dhns;
 import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.node.treelist.SingleTreeIterator;
+import org.gephi.data.network.node.treelist.VisibleTreeIterator;
 
 /**
  *
@@ -51,7 +51,7 @@ public class PotatoManager {
 
     public List<PotatoImpl> cookPotatoes() {
         List<PreNode> enabledNodes = new ArrayList<PreNode>();
-        SingleTreeIterator itr = new SingleTreeIterator(dhns.getTreeStructure());
+        VisibleTreeIterator itr = new VisibleTreeIterator(dhns.getTreeStructure());
         for (; itr.hasNext();) {
             PreNode enabledNode = itr.next();
             enabledNodes.add(enabledNode);

@@ -27,9 +27,9 @@ import org.gephi.data.network.tree.TreeStructure;
  *
  * @author Mathieu Bastian
  */
-public class SightTreeIterator extends PreNodeTreeListIterator {
+public class CompleteTreeIterator extends PreNodeTreeListIterator {
 
-    public SightTreeIterator(TreeStructure treeStructure)
+    public CompleteTreeIterator(TreeStructure treeStructure)
     {
         super(treeStructure.getTree());
     }

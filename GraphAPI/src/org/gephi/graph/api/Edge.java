@@ -29,4 +29,6 @@ public interface Edge extends Renderable {
     public Node getSource();
 
     public Node getTarget();
+
+    public String getLabel();
 }

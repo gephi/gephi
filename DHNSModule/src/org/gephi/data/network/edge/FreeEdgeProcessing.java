@@ -26,8 +26,8 @@ import org.gephi.data.network.edge.PreEdge.EdgeType;
 import org.gephi.data.network.mode.EdgeProcessing;
 import org.gephi.data.network.node.NodeImpl;
 import org.gephi.data.network.node.PreNode;
-import org.gephi.data.network.node.treelist.SightTreeIterator;
-import org.gephi.data.network.node.treelist.SingleTreeIterator;
+import org.gephi.data.network.node.treelist.CompleteTreeIterator;
+import org.gephi.data.network.node.treelist.VisibleTreeIterator;
 import org.gephi.data.network.utils.avl.DhnsEdgeTree;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 
@@ -51,7 +51,7 @@ public class FreeEdgeProcessing implements EdgeProcessing {
     }
 
     public void clear() {
-        SingleTreeIterator enabledNodes = new SingleTreeIterator(treeStructure);
+        VisibleTreeIterator enabledNodes = new VisibleTreeIterator(treeStructure);
         while (enabledNodes.hasNext()) {
             PreNode currentNode = enabledNodes.next();
             currentNode.clearDhnsEdges();
@@ -60,7 +60,7 @@ public class FreeEdgeProcessing implements EdgeProcessing {
 
     public void processInducedEdges() {
 
-        SingleTreeIterator enabledNodes = new SingleTreeIterator(treeStructure);
+        VisibleTreeIterator enabledNodes = new VisibleTreeIterator(treeStructure);
         while (enabledNodes.hasNext()) {
             PreNode currentNode = enabledNodes.next();
             processInducedEdges(currentNode);
@@ -407,7 +407,7 @@ public class FreeEdgeProcessing implements EdgeProcessing {
     }
 
     public void buildHierarchyViewMode() {
-        SightTreeIterator enabledNodes = new SightTreeIterator(treeStructure);
+        CompleteTreeIterator enabledNodes = new CompleteTreeIterator(treeStructure);
         for (; enabledNodes.hasNext();) {
             PreNode n = enabledNodes.next();
             NodeImpl ni = n.getNode();

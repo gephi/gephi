@@ -23,9 +23,12 @@ package org.gephi.data.network.reader;
 import java.util.ArrayList;
 import org.gephi.data.network.Dhns;
 import org.gephi.data.network.api.HierarchyReader;
+import org.gephi.data.network.edge.PreEdge;
+import org.gephi.data.network.edge.iterators.PreEdgeIterator;
 import org.gephi.data.network.node.NodeImpl;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.node.treelist.ChildrenIterator;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
 /**
@@ -42,11 +45,9 @@ public class HierarchyReaderImpl implements HierarchyReader {
 
     public Node[] getTopNodes() {
         ArrayList<Node> topList = new ArrayList<Node>();
-        if(dhns.getTreeStructure().getTreeSize() >0)
-        {
+        if (dhns.getTreeStructure().getTreeSize() > 0) {
             ChildrenIterator itr = new ChildrenIterator(dhns.getTreeStructure());
-            for(itr.setNode(dhns.getTreeStructure().getRoot());itr.hasNext();)
-            {
+            for (itr.setNode(dhns.getTreeStructure().getRoot()); itr.hasNext();) {
                 PreNode preNode = itr.next();
                 topList.add(preNode.getNode());
             }
@@ -56,18 +57,30 @@ public class HierarchyReaderImpl implements HierarchyReader {
     }
 
     public boolean hasChildren(Node node) {
-        return !((NodeImpl)node).getPreNode().isLeaf();
+        return !((NodeImpl) node).getPreNode().isLeaf();
     }
 
     public Node[] getChildren(Node node) {
         ArrayList<Node> childList = new ArrayList<Node>();
         ChildrenIterator itr = new ChildrenIterator(dhns.getTreeStructure());
-        for(itr.setNode(((NodeImpl)node).getPreNode());itr.hasNext();)
-        {
+        for (itr.setNode(((NodeImpl) node).getPreNode()); itr.hasNext();) {
             PreNode preNode = itr.next();
             childList.add(preNode.getNode());
         }
         return childList.toArray(new Node[0]);
+    }
+
+    public Edge[] getEdges() {
+        ArrayList<Edge> edgeList = new ArrayList<Edge>();
+        PreEdgeIterator itr = new PreEdgeIterator(dhns.getTreeStructure());
+        for (; itr.hasNext();) {
+            PreEdge preEdge = itr.next();
+            Edge edge = preEdge.getEdge();
+            if (edge != null) {
+                edgeList.add(edge);
+            }
+        }
+        return edgeList.toArray(new Edge[0]);
     }
 
     public void lock() {

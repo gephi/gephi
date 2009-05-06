@@ -18,29 +18,31 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.gephi.data.network.edge.iterators;
 
 import java.util.Iterator;
-import org.gephi.data.network.edge.DhnsEdge;
+import org.gephi.data.network.edge.PreEdge;
 import org.gephi.data.network.node.PreNode;
 import org.gephi.data.network.node.treelist.CompleteTreeIterator;
 import org.gephi.data.network.tree.TreeStructure;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 
 /**
+ * Iterator for physical edges for the complete graph.
  *
  * @author Mathieu Bastian
  */
-public class HierarchyEdgesIterator implements Iterator<DhnsEdge> {
+public class PreEdgeIterator implements Iterator<PreEdge> {
 
     protected CompleteTreeIterator treeIterator;
-    protected ParamAVLIterator<DhnsEdge> edgeIterator;
+    protected ParamAVLIterator<PreEdge> edgeIterator;
     protected PreNode currentNode;
-    protected DhnsEdge pointer;
+    protected PreEdge pointer;
 
-    public HierarchyEdgesIterator(TreeStructure treeStructure) {
+    public PreEdgeIterator(TreeStructure treeStructure) {
         treeIterator = new CompleteTreeIterator(treeStructure);
-        edgeIterator = new ParamAVLIterator<DhnsEdge>();
+        edgeIterator = new ParamAVLIterator<PreEdge>();
     }
 
     @Override
@@ -48,7 +50,10 @@ public class HierarchyEdgesIterator implements Iterator<DhnsEdge> {
         while (!edgeIterator.hasNext()) {
             if (treeIterator.hasNext()) {
                 currentNode = treeIterator.next();
-                edgeIterator.setNode(currentNode.getDhnsEdgesOUT());
+                if(currentNode.countForwardEdges() > 0)
+                {
+                    edgeIterator.setNode(currentNode.getForwardEdges());
+                }
             } else {
                 return false;
             }
@@ -59,7 +64,7 @@ public class HierarchyEdgesIterator implements Iterator<DhnsEdge> {
     }
 
     @Override
-    public DhnsEdge next() {
+    public PreEdge next() {
         return pointer;
     }
 
@@ -67,4 +72,5 @@ public class HierarchyEdgesIterator implements Iterator<DhnsEdge> {
     public void remove() {
         throw new UnsupportedOperationException();
     }
+
 }
