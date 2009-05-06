@@ -43,4 +43,6 @@ public interface DhnsController {
     public Dictionary getDictionary();
 
     public String getPotatoesSVG();
+
+    public HierarchyReader getHierarchyReader();
 }

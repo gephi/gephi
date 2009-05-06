@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.laboratory;
 
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.laboratory.NodeTreeModel.TreeNode;
 import org.gephi.graph.api.Node;
 import org.netbeans.swing.outline.RowModel;
 
@@ -54,7 +55,8 @@ public class NodeRowModel implements RowModel {
     }
 
     public Object getValueFor(Object node, int column) {
-        return columns[column].getValue((Node) node);
+        TreeNode treeNode = (TreeNode)node;
+        return columns[column].getValue(treeNode.getNode());
     }
 
     public Class getColumnClass(int column) {

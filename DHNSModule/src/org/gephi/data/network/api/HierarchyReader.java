@@ -19,31 +19,23 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.gephi.data.laboratory;
+package org.gephi.data.network.api;
 
-import java.util.Collection;
-import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.graph.api.Node;
-import org.openide.nodes.Children;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class NodeChildren extends Children.Keys {
+public interface HierarchyReader {
 
-    private Node graphNode;
-    private Collection<? extends AttributeColumn> attributesColumns;
+    public void lock();
 
-    public NodeChildren(Node node, Collection<? extends AttributeColumn> attributeColumns)
-    {
-        this.graphNode = node;
-        this.attributesColumns = attributeColumns;
-    }
+    public Node[] getTopNodes();
 
-    @Override
-    protected org.openide.nodes.Node[] createNodes(Object key) {
-        return new org.openide.nodes.Node[] {new NodeNode(graphNode,attributesColumns)};
-    }
+    public boolean hasChildren(Node node);
 
+    public Node[] getChildren(Node node);
+
+    public void unlock();
 }

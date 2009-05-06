@@ -27,9 +27,11 @@ import org.gephi.data.network.api.FreeModifier;
 import org.gephi.data.network.api.AsyncReader;
 import org.gephi.data.network.api.DhnsController;
 import org.gephi.data.network.api.HierarchyImporter;
+import org.gephi.data.network.api.HierarchyReader;
 import org.gephi.data.network.api.LayoutReader;
 import org.gephi.data.network.api.SyncReader;
 import org.gephi.data.network.reader.AsyncReaderImpl;
+import org.gephi.data.network.reader.HierarchyReaderImpl;
 import org.gephi.data.network.reader.LayoutReaderImpl;
 import org.gephi.data.network.reader.SyncReaderImpl;
 import org.gephi.data.network.tree.importer.FlatImporterImpl;
@@ -91,5 +93,10 @@ public class DhnsControllerImpl implements DhnsController {
     public String getPotatoesSVG()
     {
         return dhns.getPotatoManager().getPotatoesSVG();
+    }
+
+    public HierarchyReader getHierarchyReader()
+    {
+        return new HierarchyReaderImpl(dhns);
     }
 }

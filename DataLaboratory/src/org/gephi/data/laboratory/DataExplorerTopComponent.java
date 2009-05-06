@@ -13,6 +13,7 @@ import javax.swing.tree.TreeModel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.network.api.DhnsController;
+import org.gephi.data.network.api.HierarchyReader;
 import org.gephi.data.network.api.SyncReader;
 import org.gephi.graph.api.NodeWrap;
 import org.netbeans.swing.outline.DefaultOutlineModel;
@@ -64,25 +65,20 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
     private void initNodesView() {
         try {
-            //Nodes from DHNS
-            SyncReader reader = Lookup.getDefault().lookup(DhnsController.class).getSyncReader();
-            reader.lock();
-            org.gephi.graph.api.Node[] nodes = new org.gephi.graph.api.Node[reader.getNodeCount()];
-            int count=0;
-            for(Iterator<? extends NodeWrap> itr = reader.getNodes();itr.hasNext();)
-            {
-                org.gephi.graph.api.Node n = itr.next().getNode();
-                nodes[count] = n;
-                count++;
-            }
-            reader.unlock();
-
              //Attributes columns
             Collection<? extends AttributeColumn> attributeColumns = nodeColumnsResult.allInstances();
             AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
 
-            //Outline models
-            TreeModel treeMdl = new NodeTreeModel(nodes);
+            //Nodes from DHNS
+            HierarchyReader reader = Lookup.getDefault().lookup(DhnsController.class).getHierarchyReader();
+            reader.lock();
+            org.gephi.graph.api.Node[] nodes = reader.getTopNodes();
+            
+            //TreeModel
+            TreeModel treeMdl = new NodeTreeModel(nodes, reader);
+            reader.unlock();
+
+            //Outline
             OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new NodeRowModel(cols), true);
             outline1.setRootVisible(false);
             outline1.setRenderDataProvider(new NodeRenderer());

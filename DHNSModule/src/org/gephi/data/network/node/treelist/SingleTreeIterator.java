@@ -38,7 +38,7 @@ public class SingleTreeIterator implements Iterator<PreNode>, ResetableIterator 
     protected PreNodeTreeList treeList;
     protected int nextIndex;
     protected int diffIndex;
-    ;
+    
     protected AVLNode currentNode;
 
     public SingleTreeIterator(TreeStructure treeStructure) {

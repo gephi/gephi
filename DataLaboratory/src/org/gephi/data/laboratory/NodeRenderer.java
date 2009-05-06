@@ -21,9 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.data.laboratory;
 
-import java.awt.Color;
-import javax.swing.Icon;
-import org.gephi.graph.api.Node;
+import org.gephi.data.laboratory.NodeTreeModel.TreeNode;
 import org.netbeans.swing.outline.RenderDataProvider;
 
 /**
@@ -41,11 +39,7 @@ public class NodeRenderer implements RenderDataProvider {
 
     @Override
     public String getDisplayName(Object o) {
-        if(o instanceof NodeTreeModel.RootNode)
-        {
-            return "root";
-        }
-        return ((Node)o).getLabel();
+        return ((TreeNode)o).getLabel();
     }
 
     @Override

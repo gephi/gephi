@@ -23,6 +23,7 @@ package org.gephi.data.laboratory;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import org.gephi.data.network.api.HierarchyReader;
 import org.gephi.graph.api.Node;
 
 /**
@@ -31,10 +32,12 @@ import org.gephi.graph.api.Node;
  */
 public class NodeTreeModel implements TreeModel {
 
-    private RootNode root;
+    private TreeNode root;
+    private HierarchyReader hierarchyReader;
 
-    public NodeTreeModel(Node[] nodes) {
-        this.root = new RootNode(nodes);
+    public NodeTreeModel(Node[] nodes, HierarchyReader hierarchyReader) {
+        this.hierarchyReader = hierarchyReader;
+        this.root = new TreeNode(nodes);
     }
 
     public Object getRoot() {
@@ -42,30 +45,22 @@ public class NodeTreeModel implements TreeModel {
     }
 
     public Object getChild(Object parent, int index) {
-        if (parent == root) {
-            return root.getChildAt(index);
-        } else {
-            Node node = (Node) parent;
-            return node.getChildAt(index);
-        }
+        TreeNode node = (TreeNode) parent;
+        return node.getChildAt(index);
     }
 
     public int getChildCount(Object parent) {
-        if (parent == root) {
-            return root.getChildrenCount();
-        } else {
-            Node node = (Node) parent;
-            return node.getChildrenCount();
-        }
+
+        TreeNode node = (TreeNode) parent;
+        return node.getChildrenCount();
+
     }
 
     public boolean isLeaf(Object node) {
-        if (node == root) {
-            return root.isLeaf();
-        } else {
-            Node n = (Node) node;
-            return n.getChildrenCount() == 0;
-        }
+
+        TreeNode n = (TreeNode) node;
+        return n.getChildrenCount() == 0;
+
     }
 
     public void valueForPathChanged(TreePath path, Object newValue) {
@@ -75,10 +70,8 @@ public class NodeTreeModel implements TreeModel {
         if (parent == null || child == null) {
             return -1;
         }
-        if (parent == root) {
-            return root.getIndexOfChild((Node) child);
-        }
-        return -1;//TODO for node
+        TreeNode node = (TreeNode) parent;
+        return node.getIndexOfChild((TreeNode) child);
     }
 
     public void addTreeModelListener(TreeModelListener l) {
@@ -87,33 +80,66 @@ public class NodeTreeModel implements TreeModel {
     public void removeTreeModelListener(TreeModelListener l) {
     }
 
-    class RootNode {
+    class TreeNode {
 
-        private Node[] nodes;
+        private Node node;
+        private TreeNode[] children;
 
-        public RootNode(Node[] nodes) {
-            this.nodes = nodes;
+        public TreeNode(Node node) {
+            this.node = node;
+            Node[] ch = hierarchyReader.getChildren(node);
+            if (ch != null) {
+                children = new TreeNode[ch.length];
+                for (int i = 0; i < ch.length; i++) {
+                    children[i] = new TreeNode(ch[i]);
+                }
+            }
         }
 
-        public Node getChildAt(int index) {
-            return nodes[index];
+        public TreeNode(Node[] nodes) {
+            children = new TreeNode[nodes.length];
+            for (int i = 0; i < nodes.length; i++) {
+                children[i] = new TreeNode(nodes[i]);
+            }
+        }
+
+        public TreeNode getChildAt(int index) {
+            return children[index];
         }
 
         public int getChildrenCount() {
-            return nodes.length;
+            if (children != null) {
+                return children.length;
+            }
+            return 0;
         }
 
         public boolean isLeaf() {
-            return nodes.length == 0;
+            if (children != null) {
+                return false;
+            }
+            return true;
         }
 
-        public int getIndexOfChild(Node node) {
-            for (int i = 0; i < nodes.length; i++) {
-                if (nodes[i] == node) {
+        public int getIndexOfChild(TreeNode node) {
+            for (int i = 0; i < children.length; i++) {
+                if (children[i] == node) {
                     return i;
                 }
             }
             return -1;
+        }
+
+        public String getLabel() {
+            if (this == root) {
+                return "root";
+            } else {
+                return node.getLabel();
+            }
+        }
+
+        public Node getNode() {
+            return node;
         }
     }
 }

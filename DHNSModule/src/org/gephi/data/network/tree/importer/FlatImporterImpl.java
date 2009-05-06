@@ -70,7 +70,7 @@ public class FlatImporterImpl implements FlatImporter {
         p.setNode(nodeImpl);
 
         //Insert
-        treeStructure.insertAtEnd(p);
+        treeStructure.insertAsChild(p, root);
         currentPre++;
 
         nodeImported++;
