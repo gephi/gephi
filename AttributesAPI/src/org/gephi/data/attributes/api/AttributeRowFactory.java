@@ -18,23 +18,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.data.attributes.api;
 
-import org.openide.util.Lookup;
+package org.gephi.data.attributes.api;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface AttributeController {
+public interface AttributeRowFactory {
 
-    public AttributeManager getTemporaryAttributeManager();
+    public AttributeRow newNodeRow();
 
-    public AttributeValueFactory valueFactory();
+    public AttributeRow newEdgeRow();
 
-    public AttributeRowFactory rowFactory();
-
-    public Lookup getNodeColumnsLookup();
-
-    public Lookup getEdgeColumnsLookup();
+    public AttributeRow newRowForClass(String className);
 }

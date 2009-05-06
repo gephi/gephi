@@ -63,16 +63,19 @@ public abstract class AbstractAttributeManager implements AttributeManager {
         return classMap.get(className).getLookup();
     }
 
-    public AttributeClass getNodeClass() {
+    public AbstractAttributeClass getNodeClass() {
         return nodeClass;
     }
 
-    public AttributeClass getEdgeClass() {
+    public AbstractAttributeClass getEdgeClass() {
         return edgeClass;
     }
 
-    public AttributeClass getClass(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public AbstractAttributeClass getClass(String name) {
+        AbstractAttributeClass attClass = classMap.get(name);
+        if(attClass!=null)
+            return attClass;
+        return null;
     }
 
     

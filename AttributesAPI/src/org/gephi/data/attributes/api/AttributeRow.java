@@ -20,17 +20,21 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes.api;
 
+import org.gephi.graph.api.Attributes;
+
 /**
  *
  * @author Mathieu Bastian
  */
-public interface AttributeRow {
+public interface AttributeRow extends Attributes {
 
     public void reset();
 
     public void setValues(AttributeRow attributeRow);
 
     public void setValue(AttributeColumn column, Object value);
+
+    public void setValue(String column, Object value);
 
     public Object getValue(AttributeColumn column);
 

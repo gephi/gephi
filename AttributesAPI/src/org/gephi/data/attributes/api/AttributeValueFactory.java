@@ -24,7 +24,7 @@ package org.gephi.data.attributes.api;
  *
  * @author Mathieu Bastian
  */
-public interface AttributeFactory {
+public interface AttributeValueFactory {
 
     public AttributeValue newValue(AttributeColumn column, Object value);
 }

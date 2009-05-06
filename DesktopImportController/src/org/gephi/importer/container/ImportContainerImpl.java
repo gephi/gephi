@@ -27,7 +27,7 @@ import org.gephi.data.attributes.api.AttributeManager;
 import org.gephi.importer.api.*;
 import java.util.HashMap;
 import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeFactory;
+import org.gephi.data.attributes.api.AttributeValueFactory;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -48,14 +48,14 @@ public class ImportContainerImpl implements ImportContainer {
     private boolean hasHierarchy = false;
 
     //Attributes
-    private AttributeFactory attributeFactory;
+    private AttributeValueFactory attributeFactory;
     private AttributeManager attributeManager;
 
     public ImportContainerImpl() {
         parameters = new ImportContainerParameters();
         nodeMap = new HashMap<String, NodeDraftImpl>();
         edgeMap = new HashMap<String, EdgeDraftImpl>();
-        attributeFactory = Lookup.getDefault().lookup(AttributeController.class).factory();
+        attributeFactory = Lookup.getDefault().lookup(AttributeController.class).valueFactory();
         attributeManager = Lookup.getDefault().lookup(AttributeController.class).getTemporaryAttributeManager();
     }
 
@@ -165,7 +165,7 @@ public class ImportContainerImpl implements ImportContainer {
         System.err.println(e.getMessage());
     }
 
-    public AttributeFactory getFactory() {
+    public AttributeValueFactory getFactory() {
         return attributeFactory;
     }
 }

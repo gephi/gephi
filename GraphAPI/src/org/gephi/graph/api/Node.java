@@ -57,4 +57,6 @@ public interface Node extends Renderable {
     public int getChildrenCount();
 
     public Node getChildAt(int index);
+
+    public Attributes getAttributes();
 }

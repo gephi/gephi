@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.network.node;
 
 import java.util.Iterator;
+import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.EdgeWrap;
 import org.gephi.graph.api.NodeLayoutInterface;
 import org.gephi.data.network.edge.DhnsEdge;
@@ -53,6 +55,7 @@ public class NodeImpl implements Node {
     //Impl
     protected PreNode preNode;
     protected NodeLayoutInterface nodeLayout;
+    protected AttributeRow attributeRow;
 
     public NodeImpl() {
         x = ((float) Math.random()) * 2000 - 1000.0f;
@@ -180,6 +183,14 @@ public class NodeImpl implements Node {
 
     public void setNodeLayout(NodeLayoutInterface nodeLayout) {
         this.nodeLayout = nodeLayout;
+    }
+
+    public AttributeRow getAttributes() {
+        return attributeRow;
+    }
+
+    public void setAttributeRow(AttributeRow row) {
+        this.attributeRow = row;
     }
 
     public int getInDegree() {

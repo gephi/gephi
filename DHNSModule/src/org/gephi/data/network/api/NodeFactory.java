@@ -32,6 +32,7 @@ public class NodeFactory {
 
     public static Node createNode()
     {
-        return new NodeImpl();
+        NodeImpl nodeImpl = new NodeImpl();
+        return nodeImpl;
     }
 }

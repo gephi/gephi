@@ -114,6 +114,8 @@ public class DesktopImportController implements ImportController {
         //Nodes
         for (NodeDraft node : container.getNodes()) {
             Node n = NodeFactory.createNode();
+            
+
             NodeDraftImpl im = (NodeDraftImpl)node;
             im.flushToNode(n);
 

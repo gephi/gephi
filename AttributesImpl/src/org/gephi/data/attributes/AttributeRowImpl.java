@@ -64,6 +64,13 @@ public class AttributeRowImpl implements AttributeRow {
         }
     }
 
+    public void setValue(String column, Object value) {
+        AttributeColumn attributeColumn = attributeClass.getAttributeColumn(column);
+        if (attributeColumn != null) {
+            setValue(attributeColumn, value);
+        }
+    }
+
     public void setValue(AttributeColumn column, Object value) {
         setValue(column.getIndex(), value);
     }
