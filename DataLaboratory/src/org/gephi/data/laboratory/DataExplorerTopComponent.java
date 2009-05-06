@@ -4,21 +4,22 @@
  */
 package org.gephi.data.laboratory;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.TreeModel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.network.api.DhnsController;
 import org.gephi.data.network.api.HierarchyReader;
-import org.gephi.data.network.api.SyncReader;
-import org.gephi.graph.api.NodeWrap;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.OutlineModel;
-import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -47,8 +48,13 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
     //States
     ClassDisplayed classDisplayed = ClassDisplayed.NODE;
+    //Executor
+    ExecutorService taskExecutor;
 
     private DataExplorerTopComponent() {
+
+        taskExecutor = new ThreadPoolExecutor(0, 1, 10L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(10));
+
         initComponents();
         setName(NbBundle.getMessage(DataExplorerTopComponent.class, "CTL_DataExplorerTopComponent"));
         setToolTipText(NbBundle.getMessage(DataExplorerTopComponent.class, "HINT_DataExplorerTopComponent"));
@@ -64,55 +70,75 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
     }
 
     private void initNodesView() {
-        try {
-             //Attributes columns
-            Collection<? extends AttributeColumn> attributeColumns = nodeColumnsResult.allInstances();
-            AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
+        Runnable initNodesRunnable = new Runnable() {
 
-            //Nodes from DHNS
-            HierarchyReader reader = Lookup.getDefault().lookup(DhnsController.class).getHierarchyReader();
-            reader.lock();
-            org.gephi.graph.api.Node[] nodes = reader.getTopNodes();
-            
-            //TreeModel
-            TreeModel treeMdl = new NodeTreeModel(nodes, reader);
-            reader.unlock();
+            public void run() {
+                try {
+                    //Attributes columns
+                    Collection<? extends AttributeColumn> attributeColumns = nodeColumnsResult.allInstances();
+                    final AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
 
-            //Outline
-            OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new NodeRowModel(cols), true);
-            outline1.setRootVisible(false);
-            outline1.setRenderDataProvider(new NodeRenderer());
-            outline1.setModel(mdl);
+                    //Nodes from DHNS
+                    HierarchyReader reader = Lookup.getDefault().lookup(DhnsController.class).getHierarchyReader();
+                    reader.lock();
+                    org.gephi.graph.api.Node[] nodes = reader.getTopNodes();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                    //TreeModel
+                    final TreeModel treeMdl = new NodeTreeModel(nodes, reader);
+                    reader.unlock();
+
+                    //Outline
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        public void run() {
+                            OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new NodeRowModel(cols), true);
+                            outline1.setRootVisible(false);
+                            outline1.setRenderDataProvider(new NodeRenderer());
+                            outline1.setModel(mdl);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        Future future = taskExecutor.submit(initNodesRunnable);
     }
 
     private void initEdgesView() {
-        try {
-             //Attributes columns
-            Collection<? extends AttributeColumn> attributeColumns = edgeColumnsResult.allInstances();
-            AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
+        Runnable initEdgesRunnable = new Runnable() {
 
-            //Edges from DHNS
-            HierarchyReader reader = Lookup.getDefault().lookup(DhnsController.class).getHierarchyReader();
-            reader.lock();
-            org.gephi.graph.api.Edge[] edges = reader.getEdges();
+            public void run() {
+                try {
+                    //Attributes columns
+                    Collection<? extends AttributeColumn> attributeColumns = edgeColumnsResult.allInstances();
+                    final AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
 
-            //TreeModel
-            TreeModel treeMdl = new EdgeTreeModel(edges);
-            reader.unlock();
+                    //Edges from DHNS
+                    HierarchyReader reader = Lookup.getDefault().lookup(DhnsController.class).getHierarchyReader();
+                    reader.lock();
+                    org.gephi.graph.api.Edge[] edges = reader.getEdges();
 
-            //Outline
-            OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new EdgeRowModel(cols), true);
-            outline1.setRootVisible(false);
-            outline1.setRenderDataProvider(new EdgeRenderer());
-            outline1.setModel(mdl);
+                    //TreeModel
+                    final TreeModel treeMdl = new EdgeTreeModel(edges);
+                    reader.unlock();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                    //Outline
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        public void run() {
+                            OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new EdgeRowModel(cols), true);
+                            outline1.setRootVisible(false);
+                            outline1.setRenderDataProvider(new EdgeRenderer());
+                            outline1.setModel(mdl);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        Future future = taskExecutor.submit(initEdgesRunnable);
     }
 
     public void resultChanged(LookupEvent ev) {
