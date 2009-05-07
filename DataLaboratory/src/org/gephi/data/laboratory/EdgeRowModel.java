@@ -94,6 +94,7 @@ public class EdgeRowModel implements RowModel {
 
         public Object getValue(Edge edge) {
             if (attributeColumn != null) {
+                //return ((AttributeRow)edge.getAttributes()).getValue(attributeColumn);
                 return "rien";
             } else if (propertyColumn == PropertyColumn.ID) {
                 return "";

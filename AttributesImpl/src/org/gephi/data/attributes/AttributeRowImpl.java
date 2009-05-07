@@ -34,6 +34,7 @@ public class AttributeRowImpl implements AttributeRow {
     protected Object[] values;
 
     public AttributeRowImpl(AbstractAttributeClass attributeClass) {
+        this.attributeClass = attributeClass;
         reset();
     }
 

@@ -172,6 +172,10 @@ public class NodeDraftImpl implements NodeDraft {
         attributeValues.add(attValue);
     }
 
+    public List<AttributeValue> getAttributeValues() {
+        return attributeValues;
+    }
+
     public void addChild(NodeDraft child) {
         children.add((NodeDraftImpl) child);
     }

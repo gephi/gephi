@@ -31,6 +31,10 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeRowFactory;
+import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.network.api.DhnsController;
 import org.gephi.data.network.api.EdgeFactory;
 import org.gephi.data.network.api.FlatImporter;
@@ -132,6 +136,19 @@ public class DesktopImportController implements ImportController {
 
             flatImporter.addEdge(e);
         }
+
+        //Attributes
+         AttributeRowFactory rowFactory = Lookup.getDefault().lookup(AttributeController.class).rowFactory();
+         for (NodeDraft node : container.getNodes()) {
+             NodeDraftImpl impl = (NodeDraftImpl)node;
+             Node n = impl.getNode();
+             AttributeRow row = rowFactory.newNodeRow();
+             for(AttributeValue val : impl.getAttributeValues())
+             {
+                 row.setValue(val.getColumn(), val.getValue());
+             }
+             n.setAttributes(row);
+         }
 
         flatImporter.finishImport();
         

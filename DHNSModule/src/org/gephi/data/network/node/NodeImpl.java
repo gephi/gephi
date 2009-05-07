@@ -189,8 +189,8 @@ public class NodeImpl implements Node {
         return attributeRow;
     }
 
-    public void setAttributeRow(AttributeRow row) {
-        this.attributeRow = row;
+    public void setAttributes(Attributes attributes) {
+        this.attributeRow = (AttributeRow)attributes;
     }
 
     public int getInDegree() {
