@@ -63,6 +63,7 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
 
     @Override
     protected void init(GL gl) {
+        System.out.println("init");
         graphComponent.setCursor(Cursor.getDefaultCursor());
         engine.initEngine(gl, glu);
         VizController.getInstance().getGraphIO().startMouseListening();

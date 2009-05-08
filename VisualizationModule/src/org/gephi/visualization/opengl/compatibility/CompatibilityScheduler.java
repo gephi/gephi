@@ -172,7 +172,16 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
     @Override
     public void stop() {
-        simpleFPSAnimator.shutdown();
+        if (simpleFPSAnimator.isAnimating()) {
+            simpleFPSAnimator.shutdown();
+        }
+        cameraMoved.set(false);
+        mouseMoved.set(false);
+        objectsMoved.set(false);
+        startDrag.set(false);
+        drag.set(false);
+        stopDrag.set(false);
+        mouseClick.set(false);
     }
 
     public boolean isAnimating() {
@@ -187,15 +196,20 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
         this.gl = gl;
         this.glu = glu;
 
+        //Boolean vals
+        boolean execMouseClick = mouseClick.getAndSet(false);
+        boolean execMouseMove = mouseMoved.getAndSet(false);
+        boolean execDrag = drag.getAndSet(false) || startDrag.getAndSet(false) || stopDrag.getAndSet(false);
+
         //Calculate permits
         int pool1Permit = 0;
         int pool2Permit = 0;
-        if (mouseMoved.get()) {
+        if (execMouseMove) {
             pool2Permit++;
-        } else if (drag.get() || startDrag.get() || stopDrag.get()) {
+        } else if (execDrag) {
             pool2Permit++;
         }
-        if (mouseClick.get()) {
+        if (execMouseClick) {
             pool2Permit++;
         }
 
@@ -214,16 +228,16 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
         }
 
         //Task SELECTED
-        if (mouseMoved.getAndSet(false)) {
+        if (execMouseMove) {
             engine.updateSelection(gl, glu);
             pool2.execute(selectionSegment);
-        } else if (drag.get() || startDrag.get() || stopDrag.get()) {
+        } else if (execDrag) {
             pool2.execute(dragSegment);
         }
 
 
         //Task AFTERSELECTION
-        if (mouseClick.getAndSet(false)) {
+        if (execMouseClick) {
             pool2.execute(mouseClickSegment);
         }
 

@@ -87,6 +87,11 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     }
 
     public void mousePressed(MouseEvent e) {
+
+        if (!graphDrawable.getGraphComponent().isShowing()) {
+            return;
+        }
+
         float x = e.getLocationOnScreen().x - graphDrawable.graphComponent.getLocationOnScreen().x;
         float y = e.getLocationOnScreen().y - graphDrawable.graphComponent.getLocationOnScreen().y;
 
@@ -115,10 +120,13 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         middleButtonMoving[0] = -1;
 
         //Update mouse position because the movement during dragging
-        float x = e.getLocationOnScreen().x - graphDrawable.graphComponent.getLocationOnScreen().x;
-        float y = e.getLocationOnScreen().y - graphDrawable.graphComponent.getLocationOnScreen().y;
-        mousePosition[0] = x;
-        mousePosition[1] = graphDrawable.viewport.get(3) - y;
+        if (graphDrawable.getGraphComponent().isShowing()) {
+
+            float x = e.getLocationOnScreen().x - graphDrawable.graphComponent.getLocationOnScreen().x;
+            float y = e.getLocationOnScreen().y - graphDrawable.graphComponent.getLocationOnScreen().y;
+            mousePosition[0] = x;
+            mousePosition[1] = graphDrawable.viewport.get(3) - y;
+        }
 
         if (dragging) {
             dragging = false;
@@ -143,6 +151,11 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     }
 
     public void mouseMoved(MouseEvent e) {
+
+        if (!graphDrawable.getGraphComponent().isShowing()) {
+            return;
+        }
+
         float x = e.getLocationOnScreen().x - graphDrawable.graphComponent.getLocationOnScreen().x;
         float y = e.getLocationOnScreen().y - graphDrawable.graphComponent.getLocationOnScreen().y;
         mousePosition[0] = x;
@@ -167,6 +180,10 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     }
 
     public void mouseDragged(MouseEvent e) {
+
+        if (!graphDrawable.getGraphComponent().isShowing()) {
+            return;
+        }
 
         float x = e.getLocationOnScreen().x - graphDrawable.graphComponent.getLocationOnScreen().x;//TODO Pourqoui ce osnt des float et pas des int
         float y = e.getLocationOnScreen().y - graphDrawable.graphComponent.getLocationOnScreen().y;
