@@ -28,7 +28,6 @@ import org.gephi.data.network.api.DhnsController;
 import org.gephi.data.network.api.LayoutReader;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutController;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -62,12 +61,6 @@ public class LayoutControllerImpl implements LayoutController {
 
                 while (true) {
                     layout.goAlgo(reader);
-                    try {
-                    Thread.sleep(10);
-                    //layout.endAlgo();
-                } catch (InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
                 }
 
 
