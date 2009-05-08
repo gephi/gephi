@@ -33,6 +33,8 @@ public interface Scheduler {
 
     public void stop();
 
+    public boolean isAnimating();
+
     public void updatePosition();
 
     public void updateWorld();

@@ -131,10 +131,14 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
     public void mouseEntered(MouseEvent e) {
         dragging = false;
+    /*if (!engine.getScheduler().isAnimating()) {
+    engine.getScheduler().start();
+    }*/
     }
 
     public void mouseExited(MouseEvent e) {
         if (!dragging) {
+            //engine.getScheduler().stop();
         }
     }
 

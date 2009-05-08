@@ -180,7 +180,7 @@ public class NodeDraftImpl implements NodeDraft {
         children.add((NodeDraftImpl) child);
     }
 
-    public List<NodeDraftImpl> getChildren() {
+    public List<? extends NodeDraft> getChildren() {
         return children;
     }
 
@@ -197,13 +197,13 @@ public class NodeDraftImpl implements NodeDraft {
         }
 
         if (x != 0) {
-            node.setX(x * 13);
+            node.setX(x * 4);
         }
         if (y != 0) {
-            node.setY(y * 13);
+            node.setY(y * 4);
         }
         if (z != 0) {
-            node.setZ(z * 13);
+            node.setZ(z * 4);
         }
 
         if (size != 0) {

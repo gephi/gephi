@@ -63,15 +63,20 @@ public class PotatoRender {
     }
 
     private void loadConfig(Node node) {
-        NB_SUBDIVISIONS = 4;
+        NB_SUBDIVISIONS = 3;
 
         switch (potato.getLevel()) {
-            case 0:
+             case 0:
+                RAYON = 17f;
+                INFLUENCE = 0.81f;
+                RAYON_INFLUENCE_MAX = 80f;
+                break;
+            case 1:
                 RAYON = 21f;
                 INFLUENCE = 0.71f;
                 RAYON_INFLUENCE_MAX = 97f;
                 break;
-            case 1:
+            case 2:
                 RAYON = 26.5f;
                 INFLUENCE = 0.41f;
                 RAYON_INFLUENCE_MAX = 127.5f;
@@ -167,7 +172,7 @@ public class PotatoRender {
         
         triangleBuffer = new ArrayList<float[]>();
         disksBuffer = new ArrayList<float[]>();
-
+        //System.out.println("potatorender start "+potato.getNode().getIndex()+" "+potato.getNode().getLabel());
         for (Node node : potato.getContent()) {
             loadConfig(node);
             //DESSINE LE DISQUE MINIMAL AUTOUR DU NOEUD
@@ -388,7 +393,7 @@ public class PotatoRender {
         //computePolygon();
         PotatoDisplay display = new PotatoDisplay(triangleBuffer, disksBuffer);
         potato.setDisplay(display);
-        System.out.println("potatorender "+potato.getNode().getIndex());
+        //System.out.println("potatorender finish "+potato.getNode().getIndex());
     }
 
     public void createTriangle(float x1, float y1, float x2, float y2, float x3, float y3) {
@@ -417,7 +422,7 @@ public class PotatoRender {
                 "<svg stroke-linecap=\"round\" stroke-linejoin=\"round\" width=\"800\" height=\"600\" xmlns=\"http://www.w3.org/2000/svg\">";
 
         for (PotatoImpl pot : potatoes) {
-
+            System.out.println("polygon "+pot.getNode().getLabel());
             List<float[]> triangleBuffer = pot.getDisplay().getTriangles();
             List<float[]> disksBuffer = pot.getDisplay().getDisks();
 

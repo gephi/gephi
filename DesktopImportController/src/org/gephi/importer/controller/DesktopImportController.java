@@ -108,8 +108,8 @@ public class DesktopImportController implements ImportController {
 
     private void finishImport(ImportContainerImpl container) {
         container.checkNodeLabels();
-        /*
-        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+        
+        /*DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
         dynamicController.appendData(container);*/
         DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
         FlatImporter flatImporter = dhnsController.getFlatImporter();

@@ -64,25 +64,26 @@ public class PotatoManager {
     }
 
     public void renderPotato(final PotatoImpl potato, final boolean propagateAncestors) {
-        Future futur = potato.getDisplayTask();
+        /*Future futur = potato.getDisplayTask();
         if (futur != null) {
-            futur.cancel(false);
+        futur.cancel(false);
         }
 
         futur = potatoRenderExecutor.submit(new Runnable() {
 
-            public void run() {
-                render.renderPotato(potato);
-                if (propagateAncestors) {
-                    PotatoImpl currentFather = potato.getFather();
-                    while (currentFather != null) {
-                        render.renderPotato(currentFather);
-                        currentFather = currentFather.getFather();
-                    }
-                }
+        public void run() {*/
+        render.renderPotato(potato);
+        if (propagateAncestors) {
+            PotatoImpl currentFather = potato.getFather();
+            while (currentFather != null) {
+                render.renderPotato(currentFather);
+                currentFather = currentFather.getFather();
             }
-        });
-        potato.setDisplayTask(futur);
+        }
+    /*}
+    });
+    //potato.setDisplayTask(futur);
+    }*/
     }
 
     public int getTreeHeight() {
@@ -103,8 +104,7 @@ public class PotatoManager {
         }
     }
 
-    public String getPotatoesSVG()
-    {
+    public String getPotatoesSVG() {
         return render.computePolygon(currentPotatoes);
     }
 }

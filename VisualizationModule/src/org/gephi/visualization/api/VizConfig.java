@@ -40,6 +40,7 @@ public class VizConfig {
     private boolean lighting = true;
     private boolean material = true;
     private boolean wireFrame = false;
+    private boolean useGLJPanel = false;
     private Color backgroundColor = Color.WHITE;
     private float[] defaultCameraPosition = {0f, 0f, 5000f};
     protected float[] nodeSelectedColor = {1f, 1f, 1f};
@@ -162,5 +163,9 @@ public class VizConfig {
 
     public boolean isWireFrame() {
         return wireFrame;
+    }
+
+    public boolean useGLJPanel() {
+        return useGLJPanel;
     }
 }

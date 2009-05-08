@@ -43,11 +43,11 @@ public class SimpleFPSAnimator extends Thread {
         this.animating = new AtomicBoolean();
 
         setFps(fps);
+        animating.set(true);
     }
 
     @Override
     public void run() {
-        animating.set(true);
 
         try {
             while (animating.get()) {

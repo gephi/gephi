@@ -58,13 +58,13 @@ public class NodeImpl implements Node {
     protected AttributeRow attributeRow;
 
     public NodeImpl() {
-        x = ((float) Math.random()) * 2000 - 1000.0f;
-        y = ((float) Math.random()) * 2000 - 1000.0f;
+        x = ((float) Math.random()) * 1000 - 500.0f;
+        y = ((float) Math.random()) * 1000 - 500.0f;
         r = (float) Math.random();
         g = (float) Math.random();
         b = (float) Math.random();
-        //size= 10f;
-        size = ((float) Math.random()) * 20 + 10;
+        size= 6f;
+        //size = ((float) Math.random()) * 20 + 10;
     }
 
     public float x() {
@@ -86,7 +86,7 @@ public class NodeImpl implements Node {
 
     public void setY(float y) {
         this.y = y;
-        updatePositionFlag();
+        //updatePositionFlag();
     }
 
     public void setZ(float z) {

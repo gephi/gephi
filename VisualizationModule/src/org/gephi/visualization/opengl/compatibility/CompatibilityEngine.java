@@ -61,7 +61,7 @@ public class CompatibilityEngine extends AbstractEngine {
     private ConcurrentLinkedQueue<Object3dImpl>[] selectedObjects;
 
     //State
-    private boolean inited=false;
+    private boolean inited = false;
 
     public CompatibilityEngine() {
         super();
@@ -111,10 +111,9 @@ public class CompatibilityEngine extends AbstractEngine {
             int hitName = 1;
             Object3dImpl[] array = new Object3dImpl[potatoCount];
             for (Iterator<Object3dImpl> itr = octree.getSelectedObjectIterator(CLASS_POTATO); itr.hasNext();) {
-                Potato3dObject obj = (Potato3dObject)itr.next();
+                Potato3dObject obj = (Potato3dObject) itr.next();
                 obj.setUnderMouse(false);
-                if(obj.isDisplayReady())
-                {
+                if (obj.isDisplayReady()) {
                     array[hitName - 1] = obj;
                     gl.glLoadName(hitName);
                     obj.mark = false;
@@ -140,9 +139,10 @@ public class CompatibilityEngine extends AbstractEngine {
             //Get the hits and put the node under selection in the selectionArray
             for (int i = 0; i < nbRecords; i++) {
                 int hit = hitsBuffer.get(i * 4 + 3) - 1; 		//-1 Because of the glPushName(0)
-                Potato3dObject obj = (Potato3dObject)array[hit];
-                if(!obj.isParentUnderMouse())
+                Potato3dObject obj = (Potato3dObject) array[hit];
+                if (!obj.isParentUnderMouse()) {
                     obj.setUnderMouse(true);
+                }
             }
         }
     }
@@ -406,7 +406,7 @@ public class CompatibilityEngine extends AbstractEngine {
         initDisplayLists(gl, glu);
         scheduler.cameraMoved.set(true);
         scheduler.mouseMoved.set(true);
-        inited=true;
+        inited = true;
     }
 
     @Override
@@ -624,6 +624,20 @@ public class CompatibilityEngine extends AbstractEngine {
             objClass.setSelectionId(i);
             selectedObjects[i] = new ConcurrentLinkedQueue<Object3dImpl>();
             i++;
+        }
+    }
+
+    @Override
+    protected void componentHidden() {
+        if (scheduler.isAnimating()) {
+            scheduler.stop();
+        }
+    }
+
+    @Override
+    protected void componentVisible() {
+        if (!scheduler.isAnimating()) {
+            scheduler.start();
         }
     }
 

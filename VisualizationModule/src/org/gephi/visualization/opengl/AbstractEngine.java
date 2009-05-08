@@ -46,7 +46,7 @@ import org.gephi.visualization.swing.GraphDrawableImpl;
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractEngine implements Engine,VizArchitecture {
+public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     //Enums
     public enum Limits {
@@ -117,6 +117,10 @@ public abstract class AbstractEngine implements Engine,VizArchitecture {
 
     public abstract Object3dClass[] getObject3dClasses();
 
+    protected abstract void componentHidden();
+
+    protected abstract void componentVisible();
+
     /**
      * Reset contents of octree for the given class
      */
@@ -142,23 +146,22 @@ public abstract class AbstractEngine implements Engine,VizArchitecture {
         object.setViewportRadius(rad);
     }
 
-
     protected boolean isUnderMouse(Object3dImpl obj) {
         float x1 = graphIO.getMousePosition()[0];
         float y1 = graphIO.getMousePosition()[1];
-        
+
         float x2 = obj.getViewportX();
         float y2 = obj.getViewportY();
 
         float xDist = Math.abs(x2 - x1);
         float yDist = Math.abs(y2 - y1);
 
-        float distance = (float)Math.sqrt(xDist * xDist + yDist * yDist);
+        float distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
 
         Vecf d = new Vecf(5);
-        d.set(0,xDist);
-        d.set(1,yDist);
-        d.set(2,distance);
+        d.set(0, xDist);
+        d.set(1, yDist);
+        d.set(2, distance);
 
         return currentSelectionArea.mouseTest(d, obj);
     }

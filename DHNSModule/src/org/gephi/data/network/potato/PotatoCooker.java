@@ -41,7 +41,7 @@ public class PotatoCooker {
     private List<PotatoImpl> potatoes;
 
     //Config
-    private int levelLimit=1;
+    private int levelLimit=0;
 
     public PotatoCooker(Dhns dhns, PotatoManager manager) {
         this.treeStructure = dhns.getTreeStructure();

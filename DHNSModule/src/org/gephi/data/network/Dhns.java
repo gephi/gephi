@@ -56,7 +56,7 @@ public class Dhns {
     }
 
     public void init() {
-       //importFakeGraph();
+       importFakeGraph();
        //treeStructure.showTreeAsTable();
     }
 
@@ -68,13 +68,14 @@ public class Dhns {
     private void importFakeGraph() {
         CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure);
 
-        importer.importGraph(5, true);
+        //importer.importGraph(5, true);
+        importer.importGraph(3, 6, false);
         //importer.shuffleEnable();
         System.out.println("Tree size : " + treeStructure.getTreeSize());
         //treeStructure.showTreeAsTable();
 
         RandomEdgesGenerator reg = new RandomEdgesGenerator(treeStructure);
-        reg.generatPhysicalEdges(300);
+        reg.generatPhysicalEdges(30);
         freeMode.init();
 
 

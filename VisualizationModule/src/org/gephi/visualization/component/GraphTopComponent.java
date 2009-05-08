@@ -23,10 +23,13 @@ package org.gephi.visualization.component;
 import java.awt.BorderLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.swing.GraphDrawableImpl;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
+import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 //import org.openide.util.Utilities;
@@ -49,18 +52,28 @@ final class GraphTopComponent extends TopComponent {
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
 
         //Init
-
-
         VizController.getInstance().initInstances();
-        CompatibilityEngine engine = (CompatibilityEngine) VizController.getInstance().getEngine();
-        GraphDrawableImpl drawable = VizController.getInstance().getDrawable();
+        final CompatibilityEngine engine = (CompatibilityEngine) VizController.getInstance().getEngine();
+        final GraphDrawableImpl drawable = VizController.getInstance().getDrawable();
 
-        //
-        add(drawable.getGraphComponent(), BorderLayout.CENTER);
-        
-        remove(waitingLabel);
-        drawable.display();
-        engine.getScheduler().start();
+        //Request component activation and therefore initialize JOGL component
+        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+            public void run() {
+                open();
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        requestActive();
+                        add(drawable.getGraphComponent(), BorderLayout.CENTER);
+                        remove(waitingLabel);
+
+                        drawable.display();
+                        engine.getScheduler().start();
+                    }
+                });
+            }
+        });
+
+
     }
 
     /** This method is called from within the constructor to
@@ -121,8 +134,17 @@ final class GraphTopComponent extends TopComponent {
     }
 
     @Override
+    protected void componentShowing() {
+        super.componentShowing();
+    }
+
+    @Override
+    protected void componentHidden() {
+        super.componentHidden();
+    }
+
+    @Override
     public void componentOpened() {
-        
     }
 
     @Override

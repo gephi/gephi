@@ -63,11 +63,11 @@ public class ForceAtlas extends AbstractForceVector {
 
     public void resetPropertiesValues() {
         inertia = 0.1;
-        repulsionStrength = 1000;
+        repulsionStrength = 5000;
         attractionStrength = 10;
         maxDisplacement = 10;
         freezeBalance = true;
-        freezeStrength = 30;
+        freezeStrength = 80;
         freezeInertia = 0.2;
         gravity = 30;
         outboundAttractionDistribution = false;

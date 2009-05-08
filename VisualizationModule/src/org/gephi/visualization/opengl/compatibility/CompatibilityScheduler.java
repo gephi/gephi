@@ -175,6 +175,13 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
         simpleFPSAnimator.shutdown();
     }
 
+    public boolean isAnimating() {
+        if (simpleFPSAnimator != null && simpleFPSAnimator.isAnimating()) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void display(GL gl, GLU glu) {
         this.gl = gl;

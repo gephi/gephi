@@ -112,6 +112,30 @@ public class CompleteTreeImporter {
         }
     }
 
+    public void importGraph(int numFathers, int numChilds, boolean random) {
+        initImport();
+        int counter = 0;
+        for (int i = 0; i < numFathers; i++) {
+            counter++;
+
+            addSibling(counter);
+            addChild();
+            int rand = numChilds;
+            if (random) {
+                rand = (int) (Math.random() * numChilds + 1);
+            }
+
+            for (int j = 0; j < rand; j++) {
+                counter++;
+
+                addSibling(counter);
+            }
+            closeChild();
+        }
+
+        endImport();
+    }
+
     public void importGraph(int numSibling, boolean random) {
         initImport();
 

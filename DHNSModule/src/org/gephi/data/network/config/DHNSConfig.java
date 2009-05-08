@@ -27,7 +27,7 @@ public class DHNSConfig {
         SINGLE, HIERARCHY
     };
     private ViewType viewType;
-    private boolean potatoesEnabled=false;
+    private boolean potatoesEnabled=true;
 
     public DHNSConfig() {
         viewType = ViewType.SINGLE;
