@@ -68,7 +68,9 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected EventBridge eventBridge;
     protected VizConfig vizConfig;
 
-    //AddRemove
+    //States
+    protected EngineLifeCycle lifeCycle = new EngineLifeCycle();
+
     public void initArchitecture() {
         this.graphDrawable = VizController.getInstance().getDrawable();
         this.graphIO = VizController.getInstance().getGraphIO();
@@ -117,9 +119,9 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public abstract Object3dClass[] getObject3dClasses();
 
-    protected abstract void componentHidden();
+    protected abstract void startAnimating();
 
-    protected abstract void componentVisible();
+    protected abstract void stopAnimating();
 
     /**
      * Reset contents of octree for the given class
@@ -164,5 +166,46 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         d.set(2, distance);
 
         return currentSelectionArea.mouseTest(d, obj);
+    }
+
+    public void startDisplay() {
+        lifeCycle.requestStartAnimating();
+    }
+
+    public void stopDisplay() {
+        lifeCycle.requestStopAnimating();
+    }
+
+    protected class EngineLifeCycle {
+
+        private boolean inited;
+        private boolean requestAnimation;
+
+        public void requestStartAnimating() {
+            if (inited) {
+                startAnimating();
+            } else {
+                requestAnimation = true;
+            }
+        }
+
+        public void requestStopAnimating() {
+            if (inited) {
+                stopAnimating();
+            }
+        }
+
+        public void initEngine() {
+        }
+
+        public void setInited() {
+            if (!inited) {
+                inited = true;
+                if (requestAnimation) {
+                    startAnimating();
+                    requestAnimation = false;
+                }
+            }
+        }
     }
 }

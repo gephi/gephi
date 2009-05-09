@@ -60,9 +60,6 @@ public class CompatibilityEngine extends AbstractEngine {
     //Selection
     private ConcurrentLinkedQueue<Object3dImpl>[] selectedObjects;
 
-    //State
-    private boolean inited = false;
-
     public CompatibilityEngine() {
         super();
     }
@@ -149,7 +146,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public boolean updateWorld() {
-        if (inited && dataBridge.requireUpdate()) {
+        if (dataBridge.requireUpdate()) {
             dataBridge.updateWorld();
             return true;
         }
@@ -293,104 +290,6 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
         octree.displayOctree(gl);
-    /*
-
-    float x1 = -140f;
-    float x2 = 200f;
-    float y1 = 56;
-    float y2 = 150;
-    float z1 = 0;
-    float z2 = 0;
-    float t=3f;
-
-    gl.glBegin(GL.GL_POINTS);
-    gl.glVertex3f(x1, y1, z1);
-    gl.glVertex3f(x2, y2, z2);
-    gl.glEnd();
-
-
-    float distance = (float)Math.sqrt(Math.pow((double)x1 - x2,2d) +
-    Math.pow((double)y1 - y2,2d) +
-    Math.pow((double)z1 - z2,2d));
-    double anglez = Math.atan2(y2 - y1, x2 - x1);
-
-    gl.glPushMatrix();
-
-    gl.glTranslatef(x1+(float)Math.cos(anglez)*distance/2f, y1+(float)Math.sin(anglez)*distance/2f, 1);
-    gl.glRotatef((float)Math.toDegrees(anglez), 0, 0, 1);
-    gl.glScalef(distance/2f, 1f, 0f);
-
-
-    //gl.glRotatef((float)Math.toDegrees(anglez), 0, 0, 1);
-    //gl.glTranslatef(x1, 0, 0);
-    //gl.glScalef(distance, 1f, 0f);
-
-
-    gl.glBegin(GL.GL_TRIANGLE_STRIP);
-    gl.glVertex3f(1, 1, 0);
-    gl.glVertex3f(-1, 1,0);
-    gl.glVertex3f(1, -1, 0);
-    gl.glVertex3f(-1,-1, 0);
-    gl.glEnd();
-
-    gl.glPopMatrix();
-
-    //Reference
-    double angle = Math.atan2(y2 - y1, x2 - x1);
-    float t2sina1 =(float)( t / 2 * Math.sin(angle));
-    float t2cosa1 = (float)( t / 2 * Math.cos(angle));
-    float t2sina2 = (float)( t / 2 * Math.sin(angle));
-    float t2cosa2 = (float)( t / 2 * Math.cos(angle));
-
-    gl.glColor3i(255, 0, 0);
-    gl.glBegin(GL.GL_TRIANGLES);
-    gl.glVertex2f(x1 + t2sina1, y1 - t2cosa1+20);
-    gl.glVertex2f(x2 + t2sina2, y2 - t2cosa2+20);
-    gl.glVertex2f(x2 - t2sina2, y2 + t2cosa2+20);
-    gl.glVertex2f(x2 - t2sina2, y2 + t2cosa2+20);
-    gl.glVertex2f(x1 - t2sina1, y1 + t2cosa1+20);
-    gl.glVertex2f(x1 + t2sina1, y1 - t2cosa1+20);
-    gl.glEnd();*/
-
-    /*DhnsController.getInstance().updatePotatoes();
-
-    gl.glColor3f(0.2f,0.2f,0.2f);
-    PotatoBuilder potatoBuilder = DhnsController.getInstance().getPotatoBuilder();
-    for(Potato p : potatoBuilder.getPotatoes())
-    {
-    gl.glBegin(GL.GL_TRIANGLES);
-    for(Potato.Triangle triangles : p.getTriangles())
-    {
-    float[] array = triangles.array;
-    gl.glVertex3f(array[0], array[1],0f);
-    gl.glVertex3f(array[2], array[3],0f);
-    gl.glVertex3f(array[4], array[5],0f);
-    }
-    gl.glEnd();
-
-    gl.glBegin(GL.GL_QUADS);
-    for(Potato.Square squares : p.getSquares())
-    {
-    float[] array = squares.array;
-
-    gl.glVertex2f(array[0], array[1]);
-    gl.glVertex2f(array[2], array[3]);
-    gl.glVertex2f(array[4], array[5]);
-    gl.glVertex2f(array[6], array[7]);
-    }
-    gl.glEnd();
-
-    for(Potato.Circle circle : p.getCircles())
-    {
-    gl.glPushMatrix();
-    gl.glTranslatef(circle.x,circle.y,0f);
-    GLUquadric quadric = glu.gluNewQuadric();
-    glu.gluDisk(quadric,0f, circle.rayon, 20, 20);
-    glu.gluQuadricDrawStyle(quadric, GLU.GLU_FILL);
-    glu.gluDeleteQuadric(quadric);
-    gl.glPopMatrix();
-    }
-    }*/
     }
 
     @Override
@@ -406,7 +305,7 @@ public class CompatibilityEngine extends AbstractEngine {
         initDisplayLists(gl, glu);
         scheduler.cameraMoved.set(true);
         scheduler.mouseMoved.set(true);
-        inited = true;
+        lifeCycle.setInited();
     }
 
     @Override
@@ -628,17 +527,20 @@ public class CompatibilityEngine extends AbstractEngine {
     }
 
     @Override
-    protected void componentHidden() {
-        if (scheduler.isAnimating()) {
-            scheduler.stop();
+    public void startAnimating() {
+        if (!scheduler.isAnimating()) {
+            System.out.println("start animating");
+            scheduler.start();
         }
     }
 
     @Override
-    protected void componentVisible() {
-        if (!scheduler.isAnimating()) {
-            scheduler.start();
+    public void stopAnimating() {
+        if (scheduler.isAnimating()) {
+            System.out.println("stop animating");
+            scheduler.stop();
         }
+
     }
 
     public CompatibilityObject3dClass[] getObject3dClasses() {

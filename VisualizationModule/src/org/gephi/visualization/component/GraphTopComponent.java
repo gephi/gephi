@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.openide.util.Exceptions;
@@ -44,6 +45,8 @@ final class GraphTopComponent extends TopComponent {
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "GraphTopComponent";
 
+    private AbstractEngine engine;
+
     private GraphTopComponent() {
         initComponents();
 
@@ -53,7 +56,7 @@ final class GraphTopComponent extends TopComponent {
 
         //Init
         VizController.getInstance().initInstances();
-        final CompatibilityEngine engine = (CompatibilityEngine) VizController.getInstance().getEngine();
+        engine = VizController.getInstance().getEngine();
         final GraphDrawableImpl drawable = VizController.getInstance().getDrawable();
 
         //Request component activation and therefore initialize JOGL component
@@ -65,15 +68,10 @@ final class GraphTopComponent extends TopComponent {
                         requestActive();
                         add(drawable.getGraphComponent(), BorderLayout.CENTER);
                         remove(waitingLabel);
-
-                        drawable.display();
-                        engine.getScheduler().start();
                     }
                 });
             }
         });
-
-
     }
 
     /** This method is called from within the constructor to
@@ -136,11 +134,13 @@ final class GraphTopComponent extends TopComponent {
     @Override
     protected void componentShowing() {
         super.componentShowing();
+        engine.startDisplay();
     }
 
     @Override
     protected void componentHidden() {
         super.componentHidden();
+        engine.stopDisplay();
     }
 
     @Override
@@ -149,7 +149,7 @@ final class GraphTopComponent extends TopComponent {
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
+        engine.stopDisplay();
     }
 
     /** replaces this in object stream */
