@@ -34,8 +34,8 @@ public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
 
     private EdgeTree edges;
 
-    public MetaEdgeImpl(PreNode source, PreNode target) {
-        super(source, target);
+    public MetaEdgeImpl(int ID, PreNode source, PreNode target) {
+        super(ID, source, target);
         this.edges = new EdgeTree();
     }
 

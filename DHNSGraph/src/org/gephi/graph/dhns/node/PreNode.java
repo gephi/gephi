@@ -56,7 +56,8 @@ public class PreNode extends AbstractNode implements AVLItem {
     private MetaEdgeTree metaEdgesOutTree;
     private MetaEdgeTree metaEdgesInTree;
 
-    public PreNode(int pre, int size, int level, PreNode parent) {
+    public PreNode(int ID, int pre, int size, int level, PreNode parent) {
+        super(ID);
         this.pre = pre;
         this.size = size;
         this.level = level;

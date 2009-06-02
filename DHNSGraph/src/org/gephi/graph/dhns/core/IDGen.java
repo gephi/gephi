@@ -18,18 +18,26 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.edge;
 
-import org.gephi.graph.dhns.node.PreNode;
+package org.gephi.graph.dhns.core;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Edges with source equal target.
+ * Generates incremental IDs for node and edges;
  *
  * @author Mathieu Bastian
  */
-public class SelfLoopImpl extends AbstractEdge {
+public class IDGen {
 
-    public SelfLoopImpl(int ID, PreNode node) {
-        super(ID, node, node);
+    private AtomicInteger nodeGen = new AtomicInteger();
+    private AtomicInteger edgeGen = new AtomicInteger();
+
+    public int newNodeId() {
+        return nodeGen.getAndIncrement();
+    }
+
+    public int newEdgeId() {
+        return edgeGen.getAndIncrement();
     }
 }

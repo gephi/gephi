@@ -32,12 +32,11 @@ import org.gephi.graph.api.NodeData;
  */
 public class AbstractNode implements Node, AVLItem {
 
-    private static int IDGen = 0;
     protected final int ID;
     protected NodeDataImpl nodeData;
 
-    public AbstractNode() {
-        ID = IDGen++;
+    public AbstractNode(int ID) {
+        this.ID = ID;
         nodeData = new NodeDataImpl(this);
     }
 

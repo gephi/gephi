@@ -41,13 +41,15 @@ import org.gephi.graph.dhns.node.PreNode;
 public class GraphFactoryImpl implements GraphFactory {
 
     private Dhns dhns;
+    private IDGen idGen;
 
     public GraphFactoryImpl(Dhns dhns) {
         this.dhns = dhns;
+        this.idGen = dhns.getIdGen();
     }
 
     public AbstractNode newNode() {
-        PreNode node = new PreNode(0, 0, 0, null);
+        PreNode node = new PreNode(idGen.newNodeId(),0, 0, 0, null);
         node.setAttributes(dhns.newNodeAttributes());
         return node;
     }
@@ -60,9 +62,9 @@ public class GraphFactoryImpl implements GraphFactory {
         PreNode nodeTarget = (PreNode) target;
         AbstractEdge edge;
         if (source == target) {
-            edge = new SelfLoopImpl(nodeSource);
+            edge = new SelfLoopImpl(idGen.newEdgeId(),nodeSource);
         } else {
-            edge = new EdgeImpl(nodeSource, nodeTarget);
+            edge = new EdgeImpl(idGen.newEdgeId(),nodeSource, nodeTarget);
         }
         edge.setAttributes(dhns.newEdgeAttributes());
         return edge;
@@ -76,9 +78,9 @@ public class GraphFactoryImpl implements GraphFactory {
         PreNode nodeTarget = (PreNode) target;
         AbstractEdge edge;
         if (source == target) {
-            edge = new SelfLoopImpl(nodeSource);
+            edge = new SelfLoopImpl(idGen.newEdgeId(),nodeSource);
         } else {
-            edge = new SparseEdgeImpl(nodeSource, nodeTarget, directed);
+            edge = new SparseEdgeImpl(idGen.newEdgeId(),nodeSource, nodeTarget, directed);
         }
         if (weight != 0) {
             edge.setWeight(weight);

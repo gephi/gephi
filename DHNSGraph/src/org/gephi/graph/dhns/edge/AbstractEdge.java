@@ -33,7 +33,6 @@ import org.gephi.graph.api.Edge;
  */
 public abstract class AbstractEdge implements Edge, AVLItem {
 
-    private static int IDGen = 0;
     protected final int ID;
     protected final PreNode source;
     protected final PreNode target;
@@ -41,10 +40,10 @@ public abstract class AbstractEdge implements Edge, AVLItem {
     protected boolean visible = true;
     protected EdgeDataImpl edgeData;
 
-    public AbstractEdge(PreNode source, PreNode target) {
+    public AbstractEdge(int ID, PreNode source, PreNode target) {
         this.source = source;
         this.target = target;
-        this.ID = IDGen++;
+        this.ID = ID;
         this.edgeData = new EdgeDataImpl(this);
     }
 

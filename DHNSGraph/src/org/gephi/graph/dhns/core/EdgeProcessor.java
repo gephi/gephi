@@ -36,9 +36,11 @@ public class EdgeProcessor {
 
     private TreeStructure treeStructure;
     private ParamAVLIterator<AbstractEdge> edgeIterator;
+    private IDGen idGen;
 
     public EdgeProcessor(Dhns dhns) {
         this.treeStructure = dhns.getTreeStructure();
+        this.idGen = dhns.getIdGen();
     }
 
     public void clearEdges(PreNode node) {
@@ -136,7 +138,7 @@ public class EdgeProcessor {
     }
 
     public void createMetaEdge(PreNode source, PreNode target) {
-        MetaEdgeImpl newEdge = new MetaEdgeImpl(source, target);
+        MetaEdgeImpl newEdge = new MetaEdgeImpl(idGen.newEdgeId(),source, target);
         source.getMetaEdgesOutTree().add(newEdge);
         target.getMetaEdgesInTree().add(newEdge);
     }

@@ -22,12 +22,14 @@ package org.gephi.graph.dhns.core;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.EdgeImpl;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantAndSelfIterator;
+import org.openide.util.Exceptions;
 
 /**
  * Business class for external operations on the data structure. Propose blocking mechanism.
@@ -52,12 +54,13 @@ public class StructureModifier {
     }
 
     public void expand(final Node node) {
-        executor.execute(new Runnable() {
-
-            public void run() {
-                expandBlock(node);
-            }
-        });
+        expandBlock(node);
+//        executor.execute(new Runnable() {
+//
+//            public void run() {
+//                expandBlock(node);
+//            }
+//        });
     }
 
     public void expandBlock(Node node) {
@@ -72,12 +75,13 @@ public class StructureModifier {
     }
 
     public void retract(final Node node) {
-        executor.execute(new Runnable() {
-
-            public void run() {
-                retractBlock(node);
-            }
-        });
+        retractBlock(node);
+//        executor.execute(new Runnable() {
+//
+//            public void run() {
+//                retractBlock(node);
+//            }
+//        });
     }
 
     public void retractBlock(Node node) {
@@ -92,12 +96,13 @@ public class StructureModifier {
     }
 
     public void addNode(final Node node, final Node parent) {
-        executor.execute(new Runnable() {
-
-            public void run() {
-                addNodeBlock(node, parent);
-            }
-        });
+        addNodeBlock(node, parent);
+//        executor.execute(new Runnable() {
+//
+//            public void run() {
+//                addNodeBlock(node, parent);
+//            }
+//        });
     }
 
     public void addNodeBlock(Node node, Node parent) {
@@ -118,12 +123,13 @@ public class StructureModifier {
     }
 
     public void deleteNode(final Node node) {
-        executor.execute(new Runnable() {
-
-            public void run() {
-                deleteNodeBlock(node);
-            }
-        });
+        deleteNodeBlock(node);
+//        executor.execute(new Runnable() {
+//
+//            public void run() {
+//                deleteNodeBlock(node);
+//            }
+//        });
     }
 
     public void deleteNodeBlock(Node node) {
@@ -136,12 +142,13 @@ public class StructureModifier {
     }
 
     public void addEdge(final Edge edge) {
-        executor.execute(new Runnable() {
-
-            public void run() {
-                addEdgeBlock(edge);
-            }
-        });
+        addEdgeBlock(edge);
+//        executor.execute(new Runnable() {
+//
+//            public void run() {
+//                addEdgeBlock(edge);
+//            }
+//        });
     }
 
     public void addEdgeBlock(Edge edge) {
@@ -155,12 +162,13 @@ public class StructureModifier {
     }
 
     public void deleteEdge(final Edge edge) {
-        executor.execute(new Runnable() {
-
-            public void run() {
-                deleteEdgeBlock(edge);
-            }
-        });
+        deleteEdgeBlock(edge);
+//        executor.execute(new Runnable() {
+//
+//            public void run() {
+//                deleteEdgeBlock(edge);
+//            }
+//        });
     }
 
     public void deleteEdgeBlock(Edge edge) {
@@ -173,12 +181,13 @@ public class StructureModifier {
     }
 
     public void clear() {
-        executor.execute(new Runnable() {
-
-            public void run() {
-                clearBlock();
-            }
-        });
+        clearBlock();
+//        executor.execute(new Runnable() {
+//
+//            public void run() {
+//                clearBlock();
+//            }
+//        });
     }
 
     public void clearBlock() {
@@ -190,12 +199,13 @@ public class StructureModifier {
     }
 
     public void clearEdges() {
-        executor.execute(new Runnable() {
-
-            public void run() {
-                clearEdgesBlock();
-            }
-        });
+        clearEdgesBlock();
+//        executor.execute(new Runnable() {
+//
+//            public void run() {
+//                clearEdgesBlock();
+//            }
+//        });
     }
 
     public void clearEdgesBlock() {
@@ -206,12 +216,13 @@ public class StructureModifier {
     }
 
     public void clearEdges(final Node node) {
-        executor.execute(new Runnable() {
-
-            public void run() {
-                clearEdgesBlock(node);
-            }
-        });
+        clearEdgesBlock(node);
+//        executor.execute(new Runnable() {
+//
+//            public void run() {
+//                clearEdgesBlock(node);
+//            }
+//        });
     }
 
     public void clearEdgesBlock(Node node) {
@@ -222,12 +233,13 @@ public class StructureModifier {
     }
 
     public void clearMetaEdges(final Node node) {
-        executor.execute(new Runnable() {
-
-            public void run() {
-                clearMetaEdgesBlock(node);
-            }
-        });
+        clearMetaEdgesBlock(node);
+//        executor.execute(new Runnable() {
+//
+//            public void run() {
+//                clearMetaEdgesBlock(node);
+//            }
+//        });
     }
 
     public void clearMetaEdgesBlock(Node node) {

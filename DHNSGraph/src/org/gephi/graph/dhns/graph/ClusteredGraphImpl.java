@@ -112,7 +112,7 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
                 }
             }
         } else {
-            count = dhns.getTreeStructure().getTreeSize();
+            count = dhns.getTreeStructure().getTreeSize() - 1;// -1 Exclude virtual root
         }
         readUnlock();
         return count;

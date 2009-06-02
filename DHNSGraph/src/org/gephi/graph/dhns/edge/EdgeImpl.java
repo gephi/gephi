@@ -29,7 +29,7 @@ import org.gephi.graph.dhns.node.PreNode;
  */
 public class EdgeImpl extends AbstractEdge {
 
-    public EdgeImpl(PreNode source, PreNode target) {
-        super(source, target);
+    public EdgeImpl(int ID, PreNode source, PreNode target) {
+        super(ID, source, target);
     }
 }

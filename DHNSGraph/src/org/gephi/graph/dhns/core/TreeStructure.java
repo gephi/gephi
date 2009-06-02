@@ -40,7 +40,7 @@ public class TreeStructure {
 
     public TreeStructure(int treeCapacity) {
         tree = new DurableTreeList();
-        root = new PreNode(0, 0, 0, null);
+        root = new PreNode(-1,0, 0, 0, null);
         root.setEnabled(false);
         tree.add(root);
     }

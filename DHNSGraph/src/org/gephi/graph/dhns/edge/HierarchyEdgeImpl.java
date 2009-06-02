@@ -29,7 +29,7 @@ import org.gephi.graph.dhns.node.PreNode;
  */
 public class HierarchyEdgeImpl extends AbstractEdge {
 
-    public HierarchyEdgeImpl(PreNode node) {
-        super(node, node.parent);
+    public HierarchyEdgeImpl(int ID, PreNode node) {
+        super(ID, node, node.parent);
     }
 }

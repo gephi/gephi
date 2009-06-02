@@ -32,8 +32,8 @@ public class SparseEdgeImpl extends AbstractEdge {
 
     protected boolean directed;
 
-    public SparseEdgeImpl(PreNode source, PreNode target, boolean directed) {
-        super(source, target);
+    public SparseEdgeImpl(int ID, PreNode source, PreNode target, boolean directed) {
+        super(ID, source, target);
         this.directed = directed;
     }
 

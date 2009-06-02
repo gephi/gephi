@@ -42,10 +42,12 @@ import org.openide.util.Lookup;
  */
 public class Dhns {
 
+    //Core
     private TreeStructure treeStructure;
     private StructureModifier structureModifier;
     private GraphVersion graphVersion;
     private GraphFactoryImpl graphFactory;
+    private IDGen idGen;
 
     //Locking
     private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
@@ -53,13 +55,16 @@ public class Dhns {
     private AttributeRowFactory attributesFactory;
 
     public Dhns() {
+        idGen = new IDGen();
         treeStructure = new TreeStructure();
         graphVersion = new GraphVersion();
         structureModifier = new StructureModifier(this);
         graphFactory = new GraphFactoryImpl(this);
         init();
 
-        attributesFactory = Lookup.getDefault().lookup(AttributeController.class).rowFactory();
+        if(Lookup.getDefault().lookup(AttributeController.class)!=null) {
+            attributesFactory = Lookup.getDefault().lookup(AttributeController.class).rowFactory();
+        }
     }
 
     public void init() {
@@ -102,6 +107,10 @@ public class Dhns {
 
     public GraphFactoryImpl getGraphFactory() {
         return graphFactory;
+    }
+
+    public IDGen getIdGen() {
+        return idGen;
     }
 
     public NodeIterable newNodeIterable(Iterator<Node> iterator) {
