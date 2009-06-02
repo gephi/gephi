@@ -91,6 +91,10 @@ public abstract class AbstractEdge implements Edge, AVLItem {
         return true;
     }
 
+    public boolean isSelfLoop() {
+        return source==target;
+    }
+
     public boolean hasAttributes() {
         return edgeData.getAttributes() == null;
     }

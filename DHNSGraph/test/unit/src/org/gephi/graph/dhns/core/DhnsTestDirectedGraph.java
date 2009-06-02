@@ -4,7 +4,10 @@
  */
 package org.gephi.graph.dhns.core;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
 import org.gephi.graph.dhns.node.PreNode;
 import org.junit.After;
@@ -22,6 +25,7 @@ public class DhnsTestDirectedGraph {
 
     private Dhns dhnsGlobal;
     private ClusteredDirectedGraphImpl graphGlobal;
+    private Map<String, Node> nodeMap;
 
     public DhnsTestDirectedGraph() {
     }
@@ -38,10 +42,42 @@ public class DhnsTestDirectedGraph {
     public void setUp() {
         dhnsGlobal = new Dhns();
         graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, false);
+        nodeMap = new HashMap<String, Node>();
+
+        TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
+        GraphFactoryImpl factory = dhnsGlobal.getGraphFactory();
+
+        //Nodes
+        //System.out.println("-----Global-----");
+        for (int i = 0; i < 10; i++) {
+            Node node = factory.newNode();
+            node.getNodeData().setLabel("Node " + i);
+            graphGlobal.addNode(node);
+            nodeMap.put(node.getNodeData().getLabel(), node);
+            //System.out.println("Node " + i + " added. Id = " + node.getId());
+        }
+        //System.out.println("---End Global---");
+
+        //Alone node
+        Node fakeNode1 = factory.newNode();
+        Node fakeNode2 = factory.newNode();
+        nodeMap.put("Fake Node 1", fakeNode1);
+        nodeMap.put("Fake Node 2", fakeNode2);
+
+        //Edges
+        Node node1 = nodeMap.get("Node 1");
+        Node node2 = nodeMap.get("Node 2");
+        Node node3 = nodeMap.get("Node 3");
+        Node node4 = nodeMap.get("Node 4");
+
+        //graphGlobal.addEdge(node1, node4);
     }
 
     @After
     public void tearDown() {
+        nodeMap.clear();
+        dhnsGlobal = null;
+        graphGlobal = null;
     }
 
     @Test
@@ -171,7 +207,111 @@ public class DhnsTestDirectedGraph {
         System.out.println();
         //End Test3
 
+        assertFalse(graph.contains(first));
+        assertFalse(graph.contains(middle));
+        assertFalse(graph.contains(end));
+
+        PreNode preNode = (PreNode)first;
+        assertNull(preNode.avlNode);
+        assertNull(preNode.parent);
+
         //Test
         assertEquals("tree size", 8, treeStructure.getTreeSize());
     }
+
+    @Test
+    public void testContainsNode() {
+
+        Node node = nodeMap.get("Node 1");
+        boolean contains = graphGlobal.contains(node);
+
+        //Test
+        assertTrue("contains node", contains);
+        assertFalse("not contains node",graphGlobal.contains(nodeMap.get("Fake Node 1")));
+    }
+
+    @Test
+    public void testClearNodes()  {
+
+        TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
+        graphGlobal.clear();
+
+        //Test
+        assertEquals("clear nodes", 1, treeStructure.getTreeSize());
+        assertEquals("clear nodes", 0, graphGlobal.getNodeCount());
+        assertEquals("clear nodes", treeStructure.getRoot(), treeStructure.getNodeAt(0));
+
+        assertFalse("not contains anymore", graphGlobal.contains(nodeMap.get("Node 1")));
+
+        PreNode preNode = (PreNode)nodeMap.get("Node 2");
+        assertNull("clean clear", preNode.avlNode);
+        assertNull("clean clear", preNode.parent);
+    }
+
+    @Test
+    public void testAddEdge() {
+        Node node1 = nodeMap.get("Node 1");
+        Node node2 = nodeMap.get("Node 2");
+        Node node3 = nodeMap.get("Node 3");
+
+        //Test normal edge
+        graphGlobal.addEdge(node1, node2);
+        PreNode preNode1 = (PreNode)node1;
+        PreNode preNode2 = (PreNode)node2;
+
+        AbstractEdge edge = preNode1.getEdgesOutTree().getItem(preNode2.getNumber());
+        assertNotNull("find OUT edge",edge);
+        assertTrue("contains OUT edge",preNode1.getEdgesOutTree().contains(edge));
+
+        AbstractEdge edge2 = preNode2.getEdgesInTree().getItem(preNode1.getNumber());
+        assertNotNull("find IN edge",edge);
+        assertTrue("contains IN edge",preNode2.getEdgesInTree().contains(edge2));
+
+        assertSame("edges equal", edge, edge2);
+
+        assertEquals("edges count", 1, graphGlobal.getEdgeCount());
+
+        //Test factoryedge
+        graphGlobal.addEdge(edge);
+        assertEquals("edges count", 1, graphGlobal.getEdgeCount());
+
+        //Test self loop
+        graphGlobal.addEdge(node3, node3);
+
+        PreNode preNode3 = (PreNode)node3;
+
+        AbstractEdge edge3 = preNode3.getEdgesOutTree().getItem(preNode3.getNumber());
+        assertNotNull("find OUT edge",edge);
+        assertTrue("contains OUT edge",preNode3.getEdgesOutTree().contains(edge3));
+
+        AbstractEdge edge4 = preNode3.getEdgesInTree().getItem(preNode3.getNumber());
+        assertNotNull("find IN edge",edge);
+        assertTrue("contains IN edge",preNode3.getEdgesInTree().contains(edge3));
+
+        assertSame("edges equal", edge3, edge4);
+
+        assertTrue("is self loop",edge3.isSelfLoop());
+    }
+
+    @Test
+    public void testRemoveEdge() {
+        GraphFactoryImpl factory = dhnsGlobal.getGraphFactory();
+        PreNode node3 = (PreNode)nodeMap.get("Node 3");
+        PreNode node4 = (PreNode)nodeMap.get("Node 4");
+        AbstractEdge edge = factory.newEdge(node3, node4);
+
+        graphGlobal.addEdge(edge);
+
+        graphGlobal.removeEdge(edge);
+        AbstractEdge edge3 = node3.getEdgesOutTree().getItem(node4.getNumber());
+        assertNull("OUT null",edge3);
+        assertFalse("contains OUT edge",node3.getEdgesOutTree().contains(edge));
+
+        AbstractEdge edge4 = node4.getEdgesInTree().getItem(node3.getNumber());
+        assertNull("IN null",edge4);
+        assertFalse("contains IN edge",node3.getEdgesInTree().contains(edge));
+
+        assertFalse(graphGlobal.contains(edge));
+    }
+    
 }

@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.core;
 
 import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 
 /**
  * Holds nodes tree and manage basic operations.
@@ -40,6 +41,10 @@ public class TreeStructure {
 
     public TreeStructure(int treeCapacity) {
         tree = new DurableTreeList();
+        initRoot();
+    }
+
+    private void initRoot() {
         root = new PreNode(-1,0, 0, 0, null);
         root.setEnabled(false);
         tree.add(root);
@@ -140,9 +145,16 @@ public class TreeStructure {
 
     public void clear()
     {
+        //Clean nodes
+        for(TreeListIterator itr=new TreeListIterator(tree);itr.hasNext();)  {
+            PreNode preNode = itr.next();
+            preNode.avlNode = null;
+            preNode.parent = null;
+        }
         tree.clear();
         root=null;
         treeHeight=0;
+        initRoot();
     }
 
     public int getTreeSize() {

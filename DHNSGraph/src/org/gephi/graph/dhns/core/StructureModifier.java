@@ -22,14 +22,12 @@ package org.gephi.graph.dhns.core;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.dhns.edge.EdgeImpl;
+import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantAndSelfIterator;
-import org.openide.util.Exceptions;
 
 /**
  * Business class for external operations on the data structure. Propose blocking mechanism.
@@ -153,9 +151,9 @@ public class StructureModifier {
 
     public void addEdgeBlock(Edge edge) {
         dhns.getWriteLock().lock();
-        EdgeImpl edgeImpl = (EdgeImpl) edge;
+        AbstractEdge abstractEdge = (AbstractEdge) edge;
 
-        addEdge(edgeImpl);
+        addEdge(abstractEdge);
         //dhns.getDictionary().addEdge(preEdge);     //Dico
         graphVersion.incEdgeVersion();
         dhns.getWriteLock().unlock();
@@ -173,7 +171,7 @@ public class StructureModifier {
 
     public void deleteEdgeBlock(Edge edge) {
         dhns.getWriteLock().lock();
-        EdgeImpl edgeImpl = (EdgeImpl) edge;
+        AbstractEdge edgeImpl = (AbstractEdge) edge;
         //dhns.getDictionary().removeEdge(edge);
         delEdge(edgeImpl);
         graphVersion.incEdgeVersion();
@@ -282,7 +280,7 @@ public class StructureModifier {
         treeStructure.insertAsChild(node, node.parent);
     }
 
-    private void addEdge(EdgeImpl edge) {
+    private void addEdge(AbstractEdge edge) {
         PreNode sourceNode = edge.getSource();
         PreNode targetNode = edge.getTarget();
 
@@ -291,7 +289,9 @@ public class StructureModifier {
         targetNode.getEdgesInTree().add(edge);
 
         //Add Meta Edge
-        edgeProcessor.createMetaEdge(edge);
+        if (!edge.isSelfLoop()) {
+            edgeProcessor.createMetaEdge(edge);
+        }
     }
 
     private void deleteNode(PreNode node) {
@@ -307,7 +307,7 @@ public class StructureModifier {
         treeStructure.deleteDescendantAndSelf(node);
     }
 
-    private void delEdge(EdgeImpl edge) {
+    private void delEdge(AbstractEdge edge) {
         //Remove edge
         edge.getSource().getEdgesOutTree().remove(edge);
         edge.getTarget().getEdgesInTree().remove(edge);

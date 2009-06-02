@@ -22,24 +22,24 @@ package org.gephi.graph.dhns.node.utils.avl;
 
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
-import org.gephi.graph.dhns.edge.EdgeImpl;
+import org.gephi.graph.dhns.edge.AbstractEdge;
 
 /**
  * Simple AVL Tree for storing EdgeImpl isntances. Based on edges ID.
  *
  * @author Mathieu Bastian
  */
-public class EdgeTree extends ParamAVLTree<EdgeImpl> {
+public class EdgeTree extends ParamAVLTree<AbstractEdge> {
 
     public EdgeTree() {
         super();
         setAccessor(new EdgeImplAVLItemAccessor());
     }
 
-    private class EdgeImplAVLItemAccessor implements AVLItemAccessor<EdgeImpl> {
+    private class EdgeImplAVLItemAccessor implements AVLItemAccessor<AbstractEdge> {
 
         @Override
-        public int getNumber(EdgeImpl item) {
+        public int getNumber(AbstractEdge item) {
             return item.getNumber();
         }
     }

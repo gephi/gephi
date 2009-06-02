@@ -39,12 +39,12 @@ public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
         this.edges = new EdgeTree();
     }
 
-    public void addEdge(EdgeImpl edge) {
+    public void addEdge(AbstractEdge edge) {
         edges.add(edge);
         weight += edge.getWeight();
     }
 
-    public void removeEdge(EdgeImpl edge) {
+    public void removeEdge(AbstractEdge edge) {
         edges.remove(edge);
         weight -= edge.getWeight();
     }

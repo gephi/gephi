@@ -124,7 +124,7 @@ public class EdgeProcessor {
         }
     }
 
-    public void createMetaEdge(PreNode source, PreNode target, EdgeImpl edge) {
+    public void createMetaEdge(PreNode source, PreNode target, AbstractEdge edge) {
         if (edge.getSource() == source && edge.getTarget() == target) {
             return;
         }
@@ -143,7 +143,7 @@ public class EdgeProcessor {
         target.getMetaEdgesInTree().add(newEdge);
     }
 
-    public void createMetaEdge(EdgeImpl edge) {
+    public void createMetaEdge(AbstractEdge edge) {
         PreNode sourceParent = treeStructure.getEnabledAncestorOrSelf(edge.getSource());
         PreNode targetParent = treeStructure.getEnabledAncestorOrSelf(edge.getTarget());
 
@@ -152,7 +152,7 @@ public class EdgeProcessor {
         }
     }
 
-    public void removeEdgeFromMetaEdge(EdgeImpl edge) {
+    public void removeEdgeFromMetaEdge(AbstractEdge edge) {
         MetaEdgeImpl metaEdge = getMetaEdge(edge);
         if (metaEdge != null) {
             metaEdge.removeEdge(edge);
@@ -167,7 +167,7 @@ public class EdgeProcessor {
         return source.getMetaEdgesOutTree().getItem(target.getNumber());
     }
 
-    public MetaEdgeImpl getMetaEdge(EdgeImpl edge) {
+    public MetaEdgeImpl getMetaEdge(AbstractEdge edge) {
         PreNode sourceParent = treeStructure.getEnabledAncestorOrSelf(edge.getSource());
         PreNode targetParent = treeStructure.getEnabledAncestorOrSelf(edge.getTarget());
 
