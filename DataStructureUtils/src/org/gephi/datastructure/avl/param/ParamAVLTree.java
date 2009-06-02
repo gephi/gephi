@@ -609,6 +609,10 @@ public class ParamAVLTree<Item> implements Iterable<Item> {
         return count;
     }
 
+    public boolean isEmpty() {
+        return count==0;
+    }
+
     public AVLItemAccessor<Item> getAccessor() {
         return accessor;
     }

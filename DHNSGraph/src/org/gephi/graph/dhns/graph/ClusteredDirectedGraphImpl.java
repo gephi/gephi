@@ -29,12 +29,16 @@ import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.EdgeImpl;
-import org.gephi.graph.dhns.edge.SelfLoopImpl;
+import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
+import org.gephi.graph.dhns.edge.iterators.MetaEdgeIterator;
+import org.gephi.graph.dhns.edge.iterators.MetaEdgeNodeIterator;
 import org.gephi.graph.dhns.edge.iterators.RangeEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.VisibleEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.VisibleEdgeNodeIterator;
+import org.gephi.graph.dhns.edge.iterators.VisibleMetaEdgeIterator;
+import org.gephi.graph.dhns.edge.iterators.VisibleMetaEdgeNodeIterator;
 import org.gephi.graph.dhns.edge.iterators.VisibleRangeEdgeIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
@@ -130,7 +134,7 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         readLock();
         PreNode preNode = (PreNode) node;
         int count = 0;
-        if (visible) {
+        if (visible && !preNode.getEdgesInTree().isEmpty()) {
             for (Iterator<EdgeImpl> itr = preNode.getEdgesInTree().iterator(); itr.hasNext();) {
                 if (itr.next().isVisible()) {
                     count++;
@@ -150,14 +154,14 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         readLock();
         PreNode preNode = (PreNode) node;
         int count = 0;
-        if (visible) {
+        if (visible && !preNode.getEdgesInTree().isEmpty()) {
             for (Iterator<EdgeImpl> itr = preNode.getEdgesOutTree().iterator(); itr.hasNext();) {
                 if (itr.next().isVisible()) {
                     count++;
                 }
             }
         } else {
-            count = preNode.getEdgesInTree().getCount();
+            count = preNode.getEdgesOutTree().getCount();
         }
         readUnlock();
         return count;
@@ -480,10 +484,6 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         }
     }
 
-    public EdgeIterable getMetaEdges() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public NodeIterable getTopNodes() {
         readLock();
         if (visible) {
@@ -579,16 +579,96 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public EdgeIterable getMetaEdges() {
+        readLock();
+        if (visible) {
+            return dhns.newEdgeIterable(new VisibleMetaEdgeIterator(dhns.getTreeStructure(), new VisibleTreeIterator(dhns.getTreeStructure())));
+        } else {
+            return dhns.newEdgeIterable(new MetaEdgeIterator(dhns.getTreeStructure(), new CompleteTreeIterator(dhns.getTreeStructure())));
+        }
+    }
+
+    public EdgeIterable getMetaEdges(Node node) {
+        if (node == null) {
+            throw new NullPointerException();
+        }
+        readLock();
+        PreNode preNode = (PreNode) node;
+        if (visible) {
+            return dhns.newEdgeIterable(new VisibleMetaEdgeNodeIterator(preNode, VisibleMetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH));
+        } else {
+            return dhns.newEdgeIterable(new MetaEdgeNodeIterator(preNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH));
+        }
+    }
+
+    public EdgeIterable getMetaInEdges(Node node) {
+        if (node == null) {
+            throw new NullPointerException();
+        }
+        readLock();
+        PreNode preNode = (PreNode) node;
+        if (visible) {
+            return dhns.newEdgeIterable(new VisibleMetaEdgeNodeIterator(preNode, VisibleMetaEdgeNodeIterator.EdgeNodeIteratorMode.IN));
+        } else {
+            return dhns.newEdgeIterable(new MetaEdgeNodeIterator(preNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.IN));
+        }
+    }
+
+    public EdgeIterable getMetaOutEdges(Node node) {
+        if (node == null) {
+            throw new NullPointerException();
+        }
+        readLock();
+        PreNode preNode = (PreNode) node;
+        if (visible) {
+            return dhns.newEdgeIterable(new VisibleMetaEdgeNodeIterator(preNode, VisibleMetaEdgeNodeIterator.EdgeNodeIteratorMode.OUT));
+        } else {
+            return dhns.newEdgeIterable(new MetaEdgeNodeIterator(preNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.OUT));
+        }
+    }
+
     public int getMetaInDegree(Node node) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (node == null) {
+            throw new NullPointerException();
+        }
+        readLock();
+        PreNode preNode = (PreNode) node;
+        int count = 0;
+        if (visible && !preNode.getMetaEdgesOutTree().isEmpty()) {
+            for (Iterator<MetaEdgeImpl> itr = preNode.getMetaEdgesOutTree().iterator(); itr.hasNext();) {
+                if (itr.next().isVisible()) {
+                    count++;
+                }
+            }
+        } else {
+            count = preNode.getMetaEdgesOutTree().getCount();
+        }
+        readUnlock();
+        return count;
     }
 
     public int getMetaOutDegree(Node node) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (node == null) {
+            throw new NullPointerException();
+        }
+        readLock();
+        PreNode preNode = (PreNode) node;
+        int count = 0;
+        if (visible && !preNode.getMetaEdgesOutTree().isEmpty()) {
+            for (Iterator<MetaEdgeImpl> itr = preNode.getMetaEdgesOutTree().iterator(); itr.hasNext();) {
+                if (itr.next().isVisible()) {
+                    count++;
+                }
+            }
+        } else {
+            count = preNode.getMetaEdgesOutTree().getCount();
+        }
+        readUnlock();
+        return count;
     }
 
     public int getMetaDegree(Node node) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return getMetaInDegree(node) + getMetaOutDegree(node);
     }
 
     public void readLock() {

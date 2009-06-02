@@ -27,6 +27,10 @@ package org.gephi.graph.api;
  */
 public interface ClusteredDirectedGraph extends DirectedGraph, ClusteredGraph {
 
+    public EdgeIterable getMetaInEdges(Node node);
+
+    public EdgeIterable getMetaOutEdges(Node node);
+
     public int getMetaInDegree(Node node);
 
     public int getMetaOutDegree(Node node);

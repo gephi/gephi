@@ -52,7 +52,7 @@ public class VisibleEdgeIterator extends AbstractEdgeIterator implements Iterato
             while (!edgeIterator.hasNext()) {
                 if (nodeIterator.hasNext()) {
                     currentNode = nodeIterator.next();
-                    if (currentNode.getEdgesOutTree().getCount() > 0) {
+                    if (!currentNode.getEdgesOutTree().isEmpty()) {
                         edgeIterator.setNode(currentNode.getEdgesOutTree());
                     }
                 } else {

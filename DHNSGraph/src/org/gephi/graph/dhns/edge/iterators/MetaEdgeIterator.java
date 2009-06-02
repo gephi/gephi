@@ -24,32 +24,36 @@ import java.util.Iterator;
 import org.gephi.graph.dhns.edge.EdgeImpl;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.node.PreNode;
-import org.gephi.graph.dhns.node.iterators.CompleteTreeIterator;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.dhns.edge.MetaEdgeImpl;
+import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 
 /**
  * Meta Edge Iterator for edges in the activates view.
  * 
  * @author Mathieu Bastian
  */
-public class MetaEdgeIterator implements Iterator<EdgeImpl> {
+public class MetaEdgeIterator extends AbstractEdgeIterator implements Iterator<Edge> {
 
-    protected CompleteTreeIterator treeIterator;
-    protected ParamAVLIterator<EdgeImpl> edgeIterator;
+    protected AbstractNodeIterator nodeIterator;
+    protected ParamAVLIterator<MetaEdgeImpl> edgeIterator;
     protected PreNode currentNode;
-    protected EdgeImpl pointer;
+    protected MetaEdgeImpl pointer;
 
-    public MetaEdgeIterator(TreeStructure treeStructure) {
-        treeIterator = new CompleteTreeIterator(treeStructure);
-        edgeIterator = new ParamAVLIterator<EdgeImpl>();
+    public MetaEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator) {
+        this.nodeIterator = nodeIterator;
+        edgeIterator = new ParamAVLIterator<MetaEdgeImpl>();
     }
 
     @Override
     public boolean hasNext() {
         while (!edgeIterator.hasNext()) {
-            if (treeIterator.hasNext()) {
-                currentNode = treeIterator.next();
-                edgeIterator.setNode(currentNode.getMetaEdgesOutTree());
+            if (nodeIterator.hasNext()) {
+                currentNode = nodeIterator.next();
+                if (!currentNode.getMetaEdgesOutTree().isEmpty()) {
+                    edgeIterator.setNode(currentNode.getMetaEdgesOutTree());
+                }
             } else {
                 return false;
             }
@@ -60,7 +64,7 @@ public class MetaEdgeIterator implements Iterator<EdgeImpl> {
     }
 
     @Override
-    public EdgeImpl next() {
+    public MetaEdgeImpl next() {
         return pointer;
     }
 

@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.graph.dhns.edge.iterators;
 
 import java.util.Iterator;
@@ -30,42 +29,47 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 
 /**
- * Iterator for main edges for the whole graph. The node iterator is given to the constructor.
+ * Iterator for meta edges for the visible graph.
  *
  * @author Mathieu Bastian
+ * @see EdgeIterator
  */
-public class EdgeIterator extends AbstractEdgeIterator implements Iterator<Edge> {
+public class VisibleMetaEdgeIterator extends AbstractEdgeIterator implements Iterator<Edge> {
 
     protected AbstractNodeIterator nodeIterator;
     protected ParamAVLIterator<EdgeImpl> edgeIterator;
     protected PreNode currentNode;
     protected EdgeImpl pointer;
 
-    public EdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator) {
+    public VisibleMetaEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator) {
         this.nodeIterator = nodeIterator;
         edgeIterator = new ParamAVLIterator<EdgeImpl>();
     }
 
     @Override
     public boolean hasNext() {
-        while (!edgeIterator.hasNext()) {
-            if (nodeIterator.hasNext()) {
-                currentNode = nodeIterator.next();
-                if(!currentNode.getEdgesOutTree().isEmpty()) {
-                    edgeIterator.setNode(currentNode.getEdgesOutTree());
+        while (pointer == null || !pointer.isVisible()) {
+            while (!edgeIterator.hasNext()) {
+                if (nodeIterator.hasNext()) {
+                    currentNode = nodeIterator.next();
+                    if (!currentNode.getEdgesOutTree().isEmpty()) {
+                        edgeIterator.setNode(currentNode.getMetaEdgesOutTree());
+                    }
+                } else {
+                    return false;
                 }
-            } else {
-                return false;
             }
-        }
 
-        pointer = edgeIterator.next();
+            pointer = edgeIterator.next();
+        }
         return true;
     }
 
     @Override
     public EdgeImpl next() {
-        return pointer;
+        EdgeImpl e = pointer;
+        pointer = null;
+        return e;
     }
 
     @Override
