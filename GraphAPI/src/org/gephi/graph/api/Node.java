@@ -26,6 +26,8 @@ package org.gephi.graph.api;
  */
 public interface Node {
 
+    public int getId();
+
     public NodeData getNodeData();
     
 }

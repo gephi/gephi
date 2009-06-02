@@ -58,4 +58,8 @@ public class AbstractNode implements Node, AVLItem {
             nodeData.setAttributes(attributes);
         }
     }
+
+    public int getId() {
+        return ID;
+    }
 }

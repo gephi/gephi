@@ -31,6 +31,10 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeRowFactory;
+import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -108,71 +112,38 @@ public class DesktopImportController implements ImportController {
         Graph graph = graphController.getDirectedGraph();
         GraphFactory factory = graphController.factory();
 
-         for (NodeDraft node : container.getNodes()) {
+        for (NodeDraft node : container.getNodes()) {
             Node n = factory.newNode();
 
-            NodeDraftImpl im = (NodeDraftImpl)node;
+            NodeDraftImpl im = (NodeDraftImpl) node;
             im.flushToNode(n);
 
             graph.addNode(n);
         }
 
         for (EdgeDraft edge : container.getEdges()) {
-            Node nodeSource = ((EdgeDraftImpl)edge).getNodeSource().getNode();
-            Node nodeTarget = ((EdgeDraftImpl)edge).getNodeTarget().getNode();
+            Node nodeSource = ((EdgeDraftImpl) edge).getNodeSource().getNode();
+            Node nodeTarget = ((EdgeDraftImpl) edge).getNodeTarget().getNode();
 
             Edge e = factory.newEdge(nodeSource, nodeTarget);
 
             graph.addEdge(e);
         }
 
-        /*DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-        dynamicController.appendData(container);*/
-        /*DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-        FlatImporter flatImporter = dhnsController.getFlatImporter();
-
-        flatImporter.initImport();
-
-        //Nodes
-        for (NodeDraft node : container.getNodes()) {
-            Node n = NodeFactory.createNode();
-            
-
-            NodeDraftImpl im = (NodeDraftImpl)node;
-            im.flushToNode(n);
-
-            flatImporter.addNode(n);
-        }
-
-        //Edges
-        for (EdgeDraft edge : container.getEdges()) {
-            Node nodeSource = ((EdgeDraftImpl)edge).getNodeSource().getNode();
-            Node nodeTarget = ((EdgeDraftImpl)edge).getNodeTarget().getNode();
-
-            Edge e = EdgeFactory.createEdge(nodeSource, nodeTarget);
-
-            flatImporter.addEdge(e);
-        }
 
         //Attributes
-         AttributeRowFactory rowFactory = Lookup.getDefault().lookup(AttributeController.class).rowFactory();
-         for (NodeDraft node : container.getNodes()) {
-             NodeDraftImpl impl = (NodeDraftImpl)node;
-             Node n = impl.getNode();
-             AttributeRow row = rowFactory.newNodeRow();
-             for(AttributeValue val : impl.getAttributeValues())
-             {
-                 row.setValue(val.getColumn(), val.getValue());
-             }
-             n.setAttributes(row);
-         }
+        for (NodeDraft node : container.getNodes()) {
+            NodeDraftImpl impl = (NodeDraftImpl) node;
+            Node n = impl.getNode();
 
-        flatImporter.finishImport();*/
-        
-
+            if (n.getNodeData().getAttributes() != null) {
+                AttributeRow row = (AttributeRow) n.getNodeData().getAttributes();
+                for (AttributeValue val : impl.getAttributeValues()) {
+                    row.setValue(val.getColumn(), val.getValue());
+                }
+            }
+        }
     }
-
-
 
     private BufferedReader getTextReader(FileObject fileObject) throws ImportException {
         File file = FileUtil.toFile(fileObject);

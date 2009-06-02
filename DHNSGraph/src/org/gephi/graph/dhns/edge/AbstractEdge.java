@@ -101,4 +101,8 @@ public abstract class AbstractEdge implements Edge, AVLItem {
             edgeData.setAttributes(attributes);
         }
     }
+
+    public int getId() {
+        return ID;
+    }
 }

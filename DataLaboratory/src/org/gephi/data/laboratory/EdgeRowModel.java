@@ -100,7 +100,7 @@ public class EdgeRowModel implements RowModel {
                     return row.getValue(attributeColumn);
                 }
             } else if (propertyColumn == PropertyColumn.ID) {
-                return "";
+                return ""+edge.getId();
             } else if (propertyColumn == PropertyColumn.SOURCE) {
                 return ""+edge.getSource().getNodeData().getId();
             } else if (propertyColumn == PropertyColumn.TARGET) {

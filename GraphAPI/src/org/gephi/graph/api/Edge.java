@@ -26,6 +26,8 @@ package org.gephi.graph.api;
  */
 public interface Edge {
 
+    public int getId();
+
     public Node getSource();
 
     public Node getTarget();
