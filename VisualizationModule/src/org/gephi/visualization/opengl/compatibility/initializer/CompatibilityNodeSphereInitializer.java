@@ -25,6 +25,7 @@ import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JPanel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.api.initializer.CompatibilityNodeInitializer;
 import org.gephi.visualization.initializer.NodeSphereInitializer;
@@ -54,7 +55,7 @@ public class CompatibilityNodeSphereInitializer extends NodeSphereInitializer im
     @Override
     public Object3dImpl initObject(Renderable n) {
         NodeSphereObject obj = new NodeSphereObject();
-        obj.setObj((Node) n);
+        obj.setObj((NodeData) n);
         obj.setSelected(false);
         obj.setDragDistanceFromMouse(new float[2]);
         n.setObject3d(obj);

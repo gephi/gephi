@@ -22,11 +22,14 @@ package org.gephi.layout.forceAtlas;
 
 import javax.swing.Icon;
 import javax.swing.JPanel;
-import org.gephi.data.network.api.LayoutReader;
+import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 import org.gephi.layout.AbstractForceVector;
-import org.gephi.layout.EdgeLayout;
+
 import org.gephi.layout.ForceVectorUtils;
-import org.gephi.layout.NodeLayout;
+import org.gephi.layout.ForceVectorNodeLayoutData;
 import org.gephi.layout.api.LayoutProperty;
 import org.openide.util.NbBundle;
 
@@ -36,6 +39,10 @@ import org.openide.util.NbBundle;
  */
 public class ForceAtlas extends AbstractForceVector {
 
+    //Graph
+    protected DirectedGraph graph;
+
+    //Properties
     public double inertia;
     public double repulsionStrength;
     public double attractionStrength;
@@ -80,31 +87,33 @@ public class ForceAtlas extends AbstractForceVector {
         return true;
     }
 
-    public void initAlgo() {
+    public void initAlgo(DirectedGraph graph) {
+        this.graph = graph;
     }
     
 
-    public void goAlgo(LayoutReader<NodeLayout, EdgeLayout> reader) {
-        for (NodeLayout n : reader.getNodes()) {
-            n.old_dx = n.dx;
-            n.old_dy = n.dy;
-            n.dx *= inertia;
-            n.dy *= inertia;
+    public void goAlgo() {
+        for (Node n : graph.getNodes()) {
+            ForceVectorNodeLayoutData layoutData = n.getNodeData().getLayoutData();
+            layoutData.old_dx = layoutData.dx;
+            layoutData.old_dy = layoutData.dy;
+            layoutData.dx *= inertia;
+            layoutData.dy *= inertia;
         }
         // repulsion
         if (adjustSizes) {
-            for (NodeLayout n1 : reader.getNodes()) {
-                for (NodeLayout n2 : reader.getNodes()) {
+            for (Node n1 : graph.getNodes()) {
+                for (Node n2 : graph.getNodes()) {
                     if (n1 != n2) {
-                        ForceVectorUtils.fcBiRepulsor_noCollide(n1, n2, repulsionStrength * (1 + n1.getNeighboursCount()) * (1 + n2.getNeighboursCount()));
+                        ForceVectorUtils.fcBiRepulsor_noCollide(n1.getNodeData(), n2.getNodeData(), repulsionStrength * (1 + graph.getDegree(n1)) * (1 + graph.getDegree(n2)));
                     }
                 }
             }
         } else {
-            for (NodeLayout n1 : reader.getNodes()) {
-                for (NodeLayout n2 : reader.getNodes()) {
+            for (Node n1 : graph.getNodes()) {
+                for (Node n2 : graph.getNodes()) {
                     if (n1 != n2) {
-                        ForceVectorUtils.fcBiRepulsor(n1, n2, repulsionStrength * (1 + n1.getNeighboursCount()) * (1 + n2.getNeighboursCount()));
+                        ForceVectorUtils.fcBiRepulsor(n1.getNodeData(), n2.getNodeData(), repulsionStrength * (1 + graph.getDegree(n1)) * (1 + graph.getDegree(n2)));
                     }
                 }
             }
@@ -112,77 +121,82 @@ public class ForceAtlas extends AbstractForceVector {
         // attraction
         if (adjustSizes) {
             if (outboundAttractionDistribution) {
-                for (EdgeLayout e : reader.getEdges()) {
-                    NodeLayout nf = e.getSource();
-                    NodeLayout nt = e.getTarget();
-                    double bonus = (nf.fixed || nt.fixed) ? (100) : (1);
-                    ForceVectorUtils.fcBiAttractor_noCollide(nf, nt, bonus * attractionStrength / (1 + nf.getNeighboursCount()));
+                for (Edge e : graph.getEdges()) {
+                    Node nf = e.getSource();
+                    Node nt = e.getTarget();
+                    double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
+                    ForceVectorUtils.fcBiAttractor_noCollide(nf.getNodeData(), nt.getNodeData(), bonus * attractionStrength / (1 + graph.getDegree(nf)));
                 }
             } else {
-                for (EdgeLayout e : reader.getEdges()) {
-                    NodeLayout nf = e.getSource();
-                    NodeLayout nt = e.getTarget();
-                    double bonus = (nf.fixed || nt.fixed) ? (100) : (1);
-                    ForceVectorUtils.fcBiAttractor_noCollide(nf, nt, bonus * attractionStrength);
+                for (Edge e : graph.getEdges()) {
+                    Node nf = e.getSource();
+                    Node nt = e.getTarget();
+                    double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
+                    ForceVectorUtils.fcBiAttractor_noCollide(nf.getNodeData(), nt.getNodeData(), bonus * attractionStrength);
                 }
             }
         } else {
             if (outboundAttractionDistribution) {
-                for (EdgeLayout e : reader.getEdges()) {
-                    NodeLayout nf = e.getSource();
-                    NodeLayout nt = e.getTarget();
-                    double bonus = (nf.fixed || nt.fixed) ? (100) : (1);
-                    ForceVectorUtils.fcBiAttractor(nf, nt, bonus * attractionStrength / (1 + nf.getNeighboursCount()));
+                for (Edge e : graph.getEdges()) {
+                    Node nf = e.getSource();
+                    Node nt = e.getTarget();
+                    double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
+                    ForceVectorUtils.fcBiAttractor(nf.getNodeData(), nt.getNodeData(), bonus * attractionStrength / (1 + graph.getDegree(nf)));
                 }
             } else {
-                for (EdgeLayout e : reader.getEdges()) {
-                    NodeLayout nf = e.getSource();
-                    NodeLayout nt = e.getTarget();
-                    double bonus = (nf.fixed || nt.fixed) ? (100) : (1);
-                    ForceVectorUtils.fcBiAttractor(nf, nt, bonus * attractionStrength);
+                for (Edge e : graph.getEdges()) {
+                    Node nf = e.getSource();
+                    Node nt = e.getTarget();
+                    double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
+                    ForceVectorUtils.fcBiAttractor(nf.getNodeData(), nt.getNodeData(), bonus * attractionStrength);
                 }
             }
         }
         // gravity
-        for (NodeLayout n : reader.getNodes()) {
+        for (Node n : graph.getNodes()) {
 
-            float nx = n.x();
-            float ny = n.y();
+            float nx = n.getNodeData().x();
+            float ny = n.getNodeData().y();
             double d = 0.0001 + Math.sqrt(nx * nx + ny * ny);
             double gf = 0.0001 * gravity * d;
-            n.dx -= gf * nx / d;
-            n.dy -= gf * ny / d;
+            ForceVectorNodeLayoutData layoutData = n.getNodeData().getLayoutData();
+            layoutData.dx -= gf * nx / d;
+            layoutData.dy -= gf * ny / d;
         }
         // speed
         if (freezeBalance) {
-            for (NodeLayout n : reader.getNodes()) {
-                n.dx *= speed * 10f;
-                n.dy *= speed * 10f;
+            for (Node n : graph.getNodes()) {
+                ForceVectorNodeLayoutData layoutData = n.getNodeData().getLayoutData();
+                layoutData.dx *= speed * 10f;
+                layoutData.dy *= speed * 10f;
             }
         } else {
-            for (NodeLayout n : reader.getNodes()) {
-                n.dx *= speed;
-                n.dy *= speed;
+            for (Node n : graph.getNodes()) {
+                ForceVectorNodeLayoutData layoutData = n.getNodeData().getLayoutData();
+                layoutData.dx *= speed;
+                layoutData.dy *= speed;
             }
         }
         // apply forces
-        for (NodeLayout n : reader.getNodes()) {
-            if (!n.fixed) {
-                double d = 0.0001 + Math.sqrt(n.dx * n.dx + n.dy * n.dy);
+        for (Node n : graph.getNodes()) {
+            NodeData nData = n.getNodeData();
+            ForceVectorNodeLayoutData nLayout = nData.getLayoutData();
+            if (!nData.isFixed()) {
+                double d = 0.0001 + Math.sqrt(nLayout.dx * nLayout.dx + nLayout.dy * nLayout.dy);
                 float ratio;
                 if (freezeBalance) {
-                    n.freeze = (float) (freezeInertia * n.freeze + (1 - freezeInertia) * 0.1 * freezeStrength * (Math.sqrt(Math.sqrt((n.old_dx - n.dx) * (n.old_dx - n.dx) + (n.old_dy - n.dy) * (n.old_dy - n.dy)))));
-                    ratio = (float) Math.min((d / (d * (1f + n.freeze))), maxDisplacement / d);
+                    nLayout.freeze = (float) (freezeInertia * nLayout.freeze + (1 - freezeInertia) * 0.1 * freezeStrength * (Math.sqrt(Math.sqrt((nLayout.old_dx - nLayout.dx) * (nLayout.old_dx - nLayout.dx) + (nLayout.old_dy - nLayout.dy) * (nLayout.old_dy - nLayout.dy)))));
+                    ratio = (float) Math.min((d / (d * (1f + nLayout.freeze))), maxDisplacement / d);
                 } else {
                     ratio = (float) Math.min(1, maxDisplacement / d);
                 }
-                n.dx *= ratio / cooling;
-                n.dy *= ratio / cooling;
-                float x = n.x() + n.dx;
-                float y = n.y() + n.dy;
+                nLayout.dx *= ratio / cooling;
+                nLayout.dy *= ratio / cooling;
+                float x = nData.x() + nLayout.dx;
+                float y = nData.y() + nLayout.dy;
 
-                n.setX(x);
-                n.setY(y);
+                nData.setX(x);
+                nData.setY(y);
             }
         }
     }

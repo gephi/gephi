@@ -20,7 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics;
 
-import org.gephi.data.network.api.SyncReader;
+import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.statistics.api.Statistics;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -32,9 +33,10 @@ import org.openide.util.NbBundle;
  */
 public class GraphDensity implements Statistics {
 
-    public void execute(SyncReader synchReader) {
-        int edgesCount = synchReader.getEdgeCount();
-        int nodesCount = synchReader.getNodeCount();
+    public void execute(GraphController graphController) {
+        DirectedGraph graph = graphController.getDirectedGraph();
+        int edgesCount = graph.getEdgeCount();
+        int nodesCount = graph.getNodeCount();
         float density = (float) edgesCount / (nodesCount * nodesCount - nodesCount);
         NotifyDescriptor.Message msg = new NotifyDescriptor.Message("Density: " + density);
 

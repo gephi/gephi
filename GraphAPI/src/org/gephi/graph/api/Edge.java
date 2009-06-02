@@ -24,11 +24,15 @@ package org.gephi.graph.api;
  *
  * @author Mathieu Bastian
  */
-public interface Edge extends Renderable {
+public interface Edge {
 
     public Node getSource();
 
     public Node getTarget();
 
-    public String getLabel();
+    public float getWeight();
+
+    public boolean isVisible();
+
+    public EdgeData getEdgeData();
 }

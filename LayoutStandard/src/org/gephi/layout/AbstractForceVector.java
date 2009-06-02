@@ -20,28 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout;
 
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.EdgeLayoutInterface;
-import org.gephi.graph.api.LayoutDataFactory;
-import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeLayoutInterface;
 import org.gephi.layout.api.Layout;
+
 
 /**
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractForceVector implements Layout<NodeLayout, EdgeLayout>, LayoutDataFactory {
+public abstract class AbstractForceVector implements Layout {
 
-    public LayoutDataFactory getLayoutDataFactory() {
-        return this;
-    }
 
-    public EdgeLayoutInterface getEdgeLayout(Edge edge) {
-        return new EdgeLayout(edge);
-    }
-
-    public NodeLayoutInterface getNodeLayout(Node node) {
-        return new NodeLayout(node);
-    }
 }

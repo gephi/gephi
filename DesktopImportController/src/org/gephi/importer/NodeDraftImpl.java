@@ -62,6 +62,9 @@ public class NodeDraftImpl implements NodeDraft {
 
     public NodeDraftImpl(ImportContainerImpl container) {
         this.container = container;
+
+        x = (float)(Math.random()*100.0);
+        y = (float)(Math.random()*100.0);
     }
 
     public Color getColor() {
@@ -187,27 +190,27 @@ public class NodeDraftImpl implements NodeDraft {
     public void flushToNode(Node node) {
         setNode(node);
         if (color != null) {
-            node.setR(color.getRed() / 255f);
-            node.setG(color.getGreen() / 255f);
-            node.setB(color.getBlue() / 255f);
+            node.getNodeData().setR(color.getRed() / 255f);
+            node.getNodeData().setG(color.getGreen() / 255f);
+            node.getNodeData().setB(color.getBlue() / 255f);
         }
 
         if (label != null) {
-            node.setLabel(label);
+            node.getNodeData().setLabel(label);
         }
 
         if (x != 0) {
-            node.setX(x * 4);
+            node.getNodeData().setX(x);
         }
         if (y != 0) {
-            node.setY(y * 4);
+            node.getNodeData().setY(y);
         }
         if (z != 0) {
-            node.setZ(z * 4);
+            node.getNodeData().setZ(z);
         }
 
         if (size != 0) {
-            node.setSize(size);
+            node.getNodeData().setSize(size);
         }
     }
 }

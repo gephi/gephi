@@ -20,18 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.bridge;
 
-import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicBoolean;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import org.gephi.graph.api.EdgeWrap;
-import org.gephi.graph.api.NodeWrap;
-import org.gephi.data.network.api.AsyncReader;
-import org.gephi.data.network.api.DhnsController;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Object3d;
-import org.gephi.data.network.api.Potato;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.Object3dImpl;
@@ -42,20 +35,23 @@ import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.objects.Edge3dObject;
 import org.openide.util.Lookup;
 
+
+
 /**
  *
  * @author Mathieu Bastian
  */
-public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListener {
+public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
     //Architecture
     protected AbstractEngine engine;
-    protected DhnsController controller;
-    protected AsyncReader reader;
+    protected GraphController controller;
+    protected Graph graph;
     private VizConfig vizConfig;
 
-    //States
-    private AtomicBoolean sightChange = new AtomicBoolean(true);
+    //Version
+    protected int nodeVersion=-1;
+    protected int edgeVersion=-1;
 
     //Attributes
     private int cacheMarker = 0;
@@ -63,10 +59,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
     @Override
     public void initArchitecture() {
         this.engine = VizController.getInstance().getEngine();
-        controller = Lookup.getDefault().lookup(DhnsController.class);
-        //controller.getSightManager().addChangeListener(this);
-        reader = controller.getAsyncReader();
-        //resetClasses();
+        controller = Lookup.getDefault().lookup(GraphController.class);
+        graph = controller.getVisibleDirectedGraph();
         this.vizConfig = VizController.getInstance().getVizConfig();
     }
 
@@ -76,14 +70,16 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
 
         Object3dClass[] object3dClasses = engine.getObject3dClasses();
 
+        graph.readLock();
+
         Object3dClass nodeClass = object3dClasses[AbstractEngine.CLASS_NODE];
-        if (nodeClass.isEnabled() && reader.requireNodeUpdate()) {
+        if (nodeClass.isEnabled() && graph.getNodeVersion() > nodeVersion) {
             updateNodes();
             nodeClass.setCacheMarker(cacheMarker);
         }
 
         Object3dClass edgeClass = object3dClasses[AbstractEngine.CLASS_EDGE];
-        if (edgeClass.isEnabled() && reader.requireEdgeUpdate()) {
+        if (edgeClass.isEnabled() && graph.getEdgeVersion() > edgeVersion) {
             updateEdges();
             edgeClass.setCacheMarker(cacheMarker);
             if (vizConfig.isDirectedEdges()) {
@@ -91,53 +87,49 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
             }
         }
 
-        Object3dClass potatoClass = object3dClasses[AbstractEngine.CLASS_POTATO];
+        /*Object3dClass potatoClass = object3dClasses[AbstractEngine.CLASS_POTATO];
         if (potatoClass.isEnabled() && reader.requirePotatoUpdate()) {
             updatePotatoes();
             potatoClass.setCacheMarker(cacheMarker);
-        }
+        }*/
 
-        reader.setUpdated();
+        graph.readUnlock();
+
         engine.worldUpdated(cacheMarker);
     }
 
     private void updateNodes() {
         Object3dInitializer nodeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_NODE].getCurrentObject3dInitializer();
 
-        Iterator<? extends NodeWrap> itr = reader.getNodes();
-        for (; itr.hasNext();) {
-            NodeWrap preNode = itr.next();
-            Node node = preNode.getNode();
-            
-            Object3d obj = node.getObject3d();
+        for (Node node : graph.getNodes()) {
+            Object3d obj = node.getNodeData().getObject3d();
             if (obj == null) {
                 //Object3d is null, ADD
-                obj = nodeInit.initObject(node);
+                obj = nodeInit.initObject(node.getNodeData());
                 engine.addObject(AbstractEngine.CLASS_NODE, (Object3dImpl) obj);
             } else if (!obj.isValid()) {
                 engine.addObject(AbstractEngine.CLASS_NODE, (Object3dImpl) obj);
             }
             obj.setCacheMarker(cacheMarker);
         }
+
+        nodeVersion = graph.getNodeVersion();
     }
 
     private void updateEdges() {
         Object3dInitializer edgeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_EDGE].getCurrentObject3dInitializer();
         Object3dInitializer arrowInit = engine.getObject3dClasses()[AbstractEngine.CLASS_ARROW].getCurrentObject3dInitializer();
 
-        Iterator<? extends EdgeWrap> itr = reader.getEdges();
-        for (; itr.hasNext();) {
-            EdgeWrap virtualEdge = itr.next();
-            Edge edge = virtualEdge.getEdge();
+        for (Edge edge : graph.getEdges()) {
 
-            Object3d obj = edge.getObject3d();
+            Object3d obj = edge.getEdgeData().getObject3d();
             if (obj == null) {
                 //Object3d is null, ADD
-                obj = edgeInit.initObject(edge);
+                obj = edgeInit.initObject(edge.getEdgeData());
 
                 engine.addObject(AbstractEngine.CLASS_EDGE, (Object3dImpl) obj);
                 if (vizConfig.isDirectedEdges()) {
-                    Object3dImpl arrowObj = arrowInit.initObject(edge);
+                    Object3dImpl arrowObj = arrowInit.initObject(edge.getEdgeData());
                     engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);
                     ((Edge3dObject) obj).setArrow(arrowObj);
@@ -152,10 +144,12 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
             }
             obj.setCacheMarker(cacheMarker);
         }
+
+        edgeVersion = graph.getEdgeVersion();
     }
 
     public void updatePotatoes() {
-        Object3dInitializer potatoInit = engine.getObject3dClasses()[AbstractEngine.CLASS_POTATO].getCurrentObject3dInitializer();
+        /*Object3dInitializer potatoInit = engine.getObject3dClasses()[AbstractEngine.CLASS_POTATO].getCurrentObject3dInitializer();
 
         Iterator<? extends Potato> itr = reader.getPotatoes();
         for (; itr.hasNext();) {
@@ -170,20 +164,17 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture, ChangeListen
                 engine.addObject(AbstractEngine.CLASS_POTATO, (Object3dImpl) obj);
             }
             obj.setCacheMarker(cacheMarker);
-        }
+        }*/
     }
 
     public boolean requireUpdate() {
         //Refresh reader if sight changed
-        if (reader != null) {
-            return reader.requireUpdate();
+        if (graph != null) {
+            return graph.getNodeVersion() > nodeVersion || graph.getEdgeVersion() > edgeVersion;
         }
         return false;
     }
 
-    public void stateChanged(ChangeEvent e) {
-        sightChange.set(true);
-    }
 
     private void resetClasses() {
         for (Object3dClass objClass : engine.getObject3dClasses()) {

@@ -24,41 +24,8 @@ package org.gephi.graph.api;
  *
  * @author Mathieu Bastian
  */
-public interface Node extends Renderable {
+public interface Node {
 
-    public int getIndex();
-
-    public int getLevel();
-
-    public String getLabel();
-
-    public void setLabel(String label);
-
-    public Iterable<? extends EdgeWrap> getEdges();
-
-    public Iterable<? extends EdgeWrap> getEdgesIn();
-
-    public Iterable<? extends EdgeWrap> getEdgesOut();
-
-    public int getInDegree();
-
-    public int getOutDegree();
-
-    public boolean containsEdge(Edge edge);
-
-    public boolean hasNeighbour(Node node);
-
-    public Iterable<? extends NodeWrap> getNeighbours();
-
-    public int countNeighbours();
-
-    public NodeLayoutInterface getNodeLayout();
-
-    public int getChildrenCount();
-
-    public Node getChildAt(int index);
-
-    public Attributes getAttributes();
-
-    public void setAttributes(Attributes attributes);
+    public NodeData getNodeData();
+    
 }

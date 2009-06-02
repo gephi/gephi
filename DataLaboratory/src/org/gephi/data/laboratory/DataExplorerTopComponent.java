@@ -16,8 +16,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.TreeModel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.network.api.DhnsController;
-import org.gephi.data.network.api.HierarchyReader;
+import org.gephi.graph.api.ClusteredDirectedGraph;
+import org.gephi.graph.api.GraphController;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.OutlineModel;
 import org.openide.util.Lookup;
@@ -55,6 +55,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
         taskExecutor = new ThreadPoolExecutor(0, 1, 10L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(10));
 
+
         initComponents();
         setName(NbBundle.getMessage(DataExplorerTopComponent.class, "CTL_DataExplorerTopComponent"));
         setToolTipText(NbBundle.getMessage(DataExplorerTopComponent.class, "HINT_DataExplorerTopComponent"));
@@ -79,13 +80,14 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                     final AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
 
                     //Nodes from DHNS
-                    HierarchyReader reader = Lookup.getDefault().lookup(DhnsController.class).getHierarchyReader();
-                    reader.lock();
-                    org.gephi.graph.api.Node[] nodes = reader.getTopNodes();
+
+                    ClusteredDirectedGraph graph = Lookup.getDefault().lookup(GraphController.class).getClusteredDirectedGraph();
+                    graph.readLock();
+                    org.gephi.graph.api.Node[] nodes = graph.getTopNodes().toArray();
 
                     //TreeModel
-                    final TreeModel treeMdl = new NodeTreeModel(nodes, reader);
-                    reader.unlock();
+                    final TreeModel treeMdl = new NodeTreeModel(nodes, graph);
+                    graph.readUnlock();
 
                     //Outline
                     SwingUtilities.invokeLater(new Runnable() {
@@ -115,13 +117,13 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                     final AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
 
                     //Edges from DHNS
-                    HierarchyReader reader = Lookup.getDefault().lookup(DhnsController.class).getHierarchyReader();
-                    reader.lock();
-                    org.gephi.graph.api.Edge[] edges = reader.getEdges();
+                     ClusteredDirectedGraph graph = Lookup.getDefault().lookup(GraphController.class).getClusteredDirectedGraph();
+                    graph.readLock();
+                    org.gephi.graph.api.Edge[] edges = graph.getEdges().toArray();
 
                     //TreeModel
                     final TreeModel treeMdl = new EdgeTreeModel(edges);
-                    reader.unlock();
+                    graph.readUnlock();
 
                     //Outline
                     SwingUtilities.invokeLater(new Runnable() {

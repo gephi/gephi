@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.gephi.data.network.api.DhnsController;
-import org.gephi.data.network.api.LayoutReader;
+import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutController;
 import org.openide.util.Lookup;
@@ -53,14 +53,14 @@ public class LayoutControllerImpl implements LayoutController {
         executor.execute(new Runnable() {
 
             public void run() {
-                layout.initAlgo();
+                GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+                DirectedGraph graph = graphController.getDirectedGraph();
+
+                layout.initAlgo(graph);
                 layout.resetPropertiesValues();
 
-                DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-                LayoutReader reader = dhnsController.getLayoutReader(layout.getLayoutDataFactory());
-
                 while (true) {
-                    layout.goAlgo(reader);
+                    layout.goAlgo();
                 }
 
 

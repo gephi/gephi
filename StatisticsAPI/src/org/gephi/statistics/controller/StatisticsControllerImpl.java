@@ -23,8 +23,7 @@ package org.gephi.statistics.controller;
 import java.util.ArrayList;
 import org.gephi.statistics.api.*;
 import java.util.List;
-import org.gephi.data.network.api.DhnsController;
-import org.gephi.data.network.api.SyncReader;
+import org.gephi.graph.api.GraphController;
 import org.openide.util.Lookup;
 
 /**
@@ -40,13 +39,9 @@ public class StatisticsControllerImpl implements StatisticsController {
     }
 
     public void execute(Statistics statistics) {
-        DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        statistics.execute(graphController);
 
-        SyncReader reader = dhnsController.getSyncReader();
-
-        reader.lock();
-        statistics.execute(reader);
-        reader.unlock();
     }
 
     public List<Statistics> getStatistics() {

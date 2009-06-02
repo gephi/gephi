@@ -41,7 +41,7 @@ public class EdgeRenderer implements RenderDataProvider {
             return "root";
         } else {
             Edge edge = (Edge)o;
-            String label = edge.getLabel();
+            String label = edge.getEdgeData().getLabel();
             if(label.isEmpty())
             {
                 label = "Edge ";

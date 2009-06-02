@@ -23,7 +23,9 @@ package org.gephi.visualization.opengl.compatibility.objects;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.Object3dImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
@@ -33,9 +35,9 @@ import org.gephi.visualization.opengl.octree.Octant;
  *
  * @author Mathieu Bastian
  */
-public class Edge3dObject extends Object3dImpl<Edge> {
+public class Edge3dObject extends Object3dImpl<EdgeData> {
 
-    private static float CARDINAL_DIV = 10f;  //Set the size of edges according to cardinal
+    private static float CARDINAL_DIV = 1f;  //Set the size of edges according to cardinal
 
     //An edge is set in both source node and target node octant. Hence edges are not drawn when none of
     //these octants are visible.
@@ -49,8 +51,8 @@ public class Edge3dObject extends Object3dImpl<Edge> {
 
     @Override
     public int[] octreePosition(float centerX, float centerY, float centerZ, float size) {
-        Node nodeFrom = obj.getSource();
-        Node nodeTo = obj.getTarget();
+        NodeData nodeFrom = obj.getSource();
+        NodeData nodeTo = obj.getTarget();
 
         int index1 = -1, index2 = -1;
 
@@ -104,8 +106,8 @@ public class Edge3dObject extends Object3dImpl<Edge> {
 
     @Override
     public boolean isInOctreeLeaf(Octant leaf) {
-        Node nodeFrom = obj.getSource();
-        Node nodeTo = obj.getTarget();
+        NodeData nodeFrom = obj.getSource();
+        NodeData nodeTo = obj.getTarget();
 
         if (octants[0] == leaf) {
             if (octants[0] != ((Object3dImpl) nodeFrom.getObject3d()).getOctants()[0]) //0 = nodeFrom
@@ -134,16 +136,13 @@ public class Edge3dObject extends Object3dImpl<Edge> {
         float y2 = obj.getTarget().y();
         float z1 = obj.getSource().z();
         float z2 = obj.getTarget().z();
-        float t1 = obj.getSource().getSize() / CARDINAL_DIV;
-        float t2 = obj.getSource().getSize() / CARDINAL_DIV;
+        float t1 = obj.getEdge().getWeight() / CARDINAL_DIV;
+        float t2 = obj.getEdge().getWeight() / CARDINAL_DIV;
 
         //CameraVector, from camera location to any point on the line
         float cameraVectorX = x1 - cameraLocation[0];
         float cameraVectorY = y1 - cameraLocation[1];
         float cameraVectorZ = z1 - cameraLocation[2];
-        /*float cameraVectorX = cameraVector.x();
-        float cameraVectorY = cameraVector.y();
-        float cameraVectorZ = cameraVector.z();*/
 
         //This code has been replaced by followinf more efficient
         //Vec3f edgeVector = new Vec3f(x2 - x1,y2 - y1,z2 - z1);

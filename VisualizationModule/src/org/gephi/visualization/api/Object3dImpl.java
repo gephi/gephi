@@ -44,7 +44,7 @@ public abstract class Object3dImpl<ObjectType extends Renderable> implements Obj
     //Graphical data
     protected float viewportX;
     protected float viewportY;
-    protected float viewportZ;
+    protected float cameraDistance;
     protected float viewportRadius;
     protected float[] dragDistance;
 
@@ -122,12 +122,12 @@ public abstract class Object3dImpl<ObjectType extends Renderable> implements Obj
         this.viewportY = viewportY;
     }
 
-    public float getViewportZ() {
-        return viewportZ;
+    public float getCameraDistance() {
+        return cameraDistance;
     }
 
-    public void setViewportZ(float viewportZ) {
-        this.viewportZ = viewportZ;
+    public void setCameraDistance(float distance) {
+        this.cameraDistance = distance;
     }
 
     public boolean isSelected() {

@@ -164,9 +164,9 @@ public class EdgeDraftImpl implements EdgeDraft {
 
     public void flushToEdge(Edge edge) {
         if (color != null) {
-            edge.setR(color.getRed() / 255f);
-            edge.setG(color.getGreen() / 255f);
-            edge.setB(color.getBlue() / 255f);
+            edge.getEdgeData().setR(color.getRed() / 255f);
+            edge.getEdgeData().setG(color.getGreen() / 255f);
+            edge.getEdgeData().setB(color.getBlue() / 255f);
         }
 
     }

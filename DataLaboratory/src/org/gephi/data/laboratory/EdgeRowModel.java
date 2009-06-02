@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.laboratory;
 
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.laboratory.NodeTreeModel.TreeNode;
+import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.graph.api.Edge;
 import org.netbeans.swing.outline.RowModel;
 
@@ -93,15 +93,18 @@ public class EdgeRowModel implements RowModel {
         }
 
         public Object getValue(Edge edge) {
-            if (attributeColumn != null) {
-                //return ((AttributeRow)edge.getAttributes()).getValue(attributeColumn);
-                return "rien";
+           if (attributeColumn != null) {
+                if(edge.getEdgeData().getAttributes()!=null)
+                {
+                    AttributeRow row = ((AttributeRow)edge.getEdgeData().getAttributes());
+                    return row.getValue(attributeColumn);
+                }
             } else if (propertyColumn == PropertyColumn.ID) {
                 return "";
             } else if (propertyColumn == PropertyColumn.SOURCE) {
-                return ""+edge.getSource().getIndex();
+                return ""+edge.getSource().getNodeData().getId();
             } else if (propertyColumn == PropertyColumn.TARGET) {
-                return ""+edge.getTarget().getIndex();
+                return ""+edge.getTarget().getNodeData().getId();
             }
             return null;
         }

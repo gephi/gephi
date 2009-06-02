@@ -24,33 +24,33 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JPanel;
-import org.gephi.data.network.api.Potato;
+
+import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.api.Object3dImpl;
 import org.gephi.visualization.api.initializer.CompatibilityObject3dInitializer;
-import org.gephi.visualization.opengl.compatibility.objects.Potato3dObject;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class CompatibilityPotatoInitializer implements CompatibilityObject3dInitializer<Potato> {
+public class CompatibilityPotatoInitializer implements CompatibilityObject3dInitializer<NodeData> {
 
     public int DISK_LOW;
     public int DISK_HIGH;
 
     public Object3dImpl initObject(Renderable n) {
-        Potato potato = (Potato)n;
+        /*Potato potato = (Potato)n;
 
         Potato3dObject obj = new Potato3dObject(potato);
         obj.modelType = DISK_HIGH;
         obj.setObj(potato);
-        potato.setObject3d(obj);
+        potato.setObject3d(obj);*/
 
-        return obj;
+        return null;
     }
 
-    public void chooseModel(Object3dImpl<Potato> obj) {
+    public void chooseModel(Object3dImpl<NodeData> obj) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

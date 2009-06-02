@@ -20,11 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.bridge;
 
-import org.gephi.data.network.api.DhnsController;
-import org.gephi.data.network.api.FreeModifier;
+
+import org.gephi.graph.api.ClusteredGraph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Object3d;
-import org.gephi.data.network.api.Potato;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.objects.Object3dClass;
@@ -38,13 +38,13 @@ import org.openide.util.Lookup;
 public class DHNSEventBridge implements EventBridge, VizArchitecture {
 
     //Architecture
-    private FreeModifier freeModifier;
     private AbstractEngine engine;
+    private ClusteredGraph graph;
 
     @Override
     public void initArchitecture() {
-        DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-        this.freeModifier = dhnsController.getFreeModifier();
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        this.graph = graphController.getClusteredDirectedGraph();
         this.engine = VizController.getInstance().getEngine();
         initEvents();
     }
@@ -55,7 +55,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
 
     public void mouseClick(Object3dClass objClass, Object3d[] clickedObjects) {
 
-        switch (objClass.getClassId()) {
+       /* switch (objClass.getClassId()) {
             case AbstractEngine.CLASS_NODE:
                 for (int i = 0; i < clickedObjects.length; i++) {
                     Object3d obj = clickedObjects[i];
@@ -72,7 +72,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
                     freeModifier.retract(potato.getNode());
                 }
                 break;
-        }
+        }*/
 
 
 

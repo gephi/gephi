@@ -32,4 +32,7 @@ public interface Object3d<ObjectType extends Renderable> {
     public ObjectType getObj();
     public boolean isValid();
     public void updatePositionFlag();
+    public float getViewportX();
+    public float getViewportY();
+    public float getCameraDistance();
 }

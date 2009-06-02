@@ -94,9 +94,13 @@ public class NodeRowModel implements RowModel {
 
         public Object getValue(Node node) {
             if (attributeColumn != null) {
-                return ((AttributeRow)node.getAttributes()).getValue(attributeColumn);
+                if(node.getNodeData().getAttributes()!=null)
+                {
+                    AttributeRow row = ((AttributeRow)node.getNodeData().getAttributes());
+                    return row.getValue(attributeColumn);
+                }
             } else if (propertyColumn == PropertyColumn.ID) {
-                return "" + node.getIndex();
+                return "" + node.getNodeData().getId();
             }
             return null;
         }

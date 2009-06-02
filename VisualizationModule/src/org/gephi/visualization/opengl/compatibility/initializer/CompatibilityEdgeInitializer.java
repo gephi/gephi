@@ -25,7 +25,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JPanel;
-import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.api.Object3dImpl;
 import org.gephi.visualization.opengl.compatibility.objects.Edge3dObject;
@@ -34,11 +34,11 @@ import org.gephi.visualization.opengl.compatibility.objects.Edge3dObject;
  *
  * @author Mathieu Bastian
  */
-public class CompatibilityEdgeInitializer implements CompatibilityObject3dInitializer<Edge> {
+public class CompatibilityEdgeInitializer implements CompatibilityObject3dInitializer<EdgeData> {
 
     @Override
     public Object3dImpl initObject(Renderable n) {
-        Edge e = (Edge) n;
+        EdgeData e = (EdgeData) n;
 
         Edge3dObject edge = new Edge3dObject();
         edge.setObj(e);

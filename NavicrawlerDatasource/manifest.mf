@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module: org.gephi.datasource.repository.navicrawler
-OpenIDE-Module-Layer: org/gephi/datasource/repository/navicrawler/layer.xml
-OpenIDE-Module-Localizing-Bundle: org/gephi/datasource/repository/navicrawler/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
-

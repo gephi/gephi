@@ -20,13 +20,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout;
 
+import org.gephi.graph.api.NodeData;
+
 /**
  *
  * @author Mathieu Jacomy
  */
 public class ForceVectorUtils {
 
-    public static void fcBiRepulsor(NodeLayout N1, NodeLayout N2, double c) {
+    public static void fcBiRepulsor(NodeData N1, NodeData N2, double c) {
         double xDist = N1.x() - N2.x();	// distance en x entre les deux noeuds
         double yDist = N1.y() - N2.y();
         double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);	// distance tout court
@@ -34,15 +36,18 @@ public class ForceVectorUtils {
         if (dist > 0) {
             double f = repulsion(c, dist);
 
-            N1.dx += xDist / dist * f;
-            N1.dy += yDist / dist * f;
+            ForceVectorNodeLayoutData N1L = N1.getLayoutData();
+            ForceVectorNodeLayoutData N2L = N2.getLayoutData();
 
-            N2.dx -= xDist / dist * f;
-            N2.dy -= yDist / dist * f;
+            N1L.dx += xDist / dist * f;
+            N1L.dy += yDist / dist * f;
+
+            N2L.dx -= xDist / dist * f;
+            N2L.dy -= yDist / dist * f;
         }
     }
 
-    public static void fcBiRepulsor_y(NodeLayout N1, NodeLayout N2, double c, double verticalization) {
+    public static void fcBiRepulsor_y(NodeData N1, NodeData N2, double c, double verticalization) {
         double xDist = N1.x() - N2.x();	// distance en x entre les deux noeuds
         double yDist = N1.y() - N2.y();
         double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);	// distance tout court
@@ -50,39 +55,48 @@ public class ForceVectorUtils {
         if (dist > 0) {
             double f = repulsion(c, dist);
 
-            N1.dx += xDist / dist * f;
-            N1.dy += verticalization * yDist / dist * f;
+            ForceVectorNodeLayoutData N1L = N1.getLayoutData();
+            ForceVectorNodeLayoutData N2L = N2.getLayoutData();
 
-            N2.dx -= xDist / dist * f;
-            N2.dy -= verticalization * yDist / dist * f;
+            N1L.dx += xDist / dist * f;
+            N1L.dy += verticalization * yDist / dist * f;
+
+            N2L.dx -= xDist / dist * f;
+            N2L.dy -= verticalization * yDist / dist * f;
         }
     }
 
-    public static void fcBiRepulsor_noCollide(NodeLayout N1, NodeLayout N2, double c) {
+    public static void fcBiRepulsor_noCollide(NodeData N1, NodeData N2, double c) {
         double xDist = N1.x() - N2.x();	// distance en x entre les deux noeuds
         double yDist = N1.y() - N2.y();
-        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist) - N1.size() - N2.size();	// distance (from the border of each node)
+        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist) - N1.getSize() - N2.getSize();	// distance (from the border of each node)
 
         if (dist > 0) {
             double f = repulsion(c, dist);
 
-            N1.dx += xDist / dist * f;
-            N1.dy += yDist / dist * f;
+            ForceVectorNodeLayoutData N1L = N1.getLayoutData();
+            ForceVectorNodeLayoutData N2L = N2.getLayoutData();
 
-            N2.dx -= xDist / dist * f;
-            N2.dy -= yDist / dist * f;
+            N1L.dx += xDist / dist * f;
+            N1L.dy += yDist / dist * f;
+
+            N2L.dx -= xDist / dist * f;
+            N2L.dy -= yDist / dist * f;
         } else if (dist != 0) {
             double f = -c;	//flat repulsion
 
-            N1.dx += xDist / dist * f;
-            N1.dy += yDist / dist * f;
+            ForceVectorNodeLayoutData N1L = N1.getLayoutData();
+            ForceVectorNodeLayoutData N2L = N2.getLayoutData();
 
-            N2.dx -= xDist / dist * f;
-            N2.dy -= yDist / dist * f;
+            N1L.dx += xDist / dist * f;
+            N1L.dy += yDist / dist * f;
+
+            N2L.dx -= xDist / dist * f;
+            N2L.dy -= yDist / dist * f;
         }
     }
 
-    public static void fcUniRepulsor(NodeLayout N1, NodeLayout N2, double c) {
+    public static void fcUniRepulsor(NodeData N1, NodeData N2, double c) {
         double xDist = N1.x() - N2.x();	// distance en x entre les deux noeuds
         double yDist = N1.y() - N2.y();
         double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);	// distance tout court
@@ -90,12 +104,14 @@ public class ForceVectorUtils {
         if (dist > 0) {
             double f = repulsion(c, dist);
 
-            N2.dx -= xDist / dist * f;
-            N2.dy -= yDist / dist * f;
+            ForceVectorNodeLayoutData N2L = N2.getLayoutData();
+
+            N2L.dx -= xDist / dist * f;
+            N2L.dy -= yDist / dist * f;
         }
     }
 
-    public static void fcBiAttractor(NodeLayout N1, NodeLayout N2, double c) {
+    public static void fcBiAttractor(NodeData N1, NodeData N2, double c) {
         double xDist = N1.x() - N2.x();	// distance en x entre les deux noeuds
         double yDist = N1.y() - N2.y();
         double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);	// distance tout court
@@ -103,31 +119,37 @@ public class ForceVectorUtils {
         if (dist > 0) {
             double f = attraction(c, dist);
 
-            N1.dx += xDist / dist * f;
-            N1.dy += yDist / dist * f;
+            ForceVectorNodeLayoutData N1L = N1.getLayoutData();
+            ForceVectorNodeLayoutData N2L = N2.getLayoutData();
 
-            N2.dx -= xDist / dist * f;
-            N2.dy -= yDist / dist * f;
+            N1L.dx += xDist / dist * f;
+            N1L.dy += yDist / dist * f;
+
+            N2L.dx -= xDist / dist * f;
+            N2L.dy -= yDist / dist * f;
         }
     }
 
-    public static void fcBiAttractor_noCollide(NodeLayout N1, NodeLayout N2, double c) {
+    public static void fcBiAttractor_noCollide(NodeData N1, NodeData N2, double c) {
         double xDist = N1.x() - N2.x();	// distance en x entre les deux noeuds
         double yDist = N1.y() - N2.y();
-        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist) - N1.size() - N2.size();	// distance (from the border of each node)
+        double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist) - N1.getSize() - N2.getSize();	// distance (from the border of each node)
 
         if (dist > 0) {
             double f = attraction(c, dist);
 
-            N1.dx += xDist / dist * f;
-            N1.dy += yDist / dist * f;
+            ForceVectorNodeLayoutData N1L = N1.getLayoutData();
+            ForceVectorNodeLayoutData N2L = N2.getLayoutData();
 
-            N2.dx -= xDist / dist * f;
-            N2.dy -= yDist / dist * f;
+            N1L.dx += xDist / dist * f;
+            N1L.dy += yDist / dist * f;
+
+            N2L.dx -= xDist / dist * f;
+            N2L.dy -= yDist / dist * f;
         }
     }
 
-    public static void fcBiFlatAttractor(NodeLayout N1, NodeLayout N2, double c) {
+    public static void fcBiFlatAttractor(NodeData N1, NodeData N2, double c) {
         double xDist = N1.x() - N2.x();	// distance en x entre les deux noeuds
         double yDist = N1.y() - N2.y();
         double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);	// distance tout court
@@ -135,15 +157,18 @@ public class ForceVectorUtils {
         if (dist > 0) {
             double f = -c;
 
-            N1.dx += xDist / dist * f;
-            N1.dy += yDist / dist * f;
+            ForceVectorNodeLayoutData N1L = N1.getLayoutData();
+            ForceVectorNodeLayoutData N2L = N2.getLayoutData();
 
-            N2.dx -= xDist / dist * f;
-            N2.dy -= yDist / dist * f;
+            N1L.dx += xDist / dist * f;
+            N1L.dy += yDist / dist * f;
+
+            N2L.dx -= xDist / dist * f;
+            N2L.dy -= yDist / dist * f;
         }
     }
 
-    public static void fcUniAttractor(NodeLayout N1, NodeLayout N2, float c) {
+    public static void fcUniAttractor(NodeData N1, NodeData N2, float c) {
         double xDist = N1.x() - N2.x();	// distance en x entre les deux noeuds
         double yDist = N1.y() - N2.y();
         double dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);	// distance tout court
@@ -151,8 +176,10 @@ public class ForceVectorUtils {
         if (dist > 0) {
             double f = attraction(c, dist);
 
-            N2.dx -= xDist / dist * f;
-            N2.dy -= yDist / dist * f;
+            ForceVectorNodeLayoutData N2L = N2.getLayoutData();
+
+            N2L.dx -= xDist / dist * f;
+            N2L.dy -= yDist / dist * f;
         }
     }
 

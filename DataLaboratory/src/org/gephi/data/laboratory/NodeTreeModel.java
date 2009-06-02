@@ -23,7 +23,7 @@ package org.gephi.data.laboratory;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-import org.gephi.data.network.api.HierarchyReader;
+import org.gephi.graph.api.ClusteredDirectedGraph;
 import org.gephi.graph.api.Node;
 
 /**
@@ -33,10 +33,10 @@ import org.gephi.graph.api.Node;
 public class NodeTreeModel implements TreeModel {
 
     private TreeNode root;
-    private HierarchyReader hierarchyReader;
+    private ClusteredDirectedGraph graph;
 
-    public NodeTreeModel(Node[] nodes, HierarchyReader hierarchyReader) {
-        this.hierarchyReader = hierarchyReader;
+    public NodeTreeModel(Node[] nodes, ClusteredDirectedGraph graph) {
+        this.graph = graph;
         this.root = new TreeNode(nodes);
     }
 
@@ -87,7 +87,7 @@ public class NodeTreeModel implements TreeModel {
 
         public TreeNode(Node node) {
             this.node = node;
-            Node[] ch = hierarchyReader.getChildren(node);
+            Node[] ch = graph.getChildren(node).toArray();
             if (ch != null) {
                 children = new TreeNode[ch.length];
                 for (int i = 0; i < ch.length; i++) {
@@ -134,7 +134,7 @@ public class NodeTreeModel implements TreeModel {
             if (this == root) {
                 return "root";
             } else {
-                return node.getLabel();
+                return node.getNodeData().getLabel();
             }
         }
 

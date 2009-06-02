@@ -20,8 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.gephi.statistics.api;
-
-import org.gephi.data.network.api.SyncReader;
+import org.gephi.graph.api.GraphController;
 
 /**
  *
@@ -31,5 +30,5 @@ public interface Statistics {
 
     public String getName();
 
-    public void execute(SyncReader synchReader);
+    public void execute(GraphController graphController);
 }

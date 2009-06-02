@@ -319,6 +319,12 @@ public class ImporterGDF implements TextImporter {
         if (column.getNodeColumn() != null) {
             try {
                 switch (column.getNodeColumn()) {
+                    case X:
+                        node.setX(Float.parseFloat(data));
+                        break;
+                    case Y:
+                        node.setY(Float.parseFloat(data));
+                        break;
                     case COLOR:
                         String[] rgb = data.split(",");
                         if (rgb.length == 3) {

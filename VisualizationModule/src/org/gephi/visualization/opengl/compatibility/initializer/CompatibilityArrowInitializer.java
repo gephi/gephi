@@ -25,8 +25,8 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JPanel;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Node;
+import org.gephi.graph.api.EdgeData;
+import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.api.Object3dImpl;
@@ -37,7 +37,7 @@ import org.gephi.visualization.opengl.compatibility.objects.Arrow3dObject;
  *
  * @author Mathieu Bastian
  */
-public class CompatibilityArrowInitializer implements CompatibilityObject3dInitializer<Node> {
+public class CompatibilityArrowInitializer implements CompatibilityObject3dInitializer<NodeData> {
 
     private CompatibilityEngine engine;
 
@@ -47,7 +47,7 @@ public class CompatibilityArrowInitializer implements CompatibilityObject3dIniti
 
     @Override
     public Object3dImpl initObject(Renderable n) {
-        Edge e = (Edge) n;
+        EdgeData e = (EdgeData) n;
 
         Arrow3dObject arrow = new Arrow3dObject(e);
         arrow.setObj(e.getTarget());

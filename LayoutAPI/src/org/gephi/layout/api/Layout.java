@@ -23,16 +23,13 @@ package org.gephi.layout.api;
 
 import javax.swing.Icon;
 import javax.swing.JPanel;
-import org.gephi.data.network.api.LayoutReader;
-import org.gephi.graph.api.EdgeLayoutInterface;
-import org.gephi.graph.api.LayoutDataFactory;
-import org.gephi.graph.api.NodeLayoutInterface;
+import org.gephi.graph.api.DirectedGraph;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Layout<T extends NodeLayoutInterface ,U extends EdgeLayoutInterface> {
+public interface Layout {
 
     public String getName();
 
@@ -42,9 +39,9 @@ public interface Layout<T extends NodeLayoutInterface ,U extends EdgeLayoutInter
 
     public boolean testAlgo();
 
-    public void initAlgo();
+    public void initAlgo(DirectedGraph graph);
 
-    public void goAlgo(LayoutReader<T,U> reader);
+    public void goAlgo();
 
     public void endAlgo();
 
@@ -53,6 +50,4 @@ public interface Layout<T extends NodeLayoutInterface ,U extends EdgeLayoutInter
     public void resetPropertiesValues();
 
     public JPanel getPanel();
-
-    public LayoutDataFactory getLayoutDataFactory();
 }

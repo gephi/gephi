@@ -31,15 +31,10 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeRow;
-import org.gephi.data.attributes.api.AttributeRowFactory;
-import org.gephi.data.attributes.api.AttributeValue;
-import org.gephi.data.network.api.DhnsController;
-import org.gephi.data.network.api.EdgeFactory;
-import org.gephi.data.network.api.FlatImporter;
-import org.gephi.data.network.api.NodeFactory;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.Node;
 import org.gephi.importer.EdgeDraftImpl;
 import org.gephi.importer.NodeDraftImpl;
@@ -108,10 +103,32 @@ public class DesktopImportController implements ImportController {
 
     private void finishImport(ImportContainerImpl container) {
         container.checkNodeLabels();
-        
+
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        Graph graph = graphController.getDirectedGraph();
+        GraphFactory factory = graphController.factory();
+
+         for (NodeDraft node : container.getNodes()) {
+            Node n = factory.newNode();
+
+            NodeDraftImpl im = (NodeDraftImpl)node;
+            im.flushToNode(n);
+
+            graph.addNode(n);
+        }
+
+        for (EdgeDraft edge : container.getEdges()) {
+            Node nodeSource = ((EdgeDraftImpl)edge).getNodeSource().getNode();
+            Node nodeTarget = ((EdgeDraftImpl)edge).getNodeTarget().getNode();
+
+            Edge e = factory.newEdge(nodeSource, nodeTarget);
+
+            graph.addEdge(e);
+        }
+
         /*DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
         dynamicController.appendData(container);*/
-        DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
+        /*DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
         FlatImporter flatImporter = dhnsController.getFlatImporter();
 
         flatImporter.initImport();
@@ -150,7 +167,7 @@ public class DesktopImportController implements ImportController {
              n.setAttributes(row);
          }
 
-        flatImporter.finishImport();
+        flatImporter.finishImport();*/
         
 
     }

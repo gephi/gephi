@@ -20,9 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes;
 
-import java.util.Iterator;
-import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeWrap;
+
 import org.openide.util.NbBundle;
 
 /**
@@ -42,13 +40,13 @@ public class NodeAttributeClass extends AbstractAttributeClass {
 
     @Override
     protected void addColumnToData(AttributeColumnImpl column) {
-        manager.reader.lock();
+        /*manager.reader.lock();
         for(Iterator<? extends NodeWrap> itr = manager.reader.getNodes();itr.hasNext();)
         {
             Node node = itr.next().getNode();
             
         }
-        manager.reader.unlock();
+        manager.reader.unlock();*/
     }
 
     @Override

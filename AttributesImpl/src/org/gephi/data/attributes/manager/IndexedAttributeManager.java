@@ -23,7 +23,7 @@ package org.gephi.data.attributes.manager;
 import org.gephi.data.attributes.AbstractAttributeManager;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.type.StringList;
-import org.gephi.data.network.api.SyncReader;
+
 
 /**
  *
@@ -33,8 +33,7 @@ public class IndexedAttributeManager extends AbstractAttributeManager {
 
     protected DataIndex dataIndex;
 
-    public IndexedAttributeManager(SyncReader reader) {
-        super(reader);
+    public IndexedAttributeManager() {
         dataIndex = new DataIndex();
     }
 

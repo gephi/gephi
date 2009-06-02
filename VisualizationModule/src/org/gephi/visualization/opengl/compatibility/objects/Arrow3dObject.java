@@ -23,7 +23,9 @@ package org.gephi.visualization.opengl.compatibility.objects;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.Object3dImpl;
 import org.gephi.visualization.gleem.linalg.Vec3f;
@@ -34,29 +36,34 @@ import org.gephi.visualization.opengl.octree.Octant;
  *
  * @author Mathieu Bastian
  */
-public class Arrow3dObject extends Object3dImpl<Node> {
+public class Arrow3dObject extends Object3dImpl<NodeData> {
 
-    private static float ARROW_WIDTH = 1.5f;
-    private static float ARROW_HEIGHT = 4.5f;
-    private Edge edge;
+    private static float ARROW_WIDTH = 1f;
+    private static float ARROW_HEIGHT = 1.1f;
+    private EdgeData edge;
     private float[] cameraLocation;
 
 
-    public Arrow3dObject() {
+    private Arrow3dObject() {
         super();
         cameraLocation = VizController.getInstance().getDrawable().getCameraLocation();
         octants = new Octant[1];
     }
 
-    public Arrow3dObject(Edge edge) {
+    public Arrow3dObject(EdgeData edge) {
         this();
         this.edge = edge;
     }
 
     @Override
     public void display(GL gl, GLU glu) {
-        Node nodeFrom = edge.getSource();
-        Node nodeTo = edge.getTarget();
+        NodeData nodeFrom = edge.getSource();
+        NodeData nodeTo = edge.getTarget();
+
+        //Edge size
+        float weight = edge.getEdge().getWeight();
+        float arrowWidth = ARROW_WIDTH*weight*2f;
+        float arrowHeight = ARROW_HEIGHT*weight*2f;
 
         //Edge vector
         Vec3f edgeVector = new Vec3f(nodeTo.x() - nodeFrom.x(), nodeTo.y() - nodeFrom.y(), nodeTo.z() - nodeFrom.z());
@@ -76,9 +83,9 @@ public class Arrow3dObject extends Object3dImpl<Node> {
         float targetZ = z2 - edgeVector.z() * collisionDistance;
 
         //Base of the arrow
-        float baseX = targetX - edgeVector.x() * ARROW_HEIGHT;
-        float baseY = targetY - edgeVector.y() * ARROW_HEIGHT;
-        float baseZ = targetZ - edgeVector.z() * ARROW_HEIGHT;
+        float baseX = targetX - edgeVector.x() * arrowHeight*2f;
+        float baseY = targetY - edgeVector.y() * arrowHeight*2f;
+        float baseZ = targetZ - edgeVector.z() * arrowHeight*2f;
 
         //Camera vector
         Vec3f cameraVector = new Vec3f(targetX - cameraLocation[0], targetY - cameraLocation[1], targetZ - cameraLocation[2]);
@@ -89,8 +96,8 @@ public class Arrow3dObject extends Object3dImpl<Node> {
 
         //Draw the triangle
         gl.glColor4f(edge.r(), edge.g(), edge.b(), edge.alpha());
-        gl.glVertex3d(baseX + sideVector.x() * ARROW_WIDTH, baseY + sideVector.y() * ARROW_WIDTH, baseZ + sideVector.z() * ARROW_WIDTH);
-        gl.glVertex3d(baseX - sideVector.x() * ARROW_WIDTH, baseY - sideVector.y() * ARROW_WIDTH, baseZ - sideVector.z() * ARROW_WIDTH);
+        gl.glVertex3d(baseX + sideVector.x() * arrowWidth, baseY + sideVector.y() * arrowWidth, baseZ + sideVector.z() * arrowWidth);
+        gl.glVertex3d(baseX - sideVector.x() * arrowWidth, baseY - sideVector.y() * arrowWidth, baseZ - sideVector.z() * arrowWidth);
         gl.glVertex3d(targetX, targetY, targetZ);
     }
 

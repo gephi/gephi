@@ -22,7 +22,6 @@ package org.gephi.data.attributes.manager;
 
 import org.gephi.data.attributes.AbstractAttributeManager;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.data.network.api.SyncReader;
 
 /**
  * Specific manager for temporary storing of attributes. This is typically used when new attributes are
@@ -34,8 +33,8 @@ import org.gephi.data.network.api.SyncReader;
  */
 public class TemporaryAttributeManager extends AbstractAttributeManager {
 
-    public TemporaryAttributeManager(SyncReader reader) {
-        super(reader);
+    public TemporaryAttributeManager() {
+
     }
 
     @Override

@@ -26,8 +26,6 @@ import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.data.attributes.api.AttributeValueFactory;
 import org.gephi.data.attributes.api.AttributeManager;
 import org.gephi.data.attributes.manager.IndexedAttributeManager;
-import org.gephi.data.network.api.DhnsController;
-import org.gephi.data.network.api.SyncReader;
 import org.openide.util.Lookup;
 
 /**
@@ -41,11 +39,9 @@ public class AttributeContollerImpl implements AttributeController {
 
     public AttributeContollerImpl()
     {
-        DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-        SyncReader reader = dhnsController.getSyncReader();
 
         factory = new AttributeFactoryImpl();
-        currentManager = new IndexedAttributeManager(reader);
+        currentManager = new IndexedAttributeManager();
     }
 
     public Lookup getNodeColumnsLookup() {

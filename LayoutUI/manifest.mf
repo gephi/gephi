@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.ui.layout
+OpenIDE-Module-Layer: org/gephi/ui/layout/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/gephi/ui/layout/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

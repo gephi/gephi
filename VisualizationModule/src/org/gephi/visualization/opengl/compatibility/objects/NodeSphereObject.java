@@ -22,7 +22,7 @@ package org.gephi.visualization.opengl.compatibility.objects;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
-import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.api.Object3dImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
@@ -35,7 +35,7 @@ import org.gephi.visualization.opengl.octree.Octant;
  * @author Mathieu Bastian
  * @see CompatibilityEngine
  */
-public class NodeSphereObject extends Object3dImpl<Node> {
+public class NodeSphereObject extends Object3dImpl<NodeData> {
 
     public int modelType;
 

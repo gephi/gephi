@@ -22,6 +22,7 @@ package org.gephi.visualization.api.initializer;
 
 
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.api.Object3dImpl;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 
@@ -31,8 +32,8 @@ import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
  *
  * @author Mathieu Bastian
  */
-public interface CompatibilityNodeInitializer extends CompatibilityObject3dInitializer<Node>, NodeInitializer
+public interface CompatibilityNodeInitializer extends CompatibilityObject3dInitializer<NodeData>, NodeInitializer
 {
     @Override
-	public void chooseModel(Object3dImpl<Node> obj);
+	public void chooseModel(Object3dImpl<NodeData> obj);
 }

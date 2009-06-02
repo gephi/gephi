@@ -133,7 +133,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         double distance = Math.sqrt(Math.pow((double) object.getObj().x() - cameraLocation[0], 2d) +
                 Math.pow((double) object.getObj().y() - cameraLocation[1], 2d) +
                 Math.pow((double) object.getObj().z() - cameraLocation[2], 2d));
-        object.setViewportZ((float) distance);
+        object.setCameraDistance((float) distance);
 
         return (float) distance - object.getObj().getRadius();
     }

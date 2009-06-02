@@ -25,8 +25,8 @@ import javax.media.opengl.glu.GLU;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.graph.api.Node;
-import org.gephi.data.network.api.Potato;
-import org.gephi.data.network.api.PotatoDisplay;
+
+import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.api.Object3dImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
@@ -35,14 +35,14 @@ import org.gephi.visualization.opengl.octree.Octant;
  *
  * @author Mathieu Bastian
  */
-public class Potato3dObject extends Object3dImpl<Potato> {
+public class Potato3dObject extends Object3dImpl<NodeData> {
 
     public int modelType;
     private ParamAVLTree<Octant> octantsTree;
     protected boolean underMouse = false;
-    protected PotatoDisplay display = null;
+    //protected PotatoDisplay display = null;
 
-    public Potato3dObject(Potato potato) {
+    public Potato3dObject() {
 
         octantsTree = new ParamAVLTree<Octant>(new AVLItemAccessor<Octant>() {
 
@@ -51,7 +51,7 @@ public class Potato3dObject extends Object3dImpl<Potato> {
             }
         });
 
-        potato.updatePotato();
+        //potato.updatePotato();
     }
 
     @Override
@@ -61,19 +61,19 @@ public class Potato3dObject extends Object3dImpl<Potato> {
 
     @Override
     public boolean isInOctreeLeaf(Octant leaf) {
-        for (Node node : obj.getContent()) {
+       /* for (Node node : obj.getContent()) {
             Object3dImpl objImpl = (Object3dImpl) node.getObject3d();
             Octant o = objImpl.getOctants()[0];
             if (o == leaf) {
                 return true;
             }
-        }
+        }*/
         return false;
     }
 
     @Override
     public void display(GL gl, GLU glu) {
-        if (mark) {
+        /*if (mark) {
             this.display = obj.getDisplay();
         }
 
@@ -108,12 +108,12 @@ public class Potato3dObject extends Object3dImpl<Potato> {
                     gl.glVertex3f(triangle[4], triangle[5], obj.z());
                 }
             }
-        }
+        }*/
     }
 
     @Override
     public boolean selectionTest(Vecf distanceFromMouse, float selectionSize) {
-        if (underMouse) {
+        /*if (underMouse) {
             for (Node n : obj.getContent()) {
                 if (n.getObject3d().isSelected()) {
                     return false;
@@ -127,7 +127,7 @@ public class Potato3dObject extends Object3dImpl<Potato> {
                 }
             }
             return true;
-        }
+        }*/
         return false;
     }
 
@@ -159,12 +159,12 @@ public class Potato3dObject extends Object3dImpl<Potato> {
         octantsTree.clear();
 
         //Compute
-        for (Node node : obj.getContent()) {
+       /* for (Node node : obj.getContent()) {
             Object3dImpl objImpl = (Object3dImpl) node.getObject3d();
             Octant o = objImpl.getOctants()[0];
             octantsTree.add(o);
         }
-
+        */
         octants = octantsTree.toArray(new Octant[0]);
     }
 
@@ -173,13 +173,14 @@ public class Potato3dObject extends Object3dImpl<Potato> {
     }
 
     public boolean isParentUnderMouse() {
-        if (obj.getParent() != null && ((Potato3dObject) obj.getParent().getObject3d()).underMouse) {
+       /* if (obj.getParent() != null && ((Potato3dObject) obj.getParent().getObject3d()).underMouse) {
             return true;
-        }
+        }*/
         return false;
     }
 
     public boolean isDisplayReady() {
-        return display != null;
+        //return display != null;
+        return false;
     }
 }

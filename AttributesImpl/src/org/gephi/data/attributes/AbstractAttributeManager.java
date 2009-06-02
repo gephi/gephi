@@ -22,10 +22,8 @@ package org.gephi.data.attributes;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import org.gephi.data.attributes.api.AttributeClass;
 import org.gephi.data.attributes.api.AttributeManager;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.data.network.api.SyncReader;
 import org.openide.util.Lookup;
 
 /**
@@ -40,10 +38,9 @@ public abstract class AbstractAttributeManager implements AttributeManager {
     private EdgeAttributeClass edgeClass;
 
     //Data API
-    protected SyncReader reader;
+    
 
-    public AbstractAttributeManager(SyncReader reader) {
-        this.reader = reader;
+    public AbstractAttributeManager() {
         classMap = new ConcurrentHashMap<String, AbstractAttributeClass>();
         nodeClass = new NodeAttributeClass(this);
         edgeClass = new EdgeAttributeClass(this);
