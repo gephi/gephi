@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.graph.dhns.edge.iterators;
 
 import java.util.Iterator;
@@ -40,32 +39,39 @@ public class EdgeIterator extends AbstractEdgeIterator implements Iterator<Edge>
     protected ParamAVLIterator<EdgeImpl> edgeIterator;
     protected PreNode currentNode;
     protected EdgeImpl pointer;
+    protected boolean undirected;
 
-    public EdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator) {
+    public EdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected) {
         this.nodeIterator = nodeIterator;
         edgeIterator = new ParamAVLIterator<EdgeImpl>();
+        this.undirected = undirected;
     }
 
     @Override
     public boolean hasNext() {
-        while (!edgeIterator.hasNext()) {
-            if (nodeIterator.hasNext()) {
-                currentNode = nodeIterator.next();
-                if(!currentNode.getEdgesOutTree().isEmpty()) {
-                    edgeIterator.setNode(currentNode.getEdgesOutTree());
+        while (pointer == null || (undirected && pointer.isSecondMutual())) {
+            while (!edgeIterator.hasNext()) {
+                if (nodeIterator.hasNext()) {
+                    currentNode = nodeIterator.next();
+                    if (!currentNode.getEdgesOutTree().isEmpty()) {
+                        edgeIterator.setNode(currentNode.getEdgesOutTree());
+                    }
+                } else {
+                    return false;
                 }
-            } else {
-                return false;
             }
+
+            pointer = edgeIterator.next();
         }
 
-        pointer = edgeIterator.next();
         return true;
     }
 
     @Override
     public EdgeImpl next() {
-        return pointer;
+        EdgeImpl e = pointer;
+        pointer = null;
+        return e;
     }
 
     @Override

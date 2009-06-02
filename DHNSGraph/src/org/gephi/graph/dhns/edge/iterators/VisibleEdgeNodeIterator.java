@@ -42,10 +42,12 @@ public class VisibleEdgeNodeIterator extends AbstractEdgeIterator implements Ite
     protected ParamAVLIterator<EdgeImpl> edgeIterator;
     protected EdgeNodeIteratorMode mode;
     protected EdgeImpl pointer;
+    protected boolean undirected;
 
-    public VisibleEdgeNodeIterator(PreNode node, EdgeNodeIteratorMode mode) {
+    public VisibleEdgeNodeIterator(PreNode node, EdgeNodeIteratorMode mode, boolean undirected) {
         this.node = node;
         this.mode = mode;
+        this.undirected = undirected;
         this.edgeIterator = new ParamAVLIterator<EdgeImpl>();
         if (mode.equals(EdgeNodeIteratorMode.OUT) || mode.equals(EdgeNodeIteratorMode.BOTH)) {
             this.edgeIterator.setNode(node.getEdgesOutTree());
@@ -55,7 +57,7 @@ public class VisibleEdgeNodeIterator extends AbstractEdgeIterator implements Ite
     }
 
     public boolean hasNext() {
-        while (pointer == null || !pointer.isVisible()) {
+        while (pointer == null || (undirected && pointer.isSecondMutual()) || !pointer.isVisible()) {
             if (mode.equals(EdgeNodeIteratorMode.BOTH)) {
                 boolean res = edgeIterator.hasNext();
                 if (res) {

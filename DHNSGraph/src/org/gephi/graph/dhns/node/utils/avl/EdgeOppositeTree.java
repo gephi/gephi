@@ -24,19 +24,20 @@ import org.gephi.graph.dhns.edge.EdgeImpl;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
+import org.gephi.graph.dhns.edge.AbstractEdge;
 
 /**
  * Special type of tree which knows his {@link PreNode} owner. The <code>AVLItemAccessor</code> always
  * return the number of the <code>PreNode</code> linked to the owner.
  * <p>
- * This type of tree stores {@link EdgeImpl}. These edges can be <b>IN</b> or <b>OUT</b>. The instance
+ * This type of tree stores {@link AbstractEdge}. These edges can be <b>IN</b> or <b>OUT</b>. The instance
  * of the edge is duplicated in each node, once as <b>IN</b> and once as <b>OUT</b>. In each node, the
  * tree key must be the neigbour's number. So the <code>getNumber()</code> method compare the given
  * item with the owner and returns the neighbour's number.
  * 
  * @author Mathieu Bastian
  */
-public class EdgeOppositeTree extends ParamAVLTree<EdgeImpl> {
+public class EdgeOppositeTree extends ParamAVLTree<AbstractEdge> {
 
     private PreNode owner;
 
@@ -54,10 +55,10 @@ public class EdgeOppositeTree extends ParamAVLTree<EdgeImpl> {
         return getItem(node.getNumber()) != null;
     }
 
-    private class EdgeOppositeImplAVLItemAccessor implements AVLItemAccessor<EdgeImpl> {
+    private class EdgeOppositeImplAVLItemAccessor implements AVLItemAccessor<AbstractEdge> {
 
         @Override
-        public int getNumber(EdgeImpl item) {
+        public int getNumber(AbstractEdge item) {
             if (item.getSource() == owner) {
                 return item.getTarget().getNumber();
             } else {

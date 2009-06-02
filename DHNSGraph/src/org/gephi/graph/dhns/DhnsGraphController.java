@@ -30,6 +30,7 @@ import org.gephi.graph.api.SparseGraph;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
+import org.gephi.graph.dhns.graph.ClusteredUndirectedGraphImpl;
 
 /**
  * Singleton which manages the graph access.
@@ -57,11 +58,11 @@ public class DhnsGraphController implements GraphController {
     }
 
     public UndirectedGraph getUndirectedGraph() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new ClusteredUndirectedGraphImpl(dhns, false);
     }
 
     public UndirectedGraph getVisibleUndirectedGraph() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new ClusteredUndirectedGraphImpl(dhns, true);
     }
 
     public SparseGraph getSparseGraph() {
@@ -81,11 +82,11 @@ public class DhnsGraphController implements GraphController {
     }
 
     public ClusteredUndirectedGraph getClusteredUndirectedGraph() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new ClusteredUndirectedGraphImpl(dhns, false);
     }
 
     public ClusteredUndirectedGraph getVisibleClusteredUndirectedGraph() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new ClusteredUndirectedGraphImpl(dhns, true);
     }
 
     public ClusteredSparseGraph getClusteredSparseGraph() {

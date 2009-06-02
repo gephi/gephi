@@ -40,15 +40,17 @@ public class VisibleEdgeIterator extends AbstractEdgeIterator implements Iterato
     protected ParamAVLIterator<EdgeImpl> edgeIterator;
     protected PreNode currentNode;
     protected EdgeImpl pointer;
+    protected boolean undirected;
 
-    public VisibleEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator) {
+    public VisibleEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected) {
         this.nodeIterator = nodeIterator;
         edgeIterator = new ParamAVLIterator<EdgeImpl>();
+        this.undirected = undirected;
     }
 
     @Override
     public boolean hasNext() {
-        while (pointer == null || !pointer.isVisible()) {
+        while (pointer == null || (undirected && pointer.isSecondMutual()) || !pointer.isVisible()) {
             while (!edgeIterator.hasNext()) {
                 if (nodeIterator.hasNext()) {
                     currentNode = nodeIterator.next();

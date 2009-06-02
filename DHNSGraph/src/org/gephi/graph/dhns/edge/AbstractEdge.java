@@ -80,7 +80,12 @@ public abstract class AbstractEdge implements Edge, AVLItem {
         if (source == target) {
             return false;
         }
-        return target.getEdgesOutTree().hasNeighbour(source);
+        return source.getEdgesInTree().hasNeighbour(target);
+        //return target.getEdgesOutTree().hasNeighbour(source);
+    }
+
+    public boolean isSecondMutual() {
+         return isMutual() && source.getPre() < target.getPre();
     }
 
     public boolean hasAttributes() {

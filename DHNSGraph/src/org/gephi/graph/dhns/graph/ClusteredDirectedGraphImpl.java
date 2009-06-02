@@ -40,15 +40,9 @@ import org.gephi.graph.dhns.edge.iterators.VisibleEdgeNodeIterator;
 import org.gephi.graph.dhns.edge.iterators.VisibleMetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.VisibleMetaEdgeNodeIterator;
 import org.gephi.graph.dhns.edge.iterators.VisibleRangeEdgeIterator;
-import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
-import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.CompleteTreeIterator;
-import org.gephi.graph.dhns.node.iterators.DescendantIterator;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
-import org.gephi.graph.dhns.node.iterators.TreeListIterator;
-import org.gephi.graph.dhns.node.iterators.VisibleChildrenIterator;
-import org.gephi.graph.dhns.node.iterators.VisibleDescendantIterator;
 import org.gephi.graph.dhns.node.iterators.VisibleTreeIterator;
 
 /**
@@ -56,43 +50,22 @@ import org.gephi.graph.dhns.node.iterators.VisibleTreeIterator;
  *
  * @author Mathieu Bastian
  */
-public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
-
-    private Dhns dhns;
-    private boolean visible = true;
+public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements ClusteredDirectedGraph {
 
     public ClusteredDirectedGraphImpl(Dhns dhns, boolean visible) {
-        this.dhns = dhns;
-        this.visible = visible;
+        super(dhns, visible);
     }
 
+    //Directed
     public void addEdge(Node source, Node target) {
+        if (source == null || target == null) {
+            throw new NullPointerException();
+        }
         AbstractEdge edge = dhns.getGraphFactory().newEdge(source, target);
         dhns.getStructureModifier().addEdge(edge);
     }
 
-    public void addEdge(Edge edge) {
-        if (edge == null) {
-            throw new NullPointerException();
-        }
-        AbstractEdge e = (AbstractEdge) edge;
-        if (!e.hasAttributes()) {
-            e.setAttributes(dhns.newEdgeAttributes());
-        }
-        dhns.getStructureModifier().addEdge(edge);
-    }
-
-    public void addNode(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
-        AbstractNode n = (AbstractNode) node;
-        if (!n.hasAttributes()) {
-            n.setAttributes(dhns.newNodeAttributes());
-        }
-        dhns.getStructureModifier().addNode(node, null);
-    }
-
+    //Directed
     public NodeIterable getSuccessors(Node node) {
         if (node == null) {
             throw new NullPointerException();
@@ -100,12 +73,13 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         readLock();
         PreNode preNode = (PreNode) node;
         if (visible) {
-            return dhns.newNodeIterable(new NeighborIterator(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.OUT), preNode));
+            return dhns.newNodeIterable(new NeighborIterator(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.OUT, false), preNode));
         } else {
-            return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT), preNode));
+            return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT, false), preNode));
         }
     }
 
+    //Directed
     public NodeIterable getPredecessors(Node node) {
         if (node == null) {
             throw new NullPointerException();
@@ -113,20 +87,23 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         readLock();
         PreNode preNode = (PreNode) node;
         if (visible) {
-            return dhns.newNodeIterable(new NeighborIterator(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.IN), preNode));
+            return dhns.newNodeIterable(new NeighborIterator(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.IN, false), preNode));
         } else {
-            return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.IN), preNode));
+            return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.IN, false), preNode));
         }
     }
 
+    //Directed
     public boolean isSuccessor(Node node, Node successor) {
         return getEdge(node, successor) != null;
     }
 
+    //Directed
     public boolean isPredecessor(Node node, Node predecessor) {
         return getEdge(predecessor, node) != null;
     }
 
+    //Directed
     public int getInDegree(Node node) {
         if (node == null) {
             throw new NullPointerException();
@@ -135,7 +112,7 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         PreNode preNode = (PreNode) node;
         int count = 0;
         if (visible && !preNode.getEdgesInTree().isEmpty()) {
-            for (Iterator<EdgeImpl> itr = preNode.getEdgesInTree().iterator(); itr.hasNext();) {
+            for (Iterator<AbstractEdge> itr = preNode.getEdgesInTree().iterator(); itr.hasNext();) {
                 if (itr.next().isVisible()) {
                     count++;
                 }
@@ -147,6 +124,7 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         return count;
     }
 
+    //Directed
     public int getOutDegree(Node node) {
         if (node == null) {
             throw new NullPointerException();
@@ -155,7 +133,7 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         PreNode preNode = (PreNode) node;
         int count = 0;
         if (visible && !preNode.getEdgesInTree().isEmpty()) {
-            for (Iterator<EdgeImpl> itr = preNode.getEdgesOutTree().iterator(); itr.hasNext();) {
+            for (Iterator<AbstractEdge> itr = preNode.getEdgesOutTree().iterator(); itr.hasNext();) {
                 if (itr.next().isVisible()) {
                     count++;
                 }
@@ -167,59 +145,22 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         return count;
     }
 
-    public boolean contains(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
-        readLock();
-        PreNode preNode = (PreNode) node;
-        boolean res = false;
-        if (visible) {
-            if (preNode.isVisible() && dhns.getTreeStructure().getTree().contains(preNode)) {
-                res = true;
-            }
-        } else {
-            if (dhns.getTreeStructure().getTree().contains(preNode)) {
-                res = true;
-            }
-        }
-        readUnlock();
-        return res;
-    }
-
+    //Graph
     public boolean contains(Edge edge) {
-        if (edge == null) {
-            throw new NullPointerException();
-        }
-        readLock();
-        boolean res = false;
-        if (visible) {
-            res = contains(edge.getSource()) && contains(edge.getTarget()) && edge.isVisible();
-        } else {
-            res = contains(edge.getSource()) && contains(edge.getTarget());
-        }
-        readUnlock();
-        return res;
+        return getEdge(edge.getSource(), edge.getTarget()) != null;
     }
 
-    public NodeIterable getNodes() {
-        readLock();
-        if (visible) {
-            return dhns.newNodeIterable(new VisibleTreeIterator(dhns.getTreeStructure()));
-        } else {
-            return dhns.newNodeIterable(new CompleteTreeIterator(dhns.getTreeStructure()));
-        }
-    }
-
+    //Graph
     public EdgeIterable getEdges() {
         readLock();
         if (visible) {
-            return dhns.newEdgeIterable(new VisibleEdgeIterator(dhns.getTreeStructure(), new VisibleTreeIterator(dhns.getTreeStructure())));
+            return dhns.newEdgeIterable(new VisibleEdgeIterator(dhns.getTreeStructure(), new VisibleTreeIterator(dhns.getTreeStructure()),false));
         } else {
-            return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new CompleteTreeIterator(dhns.getTreeStructure())));
+            return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new CompleteTreeIterator(dhns.getTreeStructure()),false));
         }
     }
 
+    //Directed
     public EdgeIterable getInEdges(Node node) {
         if (node == null) {
             throw new NullPointerException();
@@ -227,12 +168,13 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         readLock();
         PreNode preNode = (PreNode) node;
         if (visible) {
-            return dhns.newEdgeIterable(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.IN));
+            return dhns.newEdgeIterable(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.IN, false));
         } else {
-            return dhns.newEdgeIterable(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.IN));
+            return dhns.newEdgeIterable(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.IN, false));
         }
     }
 
+    //Directed
     public EdgeIterable getOutEdges(Node node) {
         if (node == null) {
             throw new NullPointerException();
@@ -240,12 +182,13 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         readLock();
         PreNode preNode = (PreNode) node;
         if (visible) {
-            return dhns.newEdgeIterable(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.OUT));
+            return dhns.newEdgeIterable(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.OUT, false));
         } else {
-            return dhns.newEdgeIterable(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT));
+            return dhns.newEdgeIterable(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT, false));
         }
     }
 
+    //Graph
     public EdgeIterable getEdges(Node node) {
         if (node == null) {
             throw new NullPointerException();
@@ -253,12 +196,13 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         readLock();
         PreNode preNode = (PreNode) node;
         if (visible) {
-            return dhns.newEdgeIterable(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.BOTH));
+            return dhns.newEdgeIterable(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false));
         } else {
-            return dhns.newEdgeIterable(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH));
+            return dhns.newEdgeIterable(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false));
         }
     }
 
+    //Graph
     public NodeIterable getNeigbors(Node node) {
         if (node == null) {
             throw new NullPointerException();
@@ -266,12 +210,13 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         readLock();
         PreNode preNode = (PreNode) node;
         if (visible) {
-            return dhns.newNodeIterable(new NeighborIterator(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.BOTH), preNode));
+            return dhns.newNodeIterable(new NeighborIterator(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false), preNode));
         } else {
-            return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH), preNode));
+            return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false), preNode));
         }
     }
 
+    //Directed
     public Edge getEdge(Node source, Node target) {
         if (source == null || target == null) {
             throw new NullPointerException();
@@ -279,9 +224,9 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         readLock();
         PreNode sourceNode = (PreNode) source;
         PreNode targetNode = (PreNode) target;
-        EdgeImpl res = null;
+        AbstractEdge res = null;
         if (visible) {
-            EdgeImpl edge = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
+            AbstractEdge edge = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
             if (edge != null && edge.isVisible()) {
                 res = edge;
             }
@@ -292,32 +237,17 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         return res;
     }
 
-    public int getNodeCount() {
-        readLock();
-        int count = 0;
-        if (visible) {
-            for (TreeListIterator itr = new TreeListIterator(dhns.getTreeStructure().getTree()); itr.hasNext();) {
-                if (itr.next().isVisible()) {
-                    count++;
-                }
-            }
-        } else {
-            count = dhns.getTreeStructure().getTreeSize();
-        }
-        readUnlock();
-        return count;
-    }
-
+    //Graph
     public int getEdgeCount() {
         readLock();
         int count = 0;
         if (visible) {
-            for (VisibleEdgeIterator itr = new VisibleEdgeIterator(dhns.getTreeStructure(), new VisibleTreeIterator(dhns.getTreeStructure())); itr.hasNext();) {
+            for (VisibleEdgeIterator itr = new VisibleEdgeIterator(dhns.getTreeStructure(), new VisibleTreeIterator(dhns.getTreeStructure()), false); itr.hasNext();) {
                 itr.next();
                 count++;
             }
         } else {
-            for (EdgeIterator itr = new EdgeIterator(dhns.getTreeStructure(), new CompleteTreeIterator(dhns.getTreeStructure())); itr.hasNext();) {
+            for (EdgeIterator itr = new EdgeIterator(dhns.getTreeStructure(), new CompleteTreeIterator(dhns.getTreeStructure()), false); itr.hasNext();) {
                 itr.next();
                 count++;
             }
@@ -326,138 +256,17 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         return count;
     }
 
-    public Node getOpposite(Node node, Edge edge) {
-        if (node == null || edge == null) {
-            throw new NullPointerException();
-        }
-        if (edge.getSource() == node) {
-            return edge.getTarget();
-        } else if (edge.getTarget() == node) {
-            return edge.getSource();
-        }
-        throw new IllegalArgumentException("Node must be either source or target of the edge.");
-    }
-
+    //Graph
     public int getDegree(Node node) {
         return getInDegree(node) + getOutDegree(node);
     }
 
-    public boolean isSelfLoop(Edge edge) {
-        if (edge == null) {
-            throw new NullPointerException();
-        }
-        return edge.getSource() == edge.getTarget();
-    }
-
+    //Graph
     public boolean isNeighbor(Node node, Node neighbor) {
         return isSuccessor(node, neighbor) || isPredecessor(node, neighbor);
     }
 
-    public void removeEdge(Edge edge) {
-        if (edge == null) {
-            throw new NullPointerException();
-        }
-        dhns.getStructureModifier().deleteEdge(edge);
-    }
-
-    public void removeNode(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
-        dhns.getStructureModifier().deleteNode(node);
-    }
-
-    public void clear() {
-        dhns.getStructureModifier().clear();
-    }
-
-    public void clearEdges() {
-        dhns.getStructureModifier().clearEdges();
-    }
-
-    public void clearEdges(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
-        dhns.getStructureModifier().clearEdges(node);
-    }
-
-    public void clearMetaEdges(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
-        dhns.getStructureModifier().clearMetaEdges(node);
-    }
-
-    public void addNode(Node node, Node parent) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
-        AbstractNode n = (AbstractNode) node;
-        if (!n.hasAttributes()) {
-            n.setAttributes(dhns.newNodeAttributes());
-        }
-        dhns.getStructureModifier().addNode(node, parent);
-    }
-
-    public int getChildrenCount(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
-        readLock();
-        PreNode preNode = (PreNode) node;
-        int count = 0;
-        ChildrenIterator itr = new ChildrenIterator(dhns.getTreeStructure(), preNode);
-        for (; itr.hasNext();) {
-            PreNode child = itr.next();
-            if (!visible || child.isVisible()) {
-                count++;
-            }
-        }
-        readUnlock();
-        return count;
-    }
-
-    public Node getParent(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
-        readLock();
-        PreNode preNode = (PreNode) node;
-        if (preNode.parent == dhns.getTreeStructure().getRoot()) {
-            return null;
-        }
-        Node parent = preNode.parent;
-        readUnlock();
-        return parent;
-    }
-
-    public NodeIterable getChildren(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
-        readLock();
-        PreNode preNode = (PreNode) node;
-        if (visible) {
-            return dhns.newNodeIterable(new VisibleChildrenIterator(dhns.getTreeStructure(), preNode));
-        } else {
-            return dhns.newNodeIterable(new ChildrenIterator(dhns.getTreeStructure(), preNode));
-        }
-    }
-
-    public NodeIterable getDescendant(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
-        readLock();
-        PreNode preNode = (PreNode) node;
-        if (visible) {
-            return dhns.newNodeIterable(new VisibleDescendantIterator(dhns.getTreeStructure(), preNode));
-        } else {
-            return dhns.newNodeIterable(new DescendantIterator(dhns.getTreeStructure(), preNode));
-        }
-    }
-
+    //ClusteredGraph
     public EdgeIterable getInnerEdges(Node nodeGroup) {
         if (nodeGroup == null) {
             throw new NullPointerException();
@@ -471,6 +280,7 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         }
     }
 
+    //ClusteredGraph
     public EdgeIterable getOuterEdges(Node nodeGroup) {
         if (nodeGroup == null) {
             throw new NullPointerException();
@@ -484,101 +294,7 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         }
     }
 
-    public NodeIterable getTopNodes() {
-        readLock();
-        if (visible) {
-            return dhns.newNodeIterable(new VisibleChildrenIterator(dhns.getTreeStructure()));
-        } else {
-            return dhns.newNodeIterable(new ChildrenIterator(dhns.getTreeStructure()));
-        }
-    }
-
-    public boolean isDescendant(Node node, Node descendant) {
-        if (node == null || descendant == null) {
-            throw new NullPointerException();
-        }
-        readLock();
-        PreNode preNode = (PreNode) node;
-        PreNode preDesc = (PreNode) descendant;
-        boolean res = preDesc.getPre() > preNode.getPre() && preDesc.getPost() < preNode.getPost();
-        readUnlock();
-        return res;
-    }
-
-    public boolean isAncestor(Node node, Node ancestor) {
-        return isDescendant(ancestor, node);
-    }
-
-    public boolean isFollowing(Node node, Node following) {
-        if (node == null || following == null) {
-            throw new NullPointerException();
-        }
-        readLock();
-        PreNode preNode = (PreNode) node;
-        PreNode preFoll = (PreNode) following;
-        boolean res = preFoll.getPre() > preNode.getPre() && preFoll.getPost() > preNode.getPost();
-        readUnlock();
-        return res;
-    }
-
-    public boolean isPreceding(Node node, Node preceding) {
-        return isFollowing(preceding, node);
-    }
-
-    public boolean isParent(Node node, Node parent) {
-        if (node == null || parent == null) {
-            throw new NullPointerException();
-        }
-        readLock();
-        boolean res = ((PreNode) node).parent == parent;
-        readUnlock();
-        return res;
-    }
-
-    public int getHeight() {
-        readLock();
-        int res = dhns.getTreeStructure().treeHeight;
-        readUnlock();
-        return res;
-    }
-
-    public int getLevel(Node node) {
-        readLock();
-        int res = ((PreNode) node).level;
-        readUnlock();
-        return res;
-    }
-
-    public void expand(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
-        dhns.getStructureModifier().expand(node);
-    }
-
-    public void retract(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
-        dhns.getStructureModifier().retract(node);
-    }
-
-    public void addToGroup(Node node, Node nodeGroup) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void removeFromGroup(Node node) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void groupNodes(Node[] nodes) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void ungroupNodes(Node[] nodes) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+    //ClusteredGraph
     public EdgeIterable getMetaEdges() {
         readLock();
         if (visible) {
@@ -588,6 +304,7 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         }
     }
 
+    //ClusteredGraph
     public EdgeIterable getMetaEdges(Node node) {
         if (node == null) {
             throw new NullPointerException();
@@ -601,6 +318,7 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         }
     }
 
+    //DirectedClusteredGraph
     public EdgeIterable getMetaInEdges(Node node) {
         if (node == null) {
             throw new NullPointerException();
@@ -614,6 +332,7 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         }
     }
 
+    //DirectedClusteredGraph
     public EdgeIterable getMetaOutEdges(Node node) {
         if (node == null) {
             throw new NullPointerException();
@@ -627,6 +346,7 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         }
     }
 
+    //DirectedClusteredGraph
     public int getMetaInDegree(Node node) {
         if (node == null) {
             throw new NullPointerException();
@@ -647,6 +367,7 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         return count;
     }
 
+    //DirectedClusteredGraph
     public int getMetaOutDegree(Node node) {
         if (node == null) {
             throw new NullPointerException();
@@ -667,35 +388,8 @@ public class ClusteredDirectedGraphImpl implements ClusteredDirectedGraph {
         return count;
     }
 
+    //ClusteredGraph
     public int getMetaDegree(Node node) {
         return getMetaInDegree(node) + getMetaOutDegree(node);
-    }
-
-    public void readLock() {
-        //System.out.println(Thread.currentThread()+ "read lock");
-        dhns.getReadLock().lock();
-    }
-
-    public void readUnlock() {
-        //System.out.println(Thread.currentThread()+ "read unlock");
-        dhns.getReadLock().unlock();
-    }
-
-    public void writeLock() {
-        //System.out.println(Thread.currentThread()+ "write lock");
-        dhns.getWriteLock().lock();
-    }
-
-    public void writeUnlock() {
-        //System.out.println(Thread.currentThread()+ "write lock");
-        dhns.getWriteLock().unlock();
-    }
-
-    public int getNodeVersion() {
-        return dhns.getGraphVersion().getNodeVersion();
-    }
-
-    public int getEdgeVersion() {
-        return dhns.getGraphVersion().getEdgeVersion();
     }
 }

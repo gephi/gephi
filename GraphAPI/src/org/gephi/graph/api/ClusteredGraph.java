@@ -41,11 +41,11 @@ public interface ClusteredGraph {
 
     public EdgeIterable getOuterEdges(Node nodeGroup);
 
-    public EdgeIterable getMetaEdges();
+    public NodeIterable getTopNodes();
+
+        public EdgeIterable getMetaEdges();
 
     public EdgeIterable getMetaEdges(Node node);
-
-    public NodeIterable getTopNodes();
 
     public int getMetaDegree(Node node);
 

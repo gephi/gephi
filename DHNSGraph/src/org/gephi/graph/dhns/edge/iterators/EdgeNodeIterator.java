@@ -40,10 +40,13 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
     protected PreNode node;
     protected ParamAVLIterator<EdgeImpl> edgeIterator;
     protected EdgeNodeIteratorMode mode;
+    protected EdgeImpl pointer;
+    protected boolean undirected;
 
-    public EdgeNodeIterator(PreNode node, EdgeNodeIteratorMode mode) {
+    public EdgeNodeIterator(PreNode node, EdgeNodeIteratorMode mode, boolean undirected) {
         this.node = node;
         this.mode = mode;
+        this.undirected = undirected;
         this.edgeIterator = new ParamAVLIterator<EdgeImpl>();
         if (mode.equals(EdgeNodeIteratorMode.OUT) || mode.equals(EdgeNodeIteratorMode.BOTH)) {
             this.edgeIterator.setNode(node.getEdgesOutTree());
@@ -53,17 +56,24 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
     }
 
     public boolean hasNext() {
-        if (mode.equals(EdgeNodeIteratorMode.BOTH)) {
-            boolean res = edgeIterator.hasNext();
-            if (!res) {
-                this.edgeIterator.setNode(node.getEdgesInTree());
-                this.mode = EdgeNodeIteratorMode.IN;
-                return edgeIterator.hasNext();
+        while (pointer == null || (undirected && pointer.isSecondMutual())) {
+            if (mode.equals(EdgeNodeIteratorMode.BOTH)) {
+                boolean res = edgeIterator.hasNext();
+                if (res) {
+                    pointer = edgeIterator.next();
+                } else {
+                    this.edgeIterator.setNode(node.getEdgesInTree());
+                    this.mode = EdgeNodeIteratorMode.IN;
+                }
+            } else {
+                if (edgeIterator.hasNext()) {
+                    pointer = edgeIterator.next();
+                } else {
+                    return false;
+                }
             }
-        } else {
-            return edgeIterator.hasNext();
         }
-        return false;
+        return true;
     }
 
     public EdgeImpl next() {
