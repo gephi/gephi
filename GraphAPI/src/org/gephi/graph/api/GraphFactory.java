@@ -30,4 +30,6 @@ public interface GraphFactory {
     public Node newNode();
 
     public Edge newEdge(Node source, Node target);
+
+    public Edge newEdge(Node source, Node target, float weight, boolean directed);
 }

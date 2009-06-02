@@ -19,21 +19,26 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.gephi.graph.api;
+package org.gephi.graph.dhns.edge;
+
+import org.gephi.graph.dhns.node.PreNode;
 
 /**
+ * Main edge implementation + sparse support.
  *
  * @author Mathieu Bastian
  */
-public interface SparseGraph extends Graph {
+public class SparseEdgeImpl extends AbstractEdge {
 
-    public void addEdge(Node source, Node target, boolean directed);
+    protected boolean directed;
 
-    public Edge getEdge(Node node1, Node node2);
+    public SparseEdgeImpl(PreNode source, PreNode target, boolean directed) {
+        super(source, target);
+        this.directed = directed;
+    }
 
-    public Iterable<Edge> getDirectedEdges();
-
-    public Iterable<Edge> getUndirectedEdges();
-
-    public boolean isDirected(Edge edge);
+    @Override
+    public boolean isDirected() {
+        return directed;
+    }
 }

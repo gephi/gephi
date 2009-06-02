@@ -21,11 +21,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.core;
 
 import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.EdgeImpl;
 import org.gephi.graph.dhns.edge.SelfLoopImpl;
+import org.gephi.graph.dhns.edge.SparseEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
 
@@ -61,6 +63,25 @@ public class GraphFactoryImpl implements GraphFactory {
             edge = new SelfLoopImpl(nodeSource);
         } else {
             edge = new EdgeImpl(nodeSource, nodeTarget);
+        }
+        edge.setAttributes(dhns.newEdgeAttributes());
+        return edge;
+    }
+
+    public AbstractEdge newEdge(Node source, Node target, float weight, boolean directed) {
+        if (source == null || target == null) {
+            throw new NullPointerException();
+        }
+        PreNode nodeSource = (PreNode) source;
+        PreNode nodeTarget = (PreNode) target;
+        AbstractEdge edge;
+        if (source == target) {
+            edge = new SelfLoopImpl(nodeSource);
+        } else {
+            edge = new SparseEdgeImpl(nodeSource, nodeTarget, directed);
+        }
+        if (weight != 0) {
+            edge.setWeight(weight);
         }
         edge.setAttributes(dhns.newEdgeAttributes());
         return edge;

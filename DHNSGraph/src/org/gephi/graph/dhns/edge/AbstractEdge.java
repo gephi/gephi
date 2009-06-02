@@ -88,6 +88,10 @@ public abstract class AbstractEdge implements Edge, AVLItem {
          return isMutual() && source.getPre() < target.getPre();
     }
 
+    public boolean isDirected() {
+        return true;
+    }
+
     public boolean hasAttributes() {
         return edgeData.getAttributes() == null;
     }
