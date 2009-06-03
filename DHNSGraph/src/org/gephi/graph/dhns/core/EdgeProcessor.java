@@ -41,6 +41,7 @@ public class EdgeProcessor {
     public EdgeProcessor(Dhns dhns) {
         this.treeStructure = dhns.getTreeStructure();
         this.idGen = dhns.getIdGen();
+        this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
     }
 
     public void clearEdges(PreNode node) {

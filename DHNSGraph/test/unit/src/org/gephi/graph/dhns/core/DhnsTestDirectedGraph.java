@@ -4,6 +4,7 @@
  */
 package org.gephi.graph.dhns.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.graph.api.Edge;
@@ -57,7 +58,7 @@ public class DhnsTestDirectedGraph {
             node.getNodeData().setLabel("Node " + i);
             graphGlobal.addNode(node);
             nodeMap.put(node.getNodeData().getLabel(), node);
-            //System.out.println("Node " + i + " added. Id = " + node.getId());
+        //System.out.println("Node " + i + " added. Id = " + node.getId());
         }
         //System.out.println("---End Global---");
 
@@ -81,17 +82,19 @@ public class DhnsTestDirectedGraph {
         AbstractEdge edge2 = factory.newEdge(node5, node6);
         AbstractEdge edge3 = factory.newEdge(node6, node5);
         AbstractEdge edge4 = factory.newEdge(node7, node7);
+        AbstractEdge edge5 = factory.newEdge(node4, node4);
 
         graphGlobal.addEdge(edge1);
         graphGlobal.addEdge(edge2);
         graphGlobal.addEdge(edge3);
         graphGlobal.addEdge(edge4);
+        graphGlobal.addEdge(edge5);
 
-        edgeMap.put("4-5",edge1);
-        edgeMap.put("5-6",edge2);
-        edgeMap.put("6-5",edge3);
-        edgeMap.put("7-7",edge4);
-
+        edgeMap.put("4-5", edge1);
+        edgeMap.put("5-6", edge2);
+        edgeMap.put("6-5", edge3);
+        edgeMap.put("7-7", edge4);
+        edgeMap.put("4-4", edge5);
     }
 
     @After
@@ -152,20 +155,20 @@ public class DhnsTestDirectedGraph {
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.getGraphFactory();
 
-        Node first=null;
-        Node middle=null;
-        Node end=null;
+        Node first = null;
+        Node middle = null;
+        Node end = null;
         for (int i = 0; i < 10; i++) {
             Node node = factory.newNode();
             node.getNodeData().setLabel("Node " + i);
             graph.addNode(node);
             System.out.println("Node " + i + " added. Id = " + node.getId());
 
-            if(i==0) {
+            if (i == 0) {
                 first = node;
-            } else if(i==4) {
+            } else if (i == 4) {
                 middle = node;
-            } else if(i==9) {
+            } else if (i == 9) {
                 end = node;
             }
         }
@@ -176,7 +179,7 @@ public class DhnsTestDirectedGraph {
         System.out.print("Test1 nodes: ");
         for (int i = 0; i < treeStructure.getTreeSize(); i++) {
             PreNode n = treeStructure.getNodeAt(i);
-            System.out.print(n.getId()+" ");
+            System.out.print(n.getId() + " ");
             assertEquals("prenode pre", i, n.getPre());
             assertEquals("prenode avl node", i, n.avlNode.getIndex());
             if (n.avlNode.next() != null) {
@@ -195,7 +198,7 @@ public class DhnsTestDirectedGraph {
         System.out.print("Test2 nodes: ");
         for (int i = 0; i < treeStructure.getTreeSize(); i++) {
             PreNode n = treeStructure.getNodeAt(i);
-            System.out.print(n.getId()+" ");
+            System.out.print(n.getId() + " ");
             assertEquals("prenode pre", i, n.getPre());
             assertEquals("prenode avl node", i, n.avlNode.getIndex());
             if (n.avlNode.next() != null) {
@@ -215,7 +218,7 @@ public class DhnsTestDirectedGraph {
         System.out.print("Test3 nodes: ");
         for (int i = 0; i < treeStructure.getTreeSize(); i++) {
             PreNode n = treeStructure.getNodeAt(i);
-            System.out.print(n.getId()+" ");
+            System.out.print(n.getId() + " ");
             assertEquals("prenode pre", i, n.getPre());
             assertEquals("prenode avl node", i, n.avlNode.getIndex());
             if (n.avlNode.next() != null) {
@@ -232,7 +235,7 @@ public class DhnsTestDirectedGraph {
         assertFalse(graph.contains(middle));
         assertFalse(graph.contains(end));
 
-        PreNode preNode = (PreNode)first;
+        PreNode preNode = (PreNode) first;
         assertNull(preNode.avlNode);
         assertNull(preNode.parent);
 
@@ -248,11 +251,11 @@ public class DhnsTestDirectedGraph {
 
         //Test
         assertTrue("contains node", contains);
-        assertFalse("not contains node",graphGlobal.contains(nodeMap.get("Fake Node 1")));
+        assertFalse("not contains node", graphGlobal.contains(nodeMap.get("Fake Node 1")));
     }
 
     @Test
-    public void testClearNodes()  {
+    public void testClearNodes() {
 
         TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
         graphGlobal.clear();
@@ -264,7 +267,7 @@ public class DhnsTestDirectedGraph {
 
         assertFalse("not contains anymore", graphGlobal.contains(nodeMap.get("Node 1")));
 
-        PreNode preNode = (PreNode)nodeMap.get("Node 2");
+        PreNode preNode = (PreNode) nodeMap.get("Node 2");
         assertNull("clean clear", preNode.avlNode);
         assertNull("clean clear", preNode.parent);
     }
@@ -285,16 +288,16 @@ public class DhnsTestDirectedGraph {
 
         //Test normal edge
         graph.addEdge(node1, node2);
-        PreNode preNode1 = (PreNode)node1;
-        PreNode preNode2 = (PreNode)node2;
+        PreNode preNode1 = (PreNode) node1;
+        PreNode preNode2 = (PreNode) node2;
 
         AbstractEdge edge = preNode1.getEdgesOutTree().getItem(preNode2.getNumber());
-        assertNotNull("find OUT edge",edge);
-        assertTrue("contains OUT edge",preNode1.getEdgesOutTree().contains(edge));
+        assertNotNull("find OUT edge", edge);
+        assertTrue("contains OUT edge", preNode1.getEdgesOutTree().contains(edge));
 
         AbstractEdge edge2 = preNode2.getEdgesInTree().getItem(preNode1.getNumber());
-        assertNotNull("find IN edge",edge);
-        assertTrue("contains IN edge",preNode2.getEdgesInTree().contains(edge2));
+        assertNotNull("find IN edge", edge);
+        assertTrue("contains IN edge", preNode2.getEdgesInTree().contains(edge2));
 
         assertSame("edges equal", edge, edge2);
 
@@ -307,38 +310,38 @@ public class DhnsTestDirectedGraph {
         //Test self loop
         graph.addEdge(node3, node3);
 
-        PreNode preNode3 = (PreNode)node3;
+        PreNode preNode3 = (PreNode) node3;
 
         AbstractEdge edge3 = preNode3.getEdgesOutTree().getItem(preNode3.getNumber());
-        assertNotNull("find OUT edge",edge);
-        assertTrue("contains OUT edge",preNode3.getEdgesOutTree().contains(edge3));
+        assertNotNull("find OUT edge", edge);
+        assertTrue("contains OUT edge", preNode3.getEdgesOutTree().contains(edge3));
 
         AbstractEdge edge4 = preNode3.getEdgesInTree().getItem(preNode3.getNumber());
-        assertNotNull("find IN edge",edge);
-        assertTrue("contains IN edge",preNode3.getEdgesInTree().contains(edge3));
+        assertNotNull("find IN edge", edge);
+        assertTrue("contains IN edge", preNode3.getEdgesInTree().contains(edge3));
 
         assertSame("edges equal", edge3, edge4);
 
-        assertTrue("is self loop",edge3.isSelfLoop());
+        assertTrue("is self loop", edge3.isSelfLoop());
     }
 
     @Test
     public void testRemoveEdge() {
         GraphFactoryImpl factory = dhnsGlobal.getGraphFactory();
-        PreNode node3 = (PreNode)nodeMap.get("Node 1");
-        PreNode node4 = (PreNode)nodeMap.get("Node 2");
+        PreNode node3 = (PreNode) nodeMap.get("Node 1");
+        PreNode node4 = (PreNode) nodeMap.get("Node 2");
         AbstractEdge edge = factory.newEdge(node3, node4);
 
         graphGlobal.addEdge(edge);
 
         graphGlobal.removeEdge(edge);
         AbstractEdge edge3 = node3.getEdgesOutTree().getItem(node4.getNumber());
-        assertNull("OUT null",edge3);
-        assertFalse("contains OUT edge",node3.getEdgesOutTree().contains(edge));
+        assertNull("OUT null", edge3);
+        assertFalse("contains OUT edge", node3.getEdgesOutTree().contains(edge));
 
         AbstractEdge edge4 = node4.getEdgesInTree().getItem(node3.getNumber());
-        assertNull("IN null",edge4);
-        assertFalse("contains IN edge",node3.getEdgesInTree().contains(edge));
+        assertNull("IN null", edge4);
+        assertFalse("contains IN edge", node3.getEdgesInTree().contains(edge));
 
         assertFalse(graphGlobal.contains(edge));
     }
@@ -346,13 +349,85 @@ public class DhnsTestDirectedGraph {
     @Test
     public void testGetEdges() {
 
-        for(Edge e : graphGlobal.getEdges()) {
+        //Test1
+        Edge[] expected = new Edge[5];
+        expected[0] = edgeMap.get("4-4");
+        expected[1] = edgeMap.get("4-5");
+        expected[2] = edgeMap.get("5-6");
+        expected[3] = edgeMap.get("6-5");
+        expected[4] = edgeMap.get("7-7");
+        Edge[] actual = new Edge[5];
+
+        int i = 0;
+        System.out.print("testGetEdges: ");
+        for (Edge e : graphGlobal.getEdges()) {
             Node s = e.getSource();
             Node t = e.getTarget();
-            Edge ed = edgeMap.get(s.getId()+"-"+t.getId());
-            assertSame("edge iterator", e,ed);
+            Edge ed = edgeMap.get(s.getId() + "-" + t.getId());
+            assertSame("edge iterator", e, ed);
+            System.out.print("#" + s.getId() + "-" + t.getId() + " ");
+            actual[i++] = e;
         }
+        System.out.println();
+        assertArrayEquals(expected, actual);
+        assertEquals("edge count", i, graphGlobal.getEdgeCount());
 
+
+        graphGlobal.removeNode(nodeMap.get("Node 5"));
+
+        //Test2
+        expected = new Edge[2];
+        expected[0] = edgeMap.get("4-4");
+        expected[1] = edgeMap.get("7-7");
+        actual = new Edge[2];
+        i = 0;
+        System.out.print("testGetEdges: ");
+        for (Edge e : graphGlobal.getEdges()) {
+            Node s = e.getSource();
+            Node t = e.getTarget();
+            Edge ed = edgeMap.get(s.getId() + "-" + t.getId());
+            assertSame("edge iterator", e, ed);
+            System.out.print("#" + s.getId() + "-" + t.getId() + " ");
+            actual[i++] = e;
+        }
+        System.out.println();
+        assertArrayEquals(expected, actual);
     }
-    
+
+    @Test
+    public void testGetEdgesNode() {
+
+        //Test1
+        System.out.print("testGetEdgesNode: ");
+        Edge[] expected = new Edge[3];
+        expected[0] = edgeMap.get("5-6");
+        expected[1] = edgeMap.get("4-5");
+        expected[2] = edgeMap.get("6-5");
+        Edge[] actual = new Edge[3];
+
+        int i = 0;
+        for (Edge e : graphGlobal.getEdges(nodeMap.get("Node 5"))) {
+            Node s = e.getSource();
+            Node t = e.getTarget();
+            System.out.print("#" + s.getId() + "-" + t.getId() + " ");
+            actual[i++] = e;
+        }
+        System.out.println();
+        assertArrayEquals(expected, actual);
+
+        //Test2
+        System.out.print("testGetEdgesNode: ");
+        expected = new Edge[1];
+        expected[0] = edgeMap.get("7-7");
+        actual = new Edge[1];
+        i = 0;
+        for (Edge e : graphGlobal.getEdges(nodeMap.get("Node 7"))) {
+            Node s = e.getSource();
+            Node t = e.getTarget();
+            System.out.print("#" + s.getId() + "-" + t.getId() + " ");
+            actual[i++] = e;
+        }
+        System.out.println();
+        assertArrayEquals(expected, actual);
+    }
 }

@@ -23,6 +23,7 @@ package org.gephi.graph.dhns.edge.iterators;
 import java.util.Iterator;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.EdgeImpl;
 import org.gephi.graph.dhns.node.PreNode;
 
@@ -38,16 +39,16 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
         OUT, IN, BOTH
     };
     protected PreNode node;
-    protected ParamAVLIterator<EdgeImpl> edgeIterator;
+    protected ParamAVLIterator<AbstractEdge> edgeIterator;
     protected EdgeNodeIteratorMode mode;
-    protected EdgeImpl pointer;
+    protected AbstractEdge pointer;
     protected boolean undirected;
 
     public EdgeNodeIterator(PreNode node, EdgeNodeIteratorMode mode, boolean undirected) {
         this.node = node;
         this.mode = mode;
         this.undirected = undirected;
-        this.edgeIterator = new ParamAVLIterator<EdgeImpl>();
+        this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
         if (mode.equals(EdgeNodeIteratorMode.OUT) || mode.equals(EdgeNodeIteratorMode.BOTH)) {
             this.edgeIterator.setNode(node.getEdgesOutTree());
         } else {
@@ -61,6 +62,9 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
                 boolean res = edgeIterator.hasNext();
                 if (res) {
                     pointer = edgeIterator.next();
+                    if(pointer.isSelfLoop()) {  //Ignore self loop here to avoid double iteration
+                        pointer = null;
+                    }
                 } else {
                     this.edgeIterator.setNode(node.getEdgesInTree());
                     this.mode = EdgeNodeIteratorMode.IN;
@@ -76,8 +80,10 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
         return true;
     }
 
-    public EdgeImpl next() {
-        return edgeIterator.next();
+    public AbstractEdge next() {
+        AbstractEdge res = pointer;
+        pointer = null;
+        return res;
     }
 
     public void remove() {

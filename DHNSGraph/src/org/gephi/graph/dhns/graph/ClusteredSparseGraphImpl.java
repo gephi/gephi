@@ -90,7 +90,7 @@ public class ClusteredSparseGraphImpl extends ClusteredGraphImpl implements Clus
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public NodeIterable getNeigbors(Node node) {
+    public NodeIterable getNeighbors(Node node) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

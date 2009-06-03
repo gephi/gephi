@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
-import java.util.Iterator;
 import org.gephi.graph.api.ClusteredUndirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
@@ -28,7 +27,6 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.edge.EdgeImpl;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
 import org.gephi.graph.dhns.edge.iterators.VisibleEdgeIterator;
@@ -79,7 +77,7 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
         }
     }
 
-    public NodeIterable getNeigbors(Node node) {
+    public NodeIterable getNeighbors(Node node) {
         PreNode preNode = checkNode(node);
         readLock();
         if (visible) {

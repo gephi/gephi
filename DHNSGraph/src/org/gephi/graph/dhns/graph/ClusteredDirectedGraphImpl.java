@@ -180,7 +180,7 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     }
 
     //Graph
-    public NodeIterable getNeigbors(Node node) {
+    public NodeIterable getNeighbors(Node node) {
         PreNode preNode = checkNode(node);
         readLock();
         if (visible) {

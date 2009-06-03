@@ -42,7 +42,7 @@ public interface Graph {
 
     public EdgeIterable getEdges();
 
-    public NodeIterable getNeigbors(Node node);
+    public NodeIterable getNeighbors(Node node);
 
     public EdgeIterable getEdges(Node node);
 

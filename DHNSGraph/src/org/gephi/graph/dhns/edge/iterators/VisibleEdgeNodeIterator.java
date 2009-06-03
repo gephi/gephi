@@ -62,6 +62,9 @@ public class VisibleEdgeNodeIterator extends AbstractEdgeIterator implements Ite
                 boolean res = edgeIterator.hasNext();
                 if (res) {
                     pointer = edgeIterator.next();
+                    if(pointer.isSelfLoop()) {  //Ignore self loop here to avoid double iteration
+                        pointer = null;
+                    }
                 } else {
                     this.edgeIterator.setNode(node.getEdgesInTree());
                     this.mode = EdgeNodeIteratorMode.IN;
