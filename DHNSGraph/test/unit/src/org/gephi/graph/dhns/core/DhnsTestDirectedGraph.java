@@ -430,4 +430,183 @@ public class DhnsTestDirectedGraph {
         System.out.println();
         assertArrayEquals(expected, actual);
     }
+
+    @Test
+    public void testSucessors() {
+        //Test
+        System.out.print("testSucessors: ");
+        Node[] expected = new Node[1];
+        expected[0] = nodeMap.get("Node 6");
+        Node[] actual = new Node[1];
+
+        int i = 0;
+        Node node5 = nodeMap.get("Node 5");
+        for (Node n : graphGlobal.getSuccessors(node5)) {
+            System.out.print(n.getId()+" ");
+            actual[i++] = n;
+            assertTrue(graphGlobal.isSuccessor(node5, n));
+        }
+        System.out.println();
+        assertArrayEquals(expected, actual);
+
+        //Test Self loop
+        Node[] array = graphGlobal.getSuccessors(nodeMap.get("Node 7")).toArray();
+        assertEquals("self loop array length 0", 0, array.length);
+    }
+
+    @Test
+    public void testPredecessors() {
+        //Test
+        System.out.print("testPredecessors: ");
+        Node[] expected = new Node[2];
+        expected[0] = nodeMap.get("Node 4");
+        expected[1] = nodeMap.get("Node 6");
+        Node[] actual = new Node[2];
+
+        int i = 0;
+        Node node5 = nodeMap.get("Node 5");
+        for (Node n : graphGlobal.getPredecessors(node5)) {
+            System.out.print(n.getId()+" ");
+            actual[i++] = n;
+            assertTrue(graphGlobal.isPredecessor(node5, n));
+        }
+        System.out.println();
+        assertArrayEquals(expected, actual);
+
+        //Test Self loop
+        Node[] array = graphGlobal.getSuccessors(nodeMap.get("Node 7")).toArray();
+        assertEquals("self loop array length 0", 0, array.length);
+    }
+
+    @Test
+    public void testNeighbors() {
+        System.out.print("testNeighbors: ");
+        Node[] expected = new Node[2];
+        expected[0] = nodeMap.get("Node 4");
+        expected[1] = nodeMap.get("Node 6");
+        Node[] actual = new Node[2];
+
+        int i = 0;
+        for (Node n : graphGlobal.getNeighbors(nodeMap.get("Node 5"))) {
+            System.out.print(n.getId()+" ");
+            actual[i++] = n;
+        }
+        System.out.println();
+        assertArrayEquals(expected, actual);
+
+         //Test Self loop
+         Node[] array = graphGlobal.getSuccessors(nodeMap.get("Node 7")).toArray();
+         assertEquals("self loop array length 0", 0, array.length);
+    }
+
+    @Test
+    public void testOpposite() {
+        Node node4 = nodeMap.get("Node 4");
+        Node node5 = nodeMap.get("Node 5");
+        Edge edge1 = edgeMap.get("4-5");
+        Edge edge2 = edgeMap.get("4-4");
+
+        assertEquals(node5,graphGlobal.getOpposite(node4, edge1));
+        assertEquals(node4,graphGlobal.getOpposite(node4, edge2));
+    }
+
+    @Test
+    public void testDegree() {
+        Node node5 = nodeMap.get("Node 5");
+        Node node4 = nodeMap.get("Node 4");
+        Node node7 = nodeMap.get("Node 7");
+
+        assertEquals(3, graphGlobal.getDegree(node5));
+        assertEquals(3, graphGlobal.getDegree(node4));
+        assertEquals(2, graphGlobal.getDegree(node7));
+    }
+
+    @Test
+    public void testAdjacent() {
+        Node node4 = nodeMap.get("Node 4");
+        Node node5 = nodeMap.get("Node 5");
+        Node node6 = nodeMap.get("Node 6");
+        Edge edge1 = edgeMap.get("4-5");
+        Edge edge2 = edgeMap.get("5-6");
+
+        assertTrue(graphGlobal.isAdjacent(node4, node5));
+        assertFalse(graphGlobal.isAdjacent(node4, node6));
+        assertTrue(graphGlobal.isAdjacent(edge1, edge2));
+    }
+
+    @Test
+    public void testClearEdgesNode() {
+        Node node4 = nodeMap.get("Node 4");
+        Node node5 = nodeMap.get("Node 5");
+        Edge edge1 = edgeMap.get("4-4");
+        Edge edge2 = edgeMap.get("5-6");
+        graphGlobal.clearEdges(node5);
+        graphGlobal.clearEdges(node4);
+
+        assertEquals(0,graphGlobal.getDegree(node5));
+        assertEquals(0,graphGlobal.getDegree(node4));
+        assertFalse(graphGlobal.contains(edge2));
+        assertFalse(graphGlobal.contains(edge1));
+        assertFalse(graphGlobal.isAdjacent(node4, node5));
+        //assertFalse(graphGlobal.isAdjacent(edge1, edge2));        //Fail because no test verifying edge belongs to the structure
+    }
+
+    @Test
+    public void testGetEdge() {
+        Node node4 = nodeMap.get("Node 4");
+        Node node5 = nodeMap.get("Node 5");
+
+        assertNotNull(graphGlobal.getEdge(node4, node5));
+        Edge selfLoop = graphGlobal.getEdge(node4, node4);
+        assertTrue(graphGlobal.isSelfLoop(selfLoop));
+    }
+
+    @Test
+    public void testGetInEdges() {
+
+        //Test1
+        System.out.print("testGetInEdges: ");
+        Edge[] expected = new Edge[2];
+        expected[0] = edgeMap.get("4-5");
+        expected[1] = edgeMap.get("6-5");
+        Edge[] actual = new Edge[2];
+
+        int i = 0;
+        Node node5 = nodeMap.get("Node 5");
+        for (Edge e : graphGlobal.getInEdges(node5)) {
+            Node s = e.getSource();
+            Node t = e.getTarget();
+            System.out.print("#" + s.getId() + "-" + t.getId() + " ");
+            actual[i++] = e;
+        }
+        System.out.println();
+        assertArrayEquals(expected, actual);
+
+        //Test2
+        assertEquals(graphGlobal.getInEdges(nodeMap.get("Node 4")).toArray()[0], edgeMap.get("4-4"));
+    }
+
+    @Test
+    public void testGetOutEdges() {
+
+        //Test1
+        System.out.print("testGetOutEdges: ");
+        Edge[] expected = new Edge[1];
+        expected[0] = edgeMap.get("5-6");
+        Edge[] actual = new Edge[1];
+
+        int i = 0;
+        Node node5 = nodeMap.get("Node 5");
+        for (Edge e : graphGlobal.getOutEdges(node5)) {
+            Node s = e.getSource();
+            Node t = e.getTarget();
+            System.out.print("#" + s.getId() + "-" + t.getId() + " ");
+            actual[i++] = e;
+        }
+        System.out.println();
+        assertArrayEquals(expected, actual);
+
+        //Test2
+        assertEquals(graphGlobal.getInEdges(nodeMap.get("Node 4")).toArray()[0], edgeMap.get("4-4"));
+    }
 }

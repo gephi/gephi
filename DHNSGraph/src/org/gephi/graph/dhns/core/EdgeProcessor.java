@@ -22,7 +22,7 @@ package org.gephi.graph.dhns.core;
 
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.edge.EdgeImpl;
+import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
@@ -49,8 +49,8 @@ public class EdgeProcessor {
             edgeIterator.setNode(node.getEdgesInTree());
             while (edgeIterator.hasNext()) {
                 AbstractEdge edge = edgeIterator.next();
-                removeEdgeFromMetaEdge((EdgeImpl) edge);
-                edge.getSource().getEdgesOutTree().remove((EdgeImpl) edge);
+                removeEdgeFromMetaEdge(edge);
+                edge.getSource().getEdgesOutTree().remove(edge);
             }
             node.getEdgesInTree().clear();
         }
@@ -59,10 +59,10 @@ public class EdgeProcessor {
             edgeIterator.setNode(node.getEdgesOutTree());
             while (edgeIterator.hasNext()) {
                 AbstractEdge edge = edgeIterator.next();
-                removeEdgeFromMetaEdge((EdgeImpl) edge);
-                edge.getTarget().getEdgesInTree().remove((EdgeImpl) edge);
+                removeEdgeFromMetaEdge(edge);
+                edge.getTarget().getEdgesInTree().remove(edge);
             }
-            node.getMetaEdgesOutTree().clear();
+            node.getEdgesOutTree().clear();
         }
     }
 
@@ -107,7 +107,7 @@ public class EdgeProcessor {
                     PreNode targetNode = treeStructure.getEnabledAncestorOrSelf(edge.getTarget());
                     if (targetNode != null && targetNode != edge.getTarget()) {
                         //Create Meta Edge if not exist
-                        createMetaEdge(node, targetNode, (EdgeImpl) edge);
+                        createMetaEdge(node, targetNode, (ProperEdgeImpl) edge);
                     }
                 }
             }
@@ -118,7 +118,7 @@ public class EdgeProcessor {
                     PreNode sourceNode = treeStructure.getEnabledAncestorOrSelf(edge.getSource());
                     if (sourceNode != null && sourceNode != edge.getSource()) {
                         //Create Meta Edge if not exist
-                        createMetaEdge(sourceNode, node, (EdgeImpl) edge);
+                        createMetaEdge(sourceNode, node, (ProperEdgeImpl) edge);
                     }
                 }
             }
@@ -139,12 +139,18 @@ public class EdgeProcessor {
     }
 
     public void createMetaEdge(PreNode source, PreNode target) {
+        if(source==target) {
+            return;
+        }
         MetaEdgeImpl newEdge = new MetaEdgeImpl(idGen.newEdgeId(),source, target);
         source.getMetaEdgesOutTree().add(newEdge);
         target.getMetaEdgesInTree().add(newEdge);
     }
 
     public void createMetaEdge(AbstractEdge edge) {
+        if(edge.isSelfLoop()) {
+            return;
+        }
         PreNode sourceParent = treeStructure.getEnabledAncestorOrSelf(edge.getSource());
         PreNode targetParent = treeStructure.getEnabledAncestorOrSelf(edge.getTarget());
 
@@ -154,6 +160,9 @@ public class EdgeProcessor {
     }
 
     public void removeEdgeFromMetaEdge(AbstractEdge edge) {
+        if(edge.isSelfLoop()) {
+            return;
+        }
         MetaEdgeImpl metaEdge = getMetaEdge(edge);
         if (metaEdge != null) {
             metaEdge.removeEdge(edge);
@@ -165,10 +174,16 @@ public class EdgeProcessor {
     }
 
     public MetaEdgeImpl getMetaEdge(PreNode source, PreNode target) {
+        if(source==target) {
+            return null;
+        }
         return source.getMetaEdgesOutTree().getItem(target.getNumber());
     }
 
     public MetaEdgeImpl getMetaEdge(AbstractEdge edge) {
+        if(edge.isSelfLoop()) {
+            return null;
+        }
         PreNode sourceParent = treeStructure.getEnabledAncestorOrSelf(edge.getSource());
         PreNode targetParent = treeStructure.getEnabledAncestorOrSelf(edge.getTarget());
 

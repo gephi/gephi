@@ -25,6 +25,15 @@ package org.gephi.graph.api;
  *
  * @author Mathieu Bastian
  */
-public interface ClusteredSparseGraph extends SparseGraph, ClusteredGraph {
+public interface MixedGraph extends Graph {
 
+    public void addEdge(Node source, Node target, boolean directed);
+
+    public Edge getEdge(Node node1, Node node2);
+
+    public Iterable<Edge> getDirectedEdges();
+
+    public Iterable<Edge> getUndirectedEdges();
+
+    public boolean isDirected(Edge edge);
 }

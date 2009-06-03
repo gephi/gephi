@@ -37,9 +37,9 @@ public interface GraphController {
 
     public UndirectedGraph getVisibleUndirectedGraph();
 
-    public SparseGraph getSparseGraph();
+    public MixedGraph getMixedGraph();
 
-    public SparseGraph getVisibleSparseGraph();
+    public MixedGraph getVisibleMixedGraph();
 
     public ClusteredDirectedGraph getClusteredDirectedGraph();
 
@@ -49,7 +49,7 @@ public interface GraphController {
 
     public ClusteredUndirectedGraph getVisibleClusteredUndirectedGraph();
 
-    public ClusteredSparseGraph getClusteredSparseGraph();
+    public ClusteredMixedGraph getClusteredMixedGraph();
 
-    public ClusteredSparseGraph getVisibleClusteredSparseGraph();
+    public ClusteredMixedGraph getVisibleClusteredMixedGraph();
 }

@@ -18,18 +18,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.edge;
 
-import org.gephi.graph.dhns.node.PreNode;
+package org.gephi.graph.api;
 
 /**
- * Main Edge implementation. Has a source and a target.
  *
  * @author Mathieu Bastian
  */
-public class EdgeImpl extends AbstractEdge {
+public interface ClusteredMixedGraph extends MixedGraph, ClusteredGraph {
 
-    public EdgeImpl(int ID, PreNode source, PreNode target) {
-        super(ID, source, target);
-    }
 }

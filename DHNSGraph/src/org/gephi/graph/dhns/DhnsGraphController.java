@@ -21,16 +21,16 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns;
 
 import org.gephi.graph.api.ClusteredDirectedGraph;
-import org.gephi.graph.api.ClusteredSparseGraph;
+import org.gephi.graph.api.ClusteredMixedGraph;
 import org.gephi.graph.api.ClusteredUndirectedGraph;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphFactory;
-import org.gephi.graph.api.SparseGraph;
+import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
-import org.gephi.graph.dhns.graph.ClusteredSparseGraphImpl;
+import org.gephi.graph.dhns.graph.ClusteredMixedGraphImpl;
 import org.gephi.graph.dhns.graph.ClusteredUndirectedGraphImpl;
 
 /**
@@ -66,12 +66,12 @@ public class DhnsGraphController implements GraphController {
         return new ClusteredUndirectedGraphImpl(dhns, true);
     }
 
-    public SparseGraph getSparseGraph() {
-        return new ClusteredSparseGraphImpl(dhns, false);
+    public MixedGraph getMixedGraph() {
+        return new ClusteredMixedGraphImpl(dhns, false);
     }
 
-    public SparseGraph getVisibleSparseGraph() {
-        return new ClusteredSparseGraphImpl(dhns, true);
+    public MixedGraph getVisibleMixedGraph() {
+        return new ClusteredMixedGraphImpl(dhns, true);
     }
 
     public ClusteredDirectedGraph getClusteredDirectedGraph() {
@@ -90,11 +90,11 @@ public class DhnsGraphController implements GraphController {
         return new ClusteredUndirectedGraphImpl(dhns, true);
     }
 
-    public ClusteredSparseGraph getClusteredSparseGraph() {
-        return new ClusteredSparseGraphImpl(dhns, false);
+    public ClusteredMixedGraph getClusteredMixedGraph() {
+        return new ClusteredMixedGraphImpl(dhns, false);
     }
 
-    public ClusteredSparseGraph getVisibleClusteredSparseGraph() {
-        return new ClusteredSparseGraphImpl(dhns, true);
+    public ClusteredMixedGraph getVisibleClusteredMixedGraph() {
+        return new ClusteredMixedGraphImpl(dhns, true);
     }
 }

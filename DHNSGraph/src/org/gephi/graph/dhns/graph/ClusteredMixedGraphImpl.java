@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
-import org.gephi.graph.api.ClusteredSparseGraph;
+import org.gephi.graph.api.ClusteredMixedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Node;
@@ -34,9 +34,9 @@ import org.gephi.graph.dhns.node.PreNode;
  *
  * @author Mathieu Bastian
  */
-public class ClusteredSparseGraphImpl extends ClusteredGraphImpl implements ClusteredSparseGraph {
+public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements ClusteredMixedGraph {
 
-    public ClusteredSparseGraphImpl(Dhns dhns, boolean visible) {
+    public ClusteredMixedGraphImpl(Dhns dhns, boolean visible) {
         super(dhns, visible);
     }
 
@@ -106,7 +106,7 @@ public class ClusteredSparseGraphImpl extends ClusteredGraphImpl implements Clus
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public boolean isNeighbor(Node node, Node neighbor) {
+    public boolean isAdjacent(Node node1, Node node2) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

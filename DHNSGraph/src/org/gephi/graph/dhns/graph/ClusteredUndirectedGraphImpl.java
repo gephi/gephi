@@ -124,8 +124,8 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
         return count;
     }
 
-    public boolean isNeighbor(Node node, Node neighbor) {
-        return getEdge(node, neighbor) != null;
+    public boolean isAdjacent(Node node1, Node node2) {
+        return getEdge(node1, node2) != null;
     }
 
     public EdgeIterable getInnerEdges(Node nodeGroup) {

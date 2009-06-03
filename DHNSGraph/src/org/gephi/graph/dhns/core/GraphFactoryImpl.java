@@ -25,7 +25,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.edge.EdgeImpl;
+import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.edge.SelfLoopImpl;
 import org.gephi.graph.dhns.edge.SparseEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
@@ -64,7 +64,7 @@ public class GraphFactoryImpl implements GraphFactory {
         if (source == target) {
             edge = new SelfLoopImpl(idGen.newEdgeId(),nodeSource);
         } else {
-            edge = new EdgeImpl(idGen.newEdgeId(),nodeSource, nodeTarget);
+            edge = new ProperEdgeImpl(idGen.newEdgeId(),nodeSource, nodeTarget);
         }
         edge.setAttributes(dhns.newEdgeAttributes());
         return edge;

@@ -60,10 +60,10 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     }
 
     public void addNode(Node node) {
-        if(node==null) {
+        if (node == null) {
             throw new NullPointerException();
         }
-        PreNode preNode = (PreNode)node;
+        PreNode preNode = (PreNode) node;
         if (preNode.isValid()) {
             return;     //Already added
         }
@@ -124,6 +124,15 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     public boolean isSelfLoop(Edge edge) {
         checkEdge(edge);
         return edge.getSource() == edge.getTarget();
+    }
+
+    public boolean isAdjacent(Edge edge1, Edge edge2) {
+        checkEdge(edge1);
+        checkEdge(edge2);
+        return edge1.getSource() == edge2.getSource() ||
+                edge1.getSource() == edge2.getTarget() ||
+                edge1.getTarget() == edge2.getSource() ||
+                edge1.getTarget() == edge2.getSource();
     }
 
     public Node getOpposite(Node node, Edge edge) {

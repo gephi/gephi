@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.node.utils.avl;
 
-import org.gephi.graph.dhns.edge.EdgeImpl;
+import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;

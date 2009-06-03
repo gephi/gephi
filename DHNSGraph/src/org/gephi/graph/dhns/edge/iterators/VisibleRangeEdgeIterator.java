@@ -23,7 +23,7 @@ package org.gephi.graph.dhns.edge.iterators;
 import java.util.Iterator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.dhns.core.TreeStructure;
-import org.gephi.graph.dhns.edge.EdgeImpl;
+import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.VisibleDescendantAndSelfIterator;
 
@@ -43,7 +43,7 @@ public class VisibleRangeEdgeIterator extends RangeEdgeIterator implements Itera
     }
 
     @Override
-    protected boolean testTarget(EdgeImpl edgeImpl) {
+    protected boolean testTarget(ProperEdgeImpl edgeImpl) {
         if (edgeImpl.isVisible()) {
             if (IN) {
                 PreNode source = edgeImpl.getSource();

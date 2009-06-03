@@ -60,7 +60,9 @@ public interface Graph {
 
     public boolean isSelfLoop(Edge edge);
 
-    public boolean isNeighbor(Node node, Node neighbor);
+    public boolean isAdjacent(Node node1, Node node2);
+
+    public boolean isAdjacent(Edge edge1, Edge edge2);
 
     public void clearEdges(Node node);
 

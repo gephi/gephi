@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.edge.iterators;
 
 import java.util.Iterator;
-import org.gephi.graph.dhns.edge.EdgeImpl;
+import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
@@ -37,13 +37,13 @@ import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 public class VisibleMetaEdgeIterator extends AbstractEdgeIterator implements Iterator<Edge> {
 
     protected AbstractNodeIterator nodeIterator;
-    protected ParamAVLIterator<EdgeImpl> edgeIterator;
+    protected ParamAVLIterator<ProperEdgeImpl> edgeIterator;
     protected PreNode currentNode;
-    protected EdgeImpl pointer;
+    protected ProperEdgeImpl pointer;
 
     public VisibleMetaEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator) {
         this.nodeIterator = nodeIterator;
-        edgeIterator = new ParamAVLIterator<EdgeImpl>();
+        edgeIterator = new ParamAVLIterator<ProperEdgeImpl>();
     }
 
     @Override
@@ -66,8 +66,8 @@ public class VisibleMetaEdgeIterator extends AbstractEdgeIterator implements Ite
     }
 
     @Override
-    public EdgeImpl next() {
-        EdgeImpl e = pointer;
+    public ProperEdgeImpl next() {
+        ProperEdgeImpl e = pointer;
         pointer = null;
         return e;
     }

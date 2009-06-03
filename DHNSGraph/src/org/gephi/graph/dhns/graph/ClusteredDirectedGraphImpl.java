@@ -186,7 +186,7 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         if (visible) {
             return dhns.newNodeIterable(new NeighborIterator(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false), preNode));
         } else {
-            return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false), preNode));
+            return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true), preNode));
         }
     }
 
@@ -233,8 +233,8 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     }
 
     //Graph
-    public boolean isNeighbor(Node node, Node neighbor) {
-        return isSuccessor(node, neighbor) || isPredecessor(node, neighbor);
+    public boolean isAdjacent(Node node1, Node node2) {
+        return isSuccessor(node1, node2) || isPredecessor(node1, node2);
     }
 
     //ClusteredGraph

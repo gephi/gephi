@@ -23,7 +23,7 @@ package org.gephi.graph.dhns.edge.iterators;
 import java.util.Iterator;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.dhns.edge.EdgeImpl;
+import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.node.PreNode;
 
 /**
@@ -39,16 +39,16 @@ public class VisibleEdgeNodeIterator extends AbstractEdgeIterator implements Ite
         OUT, IN, BOTH
     };
     protected PreNode node;
-    protected ParamAVLIterator<EdgeImpl> edgeIterator;
+    protected ParamAVLIterator<ProperEdgeImpl> edgeIterator;
     protected EdgeNodeIteratorMode mode;
-    protected EdgeImpl pointer;
+    protected ProperEdgeImpl pointer;
     protected boolean undirected;
 
     public VisibleEdgeNodeIterator(PreNode node, EdgeNodeIteratorMode mode, boolean undirected) {
         this.node = node;
         this.mode = mode;
         this.undirected = undirected;
-        this.edgeIterator = new ParamAVLIterator<EdgeImpl>();
+        this.edgeIterator = new ParamAVLIterator<ProperEdgeImpl>();
         if (mode.equals(EdgeNodeIteratorMode.OUT) || mode.equals(EdgeNodeIteratorMode.BOTH)) {
             this.edgeIterator.setNode(node.getEdgesOutTree());
         } else {
@@ -80,8 +80,8 @@ public class VisibleEdgeNodeIterator extends AbstractEdgeIterator implements Ite
         return true;
     }
 
-    public EdgeImpl next() {
-        EdgeImpl e = pointer;
+    public ProperEdgeImpl next() {
+        ProperEdgeImpl e = pointer;
         pointer = null;
         return e;
     }

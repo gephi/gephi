@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.graph.dhns.node.iterators;
 
 import java.util.Iterator;
@@ -36,6 +35,7 @@ public class NeighborIterator implements Iterator<Node> {
 
     private AbstractEdgeIterator edgeIterator;
     private PreNode owner;
+    private AbstractEdge pointer;
 
     public NeighborIterator(AbstractEdgeIterator edgeIterator, PreNode owner) {
         this.edgeIterator = edgeIterator;
@@ -43,15 +43,20 @@ public class NeighborIterator implements Iterator<Node> {
     }
 
     public boolean hasNext() {
-        return edgeIterator.hasNext();
+        while (edgeIterator.hasNext()) {
+            pointer = edgeIterator.next();
+            if (!pointer.isSelfLoop()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public PreNode next() {
-        AbstractEdge edge = edgeIterator.next();
-        if (edge.getSource() == owner) {
-            return edge.getTarget();
+        if (pointer.getSource() == owner) {
+            return pointer.getTarget();
         } else {
-            return edge.getSource();
+            return pointer.getSource();
         }
     }
 
