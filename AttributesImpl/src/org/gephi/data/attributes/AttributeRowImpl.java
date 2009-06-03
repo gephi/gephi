@@ -20,9 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes;
 
-import java.util.Arrays;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeValue;
 
 /**
  *
@@ -31,7 +31,8 @@ import org.gephi.data.attributes.api.AttributeRow;
 public class AttributeRowImpl implements AttributeRow {
 
     protected AbstractAttributeClass attributeClass;
-    protected Object[] values;
+    protected AttributeValueImpl[] values;
+    protected int rowVersion = -1;
 
     public AttributeRowImpl(AbstractAttributeClass attributeClass) {
         this.attributeClass = attributeClass;
@@ -39,29 +40,26 @@ public class AttributeRowImpl implements AttributeRow {
     }
 
     public void reset() {
-
+        rowVersion = attributeClass.getVersion();
         int attSize = attributeClass.countAttributeColumns();
-        Object[] newValues = new Object[attSize];
+        AttributeValueImpl[] newValues = new AttributeValueImpl[attSize];
         for (int i = 0; i < attSize; i++) {
-            newValues[i] = attributeClass.getAttributeColumn(i).getDefaultValue();
+            newValues[i] = attributeClass.getAttributeColumn(i).defaultValue;
         }
         this.values = newValues;
     }
 
-    public void setValues(Object[] values) {
-        for (int i = 0; i < values.length; i++) {
-            setValue(i, values[i]);
+    public void setValues(AttributeRow attributeRow) {
+        AttributeValue[] attValues = attributeRow.getValues();
+        for (int i = 0; i < attValues.length; i++) {
+            setValue(attValues[i]);
         }
     }
 
-    public void setValues(AttributeRow attributeRow) {
-        setValues(((AttributeRowImpl) attributeRow).values);
-    }
-
     public void setValue(int index, Object value) {
-        if (checkIndexRange(index)) {
-            AttributeColumn column = attributeClass.getAttributeColumn(index);
-            this.values[index] = attributeClass.getManagedValue(value, column.getAttributeType());
+        AttributeColumn column = attributeClass.getAttributeColumn(index);
+        if (column != null) {
+            setValue(column, value);
         }
     }
 
@@ -73,44 +71,72 @@ public class AttributeRowImpl implements AttributeRow {
     }
 
     public void setValue(AttributeColumn column, Object value) {
-        setValue(column.getIndex(), value);
+        setValue(new AttributeValueImpl((AttributeColumnImpl) column, value));
+    }
+
+    public void setValue(AttributeValue value) {
+        AttributeColumn column = value.getColumn();
+        setValue(column.getIndex(), (AttributeValueImpl) value);
+    }
+
+    private void setValue(int index, AttributeValueImpl value) {
+        updateColumns();
+        this.values[index] = value;
     }
 
     public Object getValue(AttributeColumn column) {
-        return getValue(column.getIndex());
+        updateColumns();
+        int index = column.getIndex();
+        if (checkIndexRange(index)) {
+            AttributeValue val = values[index];
+            if (val.getColumn() == column) {
+                return val.getValue();
+            }
+        }
+        return null;
     }
 
     public Object getValue(String column) {
         AttributeColumn attributeColumn = attributeClass.getAttributeColumn(column);
         if (attributeColumn != null) {
-            return getValue(attributeColumn.getIndex());
+            return getValue(attributeColumn);
         }
         return null;
     }
 
-    public Object getValue(int index) {
-        if (checkIndexRange(index)) {
-            return values[index];
+    public AttributeValue[] getValues() {
+        return values;
+    }
+
+    private void updateColumns() {
+
+        int classVersion = attributeClass.getVersion();
+        if (rowVersion < classVersion) {
+
+            //Need to update
+            AttributeColumnImpl[] classColumns = attributeClass.getAttributeColumns();
+            AttributeValueImpl[] newValues = new AttributeValueImpl[classColumns.length];
+
+            int j = 0;
+            for (int i = 0; i < classColumns.length; i++) {
+                AttributeColumnImpl classCol = classColumns[i];
+                newValues[i] = classCol.defaultValue;
+                while (j < values.length) {
+                    AttributeValueImpl val = values[j++];
+                    if (val.getColumn() == classCol) {
+                        newValues[i] = val;
+                        break;
+                    }
+                }
+            }
+            values = newValues;
+
+            //Upd version
+            rowVersion = classVersion;
         }
-        return null;
     }
 
     private boolean checkIndexRange(int index) {
         return index < values.length;
-    }
-
-    public void addColumn(Object defaultValue)
-    {
-        Object[] newValues = Arrays.copyOf(values, values.length+1);
-        newValues[newValues.length-1] = defaultValue;
-    }
-
-    public void removeColumn(int index)
-    {
-        Object[] newValues = Arrays.copyOf(values, values.length-1);
-        for(int i=index;i<newValues.length;i++)
-        {
-            newValues[i] = values[i+1];
-        }
     }
 }

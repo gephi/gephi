@@ -32,6 +32,8 @@ public interface AttributeRow extends Attributes {
 
     public void setValues(AttributeRow attributeRow);
 
+    public void setValue(AttributeValue value);
+
     public void setValue(AttributeColumn column, Object value);
 
     public void setValue(String column, Object value);
@@ -40,4 +42,5 @@ public interface AttributeRow extends Attributes {
 
     public Object getValue(String column);
 
+    public AttributeValue[] getValues();
 }

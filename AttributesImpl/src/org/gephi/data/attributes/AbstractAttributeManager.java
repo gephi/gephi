@@ -38,8 +38,6 @@ public abstract class AbstractAttributeManager implements AttributeManager {
     private EdgeAttributeClass edgeClass;
 
     //Data API
-    
-
     public AbstractAttributeManager() {
         classMap = new ConcurrentHashMap<String, AbstractAttributeClass>();
         nodeClass = new NodeAttributeClass(this);
@@ -50,13 +48,10 @@ public abstract class AbstractAttributeManager implements AttributeManager {
 
     public abstract Object getManagedValue(Object obj, AttributeType attributeType);
 
-    public void clear()
-    {
-        
+    public void clear() {
     }
 
-    public Lookup getClassLookup(String className)
-    {
+    public Lookup getClassLookup(String className) {
         return classMap.get(className).getLookup();
     }
 
@@ -70,10 +65,9 @@ public abstract class AbstractAttributeManager implements AttributeManager {
 
     public AbstractAttributeClass getClass(String name) {
         AbstractAttributeClass attClass = classMap.get(name);
-        if(attClass!=null)
+        if (attClass != null) {
             return attClass;
+        }
         return null;
     }
-
-    
 }

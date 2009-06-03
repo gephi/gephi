@@ -29,21 +29,11 @@ import org.openide.util.NbBundle;
 public class EdgeAttributeClass extends AbstractAttributeClass {
 
     public EdgeAttributeClass(AbstractAttributeManager manager) {
-        super(manager,"edge");
+        super(manager, "edge");
     }
 
     @Override
     public String getName() {
         return NbBundle.getMessage(NodeAttributeClass.class, "EdgeAttributeClass_name");
-    }
-
-    @Override
-    protected void addColumnToData(AttributeColumnImpl column) {
-        
-    }
-
-    @Override
-    protected void removeColumnFromData(AttributeColumnImpl column) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

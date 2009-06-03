@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.data.attributes;
 
 import org.gephi.data.attributes.api.AttributeController;
@@ -37,11 +36,9 @@ public class AttributeContollerImpl implements AttributeController {
     private IndexedAttributeManager currentManager;
     private AttributeFactoryImpl factory;
 
-    public AttributeContollerImpl()
-    {
-
-        factory = new AttributeFactoryImpl();
+    public AttributeContollerImpl() {
         currentManager = new IndexedAttributeManager();
+        factory = new AttributeFactoryImpl(currentManager);
     }
 
     public Lookup getNodeColumnsLookup() {

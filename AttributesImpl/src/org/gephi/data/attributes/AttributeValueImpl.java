@@ -18,10 +18,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.data.attributes;
 
-import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeValue;
 
 /**
@@ -29,16 +27,16 @@ import org.gephi.data.attributes.api.AttributeValue;
  * @author Mathieu Bastian
  */
 public final class AttributeValueImpl implements AttributeValue {
-    private final AttributeColumn column;
+
+    private final AttributeColumnImpl column;
     private final Object value;
 
-    public AttributeValueImpl(AttributeColumn column, Object value)
-    {
+    public AttributeValueImpl(AttributeColumnImpl column, Object value) {
         this.column = column;
         this.value = value;
     }
 
-    public AttributeColumn getColumn() {
+    public AttributeColumnImpl getColumn() {
         return column;
     }
 

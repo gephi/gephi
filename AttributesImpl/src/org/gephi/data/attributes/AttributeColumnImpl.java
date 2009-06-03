@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.data.attributes;
 
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -36,17 +35,16 @@ public class AttributeColumnImpl implements AttributeColumn {
     protected String title;
     protected AttributeType type;
     protected AttributeOrigin origin;
-    protected Object defaultValue;
+    protected AttributeValueImpl defaultValue;
 
-    public AttributeColumnImpl(int index, String id, String title, AttributeType attributeType, AttributeOrigin origin, Object defaultValue)
-	{
-		this.index = index;
-		this.id = id;
-		this.type=attributeType;
-		this.title=title;
-		this.origin = origin;
-		this.defaultValue = defaultValue;
-	}
+    public AttributeColumnImpl(int index, String id, String title, AttributeType attributeType, AttributeOrigin origin, Object defaultValue) {
+        this.index = index;
+        this.id = id;
+        this.type = attributeType;
+        this.title = title;
+        this.origin = origin;
+        this.defaultValue = new AttributeValueImpl(this, defaultValue);
+    }
 
     public AttributeType getAttributeType() {
         return type;
@@ -69,19 +67,17 @@ public class AttributeColumnImpl implements AttributeColumn {
     }
 
     public Object getDefaultValue() {
-        return defaultValue;
+        return defaultValue.getValue();
     }
 
     @Override
-	public boolean equals(Object obj)
-	{
-		if(obj instanceof AttributeColumn)
-		{
-			AttributeColumnImpl o = (AttributeColumnImpl)obj;
-			return id.equals(o.id) && o.type==type;
-		}
-		return false;
-	}
+    public boolean equals(Object obj) {
+        if (obj instanceof AttributeColumn) {
+            AttributeColumnImpl o = (AttributeColumnImpl) obj;
+            return id.equals(o.id) && o.type == type;
+        }
+        return false;
+    }
 
     @Override
     public int hashCode() {
@@ -90,5 +86,4 @@ public class AttributeColumnImpl implements AttributeColumn {
         hash = 53 * hash + (this.type != null ? this.type.hashCode() : 0);
         return hash;
     }
-
 }

@@ -49,6 +49,9 @@ public abstract class AbstractAttributeClass implements AttributeClass, Lookup.P
     protected List<AttributeColumnImpl> columns = new ArrayList<AttributeColumnImpl>();
     protected Map<String, AttributeColumnImpl> columnsMap = new HashMap<String, AttributeColumnImpl>();
 
+    //Version
+    protected int version = 0;
+
     public AbstractAttributeClass(AbstractAttributeManager manager, String name) {
         this.name = name;
         this.manager = manager;
@@ -58,11 +61,7 @@ public abstract class AbstractAttributeClass implements AttributeClass, Lookup.P
 
     public abstract String getName();
 
-    protected abstract void addColumnToData(AttributeColumnImpl column);
-
-    protected abstract void removeColumnFromData(AttributeColumnImpl column);
-
-    public synchronized AttributeColumn[] getAttributeColumns() {
+    public synchronized AttributeColumnImpl[] getAttributeColumns() {
         return columns.toArray(new AttributeColumnImpl[]{});
     }
 
@@ -70,15 +69,15 @@ public abstract class AbstractAttributeClass implements AttributeClass, Lookup.P
         return columns.size();
     }
 
-    public AttributeColumn addAttributeColumn(String id, AttributeType type) {
+    public AttributeColumnImpl addAttributeColumn(String id, AttributeType type) {
         return addAttributeColumn(id, id, type, AttributeOrigin.DATA, null);
     }
 
-    public AttributeColumn addAttributeColumn(String id, AttributeType type, AttributeOrigin origin) {
+    public AttributeColumnImpl addAttributeColumn(String id, AttributeType type, AttributeOrigin origin) {
         return addAttributeColumn(id, id, type, origin, null);
     }
 
-    public synchronized AttributeColumn addAttributeColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue) {
+    public synchronized AttributeColumnImpl addAttributeColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue) {
         AttributeColumnImpl column = new AttributeColumnImpl(columns.size(), id, title, type, origin, defaultValue);
         columns.add(column);
         columnsMap.put(id, column);
@@ -86,12 +85,14 @@ public abstract class AbstractAttributeClass implements AttributeClass, Lookup.P
             columnsMap.put(title, column);
         }
         instanceContent.add(column);
+
+        //Version
+        version++;
+
         return column;
     }
 
     public synchronized void removeAttributeColumn(AttributeColumn column) {
-        //Remove rows values
-
         //Remove from collections
         columns.remove(column);
         columnsMap.remove(column.getId());
@@ -99,9 +100,12 @@ public abstract class AbstractAttributeClass implements AttributeClass, Lookup.P
             columnsMap.remove(column.getTitle());
         }
         instanceContent.remove(column);
+
+        //Version
+        version++;
     }
 
-    public synchronized AttributeColumn getAttributeColumn(int index) {
+    public synchronized AttributeColumnImpl getAttributeColumn(int index) {
         if (index >= 0 && index < columns.size()) {
             return columns.get(index);
         }
@@ -109,12 +113,12 @@ public abstract class AbstractAttributeClass implements AttributeClass, Lookup.P
         return null;
     }
 
-    public synchronized AttributeColumn getAttributeColumn(String id) {
+    public synchronized AttributeColumnImpl getAttributeColumn(String id) {
         return columnsMap.get(id);
     }
 
-    public synchronized AttributeColumn getAttributeColumn(String title, AttributeType type) {
-        AttributeColumn c = columnsMap.get(title);
+    public synchronized AttributeColumnImpl getAttributeColumn(String title, AttributeType type) {
+        AttributeColumnImpl c = columnsMap.get(title);
         if (c != null && c.getAttributeType().equals(type)) {
             return c;
         }
@@ -123,6 +127,10 @@ public abstract class AbstractAttributeClass implements AttributeClass, Lookup.P
 
     public synchronized boolean hasAttributeColumn(String title) {
         return columnsMap.containsKey(title);
+    }
+
+    public synchronized int getVersion() {
+        return version;
     }
 
     public Lookup getLookup() {
