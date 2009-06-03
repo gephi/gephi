@@ -52,23 +52,23 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     }
 
     public void addEdge(Edge edge) {
-        if (edge == null) {
-            throw new NullPointerException();
-        }
-        AbstractEdge e = (AbstractEdge) edge;
-        if (!e.hasAttributes()) {
-            e.setAttributes(dhns.newEdgeAttributes());
+        AbstractEdge absEdge = checkEdge(edge);
+        if (!absEdge.hasAttributes()) {
+            absEdge.setAttributes(dhns.newEdgeAttributes());
         }
         dhns.getStructureModifier().addEdge(edge);
     }
 
     public void addNode(Node node) {
-        if (node == null) {
+        if(node==null) {
             throw new NullPointerException();
         }
-        AbstractNode n = (AbstractNode) node;
-        if (!n.hasAttributes()) {
-            n.setAttributes(dhns.newNodeAttributes());
+        PreNode preNode = (PreNode)node;
+        if (preNode.isValid()) {
+            return;     //Already added
+        }
+        if (!preNode.hasAttributes()) {
+            preNode.setAttributes(dhns.newNodeAttributes());
         }
         dhns.getStructureModifier().addNode(node, null);
     }
@@ -77,8 +77,11 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         if (node == null) {
             throw new NullPointerException();
         }
-        readLock();
         PreNode preNode = (PreNode) node;
+        readLock();
+        if (!preNode.isValid()) {
+            return false;
+        }
         boolean res = false;
         if (visible) {
             if (preNode.isVisible() && dhns.getTreeStructure().getTree().contains(preNode)) {
@@ -119,16 +122,13 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     }
 
     public boolean isSelfLoop(Edge edge) {
-        if (edge == null) {
-            throw new NullPointerException();
-        }
+        checkEdge(edge);
         return edge.getSource() == edge.getTarget();
     }
 
     public Node getOpposite(Node node, Edge edge) {
-        if (node == null || edge == null) {
-            throw new NullPointerException();
-        }
+        checkNode(node);
+        checkEdge(edge);
         if (edge.getSource() == node) {
             return edge.getTarget();
         } else if (edge.getTarget() == node) {
@@ -138,16 +138,12 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     }
 
     public void removeEdge(Edge edge) {
-        if (edge == null) {
-            throw new NullPointerException();
-        }
+        checkEdge(edge);
         dhns.getStructureModifier().deleteEdge(edge);
     }
 
     public void removeNode(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
+        checkNode(node);
         dhns.getStructureModifier().deleteNode(node);
     }
 
@@ -160,36 +156,29 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     }
 
     public void clearEdges(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
+        checkNode(node);
         dhns.getStructureModifier().clearEdges(node);
     }
 
     public void clearMetaEdges(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
+        checkNode(node);
         dhns.getStructureModifier().clearMetaEdges(node);
     }
 
     public void addNode(Node node, Node parent) {
-        if (node == null) {
-            throw new NullPointerException();
+        PreNode preNode = checkNode(node);
+        if (parent != null) {
+            checkNode(parent);
         }
-        AbstractNode n = (AbstractNode) node;
-        if (!n.hasAttributes()) {
-            n.setAttributes(dhns.newNodeAttributes());
+        if (!preNode.hasAttributes()) {
+            preNode.setAttributes(dhns.newNodeAttributes());
         }
         dhns.getStructureModifier().addNode(node, parent);
     }
 
     public int getChildrenCount(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
+        PreNode preNode = checkNode(node);
         readLock();
-        PreNode preNode = (PreNode) node;
         int count = 0;
         ChildrenIterator itr = new ChildrenIterator(dhns.getTreeStructure(), preNode);
         for (; itr.hasNext();) {
@@ -203,11 +192,8 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     }
 
     public Node getParent(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
+        PreNode preNode = checkNode(node);
         readLock();
-        PreNode preNode = (PreNode) node;
         if (preNode.parent == dhns.getTreeStructure().getRoot()) {
             return null;
         }
@@ -217,11 +203,8 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     }
 
     public NodeIterable getChildren(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
+        PreNode preNode = checkNode(node);
         readLock();
-        PreNode preNode = (PreNode) node;
         if (visible) {
             return dhns.newNodeIterable(new VisibleChildrenIterator(dhns.getTreeStructure(), preNode));
         } else {
@@ -230,11 +213,8 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     }
 
     public NodeIterable getDescendant(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
+        PreNode preNode = checkNode(node);
         readLock();
-        PreNode preNode = (PreNode) node;
         if (visible) {
             return dhns.newNodeIterable(new VisibleDescendantIterator(dhns.getTreeStructure(), preNode));
         } else {
@@ -252,12 +232,9 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     }
 
     public boolean isDescendant(Node node, Node descendant) {
-        if (node == null || descendant == null) {
-            throw new NullPointerException();
-        }
+        PreNode preNode = checkNode(node);
+        PreNode preDesc = checkNode(descendant);
         readLock();
-        PreNode preNode = (PreNode) node;
-        PreNode preDesc = (PreNode) descendant;
         boolean res = preDesc.getPre() > preNode.getPre() && preDesc.getPost() < preNode.getPost();
         readUnlock();
         return res;
@@ -268,12 +245,9 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     }
 
     public boolean isFollowing(Node node, Node following) {
-        if (node == null || following == null) {
-            throw new NullPointerException();
-        }
+        PreNode preNode = checkNode(node);
+        PreNode preFoll = checkNode(following);
         readLock();
-        PreNode preNode = (PreNode) node;
-        PreNode preFoll = (PreNode) following;
         boolean res = preFoll.getPre() > preNode.getPre() && preFoll.getPost() > preNode.getPost();
         readUnlock();
         return res;
@@ -284,11 +258,10 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     }
 
     public boolean isParent(Node node, Node parent) {
-        if (node == null || parent == null) {
-            throw new NullPointerException();
-        }
+        PreNode preNode = checkNode(node);
+        checkNode(parent);
         readLock();
-        boolean res = ((PreNode) node).parent == parent;
+        boolean res = preNode.parent == parent;
         readUnlock();
         return res;
     }
@@ -301,23 +274,20 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     }
 
     public int getLevel(Node node) {
+        PreNode preNode = checkNode(node);
         readLock();
-        int res = ((PreNode) node).level;
+        int res = preNode.level;
         readUnlock();
         return res;
     }
 
     public void expand(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
+        checkNode(node);
         dhns.getStructureModifier().expand(node);
     }
 
     public void retract(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
+        checkNode(node);
         dhns.getStructureModifier().retract(node);
     }
 
@@ -363,5 +333,27 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
 
     public int getEdgeVersion() {
         return dhns.getGraphVersion().getEdgeVersion();
+    }
+
+    protected PreNode checkNode(Node node) {
+        if (node == null) {
+            throw new NullPointerException();
+        }
+        PreNode preNode = (PreNode) node;
+        if (!preNode.isValid()) {
+            throw new IllegalArgumentException("Node must be in the graph");
+        }
+        return preNode;
+    }
+
+    protected AbstractEdge checkEdge(Edge edge) {
+        if (edge == null) {
+            throw new NullPointerException();
+        }
+        AbstractEdge abstractEdge = (AbstractEdge) edge;
+        if (!abstractEdge.isValid()) {
+            throw new IllegalArgumentException("Nodes must be in the graph");
+        }
+        return abstractEdge;
     }
 }

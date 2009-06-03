@@ -95,6 +95,10 @@ public abstract class AbstractEdge implements Edge, AVLItem {
         return source==target;
     }
 
+    public boolean isValid() {
+        return source.isValid() && target.isValid();
+    }
+
     public boolean hasAttributes() {
         return edgeData.getAttributes() == null;
     }

@@ -41,9 +41,8 @@ public class ClusteredSparseGraphImpl extends ClusteredGraphImpl implements Clus
     }
 
     public void addEdge(Node source, Node target, boolean directed) {
-        if (source == null || target == null) {
-            throw new NullPointerException();
-        }
+        checkNode(source);
+        checkNode(target);
         AbstractEdge edge = dhns.getGraphFactory().newEdge(source, target, 1f, directed);
         dhns.getStructureModifier().addEdge(edge);
     }
@@ -57,7 +56,8 @@ public class ClusteredSparseGraphImpl extends ClusteredGraphImpl implements Clus
     }
 
     public boolean isDirected(Edge edge) {
-        return ((AbstractEdge) edge).isDirected();
+        AbstractEdge absEdge = checkEdge(edge);
+        return absEdge.isDirected();
     }
 
     public boolean contains(Edge edge) {
@@ -65,12 +65,9 @@ public class ClusteredSparseGraphImpl extends ClusteredGraphImpl implements Clus
     }
 
     public Edge getEdge(Node node1, Node node2) {
-        if (node1 == null || node2 == null) {
-            throw new NullPointerException();
-        }
+        PreNode sourceNode = checkNode(node1);
+        PreNode targetNode = checkNode(node2);
         readLock();
-        PreNode sourceNode = (PreNode) node1;
-        PreNode targetNode = (PreNode) node2;
         AbstractEdge res = null;
         if (visible) {
             AbstractEdge edge = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());

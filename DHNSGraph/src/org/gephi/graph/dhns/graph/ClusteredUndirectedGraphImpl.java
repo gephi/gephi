@@ -50,9 +50,8 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
     }
 
     public void addEdge(Node node1, Node node2) {
-        if (node1 == null || node2 == null) {
-            throw new NullPointerException();
-        }
+        checkNode(node1);
+        checkNode(node2);
         AbstractEdge edge = dhns.getGraphFactory().newEdge(node1, node2);
         dhns.getStructureModifier().addEdge(edge);
     }
@@ -71,11 +70,8 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
     }
 
     public EdgeIterable getEdges(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
+        PreNode preNode = checkNode(node);
         readLock();
-        PreNode preNode = (PreNode) node;
         if (visible) {
             return dhns.newEdgeIterable(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true));
         } else {
@@ -84,11 +80,8 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
     }
 
     public NodeIterable getNeigbors(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
+        PreNode preNode = checkNode(node);
         readLock();
-        PreNode preNode = (PreNode) node;
         if (visible) {
             return dhns.newNodeIterable(new NeighborIterator(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true), preNode));
         } else {
@@ -115,11 +108,8 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
     }
 
     public int getDegree(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
-        }
+        PreNode preNode = checkNode(node);
         readLock();
-        PreNode preNode = (PreNode) node;
         int count = 0;
         if (visible) {
             VisibleEdgeNodeIterator itr = new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
@@ -161,12 +151,9 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
     }
 
     public Edge getEdge(Node node1, Node node2) {
-        if (node1 == null || node2 == null) {
-            throw new NullPointerException();
-        }
+        PreNode sourceNode = checkNode(node1);
+        PreNode targetNode = checkNode(node2);
         readLock();
-        PreNode sourceNode = (PreNode) node1;
-        PreNode targetNode = (PreNode) node2;
         AbstractEdge res = null;
         if (visible) {
             AbstractEdge edge = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());

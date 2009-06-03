@@ -6,6 +6,7 @@ package org.gephi.graph.dhns.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
@@ -19,13 +20,14 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class DhnsTestDirectedGraph {
 
     private Dhns dhnsGlobal;
     private ClusteredDirectedGraphImpl graphGlobal;
     private Map<String, Node> nodeMap;
+    private Map<String, Edge> edgeMap;
 
     public DhnsTestDirectedGraph() {
     }
@@ -43,6 +45,7 @@ public class DhnsTestDirectedGraph {
         dhnsGlobal = new Dhns();
         graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, false);
         nodeMap = new HashMap<String, Node>();
+        edgeMap = new HashMap<String, Edge>();
 
         TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
         GraphFactoryImpl factory = dhnsGlobal.getGraphFactory();
@@ -69,8 +72,26 @@ public class DhnsTestDirectedGraph {
         Node node2 = nodeMap.get("Node 2");
         Node node3 = nodeMap.get("Node 3");
         Node node4 = nodeMap.get("Node 4");
+        Node node5 = nodeMap.get("Node 5");
+        Node node6 = nodeMap.get("Node 6");
+        Node node7 = nodeMap.get("Node 7");
+        Node node8 = nodeMap.get("Node 8");
 
-        //graphGlobal.addEdge(node1, node4);
+        AbstractEdge edge1 = factory.newEdge(node4, node5);
+        AbstractEdge edge2 = factory.newEdge(node5, node6);
+        AbstractEdge edge3 = factory.newEdge(node6, node5);
+        AbstractEdge edge4 = factory.newEdge(node7, node7);
+
+        graphGlobal.addEdge(edge1);
+        graphGlobal.addEdge(edge2);
+        graphGlobal.addEdge(edge3);
+        graphGlobal.addEdge(edge4);
+
+        edgeMap.put("4-5",edge1);
+        edgeMap.put("5-6",edge2);
+        edgeMap.put("6-5",edge3);
+        edgeMap.put("7-7",edge4);
+
     }
 
     @After
@@ -250,12 +271,20 @@ public class DhnsTestDirectedGraph {
 
     @Test
     public void testAddEdge() {
-        Node node1 = nodeMap.get("Node 1");
-        Node node2 = nodeMap.get("Node 2");
-        Node node3 = nodeMap.get("Node 3");
+        Dhns dhns = new Dhns();
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false);
+        TreeStructure treeStructure = dhns.getTreeStructure();
+        GraphFactoryImpl factory = dhns.getGraphFactory();
+
+        Node node1 = factory.newNode();
+        Node node2 = factory.newNode();
+        Node node3 = factory.newNode();
+        graph.addNode(node1);
+        graph.addNode(node2);
+        graph.addNode(node3);
 
         //Test normal edge
-        graphGlobal.addEdge(node1, node2);
+        graph.addEdge(node1, node2);
         PreNode preNode1 = (PreNode)node1;
         PreNode preNode2 = (PreNode)node2;
 
@@ -269,14 +298,14 @@ public class DhnsTestDirectedGraph {
 
         assertSame("edges equal", edge, edge2);
 
-        assertEquals("edges count", 1, graphGlobal.getEdgeCount());
+        assertEquals("edges count", 1, graph.getEdgeCount());
 
         //Test factoryedge
-        graphGlobal.addEdge(edge);
-        assertEquals("edges count", 1, graphGlobal.getEdgeCount());
+        graph.addEdge(edge);
+        assertEquals("edges count", 1, graph.getEdgeCount());
 
         //Test self loop
-        graphGlobal.addEdge(node3, node3);
+        graph.addEdge(node3, node3);
 
         PreNode preNode3 = (PreNode)node3;
 
@@ -296,8 +325,8 @@ public class DhnsTestDirectedGraph {
     @Test
     public void testRemoveEdge() {
         GraphFactoryImpl factory = dhnsGlobal.getGraphFactory();
-        PreNode node3 = (PreNode)nodeMap.get("Node 3");
-        PreNode node4 = (PreNode)nodeMap.get("Node 4");
+        PreNode node3 = (PreNode)nodeMap.get("Node 1");
+        PreNode node4 = (PreNode)nodeMap.get("Node 2");
         AbstractEdge edge = factory.newEdge(node3, node4);
 
         graphGlobal.addEdge(edge);
@@ -312,6 +341,18 @@ public class DhnsTestDirectedGraph {
         assertFalse("contains IN edge",node3.getEdgesInTree().contains(edge));
 
         assertFalse(graphGlobal.contains(edge));
+    }
+
+    @Test
+    public void testGetEdges() {
+
+        for(Edge e : graphGlobal.getEdges()) {
+            Node s = e.getSource();
+            Node t = e.getTarget();
+            Edge ed = edgeMap.get(s.getId()+"-"+t.getId());
+            assertSame("edge iterator", e,ed);
+        }
+
     }
     
 }

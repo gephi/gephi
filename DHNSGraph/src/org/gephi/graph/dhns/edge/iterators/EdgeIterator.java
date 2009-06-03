@@ -26,6 +26,7 @@ import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 
 /**
@@ -36,14 +37,14 @@ import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 public class EdgeIterator extends AbstractEdgeIterator implements Iterator<Edge> {
 
     protected AbstractNodeIterator nodeIterator;
-    protected ParamAVLIterator<EdgeImpl> edgeIterator;
+    protected ParamAVLIterator<AbstractEdge> edgeIterator;
     protected PreNode currentNode;
-    protected EdgeImpl pointer;
+    protected AbstractEdge pointer;
     protected boolean undirected;
 
     public EdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected) {
         this.nodeIterator = nodeIterator;
-        edgeIterator = new ParamAVLIterator<EdgeImpl>();
+        edgeIterator = new ParamAVLIterator<AbstractEdge>();
         this.undirected = undirected;
     }
 
@@ -68,8 +69,8 @@ public class EdgeIterator extends AbstractEdgeIterator implements Iterator<Edge>
     }
 
     @Override
-    public EdgeImpl next() {
-        EdgeImpl e = pointer;
+    public AbstractEdge next() {
+        AbstractEdge e = pointer;
         pointer = null;
         return e;
     }
