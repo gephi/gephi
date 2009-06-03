@@ -333,6 +333,7 @@ public class DhnsTestDirectedGraph {
         AbstractEdge edge = factory.newEdge(node3, node4);
 
         graphGlobal.addEdge(edge);
+        assertTrue(graphGlobal.contains(edge));
 
         graphGlobal.removeEdge(edge);
         AbstractEdge edge3 = node3.getEdgesOutTree().getItem(node4.getNumber());
@@ -344,6 +345,11 @@ public class DhnsTestDirectedGraph {
         assertFalse("contains IN edge", node3.getEdgesInTree().contains(edge));
 
         assertFalse(graphGlobal.contains(edge));
+
+        Edge edge7 = edgeMap.get("7-7");
+        assertTrue(graphGlobal.contains(edge7));
+        graphGlobal.removeEdge(edge7);
+        assertFalse(graphGlobal.contains(edge7));
     }
 
     @Test
@@ -495,7 +501,7 @@ public class DhnsTestDirectedGraph {
         assertArrayEquals(expected, actual);
 
          //Test Self loop
-         Node[] array = graphGlobal.getSuccessors(nodeMap.get("Node 7")).toArray();
+         Node[] array = graphGlobal.getNeighbors(nodeMap.get("Node 7")).toArray();
          assertEquals("self loop array length 0", 0, array.length);
     }
 

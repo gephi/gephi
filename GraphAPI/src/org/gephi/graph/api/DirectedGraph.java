@@ -26,7 +26,7 @@ package org.gephi.graph.api;
  */
 public interface DirectedGraph extends Graph {
 
-    public void addEdge(Node source, Node target);
+    public boolean addEdge(Node source, Node target);
 
     public Edge getEdge(Node source, Node target);
 

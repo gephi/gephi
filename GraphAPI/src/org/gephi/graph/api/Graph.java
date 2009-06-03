@@ -26,9 +26,9 @@ package org.gephi.graph.api;
  */
 public interface Graph {
 
-    public void addEdge(Edge edge);
+    public boolean addEdge(Edge edge);
 
-    public void addNode(Node node);
+    public boolean addNode(Node node);
 
     public void removeEdge(Edge edge);
 

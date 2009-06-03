@@ -27,7 +27,7 @@ package org.gephi.graph.api;
  */
 public interface UndirectedGraph extends Graph {
 
-    public void addEdge(Node node1, Node node2);
+    public boolean addEdge(Node node1, Node node2);
 
     public Edge getEdge(Node node1, Node node2);
 

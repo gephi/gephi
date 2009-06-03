@@ -47,11 +47,29 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
         super(dhns, visible);
     }
 
-    public void addEdge(Node node1, Node node2) {
-        checkNode(node1);
-        checkNode(node2);
+    public boolean addEdge(Node node1, Node node2) {
+        PreNode preNode1 = checkNode(node1);
+        PreNode preNode2 = checkNode(node2);
+        if(checkEdgeExist(preNode1, preNode2) || checkEdgeExist(preNode2, preNode1)) {
+            //Edge already exist
+            return false;
+        }
         AbstractEdge edge = dhns.getGraphFactory().newEdge(node1, node2);
         dhns.getStructureModifier().addEdge(edge);
+        return true;
+    }
+
+    public void removeEdge(Edge edge) {
+        checkEdge(edge);
+        AbstractEdge absEdge = (AbstractEdge)edge;
+        if(!absEdge.isSelfLoop()) {
+            //Remove also mutual edge if present
+            AbstractEdge symmetricEdge = getSymmetricEdge(absEdge);
+            if(symmetricEdge!=null) {
+                dhns.getStructureModifier().deleteEdge(symmetricEdge);
+            }
+        }
+        dhns.getStructureModifier().deleteEdge(edge);
     }
 
     public boolean contains(Edge edge) {
@@ -112,11 +130,18 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
         if (visible) {
             VisibleEdgeNodeIterator itr = new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
             for (; itr.hasNext();) {
-                count++;
+                AbstractEdge edge = itr.next();
+                if(edge.isSelfLoop()) {
+                    count++;
+                }
             }
         } else {
             EdgeNodeIterator itr = new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
             for (; itr.hasNext();) {
+                AbstractEdge edge = itr.next();
+                if(edge.isSelfLoop()) {
+                    count++;
+                }
                 count++;
             }
         }

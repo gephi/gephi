@@ -47,6 +47,10 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
         dhns.getStructureModifier().addEdge(edge);
     }
 
+    public void removeEdge(Edge edge) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     public Iterable<Edge> getDirectedEdges() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

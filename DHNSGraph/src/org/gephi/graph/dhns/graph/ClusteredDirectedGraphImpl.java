@@ -56,11 +56,22 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     }
 
     //Directed
-    public void addEdge(Node source, Node target) {
-        checkNode(source);
-        checkNode(target);
+    public boolean addEdge(Node source, Node target) {
+        PreNode preSource = checkNode(source);
+        PreNode preTarget = checkNode(target);
+        if(checkEdgeExist(preSource, preTarget)) {
+            //Edge already exist
+            return false;
+        }
         AbstractEdge edge = dhns.getGraphFactory().newEdge(source, target);
         dhns.getStructureModifier().addEdge(edge);
+        return true;
+    }
+
+    //Directed
+    public void removeEdge(Edge edge) {
+        checkEdge(edge);
+        dhns.getStructureModifier().deleteEdge(edge);
     }
 
     //Directed

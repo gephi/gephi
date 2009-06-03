@@ -51,26 +51,32 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         this.visible = visible;
     }
 
-    public void addEdge(Edge edge) {
+    public boolean addEdge(Edge edge) {
         AbstractEdge absEdge = checkEdge(edge);
+        if(checkEdgeExist(absEdge.getSource(), absEdge.getTarget())) {
+            //Edge already exist
+            return false;
+        }
         if (!absEdge.hasAttributes()) {
             absEdge.setAttributes(dhns.newEdgeAttributes());
         }
         dhns.getStructureModifier().addEdge(edge);
+        return true;
     }
 
-    public void addNode(Node node) {
+    public boolean addNode(Node node) {
         if (node == null) {
             throw new NullPointerException();
         }
         PreNode preNode = (PreNode) node;
         if (preNode.isValid()) {
-            return;     //Already added
+            return false;     //Already added
         }
         if (!preNode.hasAttributes()) {
             preNode.setAttributes(dhns.newNodeAttributes());
         }
         dhns.getStructureModifier().addNode(node, null);
+        return true;
     }
 
     public boolean contains(Node node) {
@@ -146,11 +152,6 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         throw new IllegalArgumentException("Node must be either source or target of the edge.");
     }
 
-    public void removeEdge(Edge edge) {
-        checkEdge(edge);
-        dhns.getStructureModifier().deleteEdge(edge);
-    }
-
     public void removeNode(Node node) {
         checkNode(node);
         dhns.getStructureModifier().deleteNode(node);
@@ -174,15 +175,19 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         dhns.getStructureModifier().clearMetaEdges(node);
     }
 
-    public void addNode(Node node, Node parent) {
+    public boolean addNode(Node node, Node parent) {
         PreNode preNode = checkNode(node);
         if (parent != null) {
             checkNode(parent);
+        }
+        if(preNode.isValid()) {
+            return false;
         }
         if (!preNode.hasAttributes()) {
             preNode.setAttributes(dhns.newNodeAttributes());
         }
         dhns.getStructureModifier().addNode(node, parent);
+        return true;
     }
 
     public int getChildrenCount(Node node) {
@@ -364,5 +369,13 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
             throw new IllegalArgumentException("Nodes must be in the graph");
         }
         return abstractEdge;
+    }
+
+    protected boolean checkEdgeExist(PreNode source, PreNode target) {
+        return source.getEdgesOutTree().hasNeighbour(target);
+    }
+
+    protected AbstractEdge getSymmetricEdge(AbstractEdge edge) {
+        return edge.getTarget().getEdgesOutTree().getItem(edge.getSource().getNumber());
     }
 }

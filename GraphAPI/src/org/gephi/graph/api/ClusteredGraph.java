@@ -27,7 +27,7 @@ package org.gephi.graph.api;
  */
 public interface ClusteredGraph {
 
-    public void addNode(Node node, Node parent);
+    public boolean addNode(Node node, Node parent);
 
     public int getChildrenCount(Node node);
 
