@@ -38,6 +38,7 @@ public class GraphDensity implements Statistics {
         int edgesCount = graph.getEdgeCount();
         int nodesCount = graph.getNodeCount();
         float density = (float) edgesCount / (nodesCount * nodesCount - nodesCount);
+        
         NotifyDescriptor.Message msg = new NotifyDescriptor.Message("Density: " + density);
 
         DialogDisplayer.getDefault().notify(msg);
