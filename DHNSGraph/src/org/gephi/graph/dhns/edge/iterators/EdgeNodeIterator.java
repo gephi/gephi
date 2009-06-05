@@ -57,7 +57,7 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
     }
 
     public boolean hasNext() {
-        while (pointer == null || (undirected && pointer.isSecondMutual())) {
+        while (pointer == null || (undirected && pointer.getUndirected()!=pointer)) {
             if (mode.equals(EdgeNodeIteratorMode.BOTH)) {
                 boolean res = edgeIterator.hasNext();
                 if (res) {

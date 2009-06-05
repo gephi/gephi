@@ -70,8 +70,9 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
 
     //Directed
     public void removeEdge(Edge edge) {
-        checkEdge(edge);
-        dhns.getStructureModifier().deleteEdge(edge);
+        AbstractEdge absEdge = checkEdge(edge);
+        AbstractEdge undirected = absEdge.getUndirected();      //Ensure that the edge with the min id is removed before his mutual with a greater id
+        dhns.getStructureModifier().deleteEdge(undirected);
     }
 
     //Directed
@@ -245,6 +246,9 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
 
     //Graph
     public boolean isAdjacent(Node node1, Node node2) {
+        if(node1==node2) {
+            throw new IllegalArgumentException("Nodes can't be the same");
+        }
         return isSuccessor(node1, node2) || isPredecessor(node1, node2);
     }
 

@@ -50,7 +50,7 @@ public class VisibleEdgeIterator extends AbstractEdgeIterator implements Iterato
 
     @Override
     public boolean hasNext() {
-        while (pointer == null || (undirected && pointer.isSecondMutual()) || !pointer.isVisible()) {
+        while (pointer == null || (undirected && pointer.getUndirected()!=pointer) || !pointer.isVisible()) {
             while (!edgeIterator.hasNext()) {
                 if (nodeIterator.hasNext()) {
                     currentNode = nodeIterator.next();

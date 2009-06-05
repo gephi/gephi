@@ -205,7 +205,7 @@ public class DhnsTestUndirectedGraph {
         Edge[] expected = new Edge[4];
         expected[0] = edgeMap.get("4-4");
         expected[1] = edgeMap.get("4-5");
-        expected[2] = edgeMap.get("6-5");
+        expected[2] = edgeMap.get("5-6");
         expected[3] = edgeMap.get("7-7");
         Edge[] actual = new Edge[4];
 
@@ -255,8 +255,8 @@ public class DhnsTestUndirectedGraph {
         System.out.print("testGetEdgesNode: ");
         Edge[] expected = new Edge[3];
         expected[0] = edgeMap.get("5-3");
-        expected[1] = edgeMap.get("4-5");
-        expected[2] = edgeMap.get("6-5");
+        expected[1] = edgeMap.get("5-6");
+        expected[2] = edgeMap.get("4-5");
         Edge[] actual = new Edge[3];
 
         int i = 0;
@@ -289,8 +289,8 @@ public class DhnsTestUndirectedGraph {
     public void testNeighbors() {
         System.out.print("testNeighbors: ");
         Node[] expected = new Node[2];
-        expected[0] = nodeMap.get("Node 4");
-        expected[1] = nodeMap.get("Node 6");
+        expected[0] = nodeMap.get("Node 6");
+        expected[1] = nodeMap.get("Node 4");
         Node[] actual = new Node[2];
 
         int i = 0;
@@ -326,5 +326,26 @@ public class DhnsTestUndirectedGraph {
         assertEquals(2, graphGlobal.getDegree(node5));
         assertEquals(3, graphGlobal.getDegree(node4));
         assertEquals(2, graphGlobal.getDegree(node7));
+    }
+
+    @Test
+    public void testEdgeCount() {
+        assertEquals(4,graphGlobal.getEdgeCount());
+    }
+
+    @Test
+    public void testAdjacent() {
+        Node node4 = nodeMap.get("Node 4");
+        Node node5 = nodeMap.get("Node 5");
+        Node node6 = nodeMap.get("Node 6");
+        Edge edge1 = edgeMap.get("4-5");
+        Edge edge2 = edgeMap.get("5-6");
+        Edge edge3 = edgeMap.get("6-5");
+
+        //assertTrue(graphGlobal.isAdjacent(node4, node4));
+        assertTrue(graphGlobal.isAdjacent(node5, node6));
+        assertFalse(graphGlobal.isAdjacent(node4, node6));
+        assertTrue(graphGlobal.isAdjacent(edge1, edge2));
+        graphGlobal.isAdjacent(edge2, edge3);
     }
 }

@@ -57,7 +57,7 @@ public class VisibleEdgeNodeIterator extends AbstractEdgeIterator implements Ite
     }
 
     public boolean hasNext() {
-        while (pointer == null || (undirected && pointer.isSecondMutual()) || !pointer.isVisible()) {
+        while (pointer == null || (undirected && pointer.getUndirected()!=pointer) || !pointer.isVisible()) {
             if (mode.equals(EdgeNodeIteratorMode.BOTH)) {
                 boolean res = edgeIterator.hasNext();
                 if (res) {

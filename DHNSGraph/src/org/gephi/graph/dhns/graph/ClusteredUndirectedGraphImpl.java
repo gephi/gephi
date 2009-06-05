@@ -50,7 +50,7 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
     public boolean addEdge(Node node1, Node node2) {
         PreNode preNode1 = checkNode(node1);
         PreNode preNode2 = checkNode(node2);
-        if(checkEdgeExist(preNode1, preNode2) || checkEdgeExist(preNode2, preNode1)) {
+        if (checkEdgeExist(preNode1, preNode2) || checkEdgeExist(preNode2, preNode1)) {
             //Edge already exist
             return false;
         }
@@ -61,11 +61,11 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
 
     public void removeEdge(Edge edge) {
         checkEdge(edge);
-        AbstractEdge absEdge = (AbstractEdge)edge;
-        if(!absEdge.isSelfLoop()) {
+        AbstractEdge absEdge = (AbstractEdge) edge;
+        if (!absEdge.isSelfLoop()) {
             //Remove also mutual edge if present
             AbstractEdge symmetricEdge = getSymmetricEdge(absEdge);
-            if(symmetricEdge!=null) {
+            if (symmetricEdge != null) {
                 dhns.getStructureModifier().deleteEdge(symmetricEdge);
             }
         }
@@ -73,7 +73,7 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
     }
 
     public boolean contains(Edge edge) {
-        return getEdge(edge.getSource(), edge.getTarget()) != null;
+            return getEdge(edge.getSource(), edge.getTarget()) != null;
     }
 
     public EdgeIterable getEdges() {
@@ -131,7 +131,7 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
             VisibleEdgeNodeIterator itr = new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
             for (; itr.hasNext();) {
                 AbstractEdge edge = itr.next();
-                if(edge.isSelfLoop()) {
+                if (edge.isSelfLoop()) {
                     count++;
                 }
             }
@@ -139,7 +139,7 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
             EdgeNodeIterator itr = new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
             for (; itr.hasNext();) {
                 AbstractEdge edge = itr.next();
-                if(edge.isSelfLoop()) {
+                if (edge.isSelfLoop()) {
                     count++;
                 }
                 count++;
@@ -150,6 +150,9 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
     }
 
     public boolean isAdjacent(Node node1, Node node2) {
+        if(node1==node2) {
+            throw new IllegalArgumentException("Nodes can't be the same");
+        }
         return getEdge(node1, node2) != null;
     }
 

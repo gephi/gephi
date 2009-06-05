@@ -75,16 +75,15 @@ public abstract class AbstractEdge implements Edge, AVLItem {
         return source.isVisible() && target.isVisible() && visible;
     }
 
-    public boolean isMutual() {
-        if (source == target) {
-            return false;
+    public AbstractEdge getUndirected() {
+        if(source==target) {
+            return this;
         }
-        return source.getEdgesInTree().hasNeighbour(target);
-        //return target.getEdgesOutTree().hasNeighbour(source);
-    }
-
-    public boolean isSecondMutual() {
-         return isMutual() && source.getPre() < target.getPre();
+        AbstractEdge mutual = source.getEdgesInTree().getItem(target.getNumber());
+        if(mutual!=null && mutual.getId() < ID) {
+            return mutual;
+        }
+        return this;
     }
 
     public boolean isDirected() {

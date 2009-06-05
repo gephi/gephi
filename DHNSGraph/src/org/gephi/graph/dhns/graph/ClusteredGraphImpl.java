@@ -133,6 +133,9 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     }
 
     public boolean isAdjacent(Edge edge1, Edge edge2) {
+        if(edge1==edge2) {
+            throw new IllegalArgumentException("Edges can't be the same");
+        }
         checkEdge(edge1);
         checkEdge(edge2);
         return edge1.getSource() == edge2.getSource() ||

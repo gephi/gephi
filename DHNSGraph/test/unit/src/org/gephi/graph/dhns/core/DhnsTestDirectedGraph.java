@@ -488,8 +488,8 @@ public class DhnsTestDirectedGraph {
     public void testNeighbors() {
         System.out.print("testNeighbors: ");
         Node[] expected = new Node[2];
-        expected[0] = nodeMap.get("Node 4");
-        expected[1] = nodeMap.get("Node 6");
+        expected[0] = nodeMap.get("Node 6");
+        expected[1] = nodeMap.get("Node 4");
         Node[] actual = new Node[2];
 
         int i = 0;
