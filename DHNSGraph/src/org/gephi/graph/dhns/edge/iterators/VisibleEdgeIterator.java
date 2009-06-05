@@ -26,6 +26,7 @@ import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 
 /**
@@ -39,7 +40,7 @@ public class VisibleEdgeIterator extends AbstractEdgeIterator implements Iterato
     protected AbstractNodeIterator nodeIterator;
     protected ParamAVLIterator<ProperEdgeImpl> edgeIterator;
     protected PreNode currentNode;
-    protected ProperEdgeImpl pointer;
+    protected AbstractEdge pointer;
     protected boolean undirected;
 
     public VisibleEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected) {
@@ -68,8 +69,8 @@ public class VisibleEdgeIterator extends AbstractEdgeIterator implements Iterato
     }
 
     @Override
-    public ProperEdgeImpl next() {
-        ProperEdgeImpl e = pointer;
+    public AbstractEdge next() {
+        AbstractEdge e = pointer;
         pointer = null;
         return e;
     }

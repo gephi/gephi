@@ -34,6 +34,7 @@ public class AbstractNode implements Node, AVLItem {
 
     protected final int ID;
     protected NodeDataImpl nodeData;
+    protected boolean visible = true;
 
     public AbstractNode(int ID) {
         this.ID = ID;
@@ -56,6 +57,14 @@ public class AbstractNode implements Node, AVLItem {
         if (attributes != null) {
             nodeData.setAttributes(attributes);
         }
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public int getId() {

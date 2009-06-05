@@ -73,7 +73,7 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
     }
 
     public boolean contains(Edge edge) {
-            return getEdge(edge.getSource(), edge.getTarget()) != null;
+        return getEdge(edge.getSource(), edge.getTarget()) != null;
     }
 
     public EdgeIterable getEdges() {
@@ -150,7 +150,7 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
     }
 
     public boolean isAdjacent(Node node1, Node node2) {
-        if(node1==node2) {
+        if (node1 == node2) {
             throw new IllegalArgumentException("Nodes can't be the same");
         }
         return getEdge(node1, node2) != null;
@@ -196,5 +196,18 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
         }
         readUnlock();
         return res;
+    }
+
+    @Override
+    public void setVisible(Edge edge, boolean visible) {
+        AbstractEdge absEdge = checkEdge(edge);
+        writeLock();
+        absEdge.setVisible(visible);
+        AbstractEdge mutualEdge = getSymmetricEdge(absEdge);
+        if(mutualEdge!=null) {
+            mutualEdge.setVisible(visible);
+        }
+        writeUnlock();
+
     }
 }

@@ -25,6 +25,7 @@ import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.dhns.core.TreeStructure;
+import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
@@ -47,7 +48,7 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
     protected AbstractNodeIterator nodeIterator;
     protected ParamAVLIterator<ProperEdgeImpl> edgeIterator;
     protected PreNode currentNode;
-    protected ProperEdgeImpl pointer;
+    protected AbstractEdge pointer;
     protected boolean IN = false;
     protected boolean inner;
     protected int rangeStart;
@@ -91,7 +92,7 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
         }
     }
 
-    protected boolean testTarget(ProperEdgeImpl edgeImpl) {
+    protected boolean testTarget(AbstractEdge edgeImpl) {
         if (IN) {
             PreNode source = edgeImpl.getSource();
             int pre = source.getPre();
@@ -109,7 +110,7 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
     }
 
     @Override
-    public ProperEdgeImpl next() {
+    public AbstractEdge next() {
         return pointer;
     }
 

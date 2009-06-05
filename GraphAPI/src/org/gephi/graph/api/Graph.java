@@ -70,6 +70,10 @@ public interface Graph {
 
     public void clearEdges();
 
+    public void setVisible(Node node, boolean visible);
+
+    public void setVisible(Edge edge, boolean visible);
+
     public void readLock();
 
     public void readUnlock();

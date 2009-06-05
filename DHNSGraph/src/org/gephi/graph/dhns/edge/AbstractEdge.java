@@ -75,6 +75,10 @@ public abstract class AbstractEdge implements Edge, AVLItem {
         return source.isVisible() && target.isVisible() && visible;
     }
 
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
     public AbstractEdge getUndirected() {
         if(source==target) {
             return this;

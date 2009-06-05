@@ -88,10 +88,6 @@ public class PreNode extends AbstractNode implements AVLItem {
         return enabled;
     }
 
-    public boolean isVisible() {
-        return true;
-    }
-
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }

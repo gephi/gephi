@@ -115,7 +115,7 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         readLock();
         int count = 0;
         if (visible) {
-            for (TreeListIterator itr = new TreeListIterator(dhns.getTreeStructure().getTree()); itr.hasNext();) {
+            for (TreeListIterator itr = new TreeListIterator(dhns.getTreeStructure().getTree(), 1); itr.hasNext();) {
                 if (itr.next().isVisible()) {
                     count++;
                 }
@@ -322,6 +322,20 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
 
     public void ungroupNodes(Node[] nodes) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setVisible(Node node, boolean visible) {
+        PreNode preNode = checkNode(node);
+        writeLock();
+        preNode.setVisible(visible);
+        writeUnlock();
+    }
+
+    public void setVisible(Edge edge, boolean visible) {
+        AbstractEdge absEdge = checkEdge(edge);
+        writeLock();
+        absEdge.setVisible(visible);
+        writeUnlock();
     }
 
     public void readLock() {
