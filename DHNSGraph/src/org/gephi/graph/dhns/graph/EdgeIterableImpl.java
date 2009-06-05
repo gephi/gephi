@@ -43,6 +43,10 @@ public class EdgeIterableImpl implements EdgeIterable {
         this.iterator = new EdgeIteratorImpl(iterator, lock);
     }
 
+    public EdgeIterableImpl(Iterator<Edge> iterator , Lock lock, Condition<Edge> condition) {
+        this.iterator = new EdgeIteratorConditionImpl(iterator, lock, condition);
+    }
+
     public EdgeIterator iterator() {
         return iterator;
     }

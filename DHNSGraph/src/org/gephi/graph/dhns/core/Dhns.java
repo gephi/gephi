@@ -31,6 +31,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.dhns.graph.Condition;
 import org.gephi.graph.dhns.graph.EdgeIterableImpl;
 import org.gephi.graph.dhns.graph.NodeIterableImpl;
 import org.openide.util.Lookup;
@@ -119,6 +120,14 @@ public class Dhns {
 
     public EdgeIterable newEdgeIterable(Iterator<Edge> iterator) {
         return new EdgeIterableImpl(iterator, readWriteLock.readLock());
+    }
+
+    public NodeIterable newNodeIterable(Iterator<Node> iterator, Condition<Node> condition) {
+        return new NodeIterableImpl(iterator, readWriteLock.readLock(), condition);
+    }
+
+    public EdgeIterable newEdgeIterable(Iterator<Edge> iterator, Condition<Edge> condition) {
+        return new EdgeIterableImpl(iterator, readWriteLock.readLock(), condition);
     }
 
     public AttributeRow newNodeAttributes() {

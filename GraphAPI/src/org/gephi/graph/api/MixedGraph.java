@@ -27,7 +27,7 @@ package org.gephi.graph.api;
  */
 public interface MixedGraph extends Graph {
 
-    public void addEdge(Node source, Node target, boolean directed);
+    public boolean addEdge(Node source, Node target, boolean directed);
 
     public Edge getEdge(Node node1, Node node2);
 

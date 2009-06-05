@@ -43,6 +43,10 @@ public class NodeIterableImpl implements NodeIterable {
         this.iterator = new NodeIteratorImpl(iterator, lock);
     }
 
+    public NodeIterableImpl(Iterator<Node> iterator, Lock lock, Condition<Node> condition) {
+        this.iterator = new NodeIteratorConditionImpl(iterator, lock, condition);
+    }
+
     public NodeIterator iterator() {
         return iterator;
     }

@@ -59,7 +59,7 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public boolean addEdge(Node source, Node target) {
         PreNode preSource = checkNode(source);
         PreNode preTarget = checkNode(target);
-        if(checkEdgeExist(preSource, preTarget)) {
+        if (checkEdgeExist(preSource, preTarget)) {
             //Edge already exist
             return false;
         }
@@ -246,7 +246,7 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
 
     //Graph
     public boolean isAdjacent(Node node1, Node node2) {
-        if(node1==node2) {
+        if (node1 == node2) {
             throw new IllegalArgumentException("Nodes can't be the same");
         }
         return isSuccessor(node1, node2) || isPredecessor(node1, node2);

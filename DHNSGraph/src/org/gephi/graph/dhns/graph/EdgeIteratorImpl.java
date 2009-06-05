@@ -32,7 +32,7 @@ import org.gephi.graph.api.EdgeIterator;
  */
 public class EdgeIteratorImpl implements EdgeIterator {
 
-    private Iterator<Edge> iterator;
+    protected Iterator<Edge> iterator;
     protected Lock lock;
 
     public EdgeIteratorImpl(Iterator<Edge> iterator, Lock lock) {

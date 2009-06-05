@@ -205,7 +205,7 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
         writeLock();
         absEdge.setVisible(visible);
         AbstractEdge mutualEdge = getSymmetricEdge(absEdge);
-        if(mutualEdge!=null) {
+        if (mutualEdge != null) {
             mutualEdge.setVisible(visible);
         }
         writeUnlock();

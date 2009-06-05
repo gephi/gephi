@@ -18,25 +18,27 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.api;
+
+package org.gephi.graph.dhns.edge;
+
+import org.gephi.graph.dhns.node.PreNode;
 
 /**
+ * Main edge implementation + sparse support.
  *
  * @author Mathieu Bastian
  */
-public interface Edge {
+public class MixedEdgeImpl extends AbstractEdge {
 
-    public int getId();
+    protected boolean directed;
 
-    public Node getSource();
+    public MixedEdgeImpl(int ID, PreNode source, PreNode target, boolean directed) {
+        super(ID, source, target);
+        this.directed = directed;
+    }
 
-    public Node getTarget();
-
-    public float getWeight();
-
-    public boolean isVisible();
-
-    public boolean isDirected();
-
-    public EdgeData getEdgeData();
+    @Override
+    public boolean isDirected() {
+        return directed;
+    }
 }

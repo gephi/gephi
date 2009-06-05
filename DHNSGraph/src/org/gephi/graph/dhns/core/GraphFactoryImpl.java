@@ -27,7 +27,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.edge.SelfLoopImpl;
-import org.gephi.graph.dhns.edge.SparseEdgeImpl;
+import org.gephi.graph.dhns.edge.MixedEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
 
@@ -80,7 +80,7 @@ public class GraphFactoryImpl implements GraphFactory {
         if (source == target) {
             edge = new SelfLoopImpl(idGen.newEdgeId(),nodeSource);
         } else {
-            edge = new SparseEdgeImpl(idGen.newEdgeId(),nodeSource, nodeTarget, directed);
+            edge = new MixedEdgeImpl(idGen.newEdgeId(),nodeSource, nodeTarget, directed);
         }
         if (weight != 0) {
             edge.setWeight(weight);

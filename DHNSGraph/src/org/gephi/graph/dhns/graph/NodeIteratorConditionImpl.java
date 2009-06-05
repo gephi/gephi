@@ -23,37 +23,37 @@ package org.gephi.graph.dhns.graph;
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeIterator;
 
 /**
- * Iterator for {@link NodeIterableImpl}.
+ * Iterator for {@link NodeIterableImpl} which validates the given condition.
  *
  * @author Mathieu Bastian
  */
-public class NodeIteratorImpl implements NodeIterator {
+public class NodeIteratorConditionImpl extends NodeIteratorImpl {
 
-    protected Iterator<Node> iterator;
-    protected Lock lock;
+    protected Condition<Node> condition;
+    protected Node pointer;
 
-    public NodeIteratorImpl(Iterator<Node> iterator, Lock lock) {
-        this.iterator = iterator;
-        this.lock = lock;
+    public NodeIteratorConditionImpl(Iterator<Node> iterator, Lock lock, Condition<Node> condition) {
+        super(iterator, lock);
     }
 
+    @Override
     public boolean hasNext() {
-        boolean res = iterator.hasNext();
-        if (!res && lock != null) {
-            //System.out.println(Thread.currentThread()+ " iterator unlock");
+        while (iterator.hasNext()) {
+            pointer = iterator.next();
+            if (condition.isValid(pointer)) {
+                return true;
+            }
+        }
+        if (lock != null) {
             lock.unlock();
         }
-        return res;
+        return false;
     }
 
+    @Override
     public Node next() {
-        return iterator.next();
-    }
-
-    public void remove() {
-        iterator.remove();
+        return pointer;
     }
 }

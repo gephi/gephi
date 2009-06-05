@@ -19,26 +19,13 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.gephi.graph.dhns.edge;
-
-import org.gephi.graph.dhns.node.PreNode;
+package org.gephi.graph.dhns.graph;
 
 /**
- * Main edge implementation + sparse support.
  *
- * @author Mathieu Bastian
+ * @author Mathieu
  */
-public class SparseEdgeImpl extends AbstractEdge {
+public interface Condition<T> {
 
-    protected boolean directed;
-
-    public SparseEdgeImpl(int ID, PreNode source, PreNode target, boolean directed) {
-        super(ID, source, target);
-        this.directed = directed;
-    }
-
-    @Override
-    public boolean isDirected() {
-        return directed;
-    }
+    public boolean isValid(T t);
 }
