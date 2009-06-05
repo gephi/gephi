@@ -115,4 +115,9 @@ public abstract class AbstractEdge implements Edge, AVLItem {
     public int getId() {
         return ID;
     }
+
+    @Override
+    public String toString() {
+        return source.getId()+"-"+target.getId();
+    }
 }

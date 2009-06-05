@@ -11,6 +11,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
+import org.gephi.graph.dhns.graph.ClusteredUndirectedGraphImpl;
 import org.gephi.graph.dhns.node.PreNode;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -23,14 +24,14 @@ import static org.junit.Assert.*;
  *
  * @author Mathieu Bastian
  */
-public class DhnsTestVisibleGraph {
+public class DhnsTestVisibleUndirectedGraph {
 
     private Dhns dhnsGlobal;
-    private ClusteredDirectedGraphImpl graphGlobal;
+    private ClusteredUndirectedGraphImpl graphGlobal;
     private Map<String, Node> nodeMap;
     private Map<String, Edge> edgeMap;
 
-    public DhnsTestVisibleGraph() {
+    public DhnsTestVisibleUndirectedGraph() {
     }
 
     @BeforeClass
@@ -44,7 +45,8 @@ public class DhnsTestVisibleGraph {
     @Before
     public void setUp() {
         dhnsGlobal = new Dhns();
-        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, true);
+        graphGlobal = new ClusteredUndirectedGraphImpl(dhnsGlobal, true);
+        ClusteredDirectedGraphImpl diGraph = new ClusteredDirectedGraphImpl(dhnsGlobal, true);
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
@@ -84,6 +86,7 @@ public class DhnsTestVisibleGraph {
         AbstractEdge edge4 = factory.newEdge(node7, node7);
         AbstractEdge edge5 = factory.newEdge(node4, node4);
         AbstractEdge edge6 = factory.newEdge(node3, node4);
+        AbstractEdge edge7 = factory.newEdge(node4, node3);
 
         graphGlobal.addEdge(edge1);
         graphGlobal.addEdge(edge2);
@@ -91,6 +94,7 @@ public class DhnsTestVisibleGraph {
         graphGlobal.addEdge(edge4);
         graphGlobal.addEdge(edge5);
         graphGlobal.addEdge(edge6);
+        diGraph.addEdge(edge7);
 
         edgeMap.put("4-5", edge1);
         edgeMap.put("5-6", edge2);
@@ -98,7 +102,8 @@ public class DhnsTestVisibleGraph {
         edgeMap.put("7-7", edge4);
         edgeMap.put("4-4", edge5);
         edgeMap.put("3-4", edge6);
-
+        edgeMap.put("4-3", edge7);
+        
         graphGlobal.setVisible(node5, false);
         graphGlobal.setVisible(edge6, false);
     }
@@ -451,67 +456,6 @@ public class DhnsTestVisibleGraph {
     }
 
     @Test
-    public void testSucessors() {
-
-        graphGlobal.setVisible(edgeMap.get("3-4"), true);
-
-        //Test
-        System.out.print("testSucessors: ");
-        Node[] expected = new Node[1];
-        expected[0] = nodeMap.get("Node 4");
-        Node[] actual = new Node[1];
-
-        int i = 0;
-
-        Node node5 = nodeMap.get("Node 5");
-        Node node3 = nodeMap.get("Node 3");
-        assertEquals(0, graphGlobal.getSuccessors(node5).toArray().length);
-
-        for (Node n : graphGlobal.getSuccessors(node3)) {
-            System.out.print(n.getId()+" ");
-            actual[i++] = n;
-            assertTrue(graphGlobal.isSuccessor(node3, n));
-        }
-        System.out.println();
-        assertArrayEquals(expected, actual);
-
-        //Test Self loop
-        Node[] array = graphGlobal.getSuccessors(nodeMap.get("Node 4")).toArray();
-        assertEquals("self loop array length 0", 0, array.length);
-    }
-
-    @Test
-    public void testPredecessors() {
-
-        graphGlobal.setVisible(edgeMap.get("3-4"), true);
-
-        //Test
-        System.out.print("testPredecessors: ");
-        Node[] expected = new Node[1];
-        expected[0] = nodeMap.get("Node 3");
-        Node[] actual = new Node[1];
-
-        int i = 0;
-        Node node5 = nodeMap.get("Node 5");
-        Node node4 = nodeMap.get("Node 4");
-        assertEquals(0, graphGlobal.getSuccessors(node5).toArray().length);
-
-        for (Node n : graphGlobal.getPredecessors(node4)) {
-            System.out.print(n.getId()+" ");
-            actual[i++] = n;
-            assertTrue(graphGlobal.isPredecessor(node4, n));
-        }
-        System.out.println();
-        assertArrayEquals(expected, actual);
-
-        assertEquals(0, graphGlobal.getSuccessors(nodeMap.get("Node 6")).toArray().length);
-
-        //Test Self loop
-        Node[] array = graphGlobal.getSuccessors(nodeMap.get("Node 7")).toArray();
-        assertEquals("self loop array length 0", 0, array.length);
-    }
-
-    @Test
     public void testNeighbors() {
         graphGlobal.setVisible(edgeMap.get("3-4"), true);
 
@@ -604,61 +548,5 @@ public class DhnsTestVisibleGraph {
         assertNull(graphGlobal.getEdge(node4, node5));
         Edge selfLoop = graphGlobal.getEdge(node4, node4);
         assertTrue(graphGlobal.isSelfLoop(selfLoop));
-    }
-
-    @Test
-    public void testGetInEdges() {
-
-        graphGlobal.setVisible(edgeMap.get("3-4"), true);
-
-        //Test1
-        System.out.print("testGetInEdges: ");
-        Edge[] expected = new Edge[2];
-        expected[0] = edgeMap.get("3-4");
-        expected[1] = edgeMap.get("4-4");
-        Edge[] actual = new Edge[2];
-
-        assertEquals(0, graphGlobal.getInEdges(nodeMap.get("Node 5")).toArray().length);
-        assertEquals(0, graphGlobal.getInEdges(nodeMap.get("Node 6")).toArray().length);
-
-        int i = 0;
-        Node node5 = nodeMap.get("Node 4");
-        for (Edge e : graphGlobal.getInEdges(node5)) {
-            Node s = e.getSource();
-            Node t = e.getTarget();
-            System.out.print("#" + s.getId() + "-" + t.getId() + " ");
-            actual[i++] = e;
-        }
-        System.out.println();
-        assertArrayEquals(expected, actual);
-
-        //Test2
-        assertEquals(graphGlobal.getInEdges(nodeMap.get("Node 7")).toArray()[0], edgeMap.get("7-7"));
-    }
-
-    @Test
-    public void testGetOutEdges() {
-
-        graphGlobal.setVisible(edgeMap.get("3-4"), true);
-
-        //Test1
-        System.out.print("testGetOutEdges: ");
-        Edge[] expected = new Edge[1];
-        expected[0] = edgeMap.get("3-4");
-        Edge[] actual = new Edge[1];
-
-        int i = 0;
-        Node node5 = nodeMap.get("Node 3");
-        for (Edge e : graphGlobal.getOutEdges(node5)) {
-            Node s = e.getSource();
-            Node t = e.getTarget();
-            System.out.print("#" + s.getId() + "-" + t.getId() + " ");
-            actual[i++] = e;
-        }
-        System.out.println();
-        assertArrayEquals(expected, actual);
-
-        //Test2
-        assertEquals(graphGlobal.getOutEdges(nodeMap.get("Node 4")).toArray()[0], edgeMap.get("4-4"));
     }
 }

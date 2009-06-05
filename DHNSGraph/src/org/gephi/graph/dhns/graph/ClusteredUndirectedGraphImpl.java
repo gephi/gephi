@@ -134,6 +134,7 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
                 if (edge.isSelfLoop()) {
                     count++;
                 }
+                count++;
             }
         } else {
             EdgeNodeIterator itr = new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
