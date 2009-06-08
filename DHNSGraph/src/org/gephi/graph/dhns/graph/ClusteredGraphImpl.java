@@ -155,9 +155,13 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         throw new IllegalArgumentException("Node must be either source or target of the edge.");
     }
 
-    public void removeNode(Node node) {
-        checkNode(node);
+    public boolean removeNode(Node node) {
+        PreNode preNode = checkNode(node);
+        if(!preNode.isValid()) {
+            return false;
+        }
         dhns.getStructureModifier().deleteNode(node);
+        return true;
     }
 
     public void clear() {

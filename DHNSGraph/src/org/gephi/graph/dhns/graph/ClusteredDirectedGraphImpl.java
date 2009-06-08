@@ -69,10 +69,10 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     }
 
     //Directed
-    public void removeEdge(Edge edge) {
+    public boolean removeEdge(Edge edge) {
         AbstractEdge absEdge = checkEdge(edge);
         AbstractEdge undirected = absEdge.getUndirected();      //Ensure that the edge with the min id is removed before his mutual with a greater id
-        dhns.getStructureModifier().deleteEdge(undirected);
+        return dhns.getStructureModifier().deleteEdge(undirected);
     }
 
     //Directed

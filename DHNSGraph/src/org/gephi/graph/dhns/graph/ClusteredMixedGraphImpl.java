@@ -82,10 +82,10 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
         return true;
     }
 
-    public void removeEdge(Edge edge) {
+    public boolean removeEdge(Edge edge) {
         AbstractEdge absEdge = checkEdge(edge);
         AbstractEdge undirected = absEdge.getUndirected();      //Ensure that the edge with the min id is removed before his mutual with a greater id
-        dhns.getStructureModifier().deleteEdge(undirected);
+        return dhns.getStructureModifier().deleteEdge(undirected);
     }
 
     public EdgeIterable getDirectedEdges() {
@@ -97,7 +97,7 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
         }
     }
 
-    public Iterable<Edge> getUndirectedEdges() {
+    public EdgeIterable getUndirectedEdges() {
         readLock();
         if (visible) {
             return dhns.newEdgeIterable(new VisibleEdgeIterator(dhns.getTreeStructure(), new VisibleTreeIterator(dhns.getTreeStructure()), false), undirectedCondition);

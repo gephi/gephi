@@ -159,8 +159,8 @@ public class StructureModifier {
         dhns.getWriteLock().unlock();
     }
 
-    public void deleteEdge(final Edge edge) {
-        deleteEdgeBlock(edge);
+    public boolean deleteEdge(final Edge edge) {
+        return deleteEdgeBlock(edge);
 //        executor.execute(new Runnable() {
 //
 //            public void run() {
@@ -169,13 +169,14 @@ public class StructureModifier {
 //        });
     }
 
-    public void deleteEdgeBlock(Edge edge) {
+    public boolean deleteEdgeBlock(Edge edge) {
         dhns.getWriteLock().lock();
         AbstractEdge edgeImpl = (AbstractEdge) edge;
         //dhns.getDictionary().removeEdge(edge);
-        delEdge(edgeImpl);
+        boolean res = delEdge(edgeImpl);
         graphVersion.incEdgeVersion();
         dhns.getWriteLock().unlock();
+        return res;
     }
 
     public void clear() {
@@ -307,13 +308,14 @@ public class StructureModifier {
         treeStructure.deleteDescendantAndSelf(node);
     }
 
-    private void delEdge(AbstractEdge edge) {
+    private boolean delEdge(AbstractEdge edge) {
         //Remove edge
-        edge.getSource().getEdgesOutTree().remove(edge);
-        edge.getTarget().getEdgesInTree().remove(edge);
+        boolean res = edge.getSource().getEdgesOutTree().remove(edge);
+        res = res && edge.getTarget().getEdgesInTree().remove(edge);
 
         //Remove edge from possible metaEdge
         edgeProcessor.removeEdgeFromMetaEdge(edge);
+        return res;
     }
 
     private void clearAllEdges() {

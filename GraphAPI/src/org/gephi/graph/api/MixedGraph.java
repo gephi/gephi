@@ -27,13 +27,47 @@ package org.gephi.graph.api;
  */
 public interface MixedGraph extends Graph {
 
+    /**
+     * Add to the graph a <b>directed</b> or <b>undirected</b> edge between <code>source</code> and
+     * <code>target</code>. Graph does not accept parallel edges.
+     * Fails if a such edge already exists in the graph.
+     * @param source the source node
+     * @param target the target node
+     * @param directed the type of edge to be created
+     * @return true if add is successful, false otherwise
+     * @throws IllegalArgumentException if <code>source</code> or <code>target</code>
+     * is <code>null</code> or not legal nodes for this <code>edge</code>
+     */
     public boolean addEdge(Node source, Node target, boolean directed);
 
+    /**
+     * Find and returns a <b>directed</b> or <b>undirected</b> edge that connects <code>node1</code> and
+     * <code>node2</code>. Returns <code>null</code> if no such edge is found.
+     * @param node1 the first incident node of the queried edge
+     * @param node2 thge second incident node of the queried edge
+     * @return an edge that connects <code>node1</code> and <code>node2</code>
+     * or <code>null</code> if no such edge exists
+    */
     public Edge getEdge(Node node1, Node node2);
 
-    public Iterable<Edge> getDirectedEdges();
+    /**
+     * Returns an edge iterator of <b>directed</b> edges in the graph.
+     * @return Returns an edge iterator of <b>directed</b> edges in the graph.
+     */
+    public EdgeIterable getDirectedEdges();
 
-    public Iterable<Edge> getUndirectedEdges();
+    /**
+     * Returns an edge iterator of <b>directed</b> edges in the graph.
+     * @return Returns an edge iterator of <b>directed</b> edges in the graph.
+     */
+    public EdgeIterable getUndirectedEdges();
 
+    /**
+     * Returns <code>true</code> if <code>edge</code> is <b>directed</b> of <code>false</code> if
+     * <b>undirected</b>.
+     * @param edge the edge to be queried
+     * @return Returns <code>true</code> if <code>edge</code> is <b>directed</b> of <code>false</code> if
+     * <b>undirected</b>
+     */
     public boolean isDirected(Edge edge);
 }

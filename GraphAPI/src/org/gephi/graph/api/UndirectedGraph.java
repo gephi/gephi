@@ -27,8 +27,27 @@ package org.gephi.graph.api;
  */
 public interface UndirectedGraph extends Graph {
 
+    /**
+     * Add an undirected edge between<code>node1</code> and <code>node2</code>to the graph.
+     * Graph does not accept parallel edges.
+     * Fails if a such edge already exists in the graph.
+     * @param node1 the first node
+     * @param node2 the second node
+     * @return true if add is successful, false otherwise
+     * @throws IllegalArgumentException if <code>source</code> or <code>target</code>
+     * is <code>null</code> or not legal nodes for this <code>edge</code>
+     */
     public boolean addEdge(Node node1, Node node2);
 
+
+    /**
+     * Find and returns an edge that connects <code>node1</code> and <code>node2</code>. Returns
+     * <code>null</code> if no such edge is found.
+     * @param node1 the first incident node of the queried edge
+     * @param node2 thge second incident node of the queried edge
+     * @return an edge that connects <code>node1</code> and <code>node2</code>
+     * or <code>null</code> if no such edge exists
+    */
     public Edge getEdge(Node node1, Node node2);
 
 }

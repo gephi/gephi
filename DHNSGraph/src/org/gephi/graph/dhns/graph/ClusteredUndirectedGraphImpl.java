@@ -54,22 +54,24 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
             //Edge already exist
             return false;
         }
-        AbstractEdge edge = dhns.getGraphFactory().newEdge(node1, node2);
+        AbstractEdge edge = dhns.getGraphFactory().newEdge(node1, node2, 1.0f, false);
         dhns.getStructureModifier().addEdge(edge);
         return true;
     }
 
-    public void removeEdge(Edge edge) {
+    public boolean removeEdge(Edge edge) {
         checkEdge(edge);
         AbstractEdge absEdge = (AbstractEdge) edge;
+        boolean res = false;
         if (!absEdge.isSelfLoop()) {
             //Remove also mutual edge if present
             AbstractEdge symmetricEdge = getSymmetricEdge(absEdge);
             if (symmetricEdge != null) {
-                dhns.getStructureModifier().deleteEdge(symmetricEdge);
+                res = dhns.getStructureModifier().deleteEdge(symmetricEdge);
             }
         }
-        dhns.getStructureModifier().deleteEdge(edge);
+        res = res || dhns.getStructureModifier().deleteEdge(edge);
+        return res;
     }
 
     public boolean contains(Edge edge) {
