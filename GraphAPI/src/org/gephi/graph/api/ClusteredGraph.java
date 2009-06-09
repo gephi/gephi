@@ -167,7 +167,7 @@ public interface ClusteredGraph {
 
     public void retract(Node node);
 
-    public void addToGroup(Node node, Node nodeGroup);
+    public void moveToGroup(Node node, Node nodeGroup);
 
     public void removeFromGroup(Node node);
 

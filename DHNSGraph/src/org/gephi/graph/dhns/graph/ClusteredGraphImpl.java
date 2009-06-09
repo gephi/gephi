@@ -312,8 +312,8 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         dhns.getStructureModifier().retract(node);
     }
 
-    public void addToGroup(Node node, Node nodeGroup) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void moveToGroup(Node node, Node nodeGroup) {
+
     }
 
     public void removeFromGroup(Node node) {

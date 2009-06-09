@@ -243,6 +243,58 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
         return result;
     }
 
+    public PreNode removeAndKeepParent(int index) {
+        checkInterval(index, 0, size() - 1);
+
+        //Remove without setting null parent
+        PreNode node = get(index);
+        root = root.remove(index);
+        node.avlNode = null;
+        node.size = 0;
+        size--;
+        incPreConsistent();
+        return node;
+    }
+
+    public void move(int index, int destination) {
+        checkInterval(index, 0, size() - 1);
+
+        PreNode node = get(index);
+        PreNode parent = get(destination);
+        int destinationPre = parent.pre + parent.size + 1;
+        int nodeLimit = node.pre+node.size;
+        boolean forward = destinationPre > node.pre;
+        int difflevel = 0;
+        
+        //Move descendant & self
+        int count = 0;
+        for(int i=node.pre;i<=nodeLimit;i++) {
+            int sourcePre = i;
+            int destPre = destinationPre + count;
+            if(forward) {
+                sourcePre-=count;
+                destPre-=count+1;
+            }
+
+            PreNode sourceNode = get(sourcePre);
+            root = root.remove(sourcePre);      //Remove
+            sourceNode.avlNode = null;          //Remove
+            size--;                             //Remove
+            //System.out.println("add "+(destPre)+"   remove "+sourceNode.getId());
+            add(destPre, sourceNode);
+                   
+            if(count==0) {
+                sourceNode.parent = parent;
+                difflevel = node.parent.level - node.level + 1;
+            }
+            sourceNode.level += difflevel;
+
+            count++;
+        }
+
+        incPreConsistent();
+    }
+
     /**
      * Clears the list, removing all entries.
      */

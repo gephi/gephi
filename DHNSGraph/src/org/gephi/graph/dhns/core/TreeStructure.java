@@ -92,7 +92,7 @@ public class TreeStructure {
 
     public void insertAsChild(PreNode node, PreNode parent) {
         node.parent = parent;
-        node.pre = parent.pre + parent.size + 1;
+        node.pre = parent.getPre() + parent.size + 1;
         node.level = parent.level + 1;
         if (node.level > treeHeight) {
             treeHeight++;
@@ -102,25 +102,79 @@ public class TreeStructure {
         incrementAncestorsSize(node);
     }
 
+    public void move(PreNode node, PreNode newParent) {
+
+        PreNode sourceParent = node.parent;
+        int sourceSize = 1 + node.size;
+
+        tree.move(node.getPre(), newParent.getPre());
+
+        if(sourceParent!=null) {
+            decrementAncestorAndSelfSize(sourceParent, sourceSize);
+        }
+
+        //Increment ancestor & self
+        incrementAncestorsAndSelfSize(newParent, sourceSize);
+
+        /* nodeSize = node.size;
+        int nodePre = node.getPre();
+        boolean forward = newParent.getPre()+newParent.size+1 > nodePre;
+
+        //Move node itself
+        decrementAncestorSize(node, 1);
+        tree.removeAndKeepParent(nodePre);
+        insertAsChild(node, newParent);
+        node.size = 0;
+
+        //showTreeAsTable();
+
+        if(nodeSize>0) {
+            //Move descendants
+            for(int i=0;i<nodeSize;i++) {
+                int descPre = nodePre;
+                if(!forward) {
+                    descPre += i + 1;
+                }
+                decrementAncestorSize(node, 1);
+                PreNode descendant = tree.removeAndKeepParent(descPre);
+                //System.out.println("descendant "+descendant.getId());
+                PreNode parent = descendant.parent;
+                insertAsChild(descendant, parent);
+                descendant.size = 0;
+            }
+        }*/
+    }
+
     public void deleteAtPre(PreNode node) {
         int pre = node.getPre();
         tree.remove(pre);
         for (int i = 0; i < node.size; i++) {
             tree.remove(pre);
         }
-
     }
 
     public void deleteDescendantAndSelf(PreNode node) {
-        deleteAtPre(node);
         decrementAncestorSize(node, node.size + 1);
+        deleteAtPre(node);
     }
 
     public void incrementAncestorsSize(PreNode node) {
+        incrementAncestorsSize(node, 1);
+    }
+
+    public void incrementAncestorsSize(PreNode node, int shift) {
         while (node.parent != null) {
             node = node.parent;
-            node.size++;
+            node.size+=shift;
             node.getPost();
+        }
+    }
+
+    public void incrementAncestorsAndSelfSize(PreNode node, int shift) {
+        while (node != null) {
+            node.size+=shift;
+            node.getPost();
+            node = node.parent;
         }
     }
 
@@ -132,13 +186,21 @@ public class TreeStructure {
         }
     }
 
+    public void decrementAncestorAndSelfSize(PreNode node, int shift) {
+        while (node != null) {
+            node.size -= shift;
+            node.getPost();
+            node = node.parent;
+        }
+    }
+
     public void showTreeAsTable() {
-        System.out.println("pre\tsize\tlevel\tparent\tpost\tenabled");
+        System.out.println("pre\tsize\tlevel\tparent\tpost\tenabled\tid");
         System.out.println("-------------------------------------------------------");
 
         int pre = 0;
         for (PreNode p : tree) {
-            System.out.println(p.pre + "\t" + p.size + "\t" + p.level + "\t" + p.parent + "\t" + p.post + "\t" + p.isEnabled());
+            System.out.println(p.pre + "\t" + p.size + "\t" + p.level + "\t" + p.parent + "\t" + p.post + "\t" + p.isEnabled() + "\t"+ p.getId());
             pre++;
         }
     }
