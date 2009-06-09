@@ -171,7 +171,7 @@ public interface ClusteredGraph {
 
     public void removeFromGroup(Node node);
 
-    public void groupNodes(Node[] nodes);
+    public Node groupNodes(Node[] nodes);
 
     public void ungroupNodes(Node[] nodes);
 

@@ -65,7 +65,7 @@ public class StructureModifier {
         dhns.getWriteLock().lock();
         PreNode preNode = (PreNode) node;
         if (preNode.level < treeStructure.treeHeight) {
-            expand(node);
+            expand(preNode);
         //sightManager.updateSight((SightImpl) sight);
         }
         graphVersion.incNodeVersion();
@@ -248,6 +248,45 @@ public class StructureModifier {
         dhns.getWriteLock().unlock();
     }
 
+    public void moveToGroup(Node node, Node nodeGroup) {
+        dhns.getWriteLock().lock();
+        PreNode preNode = (PreNode) node;
+        PreNode preGroup = (PreNode) nodeGroup;
+        moveToGroup(preNode, preGroup);
+        graphVersion.incNodeAndEdgeVersion();
+        dhns.getWriteLock().unlock();
+    }
+
+    public Node group(Node[] nodes) {
+        dhns.getWriteLock().lock();
+        PreNode group = (PreNode) dhns.getGraphFactory().newNode();
+        PreNode parent = ((PreNode)nodes[0]).parent;
+        group.parent = parent;
+        addNode(group);
+        for (int i = 0; i < nodes.length; i++) {
+            PreNode nodeToGroup = (PreNode) nodes[i];
+            moveToGroup(nodeToGroup, group);
+        }
+        graphVersion.incNodeAndEdgeVersion();
+        dhns.getWriteLock().unlock();
+        return group;
+    }
+
+    public void ungroup(Node[] nodes) {
+        dhns.getWriteLock().lock();
+        PreNode parent = ((PreNode) nodes[0]).parent;
+        if (nodes.length == parent.size) {
+            //All children must be ungrouped, then the parent will be removed
+            //TODO do this ?
+        }
+
+        for (int i = 0; i < nodes.length; i++) {
+            Node node = nodes[i];
+            dhns.getStructureModifier().moveToGroup(node, parent.parent);
+        }
+        dhns.getWriteLock().unlock();
+    }
+
     //------------------------------------------
     private void expand(PreNode preNode) {
 
@@ -332,5 +371,9 @@ public class StructureModifier {
 
     private void clearMetaEdges(PreNode node) {
         edgeProcessor.clearMetaEdges(node);
+    }
+
+    private void moveToGroup(PreNode node, PreNode nodeGroup) {
+        treeStructure.move(node, nodeGroup);
     }
 }

@@ -53,7 +53,7 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
 
     public boolean addEdge(Edge edge) {
         AbstractEdge absEdge = checkEdge(edge);
-        if(checkEdgeExist(absEdge.getSource(), absEdge.getTarget())) {
+        if (checkEdgeExist(absEdge.getSource(), absEdge.getTarget())) {
             //Edge already exist
             return false;
         }
@@ -133,7 +133,7 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     }
 
     public boolean isAdjacent(Edge edge1, Edge edge2) {
-        if(edge1==edge2) {
+        if (edge1 == edge2) {
             throw new IllegalArgumentException("Edges can't be the same");
         }
         checkEdge(edge1);
@@ -157,7 +157,7 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
 
     public boolean removeNode(Node node) {
         PreNode preNode = checkNode(node);
-        if(!preNode.isValid()) {
+        if (!preNode.isValid()) {
             return false;
         }
         dhns.getStructureModifier().deleteNode(node);
@@ -187,7 +187,7 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         if (parent != null) {
             checkNode(parent);
         }
-        if(preNode.isValid()) {
+        if (preNode.isValid()) {
             return false;
         }
         if (!preNode.hasAttributes()) {
@@ -313,19 +313,57 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     }
 
     public void moveToGroup(Node node, Node nodeGroup) {
-
+        checkNode(node);
+        checkNode(nodeGroup);
+        if (isDescendant(node, nodeGroup)) {
+            throw new IllegalArgumentException("nodeGroup can't be a descendant of node");
+        }
+        dhns.getStructureModifier().moveToGroup(node, nodeGroup);
     }
 
     public void removeFromGroup(Node node) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        PreNode preNode = checkNode(node);
+        if (preNode.parent.parent == null) {   //Equal root
+            throw new IllegalArgumentException("Node parent can't be the root of the tree");
+        }
+        dhns.getStructureModifier().moveToGroup(node, preNode.parent.parent);
     }
 
-    public void groupNodes(Node[] nodes) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Node groupNodes(Node[] nodes) {
+        if (nodes == null || nodes.length == 0) {
+            throw new IllegalArgumentException("nodes can't be null or empty");
+        }
+        int level = -1;
+        for (int i = 0; i < nodes.length; i++) {
+            PreNode node = checkNode(nodes[i]);
+            if (level == -1) {
+                level = node.level;
+            } else if (level != node.level) {
+                throw new IllegalArgumentException("All nodes level must be the same");
+            }
+        }
+        Node group = dhns.getStructureModifier().group(nodes);
+        return group;
     }
 
     public void ungroupNodes(Node[] nodes) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (nodes == null || nodes.length == 0) {
+            throw new IllegalArgumentException("nodes can't be null or empty");
+        }
+        PreNode parent = null;
+        for (int i = 0; i < nodes.length; i++) {
+            PreNode node = checkNode(nodes[i]);
+            if (node.parent.parent == null) {  //Equal root
+                throw new IllegalArgumentException("Nodes parent can't be the root of the tree");
+            }
+            if (parent == null) {
+                parent = node.parent;
+            } else if (parent != node.parent) {
+                throw new IllegalArgumentException("All nodes must have the same parent");
+            }
+        }
+
+        dhns.getStructureModifier().ungroup(nodes);
     }
 
     public void setVisible(Node node, boolean visible) {
@@ -372,7 +410,7 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
 
     protected PreNode checkNode(Node node) {
         if (node == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException("node can't be null");
         }
         PreNode preNode = (PreNode) node;
         if (!preNode.isValid()) {
@@ -383,7 +421,7 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
 
     protected AbstractEdge checkEdge(Edge edge) {
         if (edge == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException("edge can't be null");
         }
         AbstractEdge abstractEdge = (AbstractEdge) edge;
         if (!abstractEdge.isValid()) {
