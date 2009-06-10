@@ -59,12 +59,11 @@ public class LayoutControllerImpl implements LayoutController {
                 layout.initAlgo(graph);
                 layout.resetPropertiesValues();
 
-                while (true) {
+                while (layout.canAlgo()) {
                     layout.goAlgo();
                 }
 
-
-                //layout.endAlgo();
+                layout.endAlgo();
             }
         });
     }

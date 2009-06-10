@@ -43,6 +43,8 @@ public interface Layout {
 
     public void goAlgo();
 
+    public boolean canAlgo();
+
     public void endAlgo();
 
     public LayoutProperty[] getProperties();
