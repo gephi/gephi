@@ -31,6 +31,28 @@ public class QuadTree implements Spatial {
     private boolean isLeaf;
     public static final float eps = (float) 1e-6;
 
+    public static QuadTree buildTree(Iterable<Spatial> nodes, int maxLevel) {
+        float minX = Float.NEGATIVE_INFINITY;
+        float maxX = Float.POSITIVE_INFINITY;
+        float minY = Float.NEGATIVE_INFINITY;
+        float maxY = Float.POSITIVE_INFINITY;
+
+        for (Spatial node : nodes) {
+            minX = Math.min(minX, node.x());
+            maxX = Math.max(maxX, node.x());
+            minY = Math.min(minY, node.y());
+            maxY = Math.max(maxY, node.y());
+        }
+
+        float size = Math.max(maxY - minY, maxX - minX);
+        QuadTree tree = new QuadTree(minX, minY, size, maxLevel);
+        for (Spatial node : nodes) {
+            tree.addNode(node);
+        }
+
+        return tree;
+    }
+
     public QuadTree(float posX, float posY, float size, int maxLevel) {
         this.posX = posX;
         this.posY = posY;
@@ -39,6 +61,10 @@ public class QuadTree implements Spatial {
         this.isLeaf = true;
         mass = 0;
         add = new FirstAdd();
+    }
+
+    public float size() {
+        return size;
     }
 
     private void divideTree() {
