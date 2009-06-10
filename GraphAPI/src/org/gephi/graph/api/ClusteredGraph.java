@@ -160,20 +160,75 @@ public interface ClusteredGraph {
      * in the tree.
      * @param node the node to be queried
      * @return the level value of <code>node</code>
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in the graph
      */
     public int getLevel(Node node);
 
-    public void expand(Node node);
+    /**
+     * Expands the graph view from <code>node</code> to its children. The children of <code>node</code> are put in the view and
+     * <code>node</code> is pulled off. Fails if <code>node</code> is not currently in the view or if <code>node</code> don't
+     * have any children.
+     * <p>
+     * Meta edges are automatically updated.
+     * @param node the node to be expanded
+     * @return <code>true</code> if the expand succeed or <code>false</code> if not
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in the graph
+     */
+    public boolean expand(Node node);
 
-    public void retract(Node node);
+    /**
+     * Retracts the graph view from <code>node</code>'s children to <code>node</code>. The children of <code>node</code> are pulled
+     * off the view and <code>node</code> is added to the view. Fails if <code>node</code> is already in the view of if <code>node</code>
+     * don't have any children.
+     * <p>
+     * Meta edges are automatically updated.
+     * @param node the nodes' parent to be retracted
+     * @return <code>true</code> if the expand succeed or <code>false</code> if not
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in the graph
+     */
+    public boolean retract(Node node);
 
+    /**
+     * Move <code>node</code> and descendants of <code>node</code> to <code>nodeGroup</code>, as <code>node</code> will be a child of
+     * <code>nodeGroup</code>. Be aware <code>nodeGroup</code> can't be a descendant of <code>node</code>.
+     * @param node the node to be appened to <code>nodeGroup</code> children
+     * @param nodeGroup the node to receive <code>node</code> as a child
+     * @throws IllegalArgumentException if <code>node</code> or <code>nodeGroup</code> is <code>null</code> or not legal in the graph,
+     * or if <code>nodeGroup</code> is a descendant of node
+     */
     public void moveToGroup(Node node, Node nodeGroup);
 
+    /**
+     * Remove <code>node</code> from its parent group and append it to <code>node</code>'s parent. In other words <code>node</code> rise
+     * one level in the tree and is no more a child of its parent.
+     * @param node the node to be removed from it's group
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in the graph,
+     * or if <code>node</code> is already at the top of the tree
+     */
     public void removeFromGroup(Node node);
 
+    /**
+     * Group <code>nodes</code> into a new node group (i.e. cluster). Creates an upper node in the tree and appends <code>nodes</code> to it.
+     * Content of <code>nodes</code> can be existing groups. In that case, only the root node must be specified. The descendants of nodes
+     * will be automatically moved. Therefore all nodes in <code>nodes</code> must have the same <b>level</b>. The method returns the newly
+     * created group of nodes.
+     * @param nodes the nodes to be grouped in a new group
+     * @return the newly created group of nodes which contains <code>nodes</code> and descendants of <code>nodes</code>
+     * @throws IllegalArgumentException if <code>nodes</code> is <code>null</code>,
+     * or if <code>nodes</code> is empty,
+     * or if content nodes are not legal in the graph,
+     * or if <code>nodes</code>' level is not equal
+     */
     public Node groupNodes(Node[] nodes);
 
-    public void ungroupNodes(Node[] nodes);
+    /**
+     * Ungroup nodes in <code>nodeGroup</code> and destroy <code>nodeGroup</code>. Descendants of <code>nodeGroup</code> are appened to
+     * <code>nodeGroup</code>'s parent node. This method is the opposite of <code>groupNodes()</code>. If called with the result of
+     * <code>groupNodes()</code> the state will be equal to the state before calling <code>groupNodes()</code>.
+     * @param nodeGroup the parent node of nodes to be ungrouped
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code>, empty or not legal in the graph
+     */
+    public void ungroupNodes(Node nodeGroup);
 
     public void clearMetaEdges(Node node);
 }

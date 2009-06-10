@@ -302,14 +302,22 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         return res;
     }
 
-    public void expand(Node node) {
-        checkNode(node);
+    public boolean expand(Node node) {
+        PreNode preNode = checkNode(node);
+        if(preNode.size == 0 || !preNode.isEnabled()) {
+            return false;
+        }
         dhns.getStructureModifier().expand(node);
+        return true;
     }
 
-    public void retract(Node node) {
-        checkNode(node);
+    public boolean retract(Node node) {
+        PreNode preNode = checkNode(node);
+        if(preNode.size == 0 || preNode.isEnabled()) {
+            return false;
+        }
         dhns.getStructureModifier().retract(node);
+        return true;
     }
 
     public void moveToGroup(Node node, Node nodeGroup) {
@@ -346,24 +354,13 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         return group;
     }
 
-    public void ungroupNodes(Node[] nodes) {
-        if (nodes == null || nodes.length == 0) {
-            throw new IllegalArgumentException("nodes can't be null or empty");
-        }
-        PreNode parent = null;
-        for (int i = 0; i < nodes.length; i++) {
-            PreNode node = checkNode(nodes[i]);
-            if (node.parent.parent == null) {  //Equal root
-                throw new IllegalArgumentException("Nodes parent can't be the root of the tree");
-            }
-            if (parent == null) {
-                parent = node.parent;
-            } else if (parent != node.parent) {
-                throw new IllegalArgumentException("All nodes must have the same parent");
-            }
+    public void ungroupNodes(Node nodeGroup) {
+        PreNode preNode = checkNode(nodeGroup);
+        if (preNode.size == 0) {
+            throw new IllegalArgumentException("nodeGroup can't be empty");
         }
 
-        dhns.getStructureModifier().ungroup(nodes);
+        dhns.getStructureModifier().ungroup(preNode);
     }
 
     public void setVisible(Node node, boolean visible) {

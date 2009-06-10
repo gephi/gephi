@@ -206,6 +206,38 @@ public class DhnsTestClusteredGraph {
         treeStructure.showTreeAsTable();
     }
 
+    @Test
+    public void testUnGroup() {
+        TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
+        int oldSize = graphGlobal.getNodeCount();
+
+        Node[] groupArray = new Node[5];
+        for (int i = 1; i < 6; i++) {
+            groupArray[i-1] = nodeMap.get("Node " + i);
+        }
+
+        PreNode group = (PreNode)graphGlobal.groupNodes(groupArray);
+
+        graphGlobal.ungroupNodes(group);
+
+        assertEquals(0, group.size);
+        for(Node n : groupArray) {
+            PreNode pn = (PreNode)n;
+            assertEquals(1,pn.level );
+            assertSame(treeStructure.getRoot(),pn.parent );
+        }
+
+        assertEquals(oldSize, graphGlobal.getNodeCount());
+
+        try {
+            checkHierarchy(treeStructure);
+        } catch (Exception ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+        treeStructure.showTreeAsTable();
+    }
+
     public void checkHierarchy(TreeStructure treeStructure) throws Exception {
 
         int count = 0;

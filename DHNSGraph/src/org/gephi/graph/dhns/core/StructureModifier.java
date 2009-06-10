@@ -272,18 +272,23 @@ public class StructureModifier {
         return group;
     }
 
-    public void ungroup(Node[] nodes) {
+    public void ungroup(PreNode nodeGroup) {
         dhns.getWriteLock().lock();
-        PreNode parent = ((PreNode) nodes[0]).parent;
-        if (nodes.length == parent.size) {
-            //All children must be ungrouped, then the parent will be removed
-            //TODO do this ?
+        //TODO Better implementation. Just remove nodeGroup from the treelist and lower level of children
+        int count = 0;
+        for (ChildrenIterator itr = new ChildrenIterator(treeStructure,nodeGroup); itr.hasNext();) {
+            itr.next();
+            count++;
         }
 
-        for (int i = 0; i < nodes.length; i++) {
-            Node node = nodes[i];
-            dhns.getStructureModifier().moveToGroup(node, parent.parent);
+        for (int i = 0; i < count; i++) {
+            PreNode node = treeStructure.getNodeAt(nodeGroup.getPre()+1);
+            dhns.getStructureModifier().moveToGroup(node, nodeGroup.parent);
         }
+
+        deleteNode(nodeGroup);
+        
+        graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
     }
 
@@ -295,7 +300,7 @@ public class StructureModifier {
         edgeProcessor.clearMetaEdges(preNode);
 
         //Enable children
-        for (ChildrenIterator itr = new ChildrenIterator(treeStructure); itr.hasNext();) {
+        for (ChildrenIterator itr = new ChildrenIterator(treeStructure,preNode); itr.hasNext();) {
             PreNode child = itr.next();
             child.setEnabled(true);
             edgeProcessor.computeMetaEdges(child);
@@ -305,7 +310,7 @@ public class StructureModifier {
     private void retract(PreNode parent) {
 
         //Disable children
-        for (ChildrenIterator itr = new ChildrenIterator(treeStructure); itr.hasNext();) {
+        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, parent); itr.hasNext();) {
             PreNode child = itr.next();
             child.setEnabled(false);
             edgeProcessor.clearMetaEdges(child);
