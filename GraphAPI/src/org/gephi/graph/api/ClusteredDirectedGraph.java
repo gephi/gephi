@@ -27,11 +27,39 @@ package org.gephi.graph.api;
  */
 public interface ClusteredDirectedGraph extends DirectedGraph, ClusteredGraph {
 
+    /**
+     * Returns incoming meta edges incident to <code>node</code>.
+     * @param node the node whose incoming meta edges are to be returned
+     * @return an edge iterable of <code>node</code>'s incoming meta edges
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
+     * the graph
+     */
     public EdgeIterable getMetaInEdges(Node node);
 
+    /**
+     * Returns outgoing meta edges incident to <code>node</code>.
+     * @param node the node whose outgoing meta edges are to be returned
+     * @return an edge iterable of <code>node</code>'s outgoing meta edges
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
+     * the graph
+     */
     public EdgeIterable getMetaOutEdges(Node node);
 
+    /**
+     * Returns the number of <code>node</code>'s incoming meta edges.
+     * @param node the node whose meta in-degree is queried
+     * @return the number of meta edges incoming to <code>node</code>
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
+     * the graph.
+     */
     public int getMetaInDegree(Node node);
 
+    /**
+     * Returns the number of <code>node</code>'s outgoing meta edges.
+     * @param node the node whose meta out-degree is queried
+     * @return the number of meta edges outgoing from <code>node</code>
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
+     * the graph.
+     */
     public int getMetaOutDegree(Node node);
 }

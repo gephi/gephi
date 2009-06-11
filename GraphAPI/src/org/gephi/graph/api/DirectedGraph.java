@@ -46,6 +46,8 @@ public interface DirectedGraph extends Graph {
      * @param target the target node of the queried edge
      * @return a directed edge that connects <code>source</code> and <code>target</code>
      * or <code>null</code> if no such edge exists
+     * @throws IllegalArgumentException if <code>source</code> or <code>target</code>
+     * is <code>null</code> or not legal nodes in the graph
      */
     public Edge getEdge(Node source, Node target);
 

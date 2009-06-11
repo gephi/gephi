@@ -37,6 +37,7 @@ public interface MixedGraph extends Graph {
      * @return true if add is successful, false otherwise
      * @throws IllegalArgumentException if <code>source</code> or <code>target</code>
      * is <code>null</code> or not legal nodes for this <code>edge</code>
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public boolean addEdge(Node source, Node target, boolean directed);
 
@@ -47,6 +48,8 @@ public interface MixedGraph extends Graph {
      * @param node2 thge second incident node of the queried edge
      * @return an edge that connects <code>node1</code> and <code>node2</code>
      * or <code>null</code> if no such edge exists
+     * @throws IllegalArgumentException if <code>node1</code> or <code>node2</code>
+     * is <code>null</code> or not legal nodes in the graph
     */
     public Edge getEdge(Node node1, Node node2);
 
@@ -68,6 +71,7 @@ public interface MixedGraph extends Graph {
      * @param edge the edge to be queried
      * @return Returns <code>true</code> if <code>edge</code> is <b>directed</b> of <code>false</code> if
      * <b>undirected</b>
+     * @throws IllegalArgumentException if <code>edge</code> is <code>null</code>
      */
     public boolean isDirected(Edge edge);
 }

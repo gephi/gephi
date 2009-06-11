@@ -129,7 +129,7 @@ public interface ClusteredGraph extends Graph {
      * Returns <code>true</code> if <code>preceding</code> is before <code>node</code>. The definition is similar to <code>XML</code> preceding
      * axis. Is true when <code>preceding</code> has a lower <b>pre</b> and <b>post</b> order than <code>node</code>.
      * @param node the node to be queried
-     * @param following the preceding to be queried
+     * @param preceding the preceding to be queried
      * @return <code>true</code> if <code>preceding</code> is preceding <code>node</code>
      * @throws IllegalArgumentException if <code>node</code> or <code>preceding</code> is <code>null</code> or not legal in the graph
      */
@@ -243,6 +243,7 @@ public interface ClusteredGraph extends Graph {
     /**
      * Reset the current view to leaves of the clustered graph tree. Therefore the <code>getNodes()</code>
      * method will return only these leaves.
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public void resetView();
 
@@ -286,7 +287,7 @@ public interface ClusteredGraph extends Graph {
     public EdgeIterable getMetaEdgeContent(Edge metaEdge);
 
     /**
-     * Returns the number <code>node</code>'s incident meta edges.
+     * Returns the number of <code>node</code>'s incident meta edges.
      * @param node the node whose meta degree is queried
      * @return the number of meta edges connected to <code>node</code>
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
@@ -299,6 +300,7 @@ public interface ClusteredGraph extends Graph {
      * @param node the node whose meta edges will be deleted
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
      * the graph.
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public void clearMetaEdges(Node node);
 }

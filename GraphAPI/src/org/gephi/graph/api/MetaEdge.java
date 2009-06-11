@@ -27,5 +27,4 @@ package org.gephi.graph.api;
  */
 public interface MetaEdge extends Edge {
 
-    public Iterable<? extends Edge> getEdges();
 }
