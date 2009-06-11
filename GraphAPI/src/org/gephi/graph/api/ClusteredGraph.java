@@ -24,7 +24,7 @@ package org.gephi.graph.api;
  *
  * @author Mathieu Bastian
  */
-public interface ClusteredGraph {
+public interface ClusteredGraph extends Graph {
 
     /**
      * Add <code>node</code> as a child of <code>parent</code> in the graph. If <code>parent</code> is
@@ -34,7 +34,8 @@ public interface ClusteredGraph {
      * @param parent the existing node whose a child is to be added or <code>null</code>
      * @return <code>true</code> if add is successful, false otherwise
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code>,
-     * or if <code>node</code> or <code>parent</code> is not legal in the graph
+     * or if <code>parent</code> is not legal in the graph
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public boolean addNode(Node node, Node parent);
 
@@ -93,12 +94,6 @@ public interface ClusteredGraph {
      * @return a node iterator of nodes at the top of the tree
      */
     public NodeIterable getTopNodes();
-
-    public EdgeIterable getMetaEdges();
-
-    public EdgeIterable getMetaEdges(Node node);
-
-    public int getMetaDegree(Node node);
 
     /**
      * Returns <code>true</code> if <code>descendant</code> is a descendant of <code>node</code>. True if <code>node</code> is an ancestor
@@ -173,6 +168,7 @@ public interface ClusteredGraph {
      * @param node the node to be expanded
      * @return <code>true</code> if the expand succeed or <code>false</code> if not
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in the graph
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public boolean expand(Node node);
 
@@ -185,6 +181,7 @@ public interface ClusteredGraph {
      * @param node the nodes' parent to be retracted
      * @return <code>true</code> if the expand succeed or <code>false</code> if not
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in the graph
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public boolean retract(Node node);
 
@@ -195,6 +192,7 @@ public interface ClusteredGraph {
      * @param nodeGroup the node to receive <code>node</code> as a child
      * @throws IllegalArgumentException if <code>node</code> or <code>nodeGroup</code> is <code>null</code> or not legal in the graph,
      * or if <code>nodeGroup</code> is a descendant of node
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public void moveToGroup(Node node, Node nodeGroup);
 
@@ -204,6 +202,7 @@ public interface ClusteredGraph {
      * @param node the node to be removed from it's group
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in the graph,
      * or if <code>node</code> is already at the top of the tree
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public void removeFromGroup(Node node);
 
@@ -218,6 +217,7 @@ public interface ClusteredGraph {
      * or if <code>nodes</code> is empty,
      * or if content nodes are not legal in the graph,
      * or if <code>nodes</code>' level is not equal
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public Node groupNodes(Node[] nodes);
 
@@ -227,8 +227,21 @@ public interface ClusteredGraph {
      * <code>groupNodes()</code> the state will be equal to the state before calling <code>groupNodes()</code>.
      * @param nodeGroup the parent node of nodes to be ungrouped
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code>, empty or not legal in the graph
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public void ungroupNodes(Node nodeGroup);
+
+    public boolean isInView(Node node);
+
+    public void resetView();
+
+    public EdgeIterable getMetaEdges();
+
+    public EdgeIterable getMetaEdges(Node node);
+
+    public EdgeIterable getMetaEdgeContent(Edge metaEdge);
+
+    public int getMetaDegree(Node node);
 
     public void clearMetaEdges(Node node);
 }

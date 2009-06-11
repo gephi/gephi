@@ -102,6 +102,10 @@ public abstract class AbstractEdge implements Edge, AVLItem {
         return source.isValid() && target.isValid();
     }
 
+    public boolean isMetaEdge() {
+        return false;
+    }
+
     public boolean hasAttributes() {
         return edgeData.getAttributes() == null;
     }

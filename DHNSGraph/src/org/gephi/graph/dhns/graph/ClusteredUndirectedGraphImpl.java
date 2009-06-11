@@ -167,18 +167,6 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public int getMetaDegree(Node node) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public EdgeIterable getMetaEdges() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public EdgeIterable getMetaEdges(Node node) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public Edge getEdge(Node node1, Node node2) {
         PreNode sourceNode = checkNode(node1);
         PreNode targetNode = checkNode(node2);
@@ -212,5 +200,21 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
         }
         writeUnlock();
 
+    }
+
+    public int getMetaDegree(Node node) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public EdgeIterable getMetaEdges() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public EdgeIterable getMetaEdges(Node node) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public EdgeIterable getMetaEdgeContent(Edge metaEdge) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

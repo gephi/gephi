@@ -40,13 +40,15 @@ public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
     }
 
     public void addEdge(AbstractEdge edge) {
-        edges.add(edge);
-        weight += edge.getWeight();
+        if(edges.add(edge)) {
+            weight += edge.getWeight();
+        }
     }
 
     public void removeEdge(AbstractEdge edge) {
-        edges.remove(edge);
-        weight -= edge.getWeight();
+        if(edges.remove(edge)) {
+            weight -= edge.getWeight();
+        }
     }
 
     public Iterable<? extends Edge> getEdges()
@@ -56,5 +58,10 @@ public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
 
     public boolean isEmpty() {
         return edges.getCount() == 0;
+    }
+
+    @Override
+    public boolean isMetaEdge() {
+        return true;
     }
 }

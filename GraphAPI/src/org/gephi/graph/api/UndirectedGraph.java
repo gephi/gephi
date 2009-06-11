@@ -36,6 +36,7 @@ public interface UndirectedGraph extends Graph {
      * @return true if add is successful, false otherwise
      * @throws IllegalArgumentException if <code>source</code> or <code>target</code>
      * is <code>null</code> or not legal nodes for this <code>edge</code>
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public boolean addEdge(Node node1, Node node2);
 
@@ -47,6 +48,8 @@ public interface UndirectedGraph extends Graph {
      * @param node2 thge second incident node of the queried edge
      * @return an edge that connects <code>node1</code> and <code>node2</code>
      * or <code>null</code> if no such edge exists
+     * @throws IllegalArgumentException if <code>node1</code> or <code>node2</code>
+     * is <code>null</code> or not legal nodes in the graph
     */
     public Edge getEdge(Node node1, Node node2);
 

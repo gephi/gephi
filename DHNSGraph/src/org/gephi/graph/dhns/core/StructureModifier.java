@@ -28,6 +28,7 @@ import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantAndSelfIterator;
+import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 
 /**
  * Business class for external operations on the data structure. Propose blocking mechanism.
@@ -66,7 +67,7 @@ public class StructureModifier {
         PreNode preNode = (PreNode) node;
         if (preNode.level < treeStructure.treeHeight) {
             expand(preNode);
-        //sightManager.updateSight((SightImpl) sight);
+            //sightManager.updateSight((SightImpl) sight);
         }
         graphVersion.incNodeVersion();
         dhns.getWriteLock().unlock();
@@ -87,7 +88,7 @@ public class StructureModifier {
         PreNode preNode = (PreNode) node;
         if (preNode.level < treeStructure.treeHeight) {
             retract(((PreNode) node));
-        //sightManager.updateSight((SightImpl)sight);
+            //sightManager.updateSight((SightImpl)sight);
         }
         graphVersion.incNodeVersion();
         dhns.getWriteLock().unlock();
@@ -113,7 +114,11 @@ public class StructureModifier {
         }
         PreNode preNode = (PreNode) node;
         preNode.parent = parentNode;
-
+        if(treeStructure.getEnabledAncestor(preNode)==null) {
+            preNode.setEnabled(true);
+        } else {
+            preNode.setEnabled(false);
+        }
         addNode(preNode);
         //dhns.getDictionary().addNode(preNode);      //Dico
         graphVersion.incNodeVersion();
@@ -248,6 +253,21 @@ public class StructureModifier {
         dhns.getWriteLock().unlock();
     }
 
+    public void resetView() {
+        dhns.getWriteLock().lock();
+        edgeProcessor.clearAllMetaEdges();
+        for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
+            PreNode node = itr.next();
+            if (node.size == 0) {
+                node.setEnabled(true);
+            } else {
+                node.setEnabled(false);
+            }
+        }
+        graphVersion.incEdgeVersion();
+        dhns.getWriteLock().unlock();
+    }
+
     public void moveToGroup(Node node, Node nodeGroup) {
         dhns.getWriteLock().lock();
         PreNode preNode = (PreNode) node;
@@ -260,7 +280,7 @@ public class StructureModifier {
     public Node group(Node[] nodes) {
         dhns.getWriteLock().lock();
         PreNode group = (PreNode) dhns.getGraphFactory().newNode();
-        PreNode parent = ((PreNode)nodes[0]).parent;
+        PreNode parent = ((PreNode) nodes[0]).parent;
         group.parent = parent;
         addNode(group);
         for (int i = 0; i < nodes.length; i++) {
@@ -276,18 +296,18 @@ public class StructureModifier {
         dhns.getWriteLock().lock();
         //TODO Better implementation. Just remove nodeGroup from the treelist and lower level of children
         int count = 0;
-        for (ChildrenIterator itr = new ChildrenIterator(treeStructure,nodeGroup); itr.hasNext();) {
+        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, nodeGroup); itr.hasNext();) {
             itr.next();
             count++;
         }
 
         for (int i = 0; i < count; i++) {
-            PreNode node = treeStructure.getNodeAt(nodeGroup.getPre()+1);
+            PreNode node = treeStructure.getNodeAt(nodeGroup.getPre() + 1);
             dhns.getStructureModifier().moveToGroup(node, nodeGroup.parent);
         }
 
         deleteNode(nodeGroup);
-        
+
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
     }
@@ -300,7 +320,7 @@ public class StructureModifier {
         edgeProcessor.clearMetaEdges(preNode);
 
         //Enable children
-        for (ChildrenIterator itr = new ChildrenIterator(treeStructure,preNode); itr.hasNext();) {
+        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, preNode); itr.hasNext();) {
             PreNode child = itr.next();
             child.setEnabled(true);
             edgeProcessor.computeMetaEdges(child);

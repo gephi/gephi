@@ -322,14 +322,14 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         PreNode preNode = checkNode(node);
         readLock();
         int count = 0;
-        if (visible && !preNode.getMetaEdgesOutTree().isEmpty()) {
-            for (Iterator<MetaEdgeImpl> itr = preNode.getMetaEdgesOutTree().iterator(); itr.hasNext();) {
+        if (visible && !preNode.getMetaEdgesInTree().isEmpty()) {
+            for (Iterator<MetaEdgeImpl> itr = preNode.getMetaEdgesInTree().iterator(); itr.hasNext();) {
                 if (itr.next().isVisible()) {
                     count++;
                 }
             }
         } else {
-            count = preNode.getMetaEdgesOutTree().getCount();
+            count = preNode.getMetaEdgesInTree().getCount();
         }
         readUnlock();
         return count;
@@ -356,5 +356,22 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     //ClusteredGraph
     public int getMetaDegree(Node node) {
         return getMetaInDegree(node) + getMetaOutDegree(node);
+    }
+
+    public EdgeIterable getMetaEdgeContent(Edge metaEdge) {
+        MetaEdgeImpl metaEdgeImpl = checkMetaEdge(metaEdge);
+        readLock();
+        if(visible) {
+            Iterator<Edge> itr = (Iterator<Edge>)metaEdgeImpl.getEdges().iterator();
+            return dhns.newEdgeIterable(itr, new Condition<Edge>() {
+
+                public boolean isValid(Edge t) {
+                    return t.isVisible();
+                }
+            });
+        } else {
+            Iterator<Edge> itr = (Iterator<Edge>)metaEdgeImpl.getEdges().iterator();
+            return dhns.newEdgeIterable(itr);
+        }
     }
 }

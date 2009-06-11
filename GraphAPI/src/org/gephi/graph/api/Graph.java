@@ -35,6 +35,7 @@ public interface Graph {
      * @return true if add is successful, false otherwise
      * @throws IllegalArgumentException if <code>edge</code> is <code>null</code> or
      * if nodes are not legal nodes for this <code>edge</code>
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public boolean addEdge(Edge edge);
 
@@ -43,6 +44,8 @@ public interface Graph {
      * Fails if the node already exists.
      * @param node the node to add
      * @return true if add is successful, false otherwise
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code>
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public boolean addNode(Node node);
 
@@ -51,6 +54,9 @@ public interface Graph {
      * Fails if the edge doesn't exist.
      * @param edge the edge to remove
      * @return true if remove is successful, false otherwise
+     * @throws IllegalArgumentException if <code>edge</code> is <code>null</code> or nodes not legal in
+     * the graph
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public boolean removeEdge(Edge edge);
 
@@ -59,6 +65,9 @@ public interface Graph {
      * also be removed.
      * @param node the node to remove
      * @return true if remove is successful, false otherwise
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code>
+     * or not legal in the graph.
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public boolean removeNode(Node node);
 
@@ -66,6 +75,7 @@ public interface Graph {
      * Returns true if the graph contains <code>node</code>.
      * @param node the node whose presence is required
      * @return true if the graph contains <code>node</code>
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code>
      */
     public boolean contains(Node node);
 
@@ -73,6 +83,7 @@ public interface Graph {
      * Returns true if the graph contains <code>edge</code>.
      * @param edge the edge whose presence is required
      * @return true if the graph contains <code>edge</code>
+     * @throws IllegalArgumentException if <code>edge</code> is <code>null</code>
      */
     public boolean contains(Edge edge);
 
@@ -99,6 +110,8 @@ public interface Graph {
      * therefore self-loops are ignored.
      * @param node the node whose neighbors are to be returned
      * @return a node iterator of <code>node</code>'s neighbors
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code>
+     * or not legal in the graph.
      */
     public NodeIterable getNeighbors(Node node);
 
@@ -109,8 +122,8 @@ public interface Graph {
      * graphs repeats edges once by default.
      * @param node the node whose incident edges are to be returned
      * @return an edge iterator of edges incident to <code>node</code>
-     * @throws IllegalArgumentException if <code>node</code> is <code>null</code>,
-     * or if <code>node</code> is not legal in the graph.
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code>
+     * or not legal in the graph.
      */
     public EdgeIterable getEdges(Node node);
 
@@ -207,16 +220,19 @@ public interface Graph {
      * Removes all edges incident to <code>node</code>.
      * @param node the node whose edges is to be cleared
      * @throws IllegalArgumentException if <code>node</code> if null or not legal in the graph
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public void clearEdges(Node node);
 
     /**
      * Removes all nodes and edges in the graph.
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public void clear();
 
     /**
      * Removes all edges in the graph.
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public void clearEdges();
 
@@ -224,6 +240,7 @@ public interface Graph {
      * Set <code>visible</code> flag to <code>node</code>.
      * @param node the node to show or hide
      * @param visible visible or hidden
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public void setVisible(Node node, boolean visible);
 
@@ -231,6 +248,7 @@ public interface Graph {
      * Set <code>visible</code> flag to <code>edge</code>.
      * @param edge the edge to show or hide
      * @param visible visible or hidden
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public void setVisible(Edge edge, boolean visible);
 
@@ -250,6 +268,7 @@ public interface Graph {
      * Acquire a write lock on the graph. Calling thread will be blocked until all read locks are released.
      * Several threads can read but only once can write.
      * @see ReentrantReadWriteLock
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public void writeLock();
 

@@ -26,6 +26,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
@@ -64,19 +65,26 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         return true;
     }
 
-    public boolean addNode(Node node) {
-        if (node == null) {
-            throw new NullPointerException();
+    public boolean addNode(Node node, Node parent) {
+        if(node==null) {
+            throw new IllegalArgumentException("Node can't be null");
         }
-        PreNode preNode = (PreNode) node;
+        PreNode preNode = (PreNode)node;
+        if (parent != null) {
+            checkNode(parent);
+        }
         if (preNode.isValid()) {
-            return false;     //Already added
+            return false;
         }
         if (!preNode.hasAttributes()) {
             preNode.setAttributes(dhns.newNodeAttributes());
         }
-        dhns.getStructureModifier().addNode(node, null);
+        dhns.getStructureModifier().addNode(node, parent);
         return true;
+    }
+
+    public boolean addNode(Node node) {
+        return addNode(node, null);
     }
 
     public boolean contains(Node node) {
@@ -180,21 +188,6 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     public void clearMetaEdges(Node node) {
         checkNode(node);
         dhns.getStructureModifier().clearMetaEdges(node);
-    }
-
-    public boolean addNode(Node node, Node parent) {
-        PreNode preNode = checkNode(node);
-        if (parent != null) {
-            checkNode(parent);
-        }
-        if (preNode.isValid()) {
-            return false;
-        }
-        if (!preNode.hasAttributes()) {
-            preNode.setAttributes(dhns.newNodeAttributes());
-        }
-        dhns.getStructureModifier().addNode(node, parent);
-        return true;
     }
 
     public int getChildrenCount(Node node) {
@@ -304,7 +297,7 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
 
     public boolean expand(Node node) {
         PreNode preNode = checkNode(node);
-        if(preNode.size == 0 || !preNode.isEnabled()) {
+        if (preNode.size == 0 || !preNode.isEnabled()) {
             return false;
         }
         dhns.getStructureModifier().expand(node);
@@ -313,7 +306,7 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
 
     public boolean retract(Node node) {
         PreNode preNode = checkNode(node);
-        if(preNode.size == 0 || preNode.isEnabled()) {
+        if (preNode.size == 0 || preNode.isEnabled()) {
             return false;
         }
         dhns.getStructureModifier().retract(node);
@@ -361,6 +354,18 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         }
 
         dhns.getStructureModifier().ungroup(preNode);
+    }
+
+    public boolean isInView(Node node) {
+        PreNode preNode = checkNode(node);
+        readLock();
+        boolean res = preNode.isEnabled();
+        readUnlock();
+        return res;
+    }
+
+    public void resetView() {
+        dhns.getStructureModifier().resetView();
     }
 
     public void setVisible(Node node, boolean visible) {
@@ -425,6 +430,20 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
             throw new IllegalArgumentException("Nodes must be in the graph");
         }
         return abstractEdge;
+    }
+
+    protected MetaEdgeImpl checkMetaEdge(Edge edge) {
+        if (edge == null) {
+            throw new IllegalArgumentException("edge can't be null");
+        }
+        AbstractEdge absEdge = (AbstractEdge)edge;
+        if(!absEdge.isMetaEdge()) {
+            throw new IllegalArgumentException("edge must be a meta edge");
+        }
+        if (!absEdge.isValid()) {
+            throw new IllegalArgumentException("Nodes must be in the graph");
+        }
+        return (MetaEdgeImpl)absEdge;
     }
 
     protected boolean checkEdgeExist(PreNode source, PreNode target) {

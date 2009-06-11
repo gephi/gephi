@@ -37,6 +37,7 @@ public class EdgeProcessor {
     private TreeStructure treeStructure;
     private ParamAVLIterator<AbstractEdge> edgeIterator;
     private IDGen idGen;
+    private boolean enableMetaEdges = true;
 
     public EdgeProcessor(Dhns dhns) {
         this.treeStructure = dhns.getTreeStructure();
@@ -96,7 +97,18 @@ public class EdgeProcessor {
         }
     }
 
+    public void clearAllMetaEdges() {
+        for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree()); itr.hasNext();) {
+            PreNode node = itr.next();
+            node.getMetaEdgesInTree().clear();
+            node.getMetaEdgesOutTree().clear();
+        }
+    }
+
     public void computeMetaEdges(PreNode node) {
+        if(!enableMetaEdges) {
+            return;
+        }
         int clusterEnd = node.pre + node.size;
         for (int i = node.pre; i <= clusterEnd; i++) {
             PreNode desc = treeStructure.getNodeAt(i);
@@ -125,7 +137,7 @@ public class EdgeProcessor {
         }
     }
 
-    public void createMetaEdge(PreNode source, PreNode target, AbstractEdge edge) {
+    private void createMetaEdge(PreNode source, PreNode target, AbstractEdge edge) {
         if (edge.getSource() == source && edge.getTarget() == target) {
             return;
         }
@@ -134,21 +146,28 @@ public class EdgeProcessor {
         if (metaEdge != null) {
             metaEdge.addEdge(edge);
         } else {
-            createMetaEdge(source, target);
+            metaEdge = createMetaEdge(source, target);
+            if(metaEdge!=null) {
+                metaEdge.addEdge(edge);
+            }
         }
     }
 
-    public void createMetaEdge(PreNode source, PreNode target) {
-        if(source==target) {
-            return;
+    private MetaEdgeImpl createMetaEdge(PreNode source, PreNode target) {
+        if (source == target) {
+            return null;
         }
-        MetaEdgeImpl newEdge = new MetaEdgeImpl(idGen.newEdgeId(),source, target);
+        MetaEdgeImpl newEdge = new MetaEdgeImpl(idGen.newEdgeId(), source, target);
         source.getMetaEdgesOutTree().add(newEdge);
         target.getMetaEdgesInTree().add(newEdge);
+        return newEdge;
     }
 
     public void createMetaEdge(AbstractEdge edge) {
-        if(edge.isSelfLoop()) {
+        if(!enableMetaEdges) {
+            return;
+        }
+        if (edge.isSelfLoop()) {
             return;
         }
         PreNode sourceParent = treeStructure.getEnabledAncestorOrSelf(edge.getSource());
@@ -160,7 +179,10 @@ public class EdgeProcessor {
     }
 
     public void removeEdgeFromMetaEdge(AbstractEdge edge) {
-        if(edge.isSelfLoop()) {
+        if(!enableMetaEdges) {
+            return;
+        }
+        if (edge.isSelfLoop()) {
             return;
         }
         MetaEdgeImpl metaEdge = getMetaEdge(edge);
@@ -173,15 +195,15 @@ public class EdgeProcessor {
         }
     }
 
-    public MetaEdgeImpl getMetaEdge(PreNode source, PreNode target) {
-        if(source==target) {
+    private MetaEdgeImpl getMetaEdge(PreNode source, PreNode target) {
+        if (source == target) {
             return null;
         }
         return source.getMetaEdgesOutTree().getItem(target.getNumber());
     }
 
-    public MetaEdgeImpl getMetaEdge(AbstractEdge edge) {
-        if(edge.isSelfLoop()) {
+    private MetaEdgeImpl getMetaEdge(AbstractEdge edge) {
+        if (edge.isSelfLoop()) {
             return null;
         }
         PreNode sourceParent = treeStructure.getEnabledAncestorOrSelf(edge.getSource());

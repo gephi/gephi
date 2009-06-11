@@ -23,6 +23,7 @@ package org.gephi.graph.dhns.edge.iterators;
 import java.util.Iterator;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.node.PreNode;
 
@@ -38,13 +39,13 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
         OUT, IN, BOTH
     };
     protected PreNode node;
-    protected ParamAVLIterator<ProperEdgeImpl> edgeIterator;
+    protected ParamAVLIterator<AbstractEdge> edgeIterator;
     protected EdgeNodeIteratorMode mode;
 
     public MetaEdgeNodeIterator(PreNode node, EdgeNodeIteratorMode mode) {
         this.node = node;
         this.mode = mode;
-        this.edgeIterator = new ParamAVLIterator<ProperEdgeImpl>();
+        this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
         if (mode.equals(EdgeNodeIteratorMode.OUT) || mode.equals(EdgeNodeIteratorMode.BOTH)) {
             this.edgeIterator.setNode(node.getMetaEdgesOutTree());
         } else {
@@ -60,13 +61,13 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
                 this.mode = EdgeNodeIteratorMode.IN;
                 return edgeIterator.hasNext();
             }
+            return true;
         } else {
             return edgeIterator.hasNext();
         }
-        return false;
     }
 
-    public ProperEdgeImpl next() {
+    public AbstractEdge next() {
         return edgeIterator.next();
     }
 

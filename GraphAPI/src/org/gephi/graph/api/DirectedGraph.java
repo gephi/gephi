@@ -35,6 +35,7 @@ public interface DirectedGraph extends Graph {
      * @return true if add is successful, false otherwise
      * @throws IllegalArgumentException if <code>source</code> or <code>target</code>
      * is <code>null</code> or not legal nodes for this <code>edge</code>
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public boolean addEdge(Node source, Node target);
 
@@ -93,6 +94,8 @@ public interface DirectedGraph extends Graph {
      * @param node the node which has <code>successor</code> as a successor
      * @param successor the node which has <code>node</code> as a predecessor
      * @return <code>true</code> if <code>successor</code> is a successor of <code>node</code>
+     * @throws IllegalArgumentException if <code>node</code> or <code>successor</code> is
+     * <code>null</code> of not legal in the graph
      */
     public boolean isSuccessor(Node node, Node successor);
 
@@ -101,6 +104,8 @@ public interface DirectedGraph extends Graph {
      * @param node the node which has <code>predecessor</code> as a predecessor
      * @param predecessor the node which has <code>node</code> as a successor
      * @return <code>true</code> if <code>predecessor</code> is a predecessor of <code>node</code>
+     * @throws IllegalArgumentException if <code>node</code> or <code>predecessor</code> is
+     * <code>null</code> of not legal in the graph
      */
     public boolean isPredecessor(Node node, Node predecessor);
 

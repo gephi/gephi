@@ -51,7 +51,7 @@ public class Dhns {
     private IDGen idGen;
 
     //Locking
-    private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     //External
     private AttributeRowFactory attributesFactory;
 
@@ -150,6 +150,9 @@ public class Dhns {
     }
 
     public Lock getWriteLock() {
+        if(readWriteLock.getReadHoldCount()>0) {
+            throw new IllegalMonitorStateException("Impossible to acquire a write lock when currently holding a read lock. Use toArray() methods on NodeIterable and EdgeIterable to avoid holding a readLock.");
+        }
         return readWriteLock.writeLock();
     }
 }
