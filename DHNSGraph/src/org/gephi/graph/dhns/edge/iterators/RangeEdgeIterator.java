@@ -46,7 +46,7 @@ import org.gephi.graph.dhns.node.iterators.DescendantAndSelfIterator;
 public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<Edge> {
 
     protected AbstractNodeIterator nodeIterator;
-    protected ParamAVLIterator<ProperEdgeImpl> edgeIterator;
+    protected ParamAVLIterator<AbstractEdge> edgeIterator;
     protected PreNode currentNode;
     protected AbstractEdge pointer;
     protected boolean IN = false;
@@ -61,6 +61,7 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
         this.nodeGroup = nodeGroup;
         this.rangeStart = target.getPre();
         this.rangeLimit = rangeStart + target.size;
+        this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
     }
 
     public RangeEdgeIterator() {
@@ -69,7 +70,7 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
     @Override
     public boolean hasNext() {
         while (true) {
-            while (edgeIterator == null || !edgeIterator.hasNext()) {
+            while (!edgeIterator.hasNext()) {
                 if (currentNode == null) {
                     if (nodeIterator.hasNext()) {
                         currentNode = nodeIterator.next();

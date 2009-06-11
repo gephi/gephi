@@ -231,17 +231,74 @@ public interface ClusteredGraph extends Graph {
      */
     public void ungroupNodes(Node nodeGroup);
 
+    /**
+     * Returns true if <code>node</code> is currently in the graph view.
+     * @param node the node to be queried
+     * @return <code>true</code> if <code>node</code> is in the view, <code>false</code> otherwise
+     * @throws IllegalArgumentException if <code>nodeGroup</code> is <code>null</code> or not legal in
+     * the graph
+     */
     public boolean isInView(Node node);
 
+    /**
+     * Reset the current view to leaves of the clustered graph tree. Therefore the <code>getNodes()</code>
+     * method will return only these leaves.
+     */
     public void resetView();
 
+    /**
+     * Returns meta edges for the whole graph. Meta edges are edges between a group and a leaf
+     * or between two groups. They represents proper edges between descendants of groups. Meta
+     * edges are always located only on nodes which are in the current view.
+     * <p>
+     * <b>Example:</b>
+     * In a clustered graph, let's define <code>group1</code> and <code>group2</code>, both with
+     * two leaves as children. Leaves are named <code>l11</code>, <code>l12</code>, <code>l21</code>
+     * and <code>l22</code>. Then we add an edge between <code>l11</code> and <code>l22</code>.
+     * Then we look at the view of the graph. Let's say the view is set for groups only, that means
+     * only groups are visible and leaves are not. At this point we can say a meta edge exist between
+     * <code>group1</code> and <code>group2</code> and it represents the edge <code>l11-l22</code>.
+     * <p>
+     * Therefore meta edges are useful when a graph is retracted/collapsed into clusters. Relations
+     * between clusters can be get with meta edges directly. Note that a meta edge knows which edges
+     * it represents and its weight is the sum of content edges' weight.
+     * @return an edge iterable of all meta edges in the current graph view
+     */
     public EdgeIterable getMetaEdges();
 
-    public EdgeIterable getMetaEdges(Node node);
+    /**
+     * Returns meta edges for <code>nodeGroup</code>.
+     * @param nodeGroup the node whose meta edges are queried
+     * @return an edge iterable of meta edges incident to nodeGroup
+     * @throws IllegalArgumentException if <code>nodeGroup</code> is <code>null</code> or not legal in
+     * the graph
+     */
+    public EdgeIterable getMetaEdges(Node nodeGroup);
 
+    /**
+     * Returns proper edges represented by <code>metaEdge</code>. These proper edges are connected to
+     * descendants of <code>metaEdges</code>'s incident nodes.
+     * @param metaEdge the meta edge whose content edges is to be returned
+     * @return an edge iterable of proper edges contained by <code>metaEdge</code>
+     * @throws IllegalArgumentException if <code>metaEdge</code> is null,
+     * or if <code>metaEdge</code> is not a meta edge
+     */
     public EdgeIterable getMetaEdgeContent(Edge metaEdge);
 
+    /**
+     * Returns the number <code>node</code>'s incident meta edges.
+     * @param node the node whose meta degree is queried
+     * @return the number of meta edges connected to <code>node</code>
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
+     * the graph.
+     */
     public int getMetaDegree(Node node);
 
+    /**
+     * Clears all meta edges for <code>node</code>.
+     * @param node the node whose meta edges will be deleted
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
+     * the graph.
+     */
     public void clearMetaEdges(Node node);
 }

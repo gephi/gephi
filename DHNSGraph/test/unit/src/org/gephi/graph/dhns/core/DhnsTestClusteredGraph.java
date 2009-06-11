@@ -421,6 +421,44 @@ public class DhnsTestClusteredGraph {
         }
     }
 
+    @Test
+    public void testInnerOuterEdges() {
+
+        Node metaNode0 = graphGlobal2.getTopNodes().toArray()[0];
+        Node metaNode1 = graphGlobal2.getTopNodes().toArray()[1];
+        Node metaNode2 = graphGlobal2.getTopNodes().toArray()[2];
+
+        Node leaf2 = graphGlobal2.getChildren(metaNode0).toArray()[0];
+        Node leaf3 = graphGlobal2.getChildren(metaNode0).toArray()[1];
+        Node leaf5 = graphGlobal2.getChildren(metaNode1).toArray()[0];
+        Node leaf6 = graphGlobal2.getChildren(metaNode1).toArray()[1];
+        Node leaf8 = graphGlobal2.getChildren(metaNode2).toArray()[0];
+        Node leaf9 = graphGlobal2.getChildren(metaNode2).toArray()[1];
+
+        //Inner
+        Edge[] innerEdges = graphGlobal2.getInnerEdges(metaNode0).toArray();
+        assertEquals(1, innerEdges.length);
+        assertSame(graphGlobal2.getEdge(leaf3, leaf2), innerEdges[0]);
+
+        //Outer
+        Edge[] outerEdges = graphGlobal2.getOuterEdges(metaNode0).toArray();
+        assertEquals(3, outerEdges.length);
+        assertSame(graphGlobal2.getEdge(leaf2, leaf5), outerEdges[0]);
+        assertSame(graphGlobal2.getEdge(leaf2, leaf6), outerEdges[1]);
+        assertSame(graphGlobal2.getEdge(leaf3, leaf5), outerEdges[2]);
+
+        //Inner with self loop
+        innerEdges = graphGlobal2.getInnerEdges(metaNode2).toArray();
+        assertEquals(2, innerEdges.length);
+        assertSame(graphGlobal2.getEdge(leaf9, leaf8), innerEdges[0]);
+        assertSame(graphGlobal2.getEdge(leaf9, leaf9), innerEdges[1]);
+
+        //Inner from self loop node
+        innerEdges = graphGlobal2.getInnerEdges(leaf9).toArray();
+        assertEquals(1, innerEdges.length);
+        assertSame(graphGlobal2.getEdge(leaf9, leaf9), innerEdges[0]);
+    }
+
     public void checkHierarchy(TreeStructure treeStructure) throws Exception {
 
         int count = 0;

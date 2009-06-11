@@ -114,7 +114,7 @@ public class StructureModifier {
         }
         PreNode preNode = (PreNode) node;
         preNode.parent = parentNode;
-        if(treeStructure.getEnabledAncestor(preNode)==null) {
+        if (treeStructure.getEnabledAncestor(preNode) == null) {
             preNode.setEnabled(true);
         } else {
             preNode.setEnabled(false);

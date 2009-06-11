@@ -361,8 +361,8 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public EdgeIterable getMetaEdgeContent(Edge metaEdge) {
         MetaEdgeImpl metaEdgeImpl = checkMetaEdge(metaEdge);
         readLock();
-        if(visible) {
-            Iterator<Edge> itr = (Iterator<Edge>)metaEdgeImpl.getEdges().iterator();
+        if (visible) {
+            Iterator<Edge> itr = (Iterator<Edge>) metaEdgeImpl.getEdges().iterator();
             return dhns.newEdgeIterable(itr, new Condition<Edge>() {
 
                 public boolean isValid(Edge t) {
@@ -370,7 +370,7 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
                 }
             });
         } else {
-            Iterator<Edge> itr = (Iterator<Edge>)metaEdgeImpl.getEdges().iterator();
+            Iterator<Edge> itr = (Iterator<Edge>) metaEdgeImpl.getEdges().iterator();
             return dhns.newEdgeIterable(itr);
         }
     }

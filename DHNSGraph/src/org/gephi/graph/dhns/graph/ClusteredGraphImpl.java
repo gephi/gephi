@@ -66,10 +66,10 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     }
 
     public boolean addNode(Node node, Node parent) {
-        if(node==null) {
+        if (node == null) {
             throw new IllegalArgumentException("Node can't be null");
         }
-        PreNode preNode = (PreNode)node;
+        PreNode preNode = (PreNode) node;
         if (parent != null) {
             checkNode(parent);
         }
@@ -436,14 +436,14 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         if (edge == null) {
             throw new IllegalArgumentException("edge can't be null");
         }
-        AbstractEdge absEdge = (AbstractEdge)edge;
-        if(!absEdge.isMetaEdge()) {
+        AbstractEdge absEdge = (AbstractEdge) edge;
+        if (!absEdge.isMetaEdge()) {
             throw new IllegalArgumentException("edge must be a meta edge");
         }
         if (!absEdge.isValid()) {
             throw new IllegalArgumentException("Nodes must be in the graph");
         }
-        return (MetaEdgeImpl)absEdge;
+        return (MetaEdgeImpl) absEdge;
     }
 
     protected boolean checkEdgeExist(PreNode source, PreNode target) {
