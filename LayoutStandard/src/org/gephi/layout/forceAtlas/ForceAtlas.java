@@ -223,4 +223,8 @@ public class ForceAtlas extends AbstractForceVector {
     public JPanel getPanel() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public boolean canAlgo() {
+        return true;
+    }
 }
