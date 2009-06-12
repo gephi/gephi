@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.core;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -323,7 +324,7 @@ public class DhnsTestClusteredGraph {
         //Test resetView
         graph.resetView();
         for (Node n : graph.getNodes()) {
-            assertEquals(2, graph.getLevel(n));
+            assertEquals(1, graph.getLevel(n));
             assertFalse(graph.isInView(graph.getParent(n)));
         }
 
@@ -593,6 +594,35 @@ public class DhnsTestClusteredGraph {
         assertEquals(2, outerEdges.length);
         assertSame(graphGlobal2Undirected.getEdge(leaf6, leaf8), outerEdges[0]);
         assertSame(graphGlobal2Undirected.getEdge(leaf5, leaf9), outerEdges[1]);
+    }
+
+    @Test
+    public void testLevel() {
+        //Height
+        assertEquals(1, graphGlobal2Directed.getHeight());
+
+        //Level
+        Node nodeLevel0 = graphGlobal2Directed.getTopNodes().toArray()[0];
+        Node nodeLevel1 = graphGlobal2Directed.getChildren(nodeLevel0).toArray()[0];
+        assertEquals(0, graphGlobal2Directed.getLevel(nodeLevel0));
+        assertEquals(1, graphGlobal2Directed.getLevel(nodeLevel1));
+
+        //getNodes(level) 0
+        assertArrayEquals(graphGlobal2Directed.getTopNodes().toArray(), graphGlobal2Directed.getNodes(0).toArray());
+
+        //getNodes(level) 1
+        ArrayList<Node> nodesLevel1 = new ArrayList<Node>();
+        nodesLevel1.addAll(Arrays.asList(graphGlobal2Directed.getChildren(graphGlobal2Directed.getTopNodes().toArray()[0]).toArray()));
+        nodesLevel1.addAll(Arrays.asList(graphGlobal2Directed.getChildren(graphGlobal2Directed.getTopNodes().toArray()[1]).toArray()));
+        nodesLevel1.addAll(Arrays.asList(graphGlobal2Directed.getChildren(graphGlobal2Directed.getTopNodes().toArray()[2]).toArray()));
+        assertArrayEquals(nodesLevel1.toArray(), graphGlobal2Directed.getNodes(1).toArray());
+
+        //Levelsize
+        assertEquals(graphGlobal2Directed.getLevelSize(0), 3);
+        assertEquals(graphGlobal2Directed.getLevelSize(1), 6);
+        assertEquals(graphGlobal.getLevelSize(0), 15);
+
+    //graphGlobal2Directed.getNodes(2);
     }
 
     public void checkHierarchy(TreeStructure treeStructure) throws Exception {

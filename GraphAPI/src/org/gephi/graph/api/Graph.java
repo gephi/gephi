@@ -88,40 +88,40 @@ public interface Graph {
     public boolean contains(Edge edge);
 
     /**
-     * Returns a node iterator of nodes contained in the graph.
+     * Returns nodes contained in the graph.
      * <p>
      * In the case of a hierarchical graph, only nodes in the current view will be returned.
      * See {@link ClusteredGraph} for details.
-     * @return a node iterator of nodes contained in the graph.
+     * @return a node iterable of nodes contained in the graph.
      */
     public NodeIterable getNodes();
 
     /**
-     * Returns an edge iterator of edges contained in the graph. Self-loops will be present only once.
+     * Returns edges contained in the graph. Self-loops will be present only once.
      * <p>
      * If the graph is <b>undirected</b>, directed mutual edges will be present only once.
-     * @return an edge iterator of edges contained in the graph.
+     * @return an edge iterable of edges contained in the graph.
      */
     public EdgeIterable getEdges();
 
     /**
-     * Returns a node iterator of neighbors of <code>node</code>. Neighbors are nodes connected to
+     * Returns neighbors of <code>node</code>. Neighbors are nodes connected to
      * <code>node</code> with any edge of the graph. Neighbors exclude <code>node</code> itself,
      * therefore self-loops are ignored.
      * @param node the node whose neighbors are to be returned
-     * @return a node iterator of <code>node</code>'s neighbors
+     * @return a node iterable of <code>node</code>'s neighbors
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code>
      * or not legal in the graph.
      */
     public NodeIterable getNeighbors(Node node);
 
     /**
-     * Returns an edge iterator of edges incident to <code>node</code>.
+     * Returns edges incident to <code>node</code>.
      * <p>
      * For <b>directed</b> graph, note that self-loops are repeated only once. <b>Undirected</b>
      * graphs repeats edges once by default.
      * @param node the node whose incident edges are to be returned
-     * @return an edge iterator of edges incident to <code>node</code>
+     * @return an edge iterable of edges incident to <code>node</code>
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code>
      * or not legal in the graph.
      */

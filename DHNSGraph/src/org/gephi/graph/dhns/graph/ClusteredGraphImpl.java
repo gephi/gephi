@@ -27,14 +27,15 @@ import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
-import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.CompleteTreeIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantIterator;
+import org.gephi.graph.dhns.node.iterators.LevelIterator;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.gephi.graph.dhns.node.iterators.VisibleChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.VisibleDescendantIterator;
+import org.gephi.graph.dhns.node.iterators.VisibleLevelIterator;
 import org.gephi.graph.dhns.node.iterators.VisibleTreeIterator;
 
 /**
@@ -133,6 +134,45 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         }
         readUnlock();
         return count;
+    }
+
+    public NodeIterable getNodes(int level) {
+        level += 1;     //Because we ignore the virtual root
+        readLock();
+        int height = dhns.getTreeStructure().treeHeight;
+        if (level > height) {
+            readUnlock();
+            throw new IllegalArgumentException("Level must be between 0 and the height of the tree, currently height=" + (height - 1));
+        }
+        if (visible) {
+            return dhns.newNodeIterable(new VisibleLevelIterator(dhns.getTreeStructure(), level));
+        } else {
+            return dhns.newNodeIterable(new LevelIterator(dhns.getTreeStructure(), level));
+        }
+    }
+
+    public int getLevelSize(int level) {
+        level += 1;     //Because we ignore the virtual root
+        readLock();
+        int height = dhns.getTreeStructure().treeHeight;
+        if (level > height) {
+            readUnlock();
+            throw new IllegalArgumentException("Level must be between 0 and the height of the tree, currently height=" + (height - 1));
+        }
+        int res = 0;
+        if (visible) {
+            for (VisibleLevelIterator itr = new VisibleLevelIterator(dhns.getTreeStructure(), level); itr.hasNext();) {
+                itr.next();
+                res++;
+            }
+        } else {
+            for (LevelIterator itr = new LevelIterator(dhns.getTreeStructure(), level); itr.hasNext();) {
+                itr.next();
+                res++;
+            }
+        }
+        readUnlock();
+        return res;
     }
 
     public boolean isSelfLoop(Edge edge) {
@@ -282,7 +322,7 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
 
     public int getHeight() {
         readLock();
-        int res = dhns.getTreeStructure().treeHeight;
+        int res = dhns.getTreeStructure().treeHeight - 1;
         readUnlock();
         return res;
     }
@@ -290,7 +330,7 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     public int getLevel(Node node) {
         PreNode preNode = checkNode(node);
         readLock();
-        int res = preNode.level;
+        int res = preNode.level - 1;
         readUnlock();
         return res;
     }

@@ -52,40 +52,40 @@ public interface DirectedGraph extends Graph {
     public Edge getEdge(Node source, Node target);
 
     /**
-     * Returns an edge iterator of incoming edges incident to <code>node</code>.
+     * Returns incoming edges incident to <code>node</code>.
      * @param node the node whose incoming edges are to be returned
-     * @return an edge iterator of incoming edges incident to <code>node</code>
+     * @return an edge iterable of incoming edges incident to <code>node</code>
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code>,
      * or if <code>node</code> is not legal in the graph.
      */
     public EdgeIterable getInEdges(Node node);
 
     /**
-     * Returns an edge iterator of outgoing edges incident to <code>node</code>.
+     * Returns outgoing edges incident to <code>node</code>.
      * @param node the node whose outgoing edges are to be returned
-     * @return an edge iterator of outgoing edges incident to <code>node</code>
+     * @return an edge iterable of outgoing edges incident to <code>node</code>
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code>,
      * or if <code>node</code> is not legal in the graph.
      */
     public EdgeIterable getOutEdges(Node node);
 
     /**
-     * Returns an node iterator of <code>node</code>'s successors.
+     * Returns <code>node</code>'s successors.
      * A successor of <code>node</code> is a node which is connected to <code>node</code>
      * by an outgoing edge going from <code>node</code>.
      * @param node the node whose successors are to be returned
-     * @return a node iterator of <code>node</code>'s successors
+     * @return a node iterable of <code>node</code>'s successors
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code>,
      * or if <code>node</code> is not legal in the graph.
      */
     public NodeIterable getSuccessors(Node node);
 
     /**
-     * Returns an node iterator of <code>node</code>'s predecessors.
+     * Returns <code>node</code>'s predecessors.
      * A predecessor of <code>node</code> is a node which is connected to <code>node</code>
      * by an incoming edge going to <code>node</code>.
      * @param node the node whose predecessors are to be returned
-     * @return a node iterator of <code>node</code>'s successors
+     * @return a node iterable of <code>node</code>'s successors
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code>,
      * or if <code>node</code> is not legal in the graph.
      */

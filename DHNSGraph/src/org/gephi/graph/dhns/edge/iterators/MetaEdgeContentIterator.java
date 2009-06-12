@@ -26,8 +26,9 @@ import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 
 /**
+ * Iterates over the edges contained in a meta edge. Support either directed ot undirected request.
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class MetaEdgeContentIterator extends AbstractEdgeIterator implements Iterator<Edge> {
 
