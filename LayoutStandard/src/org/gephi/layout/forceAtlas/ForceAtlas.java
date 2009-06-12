@@ -89,6 +89,9 @@ public class ForceAtlas extends AbstractForceVector {
 
     public void initAlgo(DirectedGraph graph) {
         this.graph = graph;
+        for (Node n : graph.getNodes()) {
+            n.getNodeData().setLayoutData(new ForceVectorNodeLayoutData());
+        }
     }
     
 
