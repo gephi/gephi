@@ -72,6 +72,8 @@ final class GraphTopComponent extends TopComponent {
                 });
             }
         });
+        //add(drawable.getGraphComponent(), BorderLayout.CENTER);
+        //remove(waitingLabel);
     }
 
     /** This method is called from within the constructor to

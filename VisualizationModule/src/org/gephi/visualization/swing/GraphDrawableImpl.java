@@ -66,7 +66,6 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
         System.out.println("init");
         graphComponent.setCursor(Cursor.getDefaultCursor());
         engine.initEngine(gl, glu);
-        VizController.getInstance().getGraphIO().startMouseListening();
     }
 
     public void refreshDraggingMarker() {
