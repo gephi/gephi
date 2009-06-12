@@ -30,6 +30,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
+import org.gephi.graph.dhns.graph.ClusteredUndirectedGraphImpl;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.junit.After;
@@ -49,7 +50,8 @@ public class DhnsTestClusteredGraph {
     private Dhns dhnsGlobal;
     private ClusteredDirectedGraphImpl graphGlobal;
     private Dhns dhnsGlobal2;
-    private ClusteredDirectedGraphImpl graphGlobal2;
+    private ClusteredDirectedGraphImpl graphGlobal2Directed;
+    private ClusteredUndirectedGraphImpl graphGlobal2Undirected;
     private Map<String, Node> nodeMap;
     private Map<String, Edge> edgeMap;
 
@@ -81,24 +83,24 @@ public class DhnsTestClusteredGraph {
 
         //2
         dhnsGlobal2 = new Dhns();
-        graphGlobal2 = new ClusteredDirectedGraphImpl(dhnsGlobal2, false);
-
+        graphGlobal2Directed = new ClusteredDirectedGraphImpl(dhnsGlobal2, false);
+        graphGlobal2Undirected = new ClusteredUndirectedGraphImpl(dhnsGlobal2, false);
         treeStructure = dhnsGlobal2.getTreeStructure();
         factory = dhnsGlobal2.getGraphFactory();
 
         //Nodes
         for (int i = 0; i < 3; i++) {
             Node node = factory.newNode();
-            graphGlobal2.addNode(node);
+            graphGlobal2Directed.addNode(node);
         }
 
         int i = 0;
-        for (Node n : graphGlobal2.getTopNodes().toArray()) {
+        for (Node n : graphGlobal2Directed.getTopNodes().toArray()) {
             Node newC = factory.newNode();
-            graphGlobal2.addNode(newC, n);
+            graphGlobal2Directed.addNode(newC, n);
             nodeMap.put("Leaf " + (i++), newC);
             newC = factory.newNode();
-            graphGlobal2.addNode(newC, n);
+            graphGlobal2Directed.addNode(newC, n);
             nodeMap.put("Leaf " + (i++), newC);
         }
 
@@ -109,14 +111,16 @@ public class DhnsTestClusteredGraph {
         Node leaf8 = nodeMap.get("Leaf 4");
         Node leaf9 = nodeMap.get("Leaf 5");
 
-        graphGlobal2.addEdge(leaf2, leaf5);
-        graphGlobal2.addEdge(leaf2, leaf6);
-        graphGlobal2.addEdge(leaf3, leaf2);
-        graphGlobal2.addEdge(leaf3, leaf5);
-        graphGlobal2.addEdge(leaf6, leaf8);
-        graphGlobal2.addEdge(leaf9, leaf8);
-        graphGlobal2.addEdge(leaf9, leaf5);
-        graphGlobal2.addEdge(leaf9, leaf9);
+        graphGlobal2Directed.addEdge(leaf2, leaf5);
+        graphGlobal2Directed.addEdge(leaf2, leaf6);
+        graphGlobal2Directed.addEdge(leaf3, leaf2);
+        graphGlobal2Directed.addEdge(leaf3, leaf5);
+        graphGlobal2Directed.addEdge(leaf6, leaf8);
+        graphGlobal2Directed.addEdge(leaf9, leaf8);
+        graphGlobal2Directed.addEdge(leaf8, leaf9);
+        graphGlobal2Directed.addEdge(leaf9, leaf5);
+        graphGlobal2Directed.addEdge(leaf5, leaf9);
+        graphGlobal2Directed.addEdge(leaf9, leaf9);
 
     }
 
@@ -126,7 +130,8 @@ public class DhnsTestClusteredGraph {
         dhnsGlobal = null;
         graphGlobal = null;
         dhnsGlobal2 = null;
-        graphGlobal2 = null;
+        graphGlobal2Directed = null;
+        graphGlobal2Undirected = null;
     }
 
     @Test
@@ -331,22 +336,22 @@ public class DhnsTestClusteredGraph {
     }
 
     @Test
-    public void testMetaEdges() {
+    public void testMetaEdgesDirected() {
         TreeStructure treeStructure = dhnsGlobal2.getTreeStructure();
 
-        Node metaNode0 = graphGlobal2.getTopNodes().toArray()[0];
-        Node metaNode1 = graphGlobal2.getTopNodes().toArray()[1];
-        Node metaNode2 = graphGlobal2.getTopNodes().toArray()[2];
+        Node metaNode0 = graphGlobal2Directed.getTopNodes().toArray()[0];
+        Node metaNode1 = graphGlobal2Directed.getTopNodes().toArray()[1];
+        Node metaNode2 = graphGlobal2Directed.getTopNodes().toArray()[2];
 
-        Node leaf2 = graphGlobal2.getChildren(metaNode0).toArray()[0];
-        Node leaf3 = graphGlobal2.getChildren(metaNode0).toArray()[1];
-        Node leaf5 = graphGlobal2.getChildren(metaNode1).toArray()[0];
-        Node leaf6 = graphGlobal2.getChildren(metaNode1).toArray()[1];
-        Node leaf8 = graphGlobal2.getChildren(metaNode2).toArray()[0];
-        Node leaf9 = graphGlobal2.getChildren(metaNode2).toArray()[1];
+        Node leaf2 = graphGlobal2Directed.getChildren(metaNode0).toArray()[0];
+        Node leaf3 = graphGlobal2Directed.getChildren(metaNode0).toArray()[1];
+        Node leaf5 = graphGlobal2Directed.getChildren(metaNode1).toArray()[0];
+        Node leaf6 = graphGlobal2Directed.getChildren(metaNode1).toArray()[1];
+        Node leaf8 = graphGlobal2Directed.getChildren(metaNode2).toArray()[0];
+        Node leaf9 = graphGlobal2Directed.getChildren(metaNode2).toArray()[1];
 
         //Get meta edges
-        Edge[] metaEdges = graphGlobal2.getMetaEdges().toArray();
+        Edge[] metaEdges = graphGlobal2Directed.getMetaEdges().toArray();
         assertEquals(3, metaEdges.length);
         MetaEdgeImpl metaEdge01 = (MetaEdgeImpl) metaEdges[0];
         MetaEdgeImpl metaEdge12 = (MetaEdgeImpl) metaEdges[1];
@@ -360,58 +365,59 @@ public class DhnsTestClusteredGraph {
         assertSame(metaNode1, metaEdge21.getTarget());
 
         //Meta edge content
-        Edge[] metaEdge01content = graphGlobal2.getMetaEdgeContent(metaEdge01).toArray();
+        Edge[] metaEdge01content = graphGlobal2Directed.getMetaEdgeContent(metaEdge01).toArray();
         assertEquals(3, metaEdge01content.length);
-        assertSame(metaEdge01content[0], graphGlobal2.getEdge(leaf2, leaf5));
-        assertSame(metaEdge01content[1], graphGlobal2.getEdge(leaf2, leaf6));
-        assertSame(metaEdge01content[2], graphGlobal2.getEdge(leaf3, leaf5));
+        assertSame(metaEdge01content[0], graphGlobal2Directed.getEdge(leaf2, leaf5));
+        assertSame(metaEdge01content[1], graphGlobal2Directed.getEdge(leaf2, leaf6));
+        assertSame(metaEdge01content[2], graphGlobal2Directed.getEdge(leaf3, leaf5));
 
-        Edge[] metaEdge12content = graphGlobal2.getMetaEdgeContent(metaEdge12).toArray();
-        assertEquals(1, metaEdge12content.length);
-        assertSame(metaEdge12content[0], graphGlobal2.getEdge(leaf6, leaf8));
+        Edge[] metaEdge12content = graphGlobal2Directed.getMetaEdgeContent(metaEdge12).toArray();
+        assertEquals(2, metaEdge12content.length);
+        assertSame(metaEdge12content[0], graphGlobal2Directed.getEdge(leaf6, leaf8));
+        assertSame(metaEdge12content[1], graphGlobal2Directed.getEdge(leaf5, leaf9));
 
-        Edge[] metaEdge21content = graphGlobal2.getMetaEdgeContent(metaEdge21).toArray();
+        Edge[] metaEdge21content = graphGlobal2Directed.getMetaEdgeContent(metaEdge21).toArray();
         assertEquals(1, metaEdge21content.length);
-        assertSame(metaEdge21content[0], graphGlobal2.getEdge(leaf9, leaf5));
+        assertSame(metaEdge21content[0], graphGlobal2Directed.getEdge(leaf9, leaf5));
 
         //Degree
-        assertEquals(2, graphGlobal2.getMetaInDegree(metaNode1));
-        assertEquals(1, graphGlobal2.getMetaOutDegree(metaNode1));
-        assertEquals(1, graphGlobal2.getMetaOutDegree(metaNode0));
-        assertEquals(3, graphGlobal2.getMetaDegree(metaNode1));
+        assertEquals(2, graphGlobal2Directed.getMetaInDegree(metaNode1));
+        assertEquals(1, graphGlobal2Directed.getMetaOutDegree(metaNode1));
+        assertEquals(1, graphGlobal2Directed.getMetaOutDegree(metaNode0));
+        assertEquals(3, graphGlobal2Directed.getMetaDegree(metaNode1));
 
-        Edge[] metaInEdges1 = graphGlobal2.getMetaInEdges(metaNode1).toArray();
+        Edge[] metaInEdges1 = graphGlobal2Directed.getMetaInEdges(metaNode1).toArray();
         assertEquals(2, metaInEdges1.length);
         assertSame(metaInEdges1[0], metaEdge01);
         assertSame(metaInEdges1[1], metaEdge21);
 
-        Edge[] metaOutEdges1 = graphGlobal2.getMetaOutEdges(metaNode1).toArray();
+        Edge[] metaOutEdges1 = graphGlobal2Directed.getMetaOutEdges(metaNode1).toArray();
         assertEquals(1, metaOutEdges1.length);
         assertSame(metaOutEdges1[0], metaEdge12);
 
-        Edge[] metaEdges1 = graphGlobal2.getMetaEdges(metaNode1).toArray();
+        Edge[] metaEdges1 = graphGlobal2Directed.getMetaEdges(metaNode1).toArray();
         assertEquals(3, metaEdges1.length);
         assertSame(metaEdges1[0], metaEdge12);
         assertSame(metaEdges1[1], metaEdge01);
         assertSame(metaEdges1[2], metaEdge21);
 
         //Remove edge
-        graphGlobal2.removeEdge(graphGlobal2.getEdge(leaf2, leaf5));
-        assertEquals(2, graphGlobal2.getMetaEdgeContent(metaEdge01).toArray().length);
+        graphGlobal2Directed.removeEdge(graphGlobal2Directed.getEdge(leaf2, leaf5));
+        assertEquals(2, graphGlobal2Directed.getMetaEdgeContent(metaEdge01).toArray().length);
 
-        graphGlobal2.removeEdge(graphGlobal2.getEdge(leaf3, leaf2));
-        assertEquals(2, graphGlobal2.getMetaEdgeContent(metaEdge01).toArray().length);
+        graphGlobal2Directed.removeEdge(graphGlobal2Directed.getEdge(leaf3, leaf2));
+        assertEquals(2, graphGlobal2Directed.getMetaEdgeContent(metaEdge01).toArray().length);
 
-        graphGlobal2.removeEdge(graphGlobal2.getEdge(leaf3, leaf5));
-        graphGlobal2.removeEdge(graphGlobal2.getEdge(leaf2, leaf6));
-        assertEquals(0, graphGlobal2.getMetaEdges(metaNode0).toArray().length);
+        graphGlobal2Directed.removeEdge(graphGlobal2Directed.getEdge(leaf3, leaf5));
+        graphGlobal2Directed.removeEdge(graphGlobal2Directed.getEdge(leaf2, leaf6));
+        assertEquals(0, graphGlobal2Directed.getMetaEdges(metaNode0).toArray().length);
 
-        graphGlobal2.clearMetaEdges(metaNode1);
-        graphGlobal2.clearMetaEdges(metaNode2);
+        graphGlobal2Directed.clearMetaEdges(metaNode1);
+        graphGlobal2Directed.clearMetaEdges(metaNode2);
 
-        assertEquals(0, graphGlobal2.getMetaEdges().toArray().length);
-        assertEquals(0, graphGlobal2.getMetaEdges(metaNode1).toArray().length);
-        assertEquals(0, graphGlobal2.getMetaEdges(metaNode2).toArray().length);
+        assertEquals(0, graphGlobal2Directed.getMetaEdges().toArray().length);
+        assertEquals(0, graphGlobal2Directed.getMetaEdges(metaNode1).toArray().length);
+        assertEquals(0, graphGlobal2Directed.getMetaEdges(metaNode2).toArray().length);
 
         treeStructure.showTreeAsTable();
         try {
@@ -422,41 +428,171 @@ public class DhnsTestClusteredGraph {
     }
 
     @Test
-    public void testInnerOuterEdges() {
+    public void testMetaEdgesUndirected() {
+        TreeStructure treeStructure = dhnsGlobal2.getTreeStructure();
 
-        Node metaNode0 = graphGlobal2.getTopNodes().toArray()[0];
-        Node metaNode1 = graphGlobal2.getTopNodes().toArray()[1];
-        Node metaNode2 = graphGlobal2.getTopNodes().toArray()[2];
+        Node metaNode0 = graphGlobal2Undirected.getTopNodes().toArray()[0];
+        Node metaNode1 = graphGlobal2Undirected.getTopNodes().toArray()[1];
+        Node metaNode2 = graphGlobal2Undirected.getTopNodes().toArray()[2];
 
-        Node leaf2 = graphGlobal2.getChildren(metaNode0).toArray()[0];
-        Node leaf3 = graphGlobal2.getChildren(metaNode0).toArray()[1];
-        Node leaf5 = graphGlobal2.getChildren(metaNode1).toArray()[0];
-        Node leaf6 = graphGlobal2.getChildren(metaNode1).toArray()[1];
-        Node leaf8 = graphGlobal2.getChildren(metaNode2).toArray()[0];
-        Node leaf9 = graphGlobal2.getChildren(metaNode2).toArray()[1];
+        Node leaf2 = graphGlobal2Undirected.getChildren(metaNode0).toArray()[0];
+        Node leaf3 = graphGlobal2Undirected.getChildren(metaNode0).toArray()[1];
+        Node leaf5 = graphGlobal2Undirected.getChildren(metaNode1).toArray()[0];
+        Node leaf6 = graphGlobal2Undirected.getChildren(metaNode1).toArray()[1];
+        Node leaf8 = graphGlobal2Undirected.getChildren(metaNode2).toArray()[0];
+        Node leaf9 = graphGlobal2Undirected.getChildren(metaNode2).toArray()[1];
+
+        //Get meta edges
+        Edge[] metaEdges = graphGlobal2Undirected.getMetaEdges().toArray();
+        assertEquals(2, metaEdges.length);
+        MetaEdgeImpl metaEdge01 = (MetaEdgeImpl) metaEdges[0];
+        MetaEdgeImpl metaEdge12 = (MetaEdgeImpl) metaEdges[1];
+
+        assertSame(metaNode0, metaEdge01.getSource());
+        assertSame(metaNode1, metaEdge01.getTarget());
+        assertSame(metaNode1, metaEdge12.getSource());
+        assertSame(metaNode2, metaEdge12.getTarget());
+
+        //Degree
+        assertEquals(2, graphGlobal2Undirected.getMetaDegree(metaNode1));
+        assertEquals(1, graphGlobal2Undirected.getMetaDegree(metaNode0));
+        assertEquals(1, graphGlobal2Undirected.getMetaDegree(metaNode2));
+
+        Edge[] metaEdges1 = graphGlobal2Undirected.getMetaEdges(metaNode1).toArray();
+        assertEquals(2, metaEdges1.length);
+        assertSame(metaEdges1[0], metaEdge12);
+        assertSame(metaEdges1[1], metaEdge01);
+
+        //Meta edge content
+        Edge[] metaEdge01content = graphGlobal2Undirected.getMetaEdgeContent(metaEdge01).toArray();
+        assertEquals(3, metaEdge01content.length);
+        assertSame(metaEdge01content[0], graphGlobal2Undirected.getEdge(leaf2, leaf5));
+        assertSame(metaEdge01content[1], graphGlobal2Undirected.getEdge(leaf2, leaf6));
+        assertSame(metaEdge01content[2], graphGlobal2Undirected.getEdge(leaf3, leaf5));
+
+        Edge[] metaEdge12content = graphGlobal2Undirected.getMetaEdgeContent(metaEdge12).toArray();
+        assertEquals(2, metaEdge12content.length);
+        assertSame(metaEdge12content[0], graphGlobal2Undirected.getEdge(leaf6, leaf8));
+        assertSame(metaEdge12content[1], graphGlobal2Undirected.getEdge(leaf5, leaf9));
+
+        //Remove edge
+        graphGlobal2Undirected.removeEdge(graphGlobal2Undirected.getEdge(leaf2, leaf5));
+        assertEquals(2, graphGlobal2Undirected.getMetaEdgeContent(metaEdge01).toArray().length);
+
+        graphGlobal2Undirected.removeEdge(graphGlobal2Undirected.getEdge(leaf3, leaf2));
+        assertEquals(2, graphGlobal2Undirected.getMetaEdgeContent(metaEdge01).toArray().length);
+
+        graphGlobal2Undirected.removeEdge(graphGlobal2Undirected.getEdge(leaf3, leaf5));
+        graphGlobal2Undirected.removeEdge(graphGlobal2Undirected.getEdge(leaf2, leaf6));
+        assertEquals(0, graphGlobal2Undirected.getMetaEdges(metaNode0).toArray().length);
+
+        graphGlobal2Undirected.removeEdge(graphGlobal2Undirected.getEdge(leaf5, leaf9));
+        assertEquals(1, graphGlobal2Undirected.getMetaEdgeContent(metaEdge12).toArray().length);
+
+        graphGlobal2Undirected.clearMetaEdges(metaNode1);
+        graphGlobal2Undirected.clearMetaEdges(metaNode2);
+
+        assertEquals(0, graphGlobal2Undirected.getMetaEdges().toArray().length);
+        assertEquals(0, graphGlobal2Undirected.getMetaEdges(metaNode1).toArray().length);
+        assertEquals(0, graphGlobal2Undirected.getMetaEdges(metaNode2).toArray().length);
+
+        treeStructure.showTreeAsTable();
+        try {
+            checkHierarchy(treeStructure);
+        } catch (Exception ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    @Test
+    public void testInnerOuterEdgesDirected() {
+
+        Node metaNode0 = graphGlobal2Directed.getTopNodes().toArray()[0];
+        Node metaNode1 = graphGlobal2Directed.getTopNodes().toArray()[1];
+        Node metaNode2 = graphGlobal2Directed.getTopNodes().toArray()[2];
+
+        Node leaf2 = graphGlobal2Directed.getChildren(metaNode0).toArray()[0];
+        Node leaf3 = graphGlobal2Directed.getChildren(metaNode0).toArray()[1];
+        Node leaf5 = graphGlobal2Directed.getChildren(metaNode1).toArray()[0];
+        Node leaf6 = graphGlobal2Directed.getChildren(metaNode1).toArray()[1];
+        Node leaf8 = graphGlobal2Directed.getChildren(metaNode2).toArray()[0];
+        Node leaf9 = graphGlobal2Directed.getChildren(metaNode2).toArray()[1];
 
         //Inner
-        Edge[] innerEdges = graphGlobal2.getInnerEdges(metaNode0).toArray();
+        Edge[] innerEdges = graphGlobal2Directed.getInnerEdges(metaNode0).toArray();
         assertEquals(1, innerEdges.length);
-        assertSame(graphGlobal2.getEdge(leaf3, leaf2), innerEdges[0]);
+        assertSame(graphGlobal2Directed.getEdge(leaf3, leaf2), innerEdges[0]);
 
         //Outer
-        Edge[] outerEdges = graphGlobal2.getOuterEdges(metaNode0).toArray();
+        Edge[] outerEdges = graphGlobal2Directed.getOuterEdges(metaNode0).toArray();
         assertEquals(3, outerEdges.length);
-        assertSame(graphGlobal2.getEdge(leaf2, leaf5), outerEdges[0]);
-        assertSame(graphGlobal2.getEdge(leaf2, leaf6), outerEdges[1]);
-        assertSame(graphGlobal2.getEdge(leaf3, leaf5), outerEdges[2]);
+        assertSame(graphGlobal2Directed.getEdge(leaf2, leaf5), outerEdges[0]);
+        assertSame(graphGlobal2Directed.getEdge(leaf2, leaf6), outerEdges[1]);
+        assertSame(graphGlobal2Directed.getEdge(leaf3, leaf5), outerEdges[2]);
 
         //Inner with self loop
-        innerEdges = graphGlobal2.getInnerEdges(metaNode2).toArray();
-        assertEquals(2, innerEdges.length);
-        assertSame(graphGlobal2.getEdge(leaf9, leaf8), innerEdges[0]);
-        assertSame(graphGlobal2.getEdge(leaf9, leaf9), innerEdges[1]);
+        innerEdges = graphGlobal2Directed.getInnerEdges(metaNode2).toArray();
+        assertEquals(3, innerEdges.length);
+        assertSame(graphGlobal2Directed.getEdge(leaf8, leaf9), innerEdges[0]);
+        assertSame(graphGlobal2Directed.getEdge(leaf9, leaf8), innerEdges[1]);
+        assertSame(graphGlobal2Directed.getEdge(leaf9, leaf9), innerEdges[2]);
 
         //Inner from self loop node
-        innerEdges = graphGlobal2.getInnerEdges(leaf9).toArray();
+        innerEdges = graphGlobal2Directed.getInnerEdges(leaf9).toArray();
         assertEquals(1, innerEdges.length);
-        assertSame(graphGlobal2.getEdge(leaf9, leaf9), innerEdges[0]);
+        assertSame(graphGlobal2Directed.getEdge(leaf9, leaf9), innerEdges[0]);
+
+        //Outer with mutual
+        System.out.println();
+        outerEdges = graphGlobal2Directed.getOuterEdges(metaNode2).toArray();
+        assertEquals(3, outerEdges.length);
+        assertSame(graphGlobal2Directed.getEdge(leaf6, leaf8), outerEdges[0]);
+        assertSame(graphGlobal2Directed.getEdge(leaf9, leaf5), outerEdges[1]);
+        assertSame(graphGlobal2Directed.getEdge(leaf5, leaf9), outerEdges[2]);
+    }
+
+    @Test
+    public void testInnerOuterEdgesUndirected() {
+
+        Node metaNode0 = graphGlobal2Undirected.getTopNodes().toArray()[0];
+        Node metaNode1 = graphGlobal2Undirected.getTopNodes().toArray()[1];
+        Node metaNode2 = graphGlobal2Undirected.getTopNodes().toArray()[2];
+
+        Node leaf2 = graphGlobal2Undirected.getChildren(metaNode0).toArray()[0];
+        Node leaf3 = graphGlobal2Undirected.getChildren(metaNode0).toArray()[1];
+        Node leaf5 = graphGlobal2Undirected.getChildren(metaNode1).toArray()[0];
+        Node leaf6 = graphGlobal2Undirected.getChildren(metaNode1).toArray()[1];
+        Node leaf8 = graphGlobal2Undirected.getChildren(metaNode2).toArray()[0];
+        Node leaf9 = graphGlobal2Undirected.getChildren(metaNode2).toArray()[1];
+
+        //Inner
+        Edge[] innerEdges = graphGlobal2Undirected.getInnerEdges(metaNode0).toArray();
+        assertEquals(1, innerEdges.length);
+        assertSame(graphGlobal2Directed.getEdge(leaf3, leaf2), innerEdges[0]);
+
+        //Outer
+        Edge[] outerEdges = graphGlobal2Undirected.getOuterEdges(metaNode0).toArray();
+        assertEquals(3, outerEdges.length);
+        assertSame(graphGlobal2Undirected.getEdge(leaf2, leaf5), outerEdges[0]);
+        assertSame(graphGlobal2Undirected.getEdge(leaf2, leaf6), outerEdges[1]);
+        assertSame(graphGlobal2Undirected.getEdge(leaf3, leaf5), outerEdges[2]);
+
+        //Inner with self loop
+        innerEdges = graphGlobal2Undirected.getInnerEdges(metaNode2).toArray();
+        assertEquals(2, innerEdges.length);
+        assertSame(graphGlobal2Undirected.getEdge(leaf8, leaf9), innerEdges[0]);
+        assertSame(graphGlobal2Undirected.getEdge(leaf9, leaf9), innerEdges[1]);
+
+        //Inner from self loop node
+        innerEdges = graphGlobal2Undirected.getInnerEdges(leaf9).toArray();
+        assertEquals(1, innerEdges.length);
+        assertSame(graphGlobal2Undirected.getEdge(leaf9, leaf9), innerEdges[0]);
+
+        //Outer with mutual
+        outerEdges = graphGlobal2Undirected.getOuterEdges(metaNode2).toArray();
+        assertEquals(2, outerEdges.length);
+        assertSame(graphGlobal2Undirected.getEdge(leaf6, leaf8), outerEdges[0]);
+        assertSame(graphGlobal2Undirected.getEdge(leaf5, leaf9), outerEdges[1]);
     }
 
     public void checkHierarchy(TreeStructure treeStructure) throws Exception {

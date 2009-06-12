@@ -27,10 +27,18 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
+import org.gephi.graph.dhns.edge.iterators.MetaEdgeContentIterator;
+import org.gephi.graph.dhns.edge.iterators.MetaEdgeIterator;
+import org.gephi.graph.dhns.edge.iterators.MetaEdgeNodeIterator;
+import org.gephi.graph.dhns.edge.iterators.RangeEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.VisibleEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.VisibleEdgeNodeIterator;
+import org.gephi.graph.dhns.edge.iterators.VisibleMetaEdgeIterator;
+import org.gephi.graph.dhns.edge.iterators.VisibleMetaEdgeNodeIterator;
+import org.gephi.graph.dhns.edge.iterators.VisibleRangeEdgeIterator;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.CompleteTreeIterator;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
@@ -70,7 +78,7 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
                 res = dhns.getStructureModifier().deleteEdge(symmetricEdge);
             }
         }
-        res = res || dhns.getStructureModifier().deleteEdge(edge);
+        res = dhns.getStructureModifier().deleteEdge(edge) || res;
         return res;
     }
 
@@ -159,30 +167,41 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
         return getEdge(node1, node2) != null;
     }
 
-    public EdgeIterable getInnerEdges(Node nodeGroup) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public EdgeIterable getOuterEdges(Node nodeGroup) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public Edge getEdge(Node node1, Node node2) {
         PreNode sourceNode = checkNode(node1);
         PreNode targetNode = checkNode(node2);
         readLock();
         AbstractEdge res = null;
         if (visible) {
-            AbstractEdge edge = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
-            if (edge == null) {
-                edge = sourceNode.getEdgesInTree().getItem(targetNode.getNumber());
-            } else if (edge.isVisible()) {
-                res = edge;
+            AbstractEdge edge1 = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
+            AbstractEdge edge2 = sourceNode.getEdgesInTree().getItem(targetNode.getNumber());
+            if (edge1 != null && edge2 != null) {
+                if (edge1.getId() < edge2.getId()) {
+                    res = edge1;
+                } else {
+                    res = edge2;
+                }
+            } else if (edge1 != null) {
+                res = edge1;
+            } else if (edge2 != null) {
+                res = edge2;
+            }
+            if (res != null && !res.isVisible()) {
+                res = null;
             }
         } else {
-            res = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
-            if (res == null) {
-                res = sourceNode.getEdgesInTree().getItem(targetNode.getNumber());
+            AbstractEdge edge1 = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
+            AbstractEdge edge2 = sourceNode.getEdgesInTree().getItem(targetNode.getNumber());
+            if (edge1 != null && edge2 != null) {
+                if (edge1.getId() < edge2.getId()) {
+                    res = edge1;
+                } else {
+                    res = edge2;
+                }
+            } else if (edge1 != null) {
+                res = edge1;
+            } else if (edge2 != null) {
+                res = edge2;
             }
         }
         readUnlock();
@@ -202,19 +221,79 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
 
     }
 
+    public EdgeIterable getInnerEdges(Node nodeGroup) {
+        PreNode preNode = checkNode(nodeGroup);
+        readLock();
+        if (visible) {
+            return dhns.newEdgeIterable(new VisibleRangeEdgeIterator(dhns.getTreeStructure(), preNode, preNode, true, true));
+        } else {
+            return dhns.newEdgeIterable(new RangeEdgeIterator(dhns.getTreeStructure(), preNode, preNode, true, true));
+        }
+    }
+
+    public EdgeIterable getOuterEdges(Node nodeGroup) {
+        PreNode preNode = checkNode(nodeGroup);
+        readLock();
+        if (visible) {
+            return dhns.newEdgeIterable(new VisibleRangeEdgeIterator(dhns.getTreeStructure(), preNode, preNode, false, true));
+        } else {
+            return dhns.newEdgeIterable(new RangeEdgeIterator(dhns.getTreeStructure(), preNode, preNode, false, true));
+        }
+    }
+
     public int getMetaDegree(Node node) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        PreNode preNode = checkNode(node);
+        readLock();
+        int count = 0;
+        if (visible) {
+            VisibleMetaEdgeNodeIterator itr = new VisibleMetaEdgeNodeIterator(preNode, VisibleMetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
+            for (; itr.hasNext();) {
+                AbstractEdge edge = itr.next();
+                if (edge.isSelfLoop()) {
+                    count++;
+                }
+                count++;
+            }
+        } else {
+            MetaEdgeNodeIterator itr = new MetaEdgeNodeIterator(preNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
+            for (; itr.hasNext();) {
+                AbstractEdge edge = itr.next();
+                if (edge.isSelfLoop()) {
+                    count++;
+                }
+                count++;
+            }
+        }
+        readUnlock();
+        return count;
     }
 
     public EdgeIterable getMetaEdges() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        readLock();
+        if (visible) {
+            return dhns.newEdgeIterable(new VisibleMetaEdgeIterator(dhns.getTreeStructure(), new VisibleTreeIterator(dhns.getTreeStructure()), true));
+        } else {
+            return dhns.newEdgeIterable(new MetaEdgeIterator(dhns.getTreeStructure(), new CompleteTreeIterator(dhns.getTreeStructure()), true));
+        }
     }
 
     public EdgeIterable getMetaEdges(Node node) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        PreNode preNode = checkNode(node);
+        readLock();
+        if (visible) {
+            return dhns.newEdgeIterable(new VisibleMetaEdgeNodeIterator(preNode, VisibleMetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true));
+        } else {
+            return dhns.newEdgeIterable(new MetaEdgeNodeIterator(preNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true));
+        }
     }
 
     public EdgeIterable getMetaEdgeContent(Edge metaEdge) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        MetaEdgeImpl metaEdgeImpl = checkMetaEdge(metaEdge);
+        readLock();
+        if (visible) {
+            return dhns.newEdgeIterable(new MetaEdgeContentIterator(metaEdgeImpl, true, true));
+        } else {
+            return dhns.newEdgeIterable(new MetaEdgeContentIterator(metaEdgeImpl, false, true));
+        }
     }
 }

@@ -51,7 +51,20 @@ public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
         }
     }
 
-    public Iterable<? extends Edge> getEdges()
+    @Override
+    public AbstractEdge getUndirected() {
+        if(source==target) {
+            return this;
+        }
+        AbstractEdge mutual = source.getMetaEdgesInTree().getItem(target.getNumber());
+        if(mutual!=null && mutual.getId() < ID) {
+            return mutual;
+        }
+        return this;
+    }
+
+
+    public Iterable<AbstractEdge> getEdges()
     {
         return edges;
     }

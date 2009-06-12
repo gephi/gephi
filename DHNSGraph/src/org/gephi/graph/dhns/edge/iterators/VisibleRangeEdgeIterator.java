@@ -34,29 +34,31 @@ import org.gephi.graph.dhns.node.iterators.VisibleDescendantAndSelfIterator;
  */
 public class VisibleRangeEdgeIterator extends RangeEdgeIterator implements Iterator<Edge> {
 
-    public VisibleRangeEdgeIterator(TreeStructure treeStructure, PreNode nodeGroup, PreNode target, boolean inner) {
+    public VisibleRangeEdgeIterator(TreeStructure treeStructure, PreNode nodeGroup, PreNode target, boolean inner, boolean undirected) {
         nodeIterator = new VisibleDescendantAndSelfIterator(treeStructure, nodeGroup);
         this.inner = inner;
         this.nodeGroup = nodeGroup;
         this.rangeStart = target.getPre();
         this.rangeLimit = rangeStart + target.size;
+        this.undirected = undirected;
     }
 
     @Override
     protected boolean testTarget(AbstractEdge edgeImpl) {
-        if (edgeImpl.isVisible()) {
-            if (IN) {
-                PreNode source = edgeImpl.getSource();
-                int pre = source.getPre();
-                if (pre < nodeGroup.getPre() && pre > nodeGroup.pre + nodeGroup.size) {
+        if (!undirected || edgeImpl.getUndirected() == edgeImpl) {
+            if (edgeImpl.isVisible()) {
+                if (IN) {
+                    PreNode source = edgeImpl.getSource();
+                    int pre = source.getPre();
+                    if (!inner) {
+                        return pre < rangeStart || pre > rangeLimit;
+                    }
+                } else {
+                    PreNode target = edgeImpl.getTarget();
+                    int pre = target.getPre();
                     boolean isInner = pre >= rangeStart && pre <= rangeLimit;
                     return (inner && isInner) || (!inner && !isInner);
                 }
-            } else {
-                PreNode target = edgeImpl.getTarget();
-                int pre = target.getPre();
-                boolean isInner = pre >= rangeStart && pre <= rangeLimit;
-                return (inner && isInner) || (!inner && !isInner);
             }
         }
         return false;

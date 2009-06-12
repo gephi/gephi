@@ -54,14 +54,16 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
     protected int rangeStart;
     protected int rangeLimit;
     protected PreNode nodeGroup;
+    protected boolean undirected;
 
-    public RangeEdgeIterator(TreeStructure treeStructure, PreNode nodeGroup, PreNode target, boolean inner) {
+    public RangeEdgeIterator(TreeStructure treeStructure, PreNode nodeGroup, PreNode target, boolean inner, boolean undirected) {
         nodeIterator = new DescendantAndSelfIterator(treeStructure, nodeGroup);
         this.inner = inner;
         this.nodeGroup = nodeGroup;
         this.rangeStart = target.getPre();
         this.rangeLimit = rangeStart + target.size;
         this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
+        this.undirected = undirected;
     }
 
     public RangeEdgeIterator() {
@@ -94,18 +96,19 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
     }
 
     protected boolean testTarget(AbstractEdge edgeImpl) {
-        if (IN) {
-            PreNode source = edgeImpl.getSource();
-            int pre = source.getPre();
-            if (pre < nodeGroup.getPre() && pre > nodeGroup.pre + nodeGroup.size) {
+        if (!undirected || edgeImpl.getUndirected() == edgeImpl) {
+            if (IN) {
+                PreNode source = edgeImpl.getSource();
+                int pre = source.getPre();
+                if (!inner) {
+                    return pre < rangeStart || pre > rangeLimit;
+                }
+            } else {
+                PreNode target = edgeImpl.getTarget();
+                int pre = target.getPre();
                 boolean isInner = pre >= rangeStart && pre <= rangeLimit;
                 return (inner && isInner) || (!inner && !isInner);
             }
-        } else {
-            PreNode target = edgeImpl.getTarget();
-            int pre = target.getPre();
-            boolean isInner = pre >= rangeStart && pre <= rangeLimit;
-            return (inner && isInner) || (!inner && !isInner);
         }
         return false;
     }

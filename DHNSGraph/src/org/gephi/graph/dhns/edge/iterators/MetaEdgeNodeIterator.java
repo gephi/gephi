@@ -41,8 +41,10 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
     protected PreNode node;
     protected ParamAVLIterator<AbstractEdge> edgeIterator;
     protected EdgeNodeIteratorMode mode;
+    protected boolean undirected;
+    protected AbstractEdge pointer;
 
-    public MetaEdgeNodeIterator(PreNode node, EdgeNodeIteratorMode mode) {
+    public MetaEdgeNodeIterator(PreNode node, EdgeNodeIteratorMode mode, boolean undirected) {
         this.node = node;
         this.mode = mode;
         this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
@@ -51,24 +53,37 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
         } else {
             this.edgeIterator.setNode(node.getMetaEdgesInTree());
         }
+        this.undirected = undirected;
     }
 
     public boolean hasNext() {
-        if (mode.equals(EdgeNodeIteratorMode.BOTH)) {
-            boolean res = edgeIterator.hasNext();
-            if (!res) {
-                this.edgeIterator.setNode(node.getMetaEdgesInTree());
-                this.mode = EdgeNodeIteratorMode.IN;
-                return edgeIterator.hasNext();
+        while (pointer == null || (undirected && pointer.getUndirected()!=pointer)) {
+            if (mode.equals(EdgeNodeIteratorMode.BOTH)) {
+                boolean res = edgeIterator.hasNext();
+                if (res) {
+                    pointer = edgeIterator.next();
+                    if(pointer.isSelfLoop()) {  //Ignore self loop here to avoid double iteration
+                        pointer = null;
+                    }
+                } else {
+                    this.edgeIterator.setNode(node.getMetaEdgesInTree());
+                    this.mode = EdgeNodeIteratorMode.IN;
+                }
+            } else {
+                if (edgeIterator.hasNext()) {
+                    pointer = edgeIterator.next();
+                } else {
+                    return false;
+                }
             }
-            return true;
-        } else {
-            return edgeIterator.hasNext();
         }
+        return true;
     }
 
     public AbstractEdge next() {
-        return edgeIterator.next();
+        AbstractEdge e = pointer;
+        pointer = null;
+        return e;
     }
 
     public void remove() {

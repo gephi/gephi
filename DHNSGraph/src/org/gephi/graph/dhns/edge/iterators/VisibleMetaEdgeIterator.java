@@ -21,11 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.edge.iterators;
 
 import java.util.Iterator;
-import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 
 /**
@@ -37,18 +37,20 @@ import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 public class VisibleMetaEdgeIterator extends AbstractEdgeIterator implements Iterator<Edge> {
 
     protected AbstractNodeIterator nodeIterator;
-    protected ParamAVLIterator<ProperEdgeImpl> edgeIterator;
+    protected ParamAVLIterator<AbstractEdge> edgeIterator;
     protected PreNode currentNode;
-    protected ProperEdgeImpl pointer;
+    protected AbstractEdge pointer;
+    protected boolean undirected;
 
-    public VisibleMetaEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator) {
+    public VisibleMetaEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected) {
         this.nodeIterator = nodeIterator;
-        edgeIterator = new ParamAVLIterator<ProperEdgeImpl>();
+        edgeIterator = new ParamAVLIterator<AbstractEdge>();
+        this.undirected = undirected;
     }
 
     @Override
     public boolean hasNext() {
-        while (pointer == null || !pointer.isVisible()) {
+        while (pointer == null || (undirected && pointer.getUndirected() != pointer) || !pointer.isVisible()) {
             while (!edgeIterator.hasNext()) {
                 if (nodeIterator.hasNext()) {
                     currentNode = nodeIterator.next();
@@ -66,8 +68,8 @@ public class VisibleMetaEdgeIterator extends AbstractEdgeIterator implements Ite
     }
 
     @Override
-    public ProperEdgeImpl next() {
-        ProperEdgeImpl e = pointer;
+    public AbstractEdge next() {
+        AbstractEdge e = pointer;
         pointer = null;
         return e;
     }

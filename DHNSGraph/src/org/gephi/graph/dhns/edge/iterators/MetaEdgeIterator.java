@@ -40,32 +40,39 @@ public class MetaEdgeIterator extends AbstractEdgeIterator implements Iterator<E
     protected ParamAVLIterator<MetaEdgeImpl> edgeIterator;
     protected PreNode currentNode;
     protected MetaEdgeImpl pointer;
+    protected boolean undirected;
 
-    public MetaEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator) {
+    public MetaEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected) {
         this.nodeIterator = nodeIterator;
         edgeIterator = new ParamAVLIterator<MetaEdgeImpl>();
+        this.undirected = undirected;
     }
 
     @Override
     public boolean hasNext() {
-        while (!edgeIterator.hasNext()) {
-            if (nodeIterator.hasNext()) {
-                currentNode = nodeIterator.next();
-                if (!currentNode.getMetaEdgesOutTree().isEmpty()) {
-                    edgeIterator.setNode(currentNode.getMetaEdgesOutTree());
+        while (pointer == null || (undirected && pointer.getUndirected()!=pointer)) {
+            while (!edgeIterator.hasNext()) {
+                if (nodeIterator.hasNext()) {
+                    currentNode = nodeIterator.next();
+                    if (!currentNode.getMetaEdgesOutTree().isEmpty()) {
+                        edgeIterator.setNode(currentNode.getMetaEdgesOutTree());
+                    }
+                } else {
+                    return false;
                 }
-            } else {
-                return false;
             }
+
+            pointer = edgeIterator.next();
         }
 
-        pointer = edgeIterator.next();
         return true;
     }
 
     @Override
     public MetaEdgeImpl next() {
-        return pointer;
+        MetaEdgeImpl e = pointer;
+        pointer = null;
+        return e;
     }
 
     @Override

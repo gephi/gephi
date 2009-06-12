@@ -246,6 +246,23 @@ public class DhnsTestUndirectedGraph {
     }
 
     @Test
+    public void testGetUndirecteEdge() {
+
+        Node node5 = nodeMap.get("Node 5");
+        Node node6 = nodeMap.get("Node 6");
+
+        Edge edge1 = graphGlobal.getEdge(node5, node6);
+        Edge edge2 = graphGlobal.getEdge(node5, node6);
+        assertSame(edge1, edge2);
+        assertSame(edgeMap.get("5-6"), edge1);
+
+        assertNull(graphGlobal.getEdge(nodeMap.get("Node 1"), nodeMap.get("Node 2")));
+        assertNull(graphGlobal.getEdge(nodeMap.get("Node 5"), nodeMap.get("Node 5")));
+
+        assertNotNull(graphGlobal.getEdge(nodeMap.get("Node 4"), nodeMap.get("Node 5")));
+    }
+
+    @Test
     public void testGetEdgesNode() {
 
         graphGlobal.addEdge(nodeMap.get("Node 5"), nodeMap.get("Node 3"));
