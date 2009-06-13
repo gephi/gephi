@@ -33,6 +33,7 @@ import org.gephi.graph.dhns.node.utils.avl.EdgeTree;
 public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
 
     private EdgeTree edges;
+    private int directedCount=0;
 
     public MetaEdgeImpl(int ID, PreNode source, PreNode target) {
         super(ID, source, target);
@@ -42,12 +43,18 @@ public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
     public void addEdge(AbstractEdge edge) {
         if(edges.add(edge)) {
             weight += edge.getWeight();
+            if(edge.isDirected()) {
+                directedCount++;
+            }
         }
     }
 
     public void removeEdge(AbstractEdge edge) {
         if(edges.remove(edge)) {
             weight -= edge.getWeight();
+            if(edge.isDirected()) {
+                directedCount--;
+            }
         }
     }
 
@@ -71,6 +78,11 @@ public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
 
     public boolean isEmpty() {
         return edges.getCount() == 0;
+    }
+
+    @Override
+    public boolean isDirected() {
+        return directedCount > 0;
     }
 
     @Override

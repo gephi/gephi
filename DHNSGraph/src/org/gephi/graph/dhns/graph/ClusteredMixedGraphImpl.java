@@ -64,6 +64,32 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
         };
     }
 
+    public boolean addEdge(Edge edge) {
+        AbstractEdge absEdge = checkEdge(edge);
+        if (!edge.isDirected()) {
+            throw new IllegalArgumentException("Can't add an undirected egde");
+        }
+        if (checkEdgeExist(absEdge.getSource(), absEdge.getTarget())) {
+            //Edge already exist
+            return false;
+        }
+        AbstractEdge symmetricEdge = getSymmetricEdge(absEdge);
+        if (symmetricEdge != null && (!symmetricEdge.isDirected() || !absEdge.isDirected())) {
+            //The symmetric edge exist and is undirected
+            return false;
+        }
+        if (!absEdge.hasAttributes()) {
+            absEdge.setAttributes(dhns.newEdgeAttributes());
+        }
+        dhns.getStructureModifier().addEdge(edge);
+        if (absEdge.isDirected()) {
+            dhns.touchDirected();
+        } else {
+            dhns.touchUndirected();
+        }
+        return true;
+    }
+
     public boolean addEdge(Node source, Node target, boolean directed) {
         PreNode preSource = checkNode(source);
         PreNode preTarget = checkNode(target);
@@ -79,6 +105,11 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
 
         AbstractEdge edge = dhns.getGraphFactory().newEdge(source, target, 1.0f, directed);
         dhns.getStructureModifier().addEdge(edge);
+        if (directed) {
+            dhns.touchDirected();
+        } else {
+            dhns.touchUndirected();
+        }
         return true;
     }
 

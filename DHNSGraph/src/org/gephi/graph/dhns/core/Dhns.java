@@ -50,8 +50,14 @@ public class Dhns {
     private GraphFactoryImpl graphFactory;
     private IDGen idGen;
 
+    //Type
+    private boolean directed = false;
+    private boolean undirected = false;
+    private boolean mixed = false;
+
     //Locking
     private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    
     //External
     private AttributeRowFactory attributesFactory;
 
@@ -154,5 +160,40 @@ public class Dhns {
             throw new IllegalMonitorStateException("Impossible to acquire a write lock when currently holding a read lock. Use toArray() methods on NodeIterable and EdgeIterable to avoid holding a readLock.");
         }
         return readWriteLock.writeLock();
+    }
+
+    //Type
+    public void touchDirected() {
+        if(undirected || mixed) {
+           touchMixed();
+        } else {
+            directed = true;
+        }
+    }
+
+    public void touchUndirected() {
+        if(directed || mixed) {
+           touchMixed();
+        } else {
+            undirected = true;
+        }
+    }
+
+    public void touchMixed() {
+        directed = false;
+        undirected = false;
+        mixed = true;
+    }
+
+    public boolean isDirected() {
+        return directed;
+    }
+
+    public boolean isMixed() {
+        return mixed;
+    }
+
+    public boolean isUndirected() {
+        return undirected;
     }
 }

@@ -53,19 +53,6 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         this.visible = visible;
     }
 
-    public boolean addEdge(Edge edge) {
-        AbstractEdge absEdge = checkEdge(edge);
-        if (checkEdgeExist(absEdge.getSource(), absEdge.getTarget())) {
-            //Edge already exist
-            return false;
-        }
-        if (!absEdge.hasAttributes()) {
-            absEdge.setAttributes(dhns.newEdgeAttributes());
-        }
-        dhns.getStructureModifier().addEdge(edge);
-        return true;
-    }
-
     public boolean addNode(Node node, Node parent) {
         if (node == null) {
             throw new IllegalArgumentException("Node can't be null");
@@ -422,6 +409,22 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         writeUnlock();
     }
 
+    public boolean isDirected() {
+        return dhns.isDirected();
+    }
+
+    public boolean isUndirected() {
+        return dhns.isUndirected();
+    }
+
+    public boolean isMixed() {
+        return dhns.isMixed();
+    }
+
+    public boolean isClustered() {
+        return getHeight() > 0;
+    }
+
     public void readLock() {
         //System.out.println(Thread.currentThread()+ "read lock");
         dhns.getReadLock().lock();
@@ -468,6 +471,9 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         AbstractEdge abstractEdge = (AbstractEdge) edge;
         if (!abstractEdge.isValid()) {
             throw new IllegalArgumentException("Nodes must be in the graph");
+        }
+        if (abstractEdge.isMetaEdge()) {
+            throw new IllegalArgumentException("Edge can't be a meta edge");
         }
         return abstractEdge;
     }

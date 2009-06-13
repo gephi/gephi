@@ -33,8 +33,10 @@ public interface Graph {
      * Fails if <code>edge</code> is already in the graph.
      * @param edge the edge to add
      * @return true if add is successful, false otherwise
-     * @throws IllegalArgumentException if <code>edge</code> is <code>null</code> or
-     * if nodes are not legal nodes for this <code>edge</code>
+     * @throws IllegalArgumentException if <code>edge</code> is <code>null</code>,
+     * or if nodes are not legal nodes for this <code>edge</code>,
+     * or if <code>edge</code> is directed when the graph is undirected,
+     * or if <code>edge</code> is undirected when the graph is directed,
      * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public boolean addEdge(Edge edge);
@@ -251,6 +253,40 @@ public interface Graph {
      * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public void setVisible(Edge edge, boolean visible);
+
+    /**
+     * Returns <code>true</code> if the graph is <b>directed</b> by default. This value is an
+     * indicator of the current state and it means that so far all edges are directed in the graph.
+     * @return <code>true</code> if the graph is only directed or <code>false</code> otherwise
+     * @see DirectedGraph
+     */
+    public boolean isDirected();
+
+    /**
+     * Returns <code>true</code> if the graph is <b>undirected</b> by default. This value is an
+     * indicator of the current state and it means that so far all edges are undirected in the graph.
+     * @return <code>true</code> if the graph is only undirected or <code>false</code> otherwise
+     * @see UndirectedGraph
+     */
+    public boolean isUndirected();
+
+    /**
+     * Returns <code>true</code> if the graph is <b>mixed</b> by default. This value is an
+     * indicator of the current state and it means that directed and undirected edges has been
+     * added to the graph. When it returns <code>true</code>, <code>isDirected()</code> and
+     * <code>isUndirected()</code> methods always returns <code>false</code>.
+     * @return <code>true</code> if the graph is mixed or <code>false</code> otherwise
+     * @see MixedGraph
+     */
+    public boolean isMixed();
+
+    /**
+     * Returns <code>true</code> if the graph is <b>clustered</b>. This indicates the presence
+     * of a hierarchy, in other words the height of the tree is greater than 0.
+     * @return <code>true</code> if the graph is clustered or <code>false</code> otherwise
+     * @see ClusteredGraph
+     */
+    public boolean isClustered();
 
     /**
      * Acquire a read lock on the graph. Calling thread will be blocked until all write locks are released.

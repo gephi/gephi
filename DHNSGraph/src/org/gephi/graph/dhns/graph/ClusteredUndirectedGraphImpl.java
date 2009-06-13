@@ -55,6 +55,23 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
         super(dhns, visible);
     }
 
+    public boolean addEdge(Edge edge) {
+        AbstractEdge absEdge = checkEdge(edge);
+        if (edge.isDirected()) {
+            throw new IllegalArgumentException("Can't add a directed egde");
+        }
+        if (checkEdgeExist(absEdge.getSource(), absEdge.getTarget()) || checkEdgeExist(absEdge.getTarget(), absEdge.getSource())) {
+            //Edge already exist
+            return false;
+        }
+        if (!absEdge.hasAttributes()) {
+            absEdge.setAttributes(dhns.newEdgeAttributes());
+        }
+        dhns.getStructureModifier().addEdge(edge);
+        dhns.touchUndirected();
+        return true;
+    }
+
     public boolean addEdge(Node node1, Node node2) {
         PreNode preNode1 = checkNode(node1);
         PreNode preNode2 = checkNode(node2);
@@ -64,6 +81,7 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
         }
         AbstractEdge edge = dhns.getGraphFactory().newEdge(node1, node2, 1.0f, false);
         dhns.getStructureModifier().addEdge(edge);
+        dhns.touchUndirected();
         return true;
     }
 
