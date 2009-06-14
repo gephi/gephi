@@ -25,13 +25,7 @@ package org.gephi.graph.api;
  *
  * @author Mathieu Bastian
  */
-public interface Renderable {
-
-    public float x();
-
-    public float y();
-
-    public float z();
+public interface Renderable extends Spatial {
 
     public void setX(float x);
 

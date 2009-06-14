@@ -21,12 +21,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.layout;
 
 import org.gephi.graph.api.NodeData;
+import org.gephi.graph.api.Spatial;
 
 /**
  *
  * @author Mathieu Jacomy
  */
 public class ForceVectorUtils {
+
+    public static float distance(Spatial n1, Spatial n2) {
+        return (float) Math.hypot(n1.x() - n2.x(), n1.y() - n2.y());
+    }
 
     public static void fcBiRepulsor(NodeData N1, NodeData N2, double c) {
         double xDist = N1.x() - N2.x();	// distance en x entre les deux noeuds

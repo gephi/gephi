@@ -174,9 +174,9 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         checkEdge(edge1);
         checkEdge(edge2);
         return edge1.getSource() == edge2.getSource() ||
-                edge1.getSource() == edge2.getTarget() ||
-                edge1.getTarget() == edge2.getSource() ||
-                edge1.getTarget() == edge2.getSource();
+               edge1.getSource() == edge2.getTarget() ||
+               edge1.getTarget() == edge2.getSource() ||
+               edge1.getTarget() == edge2.getTarget();
     }
 
     public Node getOpposite(Node node, Edge edge) {
@@ -235,10 +235,10 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
     public Node getParent(Node node) {
         PreNode preNode = checkNode(node);
         readLock();
-        if (preNode.parent == dhns.getTreeStructure().getRoot()) {
-            return null;
+        Node parent = null;
+        if (preNode.parent != dhns.getTreeStructure().getRoot()) {
+            parent = preNode.parent;
         }
-        Node parent = preNode.parent;
         readUnlock();
         return parent;
     }

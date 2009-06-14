@@ -23,7 +23,7 @@ package org.gephi.layout.api;
 
 import javax.swing.Icon;
 import javax.swing.JPanel;
-import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.GraphController;
 
 /**
  *
@@ -39,9 +39,11 @@ public interface Layout {
 
     public boolean testAlgo();
 
-    public void initAlgo(DirectedGraph graph);
+    public void initAlgo(GraphController graphController);
 
     public void goAlgo();
+
+    public boolean canAlgo();
 
     public void endAlgo();
 
