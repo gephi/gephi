@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutController;
@@ -44,9 +43,8 @@ public class LayoutControllerImpl implements LayoutController {
         executor = Executors.newSingleThreadExecutor();
     }
 
-    public void executeLayout()
-    {
-        executeLayout(layouts.get(0));
+    public void executeLayout() {
+        executeLayout(layouts.get(2));
     }
 
     public void executeLayout(final Layout layout) {
@@ -54,17 +52,15 @@ public class LayoutControllerImpl implements LayoutController {
 
             public void run() {
                 GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-                DirectedGraph graph = graphController.getDirectedGraph();
+                // DirectedGraph graph = graphController.getDirectedGraph();
 
-                layout.initAlgo(graph);
+                layout.initAlgo(graphController);
                 layout.resetPropertiesValues();
-
-                while (true) {
+                while (layout.canAlgo()) {
                     layout.goAlgo();
                 }
 
-
-                //layout.endAlgo();
+                layout.endAlgo();
             }
         });
     }

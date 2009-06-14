@@ -22,8 +22,10 @@ package org.gephi.layout.forceAtlas;
 
 import javax.swing.Icon;
 import javax.swing.JPanel;
-import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.ClusteredDirectedGraph;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.layout.AbstractForceVector;
@@ -40,7 +42,7 @@ import org.openide.util.NbBundle;
 public class ForceAtlas extends AbstractForceVector {
 
     //Graph
-    protected DirectedGraph graph;
+    protected Graph graph;
 
     //Properties
     public double inertia;
@@ -80,20 +82,19 @@ public class ForceAtlas extends AbstractForceVector {
         outboundAttractionDistribution = false;
         adjustSizes = false;
         speed = 1f;
-        cooling=1f;
+        cooling = 1f;
     }
 
     public boolean testAlgo() {
         return true;
     }
 
-    public void initAlgo(DirectedGraph graph) {
-        this.graph = graph;
+    public void initAlgo(GraphController graphController) {
+        this.graph = graphController.getDirectedGraph();
         for (Node n : graph.getNodes()) {
             n.getNodeData().setLayoutData(new ForceVectorNodeLayoutData());
         }
     }
-    
 
     public void goAlgo() {
         for (Node n : graph.getNodes()) {
@@ -225,5 +226,9 @@ public class ForceAtlas extends AbstractForceVector {
 
     public JPanel getPanel() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean canAlgo() {
+        return true;
     }
 }
