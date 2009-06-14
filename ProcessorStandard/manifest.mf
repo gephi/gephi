@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.io.processor.standard
+OpenIDE-Module-Layer: org/gephi/io/processor/standard/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/gephi/io/processor/standard/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
