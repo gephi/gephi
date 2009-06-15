@@ -66,7 +66,7 @@ public class TreeStructure {
         PreNode parent = node;
         while (!parent.isEnabled()) {
             parent = parent.parent;
-            if (parent == null || parent.pre == 0) {
+            if (parent == null || parent.getPre() == 0) {
                 return null;
             }
         }
@@ -76,7 +76,7 @@ public class TreeStructure {
     public PreNode getEnabledAncestor(PreNode node) {
         PreNode parent = node.parent;
         while (!parent.isEnabled()) {
-            if (parent.pre == 0) {
+            if (parent.getPre() == 0) {
                 return null;
             }
             parent = parent.parent;
@@ -107,7 +107,7 @@ public class TreeStructure {
         PreNode sourceParent = node.parent;
         int sourceSize = 1 + node.size;
 
-        tree.move(node.getPre(), newParent.getPre());
+        int maxLevel = tree.move(node.getPre(), newParent.getPre());
 
         if(sourceParent!=null) {
             decrementAncestorAndSelfSize(sourceParent, sourceSize);
@@ -115,6 +115,11 @@ public class TreeStructure {
 
         //Increment ancestor & self
         incrementAncestorsAndSelfSize(newParent, sourceSize);
+
+        //Update tree height
+        if(maxLevel > treeHeight) {
+            treeHeight = maxLevel;
+        }
 
         /* nodeSize = node.size;
         int nodePre = node.getPre();

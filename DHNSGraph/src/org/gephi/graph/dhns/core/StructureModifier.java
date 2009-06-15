@@ -28,6 +28,7 @@ import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantAndSelfIterator;
+import org.gephi.graph.dhns.node.iterators.DescendantIterator;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 
 /**
@@ -67,7 +68,7 @@ public class StructureModifier {
         PreNode preNode = (PreNode) node;
         if (preNode.level < treeStructure.treeHeight) {
             expand(preNode);
-            //sightManager.updateSight((SightImpl) sight);
+        //sightManager.updateSight((SightImpl) sight);
         }
         graphVersion.incNodeVersion();
         dhns.getWriteLock().unlock();
@@ -88,7 +89,7 @@ public class StructureModifier {
         PreNode preNode = (PreNode) node;
         if (preNode.level < treeStructure.treeHeight) {
             retract(((PreNode) node));
-            //sightManager.updateSight((SightImpl)sight);
+        //sightManager.updateSight((SightImpl)sight);
         }
         graphVersion.incNodeVersion();
         dhns.getWriteLock().unlock();
@@ -301,6 +302,9 @@ public class StructureModifier {
             count++;
         }
 
+        if (nodeGroup.isEnabled()) {
+            expand(nodeGroup);
+        }
         for (int i = 0; i < count; i++) {
             PreNode node = treeStructure.getNodeAt(nodeGroup.getPre() + 1);
             dhns.getStructureModifier().moveToGroup(node, nodeGroup.parent);
@@ -323,7 +327,7 @@ public class StructureModifier {
         for (ChildrenIterator itr = new ChildrenIterator(treeStructure, preNode); itr.hasNext();) {
             PreNode child = itr.next();
             child.setEnabled(true);
-            edgeProcessor.computeMetaEdges(child);
+            edgeProcessor.computeMetaEdges(child, child);
         }
     }
 
@@ -338,7 +342,7 @@ public class StructureModifier {
 
         //Enable node
         parent.setEnabled(true);
-        edgeProcessor.computeMetaEdges(parent);
+        edgeProcessor.computeMetaEdges(parent, parent);
     }
 
     private void addNode(PreNode node) {
@@ -399,6 +403,69 @@ public class StructureModifier {
     }
 
     private void moveToGroup(PreNode node, PreNode nodeGroup) {
+
+        PreNode toMoveAncestor = treeStructure.getEnabledAncestor(node);
+        PreNode destinationAncestor = treeStructure.getEnabledAncestorOrSelf(nodeGroup);
+
+        if (toMoveAncestor != destinationAncestor) {
+            if (toMoveAncestor != null) {
+                //The node has an enabled ancestor
+                //We delete edges from potential meta edges
+                if (node.size > 0) {
+                    for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node); itr.hasNext();) {
+                        PreNode descendant = itr.next();
+                        edgeProcessor.clearEdgesWithoutRemove(descendant);
+                    }
+                } else {
+                    edgeProcessor.clearEdgesWithoutRemove(node);
+                }
+            } else if (node.isEnabled()) {
+                //The node is enabled
+                if (destinationAncestor != null) {
+                    //The destination is enabled or has enabled ancestor
+                    //Node is thus disabled
+                    edgeProcessor.clearMetaEdges(node);
+                    node.setEnabled(false);
+                //DO
+                } else {
+                    //The node is kept enabled
+                    //Meta edges are still valid only if their target is out of the dest cluster
+                    edgeProcessor.clearMetaEdgesOutOfRange(node, nodeGroup);
+                }
+            } else if (node.size > 0) {
+                if (destinationAncestor != null) {
+                    //The node may have some enabled descendants and we set them disabled
+                    for (DescendantIterator itr = new DescendantIterator(treeStructure, node); itr.hasNext();) {
+                        PreNode descendant = itr.next();
+                        if (descendant.isEnabled()) {
+                            edgeProcessor.clearMetaEdges(descendant);
+                            descendant.setEnabled(false);
+                        }
+                    }
+                //DO
+                } else {
+                    //The node may have some enabled descendants and we keep them enabled
+                    for (DescendantIterator itr = new DescendantIterator(treeStructure, node); itr.hasNext();) {
+                        PreNode descendant = itr.next();
+                        if (descendant.isEnabled()) {
+                            //Enabled descendants meta edges are still valid only if their target is out of
+                            //the destination cluster
+                            edgeProcessor.clearMetaEdgesOutOfRange(node, nodeGroup);
+                        }
+                    }
+                }
+
+            }
+        }
+
         treeStructure.move(node, nodeGroup);
+
+        if (destinationAncestor != null) {
+            destinationAncestor.getPre();
+            //Compute all meta edges for the descendants of node and append them to the enabled
+            //destinationAncestor
+            edgeProcessor.computeMetaEdges(node, destinationAncestor);
+        }
+
     }
 }

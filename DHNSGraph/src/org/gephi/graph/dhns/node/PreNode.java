@@ -27,7 +27,7 @@ import org.gephi.graph.dhns.node.utils.avl.MetaEdgeTree;
 
 /**
  * Node of the tree. Maintained in a global order tree, the node is build on a <b>pre/post/size/level</b> pane.
- * The <b>pre</b> is the global number in the tree, the <b>size</b> the number of node's child and <b>level</b>
+ * The <b>pre</b> is the global number in the tree, the <b>size</b> the number of node's descendants and <b>level</b>
  * the level within the hierarchy (greater when deeper). The post is equal to <code>pre-level+size</code>
  * and speed up algorithms when performing skipping. It also directly contains a reference on
  * his {@link DurableAVLNode}.

@@ -174,9 +174,9 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         checkEdge(edge1);
         checkEdge(edge2);
         return edge1.getSource() == edge2.getSource() ||
-               edge1.getSource() == edge2.getTarget() ||
-               edge1.getTarget() == edge2.getSource() ||
-               edge1.getTarget() == edge2.getTarget();
+                edge1.getSource() == edge2.getTarget() ||
+                edge1.getTarget() == edge2.getSource() ||
+                edge1.getTarget() == edge2.getTarget();
     }
 
     public Node getOpposite(Node node, Edge edge) {
@@ -361,13 +361,13 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
         if (nodes == null || nodes.length == 0) {
             throw new IllegalArgumentException("nodes can't be null or empty");
         }
-        int level = -1;
+        PreNode parent = null;
         for (int i = 0; i < nodes.length; i++) {
             PreNode node = checkNode(nodes[i]);
-            if (level == -1) {
-                level = node.level;
-            } else if (level != node.level) {
-                throw new IllegalArgumentException("All nodes level must be the same");
+            if (parent == null) {
+                parent = node.parent;
+            } else if (parent != node.parent) {
+                throw new IllegalArgumentException("All nodes must have the same parent");
             }
         }
         Node group = dhns.getStructureModifier().group(nodes);

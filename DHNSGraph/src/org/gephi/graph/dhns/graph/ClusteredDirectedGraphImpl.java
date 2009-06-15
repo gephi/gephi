@@ -24,6 +24,7 @@ import java.util.Iterator;
 import org.gephi.graph.api.ClusteredDirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.MetaEdge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
@@ -385,5 +386,12 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         } else {
             return dhns.newEdgeIterable(new MetaEdgeContentIterator(metaEdgeImpl, false, false));
         }
+    }
+
+    //ClusteredDirected
+    public MetaEdge getMetaEdge(Node source, Node target) {
+        PreNode preNodeSource = checkNode(source);
+        PreNode preNodeTarget = checkNode(target);
+        return preNodeSource.getMetaEdgesOutTree().getItem(preNodeTarget.getNumber());
     }
 }
