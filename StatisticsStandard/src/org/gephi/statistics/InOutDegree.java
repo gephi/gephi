@@ -20,6 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics;
 
+import java.awt.event.ActionListener;
+import javax.swing.JPanel;
+import javax.swing.ProgressMonitor;
 import org.gephi.data.attributes.api.AttributeClass;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
@@ -39,7 +42,23 @@ import org.openide.util.NbBundle;
  */
 public class InOutDegree implements Statistics {
 
-    public void execute(GraphController graphController) {
+    private float avgInDegree;
+    private float avgOutDegree;
+
+   private boolean isCancelled;
+
+    public void confirm()
+    {
+        isCancelled = true;
+    }
+    public String toString()
+    {
+        return new String("In/Out Degree");
+    }
+
+    public void execute(GraphController graphController,
+            ProgressMonitor progressMonitor) {
+        isCancelled = false;
         //Attributes cols
         AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
         AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
@@ -47,15 +66,46 @@ public class InOutDegree implements Statistics {
         AttributeColumn outCol = nodeClass.addAttributeColumn("outdegree", "Out Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
         
         DirectedGraph graph = graphController.getDirectedGraph();
-
+        progressMonitor.setMinimum(0);
+        progressMonitor.setMinimum(graph.getNodeCount());
+        progressMonitor.setProgress(0);
+        int i = 0;
         for(Node n : graph.getNodes()) {
             AttributeRow row = (AttributeRow)n.getNodeData().getAttributes();
             row.setValue(inCol, graph.getInDegree(n));
             row.setValue(outCol, graph.getOutDegree(n));
+            avgInDegree += graph.getInDegree(n);
+            avgOutDegree += graph.getOutDegree(n);
+            if(progressMonitor.isCanceled())
+            {
+                break;
+            }
+            i++;
+            progressMonitor.setProgress(i);
         }
+        avgInDegree /= graph.getNodeCount();
+        avgOutDegree /= graph.getNodeCount();
+
     }
 
     public String getName() {
         return NbBundle.getMessage(GraphDensity.class, "GraphDensity_name");
+    }
+
+
+    public boolean isParamerizable() {
+        return false;
+    }
+
+    public JPanel getPanel() {
+        return null;
+    }
+
+    public String getReport() {
+       return new String("Average In Degree: " + avgInDegree + "\n Average out Degree: " +  avgOutDegree);
+    }
+
+    public void addActionListener(ActionListener listener) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

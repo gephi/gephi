@@ -1,2 +1,5 @@
 org.gephi.statistics.GraphDensity
 org.gephi.statistics.InOutDegree
+org.gephi.statistics.ClusteringCoefficient
+org.gephi.statistics.DegreeDistribution
+org.gephi.statistics.GraphDistance

@@ -20,6 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.gephi.statistics.api;
+import java.awt.event.ActionListener;
+import javax.swing.JPanel;
+import javax.swing.ProgressMonitor;
 import org.gephi.graph.api.GraphController;
 
 /**
@@ -28,7 +31,18 @@ import org.gephi.graph.api.GraphController;
  */
 public interface Statistics {
 
+    public void confirm();
     public String getName();
 
-    public void execute(GraphController graphController);
+    public void addActionListener(ActionListener listener);
+
+    public void execute(GraphController graphController,
+            ProgressMonitor progressMonitor);
+
+    public boolean isParamerizable();
+
+    public JPanel getPanel();
+
+    public String getReport();
+
 }
