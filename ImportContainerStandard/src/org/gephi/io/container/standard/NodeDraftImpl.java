@@ -40,6 +40,9 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     //Architecture
     private ImportContainerImpl container;
 
+    //Flag
+    private boolean autoId;
+
     //Basic
     private String id;
     private String label;
@@ -65,6 +68,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     public NodeDraftImpl(ImportContainerImpl container, String id) {
         this.container = container;
         this.id = id;
+        this.autoId = true;
     }
 
     //SETTERS
@@ -93,6 +97,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
 
     public void setId(String id) {
         this.id = id;
+        this.autoId = false;
     }
 
     public void setLabel(String label) {
@@ -187,6 +192,19 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
 
     public boolean isVisible() {
         return visible;
+    }
+
+    @Override
+    public String toString() {
+        String res = "node";
+        if(!autoId) {
+            res+=" id="+id;
+        } else if(label!=null) {
+            res+=" label="+label;
+        } else {
+            res+=id;
+        }
+        return res;
     }
 
     //RESULT

@@ -348,7 +348,7 @@ public class ImporterGDF implements TextImporter {
                         break;
                 }
             } catch (Exception e) {
-                String message = String.format(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3"), column.getNodeColumn(), data);
+                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3", column.getNodeColumn(),node, data);
                 throw new ImportException(message);
             }
         } else if (column.getAttributeColumn() != null) {
@@ -387,7 +387,7 @@ public class ImporterGDF implements TextImporter {
                         break;
                 }
             } catch (Exception e) {
-                String message = String.format(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3"), column.getNodeColumn(), data);
+                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3", column.getNodeColumn(), data);
                 throw new ImportException(message);
             }
         } else if (column.getAttributeColumn() != null) {
