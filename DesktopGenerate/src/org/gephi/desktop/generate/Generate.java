@@ -24,13 +24,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import org.gephi.io.generator.Generator;
 import org.gephi.io.generator.GeneratorController;
-import org.gephi.ui.generator.GeneratorUI;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -38,7 +33,7 @@ import org.openide.util.actions.CallableSystemAction;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class Generate extends CallableSystemAction {
 
@@ -68,18 +63,6 @@ public class Generate extends CallableSystemAction {
                 JMenuItem menuItem = new JMenuItem(new AbstractAction(menuName) {
 
                     public void actionPerformed(ActionEvent e) {
-                        String title = gen.getName();
-                        GeneratorUI ui = gen.getUI();
-                        if (ui != null) {
-                            ui.setup(gen);
-                            DialogDescriptor dd = new DialogDescriptor(ui.getPanel(), title);
-                            Object result = DialogDisplayer.getDefault().notify(dd);
-                            if (result != NotifyDescriptor.OK_OPTION) {
-                                return;
-                            }
-                            ui.unsetup();
-                        }
-
                         generatorController.generate(gen);
                     }
                 });
