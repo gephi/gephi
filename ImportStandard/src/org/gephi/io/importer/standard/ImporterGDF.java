@@ -404,7 +404,7 @@ public class ImporterGDF implements TextImporter {
 
         public enum EdgeGuessColumn {
 
-            VISIBLE, COLOR, WEIGHT, WIDTH, DIRECTED, LABEL, LABELVISIBLE
+            VISIBLE, COLOR, WEIGHT, DIRECTED, LABEL, LABELVISIBLE
         };
         private AttributeColumn column;
         private NodeGuessColumn nodeColumn;
