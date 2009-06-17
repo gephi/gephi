@@ -64,83 +64,74 @@ public class ImporterGDF implements TextImporter {
         edgeLineStart = new String[]{"edgedef>", "Edgedef>"};
     }
 
-    public void importData(BufferedReader reader, ContainerLoader container) throws ImportException {
+    public void importData(BufferedReader reader, ContainerLoader container) throws Exception {
         this.container = container;
-        try {
 
-            //Verify a node line exists and puts nodes and edges lines in arrays
-            walkFile(reader);
+        //Verify a node line exists and puts nodes and edges lines in arrays
+        walkFile(reader);
 
-            //Magix regex
-            Pattern pattern = Pattern.compile("(?<=(?:,|^)\")(.*?)(?=(?<=(?:[^\\\\]))\",|\"$)|(?<=(?:,|^)')(.*?)(?=(?<=(?:[^\\\\]))',|'$)|(?<=(?:,|^))(?=[^'\"])(.*?)(?=(?:,|$))|(?<=,)($)");
+        //Magix regex
+        Pattern pattern = Pattern.compile("(?<=(?:,|^)\")(.*?)(?=(?<=(?:[^\\\\]))\",|\"$)|(?<=(?:,|^)')(.*?)(?=(?<=(?:[^\\\\]))',|'$)|(?<=(?:,|^))(?=[^'\"])(.*?)(?=(?:,|$))|(?<=,)($)");
 
-            //Nodes
-            for (String nodeLine : nodeLines) {
+        //Nodes
+        for (String nodeLine : nodeLines) {
 
-                //Create Node
-                NodeDraft node = container.factory().newNodeDraft();
+            //Create Node
+            NodeDraft node = container.factory().newNodeDraft();
 
-                Matcher m = pattern.matcher(nodeLine);
-                int count = 0;
-                while (m.find()) {
-                    int start = m.start();
-                    int end = m.end();
-                    if (start != end) {
-                        String data = nodeLine.substring(start, end);
-                        data = data.trim();
-                        if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
-                            if (count == 0) {
-                                //Id
-                                node.setId(data);
-                            } else if (count < nodeColumns.length) {
-                                setNodeData(node, nodeColumns[count - 1], data);
-                            }
+            Matcher m = pattern.matcher(nodeLine);
+            int count = 0;
+            while (m.find()) {
+                int start = m.start();
+                int end = m.end();
+                if (start != end) {
+                    String data = nodeLine.substring(start, end);
+                    data = data.trim();
+                    if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
+                        if (count == 0) {
+                            //Id
+                            node.setId(data);
+                        } else if (count < nodeColumns.length) {
+                            setNodeData(node, nodeColumns[count - 1], data);
                         }
                     }
-                    count++;
                 }
-
-                container.addNode(node);
+                count++;
             }
 
-            //Edges
-            for (String edgeLine : edgeLines) {
+            container.addNode(node);
+        }
 
-                //Create Edge
-                EdgeDraft edge = container.factory().newEdgeDraft();
+        //Edges
+        for (String edgeLine : edgeLines) {
 
-                Matcher m = pattern.matcher(edgeLine);
-                int count = 0;
-                while (m.find()) {
-                    int start = m.start();
-                    int end = m.end();
-                    if (start != end) {
-                        String data = edgeLine.substring(start, end);
-                        data = data.trim();
-                        if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
-                            if (count == 0) {
-                                NodeDraft nodeSource = container.getNode(data);
-                                edge.setSource(nodeSource);
-                            } else if (count == 1) {
-                                NodeDraft nodeTarget = container.getNode(data);
-                                edge.setTarget(nodeTarget);
-                            } else if (count < edgeColumns.length) {
-                                setEdgeData(edge, edgeColumns[count - 2], data);
-                            }
+            //Create Edge
+            EdgeDraft edge = container.factory().newEdgeDraft();
+
+            Matcher m = pattern.matcher(edgeLine);
+            int count = 0;
+            while (m.find()) {
+                int start = m.start();
+                int end = m.end();
+                if (start != end) {
+                    String data = edgeLine.substring(start, end);
+                    data = data.trim();
+                    if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
+                        if (count == 0) {
+                            NodeDraft nodeSource = container.getNode(data);
+                            edge.setSource(nodeSource);
+                        } else if (count == 1) {
+                            NodeDraft nodeTarget = container.getNode(data);
+                            edge.setTarget(nodeTarget);
+                        } else if (count < edgeColumns.length) {
+                            setEdgeData(edge, edgeColumns[count - 2], data);
                         }
                     }
-                    count++;
                 }
-
-                container.addEdge(edge);
+                count++;
             }
 
-        } catch (Exception ex) {
-            if (ex instanceof ImportException) {
-                throw (ImportException) ex;
-            } else {
-                throw new ImportException(this, ex);
-            }
+            container.addEdge(edge);
         }
 
     }
@@ -174,7 +165,7 @@ public class ImporterGDF implements TextImporter {
         }
     }
 
-    private void findNodeColumns(String line) throws ImportException {
+    private void findNodeColumns(String line) throws Exception {
         String[] columns = line.split(",");
         nodeColumns = new GDFColumn[columns.length - 1];
 
@@ -239,7 +230,7 @@ public class ImporterGDF implements TextImporter {
         }
     }
 
-    private void findEdgeColumns(String line) throws ImportException {
+    private void findEdgeColumns(String line) throws Exception {
         String[] columns = line.split(",");
         edgeColumns = new GDFColumn[columns.length - 2];
 
@@ -313,7 +304,7 @@ public class ImporterGDF implements TextImporter {
         return false;
     }
 
-    private void setNodeData(NodeDraft node, GDFColumn column, String data) throws ImportException {
+    private void setNodeData(NodeDraft node, GDFColumn column, String data) throws Exception {
         if (column.getNodeColumn() != null) {
             try {
                 switch (column.getNodeColumn()) {
@@ -348,7 +339,7 @@ public class ImporterGDF implements TextImporter {
                         break;
                 }
             } catch (Exception e) {
-                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3", column.getNodeColumn(),node, data);
+                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3", column.getNodeColumn(), node, data);
                 throw new ImportException(message);
             }
         } else if (column.getAttributeColumn() != null) {
@@ -356,7 +347,7 @@ public class ImporterGDF implements TextImporter {
         }
     }
 
-    private void setEdgeData(EdgeDraft edge, GDFColumn column, String data) throws ImportException {
+    private void setEdgeData(EdgeDraft edge, GDFColumn column, String data) throws Exception {
         if (column.getNodeColumn() != null) {
             try {
                 switch (column.getEdgeColumn()) {
@@ -373,7 +364,7 @@ public class ImporterGDF implements TextImporter {
                         edge.setWeight(Float.parseFloat(data));
                         break;
                     case DIRECTED:
-                        if(Boolean.parseBoolean(data)) {
+                        if (Boolean.parseBoolean(data)) {
                             edge.setType(EdgeDraft.EdgeType.DIRECTED);
                         } else {
                             edge.setType(EdgeDraft.EdgeType.UNDIRECTED);

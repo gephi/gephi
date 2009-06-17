@@ -25,7 +25,7 @@ package org.gephi.io.container.standard;
  *
  * @author Mathieu Bastian
  */
-public class ImportContainerException extends Exception {
+public class ImportContainerException extends RuntimeException {
 
     public ImportContainerException(String message)
     {

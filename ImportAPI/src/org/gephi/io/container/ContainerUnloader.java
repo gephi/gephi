@@ -33,7 +33,7 @@ public interface ContainerUnloader {
     public Collection<? extends NodeDraftGetter> getNodes();
 
     public Collection<? extends EdgeDraftGetter> getEdges();
-    
+
     public EdgeDefault getEdgeDefault();
 
     public boolean allowSelfLoop();

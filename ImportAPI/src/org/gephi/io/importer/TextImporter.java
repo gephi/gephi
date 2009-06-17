@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.io.importer;
 
 import java.io.BufferedReader;
@@ -30,5 +29,5 @@ import org.gephi.io.container.ContainerLoader;
  */
 public interface TextImporter extends FileFormatImporter {
 
-    public void importData(BufferedReader reader, ContainerLoader containter) throws ImportException;
+    public void importData(BufferedReader reader, ContainerLoader containter) throws Exception;
 }

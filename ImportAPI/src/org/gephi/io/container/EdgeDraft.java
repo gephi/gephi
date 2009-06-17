@@ -29,7 +29,10 @@ import org.gephi.data.attributes.api.AttributeColumn;
  */
 public interface EdgeDraft {
 
-    public enum EdgeType { DIRECTED, UNDIRECTED, MUTUAL };
+    public enum EdgeType {
+
+        DIRECTED, UNDIRECTED, MUTUAL
+    };
 
     public void setId(String id);
 

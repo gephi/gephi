@@ -44,7 +44,7 @@ public class RandomGraph implements Generator {
         NodeDraft[] nodeArray = new NodeDraft[numberOfNodes];
         for (int i = 0; i < numberOfNodes; i++) {
             NodeDraft nodeDraft = container.factory().newNodeDraft();
-            nodeDraft.setId("n"+i);
+            nodeDraft.setId("n" + i);
             container.addNode(nodeDraft);
             nodeArray[i] = nodeDraft;
         }
@@ -53,7 +53,7 @@ public class RandomGraph implements Generator {
             NodeDraft node1 = nodeArray[i];
             for (int j = i + 1; j < numberOfNodes; j++) {
                 NodeDraft node2 = nodeArray[j];
-                if(random.nextDouble() < wiringProbability) {
+                if (random.nextDouble() < wiringProbability) {
                     EdgeDraft edgeDraft = container.factory().newEdgeDraft();
                     edgeDraft.setSource(node1);
                     edgeDraft.setTarget(node2);
