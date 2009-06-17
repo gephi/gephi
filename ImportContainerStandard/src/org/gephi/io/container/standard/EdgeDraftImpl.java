@@ -25,12 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeValue;
-import org.gephi.graph.api.Edge;
 import org.gephi.io.container.EdgeDraft;
 import org.gephi.io.container.NodeDraft;
 import org.gephi.io.processor.EdgeDraftGetter;
-
-
 
 /**
  *
@@ -38,10 +35,6 @@ import org.gephi.io.processor.EdgeDraftGetter;
  */
 public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
 
-    public enum EdgeType {
-
-        DIRECTED, UNDIRECTED, MUTUAL
-    };
     //Architecture
     private ImportContainerImpl container;
 
@@ -50,8 +43,8 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
     private String label;
 
     //Topology
-    private NodeDraftImpl nodeSource;
-    private NodeDraftImpl nodeTarget;
+    private NodeDraftImpl source;
+    private NodeDraftImpl target;
     private float weight;
     private EdgeType edgeType;
 
@@ -59,6 +52,7 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
     private Color color;
     private boolean labelVisible;
     private boolean visible;
+    private float labelSize;
 
     //Attributes
     private List<AttributeValue> attributeValues = new ArrayList<AttributeValue>();
@@ -68,16 +62,9 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
         this.id = id;
     }
 
-    public float getWeight() {
-        return weight;
-    }
-
+    //SETTERS
     public void setWeight(float weight) {
         this.weight = weight;
-    }
-
-    public Color getColor() {
-        return color;
     }
 
     public void setColor(Color color) {
@@ -92,75 +79,96 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
         r = Math.max(Math.min(r, 1f), 0f);
         g = Math.max(Math.min(g, 1f), 0f);
         b = Math.max(Math.min(b, 1f), 0f);
-        this.color = new Color(r, g, b);
+        setColor(new Color(r, g, b));
     }
 
     public void setColor(int r, int g, int b) {
         setColor(r / 255f, g / 255f, b / 255f);
     }
 
-    public boolean isLabelVisible() {
-        return labelVisible;
+    public void setColor(String color) {
+        setColor(Color.getColor(color));
     }
 
     public void setLabelVisible(boolean labelVisible) {
         this.labelVisible = labelVisible;
     }
 
-    public String getLabel() {
-        return label;
-    }
-
     public void setLabel(String label) {
         this.label = label;
     }
 
-    public boolean isVisible() {
-        return visible;
+    public void setLabelSize(float size) {
+        this.labelSize = size;
     }
 
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
 
-    public void setDirected(boolean directed) {
-        if (directed) {
-            this.edgeType = EdgeType.DIRECTED;
-        } else {
-            this.edgeType = EdgeType.UNDIRECTED;
-        }
-    }
-
-    public boolean isDirected() {
-        return edgeType == EdgeType.DIRECTED;
-    }
-
-    public String getId() {
-        return id;
+    public void setType(EdgeType edgeType) {
+        this.edgeType = edgeType;
     }
 
     public void setId(String id) {
         this.id = id;
     }
 
-    public NodeDraftImpl getSource() {
-        return nodeSource;
+    public void setSource(NodeDraft nodeSource) {
+        this.source = (NodeDraftImpl) nodeSource;
     }
 
-    public void setNodeSource(NodeDraft nodeSource) {
-        this.nodeSource = (NodeDraftImpl) nodeSource;
-    }
-
-    public NodeDraftImpl getTarget() {
-        return nodeTarget;
-    }
-
-    public void setNodeTarget(NodeDraft nodeTarget) {
-        this.nodeTarget = (NodeDraftImpl) nodeTarget;
+    public void setTarget(NodeDraft nodeTarget) {
+        this.target = (NodeDraftImpl) nodeTarget;
     }
 
     public void addAttributeValue(AttributeColumn column, Object value) {
         AttributeValue attValue = container.getFactory().newValue(column, value);
         attributeValues.add(attValue);
+    }
+
+    //GETTERS
+    public EdgeType getEdgeType() {
+        return edgeType;
+    }
+
+    public float getLabelSize() {
+        return labelSize;
+    }
+
+    public NodeDraftImpl getSource() {
+        return source;
+    }
+
+    public NodeDraftImpl getTarget() {
+        return target;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public float getWeight() {
+        return weight;
+    }
+
+    public EdgeType getType() {
+        return edgeType;
+    }
+
+    public boolean isLabelVisible() {
+        return labelVisible;
+    }
+
+    public boolean isVisible() {
+        return visible;
     }
 }

@@ -18,31 +18,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package org.gephi.io.container;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Container {
+public enum EdgeDefault {
 
-    public enum ErrorMode {NO_ERROR, REPORT, ALL };
-
-    public void setErrorMode(ErrorMode errorMode);
-
-    public ErrorMode getErrorMode();
-
-    public void setSource(String source);
-
-    public String getSource();
-
-    public ContainerLoader getLoader();
-
-    public ContainerUnloader getUnloader();
-
-    public void setAllowSelfLoop(boolean value);
-
-    public void setAllowAutoNode(boolean value);
-
-    public void setAllowParallelEdge(boolean value);
+    DIRECTED, UNDIRECTED, MIXED;
 }

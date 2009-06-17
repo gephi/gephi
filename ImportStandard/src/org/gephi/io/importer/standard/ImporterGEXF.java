@@ -44,7 +44,7 @@ import org.w3c.dom.NodeList;
  */
 public class ImporterGEXF implements XMLImporter {
 
-    public void importData(Document document, ContainerLoader containter) throws ImportException {
+    public void importData(Document document, ContainerLoader container) throws ImportException {
         try {
             //XPath
             XPathFactory factory = XPathFactory.newInstance();
@@ -62,7 +62,7 @@ public class ImporterGEXF implements XMLImporter {
             //Nodes
             for (int i = 0; i < nodeListE.getLength(); i++) {
                 Element nodeE = (Element) nodeListE.item(i);
-                NodeDraft node = containter.newNodeDraft();
+                NodeDraft node = container.factory().newNodeDraft();
 
                 //Id
                 int nodeId = Integer.parseInt(nodeE.getAttribute("id"));
@@ -71,11 +71,12 @@ public class ImporterGEXF implements XMLImporter {
                 //Parent
                 if (!nodeE.getAttribute("pid").isEmpty() && !nodeE.getAttribute("pid").equals("0")) {
                     int parentId = Integer.parseInt(nodeE.getAttribute("pid"));
-                    containter.addNode(node, containter.getNode(String.valueOf(parentId)));
+                    node.setParent(container.getNode(String.valueOf(parentId)));
+                    container.addNode(node);
                 }
                 else
                 {
-                    containter.addNode(node);
+                    container.addNode(node);
                 }
                 
 
@@ -113,7 +114,7 @@ public class ImporterGEXF implements XMLImporter {
             for (int i = 0; i < edgeListE.getLength(); i++) {
                 Element edgeE = (Element) edgeListE.item(i);
 
-                EdgeDraft edge = containter.newEdgeDraft();
+                EdgeDraft edge = container.factory().newEdgeDraft();
 
                 //Id
                 if (!edgeE.getAttribute("id").isEmpty()) {
@@ -125,14 +126,14 @@ public class ImporterGEXF implements XMLImporter {
                 int edgeSource = Integer.parseInt(edgeE.getAttribute("source"));
                 int edgeTarget = Integer.parseInt(edgeE.getAttribute("target"));
 
-                NodeDraft nodeSource = containter.getNode(String.valueOf(edgeSource));
-                NodeDraft nodeTarget = containter.getNode(String.valueOf(edgeTarget));
+                NodeDraft nodeSource = container.getNode(String.valueOf(edgeSource));
+                NodeDraft nodeTarget = container.getNode(String.valueOf(edgeTarget));
                 if(nodeSource==null || nodeTarget==null)
                 {
                     throw new NullPointerException(edgeSource+"  "+edgeTarget);
                 }
-                edge.setNodeSource(nodeSource);
-                edge.setNodeTarget(nodeTarget);
+                edge.setSource(nodeSource);
+                edge.setTarget(nodeTarget);
 
                 //Cardinal
                 String cardinalStr = edgeE.getAttribute("cardinal");
@@ -141,7 +142,7 @@ public class ImporterGEXF implements XMLImporter {
                     edge.setWeight(cardinal);
                 }
 
-                containter.addEdge(edge);
+                container.addEdge(edge);
             }
 
         } catch (Exception ex) {

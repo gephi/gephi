@@ -25,6 +25,7 @@ import java.util.HashMap;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeManager;
 import org.gephi.data.attributes.api.AttributeValueFactory;
+import org.gephi.io.container.EdgeDefault;
 import org.gephi.io.container.EdgeDraft;
 import org.gephi.io.container.Container;
 import org.gephi.io.container.ContainerLoader;
@@ -35,8 +36,6 @@ import org.gephi.io.processor.NodeDraftGetter;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
-
-
 /**
  *
  * @author Mathieu Bastian
@@ -45,6 +44,9 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     //MetaData
     private String source;
+
+    //Factory
+    ContainerFactory factory;
 
     //Parameters
     private ImportContainerParameters parameters;
@@ -63,14 +65,19 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         edgeMap = new HashMap<String, EdgeDraftImpl>();
         attributeFactory = Lookup.getDefault().lookup(AttributeController.class).valueFactory();
         attributeManager = Lookup.getDefault().lookup(AttributeController.class).getTemporaryAttributeManager();
+        factory = new FactoryImpl();
     }
 
     public ContainerLoader getLoader() {
-       return this;
+        return this;
     }
 
     public ContainerUnloader getUnloader() {
         return this;
+    }
+
+    public ContainerFactory factory() {
+        return factory;
     }
 
     public void setSource(String source) {
@@ -88,13 +95,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
 
         if (nodeMap.containsKey(nodeDraftImpl.getId())) {
-            switch (parameters.nodeDoublePolicy) {
-                case IGNORE:
-                    return;
-                case UNKNOWN:
-                    String message = String.format(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_nodeExist", nodeDraftImpl.getId()));
-                    logger(new ImportContainerException(message));
-            }
+
+            String message = String.format(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_nodeExist", nodeDraftImpl.getId()));
+            logger(new ImportContainerException(message));
+
         }
 
         nodeMap.put(nodeDraftImpl.getId(), nodeDraftImpl);
@@ -130,33 +134,31 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
 
         if (edgeMap.containsKey(edgeDraftImpl.getId())) {
-            switch (parameters.edgeDoublePolicy) {
-                case IGNORE:
-                    return;
-                case UNKNOWN:
-                    String message = String.format(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_edgeExist", id));
-                    logger(new ImportContainerException(message));
-            }
+            String message = String.format(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_edgeExist", id));
+            logger(new ImportContainerException(message));
+
         }
 
         edgeMap.put(id, edgeDraftImpl);
     }
 
-    public void checkNodeLabels() {
-        for (NodeDraftImpl n : nodeMap.values()) {
-            if (n.getLabel() == null || n.getLabel().isEmpty()) {
-                n.setLabel(n.getId());
-            }
-        }
+    public boolean edgeExists(String id) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void addNode(NodeDraft node, NodeDraft parent) {
-        NodeDraftImpl nodeImpl = (NodeDraftImpl) node;
-        addNode(node);
-        parent.addChild(node);
-        nodeImpl.hasParent = true;
-
+    public boolean edgeExists(NodeDraft source, NodeDraft target) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public EdgeDraft getEdge(String id) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public EdgeDraft getEdge(NodeDraft source, NodeDraft target) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    
 
     public Collection<? extends NodeDraftGetter> getNodes() {
         return nodeMap.values();
@@ -166,23 +168,79 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         return edgeMap.values();
     }
 
-    public NodeDraft newNodeDraft() {
-        return new NodeDraftImpl(this, null);
-    }
-
-    public EdgeDraft newEdgeDraft() {
-        return new EdgeDraftImpl(this, null);
-    }
-
     public AttributeManager getAttributeManager() {
         return attributeManager;
+    }
+
+    public AttributeValueFactory getFactory() {
+        return attributeFactory;
     }
 
     private void logger(Exception e) {
         System.err.println(e.getMessage());
     }
 
-    public AttributeValueFactory getFactory() {
-        return attributeFactory;
+    /**
+     * Factory for draft objects
+     */
+    public class FactoryImpl implements ContainerFactory {
+
+        private int nodeIDgen = 0;
+        private int edgeIDgen = 0;
+
+        public NodeDraft newNodeDraft() {
+            NodeDraftImpl node = new NodeDraftImpl(ImportContainerImpl.this, source);
+            node.setId("n"+nodeIDgen);
+            nodeIDgen++;
+            return node;
+        }
+
+        public EdgeDraft newEdgeDraft() {
+            EdgeDraftImpl edge = new EdgeDraftImpl(ImportContainerImpl.this, source);
+            edge.setId("e"+edgeIDgen);
+            edgeIDgen++;
+            return edge;
+        }
+    }
+
+    //PARAMETERS
+    public void setAllowAutoNode(boolean value) {
+        parameters.setAutoNode(value);
+    }
+
+    public void setAllowParallelEdge(boolean value) {
+        parameters.setParallelEdges(value);
+    }
+
+    public void setAllowSelfLoop(boolean value) {
+        parameters.setSelfLoops(value);
+    }
+
+    public void setEdgeDefault(EdgeDefault edgeDefault) {
+        parameters.setEdgeDefault(edgeDefault);
+    }
+
+    public void setErrorMode(ErrorMode errorMode) {
+        parameters.setErrorMode(errorMode);
+    }
+
+    public ErrorMode getErrorMode() {
+        return parameters.getErrorMode();
+    }
+
+    public boolean allowAutoNode() {
+        return parameters.isAutoNode();
+    }
+
+    public boolean allowParallelEdges() {
+        return parameters.isParallelEdges();
+    }
+
+    public boolean allowSelfLoop() {
+        return parameters.isSelfLoops();
+    }
+
+    public EdgeDefault getEdgeDefault() {
+        return parameters.getEdgeDefault();
     }
 }

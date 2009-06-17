@@ -18,10 +18,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.io.container.standard;
 
-
+import org.gephi.io.container.Container.ErrorMode;
+import org.gephi.io.container.EdgeDefault;
 
 /**
  *
@@ -29,8 +29,49 @@ package org.gephi.io.container.standard;
  */
 public class ImportContainerParameters {
 
-    public enum DoublePolicy { UNKNOWN, IGNORE, REPLACE };
-    DoublePolicy nodeDoublePolicy = DoublePolicy.UNKNOWN;
-    DoublePolicy edgeDoublePolicy = DoublePolicy.UNKNOWN;
-    EdgeDraftImpl.EdgeType defaultEdgeType = EdgeDraftImpl.EdgeType.DIRECTED;
+    private ErrorMode errorMode = ErrorMode.ALL;
+    private boolean selfLoops = true;
+    private boolean parallelEdges = true;
+    private boolean autoNode = true;
+    private EdgeDefault edgeDefault = EdgeDefault.MIXED;
+
+    public boolean isAutoNode() {
+        return autoNode;
+    }
+
+    public void setAutoNode(boolean autoNode) {
+        this.autoNode = autoNode;
+    }
+
+    public boolean isParallelEdges() {
+        return parallelEdges;
+    }
+
+    public void setParallelEdges(boolean parallelEdges) {
+        this.parallelEdges = parallelEdges;
+    }
+
+    public boolean isSelfLoops() {
+        return selfLoops;
+    }
+
+    public void setSelfLoops(boolean selfLoops) {
+        this.selfLoops = selfLoops;
+    }
+
+    public EdgeDefault getEdgeDefault() {
+        return edgeDefault;
+    }
+
+    public void setEdgeDefault(EdgeDefault edgeDefault) {
+        this.edgeDefault = edgeDefault;
+    }
+
+    public ErrorMode getErrorMode() {
+        return errorMode;
+    }
+
+    public void setErrorMode(ErrorMode errorMode) {
+        this.errorMode = errorMode;
+    }
 }

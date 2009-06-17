@@ -78,7 +78,7 @@ public class ImporterGDF implements TextImporter {
             for (String nodeLine : nodeLines) {
 
                 //Create Node
-                NodeDraft node = container.newNodeDraft();
+                NodeDraft node = container.factory().newNodeDraft();
 
                 Matcher m = pattern.matcher(nodeLine);
                 int count = 0;
@@ -107,7 +107,7 @@ public class ImporterGDF implements TextImporter {
             for (String edgeLine : edgeLines) {
 
                 //Create Edge
-                EdgeDraft edge = container.newEdgeDraft();
+                EdgeDraft edge = container.factory().newEdgeDraft();
 
                 Matcher m = pattern.matcher(edgeLine);
                 int count = 0;
@@ -120,10 +120,10 @@ public class ImporterGDF implements TextImporter {
                         if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
                             if (count == 0) {
                                 NodeDraft nodeSource = container.getNode(data);
-                                edge.setNodeSource(nodeSource);
+                                edge.setSource(nodeSource);
                             } else if (count == 1) {
                                 NodeDraft nodeTarget = container.getNode(data);
-                                edge.setNodeTarget(nodeTarget);
+                                edge.setTarget(nodeTarget);
                             } else if (count < edgeColumns.length) {
                                 setEdgeData(edge, edgeColumns[count - 2], data);
                             }
@@ -277,14 +277,12 @@ public class ImporterGDF implements TextImporter {
 
             if (columnName.equals("color")) {
                 edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.COLOR);
-            } else if (columnName.equals("fixed")) {
-                edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.DIRECTED);
-            } else if (columnName.equals("style")) {
-                edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.WEIGHT);
-            } else if (columnName.equals("width")) {
-                edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.WIDTH);
-            } else if (columnName.equals("height")) {
+            } else if (columnName.equals("visible")) {
                 edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.VISIBLE);
+            } else if (columnName.equals("weight")) {
+                edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.WEIGHT);
+            } else if (columnName.equals("directed")) {
+                edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.DIRECTED);
             } else if (columnName.equals("label")) {
                 edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.LABEL);
             } else if (columnName.equals("labelvisible")) {
@@ -372,9 +370,14 @@ public class ImporterGDF implements TextImporter {
                         edge.setVisible(Boolean.parseBoolean(data));
                         break;
                     case WEIGHT:
+                        edge.setWeight(Float.parseFloat(data));
                         break;
                     case DIRECTED:
-                        edge.setDirected(Boolean.parseBoolean(data));
+                        if(Boolean.parseBoolean(data)) {
+                            edge.setType(EdgeDraft.EdgeType.DIRECTED);
+                        } else {
+                            edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
+                        }
                         break;
                     case LABEL:
                         edge.setLabel(data);

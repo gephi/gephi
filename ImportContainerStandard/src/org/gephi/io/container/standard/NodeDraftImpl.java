@@ -43,8 +43,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     //Basic
     private String id;
     private String label;
-    private List<NodeDraftImpl> children = new ArrayList();
-    public boolean hasParent = false;
+    private NodeDraftImpl parent;
 
     //Viz attributes
     private Color color;
@@ -52,6 +51,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     private float x;
     private float y;
     private float z;
+    private float labelSize;
     private boolean labelVisible;
     private boolean visible;
     private boolean fixed;
@@ -67,10 +67,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         this.id = id;
     }
 
-    public Color getColor() {
-        return color;
-    }
-
+    //SETTERS
     public void setColor(Color color) {
         this.color = color;
     }
@@ -83,83 +80,63 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         r = Math.max(Math.min(r, 1f), 0f);
         g = Math.max(Math.min(g, 1f), 0f);
         b = Math.max(Math.min(b, 1f), 0f);
-        this.color = new Color(r, g, b);
+        setColor(new Color(r, g, b));
     }
 
     public void setColor(int r, int g, int b) {
         setColor(r / 255f, g / 255f, b / 255f);
     }
 
-    public String getId() {
-        return id;
+    public void setColor(String color) {
+        setColor(Color.getColor(color));
     }
 
     public void setId(String id) {
         this.id = id;
     }
 
-    public String getLabel() {
-        return label;
-    }
-
     public void setLabel(String label) {
         this.label = label;
     }
 
-    public float getSize() {
-        return size;
+    public void setLabelSize(float size) {
+        this.labelSize = size;
     }
 
     public void setSize(float size) {
         this.size = size;
     }
 
-    public float getX() {
-        return x;
-    }
-
     public void setX(float x) {
         this.x = x;
-    }
-
-    public float getY() {
-        return y;
     }
 
     public void setY(float y) {
         this.y = y;
     }
 
-    public float getZ() {
-        return z;
-    }
-
     public void setZ(float z) {
         this.z = z;
-    }
-
-    public boolean isFixed() {
-        return fixed;
     }
 
     public void setFixed(boolean fixed) {
         this.fixed = fixed;
     }
 
-    public boolean isLabelVisible() {
-        return labelVisible;
-    }
-
     public void setLabelVisible(boolean labelVisible) {
         this.labelVisible = labelVisible;
     }
 
-    public boolean isVisible() {
-        return visible;
-    }
-
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public void setParent(NodeDraft draft) {
+        this.parent = (NodeDraftImpl)draft;
+    }
+
+    public void addChild(NodeDraft child) {
+        child.setParent(this);
     }
 
     public void addAttributeValue(AttributeColumn column, Object value) {
@@ -167,18 +144,52 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         attributeValues.add(attValue);
     }
 
+    //GETTERS
     public List<AttributeValue> getAttributeValues() {
         return attributeValues;
     }
 
-    public void addChild(NodeDraft child) {
-        children.add((NodeDraftImpl) child);
+    public Color getColor() {
+        return color;
     }
 
-    public List<? extends NodeDraft> getChildren() {
-        return children;
+    public String getId() {
+        return id;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public float getSize() {
+        return size;
+    }
+
+    public float getX() {
+       return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public float getZ() {
+        return z;
+    }
+
+    public boolean isFixed() {
+        return fixed;
+    }
+
+    public boolean isLabelVisible() {
+        return labelVisible;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    //RESULT
     public void setNode(Node node) {
         this.node = node;
     }

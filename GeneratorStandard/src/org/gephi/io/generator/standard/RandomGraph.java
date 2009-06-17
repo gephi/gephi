@@ -20,8 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.generator.standard;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import org.gephi.ui.generator.standard.RandomGraphPanel;
 import org.gephi.io.container.ContainerLoader;
@@ -45,7 +43,7 @@ public class RandomGraph implements Generator {
 
         NodeDraft[] nodeArray = new NodeDraft[numberOfNodes];
         for (int i = 0; i < numberOfNodes; i++) {
-            NodeDraft nodeDraft = container.newNodeDraft();
+            NodeDraft nodeDraft = container.factory().newNodeDraft();
             nodeDraft.setId("n"+i);
             container.addNode(nodeDraft);
             nodeArray[i] = nodeDraft;
@@ -56,9 +54,9 @@ public class RandomGraph implements Generator {
             for (int j = i + 1; j < numberOfNodes; j++) {
                 NodeDraft node2 = nodeArray[j];
                 if(random.nextDouble() < wiringProbability) {
-                    EdgeDraft edgeDraft = container.newEdgeDraft();
-                    edgeDraft.setNodeSource(node1);
-                    edgeDraft.setNodeTarget(node2);
+                    EdgeDraft edgeDraft = container.factory().newEdgeDraft();
+                    edgeDraft.setSource(node1);
+                    edgeDraft.setTarget(node2);
                     container.addEdge(edgeDraft);
                 }
             }

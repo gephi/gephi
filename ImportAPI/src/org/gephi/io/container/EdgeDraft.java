@@ -29,6 +29,8 @@ import org.gephi.data.attributes.api.AttributeColumn;
  */
 public interface EdgeDraft {
 
+    public enum EdgeType { DIRECTED, UNDIRECTED, MUTUAL };
+
     public void setId(String id);
 
     public void setWeight(float weight);
@@ -41,17 +43,21 @@ public interface EdgeDraft {
 
     public void setColor(int r, int g, int b);
 
+    public void setColor(String color);
+
     public void setLabelVisible(boolean labelVisible);
 
     public void setLabel(String label);
 
+    public void setLabelSize(float size);
+
     public void setVisible(boolean visible);
 
-    public void setDirected(boolean directed);
+    public void setType(EdgeType type);
 
-    public void setNodeSource(NodeDraft nodeSource);
+    public void setSource(NodeDraft nodeSource);
 
-    public void setNodeTarget(NodeDraft nodeTarget);
+    public void setTarget(NodeDraft nodeTarget);
 
     public void addAttributeValue(AttributeColumn column, Object value);
 }
