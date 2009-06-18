@@ -31,7 +31,7 @@ import org.gephi.graph.dhns.node.PreNode;
  *
  * @author Mathieu Bastian
  */
-public class NeighborIterator implements Iterator<Node> {
+public class NeighborIterator extends AbstractNodeIterator implements Iterator<Node> {
 
     private AbstractEdgeIterator edgeIterator;
     private PreNode owner;

@@ -21,11 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.graph;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.NodeIterator;
+import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 
 /**
  * Implementation of <code>NodeIterable</code> with automatic lock unlocking when <code>hasNext</code>
@@ -39,11 +39,11 @@ public class NodeIterableImpl implements NodeIterable {
 
     private NodeIteratorImpl iterator;
 
-    public NodeIterableImpl(Iterator<Node> iterator, Lock lock) {
+    public NodeIterableImpl(AbstractNodeIterator iterator, Lock lock) {
         this.iterator = new NodeIteratorImpl(iterator, lock);
     }
 
-    public NodeIterableImpl(Iterator<Node> iterator, Lock lock, Condition<Node> condition) {
+    public NodeIterableImpl(AbstractNodeIterator iterator, Lock lock, Condition<Node> condition) {
         this.iterator = new NodeIteratorConditionImpl(iterator, lock, condition);
     }
 

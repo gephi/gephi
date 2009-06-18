@@ -43,9 +43,8 @@ import org.gephi.graph.dhns.node.iterators.VisibleTreeIterator;
  *
  * @author Mathieu Bastian
  */
-public abstract class ClusteredGraphImpl implements ClusteredGraph {
+public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements ClusteredGraph {
 
-    protected Dhns dhns;
     protected boolean visible = true;
 
     public ClusteredGraphImpl(Dhns dhns, boolean visible) {
@@ -423,80 +422,5 @@ public abstract class ClusteredGraphImpl implements ClusteredGraph {
 
     public boolean isClustered() {
         return getHeight() > 0;
-    }
-
-    public void readLock() {
-        //System.out.println(Thread.currentThread()+ "read lock");
-        dhns.getReadLock().lock();
-    }
-
-    public void readUnlock() {
-        //System.out.println(Thread.currentThread()+ "read unlock");
-        dhns.getReadLock().unlock();
-    }
-
-    public void writeLock() {
-        //System.out.println(Thread.currentThread()+ "write lock");
-        dhns.getWriteLock().lock();
-    }
-
-    public void writeUnlock() {
-        //System.out.println(Thread.currentThread()+ "write lock");
-        dhns.getWriteLock().unlock();
-    }
-
-    public int getNodeVersion() {
-        return dhns.getGraphVersion().getNodeVersion();
-    }
-
-    public int getEdgeVersion() {
-        return dhns.getGraphVersion().getEdgeVersion();
-    }
-
-    protected PreNode checkNode(Node node) {
-        if (node == null) {
-            throw new IllegalArgumentException("node can't be null");
-        }
-        PreNode preNode = (PreNode) node;
-        if (!preNode.isValid()) {
-            throw new IllegalArgumentException("Node must be in the graph");
-        }
-        return preNode;
-    }
-
-    protected AbstractEdge checkEdge(Edge edge) {
-        if (edge == null) {
-            throw new IllegalArgumentException("edge can't be null");
-        }
-        AbstractEdge abstractEdge = (AbstractEdge) edge;
-        if (!abstractEdge.isValid()) {
-            throw new IllegalArgumentException("Nodes must be in the graph");
-        }
-        if (abstractEdge.isMetaEdge()) {
-            throw new IllegalArgumentException("Edge can't be a meta edge");
-        }
-        return abstractEdge;
-    }
-
-    protected MetaEdgeImpl checkMetaEdge(Edge edge) {
-        if (edge == null) {
-            throw new IllegalArgumentException("edge can't be null");
-        }
-        AbstractEdge absEdge = (AbstractEdge) edge;
-        if (!absEdge.isMetaEdge()) {
-            throw new IllegalArgumentException("edge must be a meta edge");
-        }
-        if (!absEdge.isValid()) {
-            throw new IllegalArgumentException("Nodes must be in the graph");
-        }
-        return (MetaEdgeImpl) absEdge;
-    }
-
-    protected boolean checkEdgeExist(PreNode source, PreNode target) {
-        return source.getEdgesOutTree().hasNeighbour(target);
-    }
-
-    protected AbstractEdge getSymmetricEdge(AbstractEdge edge) {
-        return edge.getTarget().getEdgesOutTree().getItem(edge.getSource().getNumber());
     }
 }

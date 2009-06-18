@@ -20,9 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.core;
 
-import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
@@ -31,9 +29,11 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 import org.gephi.graph.dhns.graph.Condition;
 import org.gephi.graph.dhns.graph.EdgeIterableImpl;
 import org.gephi.graph.dhns.graph.NodeIterableImpl;
+import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 import org.openide.util.Lookup;
 
 /**
@@ -120,19 +120,19 @@ public class Dhns {
         return idGen;
     }
 
-    public NodeIterable newNodeIterable(Iterator<Node> iterator) {
+    public NodeIterable newNodeIterable(AbstractNodeIterator iterator) {
         return new NodeIterableImpl(iterator, readWriteLock.readLock());
     }
 
-    public EdgeIterable newEdgeIterable(Iterator<Edge> iterator) {
+    public EdgeIterable newEdgeIterable(AbstractEdgeIterator iterator) {
         return new EdgeIterableImpl(iterator, readWriteLock.readLock());
     }
 
-    public NodeIterable newNodeIterable(Iterator<Node> iterator, Condition<Node> condition) {
+    public NodeIterable newNodeIterable(AbstractNodeIterator iterator, Condition<Node> condition) {
         return new NodeIterableImpl(iterator, readWriteLock.readLock(), condition);
     }
 
-    public EdgeIterable newEdgeIterable(Iterator<Edge> iterator, Condition<Edge> condition) {
+    public EdgeIterable newEdgeIterable(AbstractEdgeIterator iterator, Condition<Edge> condition) {
         return new EdgeIterableImpl(iterator, readWriteLock.readLock(), condition);
     }
 

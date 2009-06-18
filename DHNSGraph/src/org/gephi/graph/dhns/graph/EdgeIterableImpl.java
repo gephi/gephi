@@ -26,6 +26,7 @@ import java.util.concurrent.locks.Lock;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.EdgeIterator;
+import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 
 /**
  * Implementation of <code>EdgeIterable</code> with automatic lock unlocking when <code>hasNext</code>
@@ -39,11 +40,11 @@ public class EdgeIterableImpl implements EdgeIterable {
 
     private EdgeIteratorImpl iterator;
 
-    public EdgeIterableImpl(Iterator<Edge> iterator , Lock lock) {
+    public EdgeIterableImpl(AbstractEdgeIterator iterator , Lock lock) {
         this.iterator = new EdgeIteratorImpl(iterator, lock);
     }
 
-    public EdgeIterableImpl(Iterator<Edge> iterator , Lock lock, Condition<Edge> condition) {
+    public EdgeIterableImpl(AbstractEdgeIterator iterator , Lock lock, Condition<Edge> condition) {
         this.iterator = new EdgeIteratorConditionImpl(iterator, lock, condition);
     }
 

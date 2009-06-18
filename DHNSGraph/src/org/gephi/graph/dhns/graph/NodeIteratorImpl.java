@@ -20,10 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
-import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterator;
+import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 
 /**
  * Iterator for {@link NodeIterableImpl}.
@@ -32,10 +32,10 @@ import org.gephi.graph.api.NodeIterator;
  */
 public class NodeIteratorImpl implements NodeIterator {
 
-    protected Iterator<Node> iterator;
+    protected AbstractNodeIterator iterator;
     protected Lock lock;
 
-    public NodeIteratorImpl(Iterator<Node> iterator, Lock lock) {
+    public NodeIteratorImpl(AbstractNodeIterator iterator, Lock lock) {
         this.iterator = iterator;
         this.lock = lock;
     }

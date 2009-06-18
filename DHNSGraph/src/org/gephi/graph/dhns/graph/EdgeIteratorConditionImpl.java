@@ -20,9 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
-import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 
 /**
  * Iterator for {@link NodeIterableImpl} which validates the given condition.
@@ -34,7 +34,7 @@ public class EdgeIteratorConditionImpl extends EdgeIteratorImpl {
     protected Condition<Edge> condition;
     protected Edge pointer;
 
-    public EdgeIteratorConditionImpl(Iterator<Edge> iterator, Lock lock, Condition<Edge> condition) {
+    public EdgeIteratorConditionImpl(AbstractEdgeIterator iterator, Lock lock, Condition<Edge> condition) {
         super(iterator, lock);
     }
 
