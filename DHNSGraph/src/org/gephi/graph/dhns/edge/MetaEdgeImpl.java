@@ -20,10 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.edge;
 
-import org.gephi.graph.api.Edge;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.api.MetaEdge;
-import org.gephi.graph.dhns.node.utils.avl.EdgeTree;
+import org.gephi.graph.dhns.utils.avl.EdgeTree;
 
 /**
  * Meta edge implementation. Edge between upper activated clusters in hierarchy. Contains lower edges.
@@ -33,7 +32,7 @@ import org.gephi.graph.dhns.node.utils.avl.EdgeTree;
 public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
 
     private EdgeTree edges;
-    private int directedCount=0;
+    private int directedCount = 0;
 
     public MetaEdgeImpl(int ID, PreNode source, PreNode target) {
         super(ID, source, target);
@@ -41,18 +40,18 @@ public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
     }
 
     public void addEdge(AbstractEdge edge) {
-        if(edges.add(edge)) {
+        if (edges.add(edge)) {
             weight += edge.getWeight();
-            if(edge.isDirected()) {
+            if (edge.isDirected()) {
                 directedCount++;
             }
         }
     }
 
     public void removeEdge(AbstractEdge edge) {
-        if(edges.remove(edge)) {
+        if (edges.remove(edge)) {
             weight -= edge.getWeight();
-            if(edge.isDirected()) {
+            if (edge.isDirected()) {
                 directedCount--;
             }
         }
@@ -60,19 +59,17 @@ public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
 
     @Override
     public AbstractEdge getUndirected() {
-        if(source==target) {
+        if (source == target) {
             return this;
         }
         AbstractEdge mutual = source.getMetaEdgesInTree().getItem(target.getNumber());
-        if(mutual!=null && mutual.getId() < ID) {
+        if (mutual != null && mutual.getId() < ID) {
             return mutual;
         }
         return this;
     }
 
-
-    public Iterable<AbstractEdge> getEdges()
-    {
+    public Iterable<AbstractEdge> getEdges() {
         return edges;
     }
 

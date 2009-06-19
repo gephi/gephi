@@ -18,45 +18,29 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.node.utils.avl;
+package org.gephi.graph.dhns.utils.avl;
 
-import org.gephi.graph.dhns.edge.MetaEdgeImpl;
-import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
+import org.gephi.graph.dhns.edge.AbstractEdge;
 
 /**
- * Same behaviour as {@link EdgeTree} but with {@link MetaEdgeImpl}.
+ * Simple AVL Tree for storing EdgeImpl instances. Based on edges ID.
  *
  * @author Mathieu Bastian
  */
-public class MetaEdgeTree extends ParamAVLTree<MetaEdgeImpl> {
+public class EdgeTree extends ParamAVLTree<AbstractEdge> {
 
-    private PreNode owner;
-
-    public MetaEdgeTree(PreNode owner) {
+    public EdgeTree() {
         super();
-        this.owner = owner;
-        setAccessor(new MetaEdgeImplAVLItemAccessor());
+        setAccessor(new EdgeImplAVLItemAccessor());
     }
 
-    public PreNode getOwner() {
-        return owner;
-    }
-
-    public boolean hasNeighbour(PreNode node) {
-        return getItem(node.getNumber()) != null;
-    }
-
-    private class MetaEdgeImplAVLItemAccessor implements AVLItemAccessor<MetaEdgeImpl> {
+    private class EdgeImplAVLItemAccessor implements AVLItemAccessor<AbstractEdge> {
 
         @Override
-        public int getNumber(MetaEdgeImpl item) {
-            if (item.getSource() == owner) {
-                return item.getTarget().getNumber();
-            } else {
-                return item.getSource().getNumber();
-            }
+        public int getNumber(AbstractEdge item) {
+            return item.getNumber();
         }
     }
 }

@@ -8,6 +8,8 @@ import org.gephi.datastructure.avl.ResetableIterator;
  * get item's key. With the iterator, nodes in the tree will be returned in a ascending order.
  * <p>
  * The AVL tree implementaion is based on a iterative method and guarantee O(ln(n)) access.
+ * <p>
+ * This tree has a single iterator, it can be accessed from a single thread.
  * @author Mathieu Bastian
  */
 public class MonoAVLTree implements Iterable<AVLItem> {

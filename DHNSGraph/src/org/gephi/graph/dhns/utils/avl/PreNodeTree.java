@@ -18,31 +18,29 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.edge;
+package org.gephi.graph.dhns.utils.avl;
 
+import org.gephi.datastructure.avl.param.AVLItemAccessor;
+import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.graph.dhns.node.PreNode;
 
 /**
- * Main edge implementation + sparse support.
+ * Simple AVL Tree for storing PreNode instances. Based on nodes ID.
  *
  * @author Mathieu Bastian
  */
-public class MixedEdgeImpl extends AbstractEdge {
+public class PreNodeTree extends ParamAVLTree<PreNode> {
 
-    protected boolean directed;
-
-    public MixedEdgeImpl(int ID, PreNode source, PreNode target, boolean directed) {
-        super(ID, source, target);
-        this.directed = directed;
+    public PreNodeTree() {
+        super();
+        setAccessor(new PreNodeAVLItemAccessor());
     }
 
-    @Override
-    public boolean isDirected() {
-        return directed;
-    }
+    private class PreNodeAVLItemAccessor implements AVLItemAccessor<PreNode> {
 
-    @Override
-    public boolean isMixed() {
-        return true;
+        @Override
+        public int getNumber(PreNode item) {
+            return item.getNumber();
+        }
     }
 }

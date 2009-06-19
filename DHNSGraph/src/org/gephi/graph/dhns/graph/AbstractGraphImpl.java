@@ -20,12 +20,20 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
+import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.core.Dhns;
+import org.gephi.graph.dhns.core.GraphFactoryImpl;
+import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
+import org.gephi.graph.dhns.node.iterators.TreeListIterator;
+import org.gephi.graph.dhns.utils.avl.EdgeOppositeTree;
+import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
+import org.gephi.graph.dhns.utils.avl.PreNodeTree;
 
 /**
  * Utilities methods for managing graphs implementation like locking of non-null checking
@@ -35,6 +43,62 @@ import org.gephi.graph.dhns.node.PreNode;
 public class AbstractGraphImpl {
 
     protected Dhns dhns;
+
+    public Dhns getSubGraph(AbstractNodeIterator nodeIterator) {
+        Dhns newDhns = dhns.getController().newDhns();
+
+        TreeStructure tree = newDhns.getTreeStructure();
+        PreNodeTree nodeIdTree = new PreNodeTree();
+        GraphFactoryImpl factory = newDhns.getGraphFactory();
+        ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
+
+        for (; nodeIterator.hasNext();) {
+            PreNode node = nodeIterator.next();
+            PreNode duplicate = factory.duplicateNode(node);
+            nodeIdTree.add(duplicate);
+        }
+
+        for (TreeListIterator itr = new TreeListIterator(tree.getTree(), 1); itr.hasNext();) {
+            PreNode newNode = itr.next();
+
+            //New edge OUT tree
+            EdgeOppositeTree edgeOutTree = new EdgeOppositeTree(newNode);
+            if (!newNode.getEdgesOutTree().isEmpty()) {
+                for (edgeIterator.setNode(newNode.getEdgesOutTree()); edgeIterator.hasNext();) {
+                    AbstractEdge edge = edgeIterator.next();
+                    PreNode target = nodeIdTree.getItem(edge.getTarget().getNumber());
+                    if (target != null) {
+                        //The edge target is also in the subgraph
+                        AbstractEdge duplicate = factory.duplicateEdge(edge, newNode, target);
+                        edgeOutTree.add(duplicate);
+                    }
+                }
+            }
+            newNode.setEdgesOutTree(edgeOutTree);
+
+            //New edge IN tree
+            EdgeOppositeTree edgeInTree = new EdgeOppositeTree(newNode);
+            if (!newNode.getEdgesInTree().isEmpty()) {
+                for (edgeIterator.setNode(newNode.getEdgesInTree()); edgeIterator.hasNext();) {
+                    AbstractEdge edge = edgeIterator.next();
+                    PreNode source = nodeIdTree.getItem(edge.getSource().getNumber());
+                    if (source != null) {
+                        //The edge source is also in the subgraph
+                        AbstractEdge duplicate = factory.duplicateEdge(edge, source, newNode);
+                        edgeInTree.add(duplicate);
+                    }
+                }
+            }
+            newNode.setEdgesInTree(edgeInTree);
+
+            //Clear meta edges
+            newNode.getMetaEdgesInTree().clear();
+            newNode.getMetaEdgesOutTree().clear();
+
+        }
+
+        return newDhns;
+    }
 
     public void readLock() {
         //System.out.println(Thread.currentThread()+ "read lock");

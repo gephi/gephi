@@ -106,7 +106,7 @@ public class DesktopImportController implements ImportController {
         Container.ContainerReport report = container.getReport();
         String reportStr = report.getReport();
         System.err.println(reportStr);
-        if(!reportStr.isEmpty()) {
+        if (!reportStr.isEmpty()) {
             NotifyDescriptor.Message e = new NotifyDescriptor.Message(reportStr, NotifyDescriptor.INFORMATION_MESSAGE);
             DialogDisplayer.getDefault().notifyLater(e);
         }
