@@ -24,7 +24,7 @@ import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.LayoutData;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
-import org.gephi.graph.api.Object3d;
+import org.gephi.graph.api.Model;
 
 /**
  * Implementation of the node data interface.
@@ -45,7 +45,7 @@ public class NodeDataImpl implements NodeData {
     protected float b = 0f;
     protected float alpha = 1f;
     protected float size = 1f;
-    protected Object3d obj;
+    protected Model model;
     protected boolean fixed;
     protected Attributes attributes;
 
@@ -101,8 +101,8 @@ public class NodeDataImpl implements NodeData {
     }
 
     private void updatePositionFlag() {
-        if (obj != null) {
-            obj.updatePositionFlag();
+        if (model != null) {
+            model.updatePositionFlag();
         }
     }
 
@@ -154,12 +154,12 @@ public class NodeDataImpl implements NodeData {
         this.alpha = alpha;
     }
 
-    public Object3d getObject3d() {
-        return obj;
+    public Model getObject3d() {
+        return model;
     }
 
-    public void setObject3d(Object3d obj) {
-        this.obj = obj;
+    public void setObject3d(Model obj) {
+        this.model = obj;
     }
 
     public String getLabel() {

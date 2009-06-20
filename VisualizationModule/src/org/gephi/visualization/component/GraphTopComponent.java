@@ -26,14 +26,10 @@ import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.swing.GraphDrawableImpl;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-//import org.openide.util.Utilities;
 
 /**
  * Top component which displays something.
@@ -44,7 +40,6 @@ final class GraphTopComponent extends TopComponent {
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "GraphTopComponent";
-
     private AbstractEngine engine;
 
     private GraphTopComponent() {
@@ -61,9 +56,11 @@ final class GraphTopComponent extends TopComponent {
 
         //Request component activation and therefore initialize JOGL component
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+
             public void run() {
                 open();
                 SwingUtilities.invokeLater(new Runnable() {
+
                     public void run() {
                         requestActive();
                         add(drawable.getGraphComponent(), BorderLayout.CENTER);
@@ -72,8 +69,8 @@ final class GraphTopComponent extends TopComponent {
                 });
             }
         });
-        //add(drawable.getGraphComponent(), BorderLayout.CENTER);
-        //remove(waitingLabel);
+    //add(drawable.getGraphComponent(), BorderLayout.CENTER);
+    //remove(waitingLabel);
     }
 
     /** This method is called from within the constructor to

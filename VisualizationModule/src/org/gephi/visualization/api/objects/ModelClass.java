@@ -21,45 +21,45 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.api.objects;
 
 import java.util.List;
-import org.gephi.visualization.api.initializer.Object3dInitializer;
+import org.gephi.visualization.api.initializer.Modeler;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public abstract class Object3dClass {
+public abstract class ModelClass {
 
     private static int IDS = 0;
     private final String name;
     private int classId;
     private boolean enabled;
     private int cacheMarker;
-    private int selectionId=0;
+    private int selectionId = 0;
 
     //Config
     private boolean lod;
     private boolean selectable;
     private boolean clickable;
 
-    public Object3dClass(String name, boolean lod, boolean selectable, boolean clickable) {
-        this.classId = Object3dClass.getNumber();
+    public ModelClass(String name, boolean lod, boolean selectable, boolean clickable) {
+        this.classId = ModelClass.getNumber();
         this.name = name;
         this.lod = lod;
         this.selectable = selectable;
         this.clickable = clickable;
     }
 
-    public Object3dClass() {
+    public ModelClass() {
         this.name = "";
     }
 
-    public abstract void addObjectInitializer(Object3dInitializer object3dInitializer);
+    public abstract void addModeler(Modeler modeler);
 
-    public abstract Object3dInitializer getCurrentObject3dInitializer();
+    public abstract Modeler getCurrentModeler();
 
-    public abstract void setCurrentObject3dInitializer(Object3dInitializer object3dInitializer);
+    public abstract void setCurrentModeler(Modeler modeler);
 
-    public abstract List<? extends Object3dInitializer> getObject3dInitializers();
+    public abstract List<? extends Modeler> getModelers();
 
     public int getClassId() {
         return classId;

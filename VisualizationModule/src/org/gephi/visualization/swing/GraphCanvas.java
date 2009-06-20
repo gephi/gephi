@@ -25,12 +25,10 @@ import java.awt.Component;
 
 import java.awt.Cursor;
 import javax.media.opengl.GL;
-import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import javax.swing.JPopupMenu;
 import javax.swing.ToolTipManager;
-
 
 /**
  *
@@ -57,8 +55,7 @@ public class GraphCanvas extends GraphDrawableImpl {
 
     @Override
     protected void render3DScene(GL gl, GLU glu) {
-        if(vizConfig.isShowFPS())
-        {
+        if (vizConfig.isShowFPS()) {
             gl.glPushMatrix();
             gl.glLoadIdentity();
             gl.glMatrixMode(gl.GL_PROJECTION);
@@ -71,7 +68,7 @@ public class GraphCanvas extends GraphDrawableImpl {
             gl.glColor3i(192, 192, 192);
             gl.glRasterPos2f(10, 15);
 
-            glut.glutBitmapString(GLUT.BITMAP_HELVETICA_10, ""+fps);
+            glut.glutBitmapString(GLUT.BITMAP_HELVETICA_10, "" + fps);
 
             gl.glDepthFunc(gl.GL_LESS);
             gl.glPopMatrix();

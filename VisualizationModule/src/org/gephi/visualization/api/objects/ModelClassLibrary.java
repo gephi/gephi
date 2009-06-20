@@ -20,14 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.api.objects;
 
-import org.gephi.visualization.api.objects.CompatibilityObject3dClass;
 import org.gephi.visualization.opengl.AbstractEngine;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Object3dClassLibrary {
+public interface ModelClassLibrary {
 
-    public CompatibilityObject3dClass[] createObjectClassesCompatibility(AbstractEngine engine);
+    public CompatibilityModelClass[] createModelClassesCompatibility(AbstractEngine engine);
 }

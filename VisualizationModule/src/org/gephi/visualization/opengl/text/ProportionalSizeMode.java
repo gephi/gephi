@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
-import org.gephi.graph.api.Object3d;
+import org.gephi.graph.api.Model;
 
 /**
  *
@@ -32,7 +32,7 @@ public class ProportionalSizeMode implements SizeMode {
     private static float FACTOR_LIMIT = 0.1f;
 
     public void setSizeFactor(TextData text) {
-        Object3d object3d = text.getObject3d();
+        Model object3d = text.getObject3d();
         float factor = GLOBAL_FACTOR / object3d.getCameraDistance() * object3d.getObj().getSize();
         if (factor < FACTOR_LIMIT) {
             factor = 0f;

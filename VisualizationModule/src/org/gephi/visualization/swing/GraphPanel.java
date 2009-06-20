@@ -70,8 +70,7 @@ public class GraphPanel extends GraphDrawableImpl {
     }
 
     private void render2DForeground(Graphics2D g) {
-        if(vizConfig.isShowFPS())
-        {
+        if (vizConfig.isShowFPS()) {
             g.setColor(Color.LIGHT_GRAY);
             g.drawString("" + fps, 10, 15);
         }

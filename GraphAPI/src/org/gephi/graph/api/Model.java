@@ -18,23 +18,29 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.visualization.initializer;
-
-import org.gephi.visualization.api.initializer.NodeInitializer;
+package org.gephi.graph.api;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public abstract class NodeSphereInitializer implements NodeInitializer {
+public interface Model<ObjectType extends Renderable> {
 
-    @Override
-    public String getName() {
-        return "nodeInitializer_Sphere_name";
-    }
+    public boolean isSelected();
 
-    @Override
-    public String toString() {
-        return getName();
-    }
+    public void setCacheMarker(int cacheMarker);
+
+    public boolean isCacheMatching(int cacheMarker);
+
+    public ObjectType getObj();
+
+    public boolean isValid();
+
+    public void updatePositionFlag();
+
+    public float getViewportX();
+
+    public float getViewportY();
+
+    public float getCameraDistance();
 }

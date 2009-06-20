@@ -23,7 +23,7 @@ package org.gephi.visualization.api;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.datastructure.avl.simple.AVLItem;
-import org.gephi.graph.api.Object3d;
+import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
@@ -32,7 +32,7 @@ import org.gephi.visualization.opengl.octree.Octant;
  *
  * @author Mathieu Bastian
  */
-public abstract class Object3dImpl<ObjectType extends Renderable> implements Object3d, AVLItem {
+public abstract class ModelImpl<ObjectType extends Renderable> implements Model, AVLItem {
 
     private int ID = -1;
     private int cacheMarker;
@@ -155,13 +155,12 @@ public abstract class Object3dImpl<ObjectType extends Renderable> implements Obj
     }
 
     public boolean isValid() {
-        return octants!=null && octants[0]!=null;
+        return octants != null && octants[0] != null;
     }
 
     public void updatePositionFlag() {
-       if(octants!=null && octants[0]!=null)
-       {
-           octants[0].requireUpdatePosition();
-       }
+        if (octants != null && octants[0] != null) {
+            octants[0].requireUpdatePosition();
+        }
     }
 }

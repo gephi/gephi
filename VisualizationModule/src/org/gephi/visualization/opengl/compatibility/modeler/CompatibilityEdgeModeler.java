@@ -18,63 +18,41 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.visualization.opengl.compatibility.initializer;
+package org.gephi.visualization.opengl.compatibility.modeler;
 
+import org.gephi.visualization.api.initializer.CompatibilityModeler;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JPanel;
-
-import org.gephi.graph.api.NodeData;
+import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.Renderable;
-import org.gephi.visualization.api.Object3dImpl;
-import org.gephi.visualization.api.initializer.CompatibilityObject3dInitializer;
+import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.opengl.compatibility.objects.Edge3dModel;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class CompatibilityPotatoInitializer implements CompatibilityObject3dInitializer<NodeData> {
+public class CompatibilityEdgeModeler implements CompatibilityModeler<EdgeData> {
 
-    public int DISK_LOW;
-    public int DISK_HIGH;
+    @Override
+    public ModelImpl initModel(Renderable n) {
+        EdgeData e = (EdgeData) n;
 
-    public Object3dImpl initObject(Renderable n) {
-        /*Potato potato = (Potato)n;
+        Edge3dModel edge = new Edge3dModel();
+        edge.setObj(e);
+        e.setObject3d(edge);
 
-        Potato3dObject obj = new Potato3dObject(potato);
-        obj.modelType = DISK_HIGH;
-        obj.setObj(potato);
-        potato.setObject3d(obj);*/
-
-        return null;
+        return edge;
     }
 
-    public void chooseModel(Object3dImpl<NodeData> obj) {
+    public void chooseModel(ModelImpl obj) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr) {
-
-        //Low res disk
-        DISK_LOW = ptr + 1;
-        gl.glNewList(DISK_LOW, GL.GL_COMPILE);
-        gl.glDisable(GL.GL_LIGHTING);
-        glu.gluDisk(quadric, 0.0, 1.0, 8, 1);
-        gl.glEnable(GL.GL_LIGHTING);
-        gl.glEndList();
-        //End
-
-        //High res disk
-        DISK_HIGH = DISK_LOW + 1;
-        gl.glNewList(DISK_HIGH, GL.GL_COMPILE);
-        gl.glDisable(GL.GL_LIGHTING);
-        glu.gluDisk(quadric, 0.0, 1.0, 32, 2);
-        gl.glEnable(GL.GL_LIGHTING);
-        gl.glEndList();
-        //End
-
-        return DISK_HIGH;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void initFromOpenGLThread() {

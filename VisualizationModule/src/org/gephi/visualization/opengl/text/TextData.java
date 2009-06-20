@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.opengl.text;
 
 import java.awt.geom.Rectangle2D;
-import org.gephi.graph.api.Object3d;
+import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Renderable;
 
 /**
@@ -30,7 +30,7 @@ import org.gephi.graph.api.Renderable;
  */
 public class TextData {
 
-    Object3d<Renderable> object3d;
+    Model<Renderable> object3d;
     TextLine line                   = new TextLine();
     TextLine[] wrappedLines;
     float r;
@@ -51,7 +51,7 @@ public class TextData {
         return r > 0;
     }
 
-    public Object3d<Renderable> getObject3d() {
+    public Model<Renderable> getObject3d() {
         return object3d;
     }
 

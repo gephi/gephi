@@ -20,22 +20,18 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.api.initializer;
 
-import javax.swing.JPanel;
-import org.gephi.graph.api.Renderable;
-import org.gephi.visualization.api.Object3dImpl;
+import org.gephi.graph.api.Model;
+import org.gephi.visualization.opengl.AbstractEngine;
 
 /**
+ * Interface for classes which wants to create graphic node {@link Model}. Because node models may be too
+ * various to only propose a Node model interface it is possible to create different modelers.
+ * <p>
+ * The modeler is responsible of the model creation and maintenance. Different functionalities
+ * like LOD or texturing can be done in modelers, with the cooperation of the engine.
  *
  * @author Mathieu Bastian
+ * @see AbstractEngine
  */
-public interface Object3dInitializer {
-
-    public Object3dImpl initObject(Renderable n);
-
-    public String getName();
-
-    public JPanel getPanel();
-
-    @Override
-    public String toString();
+public interface NodeModeler extends Modeler {
 }

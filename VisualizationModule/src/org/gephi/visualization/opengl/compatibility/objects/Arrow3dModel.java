@@ -27,7 +27,7 @@ import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.Object3dImpl;
+import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vec3f;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
@@ -36,21 +36,20 @@ import org.gephi.visualization.opengl.octree.Octant;
  *
  * @author Mathieu Bastian
  */
-public class Arrow3dObject extends Object3dImpl<NodeData> {
+public class Arrow3dModel extends ModelImpl<NodeData> {
 
     private static float ARROW_WIDTH = 1f;
     private static float ARROW_HEIGHT = 1.1f;
     private EdgeData edge;
     private float[] cameraLocation;
 
-
-    private Arrow3dObject() {
+    private Arrow3dModel() {
         super();
         cameraLocation = VizController.getInstance().getDrawable().getCameraLocation();
         octants = new Octant[1];
     }
 
-    public Arrow3dObject(EdgeData edge) {
+    public Arrow3dModel(EdgeData edge) {
         this();
         this.edge = edge;
     }
@@ -62,8 +61,8 @@ public class Arrow3dObject extends Object3dImpl<NodeData> {
 
         //Edge size
         float weight = edge.getEdge().getWeight();
-        float arrowWidth = ARROW_WIDTH*weight*2f;
-        float arrowHeight = ARROW_HEIGHT*weight*2f;
+        float arrowWidth = ARROW_WIDTH * weight * 2f;
+        float arrowHeight = ARROW_HEIGHT * weight * 2f;
 
         //Edge vector
         Vec3f edgeVector = new Vec3f(nodeTo.x() - nodeFrom.x(), nodeTo.y() - nodeFrom.y(), nodeTo.z() - nodeFrom.z());
@@ -71,7 +70,7 @@ public class Arrow3dObject extends Object3dImpl<NodeData> {
 
         //Get collision distance between nodeTo and arrow point
         double angle = Math.atan2(nodeTo.y() - nodeFrom.y(), nodeTo.x() - nodeFrom.x());
-        float collisionDistance = ((Object3dImpl) nodeTo.getObject3d()).getCollisionDistance(angle);
+        float collisionDistance = ((ModelImpl) nodeTo.getObject3d()).getCollisionDistance(angle);
 
         float x2 = nodeTo.x();
         float y2 = nodeTo.y();
@@ -83,9 +82,9 @@ public class Arrow3dObject extends Object3dImpl<NodeData> {
         float targetZ = z2 - edgeVector.z() * collisionDistance;
 
         //Base of the arrow
-        float baseX = targetX - edgeVector.x() * arrowHeight*2f;
-        float baseY = targetY - edgeVector.y() * arrowHeight*2f;
-        float baseZ = targetZ - edgeVector.z() * arrowHeight*2f;
+        float baseX = targetX - edgeVector.x() * arrowHeight * 2f;
+        float baseY = targetY - edgeVector.y() * arrowHeight * 2f;
+        float baseZ = targetZ - edgeVector.z() * arrowHeight * 2f;
 
         //Camera vector
         Vec3f cameraVector = new Vec3f(targetX - cameraLocation[0], targetY - cameraLocation[1], targetZ - cameraLocation[2]);
@@ -109,7 +108,7 @@ public class Arrow3dObject extends Object3dImpl<NodeData> {
 
     @Override
     public boolean isInOctreeLeaf(Octant leaf) {
-        return ((Object3dImpl) obj.getObject3d()).getOctants()[0] == leaf;
+        return ((ModelImpl) obj.getObject3d()).getOctants()[0] == leaf;
     }
 
     @Override
@@ -137,16 +136,18 @@ public class Arrow3dObject extends Object3dImpl<NodeData> {
 
     @Override
     public Octant[] getOctants() {
-        Octant[] oc = ((Object3dImpl) obj.getObject3d()).getOctants();
-        if(oc[0]==null)   //The edge has been destroyed
+        Octant[] oc = ((ModelImpl) obj.getObject3d()).getOctants();
+        if (oc[0] == null) //The edge has been destroyed
+        {
             oc = this.octants;
+        }
         return oc;
     }
 
     @Override
     public boolean isCacheMatching(int cacheMarker) {
         if (edge.getObject3d() != null) {
-            return ((Object3dImpl) edge.getObject3d()).isCacheMatching(cacheMarker);
+            return ((ModelImpl) edge.getObject3d()).isCacheMatching(cacheMarker);
         }
         return false;
     }

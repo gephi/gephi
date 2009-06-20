@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.visualization.opengl.compatibility.initializer;
+package org.gephi.visualization.opengl.compatibility.modeler;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
@@ -27,20 +27,20 @@ import javax.swing.JPanel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
-import org.gephi.visualization.api.initializer.CompatibilityNodeInitializer;
-import org.gephi.visualization.initializer.NodeSphereInitializer;
+import org.gephi.visualization.api.initializer.CompatibilityNodeModeler;
+import org.gephi.visualization.modeler.NodeSphereModeler;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.api.Object3dImpl;
+import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
-import org.gephi.visualization.opengl.compatibility.objects.NodeSphereObject;
+import org.gephi.visualization.opengl.compatibility.objects.NodeSphereModel;
 
 /**
  * Default initializer for the nodes. The class draw sphere objects and manage a LOD system.
  *
  * @author Mathieu Bastian
- * @see NodeSphereObject
+ * @see NodeSphereModel
  */
-public class CompatibilityNodeSphereInitializer extends NodeSphereInitializer implements CompatibilityNodeInitializer {
+public class CompatibilityNodeSphereModeler extends NodeSphereModeler implements CompatibilityNodeModeler {
 
     public int SHAPE_DIAMOND;
     public int SHAPE_SPHERE16;
@@ -48,13 +48,13 @@ public class CompatibilityNodeSphereInitializer extends NodeSphereInitializer im
     public int SHAPE_BILLBOARD;
     private CompatibilityEngine engine;
 
-    public CompatibilityNodeSphereInitializer(AbstractEngine engine) {
+    public CompatibilityNodeSphereModeler(AbstractEngine engine) {
         this.engine = (CompatibilityEngine) engine;
     }
 
     @Override
-    public Object3dImpl initObject(Renderable n) {
-        NodeSphereObject obj = new NodeSphereObject();
+    public ModelImpl initModel(Renderable n) {
+        NodeSphereModel obj = new NodeSphereModel();
         obj.setObj((NodeData) n);
         obj.setSelected(false);
         obj.setDragDistanceFromMouse(new float[2]);
@@ -65,8 +65,8 @@ public class CompatibilityNodeSphereInitializer extends NodeSphereInitializer im
     }
 
     @Override
-    public void chooseModel(Object3dImpl object3d) {
-        NodeSphereObject obj = (NodeSphereObject) object3d;
+    public void chooseModel(ModelImpl object3d) {
+        NodeSphereModel obj = (NodeSphereModel) object3d;
 
         float distance = engine.cameraDistance(object3d) / object3d.getObj().getRadius();
         if (distance > 600) {

@@ -22,12 +22,10 @@ package org.gephi.visualization.opengl.compatibility.objects;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
-import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeData;
-import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.Object3dImpl;
+import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
 
@@ -35,16 +33,16 @@ import org.gephi.visualization.opengl.octree.Octant;
  *
  * @author Mathieu Bastian
  */
-public class Edge3dObject extends Object3dImpl<EdgeData> {
+public class Edge3dModel extends ModelImpl<EdgeData> {
 
     private static float CARDINAL_DIV = 1f;  //Set the size of edges according to cardinal
 
     //An edge is set in both source node and target node octant. Hence edges are not drawn when none of
     //these octants are visible.
     private float[] cameraLocation;
-    private Object3dImpl arrow;
+    private ModelImpl arrow;
 
-    public Edge3dObject() {
+    public Edge3dModel() {
         cameraLocation = VizController.getInstance().getDrawable().getCameraLocation();
         octants = new Octant[2];
     }
@@ -110,12 +108,12 @@ public class Edge3dObject extends Object3dImpl<EdgeData> {
         NodeData nodeTo = obj.getTarget();
 
         if (octants[0] == leaf) {
-            if (octants[0] != ((Object3dImpl) nodeFrom.getObject3d()).getOctants()[0]) //0 = nodeFrom
+            if (octants[0] != ((ModelImpl) nodeFrom.getObject3d()).getOctants()[0]) //0 = nodeFrom
             {
                 return false;
             }
         } else {
-            if (octants[1] != ((Object3dImpl) nodeTo.getObject3d()).getOctants()[0]) //1 = nodeTo
+            if (octants[1] != ((ModelImpl) nodeTo.getObject3d()).getOctants()[0]) //1 = nodeTo
             {
                 return false;
             }
@@ -260,7 +258,7 @@ public class Edge3dObject extends Object3dImpl<EdgeData> {
 
     @Override
     public void setOctant(Octant octant) {
-        if (((Object3dImpl) obj.getSource().getObject3d()).getOctants()[0] == octant) {
+        if (((ModelImpl) obj.getSource().getObject3d()).getOctants()[0] == octant) {
             octants[0] = octant;
         } else {
             octants[1] = octant;
@@ -283,14 +281,14 @@ public class Edge3dObject extends Object3dImpl<EdgeData> {
 
     @Override
     public boolean isValid() {
-        return octants[0]!=null || octants[1]!=null;
+        return octants[0] != null || octants[1] != null;
     }
 
-    public Object3dImpl getArrow() {
+    public ModelImpl getArrow() {
         return arrow;
     }
 
-    public void setArrow(Object3dImpl arrow) {
+    public void setArrow(ModelImpl arrow) {
         this.arrow = arrow;
     }
 }

@@ -18,21 +18,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.gephi.visualization.api.initializer;
 
-package org.gephi.graph.api;
+import javax.media.opengl.GL;
+import javax.media.opengl.glu.GLU;
+import javax.media.opengl.glu.GLUquadric;
+import org.gephi.graph.api.Renderable;
+import org.gephi.visualization.api.ModelImpl;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Object3d<ObjectType extends Renderable> {
-    public boolean isSelected();
-    public void setCacheMarker(int cacheMarker);
-    public boolean isCacheMatching(int cacheMarker);
-    public ObjectType getObj();
-    public boolean isValid();
-    public void updatePositionFlag();
-    public float getViewportX();
-    public float getViewportY();
-    public float getCameraDistance();
+public interface CompatibilityModeler<O extends Renderable> extends Modeler {
+
+    public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr);
+
+    public void chooseModel(ModelImpl<O> obj);
+
+    public void initFromOpenGLThread();
 }

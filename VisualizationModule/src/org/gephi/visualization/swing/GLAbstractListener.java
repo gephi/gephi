@@ -128,8 +128,9 @@ public abstract class GLAbstractListener implements GLEventListener {
         gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
 
         //Mesh view
-        if(vizConfig.isWireFrame())
+        if (vizConfig.isWireFrame()) {
             gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
+        }
 
         gl.glEnable(GL.GL_TEXTURE_2D);
         gl.glEnable(GL.GL_NORMALIZE);
@@ -186,10 +187,12 @@ public abstract class GLAbstractListener implements GLEventListener {
                 return;
             }
 
-            if(height==0)
-                height=1;
-            if(width==0)
-                width=1;
+            if (height == 0) {
+                height = 1;
+            }
+            if (width == 0) {
+                width = 1;
+            }
 
             int viewportW = 0, viewportH = 0, viewportX = width, viewportY = height;
 

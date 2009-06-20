@@ -20,20 +20,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.api.initializer;
 
-
-import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
-import org.gephi.visualization.api.Object3dImpl;
+import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
-
 
 /**
  * Specialized initilizer interface adapted to the {@link CompatibilityEngine} processes.
  *
  * @author Mathieu Bastian
  */
-public interface CompatibilityNodeInitializer extends CompatibilityObject3dInitializer<NodeData>, NodeInitializer
-{
+public interface CompatibilityNodeModeler extends CompatibilityModeler<NodeData>, NodeModeler {
+
     @Override
-	public void chooseModel(Object3dImpl<NodeData> obj);
+    public void chooseModel(ModelImpl<NodeData> obj);
 }

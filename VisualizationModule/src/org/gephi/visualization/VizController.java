@@ -26,8 +26,8 @@ import org.gephi.visualization.api.VizEventManager;
 import org.gephi.visualization.config.VizCommander;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.events.StandardVizEventManager;
-import org.gephi.visualization.api.objects.Object3dClassLibrary;
-import org.gephi.visualization.objects.StandardObject3dClassLibrary;
+import org.gephi.visualization.api.objects.ModelClassLibrary;
+import org.gephi.visualization.objects.StandardModelClassLibrary;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.opengl.compatibility.CompatibilityScheduler;
@@ -64,7 +64,7 @@ public class VizController {
     private VizConfig vizConfig;
     private GraphIO graphIO;
     private VizEventManager vizEventManager;
-    private Object3dClassLibrary object3dClassLibrary;
+    private ModelClassLibrary modelClassLibrary;
     private GraphLimits limits;
     private DataBridge dataBridge;
     private EventBridge eventBridge;
@@ -78,7 +78,7 @@ public class VizController {
         engine = new CompatibilityEngine();
         vizEventManager = new StandardVizEventManager();
         scheduler = new CompatibilityScheduler();
-        object3dClassLibrary = new StandardObject3dClassLibrary();
+        modelClassLibrary = new StandardModelClassLibrary();
         limits = new GraphLimits();
         dataBridge = new DHNSDataBridge();
         eventBridge = new DHNSEventBridge();
@@ -118,8 +118,8 @@ public class VizController {
         return vizConfig;
     }
 
-    public Object3dClassLibrary getObject3dClassLibrary() {
-        return object3dClassLibrary;
+    public ModelClassLibrary getModelClassLibrary() {
+        return modelClassLibrary;
     }
 
     public VizEventManager getVizEventManager() {

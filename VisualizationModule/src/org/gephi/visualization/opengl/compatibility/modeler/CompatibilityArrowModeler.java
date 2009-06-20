@@ -18,41 +18,54 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.visualization.opengl.compatibility.initializer;
+package org.gephi.visualization.opengl.compatibility.modeler;
 
-import org.gephi.visualization.api.initializer.CompatibilityObject3dInitializer;
+import org.gephi.visualization.api.initializer.CompatibilityModeler;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JPanel;
 import org.gephi.graph.api.EdgeData;
+import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
-import org.gephi.visualization.api.Object3dImpl;
-import org.gephi.visualization.opengl.compatibility.objects.Edge3dObject;
+import org.gephi.visualization.opengl.AbstractEngine;
+import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
+import org.gephi.visualization.opengl.compatibility.objects.Arrow3dModel;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class CompatibilityEdgeInitializer implements CompatibilityObject3dInitializer<EdgeData> {
+public class CompatibilityArrowModeler implements CompatibilityModeler<NodeData> {
 
-    @Override
-    public Object3dImpl initObject(Renderable n) {
-        EdgeData e = (EdgeData) n;
+    private CompatibilityEngine engine;
 
-        Edge3dObject edge = new Edge3dObject();
-        edge.setObj(e);
-        e.setObject3d(edge);
-
-        return edge;
+    public CompatibilityArrowModeler(AbstractEngine engine) {
+        this.engine = (CompatibilityEngine) engine;
     }
 
-    public void chooseModel(Object3dImpl obj) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    @Override
+    public ModelImpl initModel(Renderable n) {
+        EdgeData e = (EdgeData) n;
+
+        Arrow3dModel arrow = new Arrow3dModel(e);
+        arrow.setObj(e.getTarget());
+
+        return arrow;
+    }
+
+    public void chooseModel(ModelImpl obj) {
+        float distance = engine.cameraDistance(obj) + obj.getObj().getRadius();	//Radius is added to cancel the cameraDistance diff
+        if (distance < 100) {
+            obj.mark = false;
+        } else {
+            obj.mark = true;
+        }
     }
 
     public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return ptr;
     }
 
     public void initFromOpenGLThread() {

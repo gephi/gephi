@@ -18,54 +18,63 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.visualization.opengl.compatibility.initializer;
+package org.gephi.visualization.opengl.compatibility.modeler;
 
-import org.gephi.visualization.api.initializer.CompatibilityObject3dInitializer;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JPanel;
-import org.gephi.graph.api.EdgeData;
+
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
-import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.api.Object3dImpl;
-import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
-import org.gephi.visualization.opengl.compatibility.objects.Arrow3dObject;
+import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.api.initializer.CompatibilityModeler;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class CompatibilityArrowInitializer implements CompatibilityObject3dInitializer<NodeData> {
+public class CompatibilityPotatoModeler implements CompatibilityModeler<NodeData> {
 
-    private CompatibilityEngine engine;
+    public int DISK_LOW;
+    public int DISK_HIGH;
 
-    public CompatibilityArrowInitializer(AbstractEngine engine) {
-        this.engine = (CompatibilityEngine) engine;
+    public ModelImpl initModel(Renderable n) {
+        /*Potato potato = (Potato)n;
+
+        Potato3dObject obj = new Potato3dObject(potato);
+        obj.modelType = DISK_HIGH;
+        obj.setObj(potato);
+        potato.setObject3d(obj);*/
+
+        return null;
     }
 
-    @Override
-    public Object3dImpl initObject(Renderable n) {
-        EdgeData e = (EdgeData) n;
-
-        Arrow3dObject arrow = new Arrow3dObject(e);
-        arrow.setObj(e.getTarget());
-
-        return arrow;
-    }
-
-    public void chooseModel(Object3dImpl obj) {
-        float distance = engine.cameraDistance(obj) + obj.getObj().getRadius();	//Radius is added to cancel the cameraDistance diff
-        if (distance < 100) {
-            obj.mark = false;
-        } else {
-            obj.mark = true;
-        }
+    public void chooseModel(ModelImpl<NodeData> obj) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr) {
-        return ptr;
+
+        //Low res disk
+        DISK_LOW = ptr + 1;
+        gl.glNewList(DISK_LOW, GL.GL_COMPILE);
+        gl.glDisable(GL.GL_LIGHTING);
+        glu.gluDisk(quadric, 0.0, 1.0, 8, 1);
+        gl.glEnable(GL.GL_LIGHTING);
+        gl.glEndList();
+        //End
+
+        //High res disk
+        DISK_HIGH = DISK_LOW + 1;
+        gl.glNewList(DISK_HIGH, GL.GL_COMPILE);
+        gl.glDisable(GL.GL_LIGHTING);
+        glu.gluDisk(quadric, 0.0, 1.0, 32, 2);
+        gl.glEnable(GL.GL_LIGHTING);
+        gl.glEndList();
+        //End
+
+        return DISK_HIGH;
     }
 
     public void initFromOpenGLThread() {

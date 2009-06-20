@@ -25,7 +25,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.LayoutData;
 import org.gephi.graph.api.NodeData;
-import org.gephi.graph.api.Object3d;
+import org.gephi.graph.api.Model;
 
 /**
  * Implementation of the edge data interface.
@@ -42,7 +42,7 @@ public class EdgeDataImpl implements EdgeData {
     protected float b = 0f;
     protected float alpha = 1f;
     protected float cardinal = 1f;
-    private Object3d obj;
+    private Model model;
     protected Attributes attributes;
 
     public EdgeDataImpl(Edge edge) {
@@ -149,11 +149,11 @@ public class EdgeDataImpl implements EdgeData {
         this.alpha = alpha;
     }
 
-    public Object3d getObject3d() {
-        return obj;
+    public Model getObject3d() {
+        return model;
     }
 
-    public void setObject3d(Object3d obj) {
-        this.obj = obj;
+    public void setObject3d(Model obj) {
+        this.model = obj;
     }
 }

@@ -18,23 +18,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.gephi.visualization.modeler;
 
-package org.gephi.visualization.api.initializer;
-
-
-import javax.media.opengl.GL;
-import javax.media.opengl.glu.GLU;
-import javax.media.opengl.glu.GLUquadric;
-import org.gephi.graph.api.Renderable;
-import org.gephi.visualization.api.Object3dImpl;
+import org.gephi.visualization.api.initializer.NodeModeler;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface CompatibilityObject3dInitializer<O extends Renderable> extends Object3dInitializer {
+public abstract class NodeSphereModeler implements NodeModeler {
 
-    public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr);
-    public void chooseModel(Object3dImpl<O> obj);
-	public void initFromOpenGLThread();
+    @Override
+    public String getName() {
+        return "nodeModeler_Sphere_name";
+    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

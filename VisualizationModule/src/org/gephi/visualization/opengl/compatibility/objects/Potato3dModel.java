@@ -24,10 +24,9 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
-import org.gephi.graph.api.Node;
 
 import org.gephi.graph.api.NodeData;
-import org.gephi.visualization.api.Object3dImpl;
+import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
 
@@ -35,14 +34,14 @@ import org.gephi.visualization.opengl.octree.Octant;
  *
  * @author Mathieu Bastian
  */
-public class Potato3dObject extends Object3dImpl<NodeData> {
+public class Potato3dModel extends ModelImpl<NodeData> {
 
     public int modelType;
     private ParamAVLTree<Octant> octantsTree;
     protected boolean underMouse = false;
     //protected PotatoDisplay display = null;
 
-    public Potato3dObject() {
+    public Potato3dModel() {
 
         octantsTree = new ParamAVLTree<Octant>(new AVLItemAccessor<Octant>() {
 
@@ -51,7 +50,7 @@ public class Potato3dObject extends Object3dImpl<NodeData> {
             }
         });
 
-        //potato.updatePotato();
+    //potato.updatePotato();
     }
 
     @Override
@@ -61,12 +60,12 @@ public class Potato3dObject extends Object3dImpl<NodeData> {
 
     @Override
     public boolean isInOctreeLeaf(Octant leaf) {
-       /* for (Node node : obj.getContent()) {
-            Object3dImpl objImpl = (Object3dImpl) node.getObject3d();
-            Octant o = objImpl.getOctants()[0];
-            if (o == leaf) {
-                return true;
-            }
+        /* for (Node node : obj.getContent()) {
+        ModelImpl objImpl = (ModelImpl) node.getObject3d();
+        Octant o = objImpl.getOctants()[0];
+        if (o == leaf) {
+        return true;
+        }
         }*/
         return false;
     }
@@ -74,59 +73,59 @@ public class Potato3dObject extends Object3dImpl<NodeData> {
     @Override
     public void display(GL gl, GLU glu) {
         /*if (mark) {
-            this.display = obj.getDisplay();
+        this.display = obj.getDisplay();
         }
 
         if (display != null) {
-            //Disks
-            if (mark) {
-                if (selected) {
-                    gl.glColor3f(0.9f, 0.9f, 0.9f);
-                } else {
-                    gl.glColor3f(obj.r(), obj.g(), obj.b());
-                }
-                for (float[] disk : display.getDisks()) {
-                    gl.glPushMatrix();
-                    float size = disk[2];
-                    gl.glTranslatef(disk[0], disk[1], obj.z());
-                    gl.glScalef(size, size, size);
-                    gl.glCallList(modelType);
-                    gl.glPopMatrix();
-                }
-            }
+        //Disks
+        if (mark) {
+        if (selected) {
+        gl.glColor3f(0.9f, 0.9f, 0.9f);
+        } else {
+        gl.glColor3f(obj.r(), obj.g(), obj.b());
+        }
+        for (float[] disk : display.getDisks()) {
+        gl.glPushMatrix();
+        float size = disk[2];
+        gl.glTranslatef(disk[0], disk[1], obj.z());
+        gl.glScalef(size, size, size);
+        gl.glCallList(modelType);
+        gl.glPopMatrix();
+        }
+        }
 
-            //Triangles
-            if (!mark) {
-                if (selected) {
-                    gl.glColor3f(0.9f, 0.9f, 0.9f);
-                } else {
-                    gl.glColor3f(obj.r(), obj.g(), obj.b());
-                }
-                for (float[] triangle : display.getTriangles()) {
-                    gl.glVertex3f(triangle[0], triangle[1], obj.z());
-                    gl.glVertex3f(triangle[2], triangle[3], obj.z());
-                    gl.glVertex3f(triangle[4], triangle[5], obj.z());
-                }
-            }
+        //Triangles
+        if (!mark) {
+        if (selected) {
+        gl.glColor3f(0.9f, 0.9f, 0.9f);
+        } else {
+        gl.glColor3f(obj.r(), obj.g(), obj.b());
+        }
+        for (float[] triangle : display.getTriangles()) {
+        gl.glVertex3f(triangle[0], triangle[1], obj.z());
+        gl.glVertex3f(triangle[2], triangle[3], obj.z());
+        gl.glVertex3f(triangle[4], triangle[5], obj.z());
+        }
+        }
         }*/
     }
 
     @Override
     public boolean selectionTest(Vecf distanceFromMouse, float selectionSize) {
         /*if (underMouse) {
-            for (Node n : obj.getContent()) {
-                if (n.getObject3d().isSelected()) {
-                    return false;
-                }
-            }
+        for (Node n : obj.getContent()) {
+        if (n.getObject3d().isSelected()) {
+        return false;
+        }
+        }
 
-            for (Potato p : obj.getInnerPotatoes()) {
-                Potato3dObject po = (Potato3dObject) p.getObject3d();
-                if (po.underMouse) {
-                    return false;
-                }
-            }
-            return true;
+        for (Potato p : obj.getInnerPotatoes()) {
+        Potato3dModel po = (Potato3dModel) p.getObject3d();
+        if (po.underMouse) {
+        return false;
+        }
+        }
+        return true;
         }*/
         return false;
     }
@@ -160,11 +159,11 @@ public class Potato3dObject extends Object3dImpl<NodeData> {
 
         //Compute
        /* for (Node node : obj.getContent()) {
-            Object3dImpl objImpl = (Object3dImpl) node.getObject3d();
-            Octant o = objImpl.getOctants()[0];
-            octantsTree.add(o);
+        ModelImpl objImpl = (ModelImpl) node.getObject3d();
+        Octant o = objImpl.getOctants()[0];
+        octantsTree.add(o);
         }
-        */
+         */
         octants = octantsTree.toArray(new Octant[0]);
     }
 
@@ -173,8 +172,8 @@ public class Potato3dObject extends Object3dImpl<NodeData> {
     }
 
     public boolean isParentUnderMouse() {
-       /* if (obj.getParent() != null && ((Potato3dObject) obj.getParent().getObject3d()).underMouse) {
-            return true;
+        /* if (obj.getParent() != null && ((Potato3dModel) obj.getParent().getObject3d()).underMouse) {
+        return true;
         }*/
         return false;
     }

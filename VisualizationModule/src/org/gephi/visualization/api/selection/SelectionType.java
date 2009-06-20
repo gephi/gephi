@@ -20,8 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.api.selection;
 
-import org.gephi.visualization.selection.*;
-
 /**
  *
  * @author Mathieu Bastian
