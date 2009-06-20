@@ -18,21 +18,26 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.io.generator;
 
-import org.gephi.io.container.ContainerLoader;
-import org.gephi.ui.generator.GeneratorUI;
-import org.gephi.utils.longtask.LongTask;
+package org.gephi.utils.longtask;
+
+import org.gephi.utils.progress.ProgressTicket;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Generator extends LongTask {
+public interface LongTask {
 
-    public void generate(ContainerLoader container);
+    /**
+     * Cancel the task. Returns <code>true</code> if the task has been sucessfully cancelled, <code>false</code> otherwise.
+     * @return  <code>true</code> if the task has been sucessfully cancelled, <code>false</code> otherwise
+     */
+    public boolean cancel();
 
-    public String getName();
-
-    public GeneratorUI getUI();
+    /**
+     * Set the progress ticket for the long task. Can't be null.
+     * @param progressTicket the progress ticket for this task
+     */
+    public void setProgressTicket(ProgressTicket progressTicket);
 }

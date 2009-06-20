@@ -25,7 +25,6 @@ import org.gephi.graph.api.ClusteredMixedGraph;
 import org.gephi.graph.api.ClusteredUndirectedGraph;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.graph.dhns.core.Dhns;
@@ -47,7 +46,9 @@ public class DhnsGraphController implements GraphController {
     protected Dhns dhns;
 
     public DhnsGraphController() {
+        iDGen = new IDGen();
         dhns = new Dhns(this);
+        factory = new GraphFactoryImpl(dhns);
     }
 
     public Dhns newDhns() {

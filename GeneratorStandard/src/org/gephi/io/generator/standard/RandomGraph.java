@@ -27,6 +27,7 @@ import org.gephi.io.container.EdgeDraft;
 import org.gephi.io.container.NodeDraft;
 import org.gephi.io.generator.Generator;
 import org.gephi.ui.generator.GeneratorUI;
+import org.gephi.utils.progress.ProgressTicket;
 
 /**
  *
@@ -36,22 +37,27 @@ public class RandomGraph implements Generator {
 
     protected int numberOfNodes = 50;
     protected double wiringProbability = 0.05;
+    protected ProgressTicket progress;
+    protected boolean cancel = false;
 
     public void generate(ContainerLoader container) {
 
+        progress.start(numberOfNodes * 2 - 1);
+        int progressUnit = 0;
         Random random = new Random();
 
         NodeDraft[] nodeArray = new NodeDraft[numberOfNodes];
-        for (int i = 0; i < numberOfNodes; i++) {
+        for (int i = 0; i < numberOfNodes && !cancel; i++) {
             NodeDraft nodeDraft = container.factory().newNodeDraft();
             nodeDraft.setId("n" + i);
             container.addNode(nodeDraft);
             nodeArray[i] = nodeDraft;
+            progress.progress(++progressUnit);
         }
 
-        for (int i = 0; i < numberOfNodes - 1; i++) {
+        for (int i = 0; i < numberOfNodes - 1 && !cancel; i++) {
             NodeDraft node1 = nodeArray[i];
-            for (int j = i + 1; j < numberOfNodes; j++) {
+            for (int j = i + 1; j < numberOfNodes && !cancel; j++) {
                 NodeDraft node2 = nodeArray[j];
                 if (random.nextDouble() < wiringProbability) {
                     EdgeDraft edgeDraft = container.factory().newEdgeDraft();
@@ -60,6 +66,7 @@ public class RandomGraph implements Generator {
                     container.addEdge(edgeDraft);
                 }
             }
+            progress.progress(++progressUnit);
         }
     }
 
@@ -91,5 +98,14 @@ public class RandomGraph implements Generator {
 
     public double getWiringProbability() {
         return wiringProbability;
+    }
+
+    public boolean cancel() {
+        cancel = true;
+        return true;
+    }
+
+    public void setProgressTicket(ProgressTicket progressTicket) {
+        this.progress = progressTicket;
     }
 }

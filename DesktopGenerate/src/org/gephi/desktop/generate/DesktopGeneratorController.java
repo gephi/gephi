@@ -28,6 +28,7 @@ import org.gephi.io.generator.Generator;
 import org.gephi.io.generator.GeneratorController;
 import org.gephi.io.processor.Processor;
 import org.gephi.ui.generator.GeneratorUI;
+import org.gephi.utils.longtask.LongTaskExecutor;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -39,15 +40,10 @@ import org.openide.util.Lookup;
  */
 public class DesktopGeneratorController implements GeneratorController {
 
-    private ExecutorService executor;
+    private LongTaskExecutor executor;
 
     public DesktopGeneratorController() {
-        executor = Executors.newSingleThreadExecutor(new ThreadFactory() {
-
-            public Thread newThread(Runnable r) {
-                return new Thread(r, "Generator thread");
-            }
-        });
+        executor = new LongTaskExecutor(true, "Generator");
     }
 
     public Generator[] getGenerators() {
@@ -70,13 +66,14 @@ public class DesktopGeneratorController implements GeneratorController {
 
         final Container container = Lookup.getDefault().lookup(Container.class);
         container.setSource("" + generator.getName());
+        String taskname = "Generate " + generator.getName();
 
-        executor.execute(new Runnable() {
+        executor.execute(generator, new Runnable() {
 
             public void run() {
                 generator.generate(container.getLoader());
                 Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
             }
-        });
+        }, taskname);
     }
 }
