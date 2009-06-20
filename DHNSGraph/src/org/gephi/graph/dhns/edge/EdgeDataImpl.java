@@ -149,11 +149,11 @@ public class EdgeDataImpl implements EdgeData {
         this.alpha = alpha;
     }
 
-    public Model getObject3d() {
+    public Model getModel() {
         return model;
     }
 
-    public void setObject3d(Model obj) {
+    public void setModel(Model obj) {
         this.model = obj;
     }
 }

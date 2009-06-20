@@ -70,7 +70,7 @@ public class Arrow3dModel extends ModelImpl<NodeData> {
 
         //Get collision distance between nodeTo and arrow point
         double angle = Math.atan2(nodeTo.y() - nodeFrom.y(), nodeTo.x() - nodeFrom.x());
-        float collisionDistance = ((ModelImpl) nodeTo.getObject3d()).getCollisionDistance(angle);
+        float collisionDistance = ((ModelImpl) nodeTo.getModel()).getCollisionDistance(angle);
 
         float x2 = nodeTo.x();
         float y2 = nodeTo.y();
@@ -108,7 +108,7 @@ public class Arrow3dModel extends ModelImpl<NodeData> {
 
     @Override
     public boolean isInOctreeLeaf(Octant leaf) {
-        return ((ModelImpl) obj.getObject3d()).getOctants()[0] == leaf;
+        return ((ModelImpl) obj.getModel()).getOctants()[0] == leaf;
     }
 
     @Override
@@ -136,7 +136,7 @@ public class Arrow3dModel extends ModelImpl<NodeData> {
 
     @Override
     public Octant[] getOctants() {
-        Octant[] oc = ((ModelImpl) obj.getObject3d()).getOctants();
+        Octant[] oc = ((ModelImpl) obj.getModel()).getOctants();
         if (oc[0] == null) //The edge has been destroyed
         {
             oc = this.octants;
@@ -146,8 +146,8 @@ public class Arrow3dModel extends ModelImpl<NodeData> {
 
     @Override
     public boolean isCacheMatching(int cacheMarker) {
-        if (edge.getObject3d() != null) {
-            return ((ModelImpl) edge.getObject3d()).isCacheMatching(cacheMarker);
+        if (edge.getModel() != null) {
+            return ((ModelImpl) edge.getModel()).isCacheMatching(cacheMarker);
         }
         return false;
     }

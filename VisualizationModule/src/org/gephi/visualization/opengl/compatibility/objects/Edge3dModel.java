@@ -22,104 +22,19 @@ package org.gephi.visualization.opengl.compatibility.objects;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
-import org.gephi.graph.api.EdgeData;
-import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.ModelImpl;
-import org.gephi.visualization.gleem.linalg.Vecf;
-import org.gephi.visualization.opengl.octree.Octant;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class Edge3dModel extends ModelImpl<EdgeData> {
+public class Edge3dModel extends Edge2dModel {
 
-    private static float CARDINAL_DIV = 1f;  //Set the size of edges according to cardinal
-
-    //An edge is set in both source node and target node octant. Hence edges are not drawn when none of
-    //these octants are visible.
     private float[] cameraLocation;
-    private ModelImpl arrow;
 
     public Edge3dModel() {
+        super();
         cameraLocation = VizController.getInstance().getDrawable().getCameraLocation();
-        octants = new Octant[2];
-    }
-
-    @Override
-    public int[] octreePosition(float centerX, float centerY, float centerZ, float size) {
-        NodeData nodeFrom = obj.getSource();
-        NodeData nodeTo = obj.getTarget();
-
-        int index1 = -1, index2 = -1;
-
-        size /= 2;
-
-        //True if the point is in the big cube.
-        if (!(Math.abs(nodeFrom.x() - centerX) > size || Math.abs(nodeFrom.y() - centerY) > size || Math.abs(nodeFrom.z() - centerZ) > size)) {
-            index1 = 0;
-
-            //Point1
-            if (nodeFrom.y() < centerY) {
-                index1 += 4;
-            }
-            if (nodeFrom.z() > centerZ) {
-                index1 += 2;
-            }
-            if (nodeFrom.x() < centerX) {
-                index1 += 1;
-            }
-        }
-
-        if (!(Math.abs(nodeTo.x() - centerX) > size || Math.abs(nodeTo.y() - centerY) > size || Math.abs(nodeTo.z() - centerZ) > size)) {
-            index2 = 0;
-
-            //Point2
-            if (nodeTo.y() < centerY) {
-                index2 += 4;
-            }
-            if (nodeTo.z() > centerZ) {
-                index2 += 2;
-            }
-            if (nodeTo.x() < centerX) {
-                index2 += 1;
-            }
-        }
-
-        if (index1 >= 0 && index2 >= 0) {
-            if (index1 != index2) {
-                return new int[]{index1, index2};
-            } else {
-                return new int[]{index1};
-            }
-        } else if (index1 >= 0) {
-            return new int[]{index1};
-        } else if (index2 >= 0) {
-            return new int[]{index2};
-        } else {
-            return new int[]{};
-        }
-    }
-
-    @Override
-    public boolean isInOctreeLeaf(Octant leaf) {
-        NodeData nodeFrom = obj.getSource();
-        NodeData nodeTo = obj.getTarget();
-
-        if (octants[0] == leaf) {
-            if (octants[0] != ((ModelImpl) nodeFrom.getObject3d()).getOctants()[0]) //0 = nodeFrom
-            {
-                return false;
-            }
-        } else {
-            if (octants[1] != ((ModelImpl) nodeTo.getObject3d()).getOctants()[0]) //1 = nodeTo
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     @Override
@@ -187,108 +102,5 @@ public class Edge3dModel extends ModelImpl<EdgeData> {
         gl.glVertex3f(x2 + x2Thick, y2 + y2Thick, z2 + z2Thick);
         gl.glVertex3f(x1 + x1Thick, y1 + y1Thick, z1 + z1Thick);
 
-    /*double angle = Math.atan2(y2 - y1, x2 - x1);
-    double sin = 2*Math.sin(angle);
-    double cos = 2*Math.cos(angle);
-    float t2sina1 =(float)( t1 / sin);
-    float t2cosa1 = (float)( t1 / cos);
-    float t2sina2 = (float)( t2 / sin);
-    float t2cosa2 = (float)( t2 / cos);
-
-
-    gl.glVertex3f(x1 + t2sina1, y1 - t2cosa1,z1);
-    gl.glVertex3f(x2 + t2sina2, y2 - t2cosa2,z2);
-    gl.glVertex3f(x2 - t2sina2, y2 + t2cosa2,z2);
-    gl.glVertex3f(x2 - t2sina2, y2 + t2cosa2,z2);
-    gl.glVertex3f(x1 - t2sina1, y1 + t2cosa1,z1);
-    gl.glVertex3f(x1 + t2sina1, y1 - t2cosa1,z1);
-
-
-    /*float x1 = obj.getSource().getX();
-    float x2 = obj.getTarget().getX();
-    float y1 = obj.getSource().getY();
-    float y2 = obj.getTarget().getY();
-    float z1 = 0;
-    float z2 = 0;
-    //        float t=0.1f;
-
-    float distance = (float)Math.sqrt(Math.pow((double)x1 - x2,2d) +
-    Math.pow((double)y1 - y2,2d) +
-    Math.pow((double)z1 - z2,2d));
-    double anglez = Math.atan2(y2 - y1, x2 - x1);
-
-    gl.glPushMatrix();
-
-    gl.glTranslatef(x1+(float)Math.cos(anglez)*distance/2f, y1+(float)Math.sin(anglez)*distance/2f, 1);
-    gl.glRotatef((float)Math.toDegrees(anglez), 0, 0, 1);
-    gl.glScalef(distance/2f, t, 0f);
-
-    gl.glBegin(GL.GL_TRIANGLE_STRIP);
-    gl.glVertex3f(1, 1, 0);
-    gl.glVertex3f(-1, 1,0);
-    gl.glVertex3f(1, -1, 0);
-    gl.glVertex3f(-1,-1, 0);
-    gl.glEnd();
-
-    gl.glPopMatrix();*/
-    }
-
-    @Override
-    public boolean selectionTest(Vecf distanceFromMouse, float selectionSize) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public float getCollisionDistance(double angle) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public boolean isSelected() {
-        return obj.getSource().getObject3d().isSelected() || obj.getTarget().getObject3d().isSelected();
-    }
-
-    @Override
-    public String toSVG() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setOctant(Octant octant) {
-        if (((ModelImpl) obj.getSource().getObject3d()).getOctants()[0] == octant) {
-            octants[0] = octant;
-        } else {
-            octants[1] = octant;
-        }
-    }
-
-    @Override
-    public void resetOctant() {
-        /*if(octants[0]==octant)
-        {
-        octants[0] = null;
-        }
-        if(octants[1]==octant)
-        {
-        octants[1] = null;
-        }*/
-        octants[0] = null;
-        octants[1] = null;
-    }
-
-    @Override
-    public boolean isValid() {
-        return octants[0] != null || octants[1] != null;
-    }
-
-    public ModelImpl getArrow() {
-        return arrow;
-    }
-
-    public void setArrow(ModelImpl arrow) {
-        this.arrow = arrow;
     }
 }

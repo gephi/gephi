@@ -32,7 +32,7 @@ import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.initializer.Modeler;
 import org.gephi.visualization.api.objects.ModelClass;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.opengl.compatibility.objects.Edge3dModel;
+import org.gephi.visualization.opengl.compatibility.objects.Edge2dModel;
 import org.openide.util.Lookup;
 
 
@@ -102,7 +102,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         Modeler nodeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_NODE].getCurrentModeler();
 
         for (Node node : graph.getNodes()) {
-            Model obj = node.getNodeData().getObject3d();
+            Model obj = node.getNodeData().getModel();
             if (obj == null) {
                 //Model is null, ADD
                 obj = nodeInit.initModel(node.getNodeData());
@@ -122,7 +122,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
         for (Edge edge : graph.getEdges()) {
 
-            Model obj = edge.getEdgeData().getObject3d();
+            Model obj = edge.getEdgeData().getModel();
             if (obj == null) {
                 //Model is null, ADD
                 obj = edgeInit.initModel(edge.getEdgeData());
@@ -132,12 +132,12 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                     ModelImpl arrowObj = arrowInit.initModel(edge.getEdgeData());
                     engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);
-                    ((Edge3dModel) obj).setArrow(arrowObj);
+                    ((Edge2dModel) obj).setArrow(arrowObj);
                 }
             } else if (!obj.isValid()) {
                 engine.addObject(AbstractEngine.CLASS_EDGE, (ModelImpl) obj);
                 if (vizConfig.isDirectedEdges()) {
-                    ModelImpl arrowObj = ((Edge3dModel) obj).getArrow();
+                    ModelImpl arrowObj = ((Edge2dModel) obj).getArrow();
                     engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);
                 }
@@ -155,7 +155,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         for (; itr.hasNext();) {
             Potato potato = itr.next();
 
-            Model obj = potato.getObject3d();
+            Model obj = potato.getModel();
             if (obj == null) {
                 //Model is null, ADD
                 obj = potatoInit.initModel(potato);
