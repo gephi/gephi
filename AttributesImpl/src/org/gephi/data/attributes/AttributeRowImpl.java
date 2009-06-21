@@ -71,7 +71,8 @@ public class AttributeRowImpl implements AttributeRow {
     }
 
     public void setValue(AttributeColumn column, Object value) {
-        setValue(new AttributeValueImpl((AttributeColumnImpl) column, value));
+        AttributeValue attValue = attributeClass.getFactory().newValue(column, value);
+        setValue(attValue);
     }
 
     public void setValue(AttributeValue value) {

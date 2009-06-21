@@ -39,6 +39,7 @@ public class AttributeContollerImpl implements AttributeController {
     public AttributeContollerImpl() {
         currentManager = new IndexedAttributeManager();
         factory = new AttributeFactoryImpl(currentManager);
+        currentManager.setFactory(factory);
     }
 
     public Lookup getNodeColumnsLookup() {

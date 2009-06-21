@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.io.processor.standard;
 
 import org.gephi.data.attributes.api.AttributeRow;
@@ -47,7 +46,7 @@ public class DefaultProcessor implements Processor {
         Graph graph = graphController.getDirectedGraph();
         GraphFactory factory = graphController.factory();
 
-        int nodeCount=0;
+        int nodeCount = 0;
         for (NodeDraftGetter node : container.getNodes()) {
             Node n = factory.newNode();
             flushToNode(node, n);
@@ -57,7 +56,7 @@ public class DefaultProcessor implements Processor {
             flushToNodeAfter(node, n, graph);
         }
 
-        int edgeCount=0;
+        int edgeCount = 0;
         for (EdgeDraftGetter edge : container.getEdges()) {
             Node source = edge.getSource().getNode();
             Node target = edge.getTarget().getNode();
@@ -68,7 +67,7 @@ public class DefaultProcessor implements Processor {
             graph.addEdge(e);
         }
 
-        System.out.println("# Nodes loaded: "+nodeCount+"\n# Edges loaded: "+edgeCount);
+        System.out.println("# Nodes loaded: " + nodeCount + "\n# Edges loaded: " + edgeCount);
     }
 
     private void flushToNode(NodeDraftGetter nodeDraft, Node node) {
@@ -86,12 +85,12 @@ public class DefaultProcessor implements Processor {
         if (nodeDraft.getX() != 0) {
             node.getNodeData().setX(nodeDraft.getX());
         } else {
-            node.getNodeData().setX((float)((0.01+Math.random())*1000)-500);
+            node.getNodeData().setX((float) ((0.01 + Math.random()) * 1000) - 500);
         }
         if (nodeDraft.getY() != 0) {
             node.getNodeData().setY(nodeDraft.getY());
         } else {
-            node.getNodeData().setY((float)((0.01+Math.random())*1000)-500);
+            node.getNodeData().setY((float) ((0.01 + Math.random()) * 1000) - 500);
         }
 
         if (nodeDraft.getZ() != 0) {
@@ -112,12 +111,17 @@ public class DefaultProcessor implements Processor {
     }
 
     private void flushToNodeAfter(NodeDraftGetter nodeDraft, Node node, Graph graph) {
-        if(!nodeDraft.isVisible()) {
+        if (!nodeDraft.isVisible()) {
             graph.setVisible(node, false);
         }
     }
 
-    private void flushToEdge(EdgeDraft edgeDraft, Edge edge) {
+    private void flushToEdge(EdgeDraftGetter edgeDraft, Edge edge) {
+        if (edgeDraft.getColor() != null) {
+            edge.getEdgeData().setR(edgeDraft.getColor().getRed() / 255f);
+            edge.getEdgeData().setG(edgeDraft.getColor().getGreen() / 255f);
+            edge.getEdgeData().setB(edgeDraft.getColor().getBlue() / 255f);
+        }
     }
 }
 

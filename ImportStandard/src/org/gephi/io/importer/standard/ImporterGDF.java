@@ -91,7 +91,7 @@ public class ImporterGDF implements TextImporter {
                         if (count == 0) {
                             //Id
                             node.setId(data);
-                        } else if (count < nodeColumns.length) {
+                        } else if (count - 1 < nodeColumns.length) {
                             setNodeData(node, nodeColumns[count - 1], data);
                         }
                     }
@@ -123,7 +123,7 @@ public class ImporterGDF implements TextImporter {
                         } else if (count == 1) {
                             NodeDraft nodeTarget = container.getNode(data);
                             edge.setTarget(nodeTarget);
-                        } else if (count < edgeColumns.length) {
+                        } else if (count-2 < edgeColumns.length ) {
                             setEdgeData(edge, edgeColumns[count - 2], data);
                         }
                     }
@@ -175,8 +175,8 @@ public class ImporterGDF implements TextImporter {
             String columnName;
             AttributeType type = AttributeType.STRING;
             try {
-                typeString = columnString.substring(columnString.lastIndexOf(" ")).toLowerCase();
-                columnName = columnString.substring(0, columnString.lastIndexOf(" ")).toLowerCase();
+                typeString = columnString.substring(columnString.lastIndexOf(" ")).trim().toLowerCase();
+                columnName = columnString.substring(0, columnString.lastIndexOf(" ")).trim().toLowerCase();
             } catch (IndexOutOfBoundsException e) {
                 throw new ImportException(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat2"));
             }
@@ -188,6 +188,8 @@ public class ImporterGDF implements TextImporter {
             if (typeString.equals("varchar")) {
                 type = AttributeType.STRING;
             } else if (typeString.equals("bool")) {
+                type = AttributeType.BOOLEAN;
+            } else if (typeString.equals("boolean")) {
                 type = AttributeType.BOOLEAN;
             } else if (typeString.equals("integer")) {
                 type = AttributeType.INT;
@@ -240,8 +242,8 @@ public class ImporterGDF implements TextImporter {
             String columnName;
             AttributeType type = AttributeType.STRING;
             try {
-                typeString = columnString.substring(columnString.lastIndexOf(" ")).toLowerCase();
-                columnName = columnString.substring(0, columnString.lastIndexOf(" "));
+                typeString = columnString.substring(columnString.lastIndexOf(" ")).trim().toLowerCase();
+                columnName = columnString.substring(0, columnString.lastIndexOf(" ")).trim().toLowerCase();
             } catch (IndexOutOfBoundsException e) {
                 throw new ImportException(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat2"));
             }
@@ -253,6 +255,8 @@ public class ImporterGDF implements TextImporter {
             if (typeString.equals("varchar")) {
                 type = AttributeType.STRING;
             } else if (typeString.equals("bool")) {
+                type = AttributeType.BOOLEAN;
+            } else if (typeString.equals("boolean")) {
                 type = AttributeType.BOOLEAN;
             } else if (typeString.equals("integer")) {
                 type = AttributeType.INT;
@@ -343,12 +347,18 @@ public class ImporterGDF implements TextImporter {
                 throw new ImportException(message);
             }
         } else if (column.getAttributeColumn() != null) {
-            node.addAttributeValue(column.getAttributeColumn(), data);
+            try {
+                node.addAttributeValue(column.getAttributeColumn(), data);
+            } catch(ClassCastException e) {
+                e.printStackTrace();
+                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat4", column.getAttributeColumn().getAttributeType(), column.getAttributeColumn().getTitle(), node);
+                throw new ImportException(message);
+            }
         }
     }
 
     private void setEdgeData(EdgeDraft edge, GDFColumn column, String data) throws Exception {
-        if (column.getNodeColumn() != null) {
+        if (column.getEdgeColumn() != null) {
             try {
                 switch (column.getEdgeColumn()) {
                     case COLOR:
@@ -378,11 +388,17 @@ public class ImporterGDF implements TextImporter {
                         break;
                 }
             } catch (Exception e) {
-                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3", column.getNodeColumn(), data);
+                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3", column.getEdgeColumn(), data);
                 throw new ImportException(message);
             }
         } else if (column.getAttributeColumn() != null) {
-            edge.addAttributeValue(column.getAttributeColumn(), data);
+            try {
+                edge.addAttributeValue(column.getAttributeColumn(), data);
+            } catch(ClassCastException e) {
+                e.printStackTrace();
+                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat4", column.getAttributeColumn().getAttributeType(), column.getAttributeColumn().getTitle(), edge);
+                throw new ImportException(message);
+            }
         }
     }
 
