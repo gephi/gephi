@@ -54,7 +54,7 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
     //Viz
     private Color color;
     private boolean labelVisible;
-    private boolean visible;
+    private boolean visible = true;
     private float labelSize;
 
     //Attributes

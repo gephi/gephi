@@ -56,7 +56,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     private float z;
     private float labelSize;
     private boolean labelVisible;
-    private boolean visible;
+    private boolean visible = true;
     private boolean fixed;
 
     //Attributes
