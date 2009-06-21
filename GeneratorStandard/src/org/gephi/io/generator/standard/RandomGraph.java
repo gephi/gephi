@@ -42,7 +42,11 @@ public class RandomGraph implements Generator {
 
     public void generate(ContainerLoader container) {
 
-        progress.start(numberOfNodes * 2 - 1);
+        int max = numberOfNodes;
+        if(wiringProbability > 0) {
+            max += numberOfNodes -1;
+        }
+        progress.start(max);
         int progressUnit = 0;
         Random random = new Random();
 
@@ -55,18 +59,20 @@ public class RandomGraph implements Generator {
             progress.progress(++progressUnit);
         }
 
-        for (int i = 0; i < numberOfNodes - 1 && !cancel; i++) {
-            NodeDraft node1 = nodeArray[i];
-            for (int j = i + 1; j < numberOfNodes && !cancel; j++) {
-                NodeDraft node2 = nodeArray[j];
-                if (random.nextDouble() < wiringProbability) {
-                    EdgeDraft edgeDraft = container.factory().newEdgeDraft();
-                    edgeDraft.setSource(node1);
-                    edgeDraft.setTarget(node2);
-                    container.addEdge(edgeDraft);
+        if (wiringProbability > 0) {
+            for (int i = 0; i < numberOfNodes - 1 && !cancel; i++) {
+                NodeDraft node1 = nodeArray[i];
+                for (int j = i + 1; j < numberOfNodes && !cancel; j++) {
+                    NodeDraft node2 = nodeArray[j];
+                    if (random.nextDouble() < wiringProbability) {
+                        EdgeDraft edgeDraft = container.factory().newEdgeDraft();
+                        edgeDraft.setSource(node1);
+                        edgeDraft.setTarget(node2);
+                        container.addEdge(edgeDraft);
+                    }
                 }
+                progress.progress(++progressUnit);
             }
-            progress.progress(++progressUnit);
         }
     }
 

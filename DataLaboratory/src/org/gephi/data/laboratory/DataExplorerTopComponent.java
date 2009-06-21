@@ -35,7 +35,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
     private enum ClassDisplayed {
 
-        NODE, EDGE
+        NONE, NODE, EDGE
     };
     private static DataExplorerTopComponent instance;
     /** path to the icon used by the component and its open action */
@@ -47,7 +47,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
     final Lookup.Result<AttributeColumn> edgeColumnsResult;
 
     //States
-    ClassDisplayed classDisplayed = ClassDisplayed.NODE;
+    ClassDisplayed classDisplayed = ClassDisplayed.NONE;
     //Executor
     ExecutorService taskExecutor;
 
@@ -146,7 +146,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
     public void resultChanged(LookupEvent ev) {
         if (classDisplayed.equals(ClassDisplayed.NODE)) {
             initNodesView();
-        } else {
+        } else if(classDisplayed.equals(ClassDisplayed.EDGE)){
             initEdgesView();
         }
     }

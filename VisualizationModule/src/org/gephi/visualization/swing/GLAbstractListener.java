@@ -76,9 +76,11 @@ public abstract class GLAbstractListener implements GLEventListener {
         gl.setSwapInterval(0);
 
         //If depth
-        gl.glEnable(GL.GL_DEPTH_TEST);
-        gl.glDepthFunc(GL.GL_LEQUAL);
-        gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);	//Correct texture & colors perspective calculations
+        if (vizConfig.use3d()) {
+            gl.glEnable(GL.GL_DEPTH_TEST);
+            gl.glDepthFunc(GL.GL_LEQUAL);
+            gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);	//Correct texture & colors perspective calculations
+        }
 
         if (vizConfig.isPointSmooth()) {
             gl.glEnable(GL.GL_POINT_SMOOTH);
@@ -125,8 +127,10 @@ public abstract class GLAbstractListener implements GLEventListener {
         //gl.glAlphaFunc(GL.GL_GREATER, 0);
 
         //Material
-        gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
-
+        if(vizConfig.isMaterial()) {
+            gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
+            gl.glEnable(GL.GL_COLOR_MATERIAL);
+        }
         //Mesh view
         if (vizConfig.isWireFrame()) {
             gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
@@ -134,7 +138,7 @@ public abstract class GLAbstractListener implements GLEventListener {
 
         gl.glEnable(GL.GL_TEXTURE_2D);
         gl.glEnable(GL.GL_NORMALIZE);
-        gl.glEnable(GL.GL_COLOR_MATERIAL);
+        
     }
 
     protected void setLighting(GL gl) {
@@ -174,7 +178,12 @@ public abstract class GLAbstractListener implements GLEventListener {
         fps = (int) (1000.0f / tpsEcoule);
 
         GL gl = drawable.getGL();
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+        if (vizConfig.use3d()) {
+            gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+        } else {
+            gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+        }
+
 
         render3DScene(gl, glu);
     }

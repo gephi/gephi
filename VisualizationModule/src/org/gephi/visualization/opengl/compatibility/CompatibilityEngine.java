@@ -229,7 +229,7 @@ public class CompatibilityEngine extends AbstractEngine {
                 for (Iterator<ModelImpl> itr = octree.getObjectIterator(CLASS_NODE); itr.hasNext();) {
                     ModelImpl obj = itr.next();
                     if (obj.markTime != startTime) {
-                        obj.getObj().setAlpha(obj.isSelected() ? 1f : 0.2f);
+                        obj.getObj().setAlpha(obj.isSelected() ? 1f : 0.4f);
                         obj.display(gl, glu);
                         obj.markTime = startTime;
                     }
@@ -484,7 +484,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
 
         modelClasses[0].setEnabled(true);
-        modelClasses[1].setEnabled(true);
+        modelClasses[1].setEnabled(false);
         modelClasses[2].setEnabled(true);
         modelClasses[3].setEnabled(true);
 

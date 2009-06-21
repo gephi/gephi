@@ -20,11 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.objects;
 
+import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.objects.ModelClassLibrary;
 import org.gephi.visualization.api.objects.CompatibilityModelClass;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityArrowModeler;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityEdgeModeler;
+import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityNodeDiskModeler;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityNodeSphereModeler;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityPotatoModeler;
 
@@ -39,7 +41,13 @@ public class StandardModelClassLibrary implements ModelClassLibrary {
 
         //NODE
         modelClasses[0] = new CompatibilityModelClass("NODE", true, true, true);
-        modelClasses[0].addModeler(new CompatibilityNodeSphereModeler(engine));
+        CompatibilityNodeSphereModeler modeler3d = new CompatibilityNodeSphereModeler(engine);
+        CompatibilityNodeDiskModeler modeler2d = new CompatibilityNodeDiskModeler(engine);
+        if(VizController.getInstance().getVizConfig().use3d()) {
+            modelClasses[0].addModeler(modeler3d);
+        } else {
+            modelClasses[0].addModeler(modeler2d);
+        }
 
         //EDGE
         modelClasses[1] = new CompatibilityModelClass("EDGE", false, false, false);

@@ -33,7 +33,7 @@ public class VizConfig {
         DISPLAY_ALL, DISPLAY_NODES_ONLY, DISPLAY_NODES_EDGES, DISPLAY_ALPHA
     }
     private int antialiasing = 4;
-    private boolean use3d = true;
+    private boolean use3d = false;
     private boolean lineSmooth = true;
     private boolean lineSmoothNicest = true;
     private boolean pointSmooth = true;
