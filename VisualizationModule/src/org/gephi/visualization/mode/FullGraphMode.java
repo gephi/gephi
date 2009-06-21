@@ -18,22 +18,28 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.api;
+package org.gephi.visualization.mode;
+
+import org.gephi.visualization.api.DisplayMode;
+import org.gephi.visualization.mode.ModeManager.AVAILABLE_MODES;
+import org.gephi.visualization.opengl.AbstractEngine;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Node {
+public class FullGraphMode implements DisplayMode {
 
-    public int getId();
+    public FullGraphMode(AbstractEngine engine) {
+    }
 
-    public NodeData getNodeData();
+    public void load() {
+    }
 
-    /**
-     * Returns <code>true</code> if the node is visible of <code>false</code> if its hidden.
-     * @return  <code>true</code> if the node is visible of <code>false</code> otherwise
-     */
-    public boolean isVisible();
-    
+    public void unload() {
+    }
+
+    public AVAILABLE_MODES getMode() {
+        return ModeManager.AVAILABLE_MODES.FULL;
+    }
 }

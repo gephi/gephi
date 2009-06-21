@@ -119,7 +119,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
                 public void run() {
                     if (objClass.isEnabled()) {
-                        objClass.lod(engine.octree.getObjectIterator(objClass.getClassId()));
+                        objClass.lod(engine.getOctree().getObjectIterator(objClass.getClassId()));
                     }
                 }
             });
@@ -217,7 +217,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
             graphDrawable.setCameraPosition(gl, glu);
 
             pool1Permit = modelSegments.size();
-            engine.octree.updateVisibleOctant(gl);
+            engine.getOctree().updateVisibleOctant(gl);
             //Objects iterators in octree are ready
 
             //Task MODEL

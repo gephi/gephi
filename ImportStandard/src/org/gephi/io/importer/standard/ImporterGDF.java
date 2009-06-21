@@ -176,7 +176,7 @@ public class ImporterGDF implements TextImporter {
             AttributeType type = AttributeType.STRING;
             try {
                 typeString = columnString.substring(columnString.lastIndexOf(" ")).toLowerCase();
-                columnName = columnString.substring(0, columnString.lastIndexOf(" "));
+                columnName = columnString.substring(0, columnString.lastIndexOf(" ")).toLowerCase();
             } catch (IndexOutOfBoundsException e) {
                 throw new ImportException(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat2"));
             }

@@ -54,6 +54,7 @@ public class DefaultProcessor implements Processor {
             node.setNode(n);
             nodeCount++;
             graph.addNode(n);
+            flushToNodeAfter(node, n, graph);
         }
 
         int edgeCount=0;
@@ -107,6 +108,12 @@ public class DefaultProcessor implements Processor {
             for (AttributeValue val : nodeDraft.getAttributeValues()) {
                 row.setValue(val.getColumn(), val.getValue());
             }
+        }
+    }
+
+    private void flushToNodeAfter(NodeDraftGetter nodeDraft, Node node, Graph graph) {
+        if(!nodeDraft.isVisible()) {
+            graph.setVisible(node, false);
         }
     }
 

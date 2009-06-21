@@ -27,15 +27,15 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Model;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.ColorLayer;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.initializer.Modeler;
 import org.gephi.visualization.api.objects.ModelClass;
+import org.gephi.visualization.mode.ModeManager;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.objects.Edge2dModel;
 import org.openide.util.Lookup;
-
-
 
 /**
  *
@@ -48,10 +48,11 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     protected GraphController controller;
     protected Graph graph;
     private VizConfig vizConfig;
+    protected ModeManager modeManager;
 
     //Version
-    protected int nodeVersion=-1;
-    protected int edgeVersion=-1;
+    protected int nodeVersion = -1;
+    protected int edgeVersion = -1;
 
     //Attributes
     private int cacheMarker = 0;
@@ -60,26 +61,39 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     public void initArchitecture() {
         this.engine = VizController.getInstance().getEngine();
         controller = Lookup.getDefault().lookup(GraphController.class);
-        graph = controller.getVisibleDirectedGraph();
         this.vizConfig = VizController.getInstance().getVizConfig();
+        this.modeManager = VizController.getInstance().getModeManager();
+        graph = controller.getDirectedGraph();
     }
 
     public void updateWorld() {
         System.out.println("update world");
         cacheMarker++;
 
-        ModelClass[] object3dClasses = engine.getObject3dClasses();
+        switch (modeManager.getMode()) {
+            case FULL:
+                graph = controller.getDirectedGraph();
+                break;
+            case VISIBLE:
+                graph = controller.getVisibleDirectedGraph();
+                break;
+            case HIGHLIGHT:
+                graph = controller.getDirectedGraph();
+                break;
+        }
+
+        ModelClass[] object3dClasses = engine.getModelClasses();
 
         graph.readLock();
 
         ModelClass nodeClass = object3dClasses[AbstractEngine.CLASS_NODE];
-        if (nodeClass.isEnabled() && graph.getNodeVersion() > nodeVersion) {
+        if (nodeClass.isEnabled() && (graph.getNodeVersion() > nodeVersion || modeManager.requireModeChange())) {
             updateNodes();
             nodeClass.setCacheMarker(cacheMarker);
         }
 
         ModelClass edgeClass = object3dClasses[AbstractEngine.CLASS_EDGE];
-        if (edgeClass.isEnabled() && graph.getEdgeVersion() > edgeVersion) {
+        if (edgeClass.isEnabled() && (graph.getEdgeVersion() > edgeVersion || modeManager.requireModeChange())) {
             updateEdges();
             edgeClass.setCacheMarker(cacheMarker);
             if (vizConfig.isDirectedEdges()) {
@@ -87,11 +101,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             }
         }
 
-        /*ModelClass potatoClass = object3dClasses[AbstractEngine.CLASS_POTATO];
-        if (potatoClass.isEnabled() && reader.requirePotatoUpdate()) {
-            updatePotatoes();
-            potatoClass.setCacheMarker(cacheMarker);
-        }*/
+        nodeVersion = graph.getNodeVersion();
+        edgeVersion = graph.getEdgeVersion();
 
         graph.readUnlock();
 
@@ -99,7 +110,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     }
 
     private void updateNodes() {
-        Modeler nodeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_NODE].getCurrentModeler();
+        Modeler nodeInit = engine.getModelClasses()[AbstractEngine.CLASS_NODE].getCurrentModeler();
 
         for (Node node : graph.getNodes()) {
             Model obj = node.getNodeData().getModel();
@@ -111,14 +122,20 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                 engine.addObject(AbstractEngine.CLASS_NODE, (ModelImpl) obj);
             }
             obj.setCacheMarker(cacheMarker);
-        }
 
-        nodeVersion = graph.getNodeVersion();
+            //Modeaction
+            if (modeManager.getMode().equals(ModeManager.AVAILABLE_MODES.HIGHLIGHT)) {
+                ModelImpl impl = (ModelImpl) obj;
+                if (!node.isVisible()) {
+                    ColorLayer.layerColor(impl, 0.8f, 0.8f, 0.8f);
+                }
+            }
+        }
     }
 
     private void updateEdges() {
-        Modeler edgeInit = engine.getObject3dClasses()[AbstractEngine.CLASS_EDGE].getCurrentModeler();
-        Modeler arrowInit = engine.getObject3dClasses()[AbstractEngine.CLASS_ARROW].getCurrentModeler();
+        Modeler edgeInit = engine.getModelClasses()[AbstractEngine.CLASS_EDGE].getCurrentModeler();
+        Modeler arrowInit = engine.getModelClasses()[AbstractEngine.CLASS_ARROW].getCurrentModeler();
 
         for (Edge edge : graph.getEdges()) {
 
@@ -144,26 +161,24 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             }
             obj.setCacheMarker(cacheMarker);
         }
-
-        edgeVersion = graph.getEdgeVersion();
     }
 
     public void updatePotatoes() {
-        /*Modeler potatoInit = engine.getObject3dClasses()[AbstractEngine.CLASS_POTATO].getCurrentModeler();
+        /*Modeler potatoInit = engine.getModelClasses()[AbstractEngine.CLASS_POTATO].getCurrentModeler();
 
         Iterator<? extends Potato> itr = reader.getPotatoes();
         for (; itr.hasNext();) {
-            Potato potato = itr.next();
+        Potato potato = itr.next();
 
-            Model obj = potato.getModel();
-            if (obj == null) {
-                //Model is null, ADD
-                obj = potatoInit.initModel(potato);
-                engine.addObject(AbstractEngine.CLASS_POTATO, (ModelImpl) obj);
-            } else if (!obj.isValid()) {
-                engine.addObject(AbstractEngine.CLASS_POTATO, (ModelImpl) obj);
-            }
-            obj.setCacheMarker(cacheMarker);
+        Model obj = potato.getModel();
+        if (obj == null) {
+        //Model is null, ADD
+        obj = potatoInit.initModel(potato);
+        engine.addObject(AbstractEngine.CLASS_POTATO, (ModelImpl) obj);
+        } else if (!obj.isValid()) {
+        engine.addObject(AbstractEngine.CLASS_POTATO, (ModelImpl) obj);
+        }
+        obj.setCacheMarker(cacheMarker);
         }*/
     }
 
@@ -175,9 +190,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         return false;
     }
 
-
     private void resetClasses() {
-        for (ModelClass objClass : engine.getObject3dClasses()) {
+        for (ModelClass objClass : engine.getModelClasses()) {
             if (objClass.isEnabled()) {
                 engine.resetObjectClass(objClass);
             }

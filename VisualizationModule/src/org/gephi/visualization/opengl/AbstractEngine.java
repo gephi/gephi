@@ -38,6 +38,8 @@ import org.gephi.visualization.api.selection.SelectionArea;
 import org.gephi.visualization.bridge.DataBridge;
 import org.gephi.visualization.bridge.EventBridge;
 import org.gephi.visualization.gleem.linalg.Vecf;
+import org.gephi.visualization.mode.ModeManager;
+import org.gephi.visualization.opengl.octree.Octree;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 
 /**
@@ -66,9 +68,13 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected DataBridge dataBridge;
     protected EventBridge eventBridge;
     protected VizConfig vizConfig;
+    protected ModeManager modeManager;
 
     //States
     protected EngineLifeCycle lifeCycle = new EngineLifeCycle();
+
+    //Octree
+    protected Octree octree;
 
     public void initArchitecture() {
         this.graphDrawable = VizController.getInstance().getDrawable();
@@ -77,6 +83,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         this.dataBridge = VizController.getInstance().getDataBridge();
         this.eventBridge = VizController.getInstance().getEventBridge();
         this.vizConfig = VizController.getInstance().getVizConfig();
+        this.modeManager = VizController.getInstance().getModeManager();
         initObject3dClass();
     }
 
@@ -116,7 +123,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public abstract void initObject3dClass();
 
-    public abstract ModelClass[] getObject3dClasses();
+    public abstract ModelClass[] getModelClasses();
 
     protected abstract void startAnimating();
 
@@ -173,6 +180,10 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public void stopDisplay() {
         lifeCycle.requestStopAnimating();
+    }
+
+    public Octree getOctree() {
+        return octree;
     }
 
     protected class EngineLifeCycle {

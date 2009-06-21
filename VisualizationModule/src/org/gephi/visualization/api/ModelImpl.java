@@ -47,6 +47,7 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
     protected float cameraDistance;
     protected float viewportRadius;
     protected float[] dragDistance;
+    protected ColorLayer colorLayer;
 
     //Flags
     protected boolean selected;
@@ -65,6 +66,14 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
     public abstract float getCollisionDistance(double angle);
 
     public abstract String toSVG();
+
+    public ColorLayer getColorLayer() {
+        return colorLayer;
+    }
+
+    public void setColorLayer(ColorLayer layer) {
+        this.colorLayer = layer;
+    }
 
     public int getNumber() {
         return ID;

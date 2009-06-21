@@ -53,7 +53,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
     private DataExplorerTopComponent() {
 
-        taskExecutor = new ThreadPoolExecutor(0, 1, 10L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(10));
+        taskExecutor = new ThreadPoolExecutor(0, 1, 10L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(20));
 
 
         initComponents();
