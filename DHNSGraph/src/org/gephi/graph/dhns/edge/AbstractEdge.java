@@ -111,7 +111,7 @@ public abstract class AbstractEdge implements Edge, AVLItem {
     }
 
     public boolean hasAttributes() {
-        return edgeData.getAttributes() == null;
+        return edgeData.getAttributes() != null;
     }
 
     public void setAttributes(Attributes attributes) {
