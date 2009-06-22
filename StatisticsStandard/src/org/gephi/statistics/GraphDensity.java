@@ -20,14 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics;
 
-import java.awt.event.ActionListener;
 import javax.swing.JPanel;
-import javax.swing.ProgressMonitor;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.statistics.api.Statistics;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 
 /**
@@ -36,42 +32,57 @@ import org.openide.util.NbBundle;
  */
 public class GraphDensity implements Statistics {
 
+    /** The density of the graph.*/
     private float density;
 
-
-    public void confirm()
-    {
-    }
-
-       public void execute(GraphController graphController,
-            ProgressMonitor progressMonitor) {
+    /**
+     * 
+     * @param graphController
+     */
+    public void execute(GraphController graphController) {
         DirectedGraph graph = graphController.getDirectedGraph();
         int edgesCount = graph.getEdgeCount();
         int nodesCount = graph.getNodeCount();
         density = (float) edgesCount / (nodesCount * nodesCount - nodesCount);
     }
 
+    /**
+     * 
+     * @return
+     */
     public String toString() {
         return new String("Graph Density");
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return NbBundle.getMessage(GraphDensity.class, "GraphDensity_name");
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isParamerizable() {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     public JPanel getPanel() {
         return null;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getReport() {
-       return new String("Density: " + density);
-    }
-
-    public void addActionListener(ActionListener listener) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new String("Density: " + density);
     }
 }

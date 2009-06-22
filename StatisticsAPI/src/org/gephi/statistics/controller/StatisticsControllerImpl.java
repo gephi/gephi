@@ -53,15 +53,16 @@ import javax.swing.WindowConstants;
 import javax.swing.text.View;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.longtask.LongTaskExecutor;
+import org.gephi.utils.longtask.LongTaskListener;
 import org.openide.util.Lookup;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class StatisticsControllerImpl implements StatisticsController, ActionListener {
+public class StatisticsControllerImpl implements StatisticsController, LongTaskListener {
 
     private List<Statistics> statistics;
 
@@ -70,27 +71,32 @@ public class StatisticsControllerImpl implements StatisticsController, ActionLis
 
     }
 
-    public void actionPerformed(ActionEvent e) {
-        Statistics statistics = (Statistics) e.getSource();
+   
+    private void complete(final Statistics statistics) {
+        final GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
 
-        StatisticsReporterImpl reporter = new StatisticsReporterImpl(statistics);
+        if(statistics instanceof LongTask)
+        {
+            LongTaskExecutor executor = new LongTaskExecutor(true, statistics.getName(), 10);
+            executor.setLongTaskListener(this);
+            executor.execute((LongTask)statistics, new Runnable() {
+                 public void run() {
+                     statistics.execute(graphController); }
+             },statistics.getName());
+        }
+        else
+        {
+            statistics.execute(graphController);
+            StatisticsReporterImpl reporter = new StatisticsReporterImpl(statistics);
+
+        }
 
     }
 
-    private void complete(Statistics statistics) {
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        Graph graph = graphController.getDirectedGraph();
-        Frame frame = WindowManager.getDefault().getMainWindow();
-
-
-        ProgressMonitor progressMonitor = new ProgressMonitor(frame, (String) "Running..", "", 0, graph.getNodeCount());
-        progressMonitor.setMillisToDecideToPopup(0);
-        progressMonitor.setMillisToPopup(0);
-
-        statistics.addActionListener(this);
-        statistics.execute(graphController, progressMonitor);
-    }
-
+    /**
+     * 
+     * @param statistics
+     */
     public void execute(final Statistics statistics) {
 
         if (statistics.isParamerizable()) {
@@ -102,7 +108,6 @@ public class StatisticsControllerImpl implements StatisticsController, ActionLis
             next.addActionListener(new java.awt.event.ActionListener() {
 
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    statistics.confirm();
                     dialog.dispose();
                     complete(statistics);
 
@@ -140,5 +145,10 @@ public class StatisticsControllerImpl implements StatisticsController, ActionLis
      */
     public List<Statistics> getStatistics() {
         return statistics;
+    }
+
+    public void taskFinished(LongTask task) {
+        Statistics statistics = (Statistics)task;
+        StatisticsReporterImpl reporter = new StatisticsReporterImpl(statistics);
     }
 }

@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Authors : Patrick J. McSweeney
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,18 +18,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.statistics;
-import java.awt.event.ActionListener;
+
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Hashtable;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Edge;
 import java.util.Iterator;
 import java.util.LinkedList;
 import javax.swing.JPanel;
-import javax.swing.ProgressMonitor;
 import org.gephi.data.attributes.api.AttributeClass;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
@@ -40,55 +39,58 @@ import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.NodeIterable;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
+import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-
-
-
-
-
 
 /**
  *
  * @author pjmcswee
  */
-class Renumbering implements Comparator<ArrayWrapper>
-{
+class Renumbering implements Comparator<ArrayWrapper> {
+
     public int compare(ArrayWrapper o1, ArrayWrapper o2) {
-        if(o1.getID() < o2.getID())
-        {
+        if (o1.getID() < o2.getID()) {
             return -1;
-        }
-        else
+        } else {
             return 1;
-    }  
+        }
+    }
 }
+
 /**
  * 
  * @author pjmcswee
  */
-class ArrayWrapper implements Comparable{
+class ArrayWrapper implements Comparable {
+
     private ArrayWrapper[] mArray;
     private int mID;
 
     /** Empty Constructor/ */
-    ArrayWrapper(){}
+    ArrayWrapper() {
+    }
 
     /**
      *
      * @return The ID of this array wrapper
      */
-    public int getID(){return mID;}
+    public int getID() {
+        return mID;
+    }
 
     /**
      *
      * @return The adjacency array
      */
-    public ArrayWrapper[] getArray() { return mArray;}
-    public void setArray(ArrayWrapper[] pArray)
-    {  mArray = pArray;}
+    public ArrayWrapper[] getArray() {
+        return mArray;
+    }
+
+    public void setArray(ArrayWrapper[] pArray) {
+        mArray = pArray;
+    }
 
     /**
      *
@@ -99,24 +101,22 @@ class ArrayWrapper implements Comparable{
         mID = pID;
     }
 
-
-    public void setID(int pID)
-    {
+    public void setID(int pID) {
         mID = pID;
     }
+
     /**
      *
      * @param pIndex
      * @return
      */
     public int get(int pIndex) {
-       if(pIndex >= mArray.length) {
+        if (pIndex >= mArray.length) {
             return -1;
-       }
+        }
 
-       return mArray[pIndex].mID;
+        return mArray[pIndex].mID;
     }
-
 
     /**
      * 
@@ -132,113 +132,137 @@ class ArrayWrapper implements Comparable{
      * @return
      */
     public int compareTo(Object o) {
-        ArrayWrapper aw = (ArrayWrapper)o;
-        if(aw.length() < length())
+        ArrayWrapper aw = (ArrayWrapper) o;
+        if (aw.length() < length()) {
             return -1;
-        if(aw.length() > length())
+        }
+        if (aw.length() > length()) {
             return 1;
+        }
         return 0;
     }
-
-
 }
-class ClusteringThread implements Runnable {
 
-    public static int[] mTriangles;
-    private static ArrayWrapper[] mNetwork;
-    private int mStart;
-    private int mFinish;
-    private int mId;
-    private int mN;
-    private static int mK;
+/**
+ *
+ * @author Patrick J. McSweeney
+ */
+public class ClusteringCoefficient implements Statistics, LongTask {
 
+    /** The avergage Clustering Coefficient.*/
+    private double avgClusteringCoeff;
+    /** Indicates to use the brute force approach.*/
+    private boolean useBruteForce;
+    /**Indicates should treat graph as undirected.*/
+    private boolean undirectedOverride;
+    /** Indicates statistics should stop processing/*/
+    private boolean isCanceled;
+    /** Keeps track of progress made. */
+    private ProgressTicket progress;
+    private int[] mTriangles;
+    private ArrayWrapper[] mNetwork;
+    private int mK;
+    private int N;
 
     /**
-     * Initialize the threaded clustering coefficient.
-     * @param pNodes
+     * 
+     * @return
      */
-    public static void init(ArrayWrapper[] pNetwork){
-        mNetwork = pNetwork;
-        mTriangles = new int[pNetwork.length];
-        mK = (int)Math.sqrt(mNetwork.length);
-    }
+    public String toString() {
 
-
-
-    /**
-     *
-     * @param pStart
-     * @param pFinish
-     */
-    ClusteringThread(int pId, int pStart, int pFinish){
-        mStart = pStart;
-        mFinish = pFinish;
-        mId = pId;
-        mN = mNetwork.length;
+        return new String("Clustering Coefficient");
     }
 
     /**
      * 
+     * @return
+     */
+    public String getName() {
+        return NbBundle.getMessage(ClusteringCoefficient.class, "ClusteringCoefficent_name");
+    }
+
+    /**
+     *
+     * @param synchReader
+     */
+    public void execute(GraphController graphController) {
+        isCanceled = false;
+
+        DirectedGraph digraph = graphController.getDirectedGraph();
+
+        if (useBruteForce) {
+            bruteForce(graphController);
+            return;
+        } else {
+            triangles(graphController);
+            return;
+        }
+    }
+
+    /**
+     *
      * @param v
      * @return
      */
-    public int closest_in_array(int v){
+    public int closest_in_array(int v) {
         //int right = g->degrees[v]-1;
         int right = mNetwork[v].length() - 1;
- 
+
         /* optimization for extreme cases */
-        if (right<0) return(-1);
-        if (mNetwork[v].get(0) >= v )  return(-1);
-        if (mNetwork[v].get(right) < v) return(right);
-        if (mNetwork[v].get(right) == v) return(right-1);
+        if (right < 0) {
+            return (-1);
+        }
+        if (mNetwork[v].get(0) >= v) {
+            return (-1);
+        }
+        if (mNetwork[v].get(right) < v) {
+            return (right);
+        }
+        if (mNetwork[v].get(right) == v) {
+            return (right - 1);
+        }
 
         int left = 0, mid;
-        while (right>left) {
-            mid = (left+right)/2;
-            
-            if (v < mNetwork[v].get(mid))
-                right = mid-1;
-            else if (v > mNetwork[v].get(mid))
-                left = mid+1;
-            else return(mid-1);
-       }
-        
-        if (v>mNetwork[v].get(right))
-            return(right);
-        else
-            return(right-1);
- }
+        while (right > left) {
+            mid = (left + right) / 2;
 
+            if (v < mNetwork[v].get(mid)) {
+                right = mid - 1;
+            } else if (v > mNetwork[v].get(mid)) {
+                left = mid + 1;
+            } else {
+                return (mid - 1);
+            }
+        }
 
-    
-
-
+        if (v > mNetwork[v].get(right)) {
+            return (right);
+        } else {
+            return (right - 1);
+        }
+    }
 
     /**
      *
      * @param v - The specific node to count the triangles on.
      */
-    public void newVertex(int v){
-        boolean[] A = new boolean [mN];
+    public void newVertex(int v) {
+        boolean[] A = new boolean[N];
 
-        if(v == 0)
-            System.out.println("Test");
-      
-        for(int i = mNetwork[v].length() - 1; (i >= 0)  && (mNetwork[v].get(i) > v); i--){
+     
+        for (int i = mNetwork[v].length() - 1; (i >= 0) && (mNetwork[v].get(i) > v); i--) {
             int neighbor = mNetwork[v].get(i);
             A[neighbor] = true;
         }
 
 
-        for(int i = mNetwork[v].length() - 1; i >= 0; i--) {
-        
+        for (int i = mNetwork[v].length() - 1; i >= 0; i--) {
+
             int neighbor = mNetwork[v].get(i);
 
-            for(int j = closest_in_array(neighbor); j >= 0; j--)
-            {
+            for (int j = closest_in_array(neighbor); j >= 0; j--) {
                 int next = mNetwork[neighbor].get(j);
-                if(A[next])
-                {
+                if (A[next]) {
                     mTriangles[next]++;
                     mTriangles[v]++;
                     mTriangles[neighbor]++;
@@ -247,262 +271,242 @@ class ClusteringThread implements Runnable {
         }
     }
 
-
     /**
-     * 
+     *
      * @param u
      * @param v
      */
-    public void tr_link_nohigh(int u, int v){
+    public void tr_link_nohigh(int u, int v) {
         int iu = 0, iv = 0, w;
 
         while ((iu < mNetwork[u].length()) && (iv < mNetwork[v].length())) {
             if (mNetwork[u].get(iu) < mNetwork[v].get(iv)) {
                 iu++;
-            }
-            else if (mNetwork[u].get(iu) > mNetwork[v].get(iv)) {
+            } else if (mNetwork[u].get(iu) > mNetwork[v].get(iv)) {
                 iv++;
-            }
-            else { /* neighbor in common */
+            } else { /* neighbor in common */
                 w = mNetwork[u].get(iu);
-                if (w >= mK)
+                if (w >= mK) {
                     mTriangles[w]++;
+                }
                 iu++;
                 iv++;
             }
         }
     }
 
+    /**
+     * 
+     * @param graphController
+     */
+    public void triangles(GraphController graphController) {
 
+
+        Graph graph = graphController.getDirectedGraph();
+        int progressCount = 0;
+        progress.start(7 * graph.getNodeCount());
+
+        if (this.undirectedOverride) {
+            graph = graphController.getUndirectedGraph();
+        }
+
+
+        N = graph.getNodeCount();
+        Node[] nodes = new Node[N];
+
+        /** Create network for processing */
+        mNetwork = new ArrayWrapper[N];
+
+        /**  */
+        Hashtable<Node, Integer> indicies = new Hashtable<Node, Integer>();
+        int index = 0;
+        for (Node s : graph.getNodes()) {
+            indicies.put(s, index);
+            mNetwork[index] = new ArrayWrapper();
+            index++;
+            progress.progress(++progressCount);
+        }
+
+        index = 0;
+        for (Node node : graph.getNodes()) {
+            LinkedList<ArrayWrapper> neighbors = new LinkedList<ArrayWrapper>();
+            int j = 0;
+
+            for (Node neighbor : graph.getNeighbors(node)) {
+                neighbors.add(mNetwork[indicies.get(neighbor)]);
+                j++;
+            }
+
+            ArrayWrapper[] edges = neighbors.toArray(new ArrayWrapper[1]);
+
+            mNetwork[index].setArray(edges);
+            index++;
+            progress.progress(++progressCount);
+        }
+
+        Arrays.sort(mNetwork);
+        for (int j = 0; j < N; j++) {
+            mNetwork[j].setID(j);
+            progress.progress(++progressCount);
+
+        }
+
+        for (int j = 0; j < N; j++) {
+            Arrays.sort(mNetwork[j].getArray(), new Renumbering());
+            progress.progress(++progressCount);
+        }
+
+
+        mTriangles = new int[N];
+        mK = (int) Math.sqrt(N);
+
+
+        // ClusteringThread.init(network);
+        for (int v = 0; v < mK && v < N; v++) {
+            newVertex(v);
+            progress.progress(++progressCount);
+
+        }
+
+        /* remaining links */
+        for (int v = N - 1; (v >= 0) && (v >= mK); v--) {
+            for (int i = closest_in_array(v); i >= 0; i--) {
+                int u = mNetwork[v].get(i);
+                if (u >= mK) {
+                    tr_link_nohigh(u, v);
+                }
+            }
+            progress.progress(++progressCount);
+        }
+
+        avgClusteringCoeff = 0;
+        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
+        AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
+        AttributeColumn clusteringCol = nodeClass.addAttributeColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+
+
+        for (Node s : graph.getNodes()) {
+            int v = indicies.get(s);
+            if (mNetwork[v].length() > 1) {
+                double cc = mTriangles[v] /
+                        (mNetwork[v].length() * (mNetwork[v].length() - 1) * .5f);
+                AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
+                row.setValue(clusteringCol, cc);
+
+                avgClusteringCoeff += cc;
+            }
+            progress.progress(++progressCount);
+
+        }
+       
+        avgClusteringCoeff /= N;
+
+    }
 
     /**
-     *
+     * 
+     * @param graphController
      */
-    public void run(){
-       
-            for (int v = mStart; v < mK && v < mFinish; v++) {
-                newVertex(v);
-            }
-            
-            /* remaining links */
-            for (int v = Math.min(mFinish-1,mNetwork.length - 1); (v >= mStart) && (v >= mK); v--) {
-                for (int i = closest_in_array(v); i >= 0; i--) {
-                    int u = mNetwork[v].get(i);
-                    if (u >= mK) {
-                        tr_link_nohigh(u,v);
+    public void bruteForce(GraphController graphController) {
+        //The atrributes computed by the statistics
+        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
+        AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
+        AttributeColumn clusteringCol = nodeClass.addAttributeColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+
+
+        float totalCC = 0;
+        Graph graph = null;
+        if (undirectedOverride) {
+            graph = graphController.getUndirectedGraph();
+        } else {
+            graph = graphController.getDirectedGraph();
+        }
+
+        progress.start(graph.getNodeCount());
+        int node_count = 0;
+        for (Node node : graph.getNodes()) {
+            float nodeCC = 0;
+            int neighborhood = 0;
+            NodeIterable neighbors1 = graph.getNeighbors(node);
+            for (Node neighbor1 : neighbors1) {
+                neighborhood++;
+                NodeIterable neighbors2 = graph.getNeighbors(node);
+                for (Node neighbor2 : neighbors2) {
+
+                    if (neighbor1 == neighbor2) {
+                        continue;
+                    }
+
+                    if (graph.isAdjacent(neighbor1, neighbor2)) {
+                        nodeCC++;
                     }
                 }
             }
+            nodeCC /= 2.0;
+
+            if (neighborhood > 1) {
+                float cc = nodeCC / (.5f * neighborhood * (neighborhood - 1));
+                if (!undirectedOverride) {
+                    cc = nodeCC / (neighborhood * (neighborhood - 1));
+                }
+
+                AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
+                row.setValue(clusteringCol, cc);
+
+                totalCC += cc;
+            }
+
+            if (isCanceled) {
+                break;
+            }
+
+            node_count++;
+            progress.progress(node_count);
+
+        }
+        avgClusteringCoeff = totalCC / graph.getNodeCount();
+
     }
-}
-
-
-/**
- *
- * @author Patrick J. McSweeney
- */
-public class ClusteringCoefficient implements Statistics {
-
-
-    private double avgClusteringCoeff;
-    private boolean useBruteForce;
-    private boolean undirectedOverride;
-    private boolean isCanceled;
-
-    public void confirm()
-    {
-    }
-    public String toString(){
-
-        return new String("Clustering Coefficient");
-    }
-
 
     /**
      * 
      * @return
      */
-     public String getName() {
-        return NbBundle.getMessage(GraphDensity.class, "GraphDensity_name");
-    }
-
-    /**
-     *
-     * @param synchReader
-     */
-    public void execute(GraphController graphController,
-            ProgressMonitor progressMonitor) {
-        isCanceled = false;
-        
-        DirectedGraph digraph = graphController.getDirectedGraph();
-        
-        
-        if(useBruteForce){
-            bruteForce(graphController);
-            return;
-        }
-
-    
-        int N = digraph.getNodeCount();
-        Node[] nodes = new Node[N];
-
-        /** Create network for processing */
-        ArrayWrapper[] network = new ArrayWrapper[N];
-
-        /**  */
-        for(int i = 0; i < N; i++)
-        {   network[i] = new ArrayWrapper();}
-      
-
-/*
-        for(Node node : digraph.getNodes())
-        {
-            ArrayWrapper[] edges = new ArrayWrapper[digraph.getOutDegree(node) + digraph.getInDegree(node)];
-            int j = 0;
-            
-            for(Edge edge : digraph.getOutEdges(node)) {
-                digraph.get
-                Node neighbor = edge.getTarget();
-                if(neighbor.getIndex() == node.getIndex()) {
-                    neighbor = edge.getSource();
-                }
-                edges[j] = network[neighbor.getIndex()-1];
-                j++;
-            }
-            Iterator<? extends EdgeWrap> iter2 =  node.getEdgesIn().iterator();
-            while(iter2.hasNext())
-            {
-                Edge edge = iter2.next().getEdge();
-                Node neighbor = edge.getTarget();
-                if(neighbor.getIndex() == node.getIndex()) {
-                    neighbor = edge.getSource();
-                }
-                edges[j] = network[neighbor.getIndex()-1];
-                j++;
-            }
-
-            network[i].setArray(edges);
-            i++;
-        }
-        
-        Arrays.sort(network);
-        for(int j = 0; j < N; j++)
-        {  network[j].setID(j);}
-
-        for(int j = 0; j < N; j++)
-        {  Arrays.sort(network[j].getArray(), new Renumbering());}
-        
-
-        ClusteringThread.init(network);
-
-        int proc = Runtime.getRuntime().availableProcessors();
-		LinkedList<Thread> threads = new LinkedList<Thread>();
-        int perThread = synchReader.getNodeCount() / proc;
-        for(int p = 0; p < proc; p++) {
-
-            int end = (p+1)*perThread;
-            if(p == proc -1)
-                end = network.length;
-			ClusteringThread ct = new ClusteringThread(p, p * perThread,end );
-            Thread thread = new Thread(ct);
-            thread.start();
-            threads.add(thread);
-		}
-
-        //Wait for all of the threads to be finished
-        for(Thread t: threads){
-            try{
-                t.join();
-            }catch(Exception e){e.printStackTrace();}
-        }
-
-        double clustering = 0;
-        for(int v = 0; v < network.length; v++){
-            if(network[v].length() > 1)
-            {
-                clustering += ClusteringThread.mTriangles[v] /
-                    (network[v].length() * (network[v].length()-1) * .5f);
-            }
-        }
-
-        NotifyDescriptor.Message msg = new NotifyDescriptor.Message("Clustering : " + clustering/nodes.length);
-        DialogDisplayer.getDefault().notify(msg);
- *
- */
-    }
-
-
-    public void  bruteForce(GraphController graphController)
-    {
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
-        AttributeColumn clusteringCol = nodeClass.addAttributeColumn("clustering", "Clustering Coefficient", AttributeType.FLOAT, AttributeOrigin.COMPUTED, 0);
-
-
-        float totalCC = 0;
-        Graph graph = null;
-        if(undirectedOverride)
-           graph = graphController.getUndirectedGraph();
-        else
-           graph = graphController.getDirectedGraph();
-
-
-        for(Node node : graph.getNodes()) {
-            float nodeCC = 0;
-            int neighborhood = 0;
-            NodeIterable neighbors1 = graph.getNeighbors(node);
-            for(Node neighbor1 : neighbors1) {
-                neighborhood++;
-                NodeIterable neighbors2 = graph.getNeighbors(node);
-                for(Node neighbor2 : neighbors2) {
-
-                    if(neighbor1 == neighbor2) {
-                        continue;
-                    }
-
-                    if(graph.isAdjacent(neighbor1, neighbor2)){
-                        nodeCC++;
-                    }
-                }
-            }
-
-            nodeCC /= 2.0;
-            
-            if(neighborhood > 1)
-            {
-               float cc = nodeCC / (.5f * neighborhood * (neighborhood - 1));
-               if(!undirectedOverride){
-                   cc = nodeCC / (neighborhood * (neighborhood - 1));
-               }
-
-               AttributeRow row = (AttributeRow)node.getNodeData().getAttributes();
-               row.setValue(clusteringCol, cc);
-
-               totalCC += cc;
-            }
-        }
-        avgClusteringCoeff = totalCC / graph.getNodeCount();
-        
-    }
-
-
-
-
-
     public boolean isParamerizable() {
         return false;
     }
 
+    /**
+     * 
+     * @return
+     */
     public JPanel getPanel() {
         return null;
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getReport() {
-       return new String("Average Clustering Coefficient: " + avgClusteringCoeff);
+        return new String("Average Clustering Coefficient: " + avgClusteringCoeff);
     }
 
-    public void addActionListener(ActionListener listener) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    /**
+     * 
+     * @return
+     */
+    public boolean cancel() {
+        isCanceled = true;
+        return true;
+    }
+
+    /**
+     *
+     * @param progressTicket
+     */
+    public void setProgressTicket(ProgressTicket progressTicket) {
+        progress = progressTicket;
     }
 }
        

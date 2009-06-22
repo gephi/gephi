@@ -20,9 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics;
 
-import java.awt.event.ActionListener;
 import javax.swing.JPanel;
-import javax.swing.ProgressMonitor;
 import org.gephi.data.attributes.api.AttributeClass;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
@@ -33,6 +31,8 @@ import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.statistics.api.Statistics;
+import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -40,72 +40,106 @@ import org.openide.util.NbBundle;
  *
  * @author Mathieu
  */
-public class InOutDegree implements Statistics {
+public class InOutDegree implements Statistics, LongTask {
 
+    /** The Average Node In-Degree. */
     private float avgInDegree;
+    /** The Average Node Out-Degree. */
     private float avgOutDegree;
+    /** Remembers if the Cancel function has been called. */
+    private boolean isCanceled;
+    /** Keep track of the work done. */
+    private ProgressTicket progress;
 
-   private boolean isCancelled;
-
-    public void confirm()
-    {
-        isCancelled = true;
-    }
-    public String toString()
-    {
+    /**
+     *
+     * @return
+     */
+    public String toString() {
         return new String("In/Out Degree");
     }
 
-    public void execute(GraphController graphController,
-            ProgressMonitor progressMonitor) {
-        isCancelled = false;
+    /**
+     *
+     * @param graphController
+     * @param progressMonitor
+     */
+    public void execute(GraphController graphController) {
+        isCanceled = false;
+
         //Attributes cols
         AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
         AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
         AttributeColumn inCol = nodeClass.addAttributeColumn("indegree", "In Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
         AttributeColumn outCol = nodeClass.addAttributeColumn("outdegree", "Out Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
-        
+
         DirectedGraph graph = graphController.getDirectedGraph();
-        progressMonitor.setMinimum(0);
-        progressMonitor.setMinimum(graph.getNodeCount());
-        progressMonitor.setProgress(0);
         int i = 0;
-        for(Node n : graph.getNodes()) {
-            AttributeRow row = (AttributeRow)n.getNodeData().getAttributes();
+
+        progress.start(graph.getNodeCount());
+
+        for (Node n : graph.getNodes()) {
+            AttributeRow row = (AttributeRow) n.getNodeData().getAttributes();
             row.setValue(inCol, graph.getInDegree(n));
             row.setValue(outCol, graph.getOutDegree(n));
             avgInDegree += graph.getInDegree(n);
             avgOutDegree += graph.getOutDegree(n);
-            if(progressMonitor.isCanceled())
-            {
+            if (isCanceled) {
                 break;
             }
             i++;
-            progressMonitor.setProgress(i);
+            progress.progress(i);
         }
         avgInDegree /= graph.getNodeCount();
         avgOutDegree /= graph.getNodeCount();
-
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return NbBundle.getMessage(GraphDensity.class, "GraphDensity_name");
     }
 
-
+    /**
+     *
+     * @return
+     */
     public boolean isParamerizable() {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     public JPanel getPanel() {
         return null;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getReport() {
-       return new String("Average In Degree: " + avgInDegree + "\n Average out Degree: " +  avgOutDegree);
+        return new String("Average In Degree: " + avgInDegree + "\n Average out Degree: " + avgOutDegree);
     }
 
-    public void addActionListener(ActionListener listener) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    /**
+     *
+     * @return
+     */
+    public boolean cancel() {
+        isCanceled = true;
+        return true;
+    }
+
+    /**
+     *
+     * @param progressTicket
+     */
+    public void setProgressTicket(ProgressTicket progressTicket) {
+        progress = progressTicket;
     }
 }

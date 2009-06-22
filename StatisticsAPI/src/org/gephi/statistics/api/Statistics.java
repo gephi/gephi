@@ -40,8 +40,7 @@ public interface Statistics {
      * @param graphController
      * @param progressMonitor
      */
-    public void execute(GraphController graphController,
-            ProgressMonitor progressMonitor);
+    public void execute(GraphController graphController);
 
     /**
      * (Possibly the same as (getPanel() == null)
