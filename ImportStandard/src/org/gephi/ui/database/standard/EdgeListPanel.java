@@ -10,6 +10,7 @@
  */
 package org.gephi.ui.database.standard;
 
+import java.sql.SQLException;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
@@ -20,6 +21,8 @@ import org.gephi.io.database.drivers.SQLDriver;
 import org.gephi.io.database.drivers.SQLUtils;
 import org.gephi.io.database.standard.EdgeListDatabase;
 import org.gephi.ui.database.DatabaseTypeUI;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
 
 /**
@@ -47,13 +50,17 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
 
     public void unsetup() {
         ConfigurationComboModel model = (ConfigurationComboModel) configurationCombo.getModel();
-        Database selectedDB = model.selectedItem.db;
+        EdgeListDatabase selectedDB = model.selectedItem.db;
         selectedDB.setDBName(dbTextField.getText());
         selectedDB.setHost(hostTextField.getText());
         selectedDB.setPasswd(pwdTextField.getText());
         selectedDB.setPort(Integer.parseInt(portTextField.getText()));
         selectedDB.setUsername(userTextField.getText());
         selectedDB.setSQLDriver((SQLDriver) driverComboBox.getModel().getSelectedItem());
+        selectedDB.setNodeQuery(nodeQueryLabel.getText());
+        selectedDB.setEdgeQuery(edgeQueryLabel.getText());
+        selectedDB.setNodeAttributesQuery(nodeAttQueryTextField.getText());
+        selectedDB.setEdgeAttributesQuery(edgeAttQueryLabel.getText());
     }
 
     public Database getDatabase() {
@@ -88,6 +95,15 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
         pwdTextField = new javax.swing.JTextField();
         driverLabel = new javax.swing.JLabel();
         driverComboBox = new javax.swing.JComboBox();
+        nodeQueryLabel = new javax.swing.JLabel();
+        nodeQueryTextField = new javax.swing.JTextField();
+        edgeQueryLabel = new javax.swing.JLabel();
+        nodeAttQueyLabel = new javax.swing.JLabel();
+        edgeAttQueryLabel = new javax.swing.JLabel();
+        edgeQuerytextField = new javax.swing.JTextField();
+        nodeAttQueryTextField = new javax.swing.JTextField();
+        edgeAttQueryTextField = new javax.swing.JTextField();
+        testConnection = new javax.swing.JButton();
 
         configurationCombo.setModel(new EdgeListPanel.ConfigurationComboModel());
 
@@ -113,6 +129,29 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
 
         driverLabel.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.driverLabel.text")); // NOI18N
 
+        nodeQueryLabel.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.nodeQueryLabel.text")); // NOI18N
+
+        nodeQueryTextField.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.nodeQueryTextField.text")); // NOI18N
+
+        edgeQueryLabel.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.edgeQueryLabel.text")); // NOI18N
+
+        nodeAttQueyLabel.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.nodeAttQueyLabel.text")); // NOI18N
+
+        edgeAttQueryLabel.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.edgeAttQueryLabel.text")); // NOI18N
+
+        edgeQuerytextField.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.edgeQuerytextField.text")); // NOI18N
+
+        nodeAttQueryTextField.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.nodeAttQueryTextField.text")); // NOI18N
+
+        edgeAttQueryTextField.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.edgeAttQueryTextField.text")); // NOI18N
+
+        testConnection.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.testConnection.text")); // NOI18N
+        testConnection.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                testConnectionActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -120,23 +159,37 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(configurationLabel)
-                    .addComponent(hostLabel)
-                    .addComponent(portLabel)
-                    .addComponent(dbLabel)
-                    .addComponent(userLabel)
-                    .addComponent(pwdLabel)
-                    .addComponent(driverLabel))
-                .addGap(33, 33, 33)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(pwdTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
-                        .addComponent(userTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
-                        .addComponent(dbTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
-                        .addComponent(portTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
-                        .addComponent(hostTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE))
-                    .addComponent(configurationCombo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 517, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(driverComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(configurationLabel)
+                        .addGap(67, 67, 67)
+                        .addComponent(configurationCombo, 0, 442, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(userLabel)
+                            .addComponent(pwdLabel)
+                            .addComponent(driverLabel)
+                            .addComponent(hostLabel)
+                            .addComponent(portLabel)
+                            .addComponent(dbLabel)
+                            .addComponent(nodeQueryLabel)
+                            .addComponent(edgeQueryLabel)
+                            .addComponent(nodeAttQueyLabel)
+                            .addComponent(edgeAttQueryLabel))
+                        .addGap(22, 22, 22)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(edgeAttQueryTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                            .addComponent(nodeAttQueryTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                            .addComponent(edgeQuerytextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                            .addComponent(nodeQueryTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                            .addComponent(portTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                            .addComponent(hostTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                            .addComponent(dbTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                            .addComponent(userTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(driverComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 234, Short.MAX_VALUE)
+                                .addComponent(testConnection))
+                            .addComponent(pwdTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -146,18 +199,19 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(configurationLabel)
                     .addComponent(configurationCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
+                .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(driverLabel)
-                    .addComponent(driverComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(driverComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(testConnection))
+                .addGap(9, 9, 9)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(hostLabel)
                     .addComponent(hostTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(portLabel)
-                    .addComponent(portTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(portTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(portLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(dbLabel)
@@ -168,11 +222,41 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
                     .addComponent(userTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(pwdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pwdLabel))
-                .addContainerGap(93, Short.MAX_VALUE))
+                    .addComponent(pwdLabel)
+                    .addComponent(pwdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nodeQueryLabel)
+                    .addComponent(nodeQueryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(edgeQueryLabel)
+                    .addComponent(edgeQuerytextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nodeAttQueyLabel)
+                    .addComponent(nodeAttQueryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(edgeAttQueryLabel)
+                    .addComponent(edgeAttQueryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(44, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void testConnectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_testConnectionActionPerformed
+        unsetup();
+        Database db = getDatabase();
+        try {
+            db.getSQLDriver().getConnection(SQLUtils.getUrl(db.getSQLDriver(), db.getHost(), db.getPort(), db.getDBName()), db.getUsername(), db.getPasswd());
+            NotifyDescriptor.Message e = new NotifyDescriptor.Message("Connection successful!", NotifyDescriptor.INFORMATION_MESSAGE);
+            DialogDisplayer.getDefault().notifyLater(e);
+        } catch (SQLException ex) {
+            NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
+            DialogDisplayer.getDefault().notifyLater(e);
+        }
+
+    }//GEN-LAST:event_testConnectionActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox configurationCombo;
@@ -181,12 +265,21 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
     private javax.swing.JTextField dbTextField;
     private javax.swing.JComboBox driverComboBox;
     private javax.swing.JLabel driverLabel;
+    private javax.swing.JLabel edgeAttQueryLabel;
+    private javax.swing.JTextField edgeAttQueryTextField;
+    private javax.swing.JLabel edgeQueryLabel;
+    private javax.swing.JTextField edgeQuerytextField;
     private javax.swing.JLabel hostLabel;
     private javax.swing.JTextField hostTextField;
+    private javax.swing.JTextField nodeAttQueryTextField;
+    private javax.swing.JLabel nodeAttQueyLabel;
+    private javax.swing.JLabel nodeQueryLabel;
+    private javax.swing.JTextField nodeQueryTextField;
     private javax.swing.JLabel portLabel;
     private javax.swing.JTextField portTextField;
     private javax.swing.JLabel pwdLabel;
     private javax.swing.JTextField pwdTextField;
+    private javax.swing.JButton testConnection;
     private javax.swing.JLabel userLabel;
     private javax.swing.JTextField userTextField;
     // End of variables declaration//GEN-END:variables

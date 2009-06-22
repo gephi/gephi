@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.database.standard;
 
+import java.sql.Connection;
 import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.database.Database;
 import org.gephi.io.database.DatabaseType;
@@ -32,11 +33,11 @@ import org.gephi.io.importer.DatabaseImporter;
  */
 public class EdgeListImporter implements DatabaseImporter {
 
-    public void importData(Database database, ContainerLoader container) {
+    public void importData(Database database, ContainerLoader container) throws Exception {
 
         System.out.println("Try to connect at " + SQLUtils.getUrl(database.getSQLDriver(), database.getHost(), database.getPort(), database.getDBName()));
-
-
+        Connection connection = database.getSQLDriver().getConnection(SQLUtils.getUrl(database.getSQLDriver(), database.getHost(), database.getPort(), database.getDBName()), database.getUsername(), database.getPasswd());
+        
     }
 
     public boolean isMatchingImporter(DatabaseType databaseType) {

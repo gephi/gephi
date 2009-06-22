@@ -30,7 +30,7 @@ import org.gephi.io.database.DatabaseType;
  */
 public interface DatabaseImporter extends Importer {
 
-    public void importData(Database database, ContainerLoader container);
+    public void importData(Database database, ContainerLoader container) throws Exception;
 
     public boolean isMatchingImporter(DatabaseType databaseType);
 }
