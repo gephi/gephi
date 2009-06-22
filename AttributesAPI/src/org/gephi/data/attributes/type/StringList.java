@@ -49,6 +49,17 @@ public final class StringList {
         }
     }
 
+    public StringList(String value) {
+        if (value == null) {
+            throw new NullPointerException();
+        }
+
+        this.list = value.split(",|;");
+        for (int i = 0; i < list.length; i++) {
+            list[i] = list[i].trim();
+        }
+    }
+
     public int size() {
         return list.length;
     }

@@ -20,9 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.core;
 
-import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
@@ -31,24 +29,26 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.dhns.DhnsGraphController;
+import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 import org.gephi.graph.dhns.graph.Condition;
 import org.gephi.graph.dhns.graph.EdgeIterableImpl;
 import org.gephi.graph.dhns.graph.NodeIterableImpl;
+import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 import org.openide.util.Lookup;
 
 /**
- * Main class of the DHNS (Durable Hierarchical Network Structure) grapg structure..
+ * Main class of the DHNS (Durable Hierarchical Network Structure) graph structure..
  *
  * @author Mathieu Bastian
  */
 public class Dhns {
 
     //Core
+    private DhnsGraphController controller;
     private TreeStructure treeStructure;
     private StructureModifier structureModifier;
     private GraphVersion graphVersion;
-    private GraphFactoryImpl graphFactory;
-    private IDGen idGen;
 
     //Type
     private boolean directed = false;
@@ -61,12 +61,11 @@ public class Dhns {
     //External
     private AttributeRowFactory attributesFactory;
 
-    public Dhns() {
-        idGen = new IDGen();
+    public Dhns(DhnsGraphController controller) {
+        this.controller = controller;
         treeStructure = new TreeStructure();
         graphVersion = new GraphVersion();
         structureModifier = new StructureModifier(this);
-        graphFactory = new GraphFactoryImpl(this);
         init();
 
         if(Lookup.getDefault().lookup(AttributeController.class)!=null) {
@@ -75,29 +74,11 @@ public class Dhns {
     }
 
     public void init() {
-        //importFakeGraph();
-        //treeStructure.showTreeAsTable();
+
     }
 
-    public void endImport() {
-        //freeMode.init();
-        //treeStructure.showTreeAsTable(sightManager.getMainSight());
-    }
-
-    private void importFakeGraph() {
-        /*CompleteTreeImporter importer = new CompleteTreeImporter(treeStructure);
-
-        //importer.importGraph(5, true);
-        importer.importGraph(3, 6, false);
-        //importer.shuffleEnable();
-        System.out.println("Tree size : " + treeStructure.getTreeSize());
-        //treeStructure.showTreeAsTable();
-
-        RandomEdgesGenerator reg = new RandomEdgesGenerator(treeStructure);
-        reg.generatPhysicalEdges(30);
-        freeMode.init();
-
-         */
+    public DhnsGraphController getController() {
+        return controller;
     }
 
     public TreeStructure getTreeStructure() {
@@ -113,26 +94,26 @@ public class Dhns {
     }
 
     public GraphFactoryImpl getGraphFactory() {
-        return graphFactory;
+        return controller.factory();
     }
 
     public IDGen getIdGen() {
-        return idGen;
+        return controller.getIDGen();
     }
 
-    public NodeIterable newNodeIterable(Iterator<Node> iterator) {
+    public NodeIterable newNodeIterable(AbstractNodeIterator iterator) {
         return new NodeIterableImpl(iterator, readWriteLock.readLock());
     }
 
-    public EdgeIterable newEdgeIterable(Iterator<Edge> iterator) {
+    public EdgeIterable newEdgeIterable(AbstractEdgeIterator iterator) {
         return new EdgeIterableImpl(iterator, readWriteLock.readLock());
     }
 
-    public NodeIterable newNodeIterable(Iterator<Node> iterator, Condition<Node> condition) {
+    public NodeIterable newNodeIterable(AbstractNodeIterator iterator, Condition<Node> condition) {
         return new NodeIterableImpl(iterator, readWriteLock.readLock(), condition);
     }
 
-    public EdgeIterable newEdgeIterable(Iterator<Edge> iterator, Condition<Edge> condition) {
+    public EdgeIterable newEdgeIterable(AbstractEdgeIterator iterator, Condition<Edge> condition) {
         return new EdgeIterableImpl(iterator, readWriteLock.readLock(), condition);
     }
 

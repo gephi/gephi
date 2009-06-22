@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.io.importer;
 
 import org.openide.util.NbBundle;
@@ -27,42 +26,41 @@ import org.openide.util.NbBundle;
  *
  * @author Mathieu Bastian
  */
-public final class ImportException extends Exception {
+public final class ImportException extends RuntimeException {
 
-	private final Throwable cause;
-	private final FileFormatImporter source;
+    private final Throwable cause;
+    private final FileFormatImporter source;
     private final String message;
 
-	public ImportException(FileFormatImporter source, Throwable cause)
-	{
-		super(cause);
-		this.cause = cause;
-		this.source = source;
+    public ImportException(FileFormatImporter source, Throwable cause) {
+        super(cause);
+        this.cause = cause;
+        this.source = source;
         this.message = "";
-	}
+    }
 
-    public ImportException(String message)
-    {
+    public ImportException(String message) {
         super(message);
         this.cause = null;
         this.source = null;
         this.message = message;
     }
 
-	@Override
-	public String getMessage() {
-        if(this.cause==null && this.source==null)
+    @Override
+    public String getMessage() {
+        if (this.cause == null && this.source == null) {
             return message;
-		return getLocalizedMessage();
-	}
+        }
+        return getLocalizedMessage();
+    }
 
-	@Override
-	public String getLocalizedMessage()
-	{
-        if(this.cause==null && this.source==null)
+    @Override
+    public String getLocalizedMessage() {
+        if (this.cause == null && this.source == null) {
             return message;
-		String sourceName="";
-		sourceName = source.getClass().getName();
+        }
+        String sourceName = "";
+        sourceName = source.getClass().getName();
 
         Object[] params = new Object[5];
         params[0] = sourceName;
@@ -72,6 +70,5 @@ public final class ImportException extends Exception {
         params[4] = cause.getStackTrace()[0].getLineNumber();
         String msg = String.format(NbBundle.getMessage(getClass(), "importException_message"), params);
         return msg;
-	}
-
+    }
 }

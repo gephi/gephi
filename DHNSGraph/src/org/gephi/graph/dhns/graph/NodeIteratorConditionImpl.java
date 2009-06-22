@@ -20,9 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
-import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 
 /**
  * Iterator for {@link NodeIterableImpl} which validates the given condition.
@@ -34,7 +34,7 @@ public class NodeIteratorConditionImpl extends NodeIteratorImpl {
     protected Condition<Node> condition;
     protected Node pointer;
 
-    public NodeIteratorConditionImpl(Iterator<Node> iterator, Lock lock, Condition<Node> condition) {
+    public NodeIteratorConditionImpl(AbstractNodeIterator iterator, Lock lock, Condition<Node> condition) {
         super(iterator, lock);
     }
 

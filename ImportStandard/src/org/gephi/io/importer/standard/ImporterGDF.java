@@ -64,83 +64,74 @@ public class ImporterGDF implements TextImporter {
         edgeLineStart = new String[]{"edgedef>", "Edgedef>"};
     }
 
-    public void importData(BufferedReader reader, ContainerLoader container) throws ImportException {
+    public void importData(BufferedReader reader, ContainerLoader container) throws Exception {
         this.container = container;
-        try {
 
-            //Verify a node line exists and puts nodes and edges lines in arrays
-            walkFile(reader);
+        //Verify a node line exists and puts nodes and edges lines in arrays
+        walkFile(reader);
 
-            //Magix regex
-            Pattern pattern = Pattern.compile("(?<=(?:,|^)\")(.*?)(?=(?<=(?:[^\\\\]))\",|\"$)|(?<=(?:,|^)')(.*?)(?=(?<=(?:[^\\\\]))',|'$)|(?<=(?:,|^))(?=[^'\"])(.*?)(?=(?:,|$))|(?<=,)($)");
+        //Magix regex
+        Pattern pattern = Pattern.compile("(?<=(?:,|^)\")(.*?)(?=(?<=(?:[^\\\\]))\",|\"$)|(?<=(?:,|^)')(.*?)(?=(?<=(?:[^\\\\]))',|'$)|(?<=(?:,|^))(?=[^'\"])(.*?)(?=(?:,|$))|(?<=,)($)");
 
-            //Nodes
-            for (String nodeLine : nodeLines) {
+        //Nodes
+        for (String nodeLine : nodeLines) {
 
-                //Create Node
-                NodeDraft node = container.newNodeDraft();
+            //Create Node
+            NodeDraft node = container.factory().newNodeDraft();
 
-                Matcher m = pattern.matcher(nodeLine);
-                int count = 0;
-                while (m.find()) {
-                    int start = m.start();
-                    int end = m.end();
-                    if (start != end) {
-                        String data = nodeLine.substring(start, end);
-                        data = data.trim();
-                        if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
-                            if (count == 0) {
-                                //Id
-                                node.setId(data);
-                            } else if (count < nodeColumns.length) {
-                                setNodeData(node, nodeColumns[count - 1], data);
-                            }
+            Matcher m = pattern.matcher(nodeLine);
+            int count = 0;
+            while (m.find()) {
+                int start = m.start();
+                int end = m.end();
+                if (start != end) {
+                    String data = nodeLine.substring(start, end);
+                    data = data.trim();
+                    if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
+                        if (count == 0) {
+                            //Id
+                            node.setId(data);
+                        } else if (count - 1 < nodeColumns.length) {
+                            setNodeData(node, nodeColumns[count - 1], data);
                         }
                     }
-                    count++;
                 }
-
-                container.addNode(node);
+                count++;
             }
 
-            //Edges
-            for (String edgeLine : edgeLines) {
+            container.addNode(node);
+        }
 
-                //Create Edge
-                EdgeDraft edge = container.newEdgeDraft();
+        //Edges
+        for (String edgeLine : edgeLines) {
 
-                Matcher m = pattern.matcher(edgeLine);
-                int count = 0;
-                while (m.find()) {
-                    int start = m.start();
-                    int end = m.end();
-                    if (start != end) {
-                        String data = edgeLine.substring(start, end);
-                        data = data.trim();
-                        if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
-                            if (count == 0) {
-                                NodeDraft nodeSource = container.getNode(data);
-                                edge.setNodeSource(nodeSource);
-                            } else if (count == 1) {
-                                NodeDraft nodeTarget = container.getNode(data);
-                                edge.setNodeTarget(nodeTarget);
-                            } else if (count < edgeColumns.length) {
-                                setEdgeData(edge, edgeColumns[count - 2], data);
-                            }
+            //Create Edge
+            EdgeDraft edge = container.factory().newEdgeDraft();
+
+            Matcher m = pattern.matcher(edgeLine);
+            int count = 0;
+            while (m.find()) {
+                int start = m.start();
+                int end = m.end();
+                if (start != end) {
+                    String data = edgeLine.substring(start, end);
+                    data = data.trim();
+                    if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
+                        if (count == 0) {
+                            NodeDraft nodeSource = container.getNode(data);
+                            edge.setSource(nodeSource);
+                        } else if (count == 1) {
+                            NodeDraft nodeTarget = container.getNode(data);
+                            edge.setTarget(nodeTarget);
+                        } else if (count-2 < edgeColumns.length ) {
+                            setEdgeData(edge, edgeColumns[count - 2], data);
                         }
                     }
-                    count++;
                 }
-
-                container.addEdge(edge);
+                count++;
             }
 
-        } catch (Exception ex) {
-            if (ex instanceof ImportException) {
-                throw (ImportException) ex;
-            } else {
-                throw new ImportException(this, ex);
-            }
+            container.addEdge(edge);
         }
 
     }
@@ -174,7 +165,7 @@ public class ImporterGDF implements TextImporter {
         }
     }
 
-    private void findNodeColumns(String line) throws ImportException {
+    private void findNodeColumns(String line) throws Exception {
         String[] columns = line.split(",");
         nodeColumns = new GDFColumn[columns.length - 1];
 
@@ -184,8 +175,8 @@ public class ImporterGDF implements TextImporter {
             String columnName;
             AttributeType type = AttributeType.STRING;
             try {
-                typeString = columnString.substring(columnString.lastIndexOf(" ")).toLowerCase();
-                columnName = columnString.substring(0, columnString.lastIndexOf(" "));
+                typeString = columnString.substring(columnString.lastIndexOf(" ")).trim().toLowerCase();
+                columnName = columnString.substring(0, columnString.lastIndexOf(" ")).trim().toLowerCase();
             } catch (IndexOutOfBoundsException e) {
                 throw new ImportException(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat2"));
             }
@@ -197,6 +188,8 @@ public class ImporterGDF implements TextImporter {
             if (typeString.equals("varchar")) {
                 type = AttributeType.STRING;
             } else if (typeString.equals("bool")) {
+                type = AttributeType.BOOLEAN;
+            } else if (typeString.equals("boolean")) {
                 type = AttributeType.BOOLEAN;
             } else if (typeString.equals("integer")) {
                 type = AttributeType.INT;
@@ -239,7 +232,7 @@ public class ImporterGDF implements TextImporter {
         }
     }
 
-    private void findEdgeColumns(String line) throws ImportException {
+    private void findEdgeColumns(String line) throws Exception {
         String[] columns = line.split(",");
         edgeColumns = new GDFColumn[columns.length - 2];
 
@@ -249,8 +242,8 @@ public class ImporterGDF implements TextImporter {
             String columnName;
             AttributeType type = AttributeType.STRING;
             try {
-                typeString = columnString.substring(columnString.lastIndexOf(" ")).toLowerCase();
-                columnName = columnString.substring(0, columnString.lastIndexOf(" "));
+                typeString = columnString.substring(columnString.lastIndexOf(" ")).trim().toLowerCase();
+                columnName = columnString.substring(0, columnString.lastIndexOf(" ")).trim().toLowerCase();
             } catch (IndexOutOfBoundsException e) {
                 throw new ImportException(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat2"));
             }
@@ -262,6 +255,8 @@ public class ImporterGDF implements TextImporter {
             if (typeString.equals("varchar")) {
                 type = AttributeType.STRING;
             } else if (typeString.equals("bool")) {
+                type = AttributeType.BOOLEAN;
+            } else if (typeString.equals("boolean")) {
                 type = AttributeType.BOOLEAN;
             } else if (typeString.equals("integer")) {
                 type = AttributeType.INT;
@@ -277,14 +272,12 @@ public class ImporterGDF implements TextImporter {
 
             if (columnName.equals("color")) {
                 edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.COLOR);
-            } else if (columnName.equals("fixed")) {
-                edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.DIRECTED);
-            } else if (columnName.equals("style")) {
-                edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.WEIGHT);
-            } else if (columnName.equals("width")) {
-                edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.WIDTH);
-            } else if (columnName.equals("height")) {
+            } else if (columnName.equals("visible")) {
                 edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.VISIBLE);
+            } else if (columnName.equals("weight")) {
+                edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.WEIGHT);
+            } else if (columnName.equals("directed")) {
+                edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.DIRECTED);
             } else if (columnName.equals("label")) {
                 edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.LABEL);
             } else if (columnName.equals("labelvisible")) {
@@ -315,7 +308,7 @@ public class ImporterGDF implements TextImporter {
         return false;
     }
 
-    private void setNodeData(NodeDraft node, GDFColumn column, String data) throws ImportException {
+    private void setNodeData(NodeDraft node, GDFColumn column, String data) throws Exception {
         if (column.getNodeColumn() != null) {
             try {
                 switch (column.getNodeColumn()) {
@@ -350,16 +343,22 @@ public class ImporterGDF implements TextImporter {
                         break;
                 }
             } catch (Exception e) {
-                String message = String.format(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3"), column.getNodeColumn(), data);
+                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3", column.getNodeColumn(), node, data);
                 throw new ImportException(message);
             }
         } else if (column.getAttributeColumn() != null) {
-            node.addAttributeValue(column.getAttributeColumn(), data);
+            try {
+                node.addAttributeValue(column.getAttributeColumn(), data);
+            } catch(ClassCastException e) {
+                e.printStackTrace();
+                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat4", column.getAttributeColumn().getAttributeType(), column.getAttributeColumn().getTitle(), node);
+                throw new ImportException(message);
+            }
         }
     }
 
-    private void setEdgeData(EdgeDraft edge, GDFColumn column, String data) throws ImportException {
-        if (column.getNodeColumn() != null) {
+    private void setEdgeData(EdgeDraft edge, GDFColumn column, String data) throws Exception {
+        if (column.getEdgeColumn() != null) {
             try {
                 switch (column.getEdgeColumn()) {
                     case COLOR:
@@ -372,9 +371,14 @@ public class ImporterGDF implements TextImporter {
                         edge.setVisible(Boolean.parseBoolean(data));
                         break;
                     case WEIGHT:
+                        edge.setWeight(Float.parseFloat(data));
                         break;
                     case DIRECTED:
-                        edge.setDirected(Boolean.parseBoolean(data));
+                        if (Boolean.parseBoolean(data)) {
+                            edge.setType(EdgeDraft.EdgeType.DIRECTED);
+                        } else {
+                            edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
+                        }
                         break;
                     case LABEL:
                         edge.setLabel(data);
@@ -384,11 +388,17 @@ public class ImporterGDF implements TextImporter {
                         break;
                 }
             } catch (Exception e) {
-                String message = String.format(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3"), column.getNodeColumn(), data);
+                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat3", column.getEdgeColumn(), data);
                 throw new ImportException(message);
             }
         } else if (column.getAttributeColumn() != null) {
-            edge.addAttributeValue(column.getAttributeColumn(), data);
+            try {
+                edge.addAttributeValue(column.getAttributeColumn(), data);
+            } catch(ClassCastException e) {
+                e.printStackTrace();
+                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat4", column.getAttributeColumn().getAttributeType(), column.getAttributeColumn().getTitle(), edge);
+                throw new ImportException(message);
+            }
         }
     }
 
@@ -401,7 +411,7 @@ public class ImporterGDF implements TextImporter {
 
         public enum EdgeGuessColumn {
 
-            VISIBLE, COLOR, WEIGHT, WIDTH, DIRECTED, LABEL, LABELVISIBLE
+            VISIBLE, COLOR, WEIGHT, DIRECTED, LABEL, LABELVISIBLE
         };
         private AttributeColumn column;
         private NodeGuessColumn nodeColumn;

@@ -38,8 +38,11 @@ public class AttributeFactoryImpl implements AttributeValueFactory, AttributeRow
     }
 
     public AttributeValue newValue(AttributeColumn column, Object value) {
+        if (value.getClass() != column.getAttributeType().getType() && value.getClass() == String.class) {
+            value = column.getAttributeType().parse((String) value);
+        }
         Object managedValue = manager.getManagedValue(value, column.getAttributeType());
-        return new AttributeValueImpl((AttributeColumnImpl)column, managedValue);
+        return new AttributeValueImpl((AttributeColumnImpl) column, managedValue);
     }
 
     public AttributeRowImpl newNodeRow() {

@@ -25,15 +25,12 @@ import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.mode.ModeManager;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.swing.GraphDrawableImpl;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-//import org.openide.util.Utilities;
 
 /**
  * Top component which displays something.
@@ -44,7 +41,6 @@ final class GraphTopComponent extends TopComponent {
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "GraphTopComponent";
-
     private AbstractEngine engine;
 
     private GraphTopComponent() {
@@ -61,9 +57,11 @@ final class GraphTopComponent extends TopComponent {
 
         //Request component activation and therefore initialize JOGL component
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+
             public void run() {
                 open();
                 SwingUtilities.invokeLater(new Runnable() {
+
                     public void run() {
                         requestActive();
                         add(drawable.getGraphComponent(), BorderLayout.CENTER);
@@ -72,8 +70,8 @@ final class GraphTopComponent extends TopComponent {
                 });
             }
         });
-        //add(drawable.getGraphComponent(), BorderLayout.CENTER);
-        //remove(waitingLabel);
+    //add(drawable.getGraphComponent(), BorderLayout.CENTER);
+    //remove(waitingLabel);
     }
 
     /** This method is called from within the constructor to
@@ -84,7 +82,13 @@ final class GraphTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        graphGroup1 = new javax.swing.ButtonGroup();
         waitingLabel = new javax.swing.JLabel();
+        controlTab = new javax.swing.JTabbedPane();
+        graphPanel = new javax.swing.JPanel();
+        fullGraphButton = new javax.swing.JToggleButton();
+        visibleGraphButton = new javax.swing.JToggleButton();
+        highlightGraphButton = new javax.swing.JToggleButton();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -92,8 +96,86 @@ final class GraphTopComponent extends TopComponent {
         org.openide.awt.Mnemonics.setLocalizedText(waitingLabel, org.openide.util.NbBundle.getMessage(GraphTopComponent.class, "GraphTopComponent.waitingLabel.text")); // NOI18N
         waitingLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         add(waitingLabel, java.awt.BorderLayout.CENTER);
+
+        graphGroup1.add(fullGraphButton);
+        fullGraphButton.setSelected(true);
+        org.openide.awt.Mnemonics.setLocalizedText(fullGraphButton, org.openide.util.NbBundle.getMessage(GraphTopComponent.class, "GraphTopComponent.fullGraphButton.text")); // NOI18N
+        fullGraphButton.setMargin(new java.awt.Insets(2, 7, 2, 7));
+        fullGraphButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fullGraphButtonActionPerformed(evt);
+            }
+        });
+
+        graphGroup1.add(visibleGraphButton);
+        org.openide.awt.Mnemonics.setLocalizedText(visibleGraphButton, org.openide.util.NbBundle.getMessage(GraphTopComponent.class, "GraphTopComponent.visibleGraphButton.text")); // NOI18N
+        visibleGraphButton.setMargin(new java.awt.Insets(2, 7, 2, 7));
+        visibleGraphButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                visibleGraphButtonActionPerformed(evt);
+            }
+        });
+
+        graphGroup1.add(highlightGraphButton);
+        org.openide.awt.Mnemonics.setLocalizedText(highlightGraphButton, org.openide.util.NbBundle.getMessage(GraphTopComponent.class, "GraphTopComponent.highlightGraphButton.text")); // NOI18N
+        highlightGraphButton.setMargin(new java.awt.Insets(2, 7, 2, 7));
+        highlightGraphButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                highlightGraphButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout graphPanelLayout = new javax.swing.GroupLayout(graphPanel);
+        graphPanel.setLayout(graphPanelLayout);
+        graphPanelLayout.setHorizontalGroup(
+            graphPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(graphPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(fullGraphButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(visibleGraphButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(highlightGraphButton)
+                .addContainerGap(232, Short.MAX_VALUE))
+        );
+        graphPanelLayout.setVerticalGroup(
+            graphPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, graphPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(graphPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(fullGraphButton)
+                    .addComponent(visibleGraphButton)
+                    .addComponent(highlightGraphButton))
+                .addContainerGap())
+        );
+
+        controlTab.addTab(org.openide.util.NbBundle.getMessage(GraphTopComponent.class, "GraphTopComponent.graphPanel.TabConstraints.tabTitle"), graphPanel); // NOI18N
+
+        add(controlTab, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void fullGraphButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fullGraphButtonActionPerformed
+        ModeManager modeManager = VizController.getInstance().getModeManager();
+        modeManager.selectMode(ModeManager.AVAILABLE_MODES.FULL);
+    }//GEN-LAST:event_fullGraphButtonActionPerformed
+
+    private void visibleGraphButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visibleGraphButtonActionPerformed
+        ModeManager modeManager = VizController.getInstance().getModeManager();
+        modeManager.selectMode(ModeManager.AVAILABLE_MODES.VISIBLE);
+    }//GEN-LAST:event_visibleGraphButtonActionPerformed
+
+    private void highlightGraphButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_highlightGraphButtonActionPerformed
+        ModeManager modeManager = VizController.getInstance().getModeManager();
+        modeManager.selectMode(ModeManager.AVAILABLE_MODES.HIGHLIGHT);
+    }//GEN-LAST:event_highlightGraphButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTabbedPane controlTab;
+    private javax.swing.JToggleButton fullGraphButton;
+    private javax.swing.ButtonGroup graphGroup1;
+    private javax.swing.JPanel graphPanel;
+    private javax.swing.JToggleButton highlightGraphButton;
+    private javax.swing.JToggleButton visibleGraphButton;
     private javax.swing.JLabel waitingLabel;
     // End of variables declaration//GEN-END:variables
 

@@ -37,6 +37,8 @@ public interface NodeDraft {
 
     public void setColor(int r, int g, int b);
 
+    public void setColor(String color);
+
     public void setLabel(String label);
 
     public void setSize(float size);
@@ -53,9 +55,13 @@ public interface NodeDraft {
 
     public void setLabelVisible(boolean labelVisible);
 
+    public void setLabelSize(float size);
+
     public void setVisible(boolean visible);
 
     public void addAttributeValue(AttributeColumn column, Object value);
 
     public void addChild(NodeDraft child);
+
+    public void setParent(NodeDraft draft);
 }

@@ -26,7 +26,9 @@ import org.gephi.data.attributes.api.AttributeManager;
  *
  * @author Mathieu
  */
-public interface ContainerLoader  {
+public interface ContainerLoader {
+
+    public void addEdge(EdgeDraft edgeDraft);
 
     public void addNode(NodeDraft nodeDraft);
 
@@ -34,13 +36,24 @@ public interface ContainerLoader  {
 
     public boolean nodeExists(String id);
 
-    public void addEdge(EdgeDraft edgeDraft);
+    public EdgeDraft getEdge(String id);
 
-    public NodeDraft newNodeDraft();
+    public EdgeDraft getEdge(NodeDraft source, NodeDraft target);
 
-    public EdgeDraft newEdgeDraft();
+    public boolean edgeExists(String id);
+
+    public boolean edgeExists(NodeDraft source, NodeDraft target);
+
+    public void setEdgeDefault(EdgeDefault edgeDefault);
 
     public AttributeManager getAttributeManager();
 
-    public void addNode(NodeDraft node, NodeDraft parent);
+    public ContainerFactory factory();
+
+    public interface ContainerFactory {
+
+        public NodeDraft newNodeDraft();
+
+        public EdgeDraft newEdgeDraft();
+    }
 }

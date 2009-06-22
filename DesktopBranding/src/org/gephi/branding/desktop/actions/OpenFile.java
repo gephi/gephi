@@ -77,13 +77,7 @@ public class OpenFile extends SystemAction {
             File file = chooser.getSelectedFile();
             file = FileUtil.normalizeFile(file);
             FileObject fileObject = FileUtil.toFileObject(file);
-
-            try {
-                importController.doImport(fileObject);
-            } catch (ImportException ex) {
-                NotifyDescriptor.Message e = new NotifyDescriptor.Message(ex.getMessage(),NotifyDescriptor.WARNING_MESSAGE);
-                DialogDisplayer.getDefault().notifyLater(e);
-            }
+            importController.doImport(fileObject);
         }
     }
 

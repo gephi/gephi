@@ -55,7 +55,7 @@ public interface Renderable extends Spatial {
 
     public void setAlpha(float alpha);
 
-    public Object3d getObject3d();
+    public Model getModel();
 
-    public void setObject3d(Object3d obj);
+    public void setModel(Model obj);
 }

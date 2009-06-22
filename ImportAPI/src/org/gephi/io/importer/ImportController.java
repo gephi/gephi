@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.importer;
 
-import java.io.InputStream;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -31,5 +30,5 @@ public interface ImportController {
 
     public FileType[] getFileTypes();
 
-    public void doImport(FileObject fileObject) throws ImportException;
+    public void doImport(FileObject fileObject);
 }

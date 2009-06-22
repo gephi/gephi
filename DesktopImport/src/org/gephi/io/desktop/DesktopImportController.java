@@ -42,13 +42,14 @@ import org.gephi.io.importer.XMLImporter;
 import org.gephi.io.processor.Processor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
 
 /**
  *
@@ -65,37 +66,51 @@ public class DesktopImportController implements ImportController {
 
     }
 
-    public void doDynamicImport(InputStream stream) throws ImportException {
-    }
+    public void doImport(FileObject fileObject) {
+        try {
+            FileFormatImporter im = getMatchingImporter(fileObject);
+            if (im == null) {
+                throw new ImportException(NbBundle.getMessage(getClass(), "error_no_matching_importer"));
+            }
 
-    public void doImport(FileObject fileObject) throws ImportException {
-        FileFormatImporter im = getMatchingImporter(fileObject);
-        if (im == null) {
-            throw new ImportException(NbBundle.getMessage(getClass(), "error_no_matching_importer"));
-        }
+            ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+            Workspace workspace = projectController.importFile();
 
-        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-        Workspace workspace = projectController.importFile();
+            //Create Container
+            Container container = Lookup.getDefault().lookup(Container.class);
+            container.setSource("" + im.getClass());
+            container.setErrorMode(Container.ErrorMode.REPORT);
 
-        //Create Container
-        Container container = Lookup.getDefault().lookup(Container.class);
-        container.setSource(""+im.getClass());
+            if (im instanceof XMLImporter) {
+                Document document = getDocument(fileObject);
+                XMLImporter xmLImporter = (XMLImporter) im;
+                xmLImporter.importData(document, container.getLoader());
+                finishImport(container);
+            } else if (im instanceof TextImporter) {
+                BufferedReader reader = getTextReader(fileObject);
+                TextImporter textImporter = (TextImporter) im;
+                textImporter.importData(reader, container.getLoader());
+                finishImport(container);
+            } else if (im instanceof StreamImporter) {
+            }
 
-        if (im instanceof XMLImporter) {
-            Document document = getDocument(fileObject);
-            XMLImporter xmLImporter = (XMLImporter) im;
-            xmLImporter.importData(document, container.getLoader());
-            finishImport(container);
-        } else if (im instanceof TextImporter) {
-            BufferedReader reader = getTextReader(fileObject);
-            TextImporter textImporter = (TextImporter) im;
-            textImporter.importData(reader, container.getLoader());
-            finishImport(container);
-        } else if (im instanceof StreamImporter) {
+        } catch (Exception ex) {
+            NotifyDescriptor.Message e = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
+            DialogDisplayer.getDefault().notifyLater(e);
+            ex.printStackTrace();
         }
     }
 
     private void finishImport(Container container) {
+
+        Container.ContainerReport report = container.getReport();
+        String reportStr = report.getReport();
+        System.err.println(reportStr);
+        if (!reportStr.isEmpty()) {
+            NotifyDescriptor.Message e = new NotifyDescriptor.Message(reportStr, NotifyDescriptor.INFORMATION_MESSAGE);
+            DialogDisplayer.getDefault().notifyLater(e);
+        }
+
         Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
     }
 

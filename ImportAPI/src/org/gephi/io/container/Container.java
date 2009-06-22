@@ -26,6 +26,15 @@ package org.gephi.io.container;
  */
 public interface Container {
 
+    public enum ErrorMode {
+
+        NO_ERROR, REPORT, ALL
+    };
+
+    public void setErrorMode(ErrorMode errorMode);
+
+    public ErrorMode getErrorMode();
+
     public void setSource(String source);
 
     public String getSource();
@@ -33,4 +42,21 @@ public interface Container {
     public ContainerLoader getLoader();
 
     public ContainerUnloader getUnloader();
+
+    public void setAllowSelfLoop(boolean value);
+
+    public void setAllowAutoNode(boolean value);
+
+    public void setAllowParallelEdge(boolean value);
+
+    public ContainerReport getReport();
+
+    public interface ContainerReport {
+
+        public void append(String str);
+
+        public void append(Exception e);
+
+        public String getReport();
+    }
 }

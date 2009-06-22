@@ -22,12 +22,12 @@ package org.gephi.graph.dhns.node;
 
 import org.gephi.datastructure.avl.simple.AVLItem;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
-import org.gephi.graph.dhns.node.utils.avl.EdgeOppositeTree;
-import org.gephi.graph.dhns.node.utils.avl.MetaEdgeTree;
+import org.gephi.graph.dhns.utils.avl.EdgeOppositeTree;
+import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
 
 /**
  * Node of the tree. Maintained in a global order tree, the node is build on a <b>pre/post/size/level</b> pane.
- * The <b>pre</b> is the global number in the tree, the <b>size</b> the number of node's child and <b>level</b>
+ * The <b>pre</b> is the global number in the tree, the <b>size</b> the number of node's descendants and <b>level</b>
  * the level within the hierarchy (greater when deeper). The post is equal to <code>pre-level+size</code>
  * and speed up algorithms when performing skipping. It also directly contains a reference on
  * his {@link DurableAVLNode}.
@@ -110,6 +110,14 @@ public class PreNode extends AbstractNode implements AVLItem {
 
     public boolean isValid() {
         return avlNode != null;
+    }
+
+    public void setEdgesInTree(EdgeOppositeTree edgesInTree) {
+        this.edgesInTree = edgesInTree;
+    }
+
+    public void setEdgesOutTree(EdgeOppositeTree edgesOutTree) {
+        this.edgesOutTree = edgesOutTree;
     }
 
     @Override

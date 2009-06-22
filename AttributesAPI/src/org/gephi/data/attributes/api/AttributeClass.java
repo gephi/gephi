@@ -18,10 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package org.gephi.data.attributes.api;
 
 /**
@@ -30,6 +27,10 @@ package org.gephi.data.attributes.api;
  */
 public interface AttributeClass {
 
+    /**
+     * Returns the name of the class.
+     * @return the name of the class
+     */
     public String getName();
 
     /**
@@ -43,7 +44,7 @@ public interface AttributeClass {
     public int countAttributeColumns();
 
     /**
-     * Create and add a new column to this class. The default origin is set at <code>DATA</code>.
+     * Creates and add a new column to this class. The default origin is set at <code>DATA</code>.
      * <p>
      * The title of the column is the identifier.
      * @param id The identifier of the column.

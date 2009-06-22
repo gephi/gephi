@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.opengl.compatibility;
 
 import com.sun.opengl.util.BufferUtil;
-import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -32,15 +31,15 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.objects.Object3dClass;
+import org.gephi.visualization.api.objects.ModelClass;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.api.Object3dImpl;
-import org.gephi.visualization.api.initializer.CompatibilityObject3dInitializer;
+import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.api.initializer.CompatibilityModeler;
 import org.gephi.visualization.opengl.octree.Octree;
 import org.gephi.visualization.api.Scheduler;
 import org.gephi.visualization.api.VizConfig.DisplayConfig;
-import org.gephi.visualization.api.objects.CompatibilityObject3dClass;
-import org.gephi.visualization.opengl.compatibility.objects.Potato3dObject;
+import org.gephi.visualization.api.objects.CompatibilityModelClass;
+import org.gephi.visualization.opengl.compatibility.objects.Potato3dModel;
 
 /**
  *
@@ -48,17 +47,16 @@ import org.gephi.visualization.opengl.compatibility.objects.Potato3dObject;
  */
 public class CompatibilityEngine extends AbstractEngine {
 
-    Octree octree;
     private CompatibilityScheduler scheduler;
 
     //User config
-    protected CompatibilityObject3dClass[] object3dClasses;
-    protected CompatibilityObject3dClass[] lodClasses;
-    protected CompatibilityObject3dClass[] selectableClasses;
-    protected CompatibilityObject3dClass[] clickableClasses;
+    protected CompatibilityModelClass[] modelClasses;
+    protected CompatibilityModelClass[] lodClasses;
+    protected CompatibilityModelClass[] selectableClasses;
+    protected CompatibilityModelClass[] clickableClasses;
 
     //Selection
-    private ConcurrentLinkedQueue<Object3dImpl>[] selectedObjects;
+    private ConcurrentLinkedQueue<ModelImpl>[] selectedObjects;
 
     public CompatibilityEngine() {
         super();
@@ -71,7 +69,7 @@ public class CompatibilityEngine extends AbstractEngine {
         vizEventManager = VizController.getInstance().getVizEventManager();
 
         //Init
-        octree = new Octree(vizConfig.getOctreeDepth(), vizConfig.getOctreeWidth(), object3dClasses.length);
+        octree = new Octree(vizConfig.getOctreeDepth(), vizConfig.getOctreeWidth(), modelClasses.length);
         octree.initArchitecture();
     }
 
@@ -79,7 +77,7 @@ public class CompatibilityEngine extends AbstractEngine {
         octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
 
         //Potatoes selection
-        if (object3dClasses[CLASS_POTATO].isEnabled()) {
+        if (modelClasses[CLASS_POTATO].isEnabled()) {
 
             int potatoCount = octree.countSelectedObjects(CLASS_POTATO);
             float[] mousePosition = graphIO.getMousePosition();
@@ -106,9 +104,9 @@ public class CompatibilityEngine extends AbstractEngine {
 
             //Draw the nodes' cube int the select buffer
             int hitName = 1;
-            Object3dImpl[] array = new Object3dImpl[potatoCount];
-            for (Iterator<Object3dImpl> itr = octree.getSelectedObjectIterator(CLASS_POTATO); itr.hasNext();) {
-                Potato3dObject obj = (Potato3dObject) itr.next();
+            ModelImpl[] array = new ModelImpl[potatoCount];
+            for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(CLASS_POTATO); itr.hasNext();) {
+                Potato3dModel obj = (Potato3dModel) itr.next();
                 obj.setUnderMouse(false);
                 if (obj.isDisplayReady()) {
                     array[hitName - 1] = obj;
@@ -136,7 +134,7 @@ public class CompatibilityEngine extends AbstractEngine {
             //Get the hits and put the node under selection in the selectionArray
             for (int i = 0; i < nbRecords; i++) {
                 int hit = hitsBuffer.get(i * 4 + 3) - 1; 		//-1 Because of the glPushName(0)
-                Potato3dObject obj = (Potato3dObject) array[hit];
+                Potato3dModel obj = (Potato3dModel) array[hit];
                 if (!obj.isParentUnderMouse()) {
                     obj.setUnderMouse(true);
                 }
@@ -146,17 +144,25 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public boolean updateWorld() {
-        if (dataBridge.requireUpdate()) {
-            dataBridge.updateWorld();
-            return true;
+        boolean res = false;
+        boolean changeMode = modeManager.requireModeChange();
+        if (changeMode) {
+            modeManager.unload();
         }
-        return false;
+        if (dataBridge.requireUpdate() || changeMode) {
+            dataBridge.updateWorld();
+            res = true;
+        }
+        if (changeMode) {
+            modeManager.changeMode();
+        }
+        return res;
     }
 
     @Override
     public void worldUpdated(int cacheMarker) {
         octree.setCacheMarker(cacheMarker);
-        for (Object3dClass objClass : object3dClasses) {
+        for (ModelClass objClass : modelClasses) {
             if (objClass.getCacheMarker() == cacheMarker) {
                 octree.cleanDeletedObjects(objClass.getClassId());
             }
@@ -169,27 +175,22 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void display(GL gl, GLU glu) {
-
-        for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_NODE); itr.hasNext();) {
-            Object3dImpl obj = itr.next();
-            object3dClasses[CLASS_NODE].getCurrentObject3dInitializer().chooseModel(obj);
+        for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
+            ModelImpl obj = itr.next();
+            modelClasses[AbstractEngine.CLASS_NODE].getCurrentModeler().chooseModel(obj);
             setViewportPosition(obj);
         }
 
         long startTime = System.currentTimeMillis();
 
-        if (object3dClasses[CLASS_EDGE].isEnabled()) {
+        if (modelClasses[AbstractEngine.CLASS_EDGE].isEnabled()) {
             gl.glDisable(GL.GL_LIGHTING);
-            //gl.glLineWidth(obj.getObj().getSize());
-            //gl.glDisable(GL.GL_BLEND);
-            //gl.glBegin(GL.GL_LINES);
-            //gl.glBegin(GL.GL_QUADS);
             gl.glBegin(GL.GL_TRIANGLES);
 
             if (vizConfig.getDisplayConfig() == DisplayConfig.DISPLAY_ALL) {
                 //Normal mode, all edges rendered
-                for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_EDGE); itr.hasNext();) {
-                    Object3dImpl obj = itr.next();
+                for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
+                    ModelImpl obj = itr.next();
                     //Renderable renderable = obj.getObj();
 
                     if (obj.markTime != startTime) {
@@ -200,8 +201,8 @@ public class CompatibilityEngine extends AbstractEngine {
                 }
             } else if (vizConfig.getDisplayConfig() == DisplayConfig.DISPLAY_NODES_EDGES) {
                 //Only edges on selected nodes are rendered
-                for (Iterator<Object3dImpl> itr = octree.getSelectedObjectIterator(CLASS_EDGE); itr.hasNext();) {
-                    Object3dImpl obj = itr.next();
+                for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(CLASS_EDGE); itr.hasNext();) {
+                    ModelImpl obj = itr.next();
                     if (obj.isSelected() && obj.markTime != startTime) {
                         obj.display(gl, glu);
                         obj.markTime = startTime;
@@ -209,8 +210,8 @@ public class CompatibilityEngine extends AbstractEngine {
                 }
             } else if (vizConfig.getDisplayConfig() == DisplayConfig.DISPLAY_ALPHA) {
                 //Selected edges are rendered with 1f alpha, half otherwise
-                for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_EDGE); itr.hasNext();) {
-                    Object3dImpl obj = itr.next();
+                for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
+                    ModelImpl obj = itr.next();
                     if (obj.markTime != startTime) {
                         obj.getObj().setAlpha(obj.isSelected() ? 1f : 0.2f);
                         obj.display(gl, glu);
@@ -223,35 +224,11 @@ public class CompatibilityEngine extends AbstractEngine {
         //gl.glEnable(GL.GL_BLEND);
         }
 
-        //Node
-        if (object3dClasses[CLASS_NODE].isEnabled()) {
-            if (vizConfig.getDisplayConfig() == DisplayConfig.DISPLAY_ALPHA) {
-                //Selected nodes are rendered with 1f alpha, half otherwise
-                for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_NODE); itr.hasNext();) {
-                    Object3dImpl obj = itr.next();
-                    if (obj.markTime != startTime) {
-                        obj.getObj().setAlpha(obj.isSelected() ? 1f : 0.2f);
-                        obj.display(gl, glu);
-                        obj.markTime = startTime;
-                    }
-                }
-            } else {
-                //Mode normal
-                for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_NODE); itr.hasNext();) {
-                    Object3dImpl obj = itr.next();
-                    if (obj.markTime != startTime) {
-                        obj.display(gl, glu);
-                        obj.markTime = startTime;
-                    }
-                }
-            }
-        }
-
         //Arrows
-        if (object3dClasses[CLASS_ARROW].isEnabled()) {
+        if (modelClasses[AbstractEngine.CLASS_ARROW].isEnabled()) {
             gl.glBegin(GL.GL_TRIANGLES);
-            for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_ARROW); itr.hasNext();) {
-                Object3dImpl obj = itr.next();
+            for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_ARROW); itr.hasNext();) {
+                ModelImpl obj = itr.next();
                 if (obj.markTime != startTime) {
                     obj.display(gl, glu);
                     obj.markTime = startTime;
@@ -260,35 +237,19 @@ public class CompatibilityEngine extends AbstractEngine {
             gl.glEnd();
         }
 
-        //Potatoes
-        if (object3dClasses[CLASS_POTATO].isEnabled()) {
-            //gl.glDisable(GL.GL_LIGHTING);
-
-            //Triangles
-            gl.glDisable(GL.GL_LIGHTING);
-            gl.glBegin(GL.GL_TRIANGLES);
-            for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_POTATO); itr.hasNext();) {
-                Object3dImpl obj = itr.next();
-                if (!obj.mark) {
-                    obj.display(gl, glu);
-                    obj.mark = true;
-                }
-            }
-            gl.glEnd();
-            gl.glEnable(GL.GL_LIGHTING);
-
-            //Solid disk
-            for (Iterator<Object3dImpl> itr = octree.getObjectIterator(CLASS_POTATO); itr.hasNext();) {
-                Object3dImpl obj = itr.next();
+        //Node
+        if (modelClasses[AbstractEngine.CLASS_NODE].isEnabled()) {
+            //Mode normal
+            for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
+                ModelImpl obj = itr.next();
                 if (obj.markTime != startTime) {
                     obj.display(gl, glu);
                     obj.markTime = startTime;
-                    obj.mark = false;
                 }
             }
-        //gl.glEnable(GL.GL_LIGHTING);
-        }
 
+        }
+        
         octree.displayOctree(gl);
     }
 
@@ -309,24 +270,24 @@ public class CompatibilityEngine extends AbstractEngine {
     }
 
     @Override
-    public void addObject(int classID, Object3dImpl obj) {
+    public void addObject(int classID, ModelImpl obj) {
         octree.addObject(classID, obj);
     }
 
     @Override
-    public void removeObject(int classID, Object3dImpl obj) {
+    public void removeObject(int classID, ModelImpl obj) {
         octree.removeObject(classID, obj);
     }
 
     @Override
-    public void resetObjectClass(Object3dClass object3dClass) {
+    public void resetObjectClass(ModelClass object3dClass) {
         octree.resetObjectClass(object3dClass.getClassId());
     }
 
     @Override
     public void mouseClick() {
-        for (Object3dClass objClass : clickableClasses) {
-            Object3dImpl[] objArray = selectedObjects[objClass.getSelectionId()].toArray(new Object3dImpl[0]);
+        for (ModelClass objClass : clickableClasses) {
+            ModelImpl[] objArray = selectedObjects[objClass.getSelectionId()].toArray(new ModelImpl[0]);
             if (objArray.length > 0) {
                 eventBridge.mouseClick(objClass, objArray);
             }
@@ -336,7 +297,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public void mouseDrag() {
         float[] drag = graphIO.getMouseDrag();
-        for (Object3dImpl obj : selectedObjects[0]) {
+        for (ModelImpl obj : selectedObjects[0]) {
             float[] mouseDistance = obj.getDragDistanceFromMouse();
             obj.getObj().setX(drag[0] + mouseDistance[0]);
             obj.getObj().setY(drag[1] + mouseDistance[1]);
@@ -346,19 +307,19 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public void mouseMove() {
 
-        List<Object3dImpl> newSelectedObjects = null;
-        List<Object3dImpl> unSelectedObjects = null;
+        List<ModelImpl> newSelectedObjects = null;
+        List<ModelImpl> unSelectedObjects = null;
 
         if (vizEventManager.hasSelectionListeners()) {
-            newSelectedObjects = new ArrayList<Object3dImpl>();
-            unSelectedObjects = new ArrayList<Object3dImpl>();
+            newSelectedObjects = new ArrayList<ModelImpl>();
+            unSelectedObjects = new ArrayList<ModelImpl>();
         }
 
         long markTime = System.currentTimeMillis();
         int i = 0;
-        for (Object3dClass objClass : selectableClasses) {
-            for (Iterator<Object3dImpl> itr = octree.getSelectedObjectIterator(objClass.getClassId()); itr.hasNext();) {
-                Object3dImpl obj = itr.next();
+        for (ModelClass objClass : selectableClasses) {
+            for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(objClass.getClassId()); itr.hasNext();) {
+                ModelImpl obj = itr.next();
                 if (isUnderMouse(obj) && currentSelectionArea.select(obj.getObj())) {
                     if (!obj.isSelected()) {
                         //New selected
@@ -376,8 +337,8 @@ public class CompatibilityEngine extends AbstractEngine {
                 }
             }
 
-            for (Iterator<Object3dImpl> itr = selectedObjects[i].iterator(); itr.hasNext();) {
-                Object3dImpl o = itr.next();
+            for (Iterator<ModelImpl> itr = selectedObjects[i].iterator(); itr.hasNext();) {
+                ModelImpl o = itr.next();
                 if (o.selectionMark != markTime) {
                     itr.remove();
                     o.setSelected(false);
@@ -396,8 +357,8 @@ public class CompatibilityEngine extends AbstractEngine {
         float x = graphIO.getMouseDrag()[0];
         float y = graphIO.getMouseDrag()[1];
 
-        for (Iterator<Object3dImpl> itr = selectedObjects[0].iterator(); itr.hasNext();) {
-            Object3dImpl o = itr.next();
+        for (Iterator<ModelImpl> itr = selectedObjects[0].iterator(); itr.hasNext();) {
+            ModelImpl o = itr.next();
             float[] tab = o.getDragDistanceFromMouse();
             tab[0] = o.getObj().x() - x;
             tab[1] = o.getObj().y() - y;
@@ -411,7 +372,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void updateObjectsPosition() {
-        for (Object3dClass objClass : object3dClasses) {
+        for (ModelClass objClass : modelClasses) {
             if (objClass.isEnabled()) {
                 octree.updateObjectsPosition(objClass.getClassId());
             }
@@ -445,12 +406,12 @@ public class CompatibilityEngine extends AbstractEngine {
         gl.glEndList();
         //Fin
 
-        for (CompatibilityObject3dInitializer cis : object3dClasses[CLASS_NODE].getObject3dInitializers()) {
+        for (CompatibilityModeler cis : modelClasses[CLASS_NODE].getModelers()) {
             int newPtr = cis.initDisplayLists(gl, glu, quadric, ptr);
             ptr = newPtr;
         }
 
-        object3dClasses[CLASS_POTATO].getCurrentObject3dInitializer().initDisplayLists(gl, glu, quadric, ptr);
+        modelClasses[CLASS_POTATO].getCurrentModeler().initDisplayLists(gl, glu, quadric, ptr);
 
         //Fin
 
@@ -478,20 +439,20 @@ public class CompatibilityEngine extends AbstractEngine {
     }
 
     public void initObject3dClass() {
-        object3dClasses = objectClassLibrary.createObjectClassesCompatibility(this);
-        lodClasses = new CompatibilityObject3dClass[0];
-        selectableClasses = new CompatibilityObject3dClass[0];
-        clickableClasses = new CompatibilityObject3dClass[0];
+        modelClasses = modelClassLibrary.createModelClassesCompatibility(this);
+        lodClasses = new CompatibilityModelClass[0];
+        selectableClasses = new CompatibilityModelClass[0];
+        clickableClasses = new CompatibilityModelClass[0];
 
 
-        object3dClasses[0].setEnabled(true);
-        object3dClasses[1].setEnabled(true);
-        object3dClasses[2].setEnabled(true);
-        object3dClasses[3].setEnabled(true);
+        modelClasses[0].setEnabled(true);
+        modelClasses[1].setEnabled(true);
+        modelClasses[2].setEnabled(true);
+        modelClasses[3].setEnabled(true);
 
         //LOD
-        ArrayList<Object3dClass> classList = new ArrayList<Object3dClass>();
-        for (Object3dClass objClass : object3dClasses) {
+        ArrayList<ModelClass> classList = new ArrayList<ModelClass>();
+        for (ModelClass objClass : modelClasses) {
             if (objClass.isLod()) {
                 classList.add(objClass);
             }
@@ -500,7 +461,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
         //Selectable
         classList.clear();
-        for (Object3dClass objClass : object3dClasses) {
+        for (ModelClass objClass : modelClasses) {
             if (objClass.isSelectable()) {
                 classList.add(objClass);
             }
@@ -509,7 +470,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
         //Clickable
         classList.clear();
-        for (Object3dClass objClass : object3dClasses) {
+        for (ModelClass objClass : modelClasses) {
             if (objClass.isClickable()) {
                 classList.add(objClass);
             }
@@ -519,9 +480,9 @@ public class CompatibilityEngine extends AbstractEngine {
         //Init selection lists
         selectedObjects = new ConcurrentLinkedQueue[selectableClasses.length];
         int i = 0;
-        for (Object3dClass objClass : selectableClasses) {
+        for (ModelClass objClass : selectableClasses) {
             objClass.setSelectionId(i);
-            selectedObjects[i] = new ConcurrentLinkedQueue<Object3dImpl>();
+            selectedObjects[i] = new ConcurrentLinkedQueue<ModelImpl>();
             i++;
         }
     }
@@ -545,8 +506,8 @@ public class CompatibilityEngine extends AbstractEngine {
 
     }
 
-    public CompatibilityObject3dClass[] getObject3dClasses() {
-        return object3dClasses;
+    public CompatibilityModelClass[] getModelClasses() {
+        return modelClasses;
     }
 
     public Scheduler getScheduler() {

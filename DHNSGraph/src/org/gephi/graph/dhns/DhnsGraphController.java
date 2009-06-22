@@ -25,10 +25,11 @@ import org.gephi.graph.api.ClusteredMixedGraph;
 import org.gephi.graph.api.ClusteredUndirectedGraph;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.graph.dhns.core.Dhns;
+import org.gephi.graph.dhns.core.GraphFactoryImpl;
+import org.gephi.graph.dhns.core.IDGen;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
 import org.gephi.graph.dhns.graph.ClusteredMixedGraphImpl;
 import org.gephi.graph.dhns.graph.ClusteredUndirectedGraphImpl;
@@ -40,14 +41,26 @@ import org.gephi.graph.dhns.graph.ClusteredUndirectedGraphImpl;
  */
 public class DhnsGraphController implements GraphController {
 
+    protected IDGen iDGen;
+    protected GraphFactoryImpl factory;
     protected Dhns dhns;
 
     public DhnsGraphController() {
-        dhns = new Dhns();
+        iDGen = new IDGen();
+        dhns = new Dhns(this);
+        factory = new GraphFactoryImpl(dhns);
     }
 
-    public GraphFactory factory() {
-        return dhns.getGraphFactory();
+    public Dhns newDhns() {
+        return new Dhns(this);
+    }
+
+    public GraphFactoryImpl factory() {
+        return factory;
+    }
+
+    public IDGen getIDGen() {
+        return iDGen;
     }
 
     public DirectedGraph getDirectedGraph() {

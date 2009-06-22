@@ -18,28 +18,34 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.visualization.api;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public interface VizEventManager {
 
     public void addListener(VizEventListener listener, VizEvent.Type[] types);
+
     public void removeListener(VizEventListener listener, VizEvent.Type[] types);
 
     public void startDrag();
+
     public void drag();
+
     public void stopDrag();
 
     public void mouseLeftPress();
+
     public void mouseRightPress();
+
     public void mouseMiddlePress();
 
     public void mouseLeftClick();
+
     public void mouseRightClick();
+
     public void mouseMiddleClick();
 
     public void mouseMove();

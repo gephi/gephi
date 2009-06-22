@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.io.importer;
 
 import org.gephi.io.container.ContainerLoader;
@@ -30,5 +29,5 @@ import org.w3c.dom.Document;
  */
 public interface XMLImporter extends FileFormatImporter {
 
-    public void importData(Document document, ContainerLoader containter) throws ImportException;
+    public void importData(Document document, ContainerLoader containter) throws Exception;
 }

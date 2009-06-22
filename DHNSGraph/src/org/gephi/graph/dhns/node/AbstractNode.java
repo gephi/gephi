@@ -50,7 +50,7 @@ public class AbstractNode implements Node, AVLItem {
     }
 
     public boolean hasAttributes() {
-        return nodeData.getAttributes() == null;
+        return nodeData.getAttributes() != null;
     }
 
     public void setAttributes(Attributes attributes) {

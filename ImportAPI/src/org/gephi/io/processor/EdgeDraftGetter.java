@@ -39,7 +39,9 @@ public interface EdgeDraftGetter extends EdgeDraft {
 
     public boolean isVisible();
 
-    public boolean isDirected();
+    public EdgeType getType();
+
+    public float getLabelSize();
 
     public String getId();
 

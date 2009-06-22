@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>org.gephi.io.database.drivers</code-name-base>
+            <suite-component/>
+            <module-dependencies/>
+            <public-packages>
+                <package>com.microsoft.sqlserver.jdbc</package>
+                <package>com.mysql.jdbc</package>
+                <package>com.mysql.jdbc.exceptions</package>
+                <package>com.mysql.jdbc.exceptions.jdbc4</package>
+                <package>com.mysql.jdbc.integration.c3p0</package>
+                <package>com.mysql.jdbc.integration.jboss</package>
+                <package>com.mysql.jdbc.interceptors</package>
+                <package>com.mysql.jdbc.jdbc2.optional</package>
+                <package>com.mysql.jdbc.log</package>
+                <package>com.mysql.jdbc.profiler</package>
+                <package>com.mysql.jdbc.util</package>
+                <package>org.gephi.io.database.drivers</package>
+                <package>org.gjt.mm.mysql</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/sqljdbc4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/sqljdbc4.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/mysql-connector-java-5.1.7-bin.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/mysql-connector-java-5.1.7-bin.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>
