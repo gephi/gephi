@@ -31,6 +31,7 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.util.LinkedList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -54,12 +55,192 @@ public class StatisticsReporterImpl implements Printable
     int currentPage = -1;
     double pageStartY  = 0;
     double pageEndY = 0;
+/*
+
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
+    {
+        System.out.println(pageIndex);
+        try
+        {
+            View rootView = mDisplay.getUI().getRootView(mDisplay);
+            Rectangle allocation = new Rectangle((int)pageFormat.getImageableX(),
+                                                (int) pageFormat.getImageableY(),
+                                                 (int)pageFormat.getImageableWidth(),
+                                                 (int)pageFormat.getImageableHeight());
+
+           double scale = pageFormat.getImageableWidth()/ mDisplay.getMinimumSize().getWidth();
+           ((Graphics2D)graphics).scale(scale, scale);
+           graphics.setClip((int) (pageFormat.getImageableX()/scale),
+                               (int) (pageFormat.getImageableY()/scale),
+                               (int) (pageFormat.getImageableWidth()/scale),
+                               (int) (pageFormat.getImageableHeight()/scale));
 
 
-     public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
-     {
-         return -1;
-     }
+
+            //LinkedList<View> views = new LinkedList<View>();
+            for (int i = 0; i < rootView.getViewCount(); i++)
+            {
+                Shape allocation1 = rootView.getChildAllocation(i,allocation);
+               // if (childAllocation != null)
+                {
+
+                    View childView = rootView.getView(i);
+
+                    for (int j = 0; j < childView.getViewCount(); j++)
+                    {
+                        Shape childAllocation = childView.getChildAllocation(j,allocation);
+                        View leafView = childView.getView(j);
+                        childView.paint(graphics, childAllocation);
+                        System.out.println(pageIndex + "\t" + i + "\t" + "\t" +j +"\t" + childView.getViewCount());
+
+
+                    }
+
+                }
+            }
+           if(pageIndex > 3)
+             return Printable.NO_SUCH_PAGE;
+
+
+        }catch(Exception e){e.printStackTrace();}
+
+        return Printable.PAGE_EXISTS;
+    }
+*/
+
+    /**
+     *
+     * @param graphics
+     * @param pageFormat
+     * @param pageIndex
+     * @return
+     */
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex)
+    {
+        try
+        {
+            double scale = 1.0;
+            View rootView = mDisplay.getUI().getRootView(mDisplay);
+            Graphics2D graphics2D = (Graphics2D) graphics;
+
+            if ((mDisplay.getMinimumSize().getWidth() > pageFormat.getImageableWidth()))
+            {
+                scale = pageFormat.getImageableWidth()/ mDisplay.getMinimumSize().getWidth();
+                graphics2D.scale(scale,scale);
+            }
+            graphics2D.setClip((int) (pageFormat.getImageableX()/scale),
+                               (int) (pageFormat.getImageableY()/scale),
+                               (int) (pageFormat.getImageableWidth()/scale),
+                               (int) (pageFormat.getImageableHeight()/scale));
+
+            if (pageIndex > currentPage)
+            {
+                currentPage = pageIndex;
+                pageStartY += pageEndY;
+                pageEndY = graphics2D.getClipBounds().getHeight();
+            }
+
+            graphics2D.translate(graphics2D.getClipBounds().getX(),
+            graphics2D.getClipBounds().getY());
+
+            Rectangle allocation = new Rectangle(0,
+                (int) -pageStartY,
+                (int) (mDisplay.getMinimumSize().getWidth()),
+                (int) (mDisplay.getPreferredSize().getHeight()));
+
+            boolean valid = false;
+            for (int i = 0; i < rootView.getViewCount(); i++)
+            {
+                Rectangle childAllocation = (Rectangle) rootView.getChildAllocation(i,allocation);
+                if (childAllocation != null)
+                {
+                    View childView = rootView.getView(i);
+
+                    childView.paint(graphics2D,allocation);
+                    valid = true;
+                }
+            }
+            
+            /*
+            if (printView(graphics2D, allocation, rootView))
+            {
+                return Printable.PAGE_EXISTS;
+            }
+            else {
+                pageStartY = 0;
+                pageEndY = 0;
+                currentPage = -1;
+                return Printable.NO_SUCH_PAGE;
+            }*/
+
+            if(valid)
+                return Printable.PAGE_EXISTS;
+            else
+                return Printable.NO_SUCH_PAGE;
+
+
+       }catch(Exception e){}
+
+       return Printable.NO_SUCH_PAGE;
+    }
+
+
+
+    protected boolean printView(Graphics2D graphics2D, Shape allocation, View view)
+    {
+        boolean pageExists = false;
+        Rectangle clipRectangle = graphics2D.getClipBounds();
+        Shape childAllocation;
+        View childView;
+
+        if (view.getViewCount() > 0 && !view.getElement().getName().equalsIgnoreCase("td"))
+        {
+            for (int i = 0; i < view.getViewCount(); i++)
+            {
+                childAllocation = view.getChildAllocation(i,allocation);
+                if (childAllocation != null)
+                {
+                    childView = view.getView(i);
+                    if (printView(graphics2D,childAllocation,childView))
+                    {
+                        pageExists = true;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (allocation.getBounds().getMaxY() >= clipRectangle.getY())
+            {
+                pageExists = true;
+                if ((allocation.getBounds().getHeight() > clipRectangle.getHeight()) &&
+                    (allocation.intersects(clipRectangle)))
+                {
+                    view.paint(graphics2D,allocation);
+                }
+                else
+                {
+                    if (allocation.getBounds().getY() >= clipRectangle.getY())
+                    {
+                        if (allocation.getBounds().getMaxY() <= clipRectangle.getMaxY())
+                        {
+                            view.paint(graphics2D,allocation);
+                        }
+                        else
+                        {
+                            //  IV
+                            if (allocation.getBounds().getY() < pageEndY)
+                            {
+                                pageEndY = allocation.getBounds().getY();
+                            }
+                        }
+                    }
+                }
+            }
+       }
+
+        return pageExists;
+    }
 
 
 

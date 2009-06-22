@@ -61,57 +61,54 @@ import org.openide.windows.WindowManager;
  *
  * @author Mathieu Bastian
  */
-public class StatisticsControllerImpl implements StatisticsController,  ActionListener
-{
+public class StatisticsControllerImpl implements StatisticsController, ActionListener {
 
     private List<Statistics> statistics;
+
     public StatisticsControllerImpl() {
         statistics = new ArrayList<Statistics>(Lookup.getDefault().lookupAll(Statistics.class));
-      
+
     }
 
+    public void actionPerformed(ActionEvent e) {
+        Statistics statistics = (Statistics) e.getSource();
 
+        StatisticsReporterImpl reporter = new StatisticsReporterImpl(statistics);
 
-     public void actionPerformed(ActionEvent e)
-     {
-         Statistics statistics = (Statistics)e.getSource();
-        
-              StatisticsReporterImpl reporter = new StatisticsReporterImpl(statistics);
-  
-     }
+    }
 
-     private void complete(Statistics statistics) {
+    private void complete(Statistics statistics) {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         Graph graph = graphController.getDirectedGraph();
-       Frame frame = WindowManager.getDefault().getMainWindow();
+        Frame frame = WindowManager.getDefault().getMainWindow();
 
 
-     ProgressMonitor progressMonitor = new ProgressMonitor(frame,(String)"Running..","",0, graph.getNodeCount());
+        ProgressMonitor progressMonitor = new ProgressMonitor(frame, (String) "Running..", "", 0, graph.getNodeCount());
         progressMonitor.setMillisToDecideToPopup(0);
         progressMonitor.setMillisToPopup(0);
 
         statistics.addActionListener(this);
         statistics.execute(graphController, progressMonitor);
-      }
-
+    }
 
     public void execute(final Statistics statistics) {
 
-        if(statistics.isParamerizable())
-        {
-            final JDialog dialog = new JDialog((JDialog)null, statistics.toString());
+        if (statistics.isParamerizable()) {
+            final JDialog dialog = new JDialog((JDialog) null, statistics.toString());
             Container container = dialog.getContentPane();
             container.add(statistics.getPanel());
             JButton next = new JButton("Run");
 
             next.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
                     statistics.confirm();
                     dialog.dispose();
                     complete(statistics);
-                  
-                }});
-      
+
+                }
+            });
+
             JButton cancel = new JButton("Cancel");
 
             JPanel buttonPane = new JPanel();
@@ -123,20 +120,18 @@ public class StatisticsControllerImpl implements StatisticsController,  ActionLi
             buttonPane.add(next);
 
             container.add(buttonPane, BorderLayout.PAGE_END);
-  
-            Dimension dimension = new Dimension(500,250);
+
+            Dimension dimension = new Dimension(500, 250);
             dialog.setSize(dimension);
             dialog.setLocationRelativeTo(null);
             dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             dialog.setDefaultLookAndFeelDecorated(true);
             dialog.pack();
             dialog.setVisible(true);
-        }
-        else
-        {
+        } else {
             complete(statistics);
         }
-        
+
     }
 
     /**
@@ -146,6 +141,4 @@ public class StatisticsControllerImpl implements StatisticsController,  ActionLi
     public List<Statistics> getStatistics() {
         return statistics;
     }
-
-
 }
