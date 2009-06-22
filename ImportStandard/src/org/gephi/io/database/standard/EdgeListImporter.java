@@ -18,19 +18,31 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.io.database;
+package org.gephi.io.database.standard;
+
+import org.gephi.io.container.ContainerLoader;
+import org.gephi.io.database.Database;
+import org.gephi.io.database.DatabaseType;
+import org.gephi.io.database.drivers.SQLUtils;
+import org.gephi.io.importer.DatabaseImporter;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface EdgeListDatabase extends Database {
+public class EdgeListImporter implements DatabaseImporter {
 
-    public String getNodeQuery();
+    public void importData(Database database, ContainerLoader container) {
 
-    public String getEdgeQuery();
+        System.out.println("Try to connect at " + SQLUtils.getUrl(database.getSQLDriver(), database.getHost(), database.getPort(), database.getDBName()));
 
-    public String getNodeAttributesQuery();
 
-    public String getEdgeAttributesQuery();
+    }
+
+    public boolean isMatchingImporter(DatabaseType databaseType) {
+        if (databaseType instanceof EdgeList) {
+            return true;
+        }
+        return false;
+    }
 }

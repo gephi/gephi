@@ -33,4 +33,14 @@ public class MySQLDriver implements SQLDriver {
     public Connection getConnection(String connectionUrl, String username, String passwd) throws SQLException {
         return DriverManager.getConnection(connectionUrl, username, passwd);
     }
+
+    @Override
+    public String getPrefix() {
+        return "mysql";
+    }
+
+    @Override
+    public String toString() {
+        return "MySQL";
+    }
 }

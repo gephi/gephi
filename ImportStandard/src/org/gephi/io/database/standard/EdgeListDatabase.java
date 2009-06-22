@@ -18,21 +18,29 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.io.database.drivers;
+package org.gephi.io.database.standard;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import org.gephi.io.database.*;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface SQLDriver {
+public interface EdgeListDatabase extends Database {
 
-    public String getPrefix();
+    public String getNodeQuery();
 
-    public Connection getConnection(String connectionUrl, String username, String passwd) throws SQLException;
+    public String getEdgeQuery();
 
-    @Override
-    public String toString();
+    public String getNodeAttributesQuery();
+
+    public String getEdgeAttributesQuery();
+
+    public void setNodeQuery(String nodeQuery);
+
+    public void setEdgeQuery(String edgeQuery);
+
+    public void setNodeAttributesQuery(String nodeAttributesQuery);
+
+    public void setEdgeAttributesQuery(String edgeAttributesQuery);
 }

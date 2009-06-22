@@ -18,21 +18,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.io.database.drivers;
+package org.gephi.io.database;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import org.gephi.ui.database.DatabaseTypeUI;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface SQLDriver {
+public interface DatabaseType {
 
-    public String getPrefix();
+    public String getName();
 
-    public Connection getConnection(String connectionUrl, String username, String passwd) throws SQLException;
+    public DatabaseTypeUI getUI();
 
-    @Override
-    public String toString();
+    public Database createDatabase();
+
+    public Class<? extends Database> getDatabaseClass();
 }

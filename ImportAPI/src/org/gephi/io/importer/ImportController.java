@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.importer;
 
+import org.gephi.io.database.Database;
+import org.gephi.io.database.DatabaseType;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -31,4 +33,10 @@ public interface ImportController {
     public FileType[] getFileTypes();
 
     public void doImport(FileObject fileObject);
+
+    public void doImport(Database database);
+
+    public DatabaseType[] getDatabaseTypes();
+
+    public Database[] getDatabases(DatabaseType type);
 }
