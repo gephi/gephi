@@ -41,7 +41,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="edgeAttQueryTextField" alignment="1" pref="443" max="32767" attributes="1"/>
                           <Component id="nodeAttQueryTextField" alignment="1" pref="443" max="32767" attributes="1"/>
-                          <Component id="edgeQuerytextField" alignment="1" pref="443" max="32767" attributes="1"/>
+                          <Component id="edgeQueryTextField" alignment="1" pref="443" max="32767" attributes="1"/>
                           <Component id="nodeQueryTextField" alignment="1" pref="443" max="32767" attributes="1"/>
                           <Component id="portTextField" alignment="0" pref="443" max="32767" attributes="1"/>
                           <Component id="hostTextField" alignment="0" pref="443" max="32767" attributes="1"/>
@@ -107,7 +107,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="edgeQueryLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="edgeQuerytextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="edgeQueryTextField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -253,10 +253,10 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="edgeQuerytextField">
+    <Component class="javax.swing.JTextField" name="edgeQueryTextField">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.edgeQuerytextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.edgeQueryTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>

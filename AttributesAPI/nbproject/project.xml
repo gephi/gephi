@@ -26,6 +26,7 @@
             <public-packages>
                 <package>org.gephi.data.attributes.api</package>
                 <package>org.gephi.data.attributes.type</package>
+                <package>org.gephi.data.properties</package>
             </public-packages>
         </data>
     </configuration>

@@ -29,7 +29,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import javax.swing.JPanel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -117,33 +116,43 @@ public class DesktopImportController implements ImportController {
     }
 
     public void doImport(Database database) {
-        DatabaseType type = getDatabaseType(database);
-        if (type == null) {
-            throw new ImportException(NbBundle.getMessage(getClass(), "error_no_matching_db_importer"));
+        try {
+
+
+            DatabaseType type = getDatabaseType(database);
+            if (type == null) {
+                throw new ImportException(NbBundle.getMessage(getClass(), "error_no_matching_db_importer"));
+            }
+            DatabaseImporter im = getMatchingImporter(type);
+            if (im == null) {
+                throw new ImportException(NbBundle.getMessage(getClass(), "error_no_matching_db_importer"));
+            }
+
+            DatabaseTypeUI ui = type.getUI();
+            if (ui != null) {
+                ui.setup(type);
+                DialogDescriptor dd = new DialogDescriptor(ui.getPanel(), "Database settings");
+                Object result = DialogDisplayer.getDefault().notify(dd);
+                ui.unsetup();
+                database = ui.getDatabase();
+            }
+
+            ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+            Workspace workspace = projectController.importFile();
+
+            //Create Container
+            Container container = Lookup.getDefault().lookup(Container.class);
+            container.setSource("" + im.getClass());
+            container.setErrorMode(Container.ErrorMode.REPORT);
+
+            im.importData(database, container.getLoader());
+            finishImport(container);
+            
+        } catch (Exception ex) {
+            NotifyDescriptor.Message e = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
+            DialogDisplayer.getDefault().notifyLater(e);
+            ex.printStackTrace();
         }
-        DatabaseImporter im = getMatchingImporter(type);
-        if (im == null) {
-            throw new ImportException(NbBundle.getMessage(getClass(), "error_no_matching_db_importer"));
-        }
-
-        DatabaseTypeUI ui = type.getUI();
-        if (ui != null) {
-            ui.setup(type);
-            DialogDescriptor dd = new DialogDescriptor(ui.getPanel(), "Database settings");
-            Object result = DialogDisplayer.getDefault().notify(dd);
-            ui.unsetup();
-            database = ui.getDatabase();
-        }
-
-        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-        Workspace workspace = projectController.importFile();
-
-        //Create Container
-        Container container = Lookup.getDefault().lookup(Container.class);
-        container.setSource("" + im.getClass());
-        container.setErrorMode(Container.ErrorMode.REPORT);
-
-        im.importData(database, container.getLoader());
     }
 
     private void finishImport(Container container) {

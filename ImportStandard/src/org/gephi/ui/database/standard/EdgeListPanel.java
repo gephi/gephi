@@ -10,6 +10,7 @@
  */
 package org.gephi.ui.database.standard;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -57,10 +58,10 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
         selectedDB.setPort(Integer.parseInt(portTextField.getText()));
         selectedDB.setUsername(userTextField.getText());
         selectedDB.setSQLDriver((SQLDriver) driverComboBox.getModel().getSelectedItem());
-        selectedDB.setNodeQuery(nodeQueryLabel.getText());
-        selectedDB.setEdgeQuery(edgeQueryLabel.getText());
+        selectedDB.setNodeQuery(nodeQueryTextField.getText());
+        selectedDB.setEdgeQuery(edgeQueryTextField.getText());
         selectedDB.setNodeAttributesQuery(nodeAttQueryTextField.getText());
-        selectedDB.setEdgeAttributesQuery(edgeAttQueryLabel.getText());
+        selectedDB.setEdgeAttributesQuery(edgeAttQueryTextField.getText());
     }
 
     public Database getDatabase() {
@@ -100,7 +101,7 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
         edgeQueryLabel = new javax.swing.JLabel();
         nodeAttQueyLabel = new javax.swing.JLabel();
         edgeAttQueryLabel = new javax.swing.JLabel();
-        edgeQuerytextField = new javax.swing.JTextField();
+        edgeQueryTextField = new javax.swing.JTextField();
         nodeAttQueryTextField = new javax.swing.JTextField();
         edgeAttQueryTextField = new javax.swing.JTextField();
         testConnection = new javax.swing.JButton();
@@ -139,7 +140,7 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
 
         edgeAttQueryLabel.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.edgeAttQueryLabel.text")); // NOI18N
 
-        edgeQuerytextField.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.edgeQuerytextField.text")); // NOI18N
+        edgeQueryTextField.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.edgeQueryTextField.text")); // NOI18N
 
         nodeAttQueryTextField.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.nodeAttQueryTextField.text")); // NOI18N
 
@@ -179,7 +180,7 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(edgeAttQueryTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
                             .addComponent(nodeAttQueryTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
-                            .addComponent(edgeQuerytextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                            .addComponent(edgeQueryTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
                             .addComponent(nodeQueryTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
                             .addComponent(portTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
                             .addComponent(hostTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
@@ -231,7 +232,7 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(edgeQueryLabel)
-                    .addComponent(edgeQuerytextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(edgeQueryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nodeAttQueyLabel)
@@ -247,15 +248,22 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
     private void testConnectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_testConnectionActionPerformed
         unsetup();
         Database db = getDatabase();
+        Connection conn = null;
         try {
-            db.getSQLDriver().getConnection(SQLUtils.getUrl(db.getSQLDriver(), db.getHost(), db.getPort(), db.getDBName()), db.getUsername(), db.getPasswd());
+            conn = db.getSQLDriver().getConnection(SQLUtils.getUrl(db.getSQLDriver(), db.getHost(), db.getPort(), db.getDBName()), db.getUsername(), db.getPasswd());
             NotifyDescriptor.Message e = new NotifyDescriptor.Message("Connection successful!", NotifyDescriptor.INFORMATION_MESSAGE);
             DialogDisplayer.getDefault().notifyLater(e);
         } catch (SQLException ex) {
             NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
             DialogDisplayer.getDefault().notifyLater(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                    System.out.println("Database connection terminated");
+                } catch (Exception e) { /* ignore close errors */ }
+            }
         }
-
     }//GEN-LAST:event_testConnectionActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -268,7 +276,7 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
     private javax.swing.JLabel edgeAttQueryLabel;
     private javax.swing.JTextField edgeAttQueryTextField;
     private javax.swing.JLabel edgeQueryLabel;
-    private javax.swing.JTextField edgeQuerytextField;
+    private javax.swing.JTextField edgeQueryTextField;
     private javax.swing.JLabel hostLabel;
     private javax.swing.JTextField hostTextField;
     private javax.swing.JTextField nodeAttQueryTextField;
