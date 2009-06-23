@@ -6,6 +6,7 @@ package org.gephi.io.database.standard;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.io.container.Container;
 import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.container.ContainerUnloader;
@@ -53,7 +54,7 @@ public class EdgeListImporterTest extends NbTestCase {
         database.setUsername("root");
         database.setPasswd("");
         database.setNodeQuery("SELECT * FROM node LIMIT 0,1000");
-        database.setEdgeQuery("SELECT * FROM edge WHERE source < 1000 AND target < 1000");
+        database.setEdgeQuery("SELECT * FROM edge WHERE id_node_from < 1000 AND id_node_to < 1000");
         database.setSQLDriver(new MySQLDriver());
 
         Container cont = Lookup.getDefault().lookup(Container.class);
@@ -108,5 +109,16 @@ public class EdgeListImporterTest extends NbTestCase {
         System.out.println("Label=" + hasLabel);
         System.out.println("X=" + hasX);
 
+        //Look at attributes
+        System.out.println("--Node Attributes cols");
+        for(AttributeColumn col : containerLoader.getAttributeManager().getNodeClass().getAttributeColumns()) {
+            System.out.println(col.getIndex()+":"+col.getId()+ "("+col.getAttributeType()+")");
+        }
+
+        //Look at attributes
+        System.out.println("--Edge Attributes cols");
+        for(AttributeColumn col : containerLoader.getAttributeManager().getEdgeClass().getAttributeColumns()) {
+            System.out.println(col.getIndex()+":"+col.getId()+ "("+col.getAttributeType()+")");
+        }
     }
 }

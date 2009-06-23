@@ -147,7 +147,7 @@ public class DesktopImportController implements ImportController {
 
             im.importData(database, container.getLoader());
             finishImport(container);
-            
+
         } catch (Exception ex) {
             NotifyDescriptor.Message e = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
             DialogDisplayer.getDefault().notifyLater(e);

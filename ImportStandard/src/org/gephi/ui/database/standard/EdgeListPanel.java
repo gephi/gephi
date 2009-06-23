@@ -273,11 +273,11 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
     }//GEN-LAST:event_testConnectionActionPerformed
 
     private void configurationComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_configurationComboActionPerformed
-        ConfigurationComboModel model = (ConfigurationComboModel)configurationCombo.getModel();
+        ConfigurationComboModel model = (ConfigurationComboModel) configurationCombo.getModel();
         EdgeListDatabase selectedDatabase = model.getSelectedItem().db;
         dbTextField.setText(selectedDatabase.getDBName());
         hostTextField.setText(selectedDatabase.getHost());
-        portTextField.setText(""+selectedDatabase.getPort());
+        portTextField.setText("" + selectedDatabase.getPort());
         userTextField.setText(selectedDatabase.getUsername());
         pwdTextField.setText(selectedDatabase.getPasswd());
         driverComboBox.setSelectedItem(selectedDatabase.getSQLDriver());

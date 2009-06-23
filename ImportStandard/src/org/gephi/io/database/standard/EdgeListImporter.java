@@ -25,6 +25,10 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
+import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.properties.EdgeProperties;
 import org.gephi.data.properties.NodeProperties;
 import org.gephi.io.container.ContainerLoader;
@@ -82,6 +86,8 @@ public class EdgeListImporter implements DatabaseImporter {
         Statement s = connection.createStatement();
         s.executeQuery(database.getNodeQuery());
         ResultSet rs = s.getResultSet();
+        findNodeAttributesColumns(rs);
+        AttributeClass nodeClass = container.getAttributeManager().getNodeClass();
         ResultSetMetaData metaData = rs.getMetaData();
         int columnsCount = metaData.getColumnCount();
         int count = 0;
@@ -94,6 +100,8 @@ public class EdgeListImporter implements DatabaseImporter {
                     injectNodeProperty(p, rs, i + 1, node);
                 } else {
                     //Inject node attributes
+                    AttributeColumn col = nodeClass.getAttributeColumn(columnName);
+                    injectNodeAttribute(rs, i + 1, col, node);
                 }
             }
             container.addNode(node);
@@ -115,6 +123,8 @@ public class EdgeListImporter implements DatabaseImporter {
         Statement s = connection.createStatement();
         s.executeQuery(database.getEdgeQuery());
         ResultSet rs = s.getResultSet();
+        findEdgeAttributesColumns(rs);
+        AttributeClass edgeClass = container.getAttributeManager().getEdgeClass();
         ResultSetMetaData metaData = rs.getMetaData();
         int columnsCount = metaData.getColumnCount();
         int count = 0;
@@ -127,6 +137,8 @@ public class EdgeListImporter implements DatabaseImporter {
                     injectEdgeProperty(p, rs, i + 1, edge);
                 } else {
                     //Inject edge attributes
+                    AttributeColumn col = edgeClass.getAttributeColumn(columnName);
+                    injectEdgeAttribute(rs, i + 1, col, edge);
                 }
             }
 
@@ -224,6 +236,205 @@ public class EdgeListImporter implements DatabaseImporter {
                 break;
             case B:
                 break;
+        }
+    }
+
+    private void injectNodeAttribute(ResultSet rs, int columnIndex, AttributeColumn column, NodeDraft draft) {
+        switch (column.getAttributeType()) {
+            case BOOLEAN:
+                try {
+                    boolean val = rs.getBoolean(columnIndex);
+                    draft.addAttributeValue(column, val);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                break;
+            case DOUBLE:
+                try {
+                    double val = rs.getDouble(columnIndex);
+                    draft.addAttributeValue(column, val);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                break;
+            case FLOAT:
+                try {
+                    float val = rs.getFloat(columnIndex);
+                    draft.addAttributeValue(column, val);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                break;
+            case INT:
+                try {
+                    int val = rs.getInt(columnIndex);
+                    draft.addAttributeValue(column, val);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                break;
+            case LONG:
+                try {
+                    long val = rs.getLong(columnIndex);
+                    draft.addAttributeValue(column, val);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                break;
+            default: //String
+                try {
+                    String val = rs.getString(columnIndex);
+                    if (val != null) {
+                        draft.addAttributeValue(column, val);
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                break;
+        }
+    }
+
+    private void injectEdgeAttribute(ResultSet rs, int columnIndex, AttributeColumn column, EdgeDraft draft) {
+        switch (column.getAttributeType()) {
+            case BOOLEAN:
+                try {
+                    boolean val = rs.getBoolean(columnIndex);
+                    draft.addAttributeValue(column, val);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                break;
+            case DOUBLE:
+                try {
+                    double val = rs.getDouble(columnIndex);
+                    draft.addAttributeValue(column, val);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                break;
+            case FLOAT:
+                try {
+                    float val = rs.getFloat(columnIndex);
+                    draft.addAttributeValue(column, val);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                break;
+            case INT:
+                try {
+                    int val = rs.getInt(columnIndex);
+                    draft.addAttributeValue(column, val);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                break;
+            case LONG:
+                try {
+                    long val = rs.getLong(columnIndex);
+                    draft.addAttributeValue(column, val);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                break;
+            default: //String
+                try {
+                    String val = rs.getString(columnIndex);
+                    if (val != null) {
+                        draft.addAttributeValue(column, val);
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                break;
+        }
+    }
+
+    private void findNodeAttributesColumns(ResultSet rs) throws SQLException {
+        ResultSetMetaData metaData = rs.getMetaData();
+        int columnsCount = metaData.getColumnCount();
+        AttributeClass nodeClass = container.getAttributeManager().getNodeClass();
+        for (int i = 0; i < columnsCount; i++) {
+            String columnName = metaData.getColumnLabel(i + 1);
+            NodeProperties p = database.getPropertiesAssociations().getNodeProperty(columnName);
+            if (p == null) {
+                //No property associated to this column is found, so we append it as an attribute
+
+                AttributeType type = AttributeType.STRING;
+                switch (metaData.getColumnType(i + 1)) {
+                    case Types.BIGINT:
+                        type = AttributeType.LONG;
+                        break;
+                    case Types.INTEGER:
+                        type = AttributeType.INT;
+                        break;
+                    case Types.TINYINT:
+                        type = AttributeType.INT;
+                        break;
+                    case Types.SMALLINT:
+                        type = AttributeType.INT;
+                        break;
+                    case Types.BOOLEAN:
+                        type = AttributeType.BOOLEAN;
+                        break;
+                    case Types.FLOAT:
+                        type = AttributeType.FLOAT;
+                        break;
+                    case Types.DOUBLE:
+                        type = AttributeType.DOUBLE;
+                        break;
+                    case Types.VARCHAR:
+                        type = AttributeType.STRING;
+                        break;
+                    default:
+                        break;
+                }
+
+                nodeClass.addAttributeColumn(columnName, type);
+            }
+        }
+    }
+
+    private void findEdgeAttributesColumns(ResultSet rs) throws SQLException {
+        ResultSetMetaData metaData = rs.getMetaData();
+        int columnsCount = metaData.getColumnCount();
+        AttributeClass edgeClass = container.getAttributeManager().getEdgeClass();
+        for (int i = 0; i < columnsCount; i++) {
+            String columnName = metaData.getColumnLabel(i + 1);
+            EdgeProperties p = database.getPropertiesAssociations().getEdgeProperty(columnName);
+            if (p == null) {
+                //No property associated to this column is found, so we append it as an attribute
+                AttributeType type = AttributeType.STRING;
+                switch (metaData.getColumnType(i + 1)) {
+                    case Types.BIGINT:
+                        type = AttributeType.LONG;
+                        break;
+                    case Types.INTEGER:
+                        type = AttributeType.INT;
+                        break;
+                    case Types.TINYINT:
+                        type = AttributeType.INT;
+                        break;
+                    case Types.SMALLINT:
+                        type = AttributeType.INT;
+                        break;
+                    case Types.BOOLEAN:
+                        type = AttributeType.BOOLEAN;
+                        break;
+                    case Types.FLOAT:
+                        type = AttributeType.FLOAT;
+                        break;
+                    case Types.DOUBLE:
+                        type = AttributeType.DOUBLE;
+                        break;
+                    case Types.VARCHAR:
+                        type = AttributeType.STRING;
+                        break;
+                    default:
+                        break;
+                }
+
+                edgeClass.addAttributeColumn(columnName, type);
+            }
         }
     }
 
