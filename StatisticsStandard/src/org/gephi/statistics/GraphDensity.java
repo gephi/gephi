@@ -20,11 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics;
 
+import javax.swing.JPanel;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.statistics.api.Statistics;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
+import org.gephi.statistics.ui.api.StatisticsUI;
 import org.openide.util.NbBundle;
 
 /**
@@ -33,18 +33,53 @@ import org.openide.util.NbBundle;
  */
 public class GraphDensity implements Statistics {
 
+    /** The density of the graph.*/
+    private float density;
+
+    /**
+     * 
+     * @param graphController
+     */
     public void execute(GraphController graphController) {
         DirectedGraph graph = graphController.getDirectedGraph();
         int edgesCount = graph.getEdgeCount();
         int nodesCount = graph.getNodeCount();
-        float density = (float) edgesCount / (nodesCount * nodesCount - nodesCount);
-        
-        NotifyDescriptor.Message msg = new NotifyDescriptor.Message("Density: " + density);
-
-        DialogDisplayer.getDefault().notify(msg);
+        density = (float) edgesCount / (nodesCount * nodesCount - nodesCount);
     }
 
+    /**
+     * 
+     * @return
+     */
+    public String toString() {
+        return new String("Graph Density");
+    }
+
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return NbBundle.getMessage(GraphDensity.class, "GraphDensity_name");
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isParamerizable() {
+        return false;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getReport() {
+        return new String("Density: " + density);
+    }
+
+    public StatisticsUI getUI() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

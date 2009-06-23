@@ -15,6 +15,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.gephi.utils.longtask</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.jdesktop.layout</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -50,6 +58,7 @@
             </module-dependencies>
             <public-packages>
                 <package>org.gephi.statistics.api</package>
+                <package>org.gephi.statistics.ui.api</package>
             </public-packages>
         </data>
     </configuration>
