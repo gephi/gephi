@@ -30,5 +30,5 @@ package org.gephi.data.properties;
  */
 public enum EdgeProperties {
 
-    R, G, B, WEIGHT, ID, LABEL, ALPHA;
+    R, G, B, WEIGHT, ID, LABEL, ALPHA, SOURCE, TARGET;
 }

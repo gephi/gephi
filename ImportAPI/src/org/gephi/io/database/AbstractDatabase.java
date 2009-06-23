@@ -39,7 +39,7 @@ public abstract class AbstractDatabase implements Database {
     protected String DBName;
 
     //PropertiesAssociations
-    protected PropertiesAssociations properties;
+    protected PropertiesAssociations properties = new PropertiesAssociations();
 
     public String getDBName() {
         return DBName;

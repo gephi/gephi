@@ -22,8 +22,11 @@ package org.gephi.io.database.standard;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import org.gephi.data.properties.EdgeProperties;
+import org.gephi.data.properties.NodeProperties;
 import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.container.EdgeDraft;
 import org.gephi.io.container.NodeDraft;
@@ -31,6 +34,7 @@ import org.gephi.io.database.Database;
 import org.gephi.io.database.DatabaseType;
 import org.gephi.io.database.drivers.SQLUtils;
 import org.gephi.io.importer.DatabaseImporter;
+import org.gephi.io.importer.PropertiesAssociations;
 
 /**
  *
@@ -71,17 +75,26 @@ public class EdgeListImporter implements DatabaseImporter {
         //Factory
         ContainerLoader.ContainerFactory factory = container.factory();
 
+        //Properties
+        PropertiesAssociations properties = database.getPropertiesAssociations();
+
         Statement s = connection.createStatement();
         s.executeQuery(database.getNodeQuery());
         ResultSet rs = s.getResultSet();
+        ResultSetMetaData metaData = rs.getMetaData();
+        int columnsCount = metaData.getColumnCount();
         int count = 0;
         while (rs.next()) {
             NodeDraft node = factory.newNodeDraft();
-            int id = rs.getInt("id");
-            String label = rs.getString("label");
-
-            node.setId("" + id);
-            node.setLabel(label);
+            for (int i = 0; i < columnsCount; i++) {
+                String columnName = metaData.getColumnLabel(i+1);
+                NodeProperties p = properties.getNodeProperty(columnName);
+                if (p != null) {
+                    injectNodeProperty(p, rs, i+1, node);
+                } else {
+                    //Inject node attributes
+                }
+            }
             container.addNode(node);
             ++count;
         }
@@ -95,20 +108,26 @@ public class EdgeListImporter implements DatabaseImporter {
         //Factory
         ContainerLoader.ContainerFactory factory = container.factory();
 
+        //Properties
+        PropertiesAssociations properties = database.getPropertiesAssociations();
+
         Statement s = connection.createStatement();
         s.executeQuery(database.getEdgeQuery());
         ResultSet rs = s.getResultSet();
+        ResultSetMetaData metaData = rs.getMetaData();
+        int columnsCount = metaData.getColumnCount();
         int count = 0;
         while (rs.next()) {
             EdgeDraft edge = factory.newEdgeDraft();
-            int id = rs.getInt("id");
-            int idSource = rs.getInt("id_node_from");
-            int idTarget = rs.getInt("id_node_to");
-            NodeDraft ndSource = container.getNode("" + idSource);
-            NodeDraft ndTarget = container.getNode("" + idTarget);
-            edge.setSource(ndSource);
-            edge.setTarget(ndTarget);
-            edge.setId("" + id);
+            for (int i = 0; i < columnsCount; i++) {
+                String columnName = metaData.getColumnLabel(i+1);
+                EdgeProperties p = properties.getEdgeProperty(columnName);
+                if (p != null) {
+                    injectEdgeProperty(p, rs, i+1, edge);
+                } else {
+                    //Inject node attributes
+                }
+            }
 
             container.addEdge(edge);
             ++count;
@@ -121,6 +140,90 @@ public class EdgeListImporter implements DatabaseImporter {
     }
 
     private void getEdgesAttributes(Connection connection) throws SQLException {
+    }
+
+    private void injectNodeProperty(NodeProperties p, ResultSet rs, int column, NodeDraft nodeDraft) throws SQLException {
+        switch (p) {
+            case ID:
+                String id = rs.getString(column);
+                if (id != null) {
+                    nodeDraft.setId(id);
+                }
+                break;
+            case LABEL:
+                String label = rs.getString(column);
+                if (label != null) {
+                    nodeDraft.setLabel(label);
+                }
+                break;
+            case X:
+                float x = rs.getFloat(column);
+                if (x != 0) {
+                    nodeDraft.setX(x);
+                }
+                break;
+            case Y:
+                float y = rs.getFloat(column);
+                if (y != 0) {
+                    nodeDraft.setY(y);
+                }
+                break;
+            case Z:
+                float z = rs.getFloat(column);
+                if (z != 0) {
+                    nodeDraft.setZ(z);
+                }
+                break;
+            case R:
+                break;
+            case G:
+                break;
+            case B:
+                break;
+        }
+    }
+
+    private void injectEdgeProperty(EdgeProperties p, ResultSet rs, int column, EdgeDraft edgeDraft) throws SQLException {
+        switch (p) {
+            case ID:
+                String id = rs.getString(column);
+                if (id != null) {
+                    edgeDraft.setId(id);
+                }
+                break;
+            case LABEL:
+                String label = rs.getString(column);
+                if (label != null) {
+                    edgeDraft.setLabel(label);
+                }
+                break;
+            case SOURCE:
+                String source = rs.getString(column);
+                if (source != null) {
+                    NodeDraft sourceNode = container.getNode(source);
+                    edgeDraft.setSource(sourceNode);
+                }
+                break;
+            case TARGET:
+                String target = rs.getString(column);
+                if (target != null) {
+                    NodeDraft targetNode = container.getNode(target);
+                    edgeDraft.setTarget(targetNode);
+                }
+                break;
+            case WEIGHT:
+                float weight = rs.getFloat(column);
+                if (weight != 0) {
+                    edgeDraft.setWeight(weight);
+                }
+                break;
+            case R:
+                break;
+            case G:
+                break;
+            case B:
+                break;
+        }
     }
 
     public boolean isMatchingImporter(DatabaseType databaseType) {
