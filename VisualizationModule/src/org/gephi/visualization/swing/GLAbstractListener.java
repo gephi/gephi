@@ -75,12 +75,21 @@ public abstract class GLAbstractListener implements GLEventListener {
         //Disable Vertical synchro
         gl.setSwapInterval(0);
 
-        //If depth
+        //Depth
         if (vizConfig.use3d()) {
             gl.glEnable(GL.GL_DEPTH_TEST);
             gl.glDepthFunc(GL.GL_LEQUAL);
             gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);	//Correct texture & colors perspective calculations
+        } else {
+            gl.glDisable(GL.GL_DEPTH_TEST);
         }
+
+        //Cull face
+        if (vizConfig.isCulling() && !vizConfig.use3d()) {
+            gl.glEnable(GL.GL_CULL_FACE);
+            gl.glCullFace(GL.GL_BACK);
+        }
+
 
         if (vizConfig.isPointSmooth()) {
             gl.glEnable(GL.GL_POINT_SMOOTH);
@@ -127,7 +136,7 @@ public abstract class GLAbstractListener implements GLEventListener {
         //gl.glAlphaFunc(GL.GL_GREATER, 0);
 
         //Material
-        if(vizConfig.isMaterial()) {
+        if (vizConfig.isMaterial()) {
             gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
             gl.glEnable(GL.GL_COLOR_MATERIAL);
         }
@@ -138,7 +147,7 @@ public abstract class GLAbstractListener implements GLEventListener {
 
         gl.glEnable(GL.GL_TEXTURE_2D);
         gl.glEnable(GL.GL_NORMALIZE);
-        
+
     }
 
     protected void setLighting(GL gl) {
@@ -150,8 +159,11 @@ public abstract class GLAbstractListener implements GLEventListener {
         Lighting.setSource(5, Lighting.TYPE_LATERAL_BLANC, gl);
         Lighting.setSource(6, Lighting.TYPE_LATERAL_MULTI, gl);
         Lighting.setSource(7, Lighting.TYPE_SPOT_BLAFARD, gl);
-        Lighting.switchAll(gl, true, false, true, true, true, false, false, false);
-
+        if (vizConfig.use3d()) {
+            Lighting.switchAll(gl, true, false, true, true, true, false, false, false);
+        } else {
+            Lighting.switchAll(gl, true, false, false, false, false, false, false, false);
+        }
     }
 
     @Override

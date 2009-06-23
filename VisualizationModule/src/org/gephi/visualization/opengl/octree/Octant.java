@@ -123,13 +123,12 @@ public class Octant implements AVLItem {
 
     }
 
-    public void clear(int classID)
-    {
+    public void clear(int classID) {
         ParamAVLTree<ModelImpl> tree = getTree(classID);
         int count = tree.getCount();
         tree.clear();
-        objectsCount-=count;
-         if (objectsCount == 0) {
+        objectsCount -= count;
+        if (objectsCount == 0) {
             //Remove leaf
             octree.removeLeaf(this);
         }

@@ -39,6 +39,7 @@ public class VizConfig {
     private boolean pointSmooth = true;
     private boolean blending = true;
     private boolean lighting = true;
+    private boolean culling = true;
     private boolean material = true;
     private boolean wireFrame = false;
     private boolean useGLJPanel = false;
@@ -59,7 +60,6 @@ public class VizConfig {
     protected float edgeAlpha = 1f;
     protected int octreeDepth = 5;
     protected int octreeWidth = 100000;
-
 
     public DisplayConfig getDisplayConfig() {
         return displayConfig;
@@ -172,5 +172,9 @@ public class VizConfig {
 
     public boolean use3d() {
         return use3d;
+    }
+
+    public boolean isCulling() {
+        return culling;
     }
 }

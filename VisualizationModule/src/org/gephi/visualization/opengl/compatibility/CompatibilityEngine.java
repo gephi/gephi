@@ -184,7 +184,7 @@ public class CompatibilityEngine extends AbstractEngine {
         long startTime = System.currentTimeMillis();
 
         if (modelClasses[AbstractEngine.CLASS_EDGE].isEnabled()) {
-            gl.glDisable(GL.GL_LIGHTING);
+            //gl.glDisable(GL.GL_LIGHTING);
             gl.glBegin(GL.GL_TRIANGLES);
 
             if (vizConfig.getDisplayConfig() == DisplayConfig.DISPLAY_ALL) {
@@ -220,7 +220,7 @@ public class CompatibilityEngine extends AbstractEngine {
                 }
             }
             gl.glEnd();
-            gl.glEnable(GL.GL_LIGHTING);
+           // gl.glEnable(GL.GL_LIGHTING);
         //gl.glEnable(GL.GL_BLEND);
         }
 
