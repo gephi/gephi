@@ -18,21 +18,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.io.database.drivers;
-
-import java.sql.Connection;
-import java.sql.SQLException;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.gephi.data.properties;
 
 /**
  *
- * @author Mathieu Bastian
+ * @author Mathieu
  */
-public interface SQLDriver {
+public enum EdgeProperties {
 
-    public String getPrefix();
-
-    public Connection getConnection(String connectionUrl, String username, String passwd) throws SQLException;
-
-    @Override
-    public String toString();
+    R, G, B, WEIGHT, ID, LABEL, ALPHA;
 }

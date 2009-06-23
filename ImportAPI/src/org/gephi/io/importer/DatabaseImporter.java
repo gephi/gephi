@@ -18,19 +18,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.io.database.drivers;
+package org.gephi.io.importer;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import org.gephi.io.container.ContainerLoader;
+import org.gephi.io.database.Database;
+import org.gephi.io.database.DatabaseType;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class MsSQLServerDriver implements SQLDriver {
+public interface DatabaseImporter extends Importer {
 
-    public Connection getConnection(String connectionUrl, String username, String passwd) throws SQLException {
-        return DriverManager.getConnection(connectionUrl, username, passwd);
-    }
+    public void importData(Database database, ContainerLoader container) throws Exception;
+
+    public boolean isMatchingImporter(DatabaseType databaseType);
 }

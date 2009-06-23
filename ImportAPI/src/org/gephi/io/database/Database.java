@@ -20,13 +20,19 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.database;
 
+import org.gephi.data.properties.EdgeProperties;
+import org.gephi.data.properties.NodeProperties;
 import org.gephi.io.database.drivers.SQLDriver;
+import org.gephi.io.importer.PropertiesAssociations;
+import org.gephi.io.importer.PropertyAssociation;
 
 /**
  *
  * @author Mathieu Bastian
  */
 public interface Database {
+
+    public String getName();
 
     public SQLDriver getSQLDriver();
 
@@ -39,4 +45,20 @@ public interface Database {
     public String getPasswd();
 
     public String getDBName();
+
+    public void setName(String name);
+
+    public void setSQLDriver(SQLDriver driver);
+
+    public void setHost(String host);
+
+    public void setPort(int port);
+
+    public void setUsername(String username);
+
+    public void setPasswd(String passwd);
+
+    public void setDBName(String dbName);
+
+    public PropertiesAssociations getPropertiesAssociations();
 }

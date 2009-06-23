@@ -67,7 +67,6 @@ public class StatisticsControllerImpl implements StatisticsController, LongTaskL
             LongTaskExecutor executor = new LongTaskExecutor(true, statistics.getName(), 10);
             executor.setLongTaskListener(this);
             executor.execute((LongTask) statistics, new Runnable() {
-
                 public void run() {
                     statistics.execute(graphController);
                 }
