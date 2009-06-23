@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import org.gephi.io.container.Container;
 import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.container.ContainerUnloader;
+import org.gephi.io.database.EdgeListDatabase;
 import org.gephi.io.database.drivers.MySQLDriver;
 import org.gephi.io.database.drivers.SQLUtils;
 import org.gephi.io.processor.NodeDraftGetter;

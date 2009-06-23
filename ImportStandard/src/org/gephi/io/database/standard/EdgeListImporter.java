@@ -32,6 +32,7 @@ import org.gephi.io.container.EdgeDraft;
 import org.gephi.io.container.NodeDraft;
 import org.gephi.io.database.Database;
 import org.gephi.io.database.DatabaseType;
+import org.gephi.io.database.EdgeListDatabase;
 import org.gephi.io.database.drivers.SQLUtils;
 import org.gephi.io.importer.DatabaseImporter;
 import org.gephi.io.importer.PropertiesAssociations;
@@ -87,10 +88,10 @@ public class EdgeListImporter implements DatabaseImporter {
         while (rs.next()) {
             NodeDraft node = factory.newNodeDraft();
             for (int i = 0; i < columnsCount; i++) {
-                String columnName = metaData.getColumnLabel(i+1);
+                String columnName = metaData.getColumnLabel(i + 1);
                 NodeProperties p = properties.getNodeProperty(columnName);
                 if (p != null) {
-                    injectNodeProperty(p, rs, i+1, node);
+                    injectNodeProperty(p, rs, i + 1, node);
                 } else {
                     //Inject node attributes
                 }
@@ -120,12 +121,12 @@ public class EdgeListImporter implements DatabaseImporter {
         while (rs.next()) {
             EdgeDraft edge = factory.newEdgeDraft();
             for (int i = 0; i < columnsCount; i++) {
-                String columnName = metaData.getColumnLabel(i+1);
+                String columnName = metaData.getColumnLabel(i + 1);
                 EdgeProperties p = properties.getEdgeProperty(columnName);
                 if (p != null) {
-                    injectEdgeProperty(p, rs, i+1, edge);
+                    injectEdgeProperty(p, rs, i + 1, edge);
                 } else {
-                    //Inject node attributes
+                    //Inject edge attributes
                 }
             }
 
