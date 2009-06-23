@@ -131,6 +131,9 @@
           <Connection code="new EdgeListPanel.ConfigurationComboModel()" type="code"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="configurationComboActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="configurationLabel">
       <Properties>

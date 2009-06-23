@@ -108,6 +108,11 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
         testConnection = new javax.swing.JButton();
 
         configurationCombo.setModel(new EdgeListPanel.ConfigurationComboModel());
+        configurationCombo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                configurationComboActionPerformed(evt);
+            }
+        });
 
         configurationLabel.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.configurationLabel.text")); // NOI18N
 
@@ -266,6 +271,21 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
             }
         }
     }//GEN-LAST:event_testConnectionActionPerformed
+
+    private void configurationComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_configurationComboActionPerformed
+        ConfigurationComboModel model = (ConfigurationComboModel)configurationCombo.getModel();
+        EdgeListDatabase selectedDatabase = model.getSelectedItem().db;
+        dbTextField.setText(selectedDatabase.getDBName());
+        hostTextField.setText(selectedDatabase.getHost());
+        portTextField.setText(""+selectedDatabase.getPort());
+        userTextField.setText(selectedDatabase.getUsername());
+        pwdTextField.setText(selectedDatabase.getPasswd());
+        driverComboBox.setSelectedItem(selectedDatabase.getSQLDriver());
+        nodeQueryTextField.setText(selectedDatabase.getNodeQuery());
+        edgeQueryTextField.setText(selectedDatabase.getEdgeQuery());
+        nodeAttQueryTextField.setText(selectedDatabase.getNodeAttributesQuery());
+        edgeAttQueryTextField.setText(selectedDatabase.getEdgeAttributesQuery());
+    }//GEN-LAST:event_configurationComboActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox configurationCombo;
