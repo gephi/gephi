@@ -223,7 +223,7 @@ public class GraphDistance implements Statistics, LongTask {
      * @return
      */
     public StatisticsUI getUI() {
-       return new GraphDistancePanel.GraphDistanceUI();
+        return new GraphDistancePanel.GraphDistanceUI();
     }
 
     /**

@@ -3,3 +3,4 @@ org.gephi.statistics.InOutDegree
 org.gephi.statistics.ClusteringCoefficient
 org.gephi.statistics.DegreeDistribution
 org.gephi.statistics.GraphDistance
+org.gephi.statistics.PageRank

@@ -8,7 +8,6 @@
  *
  * Created on Jun 22, 2009, 9:58:00 PM
  */
-
 package org.gephi.statistics.ui;
 
 import javax.swing.JPanel;
@@ -95,8 +94,6 @@ public class ClusteringCoefficientPanel extends javax.swing.JPanel {
                 .addContainerGap(163, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     protected javax.swing.JRadioButton bruteRadioButton;
     private javax.swing.ButtonGroup buttonGroup1;

@@ -8,7 +8,6 @@
  *
  * Created on Jun 22, 2009, 8:59:14 PM
  */
-
 package org.gephi.statistics.ui;
 
 import javax.swing.JPanel;
@@ -26,9 +25,6 @@ public class GraphDistancePanel extends javax.swing.JPanel {
     public GraphDistancePanel() {
         initComponents();
     }
-
-
-
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -87,8 +83,6 @@ public class GraphDistancePanel extends javax.swing.JPanel {
     private void directedRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_directedRadioButtonActionPerformed
         // TODO add your handling code here:
 }//GEN-LAST:event_directedRadioButtonActionPerformed
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
@@ -97,8 +91,7 @@ public class GraphDistancePanel extends javax.swing.JPanel {
     protected javax.swing.JRadioButton undirectedRadioButton;
     // End of variables declaration//GEN-END:variables
 
-
-      public static class GraphDistanceUI implements StatisticsUI {
+    public static class GraphDistanceUI implements StatisticsUI {
 
         private GraphDistancePanel panel;
         private GraphDistance graphDistance;

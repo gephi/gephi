@@ -57,23 +57,22 @@ public class StatisticsControllerImpl implements StatisticsController, LongTaskL
     }
 
     /**
-    *
-    * @param statistics
-    */
+     *
+     * @param statistics
+     */
     private void complete(final Statistics statistics) {
         final GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
 
-        if(statistics instanceof LongTask)
-        {
+        if (statistics instanceof LongTask) {
             LongTaskExecutor executor = new LongTaskExecutor(true, statistics.getName(), 10);
             executor.setLongTaskListener(this);
-            executor.execute((LongTask)statistics, new Runnable() {
-                 public void run() {
-                     statistics.execute(graphController); }
-             },statistics.getName());
-        }
-        else
-        {
+            executor.execute((LongTask) statistics, new Runnable() {
+
+                public void run() {
+                    statistics.execute(graphController);
+                }
+            }, statistics.getName());
+        } else {
             statistics.execute(graphController);
             StatisticsReporterImpl reporter = new StatisticsReporterImpl(statistics);
 
@@ -142,7 +141,7 @@ public class StatisticsControllerImpl implements StatisticsController, LongTaskL
      * @param task
      */
     public void taskFinished(LongTask task) {
-        Statistics statistics = (Statistics)task;
+        Statistics statistics = (Statistics) task;
         StatisticsReporterImpl reporter = new StatisticsReporterImpl(statistics);
     }
 }
