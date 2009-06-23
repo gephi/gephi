@@ -20,7 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.database;
 
+import org.gephi.data.properties.EdgeProperties;
+import org.gephi.data.properties.NodeProperties;
 import org.gephi.io.database.drivers.SQLDriver;
+import org.gephi.io.importer.PropertyAssociation;
 
 /**
  *
@@ -55,4 +58,16 @@ public interface Database {
     public void setPasswd(String passwd);
 
     public void setDBName(String dbName);
+
+    public PropertyAssociation<NodeProperties>[] getNodePropertiesAssociation();
+
+    public void addNodePropertyAssociation(PropertyAssociation<NodeProperties> association);
+
+    public void removeNodePropertyAssociation(PropertyAssociation<NodeProperties> association);
+
+    public PropertyAssociation<EdgeProperties>[] getEdgePropertiesAssociation();
+
+    public void addEdgePropertyAssociation(PropertyAssociation<EdgeProperties> association);
+
+    public void removeEdgePropertyAssociation(PropertyAssociation<EdgeProperties> association);
 }

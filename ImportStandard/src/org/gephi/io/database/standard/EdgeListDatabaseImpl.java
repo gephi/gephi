@@ -20,41 +20,18 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.database.standard;
 
-import org.gephi.io.database.drivers.SQLDriver;
+import org.gephi.io.database.AbstractDatabase;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class EdgeListDatabaseImpl implements EdgeListDatabase {
+public class EdgeListDatabaseImpl extends AbstractDatabase implements EdgeListDatabase {
 
     private String nodeQuery;
     private String edgeQuery;
     private String nodeAttributesQuery;
     private String edgeAttributesQuery;
-    private String name;
-    private SQLDriver SQLDriver;
-    private String host;
-    private int port;
-    private String username;
-    private String passwd;
-    private String DBName;
-
-    public String getDBName() {
-        return DBName;
-    }
-
-    public void setDBName(String DBName) {
-        this.DBName = DBName;
-    }
-
-    public SQLDriver getSQLDriver() {
-        return SQLDriver;
-    }
-
-    public void setSQLDriver(SQLDriver SQLDriver) {
-        this.SQLDriver = SQLDriver;
-    }
 
     public String getEdgeAttributesQuery() {
         return edgeAttributesQuery;
@@ -72,22 +49,6 @@ public class EdgeListDatabaseImpl implements EdgeListDatabase {
         this.edgeQuery = edgeQuery;
     }
 
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getNodeAttributesQuery() {
         return nodeAttributesQuery;
     }
@@ -102,29 +63,5 @@ public class EdgeListDatabaseImpl implements EdgeListDatabase {
 
     public void setNodeQuery(String nodeQuery) {
         this.nodeQuery = nodeQuery;
-    }
-
-    public String getPasswd() {
-        return passwd;
-    }
-
-    public void setPasswd(String passwd) {
-        this.passwd = passwd;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 }

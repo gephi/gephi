@@ -26,19 +26,46 @@ package org.gephi.io.importer;
  */
 public final class PropertyAssociation<Property> {
 
-    private final Property nodeProperty;
+    private final Property property;
     private final String title;
+    private volatile int hashCode = 0;      //Cache hashcode
 
-    public PropertyAssociation(Property nodeProperty, String title) {
-        this.nodeProperty = nodeProperty;
+    public PropertyAssociation(Property property, String title) {
+        this.property = property;
         this.title = title;
     }
 
-    public Property getNodeProperty() {
-        return nodeProperty;
+    public Property getProperty() {
+        return property;
     }
 
     public String getTitle() {
         return title;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof PropertyAssociation)) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        PropertyAssociation foreign = (PropertyAssociation) obj;
+        if (foreign.title.equals(title) && foreign.property.equals(property)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        if (hashCode == 0) {
+            int res = 17;
+            res = 37 * res + title.hashCode();
+            res = 37 * res + property.hashCode();
+            hashCode = res;
+        }
+        return hashCode;
     }
 }
