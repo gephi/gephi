@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.statistics.api.Statistics;
+import org.gephi.statistics.ui.api.StatisticsUI;
 import org.openide.util.NbBundle;
 
 /**
@@ -74,15 +75,11 @@ public class GraphDensity implements Statistics {
      *
      * @return
      */
-    public JPanel getPanel() {
-        return null;
-    }
-
-    /**
-     *
-     * @return
-     */
     public String getReport() {
         return new String("Density: " + density);
+    }
+
+    public StatisticsUI getUI() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

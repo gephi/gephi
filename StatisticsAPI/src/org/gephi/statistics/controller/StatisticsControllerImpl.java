@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Patrick J. McSweeney (pjmcswee@syr.edu)
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -23,36 +23,18 @@ package org.gephi.statistics.controller;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 import java.util.ArrayList;
 import org.gephi.statistics.api.*;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ProgressMonitor;
 import javax.swing.WindowConstants;
-import javax.swing.text.View;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.statistics.ui.api.StatisticsUI;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.longtask.LongTaskExecutor;
 import org.gephi.utils.longtask.LongTaskListener;
@@ -60,18 +42,24 @@ import org.openide.util.Lookup;
 
 /**
  *
- * @author Mathieu Bastian
+ * @author Mathieu Bastian, Patrick J. McSweeney
  */
 public class StatisticsControllerImpl implements StatisticsController, LongTaskListener {
 
     private List<Statistics> statistics;
 
+    /**
+     *
+     */
     public StatisticsControllerImpl() {
         statistics = new ArrayList<Statistics>(Lookup.getDefault().lookupAll(Statistics.class));
 
     }
 
-   
+    /**
+    *
+    * @param statistics
+    */
     private void complete(final Statistics statistics) {
         final GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
 
@@ -90,7 +78,6 @@ public class StatisticsControllerImpl implements StatisticsController, LongTaskL
             StatisticsReporterImpl reporter = new StatisticsReporterImpl(statistics);
 
         }
-
     }
 
     /**
@@ -102,12 +89,15 @@ public class StatisticsControllerImpl implements StatisticsController, LongTaskL
         if (statistics.isParamerizable()) {
             final JDialog dialog = new JDialog((JDialog) null, statistics.toString());
             Container container = dialog.getContentPane();
-            container.add(statistics.getPanel());
+            final StatisticsUI ui = statistics.getUI();
+            ui.setup(statistics);
+            container.add(ui.getPanel());
             JButton next = new JButton("Run");
 
             next.addActionListener(new java.awt.event.ActionListener() {
 
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    ui.unsetup();
                     dialog.dispose();
                     complete(statistics);
 
@@ -147,6 +137,10 @@ public class StatisticsControllerImpl implements StatisticsController, LongTaskL
         return statistics;
     }
 
+    /**
+     *
+     * @param task
+     */
     public void taskFinished(LongTask task) {
         Statistics statistics = (Statistics)task;
         StatisticsReporterImpl reporter = new StatisticsReporterImpl(statistics);

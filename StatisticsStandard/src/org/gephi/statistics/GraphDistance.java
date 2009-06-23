@@ -21,6 +21,8 @@ import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.statistics.ui.GraphDistancePanel;
+import org.gephi.statistics.ui.api.StatisticsUI;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
 import org.jfree.chart.ChartFactory;
@@ -52,6 +54,7 @@ public class GraphDistance implements Statistics, LongTask {
     private boolean directed;
     private ProgressTicket progress;
     private boolean isCanceled;
+    private GraphDistancePanel panel;
 
     /**
      * 
@@ -214,23 +217,21 @@ public class GraphDistance implements Statistics, LongTask {
     public boolean isParamerizable() {
         return true;
     }
-    final JRadioButton directedButton = new JRadioButton("Directed: ");
-    final JRadioButton undirectedButton = new JRadioButton("Undirected: ");
 
     /**
      *
      * @return
      */
-    public JPanel getPanel() {
-        JPanel panel = new JPanel();
+    public StatisticsUI getUI() {
+       return new GraphDistancePanel.GraphDistanceUI();
+    }
 
-        directedButton.setSelected(true);
-        ButtonGroup group = new ButtonGroup();
-        group.add(directedButton);
-        group.add(undirectedButton);
-        panel.add(directedButton);
-        panel.add(undirectedButton);
-        return panel;
+    /**
+     * 
+     * @param pDirected
+     */
+    public void setDirected(boolean pDirected) {
+        this.directed = pDirected;
     }
 
     /**

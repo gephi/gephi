@@ -31,6 +31,7 @@ import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.statistics.api.Statistics;
+import org.gephi.statistics.ui.api.StatisticsUI;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
@@ -110,13 +111,6 @@ public class InOutDegree implements Statistics, LongTask {
         return false;
     }
 
-    /**
-     *
-     * @return
-     */
-    public JPanel getPanel() {
-        return null;
-    }
 
     /**
      *
@@ -141,5 +135,9 @@ public class InOutDegree implements Statistics, LongTask {
      */
     public void setProgressTicket(ProgressTicket progressTicket) {
         progress = progressTicket;
+    }
+
+    public StatisticsUI getUI() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

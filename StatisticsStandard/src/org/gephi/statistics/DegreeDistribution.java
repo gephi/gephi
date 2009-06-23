@@ -25,6 +25,8 @@ import java.io.IOException;
 import javax.swing.JPanel;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.graph.api.*;
+import org.gephi.statistics.ui.DegreeDistributionPanel;
+import org.gephi.statistics.ui.api.StatisticsUI;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
 import org.jfree.chart.ChartFactory;
@@ -53,11 +55,20 @@ public class DegreeDistribution implements Statistics, LongTask {
     private boolean isCanceled;
     private ProgressTicket progress;
     private double[] fit;
-
-
+    private boolean directed;
     public String toString() {
         return new String("Degree Distribution");
     }
+
+
+    /**
+     * 
+     * @param pDirected
+     */
+    public void setDirected(boolean pDirected){
+        directed = pDirected;
+    }
+
 
     /**
      * 
@@ -87,12 +98,13 @@ public class DegreeDistribution implements Statistics, LongTask {
             combinedDistribution[0][combinedDegree] = combinedDegree;
             progress.progress(nodeCount);
             nodeCount++;
-            if(isCanceled)
+            if (isCanceled) {
                 return;
+            }
         }
 
         fit = new double[2];
-        leastSquares(combinedDistribution[1],fit);
+        leastSquares(combinedDistribution[1], fit);
     }
 
     /**
@@ -124,8 +136,9 @@ public class DegreeDistribution implements Statistics, LongTask {
                 nonZero++;
             }
 
-            if(isCanceled)
+            if (isCanceled) {
                 return;
+            }
 
         }
         avgX /= nonZero;
@@ -150,7 +163,7 @@ public class DegreeDistribution implements Statistics, LongTask {
      * @return
      */
     public boolean isParamerizable() {
-        return false;
+        return true;
     }
 
     /**
@@ -209,16 +222,6 @@ public class DegreeDistribution implements Statistics, LongTask {
 
         plot.setRenderer(renderer);
 
-        /*
-        String imageFile = "<IMG SRC=\"test.png\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\">";
-        try {
-            final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            final File file1 = new File("test.png");
-            ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
-        } catch (IOException e) {
-            System.out.println(e.toString());
-        }
-*/
 
         String imageFile = "";
         try {
@@ -236,7 +239,8 @@ public class DegreeDistribution implements Statistics, LongTask {
             System.out.println(e.toString());
         }
 
-        return imageFile;
+        String report = "<HTML> <BODY> Power: -"+ fit[0] +  "\n <BR>" + imageFile +"</BODY> </HTML>";
+        return report;
     }
 
     /**
@@ -254,5 +258,13 @@ public class DegreeDistribution implements Statistics, LongTask {
      */
     public void setProgressTicket(ProgressTicket progressTicket) {
         progress = progressTicket;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public StatisticsUI getUI() {
+       return new DegreeDistributionPanel.DegreeDistributionUI();
     }
 }

@@ -25,10 +25,7 @@ import java.util.Comparator;
 import java.util.Hashtable;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.Edge;
-import java.util.Iterator;
 import java.util.LinkedList;
-import javax.swing.JPanel;
 import org.gephi.data.attributes.api.AttributeClass;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
@@ -39,6 +36,8 @@ import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.statistics.ui.ClusteringCoefficientPanel;
+import org.gephi.statistics.ui.api.StatisticsUI;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
@@ -152,9 +151,9 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     /** The avergage Clustering Coefficient.*/
     private double avgClusteringCoeff;
     /** Indicates to use the brute force approach.*/
-    private boolean useBruteForce;
+    private boolean bruteForce;
     /**Indicates should treat graph as undirected.*/
-    private boolean undirectedOverride;
+    private boolean directed;
     /** Indicates statistics should stop processing/*/
     private boolean isCanceled;
     /** Keeps track of progress made. */
@@ -190,7 +189,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
         DirectedGraph digraph = graphController.getDirectedGraph();
 
-        if (useBruteForce) {
+        if (bruteForce) {
             bruteForce(graphController);
             return;
         } else {
@@ -249,7 +248,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     public void newVertex(int v) {
         boolean[] A = new boolean[N];
 
-     
+
         for (int i = mNetwork[v].length() - 1; (i >= 0) && (mNetwork[v].get(i) > v); i--) {
             int neighbor = mNetwork[v].get(i);
             A[neighbor] = true;
@@ -306,7 +305,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         int progressCount = 0;
         progress.start(7 * graph.getNodeCount());
 
-        if (this.undirectedOverride) {
+        if (!directed) {
             graph = graphController.getUndirectedGraph();
         }
 
@@ -334,6 +333,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
             for (Node neighbor : graph.getNeighbors(node)) {
                 neighbors.add(mNetwork[indicies.get(neighbor)]);
+                System.out.println(node.getId() + ": " + neighbor.getId());
                 j++;
             }
 
@@ -398,7 +398,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             progress.progress(++progressCount);
 
         }
-       
+
         avgClusteringCoeff /= N;
 
     }
@@ -416,7 +416,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
         float totalCC = 0;
         Graph graph = null;
-        if (undirectedOverride) {
+        if (!directed) {
             graph = graphController.getUndirectedGraph();
         } else {
             graph = graphController.getDirectedGraph();
@@ -436,9 +436,17 @@ public class ClusteringCoefficient implements Statistics, LongTask {
                     if (neighbor1 == neighbor2) {
                         continue;
                     }
-
-                    if (graph.isAdjacent(neighbor1, neighbor2)) {
-                        nodeCC++;
+                    if (directed) {
+                        if (((DirectedGraph) graph).getEdge(neighbor1, neighbor2) != null) {
+                            nodeCC++;
+                        }
+                        if (((DirectedGraph) graph).getEdge(neighbor2, neighbor1) != null) {
+                            nodeCC++;
+                        }
+                    } else {
+                        if (graph.isAdjacent(neighbor1, neighbor2)) {
+                            nodeCC++;
+                        }
                     }
                 }
             }
@@ -446,7 +454,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
             if (neighborhood > 1) {
                 float cc = nodeCC / (.5f * neighborhood * (neighborhood - 1));
-                if (!undirectedOverride) {
+                if (directed) {
                     cc = nodeCC / (neighborhood * (neighborhood - 1));
                 }
 
@@ -473,15 +481,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      * @return
      */
     public boolean isParamerizable() {
-        return false;
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public JPanel getPanel() {
-        return null;
+        return true;
     }
 
     /**
@@ -490,6 +490,22 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      */
     public String getReport() {
         return new String("Average Clustering Coefficient: " + avgClusteringCoeff);
+    }
+
+    /**
+     * 
+     * @param pDirected
+     */
+    public void setDirected(boolean pDirected) {
+        directed = pDirected;
+    }
+
+    /**
+     * 
+     * @param brute
+     */
+    public void setBruteForce(boolean brute) {
+        bruteForce = brute;
     }
 
     /**
@@ -507,6 +523,10 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      */
     public void setProgressTicket(ProgressTicket progressTicket) {
         progress = progressTicket;
+    }
+
+    public StatisticsUI getUI() {
+        return new ClusteringCoefficientPanel.ClusteringCoefficientUI();
     }
 }
        

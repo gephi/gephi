@@ -19,9 +19,9 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics.api;
-import javax.swing.JPanel;
-import javax.swing.ProgressMonitor;
+
 import org.gephi.graph.api.GraphController;
+import org.gephi.statistics.ui.api.StatisticsUI;
 
 /**
  *
@@ -52,7 +52,7 @@ public interface Statistics {
      * 
      * @return A JPanel which ties into the objects member variables.
      */
-    public JPanel getPanel();
+    public StatisticsUI getUI();
 
     /**
      *
