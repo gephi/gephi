@@ -12,6 +12,7 @@ package org.gephi.ui.database.standard;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collection;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
@@ -301,13 +302,22 @@ public class EdgeListPanel extends javax.swing.JPanel implements DatabaseTypeUI 
         private ConfigurationComboItem selectedItem;
 
         public ConfigurationComboModel() {
-            items = new ConfigurationComboItem[1];
+            Collection configs = Lookup.getDefault().lookupAll(type.getDatabaseClass());
+            items = new ConfigurationComboItem[configs.size() + 1];
+            int i = 0;
+            for (Object db : configs) {
+                EdgeListDatabase dbe = (EdgeListDatabase) db;
+                ConfigurationComboItem item = new ConfigurationComboItem();
+                item.db = dbe;
+                items[i] = item;
+                i++;
+            }
             EdgeListDatabase db = (EdgeListDatabase) type.createDatabase();
             ConfigurationComboItem item = new ConfigurationComboItem();
             item.db = db;
             db.setName("New configuration");
-            items[0] = item;
-            selectedItem = items[0];
+            items[i] = item;
+            selectedItem = items[items.length - 1];
         }
 
         public void setSelectedItem(Object anItem) {
