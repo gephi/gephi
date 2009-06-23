@@ -20,15 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.database;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import org.gephi.data.properties.EdgeProperties;
-import org.gephi.data.properties.NodeProperties;
-import org.gephi.io.database.Database;
 import org.gephi.io.database.drivers.SQLDriver;
-import org.gephi.io.importer.PropertyAssociation;
+import org.gephi.io.importer.PropertiesAssociations;
 
 /**
  *
@@ -45,57 +38,8 @@ public abstract class AbstractDatabase implements Database {
     protected String passwd;
     protected String DBName;
 
-    //Properties association
-    private List<PropertyAssociation<NodeProperties>> nodePropertyAssociations = new LinkedList<PropertyAssociation<NodeProperties>>();
-    private List<PropertyAssociation<EdgeProperties>> edgePropertyAssociations = new LinkedList<PropertyAssociation<EdgeProperties>>();
-
-    public void addEdgePropertyAssociation(PropertyAssociation<EdgeProperties> association) {
-        if (edgePropertyAssociations.contains(association)) {
-            return;
-        }
-        //Avoid any double
-        for (Iterator<PropertyAssociation<EdgeProperties>> itr = edgePropertyAssociations.iterator(); itr.hasNext();) {
-            PropertyAssociation<EdgeProperties> p = itr.next();
-            if (p.getTitle().equals(association.getTitle())) {
-                itr.remove();
-            } else if (p.getProperty().equals(association.getProperty())) {
-                itr.remove();
-            }
-        }
-        edgePropertyAssociations.add(association);
-    }
-
-    public void addNodePropertyAssociation(PropertyAssociation<NodeProperties> association) {
-        if (nodePropertyAssociations.contains(association)) {
-            return;
-        }
-        //Avoid any double
-        for (Iterator<PropertyAssociation<NodeProperties>> itr = nodePropertyAssociations.iterator(); itr.hasNext();) {
-            PropertyAssociation<NodeProperties> p = itr.next();
-            if (p.getTitle().equals(association.getTitle())) {
-                itr.remove();
-            } else if (p.getProperty().equals(association.getProperty())) {
-                itr.remove();
-            }
-        }
-        nodePropertyAssociations.add(association);
-    }
-
-    public void removeEdgePropertyAssociation(PropertyAssociation<EdgeProperties> association) {
-        edgePropertyAssociations.remove(association);
-    }
-
-    public void removeNodePropertyAssociation(PropertyAssociation<NodeProperties> association) {
-        nodePropertyAssociations.remove(association);
-    }
-
-    public PropertyAssociation<EdgeProperties>[] getEdgePropertiesAssociation() {
-        return edgePropertyAssociations.toArray(new PropertyAssociation[0]);
-    }
-
-    public PropertyAssociation<NodeProperties>[] getNodePropertiesAssociation() {
-        return nodePropertyAssociations.toArray(new PropertyAssociation[0]);
-    }
+    //PropertiesAssociations
+    protected PropertiesAssociations properties;
 
     public String getDBName() {
         return DBName;
@@ -151,5 +95,9 @@ public abstract class AbstractDatabase implements Database {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public PropertiesAssociations getPropertiesAssociations() {
+        return properties;
     }
 }

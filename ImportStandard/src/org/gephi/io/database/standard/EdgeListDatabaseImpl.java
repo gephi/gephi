@@ -20,7 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.database.standard;
 
+import org.gephi.data.properties.EdgeProperties;
+import org.gephi.data.properties.NodeProperties;
 import org.gephi.io.database.AbstractDatabase;
+import org.gephi.io.importer.PropertyAssociation;
 
 /**
  *
@@ -32,6 +35,21 @@ public class EdgeListDatabaseImpl extends AbstractDatabase implements EdgeListDa
     private String edgeQuery;
     private String nodeAttributesQuery;
     private String edgeAttributesQuery;
+
+    public EdgeListDatabaseImpl() {
+        //Default node associations
+        properties.addNodePropertyAssociation(new PropertyAssociation<NodeProperties>(NodeProperties.ID, "id"));
+        properties.addNodePropertyAssociation(new PropertyAssociation<NodeProperties>(NodeProperties.LABEL, "label"));
+        properties.addNodePropertyAssociation(new PropertyAssociation<NodeProperties>(NodeProperties.X, "x"));
+        properties.addNodePropertyAssociation(new PropertyAssociation<NodeProperties>(NodeProperties.Y, "y"));
+        properties.addNodePropertyAssociation(new PropertyAssociation<NodeProperties>(NodeProperties.SIZE, "size"));
+
+        //Default edge associations
+        properties.addEdgePropertyAssociation(new PropertyAssociation<EdgeProperties>(EdgeProperties.ID, "id"));
+        properties.addEdgePropertyAssociation(new PropertyAssociation<EdgeProperties>(EdgeProperties.LABEL, "label"));
+        properties.addEdgePropertyAssociation(new PropertyAssociation<EdgeProperties>(EdgeProperties.WEIGHT, "weight"));
+
+    }
 
     public String getEdgeAttributesQuery() {
         return edgeAttributesQuery;
