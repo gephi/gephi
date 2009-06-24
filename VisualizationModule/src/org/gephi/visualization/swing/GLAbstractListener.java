@@ -85,7 +85,7 @@ public abstract class GLAbstractListener implements GLEventListener {
         }
 
         //Cull face
-        if (vizConfig.isCulling() && !vizConfig.use3d()) {
+        if (vizConfig.isCulling()) {
             gl.glEnable(GL.GL_CULL_FACE);
             gl.glCullFace(GL.GL_BACK);
         }
@@ -151,18 +151,20 @@ public abstract class GLAbstractListener implements GLEventListener {
     }
 
     protected void setLighting(GL gl) {
+
         //Lights
-        Lighting.setSource(0, Lighting.TYPE_AMBIANT, gl);//
-        Lighting.setSource(2, Lighting.TYPE_BAS_ROUGE, gl);//
-        Lighting.setSource(3, Lighting.TYPE_GAUCHE_JAUNE, gl);//
-        Lighting.setSource(4, Lighting.TYPE_HAUT_BLEU, gl);//
-        Lighting.setSource(5, Lighting.TYPE_LATERAL_BLANC, gl);
-        Lighting.setSource(6, Lighting.TYPE_LATERAL_MULTI, gl);
-        Lighting.setSource(7, Lighting.TYPE_SPOT_BLAFARD, gl);
         if (vizConfig.use3d()) {
+            Lighting.setSource(0, Lighting.TYPE_AMBIANT, gl);//
+            Lighting.setSource(2, Lighting.TYPE_BAS_ROUGE, gl);//
+            Lighting.setSource(3, Lighting.TYPE_GAUCHE_JAUNE, gl);//
+            Lighting.setSource(4, Lighting.TYPE_HAUT_BLEU, gl);//
+            Lighting.setSource(5, Lighting.TYPE_LATERAL_BLANC, gl);
+            Lighting.setSource(6, Lighting.TYPE_LATERAL_MULTI, gl);
+            Lighting.setSource(7, Lighting.TYPE_SPOT_BLAFARD, gl);
             Lighting.switchAll(gl, true, false, true, true, true, false, false, false);
         } else {
-            Lighting.switchAll(gl, true, false, false, false, false, false, false, false);
+            gl.glLightModelfv(GL.GL_LIGHT_MODEL_AMBIENT, new float[] {0f, 0f, 0f, 1f}, 0);
+            gl.glEnable(GL.GL_LIGHT0);
         }
     }
 
