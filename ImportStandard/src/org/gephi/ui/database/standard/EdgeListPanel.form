@@ -52,7 +52,7 @@
                               <EmptySpace pref="234" max="32767" attributes="0"/>
                               <Component id="testConnection" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="pwdTextField" alignment="1" pref="443" max="32767" attributes="1"/>
+                          <Component id="pwdTextField" alignment="0" pref="443" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -119,7 +119,7 @@
                   <Component id="edgeAttQueryLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="edgeAttQueryTextField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="44" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -157,13 +157,23 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="hostTextField">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="host" noResource="true"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JTextField" name="portTextField">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.portTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.port.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
+        <Property name="name" type="java.lang.String" value="port" noResource="true"/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="userLabel">
       <Properties>
@@ -189,23 +199,24 @@
     <Component class="javax.swing.JTextField" name="dbTextField">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.dbTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.database.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
+        <Property name="name" type="java.lang.String" value="database" noResource="true"/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JTextField" name="userTextField">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.userTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.user name.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
+        <Property name="name" type="java.lang.String" value="user name" noResource="true"/>
       </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="pwdTextField">
-      <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.pwdTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
-      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="driverLabel">
       <Properties>
@@ -234,6 +245,9 @@
           <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.nodeQueryTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="edgeQueryLabel">
       <Properties>
@@ -262,6 +276,9 @@
           <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.edgeQueryTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JTextField" name="nodeAttQueryTextField">
       <Properties>
@@ -269,6 +286,9 @@
           <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.nodeAttQueryTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JTextField" name="edgeAttQueryTextField">
       <Properties>
@@ -276,6 +296,9 @@
           <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.edgeAttQueryTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JButton" name="testConnection">
       <Properties>
@@ -286,6 +309,17 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="testConnectionActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JPasswordField" name="pwdTextField">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.password.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="password" noResource="true"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>

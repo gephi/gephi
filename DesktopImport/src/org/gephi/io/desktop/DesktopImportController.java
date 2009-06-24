@@ -29,6 +29,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import javax.swing.JPanel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -46,6 +47,7 @@ import org.gephi.io.processor.Processor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.database.DatabaseTypeUI;
+import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -117,8 +119,6 @@ public class DesktopImportController implements ImportController {
 
     public void doImport(Database database) {
         try {
-
-
             DatabaseType type = getDatabaseType(database);
             if (type == null) {
                 throw new ImportException(NbBundle.getMessage(getClass(), "error_no_matching_db_importer"));
@@ -131,12 +131,22 @@ public class DesktopImportController implements ImportController {
             DatabaseTypeUI ui = type.getUI();
             if (ui != null) {
                 ui.setup(type);
-                DialogDescriptor dd = new DialogDescriptor(ui.getPanel(), "Database settings");
-                Object result = DialogDisplayer.getDefault().notify(dd);
+                String title = "Database settings";
+                JPanel panel = ui.getPanel();
+                if (panel instanceof ValidationPanel) {
+                    ValidationPanel validationPanel = (ValidationPanel) panel;
+                    if (!validationPanel.showOkCancelDialog(title)) {
+                        return;
+                    }
+                } else {
+                    DialogDescriptor dd = new DialogDescriptor(panel, title);
+                    if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.CANCEL_OPTION)) {
+                        return;
+                    }
+                }
                 ui.unsetup();
                 database = ui.getDatabase();
             }
-
             ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
             Workspace workspace = projectController.importFile();
 
