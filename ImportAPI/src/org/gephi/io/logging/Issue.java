@@ -51,4 +51,16 @@ public final class Issue {
         this.level = level;
         this.throwable = null;
     }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Level getLevel() {
+        return level;
+    }
+
+    public Throwable getThrowable() {
+        return throwable;
+    }
 }

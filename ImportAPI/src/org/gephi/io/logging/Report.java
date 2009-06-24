@@ -29,14 +29,38 @@ import java.util.List;
  */
 public final class Report {
 
-    private final List<ReportEntry> issues = new ArrayList<ReportEntry>();
+    private final List<ReportEntry> entries = new ArrayList<ReportEntry>();
 
     public void log(String message) {
-        issues.add(new ReportEntry(message));
+        entries.add(new ReportEntry(message));
     }
 
     public void logIssue(Issue issue) {
-        issues.add(new ReportEntry(issue));
+        entries.add(new ReportEntry(issue));
+    }
+
+    public List<Issue> getIssues() {
+        List<Issue> res = new ArrayList<Issue>();
+        for(ReportEntry re : entries) {
+            if(re.issue!=null) {
+                res.add(re.issue);
+            }
+        }
+        return res;
+    }
+
+    public String getHtml() {
+        String html = "";
+        for(ReportEntry re : entries) {
+            if(re.issue!=null) {
+                html+=re.issue.getMessage();
+                html+="<br><br>";
+            } else {
+                html+=re.message;
+                html+="<br>";
+            }
+        }
+        return html;
     }
 
     private class ReportEntry {

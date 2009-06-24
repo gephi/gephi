@@ -162,7 +162,7 @@ public class DesktopImportController implements ImportController {
             Report report = new Report();
             container.setReport(report);
 
-            im.importData(database, container.getLoader(),report);
+            im.importData(database, container.getLoader(), report);
             finishImport(container);
 
         } catch (Exception ex) {
@@ -175,6 +175,14 @@ public class DesktopImportController implements ImportController {
     private void finishImport(Container container) {
 
         Report report = container.getReport();
+
+        //Report panel
+        ReportPanel reportPanel = new ReportPanel();
+        reportPanel.setData(report, container);
+        DialogDescriptor dd = new DialogDescriptor(reportPanel, "Import report");
+        if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.CANCEL_OPTION)) {
+            return;
+        }
 
         Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
     }
