@@ -51,6 +51,7 @@
                 <package>org.gephi.io.container</package>
                 <package>org.gephi.io.database</package>
                 <package>org.gephi.io.importer</package>
+                <package>org.gephi.io.logging</package>
                 <package>org.gephi.io.processor</package>
                 <package>org.gephi.ui.database</package>
             </public-packages>

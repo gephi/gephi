@@ -40,6 +40,8 @@ import org.gephi.io.database.EdgeListDatabase;
 import org.gephi.io.database.drivers.SQLUtils;
 import org.gephi.io.importer.DatabaseImporter;
 import org.gephi.io.importer.PropertiesAssociations;
+import org.gephi.io.logging.Issue;
+import org.gephi.io.logging.Report;
 
 /**
  *
@@ -47,32 +49,45 @@ import org.gephi.io.importer.PropertiesAssociations;
  */
 public class EdgeListImporter implements DatabaseImporter {
 
+    private Report report;
     private EdgeListDatabase database;
     private ContainerLoader container;
 
-    public void importData(Database database, ContainerLoader container) throws Exception {
+    public void importData(Database database, ContainerLoader container, Report report) throws Exception {
         this.database = (EdgeListDatabase) database;
         this.container = container;
+        this.report = report;
 
+        //Connect database
         Connection connection = null;
+        String url = SQLUtils.getUrl(database.getSQLDriver(), database.getHost(), database.getPort(), database.getDBName());
         try {
-            System.out.println("Try to connect at " + SQLUtils.getUrl(database.getSQLDriver(), database.getHost(), database.getPort(), database.getDBName()));
-            connection = database.getSQLDriver().getConnection(SQLUtils.getUrl(database.getSQLDriver(), database.getHost(), database.getPort(), database.getDBName()), database.getUsername(), database.getPasswd());
-            System.out.println("Database connection established");
-            getNodes(connection);
-            getEdges(connection);
-            getNodesAttributes(connection);
-            getEdgesAttributes(connection);
+            report.log("Try to connect at " + url);
+            connection = database.getSQLDriver().getConnection(url, database.getUsername(), database.getPasswd());
+            report.log("Database connection established");
         } catch (SQLException ex) {
-            throw ex;
-        } finally {
             if (connection != null) {
                 try {
                     connection.close();
-                    System.out.println("Database connection terminated");
+                    report.log("Database connection terminated");
                 } catch (Exception e) { /* ignore close errors */ }
             }
+            report.logIssue(new Issue("Failed to connect at " + url, Issue.Level.CRITICAL, ex));
         }
+
+        getNodes(connection);
+        getEdges(connection);
+        getNodesAttributes(connection);
+        getEdgesAttributes(connection);
+
+        //Close connection
+        if (connection != null) {
+            try {
+                connection.close();
+                report.log("Database connection terminated");
+            } catch (Exception e) { /* ignore close errors */ }
+        }
+
     }
 
     private void getNodes(Connection connection) throws SQLException {

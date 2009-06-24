@@ -18,17 +18,37 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.io.importer;
-
-import java.io.InputStream;
-import org.gephi.io.container.ContainerLoader;
-import org.gephi.io.logging.Report;
+package org.gephi.io.logging;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface StreamImporter {
+public final class Issue {
 
-    public void importData(InputStream stream, ContainerLoader containter, Report report) throws Exception;
+    public enum Level {
+
+        INFO, WARNING, SEVERE, CRITICAL
+    };
+    private final Throwable throwable;
+    private final String message;
+    private final Level level;
+
+    public Issue(Throwable throwable, Level level) {
+        this.throwable = throwable;
+        this.level = level;
+        this.message = throwable.getMessage();
+    }
+
+    public Issue(String message, Level level, Throwable throwable) {
+        this.throwable = throwable;
+        this.level = level;
+        this.message = message;
+    }
+
+    public Issue(String message, Level level) {
+        this.message = message;
+        this.level = level;
+        this.throwable = null;
+    }
 }

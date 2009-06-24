@@ -18,17 +18,40 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.io.importer;
+package org.gephi.io.logging;
 
-import java.io.InputStream;
-import org.gephi.io.container.ContainerLoader;
-import org.gephi.io.logging.Report;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface StreamImporter {
+public final class Report {
 
-    public void importData(InputStream stream, ContainerLoader containter, Report report) throws Exception;
+    private final List<ReportEntry> issues = new ArrayList<ReportEntry>();
+
+    public void log(String message) {
+        issues.add(new ReportEntry(message));
+    }
+
+    public void logIssue(Issue issue) {
+        issues.add(new ReportEntry(issue));
+    }
+
+    private class ReportEntry {
+
+        private final Issue issue;
+        private final String message;
+
+        public ReportEntry(Issue issue) {
+            this.issue = issue;
+            this.message = null;
+        }
+
+        public ReportEntry(String message) {
+            this.message = message;
+            this.issue = null;
+        }
+    }
 }

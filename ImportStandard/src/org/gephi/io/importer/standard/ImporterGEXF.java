@@ -29,8 +29,8 @@ import org.gephi.io.container.EdgeDraft;
 import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.container.NodeDraft;
 import org.gephi.io.importer.FileType;
-import org.gephi.io.importer.ImportException;
 import org.gephi.io.importer.XMLImporter;
+import org.gephi.io.logging.Report;
 import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
 import org.w3c.dom.Document;
@@ -43,7 +43,7 @@ import org.w3c.dom.NodeList;
  */
 public class ImporterGEXF implements XMLImporter {
 
-    public void importData(Document document, ContainerLoader container) throws Exception {
+    public void importData(Document document, ContainerLoader container, Report report) throws Exception {
 
         //XPath
         XPathFactory factory = XPathFactory.newInstance();

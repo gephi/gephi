@@ -43,6 +43,7 @@ import org.gephi.io.importer.ImportException;
 import org.gephi.io.importer.StreamImporter;
 import org.gephi.io.importer.TextImporter;
 import org.gephi.io.importer.XMLImporter;
+import org.gephi.io.logging.Report;
 import org.gephi.io.processor.Processor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -95,17 +96,20 @@ public class DesktopImportController implements ImportController {
             //Create Container
             Container container = Lookup.getDefault().lookup(Container.class);
             container.setSource("" + im.getClass());
-            container.setErrorMode(Container.ErrorMode.REPORT);
+
+            //Report
+            Report report = new Report();
+            container.setReport(report);
 
             if (im instanceof XMLImporter) {
                 Document document = getDocument(fileObject);
                 XMLImporter xmLImporter = (XMLImporter) im;
-                xmLImporter.importData(document, container.getLoader());
+                xmLImporter.importData(document, container.getLoader(), report);
                 finishImport(container);
             } else if (im instanceof TextImporter) {
                 BufferedReader reader = getTextReader(fileObject);
                 TextImporter textImporter = (TextImporter) im;
-                textImporter.importData(reader, container.getLoader());
+                textImporter.importData(reader, container.getLoader(), report);
                 finishImport(container);
             } else if (im instanceof StreamImporter) {
             }
@@ -153,9 +157,12 @@ public class DesktopImportController implements ImportController {
             //Create Container
             Container container = Lookup.getDefault().lookup(Container.class);
             container.setSource("" + im.getClass());
-            container.setErrorMode(Container.ErrorMode.REPORT);
 
-            im.importData(database, container.getLoader());
+            //Report
+            Report report = new Report();
+            container.setReport(report);
+
+            im.importData(database, container.getLoader(),report);
             finishImport(container);
 
         } catch (Exception ex) {
@@ -167,13 +174,7 @@ public class DesktopImportController implements ImportController {
 
     private void finishImport(Container container) {
 
-        Container.ContainerReport report = container.getReport();
-        String reportStr = report.getReport();
-        System.err.println(reportStr);
-        if (!reportStr.isEmpty()) {
-            NotifyDescriptor.Message e = new NotifyDescriptor.Message(reportStr, NotifyDescriptor.INFORMATION_MESSAGE);
-            DialogDisplayer.getDefault().notifyLater(e);
-        }
+        Report report = container.getReport();
 
         Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
     }
