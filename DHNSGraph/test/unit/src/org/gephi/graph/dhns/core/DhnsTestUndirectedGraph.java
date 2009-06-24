@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
 import org.gephi.graph.dhns.graph.ClusteredUndirectedGraphImpl;
@@ -43,7 +44,8 @@ public class DhnsTestUndirectedGraph {
 
     @Before
     public void setUp() {
-        dhnsGlobal = new Dhns();
+        DhnsGraphController controller = new DhnsGraphController();
+        dhnsGlobal = controller.getMainDhns();
         graphGlobal = new ClusteredUndirectedGraphImpl(dhnsGlobal, false);
         ClusteredDirectedGraphImpl diGraph = new ClusteredDirectedGraphImpl(dhnsGlobal, false);
         nodeMap = new HashMap<String, Node>();
@@ -107,7 +109,8 @@ public class DhnsTestUndirectedGraph {
 
     @Test
     public void testAddEdge() {
-        Dhns dhns = new Dhns();
+        DhnsGraphController controller = new DhnsGraphController();
+        Dhns dhns = controller.getMainDhns();
         ClusteredUndirectedGraphImpl graph = new ClusteredUndirectedGraphImpl(dhns, false);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.getGraphFactory();

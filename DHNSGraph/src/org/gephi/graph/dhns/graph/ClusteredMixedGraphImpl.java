@@ -79,7 +79,7 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
             return false;
         }
         if (!absEdge.hasAttributes()) {
-            absEdge.setAttributes(dhns.newEdgeAttributes());
+            absEdge.setAttributes(dhns.getGraphFactory().newEdgeAttributes());
         }
         dhns.getStructureModifier().addEdge(edge);
         if (absEdge.isDirected()) {

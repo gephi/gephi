@@ -26,7 +26,6 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.CompleteTreeIterator;
@@ -64,7 +63,7 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
             return false;
         }
         if (!preNode.hasAttributes()) {
-            preNode.setAttributes(dhns.newNodeAttributes());
+            preNode.setAttributes(dhns.getGraphFactory().newNodeAttributes());
         }
         dhns.getStructureModifier().addNode(node, parent);
         return true;
