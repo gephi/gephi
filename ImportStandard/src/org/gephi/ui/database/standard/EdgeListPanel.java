@@ -1,12 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+Copyright 2008 WebAtlas
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Website : http://www.gephi.org
 
-/*
- * EdgeListPanel.java
- *
- * Created on 22 juin 2009, 15:05:24
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.database.standard;
 
@@ -15,16 +25,12 @@ import java.sql.SQLException;
 import java.util.Collection;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JPanel;
 import javax.swing.event.ListDataListener;
 import org.gephi.io.database.Database;
 import org.gephi.io.database.DatabaseType;
 import org.gephi.io.database.EdgeListDatabase;
 import org.gephi.io.database.drivers.SQLDriver;
 import org.gephi.io.database.drivers.SQLUtils;
-import org.gephi.ui.database.DatabaseTypeUI;
-import org.gephi.validation.BetweenZeroAndOneValidator;
-import org.gephi.validation.PositiveNumberValidator;
 import org.netbeans.validation.api.builtin.Validators;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
@@ -57,7 +63,9 @@ public class EdgeListPanel extends javax.swing.JPanel {
         //Validators
         group.add(innerPanel.hostTextField, Validators.HOST_NAME_OR_IP_ADDRESS);
         group.add(innerPanel.dbTextField, Validators.REQUIRE_NON_EMPTY_STRING);
-        group.add(innerPanel.portTextField, Validators.REQUIRE_VALID_INTEGER, Validators.numberRange(1, 65535));
+        group.add(innerPanel.portTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                Validators.REQUIRE_VALID_INTEGER,
+                Validators.numberRange(1, 65535));
         group.add(innerPanel.userTextField, Validators.REQUIRE_NON_EMPTY_STRING);
 
         return validationPanel;
