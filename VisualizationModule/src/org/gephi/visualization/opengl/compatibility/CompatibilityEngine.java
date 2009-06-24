@@ -175,7 +175,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void display(GL gl, GLU glu) {
-        for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
+        for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {       //TODO Move this
             ModelImpl obj = itr.next();
             modelClasses[AbstractEngine.CLASS_NODE].getCurrentModeler().chooseModel(obj);
             setViewportPosition(obj);
@@ -187,40 +187,18 @@ public class CompatibilityEngine extends AbstractEngine {
             //gl.glDisable(GL.GL_LIGHTING);
             gl.glBegin(GL.GL_TRIANGLES);
 
-            if (vizConfig.getDisplayConfig() == DisplayConfig.DISPLAY_ALL) {
-                //Normal mode, all edges rendered
-                for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
-                    ModelImpl obj = itr.next();
-                    //Renderable renderable = obj.getObj();
+            for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
+                ModelImpl obj = itr.next();
+                //Renderable renderable = obj.getObj();
 
-                    if (obj.markTime != startTime) {
-                        obj.display(gl, glu);
-                        obj.markTime = startTime;
-                    }
+                if (obj.markTime != startTime) {
+                    obj.display(gl, glu);
+                    obj.markTime = startTime;
+                }
 
-                }
-            } else if (vizConfig.getDisplayConfig() == DisplayConfig.DISPLAY_NODES_EDGES) {
-                //Only edges on selected nodes are rendered
-                for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(CLASS_EDGE); itr.hasNext();) {
-                    ModelImpl obj = itr.next();
-                    if (obj.isSelected() && obj.markTime != startTime) {
-                        obj.display(gl, glu);
-                        obj.markTime = startTime;
-                    }
-                }
-            } else if (vizConfig.getDisplayConfig() == DisplayConfig.DISPLAY_ALPHA) {
-                //Selected edges are rendered with 1f alpha, half otherwise
-                for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
-                    ModelImpl obj = itr.next();
-                    if (obj.markTime != startTime) {
-                        obj.getObj().setAlpha(obj.isSelected() ? 1f : 0.2f);
-                        obj.display(gl, glu);
-                        obj.markTime = startTime;
-                    }
-                }
             }
             gl.glEnd();
-           // gl.glEnable(GL.GL_LIGHTING);
+        // gl.glEnable(GL.GL_LIGHTING);
         //gl.glEnable(GL.GL_BLEND);
         }
 
@@ -249,7 +227,7 @@ public class CompatibilityEngine extends AbstractEngine {
             }
 
         }
-        
+
         octree.displayOctree(gl);
     }
 
@@ -445,9 +423,9 @@ public class CompatibilityEngine extends AbstractEngine {
         clickableClasses = new CompatibilityModelClass[0];
 
 
-        modelClasses[0].setEnabled(true);
-        modelClasses[1].setEnabled(true);
-        modelClasses[2].setEnabled(true);
+        modelClasses[CLASS_NODE].setEnabled(true);
+        modelClasses[CLASS_EDGE].setEnabled(vizConfig.isShowEdges());
+        modelClasses[CLASS_ARROW].setEnabled(vizConfig.isShowArrows());
         modelClasses[3].setEnabled(true);
 
         //LOD

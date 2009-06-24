@@ -40,6 +40,7 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
     //Architecture
     protected Octant[] octants;
     protected ObjectType obj;
+    protected VizConfig config;
 
     //Graphical data
     protected float viewportX;
@@ -163,6 +164,10 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
         return cacheMarker == this.cacheMarker;
     }
 
+    public void setConfig(VizConfig config) {
+        this.config = config;
+    }
+
     public boolean isValid() {
         return octants != null && octants[0] != null;
     }
@@ -172,4 +177,5 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
             octants[0].requireUpdatePosition();
         }
     }
+
 }

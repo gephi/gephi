@@ -76,34 +76,53 @@ public class NodeDiskModel extends ModelImpl<NodeData> {
         gl.glTranslatef(obj.x(), obj.y(), obj.z());
         gl.glScalef(size, size, size);
 
-        float r = obj.r();
-        float g = obj.g();
-        float b = obj.b();
-
-        float rdark = 0.498f*r;
-        float gdark = 0.498f*g;
-        float bdark = 0.498f*b;
-        float rlight = Math.min(1,0.5f*r + 0.5f);
-        float glight = Math.min(1,0.5f*g + 0.5f);
-        float blight = Math.min(1,0.5f*b + 0.5f);
-
         if (!selected) {
-            gl.glColor3f(rlight, glight, blight);
-        } else {
-            gl.glColor3f(r, g, b);
-        }
-        gl.glCallList(modelType);
-
-        if(modelBorderType!=0) {
-            if(!selected) {
-                gl.glColor3f(r, g, b);
+            if (config.isDarkenNonSelected()) {
+                float[] darkenNonSelectedColor = config.getDarkenNonSelectedColor();
+                gl.glColor3f(darkenNonSelectedColor[0], darkenNonSelectedColor[1], darkenNonSelectedColor[2]);
+                gl.glCallList(modelType);
+                if (modelBorderType != 0) {
+                    gl.glCallList(modelBorderType);
+                }
             } else {
-                gl.glColor3f(rdark, gdark, bdark);
+                float r = obj.r();
+                float g = obj.g();
+                float b = obj.b();
+                float rlight = Math.min(1, 0.5f * r + 0.5f);
+                float glight = Math.min(1, 0.5f * g + 0.5f);
+                float blight = Math.min(1, 0.5f * b + 0.5f);
+                gl.glColor3f(rlight, glight, blight);
+                gl.glCallList(modelType);
+                if (modelBorderType != 0) {
+                    gl.glColor3f(r, g, b);
+                    gl.glCallList(modelBorderType);
+                }
             }
-            
-            gl.glCallList(modelBorderType);
+        } else {
+            float r;
+            float g;
+            float b;
+            if (config.isUniColorSelected()) {
+                r = config.getUniColorSelectedColor()[0];
+                g = config.getUniColorSelectedColor()[1];
+                b = config.getUniColorSelectedColor()[2];
+            } else {
+                r = obj.r();
+                g = obj.g();
+                b = obj.b();
+            }
+
+            gl.glColor3f(r, g, b);
+            gl.glCallList(modelType);
+            if (modelBorderType != 0) {
+                float rdark = 0.498f * r;
+                float gdark = 0.498f * g;
+                float bdark = 0.498f * b;
+                gl.glColor3f(rdark, gdark, bdark);
+                gl.glCallList(modelBorderType);
+            }
         }
-        
+
         gl.glPopMatrix();
     }
 

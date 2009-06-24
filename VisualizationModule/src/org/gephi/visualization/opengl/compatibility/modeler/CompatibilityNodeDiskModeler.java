@@ -27,7 +27,9 @@ import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JPanel;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
+import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.initializer.CompatibilityNodeModeler;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
@@ -46,9 +48,11 @@ public class CompatibilityNodeDiskModeler implements CompatibilityNodeModeler {
     public int BORDER16;
     public int BORDER32;
     private CompatibilityEngine engine;
+    protected VizConfig config;
 
     public CompatibilityNodeDiskModeler(AbstractEngine engine) {
         this.engine = (CompatibilityEngine) engine;
+        this.config = VizController.getInstance().getVizConfig();
     }
 
     @Override
@@ -56,6 +60,7 @@ public class CompatibilityNodeDiskModeler implements CompatibilityNodeModeler {
         NodeDiskModel obj = new NodeDiskModel();
         obj.setObj((NodeData) n);
         obj.setSelected(false);
+        obj.setConfig(config);
         obj.setDragDistanceFromMouse(new float[2]);
         n.setModel(obj);
 

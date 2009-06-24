@@ -96,7 +96,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         if (edgeClass.isEnabled() && (graph.getEdgeVersion() > edgeVersion || modeManager.requireModeChange())) {
             updateEdges();
             edgeClass.setCacheMarker(cacheMarker);
-            if (vizConfig.isDirectedEdges()) {
+            if (vizConfig.isShowArrows()) {
                 object3dClasses[AbstractEngine.CLASS_ARROW].setCacheMarker(cacheMarker);
             }
         }
@@ -145,7 +145,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                 obj = edgeInit.initModel(edge.getEdgeData());
 
                 engine.addObject(AbstractEngine.CLASS_EDGE, (ModelImpl) obj);
-                if (vizConfig.isDirectedEdges()) {
+                if (vizConfig.isShowArrows()) {
                     ModelImpl arrowObj = arrowInit.initModel(edge.getEdgeData());
                     engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);
@@ -153,7 +153,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                 }
             } else if (!obj.isValid()) {
                 engine.addObject(AbstractEngine.CLASS_EDGE, (ModelImpl) obj);
-                if (vizConfig.isDirectedEdges()) {
+                if (vizConfig.isShowArrows()) {
                     ModelImpl arrowObj = ((Edge2dModel) obj).getArrow();
                     engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);
