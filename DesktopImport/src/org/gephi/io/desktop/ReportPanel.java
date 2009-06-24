@@ -145,8 +145,10 @@ public class ReportPanel extends javax.swing.JPanel {
 
         graphTypeCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Directed", "Undirected", "Mixed" }));
 
+        nodeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         nodeCountLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.nodeCountLabel.text")); // NOI18N
 
+        edgeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         edgeCountLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.edgeCountLabel.text")); // NOI18N
 
         processorStrategyRadio.add(fullGraphRadio);
