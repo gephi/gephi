@@ -81,24 +81,3 @@ public class QuadTreeTest {
     }
 }
 
-class TestNode implements Spatial {
-
-    public float x,  y;
-
-    public TestNode(float x, float y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public float x() {
-        return x;
-    }
-
-    public float y() {
-        return y;
-    }
-
-    public float z() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-}

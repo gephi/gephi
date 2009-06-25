@@ -5,7 +5,6 @@ package org.gephi.layout.force.quadtree;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.gephi.graph.api.ClusteredDirectedGraph;
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Spatial;
@@ -28,12 +27,12 @@ public class QuadTree implements Spatial {
     public static final float eps = (float) 1e-6;
 
     public static QuadTree buildTree(ClusteredGraph graph, int maxLevel) {
-        float minX = Float.NEGATIVE_INFINITY;
-        float maxX = Float.POSITIVE_INFINITY;
-        float minY = Float.NEGATIVE_INFINITY;
-        float maxY = Float.POSITIVE_INFINITY;
+        float minX = Float.POSITIVE_INFINITY;
+        float maxX = Float.NEGATIVE_INFINITY;
+        float minY = Float.POSITIVE_INFINITY;
+        float maxY = Float.NEGATIVE_INFINITY;
 
-        for (Node node : graph.getNodes(0)) {
+        for (Node node : graph.getTopNodes()) {
             minX = Math.min(minX, node.getNodeData().x());
             maxX = Math.max(maxX, node.getNodeData().x());
             minY = Math.min(minY, node.getNodeData().y());
@@ -42,7 +41,7 @@ public class QuadTree implements Spatial {
 
         float size = Math.max(maxY - minY, maxX - minX);
         QuadTree tree = new QuadTree(minX, minY, size, maxLevel);
-        for (Node node : graph.getNodes(0)) {
+        for (Node node : graph.getTopNodes()) {
             tree.addNode(node.getNodeData());
         }
 
@@ -114,8 +113,8 @@ public class QuadTree implements Spatial {
     }
 
     public boolean addNode(Spatial node) {
-        if (posX <= node.x() && node.x() < posX + size + eps &&
-            posY <= node.y() && node.y() < posY + size + eps) {
+        if (posX <= node.x() && node.x() <= posX + size &&
+            posY <= node.y() && node.y() <= posY + size) {
             return add.addNode(node);
         } else {
             return false;

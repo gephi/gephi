@@ -16,6 +16,10 @@ public class MultiLevelLayout extends AbstractMultiLevelLayout {
     @Override
     protected YifanHu getForceLayout() {
         YifanHu layout = new YifanHu();
+        
+        layout.initAlgo(getGraph());
+        layout.resetPropertiesValues();
+
         return layout;
     }
 

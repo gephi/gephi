@@ -5,8 +5,10 @@ package org.gephi.layout.force.yifanHu;
 
 import javax.swing.Icon;
 import javax.swing.JPanel;
+import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Spatial;
+import org.gephi.layout.ForceVectorUtils;
 import org.gephi.layout.api.LayoutProperty;
 import org.gephi.layout.force.Displacement;
 import org.gephi.layout.force.AbstractForce;
@@ -28,6 +30,18 @@ public class YifanHu extends AbstractForceLayout {
     public float stepRatio;
     private boolean converged;
 
+    private float getAverageEdge(ClusteredGraph graph) {
+        float edgeLength = 0;
+        int count = 1;
+        for (Edge e : graph.getEdges()) {
+            edgeLength += ForceVectorUtils.distance(
+                e.getSource().getNodeData(), e.getTarget().getNodeData());
+            count++;
+        }
+
+        return edgeLength / count;
+    }
+
     /* Fa = (n2 - n1) * ||n2 - n1|| / K
      */
     class AttractionForce extends AbstractForce {
@@ -37,7 +51,7 @@ public class YifanHu extends AbstractForceLayout {
                                           float distance) {
             ForceVector f = new ForceVector(node2.x() - node1.x(),
                                             node2.y() - node1.y());
-            f.multiply(distance);
+            f.multiply(distance / optimalDistance);
             return f;
         }
     }
@@ -46,18 +60,15 @@ public class YifanHu extends AbstractForceLayout {
      */
     class RepulsionForce extends AbstractForce {
 
-        private float forceConstant;
-
-        public RepulsionForce() {
-            forceConstant = relativeStrength * optimalDistance * optimalDistance;
-        }
-
         @Override
         public ForceVector calculateForce(Spatial node1, Spatial node2,
                                           float distance) {
             ForceVector f = new ForceVector(node2.x() - node1.x(),
                                             node2.y() - node1.y());
-            f.multiply(forceConstant / distance);
+            f.multiply(-relativeStrength * optimalDistance * optimalDistance / (distance * distance));
+            if (Float.isNaN(f.x()) || Float.isNaN(f.y())) {
+                f = new ForceVector(100, 100);
+            }
             return f;
         }
     }
@@ -79,7 +90,7 @@ public class YifanHu extends AbstractForceLayout {
             step *= stepRatio;
         }
 
-        if (Math.abs(energy - energy0) < optimalDistance * 1e-6) {
+        if (Math.abs((energy - energy0) / energy) < 1e-3) {
             converged = true;
         }
     }
@@ -135,12 +146,18 @@ public class YifanHu extends AbstractForceLayout {
         stepRatio = (float) 0.9;
         progress = 0;
         converged = false;
-        optimalDistance = 10;
-        step = optimalDistance / 10;
-        relativeStrength = (float) 0.1;
+        optimalDistance = getAverageEdge(graph);
+        System.out.println("distance = " + optimalDistance);
+        step = (float) optimalDistance / 10000;
+        relativeStrength = (float) 0.2;
     }
 
     public JPanel getPanel() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    protected int getBarnesHutMaxLevel() {
+        return 10;
     }
 }

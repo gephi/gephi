@@ -3,6 +3,10 @@
  */
 package org.gephi.layout.force;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Vector;
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
@@ -44,8 +48,32 @@ public abstract class AbstractForceLayout implements Layout {
         return (float) 1.2;
     }
 
+    private Node getTopmostParent(ClusteredGraph graph, Node n) {
+        Node parent = graph.getParent(n);
+        while (parent != null) {
+            n = parent;
+            parent = graph.getParent(n);
+        }
+        return n;
+    }
+
+    private Collection<EdgeImpl> getTopEdges(ClusteredGraph graph) {
+        HashSet<EdgeImpl> edges = new HashSet<EdgeImpl>();
+
+        for (Edge e : graph.getEdges()) {
+            Node n1 = getTopmostParent(graph, e.getSource());
+            Node n2 = getTopmostParent(graph, e.getTarget());
+            if (n1 != n2 && graph.getLevel(n1) == 0) {
+                edges.add(new EdgeImpl(n1, n2));
+            }
+        }
+
+        return edges;
+    }
+
     public void goAlgo() {
         // Evaluates n^2 inter node forces using BarnesHut.
+        // TODO: NOT WORKING!!!!
         BarnesHut barnes = new BarnesHut(getNodeForce());
         barnes.theta = getBarnesHutTheta();
         QuadTree tree = QuadTree.buildTree(graph,
@@ -64,7 +92,9 @@ public abstract class AbstractForceLayout implements Layout {
 
         // Apply edge forces.
         AbstractForce edgeForce = getEdgeForce();
-        for (Edge e : graph.getEdges()) {
+        int count = 0;
+        for (Edge e : getTopEdges(graph)) {
+            count++;
             if (graph.getLevel(e.getSource()) == 0 &&
                 graph.getLevel(e.getTarget()) == 0) {
 
@@ -78,6 +108,7 @@ public abstract class AbstractForceLayout implements Layout {
                 f2.subtract(f);
             }
         }
+        System.out.println("count = " + count);
 
         // Apply displacements on nodes.
         energy0 = energy;

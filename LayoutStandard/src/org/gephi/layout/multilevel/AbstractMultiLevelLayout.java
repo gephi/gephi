@@ -18,6 +18,8 @@ public abstract class AbstractMultiLevelLayout implements Layout {
 
     private ClusteredGraph graph;
     private boolean acabou;
+    private int level;
+    private YifanHu layout;
 
     protected abstract YifanHu getForceLayout();
 
@@ -29,16 +31,20 @@ public abstract class AbstractMultiLevelLayout implements Layout {
 
     public void initAlgo(GraphController graphController) {
         graph = graphController.getClusteredDirectedGraph();
+        level = 1;
+        CoarseningStrategy coarsening = getCoarseningStrategy();
+        coarsening.coarsen(getGraph());
+        layout = getForceLayout();
+//        while (getGraph().getLevelSize(0) > 100) {
+//            CoarseningStrategy coarsening = getCoarseningStrategy();
+//            coarsening.coarsen(getGraph());
+//            level++;
+//        }
     }
 
     private void layoutLevel(int level) {
         YifanHu layout = getForceLayout();
 
-        layout.initAlgo(graph);
-        layout.resetPropertiesValues();
-
-        layout.optimalDistance = 10000000;
-        layout.optimalDistance *= Math.pow(4.0/7, level / 2.0);
         System.out.println("K = " + layout.optimalDistance);
         while (layout.canAlgo()) {
             layout.goAlgo();
@@ -47,23 +53,40 @@ public abstract class AbstractMultiLevelLayout implements Layout {
     }
 
     private void recursiveLayout(int level) {
-        System.out.println(graph.getLevelSize(0) + ", " + graph.getEdgeCount());
+        System.out.println(getGraph().getLevelSize(0) + ", " + getGraph().getEdgeCount());
 
-        if (graph.getLevelSize(0) > 100) {
+//        if (getGraph().getLevelSize(0) > 100) {
+        if (level < 2) {
             CoarseningStrategy coarsening = getCoarseningStrategy();
-            coarsening.coarsen(graph);
+            coarsening.coarsen(getGraph());
             recursiveLayout(level + 1);
             layoutLevel(level);
-            coarsening.refine(graph);
+            coarsening.refine(getGraph());
         }
         System.out.println("level = " + level);
     }
 
     public void goAlgo() {
-        recursiveLayout(0);
+//        System.out.println("level = " + level);
+//        if (level < 0) {
+//            return;
+//        }
 
-        // coarsening.refine(graph);
-        acabou = true;
+        if (layout.canAlgo()) {
+            layout.goAlgo();
+        } else {
+            layout.endAlgo();
+            if (level > 0) {
+                //acabou = true;
+                CoarseningStrategy coarsening = getCoarseningStrategy();
+                coarsening.refine(getGraph());
+                level--;
+            } else {
+                acabou = true;
+            }
+        }
+
+    // coarsening.refine(graph);
     }
 
     public boolean canAlgo() {
@@ -83,5 +106,12 @@ public abstract class AbstractMultiLevelLayout implements Layout {
 
     public JPanel getPanel() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * @return the graph
+     */
+    protected ClusteredGraph getGraph() {
+        return graph;
     }
 }

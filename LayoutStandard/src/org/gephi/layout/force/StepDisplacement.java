@@ -18,14 +18,13 @@ public class StepDisplacement implements Displacement {
     }
 
     public void moveNode(NodeData node, ForceVector forceData) {
-        if (forceData.getNorm() > 1e-3) {
-            ForceVector displacement = forceData.normalize();
-            displacement.multiply(step);
+        //ForceVector displacement = forceData.normalize();
+        ForceVector displacement = forceData;
+        displacement.multiply(step);
 
-            float x = node.x();
-            float y = node.y();
-            node.setX(node.x() + displacement.x());
-            node.setY(node.y() + displacement.y());
-        }
+        float x = node.x();
+        float y = node.y();
+        node.setX(node.x() + displacement.x());
+        node.setY(node.y() + displacement.y());
     }
 }
