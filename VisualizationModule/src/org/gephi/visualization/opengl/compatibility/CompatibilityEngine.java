@@ -295,10 +295,12 @@ public class CompatibilityEngine extends AbstractEngine {
 
         long markTime = System.currentTimeMillis();
         int i = 0;
+        boolean someSelection = false;
         for (ModelClass objClass : selectableClasses) {
             for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(objClass.getClassId()); itr.hasNext();) {
                 ModelImpl obj = itr.next();
                 if (isUnderMouse(obj) && currentSelectionArea.select(obj.getObj())) {
+                    someSelection = true;
                     if (!obj.isSelected()) {
                         //New selected
                         obj.setSelected(true);
@@ -323,6 +325,10 @@ public class CompatibilityEngine extends AbstractEngine {
                 }
             }
             i++;
+        }
+
+        if(vizConfig.isLightenNonSelectedAuto()) {
+            vizConfig.setLightenNonSelected(someSelection);
         }
     }
 

@@ -121,6 +121,18 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
 
     @Override
     public void display(GL gl, GLU glu) {
+        if(this.arrow!=null) {
+            this.arrow.setSelected(selected);
+        }
+        if(!selected && config.isHideNonSelectedEdges()) {
+            return;
+        }
+        if(config.isAutoSelectNeighbor()) {
+            ModelImpl m1 = (ModelImpl)obj.getSource().getModel();
+            ModelImpl m2 = (ModelImpl)obj.getTarget().getModel();
+            m1.mark = true;
+            m2.mark = true;
+        }
         float x1 = obj.getSource().x();
         float x2 = obj.getTarget().x();
         float y1 = obj.getSource().y();
@@ -140,10 +152,6 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
         float y2Thick = sideVectorY / 2f * t2;
 
         if (!selected) {
-            if (config.isDarkenNonSelected()) {
-                float[] darken = config.getDarkenNonSelectedColor();
-                gl.glColor4f(darken[0], darken[1], darken[2], darken[3]);
-            }
             if (config.isEdgeUniColor()) {
                 float[] uni = config.getEdgeUniColorValue();
                 gl.glColor4f(uni[0], uni[1], uni[2], uni[3]);
@@ -151,6 +159,10 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
                 gl.glColor4f(obj.r(), obj.g(), obj.b(), obj.alpha());
             }
         } else {
+            float rdark = 0.498f * obj.r();
+            float gdark = 0.498f * obj.g();
+            float bdark = 0.498f * obj.b();
+            gl.glColor4f(rdark, gdark, bdark, 1f);
         }
 
         gl.glVertex2f(x1 + x1Thick, y1 + y1Thick);
@@ -174,8 +186,13 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
     }
 
     @Override
-    public boolean isSelected() {
+    public boolean isAutoSelected() {
         return obj.getSource().getModel().isSelected() || obj.getTarget().getModel().isSelected();
+    }
+
+    @Override
+    public boolean isSelected() {
+        return selected;
     }
 
     @Override

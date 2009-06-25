@@ -54,6 +54,9 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
 
     @Override
     public void display(GL gl, GLU glu) {
+        if (!selected && config.isHideNonSelectedEdges()) {
+            return;
+        }
         NodeData nodeFrom = edge.getSource();
         NodeData nodeTo = edge.getTarget();
 
@@ -92,10 +95,6 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
 
         //Color
         if (!selected) {
-            if (config.isDarkenNonSelected()) {
-                float[] darken = config.getDarkenNonSelectedColor();
-                gl.glColor4f(darken[0], darken[1], darken[2], darken[3]);
-            }
             if (config.isEdgeUniColor()) {
                 float[] uni = config.getEdgeUniColorValue();
                 gl.glColor4f(uni[0], uni[1], uni[2], uni[3]);

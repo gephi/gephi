@@ -50,7 +50,7 @@ public class StandardModelClassLibrary implements ModelClassLibrary {
         }
 
         //EDGE
-        modelClasses[1] = new CompatibilityModelClass("EDGE", false, false, false);
+        modelClasses[1] = new CompatibilityModelClass("EDGE", false, true, false);
         modelClasses[1].addModeler(new CompatibilityEdgeModeler());
 
         //ARROW

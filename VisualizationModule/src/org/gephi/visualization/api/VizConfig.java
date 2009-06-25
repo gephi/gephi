@@ -49,6 +49,7 @@ public class VizConfig {
     private boolean wireFrame = false;
     private boolean useGLJPanel = false;
     private Color backgroundColor = Color.WHITE;
+    private float[] defaultCameraTarget = {0f, 0f, 0f};
     private float[] defaultCameraPosition = {0f, 0f, 5000f};
     protected float[] nodeSelectedColor = {1f, 1f, 1f};
     protected boolean selectionEnable = true;
@@ -58,17 +59,19 @@ public class VizConfig {
     protected boolean showFPS = true;
     protected boolean showEdges = true;
     protected boolean showArrows = true;
-    protected boolean darkenNonSelected = false;
-    protected float[] darkenNonSelectedColor = {0f, 0f, 0f, 0.5f};
+    protected boolean lightenNonSelectedAuto = true;
+    protected boolean lightenNonSelected = true;
+    protected float[] lightenNonSelectedColor = {0.9f, 0.9f, 0.9f, 1f};
+    protected boolean autoSelectNeighbor = true;
+    protected boolean hideNonSelectedEdges = true;
     protected boolean uniColorSelected = false;
     protected float[] uniColorSelectedColor = {0.8f, 1f, 0f};
     protected float[] edgeInSelectedColor = {1f, 0f, 0f};
     protected float[] edgeOutSelectedColor = {1f, 1f, 0f};
     protected float[] edgeBothSelectedColor = {0f, 0f, 0f};
     protected DisplayConfig displayConfig = DisplayConfig.DISPLAY_ALL;
-    protected boolean edgeUniColor = true;
+    protected boolean edgeUniColor = false;
     protected float[] edgeUniColorValue = {0.5f, 0.5f, 0.5f, 0.1f};
-    protected float[] edgesColor = null;
     protected int octreeDepth = 5;
     protected int octreeWidth = 100000;
 
@@ -91,10 +94,6 @@ public class VizConfig {
         return edgeOutSelectedColor;
     }
 
-    public float[] getEdgesColor() {
-        return edgesColor;
-    }
-
     public float[] getNodeSelectedColor() {
         return nodeSelectedColor;
     }
@@ -102,7 +101,6 @@ public class VizConfig {
     public float[] getDefaultCameraPosition() {
         return defaultCameraPosition;
     }
-    private float[] defaultCameraTarget = {0f, 0f, 0f};
 
     public float[] getDefaultCameraTarget() {
         return defaultCameraTarget;
@@ -172,6 +170,26 @@ public class VizConfig {
         return showFPS;
     }
 
+    public boolean isAutoSelectNeighbor() {
+        return autoSelectNeighbor;
+    }
+
+    public boolean isLightenNonSelected() {
+        return lightenNonSelected;
+    }
+
+    public boolean isLightenNonSelectedAuto() {
+        return lightenNonSelectedAuto;
+    }
+
+    public float[] getLightenNonSelectedColor() {
+        return lightenNonSelectedColor;
+    }
+
+    public void setLightenNonSelected(boolean lightenNonSelected) {
+        this.lightenNonSelected = lightenNonSelected;
+    }
+
     public int getOctreeDepth() {
         return octreeDepth;
     }
@@ -196,14 +214,6 @@ public class VizConfig {
         return culling;
     }
 
-    public boolean isDarkenNonSelected() {
-        return darkenNonSelected;
-    }
-
-    public float[] getDarkenNonSelectedColor() {
-        return darkenNonSelectedColor;
-    }
-
     public boolean isUniColorSelected() {
         return uniColorSelected;
     }
@@ -218,6 +228,10 @@ public class VizConfig {
 
     public float[] getEdgeUniColorValue() {
         return edgeUniColorValue;
+    }
+
+    public boolean isHideNonSelectedEdges() {
+        return hideNonSelectedEdges;
     }
 
     public void setAntialiasing(int antialiasing) {
