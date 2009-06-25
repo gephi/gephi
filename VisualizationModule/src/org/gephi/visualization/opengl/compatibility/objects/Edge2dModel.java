@@ -129,8 +129,8 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
         float t1 = obj.getEdge().getWeight() / CARDINAL_DIV;
         float t2 = obj.getEdge().getWeight() / CARDINAL_DIV;
 
-        float sideVectorX = y1-y2;
-        float sideVectorY = x2-x1;
+        float sideVectorX = y1 - y2;
+        float sideVectorY = x2 - x1;
         float norm = (float) Math.sqrt(sideVectorX * sideVectorX + sideVectorY * sideVectorY);
         sideVectorX /= norm;
         sideVectorY /= norm;
@@ -140,7 +140,18 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
         float y1Thick = sideVectorY / 2f * t1;
         float y2Thick = sideVectorY / 2f * t2;
 
-        gl.glColor4f(obj.r(), obj.g(), obj.b(), obj.alpha());
+        if (!selected) {
+            if (config.isEdgeUniColor()) {
+                float[] uni = config.getEdgeUniColorValue();
+                gl.glColor4f(uni[0], uni[1], uni[2], uni[3]);
+            } else if (config.isDarkenNonSelected()) {
+                float[] darken = config.getDarkenNonSelectedColor();
+                gl.glColor4f(darken[0], darken[1], darken[2], darken[3]);
+            } else {
+                gl.glColor4f(obj.r(), obj.g(), obj.b(), obj.alpha());
+            }
+        } else {
+        }
 
         gl.glVertex2f(x1 + x1Thick, y1 + y1Thick);
         gl.glVertex2f(x1 - x1Thick, y1 - y1Thick);

@@ -38,13 +38,14 @@ public class VizConfig {
     }
     private int antialiasing = 4;
     private boolean use3d = false;
-    private boolean lineSmooth = true;
+    private boolean lineSmooth = false;
     private boolean lineSmoothNicest = true;
-    private boolean pointSmooth = true;
+    private boolean pointSmooth = false;
     private boolean blending = true;
-    private boolean lighting = true;
+    private boolean blendCinema = false;
+    private boolean lighting = false;
     private boolean culling = true;
-    private boolean material = true;
+    private boolean material = false;
     private boolean wireFrame = false;
     private boolean useGLJPanel = false;
     private Color backgroundColor = Color.WHITE;
@@ -58,15 +59,16 @@ public class VizConfig {
     protected boolean showEdges = true;
     protected boolean showArrows = true;
     protected boolean darkenNonSelected = false;
-    protected float[] darkenNonSelectedColor = {0f, 0f, 0f};
+    protected float[] darkenNonSelectedColor = {0f, 0f, 0f, 0.5f};
     protected boolean uniColorSelected = false;
     protected float[] uniColorSelectedColor = {0.8f, 1f, 0f};
     protected float[] edgeInSelectedColor = {1f, 0f, 0f};
     protected float[] edgeOutSelectedColor = {1f, 1f, 0f};
     protected float[] edgeBothSelectedColor = {0f, 0f, 0f};
     protected DisplayConfig displayConfig = DisplayConfig.DISPLAY_ALL;
+    protected boolean edgeUniColor = true;
+    protected float[] edgeUniColorValue = {0.5f, 0.5f, 0.5f, 0.1f};
     protected float[] edgesColor = null;
-    protected float edgeAlpha = 1f;
     protected int octreeDepth = 5;
     protected int octreeWidth = 100000;
 
@@ -75,10 +77,6 @@ public class VizConfig {
 
     public DisplayConfig getDisplayConfig() {
         return displayConfig;
-    }
-
-    public float getEdgeAlpha() {
-        return edgeAlpha;
     }
 
     public float[] getEdgeBothSelectedColor() {
@@ -120,6 +118,10 @@ public class VizConfig {
 
     public boolean isBlending() {
         return blending;
+    }
+
+    public boolean isBlendingCinema() {
+        return blendCinema;
     }
 
     public boolean isLineSmoothNicest() {
@@ -208,6 +210,14 @@ public class VizConfig {
 
     public float[] getUniColorSelectedColor() {
         return uniColorSelectedColor;
+    }
+
+    public boolean isEdgeUniColor() {
+        return edgeUniColor;
+    }
+
+    public float[] getEdgeUniColorValue() {
+        return edgeUniColorValue;
     }
 
     public void setAntialiasing(int antialiasing) {
