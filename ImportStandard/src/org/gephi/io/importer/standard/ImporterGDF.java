@@ -63,7 +63,7 @@ public class ImporterGDF implements TextImporter {
     private GDFColumn[] edgeColumns;
 
     public ImporterGDF() {
-        nodeLineStart = new String[]{"nodedef>name", "nodedef> name", "Nodedef>name", "Nodedef> name"};
+        nodeLineStart = new String[]{"nodedef>name", "nodedef> name", "Nodedef>name", "Nodedef> name", "nodedef>\"name", "nodedef> \"name", "Nodedef>\"name", "Nodedef> \"name"};
         edgeLineStart = new String[]{"edgedef>", "Edgedef>"};
     }
 
