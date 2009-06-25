@@ -24,7 +24,6 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
-import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
@@ -141,12 +140,13 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
         float y2Thick = sideVectorY / 2f * t2;
 
         if (!selected) {
+            if (config.isDarkenNonSelected()) {
+                float[] darken = config.getDarkenNonSelectedColor();
+                gl.glColor4f(darken[0], darken[1], darken[2], darken[3]);
+            }
             if (config.isEdgeUniColor()) {
                 float[] uni = config.getEdgeUniColorValue();
                 gl.glColor4f(uni[0], uni[1], uni[2], uni[3]);
-            } else if (config.isDarkenNonSelected()) {
-                float[] darken = config.getDarkenNonSelectedColor();
-                gl.glColor4f(darken[0], darken[1], darken[2], darken[3]);
             } else {
                 gl.glColor4f(obj.r(), obj.g(), obj.b(), obj.alpha());
             }

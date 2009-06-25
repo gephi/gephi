@@ -28,10 +28,12 @@ import javax.swing.JPanel;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
+import org.gephi.visualization.VizController;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
-import org.gephi.visualization.opengl.compatibility.objects.Arrow3dModel;
+import org.gephi.visualization.opengl.compatibility.objects.Arrow2dModel;
 
 /**
  *
@@ -40,17 +42,20 @@ import org.gephi.visualization.opengl.compatibility.objects.Arrow3dModel;
 public class CompatibilityArrowModeler implements CompatibilityModeler<NodeData> {
 
     private CompatibilityEngine engine;
+    private VizConfig config;
 
     public CompatibilityArrowModeler(AbstractEngine engine) {
         this.engine = (CompatibilityEngine) engine;
+        this.config = VizController.getInstance().getVizConfig();
     }
 
     @Override
     public ModelImpl initModel(Renderable n) {
         EdgeData e = (EdgeData) n;
 
-        Arrow3dModel arrow = new Arrow3dModel(e);
+        Arrow2dModel arrow = new Arrow2dModel(e);
         arrow.setObj(e.getTarget());
+        arrow.setConfig(config);
 
         return arrow;
     }
