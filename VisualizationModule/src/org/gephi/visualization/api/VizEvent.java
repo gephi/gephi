@@ -24,11 +24,12 @@ import java.util.EventObject;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class VizEvent extends EventObject {
 
     public enum Type {
+
         START_DRAG,
         DRAG,
         STOP_DRAG,

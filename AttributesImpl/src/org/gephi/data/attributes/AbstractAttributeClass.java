@@ -78,7 +78,9 @@ public abstract class AbstractAttributeClass implements AttributeClass, Lookup.P
     }
 
     public synchronized AttributeColumnImpl addAttributeColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue) {
-        AttributeColumnImpl column = new AttributeColumnImpl(columns.size(), id, title, type, origin, defaultValue);
+        //TODO check if defaultValue is type AttributeType
+        Object managedValue = manager.getManagedValue(defaultValue, type);
+        AttributeColumnImpl column = new AttributeColumnImpl(columns.size(), id, title, type, origin, managedValue);
         columns.add(column);
         columnsMap.put(id, column);
         if (title != null && !title.equals(id)) {
@@ -137,7 +139,7 @@ public abstract class AbstractAttributeClass implements AttributeClass, Lookup.P
         return lookup;
     }
 
-    public Object getManagedValue(Object object, AttributeType type) {
-        return manager.getManagedValue(object, type);
+    public AttributeFactoryImpl getFactory() {
+        return manager.getFactory();
     }
 }

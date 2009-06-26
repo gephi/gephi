@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.ui.database.standard
+OpenIDE-Module-Localizing-Bundle: org/gephi/ui/database/standard/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

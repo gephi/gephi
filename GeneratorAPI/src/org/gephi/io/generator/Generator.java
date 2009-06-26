@@ -18,17 +18,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.io.generator;
 
 import org.gephi.io.container.ContainerLoader;
 import org.gephi.ui.generator.GeneratorUI;
+import org.gephi.utils.longtask.LongTask;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Generator {
+public interface Generator extends LongTask {
 
     public void generate(ContainerLoader container);
 

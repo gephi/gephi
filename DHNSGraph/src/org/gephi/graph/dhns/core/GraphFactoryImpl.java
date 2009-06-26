@@ -20,8 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.core;
 
+import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.graph.api.Attributes;
-import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.AbstractEdge;
@@ -40,17 +41,30 @@ import org.gephi.graph.dhns.node.PreNode;
  */
 public class GraphFactoryImpl implements GraphFactory {
 
-    private Dhns dhns;
     private IDGen idGen;
+    private AttributeRowFactory attributesFactory;
 
-    public GraphFactoryImpl(Dhns dhns) {
-        this.dhns = dhns;
-        this.idGen = dhns.getIdGen();
+    public GraphFactoryImpl(IDGen idGen, AttributeRowFactory attributesFactory) {
+        this.idGen = idGen;
     }
 
-    public AbstractNode newNode() {
-        PreNode node = new PreNode(idGen.newNodeId(),0, 0, 0, null);
-        node.setAttributes(dhns.newNodeAttributes());
+    public AttributeRow newNodeAttributes() {
+        if (attributesFactory == null) {
+            return null;
+        }
+        return attributesFactory.newNodeRow();
+    }
+
+    public AttributeRow newEdgeAttributes() {
+        if (attributesFactory == null) {
+            return null;
+        }
+        return attributesFactory.newEdgeRow();
+    }
+
+    public PreNode newNode() {
+        PreNode node = new PreNode(idGen.newNodeId(), 0, 0, 0, null);
+        node.setAttributes(newNodeAttributes());
         return node;
     }
 
@@ -62,11 +76,11 @@ public class GraphFactoryImpl implements GraphFactory {
         PreNode nodeTarget = (PreNode) target;
         AbstractEdge edge;
         if (source == target) {
-            edge = new SelfLoopImpl(idGen.newEdgeId(),nodeSource);
+            edge = new SelfLoopImpl(idGen.newEdgeId(), nodeSource);
         } else {
-            edge = new ProperEdgeImpl(idGen.newEdgeId(),nodeSource, nodeTarget);
+            edge = new ProperEdgeImpl(idGen.newEdgeId(), nodeSource, nodeTarget);
         }
-        edge.setAttributes(dhns.newEdgeAttributes());
+        edge.setAttributes(newEdgeAttributes());
         return edge;
     }
 
@@ -78,14 +92,34 @@ public class GraphFactoryImpl implements GraphFactory {
         PreNode nodeTarget = (PreNode) target;
         AbstractEdge edge;
         if (source == target) {
-            edge = new SelfLoopImpl(idGen.newEdgeId(),nodeSource);
+            edge = new SelfLoopImpl(idGen.newEdgeId(), nodeSource);
         } else {
-            edge = new MixedEdgeImpl(idGen.newEdgeId(),nodeSource, nodeTarget, directed);
+            edge = new MixedEdgeImpl(idGen.newEdgeId(), nodeSource, nodeTarget, directed);
         }
         if (weight != 0) {
             edge.setWeight(weight);
         }
-        edge.setAttributes(dhns.newEdgeAttributes());
+        edge.setAttributes(newEdgeAttributes());
         return edge;
+    }
+
+    public PreNode duplicateNode(PreNode node) {
+        PreNode duplicate = new PreNode(node.getId(), 0, 0, 0, node.parent);
+        duplicate.setVisible(node.isVisible());
+        return duplicate;
+    }
+
+    public AbstractEdge duplicateEdge(AbstractEdge edge, PreNode source, PreNode target) {
+        AbstractEdge duplicate;
+        if (edge.isSelfLoop()) {
+            duplicate = new SelfLoopImpl(edge.getId(), source);
+        } else if (edge.isMixed()) {
+            duplicate = new MixedEdgeImpl(edge.getId(), source, target, edge.isDirected());
+        } else {
+            duplicate = new ProperEdgeImpl(edge.getId(), source, target);
+        }
+        duplicate.setWeight(edge.getWeight());
+        duplicate.setVisible(edge.isVisible());
+        return duplicate;
     }
 }

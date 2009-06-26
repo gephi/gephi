@@ -29,8 +29,6 @@ import org.gephi.graph.api.Node;
 import org.gephi.io.container.NodeDraft;
 import org.gephi.io.processor.NodeDraftGetter;
 
-
-
 /**
  *
  * @author Mathieu Bastian
@@ -56,7 +54,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     private float z;
     private float labelSize;
     private boolean labelVisible;
-    private boolean visible;
+    private boolean visible = true;
     private boolean fixed;
 
     //Attributes
@@ -137,7 +135,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     }
 
     public void setParent(NodeDraft draft) {
-        this.parent = (NodeDraftImpl)draft;
+        this.parent = (NodeDraftImpl) draft;
     }
 
     public void addChild(NodeDraft child) {
@@ -171,7 +169,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     }
 
     public float getX() {
-       return x;
+        return x;
     }
 
     public float getY() {
@@ -197,12 +195,12 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     @Override
     public String toString() {
         String res = "node";
-        if(!autoId) {
-            res+=" id="+id;
-        } else if(label!=null) {
-            res+=" label="+label;
+        if (!autoId) {
+            res += " id=" + id;
+        } else if (label != null) {
+            res += " label=" + label;
         } else {
-            res+=id;
+            res += id;
         }
         return res;
     }

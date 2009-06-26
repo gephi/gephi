@@ -22,6 +22,7 @@ package org.gephi.io.importer;
 
 import java.io.BufferedReader;
 import org.gephi.io.container.ContainerLoader;
+import org.gephi.io.logging.Report;
 
 /**
  *
@@ -29,5 +30,5 @@ import org.gephi.io.container.ContainerLoader;
  */
 public interface TextImporter extends FileFormatImporter {
 
-    public void importData(BufferedReader reader, ContainerLoader containter) throws Exception;
+    public void importData(BufferedReader reader, ContainerLoader containter, Report report) throws Exception;
 }

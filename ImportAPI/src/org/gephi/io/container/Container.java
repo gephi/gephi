@@ -20,20 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.container;
 
+import org.gephi.io.logging.Report;
+
 /**
  *
  * @author Mathieu Bastian
  */
 public interface Container {
-
-    public enum ErrorMode {
-
-        NO_ERROR, REPORT, ALL
-    };
-
-    public void setErrorMode(ErrorMode errorMode);
-
-    public ErrorMode getErrorMode();
 
     public void setSource(String source);
 
@@ -49,14 +42,7 @@ public interface Container {
 
     public void setAllowParallelEdge(boolean value);
 
-    public ContainerReport getReport();
+    public void setReport(Report report);
 
-    public interface ContainerReport {
-
-        public void append(String str);
-
-        public void append(Exception e);
-
-        public String getReport();
-    }
+    public Report getReport();
 }

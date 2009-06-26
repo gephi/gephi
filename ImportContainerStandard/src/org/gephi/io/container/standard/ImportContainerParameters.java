@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.container.standard;
 
-import org.gephi.io.container.Container.ErrorMode;
 import org.gephi.io.container.EdgeDefault;
 
 /**
@@ -29,7 +28,6 @@ import org.gephi.io.container.EdgeDefault;
  */
 public class ImportContainerParameters {
 
-    private ErrorMode errorMode = ErrorMode.ALL;
     private boolean selfLoops = true;
     private boolean parallelEdges = true;
     private boolean autoNode = true;
@@ -65,13 +63,5 @@ public class ImportContainerParameters {
 
     public void setEdgeDefault(EdgeDefault edgeDefault) {
         this.edgeDefault = edgeDefault;
-    }
-
-    public ErrorMode getErrorMode() {
-        return errorMode;
-    }
-
-    public void setErrorMode(ErrorMode errorMode) {
-        this.errorMode = errorMode;
     }
 }

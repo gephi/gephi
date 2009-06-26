@@ -20,18 +20,23 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns;
 
+import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.graph.api.ClusteredDirectedGraph;
 import org.gephi.graph.api.ClusteredMixedGraph;
 import org.gephi.graph.api.ClusteredUndirectedGraph;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.graph.dhns.core.Dhns;
+import org.gephi.graph.dhns.core.GraphFactoryImpl;
+import org.gephi.graph.dhns.core.IDGen;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
 import org.gephi.graph.dhns.graph.ClusteredMixedGraphImpl;
 import org.gephi.graph.dhns.graph.ClusteredUndirectedGraphImpl;
+import org.openide.util.Lookup;
 
 /**
  * Singleton which manages the graph access.
@@ -40,14 +45,36 @@ import org.gephi.graph.dhns.graph.ClusteredUndirectedGraphImpl;
  */
 public class DhnsGraphController implements GraphController {
 
+    protected IDGen iDGen;
+    protected GraphFactoryImpl factory;
     protected Dhns dhns;
+    private AttributeRowFactory attributesFactory;
 
     public DhnsGraphController() {
-        dhns = new Dhns();
+        iDGen = new IDGen();
+        dhns = new Dhns(this);
+
+        if (Lookup.getDefault().lookup(AttributeController.class) != null) {
+            attributesFactory = Lookup.getDefault().lookup(AttributeController.class).rowFactory();
+        }
+
+        factory = new GraphFactoryImpl(iDGen, attributesFactory);
     }
 
-    public GraphFactory factory() {
-        return dhns.getGraphFactory();
+    public Dhns newDhns() {
+        return new Dhns(this);
+    }
+
+    public Dhns getMainDhns() {
+        return dhns;
+    }
+
+    public GraphFactoryImpl factory() {
+        return factory;
+    }
+
+    public IDGen getIDGen() {
+        return iDGen;
     }
 
     public DirectedGraph getDirectedGraph() {

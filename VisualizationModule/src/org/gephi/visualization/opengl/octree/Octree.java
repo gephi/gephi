@@ -36,7 +36,7 @@ import org.gephi.visualization.GraphLimits;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.api.Object3dImpl;
+import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.gleem.linalg.Vec3f;
 import org.gephi.visualization.swing.GraphDrawableImpl;
@@ -54,7 +54,7 @@ public class Octree implements VizArchitecture {
     private VizConfig config;
 
     //Attributes
-    private int objectsIDs;
+    private int modelIDs;
     private int maxDepth;
     private int classesCount;
     private int size;
@@ -72,8 +72,8 @@ public class Octree implements VizArchitecture {
     protected List<Octant> selectedLeaves;
 
     //Utils
-    protected ParamAVLIterator<Object3dImpl> updatePositionIterator = new ParamAVLIterator<Object3dImpl>();
-    protected ParamAVLIterator<Object3dImpl> cleanObjectsIterator = new ParamAVLIterator<Object3dImpl>();
+    protected ParamAVLIterator<ModelImpl> updatePositionIterator = new ParamAVLIterator<ModelImpl>();
+    protected ParamAVLIterator<ModelImpl> cleanObjectsIterator = new ParamAVLIterator<ModelImpl>();
 
     public Octree(int maxDepth, int size, int nbClasses) {
         this.maxDepth = maxDepth;
@@ -106,7 +106,7 @@ public class Octree implements VizArchitecture {
         root = new Octant(this, 0, dis, dis, dis, size);
     }
 
-    public void addObject(int classID, Object3dImpl obj) {
+    public void addObject(int classID, ModelImpl obj) {
         Octant[] octants = obj.getOctants();
         boolean manualAdd = true;
         for (int i = 0; i < octants.length; i++) {
@@ -122,7 +122,7 @@ public class Octree implements VizArchitecture {
         }
     }
 
-    public void removeObject(int classID, Object3dImpl obj) {
+    public void removeObject(int classID, ModelImpl obj) {
         Octant[] octants = obj.getOctants();
         for (int i = 0; i < octants.length; i++) {
             Octant o = obj.getOctants()[i];
@@ -143,7 +143,7 @@ public class Octree implements VizArchitecture {
         gl.glRenderMode(GL.GL_SELECT);
         gl.glInitNames();
         gl.glPushName(0);
-
+        gl.glDisable(GL.GL_CULL_FACE);      //Disable flags
         //Draw the nodes cube in the select buffer
         for (Octant n : leaves) {
             n.resetUpdatePositionFlag();        //Profit from the loop to do this, because this method is always after updating position
@@ -151,7 +151,10 @@ public class Octree implements VizArchitecture {
             n.displayOctreeNode(gl);
         }
         int nbRecords = gl.glRenderMode(GL.GL_RENDER);
-
+        if (config.isCulling()) {
+            gl.glEnable(GL.GL_CULL_FACE);
+            gl.glCullFace(GL.GL_BACK);
+        }
         visibleLeaves.clear();
 
         //Get the hits and add the nodes' objects to the array
@@ -183,6 +186,7 @@ public class Octree implements VizArchitecture {
 
         gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
         gl.glRenderMode(GL.GL_SELECT);
+        gl.glDisable(GL.GL_CULL_FACE);      //Disable flags
 
         gl.glInitNames();
         gl.glPushName(0);
@@ -213,6 +217,10 @@ public class Octree implements VizArchitecture {
 
         //Returning to normal rendering mode
         int nbRecords = gl.glRenderMode(GL.GL_RENDER);
+        if (config.isCulling()) {
+            gl.glEnable(GL.GL_CULL_FACE);
+            gl.glCullFace(GL.GL_BACK);
+        }
 
         //Clean previous selection
         selectedLeaves.clear();
@@ -229,7 +237,7 @@ public class Octree implements VizArchitecture {
     public void cleanDeletedObjects(int classID) {
         for (Octant o : leaves) {
             for (cleanObjectsIterator.setNode(o.getTree(classID)); cleanObjectsIterator.hasNext();) {
-                Object3dImpl obj = cleanObjectsIterator.next();
+                ModelImpl obj = cleanObjectsIterator.next();
                 if (!obj.isCacheMatching(cacheMarker)) {
                     removeObject(classID, obj);
                     obj.resetOctant();
@@ -238,14 +246,13 @@ public class Octree implements VizArchitecture {
         }
     }
 
-    public void resetObjectClass(int classID)
-    {
+    public void resetObjectClass(int classID) {
         for (Octant o : leaves) {
-            ParamAVLTree<Object3dImpl> tree = o.getTree(classID);
+            ParamAVLTree<ModelImpl> tree = o.getTree(classID);
 
             //Reset octants in objects
             for (cleanObjectsIterator.setNode(tree); cleanObjectsIterator.hasNext();) {
-                Object3dImpl obj = cleanObjectsIterator.next();
+                ModelImpl obj = cleanObjectsIterator.next();
                 obj.resetOctant();
             }
 
@@ -258,12 +265,12 @@ public class Octree implements VizArchitecture {
         for (Octant o : leaves) {
             if (o.isRequiringUpdatePosition()) {
                 for (updatePositionIterator.setNode(o.getTree(classID)); updatePositionIterator.hasNext();) {
-                    Object3dImpl obj = updatePositionIterator.next();
+                    ModelImpl obj = updatePositionIterator.next();
                     if (!obj.isInOctreeLeaf(o)) {
                         o.removeObject(classID, obj);
                         obj.resetOctant();
                         addObject(classID, obj);
-                        //TODO break the loop somehow
+                    //TODO break the loop somehow
                     }
                 }
 
@@ -271,37 +278,42 @@ public class Octree implements VizArchitecture {
         }
     }
 
-    public Iterator<Object3dImpl> getObjectIterator(int classID) {
+    public Iterator<ModelImpl> getObjectIterator(int classID) {
         OctreeIterator itr = borrowIterator();
         itr.reset(visibleLeaves, classID);
         return itr;
     }
 
-    public Iterator<Object3dImpl> getSelectedObjectIterator(int classID) {
+    public Iterator<ModelImpl> getSelectedObjectIterator(int classID) {
         OctreeIterator itr = borrowIterator();
         itr.reset(selectedLeaves, classID);
         return itr;
     }
 
-    public int countSelectedObjects(int classID)
-    {
-        int res=0;
-        for(int i=0;i<selectedLeaves.size();i++)
-        {
+    public int countSelectedObjects(int classID) {
+        int res = 0;
+        for (int i = 0; i < selectedLeaves.size(); i++) {
             Octant o = selectedLeaves.get(i);
-            res+=o.getTree(classID).getCount();
+            res += o.getTree(classID).getCount();
         }
         return res;
     }
 
     public void displayOctree(GL gl) {
+        gl.glDisable(GL.GL_CULL_FACE);
         gl.glColor3f(1, 0.5f, 0.5f);
         gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
         for (Octant o : visibleLeaves) {
             o.displayOctreeNode(gl);
         }
-        if(!config.isWireFrame())
+        if (!config.isWireFrame()) {
             gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
+        }
+
+        if (config.isCulling()) {
+            gl.glEnable(GL.GL_CULL_FACE);
+            gl.glCullFace(GL.GL_BACK);
+        }
     }
 
     void addLeaf(Octant leaf) {
@@ -407,7 +419,7 @@ public class Octree implements VizArchitecture {
     }
 
     int getNextObjectID() {
-        return objectsIDs++;
+        return modelIDs++;
     }
 
     private OctreeIterator borrowIterator() {
@@ -427,15 +439,15 @@ public class Octree implements VizArchitecture {
         this.cacheMarker = cacheMarker;
     }
 
-    private class OctreeIterator implements Iterator<Object3dImpl>, ResetableIterator {
+    private class OctreeIterator implements Iterator<ModelImpl>, ResetableIterator {
 
         private int i = 0;
         private int classID;
         private List<Octant> octants;
-        private ParamAVLIterator<Object3dImpl> octantIterator;
+        private ParamAVLIterator<ModelImpl> octantIterator;
 
         public OctreeIterator() {
-            octantIterator = new ParamAVLIterator<Object3dImpl>();
+            octantIterator = new ParamAVLIterator<ModelImpl>();
         }
 
         public OctreeIterator(List<Octant> octants, int classID) {
@@ -465,8 +477,8 @@ public class Octree implements VizArchitecture {
             return true;
         }
 
-        public Object3dImpl next() {
-            Object3dImpl obj = octantIterator.next();
+        public ModelImpl next() {
+            ModelImpl obj = octantIterator.next();
             return obj;
         }
 

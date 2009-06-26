@@ -80,11 +80,11 @@ public abstract class AbstractEdge implements Edge, AVLItem {
     }
 
     public AbstractEdge getUndirected() {
-        if(source==target) {
+        if (source == target) {
             return this;
         }
         AbstractEdge mutual = source.getEdgesInTree().getItem(target.getNumber());
-        if(mutual!=null && mutual.getId() < ID) {
+        if (mutual != null && mutual.getId() < ID) {
             return mutual;
         }
         return this;
@@ -95,7 +95,7 @@ public abstract class AbstractEdge implements Edge, AVLItem {
     }
 
     public boolean isSelfLoop() {
-        return source==target;
+        return source == target;
     }
 
     public boolean isValid() {
@@ -106,8 +106,12 @@ public abstract class AbstractEdge implements Edge, AVLItem {
         return false;
     }
 
+    public boolean isMixed() {
+        return false;
+    }
+
     public boolean hasAttributes() {
-        return edgeData.getAttributes() == null;
+        return edgeData.getAttributes() != null;
     }
 
     public void setAttributes(Attributes attributes) {
@@ -122,6 +126,6 @@ public abstract class AbstractEdge implements Edge, AVLItem {
 
     @Override
     public String toString() {
-        return source.getId()+"-"+target.getId();
+        return source.getId() + "-" + target.getId();
     }
 }

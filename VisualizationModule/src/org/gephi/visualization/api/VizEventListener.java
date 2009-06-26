@@ -18,16 +18,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.visualization.api;
 
 import java.util.EventListener;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public interface VizEventListener extends EventListener {
 
-	public void vizEvent(VizEvent event);
+    public void vizEvent(VizEvent event);
 }

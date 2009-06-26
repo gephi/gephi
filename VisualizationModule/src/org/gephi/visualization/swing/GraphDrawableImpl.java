@@ -241,7 +241,7 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
     }
 
     public DoubleBuffer getProjectionMatrix() {
-       return projMatrix;
+        return projMatrix;
     }
 
     public DoubleBuffer getModelMatrix() {

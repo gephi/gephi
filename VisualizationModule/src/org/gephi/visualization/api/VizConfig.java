@@ -21,6 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.api;
 
 import java.awt.Color;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -33,39 +37,49 @@ public class VizConfig {
         DISPLAY_ALL, DISPLAY_NODES_ONLY, DISPLAY_NODES_EDGES, DISPLAY_ALPHA
     }
     private int antialiasing = 4;
-    private boolean lineSmooth = true;
+    private boolean use3d = false;
+    private boolean lineSmooth = false;
     private boolean lineSmoothNicest = true;
-    private boolean pointSmooth = true;
+    private boolean pointSmooth = false;
     private boolean blending = true;
-    private boolean lighting = true;
-    private boolean material = true;
+    private boolean blendCinema = false;
+    private boolean lighting = false;
+    private boolean culling = true;
+    private boolean material = false;
     private boolean wireFrame = false;
     private boolean useGLJPanel = false;
     private Color backgroundColor = Color.WHITE;
+    private float[] defaultCameraTarget = {0f, 0f, 0f};
     private float[] defaultCameraPosition = {0f, 0f, 5000f};
     protected float[] nodeSelectedColor = {1f, 1f, 1f};
     protected boolean selectionEnable = true;
     protected boolean draggingEnable = true;
     protected boolean cameraControlEnable = true;
     protected boolean rotatingEnable = true;
-    protected boolean directedEdges = true;
     protected boolean showFPS = true;
+    protected boolean showEdges = true;
+    protected boolean showArrows = true;
+    protected boolean lightenNonSelectedAuto = true;
+    protected boolean lightenNonSelected = true;
+    protected float[] lightenNonSelectedColor = {0.9f, 0.9f, 0.9f, 1f};
+    protected boolean autoSelectNeighbor = true;
+    protected boolean hideNonSelectedEdges = true;
+    protected boolean uniColorSelected = false;
+    protected float[] uniColorSelectedColor = {0.8f, 1f, 0f};
     protected float[] edgeInSelectedColor = {1f, 0f, 0f};
     protected float[] edgeOutSelectedColor = {1f, 1f, 0f};
     protected float[] edgeBothSelectedColor = {0f, 0f, 0f};
     protected DisplayConfig displayConfig = DisplayConfig.DISPLAY_ALL;
-    protected float[] edgesColor = null;
-    protected float edgeAlpha = 1f;
+    protected boolean edgeUniColor = false;
+    protected float[] edgeUniColorValue = {0.5f, 0.5f, 0.5f, 0.1f};
     protected int octreeDepth = 5;
     protected int octreeWidth = 100000;
 
+    //Listener
+    protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
 
     public DisplayConfig getDisplayConfig() {
         return displayConfig;
-    }
-
-    public float getEdgeAlpha() {
-        return edgeAlpha;
     }
 
     public float[] getEdgeBothSelectedColor() {
@@ -80,10 +94,6 @@ public class VizConfig {
         return edgeOutSelectedColor;
     }
 
-    public float[] getEdgesColor() {
-        return edgesColor;
-    }
-
     public float[] getNodeSelectedColor() {
         return nodeSelectedColor;
     }
@@ -91,7 +101,6 @@ public class VizConfig {
     public float[] getDefaultCameraPosition() {
         return defaultCameraPosition;
     }
-    private float[] defaultCameraTarget = {0f, 0f, 0f};
 
     public float[] getDefaultCameraTarget() {
         return defaultCameraTarget;
@@ -107,6 +116,10 @@ public class VizConfig {
 
     public boolean isBlending() {
         return blending;
+    }
+
+    public boolean isBlendingCinema() {
+        return blendCinema;
     }
 
     public boolean isLineSmoothNicest() {
@@ -145,12 +158,36 @@ public class VizConfig {
         return selectionEnable;
     }
 
-    public boolean isDirectedEdges() {
-        return directedEdges;
+    public boolean isShowEdges() {
+        return showEdges;
+    }
+
+    public boolean isShowArrows() {
+        return showArrows;
     }
 
     public boolean isShowFPS() {
         return showFPS;
+    }
+
+    public boolean isAutoSelectNeighbor() {
+        return autoSelectNeighbor;
+    }
+
+    public boolean isLightenNonSelected() {
+        return lightenNonSelected;
+    }
+
+    public boolean isLightenNonSelectedAuto() {
+        return lightenNonSelectedAuto;
+    }
+
+    public float[] getLightenNonSelectedColor() {
+        return lightenNonSelectedColor;
+    }
+
+    public void setLightenNonSelected(boolean lightenNonSelected) {
+        this.lightenNonSelected = lightenNonSelected;
     }
 
     public int getOctreeDepth() {
@@ -167,5 +204,79 @@ public class VizConfig {
 
     public boolean useGLJPanel() {
         return useGLJPanel;
+    }
+
+    public boolean use3d() {
+        return use3d;
+    }
+
+    public boolean isCulling() {
+        return culling;
+    }
+
+    public boolean isUniColorSelected() {
+        return uniColorSelected;
+    }
+
+    public float[] getUniColorSelectedColor() {
+        return uniColorSelectedColor;
+    }
+
+    public boolean isEdgeUniColor() {
+        return edgeUniColor;
+    }
+
+    public float[] getEdgeUniColorValue() {
+        return edgeUniColorValue;
+    }
+
+    public boolean isHideNonSelectedEdges() {
+        return hideNonSelectedEdges;
+    }
+
+    public void setAntialiasing(int antialiasing) {
+        this.antialiasing = antialiasing;
+        fireProperyChange("antialiasing", null, antialiasing);
+    }
+
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+        fireProperyChange("backgroundColor", null, backgroundColor);
+    }
+
+    public void setDisplayConfig(DisplayConfig displayConfig) {
+        this.displayConfig = displayConfig;
+        fireProperyChange("displayConfig", null, displayConfig);
+    }
+
+    public void setShowFPS(boolean showFPS) {
+        this.showFPS = showFPS;
+        fireProperyChange("fps", null, showFPS);
+    }
+
+    public void setShowEdges(boolean showEdges) {
+        this.showEdges = showEdges;
+        fireProperyChange("showEdges", null, showEdges);
+    }
+
+    public void setShowArrows(boolean showArrows) {
+        this.showArrows = showArrows;
+        fireProperyChange("showArrows", null, showArrows);
+    }
+
+    //EVENTS
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        listeners.remove(listener);
+    }
+
+    public void fireProperyChange(String propertyName, Object oldvalue, Object newValue) {
+        PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldvalue, newValue);
+        for (PropertyChangeListener l : listeners) {
+            l.propertyChange(evt);
+        }
     }
 }

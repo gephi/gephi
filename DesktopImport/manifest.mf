@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 OpenIDE-Module: org.gephi.io.desktop
+OpenIDE-Module-Layer: org/gephi/io/desktop/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/io/desktop/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.0
 

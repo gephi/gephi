@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl;
 
-import org.gephi.visualization.api.Object3dImpl;
+import org.gephi.visualization.api.ModelImpl;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
@@ -29,9 +29,8 @@ import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.Engine;
 import org.gephi.visualization.api.GraphIO;
 import org.gephi.visualization.api.VizEventManager;
-import org.gephi.visualization.api.objects.Object3dClass;
-import org.gephi.visualization.api.objects.Object3dClassLibrary;
-import org.gephi.visualization.gleem.linalg.Vec3f;
+import org.gephi.visualization.api.objects.ModelClass;
+import org.gephi.visualization.api.objects.ModelClassLibrary;
 import org.gephi.visualization.api.Scheduler;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.selection.Point;
@@ -39,6 +38,8 @@ import org.gephi.visualization.api.selection.SelectionArea;
 import org.gephi.visualization.bridge.DataBridge;
 import org.gephi.visualization.bridge.EventBridge;
 import org.gephi.visualization.gleem.linalg.Vecf;
+import org.gephi.visualization.mode.ModeManager;
+import org.gephi.visualization.opengl.octree.Octree;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 
 /**
@@ -63,21 +64,26 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected GraphIO graphIO;
     protected VizEventManager vizEventManager;
     protected SelectionArea currentSelectionArea = new Point();
-    protected Object3dClassLibrary objectClassLibrary;
+    protected ModelClassLibrary modelClassLibrary;
     protected DataBridge dataBridge;
     protected EventBridge eventBridge;
     protected VizConfig vizConfig;
+    protected ModeManager modeManager;
 
     //States
     protected EngineLifeCycle lifeCycle = new EngineLifeCycle();
 
+    //Octree
+    protected Octree octree;
+
     public void initArchitecture() {
         this.graphDrawable = VizController.getInstance().getDrawable();
         this.graphIO = VizController.getInstance().getGraphIO();
-        this.objectClassLibrary = VizController.getInstance().getObject3dClassLibrary();
+        this.modelClassLibrary = VizController.getInstance().getModelClassLibrary();
         this.dataBridge = VizController.getInstance().getDataBridge();
         this.eventBridge = VizController.getInstance().getEventBridge();
         this.vizConfig = VizController.getInstance().getVizConfig();
+        this.modeManager = VizController.getInstance().getModeManager();
         initObject3dClass();
     }
 
@@ -103,9 +109,9 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public abstract Scheduler getScheduler();
 
-    public abstract void addObject(int classID, Object3dImpl obj);
+    public abstract void addObject(int classID, ModelImpl obj);
 
-    public abstract void removeObject(int classID, Object3dImpl obj);
+    public abstract void removeObject(int classID, ModelImpl obj);
 
     public abstract void worldUpdated(int cacheMarker);
 
@@ -117,7 +123,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public abstract void initObject3dClass();
 
-    public abstract Object3dClass[] getObject3dClasses();
+    public abstract ModelClass[] getModelClasses();
 
     protected abstract void startAnimating();
 
@@ -126,9 +132,9 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     /**
      * Reset contents of octree for the given class
      */
-    public abstract void resetObjectClass(Object3dClass object3dClass);
+    public abstract void resetObjectClass(ModelClass object3dClass);
 
-    public float cameraDistance(Object3dImpl object) {
+    public float cameraDistance(ModelImpl object) {
         float[] cameraLocation = graphDrawable.getCameraLocation();
         double distance = Math.sqrt(Math.pow((double) object.getObj().x() - cameraLocation[0], 2d) +
                 Math.pow((double) object.getObj().y() - cameraLocation[1], 2d) +
@@ -138,7 +144,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         return (float) distance - object.getObj().getRadius();
     }
 
-    protected void setViewportPosition(Object3dImpl object) {
+    protected void setViewportPosition(ModelImpl object) {
         double[] res = graphDrawable.myGluProject(object.getObj().x(), object.getObj().y(), object.getObj().z());
         object.setViewportX((float) res[0]);
         object.setViewportY((float) res[1]);
@@ -148,7 +154,10 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         object.setViewportRadius(rad);
     }
 
-    protected boolean isUnderMouse(Object3dImpl obj) {
+    protected boolean isUnderMouse(ModelImpl obj) {
+        if(obj.isAutoSelected()) {
+            return true;
+        }
         float x1 = graphIO.getMousePosition()[0];
         float y1 = graphIO.getMousePosition()[1];
 
@@ -174,6 +183,10 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public void stopDisplay() {
         lifeCycle.requestStopAnimating();
+    }
+
+    public Octree getOctree() {
+        return octree;
     }
 
     protected class EngineLifeCycle {

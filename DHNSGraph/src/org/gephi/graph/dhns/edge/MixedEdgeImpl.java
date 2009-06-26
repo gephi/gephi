@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.graph.dhns.edge;
 
 import org.gephi.graph.dhns.node.PreNode;
@@ -40,5 +39,10 @@ public class MixedEdgeImpl extends AbstractEdge {
     @Override
     public boolean isDirected() {
         return directed;
+    }
+
+    @Override
+    public boolean isMixed() {
+        return true;
     }
 }

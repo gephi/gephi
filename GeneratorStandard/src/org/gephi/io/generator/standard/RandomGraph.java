@@ -20,13 +20,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.generator.standard;
 
+import org.gephi.ui.generator.standard.RandomGraphUI;
 import java.util.Random;
-import org.gephi.ui.generator.standard.RandomGraphPanel;
 import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.container.EdgeDraft;
 import org.gephi.io.container.NodeDraft;
 import org.gephi.io.generator.Generator;
 import org.gephi.ui.generator.GeneratorUI;
+import org.gephi.utils.progress.ProgressTicket;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -36,29 +38,41 @@ public class RandomGraph implements Generator {
 
     protected int numberOfNodes = 50;
     protected double wiringProbability = 0.05;
+    protected ProgressTicket progress;
+    protected boolean cancel = false;
 
     public void generate(ContainerLoader container) {
 
+        int max = numberOfNodes;
+        if (wiringProbability > 0) {
+            max += numberOfNodes - 1;
+        }
+        progress.start(max);
+        int progressUnit = 0;
         Random random = new Random();
 
         NodeDraft[] nodeArray = new NodeDraft[numberOfNodes];
-        for (int i = 0; i < numberOfNodes; i++) {
+        for (int i = 0; i < numberOfNodes && !cancel; i++) {
             NodeDraft nodeDraft = container.factory().newNodeDraft();
             nodeDraft.setId("n" + i);
             container.addNode(nodeDraft);
             nodeArray[i] = nodeDraft;
+            progress.progress(++progressUnit);
         }
 
-        for (int i = 0; i < numberOfNodes - 1; i++) {
-            NodeDraft node1 = nodeArray[i];
-            for (int j = i + 1; j < numberOfNodes; j++) {
-                NodeDraft node2 = nodeArray[j];
-                if (random.nextDouble() < wiringProbability) {
-                    EdgeDraft edgeDraft = container.factory().newEdgeDraft();
-                    edgeDraft.setSource(node1);
-                    edgeDraft.setTarget(node2);
-                    container.addEdge(edgeDraft);
+        if (wiringProbability > 0) {
+            for (int i = 0; i < numberOfNodes - 1 && !cancel; i++) {
+                NodeDraft node1 = nodeArray[i];
+                for (int j = i + 1; j < numberOfNodes && !cancel; j++) {
+                    NodeDraft node2 = nodeArray[j];
+                    if (random.nextDouble() < wiringProbability) {
+                        EdgeDraft edgeDraft = container.factory().newEdgeDraft();
+                        edgeDraft.setSource(node1);
+                        edgeDraft.setTarget(node2);
+                        container.addEdge(edgeDraft);
+                    }
                 }
+                progress.progress(++progressUnit);
             }
         }
     }
@@ -68,7 +82,7 @@ public class RandomGraph implements Generator {
     }
 
     public GeneratorUI getUI() {
-        return new RandomGraphPanel.RandomGraphUI();
+        return Lookup.getDefault().lookup(RandomGraphUI.class);
     }
 
     public void setNumberOfNodes(int numberOfNodes) {
@@ -91,5 +105,14 @@ public class RandomGraph implements Generator {
 
     public double getWiringProbability() {
         return wiringProbability;
+    }
+
+    public boolean cancel() {
+        cancel = true;
+        return true;
+    }
+
+    public void setProgressTicket(ProgressTicket progressTicket) {
+        this.progress = progressTicket;
     }
 }

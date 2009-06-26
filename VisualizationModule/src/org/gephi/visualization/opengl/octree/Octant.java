@@ -28,7 +28,7 @@ import javax.media.opengl.GL;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.datastructure.avl.simple.AVLItem;
-import org.gephi.visualization.api.Object3dImpl;
+import org.gephi.visualization.api.ModelImpl;
 
 /**
  *
@@ -55,8 +55,8 @@ public class Octant implements AVLItem {
     private Octant[] children;
     private AtomicBoolean updateFlag = new AtomicBoolean();
 
-    //Objects
-    private List<ParamAVLTree<Object3dImpl>> objectClasses;
+    //Models
+    private List<ParamAVLTree<ModelImpl>> modelClasses;
 
     public Octant(Octree octree, int depth, float posX, float posY, float posZ, float size) {
         this.size = size;
@@ -68,7 +68,7 @@ public class Octant implements AVLItem {
         this.octantID = OctantIDs++;
     }
 
-    public void addObject(int classID, Object3dImpl obj) {
+    public void addObject(int classID, ModelImpl obj) {
         if (children == null && depth < octree.getMaxDepth()) {
             //Create children
             subdivide();
@@ -79,11 +79,11 @@ public class Octant implements AVLItem {
             if (objectsCount == 0) {
                 octree.addLeaf(this);
 
-                objectClasses = new ArrayList<ParamAVLTree<Object3dImpl>>(octree.getClassesCount());
+                modelClasses = new ArrayList<ParamAVLTree<ModelImpl>>(octree.getClassesCount());
                 for (int i = 0; i < octree.getClassesCount(); i++) {
-                    objectClasses.add(new ParamAVLTree<Object3dImpl>(new AVLItemAccessor<Object3dImpl>() {
+                    modelClasses.add(new ParamAVLTree<ModelImpl>(new AVLItemAccessor<ModelImpl>() {
 
-                        public int getNumber(Object3dImpl item) {
+                        public int getNumber(ModelImpl item) {
                             return item.getNumber();
                         }
                     }));
@@ -91,7 +91,7 @@ public class Octant implements AVLItem {
             }
 
             //Get the list
-            ParamAVLTree<Object3dImpl> objectClass = this.objectClasses.get(classID);
+            ParamAVLTree<ModelImpl> objectClass = this.modelClasses.get(classID);
 
             //Set Octant
             obj.setOctant(this);
@@ -108,9 +108,9 @@ public class Octant implements AVLItem {
         }
     }
 
-    public void removeObject(int classID, Object3dImpl obj) {
+    public void removeObject(int classID, ModelImpl obj) {
         //Get the list
-        ParamAVLTree<Object3dImpl> objectClass = this.objectClasses.get(classID);
+        ParamAVLTree<ModelImpl> objectClass = this.modelClasses.get(classID);
 
         if (objectClass.remove(obj)) {
             objectsCount--;
@@ -123,13 +123,12 @@ public class Octant implements AVLItem {
 
     }
 
-    public void clear(int classID)
-    {
-        ParamAVLTree<Object3dImpl> tree = getTree(classID);
+    public void clear(int classID) {
+        ParamAVLTree<ModelImpl> tree = getTree(classID);
         int count = tree.getCount();
         tree.clear();
-        objectsCount-=count;
-         if (objectsCount == 0) {
+        objectsCount -= count;
+        if (objectsCount == 0) {
             //Remove leaf
             octree.removeLeaf(this);
         }
@@ -151,12 +150,12 @@ public class Octant implements AVLItem {
         children = new Octant[]{o1, o2, o3, o4, o5, o6, o7, o8};
     }
 
-    public Iterator<Object3dImpl> iterator(int classID) {
-        return this.objectClasses.get(classID).iterator();
+    public Iterator<ModelImpl> iterator(int classID) {
+        return this.modelClasses.get(classID).iterator();
     }
 
-    public ParamAVLTree<Object3dImpl> getTree(int classID) {
-        return objectClasses.get(classID);
+    public ParamAVLTree<ModelImpl> getTree(int classID) {
+        return modelClasses.get(classID);
     }
 
     public void displayOctreeNode(GL gl) {

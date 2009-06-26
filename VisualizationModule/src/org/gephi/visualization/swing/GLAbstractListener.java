@@ -75,11 +75,22 @@ public abstract class GLAbstractListener implements GLEventListener {
         //Disable Vertical synchro
         gl.setSwapInterval(0);
 
-        //If depth
-        gl.glEnable(GL.GL_DEPTH_TEST);
-        gl.glDepthFunc(GL.GL_LEQUAL);
-        gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);	//Correct texture & colors perspective calculations
+        //Depth
+        if (vizConfig.use3d()) {
+            gl.glEnable(GL.GL_DEPTH_TEST);
+            gl.glDepthFunc(GL.GL_LEQUAL);
+            gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);	//Correct texture & colors perspective calculations
+        } else {
+            gl.glDisable(GL.GL_DEPTH_TEST);
+        }
 
+        //Cull face
+        if (vizConfig.isCulling()) {
+            gl.glEnable(GL.GL_CULL_FACE);
+            gl.glCullFace(GL.GL_BACK);
+        }
+
+        //Point Smooth
         if (vizConfig.isPointSmooth()) {
             gl.glEnable(GL.GL_POINT_SMOOTH);
             gl.glHint(GL.GL_POINT_SMOOTH_HINT, GL.GL_NICEST); //Point smoothing
@@ -87,6 +98,7 @@ public abstract class GLAbstractListener implements GLEventListener {
             gl.glDisable(GL.GL_POINT_SMOOTH);
         }
 
+        //Light Smooth
         if (vizConfig.isLineSmooth()) {
             gl.glEnable(GL.GL_LINE_SMOOTH);
             if (vizConfig.isLineSmoothNicest()) {
@@ -104,40 +116,46 @@ public abstract class GLAbstractListener implements GLEventListener {
         Color backgroundColor = vizConfig.getBackgroundColor();
         gl.glClearColor(backgroundColor.getRed() / 255f, backgroundColor.getGreen() / 255f, backgroundColor.getBlue() / 255f, 1f);
 
-        gl.glShadeModel(GL.GL_SMOOTH);
-
         //Lighting
         if (vizConfig.isLighting()) {
             gl.glEnable(GL.GL_LIGHTING);
             setLighting(gl);
+            gl.glEnable(GL.GL_NORMALIZE);
+            gl.glShadeModel(GL.GL_SMOOTH);
         } else {
             gl.glDisable(GL.GL_LIGHTING);
+            gl.glShadeModel(GL.GL_FLAT);
         }
 
         //Blending
         if (vizConfig.isBlending()) {
             gl.glEnable(GL.GL_BLEND);
-            gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-        //gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE_MINUS_SRC_ALPHA);
-        // gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE);
+            if (vizConfig.isBlendingCinema()) {
+                gl.glBlendFunc(GL.GL_CONSTANT_COLOR, GL.GL_ONE_MINUS_SRC_ALPHA);        //Black display
+            } else {
+                gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+            }
         }
-        // gl.glEnable(GL.GL_ALPHA_TEST);
-        //gl.glAlphaFunc(GL.GL_GREATER, 0);
+
 
         //Material
-        gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
-
+        if (vizConfig.isMaterial()) {
+            gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
+            gl.glEnable(GL.GL_COLOR_MATERIAL);
+        }
         //Mesh view
-        if(vizConfig.isWireFrame())
+        if (vizConfig.isWireFrame()) {
             gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
+        }
 
         gl.glEnable(GL.GL_TEXTURE_2D);
-        gl.glEnable(GL.GL_NORMALIZE);
-        gl.glEnable(GL.GL_COLOR_MATERIAL);
+
     }
 
     protected void setLighting(GL gl) {
+
         //Lights
+
         Lighting.setSource(0, Lighting.TYPE_AMBIANT, gl);//
         Lighting.setSource(2, Lighting.TYPE_BAS_ROUGE, gl);//
         Lighting.setSource(3, Lighting.TYPE_GAUCHE_JAUNE, gl);//
@@ -146,7 +164,6 @@ public abstract class GLAbstractListener implements GLEventListener {
         Lighting.setSource(6, Lighting.TYPE_LATERAL_MULTI, gl);
         Lighting.setSource(7, Lighting.TYPE_SPOT_BLAFARD, gl);
         Lighting.switchAll(gl, true, false, true, true, true, false, false, false);
-
     }
 
     @Override
@@ -173,7 +190,11 @@ public abstract class GLAbstractListener implements GLEventListener {
         fps = (int) (1000.0f / tpsEcoule);
 
         GL gl = drawable.getGL();
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+        if (vizConfig.use3d()) {
+            gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+        } else {
+            gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+        }
 
         render3DScene(gl, glu);
     }
@@ -186,10 +207,12 @@ public abstract class GLAbstractListener implements GLEventListener {
                 return;
             }
 
-            if(height==0)
-                height=1;
-            if(width==0)
-                width=1;
+            if (height == 0) {
+                height = 1;
+            }
+            if (width == 0) {
+                width = 1;
+            }
 
             int viewportW = 0, viewportH = 0, viewportX = width, viewportY = height;
 

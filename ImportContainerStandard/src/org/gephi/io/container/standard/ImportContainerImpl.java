@@ -31,6 +31,9 @@ import org.gephi.io.container.Container;
 import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.container.ContainerUnloader;
 import org.gephi.io.container.NodeDraft;
+import org.gephi.io.logging.Issue;
+import org.gephi.io.logging.Issue.Level;
+import org.gephi.io.logging.Report;
 import org.gephi.io.processor.EdgeDraftGetter;
 import org.gephi.io.processor.NodeDraftGetter;
 import org.openide.util.Lookup;
@@ -61,7 +64,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private AttributeManager attributeManager;
 
     //Error
-    private ReportImpl report;
+    private Report report;
 
     public ImportContainerImpl() {
         parameters = new ImportContainerParameters();
@@ -71,7 +74,6 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         attributeFactory = Lookup.getDefault().lookup(AttributeController.class).valueFactory();
         attributeManager = Lookup.getDefault().lookup(AttributeController.class).getTemporaryAttributeManager();
         factory = new FactoryImpl();
-        report = new ReportImpl();
     }
 
     public ContainerLoader getLoader() {
@@ -96,14 +98,14 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     public void addNode(NodeDraft nodeDraft) {
         if (nodeDraft == null) {
-            severe("nodeDraft can't be null");
-            return;
+            throw new NullPointerException();
         }
         NodeDraftImpl nodeDraftImpl = (NodeDraftImpl) nodeDraft;
 
         if (nodeMap.containsKey(nodeDraftImpl.getId())) {
             String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_nodeExist", nodeDraftImpl.getId());
-            severe(message);
+            report.logIssue(new Issue(message, Level.WARNING));
+            report.log("Duplicated node id=" + nodeDraftImpl.getId() + "label=" + nodeDraftImpl.getLabel() + " is ignored");
             return;
         }
 
@@ -112,8 +114,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     public NodeDraftImpl getNode(String id) {
         if (id == null || id.isEmpty()) {
-            severe("id can't be null");
-            return null;
+            throw new NullPointerException();
         }
         NodeDraftImpl node = nodeMap.get(id);
         if (node == null) {
@@ -122,10 +123,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 node = factory.newNodeDraft();
                 node.setId(id);
                 addNode(node);
-                warning("Automatic node creation from id=" + id);
+                report.logIssue(new Issue("Unknow Node id", Level.WARNING));
+                report.log("Automatic node creation from id=" + id);
             } else {
                 String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_UnknowNodeId", id);
-                severe(message);
+                report.logIssue(new Issue(message, Level.SEVERE));
             }
         }
         return node;
@@ -133,33 +135,31 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     public boolean nodeExists(String id) {
         if (id == null || id.isEmpty()) {
-            severe("id can't be null");
-            return false;
+            throw new NullPointerException();
         }
         return nodeMap.containsKey(id);
     }
 
     public void addEdge(EdgeDraft edgeDraft) {
         if (edgeDraft == null) {
-            severe("edgeDraft can't be null");
-            return;
+            throw new NullPointerException();
         }
         EdgeDraftImpl edgeDraftImpl = (EdgeDraftImpl) edgeDraft;
         if (edgeDraftImpl.getSource() == null) {
             String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_MissingNodeSource");
-            severe(message);
+            report.logIssue(new Issue(message, Level.SEVERE));
             return;
         }
         if (edgeDraftImpl.getTarget() == null) {
             String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_MissingNodeTarget");
-            severe(message);
+            report.logIssue(new Issue(message, Level.SEVERE));
             return;
         }
 
         //Self loop
         if (edgeDraftImpl.getSource() == edgeDraftImpl.getTarget() && !parameters.isSelfLoops()) {
             String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_SelfLoop");
-            severe(message);
+            report.logIssue(new Issue(message, Level.SEVERE));
             return;
         }
 
@@ -167,13 +167,13 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             case DIRECTED:
                 EdgeDraft.EdgeType type1 = edgeDraftImpl.getType();
                 if (type1.equals(EdgeDraft.EdgeType.UNDIRECTED)) {
-                    severe(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Bad_Edge_Type"));
+                    report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Bad_Edge_Type"), Level.WARNING));
                 }
                 break;
             case UNDIRECTED:
                 EdgeDraft.EdgeType type2 = edgeDraftImpl.getType();
                 if (type2.equals(EdgeDraft.EdgeType.DIRECTED)) {
-                    severe(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Bad_Edge_Type"));
+                    report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Bad_Edge_Type"), Level.WARNING));
                 }
                 break;
             case MIXED:
@@ -181,13 +181,15 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
 
         String id = edgeDraftImpl.getId();
-        if (edgeMap.containsKey(id)) {
+        String sourceTargetId = edgeDraftImpl.getSource().getId() + "-" + edgeDraftImpl.getTarget().getId();
+        if (edgeMap.containsKey(id) || edgeSourceTargetMap.containsKey(sourceTargetId)) {
             if (!parameters.isParallelEdges()) {
-                String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_edgeExist");
-                severe(message);
+                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_edgeExist"), Level.WARNING));
                 return;
             } else {
                 //Manage parallel edges
+                report.logIssue(new Issue("Parallel edges are not supported yet, edge id=" + id + " is ignored", Level.INFO));
+                return;
             }
         }
 
@@ -197,32 +199,28 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     public boolean edgeExists(String id) {
         if (id == null || id.isEmpty()) {
-            severe("id can't be null");
-            return false;
+            throw new NullPointerException();
         }
         return edgeMap.containsKey(id);
     }
 
     public boolean edgeExists(NodeDraft source, NodeDraft target) {
         if (source == null || target == null) {
-            severe("source of target can't be null");
-            return false;
+            throw new NullPointerException();
         }
         return edgeSourceTargetMap.containsKey(((NodeDraftImpl) source).getId() + "-" + ((NodeDraftImpl) target).getId());
     }
 
     public EdgeDraft getEdge(String id) {
         if (id == null || id.isEmpty()) {
-            severe("id can't be null");
-            return null;
+            throw new NullPointerException();
         }
         return edgeMap.get(id);
     }
 
     public EdgeDraft getEdge(NodeDraft source, NodeDraft target) {
         if (source == null || target == null) {
-            severe("source of target can't be null");
-            return null;
+            throw new NullPointerException();
         }
         return edgeSourceTargetMap.get(((NodeDraftImpl) source).getId() + "-" + ((NodeDraftImpl) target).getId());
     }
@@ -241,29 +239,6 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     public AttributeValueFactory getFactory() {
         return attributeFactory;
-    }
-
-    //LOGGING
-    private void severe(String msg) {
-        if (parameters.getErrorMode().equals(ErrorMode.ALL)) {
-            throw new ImportContainerException(msg);
-        }
-        report.append(msg);
-    }
-
-    private void severe(RuntimeException e) {
-        if (parameters.getErrorMode().equals(ErrorMode.ALL)) {
-            throw e;
-        }
-        report.append(e);
-    }
-
-    private void warning(String msg) {
-        report.append(msg);
-    }
-
-    public ContainerReport getReport() {
-        return report;
     }
 
     /**
@@ -289,24 +264,13 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
     }
 
-    /**
-     * Report about errors
-     */
-    public class ReportImpl implements ContainerReport {
+    //REPORT
+    public Report getReport() {
+        return report;
+    }
 
-        private StringBuilder stringBuilder = new StringBuilder();
-
-        public void append(Exception e) {
-            stringBuilder.append(e.getMessage()+"\n");
-        }
-
-        public void append(String str) {
-            stringBuilder.append(str+"\n");
-        }
-
-        public String getReport() {
-            return stringBuilder.toString();
-        }
+    public void setReport(Report report) {
+        this.report = report;
     }
 
     //PARAMETERS
@@ -324,14 +288,6 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     public void setEdgeDefault(EdgeDefault edgeDefault) {
         parameters.setEdgeDefault(edgeDefault);
-    }
-
-    public void setErrorMode(ErrorMode errorMode) {
-        parameters.setErrorMode(errorMode);
-    }
-
-    public ErrorMode getErrorMode() {
-        return parameters.getErrorMode();
     }
 
     public boolean allowAutoNode() {

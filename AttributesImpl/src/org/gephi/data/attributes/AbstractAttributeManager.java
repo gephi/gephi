@@ -37,6 +37,9 @@ public abstract class AbstractAttributeManager implements AttributeManager {
     private NodeAttributeClass nodeClass;
     private EdgeAttributeClass edgeClass;
 
+    //Factory
+    private AttributeFactoryImpl factory;
+
     //Data API
     public AbstractAttributeManager() {
         classMap = new ConcurrentHashMap<String, AbstractAttributeClass>();
@@ -69,5 +72,13 @@ public abstract class AbstractAttributeManager implements AttributeManager {
             return attClass;
         }
         return null;
+    }
+
+    public AttributeFactoryImpl getFactory() {
+        return factory;
+    }
+
+    public void setFactory(AttributeFactoryImpl factory) {
+        this.factory = factory;
     }
 }

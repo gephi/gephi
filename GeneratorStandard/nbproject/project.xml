@@ -23,7 +23,7 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.gephi.validation</code-name-base>
+                    <code-name-base>org.gephi.utils.longtask</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -39,7 +39,10 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages/>
+            <public-packages>
+                <package>org.gephi.io.generator.standard</package>
+                <package>org.gephi.ui.generator.standard</package>
+            </public-packages>
         </data>
     </configuration>
 </project>

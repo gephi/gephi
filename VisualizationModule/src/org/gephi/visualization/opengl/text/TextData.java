@@ -20,9 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
+import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
-import org.gephi.graph.api.Object3d;
+import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Renderable;
+import org.gephi.visualization.api.ModelImpl;
 
 /**
  *
@@ -30,8 +32,8 @@ import org.gephi.graph.api.Renderable;
  */
 public class TextData {
 
-    Object3d<Renderable> object3d;
-    TextLine line                   = new TextLine();
+    ModelImpl object3d;
+    TextLine line = new TextLine();
     TextLine[] wrappedLines;
     float r;
     float g;
@@ -51,7 +53,7 @@ public class TextData {
         return r > 0;
     }
 
-    public Object3d<Renderable> getObject3d() {
+    public Model<Renderable> getObject3d() {
         return object3d;
     }
 
@@ -59,8 +61,7 @@ public class TextData {
         this.sizeFactor = sizeFactor;
     }
 
-    public void setColor(float r, float g, float b, float alpha)
-    {
+    public void setColor(float r, float g, float b, float alpha) {
         this.r = r;
         this.g = g;
         this.b = b;
@@ -70,7 +71,7 @@ public class TextData {
     public static class TextLine {
 
         String text;
-        Rectangle2D bounds;
+        Rectangle2D bounds = new Rectangle(20, 20);
 
         public TextLine() {
         }
