@@ -32,10 +32,11 @@ import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.container.EdgeDraft;
 import org.gephi.io.container.NodeDraft;
 import org.gephi.io.importer.FileType;
-import org.gephi.io.importer.ImportException;
 import org.gephi.io.importer.TextImporter;
 import org.gephi.io.logging.Issue;
 import org.gephi.io.logging.Report;
+import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.progress.ProgressTicket;
 import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
 
@@ -44,11 +45,13 @@ import org.openide.util.NbBundle;
  * @author Mathieu Bastian
  * @author Sebastien Heymann
  */
-public class ImporterGDF implements TextImporter {
+public class ImporterGDF implements TextImporter, LongTask {
 
     //Architecture
-    ContainerLoader container;
-    Report report;
+    private ContainerLoader container;
+    private Report report;
+    private ProgressTicket progressTicket;
+    private boolean cancel = false;
 
     //Extract
     private List<String> nodeLines = new ArrayList<String>();
@@ -71,14 +74,21 @@ public class ImporterGDF implements TextImporter {
         this.container = container;
         this.report = report;
 
+        progressTicket.start();         //Progress
+
         //Verify a node line exists and puts nodes and edges lines in arrays
         walkFile(reader);
+
+        progressTicket.switchToDeterminate(nodeLines.size() + edgeLines.size());         //Progress
 
         //Magix regex
         Pattern pattern = Pattern.compile("(?<=(?:,|^)\")(.*?)(?=(?<=(?:[^\\\\]))\",|\"$)|(?<=(?:,|^)')(.*?)(?=(?<=(?:[^\\\\]))',|'$)|(?<=(?:,|^))(?=[^'\"])(.*?)(?=(?:,|$))|(?<=,)($)");
 
         //Nodes
         for (String nodeLine : nodeLines) {
+            if (cancel) {
+                return;
+            }
 
             //Create Node
             NodeDraft node = container.factory().newNodeDraft();
@@ -104,11 +114,15 @@ public class ImporterGDF implements TextImporter {
             }
 
             container.addNode(node);
+
+            progressTicket.progress();      //Progress
         }
 
         //Edges
         for (String edgeLine : edgeLines) {
-
+            if (cancel) {
+                return;
+            }
             //Create Edge
             EdgeDraft edge = container.factory().newEdgeDraft();
 
@@ -136,6 +150,7 @@ public class ImporterGDF implements TextImporter {
             }
 
             container.addEdge(edge);
+            progressTicket.progress();      //Progress
         }
     }
 
@@ -145,7 +160,7 @@ public class ImporterGDF implements TextImporter {
             if (isNodeFirstLine(firstLine)) {
                 findNodeColumns(firstLine);
                 boolean edgesWalking = false;
-                while (reader.ready()) {
+                while (reader.ready() && !cancel) {
                     String line = reader.readLine();
                     if (isEdgeFirstLine(line)) {
                         edgesWalking = true;
@@ -244,7 +259,7 @@ public class ImporterGDF implements TextImporter {
                 AttributeClass nodeClass = container.getAttributeManager().getNodeClass();
                 AttributeColumn newColumn = nodeClass.addAttributeColumn(columnName, type);
                 nodeColumns[i - 1] = new GDFColumn(newColumn);
-                report.log("Node attribute "+columnName+" ("+type.getTypeString()+")");
+                report.log("Node attribute " + columnName + " (" + type.getTypeString() + ")");
             }
         }
     }
@@ -313,7 +328,7 @@ public class ImporterGDF implements TextImporter {
                 AttributeClass edgeClass = container.getAttributeManager().getEdgeClass();
                 AttributeColumn newColumn = edgeClass.addAttributeColumn(columnName, type);
                 edgeColumns[i - 2] = new GDFColumn(newColumn);
-                report.log("Edge attribute "+columnName+" ("+type.getTypeString()+")");
+                report.log("Edge attribute " + columnName + " (" + type.getTypeString() + ")");
             }
         }
     }
@@ -426,6 +441,15 @@ public class ImporterGDF implements TextImporter {
                 report.logIssue(new Issue(message, Issue.Level.WARNING, e));
             }
         }
+    }
+
+    public boolean cancel() {
+        cancel = true;
+        return true;
+    }
+
+    public void setProgressTicket(ProgressTicket progressTicket) {
+        this.progressTicket = progressTicket;
     }
 
     private static class GDFColumn {

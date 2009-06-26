@@ -50,17 +50,17 @@ public final class Report {
     }
 
     public String getHtml() {
-        String html = "";
+        StringBuilder builder = new StringBuilder();
         for(ReportEntry re : entries) {
             if(re.issue!=null) {
-                html+=re.issue.getMessage();
-                html+="<br><br>";
+                builder.append(re.issue.getMessage());
+                builder.append("<br>");
             } else {
-                html+=re.message;
-                html+="<br>";
+                builder.append(re.message);
+                builder.append("<br>");
             }
         }
-        return html;
+        return builder.toString();
     }
 
     private class ReportEntry {

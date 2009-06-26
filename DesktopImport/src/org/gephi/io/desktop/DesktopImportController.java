@@ -40,6 +40,7 @@ import org.gephi.io.importer.FileFormatImporter;
 import org.gephi.io.importer.FileType;
 import org.gephi.io.importer.ImportController;
 import org.gephi.io.importer.ImportException;
+import org.gephi.io.importer.Importer;
 import org.gephi.io.importer.StreamImporter;
 import org.gephi.io.importer.TextImporter;
 import org.gephi.io.importer.XMLImporter;
@@ -48,12 +49,15 @@ import org.gephi.io.processor.Processor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.database.DatabaseTypeUI;
+import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.longtask.LongTaskExecutor;
 import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.w3c.dom.Document;
@@ -65,6 +69,7 @@ import org.xml.sax.SAXException;
  */
 public class DesktopImportController implements ImportController {
 
+    private LongTaskExecutor executor;
     private FileFormatImporter[] fileFormatImporters;
     private DatabaseImporter[] databaseImporters;
     private DatabaseType[] databaseTypes;
@@ -81,6 +86,8 @@ public class DesktopImportController implements ImportController {
         //Get DatabaseTypes
         databaseTypes = new DatabaseType[0];
         databaseTypes = Lookup.getDefault().lookupAll(DatabaseType.class).toArray(databaseTypes);
+
+        executor = new LongTaskExecutor(true, "Importer", 10);
     }
 
     public void doImport(FileObject fileObject) {
@@ -94,7 +101,7 @@ public class DesktopImportController implements ImportController {
             Workspace workspace = projectController.importFile();
 
             //Create Container
-            Container container = Lookup.getDefault().lookup(Container.class);
+            final Container container = Lookup.getDefault().lookup(Container.class);
             container.setSource("" + im.getClass());
 
             //Report
@@ -102,15 +109,9 @@ public class DesktopImportController implements ImportController {
             container.setReport(report);
 
             if (im instanceof XMLImporter) {
-                Document document = getDocument(fileObject);
-                XMLImporter xmLImporter = (XMLImporter) im;
-                xmLImporter.importData(document, container.getLoader(), report);
-                finishImport(container);
+                importXML(fileObject, im, container);
             } else if (im instanceof TextImporter) {
-                BufferedReader reader = getTextReader(fileObject);
-                TextImporter textImporter = (TextImporter) im;
-                textImporter.importData(reader, container.getLoader(), report);
-                finishImport(container);
+                importText(fileObject, im, container);
             } else if (im instanceof StreamImporter) {
             }
 
@@ -119,6 +120,50 @@ public class DesktopImportController implements ImportController {
             DialogDisplayer.getDefault().notifyLater(e);
             ex.printStackTrace();
         }
+    }
+
+    private void importXML(FileObject fileObject, Importer importer, final Container container) {
+        final Document document = getDocument(fileObject);
+        final XMLImporter xmlImporter = (XMLImporter) importer;
+        final Report report = container.getReport();
+        LongTask task = null;
+        if (importer instanceof LongTask) {
+            task = (LongTask) importer;
+        }
+        executor.execute(task, new Runnable() {
+
+            public void run() {
+                try {
+                    xmlImporter.importData(document, container.getLoader(), report);
+                    finishImport(container);
+                } catch (Exception ex) {
+                    Exceptions.printStackTrace(ex);
+                //NotifyDescriptor.Message e = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
+                //DialogDisplayer.getDefault().notifyLater(e);
+                }
+            }
+        }, "Import " + fileObject.getNameExt());
+    }
+
+    private void importText(FileObject fileObject, Importer importer, final Container container) {
+        final BufferedReader reader = getTextReader(fileObject);
+        final TextImporter textImporter = (TextImporter) importer;
+        final Report report = container.getReport();
+        LongTask task = null;
+        if (importer instanceof LongTask) {
+            task = (LongTask) importer;
+        }
+        executor.execute(task, new Runnable() {
+
+            public void run() {
+                try {
+                    textImporter.importData(reader, container.getLoader(), report);
+                    finishImport(container);
+                } catch (Exception ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+        }, "Import " + fileObject.getNameExt());
     }
 
     public void doImport(Database database) {
@@ -181,8 +226,10 @@ public class DesktopImportController implements ImportController {
         reportPanel.setData(report, container);
         DialogDescriptor dd = new DialogDescriptor(reportPanel, "Import report");
         if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.CANCEL_OPTION)) {
+            reportPanel.destroy();
             return;
         }
+        reportPanel.destroy();
 
         Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
     }

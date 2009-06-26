@@ -182,13 +182,13 @@ public final class LongTaskExecutor {
                     return true;
                 }
             });
-            if(task!=null) {
+            if (task != null) {
                 task.setProgressTicket(progress);
             }
         }
 
         public void run() {
-            runnable.run();         
+            runnable.run();
             finished();
             progress.finish();
         }

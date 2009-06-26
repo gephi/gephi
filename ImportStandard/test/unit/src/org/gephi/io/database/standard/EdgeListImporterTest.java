@@ -100,7 +100,6 @@ public class EdgeListImporterTest extends NbTestCase {
             }
         }
 
-
         System.out.println("Id=" + hasId);
         System.out.println("Label=" + hasLabel);
         System.out.println("X=" + hasX);

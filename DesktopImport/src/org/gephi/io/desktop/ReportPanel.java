@@ -15,6 +15,7 @@ import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
@@ -33,9 +34,12 @@ import org.netbeans.swing.outline.RowModel;
  */
 public class ReportPanel extends javax.swing.JPanel {
 
+    private ThreadGroup fillingThreads;
+
     /** Creates new form ReportPanel */
     public ReportPanel() {
         initComponents();
+        fillingThreads = new ThreadGroup("Report Panel Issues");
     }
 
     public void setData(Report report, Container container) {
@@ -48,23 +52,36 @@ public class ReportPanel extends javax.swing.JPanel {
     }
 
     private void fillIssues(Report report) {
-        List<Issue> issues = report.getIssues();
+        final List<Issue> issues = report.getIssues();
         if (issues.isEmpty()) {
             JLabel label = new JLabel("No issue found during import");
             label.setHorizontalAlignment(SwingConstants.CENTER);
             tab1ScrollPane.setViewportView(label);
         } else {
-            final TreeModel treeMdl = new IssueTreeModel(issues);
-            OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new IssueRowModel(), true);
-            issuesOutline.setRootVisible(false);
-            issuesOutline.setRenderDataProvider(new IssueRenderer());
-            issuesOutline.setModel(mdl);
+            Thread thread = new Thread(fillingThreads, new Runnable() {
+
+                public void run() {
+                    final TreeModel treeMdl = new IssueTreeModel(issues);
+                    OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new IssueRowModel(), true);
+                    issuesOutline.setRootVisible(false);
+                    issuesOutline.setRenderDataProvider(new IssueRenderer());
+                    issuesOutline.setModel(mdl);
+                }
+            }, "Report Panel Issues Outline");
+            thread.start();
         }
     }
 
-    private void fillReport(Report report) {
-        reportTextPane.setContentType("text/html");
-        reportTextPane.setText(report.getHtml());
+    private void fillReport(final Report report) {
+        Thread thread = new Thread(fillingThreads, new Runnable() {
+
+            public void run() {
+                String str = report.getHtml();
+                reportTextPane.setContentType("text/html");
+                reportTextPane.setText(str);
+            }
+        }, "Report Panel Issues Outline");
+        thread.start();
     }
 
     private void fillStats(Container container) {
@@ -88,9 +105,13 @@ public class ReportPanel extends javax.swing.JPanel {
                 break;
         }
 
-        //Dynamic & Hierarchical graph
+//Dynamic & Hierarchical graph
         dynamicLabel.setText("false");
         hierarchicalLabel.setText("false");
+    }
+
+    public void destroy() {
+        fillingThreads.interrupt();
     }
 
     /** This method is called from within the constructor to
@@ -285,7 +306,7 @@ public class ReportPanel extends javax.swing.JPanel {
         }
 
         public boolean isLeaf(Object node) {
-            if(node instanceof Issue) {
+            if (node instanceof Issue) {
                 return true;
             }
             return false;
@@ -312,8 +333,8 @@ public class ReportPanel extends javax.swing.JPanel {
         }
 
         public Object getValueFor(Object node, int column) {
-            if(node instanceof Issue) {
-                Issue issue = (Issue)node;
+            if (node instanceof Issue) {
+                Issue issue = (Issue) node;
                 return issue.getLevel().toString();
             }
             return "";
