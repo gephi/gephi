@@ -33,6 +33,7 @@ public final class ProgressTicket {
     private ProgressHandle handle;
     private int progress100 = 0;
     private int progressTotal;
+    private int currentUnit = 0;
 
     public ProgressTicket(String displayName, Cancellable cancellable) {
         //TODO lookup if UI or not
@@ -49,10 +50,18 @@ public final class ProgressTicket {
     }
 
     /**
+     * Notify the user about a new completed unit. Equivalent to incrementing workunits by one.
+     */
+    public void progress() {
+        progress(currentUnit + 1);
+    }
+
+    /**
      * Notify the user about completed workunits.
      * @param a cumulative number of workunits completed so far
      */
     public void progress(int workunit) {
+        this.currentUnit = workunit;
         if (handle != null) {
             int ratioProgress = (int) (100.0 * workunit / progressTotal);
             if (ratioProgress != progress100) {
@@ -78,6 +87,7 @@ public final class ProgressTicket {
      * @param workunit a cumulative number of workunits completed so far
      */
     public void progress(String message, int workunit) {
+        currentUnit = workunit;
         if (handle != null) {
             int ratioProgress = (int) (100.0 * workunit / progressTotal);
             if (ratioProgress != progress100) {
@@ -124,7 +134,7 @@ public final class ProgressTicket {
     public void switchToDeterminate(int workunits) {
         if (handle != null) {
             this.progressTotal = workunits;
-            handle.switchToDeterminate(workunits);
+            handle.switchToDeterminate(100);
         }
     }
 
