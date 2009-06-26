@@ -1,21 +1,31 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+Copyright 2008 WebAtlas
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Website : http://www.gephi.org
 
-/*
- * ReportPanel.java
- *
- * Created on 24 juin 2009, 17:04:48
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.desktop;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
@@ -23,6 +33,7 @@ import org.gephi.io.container.Container;
 import org.gephi.io.container.ContainerUnloader;
 import org.gephi.io.logging.Issue;
 import org.gephi.io.logging.Report;
+import org.gephi.ui.utils.BusyUtils;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.OutlineModel;
 import org.netbeans.swing.outline.RenderDataProvider;
@@ -58,14 +69,20 @@ public class ReportPanel extends javax.swing.JPanel {
             label.setHorizontalAlignment(SwingConstants.CENTER);
             tab1ScrollPane.setViewportView(label);
         } else {
+            //Busy label
+            final BusyUtils.BusyLabel busyLabel = BusyUtils.createCenteredBusyLabel(tab1ScrollPane, "Retrieving issues...", issuesOutline);
+
+            //Thread
             Thread thread = new Thread(fillingThreads, new Runnable() {
 
                 public void run() {
+                    busyLabel.setBusy(true);
                     final TreeModel treeMdl = new IssueTreeModel(issues);
                     OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new IssueRowModel(), true);
                     issuesOutline.setRootVisible(false);
                     issuesOutline.setRenderDataProvider(new IssueRenderer());
                     issuesOutline.setModel(mdl);
+                    busyLabel.setBusy(false);
                 }
             }, "Report Panel Issues Outline");
             thread.start();
