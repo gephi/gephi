@@ -47,7 +47,6 @@ public class ReportPanel extends javax.swing.JPanel {
 
     private ThreadGroup fillingThreads;
 
-    /** Creates new form ReportPanel */
     public ReportPanel() {
         initComponents();
         fillingThreads = new ThreadGroup("Report Panel Issues");
@@ -57,9 +56,6 @@ public class ReportPanel extends javax.swing.JPanel {
         fillIssues(report);
         fillReport(report);
         fillStats(container);
-
-    //Processor
-
     }
 
     private void fillIssues(Report report) {

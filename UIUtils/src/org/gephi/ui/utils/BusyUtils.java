@@ -32,6 +32,15 @@ import org.jdesktop.swingx.JXBusyLabel;
  */
 public class BusyUtils {
 
+    /**
+     * Creates a new <code>JXBusyLabel</code> wrapper and set it at the center of <code>scrollPane</code>. When users
+     * calls <code>BusyLabel.setBusy(false)</code>, the label is removed from <code>scrollPanel</code> and
+     * <code>component</code> is set instead.
+     * @param scrollPane the scroll Panel where the label is to be put
+     * @param text the text set to the newly created label
+     * @param component the component to set in <code>scrollPane</code> when it is not busy anymore
+     * @return the newly created <code>JXBusyLabel</code> wrapper
+     */
     public static BusyLabel createCenteredBusyLabel(JScrollPane scrollPane, String text, JComponent component) {
         return new BusyLabel(scrollPane, text, component);
     }
