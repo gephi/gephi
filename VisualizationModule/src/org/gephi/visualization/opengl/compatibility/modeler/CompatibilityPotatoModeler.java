@@ -77,6 +77,12 @@ public class CompatibilityPotatoModeler implements CompatibilityModeler<NodeData
         return DISK_HIGH;
     }
 
+    public void beforeDisplay(GL gl, GLU glu) {
+    }
+
+    public void afterDisplay(GL gl, GLU glu) {
+    }
+
     public void initFromOpenGLThread() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

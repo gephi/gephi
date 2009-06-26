@@ -56,12 +56,20 @@ public class CompatibilityEdgeModeler implements CompatibilityModeler<EdgeData> 
         return edge;
     }
 
+    public void beforeDisplay(GL gl, GLU glu) {
+        gl.glBegin(GL.GL_TRIANGLES);
+    }
+
+    public void afterDisplay(GL gl, GLU glu) {
+        gl.glEnd();
+    }
+
     public void chooseModel(ModelImpl obj) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return ptr;
     }
 
     public void initFromOpenGLThread() {

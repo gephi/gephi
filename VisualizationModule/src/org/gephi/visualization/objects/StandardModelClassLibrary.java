@@ -46,9 +46,9 @@ public class StandardModelClassLibrary implements ModelClassLibrary {
         CompatibilityNodeDiskModeler modeler2d = new CompatibilityNodeDiskModeler(engine);
         CompatibilityNodeRectangleModeler modelerRect = new CompatibilityNodeRectangleModeler(engine);
         /*if(VizController.getInstance().getVizConfig().use3d()) {
-            modelClasses[0].addModeler(modeler3d);
+        modelClasses[0].addModeler(modeler3d);
         } else {
-            modelClasses[0].addModeler(modeler2d);
+        modelClasses[0].addModeler(modeler2d);
         }*/
         modelClasses[0].addModeler(modelerRect);
 

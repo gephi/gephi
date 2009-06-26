@@ -183,10 +183,13 @@ public class CompatibilityEngine extends AbstractEngine {
 
         long startTime = System.currentTimeMillis();
 
-        if (modelClasses[AbstractEngine.CLASS_EDGE].isEnabled()) {
-            //gl.glDisable(GL.GL_LIGHTING);
-            gl.glBegin(GL.GL_TRIANGLES);
+        CompatibilityModelClass edgeClass = modelClasses[AbstractEngine.CLASS_EDGE];
+        CompatibilityModelClass nodeClass = modelClasses[AbstractEngine.CLASS_NODE];
+        CompatibilityModelClass arrowClass = modelClasses[AbstractEngine.CLASS_ARROW];
 
+        //Edges
+        if (edgeClass.isEnabled()) {
+            edgeClass.beforeDisplay(gl, glu);
             for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
                 ModelImpl obj = itr.next();
                 //Renderable renderable = obj.getObj();
@@ -197,14 +200,12 @@ public class CompatibilityEngine extends AbstractEngine {
                 }
 
             }
-            gl.glEnd();
-        // gl.glEnable(GL.GL_LIGHTING);
-        //gl.glEnable(GL.GL_BLEND);
+            edgeClass.afterDisplay(gl, glu);
         }
 
         //Arrows
-        if (modelClasses[AbstractEngine.CLASS_ARROW].isEnabled()) {
-            gl.glBegin(GL.GL_TRIANGLES);
+        if (arrowClass.isEnabled()) {
+            arrowClass.beforeDisplay(gl, glu);
             for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_ARROW); itr.hasNext();) {
                 ModelImpl obj = itr.next();
                 if (obj.markTime != startTime) {
@@ -212,12 +213,12 @@ public class CompatibilityEngine extends AbstractEngine {
                     obj.markTime = startTime;
                 }
             }
-            gl.glEnd();
+            arrowClass.afterDisplay(gl, glu);
         }
 
-        //Node
-        if (modelClasses[AbstractEngine.CLASS_NODE].isEnabled()) {
-            //Mode normal
+        //Nodes
+        if (nodeClass.isEnabled()) {
+            nodeClass.beforeDisplay(gl, glu);
             for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
                 ModelImpl obj = itr.next();
                 if (obj.markTime != startTime) {
@@ -225,7 +226,7 @@ public class CompatibilityEngine extends AbstractEngine {
                     obj.markTime = startTime;
                 }
             }
-
+            nodeClass.afterDisplay(gl, glu);
         }
 
         octree.displayOctree(gl);
@@ -327,7 +328,7 @@ public class CompatibilityEngine extends AbstractEngine {
             i++;
         }
 
-        if(vizConfig.isLightenNonSelectedAuto()) {
+        if (vizConfig.isLightenNonSelectedAuto()) {
             vizConfig.setLightenNonSelected(someSelection);
         }
     }

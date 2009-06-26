@@ -155,7 +155,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     }
 
     protected boolean isUnderMouse(ModelImpl obj) {
-        if(obj.isAutoSelected()) {
+        if (obj.isAutoSelected()) {
             return true;
         }
         float x1 = graphIO.getMousePosition()[0];

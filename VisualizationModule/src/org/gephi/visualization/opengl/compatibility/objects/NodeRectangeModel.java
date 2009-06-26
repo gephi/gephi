@@ -33,10 +33,9 @@ import org.gephi.visualization.opengl.octree.Octant;
  */
 public class NodeRectangeModel extends ModelImpl<NodeData> {
 
-    public int modelType;
-    public int modelBorderType;
+    public boolean border = true;
     protected float width = 20f;
-    protected float height = 10f;
+    protected float height = 20f;
 
     public NodeRectangeModel() {
         octants = new Octant[1];
@@ -77,19 +76,24 @@ public class NodeRectangeModel extends ModelImpl<NodeData> {
             selec = true;
             mark = false;
         }
-        gl.glPushMatrix();
-        float size = obj.getSize() * 2;
-        gl.glTranslatef(obj.x(), obj.y(), obj.z());
-        gl.glScalef(width, height, 0);
+        float size = obj.getSize();
+        width = size;
+        height = size;
+        float w = width / 2f;
+        float h = height / 2f;
+        float x = obj.x();
+        float y = obj.y();
 
         if (!selec) {
             if (config.isLightenNonSelected()) {
                 float[] lightColor = config.getLightenNonSelectedColor();
                 gl.glColor3f(lightColor[0], lightColor[1], lightColor[2]);
-                if (modelBorderType != 0) {
-                    gl.glCallList(modelBorderType);
+                if (border) {
                 }
-                gl.glCallList(modelType);
+                gl.glVertex3f(x + w, y + h, 0);
+                gl.glVertex3f(x - w, y + h, 0);
+                gl.glVertex3f(x - w, y - h, 0);
+                gl.glVertex3f(x + w, y - h, 0);
             } else {
                 float r = obj.r();
                 float g = obj.g();
@@ -97,12 +101,15 @@ public class NodeRectangeModel extends ModelImpl<NodeData> {
                 float rlight = Math.min(1, 0.5f * r + 0.5f);
                 float glight = Math.min(1, 0.5f * g + 0.5f);
                 float blight = Math.min(1, 0.5f * b + 0.5f);
-                if (modelBorderType != 0) {
+                if (border) {
                     gl.glColor3f(r, g, b);
-                    gl.glCallList(modelBorderType);
                 }
                 gl.glColor3f(rlight, glight, blight);
-                gl.glCallList(modelType);
+
+                gl.glVertex3f(x + w, y + h, 0);
+                gl.glVertex3f(x - w, y + h, 0);
+                gl.glVertex3f(x - w, y - h, 0);
+                gl.glVertex3f(x + w, y - h, 0);
             }
         } else {
             float r;
@@ -117,21 +124,18 @@ public class NodeRectangeModel extends ModelImpl<NodeData> {
                 g = obj.g();
                 b = obj.b();
             }
-            if (modelBorderType != 0) {
+            if (border) {
                 float rdark = 0.498f * r;
                 float gdark = 0.498f * g;
                 float bdark = 0.498f * b;
                 gl.glColor3f(rdark, gdark, bdark);
-                gl.glCallList(modelBorderType);
             }
-
             gl.glColor3f(r, g, b);
-            gl.glCallList(modelType);
-
+            gl.glVertex3f(x + w, y + h, 0);
+            gl.glVertex3f(x - w, y + h, 0);
+            gl.glVertex3f(x - w, y - h, 0);
+            gl.glVertex3f(x + w, y - h, 0);
         }
-
-        gl.glCallList(modelType);
-        gl.glPopMatrix();
     }
 
     @Override

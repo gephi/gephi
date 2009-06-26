@@ -42,9 +42,6 @@ public class CompatibilityNodeRectangleModeler implements CompatibilityNodeModel
 
     private CompatibilityEngine engine;
     protected VizConfig config;
-    public int SHAPE_RECTANGLE;
-    public int SHAPE_RECTANGLE_BORDER;
-    public int SHAPE_RECTANGLE_WITH_BORDER;
 
     public CompatibilityNodeRectangleModeler(AbstractEngine engine) {
         this.engine = (CompatibilityEngine) engine;
@@ -70,49 +67,23 @@ public class CompatibilityNodeRectangleModeler implements CompatibilityNodeModel
 
         float distance = engine.cameraDistance(object3d) / object3d.getObj().getRadius();
         if (distance > 600) {
-            obj.modelType = SHAPE_RECTANGLE;
-            obj.modelBorderType = 0;
+            obj.border = false;
         } else {
-            obj.modelType = SHAPE_RECTANGLE_WITH_BORDER;
-            obj.modelBorderType = SHAPE_RECTANGLE_BORDER;
+            obj.border = false;
         }
     }
 
     @Override
     public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr) {
+        return ptr;
+    }
 
-        SHAPE_RECTANGLE = ptr + 1;
-        gl.glNewList(SHAPE_RECTANGLE, GL.GL_COMPILE);
-        gl.glBegin(GL.GL_TRIANGLE_STRIP);
-        gl.glVertex3f(0.5f, 0.5f, 0);
-        gl.glVertex3f(-0.5f, 0.5f, 0);
-        gl.glVertex3f(0.5f, -0.5f, 0);
-        gl.glVertex3f(-0.5f, -0.5f, 0);
+    public void beforeDisplay(GL gl, GLU glu) {
+        gl.glBegin(GL.GL_QUADS);
+    }
+
+    public void afterDisplay(GL gl, GLU glu) {
         gl.glEnd();
-        gl.glEndList();
-
-        SHAPE_RECTANGLE_WITH_BORDER = SHAPE_RECTANGLE + 1;
-        gl.glNewList(SHAPE_RECTANGLE_WITH_BORDER, GL.GL_COMPILE);
-        gl.glBegin(GL.GL_TRIANGLE_STRIP);
-        gl.glVertex3f(0.4f, 0.4f, 0);
-        gl.glVertex3f(-0.4f, 0.4f, 0);
-        gl.glVertex3f(0.4f, -0.4f, 0);
-        gl.glVertex3f(-0.4f, -0.4f, 0);
-        gl.glEnd();
-        gl.glEndList();
-
-        SHAPE_RECTANGLE_BORDER = SHAPE_RECTANGLE_WITH_BORDER + 1;
-        gl.glNewList(SHAPE_RECTANGLE_BORDER, GL.GL_COMPILE);
-        gl.glBegin(GL.GL_TRIANGLE_STRIP);
-        gl.glVertex3f(0.5f, 0.5f, 0);
-        gl.glVertex3f(-0.5f, 0.5f, 0);
-        gl.glVertex3f(0.5f, -0.5f, 0);
-        gl.glVertex3f(-0.5f, -0.5f, 0);
-        gl.glEnd();
-        gl.glEndList();
-
-
-        return SHAPE_RECTANGLE_BORDER;
     }
 
     @Override

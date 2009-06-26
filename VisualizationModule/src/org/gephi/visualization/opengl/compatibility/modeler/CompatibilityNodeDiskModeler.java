@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.visualization.opengl.compatibility.modeler;
 
 import javax.media.opengl.GL;
@@ -121,6 +120,12 @@ public class CompatibilityNodeDiskModeler implements CompatibilityNodeModeler {
         gl.glEndList();
 
         return BORDER32;
+    }
+
+    public void beforeDisplay(GL gl, GLU glu) {
+    }
+
+    public void afterDisplay(GL gl, GLU glu) {
     }
 
     @Override

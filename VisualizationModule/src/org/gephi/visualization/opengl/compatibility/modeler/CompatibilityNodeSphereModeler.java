@@ -106,6 +106,12 @@ public class CompatibilityNodeSphereModeler extends NodeSphereModeler implements
         return SHAPE_SPHERE32;
     }
 
+    public void beforeDisplay(GL gl, GLU glu) {
+    }
+
+    public void afterDisplay(GL gl, GLU glu) {
+    }
+
     @Override
     public void initFromOpenGLThread() {
     }
