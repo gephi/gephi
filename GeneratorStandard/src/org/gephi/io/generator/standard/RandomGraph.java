@@ -21,13 +21,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.generator.standard;
 
 import java.util.Random;
-import org.gephi.ui.generator.standard.RandomGraphPanel;
 import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.container.EdgeDraft;
 import org.gephi.io.container.NodeDraft;
 import org.gephi.io.generator.Generator;
 import org.gephi.ui.generator.GeneratorUI;
 import org.gephi.utils.progress.ProgressTicket;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -43,8 +43,8 @@ public class RandomGraph implements Generator {
     public void generate(ContainerLoader container) {
 
         int max = numberOfNodes;
-        if(wiringProbability > 0) {
-            max += numberOfNodes -1;
+        if (wiringProbability > 0) {
+            max += numberOfNodes - 1;
         }
         progress.start(max);
         int progressUnit = 0;
@@ -81,7 +81,7 @@ public class RandomGraph implements Generator {
     }
 
     public GeneratorUI getUI() {
-        return new RandomGraphPanel.RandomGraphUI();
+        return Lookup.getDefault().lookup(RandomGraphUI.class);
     }
 
     public void setNumberOfNodes(int numberOfNodes) {

@@ -108,32 +108,4 @@ public class RandomGraphPanel extends javax.swing.JPanel {
     protected javax.swing.JTextField nodeField;
     private javax.swing.JLabel nodeLabel;
     // End of variables declaration//GEN-END:variables
-
-    public static class RandomGraphUI implements GeneratorUI {
-
-        private RandomGraphPanel panel;
-        private RandomGraph randomGraph;
-
-        public RandomGraphUI() {
-            panel = new RandomGraphPanel();
-        }
-
-        public JPanel getPanel() {
-            return RandomGraphPanel.createValidationPanel(panel);
-        }
-
-        public void setup(Generator generator) {
-            this.randomGraph = (RandomGraph) generator;
-
-            //Set UI
-            panel.nodeField.setText(String.valueOf(randomGraph.getNumberOfNodes()));
-            panel.edgeField.setText(String.valueOf(randomGraph.getWiringProbability()));
-        }
-
-        public void unsetup() {
-            //Set params
-            randomGraph.setNumberOfNodes(Integer.parseInt(panel.nodeField.getText()));
-            randomGraph.setWiringProbability(Double.parseDouble(panel.edgeField.getText()));
-        }
-    }
 }
