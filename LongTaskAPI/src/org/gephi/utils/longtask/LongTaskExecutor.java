@@ -76,15 +76,17 @@ public final class LongTaskExecutor {
     }
 
     /**
-     * Execute a long task with cancel and progress support.
-     * @param task the task to be executed
+     * Execute a long task with cancel and progress support. Task can be <code>null</code>.
+     * In this case <code>runnable</code> will be executed normally, but without
+     * cancel and progress support.
+     * @param task the task to be executed, can be <code>null</code>.
      * @param runnable the runnable to be executed
      * @param taskName the name of the task, is displayed in the status bar if available
-     * @throws NullPointerException if <code>task</code>, <code>runnable</code> or <code>taskName</code> is null
+     * @throws NullPointerException if <code>runnable</code> or <code>taskName</code> is null
      * @throws IllegalStateException if a task is still executing at this time
      */
     public void execute(LongTask task, final Runnable runnable, String taskName) {
-        if (task == null || runnable == null || taskName == null) {
+        if (runnable == null || taskName == null) {
             throw new NullPointerException();
         }
         if (runningTask != null) {
@@ -102,6 +104,15 @@ public final class LongTaskExecutor {
         }
     }
 
+    /**
+     * Execute a long task with cancel and progress support. Task can be <code>null</code>.
+     * In this case <code>runnable</code> will be executed normally, but without
+     * cancel and progress support.
+     * @param task the task to be executed, can be <code>null</code>.
+     * @param runnable the runnable to be executed
+     * @throws NullPointerException if <code>runnable</code> is null
+     * @throws IllegalStateException if a task is still executing at this time
+     */
     public void execute(LongTask task, Runnable runnable) {
         execute(task, runnable, "");
     }
@@ -171,13 +182,15 @@ public final class LongTaskExecutor {
                     return true;
                 }
             });
-            task.setProgressTicket(progress);
+            if(task!=null) {
+                task.setProgressTicket(progress);
+            }
         }
 
         public void run() {
-            runnable.run();
-            progress.finish();
+            runnable.run();         
             finished();
+            progress.finish();
         }
 
         public boolean cancel() {
@@ -186,7 +199,10 @@ public final class LongTaskExecutor {
                     return true;
                 }
             }
-            return task.cancel();
+            if (task != null) {
+                return task.cancel();
+            }
+            return false;
         }
 
         public boolean isCancellable() {
