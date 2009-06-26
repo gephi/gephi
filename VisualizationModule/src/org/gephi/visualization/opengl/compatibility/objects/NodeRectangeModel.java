@@ -31,12 +31,14 @@ import org.gephi.visualization.opengl.octree.Octant;
  *
  * @author Mathieu Bastian
  */
-public class NodeDiskModel extends ModelImpl<NodeData> {
+public class NodeRectangeModel extends ModelImpl<NodeData> {
 
     public int modelType;
     public int modelBorderType;
+    protected float width = 20f;
+    protected float height = 10f;
 
-    public NodeDiskModel() {
+    public NodeRectangeModel() {
         octants = new Octant[1];
     }
 
@@ -71,23 +73,23 @@ public class NodeDiskModel extends ModelImpl<NodeData> {
     @Override
     public void display(GL gl, GLU glu) {
         boolean selec = selected;
-        if(config.isAutoSelectNeighbor() && mark) {
+        if (config.isAutoSelectNeighbor() && mark) {
             selec = true;
             mark = false;
         }
         gl.glPushMatrix();
         float size = obj.getSize() * 2;
         gl.glTranslatef(obj.x(), obj.y(), obj.z());
-        gl.glScalef(size, size, size);
+        gl.glScalef(width, height, 0);
 
         if (!selec) {
             if (config.isLightenNonSelected()) {
                 float[] lightColor = config.getLightenNonSelectedColor();
                 gl.glColor3f(lightColor[0], lightColor[1], lightColor[2]);
-                gl.glCallList(modelType);
                 if (modelBorderType != 0) {
                     gl.glCallList(modelBorderType);
                 }
+                gl.glCallList(modelType);
             } else {
                 float r = obj.r();
                 float g = obj.g();
@@ -95,12 +97,12 @@ public class NodeDiskModel extends ModelImpl<NodeData> {
                 float rlight = Math.min(1, 0.5f * r + 0.5f);
                 float glight = Math.min(1, 0.5f * g + 0.5f);
                 float blight = Math.min(1, 0.5f * b + 0.5f);
-                gl.glColor3f(rlight, glight, blight);
-                gl.glCallList(modelType);
                 if (modelBorderType != 0) {
                     gl.glColor3f(r, g, b);
                     gl.glCallList(modelBorderType);
                 }
+                gl.glColor3f(rlight, glight, blight);
+                gl.glCallList(modelType);
             }
         } else {
             float r;
@@ -115,9 +117,6 @@ public class NodeDiskModel extends ModelImpl<NodeData> {
                 g = obj.g();
                 b = obj.b();
             }
-
-            gl.glColor3f(r, g, b);
-            gl.glCallList(modelType);
             if (modelBorderType != 0) {
                 float rdark = 0.498f * r;
                 float gdark = 0.498f * g;
@@ -125,8 +124,13 @@ public class NodeDiskModel extends ModelImpl<NodeData> {
                 gl.glColor3f(rdark, gdark, bdark);
                 gl.glCallList(modelBorderType);
             }
+
+            gl.glColor3f(r, g, b);
+            gl.glCallList(modelType);
+
         }
 
+        gl.glCallList(modelType);
         gl.glPopMatrix();
     }
 
@@ -140,7 +144,20 @@ public class NodeDiskModel extends ModelImpl<NodeData> {
 
     @Override
     public float getCollisionDistance(double angle) {
-        return obj.getRadius();
+        double angleSinus = Math.sin(angle);
+        double angleCosinus = Math.cos(angle);
+        angle %= Math.PI * 2;
+        while (angle < 0) {
+            angle += Math.PI * 2;
+        }
+
+        if (angle < Math.atan2(height / 2, width / 2) ||
+                (angle > Math.PI - Math.atan2(height / 2, width / 2) && angle < Math.PI + Math.atan2(height / 2, width / 2)) ||
+                angle > 2 * Math.PI - Math.atan2(height / 2, width / 2)) {
+            return (float) Math.sqrt((width * width / 4) / (1 - angleSinus * angleSinus));
+        } else {
+            return (float) Math.sqrt((height * height / 4) / (1 - angleCosinus * angleCosinus));
+        }
     }
 
     @Override

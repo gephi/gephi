@@ -27,6 +27,7 @@ import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityArrowModeler;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityEdgeModeler;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityNodeDiskModeler;
+import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityNodeRectangleModeler;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityNodeSphereModeler;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityPotatoModeler;
 
@@ -43,11 +44,13 @@ public class StandardModelClassLibrary implements ModelClassLibrary {
         modelClasses[0] = new CompatibilityModelClass("NODE", true, true, true);
         CompatibilityNodeSphereModeler modeler3d = new CompatibilityNodeSphereModeler(engine);
         CompatibilityNodeDiskModeler modeler2d = new CompatibilityNodeDiskModeler(engine);
-        if(VizController.getInstance().getVizConfig().use3d()) {
+        CompatibilityNodeRectangleModeler modelerRect = new CompatibilityNodeRectangleModeler(engine);
+        /*if(VizController.getInstance().getVizConfig().use3d()) {
             modelClasses[0].addModeler(modeler3d);
         } else {
             modelClasses[0].addModeler(modeler2d);
-        }
+        }*/
+        modelClasses[0].addModeler(modelerRect);
 
         //EDGE
         modelClasses[1] = new CompatibilityModelClass("EDGE", false, true, false);

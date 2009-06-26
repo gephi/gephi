@@ -40,6 +40,7 @@ public class TextUtils {
     private ArrayList<TextData.TextLine> flowList = new ArrayList<TextData.TextLine>();
 
     public TextUtils(TextManager manager) {
+        this.manager = manager;
     }
 
     public void reflow(int width, TextData text) {

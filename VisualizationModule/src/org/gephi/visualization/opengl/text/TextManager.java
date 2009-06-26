@@ -28,9 +28,15 @@ import javax.media.opengl.glu.GLU;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class TextManager {
+
+    private TextUtils textUtils;
+
+    public TextManager() {
+        textUtils = new TextUtils(this);
+    }
 
     public void renderText(GL gl, GLU glu)
     {

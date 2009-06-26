@@ -24,7 +24,6 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JPanel;
-import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.api.initializer.CompatibilityNodeModeler;
