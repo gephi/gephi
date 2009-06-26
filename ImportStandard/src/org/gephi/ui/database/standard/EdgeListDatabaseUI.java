@@ -18,59 +18,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.gephi.ui.database.standard;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JPanel;
-import org.gephi.io.database.Database;
-import org.gephi.io.database.DatabaseType;
-import org.gephi.io.database.EdgeListDatabase;
-import org.gephi.io.database.drivers.SQLDriver;
 import org.gephi.ui.database.DatabaseTypeUI;
-import org.openide.util.Lookup;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class EdgeListDatabaseUI implements DatabaseTypeUI {
+public interface EdgeListDatabaseUI extends DatabaseTypeUI {
 
-    private EdgeListPanel panel;
-    private Database database;
-
-    public EdgeListDatabaseUI() {
-        panel = new EdgeListPanel();
-    }
-
-    public JPanel getPanel() {
-        return EdgeListPanel.createValidationPanel(panel);
-    }
-
-    public void setup(DatabaseType type) {
-        panel.setDatabaseType(type);
-
-        //Driver Combo
-        SQLDriver[] driverArray = new SQLDriver[0];
-        driverArray = Lookup.getDefault().lookupAll(SQLDriver.class).toArray(driverArray);
-        panel.setSQLDrivers(driverArray);
-    }
-
-    public void unsetup() {
-        EdgeListDatabase selectedDB = (EdgeListDatabase) panel.getSelectedDatabase();
-        selectedDB.setDBName(panel.dbTextField.getText());
-        selectedDB.setHost(panel.hostTextField.getText());
-        selectedDB.setPasswd(new String(panel.pwdTextField.getPassword()));
-        selectedDB.setPort(Integer.parseInt(panel.portTextField.getText()));
-        selectedDB.setUsername(panel.userTextField.getText());
-        selectedDB.setSQLDriver(panel.getSelectedSQLDriver());
-        selectedDB.setNodeQuery(panel.nodeQueryTextField.getText());
-        selectedDB.setEdgeQuery(panel.edgeQueryTextField.getText());
-        selectedDB.setNodeAttributesQuery(panel.nodeAttQueryTextField.getText());
-        selectedDB.setEdgeAttributesQuery(panel.edgeAttQueryTextField.getText());
-        this.database = selectedDB;
-    }
-
-    public Database getDatabase() {
-        return database;
-    }
 }

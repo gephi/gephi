@@ -23,7 +23,7 @@ package org.gephi.ui.generator.standard;
 import javax.swing.JPanel;
 import org.gephi.io.generator.Generator;
 import org.gephi.io.generator.standard.RandomGraph;
-import org.gephi.io.generator.standard.RandomGraphUI;
+import org.gephi.ui.generator.standard.RandomGraphUI;
 
 /**
  *

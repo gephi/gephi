@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.generator.standard;
 
+import org.gephi.ui.generator.standard.RandomGraphUI;
 import java.util.Random;
 import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.container.EdgeDraft;

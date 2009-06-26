@@ -93,7 +93,9 @@
                     </test-dependency>
                 </test-type>
             </test-dependencies>
-            <public-packages/>
+            <public-packages>
+                <package>org.gephi.ui.database.standard</package>
+            </public-packages>
         </data>
     </configuration>
 </project>

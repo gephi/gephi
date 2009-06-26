@@ -20,12 +20,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.database.standard;
 
+import org.gephi.ui.database.standard.EdgeListDatabaseUI;
 import org.gephi.io.database.Database;
 import org.gephi.io.database.DatabaseType;
 import org.gephi.io.database.EdgeListDatabase;
 import org.gephi.ui.database.DatabaseTypeUI;
-import org.gephi.ui.database.standard.EdgeListDatabaseUI;
-import org.gephi.ui.database.standard.EdgeListPanel;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -38,7 +38,7 @@ public class EdgeList implements DatabaseType {
     }
 
     public DatabaseTypeUI getUI() {
-        return new EdgeListDatabaseUI();
+        return Lookup.getDefault().lookup(EdgeListDatabaseUI.class);
     }
 
     public Class<? extends Database> getDatabaseClass() {

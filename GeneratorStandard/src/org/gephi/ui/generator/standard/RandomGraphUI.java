@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.gephi.io.generator.standard;
+package org.gephi.ui.generator.standard;
 
 import org.gephi.ui.generator.GeneratorUI;
 
