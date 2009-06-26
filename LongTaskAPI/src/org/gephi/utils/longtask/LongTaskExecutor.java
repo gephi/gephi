@@ -27,7 +27,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import org.gephi.utils.progress.ProgressTicket;
+import org.gephi.utils.progress.ProgressTicketProvider;
 import org.openide.util.Cancellable;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -175,22 +177,27 @@ public final class LongTaskExecutor {
         public RunningLongTask(LongTask task, Runnable runnable, String taskName) {
             this.task = task;
             this.runnable = runnable;
-            this.progress = new ProgressTicket(taskName, new Cancellable() {
+            ProgressTicketProvider progressProvider = Lookup.getDefault().lookup(ProgressTicketProvider.class);
+            if (progressProvider != null) {
+                this.progress = progressProvider.createTicket(taskName, new Cancellable() {
 
-                public boolean cancel() {
-                    LongTaskExecutor.this.cancel();
-                    return true;
+                    public boolean cancel() {
+                        LongTaskExecutor.this.cancel();
+                        return true;
+                    }
+                });
+                if (task != null) {
+                    task.setProgressTicket(progress);
                 }
-            });
-            if (task != null) {
-                task.setProgressTicket(progress);
             }
         }
 
         public void run() {
             runnable.run();
             finished();
-            progress.finish();
+            if (progress != null) {
+                progress.finish();
+            }
         }
 
         public boolean cancel() {
