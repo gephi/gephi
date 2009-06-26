@@ -9,6 +9,7 @@ import org.gephi.io.container.ContainerUnloader;
 import org.gephi.io.database.EdgeListDatabase;
 import org.gephi.io.database.drivers.MySQLDriver;
 import org.gephi.io.database.drivers.SQLUtils;
+import org.gephi.io.logging.Report;
 import org.gephi.io.processor.NodeDraftGetter;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -54,7 +55,6 @@ public class EdgeListImporterTest extends NbTestCase {
         database.setSQLDriver(new MySQLDriver());
 
         Container cont = Lookup.getDefault().lookup(Container.class);
-        cont.setErrorMode(Container.ErrorMode.REPORT);
         containerLoader = cont.getLoader();
         containerUnloader = cont.getUnloader();
     }
@@ -83,7 +83,7 @@ public class EdgeListImporterTest extends NbTestCase {
     public void testImport() throws Exception {
 
         EdgeListImporter importer = new EdgeListImporter();
-        importer.importData(database, containerLoader);
+        importer.importData(database, containerLoader, new Report());
 
         boolean hasId = false;
         boolean hasLabel = false;
