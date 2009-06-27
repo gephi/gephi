@@ -84,17 +84,12 @@ public class NodeRectangeModel extends ModelImpl<NodeData> {
         float x = obj.x();
         float y = obj.y();
 
+        float borderSize = 1f;
+
         if (!selec) {
             if (config.isLightenNonSelected()) {
                 float[] lightColor = config.getLightenNonSelectedColor();
-                gl.glColor3f(lightColor[0], lightColor[1], lightColor[2]);
-                if (border) {
-                }
-                gl.glVertex3f(x + w, y + h, 0);
-                gl.glVertex3f(x - w, y + h, 0);
-                gl.glVertex3f(x - w, y - h, 0);
-                gl.glVertex3f(x + w, y - h, 0);
-            } else {
+                float lightColorFactor = config.getLightenNonSelectedFactor();
                 float r = obj.r();
                 float g = obj.g();
                 float b = obj.b();
@@ -102,14 +97,33 @@ public class NodeRectangeModel extends ModelImpl<NodeData> {
                 float glight = Math.min(1, 0.5f * g + 0.5f);
                 float blight = Math.min(1, 0.5f * b + 0.5f);
                 if (border) {
+                    gl.glColor3f(r + (lightColor[0] - r) * lightColorFactor, g + (lightColor[1] - g) * lightColorFactor, b + (lightColor[2] - b) * lightColorFactor);
+                    gl.glVertex3f(x + w, y + h, 0);
+                    gl.glVertex3f(x - w, y + h, 0);
+                    gl.glVertex3f(x - w, y - h, 0);
+                    gl.glVertex3f(x + w, y - h, 0);
+                    w -= borderSize;
+                    h -= borderSize;
+                }
+                gl.glColor3f(rlight + (lightColor[0] - rlight) * lightColorFactor, glight + (lightColor[1] - glight) * lightColorFactor, blight + (lightColor[2] - blight) * lightColorFactor);
+            } else {
+                float r = obj.r();
+                float g = obj.g();
+                float b = obj.b();
+                float rlight = Math.min(1, 0.5f * r + 0.5f);
+                float glight = Math.min(1, 0.5f * g + 0.5f);
+                float blight = Math.min(1, 0.5f * b + 0.5f);
+
+                if (border) {
                     gl.glColor3f(r, g, b);
+                    gl.glVertex3f(x + w, y + h, 0);
+                    gl.glVertex3f(x - w, y + h, 0);
+                    gl.glVertex3f(x - w, y - h, 0);
+                    gl.glVertex3f(x + w, y - h, 0);
+                    w -= borderSize;
+                    h -= borderSize;
                 }
                 gl.glColor3f(rlight, glight, blight);
-
-                gl.glVertex3f(x + w, y + h, 0);
-                gl.glVertex3f(x - w, y + h, 0);
-                gl.glVertex3f(x - w, y - h, 0);
-                gl.glVertex3f(x + w, y - h, 0);
             }
         } else {
             float r;
@@ -129,13 +143,20 @@ public class NodeRectangeModel extends ModelImpl<NodeData> {
                 float gdark = 0.498f * g;
                 float bdark = 0.498f * b;
                 gl.glColor3f(rdark, gdark, bdark);
+                gl.glVertex3f(x + w, y + h, 0);
+                gl.glVertex3f(x - w, y + h, 0);
+                gl.glVertex3f(x - w, y - h, 0);
+                gl.glVertex3f(x + w, y - h, 0);
+                w -= borderSize;
+                h -= borderSize;
             }
             gl.glColor3f(r, g, b);
-            gl.glVertex3f(x + w, y + h, 0);
-            gl.glVertex3f(x - w, y + h, 0);
-            gl.glVertex3f(x - w, y - h, 0);
-            gl.glVertex3f(x + w, y - h, 0);
         }
+
+        gl.glVertex3f(x + w, y + h, 0);
+        gl.glVertex3f(x - w, y + h, 0);
+        gl.glVertex3f(x - w, y - h, 0);
+        gl.glVertex3f(x + w, y - h, 0);
     }
 
     @Override

@@ -45,12 +45,12 @@ public class StandardModelClassLibrary implements ModelClassLibrary {
         CompatibilityNodeSphereModeler modeler3d = new CompatibilityNodeSphereModeler(engine);
         CompatibilityNodeDiskModeler modeler2d = new CompatibilityNodeDiskModeler(engine);
         CompatibilityNodeRectangleModeler modelerRect = new CompatibilityNodeRectangleModeler(engine);
-        if(VizController.getInstance().getVizConfig().use3d()) {
+        /*if(VizController.getInstance().getVizConfig().use3d()) {
         modelClasses[0].addModeler(modeler3d);
         } else {
         modelClasses[0].addModeler(modeler2d);
-        }
-        //modelClasses[0].addModeler(modelerRect);
+        }*/
+        modelClasses[0].addModeler(modelerRect);
 
         //EDGE
         modelClasses[1] = new CompatibilityModelClass("EDGE", false, true, false);

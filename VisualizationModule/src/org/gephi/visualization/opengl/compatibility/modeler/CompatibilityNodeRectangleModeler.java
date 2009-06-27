@@ -69,7 +69,7 @@ public class CompatibilityNodeRectangleModeler implements CompatibilityNodeModel
         if (distance > 600) {
             obj.border = false;
         } else {
-            obj.border = false;
+            obj.border = true;
         }
     }
 
