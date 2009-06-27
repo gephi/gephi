@@ -74,6 +74,9 @@ public class EdgeListImporter implements DatabaseImporter {
             }
             report.logIssue(new Issue("Failed to connect at " + url, Issue.Level.CRITICAL, ex));
         }
+        if (connection == null) {
+            report.logIssue(new Issue("Failed to connect at " + url, Issue.Level.CRITICAL));
+        }
 
         report.log(database.getPropertiesAssociations().getInfos());
         getNodes(connection);
@@ -102,11 +105,11 @@ public class EdgeListImporter implements DatabaseImporter {
         Statement s = connection.createStatement();
         try {
             s.executeQuery(database.getNodeQuery());
-        } catch(SQLException ex) {
+        } catch (SQLException ex) {
             report.logIssue(new Issue("Failed to execute Node query", Issue.Level.SEVERE, ex));
             return;
         }
-        
+
         ResultSet rs = s.getResultSet();
         findNodeAttributesColumns(rs);
         AttributeClass nodeClass = container.getAttributeManager().getNodeClass();
@@ -145,7 +148,7 @@ public class EdgeListImporter implements DatabaseImporter {
         Statement s = connection.createStatement();
         try {
             s.executeQuery(database.getEdgeQuery());
-        } catch(SQLException ex) {
+        } catch (SQLException ex) {
             report.logIssue(new Issue("Failed to execute Edge query", Issue.Level.SEVERE, ex));
             return;
         }
@@ -273,7 +276,7 @@ public class EdgeListImporter implements DatabaseImporter {
                     boolean val = rs.getBoolean(columnIndex);
                     draft.addAttributeValue(column, val);
                 } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a BOOLEAN value for node attribute '"+column.getId()+"'", Issue.Level.SEVERE, ex));
+                    report.logIssue(new Issue("Failed to get a BOOLEAN value for node attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
                 }
                 break;
             case DOUBLE:
@@ -281,7 +284,7 @@ public class EdgeListImporter implements DatabaseImporter {
                     double val = rs.getDouble(columnIndex);
                     draft.addAttributeValue(column, val);
                 } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a DOUBLE value for node attribute '"+column.getId()+"'", Issue.Level.SEVERE, ex));
+                    report.logIssue(new Issue("Failed to get a DOUBLE value for node attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
                 }
                 break;
             case FLOAT:
@@ -289,7 +292,7 @@ public class EdgeListImporter implements DatabaseImporter {
                     float val = rs.getFloat(columnIndex);
                     draft.addAttributeValue(column, val);
                 } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a FLOAT value for node attribute '"+column.getId()+"'", Issue.Level.SEVERE, ex));
+                    report.logIssue(new Issue("Failed to get a FLOAT value for node attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
                 }
                 break;
             case INT:
@@ -297,7 +300,7 @@ public class EdgeListImporter implements DatabaseImporter {
                     int val = rs.getInt(columnIndex);
                     draft.addAttributeValue(column, val);
                 } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a INT value for node attribute '"+column.getId()+"'", Issue.Level.SEVERE, ex));
+                    report.logIssue(new Issue("Failed to get a INT value for node attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
                 }
                 break;
             case LONG:
@@ -305,7 +308,7 @@ public class EdgeListImporter implements DatabaseImporter {
                     long val = rs.getLong(columnIndex);
                     draft.addAttributeValue(column, val);
                 } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a LONG value for node attribute '"+column.getId()+"'", Issue.Level.SEVERE, ex));
+                    report.logIssue(new Issue("Failed to get a LONG value for node attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
                 }
                 break;
             default: //String
@@ -314,10 +317,10 @@ public class EdgeListImporter implements DatabaseImporter {
                     if (val != null) {
                         draft.addAttributeValue(column, val);
                     } else {
-                        report.logIssue(new Issue("Failed to get a STRING value for node attribute '"+column.getId()+"'", Issue.Level.WARNING));
+                        report.logIssue(new Issue("Failed to get a STRING value for node attribute '" + column.getId() + "'", Issue.Level.WARNING));
                     }
                 } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a STRING value for node attribute '"+column.getId()+"'", Issue.Level.SEVERE, ex));
+                    report.logIssue(new Issue("Failed to get a STRING value for node attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
                 }
                 break;
         }
@@ -330,7 +333,7 @@ public class EdgeListImporter implements DatabaseImporter {
                     boolean val = rs.getBoolean(columnIndex);
                     draft.addAttributeValue(column, val);
                 } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a BOOLEAN value for edge attribute '"+column.getId()+"'", Issue.Level.SEVERE, ex));
+                    report.logIssue(new Issue("Failed to get a BOOLEAN value for edge attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
                 }
                 break;
             case DOUBLE:
@@ -338,7 +341,7 @@ public class EdgeListImporter implements DatabaseImporter {
                     double val = rs.getDouble(columnIndex);
                     draft.addAttributeValue(column, val);
                 } catch (SQLException ex) {
-                   report.logIssue(new Issue("Failed to get a DOUBLE value for edge attribute '"+column.getId()+"'", Issue.Level.SEVERE, ex));
+                    report.logIssue(new Issue("Failed to get a DOUBLE value for edge attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
                 }
                 break;
             case FLOAT:
@@ -346,7 +349,7 @@ public class EdgeListImporter implements DatabaseImporter {
                     float val = rs.getFloat(columnIndex);
                     draft.addAttributeValue(column, val);
                 } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a FLOAT value for edge attribute '"+column.getId()+"'", Issue.Level.SEVERE, ex));
+                    report.logIssue(new Issue("Failed to get a FLOAT value for edge attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
                 }
                 break;
             case INT:
@@ -354,7 +357,7 @@ public class EdgeListImporter implements DatabaseImporter {
                     int val = rs.getInt(columnIndex);
                     draft.addAttributeValue(column, val);
                 } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a INT value for edge attribute '"+column.getId()+"'", Issue.Level.SEVERE, ex));
+                    report.logIssue(new Issue("Failed to get a INT value for edge attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
                 }
                 break;
             case LONG:
@@ -362,7 +365,7 @@ public class EdgeListImporter implements DatabaseImporter {
                     long val = rs.getLong(columnIndex);
                     draft.addAttributeValue(column, val);
                 } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a LONG value for edge attribute '"+column.getId()+"'", Issue.Level.SEVERE, ex));
+                    report.logIssue(new Issue("Failed to get a LONG value for edge attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
                 }
                 break;
             default: //String
@@ -371,10 +374,10 @@ public class EdgeListImporter implements DatabaseImporter {
                     if (val != null) {
                         draft.addAttributeValue(column, val);
                     } else {
-                        report.logIssue(new Issue("Failed to get a BOOLEAN value for edge attribute '"+column.getId()+"'", Issue.Level.WARNING));
+                        report.logIssue(new Issue("Failed to get a BOOLEAN value for edge attribute '" + column.getId() + "'", Issue.Level.WARNING));
                     }
                 } catch (SQLException ex) {
-                    report.logIssue(new Issue("Failed to get a STRING value for edge attribute '"+column.getId()+"'", Issue.Level.SEVERE, ex));
+                    report.logIssue(new Issue("Failed to get a STRING value for edge attribute '" + column.getId() + "'", Issue.Level.SEVERE, ex));
                 }
                 break;
         }
@@ -417,10 +420,10 @@ public class EdgeListImporter implements DatabaseImporter {
                         type = AttributeType.STRING;
                         break;
                     default:
-                        report.logIssue(new Issue("Unknown SQL Type "+metaData.getColumnType(i + 1)+", STRING used.", Issue.Level.WARNING));
+                        report.logIssue(new Issue("Unknown SQL Type " + metaData.getColumnType(i + 1) + ", STRING used.", Issue.Level.WARNING));
                         break;
                 }
-                report.log("Node attribute found: "+columnName+"("+type+")");
+                report.log("Node attribute found: " + columnName + "(" + type + ")");
                 nodeClass.addAttributeColumn(columnName, type);
             }
         }
@@ -462,11 +465,11 @@ public class EdgeListImporter implements DatabaseImporter {
                         type = AttributeType.STRING;
                         break;
                     default:
-                        report.logIssue(new Issue("Unknown SQL Type "+metaData.getColumnType(i + 1)+", STRING used.", Issue.Level.WARNING));
+                        report.logIssue(new Issue("Unknown SQL Type " + metaData.getColumnType(i + 1) + ", STRING used.", Issue.Level.WARNING));
                         break;
                 }
 
-                report.log("Edge attribute found: "+columnName+"("+type+")");
+                report.log("Edge attribute found: " + columnName + "(" + type + ")");
                 edgeClass.addAttributeColumn(columnName, type);
             }
         }

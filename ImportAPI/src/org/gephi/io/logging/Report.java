@@ -30,6 +30,7 @@ import java.util.List;
 public final class Report {
 
     private final List<ReportEntry> entries = new ArrayList<ReportEntry>();
+    private final boolean criticalException = true;
 
     public void log(String message) {
         entries.add(new ReportEntry(message));
@@ -37,12 +38,19 @@ public final class Report {
 
     public void logIssue(Issue issue) {
         entries.add(new ReportEntry(issue));
+        if (criticalException && issue.getLevel().equals(Issue.Level.CRITICAL)) {
+            if (issue.getThrowable() != null) {
+                throw new RuntimeException(issue.getMessage(), issue.getThrowable());
+            } else {
+                throw new RuntimeException(issue.getMessage());
+            }
+        }
     }
 
     public List<Issue> getIssues() {
         List<Issue> res = new ArrayList<Issue>();
-        for(ReportEntry re : entries) {
-            if(re.issue!=null) {
+        for (ReportEntry re : entries) {
+            if (re.issue != null) {
                 res.add(re.issue);
             }
         }
@@ -51,8 +59,8 @@ public final class Report {
 
     public String getHtml() {
         StringBuilder builder = new StringBuilder();
-        for(ReportEntry re : entries) {
-            if(re.issue!=null) {
+        for (ReportEntry re : entries) {
+            if (re.issue != null) {
                 builder.append(re.issue.getMessage());
                 builder.append("<br>");
             } else {

@@ -130,9 +130,12 @@ public final class LongTaskExecutor {
         if (runningTask != null) {
             if (runningTask.isCancellable()) {
                 if (interruptCancel) {
-                    cancelTimer = new Timer(name + "_cancelTimer");
-                    cancelTimer.schedule(new InterruptTimerTask(), interruptDelay);
+                    if (!runningTask.cancel()) {
+                        cancelTimer = new Timer(name + "_cancelTimer");
+                        cancelTimer.schedule(new InterruptTimerTask(), interruptDelay);
+                    }
                 } else {
+                    runningTask.cancel();
                 }
             }
         }
@@ -206,9 +209,8 @@ public final class LongTaskExecutor {
                 }
                 if (err != null) {
                     err.fatalError(e);
-                } else if (e instanceof RuntimeException) {
-                    RuntimeException ex = (RuntimeException) e;
-                    throw ex;
+                } else {
+                    throw new RuntimeException(e);
                 }
             }
 
