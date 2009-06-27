@@ -31,6 +31,7 @@ import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.compatibility.objects.Edge2dModel;
+import org.gephi.visualization.opengl.compatibility.objects.Edge3dModel;
 
 /**
  *
@@ -48,7 +49,12 @@ public class CompatibilityEdgeModeler implements CompatibilityModeler<EdgeData> 
     public ModelImpl initModel(Renderable n) {
         EdgeData e = (EdgeData) n;
 
-        Edge2dModel edge = new Edge2dModel();
+        Edge2dModel edge;
+        if(config.use3d()) {
+            edge = new Edge3dModel();
+        } else {
+            edge = new Edge2dModel();
+        }
         edge.setObj(e);
         edge.setConfig(config);
         e.setModel(edge);

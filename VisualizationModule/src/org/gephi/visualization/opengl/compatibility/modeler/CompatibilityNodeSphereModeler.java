@@ -26,10 +26,12 @@ import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JPanel;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
+import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.initializer.CompatibilityNodeModeler;
 import org.gephi.visualization.modeler.NodeSphereModeler;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.opengl.compatibility.objects.NodeSphereModel;
 
@@ -46,9 +48,11 @@ public class CompatibilityNodeSphereModeler extends NodeSphereModeler implements
     public int SHAPE_SPHERE32;
     public int SHAPE_BILLBOARD;
     private CompatibilityEngine engine;
+    private VizConfig config;
 
     public CompatibilityNodeSphereModeler(AbstractEngine engine) {
         this.engine = (CompatibilityEngine) engine;
+        this.config = VizController.getInstance().getVizConfig();
     }
 
     @Override
@@ -58,6 +62,7 @@ public class CompatibilityNodeSphereModeler extends NodeSphereModeler implements
         obj.setSelected(false);
         obj.setDragDistanceFromMouse(new float[2]);
         n.setModel(obj);
+        obj.setConfig(config);
 
         chooseModel(obj);
         return obj;
