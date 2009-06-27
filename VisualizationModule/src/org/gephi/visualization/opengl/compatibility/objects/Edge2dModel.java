@@ -121,15 +121,15 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
 
     @Override
     public void display(GL gl, GLU glu) {
-        if(this.arrow!=null) {
+        if (this.arrow != null) {
             this.arrow.setSelected(selected);
         }
-        if(!selected && config.isHideNonSelectedEdges()) {
+        if (!selected && config.isHideNonSelectedEdges()) {
             return;
         }
-        if(config.isAutoSelectNeighbor()) {
-            ModelImpl m1 = (ModelImpl)obj.getSource().getModel();
-            ModelImpl m2 = (ModelImpl)obj.getTarget().getModel();
+        if (selected && config.isAutoSelectNeighbor()) {
+            ModelImpl m1 = (ModelImpl) obj.getSource().getModel();
+            ModelImpl m2 = (ModelImpl) obj.getTarget().getModel();
             m1.mark = true;
             m2.mark = true;
         }
@@ -152,7 +152,17 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
         float y2Thick = sideVectorY / 2f * t2;
 
         if (!selected) {
-            if (config.isEdgeUniColor()) {
+            if (config.isLightenNonSelected()) {
+                float[] lightColor = config.getLightenNonSelectedColor();
+                float lightColorFactor = config.getLightenNonSelectedFactor();
+                float r = obj.r();
+                float g = obj.g();
+                float b = obj.b();
+                r = r + (lightColor[0]-r)*lightColorFactor;
+                g = g + (lightColor[1]-g)*lightColorFactor;
+                b = b + (lightColor[2]-b)*lightColorFactor;
+                gl.glColor3f(r, g, b);
+            } else if (config.isEdgeUniColor()) {
                 float[] uni = config.getEdgeUniColorValue();
                 gl.glColor4f(uni[0], uni[1], uni[2], uni[3]);
             } else {

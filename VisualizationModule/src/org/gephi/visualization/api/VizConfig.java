@@ -62,6 +62,8 @@ public class VizConfig {
     protected boolean lightenNonSelectedAuto = true;
     protected boolean lightenNonSelected = true;
     protected float[] lightenNonSelectedColor = {0.9f, 0.9f, 0.9f, 1f};
+    protected boolean lightenNonSelectedAnimation = true;
+    protected float lightenNonSelectedFactor=0.5f;
     protected boolean autoSelectNeighbor = true;
     protected boolean hideNonSelectedEdges = false;
     protected boolean uniColorSelected = false;
@@ -182,12 +184,24 @@ public class VizConfig {
         return lightenNonSelectedAuto;
     }
 
+    public boolean isLightenNonSelectedAnimation() {
+        return lightenNonSelectedAnimation;
+    }
+    
     public float[] getLightenNonSelectedColor() {
         return lightenNonSelectedColor;
     }
 
     public void setLightenNonSelected(boolean lightenNonSelected) {
         this.lightenNonSelected = lightenNonSelected;
+    }
+
+    public float getLightenNonSelectedFactor() {
+        return lightenNonSelectedFactor;
+    }
+
+    public void setLightenNonSelectedFactor(float lightenNonSelectedFactor) {
+        this.lightenNonSelectedFactor = lightenNonSelectedFactor;
     }
 
     public int getOctreeDepth() {

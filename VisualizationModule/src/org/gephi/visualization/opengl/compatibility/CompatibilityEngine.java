@@ -57,6 +57,8 @@ public class CompatibilityEngine extends AbstractEngine {
 
     //Selection
     private ConcurrentLinkedQueue<ModelImpl>[] selectedObjects;
+    private boolean anySelected = false;
+    private float lightenAnimationDelta = 0f;
 
     public CompatibilityEngine() {
         super();
@@ -171,6 +173,17 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void beforeDisplay(GL gl, GLU glu) {
+        //Lighten delta
+        if (lightenAnimationDelta != 0) {
+            float factor = vizConfig.getLightenNonSelectedFactor();
+            factor += lightenAnimationDelta;
+            if (factor >= 0.5f && factor <= 1f) {
+                vizConfig.setLightenNonSelectedFactor(factor);
+            } else {
+                lightenAnimationDelta = 0;
+                vizConfig.setLightenNonSelected(anySelected);
+            }
+        }
     }
 
     @Override
@@ -329,8 +342,23 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
         if (vizConfig.isLightenNonSelectedAuto()) {
-            vizConfig.setLightenNonSelected(someSelection);
+
+            if (vizConfig.isLightenNonSelectedAnimation()) {
+                if (!anySelected && someSelection) {
+                    //Start animation
+                    lightenAnimationDelta = 0.07f;
+                } else if (anySelected && !someSelection) {
+                    //Stop animation
+                    lightenAnimationDelta = -0.07f;
+                }
+
+                vizConfig.setLightenNonSelected(someSelection || lightenAnimationDelta != 0);
+            } else {
+                vizConfig.setLightenNonSelected(someSelection);
+            }
         }
+
+        anySelected = someSelection;
     }
 
     @Override
