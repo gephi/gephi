@@ -177,7 +177,7 @@ public class CompatibilityEngine extends AbstractEngine {
         if (lightenAnimationDelta != 0) {
             float factor = vizConfig.getLightenNonSelectedFactor();
             factor += lightenAnimationDelta;
-            if (factor >= 0.5f && factor <= 1f) {
+            if (factor >= 0.5f && factor <= 0.98f) {
                 vizConfig.setLightenNonSelectedFactor(factor);
             } else {
                 lightenAnimationDelta = 0;

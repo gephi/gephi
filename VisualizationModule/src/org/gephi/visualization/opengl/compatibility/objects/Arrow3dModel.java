@@ -39,6 +39,9 @@ public class Arrow3dModel extends Arrow2dModel {
 
     @Override
     public void display(GL gl, GLU glu) {
+        if (!selected && config.isHideNonSelectedEdges()) {
+            return;
+        }
         NodeData nodeFrom = edge.getSource();
         NodeData nodeTo = edge.getTarget();
 
@@ -77,7 +80,28 @@ public class Arrow3dModel extends Arrow2dModel {
         sideVector.normalize();
 
         //Draw the triangle
-        gl.glColor4f(edge.r(), edge.g(), edge.b(), edge.alpha());
+        if (!selected) {
+            if (config.isLightenNonSelected()) {
+                float lightColorFactor = config.getLightenNonSelectedFactor();
+                float r = obj.r();
+                float g = obj.g();
+                float b = obj.b();
+                float a = obj.alpha();
+                a = a - (a-0.1f)*lightColorFactor;
+                gl.glColor4f(r, g, b,a);
+            } else if (config.isEdgeUniColor()) {
+                float[] uni = config.getEdgeUniColorValue();
+                gl.glColor4f(uni[0], uni[1], uni[2], uni[3]);
+            } else {
+                gl.glColor4f(edge.r(), edge.g(), edge.b(), edge.alpha());
+            }
+        } else {
+            float rdark = 0.498f * edge.r();
+            float gdark = 0.498f * edge.g();
+            float bdark = 0.498f * edge.b();
+            gl.glColor4f(rdark, gdark, bdark, 1f);
+        }
+
         gl.glVertex3d(baseX + sideVector.x() * arrowWidth, baseY + sideVector.y() * arrowWidth, baseZ + sideVector.z() * arrowWidth);
         gl.glVertex3d(baseX - sideVector.x() * arrowWidth, baseY - sideVector.y() * arrowWidth, baseZ - sideVector.z() * arrowWidth);
         gl.glVertex3d(targetX, targetY, targetZ);

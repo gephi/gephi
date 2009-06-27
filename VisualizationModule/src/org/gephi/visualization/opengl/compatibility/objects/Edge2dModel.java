@@ -153,15 +153,13 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
 
         if (!selected) {
             if (config.isLightenNonSelected()) {
-                float[] lightColor = config.getLightenNonSelectedColor();
                 float lightColorFactor = config.getLightenNonSelectedFactor();
                 float r = obj.r();
                 float g = obj.g();
                 float b = obj.b();
-                r = r + (lightColor[0]-r)*lightColorFactor;
-                g = g + (lightColor[1]-g)*lightColorFactor;
-                b = b + (lightColor[2]-b)*lightColorFactor;
-                gl.glColor3f(r, g, b);
+                float a = obj.alpha();
+                a = a - (a-0.1f)*lightColorFactor;
+                gl.glColor4f(r, g, b,a);
             } else if (config.isEdgeUniColor()) {
                 float[] uni = config.getEdgeUniColorValue();
                 gl.glColor4f(uni[0], uni[1], uni[2], uni[3]);
