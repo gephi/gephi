@@ -36,6 +36,7 @@ import org.gephi.io.importer.TextImporter;
 import org.gephi.io.logging.Issue;
 import org.gephi.io.logging.Report;
 import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
@@ -74,12 +75,12 @@ public class ImporterGDF implements TextImporter, LongTask {
         this.container = container;
         this.report = report;
 
-        progressTicket.start();         //Progress
+        Progress.start(progressTicket);        //Progress
 
         //Verify a node line exists and puts nodes and edges lines in arrays
         walkFile(reader);
 
-        progressTicket.switchToDeterminate(nodeLines.size() + edgeLines.size());         //Progress
+        Progress.switchToDeterminate(progressTicket, nodeLines.size() + edgeLines.size());         //Progress
 
         //Magix regex
         Pattern pattern = Pattern.compile("(?<=(?:,|^)\")(.*?)(?=(?<=(?:[^\\\\]))\",|\"$)|(?<=(?:,|^)')(.*?)(?=(?<=(?:[^\\\\]))',|'$)|(?<=(?:,|^))(?=[^'\"])(.*?)(?=(?:,|$))|(?<=,)($)");
@@ -115,7 +116,7 @@ public class ImporterGDF implements TextImporter, LongTask {
 
             container.addNode(node);
 
-            progressTicket.progress();      //Progress
+            Progress.progress(progressTicket);      //Progress
         }
 
         //Edges
@@ -150,7 +151,7 @@ public class ImporterGDF implements TextImporter, LongTask {
             }
 
             container.addEdge(edge);
-            progressTicket.progress();      //Progress
+            Progress.progress(progressTicket);      //Progress
         }
     }
 
