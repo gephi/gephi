@@ -38,7 +38,7 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
 
     //An edge is set in both source node and target node octant. Hence edges are not drawn when none of
     //these octants are visible.
-    private ModelImpl arrow;
+    protected ModelImpl arrow;
 
     public Edge2dModel() {
         octants = new Octant[2];
@@ -152,19 +152,28 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
         float y2Thick = sideVectorY / 2f * t2;
 
         if (!selected) {
+            float r;
+            float g;
+            float b;
+            float a;
+            if (config.isEdgeUniColor()) {
+                float[] uni = config.getEdgeUniColorValue();
+                r = uni[0];
+                g = uni[1];
+                b = uni[2];
+                a = uni[3];
+            } else {
+                r = obj.r();
+                g = obj.g();
+                b = obj.b();
+                a = obj.alpha();
+            }
             if (config.isLightenNonSelected()) {
                 float lightColorFactor = config.getLightenNonSelectedFactor();
-                float r = obj.r();
-                float g = obj.g();
-                float b = obj.b();
-                float a = obj.alpha();
-                a = a - (a-0.1f)*lightColorFactor;
-                gl.glColor4f(r, g, b,a);
-            } else if (config.isEdgeUniColor()) {
-                float[] uni = config.getEdgeUniColorValue();
-                gl.glColor4f(uni[0], uni[1], uni[2], uni[3]);
+                a = a - (a - 0.1f) * lightColorFactor;
+                gl.glColor4f(r, g, b, a);
             } else {
-                gl.glColor4f(obj.r(), obj.g(), obj.b(), obj.alpha());
+                gl.glColor4f(r, g, b, a);
             }
         } else {
             float rdark = 0.498f * obj.r();

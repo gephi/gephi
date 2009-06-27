@@ -73,7 +73,7 @@ public class VizConfig {
     protected float[] edgeBothSelectedColor = {0f, 0f, 0f};
     protected DisplayConfig displayConfig = DisplayConfig.DISPLAY_ALL;
     protected boolean edgeUniColor = false;
-    protected float[] edgeUniColorValue = {0.5f, 0.5f, 0.5f, 0.1f};
+    protected float[] edgeUniColorValue = {0.5f, 0.5f, 0.5f, 0.5f};
     protected int octreeDepth = 5;
     protected int octreeWidth = 100000;
 
