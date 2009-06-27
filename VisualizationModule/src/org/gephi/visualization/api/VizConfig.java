@@ -63,7 +63,7 @@ public class VizConfig {
     protected boolean lightenNonSelected = true;
     protected float[] lightenNonSelectedColor = {0.9f, 0.9f, 0.9f, 1f};
     protected boolean autoSelectNeighbor = true;
-    protected boolean hideNonSelectedEdges = true;
+    protected boolean hideNonSelectedEdges = false;
     protected boolean uniColorSelected = false;
     protected float[] uniColorSelectedColor = {0.8f, 1f, 0f};
     protected float[] edgeInSelectedColor = {1f, 0f, 0f};

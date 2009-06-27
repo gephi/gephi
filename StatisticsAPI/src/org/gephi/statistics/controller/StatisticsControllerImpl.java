@@ -70,7 +70,7 @@ public class StatisticsControllerImpl implements StatisticsController, LongTaskL
             executor.execute((LongTask)statistics, new Runnable() {
                  public void run() {
                      statistics.execute(graphController); }
-             },statistics.getName());
+             },statistics.getName(),null);
         }
         else
         {

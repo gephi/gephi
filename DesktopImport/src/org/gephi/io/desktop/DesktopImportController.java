@@ -50,6 +50,7 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.database.DatabaseTypeUI;
 import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
 import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.DialogDescriptor;
@@ -142,7 +143,13 @@ public class DesktopImportController implements ImportController {
                 //DialogDisplayer.getDefault().notifyLater(e);
                 }
             }
-        }, "Import " + fileObject.getNameExt());
+        }, "Import " + fileObject.getNameExt(), new LongTaskErrorHandler() {
+
+            public void fatalError(Throwable t) {
+                NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
+                DialogDisplayer.getDefault().notify(ex);
+            }
+        });
     }
 
     private void importText(FileObject fileObject, Importer importer, final Container container) {
@@ -153,6 +160,17 @@ public class DesktopImportController implements ImportController {
         if (importer instanceof LongTask) {
             task = (LongTask) importer;
         }
+        
+        //ErrorHandler
+        final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
+
+            public void fatalError(Throwable t) {
+                NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
+                DialogDisplayer.getDefault().notify(ex);
+            }
+        };
+
+        //Execute task
         executor.execute(task, new Runnable() {
 
             public void run() {
@@ -160,10 +178,10 @@ public class DesktopImportController implements ImportController {
                     textImporter.importData(reader, container.getLoader(), report);
                     finishImport(container);
                 } catch (Exception ex) {
-                    Exceptions.printStackTrace(ex);
+                    throw new RuntimeException(ex);
                 }
             }
-        }, "Import " + fileObject.getNameExt());
+        }, "Import " + fileObject.getNameExt(), errorHandler);
     }
 
     public void doImport(Database database) {

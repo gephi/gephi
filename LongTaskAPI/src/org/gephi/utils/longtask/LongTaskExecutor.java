@@ -45,6 +45,7 @@ public final class LongTaskExecutor {
     private ExecutorService executor;
     private Timer cancelTimer;
     private LongTaskListener listener;
+    private LongTaskErrorHandler errorHandler;
 
     /**
      * Creates a new long task executor.
@@ -84,10 +85,11 @@ public final class LongTaskExecutor {
      * @param task the task to be executed, can be <code>null</code>.
      * @param runnable the runnable to be executed
      * @param taskName the name of the task, is displayed in the status bar if available
+     * @param errorHandler error handler for exception retrieval during execution
      * @throws NullPointerException if <code>runnable</code> or <code>taskName</code> is null
      * @throws IllegalStateException if a task is still executing at this time
      */
-    public void execute(LongTask task, final Runnable runnable, String taskName) {
+    public void execute(LongTask task, final Runnable runnable, String taskName, LongTaskErrorHandler errorHandler) {
         if (runnable == null || taskName == null) {
             throw new NullPointerException();
         }
@@ -97,12 +99,12 @@ public final class LongTaskExecutor {
         if (executor == null) {
             this.executor = Executors.newSingleThreadExecutor(new NamedThreadFactory());
         }
+        this.errorHandler = errorHandler;
         runningTask = new RunningLongTask(task, runnable, taskName);
         if (inBackground) {
-            Future future = executor.submit(runningTask);
-            runningTask.future = future;
+            runningTask.future = executor.submit(runningTask);
         } else {
-            runnable.run();
+            runningTask.run();
         }
     }
 
@@ -116,7 +118,7 @@ public final class LongTaskExecutor {
      * @throws IllegalStateException if a task is still executing at this time
      */
     public void execute(LongTask task, Runnable runnable) {
-        execute(task, runnable, "");
+        execute(task, runnable, "", null);
     }
 
     /**
@@ -124,7 +126,7 @@ public final class LongTaskExecutor {
      * the task will be <b>interrupted</b> after <code>interruptDelay</code>. Using <code>Thread.interrupt()</code> may cause
      * hazardous behaviours and should be avoided. Therefore any task should be cancellable.
      */
-    public void cancel() {
+    public synchronized void cancel() {
         if (runningTask != null) {
             if (runningTask.isCancellable()) {
                 if (interruptCancel) {
@@ -153,12 +155,13 @@ public final class LongTaskExecutor {
         this.listener = listener;
     }
 
-    private void finished() {
+    private synchronized void finished() {
         if (cancelTimer != null) {
             cancelTimer.cancel();
         }
         LongTask task = runningTask.task;
         runningTask = null;
+        errorHandler = null;
         if (listener != null) {
             listener.taskFinished(task);
         }
@@ -193,7 +196,22 @@ public final class LongTaskExecutor {
         }
 
         public void run() {
-            runnable.run();
+            try {
+                runnable.run();
+            } catch (Exception e) {
+                LongTaskErrorHandler err = errorHandler;
+                finished();
+                if (progress != null) {
+                    progress.finish();
+                }
+                if (err != null) {
+                    err.fatalError(e);
+                } else if (e instanceof RuntimeException) {
+                    RuntimeException ex = (RuntimeException) e;
+                    throw ex;
+                }
+            }
+
             finished();
             if (progress != null) {
                 progress.finish();
@@ -202,7 +220,7 @@ public final class LongTaskExecutor {
 
         public boolean cancel() {
             if (inBackground) {
-                if (future.cancel(false)) {
+                if (future != null && future.cancel(false)) {
                     return true;
                 }
             }
