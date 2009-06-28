@@ -37,7 +37,6 @@ import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.initializer.CompatibilityModeler;
 import org.gephi.visualization.opengl.octree.Octree;
 import org.gephi.visualization.api.Scheduler;
-import org.gephi.visualization.api.VizConfig.DisplayConfig;
 import org.gephi.visualization.api.objects.CompatibilityModelClass;
 import org.gephi.visualization.opengl.compatibility.objects.Potato3dModel;
 
@@ -241,6 +240,27 @@ public class CompatibilityEngine extends AbstractEngine {
             }
             nodeClass.afterDisplay(gl, glu);
         }
+
+        //Labels
+        if (vizConfig.isShowLabels()) {
+            startTime-=1;
+            textManager.beginRendering();
+            if (nodeClass.isEnabled()) {
+                textManager.defaultNodeColor();
+                for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
+                    ModelImpl obj = itr.next();
+                    if (obj.markTime != startTime) {
+                        textManager.drawText(obj);
+                        obj.markTime = startTime;
+                    }
+                }
+            }
+            if (edgeClass.isEnabled() && vizConfig.isShowEdgeLabels()) {
+                textManager.defaultEdgeColor();
+            }
+            textManager.endRendering();
+        }
+
 
         octree.displayOctree(gl);
     }

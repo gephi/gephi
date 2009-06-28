@@ -22,39 +22,36 @@ package org.gephi.visualization.opengl.text;
 
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
-import org.gephi.graph.api.Model;
-import org.gephi.graph.api.Renderable;
-import org.gephi.visualization.api.ModelImpl;
+import org.gephi.graph.api.TextData;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class TextData {
+public class TextDataImpl implements TextData {
 
-    ModelImpl object3d;
     TextLine line = new TextLine();
     TextLine[] wrappedLines;
     float r;
     float g;
     float b;
     float a;
-    float sizeFactor;
+    float sizeFactor = 1f;
 
     public TextLine getLine() {
         return line;
     }
 
-    public void setWrappedLines(TextData.TextLine[] lines) {
+    public void setWrappedLines(TextDataImpl.TextLine[] lines) {
         this.wrappedLines = lines;
+    }
+
+    public void setLine(String line) {
+        this.line = new TextLine(line);
     }
 
     public boolean hasCustomColor() {
         return r > 0;
-    }
-
-    public Model<Renderable> getObject3d() {
-        return object3d;
     }
 
     public void setSizeFactor(float sizeFactor) {
@@ -68,9 +65,17 @@ public class TextData {
         this.a = alpha;
     }
 
+    public int getWidth() {
+        return 10;
+    }
+
+    public int getHeight() {
+        return 10;
+    }
+
     public static class TextLine {
 
-        String text;
+        String text = "rien";
         Rectangle2D bounds = new Rectangle(20, 20);
 
         public TextLine() {

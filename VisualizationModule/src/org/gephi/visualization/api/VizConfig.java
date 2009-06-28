@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.api;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -59,11 +60,13 @@ public class VizConfig {
     protected boolean showFPS = true;
     protected boolean showEdges = true;
     protected boolean showArrows = true;
+    protected boolean showLabels = true;
+    protected boolean showEdgeLabels = true;
     protected boolean lightenNonSelectedAuto = true;
     protected boolean lightenNonSelected = true;
     protected float[] lightenNonSelectedColor = {0.9f, 0.9f, 0.9f, 1f};
     protected boolean lightenNonSelectedAnimation = true;
-    protected float lightenNonSelectedFactor=0.5f;
+    protected float lightenNonSelectedFactor = 0.5f;
     protected boolean autoSelectNeighbor = true;
     protected boolean hideNonSelectedEdges = false;
     protected boolean uniColorSelected = false;
@@ -76,6 +79,9 @@ public class VizConfig {
     protected float[] edgeUniColorValue = {0.5f, 0.5f, 0.5f, 0.5f};
     protected int octreeDepth = 5;
     protected int octreeWidth = 100000;
+    protected float[] defaultNodeLabelColor = {0f, 0f, 0f, 1f};
+    protected float[] defaultEdgeLabelColor = {0.5f, 0.5f, 0.5f, 1f};
+    protected Font defaultLabelFont = new Font("Arial", Font.BOLD, 20);
 
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
@@ -172,6 +178,14 @@ public class VizConfig {
         return showFPS;
     }
 
+    public boolean isShowLabels() {
+        return showLabels;
+    }
+
+    public boolean isShowEdgeLabels() {
+        return showEdgeLabels;
+    }
+
     public boolean isAutoSelectNeighbor() {
         return autoSelectNeighbor;
     }
@@ -187,7 +201,7 @@ public class VizConfig {
     public boolean isLightenNonSelectedAnimation() {
         return lightenNonSelectedAnimation;
     }
-    
+
     public float[] getLightenNonSelectedColor() {
         return lightenNonSelectedColor;
     }
@@ -246,6 +260,18 @@ public class VizConfig {
 
     public boolean isHideNonSelectedEdges() {
         return hideNonSelectedEdges;
+    }
+
+    public float[] getDefaultEdgeLabelColor() {
+        return defaultEdgeLabelColor;
+    }
+
+    public float[] getDefaultNodeLabelColor() {
+        return defaultNodeLabelColor;
+    }
+
+    public Font getDefaultLabelFont() {
+        return defaultLabelFont;
     }
 
     public void setAntialiasing(int antialiasing) {

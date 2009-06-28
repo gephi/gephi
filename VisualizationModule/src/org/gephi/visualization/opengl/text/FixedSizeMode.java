@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
-import org.gephi.graph.api.Model;
+import org.gephi.visualization.api.ModelImpl;
 
 /**
  *
@@ -31,9 +31,8 @@ public class FixedSizeMode implements SizeMode {
     private static float GLOBAL_FACTOR = 65f;
     private static float FACTOR_LIMIT = 0.1f;
 
-    public void setSizeFactor(TextData text) {
-        Model object3d = text.getObject3d();
-        float factor = GLOBAL_FACTOR / object3d.getCameraDistance();
+    public void setSizeFactor(TextDataImpl text, ModelImpl model) {
+        float factor = GLOBAL_FACTOR / model.getCameraDistance();
         if (factor < FACTOR_LIMIT) {
             factor = 0f;
         }

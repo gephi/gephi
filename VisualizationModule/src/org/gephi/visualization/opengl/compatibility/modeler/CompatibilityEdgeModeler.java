@@ -32,6 +32,7 @@ import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.compatibility.objects.Edge2dModel;
 import org.gephi.visualization.opengl.compatibility.objects.Edge3dModel;
+import org.gephi.visualization.opengl.text.TextManager;
 
 /**
  *
@@ -40,9 +41,11 @@ import org.gephi.visualization.opengl.compatibility.objects.Edge3dModel;
 public class CompatibilityEdgeModeler implements CompatibilityModeler<EdgeData> {
 
     private VizConfig config;
+    protected TextManager textManager;
 
     public CompatibilityEdgeModeler() {
         this.config = VizController.getInstance().getVizConfig();
+        this.textManager = VizController.getInstance().getTextManager();
     }
 
     @Override
@@ -50,7 +53,7 @@ public class CompatibilityEdgeModeler implements CompatibilityModeler<EdgeData> 
         EdgeData e = (EdgeData) n;
 
         Edge2dModel edge;
-        if(config.use3d()) {
+        if (config.use3d()) {
             edge = new Edge3dModel();
         } else {
             edge = new Edge2dModel();
@@ -58,6 +61,10 @@ public class CompatibilityEdgeModeler implements CompatibilityModeler<EdgeData> 
         edge.setObj(e);
         edge.setConfig(config);
         e.setModel(edge);
+
+        if (n.getTextData() == null) {
+            n.setTextData(textManager.newTextData(e));
+        }
 
         return edge;
     }

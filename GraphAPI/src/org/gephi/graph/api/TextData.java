@@ -18,24 +18,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.visualization.opengl.text;
-
-import org.gephi.visualization.api.ModelImpl;
+package org.gephi.graph.api;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class ProportionalSizeMode implements SizeMode {
-
-    private static float GLOBAL_FACTOR = 65f;
-    private static float FACTOR_LIMIT = 0.1f;
-
-    public void setSizeFactor(TextDataImpl text, ModelImpl model) {
-        float factor = GLOBAL_FACTOR / model.getCameraDistance() * model.getObj().getSize();
-        if (factor < FACTOR_LIMIT) {
-            factor = 0f;
-        }
-        text.setSizeFactor(factor);
-    }
+public interface TextData {
 }

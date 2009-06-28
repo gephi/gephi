@@ -181,5 +181,4 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
             octants[0].requireUpdatePosition();
         }
     }
-
 }

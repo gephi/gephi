@@ -20,22 +20,25 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
-import org.gephi.visualization.api.ModelImpl;
+import org.gephi.graph.api.EdgeData;
+import org.gephi.graph.api.NodeData;
+import org.gephi.graph.api.TextData;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class ProportionalSizeMode implements SizeMode {
+public class TextDataBuilder {
 
-    private static float GLOBAL_FACTOR = 65f;
-    private static float FACTOR_LIMIT = 0.1f;
+    public TextData buildTextNode(NodeData n) {
+        TextDataImpl t = new TextDataImpl();
+        t.setLine(n.getLabel());
+        return t;
+    }
 
-    public void setSizeFactor(TextDataImpl text, ModelImpl model) {
-        float factor = GLOBAL_FACTOR / model.getCameraDistance() * model.getObj().getSize();
-        if (factor < FACTOR_LIMIT) {
-            factor = 0f;
-        }
-        text.setSizeFactor(factor);
+    public TextData buildTextEdge(EdgeData n) {
+        TextDataImpl t = new TextDataImpl();
+        t.setLine(n.getLabel());
+        return t;
     }
 }
