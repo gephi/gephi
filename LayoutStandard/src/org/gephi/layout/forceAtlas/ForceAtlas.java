@@ -22,7 +22,6 @@ package org.gephi.layout.forceAtlas;
 
 import javax.swing.Icon;
 import javax.swing.JPanel;
-import org.gephi.graph.api.ClusteredDirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -83,10 +82,6 @@ public class ForceAtlas extends AbstractForceVector {
         adjustSizes = false;
         speed = 1f;
         cooling = 1f;
-    }
-
-    public boolean testAlgo() {
-        return true;
     }
 
     public void initAlgo(GraphController graphController) {

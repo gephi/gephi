@@ -18,22 +18,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.layout.force;
+package org.gephi.layout.multilevel;
 
-import org.gephi.graph.api.Spatial;
-import org.gephi.layout.ForceVectorUtils;
+import org.gephi.layout.api.Layout;
+import org.gephi.layout.api.LayoutBuilder;
+import org.gephi.layout.force.yifanHu.YifanHu;
 
 /**
  *
  * @author Helder Suzuki <heldersuzuki@gmail.com>
  */
-public abstract class AbstractForce {
+public class YifanHuMultiLevel implements LayoutBuilder {
 
-    public ForceVector calculateForce(Spatial node1, Spatial node2) {
-        return calculateForce(node1, node2,
-                              ForceVectorUtils.distance(node1, node2));
+    public Layout buildLayout() {
+        MultiLevelLayout layout = new MultiLevelLayout(new MaximalMatchingCoarsening(),
+                                                       new YifanHu(),
+                                                       "Multilevel YifanHu",
+                                                       "Multilevel YifanHu");
+        return layout;
     }
-
-    public abstract ForceVector calculateForce(Spatial node1, Spatial node2,
-                                               float distance);
 }

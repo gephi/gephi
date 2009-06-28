@@ -1,6 +1,6 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2009 Gephi
+Authors : Helder Suzuki <heldersuzuki@gmail.com>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,35 +18,32 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.layout.api;
+package org.gephi.layout.quadtree;
 
-import javax.swing.Icon;
-import javax.swing.JPanel;
-import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.Spatial;
 
 /**
  *
- * @author Mathieu Bastian
+ * @author Helder Suzuki <heldersuzuki@gmail.com>
  */
-public interface Layout {
+class TestNode implements Spatial {
 
-    public String getName();
+    public float x,  y;
 
-    public String getDescription();
+    public TestNode(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
 
-    public Icon getIcon();
+    public float x() {
+        return x;
+    }
 
-    public void initAlgo(GraphController graphController);
+    public float y() {
+        return y;
+    }
 
-    public void goAlgo();
-
-    public boolean canAlgo();
-
-    public void endAlgo();
-
-    public LayoutProperty[] getProperties();
-
-    public void resetPropertiesValues();
-
-    public JPanel getPanel();
+    public float z() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
