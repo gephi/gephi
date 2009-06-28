@@ -1,17 +1,31 @@
 /*
- *  Copyright 2009 Helder Suzuki <heldersuzuki@gmail.com>.
+Copyright 2008-2009 Gephi
+Authors : Helder Suzuki <heldersuzuki@gmail.com>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.force;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Vector;
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
+import org.gephi.layout.GraphUtils;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.force.quadtree.QuadTree;
 
@@ -24,6 +38,8 @@ public abstract class AbstractForceLayout implements Layout {
     protected ClusteredGraph graph;
     protected float energy0;
     protected float energy;
+    protected AbstractForce edgeForce;
+    protected AbstractForce nodeForce;
 
     public void initAlgo(ClusteredGraph graph) {
         this.graph = graph;
@@ -39,7 +55,7 @@ public abstract class AbstractForceLayout implements Layout {
     }
 
     /* Maximum level for Barnes-Hut's quadtree */
-    protected int getBarnesHutMaxLevel() {
+    protected int getQuadTreeMaxLevel() {
         return Integer.MAX_VALUE;
     }
 
@@ -48,94 +64,62 @@ public abstract class AbstractForceLayout implements Layout {
         return (float) 1.2;
     }
 
-    private Node getTopmostParent(ClusteredGraph graph, Node n) {
-        Node parent = graph.getParent(n);
-        while (parent != null) {
-            n = parent;
-            parent = graph.getParent(n);
-        }
-        return n;
-    }
-
-    private Collection<EdgeImpl> getTopEdges(ClusteredGraph graph) {
-        HashSet<EdgeImpl> edges = new HashSet<EdgeImpl>();
-
-        for (Edge e : graph.getEdges()) {
-            Node n1 = getTopmostParent(graph, e.getSource());
-            Node n2 = getTopmostParent(graph, e.getTarget());
-            if (n1 != n2 && graph.getLevel(n1) == 0) {
-                edges.add(new EdgeImpl(n1, n2));
-            }
-        }
-
-        return edges;
-    }
-
     public void goAlgo() {
         // Evaluates n^2 inter node forces using BarnesHut.
-        // TODO: NOT WORKING!!!!
         BarnesHut barnes = new BarnesHut(getNodeForce());
         barnes.theta = getBarnesHutTheta();
         QuadTree tree = QuadTree.buildTree(graph,
-                                           getBarnesHutMaxLevel());
+                                           getQuadTreeMaxLevel());
         for (Node node : graph.getTopNodes()) {
             NodeData data = node.getNodeData();
             ForceVector layoutData = data.getLayoutData();
 
-            if (layoutData == null) {
-                System.out.println("layouData == null: " + graph.getLevel(node));
-            } else {
-                ForceVector f = barnes.calculateForce(data, tree);
-                layoutData.add(f);
-            }
+            ForceVector f = barnes.calculateForce(data, tree);
+            layoutData.add(f);
         }
 
         // Apply edge forces.
-        AbstractForce edgeForce = getEdgeForce();
         int count = 0;
-        for (Edge e : getTopEdges(graph)) {
-            count++;
-            if (graph.getLevel(e.getSource()) == 0 &&
-                graph.getLevel(e.getTarget()) == 0) {
+        for (Edge e : GraphUtils.getTopEdges(graph)) {
+            NodeData n1 = e.getSource().getNodeData();
+            NodeData n2 = e.getTarget().getNodeData();
+            ForceVector f1 = n1.getLayoutData();
+            ForceVector f2 = n2.getLayoutData();
 
-                NodeData n1 = e.getSource().getNodeData();
-                NodeData n2 = e.getTarget().getNodeData();
-                ForceVector f1 = n1.getLayoutData();
-                ForceVector f2 = n2.getLayoutData();
-
-                ForceVector f = edgeForce.calculateForce(n1, n2);
-                f1.add(f);
-                f2.subtract(f);
-            }
+            ForceVector f = getEdgeForce().calculateForce(n1, n2);
+            f1.add(f);
+            f2.subtract(f);
         }
-        System.out.println("count = " + count);
 
-        // Apply displacements on nodes.
+        // Apply displacements on nodes and calculate energy.
         energy0 = energy;
         energy = 0;
-        Displacement displacement = getDisplacement();
         for (Node n : graph.getTopNodes()) {
             NodeData data = n.getNodeData();
             ForceVector force = data.getLayoutData();
 
             energy += force.getEnergy();
-            displacement.moveNode(data, force);
+            getDisplacement().moveNode(data, force);
         }
 
         postAlgo();
     }
 
-    protected abstract void postAlgo();
-
-    protected abstract AbstractForce getNodeForce();
-
-    protected abstract AbstractForce getEdgeForce();
-
-    protected abstract boolean hasConverged();
-
-    protected abstract Displacement getDisplacement();
-
     public boolean canAlgo() {
         return !hasConverged();
     }
+
+    protected AbstractForce getEdgeForce() {
+        return edgeForce;
+    }
+
+    protected AbstractForce getNodeForce() {
+        return nodeForce;
+    }
+
+    protected abstract Displacement getDisplacement();
+
+    protected abstract void postAlgo();
+
+    protected abstract boolean hasConverged();
 }
