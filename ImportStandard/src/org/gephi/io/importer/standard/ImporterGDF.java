@@ -190,21 +190,35 @@ public class ImporterGDF implements TextImporter, LongTask {
 
         for (int i = 1; i < columns.length; i++) {
             String columnString = columns[i];
-            String typeString;
-            String columnName;
+            String typeString = "";
+            String columnName = "";
             AttributeType type = AttributeType.STRING;
             try {
                 typeString = columnString.substring(columnString.lastIndexOf(" ")).trim().toLowerCase();
-                columnName = columnString.substring(0, columnString.lastIndexOf(" ")).trim().toLowerCase();
             } catch (IndexOutOfBoundsException e) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat2"), Issue.Level.SEVERE, e));
-                continue;
+            }
+            try {
+                int end = columnString.lastIndexOf(" ");
+                if (end != -1) {
+                    columnName = columnString.substring(0, end).trim().toLowerCase();
+                } else {
+                    columnName = columnString.trim().toLowerCase();
+                }
+            } catch (IndexOutOfBoundsException e) {
             }
 
-            if (typeString.isEmpty() || columnName.isEmpty()) {
+            //Check error
+            if (columnName.isEmpty()) {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat2"), Issue.Level.SEVERE));
-                continue;
+                columnName = "default" + i;
             }
+            if (typeString.isEmpty()) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat6", columnName), Issue.Level.INFO));
+                typeString = "varchar";
+            }
+
+            //Clean parenthesis
+            typeString = typeString.replaceAll("\\([0-9]*\\)", "");
 
             if (typeString.equals("varchar")) {
                 type = AttributeType.STRING;
@@ -271,21 +285,35 @@ public class ImporterGDF implements TextImporter, LongTask {
 
         for (int i = 2; i < columns.length; i++) {
             String columnString = columns[i];
-            String typeString;
-            String columnName;
+            String typeString = "";
+            String columnName = "";
             AttributeType type = AttributeType.STRING;
             try {
                 typeString = columnString.substring(columnString.lastIndexOf(" ")).trim().toLowerCase();
-                columnName = columnString.substring(0, columnString.lastIndexOf(" ")).trim().toLowerCase();
             } catch (IndexOutOfBoundsException e) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat2"), Issue.Level.SEVERE, e));
-                continue;
+            }
+            try {
+                int end = columnString.lastIndexOf(" ");
+                if (end != -1) {
+                    columnName = columnString.substring(0, end).trim().toLowerCase();
+                } else {
+                    columnName = columnString.trim().toLowerCase();
+                }
+            } catch (IndexOutOfBoundsException e) {
             }
 
-            if (typeString.isEmpty() || columnName.isEmpty()) {
+            //Check error
+            if (columnName.isEmpty()) {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat2"), Issue.Level.SEVERE));
-                continue;
+                columnName = "default" + i;
             }
+            if (typeString.isEmpty()) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat6", columnName), Issue.Level.INFO));
+                typeString = "varchar";
+            }
+
+            //Clean parenthesis
+            typeString = typeString.replaceAll("\\([0-9]*\\)", "");
 
             if (typeString.equals("varchar")) {
                 type = AttributeType.STRING;

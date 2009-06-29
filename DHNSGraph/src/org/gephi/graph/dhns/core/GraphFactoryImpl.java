@@ -46,6 +46,7 @@ public class GraphFactoryImpl implements GraphFactory {
 
     public GraphFactoryImpl(IDGen idGen, AttributeRowFactory attributesFactory) {
         this.idGen = idGen;
+        this.attributesFactory = attributesFactory;
     }
 
     public AttributeRow newNodeAttributes() {
