@@ -54,6 +54,7 @@ public class VizConfig {
     private float[] defaultCameraPosition = {0f, 0f, 5000f};
     protected float[] nodeSelectedColor = {1f, 1f, 1f};
     protected boolean selectionEnable = true;
+    protected boolean rectangleSelection=true;
     protected boolean draggingEnable = true;
     protected boolean cameraControlEnable = true;
     protected boolean rotatingEnable = true;
@@ -165,6 +166,12 @@ public class VizConfig {
     public boolean isSelectionEnable() {
         return selectionEnable;
     }
+
+    public boolean isRectangleSelection() {
+        return rectangleSelection;
+    }
+
+    
 
     public boolean isShowEdges() {
         return showEdges;

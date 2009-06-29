@@ -41,6 +41,7 @@ import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.mode.ModeManager;
 import org.gephi.visualization.opengl.octree.Octree;
 import org.gephi.visualization.opengl.text.TextManager;
+import org.gephi.visualization.selection.Rectangle;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 
 /**

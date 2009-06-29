@@ -39,6 +39,7 @@ import org.gephi.visualization.opengl.octree.Octree;
 import org.gephi.visualization.api.Scheduler;
 import org.gephi.visualization.api.objects.CompatibilityModelClass;
 import org.gephi.visualization.opengl.compatibility.objects.Potato3dModel;
+import org.gephi.visualization.selection.Rectangle;
 
 /**
  *
@@ -267,6 +268,9 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void afterDisplay(GL gl, GLU glu) {
+        if(vizConfig.isSelectionEnable()) {
+            currentSelectionArea.drawArea(gl, glu);
+        }
     }
 
     @Override
@@ -313,6 +317,12 @@ public class CompatibilityEngine extends AbstractEngine {
             float[] mouseDistance = obj.getDragDistanceFromMouse();
             obj.getObj().setX(drag[0] + mouseDistance[0]);
             obj.getObj().setY(drag[1] + mouseDistance[1]);
+        }
+
+        //Selection
+        if(vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
+            Rectangle rectangle = (Rectangle)currentSelectionArea;
+            rectangle.setMousePosition(graphIO.getMousePosition());
         }
     }
 
@@ -381,6 +391,7 @@ public class CompatibilityEngine extends AbstractEngine {
         anySelected = someSelection;
     }
 
+
     @Override
     public void refreshGraphLimits() {
     }
@@ -396,11 +407,24 @@ public class CompatibilityEngine extends AbstractEngine {
             tab[0] = o.getObj().x() - x;
             tab[1] = o.getObj().y() - y;
         }
+
+        //Selection
+        if(vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
+            float[] mousePosition = graphIO.getMousePosition();
+            Rectangle rectangle = (Rectangle)currentSelectionArea;
+            rectangle.start(mousePosition);
+        }
     }
 
     @Override
     public void stopDrag() {
         scheduler.requireUpdatePosition();
+
+        //Selection
+        if(vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
+            Rectangle rectangle = (Rectangle)currentSelectionArea;
+            rectangle.stop();
+        }
     }
 
     @Override
