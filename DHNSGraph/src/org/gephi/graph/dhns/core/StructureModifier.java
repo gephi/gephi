@@ -297,7 +297,7 @@ public class StructureModifier {
         dhns.getWriteLock().lock();
         //TODO Better implementation. Just remove nodeGroup from the treelist and lower level of children
         int count = 0;
-        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, nodeGroup); itr.hasNext();) {
+        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, nodeGroup, null); itr.hasNext();) {
             itr.next();
             count++;
         }
@@ -324,7 +324,7 @@ public class StructureModifier {
         edgeProcessor.clearMetaEdges(preNode);
 
         //Enable children
-        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, preNode); itr.hasNext();) {
+        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, preNode, null); itr.hasNext();) {
             PreNode child = itr.next();
             child.setEnabled(true);
             edgeProcessor.computeMetaEdges(child, child);
@@ -334,7 +334,7 @@ public class StructureModifier {
     private void retract(PreNode parent) {
 
         //Disable children
-        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, parent); itr.hasNext();) {
+        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, parent, null); itr.hasNext();) {
             PreNode child = itr.next();
             child.setEnabled(false);
             edgeProcessor.clearMetaEdges(child);
@@ -365,7 +365,7 @@ public class StructureModifier {
 
     private void deleteNode(PreNode node) {
 
-        for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node); itr.hasNext();) {
+        for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node, null); itr.hasNext();) {
             PreNode descendant = itr.next();
             if (descendant.isEnabled()) {
                 edgeProcessor.clearMetaEdges(descendant);
@@ -412,7 +412,7 @@ public class StructureModifier {
                 //The node has an enabled ancestor
                 //We delete edges from potential meta edges
                 if (node.size > 0) {
-                    for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node); itr.hasNext();) {
+                    for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node, null); itr.hasNext();) {
                         PreNode descendant = itr.next();
                         edgeProcessor.clearEdgesWithoutRemove(descendant);
                     }
@@ -435,7 +435,7 @@ public class StructureModifier {
             } else if (node.size > 0) {
                 if (destinationAncestor != null) {
                     //The node may have some enabled descendants and we set them disabled
-                    for (DescendantIterator itr = new DescendantIterator(treeStructure, node); itr.hasNext();) {
+                    for (DescendantIterator itr = new DescendantIterator(treeStructure, node, null); itr.hasNext();) {
                         PreNode descendant = itr.next();
                         if (descendant.isEnabled()) {
                             edgeProcessor.clearMetaEdges(descendant);
@@ -445,7 +445,7 @@ public class StructureModifier {
                 //DO
                 } else {
                     //The node may have some enabled descendants and we keep them enabled
-                    for (DescendantIterator itr = new DescendantIterator(treeStructure, node); itr.hasNext();) {
+                    for (DescendantIterator itr = new DescendantIterator(treeStructure, node, null); itr.hasNext();) {
                         PreNode descendant = itr.next();
                         if (descendant.isEnabled()) {
                             //Enabled descendants meta edges are still valid only if their target is out of
