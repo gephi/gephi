@@ -40,12 +40,12 @@ public class VizConfig {
     private int antialiasing = 4;
     private boolean use3d = false;
     private boolean lineSmooth = false;
-    private boolean lineSmoothNicest = true;
+    private boolean lineSmoothNicest = false;
     private boolean pointSmooth = false;
     private boolean blending = true;
     private boolean blendCinema = false;
     private boolean lighting = false;
-    private boolean culling = true;
+    private boolean culling = false;
     private boolean material = false;
     private boolean wireFrame = false;
     private boolean useGLJPanel = false;
@@ -54,7 +54,8 @@ public class VizConfig {
     private float[] defaultCameraPosition = {0f, 0f, 5000f};
     protected float[] nodeSelectedColor = {1f, 1f, 1f};
     protected boolean selectionEnable = true;
-    protected boolean rectangleSelection=true;
+    protected boolean rectangleSelection = true;
+    protected float[] rectangleSelectionColor = {0.16f, 0.48f, 0.81f, 0.2f};
     protected boolean draggingEnable = true;
     protected boolean cameraControlEnable = true;
     protected boolean rotatingEnable = true;
@@ -171,7 +172,9 @@ public class VizConfig {
         return rectangleSelection;
     }
 
-    
+    public float[] getRectangleSelectionColor() {
+        return rectangleSelectionColor;
+    }
 
     public boolean isShowEdges() {
         return showEdges;

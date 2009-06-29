@@ -244,7 +244,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
         //Labels
         if (vizConfig.isShowLabels()) {
-            startTime-=1;
+            startTime -= 1;
             textManager.beginRendering();
             if (nodeClass.isEnabled()) {
                 textManager.defaultNodeColor();
@@ -268,7 +268,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void afterDisplay(GL gl, GLU glu) {
-        if(vizConfig.isSelectionEnable()) {
+        if (vizConfig.isSelectionEnable()) {
             currentSelectionArea.drawArea(gl, glu);
         }
     }
@@ -320,8 +320,8 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
         //Selection
-        if(vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
-            Rectangle rectangle = (Rectangle)currentSelectionArea;
+        if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
+            Rectangle rectangle = (Rectangle) currentSelectionArea;
             rectangle.setMousePosition(graphIO.getMousePosition());
         }
     }
@@ -391,7 +391,6 @@ public class CompatibilityEngine extends AbstractEngine {
         anySelected = someSelection;
     }
 
-
     @Override
     public void refreshGraphLimits() {
     }
@@ -409,9 +408,9 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
         //Selection
-        if(vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
+        if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
             float[] mousePosition = graphIO.getMousePosition();
-            Rectangle rectangle = (Rectangle)currentSelectionArea;
+            Rectangle rectangle = (Rectangle) currentSelectionArea;
             rectangle.start(mousePosition);
         }
     }
@@ -421,8 +420,8 @@ public class CompatibilityEngine extends AbstractEngine {
         scheduler.requireUpdatePosition();
 
         //Selection
-        if(vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
-            Rectangle rectangle = (Rectangle)currentSelectionArea;
+        if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
+            Rectangle rectangle = (Rectangle) currentSelectionArea;
             rectangle.stop();
         }
     }
@@ -542,6 +541,11 @@ public class CompatibilityEngine extends AbstractEngine {
             selectedObjects[i] = new ConcurrentLinkedQueue<ModelImpl>();
             i++;
         }
+    }
+
+    @Override
+    public void initSelection() {
+        currentSelectionArea = new Rectangle();
     }
 
     @Override

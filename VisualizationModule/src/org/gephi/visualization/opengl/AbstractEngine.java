@@ -65,7 +65,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected GraphDrawableImpl graphDrawable;
     protected GraphIO graphIO;
     protected VizEventManager vizEventManager;
-    protected SelectionArea currentSelectionArea = new Point();
+    protected SelectionArea currentSelectionArea;
     protected ModelClassLibrary modelClassLibrary;
     protected DataBridge dataBridge;
     protected EventBridge eventBridge;
@@ -89,6 +89,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         this.modeManager = VizController.getInstance().getModeManager();
         this.textManager = VizController.getInstance().getTextManager();
         initObject3dClass();
+        initSelection();
     }
 
     public abstract void beforeDisplay(GL gl, GLU glu);
@@ -126,6 +127,8 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     public abstract void refreshGraphLimits();
 
     public abstract void initObject3dClass();
+
+    public abstract void initSelection();
 
     public abstract ModelClass[] getModelClasses();
 

@@ -20,12 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.selection;
 
+import java.util.Arrays;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.GraphDrawable;
 import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.selection.SelectionArea;
 import org.gephi.visualization.gleem.linalg.Vecf;
 
@@ -38,9 +40,12 @@ public class Rectangle implements SelectionArea {
     private float[] startPosition;
     private float[] rectangle = new float[2];
     private GraphDrawable drawable;
+    private boolean stop = true;
+    private VizConfig config;
 
     public Rectangle() {
         drawable = VizController.getInstance().getDrawable();
+        config = VizController.getInstance().getVizConfig();
     }
 
     public float[] getSelectionAreaRectancle() {
@@ -66,44 +71,63 @@ public class Rectangle implements SelectionArea {
     }
 
     public void start(float[] mousePosition) {
-        this.startPosition = mousePosition;
+        this.startPosition = Arrays.copyOf(mousePosition, 2);
         this.rectangle[0] = 0f;
         this.rectangle[1] = 0f;
+        stop = false;
     }
 
     public void stop() {
-        this.startPosition = null;
+        stop = true;
     }
 
     public void setMousePosition(float[] mousePosition) {
-        rectangle[0] = mousePosition[0] - startPosition[0];
-        rectangle[1] = mousePosition[1] - startPosition[1];
+        if (!stop) {
+            rectangle[0] = mousePosition[0] - startPosition[0];
+            rectangle[1] = mousePosition[1] - startPosition[1];
+        }
     }
 
     public void drawArea(GL gl, GLU glu) {
-        if (startPosition != null) {
+        if (!stop) {
             float x = startPosition[0];
             float y = startPosition[1];
             float w = rectangle[0];
             float h = rectangle[1];
+            //System.out.println("x:"+x+"  y:"+y+"   w:"+w+"   h:"+h);
 
             gl.glMatrixMode(GL.GL_PROJECTION);
             gl.glPushMatrix();
             gl.glLoadIdentity();
             glu.gluOrtho2D(0, drawable.getViewportWidth(), 0, drawable.getViewportHeight());
-            gl.glScalef(1, -1, 1);
-            gl.glTranslatef(0, -drawable.getViewportHeight(), 0);
             gl.glMatrixMode(GL.GL_MODELVIEW);
+            gl.glPushMatrix();
+            gl.glLoadIdentity();
 
-            gl.glColor3f(0, 0, 1);
+            float[] color = config.getRectangleSelectionColor();
+            gl.glColor4f(color[0], color[1], color[2], color[3]);
+
+            gl.glBegin(GL.GL_QUADS);
             gl.glVertex3f(x + w, y, 0);
             gl.glVertex3f(x, y, 0);
             gl.glVertex3f(x, y + h, 0);
             gl.glVertex3f(x + w, y + h, 0);
+            gl.glEnd();
 
+            gl.glColor4f(color[0], color[1], color[2], 1f);
+            gl.glBegin(GL.GL_LINE_LOOP);
+            gl.glVertex3f(x + w, y, 0);
+            gl.glVertex3f(x, y, 0);
+            gl.glVertex3f(x, y + h, 0);
+            gl.glVertex3f(x + w, y + h, 0);
+            gl.glEnd();
+
+            gl.glPopMatrix();
             gl.glMatrixMode(GL.GL_PROJECTION);
             gl.glPopMatrix();
             gl.glMatrixMode(GL.GL_MODELVIEW);
+        } else {
+            startPosition = null;
         }
     }
 }
