@@ -39,9 +39,9 @@ public class NeighborIterator extends AbstractNodeIterator implements Iterator<N
     private PreNode owner;
     private PreNode pointer;
     //Propostion
-    private Proposition proposition;
+    private Proposition<PreNode> proposition;
 
-    public NeighborIterator(AbstractEdgeIterator edgeIterator, PreNode owner, Proposition proposition) {
+    public NeighborIterator(AbstractEdgeIterator edgeIterator, PreNode owner, Proposition<PreNode> proposition) {
         this.edgeIterator = edgeIterator;
         this.owner = owner;
         if (proposition == null) {

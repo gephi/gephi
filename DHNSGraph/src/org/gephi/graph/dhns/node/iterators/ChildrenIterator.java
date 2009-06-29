@@ -46,9 +46,9 @@ public class ChildrenIterator extends AbstractNodeIterator implements Iterator<N
     protected boolean loopStart=true;
 
     //Proposition
-    protected Proposition proposition;
+    protected Proposition<PreNode> proposition;
 
-    public ChildrenIterator(TreeStructure treeStructure, Proposition proposition) {
+    public ChildrenIterator(TreeStructure treeStructure, Proposition<PreNode> proposition) {
         this.treeList = treeStructure.getTree();
         nextIndex = 1;
         diffIndex = 2;
@@ -60,7 +60,7 @@ public class ChildrenIterator extends AbstractNodeIterator implements Iterator<N
         }
     }
 
-    public ChildrenIterator(TreeStructure treeStructure, PreNode node, Proposition proposition) {
+    public ChildrenIterator(TreeStructure treeStructure, PreNode node, Proposition<PreNode> proposition) {
         this(treeStructure, proposition);
         setNode(node);
     }

@@ -41,9 +41,9 @@ public class MetaEdgeContentIterator extends AbstractEdgeIterator implements Ite
     protected boolean undirectedSecond = false;   //Flag to know we are iterating already the mutual edge
 
     //Proposition
-    protected Proposition proposition;
+    protected Proposition<AbstractEdge> proposition;
 
-    public MetaEdgeContentIterator(MetaEdgeImpl metaEdge, boolean undirected, Proposition proposition) {
+    public MetaEdgeContentIterator(MetaEdgeImpl metaEdge, boolean undirected, Proposition<AbstractEdge> proposition) {
         iterator = metaEdge.getEdges().iterator();
         this.metaEdge = metaEdge;
         this.undirected = undirected;

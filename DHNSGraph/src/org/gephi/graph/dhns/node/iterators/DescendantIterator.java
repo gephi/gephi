@@ -46,9 +46,9 @@ public class DescendantIterator extends AbstractNodeIterator implements Iterator
     protected boolean loopStart = true;
 
     //Proposition
-    protected Proposition proposition;
+    protected Proposition<PreNode> proposition;
 
-    public DescendantIterator(TreeStructure treeStructure, Proposition proposition) {
+    public DescendantIterator(TreeStructure treeStructure, Proposition<PreNode> proposition) {
         this.treeList = treeStructure.getTree();
         nextIndex = 0;
         diffIndex = 2;
@@ -60,7 +60,7 @@ public class DescendantIterator extends AbstractNodeIterator implements Iterator
         }
     }
 
-    public DescendantIterator(TreeStructure treeStructure, PreNode node, Proposition proposition) {
+    public DescendantIterator(TreeStructure treeStructure, PreNode node, Proposition<PreNode> proposition) {
         this(treeStructure, proposition);
         setNode(node);
     }

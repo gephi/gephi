@@ -45,9 +45,9 @@ public class MetaEdgeIterator extends AbstractEdgeIterator implements Iterator<E
     protected boolean undirected;
 
     //Proposition
-    protected Proposition proposition;
+    protected Proposition<AbstractEdge> proposition;
 
-    public MetaEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected, Proposition proposition) {
+    public MetaEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected, Proposition<AbstractEdge> proposition) {
         this.nodeIterator = nodeIterator;
         edgeIterator = new ParamAVLIterator<AbstractEdge>();
         this.undirected = undirected;

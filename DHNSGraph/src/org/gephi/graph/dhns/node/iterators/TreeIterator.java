@@ -45,9 +45,9 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
     protected DurableAVLNode currentNode;
 
     //Proposition
-    protected Proposition proposition;
+    protected Proposition<PreNode> proposition;
 
-    public TreeIterator(TreeStructure treeStructure, Proposition proposition) {
+    public TreeIterator(TreeStructure treeStructure, Proposition<PreNode> proposition) {
         this.treeList = treeStructure.getTree();
         nextIndex = 1;
         diffIndex = 2;

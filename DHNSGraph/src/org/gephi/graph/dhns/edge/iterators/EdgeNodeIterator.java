@@ -48,9 +48,9 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
     protected boolean undirected;
 
     //Proposition
-    protected Proposition proposition;
+    protected Proposition<AbstractEdge> proposition;
 
-    public EdgeNodeIterator(PreNode node, EdgeNodeIteratorMode mode, boolean undirected, Proposition proposition) {
+    public EdgeNodeIterator(PreNode node, EdgeNodeIteratorMode mode, boolean undirected, Proposition<AbstractEdge> proposition) {
         this.node = node;
         this.mode = mode;
         this.undirected = undirected;

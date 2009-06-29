@@ -46,9 +46,9 @@ public class EdgeIterator extends AbstractEdgeIterator implements Iterator<Edge>
     protected boolean undirected;
 
     //Proposition
-    protected Proposition proposition;
+    protected Proposition<AbstractEdge> proposition;
 
-    public EdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected, Proposition proposition) {
+    public EdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected, Proposition<AbstractEdge> proposition) {
         this.nodeIterator = nodeIterator;
         edgeIterator = new ParamAVLIterator<ProperEdgeImpl>();
         this.undirected = undirected;

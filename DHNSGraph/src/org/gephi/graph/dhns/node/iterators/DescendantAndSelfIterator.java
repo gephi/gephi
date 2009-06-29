@@ -35,11 +35,11 @@ import org.gephi.graph.dhns.proposition.Proposition;
  */
 public class DescendantAndSelfIterator extends DescendantIterator implements Iterator<Node>, ResetableIterator {
 
-    public DescendantAndSelfIterator(TreeStructure treeStructure, Proposition proposition) {
+    public DescendantAndSelfIterator(TreeStructure treeStructure, Proposition<PreNode> proposition) {
         super(treeStructure, proposition);
     }
 
-    public DescendantAndSelfIterator(TreeStructure treeStructure, PreNode node, Proposition proposition) {
+    public DescendantAndSelfIterator(TreeStructure treeStructure, PreNode node, Proposition<PreNode> proposition) {
         super(treeStructure, node, proposition);
     }
 

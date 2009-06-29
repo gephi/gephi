@@ -44,9 +44,9 @@ public class LevelIterator extends AbstractNodeIterator implements Iterator<Node
     protected int level;
 
     //Proposition
-    protected Proposition proposition;
+    protected Proposition<PreNode> proposition;
 
-    public LevelIterator(TreeStructure treeStructure, int level, Proposition proposition) {
+    public LevelIterator(TreeStructure treeStructure, int level, Proposition<PreNode> proposition) {
         this.treeList = treeStructure.getTree();
         this.nextIndex = 1;
         this.diffIndex = 2;

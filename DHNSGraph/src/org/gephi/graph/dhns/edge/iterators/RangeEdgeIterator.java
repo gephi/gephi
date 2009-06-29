@@ -50,9 +50,9 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
     protected boolean undirected;
 
     //Proposition
-    protected Proposition edgeProposition;
+    protected Proposition<AbstractEdge> edgeProposition;
 
-    public RangeEdgeIterator(TreeStructure treeStructure, PreNode nodeGroup, PreNode target, boolean inner, boolean undirected, Proposition nodeProposition, Proposition edgeProposition) {
+    public RangeEdgeIterator(TreeStructure treeStructure, PreNode nodeGroup, PreNode target, boolean inner, boolean undirected, Proposition<PreNode> nodeProposition, Proposition<AbstractEdge> edgeProposition) {
         nodeIterator = new DescendantAndSelfIterator(treeStructure, nodeGroup, nodeProposition);
         this.inner = inner;
         this.nodeGroup = nodeGroup;

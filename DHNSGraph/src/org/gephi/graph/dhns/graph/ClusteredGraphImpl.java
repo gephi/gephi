@@ -42,8 +42,8 @@ import org.gephi.graph.dhns.proposition.Tautology;
  */
 public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements ClusteredGraph {
 
-    protected Proposition nodeProposition;
-    protected Proposition edgeProposition;
+    protected Proposition<PreNode> nodeProposition;
+    protected Proposition<AbstractEdge> edgeProposition;
 
     public ClusteredGraphImpl(Dhns dhns, boolean visible) {
         this.dhns = dhns;
