@@ -29,5 +29,5 @@ import org.gephi.dynamic.*;
  */
 public interface State {
     public Comparable getComparable();
-    public NodeAtrributesState getNodeAttributesState();
+    public NodeAttributesState getNodeAttributesState();
 }

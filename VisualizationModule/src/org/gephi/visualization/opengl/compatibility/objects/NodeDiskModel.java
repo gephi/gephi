@@ -71,7 +71,7 @@ public class NodeDiskModel extends ModelImpl<NodeData> {
     @Override
     public void display(GL gl, GLU glu) {
         boolean selec = selected;
-        if(config.isAutoSelectNeighbor() && mark) {
+        if (config.isAutoSelectNeighbor() && mark) {
             selec = true;
             mark = false;
         }
@@ -83,9 +83,17 @@ public class NodeDiskModel extends ModelImpl<NodeData> {
         if (!selec) {
             if (config.isLightenNonSelected()) {
                 float[] lightColor = config.getLightenNonSelectedColor();
-                gl.glColor3f(lightColor[0], lightColor[1], lightColor[2]);
+                float lightColorFactor = config.getLightenNonSelectedFactor();
+                float r = obj.r();
+                float g = obj.g();
+                float b = obj.b();
+                float rlight = Math.min(1, 0.5f * r + 0.5f);
+                float glight = Math.min(1, 0.5f * g + 0.5f);
+                float blight = Math.min(1, 0.5f * b + 0.5f);
+                gl.glColor3f(rlight + (lightColor[0] - rlight) * lightColorFactor, glight + (lightColor[1] - glight) * lightColorFactor,  blight + (lightColor[2] - blight) * lightColorFactor);
                 gl.glCallList(modelType);
                 if (modelBorderType != 0) {
+                    gl.glColor3f(r + (lightColor[0] - r) * lightColorFactor, g + (lightColor[1] - g) * lightColorFactor,  b + (lightColor[2] - b) * lightColorFactor);
                     gl.glCallList(modelBorderType);
                 }
             } else {

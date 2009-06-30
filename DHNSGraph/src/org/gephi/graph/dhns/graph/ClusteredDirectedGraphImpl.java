@@ -30,21 +30,15 @@ import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
+import org.gephi.graph.dhns.edge.iterators.MetaEdgeContentIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
-import org.gephi.graph.dhns.edge.iterators.MetaEdgeContentIterator;
 import org.gephi.graph.dhns.edge.iterators.MetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.MetaEdgeNodeIterator;
 import org.gephi.graph.dhns.edge.iterators.RangeEdgeIterator;
-import org.gephi.graph.dhns.edge.iterators.VisibleEdgeIterator;
-import org.gephi.graph.dhns.edge.iterators.VisibleEdgeNodeIterator;
-import org.gephi.graph.dhns.edge.iterators.VisibleMetaEdgeIterator;
-import org.gephi.graph.dhns.edge.iterators.VisibleMetaEdgeNodeIterator;
-import org.gephi.graph.dhns.edge.iterators.VisibleRangeEdgeIterator;
 import org.gephi.graph.dhns.node.PreNode;
-import org.gephi.graph.dhns.node.iterators.CompleteTreeIterator;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
-import org.gephi.graph.dhns.node.iterators.VisibleTreeIterator;
+import org.gephi.graph.dhns.node.iterators.TreeIterator;
 
 /**
  * Implementation of clustered directed graph.
@@ -99,22 +93,14 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public NodeIterable getSuccessors(Node node) {
         PreNode preNode = checkNode(node);
         readLock();
-        if (visible) {
-            return dhns.newNodeIterable(new NeighborIterator(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.OUT, false), preNode));
-        } else {
-            return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT, false), preNode));
-        }
+        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT, false, edgeProposition), preNode, nodeProposition));
     }
 
     //Directed
     public NodeIterable getPredecessors(Node node) {
         PreNode preNode = checkNode(node);
         readLock();
-        if (visible) {
-            return dhns.newNodeIterable(new NeighborIterator(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.IN, false), preNode));
-        } else {
-            return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.IN, false), preNode));
-        }
+        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.IN, false, edgeProposition), preNode, nodeProposition));
     }
 
     //Directed
@@ -132,9 +118,9 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         PreNode preNode = checkNode(node);
         readLock();
         int count = 0;
-        if (visible && !preNode.getEdgesInTree().isEmpty()) {
+        if (!edgeProposition.isTautology() && !preNode.getEdgesInTree().isEmpty()) {
             for (Iterator<AbstractEdge> itr = preNode.getEdgesInTree().iterator(); itr.hasNext();) {
-                if (itr.next().isVisible()) {
+                if (edgeProposition.evaluate(itr.next())) {
                     count++;
                 }
             }
@@ -150,9 +136,9 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         PreNode preNode = checkNode(node);
         readLock();
         int count = 0;
-        if (visible && !preNode.getEdgesInTree().isEmpty()) {
+        if (!edgeProposition.isTautology() && !preNode.getEdgesInTree().isEmpty()) {
             for (Iterator<AbstractEdge> itr = preNode.getEdgesOutTree().iterator(); itr.hasNext();) {
-                if (itr.next().isVisible()) {
+                if (edgeProposition.evaluate(itr.next())) {
                     count++;
                 }
             }
@@ -171,55 +157,35 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     //Graph
     public EdgeIterable getEdges() {
         readLock();
-        if (visible) {
-            return dhns.newEdgeIterable(new VisibleEdgeIterator(dhns.getTreeStructure(), new VisibleTreeIterator(dhns.getTreeStructure()), false));
-        } else {
-            return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new CompleteTreeIterator(dhns.getTreeStructure()), false));
-        }
+        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
     }
 
     //Directed
     public EdgeIterable getInEdges(Node node) {
         PreNode preNode = checkNode(node);
         readLock();
-        if (visible) {
-            return dhns.newEdgeIterable(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.IN, false));
-        } else {
-            return dhns.newEdgeIterable(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.IN, false));
-        }
+        return dhns.newEdgeIterable(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.IN, false, edgeProposition));
     }
 
     //Directed
     public EdgeIterable getOutEdges(Node node) {
         PreNode preNode = checkNode(node);
         readLock();
-        if (visible) {
-            return dhns.newEdgeIterable(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.OUT, false));
-        } else {
-            return dhns.newEdgeIterable(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT, false));
-        }
+        return dhns.newEdgeIterable(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT, false, edgeProposition));
     }
 
     //Graph
     public EdgeIterable getEdges(Node node) {
         PreNode preNode = checkNode(node);
         readLock();
-        if (visible) {
-            return dhns.newEdgeIterable(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false));
-        } else {
-            return dhns.newEdgeIterable(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false));
-        }
+        return dhns.newEdgeIterable(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, edgeProposition));
     }
 
     //Graph
     public NodeIterable getNeighbors(Node node) {
         PreNode preNode = checkNode(node);
         readLock();
-        if (visible) {
-            return dhns.newNodeIterable(new NeighborIterator(new VisibleEdgeNodeIterator(preNode, VisibleEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true), preNode));
-        } else {
-            return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true), preNode));
-        }
+        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition), preNode, nodeProposition));
     }
 
     //Directed
@@ -228,13 +194,9 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         PreNode targetNode = checkNode(target);
         readLock();
         AbstractEdge res = null;
-        if (visible) {
-            AbstractEdge edge = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
-            if (edge != null && edge.isVisible()) {
-                res = edge;
-            }
-        } else {
-            res = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
+        AbstractEdge edge = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
+        if (edge != null && edgeProposition.evaluate(edge)) {
+            res = edge;
         }
         readUnlock();
         return res;
@@ -244,16 +206,9 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public int getEdgeCount() {
         readLock();
         int count = 0;
-        if (visible) {
-            for (VisibleEdgeIterator itr = new VisibleEdgeIterator(dhns.getTreeStructure(), new VisibleTreeIterator(dhns.getTreeStructure()), false); itr.hasNext();) {
-                itr.next();
-                count++;
-            }
-        } else {
-            for (EdgeIterator itr = new EdgeIterator(dhns.getTreeStructure(), new CompleteTreeIterator(dhns.getTreeStructure()), false); itr.hasNext();) {
-                itr.next();
-                count++;
-            }
+        for (EdgeIterator itr = new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition); itr.hasNext();) {
+            itr.next();
+            count++;
         }
         readUnlock();
         return count;
@@ -276,65 +231,41 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public EdgeIterable getInnerEdges(Node nodeGroup) {
         PreNode preNode = checkNode(nodeGroup);
         readLock();
-        if (visible) {
-            return dhns.newEdgeIterable(new VisibleRangeEdgeIterator(dhns.getTreeStructure(), preNode, preNode, true, false));
-        } else {
-            return dhns.newEdgeIterable(new RangeEdgeIterator(dhns.getTreeStructure(), preNode, preNode, true, false));
-        }
+        return dhns.newEdgeIterable(new RangeEdgeIterator(dhns.getTreeStructure(), preNode, preNode, true, false, nodeProposition, edgeProposition));
     }
 
     //ClusteredGraph
     public EdgeIterable getOuterEdges(Node nodeGroup) {
         PreNode preNode = checkNode(nodeGroup);
         readLock();
-        if (visible) {
-            return dhns.newEdgeIterable(new VisibleRangeEdgeIterator(dhns.getTreeStructure(), preNode, preNode, false, false));
-        } else {
-            return dhns.newEdgeIterable(new RangeEdgeIterator(dhns.getTreeStructure(), preNode, preNode, false, false));
-        }
+        return dhns.newEdgeIterable(new RangeEdgeIterator(dhns.getTreeStructure(), preNode, preNode, false, false, nodeProposition, edgeProposition));
     }
 
     //ClusteredGraph
     public EdgeIterable getMetaEdges() {
         readLock();
-        if (visible) {
-            return dhns.newEdgeIterable(new VisibleMetaEdgeIterator(dhns.getTreeStructure(), new VisibleTreeIterator(dhns.getTreeStructure()), false));
-        } else {
-            return dhns.newEdgeIterable(new MetaEdgeIterator(dhns.getTreeStructure(), new CompleteTreeIterator(dhns.getTreeStructure()), false));
-        }
+        return dhns.newEdgeIterable(new MetaEdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
     }
 
     //ClusteredGraph
     public EdgeIterable getMetaEdges(Node node) {
         PreNode preNode = checkNode(node);
         readLock();
-        if (visible) {
-            return dhns.newEdgeIterable(new VisibleMetaEdgeNodeIterator(preNode, VisibleMetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false));
-        } else {
-            return dhns.newEdgeIterable(new MetaEdgeNodeIterator(preNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false));
-        }
+        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(preNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, edgeProposition));
     }
 
     //DirectedClusteredGraph
     public EdgeIterable getMetaInEdges(Node node) {
         PreNode preNode = checkNode(node);
         readLock();
-        if (visible) {
-            return dhns.newEdgeIterable(new VisibleMetaEdgeNodeIterator(preNode, VisibleMetaEdgeNodeIterator.EdgeNodeIteratorMode.IN, false));
-        } else {
-            return dhns.newEdgeIterable(new MetaEdgeNodeIterator(preNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.IN, false));
-        }
+        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(preNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.IN, false, edgeProposition));
     }
 
     //DirectedClusteredGraph
     public EdgeIterable getMetaOutEdges(Node node) {
         PreNode preNode = checkNode(node);
         readLock();
-        if (visible) {
-            return dhns.newEdgeIterable(new VisibleMetaEdgeNodeIterator(preNode, VisibleMetaEdgeNodeIterator.EdgeNodeIteratorMode.OUT, false));
-        } else {
-            return dhns.newEdgeIterable(new MetaEdgeNodeIterator(preNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.OUT, false));
-        }
+        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(preNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.OUT, false, edgeProposition));
     }
 
     //DirectedClusteredGraph
@@ -342,9 +273,9 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         PreNode preNode = checkNode(node);
         readLock();
         int count = 0;
-        if (visible && !preNode.getMetaEdgesInTree().isEmpty()) {
+        if (!edgeProposition.isTautology() && !preNode.getMetaEdgesInTree().isEmpty()) {
             for (Iterator<MetaEdgeImpl> itr = preNode.getMetaEdgesInTree().iterator(); itr.hasNext();) {
-                if (itr.next().isVisible()) {
+                if (edgeProposition.evaluate(itr.next())) {
                     count++;
                 }
             }
@@ -360,9 +291,9 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         PreNode preNode = checkNode(node);
         readLock();
         int count = 0;
-        if (visible && !preNode.getMetaEdgesOutTree().isEmpty()) {
+        if (!edgeProposition.isTautology() && !preNode.getMetaEdgesOutTree().isEmpty()) {
             for (Iterator<MetaEdgeImpl> itr = preNode.getMetaEdgesOutTree().iterator(); itr.hasNext();) {
-                if (itr.next().isVisible()) {
+                if (edgeProposition.evaluate(itr.next())) {
                     count++;
                 }
             }
@@ -381,11 +312,7 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public EdgeIterable getMetaEdgeContent(Edge metaEdge) {
         MetaEdgeImpl metaEdgeImpl = checkMetaEdge(metaEdge);
         readLock();
-        if (visible) {
-            return dhns.newEdgeIterable(new MetaEdgeContentIterator(metaEdgeImpl, true, false));
-        } else {
-            return dhns.newEdgeIterable(new MetaEdgeContentIterator(metaEdgeImpl, false, false));
-        }
+        return dhns.newEdgeIterable(new MetaEdgeContentIterator(metaEdgeImpl, false, edgeProposition));
     }
 
     //ClusteredDirected

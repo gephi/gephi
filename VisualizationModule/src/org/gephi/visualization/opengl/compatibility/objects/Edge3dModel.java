@@ -23,6 +23,7 @@ package org.gephi.visualization.opengl.compatibility.objects;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.ModelImpl;
 
 /**
  *
@@ -39,9 +40,18 @@ public class Edge3dModel extends Edge2dModel {
 
     @Override
     public void display(GL gl, GLU glu) {
-        //gl.glColor3f(object.getNodeFrom().r, object.getNodeFrom().g, object.getNodeFrom().b);
-        //gl.glVertex3f(obj.getSource().getX(), obj.getSource().getY(), obj.getSource().getZ());
-        //gl.glVertex3f(obj.getTarget().getX(), obj.getTarget().getY(), obj.getTarget().getZ());
+        if (this.arrow != null) {
+            this.arrow.setSelected(selected);
+        }
+        if (!selected && config.isHideNonSelectedEdges()) {
+            return;
+        }
+        if (selected && config.isAutoSelectNeighbor()) {
+            ModelImpl m1 = (ModelImpl) obj.getSource().getModel();
+            ModelImpl m2 = (ModelImpl) obj.getTarget().getModel();
+            m1.mark = true;
+            m2.mark = true;
+        }
 
         float x1 = obj.getSource().x();
         float x2 = obj.getTarget().x();
@@ -93,7 +103,36 @@ public class Edge3dModel extends Edge2dModel {
         float z1Thick = sideVectorZ / 2f * t1;
         float z2Thick = sideVectorZ / 2f * t2;
 
-        gl.glColor4f(obj.r(), obj.g(), obj.b(), obj.alpha());
+        if (!selected) {
+            float r;
+            float g;
+            float b;
+            float a;
+            if (config.isEdgeUniColor()) {
+                float[] uni = config.getEdgeUniColorValue();
+                r = uni[0];
+                g = uni[1];
+                b = uni[2];
+                a = uni[3];
+            } else {
+                r = obj.r();
+                g = obj.g();
+                b = obj.b();
+                a = obj.alpha();
+            }
+            if (config.isLightenNonSelected()) {
+                float lightColorFactor = config.getLightenNonSelectedFactor();
+                a = a - (a - 0.1f) * lightColorFactor;
+                gl.glColor4f(r, g, b, a);
+            } else {
+                gl.glColor4f(r, g, b, a);
+            }
+        } else {
+            float rdark = 0.498f * obj.r();
+            float gdark = 0.498f * obj.g();
+            float bdark = 0.498f * obj.b();
+            gl.glColor4f(rdark, gdark, bdark, 1f);
+        }
 
         gl.glVertex3f(x1 + x1Thick, y1 + y1Thick, z1 + z1Thick);
         gl.glVertex3f(x1 - x1Thick, y1 - y1Thick, z1 - z1Thick);

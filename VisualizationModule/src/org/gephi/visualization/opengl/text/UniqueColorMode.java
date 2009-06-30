@@ -20,32 +20,36 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
-import java.awt.Color;
+import com.sun.opengl.util.j2d.TextRenderer;
+import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.api.VizConfig;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class UniqueColorMode implements ColorMode {
 
-    private TextManager manager;
-    //Unique color
-    private float r;
-    private float g;
-    private float b;
-    private float a;
+    VizConfig config;
 
-    public UniqueColorMode(TextManager manager) {
-        this.manager = manager;
+    public UniqueColorMode() {
+        config = VizController.getInstance().getVizConfig();
     }
 
-    public void setDefaultColor() {
-        manager.getRenderer().setColor(r, g, b, a);
+    public void defaultNodeColor(TextRenderer renderer) {
+        float[] defaultNodeColor = config.getDefaultNodeLabelColor();
+        renderer.setColor(defaultNodeColor[0], defaultNodeColor[1], defaultNodeColor[2], defaultNodeColor[3]);
     }
 
-    public void setTextColor(TextData text) {
+    public void defaultEdgeColor(TextRenderer renderer) {
+        float[] defaultEdgeColor = config.getDefaultEdgeLabelColor();
+        renderer.setColor(defaultEdgeColor[0], defaultEdgeColor[1], defaultEdgeColor[2], defaultEdgeColor[3]);
+    }
+
+    public void textColor(TextRenderer renderer, TextDataImpl text, ModelImpl model) {
         if (text.hasCustomColor()) {
-            manager.getRenderer().setColor(text.r, text.g, text.b, text.a);
+            renderer.setColor(text.r, text.g, text.b, text.a);
         }
     }
 }

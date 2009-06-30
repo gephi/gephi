@@ -69,6 +69,14 @@ public class CompatibilityArrowModeler implements CompatibilityModeler<NodeData>
         }
     }
 
+    public void beforeDisplay(GL gl, GLU glu) {
+        gl.glBegin(GL.GL_TRIANGLES);
+    }
+
+    public void afterDisplay(GL gl, GLU glu) {
+        gl.glEnd();
+    }
+
     public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr) {
         return ptr;
     }

@@ -22,19 +22,21 @@ package org.gephi.graph.dhns.node.iterators;
 
 import java.util.Iterator;
 import org.gephi.graph.dhns.core.DurableTreeList;
+import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
-import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.dhns.proposition.Proposition;
+import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
- * {@link PreNode} iterator for children of a node, enabled or not.
- *
+ * {@link PreNode} iterator for enabled and visible nodes.
+ * 
  * @author Mathieu Bastian
- * @see DescendantIterator
+ * @see CompleteTreeIterator
  */
-public class VisibleDescendantIterator extends AbstractNodeIterator implements Iterator<Node>, ResetableIterator {
+public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>, ResetableIterator {
 
     protected int treeSize;
     protected DurableTreeList treeList;
@@ -42,49 +44,60 @@ public class VisibleDescendantIterator extends AbstractNodeIterator implements I
     protected int diffIndex;
     protected DurableAVLNode currentNode;
 
-    public VisibleDescendantIterator(TreeStructure treeStructure) {
+    //Proposition
+    protected Proposition<PreNode> proposition;
+
+    public TreeIterator(TreeStructure treeStructure, Proposition<PreNode> proposition) {
         this.treeList = treeStructure.getTree();
-        nextIndex = 0;
+        nextIndex = 1;
         diffIndex = 2;
         treeSize = treeList.size();
+        if (proposition == null) {
+            this.proposition = new Tautology();
+        } else {
+            this.proposition = proposition;
+        }
     }
 
-    public VisibleDescendantIterator(TreeStructure treeStructure, PreNode node) {
-        this(treeStructure);
-        setNode(node);
-    }
-
-    public void setNode(PreNode node) {
-        nextIndex = node.getPre() + 1;
-        treeSize = node.getPre() + node.size + 1;
+    public void reset() {
+        nextIndex = 1;
         diffIndex = 2;
     }
 
     public boolean hasNext() {
-        while (currentNode == null || !currentNode.getValue().isVisible()) {
-
-            if (currentNode != null) {
-                nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
-                diffIndex = nextIndex - currentNode.getValue().pre;
-            }
-
+        while (true) {
             if (nextIndex < treeSize) {
                 if (diffIndex > 1) {
                     currentNode = treeList.getNode(nextIndex);
                 } else {
                     currentNode = currentNode.next();
                 }
-                return true;
+
+                while (!currentNode.getValue().isEnabled()) {
+                    ++nextIndex;
+                    if (nextIndex >= treeSize) {
+                        return false;
+                    }
+                    currentNode = currentNode.next();
+                }
+
+                if (!proposition.evaluate(currentNode.getValue())) {
+                    nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
+                    diffIndex = nextIndex - currentNode.getValue().pre;
+                } else {
+                    return true;
+                }
+
+            } else {
+                return false;
             }
         }
-        return false;
     }
 
     public PreNode next() {
-        nextIndex++;
-        diffIndex=1;
+        nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
+        diffIndex = nextIndex - currentNode.getValue().pre;
         PreNode res = currentNode.getValue();
-        currentNode = null;
         return res;
     }
 

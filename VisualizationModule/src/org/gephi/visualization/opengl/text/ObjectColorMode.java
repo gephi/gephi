@@ -18,10 +18,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.visualization.opengl.text;
 
+import com.sun.opengl.util.j2d.TextRenderer;
 import org.gephi.graph.api.Renderable;
+import org.gephi.visualization.api.ModelImpl;
 
 /**
  *
@@ -29,19 +30,14 @@ import org.gephi.graph.api.Renderable;
  */
 public class ObjectColorMode implements ColorMode {
 
-    private TextManager manager;
-
-    public ObjectColorMode(TextManager manager) {
-        this.manager = manager;
+    public void defaultEdgeColor(TextRenderer renderer) {
     }
 
-    public void setDefaultColor() {
-
+    public void defaultNodeColor(TextRenderer renderer) {
     }
 
-    public void setTextColor(TextData text) {
-        Renderable renderable = text.getObject3d().getObj();
-        manager.getRenderer().setColor(renderable.r(), renderable.g(), renderable.b(), renderable.alpha());
+    public void textColor(TextRenderer renderer, TextDataImpl text, ModelImpl model) {
+        Renderable renderable = model.getObj();
+        renderer.setColor(renderable.r(), renderable.g(), renderable.b(), renderable.alpha());
     }
-
 }

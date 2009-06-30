@@ -25,6 +25,7 @@ import org.gephi.graph.api.LayoutData;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Model;
+import org.gephi.graph.api.TextData;
 
 /**
  * Implementation of the node data interface.
@@ -48,6 +49,7 @@ public class NodeDataImpl implements NodeData {
     protected Model model;
     protected boolean fixed;
     protected Attributes attributes;
+    protected TextData textData;
 
     public NodeDataImpl(Node node) {
         this.node = node;
@@ -176,5 +178,13 @@ public class NodeDataImpl implements NodeData {
 
     public void setFixed(boolean fixed) {
         this.fixed = fixed;
+    }
+
+    public TextData getTextData() {
+        return textData;
+    }
+
+    public void setTextData(TextData textData) {
+        this.textData = textData;
     }
 }

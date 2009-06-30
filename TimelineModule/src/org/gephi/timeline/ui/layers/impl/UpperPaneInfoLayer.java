@@ -24,9 +24,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Created on Jun 21, 2009, 3:49:32 PM
  */
-
 package org.gephi.timeline.ui.layers.impl;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.GeneralPath;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import org.gephi.timeline.ui.layers.impl.DefaultInfoLayer;
 
 /**
@@ -61,8 +69,14 @@ public class UpperPaneInfoLayer extends DefaultInfoLayer {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        Graphics2D g2d = (Graphics2D) g;
+        //g2d.setRenderingHints(skin.getRenderingHints());
+        g2d.setFont(new Font("DejaVu Sans Mono", 0, 12));
+        g2d.drawString("1 january 1970", 10, 12);
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-
 }

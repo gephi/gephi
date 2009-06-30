@@ -26,5 +26,8 @@ package org.gephi.dynamic.api;
  * @author Julian Bilcke
  */
 public interface DynamicController {
-
+    public void add();
+    public void del();
+    public void up();
+    public void setVisible();
 }

@@ -21,14 +21,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.dynamic;
 
-import org.gephi.dynamic.api.NodeAtrributesState;
+import org.gephi.dynamic.api.NodeAttributesState;
 
 /**
  * Implementation using the Attributes API ?
  *
  * @author Julian Bilcke
  */
-public class NodeAttributesStateImpl implements NodeAtrributesState {
+public class NodeAttributesStateImpl implements NodeAttributesState {
     public String getValue(String key) {
         return "dummy";
     }

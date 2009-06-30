@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.timeline.ui.layers.api;
 
+import org.gephi.timeline.api.TimelineDataModel;
 import org.gephi.timeline.ui.skins.api.TimelineSkin;
 
 /**
@@ -28,5 +29,8 @@ import org.gephi.timeline.ui.skins.api.TimelineSkin;
  * @author Julian Bilcke
  */
 public interface Layer {
+    public void setModel(TimelineDataModel model);
     public void setSkin(TimelineSkin skin);
+    public TimelineDataModel getModel();
+    public TimelineSkin getSkin();
 }

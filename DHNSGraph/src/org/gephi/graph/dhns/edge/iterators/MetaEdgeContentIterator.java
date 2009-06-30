@@ -24,6 +24,8 @@ import java.util.Iterator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
+import org.gephi.graph.dhns.proposition.Proposition;
+import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
  * Iterates over the edges contained in a meta edge. Support either directed ot undirected request.
@@ -34,21 +36,27 @@ public class MetaEdgeContentIterator extends AbstractEdgeIterator implements Ite
 
     protected MetaEdgeImpl metaEdge;
     protected Iterator<AbstractEdge> iterator;
-    protected boolean visible;
     protected boolean undirected;
     protected AbstractEdge pointer;
     protected boolean undirectedSecond = false;   //Flag to know we are iterating already the mutual edge
 
-    public MetaEdgeContentIterator(MetaEdgeImpl metaEdge, boolean visible, boolean undirected) {
+    //Proposition
+    protected Proposition<AbstractEdge> proposition;
+
+    public MetaEdgeContentIterator(MetaEdgeImpl metaEdge, boolean undirected, Proposition<AbstractEdge> proposition) {
         iterator = metaEdge.getEdges().iterator();
         this.metaEdge = metaEdge;
-        this.visible = visible;
         this.undirected = undirected;
+        if (proposition == null) {
+            this.proposition = new Tautology();
+        } else {
+            this.proposition = proposition;
+        }
     }
 
     @Override
     public boolean hasNext() {
-        while (pointer == null || (!visible && !pointer.isVisible()) || (undirected && pointer.getUndirected() != pointer)) {
+        while (pointer == null || !proposition.evaluate(pointer) || (undirected && pointer.getUndirected() != pointer)) {
             boolean res = iterator.hasNext();
             if (res) {
                 pointer = iterator.next();

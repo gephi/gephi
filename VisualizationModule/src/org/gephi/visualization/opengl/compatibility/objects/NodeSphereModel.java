@@ -73,16 +73,54 @@ public class NodeSphereModel extends ModelImpl<NodeData> {
 
     @Override
     public void display(GL gl, GLU glu) {
+        boolean selec = selected;
+        if (config.isAutoSelectNeighbor() && mark) {
+            selec = true;
+            mark = false;
+        }
         gl.glPushMatrix();
         float size = obj.getSize() * 2;
         gl.glTranslatef(obj.x(), obj.y(), obj.z());
         gl.glScalef(size, size, size);
-        if (selected) {
-            gl.glColor4f(1f, 1f, 1f, obj.alpha());
+        if (!selec) {
+            if (config.isLightenNonSelected()) {
+                float[] lightColor = config.getLightenNonSelectedColor();
+                float lightColorFactor = config.getLightenNonSelectedFactor();
+                float r = obj.r();
+                float g = obj.g();
+                float b = obj.b();
+                float rlight = Math.min(1, 0.5f * r + 0.5f);
+                float glight = Math.min(1, 0.5f * g + 0.5f);
+                float blight = Math.min(1, 0.5f * b + 0.5f);
+                gl.glColor3f(rlight + (lightColor[0] - rlight) * lightColorFactor, glight + (lightColor[1] - glight) * lightColorFactor,  blight + (lightColor[2] - blight) * lightColorFactor);
+                gl.glCallList(modelType);
+            } else {
+                float r = obj.r();
+                float g = obj.g();
+                float b = obj.b();
+                float rlight = Math.min(1, 0.5f * r + 0.5f);
+                float glight = Math.min(1, 0.5f * g + 0.5f);
+                float blight = Math.min(1, 0.5f * b + 0.5f);
+                gl.glColor3f(rlight, glight, blight);
+                gl.glCallList(modelType);
+            }
         } else {
-            gl.glColor4f(obj.r(), obj.g(), obj.b(), obj.alpha());
+            float r;
+            float g;
+            float b;
+            if (config.isUniColorSelected()) {
+                r = config.getUniColorSelectedColor()[0];
+                g = config.getUniColorSelectedColor()[1];
+                b = config.getUniColorSelectedColor()[2];
+            } else {
+                r = obj.r();
+                g = obj.g();
+                b = obj.b();
+            }
+
+            gl.glColor3f(r, g, b);
+            gl.glCallList(modelType);
         }
-        gl.glCallList(modelType);
         gl.glPopMatrix();
     }
 

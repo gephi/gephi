@@ -22,26 +22,19 @@ package org.gephi.graph.dhns.edge.iterators;
 
 import java.util.Iterator;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
-import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantAndSelfIterator;
+import org.gephi.graph.dhns.proposition.Proposition;
+import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
- * Main edge iterator for egdes from a specific node cluster to another cluster. 
- * <p>
- * The iterator returns edges within the range between targets <b>pre</b> number and target 
- * <b>pre + size</b> number. The <code>inner</code> parameter specify if either the iterator
- * returns edges <b>in</b> the range or <b>out</b> the range.
- * <p>
- * Used for <code>getInnerEdges</code> and <code>getOuterEdges</code> methods. 
+ * See {@link RangeEdgeIterator}
  *
  * @author Mathieu Bastian
- * @see ClusteredGraph
  */
 public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<Edge> {
 
@@ -56,17 +49,22 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
     protected PreNode nodeGroup;
     protected boolean undirected;
 
-    public RangeEdgeIterator(TreeStructure treeStructure, PreNode nodeGroup, PreNode target, boolean inner, boolean undirected) {
-        nodeIterator = new DescendantAndSelfIterator(treeStructure, nodeGroup);
+    //Proposition
+    protected Proposition<AbstractEdge> edgeProposition;
+
+    public RangeEdgeIterator(TreeStructure treeStructure, PreNode nodeGroup, PreNode target, boolean inner, boolean undirected, Proposition<PreNode> nodeProposition, Proposition<AbstractEdge> edgeProposition) {
+        nodeIterator = new DescendantAndSelfIterator(treeStructure, nodeGroup, nodeProposition);
         this.inner = inner;
         this.nodeGroup = nodeGroup;
         this.rangeStart = target.getPre();
         this.rangeLimit = rangeStart + target.size;
-        this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
         this.undirected = undirected;
-    }
-
-    public RangeEdgeIterator() {
+        this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
+        if (edgeProposition == null) {
+            this.edgeProposition = new Tautology();
+        } else {
+            this.edgeProposition = edgeProposition;
+        }
     }
 
     @Override
@@ -97,17 +95,19 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
 
     protected boolean testTarget(AbstractEdge edgeImpl) {
         if (!undirected || edgeImpl.getUndirected() == edgeImpl) {
-            if (IN) {
-                PreNode source = edgeImpl.getSource();
-                int pre = source.getPre();
-                if (!inner) {
-                    return pre < rangeStart || pre > rangeLimit;
+            if (edgeProposition.evaluate(edgeImpl)) {
+                if (IN) {
+                    PreNode source = edgeImpl.getSource();
+                    int pre = source.getPre();
+                    if (!inner) {
+                        return pre < rangeStart || pre > rangeLimit;
+                    }
+                } else {
+                    PreNode target = edgeImpl.getTarget();
+                    int pre = target.getPre();
+                    boolean isInner = pre >= rangeStart && pre <= rangeLimit;
+                    return (inner && isInner) || (!inner && !isInner);
                 }
-            } else {
-                PreNode target = edgeImpl.getTarget();
-                int pre = target.getPre();
-                boolean isInner = pre >= rangeStart && pre <= rangeLimit;
-                return (inner && isInner) || (!inner && !isInner);
             }
         }
         return false;

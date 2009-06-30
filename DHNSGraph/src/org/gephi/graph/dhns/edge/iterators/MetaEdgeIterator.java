@@ -21,36 +21,46 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.edge.iterators;
 
 import java.util.Iterator;
-import org.gephi.graph.dhns.edge.ProperEdgeImpl;
-import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.dhns.edge.MetaEdgeImpl;
+import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
+import org.gephi.graph.dhns.proposition.Proposition;
+import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
- * Meta Edge Iterator for edges in the activates view.
- * 
+ * Iterator for meta edges for the visible graph.
+ *
  * @author Mathieu Bastian
+ * @see EdgeIterator
  */
 public class MetaEdgeIterator extends AbstractEdgeIterator implements Iterator<Edge> {
 
     protected AbstractNodeIterator nodeIterator;
-    protected ParamAVLIterator<MetaEdgeImpl> edgeIterator;
+    protected ParamAVLIterator<AbstractEdge> edgeIterator;
     protected PreNode currentNode;
-    protected MetaEdgeImpl pointer;
+    protected AbstractEdge pointer;
     protected boolean undirected;
 
-    public MetaEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected) {
+    //Proposition
+    protected Proposition<AbstractEdge> proposition;
+
+    public MetaEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected, Proposition<AbstractEdge> proposition) {
         this.nodeIterator = nodeIterator;
-        edgeIterator = new ParamAVLIterator<MetaEdgeImpl>();
+        edgeIterator = new ParamAVLIterator<AbstractEdge>();
         this.undirected = undirected;
+        if (proposition == null) {
+            this.proposition = new Tautology();
+        } else {
+            this.proposition = proposition;
+        }
     }
 
     @Override
     public boolean hasNext() {
-        while (pointer == null || (undirected && pointer.getUndirected()!=pointer)) {
+        while (pointer == null || (undirected && pointer.getUndirected() != pointer) || !proposition.evaluate(pointer)) {
             while (!edgeIterator.hasNext()) {
                 if (nodeIterator.hasNext()) {
                     currentNode = nodeIterator.next();
@@ -64,13 +74,12 @@ public class MetaEdgeIterator extends AbstractEdgeIterator implements Iterator<E
 
             pointer = edgeIterator.next();
         }
-
         return true;
     }
 
     @Override
-    public MetaEdgeImpl next() {
-        MetaEdgeImpl e = pointer;
+    public AbstractEdge next() {
+        AbstractEdge e = pointer;
         pointer = null;
         return e;
     }

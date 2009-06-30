@@ -95,13 +95,34 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
 
         //Color
         if (!selected) {
+            float r;
+            float g;
+            float b;
+            float a;
             if (config.isEdgeUniColor()) {
                 float[] uni = config.getEdgeUniColorValue();
-                gl.glColor4f(uni[0], uni[1], uni[2], uni[3]);
+                r = uni[0];
+                g = uni[1];
+                b = uni[2];
+                a = uni[3];
             } else {
-                gl.glColor4f(edge.r(), edge.g(), edge.b(), edge.alpha());
+                r = edge.r();
+                g = edge.g();
+                b = edge.b();
+                a = edge.alpha();
+            }
+            if (config.isLightenNonSelected()) {
+                float lightColorFactor = config.getLightenNonSelectedFactor();
+                a = a - (a - 0.1f) * lightColorFactor;
+                gl.glColor4f(r, g, b, a);
+            } else {
+                gl.glColor4f(r, g, b, a);
             }
         } else {
+            float rdark = 0.498f * edge.r();
+            float gdark = 0.498f * edge.g();
+            float bdark = 0.498f * edge.b();
+            gl.glColor4f(rdark, gdark, bdark, 1f);
         }
 
         //Draw the triangle

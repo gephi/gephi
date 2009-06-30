@@ -77,21 +77,21 @@ public abstract class GLAbstractListener implements GLEventListener {
 
         //Depth
         if (vizConfig.use3d()) {
-            gl.glEnable(GL.GL_DEPTH_TEST);
+            gl.glEnable(GL.GL_DEPTH_TEST);      //Enable Z-Ordering
             gl.glDepthFunc(GL.GL_LEQUAL);
             gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);	//Correct texture & colors perspective calculations
         } else {
-            gl.glDisable(GL.GL_DEPTH_TEST);
+            gl.glDisable(GL.GL_DEPTH_TEST);     //Z is set by the order of drawing
         }
 
         //Cull face
-        if (vizConfig.isCulling()) {
+        if (vizConfig.isCulling()) {        //When enabled, increases performance but polygons must be drawn counterclockwise
             gl.glEnable(GL.GL_CULL_FACE);
-            gl.glCullFace(GL.GL_BACK);
+            gl.glCullFace(GL.GL_BACK);      //Hide back face of polygons
         }
 
         //Point Smooth
-        if (vizConfig.isPointSmooth()) {
+        if (vizConfig.isPointSmooth()) {        //Only for GL_POINTS
             gl.glEnable(GL.GL_POINT_SMOOTH);
             gl.glHint(GL.GL_POINT_SMOOTH_HINT, GL.GL_NICEST); //Point smoothing
         } else {
@@ -99,7 +99,7 @@ public abstract class GLAbstractListener implements GLEventListener {
         }
 
         //Light Smooth
-        if (vizConfig.isLineSmooth()) {
+        if (vizConfig.isLineSmooth()) {         //Only for GL_LINES
             gl.glEnable(GL.GL_LINE_SMOOTH);
             if (vizConfig.isLineSmoothNicest()) {
                 gl.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST);
@@ -120,7 +120,7 @@ public abstract class GLAbstractListener implements GLEventListener {
         if (vizConfig.isLighting()) {
             gl.glEnable(GL.GL_LIGHTING);
             setLighting(gl);
-            gl.glEnable(GL.GL_NORMALIZE);
+            gl.glEnable(GL.GL_NORMALIZE);       //Normalise colors when glScale used
             gl.glShadeModel(GL.GL_SMOOTH);
         } else {
             gl.glDisable(GL.GL_LIGHTING);
@@ -133,7 +133,7 @@ public abstract class GLAbstractListener implements GLEventListener {
             if (vizConfig.isBlendingCinema()) {
                 gl.glBlendFunc(GL.GL_CONSTANT_COLOR, GL.GL_ONE_MINUS_SRC_ALPHA);        //Black display
             } else {
-                gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+                gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);             //Use alpha values correctly
             }
         }
 
@@ -141,7 +141,7 @@ public abstract class GLAbstractListener implements GLEventListener {
         //Material
         if (vizConfig.isMaterial()) {
             gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
-            gl.glEnable(GL.GL_COLOR_MATERIAL);
+            gl.glEnable(GL.GL_COLOR_MATERIAL);                                      //Use color and avoid using glMaterial
         }
         //Mesh view
         if (vizConfig.isWireFrame()) {

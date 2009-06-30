@@ -28,7 +28,7 @@ import java.util.NavigableSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
- * Scalable concurrent history, based on jdk6's new collections api
+ * Scalable concurrent history
  *
  * @author Julian Bilcke
  */
@@ -54,13 +54,17 @@ public class TreeHistory implements History {
         size++;
     }
 
+    public int getSize() {
+        // implemented as a variable since getting the size is slow with
+        // ConcurrentSkipListSets
+        return size;
+    }
+
+
     private class StateComparator implements Comparator<State> {
         public int compare(State s1, State s2) {
             return s1.getComparable().compareTo(s2);
         }
     }
 
-    public int getSize() {
-        return size;
-    }
 }

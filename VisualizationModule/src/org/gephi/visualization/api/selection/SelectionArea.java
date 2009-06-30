@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.api.selection;
 
+import javax.media.opengl.GL;
+import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
@@ -37,4 +39,6 @@ public interface SelectionArea {
     public abstract boolean select(Renderable object);
 
     public abstract boolean unselect(Renderable object);
+
+    public void drawArea(GL gl, GLU glu);
 }

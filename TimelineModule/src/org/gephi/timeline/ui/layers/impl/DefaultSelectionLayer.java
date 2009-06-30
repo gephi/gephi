@@ -20,31 +20,35 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
- * BottomPane.java
+ * DefaultInfoLayer.java
  *
- * Created on Jun 21, 2009, 1:27:29 PM
+ * Created on Jun 21, 2009, 3:48:03 PM
  */
 
-package org.gephi.timeline.ui;
+package org.gephi.timeline.ui.layers.impl;
 
-import org.gephi.timeline.ui.skins.impl.DefaultSkin;
-import org.gephi.timeline.ui.skins.api.TimelineSkin;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import org.gephi.timeline.ui.layers.api.InfoLayer;
+import org.gephi.timeline.ui.layers.api.SelectionLayer;
 
 /**
  *
  * @author Julian Bilcke
  */
-public class BottomPane extends javax.swing.JPanel {
+public class DefaultSelectionLayer extends DefaultLayer implements SelectionLayer {
     
     private static final long serialVersionUID = 1L;
 
-    // a skin that will fit our BottomPane
-    private TimelineSkin skin;
+    protected float from;
+    protected float to;
 
-    /** Creates new form BottomPane */
-    public BottomPane() {
+    /** Creates new form DefaultInfoLayer */
+    public DefaultSelectionLayer() {
         initComponents();
-        skin = new DefaultSkin();
+        from = 0.0f;
+        to = 1.0f;
     }
 
     /** This method is called from within the constructor to
@@ -60,16 +64,20 @@ public class BottomPane extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 568, Short.MAX_VALUE)
+            .addGap(0, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 110, Short.MAX_VALUE)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+
+    public void selectZone(float from, float to) {
+        this.from = from;
+        this.to = to;
+    }
 
 }

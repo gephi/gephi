@@ -19,12 +19,13 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.gephi.dynamic.api;
+package org.gephi.timeline.api;
 
 /**
  *
  * @author Julian Bilcke
  */
-public interface NodeAtrributesState {
-    public String getValue(String key);
+public interface TimelineDataModelListener {
+
+    public void timelineDataModelUpdated(TimelineDataModel model);
 }

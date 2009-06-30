@@ -40,6 +40,8 @@ import org.gephi.visualization.bridge.EventBridge;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.mode.ModeManager;
 import org.gephi.visualization.opengl.octree.Octree;
+import org.gephi.visualization.opengl.text.TextManager;
+import org.gephi.visualization.selection.Rectangle;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 
 /**
@@ -69,6 +71,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected EventBridge eventBridge;
     protected VizConfig vizConfig;
     protected ModeManager modeManager;
+    protected TextManager textManager;
 
     //States
     protected EngineLifeCycle lifeCycle = new EngineLifeCycle();
@@ -84,6 +87,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         this.eventBridge = VizController.getInstance().getEventBridge();
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.modeManager = VizController.getInstance().getModeManager();
+        this.textManager = VizController.getInstance().getTextManager();
         initObject3dClass();
     }
 
@@ -155,7 +159,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     }
 
     protected boolean isUnderMouse(ModelImpl obj) {
-        if(obj.isAutoSelected()) {
+        if (obj.isAutoSelected()) {
             return true;
         }
         float x1 = graphIO.getMousePosition()[0];

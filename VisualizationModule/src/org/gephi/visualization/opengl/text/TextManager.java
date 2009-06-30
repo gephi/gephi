@@ -18,39 +18,96 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.visualization.opengl.text;
 
 import com.sun.opengl.util.j2d.TextRenderer;
 import java.awt.Font;
-import javax.media.opengl.GL;
-import javax.media.opengl.glu.GLU;
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
+import org.gephi.graph.api.EdgeData;
+import org.gephi.graph.api.NodeData;
+import org.gephi.graph.api.Renderable;
+import org.gephi.graph.api.TextData;
+import org.gephi.visualization.VizArchitecture;
+import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.api.VizConfig;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class TextManager {
+public class TextManager implements VizArchitecture {
 
+    //Architecture
+    private VizConfig vizConfig;
+
+    //Processing
     private TextUtils textUtils;
+    private TextRenderer renderer;
+    private TextDataBuilder builder;
+
+    //Variables
+    private ColorMode colorMode;
+    private SizeMode sizeMode;
 
     public TextManager() {
         textUtils = new TextUtils(this);
+        colorMode = new UniqueColorMode();
+        sizeMode = new ScaledSizeMode();
+        builder = new TextDataBuilder();
     }
 
-    public void renderText(GL gl, GLU glu)
-    {
-        
+    public void initArchitecture() {
+        vizConfig = VizController.getInstance().getVizConfig();
+        renderer = new TextRenderer(vizConfig.getDefaultLabelFont(), false, false, null, true);
     }
 
-
-    public TextRenderer getRenderer()
-    {
-        return null;
+    public void defaultNodeColor() {
+        colorMode.defaultNodeColor(renderer);
     }
 
-    public void setFont(Font font)
-    {
+    public void defaultEdgeColor() {
+        colorMode.defaultEdgeColor(renderer);
+    }
 
+    public void beginRendering() {
+        renderer.begin3DRendering();
+    }
+
+    public void endRendering() {
+        renderer.end3DRendering();
+    }
+
+    public void drawText(ModelImpl model) {
+        Renderable renderable = model.getObj();
+        TextDataImpl textData = (TextDataImpl) renderable.getTextData();
+        if (textData != null) {
+            colorMode.textColor(renderer, textData, model);
+            sizeMode.setSizeFactor(textData, model);
+
+            String txt = textData.line.text;
+            Rectangle2D r = renderer.getBounds(txt);
+            int posX = (int) renderable.x() - (int) r.getWidth() / 2;
+            int posY = (int) renderable.y() - (int) r.getHeight() / 2;
+
+            renderer.draw3D(txt, posX, posY, 0, textData.sizeFactor);
+        }
+    }
+
+    public TextRenderer getRenderer() {
+        return renderer;
+    }
+
+    public void setFont(Font font) {
+        renderer = new TextRenderer(font, false, false, null, true);
+    }
+
+    public TextData newTextData(NodeData node) {
+        return builder.buildTextNode(node);
+    }
+
+    public TextData newTextData(EdgeData edge) {
+        return builder.buildTextEdge(edge);
     }
 }

@@ -23,6 +23,8 @@ package org.gephi.visualization.api.objects;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.media.opengl.GL;
+import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.api.initializer.Modeler;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.initializer.CompatibilityModeler;
@@ -47,6 +49,14 @@ public class CompatibilityModelClass extends ModelClass {
             ModelImpl obj = iterator.next();
             currentModeler.chooseModel(obj);
         }
+    }
+
+    public void beforeDisplay(GL gl, GLU glu) {
+        currentModeler.beforeDisplay(gl, glu);
+    }
+
+    public void afterDisplay(GL gl, GLU glu) {
+        currentModeler.afterDisplay(gl, glu);
     }
 
     public void addModeler(Modeler modeler) {

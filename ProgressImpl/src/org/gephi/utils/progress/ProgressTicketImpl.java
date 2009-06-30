@@ -45,7 +45,11 @@ public final class ProgressTicketImpl implements ProgressTicket {
      */
     public void finish() {
         if (handle != null) {
-            handle.finish();
+            try {
+                handle.finish();
+            } catch (Exception e) {
+                System.err.println("Progress Handle failed to finish");
+            }
         }
     }
 

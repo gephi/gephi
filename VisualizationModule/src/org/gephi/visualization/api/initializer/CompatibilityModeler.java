@@ -37,4 +37,8 @@ public interface CompatibilityModeler<O extends Renderable> extends Modeler {
     public void chooseModel(ModelImpl<O> obj);
 
     public void initFromOpenGLThread();
+
+    public void beforeDisplay(GL gl, GLU glu);
+
+    public void afterDisplay(GL gl, GLU glu);
 }

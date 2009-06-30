@@ -22,6 +22,7 @@ package org.gephi.dynamic;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.History;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -30,7 +31,7 @@ import org.gephi.graph.api.Node;
  *
  * @author Julian Bilcke
  */
-public class DynamicControllerImpl {
+public class DynamicControllerImpl implements DynamicController {
 
     Map<Node, History> nodeHistory;
     Map<Edge, History> edgeHistory;
@@ -39,4 +40,14 @@ public class DynamicControllerImpl {
         nodeHistory = new HashMap<Node, History>();
         edgeHistory = new HashMap<Edge, History>();
     }
+    public void add() {
+    }
+    public void del() {
+    }
+    public void up() {
+    }
+    public void setVisible() {
+    }
+
+    
 }

@@ -68,25 +68,5 @@ public class DefaultBackgroundLayer extends DefaultLayer implements BackgroundLa
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 
-    public void paint(Graphics g) {
-        super.paint(g);
-        Graphics2D g2d = (Graphics2D) g;
-
-       // BufferedImage snapshot = new BufferedImage(getWidth(), getHeight(),
-		//		BufferedImage.TYPE_INT_ARGB);
-		//Graphics2D graphics2d = snapshot.createGraphics();
-		g2d.setRenderingHints(antialiasingHints);
-
-        g2d.setPaint(skin.getBackgroundLayerPaint());
-
-        GeneralPath shape = new GeneralPath();
- 
-        shape.moveTo(1, 1);
-        //shape.lineTo(2, 2);
-        shape.quadTo(3, 3, 4, 4);
-        //shape.curveTo(5, 5, 6, 6, 7, 7);
-        shape.closePath();
-        
-    }
 
 }

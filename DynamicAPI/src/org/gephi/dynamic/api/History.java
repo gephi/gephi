@@ -35,6 +35,7 @@ public interface History {
 
     public State getLastStateExistingInInterval(State from, State to);
     public void addState(State state);
+    public State getLowerState(State state);
     public int getSize();
 
 }

@@ -20,10 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.timeline.ui.skins.impl;
 
-import org.gephi.timeline.ui.skins.api.TimelineSkin;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.GradientPaint;
-import java.awt.Paint;
+import java.awt.Stroke;
 
 /**
  * skyscrapper theme - blue sky background, grey metallic foreground
@@ -36,44 +36,56 @@ import java.awt.Paint;
  */
 public class SkyscrapperSkin extends DefaultSkin {
 
-    final static private Color defaultBackgroundColor = new Color (255, 255, 255, 0);
-    final static private Color defaultForegroundColor = new Color (55, 55, 55, 20);
-    final static private Color defaultBorderColor = new Color (12, 12, 12, 0);
+    final static private Color defaultBackgroundColor = new Color(255, 255, 255, 255);
+    final static private Color defaultForegroundColor = new Color(55, 55, 55, 255);
+    final static private Color defaultBorderColor = new Color(12, 12, 12, 255);
 
     private static class background {
 
-        final static private Color upperColor = new Color (242, 241, 241, 0);
-        final static private Color bottomColor = new Color (255, 255, 255, 0);
-
-        final static private Color highlightedUpperColor = new Color (221, 220, 220, 0);
-        final static private Color highlightedBottomColor = new Color (255, 255, 255, 0);
-
+        final static private Color upperColor = new Color(242, 241, 241, 255);
+        final static private Color bottomColor = new Color(255, 255, 255, 255);
+        final static private Color highlightedUpperColor = new Color(221, 220, 220, 255);
+        final static private Color highlightedBottomColor = new Color(255, 255, 255, 255);
     }
-    private Paint backgroundLayerPaint = new GradientPaint(0, 0, background.upperColor, 1, 10, background.bottomColor, true);
-    private Paint highlightedBackgroundLayerPaint = new GradientPaint(0, 0, background.highlightedUpperColor, 1, 10, background.highlightedBottomColor, true);
 
+    @Override
     public void compileBackgroundLayerPaint(double width, double height) {
-        backgroundLayerPaint = new GradientPaint(0, 0, background.upperColor, 1, (int) height, background.bottomColor, true);
-        highlightedBackgroundLayerPaint = new GradientPaint(0, 0, background.highlightedUpperColor, 1, (int) height, background.highlightedBottomColor, true);
-
+        backgroundLayerPaint = new GradientPaint(0, 0, background.upperColor, 0, (int) height, background.bottomColor, true);
+        highlightedBackgroundLayerPaint = new GradientPaint(0, 0, background.highlightedUpperColor, 0, (int) height, background.highlightedBottomColor, true);
     }
 
     private static class data {
 
-        final static private Color upperColor = new Color (220, 220, 220, 0);
-        final static private Color bottomColor = new Color (123, 123, 123, 0);
-
-        final static private Color highlightedUpperColor = new Color (120, 150, 180, 0);
-        final static private Color highlightedBottomColor = new Color (115, 147, 176, 0);
-
+        final static private Color upperColor = new Color(123, 123, 123, 255);
+        final static private Color bottomColor = new Color(220, 220, 220, 255);
+        final static private Color highlightedUpperColor = new Color(120, 150, 180, 255);
+        final static private Color highlightedBottomColor = new Color(115, 147, 176, 255);
+        final static private Stroke defaultStroke = new BasicStroke(1.0f);
+        final static private Color defaultStrokeColor = Color.black;
     }
-    private Paint dataLayerPaint = new GradientPaint(0, 0, data.upperColor, 1, 10, data.bottomColor, true);
-    private Paint highlightedDataLayerPaint = new GradientPaint(0, 0, data.highlightedUpperColor, 1, 10, data.highlightedBottomColor, true);
 
-
+    @Override
     public void compileDataLayerPaint(double width, double height) {
-        dataLayerPaint = new GradientPaint(0, 0, data.upperColor, 1, (int) height, data.bottomColor, true);
-        highlightedDataLayerPaint = new GradientPaint(0, 0, data.highlightedUpperColor, 1, (int) height, data.highlightedBottomColor, true);
+        dataLayerPaint = new GradientPaint(0, 0, data.upperColor, 0, (int) height, data.bottomColor, true);
+        highlightedDataLayerPaint = new GradientPaint(0, (int) height, data.highlightedUpperColor, 0, (int) height, data.highlightedBottomColor, true);
     }
 
+    /**
+     * Painters for the selection layer
+     *
+     */
+    private static class selection {
+
+        final static private Color upperColor = new Color(123, 123, 123, 255);
+        final static private Color bottomColor = new Color(220, 220, 220, 255);
+        final static private Color highlightedUpperColor = new Color(120, 150, 180, 255);
+        final static private Color highlightedBottomColor = new Color(115, 147, 176, 255);
+        final static private Stroke defaultStroke = new BasicStroke(1.0f);
+        final static private Color defaultStrokeColor = Color.black;
+    }
+
+    public void compileSelectionLayerPaint(double width, double height) {
+        selectionLayerPaint = new GradientPaint(0, 0, selection.upperColor, 0, (int) height, selection.bottomColor, true);
+        highlightedSelectionLayerPaint = new GradientPaint(0, 0, selection.highlightedUpperColor, 0, (int) height, selection.highlightedBottomColor, true);
+    }
 }

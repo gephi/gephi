@@ -1,6 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+Copyright 2008 WebAtlas
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.core;
 
@@ -81,13 +97,13 @@ public class DhnsTestVisibleUndirectedGraph {
         Node node7 = nodeMap.get("Node 7");
         Node node8 = nodeMap.get("Node 8");
 
-        AbstractEdge edge1 = factory.newEdge(node4, node5);
-        AbstractEdge edge2 = factory.newEdge(node5, node6);
-        AbstractEdge edge3 = factory.newEdge(node6, node5);
-        AbstractEdge edge4 = factory.newEdge(node7, node7);
-        AbstractEdge edge5 = factory.newEdge(node4, node4);
-        AbstractEdge edge6 = factory.newEdge(node3, node4);
-        AbstractEdge edge7 = factory.newEdge(node4, node3);
+        AbstractEdge edge1 = factory.newEdge(node4, node5, 1f, false);
+        AbstractEdge edge2 = factory.newEdge(node5, node6, 1f, false);
+        AbstractEdge edge3 = factory.newEdge(node6, node5, 1f, false);
+        AbstractEdge edge4 = factory.newEdge(node7, node7, 1f, false);
+        AbstractEdge edge5 = factory.newEdge(node4, node4, 1f, false);
+        AbstractEdge edge6 = factory.newEdge(node3, node4, 1f, false);
+        AbstractEdge edge7 = factory.newEdge(node4, node3, 1f, false);
 
         graphGlobal.addEdge(edge1);
         graphGlobal.addEdge(edge2);

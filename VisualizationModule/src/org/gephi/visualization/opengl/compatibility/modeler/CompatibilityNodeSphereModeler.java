@@ -26,12 +26,15 @@ import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JPanel;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
+import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.initializer.CompatibilityNodeModeler;
 import org.gephi.visualization.modeler.NodeSphereModeler;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.opengl.compatibility.objects.NodeSphereModel;
+import org.gephi.visualization.opengl.text.TextManager;
 
 /**
  * Default initializer for the nodes. The class draw sphere objects and manage a LOD system.
@@ -46,18 +49,28 @@ public class CompatibilityNodeSphereModeler extends NodeSphereModeler implements
     public int SHAPE_SPHERE32;
     public int SHAPE_BILLBOARD;
     private CompatibilityEngine engine;
+    private VizConfig config;
+    protected TextManager textManager;
 
     public CompatibilityNodeSphereModeler(AbstractEngine engine) {
         this.engine = (CompatibilityEngine) engine;
+        this.config = VizController.getInstance().getVizConfig();
+        this.textManager = VizController.getInstance().getTextManager();
     }
 
     @Override
     public ModelImpl initModel(Renderable n) {
+        NodeData nd = (NodeData) n;
         NodeSphereModel obj = new NodeSphereModel();
-        obj.setObj((NodeData) n);
+        obj.setObj(nd);
         obj.setSelected(false);
         obj.setDragDistanceFromMouse(new float[2]);
         n.setModel(obj);
+        obj.setConfig(config);
+
+        if(n.getTextData()==null) {
+            n.setTextData(textManager.newTextData(nd));
+        }
 
         chooseModel(obj);
         return obj;
@@ -104,6 +117,12 @@ public class CompatibilityNodeSphereModeler extends NodeSphereModeler implements
         gl.glEndList();
 
         return SHAPE_SPHERE32;
+    }
+
+    public void beforeDisplay(GL gl, GLU glu) {
+    }
+
+    public void afterDisplay(GL gl, GLU glu) {
     }
 
     @Override

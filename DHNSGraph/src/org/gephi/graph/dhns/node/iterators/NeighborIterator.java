@@ -25,6 +25,8 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.proposition.Proposition;
+import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
  * Iterator on neighbour of a node. The edge iterator is given to the constructor.
@@ -35,29 +37,39 @@ public class NeighborIterator extends AbstractNodeIterator implements Iterator<N
 
     private AbstractEdgeIterator edgeIterator;
     private PreNode owner;
-    private AbstractEdge pointer;
+    private PreNode pointer;
+    //Propostion
+    private Proposition<PreNode> proposition;
 
-    public NeighborIterator(AbstractEdgeIterator edgeIterator, PreNode owner) {
+    public NeighborIterator(AbstractEdgeIterator edgeIterator, PreNode owner, Proposition<PreNode> proposition) {
         this.edgeIterator = edgeIterator;
         this.owner = owner;
+        if (proposition == null) {
+            this.proposition = new Tautology();
+        } else {
+            this.proposition = proposition;
+        }
     }
 
     public boolean hasNext() {
         while (edgeIterator.hasNext()) {
-            pointer = edgeIterator.next();
-            if (!pointer.isSelfLoop()) {
-                return true;
+            AbstractEdge edge = edgeIterator.next();
+            if (!edge.isSelfLoop()) {
+                if (edge.getSource() == owner) {
+                    pointer = edge.getTarget();
+                } else {
+                    pointer = edge.getSource();
+                }
+                if(proposition.evaluate(pointer)) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
     public PreNode next() {
-        if (pointer.getSource() == owner) {
-            return pointer.getTarget();
-        } else {
-            return pointer.getSource();
-        }
+        return pointer;
     }
 
     public void remove() {

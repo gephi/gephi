@@ -27,6 +27,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.timeline.ui.layers.impl;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
@@ -55,11 +56,11 @@ public class DefaultDataLayer extends DefaultLayer implements DataLayer {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 485, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 276, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -67,30 +68,6 @@ public class DefaultDataLayer extends DefaultLayer implements DataLayer {
     // End of variables declaration//GEN-END:variables
 
 
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        Graphics2D g2d = (Graphics2D) g;
 
-       // BufferedImage snapshot = new BufferedImage(getWidth(), getHeight(),
-		//		BufferedImage.TYPE_INT_ARGB);
-		//Graphics2D graphics2d = snapshot.createGraphics();
-		g2d.setRenderingHints(antialiasingHints);
-
-        g2d.setPaint(skin.getDataLayerPaint());
-
-        GeneralPath shape = new GeneralPath();
-            /*
-        shape.moveTo(1, 1);
-        shape.lineTo(2, 2);
-        shape.quadTo(3, 3, 4, 4);
-        shape.curveTo(5, 5, 6, 6, 7, 7);
-        shape.closePath();
-            */
-    }
-
-    public void setSkin(TimelineSkin skin) {
-        this.skin = skin;
-    }
 
 }

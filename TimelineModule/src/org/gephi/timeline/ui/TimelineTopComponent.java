@@ -23,6 +23,10 @@ package org.gephi.timeline.ui;
 
 import java.io.Serializable;
 import java.util.logging.Logger;
+import org.gephi.timeline.api.TimelineDataModel;
+import org.gephi.timeline.ui.layers.impl.UpperPaneBackgroundLayer;
+import org.gephi.timeline.ui.layers.impl.UpperPaneDataLayer;
+import org.gephi.timeline.ui.layers.impl.UpperPaneInfoLayer;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -34,6 +38,7 @@ import org.openide.windows.WindowManager;
 final class TimelineTopComponent extends TopComponent {
 
     private static TimelineTopComponent instance;
+    private TimelineDataModel model;
 
     /** path to the icon used by the component and its open action */
     static final String ICON_PATH = "resources/date.png";
@@ -57,51 +62,158 @@ final class TimelineTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        upperPane1 = new org.gephi.timeline.ui.UpperPane();
-        bottomPane1 = new org.gephi.timeline.ui.BottomPane();
+        upperBackground = new UpperPaneBackgroundLayer();
+        upperData = new UpperPaneDataLayer();
+        bottomBackground = new org.gephi.timeline.ui.layers.impl.BottomPaneBackgroundLayer();
+        bottomData = new org.gephi.timeline.ui.layers.impl.BottomPaneDataLayer();
 
-        javax.swing.GroupLayout upperPane1Layout = new javax.swing.GroupLayout(upperPane1);
-        upperPane1.setLayout(upperPane1Layout);
-        upperPane1Layout.setHorizontalGroup(
-            upperPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 661, Short.MAX_VALUE)
+        upperBackground.setBorder(null);
+
+        upperData.setBorder(null);
+        upperData.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                upperDataMouseWheelMoved(evt);
+            }
+        });
+        upperData.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                upperDataMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                upperDataMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                upperDataMouseExited(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                upperDataMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                upperDataMouseReleased(evt);
+            }
+        });
+        upperData.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                upperDataMouseDragged(evt);
+            }
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                upperDataMouseMoved(evt);
+            }
+        });
+
+        javax.swing.GroupLayout upperDataLayout = new javax.swing.GroupLayout(upperData);
+        upperData.setLayout(upperDataLayout);
+        upperDataLayout.setHorizontalGroup(
+            upperDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 673, Short.MAX_VALUE)
         );
-        upperPane1Layout.setVerticalGroup(
-            upperPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 43, Short.MAX_VALUE)
+        upperDataLayout.setVerticalGroup(
+            upperDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 54, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout bottomPane1Layout = new javax.swing.GroupLayout(bottomPane1);
-        bottomPane1.setLayout(bottomPane1Layout);
-        bottomPane1Layout.setHorizontalGroup(
-            bottomPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 661, Short.MAX_VALUE)
+        javax.swing.GroupLayout upperBackgroundLayout = new javax.swing.GroupLayout(upperBackground);
+        upperBackground.setLayout(upperBackgroundLayout);
+        upperBackgroundLayout.setHorizontalGroup(
+            upperBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(upperData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        bottomPane1Layout.setVerticalGroup(
-            bottomPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 108, Short.MAX_VALUE)
+        upperBackgroundLayout.setVerticalGroup(
+            upperBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(upperData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        bottomBackground.setBorder(null);
+
+        bottomData.setBorder(null);
+        bottomData.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                bottomDataMouseMoved(evt);
+            }
+        });
+
+        javax.swing.GroupLayout bottomDataLayout = new javax.swing.GroupLayout(bottomData);
+        bottomData.setLayout(bottomDataLayout);
+        bottomDataLayout.setHorizontalGroup(
+            bottomDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 673, Short.MAX_VALUE)
+        );
+        bottomDataLayout.setVerticalGroup(
+            bottomDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 123, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout bottomBackgroundLayout = new javax.swing.GroupLayout(bottomBackground);
+        bottomBackground.setLayout(bottomBackgroundLayout);
+        bottomBackgroundLayout.setHorizontalGroup(
+            bottomBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(bottomData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        bottomBackgroundLayout.setVerticalGroup(
+            bottomBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(bottomData, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(upperPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(bottomPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(upperBackground, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(bottomBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(upperPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(upperBackground, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bottomPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(bottomBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void upperDataMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_upperDataMouseMoved
+        // TODO add your handling code here:
+}//GEN-LAST:event_upperDataMouseMoved
+
+    private void upperDataMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_upperDataMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_upperDataMouseEntered
+
+    private void upperDataMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_upperDataMouseDragged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_upperDataMouseDragged
+
+    private void upperDataMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_upperDataMouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_upperDataMouseExited
+
+    private void upperDataMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_upperDataMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_upperDataMouseClicked
+
+    private void upperDataMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_upperDataMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_upperDataMousePressed
+
+    private void upperDataMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_upperDataMouseReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_upperDataMouseReleased
+
+    private void upperDataMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_upperDataMouseWheelMoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_upperDataMouseWheelMoved
+
+    private void bottomDataMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bottomDataMouseMoved
+        System.out.println("moving inside the data..");
+        // print a small circle around the position
+
+    }//GEN-LAST:event_bottomDataMouseMoved
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.gephi.timeline.ui.BottomPane bottomPane1;
-    private org.gephi.timeline.ui.UpperPane upperPane1;
+    private org.gephi.timeline.ui.layers.impl.BottomPaneBackgroundLayer bottomBackground;
+    private org.gephi.timeline.ui.layers.impl.BottomPaneDataLayer bottomData;
+    private org.gephi.timeline.ui.layers.impl.UpperPaneBackgroundLayer upperBackground;
+    private org.gephi.timeline.ui.layers.impl.UpperPaneDataLayer upperData;
     // End of variables declaration//GEN-END:variables
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,

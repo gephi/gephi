@@ -27,13 +27,19 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.timeline.ui.layers.impl;
 
-import org.gephi.timeline.ui.layers.impl.DefaultInfoLayer;
+import java.awt.Color;
+import java.awt.Graphics;
 
 /**
  *
  * @author Julian Bilcke
  */
 public class BottomPaneInfoLayer extends DefaultInfoLayer {
+    private static final long serialVersionUID = 1L;
+
+    private boolean showMarker = false;
+    private int mousex = 0;
+    private int mousey = 0;
 
     /** Creates new form BottomPaneInfoLayer */
     public BottomPaneInfoLayer() {
@@ -49,6 +55,20 @@ public class BottomPaneInfoLayer extends DefaultInfoLayer {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                formMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                formMouseExited(evt);
+            }
+        });
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -60,6 +80,30 @@ public class BottomPaneInfoLayer extends DefaultInfoLayer {
             .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        // TODO add your handling code here:
+        mousex = evt.getX();
+        mousey = evt.getY();
+    }//GEN-LAST:event_formMouseMoved
+
+    private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
+        showMarker = true;
+    }//GEN-LAST:event_formMouseEntered
+
+    private void formMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseExited
+        showMarker = false;
+    }//GEN-LAST:event_formMouseExited
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+
+        if (showMarker) {
+            g.setColor( Color.black );
+            g.fillOval(10,10,10,10);
+        }
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

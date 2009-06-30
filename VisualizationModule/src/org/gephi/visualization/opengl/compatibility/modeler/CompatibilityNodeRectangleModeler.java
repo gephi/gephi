@@ -33,6 +33,7 @@ import org.gephi.visualization.api.initializer.CompatibilityNodeModeler;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.opengl.compatibility.objects.NodeRectangeModel;
+import org.gephi.visualization.opengl.text.TextManager;
 
 /**
  *
@@ -42,23 +43,27 @@ public class CompatibilityNodeRectangleModeler implements CompatibilityNodeModel
 
     private CompatibilityEngine engine;
     protected VizConfig config;
-    public int SHAPE_RECTANGLE;
-    public int SHAPE_RECTANGLE_BORDER;
-    public int SHAPE_RECTANGLE_WITH_BORDER;
+    protected TextManager textManager;
 
     public CompatibilityNodeRectangleModeler(AbstractEngine engine) {
         this.engine = (CompatibilityEngine) engine;
         this.config = VizController.getInstance().getVizConfig();
+        this.textManager = VizController.getInstance().getTextManager();
     }
 
     @Override
     public ModelImpl initModel(Renderable n) {
+        NodeData nd = (NodeData) n;
         NodeRectangeModel obj = new NodeRectangeModel();
         obj.setObj((NodeData) n);
         obj.setSelected(false);
         obj.setConfig(config);
         obj.setDragDistanceFromMouse(new float[2]);
         n.setModel(obj);
+
+        if (n.getTextData() == null) {
+            n.setTextData(textManager.newTextData(nd));
+        }
 
         chooseModel(obj);
         return obj;
@@ -70,49 +75,23 @@ public class CompatibilityNodeRectangleModeler implements CompatibilityNodeModel
 
         float distance = engine.cameraDistance(object3d) / object3d.getObj().getRadius();
         if (distance > 600) {
-            obj.modelType = SHAPE_RECTANGLE;
-            obj.modelBorderType = 0;
+            obj.border = false;
         } else {
-            obj.modelType = SHAPE_RECTANGLE_WITH_BORDER;
-            obj.modelBorderType = SHAPE_RECTANGLE_BORDER;
+            obj.border = true;
         }
     }
 
     @Override
     public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr) {
+        return ptr;
+    }
 
-        SHAPE_RECTANGLE = ptr + 1;
-        gl.glNewList(SHAPE_RECTANGLE, GL.GL_COMPILE);
-        gl.glBegin(GL.GL_TRIANGLE_STRIP);
-        gl.glVertex3f(0.5f, 0.5f, 0);
-        gl.glVertex3f(-0.5f, 0.5f, 0);
-        gl.glVertex3f(0.5f, -0.5f, 0);
-        gl.glVertex3f(-0.5f, -0.5f, 0);
+    public void beforeDisplay(GL gl, GLU glu) {
+        gl.glBegin(GL.GL_QUADS);
+    }
+
+    public void afterDisplay(GL gl, GLU glu) {
         gl.glEnd();
-        gl.glEndList();
-
-        SHAPE_RECTANGLE_WITH_BORDER = SHAPE_RECTANGLE + 1;
-        gl.glNewList(SHAPE_RECTANGLE_WITH_BORDER, GL.GL_COMPILE);
-        gl.glBegin(GL.GL_TRIANGLE_STRIP);
-        gl.glVertex3f(0.4f, 0.4f, 0);
-        gl.glVertex3f(-0.4f, 0.4f, 0);
-        gl.glVertex3f(0.4f, -0.4f, 0);
-        gl.glVertex3f(-0.4f, -0.4f, 0);
-        gl.glEnd();
-        gl.glEndList();
-
-        SHAPE_RECTANGLE_BORDER = SHAPE_RECTANGLE_WITH_BORDER + 1;
-        gl.glNewList(SHAPE_RECTANGLE_BORDER, GL.GL_COMPILE);
-        gl.glBegin(GL.GL_TRIANGLE_STRIP);
-        gl.glVertex3f(0.5f, 0.5f, 0);
-        gl.glVertex3f(-0.5f, 0.5f, 0);
-        gl.glVertex3f(0.5f, -0.5f, 0);
-        gl.glVertex3f(-0.5f, -0.5f, 0);
-        gl.glEnd();
-        gl.glEndList();
-
-
-        return SHAPE_RECTANGLE_BORDER;
     }
 
     @Override

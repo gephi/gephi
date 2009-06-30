@@ -40,9 +40,12 @@ public class DefaultInfoLayer extends DefaultLayer implements InfoLayer {
     
     private static final long serialVersionUID = 1L;
 
+    private Comparable unit;
+
     /** Creates new form DefaultInfoLayer */
     public DefaultInfoLayer() {
         initComponents();
+        unit = new Float(1.0);
     }
 
     /** This method is called from within the constructor to
@@ -70,15 +73,7 @@ public class DefaultInfoLayer extends DefaultLayer implements InfoLayer {
     // End of variables declaration//GEN-END:variables
 
     public void setUnit(Comparable unit) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setFont(new Font("DejaVu Sans Mono", 0, 12));
-		g2d.drawString("hello", 10, 1);
+        this.unit = unit;
     }
 
 }

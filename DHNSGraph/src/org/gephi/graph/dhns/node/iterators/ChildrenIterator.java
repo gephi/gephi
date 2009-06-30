@@ -27,11 +27,14 @@ import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.dhns.proposition.Proposition;
+import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
- * {@link PreNode} iterator for children of a node, enabled or not.
+ * {@link PreNode} iterator for visible children of a node, enabled or not.
  *
  * @author Mathieu Bastian
+ * @see ChildrenIterator
  */
 public class ChildrenIterator extends AbstractNodeIterator implements Iterator<Node>, ResetableIterator {
 
@@ -40,16 +43,25 @@ public class ChildrenIterator extends AbstractNodeIterator implements Iterator<N
     protected int nextIndex;
     protected int diffIndex;
     protected DurableAVLNode currentNode;
+    protected boolean loopStart=true;
 
-    public ChildrenIterator(TreeStructure treeStructure) {
+    //Proposition
+    protected Proposition<PreNode> proposition;
+
+    public ChildrenIterator(TreeStructure treeStructure, Proposition<PreNode> proposition) {
         this.treeList = treeStructure.getTree();
         nextIndex = 1;
         diffIndex = 2;
         treeSize = treeList.size();
+        if (proposition == null) {
+            this.proposition = new Tautology();
+        } else {
+            this.proposition = proposition;
+        }
     }
 
-    public ChildrenIterator(TreeStructure treeStructure, PreNode node) {
-        this(treeStructure);
+    public ChildrenIterator(TreeStructure treeStructure, PreNode node, Proposition<PreNode> proposition) {
+        this(treeStructure, proposition);
         setNode(node);
     }
 
@@ -60,20 +72,31 @@ public class ChildrenIterator extends AbstractNodeIterator implements Iterator<N
     }
 
     public boolean hasNext() {
-        if (nextIndex < treeSize) {
-            if (diffIndex > 1) {
-                currentNode = treeList.getNode(nextIndex);
-            } else {
-                currentNode = currentNode.next();
+        while (loopStart || !proposition.evaluate(currentNode.getValue())) {
+
+            if (!loopStart) {
+                nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
+                diffIndex = nextIndex - currentNode.getValue().pre;
             }
-            return true;
+            loopStart = false;
+            
+            if (nextIndex < treeSize) {
+                if (diffIndex > 1) {
+                    currentNode = treeList.getNode(nextIndex);
+                } else {
+                    currentNode = currentNode.next();
+                }
+            } else {
+                return false;
+            }
         }
-        return false;
+        return true;
     }
 
     public PreNode next() {
         nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
         diffIndex = nextIndex - currentNode.getValue().pre;
+        loopStart = true;
         return currentNode.getValue();
     }
 

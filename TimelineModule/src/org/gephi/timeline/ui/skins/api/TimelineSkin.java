@@ -23,6 +23,8 @@ package org.gephi.timeline.ui.skins.api;
 
 import java.awt.Color;
 import java.awt.Paint;
+import java.awt.RenderingHints;
+import java.awt.Stroke;
 
 /**
  *
@@ -94,4 +96,37 @@ public interface TimelineSkin {
      * @return a Paint representing the highlighted data layer color paint
      */
     public Paint getHighlightedDataLayerPaint();
+
+    public Stroke getDataLayerStroke();
+
+    public Color getDataLayerStrokeColor();
+
+       /**
+     * Builds the data layer paint cache
+     *
+     * @param width
+     * @param height
+     */
+    public void compileSelectionLayerPaint(double width, double height);
+
+    
+   /**
+     * return the selection layer paint
+     *
+     * @return a Paint representing the selection layer color paint
+     */
+    public Paint getSelectionLayerPaint();
+
+    /**
+     * return the highlighted selection layer paint
+     *
+     * @return a Paint representing the highlighted selection layer color paint
+     */
+    public Paint getHighlightedSelectionLayerPaint();
+
+    public Stroke getSelectionLayerStroke();
+
+    public Color getSelectionLayerStrokeColor();
+
+    public RenderingHints getRenderingHints();
 }
