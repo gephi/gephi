@@ -165,6 +165,12 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         if (obj.isAutoSelected()) {
             return true;
         }
+        if (obj.onlyAutoSelect()) {
+            return false;
+        }
+        if (!currentSelectionArea.isEnabled()) {
+            return false;
+        }
         float x1 = graphIO.getMousePosition()[0];
         float y1 = graphIO.getMousePosition()[1];
 
@@ -182,6 +188,10 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         d.set(2, distance);
 
         return currentSelectionArea.mouseTest(d, obj);
+    }
+
+    public SelectionArea getCurrentSelectionArea() {
+        return currentSelectionArea;
     }
 
     public void startDisplay() {

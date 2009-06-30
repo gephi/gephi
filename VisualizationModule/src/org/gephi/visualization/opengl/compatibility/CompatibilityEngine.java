@@ -39,6 +39,7 @@ import org.gephi.visualization.opengl.octree.Octree;
 import org.gephi.visualization.api.Scheduler;
 import org.gephi.visualization.api.objects.CompatibilityModelClass;
 import org.gephi.visualization.opengl.compatibility.objects.Potato3dModel;
+import org.gephi.visualization.selection.Point;
 import org.gephi.visualization.selection.Rectangle;
 
 /**
@@ -318,16 +319,16 @@ public class CompatibilityEngine extends AbstractEngine {
             obj.getObj().setX(drag[0] + mouseDistance[0]);
             obj.getObj().setY(drag[1] + mouseDistance[1]);
         }
+    }
+
+    @Override
+    public void mouseMove() {
 
         //Selection
         if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
             rectangle.setMousePosition(graphIO.getMousePosition());
         }
-    }
-
-    @Override
-    public void mouseMove() {
 
         List<ModelImpl> newSelectedObjects = null;
         List<ModelImpl> unSelectedObjects = null;
@@ -405,13 +406,6 @@ public class CompatibilityEngine extends AbstractEngine {
             float[] tab = o.getDragDistanceFromMouse();
             tab[0] = o.getObj().x() - x;
             tab[1] = o.getObj().y() - y;
-        }
-
-        //Selection
-        if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
-            float[] mousePosition = graphIO.getMousePosition();
-            Rectangle rectangle = (Rectangle) currentSelectionArea;
-            rectangle.start(mousePosition);
         }
     }
 
@@ -545,7 +539,11 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void initSelection() {
-        currentSelectionArea = new Rectangle();
+        if (vizConfig.isRectangleSelection()) {
+            currentSelectionArea = new Rectangle();
+        } else {
+            currentSelectionArea = new Point();
+        }
     }
 
     @Override

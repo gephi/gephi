@@ -62,11 +62,11 @@ public class VizConfig {
     protected boolean showFPS = true;
     protected boolean showEdges = true;
     protected boolean showArrows = true;
-    protected boolean showLabels = true;
+    protected boolean showLabels = false;
     protected boolean showEdgeLabels = true;
     protected boolean lightenNonSelectedAuto = true;
     protected boolean lightenNonSelected = true;
-    protected float[] lightenNonSelectedColor = {0.9f, 0.9f, 0.9f, 1f};
+    protected float[] lightenNonSelectedColor = {0.95f, 0.95f, 0.95f, 1f};
     protected boolean lightenNonSelectedAnimation = true;
     protected float lightenNonSelectedFactor = 0.5f;
     protected boolean autoSelectNeighbor = true;

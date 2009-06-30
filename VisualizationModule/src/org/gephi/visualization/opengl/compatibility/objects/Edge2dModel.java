@@ -170,7 +170,7 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
             }
             if (config.isLightenNonSelected()) {
                 float lightColorFactor = config.getLightenNonSelectedFactor();
-                a = a - (a - 0.1f) * lightColorFactor;
+                a = a - (a - 0.01f) * lightColorFactor;
                 gl.glColor4f(r, g, b, a);
             } else {
                 gl.glColor4f(r, g, b, a);
@@ -205,6 +205,11 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
     @Override
     public boolean isAutoSelected() {
         return obj.getSource().getModel().isSelected() || obj.getTarget().getModel().isSelected();
+    }
+
+    @Override
+    public boolean onlyAutoSelect() {
+        return true;
     }
 
     @Override

@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.selection;
 
+import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
@@ -53,13 +54,32 @@ public class Rectangle implements SelectionArea {
     }
 
     public boolean mouseTest(Vecf distanceFromMouse, ModelImpl object) {
-        float rectangleWidth = rectangle[0];
-        float rectangleHeight = rectangle[1];
-        if (distanceFromMouse.get(0) < 0 && distanceFromMouse.get(0) > -rectangleWidth &&
-                distanceFromMouse.get(1) > 0 && distanceFromMouse.get(1) < rectangleHeight) {
-            return true;
+        if (stop) {
+            return false;
         }
-        return false;
+        float x = object.getViewportX();
+        float y = object.getViewportY();
+        //System.out.println(rectangle[0]+"   "+rectangle[1]);
+        boolean res = false;
+        if (startPosition[0] > rectangle[0]) {
+            if (x < startPosition[0] && x > rectangle[0]) {
+                res = true;
+            }
+        } else {
+            if (x > startPosition[0] && x < rectangle[0]) {
+                res = true;
+            }
+        }
+        if (startPosition[1] < rectangle[1]) {
+            if (y < startPosition[1] || y > rectangle[1]) {
+                res = false;
+            }
+        } else {
+            if (y > startPosition[1] || y < rectangle[1]) {
+                res = false;
+            }
+        }
+        return res;
     }
 
     public boolean select(Renderable object) {
@@ -83,17 +103,21 @@ public class Rectangle implements SelectionArea {
 
     public void setMousePosition(float[] mousePosition) {
         if (!stop) {
-            rectangle[0] = mousePosition[0] - startPosition[0];
-            rectangle[1] = mousePosition[1] - startPosition[1];
+            rectangle[0] = mousePosition[0];
+            rectangle[1] = mousePosition[1];
         }
+    }
+
+    public boolean isEnabled() {
+        return !stop;
     }
 
     public void drawArea(GL gl, GLU glu) {
         if (!stop) {
             float x = startPosition[0];
             float y = startPosition[1];
-            float w = rectangle[0];
-            float h = rectangle[1];
+            float w = rectangle[0] - startPosition[0];
+            float h = rectangle[1] - startPosition[1];
             //System.out.println("x:"+x+"  y:"+y+"   w:"+w+"   h:"+h);
 
             gl.glMatrixMode(GL.GL_PROJECTION);
