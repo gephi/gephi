@@ -417,6 +417,7 @@ public class CompatibilityEngine extends AbstractEngine {
         if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
             rectangle.stop();
+            scheduler.requireUpdateSelection();
         }
     }
 

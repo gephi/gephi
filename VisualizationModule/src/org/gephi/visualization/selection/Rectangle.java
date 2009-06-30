@@ -59,23 +59,24 @@ public class Rectangle implements SelectionArea {
         }
         float x = object.getViewportX();
         float y = object.getViewportY();
+        float rad = object.getViewportRadius();
         //System.out.println(rectangle[0]+"   "+rectangle[1]);
-        boolean res = false;
+        boolean res = true;
         if (startPosition[0] > rectangle[0]) {
-            if (x < startPosition[0] && x > rectangle[0]) {
-                res = true;
-            }
-        } else {
-            if (x > startPosition[0] && x < rectangle[0]) {
-                res = true;
-            }
-        }
-        if (startPosition[1] < rectangle[1]) {
-            if (y < startPosition[1] || y > rectangle[1]) {
+            if (x - rad > startPosition[0] || x + rad < rectangle[0]) {
                 res = false;
             }
         } else {
-            if (y > startPosition[1] || y < rectangle[1]) {
+            if (x + rad < startPosition[0] || x - rad > rectangle[0]) {
+                res = false;
+            }
+        }
+        if (startPosition[1] < rectangle[1]) {
+            if (y + rad < startPosition[1] || y - rad > rectangle[1]) {
+                res = false;
+            }
+        } else {
+            if (y - rad > startPosition[1] || y + rad < rectangle[1]) {
                 res = false;
             }
         }
