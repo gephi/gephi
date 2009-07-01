@@ -26,16 +26,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.timeline.ui.layers.impl;
 
-import org.gephi.timeline.ui.FakeTimelineDataModel;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.color.ColorSpace;
 import java.awt.geom.GeneralPath;
-import java.util.ArrayList;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ColorConvertOp;
 import java.util.List;
-import java.util.Random;
-import org.gephi.timeline.api.TimelineDataModel;
 
 /**
  *
@@ -75,13 +74,19 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHints(skin.getRenderingHints());
+        BufferedImage buff = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
 
+        // all this block can be delayed
+
+        Graphics2D bimg2d = buff.createGraphics();
+        bimg2d.setRenderingHints(skin.getRenderingHints());
         skin.compileDataLayerPaint(getWidth(), getHeight());
 
         int dataSampleSize = getWidth() / 5;
-        if (dataSampleSize < 1)  dataSampleSize = 1;
-        List<Float> data = model.getDataSample(dataSampleSize);
+        if (dataSampleSize < 1) {
+            dataSampleSize = 1;
+        }
+        List<Float> data = model.getOverviewSample(dataSampleSize);
 
         GeneralPath chart = new GeneralPath(GeneralPath.WIND_EVEN_ODD, data.size() + 1);
 
@@ -96,29 +101,38 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
         //oddShape.curveTo(10, 90, 100, 50, 34, 99);
         chart.closePath();
 
-        g2d.setPaint(skin.getDataLayerPaint());
-        g2d.fill(chart);
+        bimg2d.setPaint(skin.getHighlightedDataLayerPaint());
+        bimg2d.fill(chart);
 
         //g2d.setPaint(Color.black);
-        g2d.setColor(skin.getDataLayerStrokeColor());
-        g2d.setStroke(skin.getDataLayerStroke());
-        g2d.draw(chart);
+        bimg2d.setColor(skin.getDataLayerStrokeColor());
+        bimg2d.setStroke(skin.getDataLayerStroke());
+        bimg2d.draw(chart);
 
-    // GeneralPath shape = new GeneralPath();
-    // System.out.println("x: "+(getWidth()/2)+"y: "+getHeight());
+
+        int cutx = (int) (getWidth() * model.getSelectionFrom());
+        int cuty = 0;
+        int cutw = (int) (getWidth() * model.getSelectionTo()) - cutx;
+        int cuth = getHeight();
+        BufferedImage hbuff = buff.getSubimage(cutx, cuty, cutw, cuth);
+
+        BufferedImageOp op = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
+        buff = op.filter(buff, null);
+
+        // must be done immediately
+        g.drawImage(buff, 0, 0, null);
+        g.drawImage(hbuff, cutx, cuty, null);
+
+        g2d.setRenderingHints(skin.getRenderingHints());
+        g2d.setFont(new Font("DejaVu Sans Mono", 0, 12));
+        g2d.drawString("1 january 1970", 10, 8);
 
     //shape.quadTo(3, 3, 4, 4);
     //shape.curveTo(5, 5, 6, 6, 7, 7);
 
-        g2d.setFont(new Font("DejaVu Sans Mono", 0, 12));
-        g2d.drawString("1 january 1970", 10, 12);
-
-
-    //layer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-    //Graphics2D graphics2d = layer.createGraphics();
-    //graphics2d.setRenderingHints(antialiasingHints);
 
     }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 }

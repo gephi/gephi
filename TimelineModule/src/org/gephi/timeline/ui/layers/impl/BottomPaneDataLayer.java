@@ -81,7 +81,7 @@ public class BottomPaneDataLayer extends DefaultDataLayer {
         if (dataSampleSize < 1)
             dataSampleSize = 1;
 
-        List<Float> data = model.getDataSample(dataSampleSize);
+        List<Float> data = model.getZoomSample(dataSampleSize);
 
         GeneralPath chart = new GeneralPath(GeneralPath.WIND_EVEN_ODD, data.size() + 1);
 

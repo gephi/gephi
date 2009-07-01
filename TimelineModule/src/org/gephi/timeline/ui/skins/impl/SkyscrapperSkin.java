@@ -76,10 +76,10 @@ public class SkyscrapperSkin extends DefaultSkin {
      */
     private static class selection {
 
-        final static private Color upperColor = new Color(123, 123, 123, 255);
-        final static private Color bottomColor = new Color(220, 220, 220, 255);
-        final static private Color highlightedUpperColor = new Color(120, 150, 180, 255);
-        final static private Color highlightedBottomColor = new Color(115, 147, 176, 255);
+        final static private Color upperColor = new Color(123, 123, 123, 100);
+        final static private Color bottomColor = new Color(220, 220, 220, 100);
+        final static private Color highlightedUpperColor = new Color(120, 150, 180, 100);
+        final static private Color highlightedBottomColor = new Color(115, 147, 176, 100);
         final static private Stroke defaultStroke = new BasicStroke(1.0f);
         final static private Color defaultStrokeColor = Color.black;
     }

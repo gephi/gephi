@@ -33,11 +33,14 @@ import org.gephi.timeline.api.TimelineDataModelListener;
 public class FakeTimelineDataModel implements TimelineDataModel {
 
     private Random random;
-    private List<Float> data;
+
     private List<TimelineDataModelListener> listeners;
+    private Float from = 0.15f;
+    private Float to = 0.85f;
 
     // FAKE DATASET SIZE
-    private int NB_OF_FAKE_REVISIONS = 80000;
+    private List<Float> data;
+    private int data_getNbOfFakeRevisions = 80000;
 
     public FakeTimelineDataModel() {
         listeners = new ArrayList<TimelineDataModelListener>();
@@ -45,17 +48,17 @@ public class FakeTimelineDataModel implements TimelineDataModel {
         // WE GENERATE OUR FAKE DATASET
         random = new Random();
         data = new ArrayList<Float>();
-        for (int i = 0; i < NB_OF_FAKE_REVISIONS; i++) {
+        for (int i = 0; i < data_getNbOfFakeRevisions; i++) {
             data.add(0.15f + random.nextFloat() * 0.6f);
         }
     }
 
-    public List<Float> getDataSample(int resolution) {
+    public List<Float> getOverviewSample(int resolution) {
         // TODO put a call to the timeline engine here ?
 
         List<Float> tmp = new ArrayList<Float>();
         
-        int unit = NB_OF_FAKE_REVISIONS / resolution; // eg.  16 = 10000 / 600
+        int unit = data_getNbOfFakeRevisions / resolution; // eg.  16 = 10000 / 600
         for (int i = 0; i < resolution; i++) {
             tmp.add(data.get(i * unit)); // eg. 600 * chunks of 16
         }
@@ -64,5 +67,49 @@ public class FakeTimelineDataModel implements TimelineDataModel {
 
     public void addTimelineDataModelListener(TimelineDataModelListener listener) {
         listeners.add(listener);
+    }
+
+    public List<Float> getZoomSample(int resolution) {
+
+        // TODO put a call to the timeline engine here ?
+        // get size from the timeline
+        int size = data_getNbOfFakeRevisions; // eg 200000000
+
+        int totalf = (int)(from * (float)size); // eg. 12000
+        int totalt = (int)(to * (float)size); // eg. 12000000
+        System.out.println("totalf: "+totalf);
+        System.out.println("totalt: "+totalt);
+
+        // get tmp from the timeline getFromRange(..,..)
+        List<Float> tmp = new ArrayList<Float>();
+
+        int unit = (totalt - totalf) / resolution; // eg.  16 = 10000 / 600
+         System.out.println("unit: "+unit);
+
+        for (int i = 0; i < resolution; i++)
+            tmp.add(data.get(totalf + i * unit)); // eg. 600 * chunks of 16
+        
+        return tmp;
+    }
+
+    public void selectInterval(Float from, Float to) {
+        this.from = from;
+        this.to = to;
+    }
+
+    public void selectTo(Float to) {
+        this.to = to;
+    }
+
+    public void selectFrom(Float from) {
+        this.from = from;
+    }
+
+    public Float getSelectionFrom() {
+        return from;
+    }
+
+    public Float getSelectionTo() {
+        return to;
     }
 }

@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.timeline.api;
 
 import java.util.List;
@@ -34,8 +33,15 @@ public interface TimelineDataModel {
      * used by the Data Layer
      * 
      */
+    public List<Float> getOverviewSample(int resolution);
+    public List<Float> getZoomSample(int resolution);
 
-    public List<Float> getDataSample(int resolution);
+    public void selectInterval(Float from, Float to);
+    public void selectTo(Float to);
+    public void selectFrom(Float from)
+            ;
+    public Float getSelectionFrom();
+    public Float getSelectionTo();
 
     public void addTimelineDataModelListener(TimelineDataModelListener listener);
 }
