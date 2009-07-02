@@ -198,6 +198,9 @@ public class DefaultSkin implements TimelineSkin {
     public Color getSelectionLayerStrokeColor() {
         return selection.defaultStrokeColor;
     }
+    public int getSelectionHookSideLength() {
+        return 2;
+    }
 
     protected RenderingHints renderingHints;
     protected Kernel convolutionKernel;

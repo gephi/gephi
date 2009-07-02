@@ -88,4 +88,8 @@ public class SkyscrapperSkin extends DefaultSkin {
         selectionLayerPaint = new GradientPaint(0, 0, selection.upperColor, 0, (int) height, selection.bottomColor, true);
         highlightedSelectionLayerPaint = new GradientPaint(0, 0, selection.highlightedUpperColor, 0, (int) height, selection.highlightedBottomColor, true);
     }
+
+    public int getSelectionHookSideLength() {
+        return 2;
+    }
 }

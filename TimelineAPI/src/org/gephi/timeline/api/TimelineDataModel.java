@@ -34,13 +34,17 @@ public interface TimelineDataModel {
      * 
      */
     public List<Float> getOverviewSample(int resolution);
+
     public List<Float> getZoomSample(int resolution);
 
     public void selectInterval(Float from, Float to);
+
     public void selectTo(Float to);
-    public void selectFrom(Float from)
-            ;
+
+    public void selectFrom(Float from);
+
     public Float getSelectionFrom();
+
     public Float getSelectionTo();
 
     public void addTimelineDataModelListener(TimelineDataModelListener listener);

@@ -59,15 +59,14 @@
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="null"/>
             </Property>
+            <Property name="model" type="org.gephi.timeline.api.TimelineDataModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="model" type="code"/>
+            </Property>
+            <Property name="skin" type="org.gephi.timeline.ui.skins.api.TimelineSkin" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="skin" type="code"/>
+            </Property>
           </Properties>
           <Events>
-            <EventHandler event="mouseWheelMoved" listener="java.awt.event.MouseWheelListener" parameters="java.awt.event.MouseWheelEvent" handler="upperDataMouseWheelMoved"/>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="upperDataMouseClicked"/>
-            <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="upperDataMouseEntered"/>
-            <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="upperDataMouseExited"/>
-            <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="upperDataMousePressed"/>
-            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="upperDataMouseReleased"/>
-            <EventHandler event="mouseDragged" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="upperDataMouseDragged"/>
             <EventHandler event="mouseMoved" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="upperDataMouseMoved"/>
           </Events>
           <AuxValues>
@@ -114,10 +113,13 @@
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="null"/>
             </Property>
+            <Property name="model" type="org.gephi.timeline.api.TimelineDataModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="model" type="code"/>
+            </Property>
+            <Property name="skin" type="org.gephi.timeline.ui.skins.api.TimelineSkin" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="skin" type="code"/>
+            </Property>
           </Properties>
-          <Events>
-            <EventHandler event="mouseMoved" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="bottomDataMouseMoved"/>
-          </Events>
 
           <Layout>
             <DimensionLayout dim="0">

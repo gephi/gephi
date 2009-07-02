@@ -43,6 +43,7 @@ import java.util.List;
 public class UpperPaneDataLayer extends DefaultDataLayer {
 
     private static final long serialVersionUID = 1L;
+    private Integer mousex = null;
 
     /** Creates new form UpperPaneDataLayer */
     public UpperPaneDataLayer() {
@@ -58,6 +59,20 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                formMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                formMouseReleased(evt);
+            }
+        });
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                formMouseDragged(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -69,6 +84,49 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
             .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private boolean inRange(int x, int a, int b) {
+        return (a < x && x < b);
+    }
+        
+    private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
+
+        int x = evt.getX();
+        float w = getWidth();
+        int r = skin.getSelectionHookSideLength();
+        int sf = (int)(model.getSelectionFrom() * w); // FROM
+        int st = (int)(model.getSelectionTo() * w); // TO
+
+        // we start
+        if (mousex== null) {
+            mousex = x;
+            return;
+        }
+        int delta = x - mousex; // + => left to right;  - => right to left;
+        if (inRange(x, sf - r, sf + r)) {
+            System.out.println("IN LEFT HOOK @ "+x);
+            model.selectFrom(((float)(sf + delta)) / w);
+        } else if (inRange(x, st - r, st + r)) {
+            System.out.println("IN RIGHT HOOK @ "+x);
+            model.selectTo(((float)(st + delta)) / w);
+        } else if (inRange(x, sf - r, st + r)) {
+            System.out.println("IN CENTRAL ZONE @ "+x);
+            model.selectInterval(((float)(sf + delta)) / w, ((float)(st + delta)) / w);
+        } else {
+            return;
+        }
+
+        mousex = x;
+        //model.selectTo(TOP_ALIGNMENT);        // TODO add your handling code here:
+    }//GEN-LAST:event_formMouseDragged
+
+    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formMousePressed
+
+    private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
+        mousex = null;
+    }//GEN-LAST:event_formMouseReleased
 
     @Override
     public void paint(Graphics g) {

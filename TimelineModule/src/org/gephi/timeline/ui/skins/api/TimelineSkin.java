@@ -128,5 +128,7 @@ public interface TimelineSkin {
 
     public Color getSelectionLayerStrokeColor();
 
+    public int getSelectionHookSideLength();
+
     public RenderingHints getRenderingHints();
 }

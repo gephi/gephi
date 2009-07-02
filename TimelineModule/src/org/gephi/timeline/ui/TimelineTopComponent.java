@@ -27,6 +27,8 @@ import org.gephi.timeline.api.TimelineDataModel;
 import org.gephi.timeline.ui.layers.impl.UpperPaneBackgroundLayer;
 import org.gephi.timeline.ui.layers.impl.UpperPaneDataLayer;
 import org.gephi.timeline.ui.layers.impl.UpperPaneInfoLayer;
+import org.gephi.timeline.ui.skins.api.TimelineSkin;
+import org.gephi.timeline.ui.skins.impl.SkyscrapperSkin;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -38,7 +40,9 @@ import org.openide.windows.WindowManager;
 final class TimelineTopComponent extends TopComponent {
 
     private static TimelineTopComponent instance;
-    private TimelineDataModel model;
+
+    private TimelineSkin skin = new SkyscrapperSkin();
+    private TimelineDataModel model = new FakeTimelineDataModel();
 
     /** path to the icon used by the component and its open action */
     static final String ICON_PATH = "resources/date.png";
@@ -51,7 +55,6 @@ final class TimelineTopComponent extends TopComponent {
         setName(NbBundle.getMessage(TimelineTopComponent.class, "CTL_TimelineTopComponent"));
         setToolTipText(NbBundle.getMessage(TimelineTopComponent.class, "HINT_TimelineTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
-        
     }
 
     /** This method is called from within the constructor to
@@ -70,32 +73,9 @@ final class TimelineTopComponent extends TopComponent {
         upperBackground.setBorder(null);
 
         upperData.setBorder(null);
-        upperData.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
-            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
-                upperDataMouseWheelMoved(evt);
-            }
-        });
-        upperData.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                upperDataMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                upperDataMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                upperDataMouseExited(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                upperDataMousePressed(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                upperDataMouseReleased(evt);
-            }
-        });
+        upperData.setModel(model);
+        upperData.setSkin(skin);
         upperData.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                upperDataMouseDragged(evt);
-            }
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 upperDataMouseMoved(evt);
             }
@@ -126,11 +106,8 @@ final class TimelineTopComponent extends TopComponent {
         bottomBackground.setBorder(null);
 
         bottomData.setBorder(null);
-        bottomData.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                bottomDataMouseMoved(evt);
-            }
-        });
+        bottomData.setModel(model);
+        bottomData.setSkin(skin);
 
         javax.swing.GroupLayout bottomDataLayout = new javax.swing.GroupLayout(bottomData);
         bottomData.setLayout(bottomDataLayout);
@@ -173,40 +150,6 @@ final class TimelineTopComponent extends TopComponent {
     private void upperDataMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_upperDataMouseMoved
         // TODO add your handling code here:
 }//GEN-LAST:event_upperDataMouseMoved
-
-    private void upperDataMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_upperDataMouseEntered
-        // TODO add your handling code here:
-    }//GEN-LAST:event_upperDataMouseEntered
-
-    private void upperDataMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_upperDataMouseDragged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_upperDataMouseDragged
-
-    private void upperDataMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_upperDataMouseExited
-        // TODO add your handling code here:
-    }//GEN-LAST:event_upperDataMouseExited
-
-    private void upperDataMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_upperDataMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_upperDataMouseClicked
-
-    private void upperDataMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_upperDataMousePressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_upperDataMousePressed
-
-    private void upperDataMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_upperDataMouseReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_upperDataMouseReleased
-
-    private void upperDataMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_upperDataMouseWheelMoved
-        // TODO add your handling code here:
-    }//GEN-LAST:event_upperDataMouseWheelMoved
-
-    private void bottomDataMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bottomDataMouseMoved
-        System.out.println("moving inside the data..");
-        // print a small circle around the position
-
-    }//GEN-LAST:event_bottomDataMouseMoved
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
