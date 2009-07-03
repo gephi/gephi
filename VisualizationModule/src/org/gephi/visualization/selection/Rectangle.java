@@ -43,6 +43,7 @@ public class Rectangle implements SelectionArea {
     private GraphDrawable drawable;
     private boolean stop = true;
     private VizConfig config;
+    private boolean blocking = false;
 
     public Rectangle() {
         drawable = VizController.getInstance().getDrawable();
@@ -96,10 +97,12 @@ public class Rectangle implements SelectionArea {
         this.rectangle[0] = 0f;
         this.rectangle[1] = 0f;
         stop = false;
+        blocking = false;
     }
 
     public void stop() {
         stop = true;
+        blocking = true;
     }
 
     public void setMousePosition(float[] mousePosition) {
@@ -111,6 +114,14 @@ public class Rectangle implements SelectionArea {
 
     public boolean isEnabled() {
         return !stop;
+    }
+
+    public boolean blockSelection() {
+        return blocking;
+    }
+
+    public void setBlocking(boolean blocking) {
+        this.blocking = blocking;
     }
 
     public void drawArea(GL gl, GLU glu) {

@@ -43,4 +43,6 @@ public interface SelectionArea {
     public void drawArea(GL gl, GLU glu);
 
     public boolean isEnabled();
+
+    public boolean blockSelection();
 }

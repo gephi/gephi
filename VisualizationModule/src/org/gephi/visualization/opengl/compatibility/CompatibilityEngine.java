@@ -309,6 +309,12 @@ public class CompatibilityEngine extends AbstractEngine {
                 eventBridge.mouseClick(objClass, objArray);
             }
         }
+
+        if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection() && anySelected) {
+            Rectangle rectangle = (Rectangle) currentSelectionArea;
+            rectangle.setBlocking(false);
+            scheduler.requireUpdateSelection();
+        }
     }
 
     @Override
@@ -328,6 +334,10 @@ public class CompatibilityEngine extends AbstractEngine {
         if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
             rectangle.setMousePosition(graphIO.getMousePosition());
+        }
+
+        if (currentSelectionArea.blockSelection()) {
+            return;
         }
 
         List<ModelImpl> newSelectedObjects = null;

@@ -54,6 +54,10 @@ public class Point implements SelectionArea {
         return true;
     }
 
+    public boolean blockSelection() {
+        return false;
+    }
+
     @Override
     public boolean mouseTest(Vecf distanceFromMouse, ModelImpl object) {
         return object.selectionTest(distanceFromMouse, 0);
