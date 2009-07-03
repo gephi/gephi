@@ -28,8 +28,20 @@ public final class Issue {
 
     public enum Level {
 
-        INFO, WARNING, SEVERE, CRITICAL
-    };
+        INFO(100),
+        WARNING(200),
+        SEVERE(500),
+        CRITICAL(1000);
+        private final int levelInt;
+
+        Level(int levelInt) {
+            this.levelInt = levelInt;
+        }
+
+        public int toInteger() {
+            return levelInt;
+        }
+    }
     private final Throwable throwable;
     private final String message;
     private final Level level;

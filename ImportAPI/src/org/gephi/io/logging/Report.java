@@ -22,6 +22,7 @@ package org.gephi.io.logging;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.gephi.io.logging.Issue.Level;
 
 /**
  *
@@ -30,7 +31,7 @@ import java.util.List;
 public final class Report {
 
     private final List<ReportEntry> entries = new ArrayList<ReportEntry>();
-    private final boolean criticalException = true;
+    private Issue.Level exceptionLevel = Issue.Level.CRITICAL;
 
     public void log(String message) {
         entries.add(new ReportEntry(message));
@@ -38,7 +39,7 @@ public final class Report {
 
     public void logIssue(Issue issue) {
         entries.add(new ReportEntry(issue));
-        if (criticalException && issue.getLevel().equals(Issue.Level.CRITICAL)) {
+        if (issue.getLevel().toInteger() >= exceptionLevel.toInteger()) {
             if (issue.getThrowable() != null) {
                 throw new RuntimeException(issue.getMessage(), issue.getThrowable());
             } else {
@@ -69,6 +70,28 @@ public final class Report {
             }
         }
         return builder.toString();
+    }
+
+    public String getText() {
+        StringBuilder builder = new StringBuilder();
+        for (ReportEntry re : entries) {
+            if (re.issue != null) {
+                builder.append(re.issue.getMessage());
+                builder.append("\n");
+            } else {
+                builder.append(re.message);
+                builder.append("\n");
+            }
+        }
+        return builder.toString();
+    }
+
+    public Level getExceptionLevel() {
+        return exceptionLevel;
+    }
+
+    public void setExceptionLevel(Level exceptionLevel) {
+        this.exceptionLevel = exceptionLevel;
     }
 
     private class ReportEntry {
