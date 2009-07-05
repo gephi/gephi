@@ -66,10 +66,10 @@ public interface MixedGraph extends Graph {
     public EdgeIterable getUndirectedEdges();
 
     /**
-     * Returns <code>true</code> if <code>edge</code> is <b>directed</b> of <code>false</code> if
+     * Returns <code>true</code> if <code>edge</code> is <b>directed</b>  if
      * <b>undirected</b>.
      * @param edge the edge to be queried
-     * @return Returns <code>true</code> if <code>edge</code> is <b>directed</b> of <code>false</code> if
+     * @return Returns <code>true</code> if <code>edge</code> is <b>directed</b>  if
      * <b>undirected</b>
      * @throws IllegalArgumentException if <code>edge</code> is <code>null</code>
      */
