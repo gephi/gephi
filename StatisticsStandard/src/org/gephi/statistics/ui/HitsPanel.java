@@ -41,7 +41,7 @@ public class HitsPanel extends javax.swing.JPanel {
         probTextField = new javax.swing.JTextField();
         epsilonTextField = new javax.swing.JTextField();
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18));
         jLabel1.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.jLabel1.text")); // NOI18N
 
         jLabel2.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.jLabel2.text")); // NOI18N
@@ -49,8 +49,12 @@ public class HitsPanel extends javax.swing.JPanel {
         jLabel3.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.jLabel3.text")); // NOI18N
 
         probTextField.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.probTextField.text")); // NOI18N
+        probTextField.setMinimumSize(new java.awt.Dimension(59, 25));
+        probTextField.setPreferredSize(new java.awt.Dimension(59, 25));
 
         epsilonTextField.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.epsilonTextField.text")); // NOI18N
+        epsilonTextField.setMinimumSize(new java.awt.Dimension(59, 25));
+        epsilonTextField.setPreferredSize(new java.awt.Dimension(59, 25));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -83,7 +87,7 @@ public class HitsPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel3)
                     .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(143, Short.MAX_VALUE))
+                .addContainerGap(133, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

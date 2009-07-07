@@ -59,8 +59,8 @@ public class PageRank implements Statistics, LongTask {
 
     private ProgressTicket progress;
     private boolean isCanceled;
-    private double epsilon;
-    private double probability;
+    private double epsilon = 0.001;
+    private double probability = 0.5;
     private double[] pageranks;
 
     /**
@@ -127,7 +127,6 @@ public class PageRank implements Statistics, LongTask {
                     done = false;
                 }
 
-                System.out.println(s_index + "\t" + temp[s_index] + "\t" + pageranks[s_index]);
                 if (isCanceled) {
                     return;
                 }
@@ -171,14 +170,14 @@ public class PageRank implements Statistics, LongTask {
         double max = 0;
         XYSeries series = new XYSeries("Series 2");
         for (int i = 0; i < pageranks.length; i++) {
-             series.add(i, pageranks[i]);
-            
+            series.add(i, pageranks[i]);
+
         }
-      
-   
+
+
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(series);
-      
+
         JFreeChart chart = ChartFactory.createXYLineChart(
                 "Page Ranks",
                 "Node",
@@ -220,7 +219,7 @@ public class PageRank implements Statistics, LongTask {
 
         String report = "<HTML> <BODY> " + imageFile + "</BODY> </HTML>";
         return report;
-       
+
     }
 
     /**

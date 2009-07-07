@@ -23,6 +23,7 @@ package org.gephi.statistics.builder;
 import org.gephi.statistics.Modularity;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.statistics.api.StatisticsBuilder;
+import org.gephi.statistics.ui.ModularityPanel.ModularityUI;
 import org.gephi.statistics.ui.api.StatisticsUI;
 import org.openide.util.Lookup;
 
@@ -33,7 +34,7 @@ import org.openide.util.Lookup;
 public class ModularityBuilder implements StatisticsBuilder {
 
     Modularity mod = new Modularity();
-
+    ModularityUI modui = new ModularityUI();
     public String toString() {
         return mod.getName();
     }
@@ -51,6 +52,6 @@ public class ModularityBuilder implements StatisticsBuilder {
      * @return
      */
     public StatisticsUI getUI() {
-        return null;//return (StatisticsUI) Lookup.getDefault().lookupAll(InOutDegreePanel.class);
+        return modui;//return (StatisticsUI) Lookup.getDefault().lookupAll(InOutDegreePanel.class);
     }
 }
