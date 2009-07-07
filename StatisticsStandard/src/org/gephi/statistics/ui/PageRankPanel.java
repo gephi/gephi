@@ -36,11 +36,14 @@ public class PageRankPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         probTextField = new javax.swing.JTextField();
         epsilonTextField = new javax.swing.JTextField();
+        undirectedButton = new javax.swing.JRadioButton();
+        directedButton = new javax.swing.JRadioButton();
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18));
         jLabel1.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.jLabel1.text")); // NOI18N
@@ -57,6 +60,12 @@ public class PageRankPanel extends javax.swing.JPanel {
         epsilonTextField.setMinimumSize(new java.awt.Dimension(59, 25));
         epsilonTextField.setPreferredSize(new java.awt.Dimension(59, 25));
 
+        buttonGroup1.add(undirectedButton);
+        undirectedButton.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.undirectedButton.text")); // NOI18N
+
+        buttonGroup1.add(directedButton);
+        directedButton.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.directedButton.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -67,14 +76,22 @@ public class PageRankPanel extends javax.swing.JPanel {
                         .addGap(82, 82, 82)
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(51, 51, 51)
+                        .addGap(61, 61, 61)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2))
-                        .addGap(27, 27, 27)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(27, 27, 27))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(probTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(probTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(149, 149, 149)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(directedButton)
+                            .addComponent(undirectedButton))))
                 .addContainerGap(159, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -82,25 +99,32 @@ public class PageRankPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jLabel1)
-                .addGap(45, 45, 45)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2)
-                    .addComponent(probTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(50, 50, 50)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addComponent(undirectedButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(directedButton)
+                .addGap(56, 56, 56)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(probTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(112, Short.MAX_VALUE))
+                .addGap(69, 69, 69))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
+    protected javax.swing.JRadioButton directedButton;
     protected javax.swing.JTextField epsilonTextField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     protected javax.swing.JTextField probTextField;
+    protected javax.swing.JRadioButton undirectedButton;
     // End of variables declaration//GEN-END:variables
 
     public static class PageRankUI implements StatisticsUI {
@@ -126,7 +150,7 @@ public class PageRankPanel extends javax.swing.JPanel {
                 double probability = Double.parseDouble(panel.probTextField.getText());
                 pageRank.setEpsilon(epsilon);
                 pageRank.setProbability(probability);
-
+                pageRank.setUndirected(panel.undirectedButton.isSelected());
             }catch(Exception e){}
         }
 
@@ -144,9 +168,10 @@ public class PageRankPanel extends javax.swing.JPanel {
          */
         public void setup(Statistics statistics) {
             this.pageRank = (PageRank) statistics;
-
             panel.epsilonTextField.setText(""+ pageRank.getEpsilon());
             panel.probTextField.setText("" + pageRank.getProbability());
+            panel.undirectedButton.setSelected(pageRank.getUndirected());
+            panel.directedButton.setSelected(!pageRank.getUndirected());
         }
     }
 }

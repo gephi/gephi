@@ -33,8 +33,10 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.statistics.ui.HitsPanel;
 import org.gephi.statistics.ui.api.StatisticsUI;
@@ -63,8 +65,31 @@ public class Hits implements Statistics, LongTask {
     private ProgressTicket progress;
     private double[] authority;
     private double[] hubs;
-    private double probability = 0.5;
+    private boolean useUndirected;
     private double epsilon = 0.0001;
+    private LinkedList<Node> hub_list;
+    private LinkedList<Node> auth_list;
+    private Hashtable<Node, Integer> indicies;
+    private Graph graph;
+
+
+
+    /**
+     *
+     * @param pUndirected
+     */
+    public void setUndirected(boolean pUndirected){
+        useUndirected = pUndirected;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public boolean getUndirected(){
+        return useUndirected;
+    }
+
 
     /**
      *
@@ -80,86 +105,119 @@ public class Hits implements Statistics, LongTask {
      */
     public void execute(GraphController graphController) {
 
-        DirectedGraph digraph = graphController.getDirectedGraph();
-        int N = digraph.getNodeCount();
+        if(useUndirected)
+            graph = graphController.getUndirectedGraph();
+        else
+            graph = graphController.getDirectedGraph();
 
+        //DirectedGraph digraph = graphController.getDirectedGraph();
+        int N = graph.getNodeCount();
         authority = new double[N];
         hubs = new double[N];
         double[] temp_authority = new double[N];
         double[] temp_hubs = new double[N];
 
-        LinkedList<Node> hub_list = new LinkedList<Node>();
-        LinkedList<Node> auth_list = new LinkedList<Node>();
+        hub_list = new LinkedList<Node>();
+        auth_list = new LinkedList<Node>();
 
         progress.start();
 
-        Hashtable<Node, Integer> indicies = new Hashtable<Node, Integer>();
+        indicies = new Hashtable<Node, Integer>();
         int index = 0;
-        for (Node node : digraph.getNodes()) {
+        for (Node node : graph.getNodes()) {
             indicies.put(node, new Integer(index));
             index++;
 
-            if (digraph.getOutDegree(node) > 0) {
-                hub_list.add(node);
+            if(!useUndirected){
+                if (((DirectedGraph)graph).getOutDegree(node) > 0) {
+                    hub_list.add(node);
+                }
+                if (((DirectedGraph)graph).getInDegree(node) > 0) {
+                    auth_list.add(node);
+                }
             }
-            if (digraph.getInDegree(node) > 0) {
-                auth_list.add(node);
+            else
+            {
+                if (((UndirectedGraph)graph).getDegree(node) > 0) {
+                    hub_list.add(node);
+                    auth_list.add(node);
+                }
             }
         }
 
 
         for (Node node : hub_list) {
             int n_index = indicies.get(node);
-            hubs[n_index] = 1.0f / hub_list.size();
+            hubs[n_index] = 1.0f;
         }
         for (Node node : auth_list) {
             int n_index = indicies.get(node);
-            authority[n_index] = 1.0f / auth_list.size();
+            authority[n_index] = 1.0f;
         }
 
         while (true) {
 
             boolean done = true;
+            double auth_sum = 0;
             for (Node node : auth_list) {
 
                 int n_index = indicies.get(node);
-                temp_authority[n_index] = (1.0 - probability) / auth_list.size();
-                EdgeIterable edge_iter = digraph.getInEdges(node);
+                temp_authority[n_index] = authority[n_index];
+                EdgeIterable edge_iter;
+                if(!useUndirected)
+                    edge_iter = ((DirectedGraph)graph).getInEdges(node);
+                else
+                    edge_iter = ((UndirectedGraph)graph).getEdges(node);
                 for (Edge edge : edge_iter) {
-                    Node target = digraph.getOpposite(node, edge);
+                    Node target = graph.getOpposite(node, edge);
                     int target_index = indicies.get(target);
-                    temp_authority[n_index] += probability * (hubs[target_index] / digraph.getInDegree(node));
+                    temp_authority[n_index] += hubs[target_index];
                 }
 
-                if (((temp_authority[n_index] - authority[n_index]) / authority[n_index]) >= epsilon) {
-                    done = false;
-                }
+                auth_sum += temp_authority[n_index];
                 if (isCanceled) {
                     break;
                 }
 
             }
 
+            double hub_sum = 0;
             for (Node node : hub_list) {
 
                 int n_index = indicies.get(node);
-                temp_hubs[n_index] = (1.0 - probability) / hub_list.size();
-
-                EdgeIterable edge_iter = digraph.getOutEdges(node);
+                temp_hubs[n_index] = hubs[n_index];
+                EdgeIterable edge_iter;
+                if(!useUndirected)
+                    edge_iter = ((DirectedGraph)graph).getInEdges(node);
+                else
+                    edge_iter = ((UndirectedGraph)graph).getEdges(node);
                 for (Edge edge : edge_iter) {
-                    Node target = digraph.getOpposite(node, edge);
+                    Node target = graph.getOpposite(node, edge);
                     int target_index = indicies.get(target);
-                    temp_hubs[n_index] += probability * (authority[target_index] / digraph.getOutDegree(node));
+                    temp_hubs[n_index] += authority[target_index];
                 }
-
-                if (((temp_hubs[n_index] - hubs[n_index]) / hubs[n_index]) >= epsilon) {
-                    done = false;
-                }
+                hub_sum += temp_hubs[n_index];
                 if (isCanceled) {
                     break;
                 }
             }
 
+            for (Node node : auth_list) {
+                int n_index = indicies.get(node);
+                temp_authority[n_index] /= auth_sum;
+                if (((temp_authority[n_index] - authority[n_index]) / authority[n_index]) >= epsilon) {
+                    done = false;
+                }
+            }
+            for (Node node : hub_list) {
+                int n_index = indicies.get(node);
+                temp_hubs[n_index] /= hub_sum;
+                 if (((temp_hubs[n_index] - hubs[n_index]) / hubs[n_index]) >= epsilon) {
+                    done = false;
+                }
+            }
+
+            
             authority = temp_authority;
             hubs = temp_hubs;
             temp_authority = new double[N];
@@ -176,14 +234,12 @@ public class Hits implements Statistics, LongTask {
         AttributeColumn authorityCol = nodeClass.addAttributeColumn("authority", "Authortiy", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
         AttributeColumn hubsCol = nodeClass.addAttributeColumn("hub", "Hub", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
 
-        for (Node s : digraph.getNodes()) {
+        for (Node s : graph.getNodes()) {
             int s_index = indicies.get(s);
             AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
             row.setValue(authorityCol, (float)authority[s_index]);
             row.setValue(hubsCol, (float) hubs[s_index]);
         }
-
-
     }
 
     /**
@@ -209,12 +265,15 @@ public class Hits implements Statistics, LongTask {
     public String getReport() {
         double max = 0;
         XYSeries series1 = new XYSeries("Hubs");
-        for (int i = 0; i < hubs.length; i++) {
-            series1.add(i, hubs[i]);
+        for(Node node : hub_list)
+        {
+            int n_index = indicies.get(node);
+            series1.add(n_index, hubs[n_index]);
         }
-         XYSeries series2 = new XYSeries("Authority");
-        for (int i = 0; i < authority.length; i++) {
-            series2.add(i, hubs[i]);
+        XYSeries series2 = new XYSeries("Authority");
+        for(Node node : auth_list){
+            int n_index = indicies.get(node);
+            series2.add(n_index, authority[n_index]);
         }
 
         XYSeriesCollection dataset = new XYSeriesCollection();
@@ -302,7 +361,9 @@ public class Hits implements Statistics, LongTask {
             System.out.println(e.toString());
         }
 
-        String report = "<HTML> <BODY> " + imageFile + "<br>" + imageFile2 + "</BODY> </HTML>";
+        //mGraph.getEdgeVersion();
+        String report = "<HTML> <BODY> HITS Metric <h2>Network Revision Number:</h2> (" +  graph.getNodeVersion() + ", " +  graph.getEdgeVersion() +  ")<br> PARAMETERS: <br>  <br>" +   "<br> RESULTS <br>" + imageFile + "<br>" + imageFile2 + "</BODY> </HTML>";
+
         return report;
     }
 
@@ -323,14 +384,7 @@ public class Hits implements Statistics, LongTask {
         progress = progressTicket;
     }
 
-    /**
-     *
-     * @param prob
-     */
-    public void setProbability(double prob) {
-        probability = prob;
-    }
-
+   
     /**
      *
      * @param eps
@@ -339,13 +393,7 @@ public class Hits implements Statistics, LongTask {
         epsilon = eps;
     }
 
-    /**
-     *
-     * @return
-     */
-    public double getProbability() {
-        return probability;
-    }
+
 
     /**
      *
