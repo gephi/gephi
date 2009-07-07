@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
+Authors : Patrick J. McSweeney
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,32 +18,43 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.statistics.ui.api;
+package org.gephi.statistics.builder;
 
-import javax.swing.JPanel;
+import org.gephi.statistics.GraphDensity;
 import org.gephi.statistics.api.Statistics;
+import org.gephi.statistics.api.StatisticsBuilder;
+import org.gephi.statistics.ui.api.StatisticsUI;
+import org.openide.util.Lookup;
 
 /**
  *
- * @author Patrick J. McSweeney
+ * @author pjmcswee
  */
-public interface StatisticsUI {
+public class DensityBuilder implements StatisticsBuilder {
+
+    GraphDensity gd = new GraphDensity();
 
     /**
-     * 
+     *
      * @return
      */
-    public JPanel getPanel();
+    public String toString() {
+        return gd.getName();
+    }
 
     /**
      *
-     * @param statistics
+     * @return
      */
-    public void setup(Statistics statistics);
+    public Statistics getStatistics() {
+        return gd;//(Statistics) Lookup.getDefault().lookupAll(GraphDensity.class);
+    }
 
     /**
      *
+     * @return
      */
-    public void unsetup();
+    public StatisticsUI getUI() {
+        return null;//(StatisticsUI) Lookup.getDefault().lookupAll(GraphDensityPanel.class);
+    }
 }
-

@@ -46,34 +46,33 @@ import org.openide.util.Lookup;
  */
 public class StatisticsControllerImpl implements StatisticsController, LongTaskListener {
 
-    private List<Statistics> statistics;
+    /** */
+    private List<StatisticsBuilder> statistics;
 
     /**
      *
      */
     public StatisticsControllerImpl() {
-        statistics = new ArrayList<Statistics>(Lookup.getDefault().lookupAll(Statistics.class));
-
+        statistics = new ArrayList<StatisticsBuilder>(Lookup.getDefault().lookupAll(StatisticsBuilder.class));
+        System.out.println("TEST:" + statistics.size());
     }
 
     /**
-    *
-    * @param statistics
-    */
+     *
+     * @param statistics
+     */
     private void complete(final Statistics statistics) {
         final GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
 
-        if(statistics instanceof LongTask)
-        {
+        if (statistics instanceof LongTask) {
             LongTaskExecutor executor = new LongTaskExecutor(true, statistics.getName(), 10);
             executor.setLongTaskListener(this);
-            executor.execute((LongTask)statistics, new Runnable() {
-                 public void run() {
-                     statistics.execute(graphController); }
-             },statistics.getName(),null);
-        }
-        else
-        {
+            executor.execute((LongTask) statistics, new Runnable() {
+                public void run() {
+                    statistics.execute(graphController);
+                }
+            } , statistics.getName(),null);
+        } else {
             statistics.execute(graphController);
             StatisticsReporterImpl reporter = new StatisticsReporterImpl(statistics);
 
@@ -84,20 +83,21 @@ public class StatisticsControllerImpl implements StatisticsController, LongTaskL
      * 
      * @param statistics
      */
-    public void execute(final Statistics statistics) {
+    public void execute(final StatisticsBuilder statisticsBuilder) {
 
-        if (statistics.isParamerizable()) {
+        final StatisticsUI gui = statisticsBuilder.getUI();
+        final Statistics statistics = statisticsBuilder.getStatistics();
+        if (gui != null) {
             final JDialog dialog = new JDialog((JDialog) null, statistics.toString());
             Container container = dialog.getContentPane();
-            final StatisticsUI ui = statistics.getUI();
-            ui.setup(statistics);
-            container.add(ui.getPanel());
+            gui.setup(statistics);
+            container.add(gui.getPanel());
             JButton next = new JButton("Run");
 
             next.addActionListener(new java.awt.event.ActionListener() {
 
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    ui.unsetup();
+                    gui.unsetup();
                     dialog.dispose();
                     complete(statistics);
 
@@ -133,7 +133,7 @@ public class StatisticsControllerImpl implements StatisticsController, LongTaskL
      * 
      * @return
      */
-    public List<Statistics> getStatistics() {
+    public List<StatisticsBuilder> getStatistics() {
         return statistics;
     }
 
@@ -142,7 +142,8 @@ public class StatisticsControllerImpl implements StatisticsController, LongTaskL
      * @param task
      */
     public void taskFinished(LongTask task) {
-        Statistics statistics = (Statistics)task;
+        Statistics statistics = (Statistics) task;
         StatisticsReporterImpl reporter = new StatisticsReporterImpl(statistics);
     }
+
 }

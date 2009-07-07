@@ -8,7 +8,7 @@ This file is part of Gephi.
 Gephi is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+(lat your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,6 +23,7 @@ package org.gephi.statistics.component;
 import javax.swing.ComboBoxModel;
 import javax.swing.event.ListDataListener;
 import org.gephi.statistics.api.Statistics;
+import org.gephi.statistics.api.StatisticsBuilder;
 import org.gephi.statistics.api.StatisticsController;
 import org.openide.util.Lookup;
 
@@ -32,7 +33,7 @@ import org.openide.util.Lookup;
  */
 public class StatisticsModel implements ComboBoxModel {
 
-    Statistics selected;
+    StatisticsBuilder selected;
 
     /**
      * 
@@ -47,7 +48,7 @@ public class StatisticsModel implements ComboBoxModel {
      * @param anItem
      */
     public void setSelectedItem(Object anItem) {
-        selected = ((Statistics) anItem);
+        selected = ((StatisticsBuilder) anItem);
     }
 
     /**
