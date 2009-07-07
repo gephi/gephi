@@ -1,0 +1,5 @@
+org.gephi.statistics.ui.ClusteringCoefficientPanel
+org.gephi.statistics.ui.DegreeDistributionPanel
+org.gephi.statistics.ui.HitsPanel
+org.gephi.statistics.ui.PageRankPanel
+org.gephi.statistics.ui.GraphDistancePanel
