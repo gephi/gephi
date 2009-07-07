@@ -51,8 +51,8 @@ public interface Edge {
     public float getWeight();
 
     /**
-     * Returns <code>true</code> if the egde is visible of <code>false</code> if its hidden.
-     * @return  <code>true</code> if the egde is visible of <code>false</code> otherwise
+     * Returns <code>true</code> if the egde is visible or <code>false</code> if its hidden.
+     * @return  <code>true</code> if the egde is visible or <code>false</code> otherwise
      */
     public boolean isVisible();
 
@@ -67,6 +67,12 @@ public interface Edge {
      * @return
      */
     public boolean isDirected();
+
+    /**
+     * Returns <code>true</code> if edge source and target are the same.
+     * @return <code>true</code> if the edge is a self-loop or <code>false</code> otherwise
+     */
+    public boolean isSelfLoop();
 
     /**
      * Returns edge data.

@@ -145,7 +145,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                 obj = edgeInit.initModel(edge.getEdgeData());
 
                 engine.addObject(AbstractEngine.CLASS_EDGE, (ModelImpl) obj);
-                if (vizConfig.isShowArrows()) {
+                if (vizConfig.isShowArrows() && !edge.isSelfLoop()) {
                     ModelImpl arrowObj = arrowInit.initModel(edge.getEdgeData());
                     engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);

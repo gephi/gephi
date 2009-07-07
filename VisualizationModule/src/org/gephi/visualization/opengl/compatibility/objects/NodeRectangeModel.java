@@ -72,10 +72,12 @@ public class NodeRectangeModel extends ModelImpl<NodeData> {
     @Override
     public void display(GL gl, GLU glu) {
         boolean selec = selected;
-        if (config.isAutoSelectNeighbor() && mark) {
+        boolean neighbor = false;
+        if (config.isAutoSelectNeighbor() && mark && !selec) {
             selec = true;
-            mark = false;
+            neighbor = true;
         }
+        mark = false;
         float size = obj.getSize();
         width = size;
         height = size;
@@ -130,9 +132,15 @@ public class NodeRectangeModel extends ModelImpl<NodeData> {
             float g;
             float b;
             if (config.isUniColorSelected()) {
-                r = config.getUniColorSelectedColor()[0];
-                g = config.getUniColorSelectedColor()[1];
-                b = config.getUniColorSelectedColor()[2];
+                if (neighbor) {
+                    r = config.getUniColorSelectedNeigborColor()[0];
+                    g = config.getUniColorSelectedNeigborColor()[1];
+                    b = config.getUniColorSelectedNeigborColor()[2];
+                } else {
+                    r = config.getUniColorSelectedColor()[0];
+                    g = config.getUniColorSelectedColor()[1];
+                    b = config.getUniColorSelectedColor()[2];
+                }
             } else {
                 r = obj.r();
                 g = obj.g();

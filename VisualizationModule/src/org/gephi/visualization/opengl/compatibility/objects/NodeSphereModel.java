@@ -74,10 +74,12 @@ public class NodeSphereModel extends ModelImpl<NodeData> {
     @Override
     public void display(GL gl, GLU glu) {
         boolean selec = selected;
-        if (config.isAutoSelectNeighbor() && mark) {
-            selec = true;
-            mark = false;
+        boolean neighbor = false;
+        if (config.isAutoSelectNeighbor() && mark && !selec) {
+            selec = true;      
+            neighbor = true;
         }
+        mark = false;
         gl.glPushMatrix();
         float size = obj.getSize() * 2;
         gl.glTranslatef(obj.x(), obj.y(), obj.z());
@@ -92,7 +94,7 @@ public class NodeSphereModel extends ModelImpl<NodeData> {
                 float rlight = Math.min(1, 0.5f * r + 0.5f);
                 float glight = Math.min(1, 0.5f * g + 0.5f);
                 float blight = Math.min(1, 0.5f * b + 0.5f);
-                gl.glColor3f(rlight + (lightColor[0] - rlight) * lightColorFactor, glight + (lightColor[1] - glight) * lightColorFactor,  blight + (lightColor[2] - blight) * lightColorFactor);
+                gl.glColor3f(rlight + (lightColor[0] - rlight) * lightColorFactor, glight + (lightColor[1] - glight) * lightColorFactor, blight + (lightColor[2] - blight) * lightColorFactor);
                 gl.glCallList(modelType);
             } else {
                 float r = obj.r();
@@ -109,9 +111,15 @@ public class NodeSphereModel extends ModelImpl<NodeData> {
             float g;
             float b;
             if (config.isUniColorSelected()) {
-                r = config.getUniColorSelectedColor()[0];
-                g = config.getUniColorSelectedColor()[1];
-                b = config.getUniColorSelectedColor()[2];
+                if (neighbor) {
+                    r = config.getUniColorSelectedNeigborColor()[0];
+                    g = config.getUniColorSelectedNeigborColor()[1];
+                    b = config.getUniColorSelectedNeigborColor()[2];
+                } else {
+                    r = config.getUniColorSelectedColor()[0];
+                    g = config.getUniColorSelectedColor()[1];
+                    b = config.getUniColorSelectedColor()[2];
+                }
             } else {
                 r = obj.r();
                 g = obj.g();

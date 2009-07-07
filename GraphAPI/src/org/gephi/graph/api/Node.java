@@ -31,8 +31,8 @@ public interface Node {
     public NodeData getNodeData();
 
     /**
-     * Returns <code>true</code> if the node is visible of <code>false</code> if its hidden.
-     * @return  <code>true</code> if the node is visible of <code>false</code> otherwise
+     * Returns <code>true</code> if the node is visible  if its hidden.
+     * @return  <code>true</code> if the node is visible  otherwise
      */
     public boolean isVisible();
     
