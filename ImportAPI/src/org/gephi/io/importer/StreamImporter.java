@@ -22,6 +22,7 @@ package org.gephi.io.importer;
 
 import java.io.InputStream;
 import org.gephi.io.container.ContainerLoader;
+import org.gephi.io.logging.Report;
 
 /**
  *
@@ -29,5 +30,5 @@ import org.gephi.io.container.ContainerLoader;
  */
 public interface StreamImporter {
 
-    public void importData(InputStream stream, ContainerLoader containter) throws Exception;
+    public void importData(InputStream stream, ContainerLoader containter, Report report) throws Exception;
 }

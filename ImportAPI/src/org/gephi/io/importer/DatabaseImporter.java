@@ -23,6 +23,7 @@ package org.gephi.io.importer;
 import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.database.Database;
 import org.gephi.io.database.DatabaseType;
+import org.gephi.io.logging.Report;
 
 /**
  *
@@ -30,7 +31,7 @@ import org.gephi.io.database.DatabaseType;
  */
 public interface DatabaseImporter extends Importer {
 
-    public void importData(Database database, ContainerLoader container) throws Exception;
+    public void importData(Database database, ContainerLoader container, Report report) throws Exception;
 
     public boolean isMatchingImporter(DatabaseType databaseType);
 }

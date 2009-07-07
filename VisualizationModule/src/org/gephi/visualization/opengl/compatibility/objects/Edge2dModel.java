@@ -24,7 +24,6 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
-import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
@@ -39,7 +38,7 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
 
     //An edge is set in both source node and target node octant. Hence edges are not drawn when none of
     //these octants are visible.
-    private ModelImpl arrow;
+    protected ModelImpl arrow;
 
     public Edge2dModel() {
         octants = new Octant[2];
@@ -122,6 +121,18 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
 
     @Override
     public void display(GL gl, GLU glu) {
+        if (this.arrow != null) {
+            this.arrow.setSelected(selected);
+        }
+        if (!selected && config.isHideNonSelectedEdges()) {
+            return;
+        }
+        if (selected && config.isAutoSelectNeighbor()) {
+            ModelImpl m1 = (ModelImpl) obj.getSource().getModel();
+            ModelImpl m2 = (ModelImpl) obj.getTarget().getModel();
+            m1.mark = true;
+            m2.mark = true;
+        }
         float x1 = obj.getSource().x();
         float x2 = obj.getTarget().x();
         float y1 = obj.getSource().y();
@@ -129,8 +140,8 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
         float t1 = obj.getEdge().getWeight() / CARDINAL_DIV;
         float t2 = obj.getEdge().getWeight() / CARDINAL_DIV;
 
-        float sideVectorX = y1-y2;
-        float sideVectorY = x2-x1;
+        float sideVectorX = y1 - y2;
+        float sideVectorY = x2 - x1;
         float norm = (float) Math.sqrt(sideVectorX * sideVectorX + sideVectorY * sideVectorY);
         sideVectorX /= norm;
         sideVectorY /= norm;
@@ -140,7 +151,36 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
         float y1Thick = sideVectorY / 2f * t1;
         float y2Thick = sideVectorY / 2f * t2;
 
-        gl.glColor4f(obj.r(), obj.g(), obj.b(), obj.alpha());
+        if (!selected) {
+            float r;
+            float g;
+            float b;
+            float a;
+            if (config.isEdgeUniColor()) {
+                float[] uni = config.getEdgeUniColorValue();
+                r = uni[0];
+                g = uni[1];
+                b = uni[2];
+                a = uni[3];
+            } else {
+                r = obj.r();
+                g = obj.g();
+                b = obj.b();
+                a = obj.alpha();
+            }
+            if (config.isLightenNonSelected()) {
+                float lightColorFactor = config.getLightenNonSelectedFactor();
+                a = a - (a - 0.01f) * lightColorFactor;
+                gl.glColor4f(r, g, b, a);
+            } else {
+                gl.glColor4f(r, g, b, a);
+            }
+        } else {
+            float rdark = 0.498f * obj.r();
+            float gdark = 0.498f * obj.g();
+            float bdark = 0.498f * obj.b();
+            gl.glColor4f(rdark, gdark, bdark, 1f);
+        }
 
         gl.glVertex2f(x1 + x1Thick, y1 + y1Thick);
         gl.glVertex2f(x1 - x1Thick, y1 - y1Thick);
@@ -163,8 +203,18 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
     }
 
     @Override
-    public boolean isSelected() {
+    public boolean isAutoSelected() {
         return obj.getSource().getModel().isSelected() || obj.getTarget().getModel().isSelected();
+    }
+
+    @Override
+    public boolean onlyAutoSelect() {
+        return true;
+    }
+
+    @Override
+    public boolean isSelected() {
+        return selected;
     }
 
     @Override

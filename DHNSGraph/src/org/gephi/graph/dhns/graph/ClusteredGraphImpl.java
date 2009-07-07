@@ -26,17 +26,14 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
-import org.gephi.graph.dhns.node.iterators.CompleteTreeIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantIterator;
 import org.gephi.graph.dhns.node.iterators.LevelIterator;
-import org.gephi.graph.dhns.node.iterators.TreeListIterator;
-import org.gephi.graph.dhns.node.iterators.VisibleChildrenIterator;
-import org.gephi.graph.dhns.node.iterators.VisibleDescendantIterator;
-import org.gephi.graph.dhns.node.iterators.VisibleLevelIterator;
-import org.gephi.graph.dhns.node.iterators.VisibleTreeIterator;
+import org.gephi.graph.dhns.node.iterators.TreeIterator;
+import org.gephi.graph.dhns.proposition.Proposition;
+import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
  * Abstract Clustered graph class. Implements methods for both directed and undirected graphs.
@@ -45,11 +42,37 @@ import org.gephi.graph.dhns.node.iterators.VisibleTreeIterator;
  */
 public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements ClusteredGraph {
 
-    protected boolean visible = true;
+    protected Proposition<PreNode> nodeProposition;
+    protected Proposition<AbstractEdge> edgeProposition;
 
     public ClusteredGraphImpl(Dhns dhns, boolean visible) {
         this.dhns = dhns;
-        this.visible = visible;
+
+        if (visible) {
+            nodeProposition = new Proposition<PreNode>() {
+
+                public boolean evaluate(PreNode node) {
+                    return node.isVisible();
+                }
+
+                public boolean isTautology() {
+                    return false;
+                }
+            };
+            edgeProposition = new Proposition<AbstractEdge>() {
+
+                public boolean evaluate(AbstractEdge edge) {
+                    return edge.isVisible();
+                }
+
+                public boolean isTautology() {
+                    return false;
+                }
+            };
+        } else {
+            nodeProposition = new Tautology();
+            edgeProposition = new Tautology();
+        }
     }
 
     public boolean addNode(Node node, Node parent) {
@@ -64,7 +87,7 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
             return false;
         }
         if (!preNode.hasAttributes()) {
-            preNode.setAttributes(dhns.newNodeAttributes());
+            preNode.setAttributes(dhns.getGraphFactory().newNodeAttributes());
         }
         dhns.getStructureModifier().addNode(node, parent);
         return true;
@@ -84,39 +107,30 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
             return false;
         }
         boolean res = false;
-        if (visible) {
-            if (preNode.isVisible() && dhns.getTreeStructure().getTree().contains(preNode)) {
-                res = true;
-            }
-        } else {
-            if (dhns.getTreeStructure().getTree().contains(preNode)) {
-                res = true;
-            }
+        if (nodeProposition.evaluate(preNode) && dhns.getTreeStructure().getTree().contains(preNode)) {
+            res = true;
         }
+
         readUnlock();
         return res;
     }
 
     public NodeIterable getNodes() {
         readLock();
-        if (visible) {
-            return dhns.newNodeIterable(new VisibleTreeIterator(dhns.getTreeStructure()));
-        } else {
-            return dhns.newNodeIterable(new CompleteTreeIterator(dhns.getTreeStructure()));
-        }
+        return dhns.newNodeIterable(new TreeIterator(dhns.getTreeStructure(), nodeProposition));
     }
 
     public int getNodeCount() {
         readLock();
         int count = 0;
-        if (visible) {
+        if (nodeProposition.isTautology()) {
+            count = dhns.getTreeStructure().getTreeSize() - 1;// -1 Exclude virtual root
+        } else {
             for (TreeListIterator itr = new TreeListIterator(dhns.getTreeStructure().getTree(), 1); itr.hasNext();) {
-                if (itr.next().isVisible()) {
+                if (nodeProposition.evaluate(itr.next())) {
                     count++;
                 }
             }
-        } else {
-            count = dhns.getTreeStructure().getTreeSize() - 1;// -1 Exclude virtual root
         }
         readUnlock();
         return count;
@@ -130,11 +144,7 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
             readUnlock();
             throw new IllegalArgumentException("Level must be between 0 and the height of the tree, currently height=" + (height - 1));
         }
-        if (visible) {
-            return dhns.newNodeIterable(new VisibleLevelIterator(dhns.getTreeStructure(), level));
-        } else {
-            return dhns.newNodeIterable(new LevelIterator(dhns.getTreeStructure(), level));
-        }
+        return dhns.newNodeIterable(new LevelIterator(dhns.getTreeStructure(), level, nodeProposition));
     }
 
     public int getLevelSize(int level) {
@@ -146,17 +156,11 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
             throw new IllegalArgumentException("Level must be between 0 and the height of the tree, currently height=" + (height - 1));
         }
         int res = 0;
-        if (visible) {
-            for (VisibleLevelIterator itr = new VisibleLevelIterator(dhns.getTreeStructure(), level); itr.hasNext();) {
-                itr.next();
-                res++;
-            }
-        } else {
-            for (LevelIterator itr = new LevelIterator(dhns.getTreeStructure(), level); itr.hasNext();) {
-                itr.next();
-                res++;
-            }
+        for (LevelIterator itr = new LevelIterator(dhns.getTreeStructure(), level, nodeProposition); itr.hasNext();) {
+            itr.next();
+            res++;
         }
+
         readUnlock();
         return res;
     }
@@ -220,12 +224,10 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         PreNode preNode = checkNode(node);
         readLock();
         int count = 0;
-        ChildrenIterator itr = new ChildrenIterator(dhns.getTreeStructure(), preNode);
+        ChildrenIterator itr = new ChildrenIterator(dhns.getTreeStructure(), preNode, nodeProposition);
         for (; itr.hasNext();) {
-            PreNode child = itr.next();
-            if (!visible || child.isVisible()) {
-                count++;
-            }
+            itr.next();
+            count++;
         }
         readUnlock();
         return count;
@@ -245,30 +247,18 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     public NodeIterable getChildren(Node node) {
         PreNode preNode = checkNode(node);
         readLock();
-        if (visible) {
-            return dhns.newNodeIterable(new VisibleChildrenIterator(dhns.getTreeStructure(), preNode));
-        } else {
-            return dhns.newNodeIterable(new ChildrenIterator(dhns.getTreeStructure(), preNode));
-        }
+        return dhns.newNodeIterable(new ChildrenIterator(dhns.getTreeStructure(), preNode, nodeProposition));
     }
 
     public NodeIterable getDescendant(Node node) {
         PreNode preNode = checkNode(node);
         readLock();
-        if (visible) {
-            return dhns.newNodeIterable(new VisibleDescendantIterator(dhns.getTreeStructure(), preNode));
-        } else {
-            return dhns.newNodeIterable(new DescendantIterator(dhns.getTreeStructure(), preNode));
-        }
+        return dhns.newNodeIterable(new DescendantIterator(dhns.getTreeStructure(), preNode, nodeProposition));
     }
 
     public NodeIterable getTopNodes() {
         readLock();
-        if (visible) {
-            return dhns.newNodeIterable(new VisibleChildrenIterator(dhns.getTreeStructure()));
-        } else {
-            return dhns.newNodeIterable(new ChildrenIterator(dhns.getTreeStructure()));
-        }
+        return dhns.newNodeIterable(new ChildrenIterator(dhns.getTreeStructure(), nodeProposition));
     }
 
     public boolean isDescendant(Node node, Node descendant) {

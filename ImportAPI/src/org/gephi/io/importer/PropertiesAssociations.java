@@ -119,4 +119,18 @@ public final class PropertiesAssociations {
         }
         return null;
     }
+
+    public String getInfos() {
+        String res = "***Node Properties Associations***\n";
+        for(PropertyAssociation<NodeProperties> p : nodePropertyAssociations) {
+            res+="Property "+p.getProperty().toString()+" = "+p.getTitle()+" Column\n";
+        }
+        res+="*********************************\n";
+        res = "***Edge Properties Associations***\n";
+        for(PropertyAssociation<EdgeProperties> p : edgePropertyAssociations) {
+            res+="Property "+p.getProperty().toString()+" = "+p.getTitle()+" Column\n";
+        }
+        res+="*********************************\n";
+        return res;
+    }
 }

@@ -27,8 +27,12 @@ import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JPanel;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.Renderable;
+import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.compatibility.objects.Edge2dModel;
+import org.gephi.visualization.opengl.compatibility.objects.Edge3dModel;
+import org.gephi.visualization.opengl.text.TextManager;
 
 /**
  *
@@ -36,15 +40,41 @@ import org.gephi.visualization.opengl.compatibility.objects.Edge2dModel;
  */
 public class CompatibilityEdgeModeler implements CompatibilityModeler<EdgeData> {
 
+    private VizConfig config;
+    protected TextManager textManager;
+
+    public CompatibilityEdgeModeler() {
+        this.config = VizController.getInstance().getVizConfig();
+        this.textManager = VizController.getInstance().getTextManager();
+    }
+
     @Override
     public ModelImpl initModel(Renderable n) {
         EdgeData e = (EdgeData) n;
 
-        Edge2dModel edge = new Edge2dModel();
+        Edge2dModel edge;
+        if (config.use3d()) {
+            edge = new Edge3dModel();
+        } else {
+            edge = new Edge2dModel();
+        }
         edge.setObj(e);
+        edge.setConfig(config);
         e.setModel(edge);
 
+        if (n.getTextData() == null) {
+            n.setTextData(textManager.newTextData(e));
+        }
+
         return edge;
+    }
+
+    public void beforeDisplay(GL gl, GLU glu) {
+        gl.glBegin(GL.GL_TRIANGLES);
+    }
+
+    public void afterDisplay(GL gl, GLU glu) {
+        gl.glEnd();
     }
 
     public void chooseModel(ModelImpl obj) {
@@ -52,7 +82,7 @@ public class CompatibilityEdgeModeler implements CompatibilityModeler<EdgeData> 
     }
 
     public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return ptr;
     }
 
     public void initFromOpenGLThread() {

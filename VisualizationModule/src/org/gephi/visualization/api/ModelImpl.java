@@ -40,6 +40,7 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
     //Architecture
     protected Octant[] octants;
     protected ObjectType obj;
+    protected VizConfig config;
 
     //Graphical data
     protected float viewportX;
@@ -77,6 +78,14 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
 
     public int getNumber() {
         return ID;
+    }
+
+    public boolean isAutoSelected() {
+        return false;
+    }
+
+    public boolean onlyAutoSelect() {
+        return false;
     }
 
     public void setID(int ID) {
@@ -161,6 +170,10 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
 
     public boolean isCacheMatching(int cacheMarker) {
         return cacheMarker == this.cacheMarker;
+    }
+
+    public void setConfig(VizConfig config) {
+        this.config = config;
     }
 
     public boolean isValid() {

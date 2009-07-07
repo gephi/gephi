@@ -22,7 +22,6 @@ package org.gephi.visualization.opengl.compatibility.objects;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
-import javax.media.opengl.glu.GLUquadric;
 import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
@@ -71,39 +70,71 @@ public class NodeDiskModel extends ModelImpl<NodeData> {
 
     @Override
     public void display(GL gl, GLU glu) {
+        boolean selec = selected;
+        if (config.isAutoSelectNeighbor() && mark) {
+            selec = true;
+            mark = false;
+        }
         gl.glPushMatrix();
         float size = obj.getSize() * 2;
         gl.glTranslatef(obj.x(), obj.y(), obj.z());
         gl.glScalef(size, size, size);
 
-        float r = obj.r();
-        float g = obj.g();
-        float b = obj.b();
-
-        float rdark = 0.498f*r;
-        float gdark = 0.498f*g;
-        float bdark = 0.498f*b;
-        float rlight = Math.min(1,0.5f*r + 0.5f);
-        float glight = Math.min(1,0.5f*g + 0.5f);
-        float blight = Math.min(1,0.5f*b + 0.5f);
-
-        if (!selected) {
-            gl.glColor3f(rlight, glight, blight);
-        } else {
-            gl.glColor3f(r, g, b);
-        }
-        gl.glCallList(modelType);
-
-        if(modelBorderType!=0) {
-            if(!selected) {
-                gl.glColor3f(r, g, b);
+        if (!selec) {
+            if (config.isLightenNonSelected()) {
+                float[] lightColor = config.getLightenNonSelectedColor();
+                float lightColorFactor = config.getLightenNonSelectedFactor();
+                float r = obj.r();
+                float g = obj.g();
+                float b = obj.b();
+                float rlight = Math.min(1, 0.5f * r + 0.5f);
+                float glight = Math.min(1, 0.5f * g + 0.5f);
+                float blight = Math.min(1, 0.5f * b + 0.5f);
+                gl.glColor3f(rlight + (lightColor[0] - rlight) * lightColorFactor, glight + (lightColor[1] - glight) * lightColorFactor,  blight + (lightColor[2] - blight) * lightColorFactor);
+                gl.glCallList(modelType);
+                if (modelBorderType != 0) {
+                    gl.glColor3f(r + (lightColor[0] - r) * lightColorFactor, g + (lightColor[1] - g) * lightColorFactor,  b + (lightColor[2] - b) * lightColorFactor);
+                    gl.glCallList(modelBorderType);
+                }
             } else {
-                gl.glColor3f(rdark, gdark, bdark);
+                float r = obj.r();
+                float g = obj.g();
+                float b = obj.b();
+                float rlight = Math.min(1, 0.5f * r + 0.5f);
+                float glight = Math.min(1, 0.5f * g + 0.5f);
+                float blight = Math.min(1, 0.5f * b + 0.5f);
+                gl.glColor3f(rlight, glight, blight);
+                gl.glCallList(modelType);
+                if (modelBorderType != 0) {
+                    gl.glColor3f(r, g, b);
+                    gl.glCallList(modelBorderType);
+                }
             }
-            
-            gl.glCallList(modelBorderType);
+        } else {
+            float r;
+            float g;
+            float b;
+            if (config.isUniColorSelected()) {
+                r = config.getUniColorSelectedColor()[0];
+                g = config.getUniColorSelectedColor()[1];
+                b = config.getUniColorSelectedColor()[2];
+            } else {
+                r = obj.r();
+                g = obj.g();
+                b = obj.b();
+            }
+
+            gl.glColor3f(r, g, b);
+            gl.glCallList(modelType);
+            if (modelBorderType != 0) {
+                float rdark = 0.498f * r;
+                float gdark = 0.498f * g;
+                float bdark = 0.498f * b;
+                gl.glColor3f(rdark, gdark, bdark);
+                gl.glCallList(modelBorderType);
+            }
         }
-        
+
         gl.glPopMatrix();
     }
 

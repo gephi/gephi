@@ -37,9 +37,10 @@ import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.initializer.CompatibilityModeler;
 import org.gephi.visualization.opengl.octree.Octree;
 import org.gephi.visualization.api.Scheduler;
-import org.gephi.visualization.api.VizConfig.DisplayConfig;
 import org.gephi.visualization.api.objects.CompatibilityModelClass;
 import org.gephi.visualization.opengl.compatibility.objects.Potato3dModel;
+import org.gephi.visualization.selection.Point;
+import org.gephi.visualization.selection.Rectangle;
 
 /**
  *
@@ -57,6 +58,8 @@ public class CompatibilityEngine extends AbstractEngine {
 
     //Selection
     private ConcurrentLinkedQueue<ModelImpl>[] selectedObjects;
+    private boolean anySelected = false;
+    private float lightenAnimationDelta = 0f;
 
     public CompatibilityEngine() {
         super();
@@ -171,11 +174,22 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void beforeDisplay(GL gl, GLU glu) {
+        //Lighten delta
+        if (lightenAnimationDelta != 0) {
+            float factor = vizConfig.getLightenNonSelectedFactor();
+            factor += lightenAnimationDelta;
+            if (factor >= 0.5f && factor <= 0.98f) {
+                vizConfig.setLightenNonSelectedFactor(factor);
+            } else {
+                lightenAnimationDelta = 0;
+                vizConfig.setLightenNonSelected(anySelected);
+            }
+        }
     }
 
     @Override
     public void display(GL gl, GLU glu) {
-        for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
+        for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {       //TODO Move this
             ModelImpl obj = itr.next();
             modelClasses[AbstractEngine.CLASS_NODE].getCurrentModeler().chooseModel(obj);
             setViewportPosition(obj);
@@ -183,50 +197,29 @@ public class CompatibilityEngine extends AbstractEngine {
 
         long startTime = System.currentTimeMillis();
 
-        if (modelClasses[AbstractEngine.CLASS_EDGE].isEnabled()) {
-            gl.glDisable(GL.GL_LIGHTING);
-            gl.glBegin(GL.GL_TRIANGLES);
+        CompatibilityModelClass edgeClass = modelClasses[AbstractEngine.CLASS_EDGE];
+        CompatibilityModelClass nodeClass = modelClasses[AbstractEngine.CLASS_NODE];
+        CompatibilityModelClass arrowClass = modelClasses[AbstractEngine.CLASS_ARROW];
 
-            if (vizConfig.getDisplayConfig() == DisplayConfig.DISPLAY_ALL) {
-                //Normal mode, all edges rendered
-                for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
-                    ModelImpl obj = itr.next();
-                    //Renderable renderable = obj.getObj();
+        //Edges
+        if (edgeClass.isEnabled()) {
+            edgeClass.beforeDisplay(gl, glu);
+            for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
+                ModelImpl obj = itr.next();
+                //Renderable renderable = obj.getObj();
 
-                    if (obj.markTime != startTime) {
-                        obj.display(gl, glu);
-                        obj.markTime = startTime;
-                    }
+                if (obj.markTime != startTime) {
+                    obj.display(gl, glu);
+                    obj.markTime = startTime;
+                }
 
-                }
-            } else if (vizConfig.getDisplayConfig() == DisplayConfig.DISPLAY_NODES_EDGES) {
-                //Only edges on selected nodes are rendered
-                for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(CLASS_EDGE); itr.hasNext();) {
-                    ModelImpl obj = itr.next();
-                    if (obj.isSelected() && obj.markTime != startTime) {
-                        obj.display(gl, glu);
-                        obj.markTime = startTime;
-                    }
-                }
-            } else if (vizConfig.getDisplayConfig() == DisplayConfig.DISPLAY_ALPHA) {
-                //Selected edges are rendered with 1f alpha, half otherwise
-                for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
-                    ModelImpl obj = itr.next();
-                    if (obj.markTime != startTime) {
-                        obj.getObj().setAlpha(obj.isSelected() ? 1f : 0.2f);
-                        obj.display(gl, glu);
-                        obj.markTime = startTime;
-                    }
-                }
             }
-            gl.glEnd();
-            gl.glEnable(GL.GL_LIGHTING);
-        //gl.glEnable(GL.GL_BLEND);
+            edgeClass.afterDisplay(gl, glu);
         }
 
         //Arrows
-        if (modelClasses[AbstractEngine.CLASS_ARROW].isEnabled()) {
-            gl.glBegin(GL.GL_TRIANGLES);
+        if (arrowClass.isEnabled()) {
+            arrowClass.beforeDisplay(gl, glu);
             for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_ARROW); itr.hasNext();) {
                 ModelImpl obj = itr.next();
                 if (obj.markTime != startTime) {
@@ -234,12 +227,12 @@ public class CompatibilityEngine extends AbstractEngine {
                     obj.markTime = startTime;
                 }
             }
-            gl.glEnd();
+            arrowClass.afterDisplay(gl, glu);
         }
 
-        //Node
-        if (modelClasses[AbstractEngine.CLASS_NODE].isEnabled()) {
-            //Mode normal
+        //Nodes
+        if (nodeClass.isEnabled()) {
+            nodeClass.beforeDisplay(gl, glu);
             for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
                 ModelImpl obj = itr.next();
                 if (obj.markTime != startTime) {
@@ -247,14 +240,38 @@ public class CompatibilityEngine extends AbstractEngine {
                     obj.markTime = startTime;
                 }
             }
-
+            nodeClass.afterDisplay(gl, glu);
         }
-        
+
+        //Labels
+        if (vizConfig.isShowLabels()) {
+            startTime -= 1;
+            textManager.beginRendering();
+            if (nodeClass.isEnabled()) {
+                textManager.defaultNodeColor();
+                for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
+                    ModelImpl obj = itr.next();
+                    if (obj.markTime != startTime) {
+                        textManager.drawText(obj);
+                        obj.markTime = startTime;
+                    }
+                }
+            }
+            if (edgeClass.isEnabled() && vizConfig.isShowEdgeLabels()) {
+                textManager.defaultEdgeColor();
+            }
+            textManager.endRendering();
+        }
+
+
         octree.displayOctree(gl);
     }
 
     @Override
     public void afterDisplay(GL gl, GLU glu) {
+        if (vizConfig.isSelectionEnable()) {
+            currentSelectionArea.drawArea(gl, glu);
+        }
     }
 
     @Override
@@ -292,6 +309,12 @@ public class CompatibilityEngine extends AbstractEngine {
                 eventBridge.mouseClick(objClass, objArray);
             }
         }
+
+        if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection() && anySelected) {
+            Rectangle rectangle = (Rectangle) currentSelectionArea;
+            rectangle.setBlocking(false);
+            scheduler.requireUpdateSelection();
+        }
     }
 
     @Override
@@ -307,6 +330,16 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public void mouseMove() {
 
+        //Selection
+        if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
+            Rectangle rectangle = (Rectangle) currentSelectionArea;
+            rectangle.setMousePosition(graphIO.getMousePosition());
+        }
+
+        if (currentSelectionArea.blockSelection()) {
+            return;
+        }
+
         List<ModelImpl> newSelectedObjects = null;
         List<ModelImpl> unSelectedObjects = null;
 
@@ -317,10 +350,12 @@ public class CompatibilityEngine extends AbstractEngine {
 
         long markTime = System.currentTimeMillis();
         int i = 0;
+        boolean someSelection = false;
         for (ModelClass objClass : selectableClasses) {
             for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(objClass.getClassId()); itr.hasNext();) {
                 ModelImpl obj = itr.next();
                 if (isUnderMouse(obj) && currentSelectionArea.select(obj.getObj())) {
+                    someSelection = true;
                     if (!obj.isSelected()) {
                         //New selected
                         obj.setSelected(true);
@@ -346,6 +381,25 @@ public class CompatibilityEngine extends AbstractEngine {
             }
             i++;
         }
+
+        if (vizConfig.isLightenNonSelectedAuto()) {
+
+            if (vizConfig.isLightenNonSelectedAnimation()) {
+                if (!anySelected && someSelection) {
+                    //Start animation
+                    lightenAnimationDelta = 0.07f;
+                } else if (anySelected && !someSelection) {
+                    //Stop animation
+                    lightenAnimationDelta = -0.07f;
+                }
+
+                vizConfig.setLightenNonSelected(someSelection || lightenAnimationDelta != 0);
+            } else {
+                vizConfig.setLightenNonSelected(someSelection);
+            }
+        }
+
+        anySelected = someSelection;
     }
 
     @Override
@@ -368,6 +422,13 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public void stopDrag() {
         scheduler.requireUpdatePosition();
+
+        //Selection
+        if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
+            Rectangle rectangle = (Rectangle) currentSelectionArea;
+            rectangle.stop();
+            scheduler.requireUpdateSelection();
+        }
     }
 
     @Override
@@ -445,9 +506,9 @@ public class CompatibilityEngine extends AbstractEngine {
         clickableClasses = new CompatibilityModelClass[0];
 
 
-        modelClasses[0].setEnabled(true);
-        modelClasses[1].setEnabled(true);
-        modelClasses[2].setEnabled(true);
+        modelClasses[CLASS_NODE].setEnabled(true);
+        modelClasses[CLASS_EDGE].setEnabled(vizConfig.isShowEdges());
+        modelClasses[CLASS_ARROW].setEnabled(vizConfig.isShowArrows());
         modelClasses[3].setEnabled(true);
 
         //LOD
@@ -484,6 +545,15 @@ public class CompatibilityEngine extends AbstractEngine {
             objClass.setSelectionId(i);
             selectedObjects[i] = new ConcurrentLinkedQueue<ModelImpl>();
             i++;
+        }
+    }
+
+    @Override
+    public void initSelection() {
+        if (vizConfig.isRectangleSelection()) {
+            currentSelectionArea = new Rectangle();
+        } else {
+            currentSelectionArea = new Point();
         }
     }
 

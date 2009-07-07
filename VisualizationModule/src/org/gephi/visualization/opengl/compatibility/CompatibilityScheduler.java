@@ -199,7 +199,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
         //Boolean vals
         boolean execMouseClick = mouseClick.getAndSet(false);
         boolean execMouseMove = mouseMoved.getAndSet(false);
-        boolean execDrag = drag.getAndSet(false) || startDrag.getAndSet(false) || stopDrag.getAndSet(false);
+        boolean execDrag = drag.get() || startDrag.get() || stopDrag.get();
 
         //Calculate permits
         int pool1Permit = 0;

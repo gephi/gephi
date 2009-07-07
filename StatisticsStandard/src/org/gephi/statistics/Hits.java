@@ -161,7 +161,7 @@ public class Hits implements Statistics, LongTask {
 
         AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
         AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
-        //AttributeType.
+
         AttributeColumn authorityCol = nodeClass.addAttributeColumn("authority", "Authortiy", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
         AttributeColumn hubsCol = nodeClass.addAttributeColumn("hub", "Hub", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
 

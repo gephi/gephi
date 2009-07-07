@@ -29,6 +29,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import javax.swing.JPanel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -39,18 +40,25 @@ import org.gephi.io.importer.FileFormatImporter;
 import org.gephi.io.importer.FileType;
 import org.gephi.io.importer.ImportController;
 import org.gephi.io.importer.ImportException;
+import org.gephi.io.importer.Importer;
 import org.gephi.io.importer.StreamImporter;
 import org.gephi.io.importer.TextImporter;
 import org.gephi.io.importer.XMLImporter;
+import org.gephi.io.logging.Report;
 import org.gephi.io.processor.Processor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.ui.database.DatabaseTypeUI;
+import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.longtask.LongTaskErrorHandler;
+import org.gephi.utils.longtask.LongTaskExecutor;
+import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.w3c.dom.Document;
@@ -62,6 +70,7 @@ import org.xml.sax.SAXException;
  */
 public class DesktopImportController implements ImportController {
 
+    private LongTaskExecutor executor;
     private FileFormatImporter[] fileFormatImporters;
     private DatabaseImporter[] databaseImporters;
     private DatabaseType[] databaseTypes;
@@ -78,6 +87,8 @@ public class DesktopImportController implements ImportController {
         //Get DatabaseTypes
         databaseTypes = new DatabaseType[0];
         databaseTypes = Lookup.getDefault().lookupAll(DatabaseType.class).toArray(databaseTypes);
+
+        executor = new LongTaskExecutor(true, "Importer", 10);
     }
 
     public void doImport(FileObject fileObject) {
@@ -91,20 +102,17 @@ public class DesktopImportController implements ImportController {
             Workspace workspace = projectController.importFile();
 
             //Create Container
-            Container container = Lookup.getDefault().lookup(Container.class);
+            final Container container = Lookup.getDefault().lookup(Container.class);
             container.setSource("" + im.getClass());
-            container.setErrorMode(Container.ErrorMode.REPORT);
+
+            //Report
+            Report report = new Report();
+            container.setReport(report);
 
             if (im instanceof XMLImporter) {
-                Document document = getDocument(fileObject);
-                XMLImporter xmLImporter = (XMLImporter) im;
-                xmLImporter.importData(document, container.getLoader());
-                finishImport(container);
+                importXML(fileObject, im, container);
             } else if (im instanceof TextImporter) {
-                BufferedReader reader = getTextReader(fileObject);
-                TextImporter textImporter = (TextImporter) im;
-                textImporter.importData(reader, container.getLoader());
-                finishImport(container);
+                importText(fileObject, im, container);
             } else if (im instanceof StreamImporter) {
             }
 
@@ -115,39 +123,141 @@ public class DesktopImportController implements ImportController {
         }
     }
 
+    private void importXML(FileObject fileObject, Importer importer, final Container container) {
+        final Document document = getDocument(fileObject);
+        final XMLImporter xmlImporter = (XMLImporter) importer;
+        final Report report = container.getReport();
+        LongTask task = null;
+        if (importer instanceof LongTask) {
+            task = (LongTask) importer;
+        }
+
+        //ErrorHandler
+        final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
+
+            public void fatalError(Throwable t) {
+                NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
+                DialogDisplayer.getDefault().notify(ex);
+            }
+        };
+
+        //Execute task
+        executor.execute(task, new Runnable() {
+
+            public void run() {
+                try {
+                    xmlImporter.importData(document, container.getLoader(), report);
+                    finishImport(container);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        }, "Import " + fileObject.getNameExt(), errorHandler);
+    }
+
+    private void importText(FileObject fileObject, Importer importer, final Container container) {
+        final BufferedReader reader = getTextReader(fileObject);
+        final TextImporter textImporter = (TextImporter) importer;
+        final Report report = container.getReport();
+        LongTask task = null;
+        if (importer instanceof LongTask) {
+            task = (LongTask) importer;
+        }
+
+        //ErrorHandler
+        final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
+
+            public void fatalError(Throwable t) {
+                NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
+                DialogDisplayer.getDefault().notify(ex);
+                t.printStackTrace();
+            }
+        };
+
+        //Execute task
+        executor.execute(task, new Runnable() {
+
+            public void run() {
+                try {
+                    textImporter.importData(reader, container.getLoader(), report);
+                    finishImport(container);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        }, "Import " + fileObject.getNameExt(), errorHandler);
+    }
+
     public void doImport(Database database) {
         try {
-
-
             DatabaseType type = getDatabaseType(database);
             if (type == null) {
                 throw new ImportException(NbBundle.getMessage(getClass(), "error_no_matching_db_importer"));
             }
-            DatabaseImporter im = getMatchingImporter(type);
-            if (im == null) {
+            final DatabaseImporter importer = getMatchingImporter(type);
+            if (importer == null) {
                 throw new ImportException(NbBundle.getMessage(getClass(), "error_no_matching_db_importer"));
             }
 
             DatabaseTypeUI ui = type.getUI();
             if (ui != null) {
                 ui.setup(type);
-                DialogDescriptor dd = new DialogDescriptor(ui.getPanel(), "Database settings");
-                Object result = DialogDisplayer.getDefault().notify(dd);
+                String title = "Database settings";
+                JPanel panel = ui.getPanel();
+                if (panel instanceof ValidationPanel) {
+                    ValidationPanel validationPanel = (ValidationPanel) panel;
+                    if (!validationPanel.showOkCancelDialog(title)) {
+                        return;
+                    }
+                } else {
+                    DialogDescriptor dd = new DialogDescriptor(panel, title);
+                    if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.CANCEL_OPTION)) {
+                        return;
+                    }
+                }
                 ui.unsetup();
                 database = ui.getDatabase();
             }
-
             ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
             Workspace workspace = projectController.importFile();
 
             //Create Container
-            Container container = Lookup.getDefault().lookup(Container.class);
-            container.setSource("" + im.getClass());
-            container.setErrorMode(Container.ErrorMode.REPORT);
+            final Container container = Lookup.getDefault().lookup(Container.class);
+            container.setSource("" + importer.getClass());
 
-            im.importData(database, container.getLoader());
-            finishImport(container);
-            
+            //Report
+            final Report report = new Report();
+            container.setReport(report);
+
+            LongTask task = null;
+            if (importer instanceof LongTask) {
+                task = (LongTask) importer;
+            }
+
+            //ErrorHandler
+            final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
+
+                public void fatalError(Throwable t) {
+                    NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
+                    DialogDisplayer.getDefault().notify(ex);
+                }
+            };
+
+            //Execute task
+            final Database db = database;
+            executor.execute(task, new Runnable() {
+
+                public void run() {
+                    try {
+                        importer.importData(db, container.getLoader(), report);
+                        finishImport(container);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }, "Import database", errorHandler);
+
         } catch (Exception ex) {
             NotifyDescriptor.Message e = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
             DialogDisplayer.getDefault().notifyLater(e);
@@ -157,13 +267,17 @@ public class DesktopImportController implements ImportController {
 
     private void finishImport(Container container) {
 
-        Container.ContainerReport report = container.getReport();
-        String reportStr = report.getReport();
-        System.err.println(reportStr);
-        if (!reportStr.isEmpty()) {
-            NotifyDescriptor.Message e = new NotifyDescriptor.Message(reportStr, NotifyDescriptor.INFORMATION_MESSAGE);
-            DialogDisplayer.getDefault().notifyLater(e);
+        Report report = container.getReport();
+
+        //Report panel
+        ReportPanel reportPanel = new ReportPanel();
+        reportPanel.setData(report, container);
+        DialogDescriptor dd = new DialogDescriptor(reportPanel, "Import report");
+        if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.CANCEL_OPTION)) {
+            reportPanel.destroy();
+            return;
         }
+        reportPanel.destroy();
 
         Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
     }

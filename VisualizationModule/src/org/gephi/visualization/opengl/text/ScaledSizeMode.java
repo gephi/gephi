@@ -18,8 +18,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.visualization.opengl.text;
+
+import org.gephi.visualization.api.ModelImpl;
 
 /**
  *
@@ -27,8 +28,7 @@ package org.gephi.visualization.opengl.text;
  */
 public class ScaledSizeMode implements SizeMode {
 
-    public void setSizeFactor(TextData text) {
+    public void setSizeFactor(TextDataImpl text, ModelImpl model) {
         text.setSizeFactor(1f);
     }
-
 }

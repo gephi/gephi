@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.visualization.opengl.compatibility.modeler;
 
 import javax.media.opengl.GL;
@@ -27,12 +26,15 @@ import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JPanel;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
+import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.initializer.CompatibilityNodeModeler;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.opengl.compatibility.objects.NodeDiskModel;
 import org.gephi.visualization.opengl.compatibility.objects.NodeSphereModel;
+import org.gephi.visualization.opengl.text.TextManager;
 
 /**
  *
@@ -46,18 +48,28 @@ public class CompatibilityNodeDiskModeler implements CompatibilityNodeModeler {
     public int BORDER16;
     public int BORDER32;
     private CompatibilityEngine engine;
+    protected VizConfig config;
+    protected TextManager textManager;
 
     public CompatibilityNodeDiskModeler(AbstractEngine engine) {
         this.engine = (CompatibilityEngine) engine;
+        this.config = VizController.getInstance().getVizConfig();
+        this.textManager = VizController.getInstance().getTextManager();
     }
 
     @Override
     public ModelImpl initModel(Renderable n) {
+        NodeData nd = (NodeData) n;
         NodeDiskModel obj = new NodeDiskModel();
-        obj.setObj((NodeData) n);
+        obj.setObj(nd);
         obj.setSelected(false);
+        obj.setConfig(config);
         obj.setDragDistanceFromMouse(new float[2]);
         n.setModel(obj);
+
+        if(n.getTextData()==null) {
+            n.setTextData(textManager.newTextData(nd));
+        }
 
         chooseModel(obj);
         return obj;
@@ -116,6 +128,12 @@ public class CompatibilityNodeDiskModeler implements CompatibilityNodeModeler {
         gl.glEndList();
 
         return BORDER32;
+    }
+
+    public void beforeDisplay(GL gl, GLU glu) {
+    }
+
+    public void afterDisplay(GL gl, GLU glu) {
     }
 
     @Override

@@ -21,8 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.statistics.api;
 
 import org.gephi.graph.api.GraphController;
-import org.gephi.statistics.ui.api.StatisticsUI;
-
 /**
  *
  * @author Mathieu Bastian, Patrick J. McSweeney
@@ -42,17 +40,6 @@ public interface Statistics {
      */
     public void execute(GraphController graphController);
 
-    /**
-     * (Possibly the same as (getPanel() == null)
-     * @return True if the Statistics is parameterizable via a JPanel
-     */
-    public boolean isParamerizable();
-
-    /**
-     * 
-     * @return A JPanel which ties into the objects member variables.
-     */
-    public StatisticsUI getUI();
 
     /**
      *

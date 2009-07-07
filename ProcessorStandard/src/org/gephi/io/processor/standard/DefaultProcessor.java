@@ -28,7 +28,6 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.Node;
 import org.gephi.io.container.ContainerUnloader;
-import org.gephi.io.container.EdgeDraft;
 import org.gephi.io.processor.EdgeDraftGetter;
 import org.gephi.io.processor.NodeDraftGetter;
 import org.gephi.io.processor.Processor;
@@ -99,6 +98,10 @@ public class DefaultProcessor implements Processor {
 
         if (nodeDraft.getSize() != 0) {
             node.getNodeData().setSize(nodeDraft.getSize());
+        }
+
+        if(nodeDraft.getId()!=null) {
+            node.getNodeData().setId(nodeDraft.getId());
         }
 
         //Attributes

@@ -32,17 +32,18 @@ import java.util.Map;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class TextUtils {
 
     private TextManager manager;
-    private ArrayList<TextData.TextLine> flowList = new ArrayList<TextData.TextLine>();
+    private ArrayList<TextDataImpl.TextLine> flowList = new ArrayList<TextDataImpl.TextLine>();
 
     public TextUtils(TextManager manager) {
+        this.manager = manager;
     }
 
-    public void reflow(int width, TextData text) {
+    public void reflow(int width, TextDataImpl text) {
         flowList.clear();
         int numLines = 0;
         TextRenderer renderer = manager.getRenderer();
@@ -57,7 +58,7 @@ public class TextUtils {
         while (measurer.getPosition() < paragraph.length()) {
             int nextPos = measurer.nextOffset(width);
             String line = paragraph.substring(curPos, nextPos);
-            TextData.TextLine textLine = new TextData.TextLine(line);
+            TextDataImpl.TextLine textLine = new TextDataImpl.TextLine(line);
             //Rectangle2D bounds = renderer.getBounds(line);
             if (nextPos < paragraph.length()) {
                 flowList.add(textLine);
@@ -67,7 +68,7 @@ public class TextUtils {
             measurer.setPosition(curPos);
         }
         if (numLines > 0) {
-            text.setWrappedLines(flowList.toArray(new TextData.TextLine[0]));
+            text.setWrappedLines(flowList.toArray(new TextDataImpl.TextLine[0]));
         } else {
             text.setWrappedLines(null);
         }

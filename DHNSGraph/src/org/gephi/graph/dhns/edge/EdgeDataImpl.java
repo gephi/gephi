@@ -26,6 +26,7 @@ import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.LayoutData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Model;
+import org.gephi.graph.api.TextData;
 
 /**
  * Implementation of the edge data interface.
@@ -44,6 +45,7 @@ public class EdgeDataImpl implements EdgeData {
     protected float cardinal = 1f;
     private Model model;
     protected Attributes attributes;
+    protected TextData textData;
 
     public EdgeDataImpl(Edge edge) {
         this.edge = edge;
@@ -82,15 +84,15 @@ public class EdgeDataImpl implements EdgeData {
     }
 
     public float x() {
-        return (getSource().x()+getTarget().x())/2f;
+        return (getSource().x() + getTarget().x()) / 2f;
     }
 
     public float y() {
-        return (getSource().y()+getTarget().y())/2f;
+        return (getSource().y() + getTarget().y()) / 2f;
     }
 
     public float z() {
-        return (getSource().z()+getTarget().z())/2f;
+        return (getSource().z() + getTarget().z()) / 2f;
     }
 
     public void setX(float x) {
@@ -155,5 +157,13 @@ public class EdgeDataImpl implements EdgeData {
 
     public void setModel(Model obj) {
         this.model = obj;
+    }
+
+    public TextData getTextData() {
+        return textData;
+    }
+
+    public void setTextData(TextData textData) {
+        this.textData = textData;
     }
 }

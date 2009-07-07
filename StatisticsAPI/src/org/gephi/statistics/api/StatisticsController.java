@@ -28,7 +28,7 @@ import java.util.List;
  */
 public interface StatisticsController {
 
-    public List<Statistics> getStatistics();
+    public List<StatisticsBuilder> getStatistics();
 
-    public void execute(Statistics statistics);
+    public void execute(StatisticsBuilder statistics);
 }

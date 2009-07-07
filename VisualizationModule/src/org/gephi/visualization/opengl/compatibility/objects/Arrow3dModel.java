@@ -22,40 +22,26 @@ package org.gephi.visualization.opengl.compatibility.objects;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
-import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeData;
-import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
-import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vec3f;
-import org.gephi.visualization.gleem.linalg.Vecf;
-import org.gephi.visualization.opengl.octree.Octant;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class Arrow3dModel extends ModelImpl<NodeData> {
-
-    private static float ARROW_WIDTH = 1f;
-    private static float ARROW_HEIGHT = 1.1f;
-    private EdgeData edge;
-    private float[] cameraLocation;
-
-    private Arrow3dModel() {
-        super();
-        cameraLocation = VizController.getInstance().getDrawable().getCameraLocation();
-        octants = new Octant[1];
-    }
+public class Arrow3dModel extends Arrow2dModel {
 
     public Arrow3dModel(EdgeData edge) {
-        this();
-        this.edge = edge;
+        super(edge);
     }
 
     @Override
     public void display(GL gl, GLU glu) {
+        if (!selected && config.isHideNonSelectedEdges()) {
+            return;
+        }
         NodeData nodeFrom = edge.getSource();
         NodeData nodeTo = edge.getTarget();
 
@@ -94,61 +80,39 @@ public class Arrow3dModel extends ModelImpl<NodeData> {
         sideVector.normalize();
 
         //Draw the triangle
-        gl.glColor4f(edge.r(), edge.g(), edge.b(), edge.alpha());
+        if (!selected) {
+            float r;
+            float g;
+            float b;
+            float a;
+            if (config.isEdgeUniColor()) {
+                float[] uni = config.getEdgeUniColorValue();
+                r = uni[0];
+                g = uni[1];
+                b = uni[2];
+                a = uni[3];
+            } else {
+                r = edge.r();
+                g = edge.g();
+                b = edge.b();
+                a = edge.alpha();
+            }
+            if (config.isLightenNonSelected()) {
+                float lightColorFactor = config.getLightenNonSelectedFactor();
+                a = a - (a - 0.1f) * lightColorFactor;
+                gl.glColor4f(r, g, b, a);
+            } else {
+                gl.glColor4f(r, g, b, a);
+            }
+        } else {
+            float rdark = 0.498f * edge.r();
+            float gdark = 0.498f * edge.g();
+            float bdark = 0.498f * edge.b();
+            gl.glColor4f(rdark, gdark, bdark, 1f);
+        }
+
         gl.glVertex3d(baseX + sideVector.x() * arrowWidth, baseY + sideVector.y() * arrowWidth, baseZ + sideVector.z() * arrowWidth);
         gl.glVertex3d(baseX - sideVector.x() * arrowWidth, baseY - sideVector.y() * arrowWidth, baseZ - sideVector.z() * arrowWidth);
         gl.glVertex3d(targetX, targetY, targetZ);
-    }
-
-    @Override
-    public float getCollisionDistance(double angle) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public boolean isInOctreeLeaf(Octant leaf) {
-        return ((ModelImpl) obj.getModel()).getOctants()[0] == leaf;
-    }
-
-    @Override
-    public int[] octreePosition(float centerX, float centerY, float centerZ,
-            float size) {
-        return null;
-    }
-
-    @Override
-    public boolean selectionTest(Vecf distanceFromMouse, float selectionSize) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public String toSVG() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setOctant(Octant octant) {
-        this.octants[0] = octant;
-    }
-
-    @Override
-    public Octant[] getOctants() {
-        Octant[] oc = ((ModelImpl) obj.getModel()).getOctants();
-        if (oc[0] == null) //The edge has been destroyed
-        {
-            oc = this.octants;
-        }
-        return oc;
-    }
-
-    @Override
-    public boolean isCacheMatching(int cacheMarker) {
-        if (edge.getModel() != null) {
-            return ((ModelImpl) edge.getModel()).isCacheMatching(cacheMarker);
-        }
-        return false;
     }
 }

@@ -32,7 +32,6 @@ import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.gephi.graph.dhns.utils.avl.EdgeOppositeTree;
-import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
 import org.gephi.graph.dhns.utils.avl.PreNodeTree;
 
 /**

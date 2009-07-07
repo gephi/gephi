@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.importer;
 
 import org.gephi.io.container.ContainerLoader;
+import org.gephi.io.logging.Report;
 import org.w3c.dom.Document;
 
 /**
@@ -29,5 +30,5 @@ import org.w3c.dom.Document;
  */
 public interface XMLImporter extends FileFormatImporter {
 
-    public void importData(Document document, ContainerLoader containter) throws Exception;
+    public void importData(Document document, ContainerLoader containter, Report report) throws Exception;
 }

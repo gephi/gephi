@@ -28,29 +28,40 @@ import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
+import org.gephi.graph.dhns.proposition.Proposition;
+import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
- * Iterator for main edges for the whole graph. The node iterator is given to the constructor.
+ * Iterator for main edges for the visible graph.
  *
  * @author Mathieu Bastian
+ * @see EdgeIterator
  */
 public class EdgeIterator extends AbstractEdgeIterator implements Iterator<Edge> {
 
     protected AbstractNodeIterator nodeIterator;
-    protected ParamAVLIterator<AbstractEdge> edgeIterator;
+    protected ParamAVLIterator<ProperEdgeImpl> edgeIterator;
     protected PreNode currentNode;
     protected AbstractEdge pointer;
     protected boolean undirected;
 
-    public EdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected) {
+    //Proposition
+    protected Proposition<AbstractEdge> proposition;
+
+    public EdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected, Proposition<AbstractEdge> proposition) {
         this.nodeIterator = nodeIterator;
-        edgeIterator = new ParamAVLIterator<AbstractEdge>();
+        edgeIterator = new ParamAVLIterator<ProperEdgeImpl>();
         this.undirected = undirected;
+        if (proposition == null) {
+            this.proposition = new Tautology();
+        } else {
+            this.proposition = proposition;
+        }
     }
 
     @Override
     public boolean hasNext() {
-        while (pointer == null || (undirected && pointer.getUndirected()!=pointer)) {
+        while (pointer == null || (undirected && pointer.getUndirected() != pointer) || !proposition.evaluate(pointer)) {
             while (!edgeIterator.hasNext()) {
                 if (nodeIterator.hasNext()) {
                     currentNode = nodeIterator.next();
@@ -64,7 +75,6 @@ public class EdgeIterator extends AbstractEdgeIterator implements Iterator<Edge>
 
             pointer = edgeIterator.next();
         }
-
         return true;
     }
 

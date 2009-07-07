@@ -7,6 +7,7 @@ package org.gephi.statistics.component;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import org.gephi.statistics.api.Statistics;
+import org.gephi.statistics.api.StatisticsBuilder;
 import org.gephi.statistics.api.StatisticsController;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -80,7 +81,7 @@ final class StatisticsTopComponent extends TopComponent {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         StatisticsController controller = Lookup.getDefault().lookup(StatisticsController.class);
-        controller.execute((Statistics) (jComboBox1.getModel().getSelectedItem()));
+        controller.execute((StatisticsBuilder) (jComboBox1.getModel().getSelectedItem()));
     }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

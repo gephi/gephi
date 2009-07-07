@@ -34,6 +34,7 @@ import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.gleem.linalg.MathUtil;
 import org.gephi.visualization.gleem.linalg.Vec3f;
+import org.gephi.visualization.selection.Rectangle;
 
 /**
  *
@@ -220,18 +221,29 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
                 mousePosition[0] = x;
                 mousePosition[1] = graphDrawable.viewport.get(3) - y;
 
-                mouseDrag[0] = (float) ((graphDrawable.viewport.get(2) / 2 - x) / graphDrawable.draggingMarker[0] + graphDrawable.cameraTarget[0]);
-                mouseDrag[1] = (float) ((y - graphDrawable.viewport.get(3) / 2) / graphDrawable.draggingMarker[1] + graphDrawable.cameraTarget[1]);
+                if (vizConfig.isRectangleSelection()) {
+                    if (!dragging) {
+                        //Start drag
+                        dragging = true;
+                        Rectangle rectangle = (Rectangle) engine.getCurrentSelectionArea();
+                        rectangle.start(mousePosition);
+                    }
+                    engine.getScheduler().requireUpdateSelection();
+                } else {
+                    mouseDrag[0] = (float) ((graphDrawable.viewport.get(2) / 2 - x) / graphDrawable.draggingMarker[0] + graphDrawable.cameraTarget[0]);
+                    mouseDrag[1] = (float) ((y - graphDrawable.viewport.get(3) / 2) / graphDrawable.draggingMarker[1] + graphDrawable.cameraTarget[1]);
 
-                if (!dragging) {
-                    //Start drag
-                    dragging = true;
-                    vizEventManager.startDrag();
-                    engine.getScheduler().requireStartDrag();
+                    if (!dragging) {
+                        //Start drag
+                        dragging = true;
+                        vizEventManager.startDrag();
+                        engine.getScheduler().requireStartDrag();
+                    }
+
+                    vizEventManager.drag();
+                    engine.getScheduler().requireDrag();
                 }
 
-                vizEventManager.drag();
-                engine.getScheduler().requireDrag();
 
                 leftButtonMoving[0] = x;
                 leftButtonMoving[1] = y;

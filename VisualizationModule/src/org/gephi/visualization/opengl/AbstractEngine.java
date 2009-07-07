@@ -40,6 +40,8 @@ import org.gephi.visualization.bridge.EventBridge;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.mode.ModeManager;
 import org.gephi.visualization.opengl.octree.Octree;
+import org.gephi.visualization.opengl.text.TextManager;
+import org.gephi.visualization.selection.Rectangle;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 
 /**
@@ -63,12 +65,13 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected GraphDrawableImpl graphDrawable;
     protected GraphIO graphIO;
     protected VizEventManager vizEventManager;
-    protected SelectionArea currentSelectionArea = new Point();
+    protected SelectionArea currentSelectionArea;
     protected ModelClassLibrary modelClassLibrary;
     protected DataBridge dataBridge;
     protected EventBridge eventBridge;
     protected VizConfig vizConfig;
     protected ModeManager modeManager;
+    protected TextManager textManager;
 
     //States
     protected EngineLifeCycle lifeCycle = new EngineLifeCycle();
@@ -84,7 +87,9 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         this.eventBridge = VizController.getInstance().getEventBridge();
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.modeManager = VizController.getInstance().getModeManager();
+        this.textManager = VizController.getInstance().getTextManager();
         initObject3dClass();
+        initSelection();
     }
 
     public abstract void beforeDisplay(GL gl, GLU glu);
@@ -123,6 +128,8 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public abstract void initObject3dClass();
 
+    public abstract void initSelection();
+
     public abstract ModelClass[] getModelClasses();
 
     protected abstract void startAnimating();
@@ -155,6 +162,15 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     }
 
     protected boolean isUnderMouse(ModelImpl obj) {
+        if (obj.isAutoSelected()) {
+            return true;
+        }
+        if (obj.onlyAutoSelect()) {
+            return false;
+        }
+        if (!currentSelectionArea.isEnabled()) {
+            return false;
+        }
         float x1 = graphIO.getMousePosition()[0];
         float y1 = graphIO.getMousePosition()[1];
 
@@ -172,6 +188,10 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         d.set(2, distance);
 
         return currentSelectionArea.mouseTest(d, obj);
+    }
+
+    public SelectionArea getCurrentSelectionArea() {
+        return currentSelectionArea;
     }
 
     public void startDisplay() {

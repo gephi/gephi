@@ -143,7 +143,7 @@ public class Octree implements VizArchitecture {
         gl.glRenderMode(GL.GL_SELECT);
         gl.glInitNames();
         gl.glPushName(0);
-
+        gl.glDisable(GL.GL_CULL_FACE);      //Disable flags
         //Draw the nodes cube in the select buffer
         for (Octant n : leaves) {
             n.resetUpdatePositionFlag();        //Profit from the loop to do this, because this method is always after updating position
@@ -151,7 +151,10 @@ public class Octree implements VizArchitecture {
             n.displayOctreeNode(gl);
         }
         int nbRecords = gl.glRenderMode(GL.GL_RENDER);
-
+        if (config.isCulling()) {
+            gl.glEnable(GL.GL_CULL_FACE);
+            gl.glCullFace(GL.GL_BACK);
+        }
         visibleLeaves.clear();
 
         //Get the hits and add the nodes' objects to the array
@@ -183,6 +186,7 @@ public class Octree implements VizArchitecture {
 
         gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
         gl.glRenderMode(GL.GL_SELECT);
+        gl.glDisable(GL.GL_CULL_FACE);      //Disable flags
 
         gl.glInitNames();
         gl.glPushName(0);
@@ -213,6 +217,10 @@ public class Octree implements VizArchitecture {
 
         //Returning to normal rendering mode
         int nbRecords = gl.glRenderMode(GL.GL_RENDER);
+        if (config.isCulling()) {
+            gl.glEnable(GL.GL_CULL_FACE);
+            gl.glCullFace(GL.GL_BACK);
+        }
 
         //Clean previous selection
         selectedLeaves.clear();
@@ -292,6 +300,7 @@ public class Octree implements VizArchitecture {
     }
 
     public void displayOctree(GL gl) {
+        gl.glDisable(GL.GL_CULL_FACE);
         gl.glColor3f(1, 0.5f, 0.5f);
         gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
         for (Octant o : visibleLeaves) {
@@ -299,6 +308,11 @@ public class Octree implements VizArchitecture {
         }
         if (!config.isWireFrame()) {
             gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
+        }
+
+        if (config.isCulling()) {
+            gl.glEnable(GL.GL_CULL_FACE);
+            gl.glCullFace(GL.GL_BACK);
         }
     }
 

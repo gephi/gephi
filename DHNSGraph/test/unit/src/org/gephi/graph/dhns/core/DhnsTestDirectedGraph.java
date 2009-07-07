@@ -1,14 +1,30 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+Copyright 2008 WebAtlas
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.core;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
 import org.gephi.graph.dhns.node.PreNode;
@@ -43,7 +59,8 @@ public class DhnsTestDirectedGraph {
 
     @Before
     public void setUp() {
-        dhnsGlobal = new Dhns();
+        DhnsGraphController controller = new DhnsGraphController();
+        dhnsGlobal = controller.getMainDhns();
         graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, false);
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
@@ -107,7 +124,8 @@ public class DhnsTestDirectedGraph {
     @Test
     public void testAddNode() {
         System.out.println("testAddNode");
-        Dhns dhns = new Dhns();
+        DhnsGraphController controller = new DhnsGraphController();
+        Dhns dhns = controller.getMainDhns();
         ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.getGraphFactory();
@@ -150,7 +168,8 @@ public class DhnsTestDirectedGraph {
 
     @Test
     public void testRemoveNode() {
-        Dhns dhns = new Dhns();
+        DhnsGraphController controller = new DhnsGraphController();
+        Dhns dhns = controller.getMainDhns();
         ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.getGraphFactory();
@@ -274,7 +293,8 @@ public class DhnsTestDirectedGraph {
 
     @Test
     public void testAddEdge() {
-        Dhns dhns = new Dhns();
+        DhnsGraphController controller = new DhnsGraphController();
+        Dhns dhns = controller.getMainDhns();
         ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.getGraphFactory();

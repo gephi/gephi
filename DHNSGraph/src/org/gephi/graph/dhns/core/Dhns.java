@@ -57,9 +57,6 @@ public class Dhns {
 
     //Locking
     private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-    
-    //External
-    private AttributeRowFactory attributesFactory;
 
     public Dhns(DhnsGraphController controller) {
         this.controller = controller;
@@ -67,14 +64,9 @@ public class Dhns {
         graphVersion = new GraphVersion();
         structureModifier = new StructureModifier(this);
         init();
-
-        if(Lookup.getDefault().lookup(AttributeController.class)!=null) {
-            attributesFactory = Lookup.getDefault().lookup(AttributeController.class).rowFactory();
-        }
     }
 
     public void init() {
-
     }
 
     public DhnsGraphController getController() {
@@ -117,27 +109,13 @@ public class Dhns {
         return new EdgeIterableImpl(iterator, readWriteLock.readLock(), condition);
     }
 
-    public AttributeRow newNodeAttributes() {
-        if (attributesFactory == null) {
-            return null;
-        }
-        return attributesFactory.newNodeRow();
-    }
-
-    public AttributeRow newEdgeAttributes() {
-        if (attributesFactory == null) {
-            return null;
-        }
-        return attributesFactory.newEdgeRow();
-    }
-
     //Locking
     public Lock getReadLock() {
         return readWriteLock.readLock();
     }
 
     public Lock getWriteLock() {
-        if(readWriteLock.getReadHoldCount()>0) {
+        if (readWriteLock.getReadHoldCount() > 0) {
             throw new IllegalMonitorStateException("Impossible to acquire a write lock when currently holding a read lock. Use toArray() methods on NodeIterable and EdgeIterable to avoid holding a readLock.");
         }
         return readWriteLock.writeLock();
@@ -145,16 +123,16 @@ public class Dhns {
 
     //Type
     public void touchDirected() {
-        if(undirected || mixed) {
-           touchMixed();
+        if (undirected || mixed) {
+            touchMixed();
         } else {
             directed = true;
         }
     }
 
     public void touchUndirected() {
-        if(directed || mixed) {
-           touchMixed();
+        if (directed || mixed) {
+            touchMixed();
         } else {
             undirected = true;
         }
