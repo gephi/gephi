@@ -23,10 +23,15 @@ package org.gephi.io.container;
 import java.util.Collection;
 import org.gephi.io.processor.EdgeDraftGetter;
 import org.gephi.io.processor.NodeDraftGetter;
+import org.gephi.io.processor.Processor;
 
 /**
+ * Interface for unloading a container. Gets graph draft elements and attributes. Get also
+ * basic params and properties which defined the content. Unloaders are used by <code>Processor</code>
+ * to load data from the container to the main data structure.
  *
  * @author Mathieu Bastian
+ * @see Processor
  */
 public interface ContainerUnloader {
 

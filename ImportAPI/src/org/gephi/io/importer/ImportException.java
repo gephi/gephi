@@ -23,16 +23,23 @@ package org.gephi.io.importer;
 import org.openide.util.NbBundle;
 
 /**
+ * Localized exceptions thrown by importers. Messages returns following details about the nature and
+ * localization of exception in the code:
+ * <ul><li>Exception</li>
+ * <li>Class</li>
+ * <li>Code line number</li></ul>
+ * <p>Returns the following localized message:
+ * <em>The importer class %s failed to import the file.\n\nException: %s : %s\nClass: %s\nLine: %d</em>
  *
  * @author Mathieu Bastian
  */
 public final class ImportException extends RuntimeException {
 
     private final Throwable cause;
-    private final FileFormatImporter source;
+    private final Importer source;
     private final String message;
 
-    public ImportException(FileFormatImporter source, Throwable cause) {
+    public ImportException(Importer source, Throwable cause) {
         super(cause);
         this.cause = cause;
         this.source = source;

@@ -22,8 +22,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.importer;
 
 /**
+ * File type definition. A simple class which contains a <b>name</b> and <b>extension</b> for a file type/
  *
  * @author Mathieu Bastian
+ * @see FileFormatImporter
  */
 public final class FileType
 {

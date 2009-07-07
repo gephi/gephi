@@ -25,10 +25,19 @@ import org.gephi.io.logging.Report;
 import org.w3c.dom.Document;
 
 /**
+ * Importers interface for XML document source.
  *
  * @author Mathieu Bastian
  */
 public interface XMLImporter extends FileFormatImporter {
 
+    /**
+     * Import data from XML <code>document</code> and push it to <code>container</code>. Informations,
+     * logs and issues are pushed to <code>report</code> for further analysis and verification.
+     * @param document the XML document
+     * @param container container loading interface
+     * @param report the import report for logging informations and issues
+     * @throws java.lang.Exception for catching eventual exceptions
+     */
     public void importData(Document document, ContainerLoader containter, Report report) throws Exception;
 }

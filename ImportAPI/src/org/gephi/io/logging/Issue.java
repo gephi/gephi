@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.logging;
 
 /**
+ * Issue are logged and classified by <code>Report</code> to describe a problem encoutered during
+ * import process. Fill issues as <code>Exceptions</code>.
  *
  * @author Mathieu Bastian
  */

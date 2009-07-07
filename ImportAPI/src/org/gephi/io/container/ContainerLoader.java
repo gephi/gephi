@@ -21,10 +21,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.container;
 
 import org.gephi.data.attributes.api.AttributeManager;
+import org.gephi.io.importer.Importer;
 
 /**
+ * Interface for a loading a {@link Container} with graph and attributes data from an importers.
+ * Data pushed to a container are not appended directly to the main data structure, <code>Processor</code>
+ * are doing this job. 
+ * <p>
+ * Use the draft factory for getting <code>NodeDraft</code> and <code>EdgeDraft</code> instances.
  *
- * @author Mathieu
+ * @author Mathieu Bastian
+ * @see Importer
  */
 public interface ContainerLoader {
 
@@ -50,10 +57,22 @@ public interface ContainerLoader {
 
     public ContainerFactory factory();
 
+    /**
+     * Node and edge draft factory. Creates node and edge to push in the container.
+     */
     public interface ContainerFactory {
 
+        /**
+         * Returns an empy node draft instance.
+         * @return an instance of <code>NodeDraft</code>
+         */
         public NodeDraft newNodeDraft();
 
+        /**
+         * Returns an empty edge draft instance. Note that <b>source</b> and <b>target</b> have to be
+         * set.
+         * @return an instance of <code>EdgeDraft</code>
+         */
         public EdgeDraft newEdgeDraft();
     }
 }

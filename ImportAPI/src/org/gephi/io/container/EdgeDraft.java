@@ -24,8 +24,11 @@ import java.awt.Color;
 import org.gephi.data.attributes.api.AttributeColumn;
 
 /**
+ * Draft edge, hosted by import containers to represent edges found when importing. <code>Processors</code>
+ * decide if this edge will finally be appended to the graph or not.
  *
  * @author Mathieu Bastian
+ * @see ContainerLoader
  */
 public interface EdgeDraft {
 
