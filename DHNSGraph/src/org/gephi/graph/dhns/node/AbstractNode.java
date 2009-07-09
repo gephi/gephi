@@ -24,17 +24,30 @@ import org.gephi.datastructure.avl.simple.AVLItem;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
+import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
+import org.gephi.graph.dhns.utils.avl.EdgeOppositeTree;
+import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
 
 /**
  * Implementation of node with default behaviour.
  *
  * @author Mathieu Bastian
  */
-public class AbstractNode implements Node, AVLItem {
+public abstract class AbstractNode implements Node, AVLItem {
 
     protected final int ID;
     protected NodeDataImpl nodeData;
     protected boolean visible = true;
+
+    //Structure properties
+    //Tree Structure
+    public int pre;
+    public int size;
+    public AbstractNode parent;
+    public int level;
+    public int post;
+    protected boolean enabled = true;
+    public DurableAVLNode avlNode;
 
     public AbstractNode(int ID) {
         this.ID = ID;
@@ -70,4 +83,34 @@ public class AbstractNode implements Node, AVLItem {
     public int getId() {
         return ID;
     }
+
+    //Structure methods
+    public int getPost() {
+        this.post = pre - level + size;
+        return post;
+    }
+
+    public int getPre() {
+        return avlNode.getIndex();
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public abstract MetaEdgeTree getMetaEdgesOutTree();
+
+    public abstract MetaEdgeTree getMetaEdgesInTree();
+
+    public abstract EdgeOppositeTree getEdgesOutTree();
+
+    public abstract EdgeOppositeTree getEdgesInTree();
+
+    public abstract boolean isValid();
+
+    public abstract boolean isClone();
 }

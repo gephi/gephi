@@ -22,15 +22,15 @@ package org.gephi.graph.dhns.node.iterators;
 
 import java.util.Iterator;
 import org.gephi.graph.dhns.core.DurableTreeList;
-import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
+import org.gephi.graph.dhns.node.AbstractNode;
 
 /**
  * Basic iterator for the {@link DurableTreeList}.
  * 
  * @author Mathieu Bastian
  */
-public class TreeListIterator implements Iterator<PreNode> {
+public class TreeListIterator implements Iterator<AbstractNode> {
 
     /** The TreeList list */
     protected final DurableTreeList treeList;
@@ -62,14 +62,14 @@ public class TreeListIterator implements Iterator<PreNode> {
         return (nextIndex < treeList.size());
     }
 
-    public PreNode next() {
+    public AbstractNode next() {
         if (next == null) {
             next = treeList.getNode(nextIndex);
         } else {
             next = next.next();
         }
 
-        PreNode value = next.getValue();
+        AbstractNode value = next.getValue();
         value.avlNode.setIndex(nextIndex);
         ++nextIndex;
         return value;

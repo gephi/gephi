@@ -24,7 +24,7 @@ import java.util.Iterator;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
-import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
 
@@ -36,12 +36,12 @@ import org.gephi.graph.dhns.proposition.Tautology;
 public class NeighborIterator extends AbstractNodeIterator implements Iterator<Node> {
 
     private AbstractEdgeIterator edgeIterator;
-    private PreNode owner;
-    private PreNode pointer;
+    private AbstractNode owner;
+    private AbstractNode pointer;
     //Propostion
-    private Proposition<PreNode> proposition;
+    private Proposition<AbstractNode> proposition;
 
-    public NeighborIterator(AbstractEdgeIterator edgeIterator, PreNode owner, Proposition<PreNode> proposition) {
+    public NeighborIterator(AbstractEdgeIterator edgeIterator, AbstractNode owner, Proposition<AbstractNode> proposition) {
         this.edgeIterator = edgeIterator;
         this.owner = owner;
         if (proposition == null) {
@@ -60,7 +60,7 @@ public class NeighborIterator extends AbstractNodeIterator implements Iterator<N
                 } else {
                     pointer = edge.getSource();
                 }
-                if(proposition.evaluate(pointer)) {
+                if (proposition.evaluate(pointer)) {
                     return true;
                 }
             }
@@ -68,7 +68,7 @@ public class NeighborIterator extends AbstractNodeIterator implements Iterator<N
         return false;
     }
 
-    public PreNode next() {
+    public AbstractNode next() {
         return pointer;
     }
 

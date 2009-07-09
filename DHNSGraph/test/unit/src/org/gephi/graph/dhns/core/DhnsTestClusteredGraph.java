@@ -28,13 +28,13 @@ import java.util.Iterator;
 import java.util.Map;
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.MetaEdge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
 import org.gephi.graph.dhns.graph.ClusteredUndirectedGraphImpl;
+import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.junit.After;
@@ -145,7 +145,7 @@ public class DhnsTestClusteredGraph {
 
         TreeStructure treeStructure = new TreeStructure();
 
-        PreNode p0 = treeStructure.getRoot();
+        PreNode p0 = (PreNode) treeStructure.getRoot();
         PreNode p1 = new PreNode(1, 0, 0, 0, null);
         PreNode p2 = new PreNode(2, 0, 0, 0, null);
         PreNode p3 = new PreNode(3, 0, 0, 0, null);
@@ -163,8 +163,8 @@ public class DhnsTestClusteredGraph {
         treeStructure.insertAsChild(p7, p0);
 
         //Test if ID = pre
-        for (Iterator<PreNode> itr = treeStructure.getTree().iterator(1); itr.hasNext();) {
-            PreNode n = itr.next();
+        for (Iterator<AbstractNode> itr = treeStructure.getTree().iterator(1); itr.hasNext();) {
+            AbstractNode n = itr.next();
             assertEquals(n.getId(), n.getPre());
         }
 
@@ -174,8 +174,8 @@ public class DhnsTestClusteredGraph {
         //Write expected array
         int[] expected = new int[treeStructure.getTreeSize() - 1];
         int index = 0;
-        for (Iterator<PreNode> itr = treeStructure.getTree().iterator(1); itr.hasNext();) {
-            PreNode n = itr.next();
+        for (Iterator<AbstractNode> itr = treeStructure.getTree().iterator(1); itr.hasNext();) {
+            AbstractNode n = itr.next();
             expected[index] = n.getId();
         }
 
@@ -183,8 +183,8 @@ public class DhnsTestClusteredGraph {
         treeStructure.move(p1, p4);
 
         int[] actual = new int[treeStructure.getTreeSize() - 1];
-        for (Iterator<PreNode> itr = treeStructure.getTree().iterator(1); itr.hasNext();) {
-            PreNode n = itr.next();
+        for (Iterator<AbstractNode> itr = treeStructure.getTree().iterator(1); itr.hasNext();) {
+            AbstractNode n = itr.next();
             actual[index] = n.getId();
         }
         assertArrayEquals(expected, actual);
@@ -250,7 +250,7 @@ public class DhnsTestClusteredGraph {
 
         int i = 0;
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), group.getPre()); itr.hasNext();) {
-            PreNode node = itr.next();
+            AbstractNode node = itr.next();
             assertEquals(group.pre + i, node.getPre());
             i++;
         }
@@ -789,11 +789,11 @@ public class DhnsTestClusteredGraph {
     public void checkHierarchy(TreeStructure treeStructure) throws Exception {
 
         int count = 0;
-        PreNode[] array = new PreNode[treeStructure.getTreeSize()];
+        AbstractNode[] array = new AbstractNode[treeStructure.getTreeSize()];
 
         //Pre test
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree()); itr.hasNext();) {
-            PreNode node = itr.next();
+            AbstractNode node = itr.next();
 
             assertEquals("node pre test", node.pre, count);
             array[count] = node;
@@ -801,9 +801,9 @@ public class DhnsTestClusteredGraph {
         }
 
         //Post test
-        Arrays.sort(array, new Comparator<PreNode>() {
+        Arrays.sort(array, new Comparator<AbstractNode>() {
 
-            public int compare(PreNode o1, PreNode o2) {
+            public int compare(AbstractNode o1, AbstractNode o2) {
                 if (o1.post > o2.post) {
                     return 1;
                 } else if (o1.post < o2.post) {

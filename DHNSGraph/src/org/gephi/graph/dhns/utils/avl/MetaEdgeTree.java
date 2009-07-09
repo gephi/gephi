@@ -21,9 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.utils.avl;
 
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
-import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
+import org.gephi.graph.dhns.node.AbstractNode;
 
 /**
  * Same behaviour as {@link EdgeTree} but with {@link MetaEdgeImpl}.
@@ -32,19 +32,19 @@ import org.gephi.datastructure.avl.param.ParamAVLTree;
  */
 public class MetaEdgeTree extends ParamAVLTree<MetaEdgeImpl> {
 
-    private PreNode owner;
+    private AbstractNode owner;
 
-    public MetaEdgeTree(PreNode owner) {
+    public MetaEdgeTree(AbstractNode owner) {
         super();
         this.owner = owner;
         setAccessor(new MetaEdgeImplAVLItemAccessor());
     }
 
-    public PreNode getOwner() {
+    public AbstractNode getOwner() {
         return owner;
     }
 
-    public boolean hasNeighbour(PreNode node) {
+    public boolean hasNeighbour(AbstractNode node) {
         return getItem(node.getNumber()) != null;
     }
 

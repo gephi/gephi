@@ -27,14 +27,14 @@ import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
- * {@link PreNode} iterator for enabled and visible nodes.
+ * {@link AbstractNode} iterator for enabled and visible nodes.
  * 
  * @author Mathieu Bastian
- * @see CompleteTreeIterator
  */
 public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>, ResetableIterator {
 
@@ -45,9 +45,9 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
     protected DurableAVLNode currentNode;
 
     //Proposition
-    protected Proposition<PreNode> proposition;
+    protected Proposition<AbstractNode> proposition;
 
-    public TreeIterator(TreeStructure treeStructure, Proposition<PreNode> proposition) {
+    public TreeIterator(TreeStructure treeStructure, Proposition<AbstractNode> proposition) {
         this.treeList = treeStructure.getTree();
         nextIndex = 1;
         diffIndex = 2;
@@ -94,10 +94,10 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
         }
     }
 
-    public PreNode next() {
+    public AbstractNode next() {
         nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
         diffIndex = nextIndex - currentNode.getValue().pre;
-        PreNode res = currentNode.getValue();
+        AbstractNode res = currentNode.getValue();
         return res;
     }
 

@@ -63,7 +63,7 @@ public class GraphFactoryImpl implements GraphFactory {
         return attributesFactory.newEdgeRow();
     }
 
-    public PreNode newNode() {
+    public AbstractNode newNode() {
         PreNode node = new PreNode(idGen.newNodeId(), 0, 0, 0, null);
         node.setAttributes(newNodeAttributes());
         return node;
@@ -73,8 +73,8 @@ public class GraphFactoryImpl implements GraphFactory {
         if (source == null || target == null) {
             throw new NullPointerException();
         }
-        PreNode nodeSource = (PreNode) source;
-        PreNode nodeTarget = (PreNode) target;
+        AbstractNode nodeSource = (AbstractNode) source;
+        AbstractNode nodeTarget = (AbstractNode) target;
         AbstractEdge edge;
         if (source == target) {
             edge = new SelfLoopImpl(idGen.newEdgeId(), nodeSource);
@@ -89,8 +89,8 @@ public class GraphFactoryImpl implements GraphFactory {
         if (source == null || target == null) {
             throw new NullPointerException();
         }
-        PreNode nodeSource = (PreNode) source;
-        PreNode nodeTarget = (PreNode) target;
+        AbstractNode nodeSource = (AbstractNode) source;
+        AbstractNode nodeTarget = (AbstractNode) target;
         AbstractEdge edge;
         if (source == target) {
             edge = new SelfLoopImpl(idGen.newEdgeId(), nodeSource);
@@ -104,7 +104,7 @@ public class GraphFactoryImpl implements GraphFactory {
         return edge;
     }
 
-    public PreNode duplicateNode(PreNode node) {
+    /*public PreNode duplicateNode(PreNode node) {
         PreNode duplicate = new PreNode(node.getId(), 0, 0, 0, node.parent);
         duplicate.setVisible(node.isVisible());
         return duplicate;
@@ -122,5 +122,5 @@ public class GraphFactoryImpl implements GraphFactory {
         duplicate.setWeight(edge.getWeight());
         duplicate.setVisible(edge.isVisible());
         return duplicate;
-    }
+    }*/
 }

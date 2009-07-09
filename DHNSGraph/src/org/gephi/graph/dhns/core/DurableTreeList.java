@@ -23,7 +23,7 @@ package org.gephi.graph.dhns.core;
 import java.util.AbstractList;
 import java.util.Collection;
 import java.util.Iterator;
-import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 
 /*
@@ -54,7 +54,7 @@ import org.gephi.graph.dhns.node.iterators.TreeListIterator;
  * are inserted and removed repeatedly from anywhere in the list.
  * <p>
  * The class has been modified in the way any modification avoid renumbering of the <b>pre</b> order.
- * <ul><li>Tuned for only store {@link PreNode}. And <code>PreNode</code> knows his {@link DurableAVLNode}.</li>
+ * <ul><li>Tuned for only store {@link AbstractNode}. And <code>AbstractNode</code> knows his {@link DurableAVLNode}.</li>
  * <li>The class know if the <b>pre</b> number of items is synchronized with indexes or not. See
  * <code>preConsistent</code> integer.</li>
  * <li>When index are not synchronized the real index of <code>DurableAVLNode</code> has to be retrieved.</li>
@@ -64,7 +64,7 @@ import org.gephi.graph.dhns.node.iterators.TreeListIterator;
  * @author Stephen Colebourne
  * @author Mathieu Bastian
  */
-public class DurableTreeList extends AbstractList<PreNode> implements Iterable<PreNode> {
+public class DurableTreeList extends AbstractList<AbstractNode> implements Iterable<AbstractNode> {
 //    add; toArray; iterator; insert; get; indexOf; remove
 //    TreeList = 1260;7360;3080;  160;   170;3400;  170;
 //   ArrayList =  220;1480;1760; 6870;    50;1540; 7200;
@@ -90,7 +90,7 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
      * @param coll  the collection to copy
      * @throws NullPointerException if the collection is null
      */
-    public DurableTreeList(Collection<PreNode> coll) {
+    public DurableTreeList(Collection<AbstractNode> coll) {
         super();
         addAll(coll);
     }
@@ -106,7 +106,7 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
      * @param index  the index to retrieve
      * @return the element at the specified index
      */
-    public PreNode get(int index) {
+    public AbstractNode get(int index) {
         checkInterval(index, 0, size() - 1);
         return root.get(index).getValue();
     }
@@ -131,12 +131,12 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
      * @return an iterator over the list
      */
     @Override
-    public Iterator<PreNode> iterator() {
+    public Iterator<AbstractNode> iterator() {
         // override to go 75% faster
         return new TreeListIterator(this);
     }
 
-    public Iterator<PreNode> iterator(int fromIndex) {
+    public Iterator<AbstractNode> iterator(int fromIndex) {
         // override to go 75% faster
         return new TreeListIterator(this, fromIndex);
     }
@@ -146,7 +146,7 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
      * 
      * @return the index of the object, -1 if not found
      */
-    public int indexOf(PreNode object) {
+    public int indexOf(AbstractNode object) {
         // override to go 75% faster
         if (root == null) {
             return -1;
@@ -160,7 +160,7 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
      * 
      * @return true if the object is found
      */
-    public boolean contains(PreNode object) {
+    public boolean contains(AbstractNode object) {
         return (indexOf(object) >= 0);
     }
 
@@ -170,9 +170,9 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
      * @return the list as an array
      */
     @Override
-    public PreNode[] toArray() {
+    public AbstractNode[] toArray() {
         // override to go 20% faster
-        PreNode[] array = new PreNode[size()];
+        AbstractNode[] array = new AbstractNode[size()];
         if (root != null) {
             root.toArray(array, root.relativePosition);
         }
@@ -187,7 +187,7 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
      * @param obj  the element to add
      */
     @Override
-    public void add(int index, PreNode obj) {
+    public void add(int index, AbstractNode obj) {
         modCount++;
         checkInterval(index, 0, size());
         incPreConsistent();
@@ -201,7 +201,7 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
     }
 
     @Override
-    public boolean add(PreNode e) {
+    public boolean add(AbstractNode e) {
         add(size, e);
         return true;
     }
@@ -215,10 +215,10 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
      * @throws IndexOutOfBoundsException if the index is invalid
      */
     @Override
-    public PreNode set(int index, PreNode obj) {
+    public AbstractNode set(int index, AbstractNode obj) {
         checkInterval(index, 0, size() - 1);
         DurableAVLNode node = root.get(index);
-        PreNode result = node.value;
+        AbstractNode result = node.value;
         node.setValue(obj);
         return result;
     }
@@ -230,10 +230,10 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
      * @return the previous object at that index
      */
     @Override
-    public PreNode remove(int index) {
+    public AbstractNode remove(int index) {
         modCount++;
         checkInterval(index, 0, size() - 1);
-        PreNode result = get(index);
+        AbstractNode result = get(index);
         result.avlNode.setIndex(index);
         root = root.remove(index);
         result.avlNode = null;
@@ -243,11 +243,11 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
         return result;
     }
 
-    public PreNode removeAndKeepParent(int index) {
+    public AbstractNode removeAndKeepParent(int index) {
         checkInterval(index, 0, size() - 1);
 
         //Remove without setting null parent
-        PreNode node = get(index);
+        AbstractNode node = get(index);
         root = root.remove(index);
         node.avlNode = null;
         node.size = 0;
@@ -259,8 +259,8 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
     public int move(int index, int destination) {
         checkInterval(index, 0, size() - 1);
 
-        PreNode node = get(index);
-        PreNode parent = get(destination);
+        AbstractNode node = get(index);
+        AbstractNode parent = get(destination);
         int destinationPre = parent.pre + parent.size + 1;
         int nodeLimit = node.pre + node.size;
         boolean forward = destinationPre > node.pre;
@@ -277,7 +277,7 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
                 destPre -= count + 1;
             }
 
-            PreNode sourceNode = get(sourcePre);
+            AbstractNode sourceNode = get(sourcePre);
             root = root.remove(sourcePre);      //Remove
             sourceNode.avlNode = null;          //Remove
             size--;                             //Remove
@@ -353,7 +353,7 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
         /** The relative position, root holds absolute position. */
         private int relativePosition;
         /** The stored element. */
-        PreNode value;
+        AbstractNode value;
         private DurableAVLNode parent;
         private int preConsistent;
         private DurableTreeList tree;
@@ -366,7 +366,7 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
          * @param rightFollower the node with the value following this one
          * @param leftFollower the node with the value leading this one
          */
-        private DurableAVLNode(DurableTreeList treeParent, int relativePosition, PreNode obj, DurableAVLNode rightFollower, DurableAVLNode leftFollower, DurableAVLNode parentNode) {
+        private DurableAVLNode(DurableTreeList treeParent, int relativePosition, AbstractNode obj, DurableAVLNode rightFollower, DurableAVLNode leftFollower, DurableAVLNode parentNode) {
             this.relativePosition = relativePosition;
             value = obj;
             obj.avlNode = this;
@@ -416,7 +416,7 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
          * 
          * @return the value of this node
          */
-        public PreNode getValue() {
+        public AbstractNode getValue() {
             return value;
         }
 
@@ -425,7 +425,7 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
          * 
          * @param obj  the value to store
          */
-        void setValue(PreNode obj) {
+        void setValue(AbstractNode obj) {
             this.value = obj;
             obj.avlNode = this;
         }
@@ -452,7 +452,7 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
         /**
          * Locate the index that contains the specified object.
          */
-        int indexOf(PreNode object, int index) {
+        int indexOf(AbstractNode object, int index) {
             //value.setPre(index);
             if (getLeftSubTree() != null) {
                 int result = left.indexOf(object, index + left.relativePosition);
@@ -475,7 +475,7 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
          * @param array the array to be filled
          * @param index the index of this node
          */
-        void toArray(PreNode[] array, int index) {
+        void toArray(AbstractNode[] array, int index) {
             array[index] = value;
             if (getLeftSubTree() != null) {
                 left.toArray(array, index + left.relativePosition);
@@ -516,7 +516,7 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
          * the parent node.
          * @param obj is the object to be stored in the position.
          */
-        DurableAVLNode insert(int index, PreNode obj) {
+        DurableAVLNode insert(int index, AbstractNode obj) {
             int indexRelativeToMe = index - relativePosition;
 
             if (indexRelativeToMe <= 0) {
@@ -526,7 +526,7 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
             }
         }
 
-        private DurableAVLNode insertOnLeft(int indexRelativeToMe, PreNode obj) {
+        private DurableAVLNode insertOnLeft(int indexRelativeToMe, AbstractNode obj) {
             DurableAVLNode ret = this;
 
             if (getLeftSubTree() == null) {
@@ -543,7 +543,7 @@ public class DurableTreeList extends AbstractList<PreNode> implements Iterable<P
             return ret;
         }
 
-        private DurableAVLNode insertOnRight(int indexRelativeToMe, PreNode obj) {
+        private DurableAVLNode insertOnRight(int indexRelativeToMe, AbstractNode obj) {
             DurableAVLNode ret = this;
 
             if (getRightSubTree() == null) {

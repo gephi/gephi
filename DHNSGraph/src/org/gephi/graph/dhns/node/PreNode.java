@@ -41,15 +41,6 @@ import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
  */
 public class PreNode extends AbstractNode implements AVLItem {
 
-    //Tree Structure
-    public int pre;
-    public int size;
-    public PreNode parent;
-    public int level;
-    public int post;
-    private boolean enabled = true;
-    public DurableAVLNode avlNode;
-
     //Edges
     private EdgeOppositeTree edgesOutTree;
     private EdgeOppositeTree edgesInTree;
@@ -70,27 +61,12 @@ public class PreNode extends AbstractNode implements AVLItem {
         metaEdgesInTree = new MetaEdgeTree(this);
     }
 
-    public int getPost() {
-        this.post = pre - level + size;
-        return post;
-    }
-
     @Override
     public String toString() {
         return "" + pre;
     }
 
-    public int getPre() {
-        return avlNode.getIndex();
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
+    
 
     public MetaEdgeTree getMetaEdgesOutTree() {
         return metaEdgesOutTree;
@@ -123,5 +99,10 @@ public class PreNode extends AbstractNode implements AVLItem {
     @Override
     public int getNumber() {
         return ID;
+    }
+
+    @Override
+    public boolean isClone() {
+        return false;
     }
 }

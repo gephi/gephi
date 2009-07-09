@@ -21,30 +21,30 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.node.iterators;
 
 import java.util.Iterator;
-import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.proposition.Proposition;
 
 /**
- * {@link PreNode} iterator for children of a node, enabled or not.
+ * {@link AbstractNode} iterator for children of a node, enabled or not.
  *
  * @author Mathieu Bastian
  * @see DescendantAndSelfIterator
  */
 public class DescendantAndSelfIterator extends DescendantIterator implements Iterator<Node>, ResetableIterator {
 
-    public DescendantAndSelfIterator(TreeStructure treeStructure, Proposition<PreNode> proposition) {
+    public DescendantAndSelfIterator(TreeStructure treeStructure, Proposition<AbstractNode> proposition) {
         super(treeStructure, proposition);
     }
 
-    public DescendantAndSelfIterator(TreeStructure treeStructure, PreNode node, Proposition<PreNode> proposition) {
+    public DescendantAndSelfIterator(TreeStructure treeStructure, AbstractNode node, Proposition<AbstractNode> proposition) {
         super(treeStructure, node, proposition);
     }
 
     @Override
-    public void setNode(PreNode node) {
+    public void setNode(AbstractNode node) {
         nextIndex = node.getPre();
         treeSize = node.getPre() + node.size + 1;
         diffIndex = 2;

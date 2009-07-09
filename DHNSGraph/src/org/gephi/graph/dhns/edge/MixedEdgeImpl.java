@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.edge;
 
-import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.node.AbstractNode;
 
 /**
  * Main edge implementation + sparse support.
@@ -31,7 +31,7 @@ public class MixedEdgeImpl extends AbstractEdge {
 
     protected boolean directed;
 
-    public MixedEdgeImpl(int ID, PreNode source, PreNode target, boolean directed) {
+    public MixedEdgeImpl(int ID, AbstractNode source, AbstractNode target, boolean directed) {
         super(ID, source, target);
         this.directed = directed;
     }

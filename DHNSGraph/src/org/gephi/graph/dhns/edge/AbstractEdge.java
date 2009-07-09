@@ -21,10 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.edge;
 
 import org.gephi.graph.api.EdgeData;
-import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.datastructure.avl.simple.AVLItem;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.dhns.node.AbstractNode;
 
 /**
  * Abstract edge with one source and one target.
@@ -34,24 +34,24 @@ import org.gephi.graph.api.Edge;
 public abstract class AbstractEdge implements Edge, AVLItem {
 
     protected final int ID;
-    protected final PreNode source;
-    protected final PreNode target;
+    protected final AbstractNode source;
+    protected final AbstractNode target;
     protected float weight = 1f;
     protected boolean visible = true;
     protected EdgeDataImpl edgeData;
 
-    public AbstractEdge(int ID, PreNode source, PreNode target) {
+    public AbstractEdge(int ID, AbstractNode source, AbstractNode target) {
         this.source = source;
         this.target = target;
         this.ID = ID;
         this.edgeData = new EdgeDataImpl(this);
     }
 
-    public PreNode getSource() {
+    public AbstractNode getSource() {
         return source;
     }
 
-    public PreNode getTarget() {
+    public AbstractNode getTarget() {
         return target;
     }
 

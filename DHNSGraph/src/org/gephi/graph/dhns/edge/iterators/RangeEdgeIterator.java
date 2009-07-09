@@ -25,7 +25,7 @@ import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantAndSelfIterator;
 import org.gephi.graph.dhns.proposition.Proposition;
@@ -40,19 +40,19 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
 
     protected AbstractNodeIterator nodeIterator;
     protected ParamAVLIterator<AbstractEdge> edgeIterator;
-    protected PreNode currentNode;
+    protected AbstractNode currentNode;
     protected AbstractEdge pointer;
     protected boolean IN = false;
     protected boolean inner;
     protected int rangeStart;
     protected int rangeLimit;
-    protected PreNode nodeGroup;
+    protected AbstractNode nodeGroup;
     protected boolean undirected;
 
     //Proposition
     protected Proposition<AbstractEdge> edgeProposition;
 
-    public RangeEdgeIterator(TreeStructure treeStructure, PreNode nodeGroup, PreNode target, boolean inner, boolean undirected, Proposition<PreNode> nodeProposition, Proposition<AbstractEdge> edgeProposition) {
+    public RangeEdgeIterator(TreeStructure treeStructure, AbstractNode nodeGroup, AbstractNode target, boolean inner, boolean undirected, Proposition<AbstractNode> nodeProposition, Proposition<AbstractEdge> edgeProposition) {
         nodeIterator = new DescendantAndSelfIterator(treeStructure, nodeGroup, nodeProposition);
         this.inner = inner;
         this.nodeGroup = nodeGroup;
@@ -97,13 +97,13 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
         if (!undirected || edgeImpl.getUndirected() == edgeImpl) {
             if (edgeProposition.evaluate(edgeImpl)) {
                 if (IN) {
-                    PreNode source = edgeImpl.getSource();
+                    AbstractNode source = edgeImpl.getSource();
                     int pre = source.getPre();
                     if (!inner) {
                         return pre < rangeStart || pre > rangeLimit;
                     }
                 } else {
-                    PreNode target = edgeImpl.getTarget();
+                    AbstractNode target = edgeImpl.getTarget();
                     int pre = target.getPre();
                     boolean isInner = pre >= rangeStart && pre <= rangeLimit;
                     return (inner && isInner) || (!inner && !isInner);

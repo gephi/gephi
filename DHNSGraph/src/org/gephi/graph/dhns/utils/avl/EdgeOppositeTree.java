@@ -20,15 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.utils.avl;
 
-import org.gephi.graph.dhns.edge.ProperEdgeImpl;
-import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.node.AbstractNode;
 
 /**
- * Special type of tree which knows his {@link PreNode} owner. The <code>AVLItemAccessor</code> always
- * return the number of the <code>PreNode</code> linked to the owner.
+ * Special type of tree which knows his {@link AbstractNode} owner. The <code>AVLItemAccessor</code> always
+ * return the number of the <code>AbstractNode</code> linked to the owner.
  * <p>
  * This type of tree stores {@link AbstractEdge}. These edges can be <b>IN</b> or <b>OUT</b>. The instance
  * of the edge is duplicated in each node, once as <b>IN</b> and once as <b>OUT</b>. In each node, the
@@ -39,19 +38,19 @@ import org.gephi.graph.dhns.edge.AbstractEdge;
  */
 public class EdgeOppositeTree extends ParamAVLTree<AbstractEdge> {
 
-    private PreNode owner;
+    private AbstractNode owner;
 
-    public EdgeOppositeTree(PreNode owner) {
+    public EdgeOppositeTree(AbstractNode owner) {
         super();
         this.owner = owner;
         setAccessor(new EdgeOppositeImplAVLItemAccessor());
     }
 
-    public PreNode getOwner() {
+    public AbstractNode getOwner() {
         return owner;
     }
 
-    public boolean hasNeighbour(PreNode node) {
+    public boolean hasNeighbour(AbstractNode node) {
         return getItem(node.getNumber()) != null;
     }
 

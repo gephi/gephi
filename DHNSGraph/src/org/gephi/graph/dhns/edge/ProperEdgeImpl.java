@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.edge;
 
-import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.node.AbstractNode;
 
 /**
  * Main Edge implementation. Has a source and a target.
@@ -29,7 +29,7 @@ import org.gephi.graph.dhns.node.PreNode;
  */
 public class ProperEdgeImpl extends AbstractEdge {
 
-    public ProperEdgeImpl(int ID, PreNode source, PreNode target) {
+    public ProperEdgeImpl(int ID, AbstractNode source, AbstractNode target) {
         super(ID, source, target);
     }
 }

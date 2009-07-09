@@ -20,19 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
-import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.core.Dhns;
-import org.gephi.graph.dhns.core.GraphFactoryImpl;
-import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
-import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
-import org.gephi.graph.dhns.node.iterators.TreeListIterator;
-import org.gephi.graph.dhns.utils.avl.EdgeOppositeTree;
-import org.gephi.graph.dhns.utils.avl.PreNodeTree;
 
 /**
  * Utilities methods for managing graphs implementation like locking of non-null checking
@@ -46,7 +40,7 @@ public class AbstractGraphImpl {
     public Dhns getSubGraph(AbstractNodeIterator nodeIterator) {
         Dhns newDhns = dhns.getController().newDhns();
 
-        TreeStructure tree = newDhns.getTreeStructure();
+        /*TreeStructure tree = newDhns.getTreeStructure();
         PreNodeTree nodeIdTree = new PreNodeTree();
         GraphFactoryImpl factory = newDhns.getGraphFactory();
         ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
@@ -95,7 +89,7 @@ public class AbstractGraphImpl {
             newNode.getMetaEdgesOutTree().clear();
 
         }
-
+*/
         return newDhns;
     }
 
@@ -127,11 +121,11 @@ public class AbstractGraphImpl {
         return dhns.getGraphVersion().getEdgeVersion();
     }
 
-    protected PreNode checkNode(Node node) {
+    protected AbstractNode checkNode(Node node) {
         if (node == null) {
             throw new IllegalArgumentException("node can't be null");
         }
-        PreNode preNode = (PreNode) node;
+        AbstractNode preNode = (AbstractNode) node;
         if (!preNode.isValid()) {
             throw new IllegalArgumentException("Node must be in the graph");
         }
@@ -166,7 +160,7 @@ public class AbstractGraphImpl {
         return (MetaEdgeImpl) absEdge;
     }
 
-    protected boolean checkEdgeExist(PreNode source, PreNode target) {
+    protected boolean checkEdgeExist(AbstractNode source, AbstractNode target) {
         return source.getEdgesOutTree().hasNeighbour(target);
     }
 

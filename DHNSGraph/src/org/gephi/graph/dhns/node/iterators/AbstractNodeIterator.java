@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.node.iterators;
 
-import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.node.AbstractNode;
 
 /**
  * Abstract Iterator.
@@ -31,7 +31,7 @@ public abstract class AbstractNodeIterator {
 
     public abstract boolean hasNext();
 
-    public abstract PreNode next();
+    public abstract AbstractNode next();
 
     public abstract void remove();
 }

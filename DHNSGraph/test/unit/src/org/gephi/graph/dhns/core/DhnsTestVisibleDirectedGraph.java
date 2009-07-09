@@ -27,6 +27,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
+import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -150,7 +151,7 @@ public class DhnsTestVisibleDirectedGraph {
         assertEquals("graph size", 10, graph.getNodeCount());
 
         for (int i = 0; i < 10; i++) {
-            PreNode n = treeStructure.getNodeAt(i);
+            AbstractNode n = treeStructure.getNodeAt(i);
             assertEquals("prenode pre", i, n.getPre());
             assertEquals("prenode id", i - 1, n.getId());
             assertEquals("prenode enabled", i > 0, n.isEnabled());
@@ -204,7 +205,7 @@ public class DhnsTestVisibleDirectedGraph {
         //Test1
         System.out.print("Test1 nodes: ");
         for (int i = 0; i < treeStructure.getTreeSize(); i++) {
-            PreNode n = treeStructure.getNodeAt(i);
+            AbstractNode n = treeStructure.getNodeAt(i);
             System.out.print(n.getId() + " ");
             assertEquals("prenode pre", i, n.getPre());
             assertEquals("prenode avl node", i, n.avlNode.getIndex());
@@ -223,7 +224,7 @@ public class DhnsTestVisibleDirectedGraph {
         //Test2
         System.out.print("Test2 nodes: ");
         for (int i = 0; i < treeStructure.getTreeSize(); i++) {
-            PreNode n = treeStructure.getNodeAt(i);
+            AbstractNode n = treeStructure.getNodeAt(i);
             System.out.print(n.getId() + " ");
             assertEquals("prenode pre", i, n.getPre());
             assertEquals("prenode avl node", i, n.avlNode.getIndex());
@@ -243,7 +244,7 @@ public class DhnsTestVisibleDirectedGraph {
         //Test3
         System.out.print("Test3 nodes: ");
         for (int i = 0; i < treeStructure.getTreeSize(); i++) {
-            PreNode n = treeStructure.getNodeAt(i);
+            AbstractNode n = treeStructure.getNodeAt(i);
             System.out.print(n.getId() + " ");
             assertEquals("prenode pre", i, n.getPre());
             assertEquals("prenode avl node", i, n.avlNode.getIndex());

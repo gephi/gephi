@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.core;
 
+import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 
@@ -31,9 +32,9 @@ import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 public class TreeStructure {
 
     DurableTreeList tree;
-    PreNode root;
+    AbstractNode root;
     public int treeHeight;
-    private PreNode cacheNode;
+    private AbstractNode cacheNode;
 
     public TreeStructure() {
         this(0);
@@ -50,7 +51,7 @@ public class TreeStructure {
         tree.add(root);
     }
 
-    public PreNode getNodeAt(int pre) {
+    public AbstractNode getNodeAt(int pre) {
         /*if(cacheNode!=null && cacheNode.avlNode.isConsistent() && cacheNode.pre == pre-1)
         {
         cacheNode = cacheNode.avlNode.next().getValue();
@@ -62,8 +63,8 @@ public class TreeStructure {
         return tree.get(pre);
     }
 
-    public PreNode getEnabledAncestorOrSelf(PreNode node) {
-        PreNode parent = node;
+    public AbstractNode getEnabledAncestorOrSelf(AbstractNode node) {
+        AbstractNode parent = node;
         while (!parent.isEnabled()) {
             parent = parent.parent;
             if (parent == null || parent.getPre() == 0) {
@@ -73,8 +74,8 @@ public class TreeStructure {
         return parent;
     }
 
-    public PreNode getEnabledAncestor(PreNode node) {
-        PreNode parent = node.parent;
+    public AbstractNode getEnabledAncestor(AbstractNode node) {
+        AbstractNode parent = node.parent;
         while (!parent.isEnabled()) {
             if (parent.getPre() == 0) {
                 return null;
@@ -84,13 +85,13 @@ public class TreeStructure {
         return parent;
     }
 
-    public void insertAtEnd(PreNode node) {
+    public void insertAtEnd(AbstractNode node) {
         node.pre = tree.size();
 
         tree.add(node);
     }
 
-    public void insertAsChild(PreNode node, PreNode parent) {
+    public void insertAsChild(AbstractNode node, AbstractNode parent) {
         node.parent = parent;
         node.pre = parent.getPre() + parent.size + 1;
         node.level = parent.level + 1;
@@ -102,9 +103,9 @@ public class TreeStructure {
         incrementAncestorsSize(node);
     }
 
-    public void move(PreNode node, PreNode newParent) {
+    public void move(AbstractNode node, AbstractNode newParent) {
 
-        PreNode sourceParent = node.parent;
+        AbstractNode sourceParent = node.parent;
         int sourceSize = 1 + node.size;
 
         int maxLevel = tree.move(node.getPre(), newParent.getPre());
@@ -150,7 +151,7 @@ public class TreeStructure {
         }*/
     }
 
-    public void deleteAtPre(PreNode node) {
+    public void deleteAtPre(AbstractNode node) {
         int pre = node.getPre();
         tree.remove(pre);
         for (int i = 0; i < node.size; i++) {
@@ -158,16 +159,16 @@ public class TreeStructure {
         }
     }
 
-    public void deleteDescendantAndSelf(PreNode node) {
+    public void deleteDescendantAndSelf(AbstractNode node) {
         decrementAncestorSize(node, node.size + 1);
         deleteAtPre(node);
     }
 
-    public void incrementAncestorsSize(PreNode node) {
+    public void incrementAncestorsSize(AbstractNode node) {
         incrementAncestorsSize(node, 1);
     }
 
-    public void incrementAncestorsSize(PreNode node, int shift) {
+    public void incrementAncestorsSize(AbstractNode node, int shift) {
         while (node.parent != null) {
             node = node.parent;
             node.size+=shift;
@@ -175,7 +176,7 @@ public class TreeStructure {
         }
     }
 
-    public void incrementAncestorsAndSelfSize(PreNode node, int shift) {
+    public void incrementAncestorsAndSelfSize(AbstractNode node, int shift) {
         while (node != null) {
             node.size+=shift;
             node.getPost();
@@ -183,7 +184,7 @@ public class TreeStructure {
         }
     }
 
-    public void decrementAncestorSize(PreNode node, int shift) {
+    public void decrementAncestorSize(AbstractNode node, int shift) {
         while (node.parent != null) {
             node = node.parent;
             node.size -= shift;
@@ -191,7 +192,7 @@ public class TreeStructure {
         }
     }
 
-    public void decrementAncestorAndSelfSize(PreNode node, int shift) {
+    public void decrementAncestorAndSelfSize(AbstractNode node, int shift) {
         while (node != null) {
             node.size -= shift;
             node.getPost();
@@ -204,7 +205,7 @@ public class TreeStructure {
         System.out.println("-------------------------------------------------------");
 
         int pre = 0;
-        for (PreNode p : tree) {
+        for (AbstractNode p : tree) {
             System.out.println(p.pre + "\t" + p.size + "\t" + p.level + "\t" + p.parent + "\t" + p.post + "\t" + p.isEnabled() + "\t"+ p.getId());
             pre++;
         }
@@ -214,7 +215,7 @@ public class TreeStructure {
     {
         //Clean nodes
         for(TreeListIterator itr=new TreeListIterator(tree);itr.hasNext();)  {
-            PreNode preNode = itr.next();
+            AbstractNode preNode = itr.next();
             preNode.avlNode = null;
             preNode.parent = null;
         }
@@ -232,7 +233,7 @@ public class TreeStructure {
         return tree;
     }
 
-    public PreNode getRoot() {
+    public AbstractNode getRoot() {
         return root;
     }
 }

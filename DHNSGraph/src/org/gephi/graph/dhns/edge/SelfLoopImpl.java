@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.edge;
 
-import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.node.AbstractNode;
 
 /**
  * Edges with source equal target.
@@ -29,7 +29,7 @@ import org.gephi.graph.dhns.node.PreNode;
  */
 public class SelfLoopImpl extends AbstractEdge {
 
-    public SelfLoopImpl(int ID, PreNode node) {
+    public SelfLoopImpl(int ID, AbstractNode node) {
         super(ID, node, node);
     }
 }
