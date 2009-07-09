@@ -26,10 +26,10 @@ import org.gephi.visualization.api.objects.CompatibilityModelClass;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityArrowModeler;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityEdgeModeler;
+import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityHullModeler;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityNodeDiskModeler;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityNodeRectangleModeler;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityNodeSphereModeler;
-import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityPotatoModeler;
 
 /**
  *
@@ -62,7 +62,9 @@ public class StandardModelClassLibrary implements ModelClassLibrary {
 
         //POTATO
         modelClasses[3] = new CompatibilityModelClass("POTATO", false, true, true);
-        modelClasses[3].addModeler(new CompatibilityPotatoModeler());
+        modelClasses[3].addModeler(new CompatibilityHullModeler());
+        //modelClasses[3] = new CompatibilityModelClass("POTATO", false, true, true);
+        //modelClasses[3].addModeler(new CompatibilityPotatoModeler());
         return modelClasses;
     }
 }

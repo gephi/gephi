@@ -32,6 +32,7 @@ import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.initializer.Modeler;
 import org.gephi.visualization.api.objects.ModelClass;
+import org.gephi.visualization.hull.ConvexHull;
 import org.gephi.visualization.mode.ModeManager;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.objects.Edge2dModel;
@@ -98,6 +99,28 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             edgeClass.setCacheMarker(cacheMarker);
             if (vizConfig.isShowArrows()) {
                 object3dClasses[AbstractEngine.CLASS_ARROW].setCacheMarker(cacheMarker);
+            }
+        }
+
+        ModelClass potatoClass = object3dClasses[AbstractEngine.CLASS_POTATO];
+        if (potatoClass.isEnabled()) {
+            Modeler potInit = engine.getModelClasses()[AbstractEngine.CLASS_POTATO].getCurrentModeler();
+            int i = 0;
+            Node[] nodes = new Node[15];
+            for (Node node : graph.getNodes().toArray()) {
+                nodes[i] = node;
+                i++;
+                if (i == 15) {
+                    break;
+                }
+            }
+            if (i == 15) {
+                ConvexHull ch = new ConvexHull();
+                ch.setNodes(nodes);
+                ModelImpl obj = potInit.initModel(ch);
+                obj.setCacheMarker(cacheMarker);
+                engine.addObject(AbstractEngine.CLASS_POTATO, obj);
+                potatoClass.setCacheMarker(cacheMarker);
             }
         }
 

@@ -79,70 +79,70 @@ public class CompatibilityEngine extends AbstractEngine {
     public void updateSelection(GL gl, GLU glu) {
         octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
 
-        //Potatoes selection
-        if (modelClasses[CLASS_POTATO].isEnabled()) {
+    //Potatoes selection
+        /*if (modelClasses[CLASS_POTATO].isEnabled()) {
 
-            int potatoCount = octree.countSelectedObjects(CLASS_POTATO);
-            float[] mousePosition = graphIO.getMousePosition();
-            float[] pickRectangle = currentSelectionArea.getSelectionAreaRectancle();
+    int potatoCount = octree.countSelectedObjects(CLASS_POTATO);
+    float[] mousePosition = graphIO.getMousePosition();
+    float[] pickRectangle = currentSelectionArea.getSelectionAreaRectancle();
 
-            //Update selection
-            int capacity = 1 * 4 * potatoCount;      //Each object take in maximium : 4 * name stack depth
-            IntBuffer hitsBuffer = BufferUtil.newIntBuffer(capacity);
+    //Update selection
+    int capacity = 1 * 4 * potatoCount;      //Each object take in maximium : 4 * name stack depth
+    IntBuffer hitsBuffer = BufferUtil.newIntBuffer(capacity);
 
-            gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
-            gl.glRenderMode(GL.GL_SELECT);
+    gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
+    gl.glRenderMode(GL.GL_SELECT);
 
-            gl.glInitNames();
-            gl.glPushName(0);
+    gl.glInitNames();
+    gl.glPushName(0);
 
-            gl.glMatrixMode(GL.GL_PROJECTION);
-            gl.glPushMatrix();
-            gl.glLoadIdentity();
+    gl.glMatrixMode(GL.GL_PROJECTION);
+    gl.glPushMatrix();
+    gl.glLoadIdentity();
 
-            glu.gluPickMatrix(mousePosition[0], mousePosition[1], pickRectangle[0], pickRectangle[1], graphDrawable.getViewport());
-            gl.glMultMatrixd(graphDrawable.getProjectionMatrix());
+    glu.gluPickMatrix(mousePosition[0], mousePosition[1], pickRectangle[0], pickRectangle[1], graphDrawable.getViewport());
+    gl.glMultMatrixd(graphDrawable.getProjectionMatrix());
 
-            gl.glMatrixMode(GL.GL_MODELVIEW);
+    gl.glMatrixMode(GL.GL_MODELVIEW);
 
-            //Draw the nodes' cube int the select buffer
-            int hitName = 1;
-            ModelImpl[] array = new ModelImpl[potatoCount];
-            for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(CLASS_POTATO); itr.hasNext();) {
-                Potato3dModel obj = (Potato3dModel) itr.next();
-                obj.setUnderMouse(false);
-                if (obj.isDisplayReady()) {
-                    array[hitName - 1] = obj;
-                    gl.glLoadName(hitName);
-                    obj.mark = false;
-                    gl.glBegin(GL.GL_TRIANGLES);
-                    obj.display(gl, glu);
-                    gl.glEnd();
-                    obj.mark = true;
-                    obj.display(gl, glu);
-                    obj.mark = false;
-                    hitName++;
-                }
-            }
+    //Draw the nodes' cube int the select buffer
+    int hitName = 1;
+    ModelImpl[] array = new ModelImpl[potatoCount];
+    for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(CLASS_POTATO); itr.hasNext();) {
+    Potato3dModel obj = (Potato3dModel) itr.next();
+    obj.setUnderMouse(false);
+    if (obj.isDisplayReady()) {
+    array[hitName - 1] = obj;
+    gl.glLoadName(hitName);
+    obj.mark = false;
+    gl.glBegin(GL.GL_TRIANGLES);
+    obj.display(gl, glu);
+    gl.glEnd();
+    obj.mark = true;
+    obj.display(gl, glu);
+    obj.mark = false;
+    hitName++;
+    }
+    }
 
-            //Restoring the original projection matrix
-            gl.glMatrixMode(GL.GL_PROJECTION);
-            gl.glPopMatrix();
-            gl.glMatrixMode(GL.GL_MODELVIEW);
-            gl.glFlush();
+    //Restoring the original projection matrix
+    gl.glMatrixMode(GL.GL_PROJECTION);
+    gl.glPopMatrix();
+    gl.glMatrixMode(GL.GL_MODELVIEW);
+    gl.glFlush();
 
-            //Returning to normal rendering mode
-            int nbRecords = gl.glRenderMode(GL.GL_RENDER);
+    //Returning to normal rendering mode
+    int nbRecords = gl.glRenderMode(GL.GL_RENDER);
 
-            //Get the hits and put the node under selection in the selectionArray
-            for (int i = 0; i < nbRecords; i++) {
-                int hit = hitsBuffer.get(i * 4 + 3) - 1; 		//-1 Because of the glPushName(0)
-                Potato3dModel obj = (Potato3dModel) array[hit];
-                if (!obj.isParentUnderMouse()) {
-                    obj.setUnderMouse(true);
-                }
-            }
-        }
+    //Get the hits and put the node under selection in the selectionArray
+    for (int i = 0; i < nbRecords; i++) {
+    int hit = hitsBuffer.get(i * 4 + 3) - 1; 		//-1 Because of the glPushName(0)
+    Potato3dModel obj = (Potato3dModel) array[hit];
+    if (!obj.isParentUnderMouse()) {
+    obj.setUnderMouse(true);
+    }
+    }
+    }*/
     }
 
     @Override
@@ -200,6 +200,22 @@ public class CompatibilityEngine extends AbstractEngine {
         CompatibilityModelClass edgeClass = modelClasses[AbstractEngine.CLASS_EDGE];
         CompatibilityModelClass nodeClass = modelClasses[AbstractEngine.CLASS_NODE];
         CompatibilityModelClass arrowClass = modelClasses[AbstractEngine.CLASS_ARROW];
+        CompatibilityModelClass potatoClass = modelClasses[AbstractEngine.CLASS_POTATO];
+
+        //Potato
+        if (potatoClass.isEnabled()) {
+            potatoClass.beforeDisplay(gl, glu);
+            for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_POTATO); itr.hasNext();) {
+                ModelImpl obj = itr.next();
+
+                if (obj.markTime != startTime) {
+                    obj.display(gl, glu);
+                    obj.markTime = startTime;
+                }
+
+            }
+            potatoClass.afterDisplay(gl, glu);
+        }
 
         //Edges
         if (edgeClass.isEnabled()) {
@@ -472,7 +488,7 @@ public class CompatibilityEngine extends AbstractEngine {
             ptr = newPtr;
         }
 
-        modelClasses[CLASS_POTATO].getCurrentModeler().initDisplayLists(gl, glu, quadric, ptr);
+        //modelClasses[CLASS_POTATO].getCurrentModeler().initDisplayLists(gl, glu, quadric, ptr);
 
         //Fin
 
@@ -509,7 +525,7 @@ public class CompatibilityEngine extends AbstractEngine {
         modelClasses[CLASS_NODE].setEnabled(true);
         modelClasses[CLASS_EDGE].setEnabled(vizConfig.isShowEdges());
         modelClasses[CLASS_ARROW].setEnabled(vizConfig.isShowArrows());
-        modelClasses[3].setEnabled(true);
+        modelClasses[CLASS_POTATO].setEnabled(true);
 
         //LOD
         ArrayList<ModelClass> classList = new ArrayList<ModelClass>();

@@ -45,7 +45,6 @@ final class GraphTopComponent extends TopComponent {
 
     private GraphTopComponent() {
         initComponents();
-        initCollapsePanel();
 
         setName(NbBundle.getMessage(GraphTopComponent.class, "CTL_GraphTopComponent"));
         setToolTipText(NbBundle.getMessage(GraphTopComponent.class, "HINT_GraphTopComponent"));
@@ -53,6 +52,7 @@ final class GraphTopComponent extends TopComponent {
 
         //Init
         VizController.getInstance().initInstances();
+        initCollapsePanel();
         engine = VizController.getInstance().getEngine();
         final GraphDrawableImpl drawable = VizController.getInstance().getDrawable();
 
@@ -76,7 +76,11 @@ final class GraphTopComponent extends TopComponent {
     }
 
     private void initCollapsePanel() {
-        collapsePanel.init(new VizBar(), new VizExtendedBar(), false);
+        if (VizController.getInstance().getVizConfig().isShowVizVar()) {
+            collapsePanel.init(new VizBar(), new VizExtendedBar(), false);
+        } else {
+            collapsePanel.setVisible(false);
+        }
     }
 
     /** This method is called from within the constructor to

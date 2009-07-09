@@ -85,6 +85,7 @@ public class VizConfig {
     protected float[] defaultNodeLabelColor = {0f, 0f, 0f, 1f};
     protected float[] defaultEdgeLabelColor = {0.5f, 0.5f, 0.5f, 1f};
     protected Font defaultLabelFont = new Font("Arial", Font.BOLD, 20);
+    protected boolean showVizVar = false;
 
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
@@ -195,6 +196,10 @@ public class VizConfig {
 
     public boolean isShowEdgeLabels() {
         return showEdgeLabels;
+    }
+
+    public boolean isShowVizVar() {
+        return showVizVar;
     }
 
     public boolean isAutoSelectNeighbor() {
