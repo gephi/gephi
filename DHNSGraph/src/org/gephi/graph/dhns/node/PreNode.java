@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.node;
 
 import org.gephi.datastructure.avl.simple.AVLItem;
+import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.graph.dhns.utils.avl.EdgeOppositeTree;
 import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
@@ -41,6 +43,9 @@ import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
  */
 public class PreNode extends AbstractNode implements AVLItem {
 
+    //Properties
+    protected final int ID;
+    protected NodeDataImpl nodeData;
     //Edges
     private EdgeOppositeTree edgesOutTree;
     private EdgeOppositeTree edgesInTree;
@@ -48,7 +53,6 @@ public class PreNode extends AbstractNode implements AVLItem {
     private MetaEdgeTree metaEdgesInTree;
 
     public PreNode(int ID, int pre, int size, int level, PreNode parent) {
-        super(ID);
         this.pre = pre;
         this.size = size;
         this.level = level;
@@ -59,14 +63,15 @@ public class PreNode extends AbstractNode implements AVLItem {
         edgesInTree = new EdgeOppositeTree(this);
         metaEdgesOutTree = new MetaEdgeTree(this);
         metaEdgesInTree = new MetaEdgeTree(this);
+
+        this.ID = ID;
+        nodeData = new NodeDataImpl(this);
     }
 
     @Override
     public String toString() {
         return "" + pre;
     }
-
-    
 
     public MetaEdgeTree getMetaEdgesOutTree() {
         return metaEdgesOutTree;
@@ -102,7 +107,29 @@ public class PreNode extends AbstractNode implements AVLItem {
     }
 
     @Override
+    public int getId() {
+        return ID;
+    }
+
+    @Override
     public boolean isClone() {
         return false;
+    }
+
+    @Override
+    public NodeData getNodeData() {
+        return nodeData;
+    }
+
+    @Override
+    public boolean hasAttributes() {
+        return nodeData.getAttributes() != null;
+    }
+
+    @Override
+    public void setAttributes(Attributes attributes) {
+        if (attributes != null) {
+            nodeData.setAttributes(attributes);
+        }
     }
 }

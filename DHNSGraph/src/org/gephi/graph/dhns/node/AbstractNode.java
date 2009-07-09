@@ -35,11 +35,8 @@ import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
  */
 public abstract class AbstractNode implements Node, AVLItem {
 
-    protected final int ID;
-    protected NodeDataImpl nodeData;
-    protected boolean visible = true;
-
     //Structure properties
+    protected boolean visible = true;
     //Tree Structure
     public int pre;
     public int size;
@@ -49,39 +46,12 @@ public abstract class AbstractNode implements Node, AVLItem {
     protected boolean enabled = true;
     public DurableAVLNode avlNode;
 
-    public AbstractNode(int ID) {
-        this.ID = ID;
-        nodeData = new NodeDataImpl(this);
-    }
-
-    public int getNumber() {
-        return ID;
-    }
-
-    public NodeData getNodeData() {
-        return nodeData;
-    }
-
-    public boolean hasAttributes() {
-        return nodeData.getAttributes() != null;
-    }
-
-    public void setAttributes(Attributes attributes) {
-        if (attributes != null) {
-            nodeData.setAttributes(attributes);
-        }
-    }
-
     public boolean isVisible() {
         return visible;
     }
 
     public void setVisible(boolean visible) {
         this.visible = visible;
-    }
-
-    public int getId() {
-        return ID;
     }
 
     //Structure methods
@@ -102,6 +72,7 @@ public abstract class AbstractNode implements Node, AVLItem {
         this.enabled = enabled;
     }
 
+    //Abstract
     public abstract MetaEdgeTree getMetaEdgesOutTree();
 
     public abstract MetaEdgeTree getMetaEdgesInTree();
@@ -113,4 +84,12 @@ public abstract class AbstractNode implements Node, AVLItem {
     public abstract boolean isValid();
 
     public abstract boolean isClone();
+
+    public abstract int getId();
+
+    public abstract NodeData getNodeData();
+
+    public abstract boolean hasAttributes();
+
+    public abstract void setAttributes(Attributes attributes);
 }
