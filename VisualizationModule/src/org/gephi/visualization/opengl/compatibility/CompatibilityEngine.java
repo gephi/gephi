@@ -79,70 +79,62 @@ public class CompatibilityEngine extends AbstractEngine {
     public void updateSelection(GL gl, GLU glu) {
         octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
 
-    //Potatoes selection
-        /*if (modelClasses[CLASS_POTATO].isEnabled()) {
+        for (int i = 0; i < selectableClasses.length; i++) {
+            CompatibilityModelClass modelClass = selectableClasses[i];
 
-    int potatoCount = octree.countSelectedObjects(CLASS_POTATO);
-    float[] mousePosition = graphIO.getMousePosition();
-    float[] pickRectangle = currentSelectionArea.getSelectionAreaRectancle();
+            if (modelClass.isEnabled() && modelClass.isGlSelection()) {
+                int objectCount = octree.countSelectedObjects(modelClass.getClassId());
 
-    //Update selection
-    int capacity = 1 * 4 * potatoCount;      //Each object take in maximium : 4 * name stack depth
-    IntBuffer hitsBuffer = BufferUtil.newIntBuffer(capacity);
+                float[] mousePosition = graphIO.getMousePosition();
+                float[] pickRectangle = currentSelectionArea.getSelectionAreaRectancle();
+                int capacity = 1 * 4 * objectCount;      //Each object take in maximium : 4 * name stack depth
+                IntBuffer hitsBuffer = BufferUtil.newIntBuffer(capacity);
 
-    gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
-    gl.glRenderMode(GL.GL_SELECT);
+                gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
+                gl.glRenderMode(GL.GL_SELECT);
 
-    gl.glInitNames();
-    gl.glPushName(0);
+                gl.glInitNames();
+                gl.glPushName(0);
 
-    gl.glMatrixMode(GL.GL_PROJECTION);
-    gl.glPushMatrix();
-    gl.glLoadIdentity();
+                gl.glMatrixMode(GL.GL_PROJECTION);
+                gl.glPushMatrix();
+                gl.glLoadIdentity();
 
-    glu.gluPickMatrix(mousePosition[0], mousePosition[1], pickRectangle[0], pickRectangle[1], graphDrawable.getViewport());
-    gl.glMultMatrixd(graphDrawable.getProjectionMatrix());
+                glu.gluPickMatrix(mousePosition[0], mousePosition[1], pickRectangle[0], pickRectangle[1], graphDrawable.getViewport());
+                gl.glMultMatrixd(graphDrawable.getProjectionMatrix());
 
-    gl.glMatrixMode(GL.GL_MODELVIEW);
+                gl.glMatrixMode(GL.GL_MODELVIEW);
 
-    //Draw the nodes' cube int the select buffer
-    int hitName = 1;
-    ModelImpl[] array = new ModelImpl[potatoCount];
-    for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(CLASS_POTATO); itr.hasNext();) {
-    Potato3dModel obj = (Potato3dModel) itr.next();
-    obj.setUnderMouse(false);
-    if (obj.isDisplayReady()) {
-    array[hitName - 1] = obj;
-    gl.glLoadName(hitName);
-    obj.mark = false;
-    gl.glBegin(GL.GL_TRIANGLES);
-    obj.display(gl, glu);
-    gl.glEnd();
-    obj.mark = true;
-    obj.display(gl, glu);
-    obj.mark = false;
-    hitName++;
-    }
-    }
+                int hitName = 1;
+                ModelImpl[] array = new ModelImpl[objectCount];
+                for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(modelClass.getClassId()); itr.hasNext();) {
+                    ModelImpl obj = itr.next();
+                    obj.setAutoSelect(false);
 
-    //Restoring the original projection matrix
-    gl.glMatrixMode(GL.GL_PROJECTION);
-    gl.glPopMatrix();
-    gl.glMatrixMode(GL.GL_MODELVIEW);
-    gl.glFlush();
+                    array[hitName - 1] = obj;
+                    gl.glLoadName(hitName);
+                    obj.display(gl, glu);
+                    hitName++;
 
-    //Returning to normal rendering mode
-    int nbRecords = gl.glRenderMode(GL.GL_RENDER);
+                }
 
-    //Get the hits and put the node under selection in the selectionArray
-    for (int i = 0; i < nbRecords; i++) {
-    int hit = hitsBuffer.get(i * 4 + 3) - 1; 		//-1 Because of the glPushName(0)
-    Potato3dModel obj = (Potato3dModel) array[hit];
-    if (!obj.isParentUnderMouse()) {
-    obj.setUnderMouse(true);
-    }
-    }
-    }*/
+                //Restoring the original projection matrix
+                gl.glMatrixMode(GL.GL_PROJECTION);
+                gl.glPopMatrix();
+                gl.glMatrixMode(GL.GL_MODELVIEW);
+                gl.glFlush();
+
+                //Returning to normal rendering mode
+                int nbRecords = gl.glRenderMode(GL.GL_RENDER);
+
+                //Get the hits and put the node under selection in the selectionArray
+                for (int j = 0; j < nbRecords; j++) {
+                    int hit = hitsBuffer.get(j * 4 + 3) - 1; 		//-1 Because of the glPushName(0)
+                    ModelImpl obj = array[hit];
+                    obj.setAutoSelect(true);
+                }
+            }
+        }
     }
 
     @Override
@@ -367,11 +359,15 @@ public class CompatibilityEngine extends AbstractEngine {
         long markTime = System.currentTimeMillis();
         int i = 0;
         boolean someSelection = false;
+        boolean forceUnselect = false;
         for (ModelClass objClass : selectableClasses) {
+            forceUnselect = objClass.isAloneSelection() && someSelection;
             for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(objClass.getClassId()); itr.hasNext();) {
                 ModelImpl obj = itr.next();
-                if (isUnderMouse(obj) && currentSelectionArea.select(obj.getObj())) {
-                    someSelection = true;
+                if (!forceUnselect && isUnderMouse(obj) && currentSelectionArea.select(obj.getObj())) {
+                    if(!objClass.isAloneSelection()) {  //avoid potatoes to select
+                        someSelection = true;
+                    }
                     if (!obj.isSelected()) {
                         //New selected
                         obj.setSelected(true);

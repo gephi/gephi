@@ -33,6 +33,8 @@ import org.gephi.visualization.opengl.octree.Octant;
  */
 public class ConvexHullModel extends ModelImpl<ConvexHull> {
 
+    protected boolean autoSelect=false;
+
     @Override
     public int[] octreePosition(float centerX, float centerY, float centerZ, float size) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -60,7 +62,11 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
         float blight = Math.min(1, 0.5f * b + 0.5f);
 
         //Fill
-        gl.glColor3f(rlight, glight, blight);
+        if(selected) {
+            gl.glColor3f(r, b, b);
+        } else {
+            gl.glColor3f(rlight, glight, blight);
+        }
         gl.glBegin(GL.GL_POLYGON);
         ModelImpl[] nodes = obj.getNodes();
         for (int i = 0; i < nodes.length; i++) {
@@ -106,5 +112,20 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
             oc[i] = nodes[i].getOctants()[0];
         }
         return oc;
+    }
+
+    @Override
+    public boolean isAutoSelected() {
+        return autoSelect;
+    }
+
+    @Override
+    public boolean onlyAutoSelect() {
+        return true;
+    }
+
+    @Override
+    public void setAutoSelect(boolean autoSelect) {
+        this.autoSelect = autoSelect;
     }
 }

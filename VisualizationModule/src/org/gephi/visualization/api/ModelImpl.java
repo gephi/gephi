@@ -88,6 +88,10 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
         return false;
     }
 
+    public void setAutoSelect(boolean autoSelect) {
+        
+    }
+
     public void setID(int ID) {
         if (this.ID == -1) {
             this.ID = ID;
