@@ -34,7 +34,8 @@ import org.gephi.visualization.api.ModelImpl;
 public class ConvexHull implements Renderable {
 
     private Node metaNode;
-    private ModelImpl[] nodes;
+    private NodeData[] groupNodes;
+    private ModelImpl[] hullNodes;
     private float alpha = 1f;
     private Model model;
     private float baryX;
@@ -42,15 +43,19 @@ public class ConvexHull implements Renderable {
     private float baryZ;
 
     public ModelImpl[] getNodes() {
-        return nodes;
+        return hullNodes;
+    }
+
+    public NodeData[] getGroupNodes() {
+        return groupNodes;
     }
 
     public void setNodes(Node[] nodes) {
-        NodeData[] nodeDatas = new NodeData[nodes.length];
+        groupNodes = new NodeData[nodes.length];
         for (int i = 0; i < nodes.length; i++) {
-            nodeDatas[i] = nodes[i].getNodeData();
+            groupNodes[i] = nodes[i].getNodeData();
         }
-        this.nodes = computeHull(nodeDatas);
+        this.hullNodes = computeHull(groupNodes);
     }
 
     private ModelImpl[] computeHull(NodeData[] nodes) {
@@ -60,6 +65,10 @@ public class ConvexHull implements Renderable {
             models[i] = (ModelImpl) n[i].getModel();
         }
         return models;
+    }
+
+    public void recompute() {
+        this.hullNodes = computeHull(groupNodes);
     }
 
     public void setX(float x) {

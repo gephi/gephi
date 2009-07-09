@@ -24,6 +24,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JPanel;
+import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.initializer.CompatibilityModeler;
@@ -41,6 +42,12 @@ public class CompatibilityHullModeler implements CompatibilityModeler<ConvexHull
 
         ConvexHullModel hull = new ConvexHullModel();
         hull.setObj(h);
+
+        for (int i = 0; i < h.getGroupNodes().length; i++) {
+            NodeData d = h.getGroupNodes()[i];
+            ModelImpl nodeModel = (ModelImpl) d.getModel();
+            nodeModel.setUpdatePositionChain(hull);
+        }
 
         return hull;
     }

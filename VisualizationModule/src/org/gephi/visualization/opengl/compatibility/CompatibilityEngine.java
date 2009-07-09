@@ -365,7 +365,7 @@ public class CompatibilityEngine extends AbstractEngine {
             for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(objClass.getClassId()); itr.hasNext();) {
                 ModelImpl obj = itr.next();
                 if (!forceUnselect && isUnderMouse(obj) && currentSelectionArea.select(obj.getObj())) {
-                    if(!objClass.isAloneSelection()) {  //avoid potatoes to select
+                    if (!objClass.isAloneSelection()) {  //avoid potatoes to select
                         someSelection = true;
                     }
                     if (!obj.isSelected()) {

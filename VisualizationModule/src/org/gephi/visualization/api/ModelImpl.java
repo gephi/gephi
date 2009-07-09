@@ -55,6 +55,7 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
     public long markTime = 0;
     public long selectionMark = 0;
     public boolean mark = false;
+    private ModelImpl updatePositionChain;
 
     public abstract int[] octreePosition(float centerX, float centerY, float centerZ, float size);
 
@@ -89,7 +90,6 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
     }
 
     public void setAutoSelect(boolean autoSelect) {
-        
     }
 
     public void setID(int ID) {
@@ -187,6 +187,13 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
     public void updatePositionFlag() {
         if (octants != null && octants[0] != null) {
             octants[0].requireUpdatePosition();
+            if (updatePositionChain != null) {
+                updatePositionChain.updatePositionFlag();
+            }
         }
+    }
+
+    public void setUpdatePositionChain(ModelImpl updatePositionChain) {
+        this.updatePositionChain = updatePositionChain;
     }
 }
