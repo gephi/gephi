@@ -58,4 +58,6 @@ public interface NodeDraftGetter extends NodeDraft {
     public void setNode(Node node);
 
     public Node getNode();
+
+    public NodeDraftGetter[] getParents();
 }

@@ -27,6 +27,7 @@ import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.iterators.HierarchyEdgeIterator;
 import org.gephi.graph.dhns.graph.AbstractGraphImpl;
 import org.gephi.graph.dhns.node.iterators.PreNodeTreeListIterator;
+import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 
 /**
  *
@@ -45,6 +46,6 @@ public class HierarchyTreeImpl extends AbstractGraphImpl implements Tree {
 
     public EdgeIterable getEdges() {
         readLock();
-        return dhns.newEdgeIterable(new HierarchyEdgeIterator(dhns.getTreeStructure(), new PreNodeTreeListIterator(dhns.getTreeStructure().getTree(), 1)));
+        return dhns.newEdgeIterable(new HierarchyEdgeIterator(dhns.getTreeStructure(), new TreeListIterator(dhns.getTreeStructure().getTree(), 1)));
     }
 }

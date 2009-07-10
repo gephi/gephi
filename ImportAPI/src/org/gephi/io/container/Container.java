@@ -86,4 +86,8 @@ public interface Container {
      * @return the report set for this container or <code>null</code> if no report is defined
      */
     public Report getReport();
+
+    public boolean isDynamicGraph();
+
+    public boolean isHierarchicalGraph();
 }

@@ -30,7 +30,7 @@ import org.gephi.graph.dhns.node.AbstractNode;
  * 
  * @author Mathieu Bastian
  */
-public class TreeListIterator implements Iterator<AbstractNode> {
+public class TreeListIterator extends AbstractNodeIterator implements Iterator<AbstractNode> {
 
     /** The TreeList list */
     protected final DurableTreeList treeList;

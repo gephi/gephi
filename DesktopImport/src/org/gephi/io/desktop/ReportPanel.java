@@ -118,9 +118,9 @@ public class ReportPanel extends javax.swing.JPanel {
                 break;
         }
 
-//Dynamic & Hierarchical graph
-        dynamicLabel.setText("false");
-        hierarchicalLabel.setText("false");
+        //Dynamic & Hierarchical graph
+        dynamicLabel.setText(String.valueOf(container.isDynamicGraph()));
+        hierarchicalLabel.setText(String.valueOf(container.isHierarchicalGraph()));
     }
 
     public void destroy() {

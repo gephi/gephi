@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.visualization.api;
 
 import java.awt.event.ActionEvent;
@@ -41,7 +40,7 @@ public class GraphContextMenu {
 
     public GraphContextMenu() {
         config = VizController.getInstance().getVizConfig();
-        eventBridge = (DHNSEventBridge)VizController.getInstance().getEventBridge();
+        eventBridge = (DHNSEventBridge) VizController.getInstance().getEventBridge();
     }
 
     public JPopupMenu getMenu() {
@@ -50,9 +49,7 @@ public class GraphContextMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-
             }
-
         };
         groupAction.setEnabled(eventBridge.canGroup());
 
@@ -61,9 +58,7 @@ public class GraphContextMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-
             }
-
         };
         ungroupAction.setEnabled(eventBridge.canUngroup());
 
@@ -72,11 +67,20 @@ public class GraphContextMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                eventBridge.expand();
             }
-
         };
         expandAction.setEnabled(eventBridge.canExpand());
+
+        //Contract
+        GraphContextMenuAction contractAction = new GraphContextMenuImpl("GraphContextMenu_Contract") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                eventBridge.contract();
+            }
+        };
+        contractAction.setEnabled(eventBridge.canContract());
 
         //Popup
         JPopupMenu popupMenu = new JPopupMenu();
@@ -84,10 +88,12 @@ public class GraphContextMenu {
         popupMenu.add(ungroupAction);
         popupMenu.addSeparator();
         popupMenu.add(expandAction);
+        popupMenu.add(contractAction);
         return popupMenu;
     }
 
     public static interface GraphContextMenuAction extends Action {
+
         public boolean isVisible();
     }
 

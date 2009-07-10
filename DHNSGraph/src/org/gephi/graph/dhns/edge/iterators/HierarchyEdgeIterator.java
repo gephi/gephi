@@ -47,7 +47,7 @@ public class HierarchyEdgeIterator extends AbstractEdgeIterator implements Itera
     @Override
     public boolean hasNext() {
         while (nodeIterator.hasNext()) {
-            AbstractNode children = nodeIterator.next().getOriginalNode();
+            AbstractNode children = nodeIterator.next();
             AbstractNode parent = children.parent.getOriginalNode();
 
             if (parent != treeStructure.getRoot()) {

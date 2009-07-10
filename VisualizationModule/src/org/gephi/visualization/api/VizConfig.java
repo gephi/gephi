@@ -71,7 +71,7 @@ public class VizConfig {
     protected float lightenNonSelectedFactor = 0.5f;
     protected boolean autoSelectNeighbor = true;
     protected boolean hideNonSelectedEdges = false;
-    protected boolean uniColorSelected = true;
+    protected boolean uniColorSelected = false;
     protected float[] uniColorSelectedColor = {0.8f, 0.2f, 0.2f};
     protected float[] uniColorSelectedNeigborColor = {0.2f, 1f, 0.3f};
     protected float[] edgeInSelectedColor = {1f, 0f, 0f};
@@ -87,7 +87,7 @@ public class VizConfig {
     protected Font defaultLabelFont = new Font("Arial", Font.BOLD, 20);
     protected boolean showVizVar = false;
     protected boolean visualizeTree = false;
-    protected boolean contextMenu = true;
+    protected boolean contextMenu = false;
 
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();

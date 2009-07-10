@@ -96,7 +96,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         }
 
         ModelClass edgeClass = object3dClasses[AbstractEngine.CLASS_EDGE];
-        if (edgeClass.isEnabled() && (graph.getEdgeVersion() > edgeVersion || modeManager.requireModeChange())) {
+        if (edgeClass.isEnabled() && (graph.getEdgeVersion() > edgeVersion || modeManager.requireModeChange() || vizConfig.isVisualizeTree())) {
             updateEdges();
             edgeClass.setCacheMarker(cacheMarker);
             if (vizConfig.isShowArrows()) {
@@ -164,8 +164,17 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             }
             //Tree position
             if (vizConfig.isVisualizeTree()) {
-                node.getNodeData().setX(node.getPre() * 10);
-                node.getNodeData().setY(node.getPost() * 10);
+                node.getNodeData().setX(node.getPre() * 25);
+                node.getNodeData().setY(node.getPost() * 25);
+                if(graph.isInView(node)) {
+                    node.getNodeData().setR(1f);
+                    node.getNodeData().setG(0f);
+                    node.getNodeData().setB(0f);
+                } else {
+                    node.getNodeData().setR(0.2f);
+                    node.getNodeData().setG(0.2f);
+                    node.getNodeData().setB(0.2f);
+                }
             }
         }
     }
@@ -229,7 +238,12 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     public boolean requireUpdate() {
         //Refresh reader if sight changed
         if (graph != null) {
-            return graph.getNodeVersion() > nodeVersion || graph.getEdgeVersion() > edgeVersion;
+            if (vizConfig.isVisualizeTree()) {
+                return graph.getNodeVersion() > nodeVersion;
+            } else {
+                return graph.getNodeVersion() > nodeVersion || graph.getEdgeVersion() > edgeVersion;
+            }
+
         }
         return false;
     }

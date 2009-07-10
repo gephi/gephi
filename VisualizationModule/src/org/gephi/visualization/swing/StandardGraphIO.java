@@ -176,9 +176,9 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             engine.getScheduler().requireMouseClick();
             vizEventManager.mouseLeftClick();
         } else if (SwingUtilities.isRightMouseButton(e)) {
-            if(vizConfig.isContextMenu()) {
+            if (vizConfig.isContextMenu()) {
                 GraphContextMenu popupMenu = new GraphContextMenu();
-                popupMenu.getMenu().show(graphDrawable.getGraphComponent(), (int)mousePosition[0], (int)(graphDrawable.viewport.get(3) - mousePosition[1]));
+                popupMenu.getMenu().show(graphDrawable.getGraphComponent(), (int) mousePosition[0], (int) (graphDrawable.viewport.get(3) - mousePosition[1]));
             }
             vizEventManager.mouseRightClick();
         } else if (SwingUtilities.isMiddleMouseButton(e)) {
