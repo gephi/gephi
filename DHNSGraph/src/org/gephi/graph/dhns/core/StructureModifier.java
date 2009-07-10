@@ -332,6 +332,7 @@ public class StructureModifier {
         //Enable children
         for (ChildrenIterator itr = new ChildrenIterator(treeStructure, absNode, null); itr.hasNext();) {
             AbstractNode child = itr.next();
+
             child.setEnabled(true);
             edgeProcessor.computeMetaEdges(child, child);
         }

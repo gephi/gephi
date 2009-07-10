@@ -46,7 +46,7 @@ public class TreeStructure {
     }
 
     private void initRoot() {
-        root = new PreNode(-1,0, 0, 0, null);
+        root = new PreNode(-1, 0, 0, 0, null);
         root.setEnabled(false);
         tree.add(root);
     }
@@ -110,7 +110,7 @@ public class TreeStructure {
 
         int maxLevel = tree.move(node.getPre(), newParent.getPre());
 
-        if(sourceParent!=null) {
+        if (sourceParent != null) {
             decrementAncestorAndSelfSize(sourceParent, sourceSize);
         }
 
@@ -118,37 +118,37 @@ public class TreeStructure {
         incrementAncestorsAndSelfSize(newParent, sourceSize);
 
         //Update tree height
-        if(maxLevel > treeHeight) {
+        if (maxLevel > treeHeight) {
             treeHeight = maxLevel;
         }
 
-        /* nodeSize = node.size;
-        int nodePre = node.getPre();
-        boolean forward = newParent.getPre()+newParent.size+1 > nodePre;
+    /* nodeSize = node.size;
+    int nodePre = node.getPre();
+    boolean forward = newParent.getPre()+newParent.size+1 > nodePre;
 
-        //Move node itself
-        decrementAncestorSize(node, 1);
-        tree.removeAndKeepParent(nodePre);
-        insertAsChild(node, newParent);
-        node.size = 0;
+    //Move node itself
+    decrementAncestorSize(node, 1);
+    tree.removeAndKeepParent(nodePre);
+    insertAsChild(node, newParent);
+    node.size = 0;
 
-        //showTreeAsTable();
+    //showTreeAsTable();
 
-        if(nodeSize>0) {
-            //Move descendants
-            for(int i=0;i<nodeSize;i++) {
-                int descPre = nodePre;
-                if(!forward) {
-                    descPre += i + 1;
-                }
-                decrementAncestorSize(node, 1);
-                PreNode descendant = tree.removeAndKeepParent(descPre);
-                //System.out.println("descendant "+descendant.getId());
-                PreNode parent = descendant.parent;
-                insertAsChild(descendant, parent);
-                descendant.size = 0;
-            }
-        }*/
+    if(nodeSize>0) {
+    //Move descendants
+    for(int i=0;i<nodeSize;i++) {
+    int descPre = nodePre;
+    if(!forward) {
+    descPre += i + 1;
+    }
+    decrementAncestorSize(node, 1);
+    PreNode descendant = tree.removeAndKeepParent(descPre);
+    //System.out.println("descendant "+descendant.getId());
+    PreNode parent = descendant.parent;
+    insertAsChild(descendant, parent);
+    descendant.size = 0;
+    }
+    }*/
     }
 
     public void deleteAtPre(AbstractNode node) {
@@ -171,14 +171,14 @@ public class TreeStructure {
     public void incrementAncestorsSize(AbstractNode node, int shift) {
         while (node.parent != null) {
             node = node.parent;
-            node.size+=shift;
+            node.size += shift;
             node.getPost();
         }
     }
 
     public void incrementAncestorsAndSelfSize(AbstractNode node, int shift) {
         while (node != null) {
-            node.size+=shift;
+            node.size += shift;
             node.getPost();
             node = node.parent;
         }
@@ -200,28 +200,37 @@ public class TreeStructure {
         }
     }
 
+    public boolean hasEnabledDescendant(AbstractNode node) {
+        for (int i = node.getPre() + 1; i <= node.pre + node.size; i++) {
+            AbstractNode descendant = tree.get(i);
+            if (descendant.isEnabled()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void showTreeAsTable() {
         System.out.println("pre\tsize\tlevel\tparent\tpost\tenabled\tid\tclone");
         System.out.println("-----------------------------------------------------------------");
 
         int pre = 0;
         for (AbstractNode p : tree) {
-            System.out.println(p.pre + "\t" + p.size + "\t" + p.level + "\t" + p.parent + "\t" + p.post + "\t" + p.isEnabled() + "\t"+ p.getId()+"\t"+p.isClone());
+            System.out.println(p.pre + "\t" + p.size + "\t" + p.level + "\t" + p.parent + "\t" + p.post + "\t" + p.isEnabled() + "\t" + p.getId() + "\t" + p.isClone());
             pre++;
         }
     }
 
-    public void clear()
-    {
+    public void clear() {
         //Clean nodes
-        for(TreeListIterator itr=new TreeListIterator(tree);itr.hasNext();)  {
+        for (TreeListIterator itr = new TreeListIterator(tree); itr.hasNext();) {
             AbstractNode preNode = itr.next();
             preNode.avlNode = null;
             preNode.parent = null;
         }
         tree.clear();
-        root=null;
-        treeHeight=0;
+        root = null;
+        treeHeight = 0;
         initRoot();
     }
 

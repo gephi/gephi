@@ -46,6 +46,16 @@ public class CloneNode extends AbstractNode {
     }
 
     @Override
+    public boolean isEnabled() {
+        return preNode.enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        preNode.setEnabled(enabled);
+    }
+
+    @Override
     public MetaEdgeTree getMetaEdgesOutTree() {
         return preNode.getMetaEdgesOutTree();
     }

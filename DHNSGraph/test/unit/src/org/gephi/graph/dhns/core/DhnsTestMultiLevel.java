@@ -168,6 +168,14 @@ public class DhnsTestMultiLevel {
     }
 
     @Test
+    public void testEnabled() {
+        graph1.expand(nodeMap.get("nodeB"));
+        assertTrue(dhns1.getTreeStructure().hasEnabledDescendant(nodeMap.get("nodeB")));
+
+        dhns1.getTreeStructure().showTreeAsTable();
+    }
+
+    @Test
     public void testCloneLinkedList() {
         PreNode preNode = new PreNode(0, 0, 0, 0, null);
         CloneNode cn1 = new CloneNode(preNode);

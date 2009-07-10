@@ -43,7 +43,6 @@ public abstract class AbstractNode implements Node, AVLItem {
     public AbstractNode parent;
     public int level;
     public int post;
-    protected boolean enabled = true;
     public DurableAVLNode avlNode;
 
     public boolean isVisible() {
@@ -64,15 +63,11 @@ public abstract class AbstractNode implements Node, AVLItem {
         return avlNode.getIndex();
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
     //Abstract
+    public abstract boolean isEnabled();
+
+    public abstract void setEnabled(boolean enabled);
+
     public abstract MetaEdgeTree getMetaEdgesOutTree();
 
     public abstract MetaEdgeTree getMetaEdgesInTree();

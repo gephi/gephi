@@ -46,6 +46,7 @@ public class PreNode extends AbstractNode implements AVLItem {
     //Properties
     protected final int ID;
     protected NodeDataImpl nodeData;
+    protected boolean enabled = true;
     //Edges
     private EdgeOppositeTree edgesOutTree;
     private EdgeOppositeTree edgesInTree;
@@ -136,6 +137,17 @@ public class PreNode extends AbstractNode implements AVLItem {
         }
     }
 
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    //CLone operations
     public void addClone(CloneNode clone) {
         clone.next = this.clones;
         this.clones = clone;
