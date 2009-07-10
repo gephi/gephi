@@ -87,6 +87,7 @@ public class VizConfig {
     protected Font defaultLabelFont = new Font("Arial", Font.BOLD, 20);
     protected boolean showVizVar = false;
     protected boolean visualizeTree = false;
+    protected boolean contextMenu = true;
 
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
@@ -205,6 +206,10 @@ public class VizConfig {
 
     public boolean isVisualizeTree() {
         return visualizeTree;
+    }
+
+    public boolean isContextMenu() {
+        return contextMenu;
     }
 
     public boolean isAutoSelectNeighbor() {

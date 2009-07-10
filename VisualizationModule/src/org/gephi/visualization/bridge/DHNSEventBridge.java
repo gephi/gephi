@@ -23,10 +23,10 @@ package org.gephi.visualization.bridge;
 
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Model;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.objects.ModelClass;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.openide.util.Lookup;
@@ -51,6 +51,34 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
 
     @Override
     public void initEvents() {
+    }
+
+    public boolean canExpand() {
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_NODE]);
+        if(selectedNodeModels.length==1) {
+            ModelImpl metaModel = selectedNodeModels[0];
+            //TODO check it is a metaNode
+            return true;
+        }
+        return false;
+    }
+
+    public boolean canContract() {
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_NODE]);
+        if(selectedNodeModels.length==1) {
+            ModelImpl metaModel = selectedNodeModels[0];
+            //TODO check it is a metaNode
+            return true;
+        }
+        return false;
+    }
+
+    public boolean canGroup() {
+        return true;
+    }
+
+    public boolean canUngroup() {
+        return true;
     }
 
     public void mouseClick(ModelClass objClass, Model[] clickedObjects) {

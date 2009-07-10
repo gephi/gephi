@@ -24,10 +24,12 @@ import java.awt.Cursor;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import org.gephi.visualization.GraphLimits;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.GraphContextMenu;
 import org.gephi.visualization.api.GraphIO;
 import org.gephi.visualization.api.VizEventManager;
 import org.gephi.visualization.api.VizConfig;
@@ -174,6 +176,10 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             engine.getScheduler().requireMouseClick();
             vizEventManager.mouseLeftClick();
         } else if (SwingUtilities.isRightMouseButton(e)) {
+            if(vizConfig.isContextMenu()) {
+                GraphContextMenu popupMenu = new GraphContextMenu();
+                popupMenu.getMenu().show(graphDrawable.getGraphComponent(), (int)mousePosition[0], (int)(graphDrawable.viewport.get(3) - mousePosition[1]));
+            }
             vizEventManager.mouseRightClick();
         } else if (SwingUtilities.isMiddleMouseButton(e)) {
             vizEventManager.mouseMiddleClick();

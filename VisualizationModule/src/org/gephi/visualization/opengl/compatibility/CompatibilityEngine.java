@@ -452,6 +452,11 @@ public class CompatibilityEngine extends AbstractEngine {
         }
     }
 
+    @Override
+    public ModelImpl[] getSelectedObjects(ModelClass modelClass) {
+        return selectedObjects[modelClass.getClassId()].toArray(new ModelImpl[0]);
+    }
+
     private void initDisplayLists(GL gl, GLU glu) {
         //Constants
         float blancCasse[] = {(float) 213 / 255, (float) 208 / 255, (float) 188 / 255, 1.0f};
