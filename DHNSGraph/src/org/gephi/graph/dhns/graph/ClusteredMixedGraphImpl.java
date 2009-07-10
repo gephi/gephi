@@ -157,15 +157,15 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
     }
 
     public NodeIterable getNeighbors(Node node) {
-        AbstractNode AbstractNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
-        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(AbstractNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition), AbstractNode, nodeProposition));
+        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition), absNode, nodeProposition));
     }
 
     public EdgeIterable getEdges(Node node) {
-        AbstractNode AbstractNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
-        return dhns.newEdgeIterable(new EdgeNodeIterator(AbstractNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, edgeProposition));
+        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, edgeProposition));
     }
 
     public int getEdgeCount() {
@@ -185,17 +185,17 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
 
     //Directed
     public int getInDegree(Node node) {
-        AbstractNode AbstractNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        if (!edgeProposition.isTautology() && !AbstractNode.getEdgesInTree().isEmpty()) {
-            for (Iterator<AbstractEdge> itr = AbstractNode.getEdgesInTree().iterator(); itr.hasNext();) {
+        if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
+            for (Iterator<AbstractEdge> itr = absNode.getEdgesInTree().iterator(); itr.hasNext();) {
                 if (edgeProposition.evaluate(itr.next())) {
                     count++;
                 }
             }
         } else {
-            count = AbstractNode.getEdgesInTree().getCount();
+            count = absNode.getEdgesInTree().getCount();
         }
         readUnlock();
         return count;
@@ -203,17 +203,17 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
 
     //Directed
     public int getOutDegree(Node node) {
-        AbstractNode AbstractNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        if (!edgeProposition.isTautology() && !AbstractNode.getEdgesInTree().isEmpty()) {
-            for (Iterator<AbstractEdge> itr = AbstractNode.getEdgesOutTree().iterator(); itr.hasNext();) {
+        if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
+            for (Iterator<AbstractEdge> itr = absNode.getEdgesOutTree().iterator(); itr.hasNext();) {
                 if (edgeProposition.evaluate(itr.next())) {
                     count++;
                 }
             }
         } else {
-            count = AbstractNode.getEdgesOutTree().getCount();
+            count = absNode.getEdgesOutTree().getCount();
         }
         readUnlock();
         return count;

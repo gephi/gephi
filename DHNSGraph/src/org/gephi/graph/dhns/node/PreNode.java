@@ -52,7 +52,10 @@ public class PreNode extends AbstractNode implements AVLItem {
     private MetaEdgeTree metaEdgesOutTree;
     private MetaEdgeTree metaEdgesInTree;
 
-    public PreNode(int ID, int pre, int size, int level, PreNode parent) {
+    //Clone
+    private CloneNode clones;
+
+    public PreNode(int ID, int pre, int size, int level, AbstractNode parent) {
         this.pre = pre;
         this.size = size;
         this.level = level;
@@ -130,6 +133,57 @@ public class PreNode extends AbstractNode implements AVLItem {
     public void setAttributes(Attributes attributes) {
         if (attributes != null) {
             nodeData.setAttributes(attributes);
+        }
+    }
+
+    public void addClone(CloneNode clone) {
+        clone.next = this.clones;
+        this.clones = clone;
+    }
+
+    public void removeClone(CloneNode clone) {
+        CloneNode c = this.clones;
+        if(c==clone) {
+            this.clones = c.next;
+        } else if(c!=null){
+            while(c.next!=null) {
+                if(c.next==clone) {
+                    c.next = clone.next;
+                    break;
+                }
+                c = c.next;
+            }
+        }
+    }
+
+    public CloneNode getClones() {
+        return clones;
+    }
+
+    public int countClones() {
+        int res=0;
+        CloneNode c = this.clones;
+        while(c!=null) {
+            c = c.next;
+            res++;
+        }
+        return res;
+    }
+
+    @Override
+    public PreNode getOriginalNode() {
+        return this;
+    }
+
+    public void transferToClones() {
+        if(this.clones!=null) {
+            avlNode = clones.avlNode;
+            pre = clones.pre;
+            post = clones.post;
+            size = clones.size;
+            level = clones.level;
+            parent = clones.parent;
+            clones = clones.next;
         }
     }
 }

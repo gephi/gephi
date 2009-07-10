@@ -33,9 +33,16 @@ import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
 public class CloneNode extends AbstractNode {
 
     private PreNode preNode;
+    protected CloneNode next;
 
-    public CloneNode(PreNode preNode) {
-        this.preNode = preNode;
+    public CloneNode(AbstractNode absNode) {
+        if (absNode.isClone()) {
+            CloneNode cn = (CloneNode) absNode;
+            this.preNode = cn.getPreNode();
+        } else {
+            this.preNode = (PreNode)absNode;
+        }
+        this.preNode.addClone(this);
     }
 
     @Override
@@ -91,5 +98,18 @@ public class CloneNode extends AbstractNode {
 
     public int getNumber() {
         return preNode.ID;
+    }
+
+    public PreNode getPreNode() {
+        return preNode;
+    }
+
+    public CloneNode getNext() {
+        return next;
+    }
+
+    @Override
+    public PreNode getOriginalNode() {
+        return preNode;
     }
 }

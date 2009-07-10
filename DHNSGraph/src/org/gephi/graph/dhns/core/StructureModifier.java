@@ -26,6 +26,8 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.node.CloneNode;
+import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantAndSelfIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantIterator;
@@ -65,9 +67,9 @@ public class StructureModifier {
 
     public void expandBlock(Node node) {
         dhns.getWriteLock().lock();
-        AbstractNode AbstractNode = (AbstractNode) node;
-        if (AbstractNode.level < treeStructure.treeHeight) {
-            expand(AbstractNode);
+        AbstractNode absNode = (AbstractNode) node;
+        if (absNode.level < treeStructure.treeHeight) {
+            expand(absNode);
         //sightManager.updateSight((SightImpl) sight);
         }
         graphVersion.incNodeVersion();
@@ -86,8 +88,8 @@ public class StructureModifier {
 
     public void retractBlock(Node node) {
         dhns.getWriteLock().lock();
-        AbstractNode AbstractNode = (AbstractNode) node;
-        if (AbstractNode.level < treeStructure.treeHeight) {
+        AbstractNode absNode = (AbstractNode) node;
+        if (absNode.level < treeStructure.treeHeight) {
             retract(((AbstractNode) node));
         //sightManager.updateSight((SightImpl)sight);
         }
@@ -113,15 +115,18 @@ public class StructureModifier {
         } else {
             parentNode = ((AbstractNode) parent);
         }
-        AbstractNode AbstractNode = (AbstractNode) node;
-        AbstractNode.parent = parentNode;
-        if (treeStructure.getEnabledAncestor(AbstractNode) == null) {
-            AbstractNode.setEnabled(true);
-        } else {
-            AbstractNode.setEnabled(false);
+        AbstractNode absNode = (AbstractNode) node;
+        if (absNode.isValid()) {
+            absNode = new CloneNode(absNode);
         }
-        addNode(AbstractNode);
-        //dhns.getDictionary().addNode(AbstractNode);      //Dico
+        absNode.parent = parentNode;
+        if (treeStructure.getEnabledAncestor(absNode) == null) {
+            absNode.setEnabled(true);
+        } else {
+            absNode.setEnabled(false);
+        }
+        addNode(absNode);
+        //dhns.getDictionary().addNode(absNode);      //Dico
         graphVersion.incNodeVersion();
         dhns.getWriteLock().unlock();
     }
@@ -138,9 +143,10 @@ public class StructureModifier {
 
     public void deleteNodeBlock(Node node) {
         dhns.getWriteLock().lock();
-        AbstractNode AbstractNode = (AbstractNode) node;
-        deleteNode(AbstractNode);
-        //dhns.getDictionary().removeNode(AbstractNode);      //Dico
+        AbstractNode absNode = (AbstractNode) node;
+        PreNode preNode = absNode.getOriginalNode();
+        deleteNode(preNode);
+        //dhns.getDictionary().removeNode(absNode);      //Dico
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
     }
@@ -271,9 +277,9 @@ public class StructureModifier {
 
     public void moveToGroup(Node node, Node nodeGroup) {
         dhns.getWriteLock().lock();
-        AbstractNode AbstractNode = (AbstractNode) node;
+        AbstractNode absNode = (AbstractNode) node;
         AbstractNode preGroup = (AbstractNode) nodeGroup;
-        moveToGroup(AbstractNode, preGroup);
+        moveToGroup(absNode, preGroup);
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
     }
@@ -317,14 +323,14 @@ public class StructureModifier {
     }
 
     //------------------------------------------
-    private void expand(AbstractNode AbstractNode) {
+    private void expand(AbstractNode absNode) {
 
         //Disable parent
-        AbstractNode.setEnabled(false);
-        edgeProcessor.clearMetaEdges(AbstractNode);
+        absNode.setEnabled(false);
+        edgeProcessor.clearMetaEdges(absNode);
 
         //Enable children
-        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, AbstractNode, null); itr.hasNext();) {
+        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, absNode, null); itr.hasNext();) {
             AbstractNode child = itr.next();
             child.setEnabled(true);
             edgeProcessor.computeMetaEdges(child, child);
@@ -363,7 +369,7 @@ public class StructureModifier {
         }
     }
 
-    private void deleteNode(AbstractNode node) {
+    private void deleteNode(PreNode node) {
 
         for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node, null); itr.hasNext();) {
             AbstractNode descendant = itr.next();
@@ -371,6 +377,25 @@ public class StructureModifier {
                 edgeProcessor.clearMetaEdges(descendant);
             }
             edgeProcessor.clearEdges(descendant);
+
+            //Delete clones or original (if descendant is a clone)
+            if (descendant == descendant.getOriginalNode()) {
+                CloneNode cn = descendant.getOriginalNode().getClones();
+                while (cn != null) {
+                    treeStructure.deleteDescendantAndSelf(cn);
+                    cn = cn.getNext();
+                }
+            } else {
+                treeStructure.deleteDescendantAndSelf(descendant.getOriginalNode());
+                CloneNode cn = descendant.getOriginalNode().getClones();
+                while (cn != null) {
+                    if (cn != descendant) {
+                        treeStructure.deleteDescendantAndSelf(cn);
+                    }
+                    cn = cn.getNext();
+                }
+            }
+
         }
 
         treeStructure.deleteDescendantAndSelf(node);

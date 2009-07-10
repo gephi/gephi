@@ -92,4 +92,6 @@ public abstract class AbstractNode implements Node, AVLItem {
     public abstract boolean hasAttributes();
 
     public abstract void setAttributes(Attributes attributes);
+
+    public abstract PreNode getOriginalNode();
 }

@@ -104,15 +104,15 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
     }
 
     public EdgeIterable getEdges(Node node) {
-        AbstractNode AbstractNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
-        return dhns.newEdgeIterable(new EdgeNodeIterator(AbstractNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition));
+        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition));
     }
 
     public NodeIterable getNeighbors(Node node) {
-        AbstractNode AbstractNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
-        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(AbstractNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition), AbstractNode, nodeProposition));
+        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition), absNode, nodeProposition));
     }
 
     public int getEdgeCount() {
@@ -127,10 +127,10 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
     }
 
     public int getDegree(Node node) {
-        AbstractNode AbstractNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        EdgeNodeIterator itr = new EdgeNodeIterator(AbstractNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition);
+        EdgeNodeIterator itr = new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition);
         for (; itr.hasNext();) {
             AbstractEdge edge = itr.next();
             if (edge.isSelfLoop()) {
@@ -188,23 +188,23 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
     }
 
     public EdgeIterable getInnerEdges(Node nodeGroup) {
-        AbstractNode AbstractNode = checkNode(nodeGroup);
+        AbstractNode absNode = checkNode(nodeGroup);
         readLock();
-        return dhns.newEdgeIterable(new RangeEdgeIterator(dhns.getTreeStructure(), AbstractNode, AbstractNode, true, true, nodeProposition, edgeProposition));
+        return dhns.newEdgeIterable(new RangeEdgeIterator(dhns.getTreeStructure(), absNode, absNode, true, true, nodeProposition, edgeProposition));
     }
 
     public EdgeIterable getOuterEdges(Node nodeGroup) {
-        AbstractNode AbstractNode = checkNode(nodeGroup);
+        AbstractNode absNode = checkNode(nodeGroup);
         readLock();
-        return dhns.newEdgeIterable(new RangeEdgeIterator(dhns.getTreeStructure(), AbstractNode, AbstractNode, false, true, nodeProposition, edgeProposition));
+        return dhns.newEdgeIterable(new RangeEdgeIterator(dhns.getTreeStructure(), absNode, absNode, false, true, nodeProposition, edgeProposition));
 
     }
 
     public int getMetaDegree(Node node) {
-        AbstractNode AbstractNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        MetaEdgeNodeIterator itr = new MetaEdgeNodeIterator(AbstractNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition);
+        MetaEdgeNodeIterator itr = new MetaEdgeNodeIterator(absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition);
         for (; itr.hasNext();) {
             AbstractEdge edge = itr.next();
             if (edge.isSelfLoop()) {
@@ -222,9 +222,9 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
     }
 
     public EdgeIterable getMetaEdges(Node node) {
-        AbstractNode AbstractNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
-        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(AbstractNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition));
+        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition));
     }
 
     public EdgeIterable getMetaEdgeContent(Edge metaEdge) {

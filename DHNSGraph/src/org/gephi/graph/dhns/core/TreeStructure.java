@@ -201,12 +201,12 @@ public class TreeStructure {
     }
 
     public void showTreeAsTable() {
-        System.out.println("pre\tsize\tlevel\tparent\tpost\tenabled\tid");
-        System.out.println("-------------------------------------------------------");
+        System.out.println("pre\tsize\tlevel\tparent\tpost\tenabled\tid\tclone");
+        System.out.println("-----------------------------------------------------------------");
 
         int pre = 0;
         for (AbstractNode p : tree) {
-            System.out.println(p.pre + "\t" + p.size + "\t" + p.level + "\t" + p.parent + "\t" + p.post + "\t" + p.isEnabled() + "\t"+ p.getId());
+            System.out.println(p.pre + "\t" + p.size + "\t" + p.level + "\t" + p.parent + "\t" + p.post + "\t" + p.isEnabled() + "\t"+ p.getId()+"\t"+p.isClone());
             pre++;
         }
     }
