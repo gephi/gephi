@@ -24,6 +24,7 @@ import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.api.Tree;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.node.AbstractNode;
@@ -36,6 +37,7 @@ import org.gephi.graph.dhns.node.iterators.LevelIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
 import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
+import org.gephi.graph.dhns.tree.HierarchyTreeImpl;
 
 /**
  * Abstract Clustered graph class. Implements methods for both directed and undirected graphs.
@@ -90,10 +92,10 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         if (!allowMultilevel && absNode.isValid()) {
             return false;
         }
-        if(allowMultilevel && parent!=null && absNode.isValid()) {
+        if (allowMultilevel && parent != null && absNode.isValid()) {
             //Verify the parent node is not a descendant of node
             readLock();
-            if(isDescendant(node, parent)) {
+            if (isDescendant(node, parent)) {
                 readUnlock();
                 throw new IllegalArgumentException("Parent can't be a descendant of node");
             }
@@ -279,12 +281,12 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         AbstractNode preDesc = checkNode(descendant);
         readLock();
         boolean res = false;
-        if(allowMultilevel) {
+        if (allowMultilevel) {
             //Check if clones of descendants are descendants
             PreNode preNode = preDesc.getOriginalNode();
             res = preDesc.getPre() > abstractNode.getPre() && preDesc.getPost() < abstractNode.getPost();
             CloneNode cn = preNode.getClones();
-            while(cn!=null) {
+            while (cn != null) {
                 res = res || cn.getPre() > abstractNode.getPre() && cn.getPost() < abstractNode.getPost();
                 cn = cn.getNext();
             }
@@ -318,9 +320,9 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         readLock();
         PreNode preNode = absNode.getOriginalNode();
         boolean res = preNode.parent == parent;
-        if(allowMultilevel && !res) {
+        if (allowMultilevel && !res) {
             CloneNode cn = preNode.getClones();
-            while(cn!=null) {
+            while (cn != null) {
                 res = res | cn.parent == parent;
             }
         }
@@ -444,5 +446,9 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
 
     public boolean isClustered() {
         return getHeight() > 0;
+    }
+
+    public Tree getHierarchyTree() {
+        return new HierarchyTreeImpl(dhns);
     }
 }

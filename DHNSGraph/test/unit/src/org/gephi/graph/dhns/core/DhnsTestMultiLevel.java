@@ -128,8 +128,8 @@ public class DhnsTestMultiLevel {
         //Test remove a clone
         graph1.removeNode(nodeMap.get("nodeB"));
         assertFalse(graph1.contains(nodeMap.get("nodeD")));
-        assertEquals(1, ((PreNode)nodeMap.get("nodeA")).size);
-        assertEquals(2, ((PreNode)dhns1.getTreeStructure().root).size);
+        assertEquals(1, ((PreNode) nodeMap.get("nodeA")).size);
+        assertEquals(2, ((PreNode) dhns1.getTreeStructure().root).size);
         assertEquals(2, graph1.getNodeCount());
 
         setUp();
@@ -137,8 +137,8 @@ public class DhnsTestMultiLevel {
         //Test remove an original
         graph1.removeNode(nodeMap.get("nodeA"));
         assertFalse(graph1.contains(nodeMap.get("nodeD")));
-        assertEquals(1, ((PreNode)nodeMap.get("nodeB")).size);
-        assertEquals(2, ((PreNode)dhns1.getTreeStructure().root).size);
+        assertEquals(1, ((PreNode) nodeMap.get("nodeB")).size);
+        assertEquals(2, ((PreNode) dhns1.getTreeStructure().root).size);
         assertEquals(2, graph1.getNodeCount());
 
         //dhns1.getTreeStructure().showTreeAsTable();
@@ -162,9 +162,9 @@ public class DhnsTestMultiLevel {
 
         graph.removeNode(nodeD);
         assertFalse(graph1.contains(nodeD));
-        assertEquals(2, ((PreNode)nodeA).size);
+        assertEquals(2, ((PreNode) nodeA).size);
 
-        //dhns.getTreeStructure().showTreeAsTable();
+    //dhns.getTreeStructure().showTreeAsTable();
     }
 
     @Test

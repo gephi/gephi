@@ -30,6 +30,6 @@ import org.gephi.graph.dhns.node.AbstractNode;
 public class HierarchyEdgeImpl extends AbstractEdge {
 
     public HierarchyEdgeImpl(int ID, AbstractNode node) {
-        super(ID, node, node.parent);
+        super(ID, node, node.parent.getOriginalNode());
     }
 }

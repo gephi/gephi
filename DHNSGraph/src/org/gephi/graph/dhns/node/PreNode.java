@@ -155,11 +155,11 @@ public class PreNode extends AbstractNode implements AVLItem {
 
     public void removeClone(CloneNode clone) {
         CloneNode c = this.clones;
-        if(c==clone) {
+        if (c == clone) {
             this.clones = c.next;
-        } else if(c!=null){
-            while(c.next!=null) {
-                if(c.next==clone) {
+        } else if (c != null) {
+            while (c.next != null) {
+                if (c.next == clone) {
                     c.next = clone.next;
                     break;
                 }
@@ -173,9 +173,9 @@ public class PreNode extends AbstractNode implements AVLItem {
     }
 
     public int countClones() {
-        int res=0;
+        int res = 0;
         CloneNode c = this.clones;
-        while(c!=null) {
+        while (c != null) {
             c = c.next;
             res++;
         }
@@ -188,7 +188,7 @@ public class PreNode extends AbstractNode implements AVLItem {
     }
 
     public void transferToClones() {
-        if(this.clones!=null) {
+        if (this.clones != null) {
             avlNode = clones.avlNode;
             pre = clones.pre;
             post = clones.post;

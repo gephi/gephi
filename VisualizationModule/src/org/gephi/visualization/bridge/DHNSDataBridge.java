@@ -20,11 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.bridge;
 
+import org.gephi.graph.api.ClusteredDirectedGraph;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Model;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ColorLayer;
@@ -47,7 +49,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     //Architecture
     protected AbstractEngine engine;
     protected GraphController controller;
-    protected Graph graph;
+    protected ClusteredDirectedGraph graph;
     private VizConfig vizConfig;
     protected ModeManager modeManager;
 
@@ -64,7 +66,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         controller = Lookup.getDefault().lookup(GraphController.class);
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.modeManager = VizController.getInstance().getModeManager();
-        graph = controller.getDirectedGraph();
+        graph = controller.getClusteredDirectedGraph();
     }
 
     public void updateWorld() {
@@ -73,13 +75,13 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
         switch (modeManager.getMode()) {
             case FULL:
-                graph = controller.getDirectedGraph();
+                graph = controller.getClusteredDirectedGraph();
                 break;
             case VISIBLE:
-                graph = controller.getVisibleDirectedGraph();
+                //graph = controller.getVisibleDirectedGraph();
                 break;
             case HIGHLIGHT:
-                graph = controller.getDirectedGraph();
+                //graph = controller.getDirectedGraph();
                 break;
         }
 
@@ -135,7 +137,14 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     private void updateNodes() {
         Modeler nodeInit = engine.getModelClasses()[AbstractEngine.CLASS_NODE].getCurrentModeler();
 
-        for (Node node : graph.getNodes()) {
+        NodeIterable nodeIterable;
+        if (vizConfig.isVisualizeTree()) {
+            nodeIterable = graph.getHierarchyTree().getNodes();
+        } else {
+            nodeIterable = graph.getNodes();
+        }
+
+        for (Node node : nodeIterable) {
             Model obj = node.getNodeData().getModel();
             if (obj == null) {
                 //Model is null, ADD
@@ -153,6 +162,11 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                     ColorLayer.layerColor(impl, 0.8f, 0.8f, 0.8f);
                 }
             }
+            //Tree position
+            if (vizConfig.isVisualizeTree()) {
+                node.getNodeData().setX(node.getPre() * 10);
+                node.getNodeData().setY(node.getPost() * 10);
+            }
         }
     }
 
@@ -160,7 +174,14 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         Modeler edgeInit = engine.getModelClasses()[AbstractEngine.CLASS_EDGE].getCurrentModeler();
         Modeler arrowInit = engine.getModelClasses()[AbstractEngine.CLASS_ARROW].getCurrentModeler();
 
-        for (Edge edge : graph.getEdges()) {
+        EdgeIterable edgeIterable;
+        if (vizConfig.isVisualizeTree()) {
+            edgeIterable = graph.getHierarchyTree().getEdges();
+        } else {
+            edgeIterable = graph.getEdges();
+        }
+
+        for (Edge edge : edgeIterable) {
 
             Model obj = edge.getEdgeData().getModel();
             if (obj == null) {

@@ -30,7 +30,7 @@ import org.gephi.graph.dhns.node.PreNode;
  *
  * @author Mathieu Bastian
  */
-public class PreNodeTreeListIterator implements Iterator<PreNode> {
+public class PreNodeTreeListIterator extends AbstractNodeIterator implements Iterator<PreNode> {
 
     protected final DurableTreeList treeList;
     protected DurableAVLNode next;
