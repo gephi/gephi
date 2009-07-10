@@ -141,6 +141,8 @@ public class DhnsTestMultiLevel {
         assertEquals(2, ((PreNode)dhns1.getTreeStructure().root).size);
         assertEquals(2, graph1.getNodeCount());
 
+        //dhns1.getTreeStructure().showTreeAsTable();
+
         //Test diamond
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = controller.getMainDhns();
@@ -162,8 +164,7 @@ public class DhnsTestMultiLevel {
         assertFalse(graph1.contains(nodeD));
         assertEquals(2, ((PreNode)nodeA).size);
 
-
-        dhns.getTreeStructure().showTreeAsTable();
+        //dhns.getTreeStructure().showTreeAsTable();
     }
 
     @Test
