@@ -26,9 +26,8 @@ import java.util.logging.Logger;
 import org.gephi.timeline.api.TimelineDataModel;
 import org.gephi.timeline.ui.layers.impl.UpperPaneBackgroundLayer;
 import org.gephi.timeline.ui.layers.impl.UpperPaneDataLayer;
-import org.gephi.timeline.ui.layers.impl.UpperPaneInfoLayer;
 import org.gephi.timeline.ui.skins.api.TimelineSkin;
-import org.gephi.timeline.ui.skins.impl.SkyscrapperSkin;
+import org.gephi.timeline.ui.skins.impl.DefaultSkin;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -41,7 +40,7 @@ final class TimelineTopComponent extends TopComponent {
 
     private static TimelineTopComponent instance;
 
-    private TimelineSkin skin = new SkyscrapperSkin();
+    private TimelineSkin skin = new DefaultSkin();
     private TimelineDataModel model = new FakeTimelineDataModel();
 
     /** path to the icon used by the component and its open action */

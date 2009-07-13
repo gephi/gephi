@@ -70,6 +70,8 @@ public class FakeTimelineDataModel implements TimelineDataModel {
 
     public List<Float> getZoomSample(int resolution) {
 
+        if (resolution < 1) resolution = 1;
+        
         // TODO put a call to the timeline engine here ?
         // get size from the timeline
         int size = data_getNbOfFakeRevisions; // eg 200000000
@@ -83,6 +85,7 @@ public class FakeTimelineDataModel implements TimelineDataModel {
         List<Float> tmp = new ArrayList<Float>();
 
         int unit = (totalt - totalf) / resolution; // eg.  16 = 10000 / 600
+        if (unit < 1) unit = 1;
         System.out.println("unit: " + unit);
 
         for (int i = 0; i < resolution; i++) {
@@ -92,16 +95,21 @@ public class FakeTimelineDataModel implements TimelineDataModel {
     }
 
     public void selectInterval(Float from, Float to) {
-        this.from = from;
-        this.to = to;
+        if (0.0f < to && to < 1.0f && 0.0f < from && from < 1.0f && from < to) {
+            this.to = to;
+            this.from = from;
+        }
     }
-
     public void selectTo(Float to) {
-        this.to = to;
+        if (0.0f < to && to < 1.0f && from < to) {
+            this.to = to;
+        }
     }
 
     public void selectFrom(Float from) {
-        this.from = from;
+        if (0.0f < from && from < 1.0f && from < to) {
+            this.from = from;
+        }
     }
 
     public Float getSelectionFrom() {
@@ -111,4 +119,5 @@ public class FakeTimelineDataModel implements TimelineDataModel {
     public Float getSelectionTo() {
         return to;
     }
+
 }

@@ -26,6 +26,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.timeline.ui.layers.impl;
 
+import java.awt.BasicStroke;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -44,6 +45,18 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
 
     private static final long serialVersionUID = 1L;
     private Integer mousex = null;
+
+    public enum TimelineState {
+
+        IDLE,
+        HIGHTLIGHT_CENTER,
+        HIGHLIGHT_LEFT,
+        HIGHLIGHT_RIGHT,
+        MOVING,
+        RESIZE_FROM,
+        RESIZE_TO
+    }
+    TimelineState currentState = TimelineState.IDLE;
 
     /** Creates new form UpperPaneDataLayer */
     public UpperPaneDataLayer() {
@@ -88,36 +101,53 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
     private boolean inRange(int x, int a, int b) {
         return (a < x && x < b);
     }
-        
+
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
 
         int x = evt.getX();
         float w = getWidth();
         int r = skin.getSelectionHookSideLength();
-        int sf = (int)(model.getSelectionFrom() * w); // FROM
-        int st = (int)(model.getSelectionTo() * w); // TO
+        int sf = (int) (model.getSelectionFrom() * w); // FROM
+        int st = (int) (model.getSelectionTo() * w); // TO
 
         // we start
-        if (mousex== null) {
+        if (mousex == null) {
             mousex = x;
             return;
         }
+
+        if (currentState == TimelineState.IDLE) {
+            if (inRange(x, sf - r, sf + r)) {
+                currentState = TimelineState.RESIZE_FROM;
+            } else if (inRange(x, st - r, st + r)) {
+                currentState = TimelineState.RESIZE_TO;
+            } else if (inRange(x, sf - r, st + r)) {
+                currentState = TimelineState.MOVING;
+            } else {
+                return;
+            }
+        }
+
         int delta = x - mousex; // + => left to right;  - => right to left;
-        if (inRange(x, sf - r, sf + r)) {
-            System.out.println("IN LEFT HOOK @ "+x);
-            model.selectFrom(((float)(sf + delta)) / w);
-        } else if (inRange(x, st - r, st + r)) {
-            System.out.println("IN RIGHT HOOK @ "+x);
-            model.selectTo(((float)(st + delta)) / w);
-        } else if (inRange(x, sf - r, st + r)) {
-            System.out.println("IN CENTRAL ZONE @ "+x);
-            model.selectInterval(((float)(sf + delta)) / w, ((float)(st + delta)) / w);
-        } else {
-            return;
+
+        switch (currentState) {
+            case RESIZE_FROM:
+                System.out.println("IN LEFT HOOK @ " + x);
+                model.selectFrom(((float) (sf + delta)) / w);
+                break;
+            case RESIZE_TO:
+                System.out.println("IN RIGHT HOOK @ " + x);
+                model.selectTo(((float) (st + delta)) / w);
+                break;
+            case MOVING:
+                System.out.println("IN CENTRAL ZONE @ " + x);
+                model.selectInterval(((float) (sf + delta)) / w, ((float) (st + delta)) / w);
+                break;
         }
 
         mousex = x;
         //model.selectTo(TOP_ALIGNMENT);        // TODO add your handling code here:
+        this.getParent().getParent().repaint(); // so it will repaint all panels
     }//GEN-LAST:event_formMouseDragged
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
@@ -126,21 +156,26 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
 
     private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
         mousex = null;
+        currentState = TimelineState.IDLE;
     }//GEN-LAST:event_formMouseReleased
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+
+        int width = getWidth();
+        int height = getHeight();
+
         Graphics2D g2d = (Graphics2D) g;
-        BufferedImage buff = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+        BufferedImage buff = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
         // all this block can be delayed
 
         Graphics2D bimg2d = buff.createGraphics();
         bimg2d.setRenderingHints(skin.getRenderingHints());
-        skin.compileDataLayerPaint(getWidth(), getHeight());
+        skin.compileDataLayerPaint(width, height);
 
-        int dataSampleSize = getWidth() / 5;
+        int dataSampleSize = width / 5;
         if (dataSampleSize < 1) {
             dataSampleSize = 1;
         }
@@ -148,19 +183,19 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
 
         GeneralPath chart = new GeneralPath(GeneralPath.WIND_EVEN_ODD, data.size() + 1);
 
-        chart.moveTo(0, getHeight());
+        chart.moveTo(0, height);
         int i = 0;
         for (Float f : data) {
-            chart.lineTo((int) (i++ * ((float) (getWidth())) / (float) (data.size())),
-                    (int) (f * getHeight()));
+            chart.lineTo((int) (i++ * ((float) (width)) / (float) (data.size())),
+                    (int) (f * height));
         }
-        chart.lineTo(getWidth(), getHeight());
+        chart.lineTo(width, height);
 
         //oddShape.curveTo(10, 90, 100, 50, 34, 99);
         chart.closePath();
 
-        bimg2d.setPaint(skin.getHighlightedDataLayerPaint());
-        bimg2d.fill(chart);
+        bimg2d.setPaint(skin.getHighlightedSelectionLayerPaint());
+       // bimg2d.fill(chart
 
         //g2d.setPaint(Color.black);
         bimg2d.setColor(skin.getDataLayerStrokeColor());
@@ -168,10 +203,20 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
         bimg2d.draw(chart);
 
 
-        int cutx = (int) (getWidth() * model.getSelectionFrom());
+        int cutx = (int) (width * model.getSelectionFrom());
+        if (cutx < 0) {
+            cutx = 0;
+        }
+        if (cutx > width) {
+            cutx = width;
+        }
         int cuty = 0;
-        int cutw = (int) (getWidth() * model.getSelectionTo()) - cutx;
-        int cuth = getHeight();
+        int cutw = (int) (width * model.getSelectionTo()) - cutx;
+        if (cutw < 0) {
+            cutw = 10;
+        }
+
+        int cuth = height;
         BufferedImage hbuff = buff.getSubimage(cutx, cuty, cutw, cuth);
 
         BufferedImageOp op = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
@@ -181,9 +226,15 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
         g.drawImage(buff, 0, 0, null);
         g.drawImage(hbuff, cutx, cuty, null);
 
+        // we still have some drawing
         g2d.setRenderingHints(skin.getRenderingHints());
+
+        g2d.setStroke(new BasicStroke(2.0f));
+        g2d.drawRoundRect(cutx, 0, cutw, height, 4, 4);
+        
         g2d.setFont(new Font("DejaVu Sans Mono", 0, 12));
         g2d.drawString("1 january 1970", 10, 8);
+
 
     //shape.quadTo(3, 3, 4, 4);
     //shape.curveTo(5, 5, 6, 6, 7, 7);

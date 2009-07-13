@@ -163,8 +163,8 @@ public class DefaultSkin implements TimelineSkin {
         final static private Color upperColor = new Color (123, 123, 123, 100);
         final static private Color bottomColor = new Color (220, 220, 220, 100);
 
-        final static private Color highlightedUpperColor = new Color (120, 150, 180, 100);
-        final static private Color highlightedBottomColor = new Color (115, 147, 176, 100);
+        final static private Color highlightedUpperColor = new Color (130, 160, 190, 255);
+        final static private Color highlightedBottomColor = new Color (115, 147, 176, 255);
 
         final static private Stroke defaultStroke = new BasicStroke(1.0f);
         final static private Color defaultStrokeColor = Color.black;
@@ -199,7 +199,7 @@ public class DefaultSkin implements TimelineSkin {
         return selection.defaultStrokeColor;
     }
     public int getSelectionHookSideLength() {
-        return 2;
+        return 10;
     }
 
     protected RenderingHints renderingHints;

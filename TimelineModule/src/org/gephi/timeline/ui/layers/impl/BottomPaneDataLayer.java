@@ -77,7 +77,7 @@ public class BottomPaneDataLayer extends DefaultDataLayer {
         g2d.setRenderingHints(skin.getRenderingHints());
         skin.compileDataLayerPaint(getWidth(), getHeight());
 
-        int dataSampleSize = getWidth() / 5;
+        int dataSampleSize = getWidth() / 6;
         if (dataSampleSize < 1)
             dataSampleSize = 1;
 
