@@ -117,16 +117,18 @@ public class StructureModifier {
         }
         AbstractNode absNode = (AbstractNode) node;
         if (absNode.isValid()) {
+            //Node already exist, clone descendant & self
             absNode = new CloneNode(absNode);
-        }
-        absNode.parent = parentNode;
-        if (treeStructure.getEnabledAncestor(absNode) == null) {
-            absNode.setEnabled(true);
         } else {
-            absNode.setEnabled(false);
+            absNode.parent = parentNode;
+            if (treeStructure.getEnabledAncestor(absNode) == null) {
+                absNode.setEnabled(true);
+            } else {
+                absNode.setEnabled(false);
+            }
+            addNode(absNode);
         }
-        addNode(absNode);
-        //dhns.getDictionary().addNode(absNode);      //Dico
+
         graphVersion.incNodeVersion();
         dhns.getWriteLock().unlock();
     }
