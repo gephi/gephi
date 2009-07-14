@@ -65,12 +65,12 @@ public class TextDataImpl implements TextData {
         this.a = alpha;
     }
 
-    public int getWidth() {
-        return 10;
+    public float getWidth() {
+        return (float)line.bounds.getWidth();
     }
 
-    public int getHeight() {
-        return 10;
+    public float getHeight() {
+        return (float)line.bounds.getHeight();
     }
 
     public static class TextLine {

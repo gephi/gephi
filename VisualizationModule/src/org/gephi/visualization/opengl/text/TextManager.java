@@ -88,6 +88,7 @@ public class TextManager implements VizArchitecture {
 
             String txt = textData.line.text;
             Rectangle2D r = renderer.getBounds(txt);
+            textData.line.setBounds(r);
             int posX = (int) renderable.x() - (int) r.getWidth() / 2;
             int posY = (int) renderable.y() - (int) r.getHeight() / 2;
 

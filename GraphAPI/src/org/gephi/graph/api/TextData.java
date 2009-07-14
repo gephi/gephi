@@ -25,4 +25,8 @@ package org.gephi.graph.api;
  * @author Mathieu Bastian
  */
 public interface TextData {
+
+    public float getWidth();
+
+    public float getHeight();
 }

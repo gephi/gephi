@@ -62,7 +62,7 @@ public class VizConfig {
     protected boolean showFPS = true;
     protected boolean showEdges = true;
     protected boolean showArrows = true;
-    protected boolean showLabels = false;
+    protected boolean showLabels = true;
     protected boolean showEdgeLabels = true;
     protected boolean lightenNonSelectedAuto = true;
     protected boolean lightenNonSelected = true;
@@ -88,6 +88,7 @@ public class VizConfig {
     protected boolean showVizVar = false;
     protected boolean visualizeTree = false;
     protected boolean contextMenu = false;
+    protected boolean adjustByText = true;
 
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
@@ -198,6 +199,10 @@ public class VizConfig {
 
     public boolean isShowEdgeLabels() {
         return showEdgeLabels;
+    }
+
+    public boolean isAdjustByText() {
+        return adjustByText;
     }
 
     public boolean isShowVizVar() {
