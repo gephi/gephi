@@ -124,6 +124,30 @@ public class DhnsTestMultiLevel {
     }
 
     @Test
+    public void testAddWithDescendants() {
+
+        //Add A as child of E
+        graph1.addNode(nodeMap.get("nodeA"), nodeMap.get("nodeE"));
+
+        assertTrue(graph1.isDescendant(nodeMap.get("nodeE"), nodeMap.get("nodeC")));
+        assertTrue(graph1.isDescendant(nodeMap.get("nodeE"), nodeMap.get("nodeA")));
+        assertTrue(graph1.isDescendant(nodeMap.get("nodeE"), nodeMap.get("nodeD")));
+        assertNotNull(nodeMap.get("nodeC").getOriginalNode().getClones());
+        assertEquals(2, nodeMap.get("nodeD").getOriginalNode().countClones());
+        assertEquals(9, graph1.getNodeCount());
+
+        //Add the cloned node A to B
+        AbstractNode cloneAafterE = nodeMap.get("nodeA").getOriginalNode().getClones();
+        graph1.addNode(cloneAafterE, nodeMap.get("nodeB"));
+
+        assertEquals(12, graph1.getNodeCount());
+        assertEquals(3, nodeMap.get("nodeD").getOriginalNode().countClones());
+        assertEquals(2, nodeMap.get("nodeA").getOriginalNode().countClones());
+
+        dhns1.getTreeStructure().showTreeAsTable();
+    }
+
+    @Test
     public void testCloneRemove() {
         //Test remove a clone
         graph1.removeNode(nodeMap.get("nodeB"));
@@ -172,7 +196,7 @@ public class DhnsTestMultiLevel {
         graph1.expand(nodeMap.get("nodeB"));
         assertTrue(dhns1.getTreeStructure().hasEnabledDescendant(nodeMap.get("nodeB")));
 
-        dhns1.getTreeStructure().showTreeAsTable();
+    //dhns1.getTreeStructure().showTreeAsTable();
     }
 
     @Test

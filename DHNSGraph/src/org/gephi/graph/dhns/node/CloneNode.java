@@ -40,7 +40,7 @@ public class CloneNode extends AbstractNode {
             CloneNode cn = (CloneNode) absNode;
             this.preNode = cn.getPreNode();
         } else {
-            this.preNode = (PreNode)absNode;
+            this.preNode = (PreNode) absNode;
         }
         this.preNode.addClone(this);
     }
@@ -121,5 +121,10 @@ public class CloneNode extends AbstractNode {
     @Override
     public PreNode getOriginalNode() {
         return preNode;
+    }
+
+    @Override
+    public String toString() {
+        return "" + getPre();
     }
 }

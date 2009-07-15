@@ -118,7 +118,7 @@ public class StructureModifier {
         AbstractNode absNode = (AbstractNode) node;
         if (absNode.isValid()) {
             //Node already exist, clone descendant & self
-            absNode = new CloneNode(absNode);
+            cloneDescedantAndSelft(absNode, parentNode);
         } else {
             absNode.parent = parentNode;
             if (treeStructure.getEnabledAncestor(absNode) == null) {
@@ -128,6 +128,7 @@ public class StructureModifier {
             }
             addNode(absNode);
         }
+
 
         graphVersion.incNodeVersion();
         dhns.getWriteLock().unlock();
@@ -495,5 +496,26 @@ public class StructureModifier {
             edgeProcessor.computeMetaEdges(node, destinationAncestor);
         }
 
+    }
+
+    private void cloneDescedantAndSelft(AbstractNode node, AbstractNode parentNode) {
+        if (node.size > 0) {
+            DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node, null);
+            for (; itr.hasNext();) {
+                AbstractNode desc = itr.next();
+                CloneNode clone = new CloneNode(desc);
+                if (desc == node) {
+                    //Parent is the given parentNode
+                    clone.parent = parentNode;
+                } else {
+                    clone.parent = desc.parent.getOriginalNode().getClones();       //The last clone added
+                }
+                addNode(clone);
+            }
+        } else {
+            CloneNode clone = new CloneNode(node);
+            clone.parent = parentNode;
+            addNode(clone);
+        }
     }
 }
