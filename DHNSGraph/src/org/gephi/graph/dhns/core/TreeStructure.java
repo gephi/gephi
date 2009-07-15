@@ -20,7 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.core;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.node.CloneNode;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 
@@ -72,6 +75,33 @@ public class TreeStructure {
             }
         }
         return parent;
+    }
+
+    public AbstractNode[] getEnabledAncestorsOrSelf(AbstractNode node) {
+        List<AbstractNode> nodeList = new ArrayList<AbstractNode>();
+        PreNode preNode = node.getOriginalNode();
+        if (preNode.getClones() == null) {
+            AbstractNode enabled = getEnabledAncestorOrSelf(preNode);
+            if (enabled != null) {
+                return new AbstractNode[]{enabled};
+            } else {
+                return null;
+            }
+        } else {
+            AbstractNode enabled = getEnabledAncestorOrSelf(preNode);
+            if (enabled != null) {
+                nodeList.add(enabled);
+            }
+            CloneNode cn = preNode.getClones();
+            while (cn != null) {
+                enabled = getEnabledAncestorOrSelf(cn);
+                if (enabled != null && !nodeList.contains(enabled)) {
+                    nodeList.add(enabled.getOriginalNode());
+                }
+                cn = cn.getNext();
+            }
+            return nodeList.toArray(new AbstractNode[0]);
+        }
     }
 
     public AbstractNode getEnabledAncestor(AbstractNode node) {

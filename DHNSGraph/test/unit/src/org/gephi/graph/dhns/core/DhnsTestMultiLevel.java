@@ -21,6 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.core;
 
 import java.util.HashMap;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.MetaEdge;
+import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
@@ -144,7 +147,7 @@ public class DhnsTestMultiLevel {
         assertEquals(3, nodeMap.get("nodeD").getOriginalNode().countClones());
         assertEquals(2, nodeMap.get("nodeA").getOriginalNode().countClones());
 
-        dhns1.getTreeStructure().showTreeAsTable();
+    // dhns1.getTreeStructure().showTreeAsTable();
     }
 
     @Test
@@ -230,5 +233,29 @@ public class DhnsTestMultiLevel {
         assertEquals(3, preNode.countClones());
         preNode.removeClone(cn4);
         assertEquals(cn3, cn5.getNext());
+    }
+
+    @Test
+    public void testGetEnabledAncestors() {
+        dhns1.getTreeStructure().showTreeAsTable();
+        AbstractNode[] enabled = dhns1.getTreeStructure().getEnabledAncestorsOrSelf(nodeMap.get("nodeD"));
+        assertArrayEquals(new AbstractNode[]{nodeMap.get("nodeA"), nodeMap.get("nodeB")}, enabled);
+    }
+
+    @Test
+    public void testComputeMetaEdges() {
+
+        GraphFactoryImpl factory = dhns1.getGraphFactory();
+        Node nodeF = factory.newNode();
+        graph1.addNode(nodeF);
+        graph1.addNode(nodeMap.get("nodeE"), nodeF);
+        graph1.addEdge(nodeMap.get("nodeD"), nodeMap.get("nodeE"));
+
+        Edge[] metaEdges = graph1.getMetaEdges().toArray();
+        MetaEdge[] expectedArray = new MetaEdge[3];
+        expectedArray[0] = graph1.getMetaEdge(nodeMap.get("nodeA"), nodeMap.get("nodeB"));
+        expectedArray[1] = graph1.getMetaEdge(nodeMap.get("nodeA"), nodeF);
+        expectedArray[2] = graph1.getMetaEdge(nodeMap.get("nodeB"), nodeF);
+        assertArrayEquals(expectedArray, metaEdges);
     }
 }
