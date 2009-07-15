@@ -22,6 +22,7 @@ package org.gephi.graph.dhns.node;
 
 import org.gephi.datastructure.avl.simple.AVLItem;
 import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
@@ -83,6 +84,8 @@ public abstract class AbstractNode implements Node, AVLItem {
     public abstract int getId();
 
     public abstract NodeData getNodeData();
+
+    public abstract GroupData getGroupData();
 
     public abstract boolean hasAttributes();
 

@@ -23,6 +23,7 @@ package org.gephi.visualization.bridge;
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Model;
+import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
@@ -87,6 +88,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
             ModelImpl metaModel = selectedNodeModels[0];
             //TODO check it is a metaNode
             NodeData node = (NodeData) metaModel.getObj();
+            expandPositioning(node);
             graph.expand(node.getNode());
         }
     }
@@ -121,5 +123,31 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
         }
         break;
         }*/
+    }
+
+    private void expandPositioning(NodeData nodeData) {
+        Node node = nodeData.getNode();
+        float centroidX = 0;
+        float centroidY = 0;
+        int len = 0;
+        Node[] children = graph.getChildren(node).toArray();
+        for (Node child : children) {
+            centroidX += child.getNodeData().x();
+            centroidY += child.getNodeData().y();
+            len++;
+        }
+        centroidX /= len;
+        centroidY /= len;
+
+        float diffX = nodeData.x() - centroidX;
+        float diffY = nodeData.y() - centroidY;
+        for (Node child : children) {
+            NodeData nd = child.getNodeData();
+            nd.setX(nd.x() + diffX);
+            nd.setY(nd.y() + diffY);
+        }
+    }
+
+    private void retractPositioning() {
     }
 }

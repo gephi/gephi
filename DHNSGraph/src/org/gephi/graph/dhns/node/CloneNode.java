@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.node;
 
 import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.utils.avl.EdgeOppositeTree;
 import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
@@ -93,6 +94,11 @@ public class CloneNode extends AbstractNode {
 
     @Override
     public NodeData getNodeData() {
+        return preNode.nodeData;
+    }
+
+    @Override
+    public GroupData getGroupData() {
         return preNode.nodeData;
     }
 

@@ -20,10 +20,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.bridge;
 
+import java.util.ArrayList;
 import org.gephi.graph.api.ClusteredDirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.Group;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.NodeIterable;
@@ -105,25 +107,9 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         }
 
         ModelClass potatoClass = object3dClasses[AbstractEngine.CLASS_POTATO];
-        if (potatoClass.isEnabled()) {
-            Modeler potInit = engine.getModelClasses()[AbstractEngine.CLASS_POTATO].getCurrentModeler();
-            int i = 0;
-            Node[] nodes = new Node[15];
-            for (Node node : graph.getNodes().toArray()) {
-                nodes[i] = node;
-                i++;
-                if (i == 15) {
-                    break;
-                }
-            }
-            if (i == 15) {
-                ConvexHull ch = new ConvexHull();
-                ch.setNodes(nodes);
-                ModelImpl obj = potInit.initModel(ch);
-                obj.setCacheMarker(cacheMarker);
-                engine.addObject(AbstractEngine.CLASS_POTATO, obj);
-                potatoClass.setCacheMarker(cacheMarker);
-            }
+        if (potatoClass.isEnabled() && (graph.getNodeVersion() > nodeVersion || modeManager.requireModeChange())) {
+            updatePotatoes();
+            potatoClass.setCacheMarker(cacheMarker);
         }
 
         nodeVersion = graph.getNodeVersion();
@@ -166,7 +152,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             if (vizConfig.isVisualizeTree()) {
                 node.getNodeData().setX(node.getPre() * 25);
                 node.getNodeData().setY(node.getPost() * 25);
-                if(graph.isInView(node)) {
+                if (graph.isInView(node)) {
                     node.getNodeData().setR(1f);
                     node.getNodeData().setG(0f);
                     node.getNodeData().setB(0f);
@@ -217,22 +203,32 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     }
 
     public void updatePotatoes() {
-        /*Modeler potatoInit = engine.getModelClasses()[AbstractEngine.CLASS_POTATO].getCurrentModeler();
+        ModelClass potatoClass = engine.getModelClasses()[AbstractEngine.CLASS_POTATO];
+        if (potatoClass.isEnabled()) {
+            Modeler potInit = engine.getModelClasses()[AbstractEngine.CLASS_POTATO].getCurrentModeler();
 
-        Iterator<? extends Potato> itr = reader.getPotatoes();
-        for (; itr.hasNext();) {
-        Potato potato = itr.next();
-
-        Model obj = potato.getModel();
-        if (obj == null) {
-        //Model is null, ADD
-        obj = potatoInit.initModel(potato);
-        engine.addObject(AbstractEngine.CLASS_POTATO, (ModelImpl) obj);
-        } else if (!obj.isValid()) {
-        engine.addObject(AbstractEngine.CLASS_POTATO, (ModelImpl) obj);
+            ArrayList<Node> temp = new ArrayList<Node>();
+            Node[] nodes = graph.getNodes().toArray();
+            for (Node n : nodes) {
+                Node parent = graph.getParent(n);
+                if (parent != null) {
+                    Group group = (Group) parent;
+                    Model hullModel = group.getGroupData().getHullModel();
+                    if (hullModel != null) {
+                        ConvexHull hull = (ConvexHull) hullModel.getObj();
+                        hull.addNode(n);
+                    } else {
+                        ConvexHull ch = new ConvexHull();
+                        ch.setMetaNode(parent);
+                        ch.addNode(n);
+                        ModelImpl obj = potInit.initModel(ch);
+                        group.getGroupData().setHullModel(obj);
+                        obj.setCacheMarker(cacheMarker);
+                        engine.addObject(AbstractEngine.CLASS_POTATO, obj);
+                    }
+                }
+            }
         }
-        obj.setCacheMarker(cacheMarker);
-        }*/
     }
 
     public boolean requireUpdate() {

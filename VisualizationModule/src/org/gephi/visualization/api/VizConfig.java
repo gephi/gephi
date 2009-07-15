@@ -87,8 +87,8 @@ public class VizConfig {
     protected Font defaultLabelFont = new Font("Arial", Font.BOLD, 20);
     protected boolean showVizVar = false;
     protected boolean visualizeTree = false;
-    protected boolean contextMenu = false;
-    protected boolean adjustByText = true;
+    protected boolean contextMenu = true;
+    protected boolean adjustByText = false;
 
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();

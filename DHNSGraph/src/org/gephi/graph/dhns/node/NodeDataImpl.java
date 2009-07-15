@@ -24,6 +24,7 @@ import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.LayoutData;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
+import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.TextData;
 
@@ -32,7 +33,7 @@ import org.gephi.graph.api.TextData;
  *
  * @author Mathieu Bastian
  */
-public class NodeDataImpl implements NodeData {
+public class NodeDataImpl implements NodeData, GroupData {
 
     protected Node node;
     protected LayoutData layoutData;
@@ -50,6 +51,7 @@ public class NodeDataImpl implements NodeData {
     protected boolean fixed;
     protected Attributes attributes;
     protected TextData textData;
+    protected Model hullModel;
 
     public NodeDataImpl(Node node) {
         this.node = node;
@@ -190,5 +192,13 @@ public class NodeDataImpl implements NodeData {
 
     public void setTextData(TextData textData) {
         this.textData = textData;
+    }
+
+    public Model getHullModel() {
+        return hullModel;
+    }
+
+    public void setHullModel(Model hullModel) {
+        this.hullModel = hullModel;
     }
 }

@@ -22,6 +22,7 @@ package org.gephi.graph.dhns.node;
 
 import org.gephi.datastructure.avl.simple.AVLItem;
 import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.graph.dhns.utils.avl.EdgeOppositeTree;
@@ -122,6 +123,11 @@ public class PreNode extends AbstractNode implements AVLItem {
 
     @Override
     public NodeData getNodeData() {
+        return nodeData;
+    }
+
+    @Override
+    public GroupData getGroupData() {
         return nodeData;
     }
 

@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.hull;
 
+import org.gephi.datastructure.avl.param.AVLItemAccessor;
+import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
@@ -34,7 +36,7 @@ import org.gephi.visualization.api.ModelImpl;
 public class ConvexHull implements Renderable {
 
     private Node metaNode;
-    private NodeData[] groupNodes;
+    private ParamAVLTree<Node> groupNodesTree;
     private ModelImpl[] hullNodes;
     private float alpha = 1f;
     private Model model;
@@ -42,20 +44,29 @@ public class ConvexHull implements Renderable {
     private float baryY;
     private float baryZ;
 
+    public ConvexHull() {
+        groupNodesTree = new ParamAVLTree<Node>(new AVLItemAccessor<Node>() {
+
+            public int getNumber(Node item) {
+                return item.getId();
+            }
+        });
+    }
+
+    public void addNode(Node node) {
+        groupNodesTree.add(node);
+    }
+
+    public void setMetaNode(Node metaNode) {
+        this.metaNode = metaNode;
+    }
+
     public ModelImpl[] getNodes() {
         return hullNodes;
     }
 
-    public NodeData[] getGroupNodes() {
-        return groupNodes;
-    }
-
-    public void setNodes(Node[] nodes) {
-        groupNodes = new NodeData[nodes.length];
-        for (int i = 0; i < nodes.length; i++) {
-            groupNodes[i] = nodes[i].getNodeData();
-        }
-        this.hullNodes = computeHull(groupNodes);
+    public Node[] getGroupNodes() {
+        return groupNodesTree.toArray(new Node[0]);
     }
 
     private ModelImpl[] computeHull(NodeData[] nodes) {
@@ -68,7 +79,7 @@ public class ConvexHull implements Renderable {
     }
 
     public void recompute() {
-        this.hullNodes = computeHull(groupNodes);
+        //this.hullNodes = computeHull(groupNodes);
     }
 
     public void setX(float x) {
