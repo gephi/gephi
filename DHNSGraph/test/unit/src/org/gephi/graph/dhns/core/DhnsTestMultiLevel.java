@@ -185,8 +185,18 @@ public class DhnsTestMultiLevel {
         graph.addNode(nodeD, nodeA);
 
         graph.removeNode(nodeD);
-        assertFalse(graph1.contains(nodeD));
+        assertFalse(graph.contains(nodeD));
         assertEquals(2, ((PreNode) nodeA).size);
+
+        //Test remove complex
+        setUp();
+        graph1.addNode(nodeMap.get("nodeA"), nodeMap.get("nodeE"));
+        AbstractNode cloneAafterE = nodeMap.get("nodeA").getOriginalNode().getClones();
+        graph1.addNode(cloneAafterE, nodeMap.get("nodeB"));
+        graph1.removeNode(nodeMap.get("nodeA"));
+        assertEquals(2, graph1.getNodeCount());
+        assertTrue(graph1.contains(nodeMap.get("nodeB")));
+        assertTrue(graph1.contains(nodeMap.get("nodeE")));
 
     //dhns.getTreeStructure().showTreeAsTable();
     }

@@ -386,6 +386,8 @@ public class StructureModifier {
             if (descendant == descendant.getOriginalNode()) {
                 CloneNode cn = descendant.getOriginalNode().getClones();
                 while (cn != null) {
+                    //Unattach clones
+                    unAttachClones(cn);
                     treeStructure.deleteDescendantAndSelf(cn);
                     cn = cn.getNext();
                 }
@@ -516,6 +518,15 @@ public class StructureModifier {
             CloneNode clone = new CloneNode(node);
             clone.parent = parentNode;
             addNode(clone);
+        }
+    }
+
+    private void unAttachClones(CloneNode node) {
+        for (int i = node.getPre(); i <= node.pre + node.size; i++) {
+            AbstractNode n = treeStructure.getNodeAt(i);
+            if (n.isClone()) {
+                n.getOriginalNode().removeClone((CloneNode) n);
+            }
         }
     }
 }

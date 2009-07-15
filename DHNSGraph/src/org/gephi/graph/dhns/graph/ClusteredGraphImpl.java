@@ -118,14 +118,12 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         }
         AbstractNode absNode = (AbstractNode) node;
         readLock();
-        if (!absNode.isValid()) {
-            return false;
-        }
         boolean res = false;
-        if (nodeProposition.evaluate(absNode) && dhns.getTreeStructure().getTree().contains(absNode)) {
-            res = true;
+        if (absNode.isValid()) {
+            if (nodeProposition.evaluate(absNode) && dhns.getTreeStructure().getTree().contains(absNode)) {
+                res = true;
+            }
         }
-
         readUnlock();
         return res;
     }
