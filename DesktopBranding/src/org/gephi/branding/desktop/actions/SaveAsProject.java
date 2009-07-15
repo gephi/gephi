@@ -35,6 +35,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 import org.openide.util.actions.SystemAction;
 
 /**
@@ -42,6 +43,9 @@ import org.openide.util.actions.SystemAction;
  * @author Mathieu
  */
 public class SaveAsProject extends SystemAction {
+
+    private static final String LAST_PATH = "SaveAsProject_Last_Path";
+    private static final String LAST_PATH_DEFAULT = "SaveAsProject_Last_Path_Default";
 
     @Override
     public String getName() {
@@ -72,7 +76,11 @@ public class SaveAsProject extends SystemAction {
         DialogFileFilter filter = new DialogFileFilter(NbBundle.getMessage(SaveAsProject.class, "SaveAsProject_filechooser_filter"));
         filter.addExtension(".gephi");
 
-        final JFileChooser chooser = new JFileChooser();
+        //Get last directory
+        String lastPathDefault = NbPreferences.forModule(SaveAsProject.class).get(LAST_PATH_DEFAULT, null);
+        String lastPath = NbPreferences.forModule(SaveAsProject.class).get(LAST_PATH, lastPathDefault);
+
+        final JFileChooser chooser = new JFileChooser(lastPath);
         chooser.addChoosableFileFilter(filter);
 
         int returnFile = chooser.showSaveDialog(null);
@@ -81,6 +89,8 @@ public class SaveAsProject extends SystemAction {
 
             File file = chooser.getSelectedFile();
 
+            //Save last path
+            NbPreferences.forModule(SaveAsProject.class).put(LAST_PATH, file.getAbsolutePath());
 
             if (!file.getPath().endsWith(".gephi")) {
                 file = new File(file.getPath() + ".gephi");
