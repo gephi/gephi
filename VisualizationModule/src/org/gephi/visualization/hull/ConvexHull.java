@@ -69,17 +69,17 @@ public class ConvexHull implements Renderable {
         return groupNodesTree.toArray(new Node[0]);
     }
 
-    private ModelImpl[] computeHull(NodeData[] nodes) {
-        NodeData[] n = AlgoHull.calculate(nodes);
+    private ModelImpl[] computeHull() {
+        Node[] n = AlgoHull.calculate(groupNodesTree.toArray(new Node[0]));
         ModelImpl[] models = new ModelImpl[n.length];
         for (int i = 0; i < n.length; i++) {
-            models[i] = (ModelImpl) n[i].getModel();
+            models[i] = (ModelImpl) n[i].getNodeData().getModel();
         }
         return models;
     }
 
     public void recompute() {
-        //this.hullNodes = computeHull(groupNodes);
+        this.hullNodes = computeHull();
     }
 
     public void setX(float x) {

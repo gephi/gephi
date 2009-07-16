@@ -22,27 +22,27 @@ package org.gephi.visualization.hull;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import org.gephi.graph.api.NodeData;
+import org.gephi.graph.api.Node;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class AlgoHull {
 
-    private static final Comparator<NodeData> LEFT_RIGHT = new Comparator<NodeData>() {
+    private static final Comparator<Node> LEFT_RIGHT = new Comparator<Node>() {
 
-        public int compare(NodeData p1, NodeData p2) {
-            if (p1.x() < p2.x()) {
+        public int compare(Node p1, Node p2) {
+            if (p1.getNodeData().x() < p2.getNodeData().x()) {
                 return -1;
             }
-            if (p1.x() > p2.x()) {
+            if (p1.getNodeData().x() > p2.getNodeData().x()) {
                 return +1;
             }
-            if (p1.y() < p2.y()) {
+            if (p1.getNodeData().y() < p2.getNodeData().y()) {
                 return -1;
             }
-            if (p1.y() > p2.y()) {
+            if (p1.getNodeData().y() > p2.getNodeData().y()) {
                 return +1;
             }
             return 0;
@@ -56,21 +56,21 @@ public class AlgoHull {
      * May return an incorrect result if the points are very close to each other
      * or if one point lies very close to the line described by the other two.
      */
-    private static boolean isRightTurn(NodeData a, NodeData b, NodeData c) {
-        double det = b.x() * c.y() + a.x() * b.y() + a.y() * c.x();
-        det -= b.y() * c.x() + a.x() * c.y() + a.y() * b.x();
+    private static boolean isRightTurn(Node a, Node b, Node c) {
+        double det = b.getNodeData().x() * c.getNodeData().y() + a.getNodeData().x() * b.getNodeData().y() + a.getNodeData().y() * c.getNodeData().x();
+        det -= b.getNodeData().y() * c.getNodeData().x() + a.getNodeData().x() * c.getNodeData().y() + a.getNodeData().y() * b.getNodeData().x();
         return det < 0;
     }
 
-    public static NodeData[] calculate(NodeData[] points) {
-        NodeData[] temp = new NodeData[points.length];
+    public static Node[] calculate(Node[] points) {
+        Node[] temp = new Node[points.length];
         System.arraycopy(points, 0, temp, 0, points.length);
         Arrays.sort(temp, LEFT_RIGHT);
         if (points.length < 3) {
             return temp;
         }
 
-        NodeData[] upperHull = new NodeData[temp.length];
+        Node[] upperHull = new Node[temp.length];
         int ucount = 0;
         upperHull[ucount++] = temp[0];
         upperHull[ucount++] = temp[1];
@@ -81,7 +81,7 @@ public class AlgoHull {
             upperHull[ucount++] = temp[i];
         }
 
-        NodeData[] lowerHull = new NodeData[temp.length];
+        Node[] lowerHull = new Node[temp.length];
         int lcount = 0;
         lowerHull[lcount++] = temp[temp.length - 1];
         lowerHull[lcount++] = temp[temp.length - 2];
@@ -96,7 +96,7 @@ public class AlgoHull {
             upperHull[ucount++] = lowerHull[i];
         }
 
-        NodeData[] result = new NodeData[ucount];
+        Node[] result = new Node[ucount];
         for (int i = 0; i < ucount; i++) {
             result[i] = upperHull[i];
         }

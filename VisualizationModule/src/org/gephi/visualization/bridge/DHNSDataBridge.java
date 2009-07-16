@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.bridge;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.gephi.graph.api.ClusteredDirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
@@ -207,14 +208,14 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         if (potatoClass.isEnabled()) {
             Modeler potInit = engine.getModelClasses()[AbstractEngine.CLASS_POTATO].getCurrentModeler();
 
-            ArrayList<Node> temp = new ArrayList<Node>();
+            List<ModelImpl> hulls = new ArrayList<ModelImpl>();
             Node[] nodes = graph.getNodes().toArray();
             for (Node n : nodes) {
                 Node parent = graph.getParent(n);
                 if (parent != null) {
                     Group group = (Group) parent;
                     Model hullModel = group.getGroupData().getHullModel();
-                    if (hullModel != null) {
+                    if (hullModel != null && hullModel.isCacheMatching(cacheMarker)) {
                         ConvexHull hull = (ConvexHull) hullModel.getObj();
                         hull.addNode(n);
                     } else {
@@ -224,9 +225,14 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                         ModelImpl obj = potInit.initModel(ch);
                         group.getGroupData().setHullModel(obj);
                         obj.setCacheMarker(cacheMarker);
-                        engine.addObject(AbstractEngine.CLASS_POTATO, obj);
+                        hulls.add(obj);
                     }
                 }
+            }
+            for (ModelImpl im : hulls) {
+                ConvexHull hull = (ConvexHull) im.getObj();
+                hull.recompute();
+                engine.addObject(AbstractEngine.CLASS_POTATO, im);
             }
         }
     }

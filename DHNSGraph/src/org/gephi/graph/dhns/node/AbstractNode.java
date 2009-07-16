@@ -22,6 +22,7 @@ package org.gephi.graph.dhns.node;
 
 import org.gephi.datastructure.avl.simple.AVLItem;
 import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.Group;
 import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
@@ -34,7 +35,7 @@ import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractNode implements Node, AVLItem {
+public abstract class AbstractNode implements Node, Group, AVLItem {
 
     //Structure properties
     protected boolean visible = true;

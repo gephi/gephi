@@ -34,7 +34,7 @@ import org.gephi.visualization.opengl.octree.Octant;
 public class ConvexHullModel extends ModelImpl<ConvexHull> {
 
     protected boolean autoSelect = false;
-    protected boolean requestUpdate = false;
+    protected boolean requestUpdate = true;
 
     @Override
     public int[] octreePosition(float centerX, float centerY, float centerZ, float size) {
@@ -44,13 +44,16 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
     @Override
     public boolean isInOctreeLeaf(Octant leaf) {
         ModelImpl[] nodes = obj.getNodes();
+        if (nodes.length != octants.length) {
+            return false;
+        }
         for (int i = 0; i < nodes.length; i++) {
             ModelImpl model = nodes[i];
-            if (model.isInOctreeLeaf(leaf)) {
-                return true;
+            if (model.getOctants()[0] != octants[i]) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     @Override
@@ -112,11 +115,16 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
     @Override
     public Octant[] getOctants() {
         ModelImpl[] nodes = obj.getNodes();
-        Octant[] oc = new Octant[nodes.length];
-        for (int i = 0; i < oc.length; i++) {
-            oc[i] = nodes[i].getOctants()[0];
+        octants = new Octant[nodes.length];
+        for (int i = 0; i < octants.length; i++) {
+            octants[i] = nodes[i].getOctants()[0];
         }
-        return oc;
+        return octants;
+    }
+
+    @Override
+    public void resetOctant() {
+        octants = null;
     }
 
     @Override
