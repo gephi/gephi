@@ -254,6 +254,7 @@ public class Octree implements VizArchitecture {
             for (cleanObjectsIterator.setNode(tree); cleanObjectsIterator.hasNext();) {
                 ModelImpl obj = cleanObjectsIterator.next();
                 obj.resetOctant();
+                obj.destroy();
             }
 
             //Empty the tree

@@ -24,7 +24,6 @@ import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
 import org.gephi.graph.api.TextData;
 import org.gephi.visualization.api.ModelImpl;
@@ -38,7 +37,7 @@ public class ConvexHull implements Renderable {
     private Node metaNode;
     private ParamAVLTree<Node> groupNodesTree;
     private ModelImpl[] hullNodes;
-    private float alpha = 1f;
+    private float alpha = 0.5f;
     private Model model;
     private float baryX;
     private float baryY;
@@ -107,18 +106,16 @@ public class ConvexHull implements Renderable {
     }
 
     public float r() {
-        return 0.4f;
-    //return metaNode.getNodeData().r();
+        return metaNode.getNodeData().r();
     }
 
     public float g() {
-        return 0f;
-    //return metaNode.getNodeData().g();
+
+        return metaNode.getNodeData().g();
     }
 
     public float b() {
-        return 0.3f;
-    //return metaNode.getNodeData().b();
+        return metaNode.getNodeData().b();
     }
 
     public void setR(float r) {

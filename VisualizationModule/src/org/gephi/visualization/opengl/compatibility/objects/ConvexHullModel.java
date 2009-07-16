@@ -22,6 +22,7 @@ package org.gephi.visualization.opengl.compatibility.objects;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
+import org.gephi.graph.api.Node;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.hull.ConvexHull;
@@ -65,15 +66,15 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
         float r = obj.r();
         float g = obj.g();
         float b = obj.b();
-        float rlight = Math.min(1, 0.5f * r + 0.5f);
+        /*float rlight = Math.min(1, 0.5f * r + 0.5f);
         float glight = Math.min(1, 0.5f * g + 0.5f);
-        float blight = Math.min(1, 0.5f * b + 0.5f);
+        float blight = Math.min(1, 0.5f * b + 0.5f);*/
 
         //Fill
         if (selected) {
-            gl.glColor3f(r, b, b);
+            gl.glColor4f(r, g, b, 0.8f);
         } else {
-            gl.glColor3f(rlight, glight, blight);
+            gl.glColor4f(r, g, b, 0.15f);
         }
         gl.glBegin(GL.GL_POLYGON);
         ModelImpl[] nodes = obj.getNodes();
@@ -84,7 +85,7 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
         gl.glEnd();
 
         //Line
-        gl.glColor3f(r, g, b);
+        gl.glColor4f(r, g, b, 0.8f);
         gl.glBegin(GL.GL_LINE_LOOP);
         for (int i = 0; i < nodes.length; i++) {
             ModelImpl node = nodes[i];
@@ -125,6 +126,14 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
     @Override
     public void resetOctant() {
         octants = null;
+    }
+
+    @Override
+    public void destroy() {
+        for (Node node : obj.getGroupNodes()) {
+            ModelImpl model = (ModelImpl) node.getNodeData().getModel();
+            model.removePositionChainItem(this);
+        }
     }
 
     @Override
