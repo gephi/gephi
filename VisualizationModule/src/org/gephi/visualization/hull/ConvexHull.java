@@ -24,6 +24,7 @@ import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
 import org.gephi.graph.api.TextData;
 import org.gephi.visualization.api.ModelImpl;
@@ -39,9 +40,8 @@ public class ConvexHull implements Renderable {
     private ModelImpl[] hullNodes;
     private float alpha = 0.5f;
     private Model model;
-    private float baryX;
-    private float baryY;
-    private float baryZ;
+    private float centroidX;
+    private float centroidY;
 
     public ConvexHull() {
         groupNodesTree = new ParamAVLTree<Node>(new AVLItemAccessor<Node>() {
@@ -71,9 +71,18 @@ public class ConvexHull implements Renderable {
     private ModelImpl[] computeHull() {
         Node[] n = AlgoHull.calculate(groupNodesTree.toArray(new Node[0]));
         ModelImpl[] models = new ModelImpl[n.length];
+        float cenX = 0;
+        float cenY = 0;
+        int len = 0;
         for (int i = 0; i < n.length; i++) {
-            models[i] = (ModelImpl) n[i].getNodeData().getModel();
+            NodeData nd = n[i].getNodeData();
+            models[i] = (ModelImpl) nd.getModel();
+            cenX += nd.x();
+            cenY += nd.y();
+            len++;
         }
+        centroidX = cenX / len;
+        centroidY = cenY / len;
         return models;
     }
 
@@ -155,14 +164,14 @@ public class ConvexHull implements Renderable {
     }
 
     public float x() {
-        return baryX;
+        return centroidX;
     }
 
     public float y() {
-        return baryY;
+        return centroidY;
     }
 
     public float z() {
-        return baryZ;
+        return 0;
     }
 }

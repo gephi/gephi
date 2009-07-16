@@ -79,8 +79,8 @@ public class NodeRectangeModel extends ModelImpl<NodeData> {
         }
         mark = false;
         if (config.isAdjustByText()) {
-            width = obj.getTextData().getWidth()*1.2f;
-            height = obj.getTextData().getHeight()*1.2f;
+            width = obj.getTextData().getWidth() * 1.2f;
+            height = obj.getTextData().getHeight() * 1.2f;
         } else {
             float size = obj.getSize();
             width = size;

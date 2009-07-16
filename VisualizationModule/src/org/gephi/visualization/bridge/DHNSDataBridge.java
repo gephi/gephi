@@ -40,6 +40,7 @@ import org.gephi.visualization.api.objects.ModelClass;
 import org.gephi.visualization.hull.ConvexHull;
 import org.gephi.visualization.mode.ModeManager;
 import org.gephi.visualization.opengl.AbstractEngine;
+import org.gephi.visualization.opengl.compatibility.objects.ConvexHullModel;
 import org.gephi.visualization.opengl.compatibility.objects.Edge2dModel;
 import org.openide.util.Lookup;
 
@@ -226,14 +227,19 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                         group.getGroupData().setHullModel(obj);
                         obj.setCacheMarker(cacheMarker);
                         hulls.add(obj);
+                        if (hullModel != null) {
+                            //Its not the first time the hull exist
+                            ConvexHullModel model = (ConvexHullModel) obj;
+                            model.setScale(1f);
+                        }
                     }
                 }
             }
             for (ModelImpl im : hulls) {
                 ConvexHull hull = (ConvexHull) im.getObj();
                 hull.recompute();
-                for(Node n : hull.getGroupNodes()) {
-                    ModelImpl model = (ModelImpl)n.getNodeData().getModel();
+                for (Node n : hull.getGroupNodes()) {
+                    ModelImpl model = (ModelImpl) n.getNodeData().getModel();
                     model.addUpdatePositionChainItem(im);
                 }
                 engine.addObject(AbstractEngine.CLASS_POTATO, im);

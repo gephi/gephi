@@ -38,7 +38,6 @@ import org.gephi.visualization.api.initializer.CompatibilityModeler;
 import org.gephi.visualization.opengl.octree.Octree;
 import org.gephi.visualization.api.Scheduler;
 import org.gephi.visualization.api.objects.CompatibilityModelClass;
-import org.gephi.visualization.opengl.compatibility.objects.Potato3dModel;
 import org.gephi.visualization.selection.Point;
 import org.gephi.visualization.selection.Rectangle;
 

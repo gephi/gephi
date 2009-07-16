@@ -73,7 +73,6 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
     public abstract String toSVG();
 
     public void destroy() {
-        
     }
 
     public ColorLayer getColorLayer() {
@@ -195,7 +194,7 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
         if (octants != null && octants[0] != null) {
             octants[0].requireUpdatePosition();
             if (updatePositionChain != null) {
-                for(ModelImpl m : updatePositionChain) {
+                for (ModelImpl m : updatePositionChain) {
                     m.updatePositionFlag();
                 }
             }
@@ -203,7 +202,7 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
     }
 
     public void addUpdatePositionChainItem(ModelImpl item) {
-        if(updatePositionChain==null) {
+        if (updatePositionChain == null) {
             updatePositionChain = new ParamAVLTree<ModelImpl>(new AVLItemAccessor<ModelImpl>() {
 
                 public int getNumber(ModelImpl item) {
@@ -217,9 +216,9 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
     }
 
     public void removePositionChainItem(ModelImpl item) {
-if(updatePositionChain!=null) {
-    updatePositionChain.remove(item);
-}
+        if (updatePositionChain != null) {
+            updatePositionChain.remove(item);
+        }
     }
 
     public void clearUpdatePositionChain() {

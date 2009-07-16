@@ -36,6 +36,7 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
 
     protected boolean autoSelect = false;
     protected boolean requestUpdate = true;
+    protected float scale = 0f;
 
     @Override
     public int[] octreePosition(float centerX, float centerY, float centerZ, float size) {
@@ -76,11 +77,26 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
         } else {
             gl.glColor4f(r, g, b, 0.15f);
         }
+
+        //Centroid
+        float centroidX = 0f;
+        float centroidY = 0f;
+
+        //Scale factor
+        if (scale < 1f) {
+            centroidX = obj.x();
+            centroidY = obj.y();
+            gl.glPushMatrix();
+            gl.glTranslatef(centroidX, centroidY, 0f);
+            gl.glScalef(scale, scale, 1f);
+        }
+
+
         gl.glBegin(GL.GL_POLYGON);
         ModelImpl[] nodes = obj.getNodes();
         for (int i = 0; i < nodes.length; i++) {
             ModelImpl node = nodes[i];
-            gl.glVertex3f(node.getObj().x(), node.getObj().y(), node.getObj().z());
+            gl.glVertex3f(node.getObj().x() - centroidX, node.getObj().y() - centroidY, node.getObj().z());
         }
         gl.glEnd();
 
@@ -89,9 +105,14 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
         gl.glBegin(GL.GL_LINE_LOOP);
         for (int i = 0; i < nodes.length; i++) {
             ModelImpl node = nodes[i];
-            gl.glVertex3f(node.getObj().x(), node.getObj().y(), node.getObj().z());
+            gl.glVertex3f(node.getObj().x() - centroidX, node.getObj().y() - centroidY, node.getObj().z());
         }
         gl.glEnd();
+
+        if (scale < 1f) {
+            scale += 0.1f;
+            gl.glPopMatrix();
+        }
     }
 
     @Override
@@ -154,5 +175,9 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
     @Override
     public void updatePositionFlag() {
         requestUpdate = true;
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
     }
 }
