@@ -23,6 +23,7 @@ package org.gephi.graph.dhns.core;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.node.AbstractNode;
@@ -74,6 +75,7 @@ public class StructureModifier {
         }
         graphVersion.incNodeVersion();
         dhns.getWriteLock().unlock();
+        dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
     public void retract(final Node node) {
@@ -95,6 +97,7 @@ public class StructureModifier {
         }
         graphVersion.incNodeVersion();
         dhns.getWriteLock().unlock();
+        dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
     public void addNode(final Node node, final Node parent) {
@@ -132,6 +135,7 @@ public class StructureModifier {
 
         graphVersion.incNodeVersion();
         dhns.getWriteLock().unlock();
+        dhns.getEventManager().fireEvent(EventType.NODES_UPDATED);
     }
 
     public void deleteNode(final Node node) {
@@ -152,6 +156,7 @@ public class StructureModifier {
         //dhns.getDictionary().removeNode(absNode);      //Dico
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
+        dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
     public void addEdge(final Edge edge) {
@@ -172,6 +177,7 @@ public class StructureModifier {
         //dhns.getDictionary().addEdge(preEdge);     //Dico
         graphVersion.incEdgeVersion();
         dhns.getWriteLock().unlock();
+        dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
     }
 
     public boolean deleteEdge(final Edge edge) {
@@ -191,6 +197,7 @@ public class StructureModifier {
         boolean res = delEdge(edgeImpl);
         graphVersion.incEdgeVersion();
         dhns.getWriteLock().unlock();
+        dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
         return res;
     }
 
@@ -210,6 +217,7 @@ public class StructureModifier {
         clearAllNodes();
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
+        dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
     public void clearEdges() {
@@ -227,6 +235,7 @@ public class StructureModifier {
         clearAllEdges();
         graphVersion.incEdgeVersion();
         dhns.getWriteLock().unlock();
+        dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
     }
 
     public void clearEdges(final Node node) {
@@ -244,6 +253,7 @@ public class StructureModifier {
         clearEdges((AbstractNode) node);
         graphVersion.incEdgeVersion();
         dhns.getWriteLock().unlock();
+        dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
     }
 
     public void clearMetaEdges(final Node node) {
@@ -261,6 +271,7 @@ public class StructureModifier {
         clearMetaEdges((AbstractNode) node);
         graphVersion.incEdgeVersion();
         dhns.getWriteLock().unlock();
+        dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
     }
 
     public void resetView() {
@@ -276,6 +287,7 @@ public class StructureModifier {
         }
         graphVersion.incEdgeVersion();
         dhns.getWriteLock().unlock();
+        dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
     }
 
     public void moveToGroup(Node node, Node nodeGroup) {
@@ -285,6 +297,7 @@ public class StructureModifier {
         moveToGroup(absNode, preGroup);
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
+        dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
     public Node group(Node[] nodes) {
@@ -299,6 +312,7 @@ public class StructureModifier {
         }
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
+        dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
         return group;
     }
 
@@ -323,6 +337,7 @@ public class StructureModifier {
 
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
+        dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
     //------------------------------------------

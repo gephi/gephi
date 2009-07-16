@@ -22,6 +22,7 @@ package org.gephi.graph.dhns.graph;
 
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Tree;
@@ -428,6 +429,14 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         writeLock();
         absEdge.setVisible(visible);
         writeUnlock();
+    }
+
+    public void addGraphListener(GraphListener graphListener) {
+        dhns.getEventManager().addListener(graphListener);
+    }
+
+    public void removeGraphListener(GraphListener graphListener) {
+        dhns.getEventManager().removeListener(graphListener);
     }
 
     public boolean isDirected() {

@@ -28,6 +28,8 @@ import java.util.Iterator;
 import java.util.Map;
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.GraphEvent;
+import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.MetaEdge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.DhnsGraphController;
@@ -44,6 +46,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.openide.util.Exceptions;
+import org.openide.util.WeakListeners;
 
 /**
  *
@@ -784,6 +787,26 @@ public class DhnsTestClusteredGraph {
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
         }
+    }
+
+    @Test
+    public void testEvents() {
+        GraphListener gl = new GraphListener() {
+
+            public void graphChanged(GraphEvent event) {
+                System.out.println("graph changed " + event.getEventType());
+            }
+        };
+        graphGlobal.addGraphListener(gl);
+        assertEquals(1, dhnsGlobal.getEventManager().getListeners().size());
+        graphGlobal.addGraphListener(gl);
+        assertEquals(1, dhnsGlobal.getEventManager().getListeners().size());
+        graphGlobal.removeGraphListener(gl);
+        assertEquals(0, dhnsGlobal.getEventManager().getListeners().size());
+
+
+        GraphFactoryImpl factory = dhnsGlobal.getGraphFactory();
+        graphGlobal.addNode(factory.newNode());
     }
 
     public void checkHierarchy(TreeStructure treeStructure) throws Exception {

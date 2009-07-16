@@ -20,8 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.graph.api.ClusteredDirectedGraph;
 import org.gephi.graph.api.ClusteredMixedGraph;
@@ -49,6 +52,7 @@ public class DhnsGraphController implements GraphController {
     protected GraphFactoryImpl factory;
     protected Dhns dhns;
     private AttributeRowFactory attributesFactory;
+    private Executor eventBus;
 
     public DhnsGraphController() {
         iDGen = new IDGen();
@@ -59,6 +63,7 @@ public class DhnsGraphController implements GraphController {
         }
 
         factory = new GraphFactoryImpl(iDGen, attributesFactory);
+        eventBus = new ThreadPoolExecutor(0,1,60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     public Dhns newDhns() {
@@ -67,6 +72,10 @@ public class DhnsGraphController implements GraphController {
 
     public Dhns getMainDhns() {
         return dhns;
+    }
+
+    public Executor getEventBus() {
+        return eventBus;
     }
 
     public GraphFactoryImpl factory() {

@@ -49,6 +49,7 @@ public class Dhns {
     private TreeStructure treeStructure;
     private StructureModifier structureModifier;
     private GraphVersion graphVersion;
+    private EventManager eventManager;
 
     //Type
     private boolean directed = false;
@@ -63,6 +64,7 @@ public class Dhns {
         treeStructure = new TreeStructure();
         graphVersion = new GraphVersion();
         structureModifier = new StructureModifier(this);
+        eventManager = new EventManager(this);
         init();
     }
 
@@ -87,6 +89,10 @@ public class Dhns {
 
     public GraphFactoryImpl getGraphFactory() {
         return controller.factory();
+    }
+
+    public EventManager getEventManager() {
+        return eventManager;
     }
 
     public IDGen getIdGen() {
