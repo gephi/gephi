@@ -54,7 +54,7 @@ public class VizConfig {
     private float[] defaultCameraPosition = {0f, 0f, 5000f};
     protected float[] nodeSelectedColor = {1f, 1f, 1f};
     protected boolean selectionEnable = true;
-    protected boolean rectangleSelection = false;
+    protected boolean rectangleSelection = true;
     protected float[] rectangleSelectionColor = {0.16f, 0.48f, 0.81f, 0.2f};
     protected boolean draggingEnable = true;
     protected boolean cameraControlEnable = true;

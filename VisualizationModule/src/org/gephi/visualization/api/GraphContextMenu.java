@@ -49,6 +49,7 @@ public class GraphContextMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                eventBridge.group();
             }
         };
         groupAction.setEnabled(eventBridge.canGroup());

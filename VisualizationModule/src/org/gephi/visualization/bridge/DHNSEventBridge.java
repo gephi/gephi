@@ -27,6 +27,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.GraphIO;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.objects.ModelClass;
 import org.gephi.visualization.opengl.AbstractEngine;
@@ -41,12 +42,14 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     //Architecture
     private AbstractEngine engine;
     private ClusteredGraph graph;
+    private GraphIO graphIO;
 
     @Override
     public void initArchitecture() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         this.graph = graphController.getClusteredDirectedGraph();
         this.engine = VizController.getInstance().getEngine();
+        this.graphIO = VizController.getInstance().getGraphIO();
         initEvents();
     }
 
@@ -101,6 +104,29 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
             NodeData node = (NodeData) metaModel.getObj();
             graph.retract(node.getNode());
         }
+    }
+
+    public void group() {
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_NODE]);
+        Node[] newGroup = new Node[selectedNodeModels.length];
+        for (int i = 0; i < selectedNodeModels.length; i++) {
+            newGroup[i] = ((NodeData) selectedNodeModels[i].getObj()).getNode();
+        }
+        float centroidX = 0;
+        float centroidY = 0;
+        int len = 0;
+        Node group = graph.groupNodes(newGroup);
+        group.getNodeData().setLabel("Group");
+        group.getNodeData().setSize(10f);
+        for (Node child : newGroup) {
+            centroidX += child.getNodeData().x();
+            centroidY += child.getNodeData().y();
+            len++;
+        }
+        centroidX /= len;
+        centroidY /= len;
+        group.getNodeData().setX(centroidX);
+        group.getNodeData().setY(centroidY);
     }
 
     public void mouseClick(ModelClass objClass, Model[] clickedObjects) {
