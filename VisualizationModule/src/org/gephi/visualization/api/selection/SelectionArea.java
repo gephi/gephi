@@ -34,6 +34,8 @@ public interface SelectionArea {
 
     public abstract float[] getSelectionAreaRectancle();
 
+    public abstract float[] getSelectionAreaCenter();
+
     public abstract boolean mouseTest(Vecf distanceFromMouse, ModelImpl object);
 
     public abstract boolean select(Renderable object);

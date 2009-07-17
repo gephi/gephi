@@ -24,6 +24,7 @@ import com.sun.opengl.util.BufferUtil;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -76,61 +77,68 @@ public class CompatibilityEngine extends AbstractEngine {
     }
 
     public void updateSelection(GL gl, GLU glu) {
-        octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
+        if (currentSelectionArea.isEnabled()) {
+            octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
 
-        for (int i = 0; i < selectableClasses.length; i++) {
-            CompatibilityModelClass modelClass = selectableClasses[i];
+            for (int i = 0; i < selectableClasses.length; i++) {
+                CompatibilityModelClass modelClass = selectableClasses[i];
 
-            if (modelClass.isEnabled() && modelClass.isGlSelection()) {
-                int objectCount = octree.countSelectedObjects(modelClass.getClassId());
+                if (modelClass.isEnabled() && modelClass.isGlSelection()) {
+                    int objectCount = octree.countSelectedObjects(modelClass.getClassId());
 
-                float[] mousePosition = graphIO.getMousePosition();
-                float[] pickRectangle = currentSelectionArea.getSelectionAreaRectancle();
-                int capacity = 1 * 4 * objectCount;      //Each object take in maximium : 4 * name stack depth
-                IntBuffer hitsBuffer = BufferUtil.newIntBuffer(capacity);
+                    float[] mousePosition = graphIO.getMousePosition();
+                    float[] pickRectangle = currentSelectionArea.getSelectionAreaRectancle();
+                    float[] center = currentSelectionArea.getSelectionAreaCenter();
+                    //System.out.println(center[0] + "/" + center[1] + "   " + mousePosition[0] + "/" + mousePosition[1]);
+                    if (center != null) {
+                        mousePosition = center;
+                    }
+                    int capacity = 1 * 4 * objectCount;      //Each object take in maximium : 4 * name stack depth
+                    IntBuffer hitsBuffer = BufferUtil.newIntBuffer(capacity);
 
-                gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
-                gl.glRenderMode(GL.GL_SELECT);
+                    gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
+                    gl.glRenderMode(GL.GL_SELECT);
 
-                gl.glInitNames();
-                gl.glPushName(0);
+                    gl.glInitNames();
+                    gl.glPushName(0);
 
-                gl.glMatrixMode(GL.GL_PROJECTION);
-                gl.glPushMatrix();
-                gl.glLoadIdentity();
+                    gl.glMatrixMode(GL.GL_PROJECTION);
+                    gl.glPushMatrix();
+                    gl.glLoadIdentity();
 
-                glu.gluPickMatrix(mousePosition[0], mousePosition[1], pickRectangle[0], pickRectangle[1], graphDrawable.getViewport());
-                gl.glMultMatrixd(graphDrawable.getProjectionMatrix());
+                    glu.gluPickMatrix(mousePosition[0], mousePosition[1], pickRectangle[0], pickRectangle[1], graphDrawable.getViewport());
+                    gl.glMultMatrixd(graphDrawable.getProjectionMatrix());
 
-                gl.glMatrixMode(GL.GL_MODELVIEW);
+                    gl.glMatrixMode(GL.GL_MODELVIEW);
 
-                int hitName = 1;
-                ModelImpl[] array = new ModelImpl[objectCount];
-                for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(modelClass.getClassId()); itr.hasNext();) {
-                    ModelImpl obj = itr.next();
-                    obj.setAutoSelect(false);
+                    int hitName = 1;
+                    ModelImpl[] array = new ModelImpl[objectCount];
+                    for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(modelClass.getClassId()); itr.hasNext();) {
+                        ModelImpl obj = itr.next();
+                        obj.setAutoSelect(false);
 
-                    array[hitName - 1] = obj;
-                    gl.glLoadName(hitName);
-                    obj.display(gl, glu);
-                    hitName++;
+                        array[hitName - 1] = obj;
+                        gl.glLoadName(hitName);
+                        obj.display(gl, glu);
+                        hitName++;
 
-                }
+                    }
 
-                //Restoring the original projection matrix
-                gl.glMatrixMode(GL.GL_PROJECTION);
-                gl.glPopMatrix();
-                gl.glMatrixMode(GL.GL_MODELVIEW);
-                gl.glFlush();
+                    //Restoring the original projection matrix
+                    gl.glMatrixMode(GL.GL_PROJECTION);
+                    gl.glPopMatrix();
+                    gl.glMatrixMode(GL.GL_MODELVIEW);
+                    gl.glFlush();
 
-                //Returning to normal rendering mode
-                int nbRecords = gl.glRenderMode(GL.GL_RENDER);
+                    //Returning to normal rendering mode
+                    int nbRecords = gl.glRenderMode(GL.GL_RENDER);
 
-                //Get the hits and put the node under selection in the selectionArray
-                for (int j = 0; j < nbRecords; j++) {
-                    int hit = hitsBuffer.get(j * 4 + 3) - 1; 		//-1 Because of the glPushName(0)
-                    ModelImpl obj = array[hit];
-                    obj.setAutoSelect(true);
+                    //Get the hits and put the node under selection in the selectionArray
+                    for (int j = 0; j < nbRecords; j++) {
+                        int hit = hitsBuffer.get(j * 4 + 3) - 1; 		//-1 Because of the glPushName(0)
+                        ModelImpl obj = array[hit];
+                        obj.setAutoSelect(true);
+                    }
                 }
             }
         }
