@@ -34,10 +34,15 @@ import org.gephi.visualization.gleem.linalg.Vecf;
 public class Point implements SelectionArea {
 
     private static float[] rectangle = {1, 1};
+    private static float[] center = {0,0};
 
     @Override
     public float[] getSelectionAreaRectancle() {
         return rectangle;
+    }
+
+    public float[] getSelectionAreaCenter() {
+        return null;
     }
 
     @Override

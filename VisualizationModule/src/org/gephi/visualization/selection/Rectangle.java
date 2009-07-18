@@ -40,6 +40,8 @@ public class Rectangle implements SelectionArea {
 
     private float[] startPosition;
     private float[] rectangle = new float[2];
+    private float[] center = new float[2];
+    private float[] rectangleSize = new float[2];
     private GraphDrawable drawable;
     private boolean stop = true;
     private VizConfig config;
@@ -51,7 +53,15 @@ public class Rectangle implements SelectionArea {
     }
 
     public float[] getSelectionAreaRectancle() {
-        return rectangle;
+        rectangleSize[0] = rectangle[0] - startPosition[0];
+        rectangleSize[1] = rectangle[1] - startPosition[1];
+        return rectangleSize;
+    }
+
+    public float[] getSelectionAreaCenter() {
+        center[0] = startPosition[0]+rectangleSize[0]/2f;
+        center[1] = startPosition[1]+rectangleSize[1]/2f;
+        return center;
     }
 
     public boolean mouseTest(Vecf distanceFromMouse, ModelImpl object) {
