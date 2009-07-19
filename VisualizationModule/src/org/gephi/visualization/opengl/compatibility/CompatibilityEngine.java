@@ -86,12 +86,12 @@ public class CompatibilityEngine extends AbstractEngine {
                 if (modelClass.isEnabled() && modelClass.isGlSelection()) {
                     int objectCount = octree.countSelectedObjects(modelClass.getClassId());
 
-                    float[] mousePosition = graphIO.getMousePosition();
+                    float[] mousePosition = Arrays.copyOf(graphIO.getMousePosition(), 2);
                     float[] pickRectangle = currentSelectionArea.getSelectionAreaRectancle();
-                    float[] center = currentSelectionArea.getSelectionAreaCenter();
-                    //System.out.println(center[0] + "/" + center[1] + "   " + mousePosition[0] + "/" + mousePosition[1]);
+                    float[] center = currentSelectionArea.getSelectionAreaCenter();          
                     if (center != null) {
-                        mousePosition = center;
+                        mousePosition[0] += center[0];
+                        mousePosition[1] += center[1];
                     }
                     int capacity = 1 * 4 * objectCount;      //Each object take in maximium : 4 * name stack depth
                     IntBuffer hitsBuffer = BufferUtil.newIntBuffer(capacity);

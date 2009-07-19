@@ -30,6 +30,7 @@ import org.gephi.visualization.api.GraphDrawable;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.selection.SelectionArea;
+import org.gephi.visualization.gleem.linalg.MathUtil;
 import org.gephi.visualization.gleem.linalg.Vecf;
 
 /**
@@ -53,14 +54,20 @@ public class Rectangle implements SelectionArea {
     }
 
     public float[] getSelectionAreaRectancle() {
-        rectangleSize[0] = rectangle[0] - startPosition[0];
-        rectangleSize[1] = rectangle[1] - startPosition[1];
+        rectangleSize[0] = Math.abs(rectangle[0] - startPosition[0]);
+        rectangleSize[1] = Math.abs(rectangle[1] - startPosition[1]);
+        if (rectangleSize[0] < 1f) {
+            rectangleSize[0] = 1f;
+        }
+        if (rectangleSize[1] < 1f) {
+            rectangleSize[1] = 1f;
+        }
         return rectangleSize;
     }
 
     public float[] getSelectionAreaCenter() {
-        center[0] = startPosition[0]+rectangleSize[0]/2f;
-        center[1] = startPosition[1]+rectangleSize[1]/2f;
+        center[0] = -(rectangle[0] - startPosition[0]) / 2f;
+        center[1] = -(rectangle[1] - startPosition[1]) / 2f;
         return center;
     }
 
