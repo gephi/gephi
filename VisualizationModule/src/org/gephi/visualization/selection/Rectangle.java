@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.selection;
 
-import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
@@ -30,7 +29,6 @@ import org.gephi.visualization.api.GraphDrawable;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.selection.SelectionArea;
-import org.gephi.visualization.gleem.linalg.MathUtil;
 import org.gephi.visualization.gleem.linalg.Vecf;
 
 /**

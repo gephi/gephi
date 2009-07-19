@@ -88,7 +88,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
                     float[] mousePosition = Arrays.copyOf(graphIO.getMousePosition(), 2);
                     float[] pickRectangle = currentSelectionArea.getSelectionAreaRectancle();
-                    float[] center = currentSelectionArea.getSelectionAreaCenter();          
+                    float[] center = currentSelectionArea.getSelectionAreaCenter();
                     if (center != null) {
                         mousePosition[0] += center[0];
                         mousePosition[1] += center[1];
@@ -325,9 +325,17 @@ public class CompatibilityEngine extends AbstractEngine {
             }
         }
 
-        if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection() && anySelected) {
+        if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
             rectangle.setBlocking(false);
+            //Clean opengl picking
+            for (ModelClass objClass : selectableClasses) {
+                if (objClass.isEnabled() && objClass.isGlSelection()) {
+                    for (ModelImpl obj : selectedObjects[objClass.getSelectionId()]) {
+                        obj.setAutoSelect(false);
+                    }
+                }
+            }
             scheduler.requireUpdateSelection();
         }
     }
@@ -385,7 +393,9 @@ public class CompatibilityEngine extends AbstractEngine {
                     }
                     obj.selectionMark = markTime;
                 } else if (currentSelectionArea.unselect(obj.getObj())) {
-                    if (vizEventManager.hasSelectionListeners() && obj.isSelected()) {
+                    if (forceUnselect) {
+                        obj.setAutoSelect(false);
+                    } else if (vizEventManager.hasSelectionListeners() && obj.isSelected()) {
                         unSelectedObjects.add(obj);
                     }
                 }
