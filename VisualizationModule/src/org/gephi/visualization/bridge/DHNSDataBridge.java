@@ -220,6 +220,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                         ConvexHull hull = (ConvexHull) hullModel.getObj();
                         hull.addNode(n);
                     } else {
+                        System.out.println("new hull");
                         ConvexHull ch = new ConvexHull();
                         ch.setMetaNode(parent);
                         ch.addNode(n);

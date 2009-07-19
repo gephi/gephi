@@ -36,7 +36,8 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
 
     protected boolean autoSelect = false;
     protected boolean requestUpdate = true;
-    protected float scale = 0f;
+    protected float scale = 0.1f;
+    protected float scaleQuantum = 0.1f;
 
     @Override
     public int[] octreePosition(float centerX, float centerY, float centerZ, float size) {
@@ -83,7 +84,7 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
         float centroidY = 0f;
 
         //Scale factor
-        if (scale < 1f) {
+        if (scale < 1f && scale > 0f) {
             centroidX = obj.x();
             centroidY = obj.y();
             gl.glPushMatrix();
@@ -109,8 +110,8 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
         }
         gl.glEnd();
 
-        if (scale < 1f) {
-            scale += 0.1f;
+        if (scale < 1f && scale > 0f) {
+            scale += scaleQuantum;
             gl.glPopMatrix();
         }
     }
@@ -137,9 +138,17 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
     @Override
     public Octant[] getOctants() {
         ModelImpl[] nodes = obj.getNodes();
-        octants = new Octant[nodes.length];
-        for (int i = 0; i < octants.length; i++) {
-            octants[i] = nodes[i].getOctants()[0];
+        Octant[] newOctants = new Octant[nodes.length];
+        boolean allNull = true;
+        for (int i = 0; i < newOctants.length; i++) {
+            Octant oc = nodes[i].getOctants()[0];
+            newOctants[i] = oc;
+            if (oc != null) {
+                allNull = false;
+            }
+        }
+        if (!allNull) {
+            octants = newOctants;
         }
         return octants;
     }
@@ -179,5 +188,9 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
 
     public void setScale(float scale) {
         this.scale = scale;
+    }
+
+    public void setScaleQuantum(float scaleQuantum) {
+        this.scaleQuantum = scaleQuantum;
     }
 }

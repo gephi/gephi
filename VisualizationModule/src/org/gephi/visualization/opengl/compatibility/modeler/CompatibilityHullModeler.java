@@ -41,6 +41,7 @@ public class CompatibilityHullModeler implements CompatibilityModeler<ConvexHull
 
         ConvexHullModel hull = new ConvexHullModel();
         hull.setObj(h);
+        h.setModel(hull);
 
         return hull;
     }

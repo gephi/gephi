@@ -471,7 +471,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public ModelImpl[] getSelectedObjects(ModelClass modelClass) {
-        return selectedObjects[modelClass.getClassId()].toArray(new ModelImpl[0]);
+        return selectedObjects[modelClass.getSelectionId()].toArray(new ModelImpl[0]);
     }
 
     private void initDisplayLists(GL gl, GLU glu) {

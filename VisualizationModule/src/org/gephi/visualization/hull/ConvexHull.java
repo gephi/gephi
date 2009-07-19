@@ -56,6 +56,10 @@ public class ConvexHull implements Renderable {
         groupNodesTree.add(node);
     }
 
+    public Node getMetaNode() {
+        return metaNode;
+    }
+
     public void setMetaNode(Node metaNode) {
         this.metaNode = metaNode;
     }

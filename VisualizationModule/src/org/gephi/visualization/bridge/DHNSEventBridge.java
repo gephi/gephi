@@ -30,7 +30,9 @@ import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.GraphIO;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.objects.ModelClass;
+import org.gephi.visualization.hull.ConvexHull;
 import org.gephi.visualization.opengl.AbstractEngine;
+import org.gephi.visualization.opengl.compatibility.objects.ConvexHullModel;
 import org.openide.util.Lookup;
 
 /**
@@ -68,7 +70,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     }
 
     public boolean canContract() {
-        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_NODE]);
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_POTATO]);
         if (selectedNodeModels.length == 1) {
             ModelImpl metaModel = selectedNodeModels[0];
             //TODO check it is a metaNode
@@ -97,12 +99,13 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     }
 
     public void contract() {
-        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_NODE]);
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_POTATO]);
         if (selectedNodeModels.length == 1) {
             ModelImpl metaModel = selectedNodeModels[0];
             //TODO check it is a metaNode
-            NodeData node = (NodeData) metaModel.getObj();
-            graph.retract(node.getNode());
+            ConvexHull hull = (ConvexHull) metaModel.getObj();
+            contractPositioning(hull);
+            graph.retract(hull.getMetaNode());
         }
     }
 
@@ -174,6 +177,13 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
         }
     }
 
-    private void retractPositioning() {
+    private void contractPositioning(ConvexHull hull) {
+        NodeData metaNode = hull.getMetaNode().getNodeData();
+        metaNode.setX(hull.x());
+        metaNode.setY(hull.y());
+
+        ConvexHullModel model = (ConvexHullModel) hull.getModel();
+        model.setScale(0.9f);
+        model.setScaleQuantum(-0.1f);
     }
 }
