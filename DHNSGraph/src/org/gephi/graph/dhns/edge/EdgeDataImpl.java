@@ -43,6 +43,7 @@ public class EdgeDataImpl implements EdgeData {
     protected float b = 0f;
     protected float alpha = 1f;
     protected float cardinal = 1f;
+    protected boolean labelVisible = true;
     private Model model;
     protected Attributes attributes;
     protected TextData textData;
@@ -165,5 +166,17 @@ public class EdgeDataImpl implements EdgeData {
 
     public void setTextData(TextData textData) {
         this.textData = textData;
+    }
+
+    public boolean isLabelVisible() {
+        return labelVisible;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setLabelVisible(boolean value) {
+        this.labelVisible = value;
     }
 }

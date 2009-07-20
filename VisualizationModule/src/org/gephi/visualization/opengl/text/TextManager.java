@@ -50,6 +50,7 @@ public class TextManager implements VizArchitecture {
     //Variables
     private ColorMode colorMode;
     private SizeMode sizeMode;
+    private boolean mouseMode = true;
 
     public TextManager() {
         textUtils = new TextUtils(this);
@@ -110,5 +111,9 @@ public class TextManager implements VizArchitecture {
 
     public TextData newTextData(EdgeData edge) {
         return builder.buildTextEdge(edge);
+    }
+
+    public boolean isMouseMode() {
+        return mouseMode;
     }
 }

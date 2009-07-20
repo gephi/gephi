@@ -73,8 +73,10 @@ public class NodeRectangeModel extends ModelImpl<NodeData> {
     public void display(GL gl, GLU glu) {
         boolean selec = selected;
         boolean neighbor = false;
+        highlight = false;
         if (config.isAutoSelectNeighbor() && mark && !selec) {
             selec = true;
+            highlight = true;
             neighbor = true;
         }
         mark = false;

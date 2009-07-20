@@ -178,4 +178,12 @@ public class ConvexHull implements Renderable {
     public float z() {
         return 0;
     }
+
+    public boolean isLabelVisible() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setLabelVisible(boolean value) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

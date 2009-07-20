@@ -55,6 +55,7 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
 
     //Flags
     protected boolean selected;
+    protected boolean highlight;
     public long markTime = 0;
     public long selectionMark = 0;
     public boolean mark = false;
@@ -184,6 +185,10 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
 
     public void setConfig(VizConfig config) {
         this.config = config;
+    }
+
+    public boolean isHighlight() {
+        return highlight;
     }
 
     public boolean isValid() {

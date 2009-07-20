@@ -295,7 +295,7 @@ public class StructureModifier {
 
     public Node group(View view, Node[] nodes) {
         dhns.getWriteLock().lock();
-        AbstractNode group = (AbstractNode) dhns.getGraphFactory().newNode();
+        AbstractNode group = dhns.getGraphFactory().newNode();
         group.addView(view, true);
         AbstractNode parent = ((AbstractNode) nodes[0]).parent;
         group.parent = parent;

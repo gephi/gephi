@@ -264,15 +264,28 @@ public class CompatibilityEngine extends AbstractEngine {
             textManager.beginRendering();
             if (nodeClass.isEnabled()) {
                 textManager.defaultNodeColor();
-                for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
-                    ModelImpl obj = itr.next();
-                    if (obj.markTime != startTime) {
-                        if (obj.getObj().isLabelVisible()) {
-                            textManager.drawText(obj);
+                if (textManager.isMouseMode()) {
+                    for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
+                        ModelImpl obj = itr.next();
+                        if (obj.markTime != startTime) {
+                            if ((obj.isSelected() || obj.isHighlight()) && obj.getObj().isLabelVisible()) {
+                                textManager.drawText(obj);
+                            }
+                            obj.markTime = startTime;
                         }
-                        obj.markTime = startTime;
+                    }
+                } else {
+                    for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
+                        ModelImpl obj = itr.next();
+                        if (obj.markTime != startTime) {
+                            if (obj.getObj().isLabelVisible()) {
+                                textManager.drawText(obj);
+                            }
+                            obj.markTime = startTime;
+                        }
                     }
                 }
+
             }
             if (edgeClass.isEnabled() && vizConfig.isShowEdgeLabels()) {
                 textManager.defaultEdgeColor();
