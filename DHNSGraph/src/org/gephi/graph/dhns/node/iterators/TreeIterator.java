@@ -88,7 +88,7 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
                     }
                     return true;
                 }
-                
+
             /*if (!proposition.evaluate(currentNode.getValue())) {
             nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
             diffIndex = nextIndex - currentNode.getValue().pre;

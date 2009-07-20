@@ -27,6 +27,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Tree;
 import org.gephi.graph.dhns.core.Dhns;
+import org.gephi.graph.dhns.core.PropositionManager;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.CloneNode;
@@ -37,6 +38,7 @@ import org.gephi.graph.dhns.node.iterators.DescendantIterator;
 import org.gephi.graph.dhns.node.iterators.LevelIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
 import org.gephi.graph.dhns.proposition.Proposition;
+import org.gephi.graph.dhns.proposition.PropositionImpl;
 import org.gephi.graph.dhns.proposition.Tautology;
 import org.gephi.graph.dhns.tree.HierarchyTreeImpl;
 import org.gephi.graph.dhns.view.View;
@@ -48,39 +50,25 @@ import org.gephi.graph.dhns.view.View;
  */
 public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements ClusteredGraph {
 
-    protected Proposition<AbstractNode> nodeProposition;
-    protected Proposition<AbstractEdge> edgeProposition;
+    protected PropositionImpl<AbstractNode> nodeProposition;
+    protected PropositionImpl<AbstractEdge> edgeProposition;
+    protected PropositionImpl<AbstractNode> nodeEnabledProposition;
     protected boolean allowMultilevel = true;
     protected View view;
 
     public ClusteredGraphImpl(Dhns dhns, boolean visible) {
         this.dhns = dhns;
         this.view = dhns.getViewManager().getMainView();
+        this.nodeProposition = new PropositionImpl<AbstractNode>();
+        this.edgeProposition = new PropositionImpl<AbstractEdge>();
+        this.nodeEnabledProposition = new PropositionImpl<AbstractNode>();
 
+        PropositionManager propositionManager = dhns.getPropositionManager();
+        nodeEnabledProposition.addPredicate(propositionManager.newEnablePredicateNode(view));
         if (visible) {
-            nodeProposition = new Proposition<AbstractNode>() {
-
-                public boolean evaluate(AbstractNode node) {
-                    return node.isVisible();
-                }
-
-                public boolean isTautology() {
-                    return false;
-                }
-            };
-            edgeProposition = new Proposition<AbstractEdge>() {
-
-                public boolean evaluate(AbstractEdge edge) {
-                    return edge.isVisible();
-                }
-
-                public boolean isTautology() {
-                    return false;
-                }
-            };
-        } else {
-            nodeProposition = new Tautology();
-            edgeProposition = new Tautology();
+            nodeProposition.addPredicate(propositionManager.getVisiblePredicateNode());
+            edgeProposition.addPredicate(propositionManager.getVisiblePredicateEdge());
+            nodeEnabledProposition.addPredicate(propositionManager.getVisiblePredicateNode());
         }
     }
 
@@ -134,7 +122,7 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
 
     public NodeIterable getNodes() {
         readLock();
-        return dhns.newNodeIterable(new TreeIterator(dhns.getTreeStructure(), nodeProposition));
+        return dhns.newNodeIterable(new TreeIterator(dhns.getTreeStructure(), nodeEnabledProposition));
     }
 
     public int getNodeCount() {

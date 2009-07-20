@@ -471,7 +471,7 @@ public class DhnsTestDirectedGraph {
         int i = 0;
         Node node5 = nodeMap.get("Node 5");
         for (Node n : graphGlobal.getSuccessors(node5)) {
-            System.out.print(n.getId()+" ");
+            System.out.print(n.getId() + " ");
             actual[i++] = n;
             assertTrue(graphGlobal.isSuccessor(node5, n));
         }
@@ -495,7 +495,7 @@ public class DhnsTestDirectedGraph {
         int i = 0;
         Node node5 = nodeMap.get("Node 5");
         for (Node n : graphGlobal.getPredecessors(node5)) {
-            System.out.print(n.getId()+" ");
+            System.out.print(n.getId() + " ");
             actual[i++] = n;
             assertTrue(graphGlobal.isPredecessor(node5, n));
         }
@@ -517,15 +517,15 @@ public class DhnsTestDirectedGraph {
 
         int i = 0;
         for (Node n : graphGlobal.getNeighbors(nodeMap.get("Node 5"))) {
-            System.out.print(n.getId()+" ");
+            System.out.print(n.getId() + " ");
             actual[i++] = n;
         }
         System.out.println();
         assertArrayEquals(expected, actual);
 
-         //Test Self loop
-         Node[] array = graphGlobal.getNeighbors(nodeMap.get("Node 7")).toArray();
-         assertEquals("self loop array length 0", 0, array.length);
+        //Test Self loop
+        Node[] array = graphGlobal.getNeighbors(nodeMap.get("Node 7")).toArray();
+        assertEquals("self loop array length 0", 0, array.length);
     }
 
     @Test
@@ -535,8 +535,8 @@ public class DhnsTestDirectedGraph {
         Edge edge1 = edgeMap.get("4-5");
         Edge edge2 = edgeMap.get("4-4");
 
-        assertEquals(node5,graphGlobal.getOpposite(node4, edge1));
-        assertEquals(node4,graphGlobal.getOpposite(node4, edge2));
+        assertEquals(node5, graphGlobal.getOpposite(node4, edge1));
+        assertEquals(node4, graphGlobal.getOpposite(node4, edge2));
     }
 
     @Test
@@ -572,12 +572,12 @@ public class DhnsTestDirectedGraph {
         graphGlobal.clearEdges(node5);
         graphGlobal.clearEdges(node4);
 
-        assertEquals(0,graphGlobal.getDegree(node5));
-        assertEquals(0,graphGlobal.getDegree(node4));
+        assertEquals(0, graphGlobal.getDegree(node5));
+        assertEquals(0, graphGlobal.getDegree(node4));
         assertFalse(graphGlobal.contains(edge2));
         assertFalse(graphGlobal.contains(edge1));
         assertFalse(graphGlobal.isAdjacent(node4, node5));
-        //assertFalse(graphGlobal.isAdjacent(edge1, edge2));        //Fail because no test verifying edge belongs to the structure
+    //assertFalse(graphGlobal.isAdjacent(edge1, edge2));        //Fail because no test verifying edge belongs to the structure
     }
 
     @Test

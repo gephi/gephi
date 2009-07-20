@@ -62,7 +62,7 @@ public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
     public AbstractEdge getUndirected() {
         throw new UnsupportedOperationException("Use getUndirected(View)");
     }
-    
+
     public AbstractEdge getUndirected(View view) {
         if (source == target) {
             return this;

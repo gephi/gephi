@@ -18,41 +18,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.view;
-
-import org.gephi.datastructure.avl.simple.SimpleAVLTree;
-import org.gephi.graph.dhns.core.Dhns;
-import org.gephi.graph.dhns.core.IDGen;
+package org.gephi.graph.dhns.proposition;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class ViewManager {
-
-    //Architecture
-    private IDGen iDGen;
-    //Structure
-    private SimpleAVLTree viewTree = new SimpleAVLTree();
-    //Management
-    private View mainView;
-
-    public ViewManager(Dhns dhns) {
-        this.iDGen = dhns.getIdGen();
-        mainView = createView();
-    }
-
-    public View getMainView() {
-        return mainView;
-    }
-
-    public View createView() {
-        View newView = new View(iDGen.newViewId());
-        viewTree.add(newView);
-        return newView;
-    }
-
-    public void deleteView(View view) {
-        viewTree.remove(view);
-    }
+public interface Predicate<T> extends Proposition<T> {
 }

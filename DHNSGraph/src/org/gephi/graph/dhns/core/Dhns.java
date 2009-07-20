@@ -48,6 +48,7 @@ public class Dhns {
     private GraphVersion graphVersion;
     private EventManager eventManager;
     private ViewManager viewManager;
+    private PropositionManager propositionManager;
 
     //Type
     private boolean directed = false;
@@ -63,7 +64,8 @@ public class Dhns {
         treeStructure = new TreeStructure(this);
         graphVersion = new GraphVersion();
         structureModifier = new StructureModifier(this);
-        eventManager = new EventManager(this);       
+        eventManager = new EventManager(this);
+        propositionManager = new PropositionManager(this);
         init();
     }
 
@@ -96,6 +98,10 @@ public class Dhns {
 
     public ViewManager getViewManager() {
         return viewManager;
+    }
+
+    public PropositionManager getPropositionManager() {
+        return propositionManager;
     }
 
     public IDGen getIdGen() {

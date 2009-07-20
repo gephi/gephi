@@ -157,7 +157,7 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     //Graph
     public EdgeIterable getEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
+        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeEnabledProposition), false, edgeProposition));
     }
 
     //Directed

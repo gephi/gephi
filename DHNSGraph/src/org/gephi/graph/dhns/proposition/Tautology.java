@@ -18,14 +18,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.graph.dhns.proposition;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class Tautology implements Proposition {
+public class Tautology implements Predicate {
 
     public boolean evaluate(Object element) {
         return true;
