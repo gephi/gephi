@@ -132,6 +132,16 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
         group.getNodeData().setY(centroidY);
     }
 
+    public void ungroup() {
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_NODE]);
+        if (selectedNodeModels.length == 1) {
+            ModelImpl metaModel = selectedNodeModels[0];
+            //TODO check it is a metaNode
+            NodeData node = (NodeData) metaModel.getObj();
+            graph.ungroupNodes(node.getNode());
+        }
+    }
+
     public void mouseClick(ModelClass objClass, Model[] clickedObjects) {
 
         /* switch (objClass.getClassId()) {
