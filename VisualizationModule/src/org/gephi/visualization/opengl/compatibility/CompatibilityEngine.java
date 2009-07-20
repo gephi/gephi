@@ -267,7 +267,9 @@ public class CompatibilityEngine extends AbstractEngine {
                 for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
                     ModelImpl obj = itr.next();
                     if (obj.markTime != startTime) {
-                        textManager.drawText(obj);
+                        if (obj.getObj().isLabelVisible()) {
+                            textManager.drawText(obj);
+                        }
                         obj.markTime = startTime;
                     }
                 }

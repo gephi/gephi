@@ -42,6 +42,7 @@ public class NodeDataImpl implements NodeData, GroupData {
     protected float y;
     protected float z;
     protected String label = "";
+    protected boolean labelVisible = true;
     protected float r = 0f;
     protected float g = 0f;
     protected float b = 0f;
@@ -184,6 +185,14 @@ public class NodeDataImpl implements NodeData, GroupData {
 
     public void setFixed(boolean fixed) {
         this.fixed = fixed;
+    }
+
+    public void setLabelVisible(boolean value) {
+        this.labelVisible = value;
+    }
+
+    public boolean isLabelVisible() {
+        return labelVisible;
     }
 
     public TextData getTextData() {
