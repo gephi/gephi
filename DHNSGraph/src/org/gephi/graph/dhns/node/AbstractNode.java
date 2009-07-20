@@ -29,6 +29,8 @@ import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.graph.dhns.utils.avl.EdgeOppositeTree;
 import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
+import org.gephi.graph.dhns.utils.avl.ViewAVLTree;
+import org.gephi.graph.dhns.view.View;
 
 /**
  * Implementation of node with default behaviour.
@@ -66,13 +68,23 @@ public abstract class AbstractNode implements Node, Group, AVLItem {
     }
 
     //Abstract
-    public abstract boolean isEnabled();
+    public abstract void addView(View view, boolean enabled);
 
-    public abstract void setEnabled(boolean enabled);
+    public abstract void removeView(View view);
 
-    public abstract MetaEdgeTree getMetaEdgesOutTree();
+    public abstract boolean isInView(View view);
 
-    public abstract MetaEdgeTree getMetaEdgesInTree();
+    public abstract ViewAVLTree getViews();
+
+    public abstract boolean isEnabled(View view);
+
+    public abstract void setEnabled(View view, boolean enabled);
+
+    public abstract MetaEdgeTree getMetaEdgesOutTree(View view);
+
+    public abstract MetaEdgeTree getMetaEdgesInTree(View view);
+
+    public abstract void clearMetaEdges();
 
     public abstract EdgeOppositeTree getEdgesOutTree();
 

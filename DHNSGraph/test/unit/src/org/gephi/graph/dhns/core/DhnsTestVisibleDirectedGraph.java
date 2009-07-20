@@ -29,6 +29,7 @@ import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.view.View;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -133,6 +134,7 @@ public class DhnsTestVisibleDirectedGraph {
         System.out.println("testAddNode");
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = controller.getMainDhns();
+        View mainView = dhns.getViewManager().getMainView();
         ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, true);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.getGraphFactory();
@@ -154,7 +156,7 @@ public class DhnsTestVisibleDirectedGraph {
             AbstractNode n = treeStructure.getNodeAt(i);
             assertEquals("prenode pre", i, n.getPre());
             assertEquals("prenode id", i - 1, n.getId());
-            assertEquals("prenode enabled", i > 0, n.isEnabled());
+            assertEquals("prenode enabled", i > 0, n.isEnabled(mainView));
             assertTrue("node visible", n.isVisible());
             assertEquals("prenode avl node", i, n.avlNode.getIndex());
             if (n.avlNode.next() != null) {

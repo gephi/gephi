@@ -24,9 +24,11 @@ import java.util.Iterator;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
+import org.gephi.graph.dhns.view.View;
 
 /**
  * Edge Iterator for edges linked to the given node. It gives IN, OUT or IN+OUT edges
@@ -41,22 +43,24 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
         OUT, IN, BOTH
     };
     protected AbstractNode node;
-    protected ParamAVLIterator<AbstractEdge> edgeIterator;
+    protected ParamAVLIterator<MetaEdgeImpl> edgeIterator;
     protected EdgeNodeIteratorMode mode;
-    protected AbstractEdge pointer;
+    protected MetaEdgeImpl pointer;
     protected boolean undirected;
+    protected View view;
 
     //Proposition
     protected Proposition<AbstractEdge> proposition;
 
-    public MetaEdgeNodeIterator(AbstractNode node, EdgeNodeIteratorMode mode, boolean undirected, Proposition<AbstractEdge> proposition) {
+    public MetaEdgeNodeIterator(View view, AbstractNode node, EdgeNodeIteratorMode mode, boolean undirected, Proposition<AbstractEdge> proposition) {
         this.node = node;
         this.mode = mode;
-        this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
+        this.view = view;
+        this.edgeIterator = new ParamAVLIterator<MetaEdgeImpl>();
         if (mode.equals(EdgeNodeIteratorMode.OUT) || mode.equals(EdgeNodeIteratorMode.BOTH)) {
-            this.edgeIterator.setNode(node.getMetaEdgesOutTree());
+            this.edgeIterator.setNode(node.getMetaEdgesOutTree(view));
         } else {
-            this.edgeIterator.setNode(node.getMetaEdgesInTree());
+            this.edgeIterator.setNode(node.getMetaEdgesInTree(view));
         }
         this.undirected = undirected;
         if (proposition == null) {
@@ -67,7 +71,7 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
     }
 
     public boolean hasNext() {
-        while (pointer == null || (undirected && pointer.getUndirected() != pointer) || !proposition.evaluate(pointer)) {
+        while (pointer == null || (undirected && pointer.getUndirected(view) != pointer) || !proposition.evaluate(pointer)) {
             if (mode.equals(EdgeNodeIteratorMode.BOTH)) {
                 boolean res = edgeIterator.hasNext();
                 if (res) {
@@ -76,7 +80,7 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
                         pointer = null;
                     }
                 } else {
-                    this.edgeIterator.setNode(node.getMetaEdgesInTree());
+                    this.edgeIterator.setNode(node.getMetaEdgesInTree(view));
                     this.mode = EdgeNodeIteratorMode.IN;
                 }
             } else {

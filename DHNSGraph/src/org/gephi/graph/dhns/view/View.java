@@ -18,31 +18,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.gephi.graph.dhns.view;
 
-package org.gephi.graph.dhns.core;
-
-import java.util.concurrent.atomic.AtomicInteger;
+import org.gephi.datastructure.avl.simple.AVLItem;
 
 /**
- * Generates incremental IDs for node and edges;
  *
  * @author Mathieu Bastian
  */
-public class IDGen {
+public class View implements AVLItem {
 
-    private AtomicInteger nodeGen = new AtomicInteger();
-    private AtomicInteger edgeGen = new AtomicInteger();
-    private AtomicInteger viewGen = new AtomicInteger();
+    private final int id;
 
-    public int newNodeId() {
-        return nodeGen.getAndIncrement();
+    public View(int id) {
+        this.id = id;
     }
 
-    public int newEdgeId() {
-        return edgeGen.getAndIncrement();
-    }
-
-    public int newViewId() {
-        return viewGen.getAndIncrement();
+    public int getNumber() {
+        return id;
     }
 }

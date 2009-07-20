@@ -22,9 +22,6 @@ package org.gephi.graph.dhns.core;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeRow;
-import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Node;
@@ -35,7 +32,7 @@ import org.gephi.graph.dhns.graph.Condition;
 import org.gephi.graph.dhns.graph.EdgeIterableImpl;
 import org.gephi.graph.dhns.graph.NodeIterableImpl;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
-import org.openide.util.Lookup;
+import org.gephi.graph.dhns.view.ViewManager;
 
 /**
  * Main class of the DHNS (Durable Hierarchical Network Structure) graph structure..
@@ -50,6 +47,7 @@ public class Dhns {
     private StructureModifier structureModifier;
     private GraphVersion graphVersion;
     private EventManager eventManager;
+    private ViewManager viewManager;
 
     //Type
     private boolean directed = false;
@@ -61,10 +59,11 @@ public class Dhns {
 
     public Dhns(DhnsGraphController controller) {
         this.controller = controller;
-        treeStructure = new TreeStructure();
+        viewManager = new ViewManager(this);
+        treeStructure = new TreeStructure(this);
         graphVersion = new GraphVersion();
         structureModifier = new StructureModifier(this);
-        eventManager = new EventManager(this);
+        eventManager = new EventManager(this);       
         init();
     }
 
@@ -93,6 +92,10 @@ public class Dhns {
 
     public EventManager getEventManager() {
         return eventManager;
+    }
+
+    public ViewManager getViewManager() {
+        return viewManager;
     }
 
     public IDGen getIdGen() {
