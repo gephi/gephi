@@ -53,6 +53,7 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     protected PropositionImpl<AbstractNode> nodeProposition;
     protected PropositionImpl<AbstractEdge> edgeProposition;
     protected PropositionImpl<AbstractNode> nodeEnabledProposition;
+    protected PropositionImpl<AbstractEdge> edgeEnabledProposition;
     protected boolean allowMultilevel = true;
     protected View view;
 
@@ -62,13 +63,17 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         this.nodeProposition = new PropositionImpl<AbstractNode>();
         this.edgeProposition = new PropositionImpl<AbstractEdge>();
         this.nodeEnabledProposition = new PropositionImpl<AbstractNode>();
+        this.edgeEnabledProposition = new PropositionImpl<AbstractEdge>();
 
         PropositionManager propositionManager = dhns.getPropositionManager();
         nodeEnabledProposition.addPredicate(propositionManager.newEnablePredicateNode(view));
+        edgeEnabledProposition.addPredicate(propositionManager.newEnablePredicateEdge(view));
+
         if (visible) {
             nodeProposition.addPredicate(propositionManager.getVisiblePredicateNode());
             edgeProposition.addPredicate(propositionManager.getVisiblePredicateEdge());
             nodeEnabledProposition.addPredicate(propositionManager.getVisiblePredicateNode());
+            edgeEnabledProposition.addPredicate(propositionManager.getVisiblePredicateEdge());
         }
     }
 

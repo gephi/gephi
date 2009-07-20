@@ -64,6 +64,19 @@ public class PropositionManager {
         };
     }
 
+    public Predicate<AbstractEdge> newEnablePredicateEdge(final View view) {
+        return new Predicate<AbstractEdge>() {
+
+            public boolean evaluate(AbstractEdge element) {
+                return element.getSource().isEnabled(view) && element.getTarget().isEnabled(view);
+            }
+
+            public boolean isTautology() {
+                return false;
+            }
+        };
+    }
+
     private void initDefaultNodePredicates() {
         visiblePredicateNode = new Predicate<AbstractNode>() {
 
