@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
+import org.gephi.graph.api.DynamicData;
 import org.gephi.graph.api.DynamicGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgePredicate;
@@ -63,7 +64,8 @@ public class DynamicGraphImpl implements DynamicGraph {
 
         public boolean evaluate(Node element) {
             //Check if element is in the range
-            return true;
+            DynamicData dd = element.getNodeData().getDynamicData();
+            return dd.getRangeFrom() >= from && dd.getRangeTo() <= to;
         }
     }
 
@@ -71,7 +73,8 @@ public class DynamicGraphImpl implements DynamicGraph {
 
         public boolean evaluate(Edge element) {
             //Check if element is in the range
-            return true;
+            DynamicData dd = element.getEdgeData().getDynamicData();
+            return dd.getRangeFrom() >= from && dd.getRangeTo() <= to;
         }
     }
 }

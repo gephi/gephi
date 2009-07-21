@@ -24,21 +24,11 @@ package org.gephi.graph.api;
  *
  * @author Mathieu Bastian
  */
-public interface EdgeData extends Renderable {
+public interface DynamicData {
 
-    public Edge getEdge();
+    public int getRangeFrom();
 
-    public NodeData getSource();
+    public int getRangeTo();
 
-    public NodeData getTarget();
-
-    public String getLabel();
-
-    public LayoutData getLayoutData();
-
-    public void setLayoutData(LayoutData layoutData);
-
-    public Attributes getAttributes();
-
-    public DynamicData getDynamicData();
+    public void setRange(int from, int to);
 }

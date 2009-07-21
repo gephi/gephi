@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.node;
 
 import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.DynamicData;
 import org.gephi.graph.api.LayoutData;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
@@ -33,7 +34,7 @@ import org.gephi.graph.api.TextData;
  *
  * @author Mathieu Bastian
  */
-public class NodeDataImpl implements NodeData, GroupData {
+public class NodeDataImpl implements NodeData, GroupData, DynamicData {
 
     protected Node node;
     protected LayoutData layoutData;
@@ -53,6 +54,8 @@ public class NodeDataImpl implements NodeData, GroupData {
     protected Attributes attributes;
     protected TextData textData;
     protected Model hullModel;
+    protected int dynamicRangeFrom;
+    protected int dynamicRangeTo;
 
     public NodeDataImpl(Node node) {
         this.node = node;
@@ -209,5 +212,22 @@ public class NodeDataImpl implements NodeData, GroupData {
 
     public void setHullModel(Model hullModel) {
         this.hullModel = hullModel;
+    }
+
+    public DynamicData getDynamicData() {
+        return this;
+    }
+
+    public int getRangeFrom() {
+        return dynamicRangeFrom;
+    }
+
+    public int getRangeTo() {
+        return dynamicRangeTo;
+    }
+
+    public void setRange(int from, int to) {
+        this.dynamicRangeFrom = from;
+        this.dynamicRangeTo = to;
     }
 }
