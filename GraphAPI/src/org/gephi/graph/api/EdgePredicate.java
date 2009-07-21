@@ -18,11 +18,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.proposition;
+package org.gephi.graph.api;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Predicate<T> extends Proposition<T> {
+public interface EdgePredicate extends Predicate<Edge> {
 }

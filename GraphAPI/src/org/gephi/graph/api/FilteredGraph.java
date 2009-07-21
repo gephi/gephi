@@ -18,18 +18,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.proposition;
-
-import org.gephi.graph.api.Predicate;
+package org.gephi.graph.api;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Proposition<T> extends Predicate<T> {
+public interface FilteredGraph {
 
-    @Override
-    public boolean evaluate(T element);
+    public void addNodePredicate(NodePredicate nodePredicate);
 
-    public boolean isTautology();
+    public void addEdgePredicate(EdgePredicate edgePredicate);
+
+    public void removeNodePredicate(NodePredicate nodePredicate);
+
+    public void removeEdgePredicate(EdgePredicate edgePredicate);
+
+    public NodePredicate[] getNodePredicates();
+
+    public EdgePredicate[] getEdgePredicates();
 }

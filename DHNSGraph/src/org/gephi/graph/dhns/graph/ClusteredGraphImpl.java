@@ -22,9 +22,13 @@ package org.gephi.graph.dhns.graph;
 
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgePredicate;
+import org.gephi.graph.api.FilteredGraph;
 import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.api.NodePredicate;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.api.Tree;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.PropositionManager;
@@ -37,9 +41,7 @@ import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantIterator;
 import org.gephi.graph.dhns.node.iterators.LevelIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
-import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.PropositionImpl;
-import org.gephi.graph.dhns.proposition.Tautology;
 import org.gephi.graph.dhns.tree.HierarchyTreeImpl;
 import org.gephi.graph.dhns.view.View;
 
@@ -48,7 +50,7 @@ import org.gephi.graph.dhns.view.View;
  *
  * @author Mathieu Bastian
  */
-public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements ClusteredGraph {
+public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements ClusteredGraph, FilteredGraph {
 
     protected PropositionImpl<AbstractNode> nodeProposition;
     protected PropositionImpl<AbstractEdge> edgeProposition;
@@ -449,6 +451,34 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         writeLock();
         absEdge.setVisible(visible);
         writeUnlock();
+    }
+
+    public void addNodePredicate(NodePredicate nodePredicate) {
+        nodeProposition.addPredicate(nodePredicate);
+        nodeEnabledProposition.addPredicate(nodePredicate);
+    }
+
+    public void addEdgePredicate(EdgePredicate edgePredicate) {
+        edgeProposition.addPredicate(edgePredicate);
+        edgeEnabledProposition.addPredicate(edgePredicate);
+    }
+
+    public void removeEdgePredicate(EdgePredicate edgePredicate) {
+        edgeProposition.removePredicate(edgePredicate);
+        edgeEnabledProposition.removePredicate(edgePredicate);
+    }
+
+    public void removeNodePredicate(NodePredicate nodePredicate) {
+        nodeProposition.removePredicate(nodePredicate);
+        nodeEnabledProposition.removePredicate(nodePredicate);
+    }
+
+    public NodePredicate[] getNodePredicates() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public EdgePredicate[] getEdgePredicates() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void addGraphListener(GraphListener graphListener) {

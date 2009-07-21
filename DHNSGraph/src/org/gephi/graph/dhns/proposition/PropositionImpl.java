@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.proposition;
 
 import java.util.Arrays;
+import org.gephi.graph.api.Predicate;
 
 /**
  *
@@ -49,19 +50,19 @@ public class PropositionImpl<T> implements Proposition<T> {
 
     public boolean isTautology() {
         for (Predicate p : predicates) {
-            if (!p.isTautology()) {
+            if (p instanceof Tautology) {
                 return false;
             }
         }
         return true;
     }
 
-    public void addPredicate(Predicate<T> predicate) {
+    public void addPredicate(Predicate<? super T> predicate) {
         predicates = Arrays.copyOf(predicates, predicates.length + 1);
-        predicates[predicates.length - 1] = predicate;
+        predicates[predicates.length - 1] = (Predicate<T>) predicate;
     }
 
-    public void removePredicate(Predicate<T> predicate) {
+    public void removePredicate(Predicate<? super T> predicate) {
         Predicate<T>[] newPredicates = new Predicate[predicates.length - 1];
         int j = 0, i = 0;
         for (; i < predicates.length; i++) {

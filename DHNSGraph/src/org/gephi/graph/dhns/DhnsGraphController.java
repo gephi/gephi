@@ -31,6 +31,9 @@ import org.gephi.graph.api.ClusteredDirectedGraph;
 import org.gephi.graph.api.ClusteredMixedGraph;
 import org.gephi.graph.api.ClusteredUndirectedGraph;
 import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.DynamicGraph;
+import org.gephi.graph.api.FilteredGraph;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.HierarchicalMixedGraph;
@@ -41,8 +44,10 @@ import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphFactoryImpl;
 import org.gephi.graph.dhns.core.IDGen;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
+import org.gephi.graph.dhns.graph.ClusteredGraphImpl;
 import org.gephi.graph.dhns.graph.ClusteredMixedGraphImpl;
 import org.gephi.graph.dhns.graph.ClusteredUndirectedGraphImpl;
+import org.gephi.graph.dhns.graph.DynamicGraphImpl;
 import org.openide.util.Lookup;
 
 /**
@@ -165,5 +170,14 @@ public class DhnsGraphController implements GraphController {
 
     public HierarchicalUndirectedGraph getVisibleHierarchicalUndirectedGraph() {
         return new ClusteredUndirectedGraphImpl(dhns, true, false);
+    }
+
+    public FilteredGraph getFilteredGraph(Graph graph) {
+        ClusteredGraphImpl graphImpl = (ClusteredGraphImpl) graph;
+        return graphImpl;
+    }
+
+    public DynamicGraph getDynamicGraph(Graph graph) {
+        return new DynamicGraphImpl((ClusteredGraphImpl) graph);
     }
 }

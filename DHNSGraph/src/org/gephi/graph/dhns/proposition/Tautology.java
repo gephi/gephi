@@ -24,7 +24,7 @@ package org.gephi.graph.dhns.proposition;
  *
  * @author Mathieu Bastian
  */
-public class Tautology implements Predicate {
+public class Tautology implements Proposition {
 
     public boolean evaluate(Object element) {
         return true;
