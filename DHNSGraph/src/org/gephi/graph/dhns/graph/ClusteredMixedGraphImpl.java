@@ -45,8 +45,8 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
     private Condition<Edge> undirectedCondition;
     private Condition<Edge> directedCondition;
 
-    public ClusteredMixedGraphImpl(Dhns dhns, boolean visible) {
-        super(dhns, visible);
+    public ClusteredMixedGraphImpl(Dhns dhns, boolean visible, boolean clustered) {
+        super(dhns, visible, clustered);
         directedCondition = new Condition<Edge>() {
 
             public boolean isValid(Edge t) {

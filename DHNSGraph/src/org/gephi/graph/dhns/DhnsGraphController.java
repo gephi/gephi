@@ -31,6 +31,9 @@ import org.gephi.graph.api.ClusteredMixedGraph;
 import org.gephi.graph.api.ClusteredUndirectedGraph;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.HierarchicalDirectedGraph;
+import org.gephi.graph.api.HierarchicalMixedGraph;
+import org.gephi.graph.api.HierarchicalUndirectedGraph;
 import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.graph.dhns.core.Dhns;
@@ -63,7 +66,7 @@ public class DhnsGraphController implements GraphController {
         }
 
         factory = new GraphFactoryImpl(iDGen, attributesFactory);
-        eventBus = new ThreadPoolExecutor(0,1,60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        eventBus = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     public Dhns newDhns() {
@@ -87,50 +90,74 @@ public class DhnsGraphController implements GraphController {
     }
 
     public DirectedGraph getDirectedGraph() {
-        return new ClusteredDirectedGraphImpl(dhns, false);
+        return new ClusteredDirectedGraphImpl(dhns, false, false);
     }
 
     public DirectedGraph getVisibleDirectedGraph() {
-        return new ClusteredDirectedGraphImpl(dhns, true);
+        return new ClusteredDirectedGraphImpl(dhns, true, false);
     }
 
     public UndirectedGraph getUndirectedGraph() {
-        return new ClusteredUndirectedGraphImpl(dhns, false);
+        return new ClusteredUndirectedGraphImpl(dhns, false, false);
     }
 
     public UndirectedGraph getVisibleUndirectedGraph() {
-        return new ClusteredUndirectedGraphImpl(dhns, true);
+        return new ClusteredUndirectedGraphImpl(dhns, true, false);
     }
 
     public MixedGraph getMixedGraph() {
-        return new ClusteredMixedGraphImpl(dhns, false);
+        return new ClusteredMixedGraphImpl(dhns, false, false);
     }
 
     public MixedGraph getVisibleMixedGraph() {
-        return new ClusteredMixedGraphImpl(dhns, true);
+        return new ClusteredMixedGraphImpl(dhns, true, false);
     }
 
     public ClusteredDirectedGraph getClusteredDirectedGraph() {
-        return new ClusteredDirectedGraphImpl(dhns, false);
+        return new ClusteredDirectedGraphImpl(dhns, false, true);
     }
 
     public ClusteredDirectedGraph getVisibleClusteredDirectedGraph() {
-        return new ClusteredDirectedGraphImpl(dhns, true);
+        return new ClusteredDirectedGraphImpl(dhns, true, true);
     }
 
     public ClusteredUndirectedGraph getClusteredUndirectedGraph() {
-        return new ClusteredUndirectedGraphImpl(dhns, false);
+        return new ClusteredUndirectedGraphImpl(dhns, false, true);
     }
 
     public ClusteredUndirectedGraph getVisibleClusteredUndirectedGraph() {
-        return new ClusteredUndirectedGraphImpl(dhns, true);
+        return new ClusteredUndirectedGraphImpl(dhns, true, true);
     }
 
     public ClusteredMixedGraph getClusteredMixedGraph() {
-        return new ClusteredMixedGraphImpl(dhns, false);
+        return new ClusteredMixedGraphImpl(dhns, false, true);
     }
 
     public ClusteredMixedGraph getVisibleClusteredMixedGraph() {
-        return new ClusteredMixedGraphImpl(dhns, true);
+        return new ClusteredMixedGraphImpl(dhns, true, true);
+    }
+
+    public HierarchicalDirectedGraph getHierarchicalDirectedGraph() {
+        return new ClusteredDirectedGraphImpl(dhns, false, false);
+    }
+
+    public HierarchicalDirectedGraph getVisibleHierarchicalDirectedGraph() {
+        return new ClusteredDirectedGraphImpl(dhns, true, false);
+    }
+
+    public HierarchicalMixedGraph getHierarchicalMixedGraph() {
+        return new ClusteredMixedGraphImpl(dhns, false, false);
+    }
+
+    public HierarchicalMixedGraph getVisibleHierarchicalMixedGraph() {
+        return new ClusteredMixedGraphImpl(dhns, true, false);
+    }
+
+    public HierarchicalUndirectedGraph getHierarchicalUndirectedGraph() {
+        return new ClusteredUndirectedGraphImpl(dhns, false, false);
+    }
+
+    public HierarchicalUndirectedGraph getVisibleHierarchicalUndirectedGraph() {
+        return new ClusteredUndirectedGraphImpl(dhns, true, false);
     }
 }

@@ -24,5 +24,5 @@ package org.gephi.graph.api;
  *
  * @author Mathieu Bastian
  */
-public interface ClusteredMixedGraph extends HierarchicalMixedGraph, ClusteredGraph {
+public interface HierarchicalMixedGraph extends HierarchicalGraph, MixedGraph {
 }

@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.graph.api;
 
 /**
@@ -40,6 +39,18 @@ public interface GraphController {
     public MixedGraph getMixedGraph();
 
     public MixedGraph getVisibleMixedGraph();
+
+    public HierarchicalDirectedGraph getHierarchicalDirectedGraph();
+
+    public HierarchicalDirectedGraph getVisibleHierarchicalDirectedGraph();
+
+    public HierarchicalUndirectedGraph getHierarchicalUndirectedGraph();
+
+    public HierarchicalUndirectedGraph getVisibleHierarchicalUndirectedGraph();
+
+    public HierarchicalMixedGraph getHierarchicalMixedGraph();
+
+    public HierarchicalMixedGraph getVisibleHierarchicalMixedGraph();
 
     public ClusteredDirectedGraph getClusteredDirectedGraph();
 

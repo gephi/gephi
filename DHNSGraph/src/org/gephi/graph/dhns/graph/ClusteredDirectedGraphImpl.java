@@ -47,8 +47,8 @@ import org.gephi.graph.dhns.node.iterators.TreeIterator;
  */
 public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements ClusteredDirectedGraph {
 
-    public ClusteredDirectedGraphImpl(Dhns dhns, boolean visible) {
-        super(dhns, visible);
+    public ClusteredDirectedGraphImpl(Dhns dhns, boolean visible, boolean clustered) {
+        super(dhns, visible, clustered);
     }
 
     public boolean addEdge(Edge edge) {

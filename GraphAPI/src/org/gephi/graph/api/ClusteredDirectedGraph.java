@@ -24,7 +24,7 @@ package org.gephi.graph.api;
  *
  * @author Mathieu Bastian
  */
-public interface ClusteredDirectedGraph extends DirectedGraph, ClusteredGraph {
+public interface ClusteredDirectedGraph extends HierarchicalDirectedGraph, ClusteredGraph {
 
     /**
      * Returns incoming meta edges incident to <code>node</code>.

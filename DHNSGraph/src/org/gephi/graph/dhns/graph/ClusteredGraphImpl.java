@@ -57,7 +57,7 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     protected boolean allowMultilevel = true;
     protected View view;
 
-    public ClusteredGraphImpl(Dhns dhns, boolean visible) {
+    public ClusteredGraphImpl(Dhns dhns, boolean visible, boolean clustered) {
         this.dhns = dhns;
         this.view = dhns.getViewManager().getMainView();
         this.nodeProposition = new PropositionImpl<AbstractNode>();
@@ -409,8 +409,16 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         return res;
     }
 
-    public void resetView() {
+    public void resetViewToLeaves() {
         dhns.getStructureModifier().resetView(view);
+    }
+
+    public void resetViewToLevel(int level) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void resetViewToTopNodes() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void setVisible(Node node, boolean visible) {
