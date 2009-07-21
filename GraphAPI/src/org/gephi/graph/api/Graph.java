@@ -294,12 +294,12 @@ public interface Graph {
     public boolean isMixed();
 
     /**
-     * Returns <code>true</code> if the graph is <b>clustered</b>. This indicates the presence
+     * Returns <code>true</code> if the graph is <b>hierarchical</b>. This indicates the presence
      * of a hierarchy, in other words the height of the tree is greater than 0.
      * @return <code>true</code> if the graph is clustered or <code>false</code> otherwise
-     * @see ClusteredGraph
+     * @see HierarchicalGraph
      */
-    public boolean isClustered();
+    public boolean isHierarchical();
 
     /**
      * Acquire a read lock on the graph. Calling thread will be blocked until all write locks are released.

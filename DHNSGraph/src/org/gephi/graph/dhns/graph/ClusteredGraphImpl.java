@@ -455,7 +455,7 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         return dhns.isMixed();
     }
 
-    public boolean isClustered() {
+    public boolean isHierarchical() {
         return getHeight() > 0;
     }
 

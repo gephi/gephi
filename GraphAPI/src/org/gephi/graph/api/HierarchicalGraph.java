@@ -30,9 +30,6 @@ public interface HierarchicalGraph extends Graph {
      * Add <code>node</code> as a child of <code>parent</code> in the graph. If <code>parent</code> is
      * <code>null</code>, <code>node</code> is added as a child of the (virtual) root node.
      * Fails if the node already exists.
-     * <p>
-     * If <code>parent</code> or ancestors of <code>parent</code> are not the view of the clustered
-     * graph, then <code>node</code> is included in it.
      * @param node the node to add
      * @param parent the existing node whose a child is to be added or <code>null</code>
      * @return <code>true</code> if add is successful, false otherwise
@@ -208,9 +205,6 @@ public interface HierarchicalGraph extends Graph {
      * Content of <code>nodes</code> can be existing groups. In that case, <code>nodes</code> must only contains roots of groups.
      * Therefore all nodes in <code>nodes</code> must have the same <b>parent</b>. The method returns the newly
      * created group of nodes.
-     * <p>
-     * The newly created group will be in the view if no ancestors of <code>nodes</code> is in the current
-     * graph view.
      * @param nodes the nodes to be grouped in a new group
      * @return the newly created group of nodes which contains <code>nodes</code> and descendants of <code>nodes</code>
      * @throws IllegalArgumentException if <code>nodes</code> is <code>null</code>,
