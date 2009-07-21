@@ -87,6 +87,23 @@ public interface ClusteredGraph extends HierarchicalGraph {
     public boolean retract(Node node);
 
     /**
+     * Returns nodes contained in the clustered graph view. A view is a <b>flat</b> representation of
+     * a hierarchical graph, where neither an ancestor or a descendant of a node in the view
+     * can be also in the view.
+     * @return a node iterable of nodes contained in the clustered graph view
+     */
+    public NodeIterable getNodesInView();
+
+    /**
+     * Returns edges contained in the clustered graph view. Edges are in the view if and only if
+     * incident nodes are in the view. A view is a <b>flat</b> representation of
+     * a hierarchical graph, where neither an ancestor or a descendant of a node in the view
+     * can be also in the view.
+     * @return an edge iterable of nodes contained in the clustered graph view
+     */
+    public EdgeIterable getEdgesInView();
+
+    /**
      * Returns true if <code>node</code> is currently in the graph view.
      * @param node the node to be queried
      * @return <code>true</code> if <code>node</code> is in the view, <code>false</code> otherwise
@@ -96,15 +113,26 @@ public interface ClusteredGraph extends HierarchicalGraph {
     public boolean isInView(Node node);
 
     /**
-     * Reset the current view to leaves of the clustered graph tree. Therefore the <code>getNodes()</code>
-     * method will return only these leaves.
+     * Reset the current view to leaves of the clustered graph tree. Therefore the 
+     * <code>getNodesInView()</code> method returns only these leaves.
      * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public void resetViewToLeaves();
 
-
+    /**
+     * Reset the current view to top nodes of the clustered graph tree. Therefore the
+     * <code>getNodesInView()</code> method returns only these nodes.
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
+     */
     public void resetViewToTopNodes();
 
+    /**
+     * Reset the current view to nodes located at the specified <code>level</code> in the
+     * clustered graph hierarchy. Therefore the <code>getNodesInView()</code> method returns
+     * only these nodes.
+     * @throws IllegalArgumentException if <code>level</code> is not between 0 and the height of the tree
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
+     */
     public void resetViewToLevel(int level);
 
     /**

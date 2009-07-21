@@ -66,14 +66,17 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         this.edgeEnabledProposition = new PropositionImpl<AbstractEdge>();
 
         PropositionManager propositionManager = dhns.getPropositionManager();
-        nodeEnabledProposition.addPredicate(propositionManager.newEnablePredicateNode(view));
-        edgeEnabledProposition.addPredicate(propositionManager.newEnablePredicateEdge(view));
 
         if (visible) {
             nodeProposition.addPredicate(propositionManager.getVisiblePredicateNode());
             edgeProposition.addPredicate(propositionManager.getVisiblePredicateEdge());
             nodeEnabledProposition.addPredicate(propositionManager.getVisiblePredicateNode());
             edgeEnabledProposition.addPredicate(propositionManager.getVisiblePredicateEdge());
+        }
+
+        if (clustered) {
+            nodeEnabledProposition.addPredicate(propositionManager.newEnablePredicateNode(view));
+            edgeEnabledProposition.addPredicate(propositionManager.newEnablePredicateEdge(view));
         }
     }
 
@@ -126,6 +129,11 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     }
 
     public NodeIterable getNodes() {
+        readLock();
+        return dhns.newNodeIterable(new TreeIterator(dhns.getTreeStructure(), nodeProposition));
+    }
+
+    public NodeIterable getNodesInView() {
         readLock();
         return dhns.newNodeIterable(new TreeIterator(dhns.getTreeStructure(), nodeEnabledProposition));
     }
@@ -410,15 +418,22 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     }
 
     public void resetViewToLeaves() {
-        dhns.getStructureModifier().resetView(view);
+        dhns.getStructureModifier().resetViewToLeaves(view);
     }
 
     public void resetViewToLevel(int level) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        level += 1;     //Because we ignore the virtual root
+        readLock();
+        int height = dhns.getTreeStructure().treeHeight;
+        if (level > height) {
+            readUnlock();
+            throw new IllegalArgumentException("Level must be between 0 and the height of the tree, currently height=" + (height - 1));
+        }
+        dhns.getStructureModifier().resetViewToLevel(view, level);
     }
 
     public void resetViewToTopNodes() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        dhns.getStructureModifier().resetViewToTopNodes(view);
     }
 
     public void setVisible(Node node, boolean visible) {

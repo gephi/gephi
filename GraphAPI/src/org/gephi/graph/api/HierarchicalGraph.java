@@ -102,7 +102,7 @@ public interface HierarchicalGraph extends Graph {
      * have the level <code>zero</code> and leaves' level is the height of the tree.
      * @param level the level whose nodes are to be returned
      * @return a node iterable of nodes located at <code>level</code> in the tree
-     * @throws IllegalArgumentException if <code>level</code> is not between 0 and the height of the tree.
+     * @throws IllegalArgumentException if <code>level</code> is not between 0 and the height of the tree
      */
     public NodeIterable getNodes(int level);
 
@@ -111,7 +111,7 @@ public interface HierarchicalGraph extends Graph {
      * <code>getNodes(level).toArray().length</code>.
      * @param level the level whose nodes are to be returned
      * @return the number of nodes at <code>level</code>
-     * @throws IllegalArgumentException if <code>level</code> is not between 0 and the height of the tree.
+     * @throws IllegalArgumentException if <code>level</code> is not between 0 and the height of the tree
      */
     public int getLevelSize(int level);
 

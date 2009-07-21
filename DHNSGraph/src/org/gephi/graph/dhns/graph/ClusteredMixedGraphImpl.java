@@ -153,6 +153,11 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
 
     public EdgeIterable getEdges() {
         readLock();
+        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
+    }
+
+    public EdgeIterable getEdgesInView() {
+        readLock();
         return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeEnabledProposition), false, edgeEnabledProposition));
     }
 

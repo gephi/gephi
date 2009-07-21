@@ -269,13 +269,41 @@ public class StructureModifier {
         dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
     }
 
-    public void resetView(View view) {
+    public void resetViewToLeaves(View view) {
         dhns.getWriteLock().lock();
         edgeProcessor.clearAllMetaEdges(view);
         for (PreNodeTreeListIterator itr = new PreNodeTreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             if (node.isInView(view)) {
                 node.setEnabled(view, node.size == 0);
+            }
+        }
+        graphVersion.incEdgeVersion();
+        dhns.getWriteLock().unlock();
+        dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
+    }
+
+    public void resetViewToTopNodes(View view) {
+        dhns.getWriteLock().lock();
+        edgeProcessor.clearAllMetaEdges(view);
+        for (PreNodeTreeListIterator itr = new PreNodeTreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
+            AbstractNode node = itr.next();
+            if (node.isInView(view)) {
+                node.setEnabled(view, node.parent == treeStructure.root);
+            }
+        }
+        graphVersion.incEdgeVersion();
+        dhns.getWriteLock().unlock();
+        dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
+    }
+
+    public void resetViewToLevel(View view, int level) {
+        dhns.getWriteLock().lock();
+        edgeProcessor.clearAllMetaEdges(view);
+        for (PreNodeTreeListIterator itr = new PreNodeTreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
+            AbstractNode node = itr.next();
+            if (node.isInView(view)) {
+                node.setEnabled(view, node.level == level);
             }
         }
         graphVersion.incEdgeVersion();

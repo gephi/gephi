@@ -91,9 +91,6 @@ public interface Graph {
 
     /**
      * Returns nodes contained in the graph.
-     * <p>
-     * In the case of a hierarchical graph, only nodes in the current view will be returned.
-     * See {@link ClusteredGraph} for details.
      * @return a node iterable of nodes contained in the graph.
      */
     public NodeIterable getNodes();
