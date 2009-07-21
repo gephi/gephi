@@ -63,7 +63,7 @@ public class DhnsTestVisibleDirectedGraph {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = controller.getMainDhns();
-        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, true);
+        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, true, true);
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
@@ -135,7 +135,7 @@ public class DhnsTestVisibleDirectedGraph {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = controller.getMainDhns();
         View mainView = dhns.getViewManager().getMainView();
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, true);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, true, true);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.getGraphFactory();
 
@@ -180,7 +180,7 @@ public class DhnsTestVisibleDirectedGraph {
     public void testRemoveNode() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = controller.getMainDhns();
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, true);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, true, true);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.getGraphFactory();
 
@@ -310,7 +310,7 @@ public class DhnsTestVisibleDirectedGraph {
     public void testAddEdge() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = controller.getMainDhns();
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.getGraphFactory();
 
@@ -491,7 +491,7 @@ public class DhnsTestVisibleDirectedGraph {
         assertEquals(0, graphGlobal.getSuccessors(node5).toArray().length);
 
         for (Node n : graphGlobal.getSuccessors(node3)) {
-            System.out.print(n.getId()+" ");
+            System.out.print(n.getId() + " ");
             actual[i++] = n;
             assertTrue(graphGlobal.isSuccessor(node3, n));
         }
@@ -520,7 +520,7 @@ public class DhnsTestVisibleDirectedGraph {
         assertEquals(0, graphGlobal.getSuccessors(node5).toArray().length);
 
         for (Node n : graphGlobal.getPredecessors(node4)) {
-            System.out.print(n.getId()+" ");
+            System.out.print(n.getId() + " ");
             actual[i++] = n;
             assertTrue(graphGlobal.isPredecessor(node4, n));
         }
@@ -548,15 +548,15 @@ public class DhnsTestVisibleDirectedGraph {
 
         int i = 0;
         for (Node n : graphGlobal.getNeighbors(nodeMap.get("Node 4"))) {
-            System.out.print(n.getId()+" ");
+            System.out.print(n.getId() + " ");
             actual[i++] = n;
         }
         System.out.println();
         assertArrayEquals(expected, actual);
 
-         //Test Self loop
-         Node[] array = graphGlobal.getNeighbors(nodeMap.get("Node 7")).toArray();
-         assertEquals("self loop array length 0", 0, array.length);
+        //Test Self loop
+        Node[] array = graphGlobal.getNeighbors(nodeMap.get("Node 7")).toArray();
+        assertEquals("self loop array length 0", 0, array.length);
     }
 
     @Test
@@ -566,8 +566,8 @@ public class DhnsTestVisibleDirectedGraph {
         Edge edge1 = edgeMap.get("4-5");
         Edge edge2 = edgeMap.get("4-4");
 
-        assertEquals(node5,graphGlobal.getOpposite(node4, edge1));
-        assertEquals(node4,graphGlobal.getOpposite(node4, edge2));
+        assertEquals(node5, graphGlobal.getOpposite(node4, edge1));
+        assertEquals(node4, graphGlobal.getOpposite(node4, edge2));
     }
 
     @Test
@@ -611,12 +611,12 @@ public class DhnsTestVisibleDirectedGraph {
         graphGlobal.clearEdges(node5);
         graphGlobal.clearEdges(node4);
 
-        assertEquals(0,graphGlobal.getDegree(node5));
-        assertEquals(0,graphGlobal.getDegree(node4));
+        assertEquals(0, graphGlobal.getDegree(node5));
+        assertEquals(0, graphGlobal.getDegree(node4));
         assertFalse(graphGlobal.contains(edge2));
         assertFalse(graphGlobal.contains(edge1));
         assertFalse(graphGlobal.isAdjacent(node4, node5));
-        //assertFalse(graphGlobal.isAdjacent(edge1, edge2));        //Fail because no test verifying edge belongs to the structure
+    //assertFalse(graphGlobal.isAdjacent(edge1, edge2));        //Fail because no test verifying edge belongs to the structure
     }
 
     @Test

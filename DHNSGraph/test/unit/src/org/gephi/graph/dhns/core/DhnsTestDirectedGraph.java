@@ -63,7 +63,7 @@ public class DhnsTestDirectedGraph {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = controller.getMainDhns();
-        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, false);
+        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, false, true);
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
@@ -129,7 +129,7 @@ public class DhnsTestDirectedGraph {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = controller.getMainDhns();
         View mainView = dhns.getViewManager().getMainView();
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.getGraphFactory();
 
@@ -173,7 +173,7 @@ public class DhnsTestDirectedGraph {
     public void testRemoveNode() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = controller.getMainDhns();
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.getGraphFactory();
 
@@ -298,7 +298,7 @@ public class DhnsTestDirectedGraph {
     public void testAddEdge() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = controller.getMainDhns();
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.getGraphFactory();
 

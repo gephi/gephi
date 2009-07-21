@@ -429,6 +429,7 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
             readUnlock();
             throw new IllegalArgumentException("Level must be between 0 and the height of the tree, currently height=" + (height - 1));
         }
+        readUnlock();
         dhns.getStructureModifier().resetViewToLevel(view, level);
     }
 

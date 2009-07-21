@@ -64,8 +64,8 @@ public class DhnsTestVisibleUndirectedGraph {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = controller.getMainDhns();
-        graphGlobal = new ClusteredUndirectedGraphImpl(dhnsGlobal, true);
-        ClusteredDirectedGraphImpl diGraph = new ClusteredDirectedGraphImpl(dhnsGlobal, true);
+        graphGlobal = new ClusteredUndirectedGraphImpl(dhnsGlobal, true, true);
+        ClusteredDirectedGraphImpl diGraph = new ClusteredDirectedGraphImpl(dhnsGlobal, true, true);
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
@@ -140,7 +140,7 @@ public class DhnsTestVisibleUndirectedGraph {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = controller.getMainDhns();
         View mainView = dhns.getViewManager().getMainView();
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, true);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, true, true);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.getGraphFactory();
 
@@ -185,7 +185,7 @@ public class DhnsTestVisibleUndirectedGraph {
     public void testRemoveNode() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = controller.getMainDhns();
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, true);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, true, true);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.getGraphFactory();
 
@@ -315,7 +315,7 @@ public class DhnsTestVisibleUndirectedGraph {
     public void testAddEdge() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = controller.getMainDhns();
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.getGraphFactory();
 
