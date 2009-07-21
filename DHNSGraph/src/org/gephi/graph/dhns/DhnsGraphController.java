@@ -22,6 +22,7 @@ package org.gephi.graph.dhns;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.gephi.data.attributes.api.AttributeController;
@@ -66,7 +67,12 @@ public class DhnsGraphController implements GraphController {
         }
 
         factory = new GraphFactoryImpl(iDGen, attributesFactory);
-        eventBus = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        eventBus = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
+
+            public Thread newThread(Runnable r) {
+                return new Thread(r, "DHNS Event Bus");
+            }
+        });
     }
 
     public Dhns newDhns() {
