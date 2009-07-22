@@ -50,7 +50,7 @@ public class TextManager implements VizArchitecture {
     //Variables
     private ColorMode colorMode;
     private SizeMode sizeMode;
-    private boolean mouseMode = true;
+    private boolean mouseMode = false;
 
     public TextManager() {
         textUtils = new TextUtils(this);
