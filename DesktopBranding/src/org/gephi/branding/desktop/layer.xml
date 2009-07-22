@@ -7,12 +7,11 @@
     <attr name="Menu\Window\org-netbeans-core-windows-actions-ResetWindowsAction.shadow\position" intvalue="2750"/>
     <folder name="Actions">
         <folder name="Window">
-            <file name="org-gephi-branding-desktop-actions-TestPerspective.instance">
+            <file name="org-gephi-branding-desktop-TopTabsAction.instance">
                 <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
-                <attr name="delegate" newvalue="org.gephi.branding.desktop.actions.TestPerspective"/>
-                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.actions.Bundle#CTL_TestPerspective"/>
-                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
-                <attr name="noIconInMenu" stringvalue="false"/>
+                <attr name="component" methodvalue="org.gephi.branding.desktop.TopTabsTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.Bundle#CTL_TopTabsAction"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
             </file>
         </folder>
     </folder>
@@ -76,14 +75,16 @@
             </file>
             <file name="Separator5.instance_hidden"/>
             <file name="SwitchToRecentDocumentAction.shadow_hidden"/>
-            <file name="org-gephi-branding-desktop-actions-TestPerspective.shadow">
-                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-branding-desktop-actions-TestPerspective.instance"/>
-                <attr name="position" intvalue="1175"/>
+            <file name="TopTabsAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-branding-desktop-TopTabsAction.instance"/>
             </file>
             <file name="org-netbeans-core-actions-GlobalPropertiesAction.shadow_hidden"/>
         </folder>
     </folder>
     <folder name="Windows2">
+        <folder name="Components">
+            <file name="TopTabsTopComponent.settings" url="TopTabsTopComponentSettings.xml"/>
+        </folder>
         <folder name="Groups">
             <file name="LaboratoryGroup.wsgrp" url="LaboratoryGroup.wsgrp"/>
             <folder name="LaboratoryGroup">
@@ -99,6 +100,12 @@
             <folder name="PreviewGroup">
                 <file name="PreviewTopComponent.wstcgrp" url="PreviewTopComponent.wstcgrp"/>
             </folder>
+        </folder>
+        <folder name="Modes">
+            <folder name="toptabmode">
+                <file name="TopTabsTopComponent.wstcref" url="TopTabsTopComponentWstcref.xml"/>
+            </folder>
+            <file name="toptabmode.wsmode" url="toptabmodeWsmode.xml"/>
         </folder>
     </folder>
 </filesystem>
