@@ -28,7 +28,6 @@ import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.NodePredicate;
-import org.gephi.graph.api.Predicate;
 import org.gephi.graph.api.Tree;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.PropositionManager;
@@ -41,6 +40,7 @@ import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantIterator;
 import org.gephi.graph.dhns.node.iterators.LevelIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
+import org.gephi.graph.dhns.node.iterators.TreeViewIterator;
 import org.gephi.graph.dhns.proposition.PropositionImpl;
 import org.gephi.graph.dhns.tree.HierarchyTreeImpl;
 import org.gephi.graph.dhns.view.View;
@@ -137,7 +137,7 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
 
     public NodeIterable getNodesInView() {
         readLock();
-        return dhns.newNodeIterable(new TreeIterator(dhns.getTreeStructure(), nodeEnabledProposition));
+        return dhns.newNodeIterable(new TreeViewIterator(dhns.getTreeStructure(), nodeEnabledProposition));
     }
 
     public int getNodeCount() {

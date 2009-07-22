@@ -130,7 +130,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         if (vizConfig.isVisualizeTree()) {
             nodeIterable = graph.getHierarchyTree().getNodes();
         } else {
-            nodeIterable = graph.getNodes();
+            nodeIterable = graph.getNodesInView();
         }
 
         for (Node node : nodeIterable) {
@@ -176,7 +176,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         if (vizConfig.isVisualizeTree()) {
             edgeIterable = graph.getHierarchyTree().getEdges();
         } else {
-            edgeIterable = graph.getEdges();
+            edgeIterable = graph.getEdgesInView();
         }
 
         for (Edge edge : edgeIterable) {
@@ -233,7 +233,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             Modeler potInit = engine.getModelClasses()[AbstractEngine.CLASS_POTATO].getCurrentModeler();
 
             List<ModelImpl> hulls = new ArrayList<ModelImpl>();
-            Node[] nodes = graph.getNodes().toArray();
+            Node[] nodes = graph.getNodesInView().toArray();
             for (Node n : nodes) {
                 Node parent = graph.getParent(n);
                 if (parent != null) {
@@ -243,7 +243,6 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                         ConvexHull hull = (ConvexHull) hullModel.getObj();
                         hull.addNode(n);
                     } else {
-                        System.out.println("new hull");
                         ConvexHull ch = new ConvexHull();
                         ch.setMetaNode(parent);
                         ch.addNode(n);

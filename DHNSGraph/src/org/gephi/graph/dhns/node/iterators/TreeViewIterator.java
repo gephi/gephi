@@ -31,11 +31,11 @@ import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
- * {@link AbstractNode} iterator for all nodes nodes.
+ * {@link AbstractNode} iterator for enabled nodes.
  * 
  * @author Mathieu Bastian
  */
-public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>, ResetableIterator {
+public class TreeViewIterator extends AbstractNodeIterator implements Iterator<Node>, ResetableIterator {
 
     protected int treeSize;
     protected DurableTreeList treeList;
@@ -46,7 +46,7 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
     //Proposition
     protected Proposition<AbstractNode> proposition;
 
-    public TreeIterator(TreeStructure treeStructure, Proposition<AbstractNode> proposition) {
+    public TreeViewIterator(TreeStructure treeStructure, Proposition<AbstractNode> proposition) {
         this.treeList = treeStructure.getTree();
         nextIndex = 1;
         diffIndex = 2;
@@ -103,9 +103,10 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
     }
 
     public AbstractNode next() {
-        nextIndex++;
-        diffIndex = 1;
-        return currentNode.getValue();
+        nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
+        diffIndex = nextIndex - currentNode.getValue().pre;
+        AbstractNode res = currentNode.getValue();
+        return res;
     }
 
     public void remove() {
