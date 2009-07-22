@@ -24,7 +24,7 @@
         </folder>
         <folder name="Modes">
             <folder name="graphmode">
-                <file name="DataExplorerTopComponent.wstcref" url="GraphTopComponentWstcref.xml"/>
+                <file name="DataExplorerTopComponent.wstcref" url="DataExplorerTopComponentWstcref.xml"/>
             </folder>
         </folder>
     </folder>

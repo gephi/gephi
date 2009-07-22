@@ -1,0 +1,9 @@
+<!DOCTYPE group PUBLIC
+  "-//NetBeans//DTD Group Properties 2.0//EN"
+  "http://www.netbeans.org/dtds/group-properties2_0.dtd">
+
+<group version="2.0">
+    <module name="org.gephi.branding.desktop" spec="1.0" />
+    <name unique="PreviewGroup" />
+    <state opened="false" />
+</group>
