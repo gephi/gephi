@@ -67,4 +67,6 @@ public interface GraphController {
     public FilteredGraph getFilteredGraph(Graph graph);
 
     public DynamicGraph getDynamicGraph(Graph graph);
+
+    public DynamicGraph getCentralDynamicGraph();
 }
