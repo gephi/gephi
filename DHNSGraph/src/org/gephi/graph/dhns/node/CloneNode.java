@@ -21,9 +21,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.node;
 
 import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.utils.avl.EdgeOppositeTree;
 import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
+import org.gephi.graph.dhns.utils.avl.ViewAVLTree;
+import org.gephi.graph.dhns.view.View;
 
 /**
  * Virtual clone of a PreNode to represents a node in two different groups.
@@ -40,30 +43,54 @@ public class CloneNode extends AbstractNode {
             CloneNode cn = (CloneNode) absNode;
             this.preNode = cn.getPreNode();
         } else {
-            this.preNode = (PreNode)absNode;
+            this.preNode = (PreNode) absNode;
         }
         this.preNode.addClone(this);
     }
 
     @Override
-    public boolean isEnabled() {
-        return preNode.enabled;
+    public boolean isEnabled(View view) {
+        return preNode.isEnabled(view);
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
-        preNode.setEnabled(enabled);
+    public void setEnabled(View view, boolean enabled) {
+        preNode.setEnabled(view, enabled);
     }
 
     @Override
-    public MetaEdgeTree getMetaEdgesOutTree() {
-        return preNode.getMetaEdgesOutTree();
+    public void addView(View view, boolean enabled) {
+        preNode.addView(view, enabled);
     }
 
     @Override
-    public MetaEdgeTree getMetaEdgesInTree() {
+    public void removeView(View view) {
+        preNode.removeView(view);
+    }
 
-        return preNode.getMetaEdgesInTree();
+    @Override
+    public boolean isInView(View view) {
+        return preNode.isInView(view);
+    }
+
+    @Override
+    public ViewAVLTree getViews() {
+        return preNode.getViews();
+    }
+
+    @Override
+    public MetaEdgeTree getMetaEdgesOutTree(View view) {
+        return preNode.getMetaEdgesOutTree(view);
+    }
+
+    @Override
+    public MetaEdgeTree getMetaEdgesInTree(View view) {
+        return preNode.getMetaEdgesInTree(view);
+    }
+
+    @Override
+    public void clearMetaEdges() {
+        preNode.clearMetaEdges();
     }
 
     @Override
@@ -97,6 +124,11 @@ public class CloneNode extends AbstractNode {
     }
 
     @Override
+    public GroupData getGroupData() {
+        return preNode.nodeData;
+    }
+
+    @Override
     public boolean hasAttributes() {
         return preNode.hasAttributes();
     }
@@ -121,5 +153,10 @@ public class CloneNode extends AbstractNode {
     @Override
     public PreNode getOriginalNode() {
         return preNode;
+    }
+
+    @Override
+    public String toString() {
+        return "" + getPre();
     }
 }

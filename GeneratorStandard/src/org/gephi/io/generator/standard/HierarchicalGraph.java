@@ -46,17 +46,29 @@ public class HierarchicalGraph implements Generator {
         nodeD.setLabel("Node D");
         NodeDraft nodeE = factory.newNodeDraft();
         nodeE.setLabel("Node E");
+        NodeDraft nodeF = factory.newNodeDraft();
+        nodeF.setLabel("Node F");
+        NodeDraft nodeG = factory.newNodeDraft();
+        nodeG.setLabel("Node G");
+        NodeDraft nodeH = factory.newNodeDraft();
+        nodeH.setLabel("Node H");
 
         nodeA.addChild(nodeC);
         nodeA.addChild(nodeD);
+        nodeA.addChild(nodeH);
         nodeB.addChild(nodeD);
         nodeB.addChild(nodeE);
+        nodeB.addChild(nodeF);
+        nodeB.addChild(nodeG);
 
         container.addNode(nodeA);
         container.addNode(nodeB);
         container.addNode(nodeC);
         container.addNode(nodeD);
         container.addNode(nodeE);
+        container.addNode(nodeF);
+        container.addNode(nodeG);
+        container.addNode(nodeH);
     }
 
     public String getName() {

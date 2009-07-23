@@ -171,6 +171,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
 
         edgeAttQueryTextField.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.edgeAttQueryTextField.text")); // NOI18N
 
+        testConnection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/database/standard/test_connection.png"))); // NOI18N
         testConnection.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.testConnection.text")); // NOI18N
         testConnection.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -216,7 +217,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
                             .addComponent(userTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(driverComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 234, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 216, Short.MAX_VALUE)
                                 .addComponent(testConnection))
                             .addComponent(pwdTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE))))
                 .addContainerGap())

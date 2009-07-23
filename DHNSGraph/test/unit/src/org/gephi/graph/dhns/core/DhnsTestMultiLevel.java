@@ -21,11 +21,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.core;
 
 import java.util.HashMap;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.MetaEdge;
+import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.CloneNode;
 import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.view.View;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -56,7 +60,7 @@ public class DhnsTestMultiLevel {
         nodeMap = new HashMap<String, AbstractNode>();
         DhnsGraphController controller = new DhnsGraphController();
         dhns1 = controller.getMainDhns();
-        graph1 = new ClusteredDirectedGraphImpl(dhns1, false);
+        graph1 = new ClusteredDirectedGraphImpl(dhns1, false, true);
         GraphFactoryImpl factory = controller.factory();
 
         AbstractNode nodeA = factory.newNode();
@@ -86,7 +90,7 @@ public class DhnsTestMultiLevel {
     @Test
     public void testDurableList() {
 
-        TreeStructure treeStructure = new TreeStructure();
+        TreeStructure treeStructure = new TreeStructure(new Dhns(new DhnsGraphController()));
         PreNode preNodeA = new PreNode(0, 0, 0, 0, null);
         PreNode preNodeB = new PreNode(1, 0, 0, 0, null);
         treeStructure.insertAsChild(preNodeA, treeStructure.getRoot());
@@ -124,6 +128,30 @@ public class DhnsTestMultiLevel {
     }
 
     @Test
+    public void testAddWithDescendants() {
+
+        //Add A as child of E
+        graph1.addNode(nodeMap.get("nodeA"), nodeMap.get("nodeE"));
+
+        assertTrue(graph1.isDescendant(nodeMap.get("nodeE"), nodeMap.get("nodeC")));
+        assertTrue(graph1.isDescendant(nodeMap.get("nodeE"), nodeMap.get("nodeA")));
+        assertTrue(graph1.isDescendant(nodeMap.get("nodeE"), nodeMap.get("nodeD")));
+        assertNotNull(nodeMap.get("nodeC").getOriginalNode().getClones());
+        assertEquals(2, nodeMap.get("nodeD").getOriginalNode().countClones());
+        assertEquals(9, graph1.getNodeCount());
+
+        //Add the cloned node A to B
+        AbstractNode cloneAafterE = nodeMap.get("nodeA").getOriginalNode().getClones();
+        graph1.addNode(cloneAafterE, nodeMap.get("nodeB"));
+
+        assertEquals(12, graph1.getNodeCount());
+        assertEquals(3, nodeMap.get("nodeD").getOriginalNode().countClones());
+        assertEquals(2, nodeMap.get("nodeA").getOriginalNode().countClones());
+
+    // dhns1.getTreeStructure().showTreeAsTable();
+    }
+
+    @Test
     public void testCloneRemove() {
         //Test remove a clone
         graph1.removeNode(nodeMap.get("nodeB"));
@@ -146,7 +174,7 @@ public class DhnsTestMultiLevel {
         //Test diamond
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = controller.getMainDhns();
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
         GraphFactoryImpl factory = controller.factory();
 
         AbstractNode nodeA = factory.newNode();
@@ -161,8 +189,18 @@ public class DhnsTestMultiLevel {
         graph.addNode(nodeD, nodeA);
 
         graph.removeNode(nodeD);
-        assertFalse(graph1.contains(nodeD));
+        assertFalse(graph.contains(nodeD));
         assertEquals(2, ((PreNode) nodeA).size);
+
+        //Test remove complex
+        setUp();
+        graph1.addNode(nodeMap.get("nodeA"), nodeMap.get("nodeE"));
+        AbstractNode cloneAafterE = nodeMap.get("nodeA").getOriginalNode().getClones();
+        graph1.addNode(cloneAafterE, nodeMap.get("nodeB"));
+        graph1.removeNode(nodeMap.get("nodeA"));
+        assertEquals(2, graph1.getNodeCount());
+        assertTrue(graph1.contains(nodeMap.get("nodeB")));
+        assertTrue(graph1.contains(nodeMap.get("nodeE")));
 
     //dhns.getTreeStructure().showTreeAsTable();
     }
@@ -170,9 +208,10 @@ public class DhnsTestMultiLevel {
     @Test
     public void testEnabled() {
         graph1.expand(nodeMap.get("nodeB"));
-        assertTrue(dhns1.getTreeStructure().hasEnabledDescendant(nodeMap.get("nodeB")));
+        View mainView = dhns1.getViewManager().getMainView();
+        assertTrue(dhns1.getTreeStructure().hasEnabledDescendant(mainView, nodeMap.get("nodeB")));
 
-        dhns1.getTreeStructure().showTreeAsTable();
+    //dhns1.getTreeStructure().showTreeAsTable();
     }
 
     @Test
@@ -196,5 +235,30 @@ public class DhnsTestMultiLevel {
         assertEquals(3, preNode.countClones());
         preNode.removeClone(cn4);
         assertEquals(cn3, cn5.getNext());
+    }
+
+    @Test
+    public void testGetEnabledAncestors() {
+        dhns1.getTreeStructure().showTreeAsTable();
+        View mainView = dhns1.getViewManager().getMainView();
+        AbstractNode[] enabled = dhns1.getTreeStructure().getEnabledAncestorsOrSelf(mainView, nodeMap.get("nodeD"));
+        assertArrayEquals(new AbstractNode[]{nodeMap.get("nodeA"), nodeMap.get("nodeB")}, enabled);
+    }
+
+    @Test
+    public void testComputeMetaEdges() {
+
+        GraphFactoryImpl factory = dhns1.getGraphFactory();
+        Node nodeF = factory.newNode();
+        graph1.addNode(nodeF);
+        graph1.addNode(nodeMap.get("nodeE"), nodeF);
+        graph1.addEdge(nodeMap.get("nodeD"), nodeMap.get("nodeE"));
+
+        Edge[] metaEdges = graph1.getMetaEdges().toArray();
+        MetaEdge[] expectedArray = new MetaEdge[3];
+        expectedArray[0] = graph1.getMetaEdge(nodeMap.get("nodeA"), nodeMap.get("nodeB"));
+        expectedArray[1] = graph1.getMetaEdge(nodeMap.get("nodeA"), nodeF);
+        expectedArray[2] = graph1.getMetaEdge(nodeMap.get("nodeB"), nodeF);
+        assertArrayEquals(expectedArray, metaEdges);
     }
 }

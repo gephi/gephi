@@ -23,7 +23,6 @@ package org.gephi.graph.dhns.node.iterators;
 import java.util.Iterator;
 import org.gephi.graph.dhns.core.DurableTreeList;
 import org.gephi.graph.dhns.core.TreeStructure;
-import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.api.Node;
@@ -32,7 +31,7 @@ import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
- * {@link AbstractNode} iterator for enabled and visible nodes.
+ * {@link AbstractNode} iterator for all nodes nodes.
  * 
  * @author Mathieu Bastian
  */
@@ -73,20 +72,29 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
                     currentNode = currentNode.next();
                 }
 
-                while (!currentNode.getValue().isEnabled()) {
-                    ++nextIndex;
-                    if (nextIndex >= treeSize) {
-                        return false;
-                    }
-                    currentNode = currentNode.next();
-                }
-
-                if (!proposition.evaluate(currentNode.getValue())) {
+                if (currentNode.getValue().isClone()) {
                     nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
                     diffIndex = nextIndex - currentNode.getValue().pre;
+                    if (nextIndex >= treeList.size()) {
+                        return false;
+                    }
                 } else {
+                    while (!proposition.evaluate(currentNode.getValue())) {
+                        ++nextIndex;
+                        if (nextIndex >= treeSize) {
+                            return false;
+                        }
+                        currentNode = currentNode.next();
+                    }
                     return true;
                 }
+
+            /*if (!proposition.evaluate(currentNode.getValue())) {
+            nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
+            diffIndex = nextIndex - currentNode.getValue().pre;
+            } else {
+            return true;
+            }*/
 
             } else {
                 return false;
@@ -95,10 +103,9 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
     }
 
     public AbstractNode next() {
-        nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
-        diffIndex = nextIndex - currentNode.getValue().pre;
-        AbstractNode res = currentNode.getValue();
-        return res;
+        nextIndex++;
+        diffIndex = 1;
+        return currentNode.getValue();
     }
 
     public void remove() {

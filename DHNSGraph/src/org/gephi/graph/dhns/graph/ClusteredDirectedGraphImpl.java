@@ -39,6 +39,7 @@ import org.gephi.graph.dhns.edge.iterators.RangeEdgeIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
+import org.gephi.graph.dhns.node.iterators.TreeViewIterator;
 
 /**
  * Implementation of clustered directed graph.
@@ -47,8 +48,8 @@ import org.gephi.graph.dhns.node.iterators.TreeIterator;
  */
 public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements ClusteredDirectedGraph {
 
-    public ClusteredDirectedGraphImpl(Dhns dhns, boolean visible) {
-        super(dhns, visible);
+    public ClusteredDirectedGraphImpl(Dhns dhns, boolean visible, boolean clustered) {
+        super(dhns, visible, clustered);
     }
 
     public boolean addEdge(Edge edge) {
@@ -160,6 +161,12 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
     }
 
+    //Clustered
+    public EdgeIterable getEdgesInView() {
+        readLock();
+        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeViewIterator(dhns.getTreeStructure(), nodeEnabledProposition), false, edgeEnabledProposition));
+    }
+
     //Directed
     public EdgeIterable getInEdges(Node node) {
         AbstractNode absNode = checkNode(node);
@@ -244,28 +251,28 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     //ClusteredGraph
     public EdgeIterable getMetaEdges() {
         readLock();
-        return dhns.newEdgeIterable(new MetaEdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
+        return dhns.newEdgeIterable(new MetaEdgeIterator(view, dhns.getTreeStructure(), new TreeViewIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
     }
 
     //ClusteredGraph
     public EdgeIterable getMetaEdges(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
-        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, edgeProposition));
+        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(view, absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, edgeProposition));
     }
 
     //DirectedClusteredGraph
     public EdgeIterable getMetaInEdges(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
-        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.IN, false, edgeProposition));
+        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(view, absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.IN, false, edgeProposition));
     }
 
     //DirectedClusteredGraph
     public EdgeIterable getMetaOutEdges(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
-        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.OUT, false, edgeProposition));
+        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(view, absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.OUT, false, edgeProposition));
     }
 
     //DirectedClusteredGraph
@@ -273,14 +280,14 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        if (!edgeProposition.isTautology() && !absNode.getMetaEdgesInTree().isEmpty()) {
-            for (Iterator<MetaEdgeImpl> itr = absNode.getMetaEdgesInTree().iterator(); itr.hasNext();) {
+        if (!edgeProposition.isTautology() && !absNode.getMetaEdgesInTree(view).isEmpty()) {
+            for (Iterator<MetaEdgeImpl> itr = absNode.getMetaEdgesInTree(view).iterator(); itr.hasNext();) {
                 if (edgeProposition.evaluate(itr.next())) {
                     count++;
                 }
             }
         } else {
-            count = absNode.getMetaEdgesInTree().getCount();
+            count = absNode.getMetaEdgesInTree(view).getCount();
         }
         readUnlock();
         return count;
@@ -291,14 +298,14 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        if (!edgeProposition.isTautology() && !absNode.getMetaEdgesOutTree().isEmpty()) {
-            for (Iterator<MetaEdgeImpl> itr = absNode.getMetaEdgesOutTree().iterator(); itr.hasNext();) {
+        if (!edgeProposition.isTautology() && !absNode.getMetaEdgesOutTree(view).isEmpty()) {
+            for (Iterator<MetaEdgeImpl> itr = absNode.getMetaEdgesOutTree(view).iterator(); itr.hasNext();) {
                 if (edgeProposition.evaluate(itr.next())) {
                     count++;
                 }
             }
         } else {
-            count = absNode.getMetaEdgesOutTree().getCount();
+            count = absNode.getMetaEdgesOutTree(view).getCount();
         }
         readUnlock();
         return count;
@@ -312,13 +319,13 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public EdgeIterable getMetaEdgeContent(Edge metaEdge) {
         MetaEdgeImpl metaEdgeImpl = checkMetaEdge(metaEdge);
         readLock();
-        return dhns.newEdgeIterable(new MetaEdgeContentIterator(metaEdgeImpl, false, edgeProposition));
+        return dhns.newEdgeIterable(new MetaEdgeContentIterator(view, metaEdgeImpl, false, edgeProposition));
     }
 
     //ClusteredDirected
     public MetaEdge getMetaEdge(Node source, Node target) {
         AbstractNode AbstractNodeSource = checkNode(source);
         AbstractNode AbstractNodeTarget = checkNode(target);
-        return AbstractNodeSource.getMetaEdgesOutTree().getItem(AbstractNodeTarget.getNumber());
+        return AbstractNodeSource.getMetaEdgesOutTree(view).getItem(AbstractNodeTarget.getNumber());
     }
 }

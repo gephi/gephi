@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
@@ -26,22 +25,23 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import org.gephi.io.importer.FileType;
 import org.gephi.io.importer.ImportController;
-import org.gephi.io.importer.ImportException;
 import org.gephi.ui.utils.DialogFileFilter;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 import org.openide.util.actions.SystemAction;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class OpenFile extends SystemAction {
+
+    private static final String LAST_PATH = "OpenFile_Last_Path";
+    private static final String LAST_PATH_DEFAULT = "OpenFile_Last_Path_Default";
 
     @Override
     public String getName() {
@@ -55,13 +55,16 @@ public class OpenFile extends SystemAction {
 
     @Override
     public void actionPerformed(ActionEvent ev) {
+        //Get last directory
+        String lastPathDefault = NbPreferences.forModule(OpenFile.class).get(LAST_PATH_DEFAULT, null);
+        String lastPath = NbPreferences.forModule(OpenFile.class).get(LAST_PATH, lastPathDefault);
+
         //Init dialog
-        final JFileChooser chooser = new JFileChooser();
+        final JFileChooser chooser = new JFileChooser(lastPath);
         DialogFileFilter graphFilter = new DialogFileFilter(NbBundle.getMessage(getClass(), "OpenFile_filechooser_graphfilter"));
 
         ImportController importController = Lookup.getDefault().lookup(ImportController.class);
-        for(FileType fileType : importController.getFileTypes())
-        {
+        for (FileType fileType : importController.getFileTypes()) {
             DialogFileFilter dialogFileFilter = new DialogFileFilter(fileType.getName());
             dialogFileFilter.addExtensions(fileType.getExtensions());
             chooser.addChoosableFileFilter(dialogFileFilter);
@@ -71,14 +74,18 @@ public class OpenFile extends SystemAction {
         chooser.addChoosableFileFilter(graphFilter);
 
         //Open dialog
-         int returnFile = chooser.showOpenDialog(null);
+        int returnFile = chooser.showOpenDialog(null);
 
         if (returnFile == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
             file = FileUtil.normalizeFile(file);
             FileObject fileObject = FileUtil.toFileObject(file);
+
+            //Save last path
+            NbPreferences.forModule(OpenFile.class).put(LAST_PATH, file.getAbsolutePath());
+
+            //Do
             importController.doImport(fileObject);
         }
     }
-
 }

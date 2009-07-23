@@ -47,5 +47,4 @@ public interface Node {
      * @return the nodes <code>pre</code> number
      */
     public int getPost();
-    
 }

@@ -23,6 +23,7 @@ package org.gephi.graph.dhns.node.iterators;
 import java.util.Iterator;
 import org.gephi.graph.dhns.core.DurableTreeList;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
+import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
 
 /**
@@ -34,14 +35,12 @@ public class PreNodeTreeListIterator extends AbstractNodeIterator implements Ite
 
     protected final DurableTreeList treeList;
     protected DurableAVLNode next;
-    protected int nextIndex;
-    protected int diffIndex;
     protected DurableAVLNode currentNode;
+    protected int nextIndex;
 
     public PreNodeTreeListIterator(DurableTreeList treeList, int fromIndex) throws IndexOutOfBoundsException {
         this.treeList = treeList;
         this.nextIndex = fromIndex;
-        this.diffIndex = 2;
     }
 
     public PreNodeTreeListIterator(DurableTreeList treeList) throws IndexOutOfBoundsException {
@@ -49,35 +48,57 @@ public class PreNodeTreeListIterator extends AbstractNodeIterator implements Ite
     }
 
     public boolean hasNext() {
-        while (true) {
-            if (nextIndex < treeList.size()) {
-                if (diffIndex > 1) {
-                    currentNode = treeList.getNode(nextIndex);
-                } else {
-                    currentNode = currentNode.next();
-                }
-
-                if (currentNode.getValue().isClone()) {
-                    nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
-                    diffIndex = nextIndex - currentNode.getValue().pre;
-                    if (nextIndex >= treeList.size()) {
-                        return false;
-                    }
-                } else {
-                    return true;
-                }
+        while (nextIndex < treeList.size()) {
+            if (next == null) {
+                next = treeList.getNode(nextIndex);
             } else {
-                return false;
+                next = next.next();
+            }
+
+            AbstractNode value = next.getValue();
+            value.avlNode.setIndex(nextIndex);
+            ++nextIndex;
+
+            if (!value.isClone()) {
+                return true;
             }
         }
+        return false;
     }
 
     public PreNode next() {
-        nextIndex++;
-        diffIndex = 1;
-        return (PreNode) currentNode.getValue();
+        return (PreNode) next.getValue();
     }
 
+    /*public boolean hasNext() {
+    while (true) {
+    if (nextIndex < treeList.size()) {
+    if (diffIndex > 1) {
+    currentNode = treeList.getNode(nextIndex);
+    } else {
+    currentNode = currentNode.next();
+    }
+
+    if (currentNode.getValue().isClone()) {
+    nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
+    diffIndex = nextIndex - currentNode.getValue().pre;
+    if (nextIndex >= treeList.size()) {
+    return false;
+    }
+    } else {
+    return true;
+    }
+    } else {
+    return false;
+    }
+    }
+    }
+
+    public PreNode next() {
+    nextIndex++;
+    diffIndex = 1;
+    return (PreNode) currentNode.getValue();
+    }*/
     public void remove() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

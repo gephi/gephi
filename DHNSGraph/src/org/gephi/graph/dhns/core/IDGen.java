@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.graph.dhns.core;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,6 +31,7 @@ public class IDGen {
 
     private AtomicInteger nodeGen = new AtomicInteger();
     private AtomicInteger edgeGen = new AtomicInteger();
+    private AtomicInteger viewGen = new AtomicInteger();
 
     public int newNodeId() {
         return nodeGen.getAndIncrement();
@@ -39,5 +39,9 @@ public class IDGen {
 
     public int newEdgeId() {
         return edgeGen.getAndIncrement();
+    }
+
+    public int newViewId() {
+        return viewGen.getAndIncrement();
     }
 }

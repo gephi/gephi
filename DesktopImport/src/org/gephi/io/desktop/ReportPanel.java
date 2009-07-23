@@ -21,9 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.desktop;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.util.List;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.event.TreeModelListener;
@@ -47,9 +47,23 @@ public class ReportPanel extends javax.swing.JPanel {
 
     private ThreadGroup fillingThreads;
 
+    //Icons
+    private ImageIcon infoIcon;
+    private ImageIcon warningIcon;
+    private ImageIcon severeIcon;
+    private ImageIcon criticalIcon;
+
     public ReportPanel() {
         initComponents();
+        initIcons();
         fillingThreads = new ThreadGroup("Report Panel Issues");
+    }
+
+    public void initIcons() {
+        infoIcon = new javax.swing.ImageIcon(getClass().getResource("/org/gephi/io/desktop/info.png"));
+        warningIcon = new javax.swing.ImageIcon(getClass().getResource("/org/gephi/io/desktop/warning.gif"));
+        severeIcon = new javax.swing.ImageIcon(getClass().getResource("/org/gephi/io/desktop/severe.png"));
+        criticalIcon = new javax.swing.ImageIcon(getClass().getResource("/org/gephi/io/desktop/critical.png"));
     }
 
     public void setData(Report report, Container container) {
@@ -393,6 +407,17 @@ public class ReportPanel extends javax.swing.JPanel {
         }
 
         public Icon getIcon(Object o) {
+            Issue issue = (Issue) o;
+            switch (issue.getLevel()) {
+                case INFO:
+                    return infoIcon;
+                case WARNING:
+                    return warningIcon;
+                case SEVERE:
+                    return severeIcon;
+                case CRITICAL:
+                    return criticalIcon;
+            }
             return null;
         }
     }

@@ -22,6 +22,7 @@ package org.gephi.visualization.opengl.compatibility.objects;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
+import org.gephi.graph.api.Node;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.hull.ConvexHull;
@@ -34,7 +35,9 @@ import org.gephi.visualization.opengl.octree.Octant;
 public class ConvexHullModel extends ModelImpl<ConvexHull> {
 
     protected boolean autoSelect = false;
-    protected boolean requestUpdate = false;
+    protected boolean requestUpdate = true;
+    protected float scale = 0.1f;
+    protected float scaleQuantum = 0.1f;
 
     @Override
     public int[] octreePosition(float centerX, float centerY, float centerZ, float size) {
@@ -44,13 +47,16 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
     @Override
     public boolean isInOctreeLeaf(Octant leaf) {
         ModelImpl[] nodes = obj.getNodes();
+        if (nodes.length != octants.length) {
+            return false;
+        }
         for (int i = 0; i < nodes.length; i++) {
             ModelImpl model = nodes[i];
-            if (model.isInOctreeLeaf(leaf)) {
-                return true;
+            if (model.getOctants()[0] != octants[i]) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     @Override
@@ -62,32 +68,52 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
         float r = obj.r();
         float g = obj.g();
         float b = obj.b();
-        float rlight = Math.min(1, 0.5f * r + 0.5f);
+        /*float rlight = Math.min(1, 0.5f * r + 0.5f);
         float glight = Math.min(1, 0.5f * g + 0.5f);
-        float blight = Math.min(1, 0.5f * b + 0.5f);
+        float blight = Math.min(1, 0.5f * b + 0.5f);*/
 
         //Fill
         if (selected) {
-            gl.glColor3f(r, b, b);
+            gl.glColor4f(r, g, b, 0.8f);
         } else {
-            gl.glColor3f(rlight, glight, blight);
+            gl.glColor4f(r, g, b, 0.15f);
         }
+
+        //Centroid
+        float centroidX = 0f;
+        float centroidY = 0f;
+
+        //Scale factor
+        if (scale < 1f && scale > 0f) {
+            centroidX = obj.x();
+            centroidY = obj.y();
+            gl.glPushMatrix();
+            gl.glTranslatef(centroidX, centroidY, 0f);
+            gl.glScalef(scale, scale, 1f);
+        }
+
+
         gl.glBegin(GL.GL_POLYGON);
         ModelImpl[] nodes = obj.getNodes();
         for (int i = 0; i < nodes.length; i++) {
             ModelImpl node = nodes[i];
-            gl.glVertex3f(node.getObj().x(), node.getObj().y(), node.getObj().z());
+            gl.glVertex3f(node.getObj().x() - centroidX, node.getObj().y() - centroidY, node.getObj().z());
         }
         gl.glEnd();
 
         //Line
-        gl.glColor3f(r, g, b);
+        gl.glColor4f(r, g, b, 0.8f);
         gl.glBegin(GL.GL_LINE_LOOP);
         for (int i = 0; i < nodes.length; i++) {
             ModelImpl node = nodes[i];
-            gl.glVertex3f(node.getObj().x(), node.getObj().y(), node.getObj().z());
+            gl.glVertex3f(node.getObj().x() - centroidX, node.getObj().y() - centroidY, node.getObj().z());
         }
         gl.glEnd();
+
+        if (scale < 1f && scale > 0f) {
+            scale += scaleQuantum;
+            gl.glPopMatrix();
+        }
     }
 
     @Override
@@ -112,11 +138,32 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
     @Override
     public Octant[] getOctants() {
         ModelImpl[] nodes = obj.getNodes();
-        Octant[] oc = new Octant[nodes.length];
-        for (int i = 0; i < oc.length; i++) {
-            oc[i] = nodes[i].getOctants()[0];
+        Octant[] newOctants = new Octant[nodes.length];
+        boolean allNull = true;
+        for (int i = 0; i < newOctants.length; i++) {
+            Octant oc = nodes[i].getOctants()[0];
+            newOctants[i] = oc;
+            if (oc != null) {
+                allNull = false;
+            }
         }
-        return oc;
+        if (!allNull) {
+            octants = newOctants;
+        }
+        return octants;
+    }
+
+    @Override
+    public void resetOctant() {
+        octants = null;
+    }
+
+    @Override
+    public void destroy() {
+        for (Node node : obj.getGroupNodes()) {
+            ModelImpl model = (ModelImpl) node.getNodeData().getModel();
+            model.removePositionChainItem(this);
+        }
     }
 
     @Override
@@ -137,5 +184,13 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
     @Override
     public void updatePositionFlag() {
         requestUpdate = true;
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+
+    public void setScaleQuantum(float scaleQuantum) {
+        this.scaleQuantum = scaleQuantum;
     }
 }

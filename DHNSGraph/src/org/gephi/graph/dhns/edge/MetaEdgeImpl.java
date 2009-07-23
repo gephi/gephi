@@ -23,6 +23,7 @@ package org.gephi.graph.dhns.edge;
 import org.gephi.graph.api.MetaEdge;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.utils.avl.EdgeTree;
+import org.gephi.graph.dhns.view.View;
 
 /**
  * Meta edge implementation. Edge between upper activated clusters in hierarchy. Contains lower edges.
@@ -59,10 +60,14 @@ public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
 
     @Override
     public AbstractEdge getUndirected() {
+        throw new UnsupportedOperationException("Use getUndirected(View)");
+    }
+
+    public AbstractEdge getUndirected(View view) {
         if (source == target) {
             return this;
         }
-        AbstractEdge mutual = source.getMetaEdgesInTree().getItem(target.getNumber());
+        AbstractEdge mutual = source.getMetaEdgesInTree(view).getItem(target.getNumber());
         if (mutual != null && mutual.getId() < ID) {
             return mutual;
         }

@@ -54,7 +54,7 @@ public class VizConfig {
     private float[] defaultCameraPosition = {0f, 0f, 5000f};
     protected float[] nodeSelectedColor = {1f, 1f, 1f};
     protected boolean selectionEnable = true;
-    protected boolean rectangleSelection = false;
+    protected boolean rectangleSelection = true;
     protected float[] rectangleSelectionColor = {0.16f, 0.48f, 0.81f, 0.2f};
     protected boolean draggingEnable = true;
     protected boolean cameraControlEnable = true;
@@ -62,7 +62,7 @@ public class VizConfig {
     protected boolean showFPS = true;
     protected boolean showEdges = true;
     protected boolean showArrows = true;
-    protected boolean showLabels = false;
+    protected boolean showLabels = true;
     protected boolean showEdgeLabels = true;
     protected boolean lightenNonSelectedAuto = true;
     protected boolean lightenNonSelected = true;
@@ -87,7 +87,8 @@ public class VizConfig {
     protected Font defaultLabelFont = new Font("Arial", Font.BOLD, 20);
     protected boolean showVizVar = false;
     protected boolean visualizeTree = false;
-    protected boolean contextMenu = false;
+    protected boolean contextMenu = true;
+    protected boolean adjustByText = false;
 
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
@@ -198,6 +199,10 @@ public class VizConfig {
 
     public boolean isShowEdgeLabels() {
         return showEdgeLabels;
+    }
+
+    public boolean isAdjustByText() {
+        return adjustByText;
     }
 
     public boolean isShowVizVar() {

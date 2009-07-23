@@ -173,6 +173,9 @@ public abstract class GLAbstractListener implements GLEventListener {
         GraphicalConfiguration graphicalConfiguration = new GraphicalConfiguration();
         graphicalConfiguration.checkGeneralCompatibility(gl);
 
+        //Reinit viewport, to ensure reshape to perform
+        viewport = BufferUtil.newIntBuffer(4);
+
         resizing = false;
         initConfig(gl);
         init(gl);
@@ -201,11 +204,11 @@ public abstract class GLAbstractListener implements GLEventListener {
 
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         if (!resizing) {
-            resizing = true;
             if (viewport.get(2) == width && viewport.get(3) == height)//NO need
             {
                 return;
             }
+            resizing = true;
 
             if (height == 0) {
                 height = 1;

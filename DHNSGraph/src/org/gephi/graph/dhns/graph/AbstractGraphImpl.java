@@ -46,50 +46,50 @@ public class AbstractGraphImpl {
         ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
 
         for (; nodeIterator.hasNext();) {
-            PreNode node = nodeIterator.next();
-            PreNode duplicate = factory.duplicateNode(node);
-            nodeIdTree.add(duplicate);
+        PreNode node = nodeIterator.next();
+        PreNode duplicate = factory.duplicateNode(node);
+        nodeIdTree.add(duplicate);
         }
 
         for (TreeListIterator itr = new TreeListIterator(tree.getTree(), 1); itr.hasNext();) {
-            PreNode newNode = itr.next();
+        PreNode newNode = itr.next();
 
-            //New edge OUT tree
-            EdgeOppositeTree edgeOutTree = new EdgeOppositeTree(newNode);
-            if (!newNode.getEdgesOutTree().isEmpty()) {
-                for (edgeIterator.setNode(newNode.getEdgesOutTree()); edgeIterator.hasNext();) {
-                    AbstractEdge edge = edgeIterator.next();
-                    PreNode target = nodeIdTree.getItem(edge.getTarget().getNumber());
-                    if (target != null) {
-                        //The edge target is also in the subgraph
-                        AbstractEdge duplicate = factory.duplicateEdge(edge, newNode, target);
-                        edgeOutTree.add(duplicate);
-                    }
-                }
-            }
-            newNode.setEdgesOutTree(edgeOutTree);
+        //New edge OUT tree
+        EdgeOppositeTree edgeOutTree = new EdgeOppositeTree(newNode);
+        if (!newNode.getEdgesOutTree().isEmpty()) {
+        for (edgeIterator.setNode(newNode.getEdgesOutTree()); edgeIterator.hasNext();) {
+        AbstractEdge edge = edgeIterator.next();
+        PreNode target = nodeIdTree.getItem(edge.getTarget().getNumber());
+        if (target != null) {
+        //The edge target is also in the subgraph
+        AbstractEdge duplicate = factory.duplicateEdge(edge, newNode, target);
+        edgeOutTree.add(duplicate);
+        }
+        }
+        }
+        newNode.setEdgesOutTree(edgeOutTree);
 
-            //New edge IN tree
-            EdgeOppositeTree edgeInTree = new EdgeOppositeTree(newNode);
-            if (!newNode.getEdgesInTree().isEmpty()) {
-                for (edgeIterator.setNode(newNode.getEdgesInTree()); edgeIterator.hasNext();) {
-                    AbstractEdge edge = edgeIterator.next();
-                    PreNode source = nodeIdTree.getItem(edge.getSource().getNumber());
-                    if (source != null) {
-                        //The edge source is also in the subgraph
-                        AbstractEdge duplicate = factory.duplicateEdge(edge, source, newNode);
-                        edgeInTree.add(duplicate);
-                    }
-                }
-            }
-            newNode.setEdgesInTree(edgeInTree);
+        //New edge IN tree
+        EdgeOppositeTree edgeInTree = new EdgeOppositeTree(newNode);
+        if (!newNode.getEdgesInTree().isEmpty()) {
+        for (edgeIterator.setNode(newNode.getEdgesInTree()); edgeIterator.hasNext();) {
+        AbstractEdge edge = edgeIterator.next();
+        PreNode source = nodeIdTree.getItem(edge.getSource().getNumber());
+        if (source != null) {
+        //The edge source is also in the subgraph
+        AbstractEdge duplicate = factory.duplicateEdge(edge, source, newNode);
+        edgeInTree.add(duplicate);
+        }
+        }
+        }
+        newNode.setEdgesInTree(edgeInTree);
 
-            //Clear meta edges
-            newNode.getMetaEdgesInTree().clear();
-            newNode.getMetaEdgesOutTree().clear();
+        //Clear meta edges
+        newNode.getMetaEdgesInTree().clear();
+        newNode.getMetaEdgesOutTree().clear();
 
         }
-*/
+         */
         return newDhns;
     }
 

@@ -62,8 +62,8 @@ public class DhnsTestUndirectedGraph {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = controller.getMainDhns();
-        graphGlobal = new ClusteredUndirectedGraphImpl(dhnsGlobal, false);
-        ClusteredDirectedGraphImpl diGraph = new ClusteredDirectedGraphImpl(dhnsGlobal, false);
+        graphGlobal = new ClusteredUndirectedGraphImpl(dhnsGlobal, false, true);
+        ClusteredDirectedGraphImpl diGraph = new ClusteredDirectedGraphImpl(dhnsGlobal, false, true);
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
@@ -127,7 +127,7 @@ public class DhnsTestUndirectedGraph {
     public void testAddEdge() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = controller.getMainDhns();
-        ClusteredUndirectedGraphImpl graph = new ClusteredUndirectedGraphImpl(dhns, false);
+        ClusteredUndirectedGraphImpl graph = new ClusteredUndirectedGraphImpl(dhns, false, true);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.getGraphFactory();
 
@@ -210,7 +210,7 @@ public class DhnsTestUndirectedGraph {
         assertNull(node5.getEdgesInTree().getItem(node6.getNumber()));
         assertNull(node6.getEdgesInTree().getItem(node5.getNumber()));
 
-        PreNode node7 = (PreNode)nodeMap.get("Node 7");
+        PreNode node7 = (PreNode) nodeMap.get("Node 7");
         graphGlobal.removeEdge(edgeMap.get("7-7"));
 
         assertNull(node7.getEdgesOutTree().getItem(node7.getNumber()));
@@ -285,7 +285,7 @@ public class DhnsTestUndirectedGraph {
     public void testGetEdgesNode() {
 
         graphGlobal.addEdge(nodeMap.get("Node 5"), nodeMap.get("Node 3"));
-        edgeMap.put("5-3",graphGlobal.getEdge(nodeMap.get("Node 5"), nodeMap.get("Node 3")));
+        edgeMap.put("5-3", graphGlobal.getEdge(nodeMap.get("Node 5"), nodeMap.get("Node 3")));
 
         //Test1
         System.out.print("testGetEdgesNode: ");
@@ -331,15 +331,15 @@ public class DhnsTestUndirectedGraph {
 
         int i = 0;
         for (Node n : graphGlobal.getNeighbors(nodeMap.get("Node 5"))) {
-            System.out.print(n.getId()+" ");
+            System.out.print(n.getId() + " ");
             actual[i++] = n;
         }
         System.out.println();
         assertArrayEquals(expected, actual);
 
-         //Test Self loop
-         Node[] array = graphGlobal.getNeighbors(nodeMap.get("Node 7")).toArray();
-         assertEquals("self loop array length 0", 0, array.length);
+        //Test Self loop
+        Node[] array = graphGlobal.getNeighbors(nodeMap.get("Node 7")).toArray();
+        assertEquals("self loop array length 0", 0, array.length);
     }
 
     @Test
@@ -349,11 +349,11 @@ public class DhnsTestUndirectedGraph {
         Edge edge1 = edgeMap.get("4-5");
         Edge edge2 = edgeMap.get("4-4");
 
-        assertEquals(node5,graphGlobal.getOpposite(node4, edge1));
-        assertEquals(node4,graphGlobal.getOpposite(node4, edge2));
+        assertEquals(node5, graphGlobal.getOpposite(node4, edge1));
+        assertEquals(node4, graphGlobal.getOpposite(node4, edge2));
     }
 
-     @Test
+    @Test
     public void testDegree() {
         Node node5 = nodeMap.get("Node 5");
         Node node4 = nodeMap.get("Node 4");
@@ -366,7 +366,7 @@ public class DhnsTestUndirectedGraph {
 
     @Test
     public void testEdgeCount() {
-        assertEquals(4,graphGlobal.getEdgeCount());
+        assertEquals(4, graphGlobal.getEdgeCount());
     }
 
     @Test

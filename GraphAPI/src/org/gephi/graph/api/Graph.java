@@ -91,9 +91,6 @@ public interface Graph {
 
     /**
      * Returns nodes contained in the graph.
-     * <p>
-     * In the case of a hierarchical graph, only nodes in the current view will be returned.
-     * See {@link ClusteredGraph} for details.
      * @return a node iterable of nodes contained in the graph.
      */
     public NodeIterable getNodes();
@@ -255,6 +252,19 @@ public interface Graph {
     public void setVisible(Edge edge, boolean visible);
 
     /**
+     * Add <code>graphListener</code> as a listener to this graph, if it is not already.
+     * To pass a <code>WeakReference</code>, use Netbeans <code>WeakListeners</code> utility class.
+     * @param graphListener the listener to add
+     */
+    public void addGraphListener(GraphListener graphListener);
+
+    /**
+     * Remove <code>graphListener</code> as a listener to this graph.
+     * @param graphListener the listener to remove
+     */
+    public void removeGraphListener(GraphListener graphListener);
+
+    /**
      * Returns <code>true</code> if the graph is <b>directed</b> by default. This value is an
      * indicator of the current state and it means that so far all edges are directed in the graph.
      * @return <code>true</code> if the graph is only directed or <code>false</code> otherwise
@@ -281,12 +291,12 @@ public interface Graph {
     public boolean isMixed();
 
     /**
-     * Returns <code>true</code> if the graph is <b>clustered</b>. This indicates the presence
+     * Returns <code>true</code> if the graph is <b>hierarchical</b>. This indicates the presence
      * of a hierarchy, in other words the height of the tree is greater than 0.
      * @return <code>true</code> if the graph is clustered or <code>false</code> otherwise
-     * @see ClusteredGraph
+     * @see HierarchicalGraph
      */
-    public boolean isClustered();
+    public boolean isHierarchical();
 
     /**
      * Acquire a read lock on the graph. Calling thread will be blocked until all write locks are released.

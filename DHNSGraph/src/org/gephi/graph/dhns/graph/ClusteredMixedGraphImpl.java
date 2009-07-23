@@ -34,6 +34,7 @@ import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
+import org.gephi.graph.dhns.node.iterators.TreeViewIterator;
 
 /**
  * Implementation of clustered sparse graph.
@@ -45,8 +46,8 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
     private Condition<Edge> undirectedCondition;
     private Condition<Edge> directedCondition;
 
-    public ClusteredMixedGraphImpl(Dhns dhns, boolean visible) {
-        super(dhns, visible);
+    public ClusteredMixedGraphImpl(Dhns dhns, boolean visible, boolean clustered) {
+        super(dhns, visible, clustered);
         directedCondition = new Condition<Edge>() {
 
             public boolean isValid(Edge t) {
@@ -154,6 +155,11 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
     public EdgeIterable getEdges() {
         readLock();
         return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
+    }
+
+    public EdgeIterable getEdgesInView() {
+        readLock();
+        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeViewIterator(dhns.getTreeStructure(), nodeEnabledProposition), false, edgeEnabledProposition));
     }
 
     public NodeIterable getNeighbors(Node node) {

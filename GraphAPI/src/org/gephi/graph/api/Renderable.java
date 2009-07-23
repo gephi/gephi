@@ -62,4 +62,8 @@ public interface Renderable extends Spatial {
     public TextData getTextData();
 
     public void setTextData(TextData textData);
+
+    public void setLabelVisible(boolean value);
+
+    public boolean isLabelVisible();
 }

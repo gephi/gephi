@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.edge;
 
 import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.DynamicData;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.LayoutData;
@@ -33,7 +34,7 @@ import org.gephi.graph.api.TextData;
  *
  * @author Mathieu Bastian
  */
-public class EdgeDataImpl implements EdgeData {
+public class EdgeDataImpl implements EdgeData, DynamicData {
 
     protected Edge edge;
     protected LayoutData layoutData;
@@ -43,9 +44,12 @@ public class EdgeDataImpl implements EdgeData {
     protected float b = 0f;
     protected float alpha = 1f;
     protected float cardinal = 1f;
+    protected boolean labelVisible = true;
     private Model model;
     protected Attributes attributes;
     protected TextData textData;
+    protected int dynamicRangeFrom;
+    protected int dynamicRangeTo;
 
     public EdgeDataImpl(Edge edge) {
         this.edge = edge;
@@ -165,5 +169,34 @@ public class EdgeDataImpl implements EdgeData {
 
     public void setTextData(TextData textData) {
         this.textData = textData;
+    }
+
+    public boolean isLabelVisible() {
+        return labelVisible;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setLabelVisible(boolean value) {
+        this.labelVisible = value;
+    }
+
+    public DynamicData getDynamicData() {
+        return this;
+    }
+
+    public int getRangeFrom() {
+        return dynamicRangeFrom;
+    }
+
+    public int getRangeTo() {
+        return dynamicRangeTo;
+    }
+
+    public void setRange(int from, int to) {
+        this.dynamicRangeFrom = from;
+        this.dynamicRangeTo = to;
     }
 }

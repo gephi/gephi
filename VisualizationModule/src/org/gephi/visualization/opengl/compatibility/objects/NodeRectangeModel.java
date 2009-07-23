@@ -73,14 +73,22 @@ public class NodeRectangeModel extends ModelImpl<NodeData> {
     public void display(GL gl, GLU glu) {
         boolean selec = selected;
         boolean neighbor = false;
+        highlight = false;
         if (config.isAutoSelectNeighbor() && mark && !selec) {
             selec = true;
+            highlight = true;
             neighbor = true;
         }
         mark = false;
-        float size = obj.getSize();
-        width = size;
-        height = size;
+        if (config.isAdjustByText()) {
+            width = obj.getTextData().getWidth() * 1.2f;
+            height = obj.getTextData().getHeight() * 1.2f;
+        } else {
+            float size = obj.getSize();
+            width = size;
+            height = size;
+        }
+
         float w = width / 2f;
         float h = height / 2f;
         float x = obj.x();

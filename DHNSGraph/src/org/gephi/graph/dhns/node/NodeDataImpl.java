@@ -21,9 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.node;
 
 import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.DynamicData;
 import org.gephi.graph.api.LayoutData;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
+import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.TextData;
 
@@ -32,7 +34,7 @@ import org.gephi.graph.api.TextData;
  *
  * @author Mathieu Bastian
  */
-public class NodeDataImpl implements NodeData {
+public class NodeDataImpl implements NodeData, GroupData, DynamicData {
 
     protected Node node;
     protected LayoutData layoutData;
@@ -41,6 +43,7 @@ public class NodeDataImpl implements NodeData {
     protected float y;
     protected float z;
     protected String label = "";
+    protected boolean labelVisible = true;
     protected float r = 0f;
     protected float g = 0f;
     protected float b = 0f;
@@ -50,6 +53,9 @@ public class NodeDataImpl implements NodeData {
     protected boolean fixed;
     protected Attributes attributes;
     protected TextData textData;
+    protected Model hullModel;
+    protected int dynamicRangeFrom;
+    protected int dynamicRangeTo;
 
     public NodeDataImpl(Node node) {
         this.node = node;
@@ -184,11 +190,44 @@ public class NodeDataImpl implements NodeData {
         this.fixed = fixed;
     }
 
+    public void setLabelVisible(boolean value) {
+        this.labelVisible = value;
+    }
+
+    public boolean isLabelVisible() {
+        return labelVisible;
+    }
+
     public TextData getTextData() {
         return textData;
     }
 
     public void setTextData(TextData textData) {
         this.textData = textData;
+    }
+
+    public Model getHullModel() {
+        return hullModel;
+    }
+
+    public void setHullModel(Model hullModel) {
+        this.hullModel = hullModel;
+    }
+
+    public DynamicData getDynamicData() {
+        return this;
+    }
+
+    public int getRangeFrom() {
+        return dynamicRangeFrom;
+    }
+
+    public int getRangeTo() {
+        return dynamicRangeTo;
+    }
+
+    public void setRange(int from, int to) {
+        this.dynamicRangeFrom = from;
+        this.dynamicRangeTo = to;
     }
 }

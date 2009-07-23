@@ -20,8 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.api;
 
+import java.util.Arrays;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
+import org.gephi.datastructure.avl.param.AVLItemAccessor;
+import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.datastructure.avl.simple.AVLItem;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Renderable;
@@ -52,10 +55,11 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
 
     //Flags
     protected boolean selected;
+    protected boolean highlight;
     public long markTime = 0;
     public long selectionMark = 0;
     public boolean mark = false;
-    private ModelImpl updatePositionChain;
+    private ParamAVLTree<ModelImpl> updatePositionChain;
 
     public abstract int[] octreePosition(float centerX, float centerY, float centerZ, float size);
 
@@ -68,6 +72,9 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
     public abstract float getCollisionDistance(double angle);
 
     public abstract String toSVG();
+
+    public void destroy() {
+    }
 
     public ColorLayer getColorLayer() {
         return colorLayer;
@@ -180,6 +187,10 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
         this.config = config;
     }
 
+    public boolean isHighlight() {
+        return highlight;
+    }
+
     public boolean isValid() {
         return octants != null && octants[0] != null;
     }
@@ -188,12 +199,34 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
         if (octants != null && octants[0] != null) {
             octants[0].requireUpdatePosition();
             if (updatePositionChain != null) {
-                updatePositionChain.updatePositionFlag();
+                for (ModelImpl m : updatePositionChain) {
+                    m.updatePositionFlag();
+                }
             }
         }
     }
 
-    public void setUpdatePositionChain(ModelImpl updatePositionChain) {
-        this.updatePositionChain = updatePositionChain;
+    public void addUpdatePositionChainItem(ModelImpl item) {
+        if (updatePositionChain == null) {
+            updatePositionChain = new ParamAVLTree<ModelImpl>(new AVLItemAccessor<ModelImpl>() {
+
+                public int getNumber(ModelImpl item) {
+                    return item.getNumber();
+                }
+            });
+            updatePositionChain.add(item);
+        } else {
+            updatePositionChain.add(item);
+        }
+    }
+
+    public void removePositionChainItem(ModelImpl item) {
+        if (updatePositionChain != null) {
+            updatePositionChain.remove(item);
+        }
+    }
+
+    public void clearUpdatePositionChain() {
+        updatePositionChain = null;
     }
 }

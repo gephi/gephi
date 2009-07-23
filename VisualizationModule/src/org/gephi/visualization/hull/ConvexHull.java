@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.hull;
 
+import org.gephi.datastructure.avl.param.AVLItemAccessor;
+import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
@@ -34,41 +36,62 @@ import org.gephi.visualization.api.ModelImpl;
 public class ConvexHull implements Renderable {
 
     private Node metaNode;
-    private NodeData[] groupNodes;
+    private ParamAVLTree<Node> groupNodesTree;
     private ModelImpl[] hullNodes;
-    private float alpha = 1f;
+    private float alpha = 0.5f;
     private Model model;
-    private float baryX;
-    private float baryY;
-    private float baryZ;
+    private float centroidX;
+    private float centroidY;
+
+    public ConvexHull() {
+        groupNodesTree = new ParamAVLTree<Node>(new AVLItemAccessor<Node>() {
+
+            public int getNumber(Node item) {
+                return item.getId();
+            }
+        });
+    }
+
+    public void addNode(Node node) {
+        groupNodesTree.add(node);
+    }
+
+    public Node getMetaNode() {
+        return metaNode;
+    }
+
+    public void setMetaNode(Node metaNode) {
+        this.metaNode = metaNode;
+    }
 
     public ModelImpl[] getNodes() {
         return hullNodes;
     }
 
-    public NodeData[] getGroupNodes() {
-        return groupNodes;
+    public Node[] getGroupNodes() {
+        return groupNodesTree.toArray(new Node[0]);
     }
 
-    public void setNodes(Node[] nodes) {
-        groupNodes = new NodeData[nodes.length];
-        for (int i = 0; i < nodes.length; i++) {
-            groupNodes[i] = nodes[i].getNodeData();
-        }
-        this.hullNodes = computeHull(groupNodes);
-    }
-
-    private ModelImpl[] computeHull(NodeData[] nodes) {
-        NodeData[] n = AlgoHull.calculate(nodes);
+    private ModelImpl[] computeHull() {
+        Node[] n = AlgoHull.calculate(groupNodesTree.toArray(new Node[0]));
         ModelImpl[] models = new ModelImpl[n.length];
+        float cenX = 0;
+        float cenY = 0;
+        int len = 0;
         for (int i = 0; i < n.length; i++) {
-            models[i] = (ModelImpl) n[i].getModel();
+            NodeData nd = n[i].getNodeData();
+            models[i] = (ModelImpl) nd.getModel();
+            cenX += nd.x();
+            cenY += nd.y();
+            len++;
         }
+        centroidX = cenX / len;
+        centroidY = cenY / len;
         return models;
     }
 
     public void recompute() {
-        this.hullNodes = computeHull(groupNodes);
+        this.hullNodes = computeHull();
     }
 
     public void setX(float x) {
@@ -96,18 +119,16 @@ public class ConvexHull implements Renderable {
     }
 
     public float r() {
-        return 0.4f;
-    //return metaNode.getNodeData().r();
+        return metaNode.getNodeData().r();
     }
 
     public float g() {
-        return 0f;
-    //return metaNode.getNodeData().g();
+
+        return metaNode.getNodeData().g();
     }
 
     public float b() {
-        return 0.3f;
-    //return metaNode.getNodeData().b();
+        return metaNode.getNodeData().b();
     }
 
     public void setR(float r) {
@@ -147,14 +168,22 @@ public class ConvexHull implements Renderable {
     }
 
     public float x() {
-        return baryX;
+        return centroidX;
     }
 
     public float y() {
-        return baryY;
+        return centroidY;
     }
 
     public float z() {
-        return baryZ;
+        return 0;
+    }
+
+    public boolean isLabelVisible() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setLabelVisible(boolean value) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

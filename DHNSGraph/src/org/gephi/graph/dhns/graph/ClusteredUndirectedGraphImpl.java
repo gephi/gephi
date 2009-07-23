@@ -37,6 +37,7 @@ import org.gephi.graph.dhns.edge.iterators.RangeEdgeIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
+import org.gephi.graph.dhns.node.iterators.TreeViewIterator;
 
 /**
  * Implementation of clustered undirected graph.
@@ -45,8 +46,8 @@ import org.gephi.graph.dhns.node.iterators.TreeIterator;
  */
 public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements ClusteredUndirectedGraph {
 
-    public ClusteredUndirectedGraphImpl(Dhns dhns, boolean visible) {
-        super(dhns, visible);
+    public ClusteredUndirectedGraphImpl(Dhns dhns, boolean visible, boolean clustered) {
+        super(dhns, visible, clustered);
     }
 
     public boolean addEdge(Edge edge) {
@@ -101,6 +102,11 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
     public EdgeIterable getEdges() {
         readLock();
         return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), true, edgeProposition));
+    }
+
+    public EdgeIterable getEdgesInView() {
+        readLock();
+        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeViewIterator(dhns.getTreeStructure(), nodeEnabledProposition), true, edgeEnabledProposition));
     }
 
     public EdgeIterable getEdges(Node node) {
@@ -204,7 +210,7 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
         AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        MetaEdgeNodeIterator itr = new MetaEdgeNodeIterator(absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition);
+        MetaEdgeNodeIterator itr = new MetaEdgeNodeIterator(view, absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition);
         for (; itr.hasNext();) {
             AbstractEdge edge = itr.next();
             if (edge.isSelfLoop()) {
@@ -218,18 +224,18 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
 
     public EdgeIterable getMetaEdges() {
         readLock();
-        return dhns.newEdgeIterable(new MetaEdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), true, edgeProposition));
+        return dhns.newEdgeIterable(new MetaEdgeIterator(view, dhns.getTreeStructure(), new TreeViewIterator(dhns.getTreeStructure(), nodeProposition), true, edgeProposition));
     }
 
     public EdgeIterable getMetaEdges(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
-        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition));
+        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(view, absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition));
     }
 
     public EdgeIterable getMetaEdgeContent(Edge metaEdge) {
         MetaEdgeImpl metaEdgeImpl = checkMetaEdge(metaEdge);
         readLock();
-        return dhns.newEdgeIterable(new MetaEdgeContentIterator(metaEdgeImpl, true, edgeProposition));
+        return dhns.newEdgeIterable(new MetaEdgeContentIterator(view, metaEdgeImpl, true, edgeProposition));
     }
 }

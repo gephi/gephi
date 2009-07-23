@@ -98,6 +98,7 @@ public class DefaultProcessor implements Processor {
         if (nodeDraft.getLabel() != null) {
             node.getNodeData().setLabel(nodeDraft.getLabel());
         }
+        node.getNodeData().setLabelVisible(nodeDraft.isLabelVisible());
 
         if (nodeDraft.getX() != 0) {
             node.getNodeData().setX(nodeDraft.getX());

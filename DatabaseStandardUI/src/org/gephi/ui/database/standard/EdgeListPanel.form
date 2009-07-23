@@ -49,7 +49,7 @@
                           <Component id="userTextField" alignment="1" pref="443" max="32767" attributes="1"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="driverComboBox" min="-2" pref="98" max="-2" attributes="1"/>
-                              <EmptySpace pref="234" max="32767" attributes="0"/>
+                              <EmptySpace pref="216" max="32767" attributes="0"/>
                               <Component id="testConnection" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="pwdTextField" alignment="0" pref="443" max="32767" attributes="0"/>
@@ -302,6 +302,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="testConnection">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/org/gephi/ui/database/standard/test_connection.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.testConnection.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>

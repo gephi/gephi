@@ -20,12 +20,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.proposition;
 
+import org.gephi.graph.api.Predicate;
+
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Proposition<T> {
+public interface Proposition<T> extends Predicate<T> {
 
+    @Override
     public boolean evaluate(T element);
 
     public boolean isTautology();

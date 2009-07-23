@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.selection;
 
-import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
@@ -40,6 +39,8 @@ public class Rectangle implements SelectionArea {
 
     private float[] startPosition;
     private float[] rectangle = new float[2];
+    private float[] center = new float[2];
+    private float[] rectangleSize = new float[2];
     private GraphDrawable drawable;
     private boolean stop = true;
     private VizConfig config;
@@ -51,7 +52,21 @@ public class Rectangle implements SelectionArea {
     }
 
     public float[] getSelectionAreaRectancle() {
-        return rectangle;
+        rectangleSize[0] = Math.abs(rectangle[0] - startPosition[0]);
+        rectangleSize[1] = Math.abs(rectangle[1] - startPosition[1]);
+        if (rectangleSize[0] < 1f) {
+            rectangleSize[0] = 1f;
+        }
+        if (rectangleSize[1] < 1f) {
+            rectangleSize[1] = 1f;
+        }
+        return rectangleSize;
+    }
+
+    public float[] getSelectionAreaCenter() {
+        center[0] = -(rectangle[0] - startPosition[0]) / 2f;
+        center[1] = -(rectangle[1] - startPosition[1]) / 2f;
+        return center;
     }
 
     public boolean mouseTest(Vecf distanceFromMouse, ModelImpl object) {

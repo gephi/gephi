@@ -50,6 +50,7 @@ public class TextManager implements VizArchitecture {
     //Variables
     private ColorMode colorMode;
     private SizeMode sizeMode;
+    private boolean mouseMode = false;
 
     public TextManager() {
         textUtils = new TextUtils(this);
@@ -88,6 +89,7 @@ public class TextManager implements VizArchitecture {
 
             String txt = textData.line.text;
             Rectangle2D r = renderer.getBounds(txt);
+            textData.line.setBounds(r);
             int posX = (int) renderable.x() - (int) r.getWidth() / 2;
             int posY = (int) renderable.y() - (int) r.getHeight() / 2;
 
@@ -109,5 +111,9 @@ public class TextManager implements VizArchitecture {
 
     public TextData newTextData(EdgeData edge) {
         return builder.buildTextEdge(edge);
+    }
+
+    public boolean isMouseMode() {
+        return mouseMode;
     }
 }

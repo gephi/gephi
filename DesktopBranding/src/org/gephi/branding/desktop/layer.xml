@@ -6,6 +6,14 @@
     <attr name="Menu\Window\ProjectAction.shadow\position" intvalue="250"/>
     <attr name="Menu\Window\org-netbeans-core-windows-actions-ResetWindowsAction.shadow\position" intvalue="2750"/>
     <folder name="Actions">
+        <folder name="File">
+            <file name="org-gephi-branding-desktop-TopTabAction.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
+                <attr name="delegate" newvalue="org.gephi.branding.desktop.TopTabAction"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.Bundle#CTL_TopTabAction"/>
+                <attr name="noIconInMenu" stringvalue="false"/>
+            </file>
+        </folder>
     </folder>
     <folder name="Menu">
         <folder name="Edit">
@@ -52,8 +60,10 @@
         <file name="GoTo_hidden"/>
         <folder name="View">
             <file name="Separator1.instance_hidden"/>
+            <file name="Separator2.instance_hidden"/>
             <file name="org-netbeans-core-actions-HTMLViewAction.instance_hidden"/>
             <file name="org-netbeans-core-actions-LogAction.shadow_hidden"/>
+            <file name="org-netbeans-core-windows-actions-ToolbarsListAction.instance_hidden"/>
         </folder>
         <folder name="Window">
             <file name="CloneDocumentAction.shadow_hidden"/>
@@ -68,6 +78,37 @@
             <file name="Separator5.instance_hidden"/>
             <file name="SwitchToRecentDocumentAction.shadow_hidden"/>
             <file name="org-netbeans-core-actions-GlobalPropertiesAction.shadow_hidden"/>
+        </folder>
+    </folder>
+    <folder name="Toolbars">
+        <file name="Clipboard_hidden"/>
+        <file name="UndoRedo_hidden"/>
+        <folder name="File">
+            <file name="org-gephi-branding-desktop-TopTabAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/File/org-gephi-branding-desktop-TopTabAction.instance"/>
+                <attr name="position" intvalue="10"/>
+            </file>
+            
+            <file name="org-openide-actions-SaveAllAction.instance_hidden"/>
+        </folder>
+
+    </folder>
+    <folder name="Windows2">
+        <folder name="Groups">
+            <file name="LaboratoryGroup.wsgrp" url="LaboratoryGroup.wsgrp"/>
+            <folder name="LaboratoryGroup">
+                <file name="DataExplorerTopComponent.wstcgrp" url="DataExplorerTopComponent.wstcgrp"/>
+            </folder>
+            <file name="OverviewGroup.wsgrp" url="OverviewGroup.wsgrp"/>
+            <folder name="OverviewGroup">
+                <file name="GraphTopComponent.wstcgrp" url="GraphTopComponent.wstcgrp"/>
+                <file name="LayoutTopComponent.wstcgrp" url="LayoutTopComponent.wstcgrp"/>
+                <file name="StatisticsTopComponent.wstcgrp" url="StatisticsTopComponent.wstcgrp"/>
+            </folder>
+            <file name="PreviewGroup.wsgrp" url="PreviewGroup.wsgrp"/>
+            <folder name="PreviewGroup">
+                <file name="PreviewTopComponent.wstcgrp" url="PreviewTopComponent.wstcgrp"/>
+            </folder>
         </folder>
     </folder>
 </filesystem>

@@ -32,8 +32,12 @@ import org.openide.loaders.DataObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 
 public final class OpenProject implements ActionListener {
+
+    private static final String LAST_PATH = "OpenProject_Last_Path";
+    private static final String LAST_PATH_DEFAULT = "OpenProject_Last_Path_Default";
 
     public void actionPerformed(ActionEvent e) {
 
@@ -44,7 +48,11 @@ public final class OpenProject implements ActionListener {
         DialogFileFilter filter = new DialogFileFilter(NbBundle.getMessage(OpenProject.class, "OpenProject_filechooser_filter"));
         filter.addExtension(".gephi");
 
-        final JFileChooser chooser = new JFileChooser();
+        //Get last directory
+        String lastPathDefault = NbPreferences.forModule(OpenProject.class).get(LAST_PATH_DEFAULT, null);
+        String lastPath = NbPreferences.forModule(OpenProject.class).get(LAST_PATH, lastPathDefault);
+
+        final JFileChooser chooser = new JFileChooser(lastPath);
         chooser.addChoosableFileFilter(filter);
 
         int returnFile = chooser.showOpenDialog(null);
@@ -53,6 +61,9 @@ public final class OpenProject implements ActionListener {
             File file = chooser.getSelectedFile();
             file = FileUtil.normalizeFile(file);
             FileObject fileObject = FileUtil.toFileObject(file);
+
+            //Save last path
+            NbPreferences.forModule(OpenProject.class).put(LAST_PATH, file.getAbsolutePath());
 
             try {
                 
