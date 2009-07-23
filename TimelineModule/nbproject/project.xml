@@ -56,10 +56,7 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages>
-                <package>org.gephi.graph.api</package>
-                <package>org.gephi.timeline.api</package>
-            </public-packages>
+            <public-packages/>
         </data>
     </configuration>
 </project>

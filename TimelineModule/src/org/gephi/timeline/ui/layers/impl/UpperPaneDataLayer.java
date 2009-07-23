@@ -343,7 +343,7 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
         String lastLabel = model.getLastComparable().toString();
 
         // get the pixel length of the string
-        int lastLabelLength = (int) ((Rectangle2D) skin.getDataLayerFontMetrics().getStringBounds(lastLabel, null)).getWidth();
+        int lastLabelLength = (int) (skin.getDataLayerFontMetrics().getStringBounds(lastLabel, null)).getWidth();
 
         g2d.drawString(firstLabel, 5, 12);
         g2d.drawString(lastLabel, width - 5 - lastLabelLength, 12);
