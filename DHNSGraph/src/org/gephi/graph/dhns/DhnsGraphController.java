@@ -80,7 +80,7 @@ public class DhnsGraphController implements GraphController {
             }
         });
 
-        centralDynamicGraph = new DynamicGraphImpl(dhns, (FilteredGraph) getClusteredDirectedGraph());
+        centralDynamicGraph = new DynamicGraphImpl(dhns, getClusteredDirectedGraph());
     }
 
     public Dhns newDhns() {

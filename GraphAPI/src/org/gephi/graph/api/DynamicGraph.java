@@ -31,4 +31,6 @@ public interface DynamicGraph {
     public float getRangeFrom();
 
     public float getRangeTo();
+
+    public Graph getGraph();
 }

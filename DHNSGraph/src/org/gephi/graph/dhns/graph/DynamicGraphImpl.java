@@ -25,6 +25,7 @@ import org.gephi.graph.api.DynamicGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgePredicate;
 import org.gephi.graph.api.FilteredGraph;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodePredicate;
@@ -34,21 +35,22 @@ import org.gephi.graph.dhns.core.Dhns;
  *
  * @author Mathieu Bastian
  */
-public class DynamicGraphImpl implements DynamicGraph {
+public class DynamicGraphImpl<T extends Graph> implements DynamicGraph {
 
     //Graph reference
-    private FilteredGraph graph;
+    private T graph;
     private Dhns dhns;
 
     //Range
     private float from = 0;
     private float to = 1;
 
-    public DynamicGraphImpl(Dhns dhns, FilteredGraph graph) {
+    public DynamicGraphImpl(Dhns dhns, T graph) {
         this.graph = graph;
         this.dhns = dhns;
-        graph.addNodePredicate(new DynamicNodePredicate());
-        graph.addEdgePredicate(new DynamicEdgePredicate());
+        FilteredGraph filteredGraph = (FilteredGraph) graph;
+        filteredGraph.addNodePredicate(new DynamicNodePredicate());
+        filteredGraph.addEdgePredicate(new DynamicEdgePredicate());
     }
 
     public void setRange(float from, float to) {
@@ -66,11 +68,18 @@ public class DynamicGraphImpl implements DynamicGraph {
         return to;
     }
 
+    public T getGraph() {
+        return graph;
+    }
+
     private class DynamicNodePredicate implements NodePredicate {
 
         public boolean evaluate(Node element) {
             //Check if element is in the range
             DynamicData dd = element.getNodeData().getDynamicData();
+            if (dd.getRangeFrom() == -1 || dd.getRangeTo() == -1) {
+                return true;
+            }
             return dd.getRangeFrom() >= from && dd.getRangeTo() <= to;
         }
     }
@@ -80,6 +89,9 @@ public class DynamicGraphImpl implements DynamicGraph {
         public boolean evaluate(Edge element) {
             //Check if element is in the range
             DynamicData dd = element.getEdgeData().getDynamicData();
+            if (dd.getRangeFrom() == -1 || dd.getRangeTo() == -1) {
+                return true;
+            }
             return dd.getRangeFrom() >= from && dd.getRangeTo() <= to;
         }
     }
