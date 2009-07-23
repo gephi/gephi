@@ -24,40 +24,26 @@ import org.gephi.datastructure.avl.simple.AVLItem;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
+import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
+import org.gephi.graph.dhns.utils.avl.EdgeOppositeTree;
+import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
 
 /**
  * Implementation of node with default behaviour.
  *
  * @author Mathieu Bastian
  */
-public class AbstractNode implements Node, AVLItem {
+public abstract class AbstractNode implements Node, AVLItem {
 
-    protected final int ID;
-    protected NodeDataImpl nodeData;
+    //Structure properties
     protected boolean visible = true;
-
-    public AbstractNode(int ID) {
-        this.ID = ID;
-        nodeData = new NodeDataImpl(this);
-    }
-
-    public int getNumber() {
-        return ID;
-    }
-
-    public NodeData getNodeData() {
-        return nodeData;
-    }
-
-    public boolean hasAttributes() {
-        return nodeData.getAttributes() != null;
-    }
-
-    public void setAttributes(Attributes attributes) {
-        if (attributes != null) {
-            nodeData.setAttributes(attributes);
-        }
-    }
+    //Tree Structure
+    public int pre;
+    public int size;
+    public AbstractNode parent;
+    public int level;
+    public int post;
+    public DurableAVLNode avlNode;
 
     public boolean isVisible() {
         return visible;
@@ -67,7 +53,40 @@ public class AbstractNode implements Node, AVLItem {
         this.visible = visible;
     }
 
-    public int getId() {
-        return ID;
+    //Structure methods
+    public int getPost() {
+        this.post = pre - level + size;
+        return post;
     }
+
+    public int getPre() {
+        return avlNode.getIndex();
+    }
+
+    //Abstract
+    public abstract boolean isEnabled();
+
+    public abstract void setEnabled(boolean enabled);
+
+    public abstract MetaEdgeTree getMetaEdgesOutTree();
+
+    public abstract MetaEdgeTree getMetaEdgesInTree();
+
+    public abstract EdgeOppositeTree getEdgesOutTree();
+
+    public abstract EdgeOppositeTree getEdgesInTree();
+
+    public abstract boolean isValid();
+
+    public abstract boolean isClone();
+
+    public abstract int getId();
+
+    public abstract NodeData getNodeData();
+
+    public abstract boolean hasAttributes();
+
+    public abstract void setAttributes(Attributes attributes);
+
+    public abstract PreNode getOriginalNode();
 }

@@ -27,14 +27,20 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.timeline.ui.layers.impl;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.color.ColorSpace;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ColorConvertOp;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,18 +51,28 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
 
     private static final long serialVersionUID = 1L;
     private Integer mousex = null;
+    private static Cursor CURSOR_DEFAULT = new Cursor(Cursor.DEFAULT_CURSOR);
+    private static Cursor CURSOR_LEFT_HOOK = new Cursor(Cursor.E_RESIZE_CURSOR);
+    private static Cursor CURSOR_CENTRAL_HOOK = new Cursor(Cursor.MOVE_CURSOR);
+    private static Cursor CURSOR_RIGHT_HOOK = new Cursor(Cursor.W_RESIZE_CURSOR);
 
     public enum TimelineState {
 
         IDLE,
-        HIGHTLIGHT_CENTER,
-        HIGHLIGHT_LEFT,
-        HIGHLIGHT_RIGHT,
         MOVING,
         RESIZE_FROM,
         RESIZE_TO
     }
     TimelineState currentState = TimelineState.IDLE;
+
+    public enum HighlightedComponent {
+
+        NONE,
+        LEFT_HOOK,
+        RIGHT_HOOK,
+        CENTER_HOOK
+    }
+    HighlightedComponent highlightedComponent = HighlightedComponent.NONE;
 
     /** Creates new form UpperPaneDataLayer */
     public UpperPaneDataLayer() {
@@ -73,9 +89,6 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
     private void initComponents() {
 
         addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                formMousePressed(evt);
-            }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 formMouseReleased(evt);
             }
@@ -83,6 +96,9 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
                 formMouseDragged(evt);
+            }
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
             }
         });
 
@@ -102,6 +118,52 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
         return (a < x && x < b);
     }
 
+    private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
+
+        mousex = null;
+        //highlightedComponent = HighlightedComponent.NONE;
+        currentState = TimelineState.IDLE;
+        this.getParent().repaint(); // so it will repaint all panels
+
+    }//GEN-LAST:event_formMouseReleased
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+
+        //System.out.println("mouse moved");
+        int x = evt.getX();
+        float w = getWidth();
+        int r = skin.getSelectionHookSideLength();
+        int sf = (int) (model.getSelectionFrom() * w); // FROM
+        int st = (int) (model.getSelectionTo() * w); // TO
+
+        HighlightedComponent old = highlightedComponent;
+        Cursor newCursor = null;
+
+        if (inRange(x, sf - 4, sf + 2)) {
+            newCursor = CURSOR_LEFT_HOOK;
+        } else if (inRange(x, sf + 2, sf + 2 + r)) {
+            highlightedComponent = HighlightedComponent.LEFT_HOOK;
+        } else if (inRange(x, sf + 2 + r, st - r - 2)) {
+            highlightedComponent = HighlightedComponent.CENTER_HOOK;
+            newCursor = CURSOR_CENTRAL_HOOK;
+        } else if (inRange(x, st - r - 2, st - 2)) {
+            highlightedComponent = HighlightedComponent.RIGHT_HOOK;
+        } else if (inRange(x, st - 2, st + 4)) {
+            newCursor = CURSOR_RIGHT_HOOK;
+        } else {
+            highlightedComponent = HighlightedComponent.NONE;
+            newCursor = CURSOR_DEFAULT;
+        }
+        if (newCursor != getCursor()) {
+            setCursor(newCursor);
+        }
+        // only repaint if highlight has changed (save a lot of fps)
+        if (highlightedComponent != old) {
+            repaint();
+        }
+
+    }//GEN-LAST:event_formMouseMoved
+
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
 
         int x = evt.getX();
@@ -110,61 +172,51 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
         int sf = (int) (model.getSelectionFrom() * w); // FROM
         int st = (int) (model.getSelectionTo() * w); // TO
 
-        // we start
-        if (mousex == null) {
-            mousex = x;
-            return;
-        }
 
+        System.out.println("x: " + x + " currentState: " + currentState);
         if (currentState == TimelineState.IDLE) {
-            if (inRange(x, sf - r, sf + r)) {
+            if (inRange(x, sf - 5, sf + 2)) {
+                highlightedComponent = HighlightedComponent.LEFT_HOOK;
                 currentState = TimelineState.RESIZE_FROM;
-            } else if (inRange(x, st - r, st + r)) {
-                currentState = TimelineState.RESIZE_TO;
-            } else if (inRange(x, sf - r, st + r)) {
+            } else if (inRange(x, sf + 2 + r, st - r - 2)) {
+                highlightedComponent = HighlightedComponent.CENTER_HOOK;
                 currentState = TimelineState.MOVING;
-            } else {
-                return;
+            } else if (inRange(x, st - 2, st + 5)) {
+                highlightedComponent = HighlightedComponent.RIGHT_HOOK;
+                currentState = TimelineState.RESIZE_TO;
             }
         }
 
-        int delta = x - mousex; // + => left to right;  - => right to left;
+        int delta = 0;
+        if (mousex != null) {
+            delta = x - mousex;
+        }
+        mousex = x;
 
         switch (currentState) {
             case RESIZE_FROM:
-                System.out.println("IN LEFT HOOK @ " + x);
                 model.selectFrom(((float) (sf + delta)) / w);
                 break;
             case RESIZE_TO:
-                System.out.println("IN RIGHT HOOK @ " + x);
                 model.selectTo(((float) (st + delta)) / w);
                 break;
             case MOVING:
-                System.out.println("IN CENTRAL ZONE @ " + x);
                 model.selectInterval(((float) (sf + delta)) / w, ((float) (st + delta)) / w);
                 break;
+
         }
 
-        mousex = x;
         //model.selectTo(TOP_ALIGNMENT);        // TODO add your handling code here:
-        this.getParent().getParent().repaint(); // so it will repaint all panels
+        this.repaint(); // so it will repaint all panels
+
     }//GEN-LAST:event_formMouseDragged
-
-    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_formMousePressed
-
-    private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
-        mousex = null;
-        currentState = TimelineState.IDLE;
-    }//GEN-LAST:event_formMouseReleased
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
 
         int width = getWidth();
-        int height = getHeight();
+        int height = getHeight() - 3;
 
         Graphics2D g2d = (Graphics2D) g;
         BufferedImage buff = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -195,7 +247,7 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
         chart.closePath();
 
         bimg2d.setPaint(skin.getHighlightedSelectionLayerPaint());
-       // bimg2d.fill(chart
+        bimg2d.fill(chart);
 
         //g2d.setPaint(Color.black);
         bimg2d.setColor(skin.getDataLayerStrokeColor());
@@ -211,7 +263,16 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
             cutx = width;
         }
         int cuty = 0;
-        int cutw = (int) (width * model.getSelectionTo()) - cutx;
+
+        int cutx2 = (int) (width * model.getSelectionTo());
+        if (cutx2 < 0) {
+            cutx2 = 10;
+        }
+        if (cutx2 > width) {
+            cutx2 = width;
+        }
+
+        int cutw = cutx2 - cutx;
         if (cutw < 0) {
             cutw = 10;
         }
@@ -226,14 +287,66 @@ public class UpperPaneDataLayer extends DefaultDataLayer {
         g.drawImage(buff, 0, 0, null);
         g.drawImage(hbuff, cutx, cuty, null);
 
-        // we still have some drawing
-        g2d.setRenderingHints(skin.getRenderingHints());
 
-        g2d.setStroke(new BasicStroke(2.0f));
-        g2d.drawRoundRect(cutx, 0, cutw, height, 4, 4);
-        
-        g2d.setFont(new Font("DejaVu Sans Mono", 0, 12));
-        g2d.drawString("1 january 1970", 10, 8);
+        int hookWidth = skin.getSelectionHookSideLength();
+
+        // RENDERING OF QUARTZ CONTROLS
+        g2d.setRenderingHints(skin.getRenderingHints());
+        g2d.setColor(new Color(255, 47, 76, 100));
+        int roundcornerradius = 5;
+
+
+        if (highlightedComponent == HighlightedComponent.LEFT_HOOK) {
+
+            g2d.fillRoundRect(cutx, 1, hookWidth, height, roundcornerradius, roundcornerradius);
+
+            g2d.setColor(Color.WHITE);
+            g2d.fillOval(cutx + 2, 3, 12, 12);
+            g2d.setColor(Color.LIGHT_GRAY);
+            Polygon po = new Polygon();
+            po.addPoint(cutx + 6, 6);
+            po.addPoint(cutx + 11, 9);
+            po.addPoint(cutx + 6, 12);
+            g2d.fillPolygon(po);
+
+            g2d.setColor(Color.BLACK);
+            g2d.drawPolygon(po);
+            g2d.drawOval(cutx + 2, 3, 12, 12);
+
+        } else if (highlightedComponent == HighlightedComponent.RIGHT_HOOK) {
+
+            g2d.fillRoundRect(cutx2 - hookWidth, 1, hookWidth, height, roundcornerradius, roundcornerradius);
+
+            g2d.setColor(Color.WHITE);
+            g2d.fillOval((cutx2 - hookWidth) + 2, 3, 12, 12);
+            g2d.setColor(Color.LIGHT_GRAY);
+            Polygon po = new Polygon();
+            po.addPoint((cutx2 - hookWidth) + 6, 6);
+            po.addPoint((cutx2 - hookWidth) + 11, 9);
+            po.addPoint((cutx2 - hookWidth) + 6, 12);
+            g2d.fillPolygon(po);
+
+            g2d.setColor(Color.BLACK);
+            g2d.drawPolygon(po);
+            g2d.drawOval((cutx2 - hookWidth) + 2, 3, 12, 12);
+        }
+
+        g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(1.0f));
+        g2d.drawRoundRect(cutx, 1, cutw, height, roundcornerradius, roundcornerradius);
+
+
+
+        // RENDERING OF OVERLAY LABELS
+        g2d.setFont(skin.getDataLayerFont());
+        String firstLabel = model.getFirstComparable().toString();
+        String lastLabel = model.getLastComparable().toString();
+
+        // get the pixel length of the string
+        int lastLabelLength = (int) ((Rectangle2D) skin.getDataLayerFontMetrics().getStringBounds(lastLabel, null)).getWidth();
+
+        g2d.drawString(firstLabel, 5, 12);
+        g2d.drawString(lastLabel, width - 5 - lastLabelLength, 12);
 
 
     //shape.quadTo(3, 3, 4, 4);

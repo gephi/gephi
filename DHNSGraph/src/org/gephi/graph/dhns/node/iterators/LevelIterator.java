@@ -25,7 +25,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.core.DurableTreeList;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.graph.dhns.core.TreeStructure;
-import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
 
@@ -44,9 +44,9 @@ public class LevelIterator extends AbstractNodeIterator implements Iterator<Node
     protected int level;
 
     //Proposition
-    protected Proposition<PreNode> proposition;
+    protected Proposition<AbstractNode> proposition;
 
-    public LevelIterator(TreeStructure treeStructure, int level, Proposition<PreNode> proposition) {
+    public LevelIterator(TreeStructure treeStructure, int level, Proposition<AbstractNode> proposition) {
         this.treeList = treeStructure.getTree();
         this.nextIndex = 1;
         this.diffIndex = 2;
@@ -91,7 +91,7 @@ public class LevelIterator extends AbstractNodeIterator implements Iterator<Node
     }
 
     @Override
-    public PreNode next() {
+    public AbstractNode next() {
         nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
         diffIndex = nextIndex - currentNode.getValue().pre;
         return currentNode.getValue();

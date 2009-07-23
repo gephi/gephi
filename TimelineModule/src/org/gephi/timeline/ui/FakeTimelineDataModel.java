@@ -23,25 +23,43 @@ package org.gephi.timeline.ui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.gephi.timeline.TimelineQuartzImpl;
 import org.gephi.timeline.api.TimelineDataModel;
 import org.gephi.timeline.api.TimelineDataModelListener;
+import org.gephi.timeline.api.TimelineQuartz;
+import org.gephi.timeline.api.TimelineQuartzListener;
 
 /**
  *
  * @author Julian Bilcke
  */
-public class FakeTimelineDataModel implements TimelineDataModel {
+public class FakeTimelineDataModel implements TimelineDataModel, TimelineQuartzListener {
 
     private Random random;
     private List<TimelineDataModelListener> listeners;
-    private Float from = 0.15f;
-    private Float to = 0.85f;
+    private Float from;
+    private Float to;
+    private TimelineQuartz quartz;
 
     // FAKE DATASET SIZE
     private List<Float> data;
-    private int data_getNbOfFakeRevisions = 80000;
+    private int data_getNbOfFakeRevisions = 800000;
+    private Float speed;
 
+   public enum PlayMode {
+        OLDEST,
+        YOUNGEST,
+        BOTH
+    }
+    PlayMode playMode = PlayMode.YOUNGEST;
+    
     public FakeTimelineDataModel() {
+        
+        // defaults
+        from = 0.15f;
+        to = 0.85f;
+        speed = 0.0001f;
+
         listeners = new ArrayList<TimelineDataModelListener>();
 
         // WE GENERATE OUR FAKE DATASET
@@ -50,6 +68,9 @@ public class FakeTimelineDataModel implements TimelineDataModel {
         for (int i = 0; i < data_getNbOfFakeRevisions; i++) {
             data.add(0.15f + random.nextFloat() * 0.6f);
         }
+
+        quartz = new TimelineQuartzImpl();
+        quartz.addTimelineQuartzListener(this);
     }
 
     public List<Float> getOverviewSample(int resolution) {
@@ -57,7 +78,7 @@ public class FakeTimelineDataModel implements TimelineDataModel {
 
         List<Float> tmp = new ArrayList<Float>();
 
-        int unit = data_getNbOfFakeRevisions / resolution; // eg.  16 = 10000 / 600
+        int unit = data.size() / resolution; // eg.  16 = 10000 / 600
         for (int i = 0; i < resolution; i++) {
             tmp.add(data.get(i * unit)); // eg. 600 * chunks of 16
         }
@@ -74,7 +95,7 @@ public class FakeTimelineDataModel implements TimelineDataModel {
         
         // TODO put a call to the timeline engine here ?
         // get size from the timeline
-        int size = data_getNbOfFakeRevisions; // eg 200000000
+        int size = data.size(); // eg 200000000
 
         int totalf = (int) (from * (float) size); // eg. 12000
         int totalt = (int) (to * (float) size); // eg. 12000000
@@ -112,12 +133,53 @@ public class FakeTimelineDataModel implements TimelineDataModel {
         }
     }
 
+    public Comparable getFirstComparable() {
+        return data.get(0);
+    }
+    public Comparable getLastComparable() {
+        return data.get(data.size()-1);
+    }
+
     public Float getSelectionFrom() {
         return from;
     }
 
+    public Comparable getSelectionFromAsComparable() {
+        return data.get((int) (from * (float)data.size()));
+    }
     public Float getSelectionTo() {
         return to;
     }
+    public Comparable getSelectionToAsComparable() {
+        return data.get((int) (to * (float)data.size()));
+    }
 
+    public void play() {
+        quartz.start();
+    }
+
+    public void pause() {
+        quartz.stop();
+    }
+
+    public void isPlaying() {
+        quartz.isRunning();
+    }
+    public void quartzTick(long delay) {
+        // delay is the current "resolution" of the quartz
+        // this is provided ases convenience, in case you would need it for your
+        // calculations
+        switch(playMode) {
+            case OLDEST:
+                selectFrom(getSelectionFrom() + speed);
+                break;
+            case BOTH:
+                selectInterval(getSelectionFrom() + speed,
+                               getSelectionTo() + speed);
+                break;
+            case YOUNGEST:
+                selectTo(getSelectionTo() + speed);
+                break;
+        }
+    }
 }

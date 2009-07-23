@@ -39,8 +39,8 @@ public class CompatibilityModelClass extends ModelClass {
     private CompatibilityModeler currentModeler;
     private List<CompatibilityModeler> modelers;
 
-    public CompatibilityModelClass(String name, boolean lod, boolean selectable, boolean clickable) {
-        super(name, lod, selectable, clickable);
+    public CompatibilityModelClass(String name, boolean lod, boolean selectable, boolean clickable, boolean glSelection, boolean aloneSelection) {
+        super(name, lod, selectable, clickable, glSelection, aloneSelection);
         modelers = new ArrayList<CompatibilityModeler>();
     }
 

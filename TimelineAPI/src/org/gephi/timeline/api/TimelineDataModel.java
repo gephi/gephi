@@ -28,24 +28,28 @@ import java.util.List;
  */
 public interface TimelineDataModel {
 
+
+    public void addTimelineDataModelListener(TimelineDataModelListener listener);
+   
     /** get the data array
      *
      * used by the Data Layer
      * 
      */
     public List<Float> getOverviewSample(int resolution);
-
     public List<Float> getZoomSample(int resolution);
 
     public void selectInterval(Float from, Float to);
 
     public void selectTo(Float to);
-
     public void selectFrom(Float from);
 
     public Float getSelectionFrom();
-
     public Float getSelectionTo();
 
-    public void addTimelineDataModelListener(TimelineDataModelListener listener);
+    public Comparable getFirstComparable();
+    public Comparable getLastComparable();
+
+    public Comparable getSelectionFromAsComparable();
+    public Comparable getSelectionToAsComparable();
 }

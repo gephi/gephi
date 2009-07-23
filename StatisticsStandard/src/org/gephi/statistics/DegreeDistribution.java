@@ -56,19 +56,18 @@ public class DegreeDistribution implements Statistics, LongTask {
     private ProgressTicket progress;
     private double[] fit;
     private boolean directed;
+
     public String toString() {
         return new String("Degree Distribution");
     }
-
 
     /**
      * 
      * @param pDirected
      */
-    public void setDirected(boolean pDirected){
+    public void setDirected(boolean pDirected) {
         directed = pDirected;
     }
-
 
     /**
      * 
@@ -239,7 +238,7 @@ public class DegreeDistribution implements Statistics, LongTask {
             System.out.println(e.toString());
         }
 
-        String report = "<HTML> <BODY> Power: -"+ fit[0] +  "\n <BR>" + imageFile +"</BODY> </HTML>";
+        String report = "<HTML> <BODY> Power: -" + fit[0] + "\n <BR>" + imageFile + "</BODY> </HTML>";
         return report;
     }
 
@@ -265,6 +264,6 @@ public class DegreeDistribution implements Statistics, LongTask {
      * @return
      */
     public StatisticsUI getUI() {
-       return new DegreeDistributionPanel.DegreeDistributionUI();
+        return new DegreeDistributionPanel.DegreeDistributionUI();
     }
 }

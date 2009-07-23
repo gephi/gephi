@@ -22,6 +22,7 @@ package org.gephi.io.container.standard;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeValue;
@@ -44,7 +45,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     //Basic
     private String id;
     private String label;
-    private NodeDraftImpl parent;
+    private NodeDraftImpl[] parent;
 
     //Viz attributes
     private Color color;
@@ -135,7 +136,18 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     }
 
     public void setParent(NodeDraft draft) {
-        this.parent = (NodeDraftImpl) draft;
+        if (this.parent == null) {
+            this.parent = new NodeDraftImpl[1];
+            this.parent[0] = (NodeDraftImpl) draft;
+        } else {
+            this.parent = Arrays.copyOf(this.parent, this.parent.length+1);
+            this.parent[this.parent.length-1] = (NodeDraftImpl) draft;
+        }
+        container.setHierarchicalGraph(true);
+    }
+
+    public NodeDraftGetter[] getParents() {
+        return parent;
     }
 
     public void addChild(NodeDraft child) {

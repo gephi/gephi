@@ -8,7 +8,6 @@
  *
  * Created on Jun 22, 2009, 10:16:41 PM
  */
-
 package org.gephi.statistics.ui;
 
 import javax.swing.JPanel;
@@ -77,8 +76,6 @@ public class DegreeDistributionPanel extends javax.swing.JPanel {
                 .addContainerGap(174, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     protected javax.swing.JRadioButton directedRadioButton;
@@ -86,8 +83,7 @@ public class DegreeDistributionPanel extends javax.swing.JPanel {
     protected javax.swing.JRadioButton undirectedRadioButton;
     // End of variables declaration//GEN-END:variables
 
-
-      public static class DegreeDistributionUI implements StatisticsUI {
+    public static class DegreeDistributionUI implements StatisticsUI {
 
         private DegreeDistributionPanel panel;
         private DegreeDistribution degreeDistribution;
@@ -120,9 +116,6 @@ public class DegreeDistributionPanel extends javax.swing.JPanel {
             //Set params
             boolean directed = panel.directedRadioButton.isSelected();
             degreeDistribution.setDirected(directed);
-         }
-
-   
+        }
     }
-
 }

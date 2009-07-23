@@ -24,8 +24,11 @@ import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.api.Tree;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.node.CloneNode;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
@@ -34,6 +37,7 @@ import org.gephi.graph.dhns.node.iterators.LevelIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
 import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
+import org.gephi.graph.dhns.tree.HierarchyTreeImpl;
 
 /**
  * Abstract Clustered graph class. Implements methods for both directed and undirected graphs.
@@ -42,16 +46,17 @@ import org.gephi.graph.dhns.proposition.Tautology;
  */
 public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements ClusteredGraph {
 
-    protected Proposition<PreNode> nodeProposition;
+    protected Proposition<AbstractNode> nodeProposition;
     protected Proposition<AbstractEdge> edgeProposition;
+    protected boolean allowMultilevel = true;
 
     public ClusteredGraphImpl(Dhns dhns, boolean visible) {
         this.dhns = dhns;
 
         if (visible) {
-            nodeProposition = new Proposition<PreNode>() {
+            nodeProposition = new Proposition<AbstractNode>() {
 
-                public boolean evaluate(PreNode node) {
+                public boolean evaluate(AbstractNode node) {
                     return node.isVisible();
                 }
 
@@ -79,15 +84,25 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         if (node == null) {
             throw new IllegalArgumentException("Node can't be null");
         }
-        PreNode preNode = (PreNode) node;
+        AbstractNode absNode = (AbstractNode) node;
+        AbstractNode absParent = null;
         if (parent != null) {
-            checkNode(parent);
+            absParent = checkNode(parent);
         }
-        if (preNode.isValid()) {
+        if (!allowMultilevel && absNode.isValid()) {
             return false;
         }
-        if (!preNode.hasAttributes()) {
-            preNode.setAttributes(dhns.getGraphFactory().newNodeAttributes());
+        if (allowMultilevel && parent != null && absNode.isValid()) {
+            //Verify the parent node is not a descendant of node
+            readLock();
+            if (isDescendant(node, parent)) {
+                readUnlock();
+                throw new IllegalArgumentException("Parent can't be a descendant of node");
+            }
+            readUnlock();
+        }
+        if (!absNode.hasAttributes()) {
+            absNode.setAttributes(dhns.getGraphFactory().newNodeAttributes());
         }
         dhns.getStructureModifier().addNode(node, parent);
         return true;
@@ -101,13 +116,13 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         if (node == null) {
             throw new NullPointerException();
         }
-        PreNode preNode = (PreNode) node;
+        AbstractNode absNode = (AbstractNode) node;
         readLock();
-        if (!preNode.isValid()) {
+        if (!absNode.isValid()) {
             return false;
         }
         boolean res = false;
-        if (nodeProposition.evaluate(preNode) && dhns.getTreeStructure().getTree().contains(preNode)) {
+        if (nodeProposition.evaluate(absNode) && dhns.getTreeStructure().getTree().contains(absNode)) {
             res = true;
         }
 
@@ -194,8 +209,8 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     }
 
     public boolean removeNode(Node node) {
-        PreNode preNode = checkNode(node);
-        if (!preNode.isValid()) {
+        AbstractNode absNode = checkNode(node);
+        if (!absNode.isValid()) {
             return false;
         }
         dhns.getStructureModifier().deleteNode(node);
@@ -221,10 +236,10 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     }
 
     public int getChildrenCount(Node node) {
-        PreNode preNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        ChildrenIterator itr = new ChildrenIterator(dhns.getTreeStructure(), preNode, nodeProposition);
+        ChildrenIterator itr = new ChildrenIterator(dhns.getTreeStructure(), absNode, nodeProposition);
         for (; itr.hasNext();) {
             itr.next();
             count++;
@@ -234,26 +249,26 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     }
 
     public Node getParent(Node node) {
-        PreNode preNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
         Node parent = null;
-        if (preNode.parent != dhns.getTreeStructure().getRoot()) {
-            parent = preNode.parent;
+        if (absNode.parent != dhns.getTreeStructure().getRoot()) {
+            parent = absNode.parent;
         }
         readUnlock();
         return parent;
     }
 
     public NodeIterable getChildren(Node node) {
-        PreNode preNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
-        return dhns.newNodeIterable(new ChildrenIterator(dhns.getTreeStructure(), preNode, nodeProposition));
+        return dhns.newNodeIterable(new ChildrenIterator(dhns.getTreeStructure(), absNode, nodeProposition));
     }
 
     public NodeIterable getDescendant(Node node) {
-        PreNode preNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
-        return dhns.newNodeIterable(new DescendantIterator(dhns.getTreeStructure(), preNode, nodeProposition));
+        return dhns.newNodeIterable(new DescendantIterator(dhns.getTreeStructure(), absNode, nodeProposition));
     }
 
     public NodeIterable getTopNodes() {
@@ -262,10 +277,22 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     }
 
     public boolean isDescendant(Node node, Node descendant) {
-        PreNode preNode = checkNode(node);
-        PreNode preDesc = checkNode(descendant);
+        AbstractNode abstractNode = checkNode(node);
+        AbstractNode preDesc = checkNode(descendant);
         readLock();
-        boolean res = preDesc.getPre() > preNode.getPre() && preDesc.getPost() < preNode.getPost();
+        boolean res = false;
+        if (allowMultilevel) {
+            //Check if clones of descendants are descendants
+            PreNode preNode = preDesc.getOriginalNode();
+            res = preDesc.getPre() > abstractNode.getPre() && preDesc.getPost() < abstractNode.getPost();
+            CloneNode cn = preNode.getClones();
+            while (cn != null) {
+                res = res || cn.getPre() > abstractNode.getPre() && cn.getPost() < abstractNode.getPost();
+                cn = cn.getNext();
+            }
+        } else {
+            res = preDesc.getPre() > abstractNode.getPre() && preDesc.getPost() < abstractNode.getPost();
+        }
         readUnlock();
         return res;
     }
@@ -275,10 +302,10 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     }
 
     public boolean isFollowing(Node node, Node following) {
-        PreNode preNode = checkNode(node);
-        PreNode preFoll = checkNode(following);
+        AbstractNode absNode = checkNode(node);
+        AbstractNode preFoll = checkNode(following);
         readLock();
-        boolean res = preFoll.getPre() > preNode.getPre() && preFoll.getPost() > preNode.getPost();
+        boolean res = preFoll.getPre() > absNode.getPre() && preFoll.getPost() > absNode.getPost();
         readUnlock();
         return res;
     }
@@ -288,10 +315,17 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     }
 
     public boolean isParent(Node node, Node parent) {
-        PreNode preNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         checkNode(parent);
         readLock();
+        PreNode preNode = absNode.getOriginalNode();
         boolean res = preNode.parent == parent;
+        if (allowMultilevel && !res) {
+            CloneNode cn = preNode.getClones();
+            while (cn != null) {
+                res = res | cn.parent == parent;
+            }
+        }
         readUnlock();
         return res;
     }
@@ -304,16 +338,16 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     }
 
     public int getLevel(Node node) {
-        PreNode preNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
-        int res = preNode.level - 1;
+        int res = absNode.level - 1;
         readUnlock();
         return res;
     }
 
     public boolean expand(Node node) {
-        PreNode preNode = checkNode(node);
-        if (preNode.size == 0 || !preNode.isEnabled()) {
+        AbstractNode absNode = checkNode(node);
+        if (absNode.size == 0 || !absNode.isEnabled()) {
             return false;
         }
         dhns.getStructureModifier().expand(node);
@@ -321,8 +355,8 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     }
 
     public boolean retract(Node node) {
-        PreNode preNode = checkNode(node);
-        if (preNode.size == 0 || preNode.isEnabled()) {
+        AbstractNode absNode = checkNode(node);
+        if (absNode.size == 0 || absNode.isEnabled()) {
             return false;
         }
         dhns.getStructureModifier().retract(node);
@@ -339,20 +373,20 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     }
 
     public void removeFromGroup(Node node) {
-        PreNode preNode = checkNode(node);
-        if (preNode.parent.parent == null) {   //Equal root
+        AbstractNode absNode = checkNode(node);
+        if (absNode.parent.parent == null) {   //Equal root
             throw new IllegalArgumentException("Node parent can't be the root of the tree");
         }
-        dhns.getStructureModifier().moveToGroup(node, preNode.parent.parent);
+        dhns.getStructureModifier().moveToGroup(node, absNode.parent.parent);
     }
 
     public Node groupNodes(Node[] nodes) {
         if (nodes == null || nodes.length == 0) {
             throw new IllegalArgumentException("nodes can't be null or empty");
         }
-        PreNode parent = null;
+        AbstractNode parent = null;
         for (int i = 0; i < nodes.length; i++) {
-            PreNode node = checkNode(nodes[i]);
+            AbstractNode node = checkNode(nodes[i]);
             if (parent == null) {
                 parent = node.parent;
             } else if (parent != node.parent) {
@@ -364,18 +398,18 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     }
 
     public void ungroupNodes(Node nodeGroup) {
-        PreNode preNode = checkNode(nodeGroup);
-        if (preNode.size == 0) {
+        AbstractNode absNode = checkNode(nodeGroup);
+        if (absNode.size == 0) {
             throw new IllegalArgumentException("nodeGroup can't be empty");
         }
 
-        dhns.getStructureModifier().ungroup(preNode);
+        dhns.getStructureModifier().ungroup(absNode);
     }
 
     public boolean isInView(Node node) {
-        PreNode preNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
-        boolean res = preNode.isEnabled();
+        boolean res = absNode.isEnabled();
         readUnlock();
         return res;
     }
@@ -385,9 +419,9 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     }
 
     public void setVisible(Node node, boolean visible) {
-        PreNode preNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         writeLock();
-        preNode.setVisible(visible);
+        absNode.setVisible(visible);
         writeUnlock();
     }
 
@@ -412,5 +446,9 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
 
     public boolean isClustered() {
         return getHeight() > 0;
+    }
+
+    public Tree getHierarchyTree() {
+        return new HierarchyTreeImpl(dhns);
     }
 }

@@ -26,12 +26,28 @@ import org.gephi.io.database.DatabaseType;
 import org.gephi.io.logging.Report;
 
 /**
+ * Importers interface for importing data from databases source.
  *
  * @author Mathieu Bastian
  */
 public interface DatabaseImporter extends Importer {
 
+    /**
+     * Import data from <code>database</code> and push it to <code>container</code>. Informations, logs and
+     * issues are pushed to <code>report</code> for further analysis and verification.
+     * @param database the database description, connexion details and queries
+     * @param container container loading interface
+     * @param report the import report for logging informations and issues
+     * @throws java.lang.Exception for catching eventual exceptions
+     */
     public void importData(Database database, ContainerLoader container, Report report) throws Exception;
 
+    /**
+     * Returns <code>true</code> if this importer can import <code>databaseType</code>. Called from
+     * controllers to identify dynamically which importers can be used for a particular source.
+     * @param databaseType the type of database
+     * @return <code>true</code> if the importer is compatible with <code>databaseType</code> or <code>false</code>
+     * otherwise
+     */
     public boolean isMatchingImporter(DatabaseType databaseType);
 }

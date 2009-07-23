@@ -63,7 +63,9 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private AttributeValueFactory attributeFactory;
     private AttributeManager attributeManager;
 
-    //Error
+    //Management
+    private boolean dynamicGraph = false;
+    private boolean hierarchicalGraph = false;
     private Report report;
 
     public ImportContainerImpl() {
@@ -262,6 +264,23 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             edgeIDgen++;
             return edge;
         }
+    }
+
+    //MANAGEMENT
+    public boolean isDynamicGraph() {
+        return dynamicGraph;
+    }
+
+    public boolean isHierarchicalGraph() {
+        return hierarchicalGraph;
+    }
+
+    public void setDynamicGraph(boolean dynamicGraph) {
+        this.dynamicGraph = dynamicGraph;
+    }
+
+    public void setHierarchicalGraph(boolean hierarchicalGraph) {
+        this.hierarchicalGraph = hierarchicalGraph;
     }
 
     //REPORT

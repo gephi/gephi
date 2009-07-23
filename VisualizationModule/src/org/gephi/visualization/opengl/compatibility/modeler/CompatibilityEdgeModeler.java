@@ -32,6 +32,8 @@ import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.compatibility.objects.Edge2dModel;
 import org.gephi.visualization.opengl.compatibility.objects.Edge3dModel;
+import org.gephi.visualization.opengl.compatibility.objects.SelfLoop2dModel;
+import org.gephi.visualization.opengl.compatibility.objects.SelfLoop3dModel;
 import org.gephi.visualization.opengl.text.TextManager;
 
 /**
@@ -52,11 +54,19 @@ public class CompatibilityEdgeModeler implements CompatibilityModeler<EdgeData> 
     public ModelImpl initModel(Renderable n) {
         EdgeData e = (EdgeData) n;
 
-        Edge2dModel edge;
+        ModelImpl<EdgeData> edge;
         if (config.use3d()) {
-            edge = new Edge3dModel();
+            if (e.getEdge().isSelfLoop()) {
+                edge = new SelfLoop3dModel();
+            } else {
+                edge = new Edge3dModel();
+            }
         } else {
-            edge = new Edge2dModel();
+            if (e.getEdge().isSelfLoop()) {
+                edge = new SelfLoop2dModel();
+            } else {
+                edge = new Edge2dModel();
+            }
         }
         edge.setObj(e);
         edge.setConfig(config);

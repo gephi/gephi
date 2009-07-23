@@ -40,13 +40,17 @@ public abstract class ModelClass {
     private boolean lod;
     private boolean selectable;
     private boolean clickable;
+    private boolean glSelection;
+    private boolean aloneSelection;
 
-    public ModelClass(String name, boolean lod, boolean selectable, boolean clickable) {
+    public ModelClass(String name, boolean lod, boolean selectable, boolean clickable, boolean glSelection, boolean aloneSelection) {
         this.classId = ModelClass.getNumber();
         this.name = name;
         this.lod = lod;
         this.selectable = selectable;
         this.clickable = clickable;
+        this.glSelection = glSelection;
+        this.aloneSelection = aloneSelection;
     }
 
     public ModelClass() {
@@ -79,6 +83,14 @@ public abstract class ModelClass {
 
     public boolean isClickable() {
         return clickable;
+    }
+
+    public boolean isGlSelection() {
+        return glSelection;
+    }
+
+    public boolean isAloneSelection() {
+        return aloneSelection;
     }
 
     public void setEnabled(boolean enabled) {

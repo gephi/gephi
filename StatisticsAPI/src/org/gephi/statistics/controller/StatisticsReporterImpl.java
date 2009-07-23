@@ -49,8 +49,6 @@ public class StatisticsReporterImpl implements Printable {
     JButton mPrint;
     JButton mSave;
     int pageIndex = 0;
-
-
     int currentPage = -1;
     double pageStartY = 0;
     double pageEndY = 0;

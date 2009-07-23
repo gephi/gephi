@@ -24,7 +24,7 @@ import java.util.Iterator;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
 
@@ -40,7 +40,7 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
 
         OUT, IN, BOTH
     };
-    protected PreNode node;
+    protected AbstractNode node;
     protected ParamAVLIterator<AbstractEdge> edgeIterator;
     protected EdgeNodeIteratorMode mode;
     protected AbstractEdge pointer;
@@ -49,7 +49,7 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
     //Proposition
     protected Proposition<AbstractEdge> proposition;
 
-    public MetaEdgeNodeIterator(PreNode node, EdgeNodeIteratorMode mode, boolean undirected, Proposition<AbstractEdge> proposition) {
+    public MetaEdgeNodeIterator(AbstractNode node, EdgeNodeIteratorMode mode, boolean undirected, Proposition<AbstractEdge> proposition) {
         this.node = node;
         this.mode = mode;
         this.edgeIterator = new ParamAVLIterator<AbstractEdge>();

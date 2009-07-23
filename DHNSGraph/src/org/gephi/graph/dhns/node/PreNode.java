@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.node;
 
 import org.gephi.datastructure.avl.simple.AVLItem;
+import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.graph.dhns.utils.avl.EdgeOppositeTree;
 import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
@@ -41,23 +43,20 @@ import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
  */
 public class PreNode extends AbstractNode implements AVLItem {
 
-    //Tree Structure
-    public int pre;
-    public int size;
-    public PreNode parent;
-    public int level;
-    public int post;
-    private boolean enabled = true;
-    public DurableAVLNode avlNode;
-
+    //Properties
+    protected final int ID;
+    protected NodeDataImpl nodeData;
+    protected boolean enabled = true;
     //Edges
     private EdgeOppositeTree edgesOutTree;
     private EdgeOppositeTree edgesInTree;
     private MetaEdgeTree metaEdgesOutTree;
     private MetaEdgeTree metaEdgesInTree;
 
-    public PreNode(int ID, int pre, int size, int level, PreNode parent) {
-        super(ID);
+    //Clone
+    private CloneNode clones;
+
+    public PreNode(int ID, int pre, int size, int level, AbstractNode parent) {
         this.pre = pre;
         this.size = size;
         this.level = level;
@@ -68,28 +67,14 @@ public class PreNode extends AbstractNode implements AVLItem {
         edgesInTree = new EdgeOppositeTree(this);
         metaEdgesOutTree = new MetaEdgeTree(this);
         metaEdgesInTree = new MetaEdgeTree(this);
-    }
 
-    public int getPost() {
-        this.post = pre - level + size;
-        return post;
+        this.ID = ID;
+        nodeData = new NodeDataImpl(this);
     }
 
     @Override
     public String toString() {
         return "" + pre;
-    }
-
-    public int getPre() {
-        return avlNode.getIndex();
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
     public MetaEdgeTree getMetaEdgesOutTree() {
@@ -123,5 +108,94 @@ public class PreNode extends AbstractNode implements AVLItem {
     @Override
     public int getNumber() {
         return ID;
+    }
+
+    @Override
+    public int getId() {
+        return ID;
+    }
+
+    @Override
+    public boolean isClone() {
+        return false;
+    }
+
+    @Override
+    public NodeData getNodeData() {
+        return nodeData;
+    }
+
+    @Override
+    public boolean hasAttributes() {
+        return nodeData.getAttributes() != null;
+    }
+
+    @Override
+    public void setAttributes(Attributes attributes) {
+        if (attributes != null) {
+            nodeData.setAttributes(attributes);
+        }
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    //CLone operations
+    public void addClone(CloneNode clone) {
+        clone.next = this.clones;
+        this.clones = clone;
+    }
+
+    public void removeClone(CloneNode clone) {
+        CloneNode c = this.clones;
+        if (c == clone) {
+            this.clones = c.next;
+        } else if (c != null) {
+            while (c.next != null) {
+                if (c.next == clone) {
+                    c.next = clone.next;
+                    break;
+                }
+                c = c.next;
+            }
+        }
+    }
+
+    public CloneNode getClones() {
+        return clones;
+    }
+
+    public int countClones() {
+        int res = 0;
+        CloneNode c = this.clones;
+        while (c != null) {
+            c = c.next;
+            res++;
+        }
+        return res;
+    }
+
+    @Override
+    public PreNode getOriginalNode() {
+        return this;
+    }
+
+    public void transferToClones() {
+        if (this.clones != null) {
+            avlNode = clones.avlNode;
+            pre = clones.pre;
+            post = clones.post;
+            size = clones.size;
+            level = clones.level;
+            parent = clones.parent;
+            clones = clones.next;
+        }
     }
 }

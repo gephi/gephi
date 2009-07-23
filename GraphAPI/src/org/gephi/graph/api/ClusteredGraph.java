@@ -329,4 +329,10 @@ public interface ClusteredGraph extends Graph {
      * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public void clearMetaEdges(Node node);
+
+    /**
+     * Get the clustered graph hierarchy as a <code>Tree</code>.
+     * @return the tree which represents the clusterd graph hierarchy
+     */
+    public Tree getHierarchyTree();
 }

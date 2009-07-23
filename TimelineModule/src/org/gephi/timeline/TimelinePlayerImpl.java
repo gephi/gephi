@@ -18,8 +18,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.timeline;
+
+import org.gephi.timeline.api.TimelineDataModel;
+import org.gephi.timeline.api.TimelineQuartz;
+
 
 /**
  *
@@ -27,12 +30,27 @@ package org.gephi.timeline;
  */
 public class TimelinePlayerImpl {
 
-      public void pause() {
+    private TimelineQuartz quartz;
+    private Thread thread;
+    private TimelineDataModel model;
+
+    public TimelinePlayerImpl() {
+        quartz = new TimelineQuartzImpl();
+        model = null;
+    }
+
+    public void pause() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void play() {
+        thread.start();
+
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setTimelineModel(TimelineDataModel model) {
+        this.model = model;
     }
 
     public void setPositionTo(double position) {
@@ -58,5 +76,4 @@ public class TimelinePlayerImpl {
     public void setSpeed(double slicepersecond) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
 }

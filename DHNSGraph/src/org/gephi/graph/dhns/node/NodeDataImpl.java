@@ -172,6 +172,10 @@ public class NodeDataImpl implements NodeData {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public boolean isFixed() {
         return fixed;
     }

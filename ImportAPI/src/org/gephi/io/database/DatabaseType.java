@@ -23,6 +23,7 @@ package org.gephi.io.database;
 import org.gephi.ui.database.DatabaseTypeUI;
 
 /**
+ * Description of a database the system can support. Associate an UI with a type of database.
  *
  * @author Mathieu Bastian
  */

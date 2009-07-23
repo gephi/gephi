@@ -18,13 +18,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.io.importer;
 
 /**
+ * Interface for classes which imports data from files, databases, streams or other sources.
  *
  * @author Mathieu Bastian
  */
 public interface Importer {
-
 }

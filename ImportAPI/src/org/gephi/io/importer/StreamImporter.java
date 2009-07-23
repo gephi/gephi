@@ -30,5 +30,13 @@ import org.gephi.io.logging.Report;
  */
 public interface StreamImporter {
 
+    /**
+     * Import data from undefined <code>streams</code> and push it to <code>container</code>. Informations,
+     * logs and issues are pushed to <code>report</code> for further analysis and verification.
+     * @param stream the input stream where data are pushed
+     * @param container container loading interface
+     * @param report the import report for logging informations and issues
+     * @throws java.lang.Exception for catching eventual exceptions
+     */
     public void importData(InputStream stream, ContainerLoader containter, Report report) throws Exception;
 }

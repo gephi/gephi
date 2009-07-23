@@ -22,13 +22,14 @@ package org.gephi.io.processor.standard;
 
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.Node;
 import org.gephi.io.container.ContainerUnloader;
-import org.gephi.io.container.EdgeDraft;
+import org.gephi.io.container.NodeDraft;
 import org.gephi.io.processor.EdgeDraftGetter;
 import org.gephi.io.processor.NodeDraftGetter;
 import org.gephi.io.processor.Processor;
@@ -43,19 +44,35 @@ public class DefaultProcessor implements Processor {
     public void process(ContainerUnloader container) {
 
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        Graph graph = graphController.getDirectedGraph();
+        ClusteredGraph graph = graphController.getClusteredDirectedGraph();
         GraphFactory factory = graphController.factory();
 
         int nodeCount = 0;
-        for (NodeDraftGetter node : container.getNodes()) {
+        //Create all nodes
+        for (NodeDraftGetter draftNode : container.getNodes()) {
             Node n = factory.newNode();
-            flushToNode(node, n);
-            node.setNode(n);
+            flushToNode(draftNode, n);
+            draftNode.setNode(n);
             nodeCount++;
-            graph.addNode(n);
-            flushToNodeAfter(node, n, graph);
         }
 
+        //Push nodes in data structure
+        for (NodeDraftGetter draftNode : container.getNodes()) {
+            Node n = draftNode.getNode();
+            NodeDraftGetter[] parents = draftNode.getParents();
+            if (parents != null) {
+                for (int i = 0; i < parents.length; i++) {
+                    Node parent = parents[i].getNode();
+                    graph.addNode(n, parent);
+                }
+            } else {
+                graph.addNode(n);
+            }
+
+            flushToNodeAfter(draftNode, n, graph);
+        }
+
+        //Create all edges and push to data structure
         int edgeCount = 0;
         for (EdgeDraftGetter edge : container.getEdges()) {
             Node source = edge.getSource().getNode();
@@ -99,6 +116,12 @@ public class DefaultProcessor implements Processor {
 
         if (nodeDraft.getSize() != 0) {
             node.getNodeData().setSize(nodeDraft.getSize());
+        } else {
+            node.getNodeData().setSize(10f);
+        }
+
+        if (nodeDraft.getId() != null) {
+            node.getNodeData().setId(nodeDraft.getId());
         }
 
         //Attributes

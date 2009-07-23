@@ -22,6 +22,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.timeline.ui.skins.api;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
@@ -31,6 +33,8 @@ import java.awt.Stroke;
  * @author Julian Bilcke
  */
 public interface TimelineSkin {
+
+    public FontMetrics getDataLayerFontMetrics();
 
    /**
      * return the default background color
@@ -100,6 +104,8 @@ public interface TimelineSkin {
     public Stroke getDataLayerStroke();
 
     public Color getDataLayerStrokeColor();
+
+    public Font getDataLayerFont();
 
        /**
      * Builds the data layer paint cache

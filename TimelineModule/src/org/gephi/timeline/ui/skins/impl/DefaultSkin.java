@@ -24,6 +24,8 @@ import java.awt.BasicStroke;
 import java.awt.Stroke;
 import org.gephi.timeline.ui.skins.api.TimelineSkin;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Paint;
 import java.awt.RenderingHints;
@@ -119,6 +121,10 @@ public class DefaultSkin implements TimelineSkin {
         final static private Stroke defaultStroke = new BasicStroke(1.0f);
         final static private Color defaultStrokeColor = Color.black;
 
+        final static private Font font = new Font("DejaVu Sans Mono", 0, 12);
+
+        final static private FontMetrics fontMetrics = new FontMetrics(font) {};
+
     }
     protected Paint dataLayerPaint = new GradientPaint(0, 0, data.upperColor, 0, 10, data.bottomColor, true);
     protected Paint highlightedDataLayerPaint = new GradientPaint(0, 0, data.highlightedUpperColor, 0, 10, data.highlightedBottomColor, true);
@@ -149,7 +155,12 @@ public class DefaultSkin implements TimelineSkin {
         return data.defaultStrokeColor;
     }
 
-
+    public Font getDataLayerFont() {
+        return data.font;
+    }
+    public FontMetrics getDataLayerFontMetrics() {
+        return data.fontMetrics;
+    }
 
 
 
@@ -199,7 +210,7 @@ public class DefaultSkin implements TimelineSkin {
         return selection.defaultStrokeColor;
     }
     public int getSelectionHookSideLength() {
-        return 10;
+        return 16;
     }
 
     protected RenderingHints renderingHints;

@@ -65,7 +65,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected GraphDrawableImpl graphDrawable;
     protected GraphIO graphIO;
     protected VizEventManager vizEventManager;
-    protected SelectionArea currentSelectionArea = new Point();
+    protected SelectionArea currentSelectionArea;
     protected ModelClassLibrary modelClassLibrary;
     protected DataBridge dataBridge;
     protected EventBridge eventBridge;
@@ -89,6 +89,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         this.modeManager = VizController.getInstance().getModeManager();
         this.textManager = VizController.getInstance().getTextManager();
         initObject3dClass();
+        initSelection();
     }
 
     public abstract void beforeDisplay(GL gl, GLU glu);
@@ -127,11 +128,15 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public abstract void initObject3dClass();
 
+    public abstract void initSelection();
+
     public abstract ModelClass[] getModelClasses();
 
     protected abstract void startAnimating();
 
     protected abstract void stopAnimating();
+
+    public abstract ModelImpl[] getSelectedObjects(ModelClass modelClass);
 
     /**
      * Reset contents of octree for the given class
@@ -162,6 +167,12 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         if (obj.isAutoSelected()) {
             return true;
         }
+        if (obj.onlyAutoSelect()) {
+            return false;
+        }
+        if (!currentSelectionArea.isEnabled()) {
+            return false;
+        }
         float x1 = graphIO.getMousePosition()[0];
         float y1 = graphIO.getMousePosition()[1];
 
@@ -179,6 +190,10 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         d.set(2, distance);
 
         return currentSelectionArea.mouseTest(d, obj);
+    }
+
+    public SelectionArea getCurrentSelectionArea() {
+        return currentSelectionArea;
     }
 
     public void startDisplay() {

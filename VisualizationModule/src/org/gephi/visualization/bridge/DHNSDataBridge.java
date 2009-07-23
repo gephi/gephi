@@ -20,11 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.bridge;
 
+import org.gephi.graph.api.ClusteredDirectedGraph;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Model;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ColorLayer;
@@ -32,6 +34,7 @@ import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.initializer.Modeler;
 import org.gephi.visualization.api.objects.ModelClass;
+import org.gephi.visualization.hull.ConvexHull;
 import org.gephi.visualization.mode.ModeManager;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.objects.Edge2dModel;
@@ -46,7 +49,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     //Architecture
     protected AbstractEngine engine;
     protected GraphController controller;
-    protected Graph graph;
+    protected ClusteredDirectedGraph graph;
     private VizConfig vizConfig;
     protected ModeManager modeManager;
 
@@ -63,7 +66,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         controller = Lookup.getDefault().lookup(GraphController.class);
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.modeManager = VizController.getInstance().getModeManager();
-        graph = controller.getDirectedGraph();
+        graph = controller.getClusteredDirectedGraph();
     }
 
     public void updateWorld() {
@@ -72,13 +75,13 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
         switch (modeManager.getMode()) {
             case FULL:
-                graph = controller.getDirectedGraph();
+                graph = controller.getClusteredDirectedGraph();
                 break;
             case VISIBLE:
-                graph = controller.getVisibleDirectedGraph();
+                //graph = controller.getVisibleDirectedGraph();
                 break;
             case HIGHLIGHT:
-                graph = controller.getDirectedGraph();
+                //graph = controller.getDirectedGraph();
                 break;
         }
 
@@ -93,11 +96,33 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         }
 
         ModelClass edgeClass = object3dClasses[AbstractEngine.CLASS_EDGE];
-        if (edgeClass.isEnabled() && (graph.getEdgeVersion() > edgeVersion || modeManager.requireModeChange())) {
+        if (edgeClass.isEnabled() && (graph.getEdgeVersion() > edgeVersion || modeManager.requireModeChange() || vizConfig.isVisualizeTree())) {
             updateEdges();
             edgeClass.setCacheMarker(cacheMarker);
             if (vizConfig.isShowArrows()) {
                 object3dClasses[AbstractEngine.CLASS_ARROW].setCacheMarker(cacheMarker);
+            }
+        }
+
+        ModelClass potatoClass = object3dClasses[AbstractEngine.CLASS_POTATO];
+        if (potatoClass.isEnabled()) {
+            Modeler potInit = engine.getModelClasses()[AbstractEngine.CLASS_POTATO].getCurrentModeler();
+            int i = 0;
+            Node[] nodes = new Node[15];
+            for (Node node : graph.getNodes().toArray()) {
+                nodes[i] = node;
+                i++;
+                if (i == 15) {
+                    break;
+                }
+            }
+            if (i == 15) {
+                ConvexHull ch = new ConvexHull();
+                ch.setNodes(nodes);
+                ModelImpl obj = potInit.initModel(ch);
+                obj.setCacheMarker(cacheMarker);
+                engine.addObject(AbstractEngine.CLASS_POTATO, obj);
+                potatoClass.setCacheMarker(cacheMarker);
             }
         }
 
@@ -112,7 +137,14 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     private void updateNodes() {
         Modeler nodeInit = engine.getModelClasses()[AbstractEngine.CLASS_NODE].getCurrentModeler();
 
-        for (Node node : graph.getNodes()) {
+        NodeIterable nodeIterable;
+        if (vizConfig.isVisualizeTree()) {
+            nodeIterable = graph.getHierarchyTree().getNodes();
+        } else {
+            nodeIterable = graph.getNodes();
+        }
+
+        for (Node node : nodeIterable) {
             Model obj = node.getNodeData().getModel();
             if (obj == null) {
                 //Model is null, ADD
@@ -130,6 +162,20 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                     ColorLayer.layerColor(impl, 0.8f, 0.8f, 0.8f);
                 }
             }
+            //Tree position
+            if (vizConfig.isVisualizeTree()) {
+                node.getNodeData().setX(node.getPre() * 25);
+                node.getNodeData().setY(node.getPost() * 25);
+                if(graph.isInView(node)) {
+                    node.getNodeData().setR(1f);
+                    node.getNodeData().setG(0f);
+                    node.getNodeData().setB(0f);
+                } else {
+                    node.getNodeData().setR(0.2f);
+                    node.getNodeData().setG(0.2f);
+                    node.getNodeData().setB(0.2f);
+                }
+            }
         }
     }
 
@@ -137,7 +183,14 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         Modeler edgeInit = engine.getModelClasses()[AbstractEngine.CLASS_EDGE].getCurrentModeler();
         Modeler arrowInit = engine.getModelClasses()[AbstractEngine.CLASS_ARROW].getCurrentModeler();
 
-        for (Edge edge : graph.getEdges()) {
+        EdgeIterable edgeIterable;
+        if (vizConfig.isVisualizeTree()) {
+            edgeIterable = graph.getHierarchyTree().getEdges();
+        } else {
+            edgeIterable = graph.getEdges();
+        }
+
+        for (Edge edge : edgeIterable) {
 
             Model obj = edge.getEdgeData().getModel();
             if (obj == null) {
@@ -145,7 +198,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                 obj = edgeInit.initModel(edge.getEdgeData());
 
                 engine.addObject(AbstractEngine.CLASS_EDGE, (ModelImpl) obj);
-                if (vizConfig.isShowArrows()) {
+                if (vizConfig.isShowArrows() && !edge.isSelfLoop()) {
                     ModelImpl arrowObj = arrowInit.initModel(edge.getEdgeData());
                     engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);
@@ -185,7 +238,12 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     public boolean requireUpdate() {
         //Refresh reader if sight changed
         if (graph != null) {
-            return graph.getNodeVersion() > nodeVersion || graph.getEdgeVersion() > edgeVersion;
+            if (vizConfig.isVisualizeTree()) {
+                return graph.getNodeVersion() > nodeVersion;
+            } else {
+                return graph.getNodeVersion() > nodeVersion || graph.getEdgeVersion() > edgeVersion;
+            }
+
         }
         return false;
     }

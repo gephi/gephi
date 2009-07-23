@@ -35,6 +35,8 @@ public interface NodeData extends Renderable {
 
     public String getId();
 
+    public void setId(String id);
+
     public <T extends LayoutData> T getLayoutData();
 
     public void setLayoutData(LayoutData layoutData);

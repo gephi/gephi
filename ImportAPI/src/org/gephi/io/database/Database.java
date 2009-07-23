@@ -20,13 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.database;
 
-import org.gephi.data.properties.EdgeProperties;
-import org.gephi.data.properties.NodeProperties;
 import org.gephi.io.database.drivers.SQLDriver;
 import org.gephi.io.importer.PropertiesAssociations;
-import org.gephi.io.importer.PropertyAssociation;
 
 /**
+ * Database description and connexion details.
  *
  * @author Mathieu Bastian
  */

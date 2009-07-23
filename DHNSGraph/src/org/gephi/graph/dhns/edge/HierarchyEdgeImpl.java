@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.edge;
 
-import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.node.AbstractNode;
 
 /**
  * Edge implementation which represents hierarchy relation between a node and his parent node.
@@ -29,7 +29,7 @@ import org.gephi.graph.dhns.node.PreNode;
  */
 public class HierarchyEdgeImpl extends AbstractEdge {
 
-    public HierarchyEdgeImpl(int ID, PreNode node) {
-        super(ID, node, node.parent);
+    public HierarchyEdgeImpl(int ID, AbstractNode node) {
+        super(ID, node, node.parent.getOriginalNode());
     }
 }

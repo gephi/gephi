@@ -22,16 +22,16 @@ package org.gephi.graph.dhns.node.iterators;
 
 import java.util.Iterator;
 import org.gephi.graph.dhns.core.DurableTreeList;
-import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
- * {@link PreNode} iterator for visible children of a node, enabled or not.
+ * {@link AbstractNode} iterator for visible children of a node, enabled or not.
  *
  * @author Mathieu Bastian
  * @see ChildrenIterator
@@ -43,12 +43,12 @@ public class ChildrenIterator extends AbstractNodeIterator implements Iterator<N
     protected int nextIndex;
     protected int diffIndex;
     protected DurableAVLNode currentNode;
-    protected boolean loopStart=true;
+    protected boolean loopStart = true;
 
     //Proposition
-    protected Proposition<PreNode> proposition;
+    protected Proposition<AbstractNode> proposition;
 
-    public ChildrenIterator(TreeStructure treeStructure, Proposition<PreNode> proposition) {
+    public ChildrenIterator(TreeStructure treeStructure, Proposition<AbstractNode> proposition) {
         this.treeList = treeStructure.getTree();
         nextIndex = 1;
         diffIndex = 2;
@@ -60,12 +60,12 @@ public class ChildrenIterator extends AbstractNodeIterator implements Iterator<N
         }
     }
 
-    public ChildrenIterator(TreeStructure treeStructure, PreNode node, Proposition<PreNode> proposition) {
+    public ChildrenIterator(TreeStructure treeStructure, AbstractNode node, Proposition<AbstractNode> proposition) {
         this(treeStructure, proposition);
         setNode(node);
     }
 
-    public void setNode(PreNode node) {
+    public void setNode(AbstractNode node) {
         nextIndex = node.getPre() + 1;
         treeSize = node.getPre() + node.size + 1;
         diffIndex = 2;
@@ -79,7 +79,7 @@ public class ChildrenIterator extends AbstractNodeIterator implements Iterator<N
                 diffIndex = nextIndex - currentNode.getValue().pre;
             }
             loopStart = false;
-            
+
             if (nextIndex < treeSize) {
                 if (diffIndex > 1) {
                     currentNode = treeList.getNode(nextIndex);
@@ -93,7 +93,7 @@ public class ChildrenIterator extends AbstractNodeIterator implements Iterator<N
         return true;
     }
 
-    public PreNode next() {
+    public AbstractNode next() {
         nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
         diffIndex = nextIndex - currentNode.getValue().pre;
         loopStart = true;

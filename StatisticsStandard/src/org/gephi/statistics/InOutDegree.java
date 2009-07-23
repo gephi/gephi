@@ -111,7 +111,6 @@ public class InOutDegree implements Statistics, LongTask {
         return false;
     }
 
-
     /**
      *
      * @return

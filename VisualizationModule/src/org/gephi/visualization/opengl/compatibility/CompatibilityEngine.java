@@ -39,6 +39,7 @@ import org.gephi.visualization.opengl.octree.Octree;
 import org.gephi.visualization.api.Scheduler;
 import org.gephi.visualization.api.objects.CompatibilityModelClass;
 import org.gephi.visualization.opengl.compatibility.objects.Potato3dModel;
+import org.gephi.visualization.selection.Point;
 import org.gephi.visualization.selection.Rectangle;
 
 /**
@@ -78,67 +79,59 @@ public class CompatibilityEngine extends AbstractEngine {
     public void updateSelection(GL gl, GLU glu) {
         octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
 
-        //Potatoes selection
-        if (modelClasses[CLASS_POTATO].isEnabled()) {
+        for (int i = 0; i < selectableClasses.length; i++) {
+            CompatibilityModelClass modelClass = selectableClasses[i];
 
-            int potatoCount = octree.countSelectedObjects(CLASS_POTATO);
-            float[] mousePosition = graphIO.getMousePosition();
-            float[] pickRectangle = currentSelectionArea.getSelectionAreaRectancle();
+            if (modelClass.isEnabled() && modelClass.isGlSelection()) {
+                int objectCount = octree.countSelectedObjects(modelClass.getClassId());
 
-            //Update selection
-            int capacity = 1 * 4 * potatoCount;      //Each object take in maximium : 4 * name stack depth
-            IntBuffer hitsBuffer = BufferUtil.newIntBuffer(capacity);
+                float[] mousePosition = graphIO.getMousePosition();
+                float[] pickRectangle = currentSelectionArea.getSelectionAreaRectancle();
+                int capacity = 1 * 4 * objectCount;      //Each object take in maximium : 4 * name stack depth
+                IntBuffer hitsBuffer = BufferUtil.newIntBuffer(capacity);
 
-            gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
-            gl.glRenderMode(GL.GL_SELECT);
+                gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
+                gl.glRenderMode(GL.GL_SELECT);
 
-            gl.glInitNames();
-            gl.glPushName(0);
+                gl.glInitNames();
+                gl.glPushName(0);
 
-            gl.glMatrixMode(GL.GL_PROJECTION);
-            gl.glPushMatrix();
-            gl.glLoadIdentity();
+                gl.glMatrixMode(GL.GL_PROJECTION);
+                gl.glPushMatrix();
+                gl.glLoadIdentity();
 
-            glu.gluPickMatrix(mousePosition[0], mousePosition[1], pickRectangle[0], pickRectangle[1], graphDrawable.getViewport());
-            gl.glMultMatrixd(graphDrawable.getProjectionMatrix());
+                glu.gluPickMatrix(mousePosition[0], mousePosition[1], pickRectangle[0], pickRectangle[1], graphDrawable.getViewport());
+                gl.glMultMatrixd(graphDrawable.getProjectionMatrix());
 
-            gl.glMatrixMode(GL.GL_MODELVIEW);
+                gl.glMatrixMode(GL.GL_MODELVIEW);
 
-            //Draw the nodes' cube int the select buffer
-            int hitName = 1;
-            ModelImpl[] array = new ModelImpl[potatoCount];
-            for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(CLASS_POTATO); itr.hasNext();) {
-                Potato3dModel obj = (Potato3dModel) itr.next();
-                obj.setUnderMouse(false);
-                if (obj.isDisplayReady()) {
+                int hitName = 1;
+                ModelImpl[] array = new ModelImpl[objectCount];
+                for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(modelClass.getClassId()); itr.hasNext();) {
+                    ModelImpl obj = itr.next();
+                    obj.setAutoSelect(false);
+
                     array[hitName - 1] = obj;
                     gl.glLoadName(hitName);
-                    obj.mark = false;
-                    gl.glBegin(GL.GL_TRIANGLES);
                     obj.display(gl, glu);
-                    gl.glEnd();
-                    obj.mark = true;
-                    obj.display(gl, glu);
-                    obj.mark = false;
                     hitName++;
+
                 }
-            }
 
-            //Restoring the original projection matrix
-            gl.glMatrixMode(GL.GL_PROJECTION);
-            gl.glPopMatrix();
-            gl.glMatrixMode(GL.GL_MODELVIEW);
-            gl.glFlush();
+                //Restoring the original projection matrix
+                gl.glMatrixMode(GL.GL_PROJECTION);
+                gl.glPopMatrix();
+                gl.glMatrixMode(GL.GL_MODELVIEW);
+                gl.glFlush();
 
-            //Returning to normal rendering mode
-            int nbRecords = gl.glRenderMode(GL.GL_RENDER);
+                //Returning to normal rendering mode
+                int nbRecords = gl.glRenderMode(GL.GL_RENDER);
 
-            //Get the hits and put the node under selection in the selectionArray
-            for (int i = 0; i < nbRecords; i++) {
-                int hit = hitsBuffer.get(i * 4 + 3) - 1; 		//-1 Because of the glPushName(0)
-                Potato3dModel obj = (Potato3dModel) array[hit];
-                if (!obj.isParentUnderMouse()) {
-                    obj.setUnderMouse(true);
+                //Get the hits and put the node under selection in the selectionArray
+                for (int j = 0; j < nbRecords; j++) {
+                    int hit = hitsBuffer.get(j * 4 + 3) - 1; 		//-1 Because of the glPushName(0)
+                    ModelImpl obj = array[hit];
+                    obj.setAutoSelect(true);
                 }
             }
         }
@@ -199,6 +192,22 @@ public class CompatibilityEngine extends AbstractEngine {
         CompatibilityModelClass edgeClass = modelClasses[AbstractEngine.CLASS_EDGE];
         CompatibilityModelClass nodeClass = modelClasses[AbstractEngine.CLASS_NODE];
         CompatibilityModelClass arrowClass = modelClasses[AbstractEngine.CLASS_ARROW];
+        CompatibilityModelClass potatoClass = modelClasses[AbstractEngine.CLASS_POTATO];
+
+        //Potato
+        if (potatoClass.isEnabled()) {
+            potatoClass.beforeDisplay(gl, glu);
+            for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_POTATO); itr.hasNext();) {
+                ModelImpl obj = itr.next();
+
+                if (obj.markTime != startTime) {
+                    obj.display(gl, glu);
+                    obj.markTime = startTime;
+                }
+
+            }
+            potatoClass.afterDisplay(gl, glu);
+        }
 
         //Edges
         if (edgeClass.isEnabled()) {
@@ -244,7 +253,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
         //Labels
         if (vizConfig.isShowLabels()) {
-            startTime-=1;
+            startTime -= 1;
             textManager.beginRendering();
             if (nodeClass.isEnabled()) {
                 textManager.defaultNodeColor();
@@ -268,7 +277,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void afterDisplay(GL gl, GLU glu) {
-        if(vizConfig.isSelectionEnable()) {
+        if (vizConfig.isSelectionEnable()) {
             currentSelectionArea.drawArea(gl, glu);
         }
     }
@@ -308,6 +317,12 @@ public class CompatibilityEngine extends AbstractEngine {
                 eventBridge.mouseClick(objClass, objArray);
             }
         }
+
+        if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection() && anySelected) {
+            Rectangle rectangle = (Rectangle) currentSelectionArea;
+            rectangle.setBlocking(false);
+            scheduler.requireUpdateSelection();
+        }
     }
 
     @Override
@@ -318,16 +333,20 @@ public class CompatibilityEngine extends AbstractEngine {
             obj.getObj().setX(drag[0] + mouseDistance[0]);
             obj.getObj().setY(drag[1] + mouseDistance[1]);
         }
-
-        //Selection
-        if(vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
-            Rectangle rectangle = (Rectangle)currentSelectionArea;
-            rectangle.setMousePosition(graphIO.getMousePosition());
-        }
     }
 
     @Override
     public void mouseMove() {
+
+        //Selection
+        if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
+            Rectangle rectangle = (Rectangle) currentSelectionArea;
+            rectangle.setMousePosition(graphIO.getMousePosition());
+        }
+
+        if (currentSelectionArea.blockSelection()) {
+            return;
+        }
 
         List<ModelImpl> newSelectedObjects = null;
         List<ModelImpl> unSelectedObjects = null;
@@ -340,11 +359,15 @@ public class CompatibilityEngine extends AbstractEngine {
         long markTime = System.currentTimeMillis();
         int i = 0;
         boolean someSelection = false;
+        boolean forceUnselect = false;
         for (ModelClass objClass : selectableClasses) {
+            forceUnselect = objClass.isAloneSelection() && someSelection;
             for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(objClass.getClassId()); itr.hasNext();) {
                 ModelImpl obj = itr.next();
-                if (isUnderMouse(obj) && currentSelectionArea.select(obj.getObj())) {
-                    someSelection = true;
+                if (!forceUnselect && isUnderMouse(obj) && currentSelectionArea.select(obj.getObj())) {
+                    if (!objClass.isAloneSelection()) {  //avoid potatoes to select
+                        someSelection = true;
+                    }
                     if (!obj.isSelected()) {
                         //New selected
                         obj.setSelected(true);
@@ -391,7 +414,6 @@ public class CompatibilityEngine extends AbstractEngine {
         anySelected = someSelection;
     }
 
-
     @Override
     public void refreshGraphLimits() {
     }
@@ -407,13 +429,6 @@ public class CompatibilityEngine extends AbstractEngine {
             tab[0] = o.getObj().x() - x;
             tab[1] = o.getObj().y() - y;
         }
-
-        //Selection
-        if(vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
-            float[] mousePosition = graphIO.getMousePosition();
-            Rectangle rectangle = (Rectangle)currentSelectionArea;
-            rectangle.start(mousePosition);
-        }
     }
 
     @Override
@@ -421,9 +436,10 @@ public class CompatibilityEngine extends AbstractEngine {
         scheduler.requireUpdatePosition();
 
         //Selection
-        if(vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
-            Rectangle rectangle = (Rectangle)currentSelectionArea;
+        if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
+            Rectangle rectangle = (Rectangle) currentSelectionArea;
             rectangle.stop();
+            scheduler.requireUpdateSelection();
         }
     }
 
@@ -434,6 +450,11 @@ public class CompatibilityEngine extends AbstractEngine {
                 octree.updateObjectsPosition(objClass.getClassId());
             }
         }
+    }
+
+    @Override
+    public ModelImpl[] getSelectedObjects(ModelClass modelClass) {
+        return selectedObjects[modelClass.getClassId()].toArray(new ModelImpl[0]);
     }
 
     private void initDisplayLists(GL gl, GLU glu) {
@@ -468,7 +489,7 @@ public class CompatibilityEngine extends AbstractEngine {
             ptr = newPtr;
         }
 
-        modelClasses[CLASS_POTATO].getCurrentModeler().initDisplayLists(gl, glu, quadric, ptr);
+        //modelClasses[CLASS_POTATO].getCurrentModeler().initDisplayLists(gl, glu, quadric, ptr);
 
         //Fin
 
@@ -505,7 +526,7 @@ public class CompatibilityEngine extends AbstractEngine {
         modelClasses[CLASS_NODE].setEnabled(true);
         modelClasses[CLASS_EDGE].setEnabled(vizConfig.isShowEdges());
         modelClasses[CLASS_ARROW].setEnabled(vizConfig.isShowArrows());
-        modelClasses[3].setEnabled(true);
+        modelClasses[CLASS_POTATO].setEnabled(true);
 
         //LOD
         ArrayList<ModelClass> classList = new ArrayList<ModelClass>();
@@ -541,6 +562,15 @@ public class CompatibilityEngine extends AbstractEngine {
             objClass.setSelectionId(i);
             selectedObjects[i] = new ConcurrentLinkedQueue<ModelImpl>();
             i++;
+        }
+    }
+
+    @Override
+    public void initSelection() {
+        if (vizConfig.isRectangleSelection()) {
+            currentSelectionArea = new Rectangle();
+        } else {
+            currentSelectionArea = new Point();
         }
     }
 

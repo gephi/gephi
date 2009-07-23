@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.statistics.api;
 
 import java.util.List;
@@ -29,7 +28,7 @@ import java.util.List;
  */
 public interface StatisticsController {
 
-    public List<Statistics> getStatistics();
+    public List<StatisticsBuilder> getStatistics();
 
-    public void execute(Statistics statistics);
+    public void execute(StatisticsBuilder statistics);
 }

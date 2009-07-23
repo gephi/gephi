@@ -25,10 +25,19 @@ import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.logging.Report;
 
 /**
+ * Importers interface for importing data from Text files.
  *
  * @author Mathieu Bastian
  */
 public interface TextImporter extends FileFormatImporter {
 
+    /**
+     * Import data from <code>reader</code> and push it to <code>container</code>. Informations, logs and
+     * issues are pushed to <code>report</code> for further analysis and verification.
+     * @param reader the reader on text data
+     * @param container container loading interface
+     * @param report the import report for logging informations and issues
+     * @throws java.lang.Exception for catching eventual exceptions
+     */
     public void importData(BufferedReader reader, ContainerLoader containter, Report report) throws Exception;
 }

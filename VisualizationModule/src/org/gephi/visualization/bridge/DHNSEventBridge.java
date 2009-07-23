@@ -20,13 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.bridge;
 
-
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Model;
+import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.objects.ModelClass;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.openide.util.Lookup;
@@ -53,28 +53,73 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     public void initEvents() {
     }
 
+    public boolean canExpand() {
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_NODE]);
+        if (selectedNodeModels.length == 1) {
+            ModelImpl metaModel = selectedNodeModels[0];
+            //TODO check it is a metaNode
+            return true;
+        }
+        return false;
+    }
+
+    public boolean canContract() {
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_NODE]);
+        if (selectedNodeModels.length == 1) {
+            ModelImpl metaModel = selectedNodeModels[0];
+            //TODO check it is a metaNode
+            return true;
+        }
+        return false;
+    }
+
+    public boolean canGroup() {
+        return true;
+    }
+
+    public boolean canUngroup() {
+        return true;
+    }
+
+    public void expand() {
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_NODE]);
+        if (selectedNodeModels.length == 1) {
+            ModelImpl metaModel = selectedNodeModels[0];
+            //TODO check it is a metaNode
+            NodeData node = (NodeData) metaModel.getObj();
+            graph.expand(node.getNode());
+        }
+    }
+
+    public void contract() {
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_NODE]);
+        if (selectedNodeModels.length == 1) {
+            ModelImpl metaModel = selectedNodeModels[0];
+            //TODO check it is a metaNode
+            NodeData node = (NodeData) metaModel.getObj();
+            graph.retract(node.getNode());
+        }
+    }
+
     public void mouseClick(ModelClass objClass, Model[] clickedObjects) {
 
-       /* switch (objClass.getClassId()) {
-            case AbstractEngine.CLASS_NODE:
-                for (int i = 0; i < clickedObjects.length; i++) {
-                    Model obj = clickedObjects[i];
-                    Node node = (Node) obj.getObj();
-                    DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-                    freeModifier.expand(node);
-                }
-                break;
-            case AbstractEngine.CLASS_POTATO:
-                for (int i = 0; i < clickedObjects.length; i++) {
-                    Model obj = clickedObjects[i];
-                    Potato potato = (Potato) obj.getObj();
-                    DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-                    freeModifier.retract(potato.getNode());
-                }
-                break;
+        /* switch (objClass.getClassId()) {
+        case AbstractEngine.CLASS_NODE:
+        for (int i = 0; i < clickedObjects.length; i++) {
+        Model obj = clickedObjects[i];
+        Node node = (Node) obj.getObj();
+        DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
+        freeModifier.expand(node);
+        }
+        break;
+        case AbstractEngine.CLASS_POTATO:
+        for (int i = 0; i < clickedObjects.length; i++) {
+        Model obj = clickedObjects[i];
+        Potato potato = (Potato) obj.getObj();
+        DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
+        freeModifier.retract(potato.getNode());
+        }
+        break;
         }*/
-
-
-
     }
 }

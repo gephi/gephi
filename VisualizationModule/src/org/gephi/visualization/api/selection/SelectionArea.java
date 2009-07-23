@@ -41,4 +41,8 @@ public interface SelectionArea {
     public abstract boolean unselect(Renderable object);
 
     public void drawArea(GL gl, GLU glu);
+
+    public boolean isEnabled();
+
+    public boolean blockSelection();
 }

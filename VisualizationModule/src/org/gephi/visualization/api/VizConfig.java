@@ -40,12 +40,12 @@ public class VizConfig {
     private int antialiasing = 4;
     private boolean use3d = false;
     private boolean lineSmooth = false;
-    private boolean lineSmoothNicest = true;
+    private boolean lineSmoothNicest = false;
     private boolean pointSmooth = false;
     private boolean blending = true;
     private boolean blendCinema = false;
     private boolean lighting = false;
-    private boolean culling = true;
+    private boolean culling = false;
     private boolean material = false;
     private boolean wireFrame = false;
     private boolean useGLJPanel = false;
@@ -54,24 +54,26 @@ public class VizConfig {
     private float[] defaultCameraPosition = {0f, 0f, 5000f};
     protected float[] nodeSelectedColor = {1f, 1f, 1f};
     protected boolean selectionEnable = true;
-    protected boolean rectangleSelection=true;
+    protected boolean rectangleSelection = false;
+    protected float[] rectangleSelectionColor = {0.16f, 0.48f, 0.81f, 0.2f};
     protected boolean draggingEnable = true;
     protected boolean cameraControlEnable = true;
     protected boolean rotatingEnable = true;
     protected boolean showFPS = true;
     protected boolean showEdges = true;
     protected boolean showArrows = true;
-    protected boolean showLabels = true;
+    protected boolean showLabels = false;
     protected boolean showEdgeLabels = true;
     protected boolean lightenNonSelectedAuto = true;
     protected boolean lightenNonSelected = true;
-    protected float[] lightenNonSelectedColor = {0.9f, 0.9f, 0.9f, 1f};
+    protected float[] lightenNonSelectedColor = {0.95f, 0.95f, 0.95f, 1f};
     protected boolean lightenNonSelectedAnimation = true;
     protected float lightenNonSelectedFactor = 0.5f;
     protected boolean autoSelectNeighbor = true;
     protected boolean hideNonSelectedEdges = false;
     protected boolean uniColorSelected = false;
-    protected float[] uniColorSelectedColor = {0.8f, 1f, 0f};
+    protected float[] uniColorSelectedColor = {0.8f, 0.2f, 0.2f};
+    protected float[] uniColorSelectedNeigborColor = {0.2f, 1f, 0.3f};
     protected float[] edgeInSelectedColor = {1f, 0f, 0f};
     protected float[] edgeOutSelectedColor = {1f, 1f, 0f};
     protected float[] edgeBothSelectedColor = {0f, 0f, 0f};
@@ -83,6 +85,9 @@ public class VizConfig {
     protected float[] defaultNodeLabelColor = {0f, 0f, 0f, 1f};
     protected float[] defaultEdgeLabelColor = {0.5f, 0.5f, 0.5f, 1f};
     protected Font defaultLabelFont = new Font("Arial", Font.BOLD, 20);
+    protected boolean showVizVar = false;
+    protected boolean visualizeTree = false;
+    protected boolean contextMenu = false;
 
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
@@ -171,7 +176,9 @@ public class VizConfig {
         return rectangleSelection;
     }
 
-    
+    public float[] getRectangleSelectionColor() {
+        return rectangleSelectionColor;
+    }
 
     public boolean isShowEdges() {
         return showEdges;
@@ -191,6 +198,18 @@ public class VizConfig {
 
     public boolean isShowEdgeLabels() {
         return showEdgeLabels;
+    }
+
+    public boolean isShowVizVar() {
+        return showVizVar;
+    }
+
+    public boolean isVisualizeTree() {
+        return visualizeTree;
+    }
+
+    public boolean isContextMenu() {
+        return contextMenu;
     }
 
     public boolean isAutoSelectNeighbor() {
@@ -255,6 +274,10 @@ public class VizConfig {
 
     public float[] getUniColorSelectedColor() {
         return uniColorSelectedColor;
+    }
+
+    public float[] getUniColorSelectedNeigborColor() {
+        return uniColorSelectedNeigborColor;
     }
 
     public boolean isEdgeUniColor() {

@@ -31,7 +31,7 @@ import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
-import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
 
@@ -88,8 +88,8 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
     }
 
     public boolean addEdge(Node source, Node target, boolean directed) {
-        PreNode preSource = checkNode(source);
-        PreNode preTarget = checkNode(target);
+        AbstractNode preSource = checkNode(source);
+        AbstractNode preTarget = checkNode(target);
         if (checkEdgeExist(preSource, preTarget)) {
             //Edge already exist
             return false;
@@ -136,8 +136,8 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
     }
 
     public Edge getEdge(Node node1, Node node2) {
-        PreNode sourceNode = checkNode(node1);
-        PreNode targetNode = checkNode(node2);
+        AbstractNode sourceNode = checkNode(node1);
+        AbstractNode targetNode = checkNode(node2);
         readLock();
         AbstractEdge res = null;
         AbstractEdge edge = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
@@ -157,15 +157,15 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
     }
 
     public NodeIterable getNeighbors(Node node) {
-        PreNode preNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
-        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition), preNode, nodeProposition));
+        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition), absNode, nodeProposition));
     }
 
     public EdgeIterable getEdges(Node node) {
-        PreNode preNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
-        return dhns.newEdgeIterable(new EdgeNodeIterator(preNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, edgeProposition));
+        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, edgeProposition));
     }
 
     public int getEdgeCount() {
@@ -185,17 +185,17 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
 
     //Directed
     public int getInDegree(Node node) {
-        PreNode preNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        if (!edgeProposition.isTautology() && !preNode.getEdgesInTree().isEmpty()) {
-            for (Iterator<AbstractEdge> itr = preNode.getEdgesInTree().iterator(); itr.hasNext();) {
+        if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
+            for (Iterator<AbstractEdge> itr = absNode.getEdgesInTree().iterator(); itr.hasNext();) {
                 if (edgeProposition.evaluate(itr.next())) {
                     count++;
                 }
             }
         } else {
-            count = preNode.getEdgesInTree().getCount();
+            count = absNode.getEdgesInTree().getCount();
         }
         readUnlock();
         return count;
@@ -203,17 +203,17 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
 
     //Directed
     public int getOutDegree(Node node) {
-        PreNode preNode = checkNode(node);
+        AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        if (!edgeProposition.isTautology() && !preNode.getEdgesInTree().isEmpty()) {
-            for (Iterator<AbstractEdge> itr = preNode.getEdgesOutTree().iterator(); itr.hasNext();) {
+        if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
+            for (Iterator<AbstractEdge> itr = absNode.getEdgesOutTree().iterator(); itr.hasNext();) {
                 if (edgeProposition.evaluate(itr.next())) {
                     count++;
                 }
             }
         } else {
-            count = preNode.getEdgesOutTree().getCount();
+            count = absNode.getEdgesOutTree().getCount();
         }
         readUnlock();
         return count;

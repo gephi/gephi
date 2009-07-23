@@ -30,6 +30,8 @@ import org.gephi.visualization.api.objects.ModelClass;
 public interface EventBridge {
 
     public void initEvents();
+
     public void initArchitecture();
+
     public void mouseClick(ModelClass objectClass, Model[] clickedObjects);
 }
