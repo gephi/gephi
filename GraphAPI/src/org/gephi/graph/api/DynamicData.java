@@ -26,9 +26,9 @@ package org.gephi.graph.api;
  */
 public interface DynamicData {
 
-    public int getRangeFrom();
+    public float getRangeFrom();
 
-    public int getRangeTo();
+    public float getRangeTo();
 
-    public void setRange(int from, int to);
+    public void setRange(float from, float to);
 }

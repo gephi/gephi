@@ -127,8 +127,8 @@ public class DefaultProcessor implements Processor {
 
         //Dynamic
         if (nodeDraft.getDynamicFrom() != -1 && nodeDraft.getDynamicTo() != -1) {
-            int from = nodeDraft.getDynamicFrom();
-            int to = nodeDraft.getDynamicTo();
+            float from = nodeDraft.getDynamicFrom();
+            float to = nodeDraft.getDynamicTo();
             node.getNodeData().getDynamicData().setRange(from, to);
         }
 

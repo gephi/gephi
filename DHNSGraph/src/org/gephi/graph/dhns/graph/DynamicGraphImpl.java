@@ -25,8 +25,10 @@ import org.gephi.graph.api.DynamicGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgePredicate;
 import org.gephi.graph.api.FilteredGraph;
+import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodePredicate;
+import org.gephi.graph.dhns.core.Dhns;
 
 /**
  *
@@ -36,27 +38,31 @@ public class DynamicGraphImpl implements DynamicGraph {
 
     //Graph reference
     private FilteredGraph graph;
+    private Dhns dhns;
 
     //Range
-    private int from;
-    private int to;
+    private float from = 0;
+    private float to = 1;
 
-    public DynamicGraphImpl(FilteredGraph graph) {
+    public DynamicGraphImpl(Dhns dhns, FilteredGraph graph) {
         this.graph = graph;
+        this.dhns = dhns;
         graph.addNodePredicate(new DynamicNodePredicate());
         graph.addEdgePredicate(new DynamicEdgePredicate());
     }
 
-    public void setRange(int from, int to) {
+    public void setRange(float from, float to) {
         this.from = from;
         this.to = to;
+        dhns.getGraphVersion().incNodeAndEdgeVersion();
+        dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
-    public int getRangeFrom() {
+    public float getRangeFrom() {
         return from;
     }
 
-    public int getRangeTo() {
+    public float getRangeTo() {
         return to;
     }
 

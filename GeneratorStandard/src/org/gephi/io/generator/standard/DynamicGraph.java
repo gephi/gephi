@@ -40,14 +40,12 @@ public class DynamicGraph implements Generator {
 
         ContainerLoader.ContainerFactory factory = container.factory();
 
-        int maximum = 1000;
-
         for (int i = 0; i < numberOfNodes; i++) {
             NodeDraft nodeDraft = factory.newNodeDraft();
             nodeDraft.setLabel("Node " + i);
             nodeDraft.setId("Node " + i);
-            int from = (int) (Math.random() * (maximum - 100));
-            int to = from + (int) Math.random() * (maximum - from);
+            float from = (float)Math.random();
+            float to = (float)(from + 1.0-Math.random());
             nodeDraft.setDynamicFrom(from);
             nodeDraft.setDynamicTo(to);
             container.addNode(nodeDraft);
