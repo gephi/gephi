@@ -23,6 +23,7 @@ package org.gephi.desktop.generate;
 import org.gephi.io.container.Container;
 import org.gephi.io.generator.Generator;
 import org.gephi.io.generator.GeneratorController;
+import org.gephi.io.logging.Report;
 import org.gephi.io.processor.Processor;
 import org.gephi.ui.generator.GeneratorUI;
 import org.gephi.utils.longtask.LongTaskErrorHandler;
@@ -64,6 +65,7 @@ public class DesktopGeneratorController implements GeneratorController {
 
         final Container container = Lookup.getDefault().lookup(Container.class);
         container.setSource("" + generator.getName());
+        container.setReport(new Report());
         String taskname = "Generate " + generator.getName();
 
         //Error handler
@@ -72,6 +74,7 @@ public class DesktopGeneratorController implements GeneratorController {
             public void fatalError(Throwable t) {
                 NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
                 DialogDisplayer.getDefault().notify(ex);
+                t.printStackTrace();
             }
         };
 

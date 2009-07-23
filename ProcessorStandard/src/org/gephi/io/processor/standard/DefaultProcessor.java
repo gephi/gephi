@@ -125,6 +125,13 @@ public class DefaultProcessor implements Processor {
             node.getNodeData().setId(nodeDraft.getId());
         }
 
+        //Dynamic
+        if (nodeDraft.getDynamicFrom() != -1 && nodeDraft.getDynamicTo() != -1) {
+            int from = nodeDraft.getDynamicFrom();
+            int to = nodeDraft.getDynamicTo();
+            node.getNodeData().getDynamicData().setRange(from, to);
+        }
+
         //Attributes
         if (node.getNodeData().getAttributes() != null) {
             AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
