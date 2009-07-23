@@ -67,4 +67,8 @@ public interface NodeDraft {
     public void addChild(NodeDraft child);
 
     public void setParent(NodeDraft draft);
+
+    public void setDynamicFrom(int from);
+
+    public void setDynamicTo(int to);
 }

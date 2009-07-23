@@ -21,9 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.timeline.ui;
 
+import org.gephi.timeline.DynamicTimelineProxy;
 import java.io.Serializable;
 import java.util.logging.Logger;
-import org.gephi.timeline.api.TimelineDataModel;
+import org.gephi.timeline.api.TimelineProxy;
 import org.gephi.timeline.ui.layers.impl.UpperPaneBackgroundLayer;
 import org.gephi.timeline.ui.layers.impl.UpperPaneDataLayer;
 import org.gephi.timeline.ui.skins.api.TimelineSkin;
@@ -41,7 +42,7 @@ final class TimelineTopComponent extends TopComponent {
     private static TimelineTopComponent instance;
 
     private TimelineSkin skin = new DefaultSkin();
-    private TimelineDataModel model = new FakeTimelineDataModel();
+    private TimelineProxy model = new DynamicTimelineProxy();
 
     /** path to the icon used by the component and its open action */
     static final String ICON_PATH = "resources/date.png";

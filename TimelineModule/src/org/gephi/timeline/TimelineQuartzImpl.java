@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.gephi.timeline.api.TimelineQuartz;
 import org.gephi.timeline.api.TimelineQuartzListener;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -70,15 +71,17 @@ public class TimelineQuartzImpl implements TimelineQuartz {
         thread.start();
     }
 
-    public void stop() {
+    public void delayedStop() {
         runnable.stop();
-        /*
+    }
+    public void waitStop() {
+        runnable.stop();
+        
         try {
             thread.join();
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
         }
-         */
     }
 }
 

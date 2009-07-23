@@ -58,6 +58,10 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     private boolean visible = true;
     private boolean fixed;
 
+    //Dynamic
+    private int from = -1;
+    private int to = -1;
+
     //Attributes
     private List<AttributeValue> attributeValues = new ArrayList<AttributeValue>();
 
@@ -140,8 +144,8 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
             this.parent = new NodeDraftImpl[1];
             this.parent[0] = (NodeDraftImpl) draft;
         } else {
-            this.parent = Arrays.copyOf(this.parent, this.parent.length+1);
-            this.parent[this.parent.length-1] = (NodeDraftImpl) draft;
+            this.parent = Arrays.copyOf(this.parent, this.parent.length + 1);
+            this.parent[this.parent.length - 1] = (NodeDraftImpl) draft;
         }
         container.setHierarchicalGraph(true);
     }
@@ -157,6 +161,14 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     public void addAttributeValue(AttributeColumn column, Object value) {
         AttributeValue attValue = container.getFactory().newValue(column, value);
         attributeValues.add(attValue);
+    }
+
+    public void setDynamicFrom(int from) {
+        this.from = from;
+    }
+
+    public void setDynamicTo(int to) {
+        this.to = to;
     }
 
     //GETTERS
@@ -202,6 +214,14 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
 
     public boolean isVisible() {
         return visible;
+    }
+
+    public int getDynamicFrom() {
+        return from;
+    }
+
+    public int getDynamicTo() {
+        return to;
     }
 
     @Override

@@ -28,7 +28,8 @@ package org.gephi.timeline.api;
 public interface TimelineQuartz {
 
     public void start();
-    public void stop();
+    public void delayedStop();
+    public void waitStop();
     public boolean isRunning();
 
     public void setDelay(long delay);

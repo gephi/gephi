@@ -62,6 +62,7 @@ public class DhnsGraphController implements GraphController {
     protected Dhns dhns;
     private AttributeRowFactory attributesFactory;
     private Executor eventBus;
+    private DynamicGraph centralDynamicGraph;
 
     public DhnsGraphController() {
         iDGen = new IDGen();
@@ -78,6 +79,8 @@ public class DhnsGraphController implements GraphController {
                 return new Thread(r, "DHNS Event Bus");
             }
         });
+
+        centralDynamicGraph = new DynamicGraphImpl((FilteredGraph) getClusteredDirectedGraph());
     }
 
     public Dhns newDhns() {
@@ -179,5 +182,9 @@ public class DhnsGraphController implements GraphController {
 
     public DynamicGraph getDynamicGraph(Graph graph) {
         return new DynamicGraphImpl((ClusteredGraphImpl) graph);
+    }
+
+    public DynamicGraph getCentralDynamicGraph() {
+        return centralDynamicGraph;
     }
 }
