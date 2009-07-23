@@ -89,6 +89,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                 break;
         }
 
+        graph = (ClusteredDirectedGraph) controller.getCentralDynamicGraph().getGraph();
+
         ModelClass[] object3dClasses = engine.getModelClasses();
 
         graph.readLock();
@@ -180,7 +182,6 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         }
 
         for (Edge edge : edgeIterable) {
-
             Model obj = edge.getEdgeData().getModel();
             if (obj == null) {
                 //Model is null, ADD

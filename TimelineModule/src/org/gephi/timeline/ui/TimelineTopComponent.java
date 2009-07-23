@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.timeline.ui;
 
-import org.gephi.timeline.DynamicTimelineProxy;
+import org.gephi.timeline.TimelineProxyDynamic;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import org.gephi.timeline.api.TimelineProxy;
@@ -42,7 +42,7 @@ final class TimelineTopComponent extends TopComponent {
     private static TimelineTopComponent instance;
 
     private TimelineSkin skin = new DefaultSkin();
-    private TimelineProxy model = new DynamicTimelineProxy();
+    private TimelineProxy model = new TimelineProxyDynamic();
 
     /** path to the icon used by the component and its open action */
     static final String ICON_PATH = "resources/date.png";

@@ -25,39 +25,51 @@ import org.gephi.graph.api.DynamicGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgePredicate;
 import org.gephi.graph.api.FilteredGraph;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodePredicate;
+import org.gephi.graph.dhns.core.Dhns;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class DynamicGraphImpl implements DynamicGraph {
+public class DynamicGraphImpl<T extends Graph> implements DynamicGraph {
 
     //Graph reference
-    private FilteredGraph graph;
+    private T graph;
+    private Dhns dhns;
 
     //Range
-    private int from;
-    private int to;
+    private float from = 0;
+    private float to = 1;
 
-    public DynamicGraphImpl(FilteredGraph graph) {
+    public DynamicGraphImpl(Dhns dhns, T graph) {
         this.graph = graph;
-        graph.addNodePredicate(new DynamicNodePredicate());
-        graph.addEdgePredicate(new DynamicEdgePredicate());
+        this.dhns = dhns;
+        FilteredGraph filteredGraph = (FilteredGraph) graph;
+        filteredGraph.addNodePredicate(new DynamicNodePredicate());
+        filteredGraph.addEdgePredicate(new DynamicEdgePredicate());
     }
 
-    public void setRange(int from, int to) {
+    public void setRange(float from, float to) {
         this.from = from;
         this.to = to;
+        dhns.getGraphVersion().incNodeAndEdgeVersion();
+        dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
-    public int getRangeFrom() {
+    public float getRangeFrom() {
         return from;
     }
 
-    public int getRangeTo() {
+    public float getRangeTo() {
         return to;
+    }
+
+    public T getGraph() {
+        return graph;
     }
 
     private class DynamicNodePredicate implements NodePredicate {
@@ -65,6 +77,9 @@ public class DynamicGraphImpl implements DynamicGraph {
         public boolean evaluate(Node element) {
             //Check if element is in the range
             DynamicData dd = element.getNodeData().getDynamicData();
+            if (dd.getRangeFrom() == -1 || dd.getRangeTo() == -1) {
+                return true;
+            }
             return dd.getRangeFrom() >= from && dd.getRangeTo() <= to;
         }
     }
@@ -74,6 +89,9 @@ public class DynamicGraphImpl implements DynamicGraph {
         public boolean evaluate(Edge element) {
             //Check if element is in the range
             DynamicData dd = element.getEdgeData().getDynamicData();
+            if (dd.getRangeFrom() == -1 || dd.getRangeTo() == -1) {
+                return true;
+            }
             return dd.getRangeFrom() >= from && dd.getRangeTo() <= to;
         }
     }

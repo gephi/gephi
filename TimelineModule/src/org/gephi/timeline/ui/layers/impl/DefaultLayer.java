@@ -27,7 +27,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.timeline.ui.layers.impl;
 
 import org.gephi.timeline.api.TimelineProxy;
-import org.gephi.timeline.TestTimelineProxy;
+import org.gephi.timeline.TimelineProxyDebug;
 import org.gephi.timeline.ui.layers.api.Layer;
 import org.gephi.timeline.ui.skins.impl.DefaultSkin;
 import org.gephi.timeline.ui.skins.api.TimelineSkin;
@@ -40,7 +40,7 @@ public class DefaultLayer extends javax.swing.JPanel implements Layer {
 
     private static final long serialVersionUID = 1L;
     protected TimelineSkin skin = new DefaultSkin();
-    protected TimelineProxy model = new TestTimelineProxy();
+    protected TimelineProxy model = new TimelineProxyDebug();
 
     public void setSkin(TimelineSkin skin) {
         this.skin = skin;

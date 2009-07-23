@@ -59,8 +59,8 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     private boolean fixed;
 
     //Dynamic
-    private int from = -1;
-    private int to = -1;
+    private float from = -1;
+    private float to = -1;
 
     //Attributes
     private List<AttributeValue> attributeValues = new ArrayList<AttributeValue>();
@@ -163,11 +163,11 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         attributeValues.add(attValue);
     }
 
-    public void setDynamicFrom(int from) {
+    public void setDynamicFrom(float from) {
         this.from = from;
     }
 
-    public void setDynamicTo(int to) {
+    public void setDynamicTo(float to) {
         this.to = to;
     }
 
@@ -216,11 +216,11 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         return visible;
     }
 
-    public int getDynamicFrom() {
+    public float getDynamicFrom() {
         return from;
     }
 
-    public int getDynamicTo() {
+    public float getDynamicTo() {
         return to;
     }
 

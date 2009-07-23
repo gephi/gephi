@@ -68,7 +68,7 @@ public interface NodeDraft {
 
     public void setParent(NodeDraft draft);
 
-    public void setDynamicFrom(int from);
+    public void setDynamicFrom(float from);
 
-    public void setDynamicTo(int to);
+    public void setDynamicTo(float to);
 }
