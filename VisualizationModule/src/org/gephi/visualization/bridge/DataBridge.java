@@ -27,6 +27,10 @@ package org.gephi.visualization.bridge;
 public interface DataBridge {
 
     public void updateWorld();
+
     public void initArchitecture();
+
     public boolean requireUpdate();
+
+    public void reset();
 }

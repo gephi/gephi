@@ -283,6 +283,11 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         return false;
     }
 
+    public void reset() {
+        nodeVersion = 0;
+        edgeVersion = 0;
+    }
+
     private void resetClasses() {
         for (ModelClass objClass : engine.getModelClasses()) {
             if (objClass.isEnabled()) {

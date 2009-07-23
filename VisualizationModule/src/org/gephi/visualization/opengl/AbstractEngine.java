@@ -33,7 +33,6 @@ import org.gephi.visualization.api.objects.ModelClass;
 import org.gephi.visualization.api.objects.ModelClassLibrary;
 import org.gephi.visualization.api.Scheduler;
 import org.gephi.visualization.api.VizConfig;
-import org.gephi.visualization.selection.Point;
 import org.gephi.visualization.api.selection.SelectionArea;
 import org.gephi.visualization.bridge.DataBridge;
 import org.gephi.visualization.bridge.EventBridge;
@@ -41,7 +40,6 @@ import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.mode.ModeManager;
 import org.gephi.visualization.opengl.octree.Octree;
 import org.gephi.visualization.opengl.text.TextManager;
-import org.gephi.visualization.selection.Rectangle;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 
 /**
@@ -230,6 +228,10 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         public void initEngine() {
         }
 
+        public boolean isInited() {
+            return inited;
+        }
+
         public void setInited() {
             if (!inited) {
                 inited = true;
@@ -238,6 +240,9 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
                     startAnimating();
                     requestAnimation = false;
                 }
+            } else {
+                dataBridge.reset();
+                textManager.initArchitecture();
             }
         }
     }

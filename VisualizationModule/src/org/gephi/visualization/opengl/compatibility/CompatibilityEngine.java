@@ -279,7 +279,7 @@ public class CompatibilityEngine extends AbstractEngine {
                         ModelImpl obj = itr.next();
                         if (obj.markTime != startTime) {
                             //if (obj.getObj().isLabelVisible()) {
-                                textManager.drawText(obj);
+                            textManager.drawText(obj);
                             //}
                             obj.markTime = startTime;
                         }
