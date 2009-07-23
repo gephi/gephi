@@ -25,7 +25,6 @@ import org.gephi.timeline.TimelineProxyDynamic;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import org.gephi.timeline.api.TimelineProxy;
-import org.gephi.timeline.ui.layers.impl.UpperPaneBackgroundLayer;
 import org.gephi.timeline.ui.layers.impl.UpperPaneDataLayer;
 import org.gephi.timeline.ui.skins.api.TimelineSkin;
 import org.gephi.timeline.ui.skins.impl.DefaultSkin;
