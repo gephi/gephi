@@ -77,9 +77,6 @@
             </file>
             <file name="Separator5.instance_hidden"/>
             <file name="SwitchToRecentDocumentAction.shadow_hidden"/>
-            <file name="TopTabsAction.shadow">
-                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-branding-desktop-TopTabsAction.instance"/>
-            </file>
             <file name="org-netbeans-core-actions-GlobalPropertiesAction.shadow_hidden"/>
         </folder>
     </folder>
@@ -97,9 +94,6 @@
 
     </folder>
     <folder name="Windows2">
-        <folder name="Components">
-            <file name="TopTabsTopComponent.settings" url="TopTabsTopComponentSettings.xml"/>
-        </folder>
         <folder name="Groups">
             <file name="LaboratoryGroup.wsgrp" url="LaboratoryGroup.wsgrp"/>
             <folder name="LaboratoryGroup">
@@ -115,12 +109,6 @@
             <folder name="PreviewGroup">
                 <file name="PreviewTopComponent.wstcgrp" url="PreviewTopComponent.wstcgrp"/>
             </folder>
-        </folder>
-        <folder name="Modes">
-            <folder name="toptabmode">
-                <file name="TopTabsTopComponent.wstcref" url="TopTabsTopComponentWstcref.xml"/>
-            </folder>
-            <file name="toptabmode.wsmode" url="toptabmodeWsmode.xml"/>
         </folder>
     </folder>
 </filesystem>
