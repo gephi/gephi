@@ -54,8 +54,10 @@ public class DynamicGraphImpl<T extends Graph> implements DynamicGraph {
     }
 
     public void setRange(float from, float to) {
+        graph.writeLock();
         this.from = from;
         this.to = to;
+        graph.writeUnlock();
         dhns.getGraphVersion().incNodeAndEdgeVersion();
         dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
@@ -90,6 +92,10 @@ public class DynamicGraphImpl<T extends Graph> implements DynamicGraph {
             //Check if element is in the range
             DynamicData dd = element.getEdgeData().getDynamicData();
             if (dd.getRangeFrom() == -1 || dd.getRangeTo() == -1) {
+                DynamicData ddTarget = element.getTarget().getNodeData().getDynamicData();
+                if(!(ddTarget.getRangeFrom() >= from && ddTarget.getRangeTo() <= to)) {
+                    return false;
+                }
                 return true;
             }
             return dd.getRangeFrom() >= from && dd.getRangeTo() <= to;

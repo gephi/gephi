@@ -104,7 +104,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         ModelClass edgeClass = object3dClasses[AbstractEngine.CLASS_EDGE];
         if (edgeClass.isEnabled() && (graph.getEdgeVersion() > edgeVersion || modeManager.requireModeChange() || vizConfig.isVisualizeTree())) {
             updateEdges();
-            updateMetaEdges();
+            //updateMetaEdges();
             edgeClass.setCacheMarker(cacheMarker);
             if (vizConfig.isShowArrows()) {
                 object3dClasses[AbstractEngine.CLASS_ARROW].setCacheMarker(cacheMarker);
