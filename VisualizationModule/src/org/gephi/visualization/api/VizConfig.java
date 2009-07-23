@@ -62,7 +62,7 @@ public class VizConfig {
     protected boolean showFPS = true;
     protected boolean showEdges = true;
     protected boolean showArrows = true;
-    protected boolean showLabels = true;
+    protected boolean showLabels = false;
     protected boolean showEdgeLabels = true;
     protected boolean lightenNonSelectedAuto = true;
     protected boolean lightenNonSelected = true;
