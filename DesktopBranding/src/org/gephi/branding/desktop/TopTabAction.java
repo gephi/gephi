@@ -24,8 +24,6 @@ package org.gephi.branding.desktop;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import org.openide.util.actions.Presenter;
 
 /**
@@ -33,6 +31,7 @@ import org.openide.util.actions.Presenter;
  * @author Mathieu Bastian
  */
 public class TopTabAction  implements Presenter.Toolbar, ActionListener {
+
     @Override
     public void actionPerformed(ActionEvent e) {
         // TODO implement action body
@@ -40,9 +39,7 @@ public class TopTabAction  implements Presenter.Toolbar, ActionListener {
 
     @Override
     public Component getToolbarPresenter() {
-        JPanel panel = new JPanel();
-        panel.add(new JLabel("lalal"));
-        return panel;
+        return new TopTabComponent();
     }
 
 }
