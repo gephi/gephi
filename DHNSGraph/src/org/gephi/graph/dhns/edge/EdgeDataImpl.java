@@ -48,8 +48,8 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     private Model model;
     protected Attributes attributes;
     protected TextData textData;
-    protected float dynamicRangeFrom;
-    protected float dynamicRangeTo;
+    protected float dynamicRangeFrom = -1;
+    protected float dynamicRangeTo = -1;
 
     public EdgeDataImpl(Edge edge) {
         this.edge = edge;

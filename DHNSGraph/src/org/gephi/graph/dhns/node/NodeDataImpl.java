@@ -54,8 +54,8 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
     protected Attributes attributes;
     protected TextData textData;
     protected Model hullModel;
-    protected float dynamicRangeFrom;
-    protected float dynamicRangeTo;
+    protected float dynamicRangeFrom = -1;
+    protected float dynamicRangeTo = -1;
 
     public NodeDataImpl(Node node) {
         this.node = node;
