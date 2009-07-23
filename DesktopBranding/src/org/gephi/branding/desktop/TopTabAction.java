@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.branding.desktop;
 
 import java.awt.Component;
@@ -30,7 +29,7 @@ import org.openide.util.actions.Presenter;
  *
  * @author Mathieu Bastian
  */
-public class TopTabAction  implements Presenter.Toolbar, ActionListener {
+public class TopTabAction implements Presenter.Toolbar, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -41,5 +40,4 @@ public class TopTabAction  implements Presenter.Toolbar, ActionListener {
     public Component getToolbarPresenter() {
         return new TopTabComponent();
     }
-
 }

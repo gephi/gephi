@@ -88,9 +88,10 @@
         <file name="UndoRedo_hidden"/>
         <folder name="File">
             <file name="org-gephi-branding-desktop-TopTabAction.shadow">
-                <attr name="originalFile" stringvalue="org-gephi-branding-desktop-TopTabAction.instance"/>
-                <attr name="position" intvalue="0"/>
+                <attr name="originalFile" stringvalue="Actions/File/org-gephi-branding-desktop-TopTabAction.instance"/>
+                <attr name="position" intvalue="10"/>
             </file>
+            
             <file name="org-openide-actions-SaveAllAction.instance_hidden"/>
         </folder>
 
