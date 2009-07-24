@@ -40,7 +40,6 @@ import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantIterator;
 import org.gephi.graph.dhns.node.iterators.LevelIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
-import org.gephi.graph.dhns.node.iterators.TreeViewIterator;
 import org.gephi.graph.dhns.proposition.PropositionImpl;
 import org.gephi.graph.dhns.tree.HierarchyTreeImpl;
 import org.gephi.graph.dhns.view.View;
@@ -54,8 +53,6 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
 
     protected PropositionImpl<AbstractNode> nodeProposition;
     protected PropositionImpl<AbstractEdge> edgeProposition;
-    protected PropositionImpl<AbstractNode> nodeEnabledProposition;
-    protected PropositionImpl<AbstractEdge> edgeEnabledProposition;
     protected boolean allowMultilevel = true;
     protected View view;
 
@@ -64,21 +61,18 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         this.view = dhns.getViewManager().getMainView();
         this.nodeProposition = new PropositionImpl<AbstractNode>();
         this.edgeProposition = new PropositionImpl<AbstractEdge>();
-        this.nodeEnabledProposition = new PropositionImpl<AbstractNode>();
-        this.edgeEnabledProposition = new PropositionImpl<AbstractEdge>();
 
         PropositionManager propositionManager = dhns.getPropositionManager();
 
         if (visible) {
             nodeProposition.addPredicate(propositionManager.getVisiblePredicateNode());
             edgeProposition.addPredicate(propositionManager.getVisiblePredicateEdge());
-            nodeEnabledProposition.addPredicate(propositionManager.getVisiblePredicateNode());
-            edgeEnabledProposition.addPredicate(propositionManager.getVisiblePredicateEdge());
         }
 
         if (clustered) {
-            nodeEnabledProposition.addPredicate(propositionManager.newEnablePredicateNode(view));
-            edgeEnabledProposition.addPredicate(propositionManager.newEnablePredicateEdge(view));
+            nodeProposition.addPredicate(propositionManager.newEnablePredicateNode(view));
+            edgeProposition.addPredicate(propositionManager.newEnablePredicateEdge(view));
+            nodeProposition.setSkipping(true);
         }
     }
 
@@ -134,11 +128,6 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     public NodeIterable getNodes() {
         readLock();
         return dhns.newNodeIterable(new TreeIterator(dhns.getTreeStructure(), nodeProposition));
-    }
-
-    public NodeIterable getNodesInView() {
-        readLock();
-        return dhns.newNodeIterable(new TreeViewIterator(dhns.getTreeStructure(), nodeEnabledProposition));
     }
 
     public int getNodeCount() {
@@ -456,22 +445,18 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
 
     public void addNodePredicate(NodePredicate nodePredicate) {
         nodeProposition.addPredicate(nodePredicate);
-        nodeEnabledProposition.addPredicate(nodePredicate);
     }
 
     public void addEdgePredicate(EdgePredicate edgePredicate) {
         edgeProposition.addPredicate(edgePredicate);
-        edgeEnabledProposition.addPredicate(edgePredicate);
     }
 
     public void removeEdgePredicate(EdgePredicate edgePredicate) {
         edgeProposition.removePredicate(edgePredicate);
-        edgeEnabledProposition.removePredicate(edgePredicate);
     }
 
     public void removeNodePredicate(NodePredicate nodePredicate) {
         nodeProposition.removePredicate(nodePredicate);
-        nodeEnabledProposition.removePredicate(nodePredicate);
     }
 
     public NodePredicate[] getNodePredicates() {

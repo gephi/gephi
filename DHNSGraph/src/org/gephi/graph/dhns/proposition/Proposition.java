@@ -32,4 +32,6 @@ public interface Proposition<T> extends Predicate<T> {
     public boolean evaluate(T element);
 
     public boolean isTautology();
+
+    public boolean isSkipping();
 }

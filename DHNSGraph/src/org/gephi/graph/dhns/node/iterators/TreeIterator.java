@@ -31,7 +31,8 @@ import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
- * {@link AbstractNode} iterator for all nodes nodes.
+ * {@link AbstractNode} iterator for all nodes nodes. If proposition contains the **enabled** predicate,
+ * skipping is true and descendants of enabled nodes are skipped
  * 
  * @author Mathieu Bastian
  */
@@ -103,8 +104,13 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
     }
 
     public AbstractNode next() {
-        nextIndex++;
-        diffIndex = 1;
+        if (proposition.isSkipping()) {
+            nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
+            diffIndex = nextIndex - currentNode.getValue().pre;
+        } else {
+            nextIndex++;
+            diffIndex = 1;
+        }
         return currentNode.getValue();
     }
 

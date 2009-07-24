@@ -33,4 +33,8 @@ public class Tautology implements Proposition {
     public boolean isTautology() {
         return true;
     }
+
+    public boolean isSkipping() {
+        return false;
+    }
 }

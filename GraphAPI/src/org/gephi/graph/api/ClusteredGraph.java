@@ -58,6 +58,7 @@ public interface ClusteredGraph extends HierarchicalGraph {
      * or if <code>nodes</code>' parent is not similar between elements
      * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
+    @Override
     public Node groupNodes(Node[] nodes);
 
     /**
@@ -85,23 +86,6 @@ public interface ClusteredGraph extends HierarchicalGraph {
      * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public boolean retract(Node node);
-
-    /**
-     * Returns nodes contained in the clustered graph view. A view is a <b>flat</b> representation of
-     * a hierarchical graph, where neither an ancestor or a descendant of a node in the view
-     * can be also in the view.
-     * @return a node iterable of nodes contained in the clustered graph view
-     */
-    public NodeIterable getNodesInView();
-
-    /**
-     * Returns edges contained in the clustered graph view. Edges are in the view if and only if
-     * incident nodes are in the view. A view is a <b>flat</b> representation of
-     * a hierarchical graph, where neither an ancestor or a descendant of a node in the view
-     * can be also in the view.
-     * @return an edge iterable of nodes contained in the clustered graph view
-     */
-    public EdgeIterable getEdgesInView();
 
     /**
      * Returns true if <code>node</code> is currently in the graph view.

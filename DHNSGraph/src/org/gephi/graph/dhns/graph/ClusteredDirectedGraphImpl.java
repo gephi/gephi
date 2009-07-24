@@ -39,7 +39,6 @@ import org.gephi.graph.dhns.edge.iterators.RangeEdgeIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
-import org.gephi.graph.dhns.node.iterators.TreeViewIterator;
 
 /**
  * Implementation of clustered directed graph.
@@ -163,12 +162,6 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
     }
 
-    //Clustered
-    public EdgeIterable getEdgesInView() {
-        readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeViewIterator(dhns.getTreeStructure(), nodeEnabledProposition), false, edgeEnabledProposition));
-    }
-
     //Directed
     public EdgeIterable getInEdges(Node node) {
         AbstractNode absNode = checkNode(node);
@@ -253,7 +246,7 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     //ClusteredGraph
     public EdgeIterable getMetaEdges() {
         readLock();
-        return dhns.newEdgeIterable(new MetaEdgeIterator(view, dhns.getTreeStructure(), new TreeViewIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
+        return dhns.newEdgeIterable(new MetaEdgeIterator(view, dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
     }
 
     //ClusteredGraph

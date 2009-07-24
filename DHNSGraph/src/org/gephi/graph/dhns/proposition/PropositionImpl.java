@@ -30,6 +30,7 @@ import org.gephi.graph.api.Predicate;
 public class PropositionImpl<T> implements Proposition<T> {
 
     private Predicate<T>[] predicates;
+    private boolean skipping = false; ///True when **enabled** predicate
 
     public PropositionImpl() {
         this.predicates = new Predicate[0];
@@ -55,6 +56,14 @@ public class PropositionImpl<T> implements Proposition<T> {
             }
         }
         return true;
+    }
+
+    public boolean isSkipping() {
+        return skipping;
+    }
+
+    public void setSkipping(boolean skipping) {
+        this.skipping = skipping;
     }
 
     public void addPredicate(Predicate<? super T> predicate) {

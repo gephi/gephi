@@ -333,18 +333,18 @@ public class DhnsTestClusteredGraph {
         //Test resetView
         //treeStructure.showTreeAsTable();
         graph.resetViewToLeaves();
-        for (Node n : graph.getNodesInView()) {
+        for (Node n : graph.getNodes()) {
             assertEquals(1, graph.getLevel(n));
             assertFalse(graph.isInView(graph.getParent(n)));
         }
 
         graph.resetViewToTopNodes();
-        for (Node n : graph.getNodesInView()) {
+        for (Node n : graph.getNodes()) {
             assertEquals(0, graph.getLevel(n));
         }
 
         graph.resetViewToLevel(1);
-        for (Node n : graph.getNodesInView()) {
+        for (Node n : graph.getNodes()) {
             assertEquals(1, graph.getLevel(n));
             assertFalse(graph.isInView(graph.getParent(n)));
         }
