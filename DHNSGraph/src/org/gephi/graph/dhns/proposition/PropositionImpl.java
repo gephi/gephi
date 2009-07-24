@@ -84,4 +84,10 @@ public class PropositionImpl<T> implements Proposition<T> {
             predicates = newPredicates;
         }
     }
+
+    public PropositionImpl<T> copy() {
+        PropositionImpl<T> copy = new PropositionImpl<T>(Arrays.copyOf(predicates, predicates.length));
+        copy.skipping = this.skipping;
+        return copy;
+    }
 }

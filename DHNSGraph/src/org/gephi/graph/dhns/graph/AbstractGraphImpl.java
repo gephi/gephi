@@ -21,21 +21,104 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.graph;
 
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgePredicate;
+import org.gephi.graph.api.FilteredGraph;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodePredicate;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
+import org.gephi.graph.dhns.proposition.PropositionImpl;
+import org.gephi.graph.dhns.view.View;
 
 /**
  * Utilities methods for managing graphs implementation like locking of non-null checking
  *
  * @author Mathieu Bastian
  */
-public class AbstractGraphImpl {
+public abstract class AbstractGraphImpl implements FilteredGraph {
 
     protected Dhns dhns;
+
+    //Proposition
+    protected PropositionImpl<AbstractNode> nodeProposition;
+    protected PropositionImpl<AbstractEdge> edgeProposition;
+
+    //Config
+    protected boolean allowMultilevel = true;
+
+    //View
+    protected View view;
+
+    public void addNodePredicate(NodePredicate nodePredicate) {
+        nodeProposition.addPredicate(nodePredicate);
+    }
+
+    public void addEdgePredicate(EdgePredicate edgePredicate) {
+        edgeProposition.addPredicate(edgePredicate);
+    }
+
+    public void removeEdgePredicate(EdgePredicate edgePredicate) {
+        edgeProposition.removePredicate(edgePredicate);
+    }
+
+    public void removeNodePredicate(NodePredicate nodePredicate) {
+        nodeProposition.removePredicate(nodePredicate);
+    }
+
+    public NodePredicate[] getNodePredicates() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public EdgePredicate[] getEdgePredicates() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setNodeProposition(PropositionImpl<AbstractNode> nodeProposition) {
+        this.nodeProposition = nodeProposition;
+    }
+
+    public void setEdgeProposition(PropositionImpl<AbstractEdge> edgeProposition) {
+        this.edgeProposition = edgeProposition;
+    }
+
+    public void setView(View view) {
+        this.view = view;
+    }
+
+    public void setAllowMultilevel(boolean allowMultilevel) {
+        this.allowMultilevel = allowMultilevel;
+    }
+
+    public PropositionImpl<AbstractNode> getNodeProposition() {
+        return nodeProposition;
+    }
+
+    public PropositionImpl<AbstractEdge> getEdgeProposition() {
+        return edgeProposition;
+    }
+
+    public boolean isAllowMultilevel() {
+        return allowMultilevel;
+    }
+
+    public View getView() {
+        return view;
+    }
+
+    public abstract Graph getGraph();
+
+    public void addGraphListener(GraphListener graphListener) {
+        dhns.getEventManager().addListener(graphListener);
+    }
+
+    public void removeGraphListener(GraphListener graphListener) {
+        dhns.getEventManager().removeListener(graphListener);
+    }
 
     public Dhns getSubGraph(AbstractNodeIterator nodeIterator) {
         Dhns newDhns = dhns.getController().newDhns();

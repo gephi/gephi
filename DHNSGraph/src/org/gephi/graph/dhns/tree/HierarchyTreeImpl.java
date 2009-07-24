@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.tree;
 
 import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Tree;
 import org.gephi.graph.dhns.core.Dhns;
@@ -47,5 +48,10 @@ public class HierarchyTreeImpl extends AbstractGraphImpl implements Tree {
     public EdgeIterable getEdges() {
         readLock();
         return dhns.newEdgeIterable(new HierarchyEdgeIterator(dhns.getTreeStructure(), new TreeListIterator(dhns.getTreeStructure().getTree(), 1)));
+    }
+
+    @Override
+    public Graph getGraph() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

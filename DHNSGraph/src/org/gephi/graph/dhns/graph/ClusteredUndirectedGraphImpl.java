@@ -23,6 +23,7 @@ package org.gephi.graph.dhns.graph;
 import org.gephi.graph.api.ClusteredUndirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
@@ -47,6 +48,10 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
 
     public ClusteredUndirectedGraphImpl(Dhns dhns, boolean visible, boolean clustered) {
         super(dhns, visible, clustered);
+    }
+
+    public Graph getGraph() {
+        return this;
     }
 
     public boolean addEdge(Edge edge) {
@@ -233,5 +238,10 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
         MetaEdgeImpl metaEdgeImpl = checkMetaEdge(metaEdge);
         readLock();
         return dhns.newEdgeIterable(new MetaEdgeContentIterator(view, metaEdgeImpl, true, edgeProposition));
+    }
+
+    @Override
+    public ClusteredUndirectedGraphImpl copy(ClusteredGraphImpl graph) {
+        return new ClusteredUndirectedGraphImpl(dhns, false, false);
     }
 }

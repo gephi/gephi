@@ -25,6 +25,7 @@ import org.gephi.graph.api.ClusteredMixedGraph;
 
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
@@ -59,6 +60,10 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
                 return !t.isDirected();
             }
         };
+    }
+
+    public Graph getGraph() {
+        return this;
     }
 
     public boolean addEdge(Edge edge) {
@@ -260,5 +265,10 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
 
     public EdgeIterable getMetaEdgeContent(Edge metaEdge) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ClusteredMixedGraphImpl copy(ClusteredGraphImpl graph) {
+        return new ClusteredMixedGraphImpl(dhns, false, false);
     }
 }

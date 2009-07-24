@@ -323,4 +323,9 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         AbstractNode AbstractNodeTarget = checkNode(target);
         return AbstractNodeSource.getMetaEdgesOutTree(view).getItem(AbstractNodeTarget.getNumber());
     }
+
+    @Override
+    public ClusteredDirectedGraphImpl copy(ClusteredGraphImpl graph) {
+        return new ClusteredDirectedGraphImpl(dhns, false, false);
+    }
 }

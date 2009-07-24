@@ -52,7 +52,7 @@ public class PropositionManager {
     }
 
     public Predicate<AbstractNode> newEnablePredicateNode(final View view) {
-        return new Predicate<AbstractNode>() {
+        return new EnabledPredicate<AbstractNode>() {
 
             public boolean evaluate(AbstractNode element) {
                 return element.isEnabled(view);
@@ -65,7 +65,7 @@ public class PropositionManager {
     }
 
     public Predicate<AbstractEdge> newEnablePredicateEdge(final View view) {
-        return new Predicate<AbstractEdge>() {
+        return new EnabledPredicate<AbstractEdge>() {
 
             public boolean evaluate(AbstractEdge element) {
                 return element.getSource().isEnabled(view) && element.getTarget().isEnabled(view);
@@ -101,5 +101,8 @@ public class PropositionManager {
                 return false;
             }
         };
+    }
+
+    private interface EnabledPredicate<T> extends Predicate<T> {
     }
 }

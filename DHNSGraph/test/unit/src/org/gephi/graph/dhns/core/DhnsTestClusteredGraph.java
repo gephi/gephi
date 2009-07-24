@@ -195,7 +195,7 @@ public class DhnsTestClusteredGraph {
         treeStructure.move(p3, p4);
         treeStructure.move(p3, p5);
 
-        //treeStructure.showTreeAsTable();
+    //treeStructure.showTreeAsTable();
     }
 
     @Test
@@ -231,7 +231,7 @@ public class DhnsTestClusteredGraph {
             fail(e.getMessage());
         }
 
-        //treeStructure.showTreeAsTable();
+    //treeStructure.showTreeAsTable();
     }
 
     @Test
@@ -263,7 +263,7 @@ public class DhnsTestClusteredGraph {
             fail(ex.getMessage());
         }
 
-        //treeStructure.showTreeAsTable();
+    //treeStructure.showTreeAsTable();
     }
 
     @Test
@@ -295,7 +295,7 @@ public class DhnsTestClusteredGraph {
             fail(ex.getMessage());
         }
 
-        //treeStructure.showTreeAsTable();
+    //treeStructure.showTreeAsTable();
     }
 
     @Test
@@ -318,6 +318,8 @@ public class DhnsTestClusteredGraph {
             Node newC = factory.newNode();
             graph.addNode(newC, n);
         }
+
+        treeStructure.showTreeAsTable();
 
         //Test getNodes()
         for (Node n : graph.getNodes()) {
@@ -651,7 +653,7 @@ public class DhnsTestClusteredGraph {
         graphGlobal2Directed.moveToGroup(nodeLevel0, graphGlobal2Directed.getTopNodes().toArray()[1]);
         assertEquals(2, graphGlobal2Directed.getHeight());
 
-        //graphGlobal2Directed.getNodes(2);
+    //graphGlobal2Directed.getNodes(2);
     }
 
     @Test

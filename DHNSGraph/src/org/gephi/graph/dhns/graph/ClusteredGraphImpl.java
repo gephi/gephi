@@ -22,12 +22,9 @@ package org.gephi.graph.dhns.graph;
 
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.EdgePredicate;
-import org.gephi.graph.api.FilteredGraph;
-import org.gephi.graph.api.GraphListener;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
-import org.gephi.graph.api.NodePredicate;
 import org.gephi.graph.api.Tree;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.PropositionManager;
@@ -42,19 +39,13 @@ import org.gephi.graph.dhns.node.iterators.LevelIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
 import org.gephi.graph.dhns.proposition.PropositionImpl;
 import org.gephi.graph.dhns.tree.HierarchyTreeImpl;
-import org.gephi.graph.dhns.view.View;
 
 /**
  * Abstract Clustered graph class. Implements methods for both directed and undirected graphs.
  *
  * @author Mathieu Bastian
  */
-public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements ClusteredGraph, FilteredGraph {
-
-    protected PropositionImpl<AbstractNode> nodeProposition;
-    protected PropositionImpl<AbstractEdge> edgeProposition;
-    protected boolean allowMultilevel = true;
-    protected View view;
+public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements ClusteredGraph {
 
     public ClusteredGraphImpl(Dhns dhns, boolean visible, boolean clustered) {
         this.dhns = dhns;
@@ -75,6 +66,13 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
             nodeProposition.setSkipping(true);
         }
     }
+
+    @Override
+    public Graph getGraph() {
+        return this;
+    }
+
+    public abstract ClusteredGraphImpl copy(ClusteredGraphImpl graph);
 
     public boolean addNode(Node node, Node parent) {
         if (node == null) {
@@ -441,38 +439,6 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         writeLock();
         absEdge.setVisible(visible);
         writeUnlock();
-    }
-
-    public void addNodePredicate(NodePredicate nodePredicate) {
-        nodeProposition.addPredicate(nodePredicate);
-    }
-
-    public void addEdgePredicate(EdgePredicate edgePredicate) {
-        edgeProposition.addPredicate(edgePredicate);
-    }
-
-    public void removeEdgePredicate(EdgePredicate edgePredicate) {
-        edgeProposition.removePredicate(edgePredicate);
-    }
-
-    public void removeNodePredicate(NodePredicate nodePredicate) {
-        nodeProposition.removePredicate(nodePredicate);
-    }
-
-    public NodePredicate[] getNodePredicates() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public EdgePredicate[] getEdgePredicates() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void addGraphListener(GraphListener graphListener) {
-        dhns.getEventManager().addListener(graphListener);
-    }
-
-    public void removeGraphListener(GraphListener graphListener) {
-        dhns.getEventManager().removeListener(graphListener);
     }
 
     public boolean isDirected() {

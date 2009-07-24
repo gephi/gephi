@@ -64,9 +64,9 @@ public interface GraphController {
 
     public ClusteredMixedGraph getVisibleClusteredMixedGraph();
 
-    public FilteredGraph getFilteredGraph(Graph graph);
+    public <T extends Graph> FilteredGraph<T> getFilteredGraph(T graph);
 
-    public DynamicGraph getDynamicGraph(Graph graph);
+    public <T extends Graph> DynamicGraph<T> getDynamicGraph(T graph);
 
     public DynamicGraph getCentralDynamicGraph();
 }
