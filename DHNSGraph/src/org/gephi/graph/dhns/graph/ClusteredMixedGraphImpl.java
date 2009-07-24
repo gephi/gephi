@@ -79,6 +79,7 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
         if (!absEdge.hasAttributes()) {
             absEdge.setAttributes(dhns.getGraphFactory().newEdgeAttributes());
         }
+        dhns.getDynamicManager().pushEdge(edge.getEdgeData());
         dhns.getStructureModifier().addEdge(edge);
         if (absEdge.isDirected()) {
             dhns.touchDirected();
@@ -102,6 +103,7 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
         }
 
         AbstractEdge edge = dhns.getGraphFactory().newEdge(source, target, 1.0f, directed);
+        dhns.getDynamicManager().pushEdge(edge.getEdgeData());
         dhns.getStructureModifier().addEdge(edge);
         if (directed) {
             dhns.touchDirected();

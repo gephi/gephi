@@ -49,6 +49,7 @@ public class Dhns {
     private EventManager eventManager;
     private ViewManager viewManager;
     private PropositionManager propositionManager;
+    private DynamicManager dynamicManager;
 
     //Type
     private boolean directed = false;
@@ -66,6 +67,7 @@ public class Dhns {
         structureModifier = new StructureModifier(this);
         eventManager = new EventManager(this);
         propositionManager = new PropositionManager(this);
+        dynamicManager = new DynamicManager(this);
         init();
     }
 
@@ -106,6 +108,10 @@ public class Dhns {
 
     public IDGen getIdGen() {
         return controller.getIDGen();
+    }
+
+    public DynamicManager getDynamicManager() {
+        return dynamicManager;
     }
 
     public NodeIterable newNodeIterable(AbstractNodeIterator iterator) {

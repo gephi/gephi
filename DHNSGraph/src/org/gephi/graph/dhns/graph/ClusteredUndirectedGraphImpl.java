@@ -62,6 +62,7 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
         if (!absEdge.hasAttributes()) {
             absEdge.setAttributes(dhns.getGraphFactory().newEdgeAttributes());
         }
+        dhns.getDynamicManager().pushEdge(edge.getEdgeData());
         dhns.getStructureModifier().addEdge(edge);
         dhns.touchUndirected();
         return true;
@@ -75,6 +76,7 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
             return false;
         }
         AbstractEdge edge = dhns.getGraphFactory().newEdge(node1, node2, 1.0f, false);
+        dhns.getDynamicManager().pushEdge(edge.getEdgeData());
         dhns.getStructureModifier().addEdge(edge);
         dhns.touchUndirected();
         return true;

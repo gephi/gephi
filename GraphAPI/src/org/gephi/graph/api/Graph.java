@@ -299,6 +299,14 @@ public interface Graph {
     public boolean isHierarchical();
 
     /**
+     * Returns <code>true</code> if the graph is <b>dynamical</b>. That means its structure is
+     * changing over time, elements have a life period.
+     * @return <code>true</code> if the graph is a dynamic graph
+     * @see DynamicGraph
+     */
+    public boolean isDynamic();
+
+    /**
      * Acquire a read lock on the graph. Calling thread will be blocked until all write locks are released.
      * Several threads can read but only once can write.
      * @see ReentrantReadWriteLock

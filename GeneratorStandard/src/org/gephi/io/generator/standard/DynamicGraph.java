@@ -44,8 +44,8 @@ public class DynamicGraph implements Generator {
             NodeDraft nodeDraft = factory.newNodeDraft();
             nodeDraft.setLabel("Node " + i);
             nodeDraft.setId("Node " + i);
-            float from = (float)Math.random();
-            float to = (float)(from + (1.0-from)*Math.random());
+            float from = (float) Math.random();
+            float to = (float) (from + (1.0 - from) * Math.random());
             nodeDraft.setDynamicFrom(from);
             nodeDraft.setDynamicTo(to);
             container.addNode(nodeDraft);

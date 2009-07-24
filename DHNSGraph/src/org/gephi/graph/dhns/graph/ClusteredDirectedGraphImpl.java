@@ -64,6 +64,7 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         if (!absEdge.hasAttributes()) {
             absEdge.setAttributes(dhns.getGraphFactory().newEdgeAttributes());
         }
+        dhns.getDynamicManager().pushEdge(absEdge.getEdgeData());
         dhns.getStructureModifier().addEdge(edge);
         dhns.touchDirected();
         return true;
@@ -78,6 +79,7 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
             return false;
         }
         AbstractEdge edge = dhns.getGraphFactory().newEdge(source, target);
+        dhns.getDynamicManager().pushEdge(edge.getEdgeData());
         dhns.getStructureModifier().addEdge(edge);
         dhns.touchDirected();
         return true;

@@ -106,7 +106,8 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         if (!absNode.hasAttributes()) {
             absNode.setAttributes(dhns.getGraphFactory().newNodeAttributes());
         }
-        dhns.getStructureModifier().addNode(view, node, parent);
+        dhns.getDynamicManager().pushNode(node.getNodeData());
+        dhns.getStructureModifier().addNode(view, node, absParent);
         return true;
     }
 
@@ -503,6 +504,10 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
 
     public boolean isHierarchical() {
         return getHeight() > 0;
+    }
+
+    public boolean isDynamic() {
+        return dhns.getDynamicManager().isDynamic();
     }
 
     public Tree getHierarchyTree() {

@@ -93,7 +93,7 @@ public class DynamicGraphImpl<T extends Graph> implements DynamicGraph {
             DynamicData dd = element.getEdgeData().getDynamicData();
             if (dd.getRangeFrom() == -1 || dd.getRangeTo() == -1) {
                 DynamicData ddTarget = element.getTarget().getNodeData().getDynamicData();
-                if(!(ddTarget.getRangeFrom() >= from && ddTarget.getRangeTo() <= to)) {
+                if (!(ddTarget.getRangeFrom() >= from && ddTarget.getRangeTo() <= to)) {
                     return false;
                 }
                 return true;
