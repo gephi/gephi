@@ -24,13 +24,11 @@ package org.gephi.graph.api;
  *
  * @author Mathieu Bastian
  */
-public interface DynamicGraph {
+public interface DynamicGraph<T extends Graph> extends GraphDecorator<T> {
 
     public void setRange(float from, float to);
 
     public float getRangeFrom();
 
     public float getRangeTo();
-
-    public Graph getGraph();
 }

@@ -24,17 +24,11 @@ package org.gephi.graph.api;
  *
  * @author Mathieu Bastian
  */
-public interface FilteredGraph<T extends Graph> extends GraphDecorator<T> {
+public interface GraphDecorator<T extends Graph> {
 
-    public void addNodePredicate(NodePredicate nodePredicate);
-
-    public void addEdgePredicate(EdgePredicate edgePredicate);
-
-    public void removeNodePredicate(NodePredicate nodePredicate);
-
-    public void removeEdgePredicate(EdgePredicate edgePredicate);
-
-    public NodePredicate[] getNodePredicates();
-
-    public EdgePredicate[] getEdgePredicates();
+    /**
+     * The original graph.
+     * @return the orginal graph
+     */
+    public T getGraph();
 }
