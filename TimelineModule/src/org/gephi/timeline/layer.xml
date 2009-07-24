@@ -23,9 +23,10 @@
             <file name="TimelineTopComponent.settings" url="TimelineTopComponentSettings.xml"/>
         </folder>
         <folder name="Modes">
-            <folder name="bottomSlidingSide">
+            <folder name="timelinemode">
                 <file name="TimelineTopComponent.wstcref" url="TimelineTopComponentWstcref.xml"/>
             </folder>
+            <file name="timelinemode.wsmode" url="timelineWsmode.xml"/>
         </folder>
     </folder>
 </filesystem>
