@@ -72,7 +72,7 @@ public class StructureModifier {
             expand(view, absNode);
         //sightManager.updateSight((SightImpl) sight);
         }
-        graphVersion.incNodeVersion();
+        graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
         dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
@@ -94,7 +94,7 @@ public class StructureModifier {
             retract(view, ((AbstractNode) node));
         //sightManager.updateSight((SightImpl)sight);
         }
-        graphVersion.incNodeVersion();
+        graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
         dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
