@@ -22,6 +22,7 @@ package org.gephi.graph.dhns.core;
 
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.DefaultMetaEdgeBuilder;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.PreNodeTreeListIterator;
@@ -35,17 +36,23 @@ import org.gephi.graph.dhns.view.View;
  */
 public class EdgeProcessor {
 
+    //Architecture
     private TreeStructure treeStructure;
+    private IDGen idGen;
+    //Config
+    private boolean enableMetaEdges = true;
+    //Utils
+    private MetaEdgeBuilder metaEdgeBuilder;
+    //Cache
     private ParamAVLIterator<AbstractEdge> edgeIterator;
     private ViewAVLIterator viewIterator;
-    private IDGen idGen;
-    private boolean enableMetaEdges = true;
 
     public EdgeProcessor(Dhns dhns) {
         this.treeStructure = dhns.getTreeStructure();
         this.idGen = dhns.getIdGen();
         this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
         this.viewIterator = new ViewAVLIterator();
+        this.metaEdgeBuilder = new DefaultMetaEdgeBuilder();
     }
 
     public void clearEdges(AbstractNode node) {
@@ -225,13 +232,13 @@ public class EdgeProcessor {
         }
 
         MetaEdgeImpl metaEdge = getMetaEdge(view, source, target);
-        if (metaEdge != null) {
-            metaEdge.addEdge(edge);
-        } else {
+        if (metaEdge == null) {
             metaEdge = createMetaEdge(view, source, target);
-            if (metaEdge != null) {
-                metaEdge.addEdge(edge);
-            }
+        }
+        if (metaEdge != null) {
+             if(metaEdge.addEdge(edge)) {
+                 metaEdgeBuilder.pushEdge(edge, metaEdge);
+             }
         }
     }
 
@@ -293,7 +300,9 @@ public class EdgeProcessor {
             if (edge.getTarget().isInView(view)) {
                 MetaEdgeImpl metaEdge = getMetaEdge(view, edge);
                 if (metaEdge != null) {
-                    metaEdge.removeEdge(edge);
+                    if(metaEdge.removeEdge(edge)) {
+                        metaEdgeBuilder.pullEdge(edge, metaEdge);
+                    }
                     if (metaEdge.isEmpty()) {
                         metaEdge.getSource().getMetaEdgesOutTree(view).remove(metaEdge);
                         metaEdge.getTarget().getMetaEdgesInTree(view).remove(metaEdge);
@@ -321,5 +330,12 @@ public class EdgeProcessor {
             return getMetaEdge(view, sourceParent, targetParent);
         }
         return null;
+    }
+
+    public interface MetaEdgeBuilder {
+
+        public void pushEdge(AbstractEdge edge, MetaEdgeImpl metaEdge);
+
+        public void pullEdge(AbstractEdge edge, MetaEdgeImpl metaEdge);
     }
 }

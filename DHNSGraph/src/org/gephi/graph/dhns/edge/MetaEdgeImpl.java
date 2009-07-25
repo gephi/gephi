@@ -38,24 +38,27 @@ public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
     public MetaEdgeImpl(int ID, AbstractNode source, AbstractNode target) {
         super(ID, source, target);
         this.edges = new EdgeTree();
+        this.weight = 0f;
     }
 
-    public void addEdge(AbstractEdge edge) {
+    public boolean addEdge(AbstractEdge edge) {
         if (edges.add(edge)) {
-            weight += edge.getWeight();
             if (edge.isDirected()) {
                 directedCount++;
             }
+            return true;
         }
+        return false;
     }
 
-    public void removeEdge(AbstractEdge edge) {
+    public boolean removeEdge(AbstractEdge edge) {
         if (edges.remove(edge)) {
-            weight -= edge.getWeight();
             if (edge.isDirected()) {
                 directedCount--;
             }
+            return true;
         }
+        return false;
     }
 
     @Override
