@@ -27,6 +27,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.io.project.GephiDataObject;
 import org.gephi.project.api.Project;
+import org.gephi.project.api.ProjectMetaData;
 import org.gephi.project.api.Workspace;
 import org.openide.loaders.DataObject;
 import org.openide.util.Lookup;
@@ -49,6 +50,7 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
     private String name;
     private Status status = Status.CLOSED;
     private GephiDataObject dataObject;
+    private ProjectMetaDataImpl metaData;
 
     //Workspaces
     private transient List<Workspace> workspaces;
@@ -65,6 +67,7 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
     }
 
     public void init() {
+        metaData = new ProjectMetaDataImpl();
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         workspaces = new ArrayList<Workspace>();
@@ -209,6 +212,60 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
         ChangeEvent event = new ChangeEvent(this);
         for (ChangeListener listener : listeners) {
             listener.stateChanged(event);
+        }
+    }
+
+    public ProjectMetaData getMetaData() {
+        return metaData;
+    }
+
+    /**
+     * Meta-Data inner class
+     */
+    private class ProjectMetaDataImpl implements ProjectMetaData {
+
+        private String author;
+        private String title = "";
+        private String keywords = "";
+        private String description = "";
+
+        public ProjectMetaDataImpl() {
+            String username = System.getProperty("user.name");
+            if (username != null) {
+                author = username;
+            }
+        }
+
+        public String getAuthor() {
+            return author;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public String getKeywords() {
+            return keywords;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setAuthor(String author) {
+            this.author = author;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public void setKeywords(String keywords) {
+            this.keywords = keywords;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
         }
     }
 }

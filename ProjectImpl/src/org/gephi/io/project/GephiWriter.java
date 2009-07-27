@@ -69,13 +69,7 @@ public class GephiWriter {
         //Core
         Element core = doc.createElement("core");
         core.setAttribute("tasks", String.valueOf(tasks));
-        Element keywords = doc.createElement("keywords");
-        Element description = doc.createElement("description");
-        Element lastModifiedBy = doc.createElement("creator");
         Element lastModifiedDate = doc.createElement("lastModifiedDate");
-
-        //Creator
-        lastModifiedBy.setTextContent(System.getProperty("user.name"));
 
         //LastModifiedDate
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -84,9 +78,6 @@ public class GephiWriter {
         lastModifiedDate.appendChild(doc.createComment("yyyy-MM-dd HH:mm:ss"));
 
         //Append
-        core.appendChild(keywords);
-        core.appendChild(description);
-        core.appendChild(lastModifiedBy);
         core.appendChild(lastModifiedDate);
         root.appendChild(core);
 
@@ -96,6 +87,22 @@ public class GephiWriter {
     public Element writeProject(Project project) throws Exception {
         Element projectE = doc.createElement("project");
         projectE.setAttribute("name", project.getName());
+
+        //MetaData
+        Element projectMetaDataE = doc.createElement("metadata");
+        Element titleE = doc.createElement("title");
+        titleE.setTextContent(project.getMetaData().getTitle());
+        Element keywordsE = doc.createElement("keywords");
+        keywordsE.setTextContent(project.getMetaData().getKeywords());
+        Element descriptionE = doc.createElement("description");
+        descriptionE.setTextContent(project.getMetaData().getDescription());
+        Element authorE = doc.createElement("author");
+        authorE.setTextContent(project.getMetaData().getAuthor());
+        projectMetaDataE.appendChild(titleE);
+        projectMetaDataE.appendChild(authorE);
+        projectMetaDataE.appendChild(keywordsE);
+        projectMetaDataE.appendChild(descriptionE);
+        projectE.appendChild(projectMetaDataE);
 
         //Workspaces
         Element workspacesE = doc.createElement("workspaces");

@@ -68,4 +68,6 @@ public interface Project {
     public void addChangeListener(ChangeListener listener);
 
     public Lookup getLookup();
+
+    public ProjectMetaData getMetaData();
 }
