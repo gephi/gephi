@@ -39,6 +39,7 @@ import org.gephi.graph.dhns.edge.iterators.RangeEdgeIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
+import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
  * Implementation of clustered directed graph.
@@ -47,8 +48,14 @@ import org.gephi.graph.dhns.node.iterators.TreeIterator;
  */
 public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements ClusteredDirectedGraph {
 
+    protected ClusteredDirectedGraphImpl clusteredCopy;
+
     public ClusteredDirectedGraphImpl(Dhns dhns, boolean visible, boolean clustered) {
         super(dhns, visible, clustered);
+
+        if (!clustered) {
+            clusteredCopy = new ClusteredDirectedGraphImpl(dhns, visible, true);
+        }
     }
 
     public boolean addEdge(Edge edge) {
@@ -314,7 +321,7 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public EdgeIterable getMetaEdgeContent(Edge metaEdge) {
         MetaEdgeImpl metaEdgeImpl = checkMetaEdge(metaEdge);
         readLock();
-        return dhns.newEdgeIterable(new MetaEdgeContentIterator(view, metaEdgeImpl, false, edgeProposition));
+        return dhns.newEdgeIterable(new MetaEdgeContentIterator(view, metaEdgeImpl, false, Tautology.instance));
     }
 
     //ClusteredDirected
@@ -327,5 +334,9 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     @Override
     public ClusteredDirectedGraphImpl copy(ClusteredGraphImpl graph) {
         return new ClusteredDirectedGraphImpl(dhns, false, false);
+    }
+
+    public ClusteredDirectedGraph getClusteredGraph() {
+        return clusteredCopy;
     }
 }

@@ -22,6 +22,7 @@ package org.gephi.visualization.bridge;
 
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
@@ -43,13 +44,13 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
 
     //Architecture
     private AbstractEngine engine;
-    private ClusteredGraph graph;
+    private HierarchicalGraph graph;
     private GraphIO graphIO;
 
     @Override
     public void initArchitecture() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        this.graph = graphController.getClusteredDirectedGraph();
+        this.graph = graphController.getHierarchicalDirectedGraph();
         this.engine = VizController.getInstance().getEngine();
         this.graphIO = VizController.getInstance().getGraphIO();
         initEvents();
@@ -94,7 +95,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
             //TODO check it is a metaNode
             NodeData node = (NodeData) metaModel.getObj();
             expandPositioning(node);
-            graph.expand(node.getNode());
+            graph.getClusteredGraph().expand(node.getNode());
         }
     }
 
@@ -105,7 +106,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
             //TODO check it is a metaNode
             ConvexHull hull = (ConvexHull) metaModel.getObj();
             contractPositioning(hull);
-            graph.retract(hull.getMetaNode());
+            graph.getClusteredGraph().retract(hull.getMetaNode());
         }
     }
 

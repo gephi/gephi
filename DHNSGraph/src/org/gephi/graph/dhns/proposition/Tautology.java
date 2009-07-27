@@ -26,6 +26,8 @@ package org.gephi.graph.dhns.proposition;
  */
 public class Tautology implements Proposition {
 
+    public static Tautology instance = new Tautology();
+
     public boolean evaluate(Object element) {
         return true;
     }

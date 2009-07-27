@@ -24,6 +24,7 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import org.gephi.graph.api.ClusteredDirectedGraph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 
 /**
@@ -33,9 +34,9 @@ import org.gephi.graph.api.Node;
 public class NodeTreeModel implements TreeModel {
 
     private TreeNode root;
-    private ClusteredDirectedGraph graph;
+    private HierarchicalGraph graph;
 
-    public NodeTreeModel(Node[] nodes, ClusteredDirectedGraph graph) {
+    public NodeTreeModel(Node[] nodes, HierarchicalGraph graph) {
         this.graph = graph;
         this.root = new TreeNode(nodes);
     }

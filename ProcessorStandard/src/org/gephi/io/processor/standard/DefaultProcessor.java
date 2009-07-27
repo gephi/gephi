@@ -22,14 +22,13 @@ package org.gephi.io.processor.standard;
 
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeValue;
-import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphFactory;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.io.container.ContainerUnloader;
-import org.gephi.io.container.NodeDraft;
 import org.gephi.io.processor.EdgeDraftGetter;
 import org.gephi.io.processor.NodeDraftGetter;
 import org.gephi.io.processor.Processor;
@@ -44,7 +43,7 @@ public class DefaultProcessor implements Processor {
     public void process(ContainerUnloader container) {
 
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        ClusteredGraph graph = graphController.getClusteredDirectedGraph();
+        HierarchicalGraph graph = graphController.getHierarchicalDirectedGraph();
         GraphFactory factory = graphController.factory();
 
         int nodeCount = 0;

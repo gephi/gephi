@@ -38,6 +38,7 @@ import org.gephi.graph.dhns.edge.iterators.RangeEdgeIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
+import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
  * Implementation of clustered undirected graph.
@@ -46,8 +47,14 @@ import org.gephi.graph.dhns.node.iterators.TreeIterator;
  */
 public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements ClusteredUndirectedGraph {
 
+    protected ClusteredUndirectedGraphImpl clusteredCopy;
+
     public ClusteredUndirectedGraphImpl(Dhns dhns, boolean visible, boolean clustered) {
         super(dhns, visible, clustered);
+
+        if (!clustered) {
+            clusteredCopy = new ClusteredUndirectedGraphImpl(dhns, visible, true);
+        }
     }
 
     public Graph getGraph() {
@@ -237,11 +244,15 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
     public EdgeIterable getMetaEdgeContent(Edge metaEdge) {
         MetaEdgeImpl metaEdgeImpl = checkMetaEdge(metaEdge);
         readLock();
-        return dhns.newEdgeIterable(new MetaEdgeContentIterator(view, metaEdgeImpl, true, edgeProposition));
+        return dhns.newEdgeIterable(new MetaEdgeContentIterator(view, metaEdgeImpl, true, Tautology.instance));
     }
 
     @Override
     public ClusteredUndirectedGraphImpl copy(ClusteredGraphImpl graph) {
         return new ClusteredUndirectedGraphImpl(dhns, false, false);
+    }
+
+    public ClusteredUndirectedGraph getClusteredGraph() {
+        return clusteredCopy;
     }
 }

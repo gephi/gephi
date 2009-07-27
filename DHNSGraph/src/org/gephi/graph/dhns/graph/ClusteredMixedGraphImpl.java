@@ -43,6 +43,7 @@ import org.gephi.graph.dhns.node.iterators.TreeIterator;
  */
 public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements ClusteredMixedGraph {
 
+    protected ClusteredMixedGraphImpl clusteredCopy;
     private Condition<Edge> undirectedCondition;
     private Condition<Edge> directedCondition;
 
@@ -60,6 +61,10 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
                 return !t.isDirected();
             }
         };
+
+        if (!clustered) {
+            clusteredCopy = new ClusteredMixedGraphImpl(dhns, visible, true);
+        }
     }
 
     public Graph getGraph() {
@@ -270,5 +275,9 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
     @Override
     public ClusteredMixedGraphImpl copy(ClusteredGraphImpl graph) {
         return new ClusteredMixedGraphImpl(dhns, false, false);
+    }
+
+    public ClusteredMixedGraph getClusteredGraph() {
+        return clusteredCopy;
     }
 }

@@ -60,7 +60,7 @@ public class DhnsTestMultiLevel {
         nodeMap = new HashMap<String, AbstractNode>();
         DhnsGraphController controller = new DhnsGraphController();
         dhns1 = controller.getMainDhns();
-        graph1 = new ClusteredDirectedGraphImpl(dhns1, false, true);
+        graph1 = new ClusteredDirectedGraphImpl(dhns1, false, false);
         GraphFactoryImpl factory = controller.factory();
 
         AbstractNode nodeA = factory.newNode();

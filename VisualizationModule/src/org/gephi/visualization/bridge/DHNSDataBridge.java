@@ -27,6 +27,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Group;
+import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.NodeIterable;
@@ -53,7 +54,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     //Architecture
     protected AbstractEngine engine;
     protected GraphController controller;
-    protected ClusteredDirectedGraph graph;
+    protected HierarchicalDirectedGraph graph;
     private VizConfig vizConfig;
     protected ModeManager modeManager;
 
@@ -70,7 +71,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         controller = Lookup.getDefault().lookup(GraphController.class);
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.modeManager = VizController.getInstance().getModeManager();
-        graph = controller.getClusteredDirectedGraph();
+        graph = controller.getHierarchicalDirectedGraph();
     }
 
     public void updateWorld() {
@@ -79,7 +80,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
         switch (modeManager.getMode()) {
             case FULL:
-                graph = controller.getClusteredDirectedGraph();
+                graph = controller.getHierarchicalDirectedGraph();
                 break;
             case VISIBLE:
                 //graph = controller.getVisibleDirectedGraph();
@@ -159,7 +160,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             if (vizConfig.isVisualizeTree()) {
                 node.getNodeData().setX(node.getPre() * 25);
                 node.getNodeData().setY(node.getPost() * 25);
-                if (graph.isInView(node)) {
+                if (graph.getClusteredGraph().isInView(node)) {
                     node.getNodeData().setR(1f);
                     node.getNodeData().setG(0f);
                     node.getNodeData().setB(0f);
@@ -215,7 +216,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             return;
         }
 
-        for (Edge edge : graph.getMetaEdges()) {
+        for (Edge edge : graph.getClusteredGraph().getMetaEdges()) {
 
             Model obj = edge.getEdgeData().getModel();
             if (obj == null) {

@@ -63,7 +63,7 @@ public class DhnsTestVisibleDirectedGraph {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = controller.getMainDhns();
-        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, true, true);
+        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, true, false);
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 

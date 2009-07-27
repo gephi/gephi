@@ -16,8 +16,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.TreeModel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.graph.api.ClusteredDirectedGraph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.OutlineModel;
 import org.openide.util.Lookup;
@@ -81,7 +81,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
                     //Nodes from DHNS
 
-                    ClusteredDirectedGraph graph = Lookup.getDefault().lookup(GraphController.class).getClusteredDirectedGraph();
+                    HierarchicalDirectedGraph graph = Lookup.getDefault().lookup(GraphController.class).getHierarchicalDirectedGraph();
                     graph.readLock();
                     org.gephi.graph.api.Node[] nodes = graph.getTopNodes().toArray();
 
@@ -117,7 +117,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                     final AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
 
                     //Edges from DHNS
-                     ClusteredDirectedGraph graph = Lookup.getDefault().lookup(GraphController.class).getClusteredDirectedGraph();
+                    HierarchicalDirectedGraph graph = Lookup.getDefault().lookup(GraphController.class).getHierarchicalDirectedGraph();
                     graph.readLock();
                     org.gephi.graph.api.Edge[] edges = graph.getEdges().toArray();
 
@@ -146,7 +146,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
     public void resultChanged(LookupEvent ev) {
         if (classDisplayed.equals(ClassDisplayed.NODE)) {
             initNodesView();
-        } else if(classDisplayed.equals(ClassDisplayed.EDGE)){
+        } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
             initEdgesView();
         }
     }

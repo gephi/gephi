@@ -64,8 +64,8 @@ public class DhnsTestVisibleUndirectedGraph {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = controller.getMainDhns();
-        graphGlobal = new ClusteredUndirectedGraphImpl(dhnsGlobal, true, true);
-        ClusteredDirectedGraphImpl diGraph = new ClusteredDirectedGraphImpl(dhnsGlobal, true, true);
+        graphGlobal = new ClusteredUndirectedGraphImpl(dhnsGlobal, true, false);
+        ClusteredDirectedGraphImpl diGraph = new ClusteredDirectedGraphImpl(dhnsGlobal, true, false);
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 

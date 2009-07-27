@@ -230,4 +230,11 @@ public interface HierarchicalGraph extends Graph {
      * @return the tree which represents the clusterd graph hierarchy
      */
     public Tree getHierarchyTree();
+
+    /**
+     * Returns the <b>clustered</b> interface of the current graph. It returns the same graph, but
+     * filtered by its current clustered view.
+     * @return the <b>clustered</b> graph interface for the current graph
+     */
+    public ClusteredGraph getClusteredGraph();
 }

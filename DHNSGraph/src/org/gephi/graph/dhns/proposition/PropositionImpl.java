@@ -51,7 +51,7 @@ public class PropositionImpl<T> implements Proposition<T> {
 
     public boolean isTautology() {
         for (Predicate p : predicates) {
-            if (p instanceof Tautology) {
+            if (!(p instanceof Tautology)) {
                 return false;
             }
         }
