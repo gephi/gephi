@@ -27,6 +27,7 @@ import javax.swing.event.ChangeListener;
 import org.gephi.project.api.Project;
 import org.gephi.project.explorer.actions.CloseProject;
 import org.gephi.project.explorer.actions.OpenProject;
+import org.gephi.project.explorer.actions.ProjectProperties;
 import org.gephi.project.explorer.actions.RemoveProject;
 import org.gephi.project.explorer.actions.RenameProject;
 import org.openide.nodes.AbstractNode;
@@ -56,11 +57,9 @@ public class ProjectNode extends AbstractNode implements ChangeListener {
     public void stateChanged(ChangeEvent e) {
 
         //Project open
-        if (project.isOpen() && getChildren()==Children.LEAF) {
+        if (project.isOpen() && getChildren() == Children.LEAF) {
             setChildren(new ProjectChildren(project));
-        }
-        else if(!project.isOpen())
-        {
+        } else if (!project.isOpen()) {
             setChildren(Children.LEAF);
         }
 
@@ -73,9 +72,8 @@ public class ProjectNode extends AbstractNode implements ChangeListener {
         return project.getName();
     }
 
-
     @Override
     public Action[] getActions(boolean context) {
-        return new Action[]{new OpenProject(project), new CloseProject(project), new RemoveProject(project), new AddWorkspace(project), new RenameProject(project)};
+        return new Action[]{new OpenProject(project), new CloseProject(project), new RemoveProject(project), new AddWorkspace(project), new RenameProject(project), new ProjectProperties(project)};
     }
 }

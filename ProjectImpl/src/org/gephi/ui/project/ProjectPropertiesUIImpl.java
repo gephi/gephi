@@ -18,33 +18,31 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.gephi.ui.project;
 
-package org.gephi.project.explorer.actions;
-
-import org.gephi.project.explorer.*;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.Workspace;
-import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
+import javax.swing.JPanel;
+import org.gephi.project.api.Project;
+import org.gephi.project.api.ProjectPropertiesUI;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class CloseWorkspace extends AbstractAction {
+public class ProjectPropertiesUIImpl implements ProjectPropertiesUI {
 
-    private Workspace workspace;
+    private ProjectPropertiesEditor panel;
 
-    public CloseWorkspace(Workspace workspace) {
-        this.workspace = workspace;
-        putValue(Action.NAME, NbBundle.getMessage(ProjectNode.class, "WorkspaceNode_closeWorkspace"));
+    public JPanel getPanel() {
+        panel = new ProjectPropertiesEditor();
+        return panel;
     }
 
-    public void actionPerformed(ActionEvent e) {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.deleteWorkspace(workspace);
+    public void load(Project project) {
+        panel.load(project);
+    }
+
+    public void save(Project project) {
+        panel.save(project);
+        panel = null;
     }
 }
