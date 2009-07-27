@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.project.filetype;
+package org.gephi.io.project;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,12 +35,8 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.gephi.project.ProjectImpl;
 import org.gephi.project.api.Project;
-import org.gephi.project.filetype.io.GephiFormatException;
-import org.gephi.project.filetype.io.GephiReader;
-import org.gephi.project.filetype.io.GephiWriter;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -59,16 +55,12 @@ public class GephiDataObject extends MultiDataObject {
 
     public GephiDataObject(FileObject pf, MultiFileLoader loader) throws DataObjectExistsException, IOException {
         super(pf, loader);
-
     }
 
-    public Project load()
-    {
-        try
-        {
+    public Project load() {
+        try {
             FileObject fileObject = getPrimaryFile();
-            if(FileUtil.isArchiveFile(fileObject))
-            {
+            if (FileUtil.isArchiveFile(fileObject)) {
                 fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
             }
 
@@ -77,46 +69,39 @@ public class GephiDataObject extends MultiDataObject {
             Document doc = builder.parse(fileObject.getInputStream());
 
             //Project instance
-            if(project==null)
-                project = new Project();
+            if (project == null) {
+                project = new ProjectImpl();
+            }
 
             project.setDataObject(this);
 
             GephiReader gephiReader = new GephiReader();
-            return gephiReader.readAll(doc.getDocumentElement(),project);
+            return gephiReader.readAll(doc.getDocumentElement(), project);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new GephiFormatException(GephiReader.class, ex);
         }
-        catch(Exception ex)
-        {
-           GephiFormatException exception = new GephiFormatException(GephiReader.class, ex);
-           exception.printStackTrace();
-           NotifyDescriptor.Message e = new NotifyDescriptor.Message(exception.getMessage(),NotifyDescriptor.WARNING_MESSAGE);
-           DialogDisplayer.getDefault().notifyLater(e);
-        }
-        return null;
     }
 
-    public void save()
-    {
-        try
-        {
+    public void save() throws GephiFormatException {
+        try {
             FileObject fileObject = getPrimaryFile();
             File outputFile = FileUtil.toFile(fileObject);
-            File writeFile=outputFile;
-            boolean useTempFile=false;
-            if(writeFile.exists())
-			{
-                useTempFile=true;
-                String tempFileName = writeFile.getName()+"_temp";
+            File writeFile = outputFile;
+            boolean useTempFile = false;
+            if (writeFile.exists()) {
+                useTempFile = true;
+                String tempFileName = writeFile.getName() + "_temp";
                 writeFile = new File(writeFile.getParent(), tempFileName);
-			}
+            }
 
             //Stream
             FileOutputStream outputStream = new FileOutputStream(writeFile);
             ZipOutputStream zipOut = new ZipOutputStream(outputStream);
-			zipOut.setLevel(0);
+            zipOut.setLevel(0);
 
             zipOut.putNextEntry(new ZipEntry("Project"));
-			GephiWriter gephiWriter = new GephiWriter();
+            GephiWriter gephiWriter = new GephiWriter();
 
             //Write Document
             Document document = gephiWriter.writeAll(project);
@@ -132,33 +117,27 @@ public class GephiDataObject extends MultiDataObject {
 
             //Close
             zipOut.closeEntry();
-			zipOut.finish();
+            zipOut.finish();
             zipOut.close();
 
             //Clean and copy
-            if(useTempFile)
-            {
+            if (useTempFile) {
                 String name = fileObject.getName();
                 String ext = fileObject.getExt();
-                
+
                 //Delete original file
                 fileObject.delete();
 
                 //Rename temp file
                 FileObject tempFileObject = FileUtil.toFileObject(writeFile);
                 FileLock lock = tempFileObject.lock();
-                tempFileObject.rename(lock, name,ext);
+                tempFileObject.rename(lock, name, ext);
                 lock.releaseLock();
             }
 
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             ex.printStackTrace();
-
-            GephiFormatException exception = new GephiFormatException(GephiWriter.class, ex);
-            NotifyDescriptor.Message e = new NotifyDescriptor.Message(exception.getMessage(),NotifyDescriptor.WARNING_MESSAGE);
-            DialogDisplayer.getDefault().notifyLater(e);
+            throw new GephiFormatException(GephiWriter.class, ex);
         }
     }
 
@@ -169,8 +148,6 @@ public class GephiDataObject extends MultiDataObject {
     public void setProject(Project project) {
         this.project = project;
     }
-
-
 
     @Override
     protected Node createNodeDelegate() {

@@ -27,8 +27,9 @@ import org.gephi.project.api.Projects;
 import org.gephi.project.api.Workspace;
 import org.openide.util.actions.SystemAction;
 import org.gephi.branding.desktop.actions.SaveProject;
-import org.gephi.project.api.Project.Status;
-import org.gephi.project.filetype.GephiDataObject;
+import org.gephi.io.project.GephiDataObject;
+import org.gephi.project.ProjectImpl;
+import org.gephi.project.ProjectsImpl;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.loaders.DataObject;
@@ -36,11 +37,12 @@ import org.openide.util.NbBundle;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class DesktopProjectController implements ProjectController {
 
-    private Projects projects = new Projects();
+    private Projects projects = new ProjectsImpl();
+    private static boolean avoidDisableSaveProject = true;
 
     public DesktopProjectController() {
         //Actions
@@ -50,7 +52,7 @@ public class DesktopProjectController implements ProjectController {
 
     public void newProject() {
         closeCurrentProject();
-        Project project = new Project();
+        ProjectImpl project = new ProjectImpl();
         projects.addProject(project);
         openProject(project);
     }
@@ -70,43 +72,36 @@ public class DesktopProjectController implements ProjectController {
         project.setDataObject(gephiDataObject);
         gephiDataObject.setProject(project);
         gephiDataObject.save();
-        
+
         disableAction(SaveProject.class);
     }
 
     public void saveProject(Project project) {
-
-       project.getDataObject().save();
-       disableAction(SaveProject.class);
-    }
-
-    public void closeCurrentProject()
-    {
-        if(projects.getCurrentProject()!=null)
-        {
-            closeProject(projects.getCurrentProject());
-        }
-    }
-
-    public void closeProject(Project project) {
-
-        NotifyDescriptor d = new NotifyDescriptor.Confirmation(
-                NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_message"),
-                NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_title"),
-                NotifyDescriptor.YES_NO_OPTION);
-        if (DialogDisplayer.getDefault().notify(d) == NotifyDescriptor.YES_OPTION) {
-            // really do it...
-        }
-
-        project.setClosedStatus();
+        ((GephiDataObject) project.getDataObject()).save();
         disableAction(SaveProject.class);
-        disableAction(SaveAsProject.class);
-        projects.setCurrentProject(null);
+    }
+
+    public void closeCurrentProject() {
+        if (projects.hasCurrentProject()) {
+            NotifyDescriptor d = new NotifyDescriptor.Confirmation(
+                    NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_message"),
+                    NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_title"),
+                    NotifyDescriptor.YES_NO_OPTION);
+            if (DialogDisplayer.getDefault().notify(d) == NotifyDescriptor.YES_OPTION) {
+                // really do it...
+            }
+
+            Project currentProject = projects.getCurrentProject();
+            currentProject.close();
+            disableAction(SaveProject.class);
+            disableAction(SaveAsProject.class);
+            projects.closeCurrentProject();
+        }
     }
 
     public void removeProject(Project project) {
         if (projects.getCurrentProject() == project) {
-            closeProject(project);
+            closeCurrentProject();
         }
         projects.removeProject(project);
     }
@@ -117,9 +112,10 @@ public class DesktopProjectController implements ProjectController {
 
     public void setProjects(Projects projects) {
         this.projects = projects;
-        projects.refreshProjects();
-        if(getCurrentProject()!=null)
+        projects.refresh();
+        if (getCurrentProject() != null) {
             enableAction(SaveAsProject.class);
+        }
     }
 
     public Workspace newWorkspace(Project project) {
@@ -129,17 +125,17 @@ public class DesktopProjectController implements ProjectController {
     }
 
     public Workspace importFile() {
-        if(projects.getCurrentProject()==null)
+        if (projects.getCurrentProject() == null) {
             newProject();
+        }
         Workspace ws = newWorkspace(projects.getCurrentProject());
         setCurrentWorkspace(ws);
         return ws;
     }
 
     public void deleteWorkspace(Workspace workspace) {
-        if(getCurrentWorkspace()==workspace)
-        {
-            workspace.setStatus(Workspace.Status.CLOSED);
+        if (getCurrentWorkspace() == workspace) {
+            workspace.close();
             getCurrentProject().setCurrentWorkspace(workspace);
         }
 
@@ -148,11 +144,11 @@ public class DesktopProjectController implements ProjectController {
     }
 
     public void openProject(Project project) {
-        if (projects.getCurrentProject() != null) {
-            closeProject(projects.getCurrentProject());
+        if (projects.hasCurrentProject()) {
+            closeCurrentProject();
         }
         projects.setCurrentProject(project);
-        project.setOpenStatus();
+        project.open();
         enableAction(SaveAsProject.class);
     }
 
@@ -161,16 +157,18 @@ public class DesktopProjectController implements ProjectController {
     }
 
     public Workspace getCurrentWorkspace() {
-        if(getCurrentProject()!=null)
+        if (projects.hasCurrentProject()) {
             return getCurrentProject().getCurrentWorkspace();
+        }
         return null;
     }
 
     public void setCurrentWorkspace(Workspace workspace) {
-        if(getCurrentWorkspace()!=null)
-            getCurrentWorkspace().setStatus(Workspace.Status.CLOSED);
+        if (getCurrentWorkspace() != null) {
+            getCurrentWorkspace().close();
+        }
         getCurrentProject().setCurrentWorkspace(workspace);
-        workspace.setStatus(Workspace.Status.OPEN);
+        workspace.open();
         enableAction(SaveProject.class);
     }
 
@@ -193,7 +191,11 @@ public class DesktopProjectController implements ProjectController {
 
     public void disableAction(Class clazz) {
         SystemAction action = SystemAction.get(clazz);
-        
+
+        if (avoidDisableSaveProject && clazz.equals(SaveProject.class)) {
+            return;
+        }
+
         if (action != null) {
             action.setEnabled(false);
         }

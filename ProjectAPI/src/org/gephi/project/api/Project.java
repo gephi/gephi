@@ -21,167 +21,51 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.project.api;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.gephi.project.api.Workspace;
-
-import org.gephi.project.filetype.GephiDataObject;
+import org.openide.loaders.DataObject;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.AbstractLookup;
-import org.openide.util.lookup.InstanceContent;
-
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
-public class Project implements Lookup.Provider, Serializable {
+public interface Project {
 
-    public enum Status {NEW, OPEN, CLOSED, INVALID};
-    private static int count=0;
+    public void open();
 
-    //Atributes
-    private String name;
-    private Status status = Status.CLOSED;
-    private GephiDataObject dataObject;
+    public void close();
 
-    //Workspaces
-    private transient List<Workspace> workspaces;
-    private transient Workspace currentWorkspace;
-   
-    //Lookup
-    private transient InstanceContent instanceContent;
-    private transient AbstractLookup lookup;
-    private transient List<ChangeListener> listeners;
+    public boolean isOpen();
 
-    public Project()
-    {
-        name = "Project "+(count++);
-        init();
-    }
+    public boolean isClosed();
 
-    public void init()
-    {
-        instanceContent = new InstanceContent();
-        lookup = new AbstractLookup(instanceContent);
-        workspaces = new ArrayList<Workspace>();
-        listeners = new ArrayList<ChangeListener>();
+    public boolean isInvalid();
 
-        if(dataObject!=null)
-        {
-            if(dataObject.isValid())
-            {
-                dataObject.setProject(this);
-                dataObject.load();
-            }
-            else
-            {
-                this.status = Status.INVALID;
-            }
-        }
-    }
+    public void setName(String name);
 
-    public List<Workspace> getWorkspaces() {
-        return workspaces;
-    }
+    public String getName();
 
-    public Workspace newWorkspace()
-    {
-        if(workspaces==null)
-            workspaces = new ArrayList<Workspace>();
-        Workspace workspace = new Workspace();
-        workspace.setProject(this);
-        workspaces.add(workspace);
-        instanceContent.add(workspace);
-        return workspace;
-    }
+    public boolean hasFile();
 
-    public void removeWorkspace(Workspace workspace)
-    {
-        workspaces.remove(workspace);
-        instanceContent.remove(workspace);
-    }
+    public void setDataObject(DataObject dataObject);
 
-    public Workspace getCurrentWorkspace() {
-        return currentWorkspace;
-    }
+    public DataObject getDataObject();
 
-    public void setCurrentWorkspace(Workspace currentWorkspace) {
-        this.currentWorkspace = currentWorkspace;
-    }
+    public Workspace newWorkspace();
 
-   public String toString() {
-       return name;
-   }
+    public void addWorkspace(Workspace workspace);
 
-    public Lookup getLookup() {
-        return lookup;
-    }
+    public void removeWorkspace(Workspace workspace);
 
-    public boolean isOpen() {
-        return status==Status.OPEN;
-    }
+    public void setCurrentWorkspace(Workspace workspace);
 
-    public void setOpenStatus()
-    {
-        this.status = Status.OPEN;
-        fireChangeEvent();
-    }
+    public Workspace[] getWorkspaces();
 
-    public void setClosedStatus()
-    {
-        this.status = Status.CLOSED;
-        fireChangeEvent();
-    }
+    public Workspace getCurrentWorkspace();
 
-    public void setNewStatus()
-    {
-        this.status = Status.NEW;
-    }
+    public boolean hasCurrentWorkspace();
 
-    public void setName(String name)
-    {
-        this.name = name;
-        fireChangeEvent();
-    }
+    public void addChangeListener(ChangeListener listener);
 
-    public String getName() {
-        return name;
-    }
-
-    public void addChangeListener(ChangeListener listener)
-    {
-        listeners.add(listener);
-    }
-
-    public void removeChangeListener(ChangeListener listener)
-    {
-        listeners.remove(listener);
-    }
-
-    public void fireChangeEvent()
-    {
-        ChangeEvent event = new ChangeEvent(this);
-        for(ChangeListener listener : listeners)
-        {
-            listener.stateChanged(event);
-        }
-    }
-
-    public GephiDataObject getDataObject() {
-        return dataObject;
-    }
-
-    public void setDataObject(GephiDataObject dataObject) {
-        this.dataObject = dataObject;
-        fireChangeEvent();
-    }
-
-    public boolean hasFile()
-    {
-        return dataObject!=null;
-    }
+    public Lookup getLookup();
 }

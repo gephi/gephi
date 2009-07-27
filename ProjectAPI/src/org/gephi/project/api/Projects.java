@@ -20,77 +20,29 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.api;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import org.gephi.project.api.Project.Status;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.AbstractLookup;
-import org.openide.util.lookup.InstanceContent;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
-public class Projects implements Lookup.Provider, Serializable {
+public interface Projects {
 
-    private static final long serialVersionUID = 1L;
+    public void addProject(Project project);
 
-    //Project
-    private List<Project> projects = new ArrayList<Project>();
-    private Project currentProject;
-    
-    //Lookup
-    private transient InstanceContent ic;
-    private transient AbstractLookup lookup;
+    public void removeProject(Project project);
 
-    public Projects()
-    {
-        ic = new InstanceContent();
-        lookup = new AbstractLookup(ic);
-    }
+    public boolean hasCurrentProject();
 
-    public void refreshProjects()
-    {
-        for(Project project : projects)
-        {
-            project.init();
-        }
-    }
+    public Project getCurrentProject();
 
-    public void addProject(Project project) {
-        projects.add(project);
-        ic.add(project);
-    }
+    public void setCurrentProject(Project project);
 
-    public void removeProject(Project project) {
-        projects.remove(project);
-        ic.remove(project);
-    }
+    public void closeCurrentProject();
 
-    public List<Project> getProjects() {
-        return projects;
-    }
+    public void refresh();
 
-    public Lookup getLookup() {
-        if(lookup==null)
-        {
-            ic = new InstanceContent();
-            lookup = new AbstractLookup(ic);
-        }
-        return lookup;
-    }
+    public Lookup getLookup();
 
-    public void reinitLookup()
-    {
-        ic.set(projects, null);
-    }
-
-    public Project getCurrentProject() {
-        return currentProject;
-    }
-
-    public void setCurrentProject(Project currentProject) {
-        this.currentProject = currentProject;
-    }
+    public void reinitLookup();
 }

@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.project.explorer;
 
 import org.gephi.project.explorer.actions.CloseWorkspace;
@@ -36,30 +35,26 @@ import org.openide.util.WeakListeners;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class WorkspaceNode extends AbstractNode implements ChangeListener {
 
     private Workspace workspace;
 
-    public WorkspaceNode(Workspace workspace)
-    {
+    public WorkspaceNode(Workspace workspace) {
         super(Children.LEAF);
         this.workspace = workspace;
 
-      //Add Workspace Listener
+        //Add Workspace Listener
         workspace.addChangeListener(WeakListeners.change(this, workspace));
     }
 
     @Override
     public void stateChanged(ChangeEvent e) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        if(pc.getCurrentWorkspace()==workspace)
-        {
+        if (pc.getCurrentWorkspace() == workspace) {
             //Current
-        }
-        else
-        {
+        } else {
             //Not current
         }
 
@@ -74,6 +69,6 @@ public class WorkspaceNode extends AbstractNode implements ChangeListener {
 
     @Override
     public Action[] getActions(boolean context) {
-        return new Action[]{new OpenWorkspace(workspace),new CloseWorkspace(workspace), new RenameWorkspace(workspace)};
+        return new Action[]{new OpenWorkspace(workspace), new CloseWorkspace(workspace), new RenameWorkspace(workspace)};
     }
 }

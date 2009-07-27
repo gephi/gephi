@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.project.explorer.actions;
 
 import java.awt.event.ActionEvent;
@@ -32,21 +31,20 @@ import org.openide.util.NbBundle;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class CloseProject extends AbstractAction {
 
     private Project project;
 
-    public CloseProject(Project project)
-    {
+    public CloseProject(Project project) {
         this.project = project;
         putValue(Action.NAME, NbBundle.getMessage(ProjectNode.class, "ProjectNode_closeProject"));
     }
 
     public void actionPerformed(ActionEvent e) {
-       ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-       pc.closeProject(project);
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.closeCurrentProject();
     }
 
     @Override

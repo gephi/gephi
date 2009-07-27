@@ -19,16 +19,15 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.gephi.project.filetype.io;
+package org.gephi.io.project;
 
-import org.gephi.project.api.Project;
 import org.openide.util.NbBundle;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
-public class GephiFormatException extends Exception {
+public class GephiFormatException extends RuntimeException {
 
 	private Throwable cause;
     private String message;

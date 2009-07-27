@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.project.filetype;
+package org.gephi.io.project;
 
 import junit.framework.TestCase;
 import org.openide.filesystems.FileObject;

@@ -27,82 +27,29 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
-public class Workspace {
+public interface Workspace {
 
-    public enum Status { OPEN, CLOSED, INVALID};
-    private static int count = 0;
-    private Project project;
-    private String name;
-    private Status status = Status.CLOSED;
+    public void open();
 
-    //Lookup
-    private transient List<ChangeListener> listeners = new ArrayList<ChangeListener>();;
+    public void close();
 
-    public Workspace() {
-        this("Workspace "+(count++));
-    }
+    public void invalid();
 
-    public Workspace(String name) {
-        this.name = name;
-    }
+    public boolean isOpen();
 
-    @Override
-    public String toString() {
-        return name;
-    }
+    public boolean isClosed();
 
-    public void setProject(Project project) {
-        this.project = project;
-    }
+    public boolean isInvalid();
 
-    public Project getProject() {
-        return project;
-    }
+    public void setProject(Project project);
 
-    public String getName()
-    {
-        return name;
-    }
+    public Project getProject();
 
-    public Status getStatus()
-    {
-        return status;
-    }
+    public String getName();
 
-    public void setName(String name)
-    {
-        this.name = name;
-        fireChangeEvent();
-    }
+    public void setName(String name);
 
-     public void setStatus(Status status) {
-        this.status = status;
-        fireChangeEvent();
-    }
-
-     public boolean isOpen()
-     {
-         return status==Status.OPEN;
-     }
-
-    public void addChangeListener(ChangeListener listener)
-    {
-        listeners.add(listener);
-    }
-
-    public void removeChangeListener(ChangeListener listener)
-    {
-        listeners.remove(listener);
-    }
-
-    public void fireChangeEvent()
-    {
-        ChangeEvent event = new ChangeEvent(this);
-        for(ChangeListener listener : listeners)
-        {
-            listener.stateChanged(event);
-        }
-    }
+    public void addChangeListener(ChangeListener listener);
 }
