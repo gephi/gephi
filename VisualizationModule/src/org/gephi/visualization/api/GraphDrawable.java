@@ -41,6 +41,10 @@ public interface GraphDrawable {
 
     public float[] getCameraLocation();
 
+    public void setCameraLocation(float[] cameraLocation);
+
+    public void setCameraTarget(float[] cameraTarget);
+
     public Vec3f getCameraVector();
 
     public double getDraggingMarkerX();

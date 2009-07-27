@@ -85,6 +85,7 @@ public class VizConfig {
     protected float[] defaultNodeLabelColor = {0f, 0f, 0f, 1f};
     protected float[] defaultEdgeLabelColor = {0.5f, 0.5f, 0.5f, 1f};
     protected Font defaultLabelFont = new Font("Arial", Font.BOLD, 20);
+    protected boolean showLabelOnSelectedOnly = false;
     protected boolean showVizVar = false;
     protected boolean visualizeTree = false;
     protected boolean contextMenu = true;
@@ -199,6 +200,10 @@ public class VizConfig {
 
     public boolean isShowEdgeLabels() {
         return showEdgeLabels;
+    }
+
+    public boolean isShowLabelOnSelectedOnly() {
+        return showLabelOnSelectedOnly;
     }
 
     public boolean isAdjustByText() {

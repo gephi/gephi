@@ -31,10 +31,19 @@ import org.gephi.visualization.api.VizConfig;
  */
 public class UniqueColorMode implements ColorMode {
 
-    VizConfig config;
+    private VizConfig config;
+    private float[] color;
 
     public UniqueColorMode() {
         config = VizController.getInstance().getVizConfig();
+    }
+
+    public float[] getColor() {
+        return color;
+    }
+
+    public void setColor(float[] color) {
+        this.color = color;
     }
 
     public void defaultNodeColor(TextRenderer renderer) {

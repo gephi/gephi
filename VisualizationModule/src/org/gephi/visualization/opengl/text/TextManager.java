@@ -48,28 +48,29 @@ public class TextManager implements VizArchitecture {
     private TextDataBuilder builder;
 
     //Variables
-    private ColorMode colorMode;
-    private SizeMode sizeMode;
-    private boolean mouseMode = false;
+    private TextModel model;
 
     public TextManager() {
         textUtils = new TextUtils(this);
-        colorMode = new UniqueColorMode();
-        sizeMode = new ScaledSizeMode();
         builder = new TextDataBuilder();
+        model = new TextModel();
     }
 
     public void initArchitecture() {
         vizConfig = VizController.getInstance().getVizConfig();
-        renderer = new TextRenderer(vizConfig.getDefaultLabelFont(), false, false, null, true);
+        model.colorMode = new UniqueColorMode();
+        model.sizeMode = new ScaledSizeMode();
+        model.font = vizConfig.getDefaultLabelFont();
+        model.setSelectedOnly(vizConfig.isShowLabelOnSelectedOnly());
+        renderer = new TextRenderer(model.font, false, false, null, true);
     }
 
     public void defaultNodeColor() {
-        colorMode.defaultNodeColor(renderer);
+        model.colorMode.defaultNodeColor(renderer);
     }
 
     public void defaultEdgeColor() {
-        colorMode.defaultEdgeColor(renderer);
+        model.colorMode.defaultEdgeColor(renderer);
     }
 
     public void beginRendering() {
@@ -84,8 +85,8 @@ public class TextManager implements VizArchitecture {
         Renderable renderable = model.getObj();
         TextDataImpl textData = (TextDataImpl) renderable.getTextData();
         if (textData != null) {
-            colorMode.textColor(renderer, textData, model);
-            sizeMode.setSizeFactor(textData, model);
+            this.model.colorMode.textColor(renderer, textData, model);
+            this.model.sizeMode.setSizeFactor(textData, model);
 
             String txt = textData.line.text;
             Rectangle2D r = renderer.getBounds(txt);
@@ -113,7 +114,15 @@ public class TextManager implements VizArchitecture {
         return builder.buildTextEdge(edge);
     }
 
-    public boolean isMouseMode() {
-        return mouseMode;
+    public boolean isSelectedOnly() {
+        return model.selectedOnly;
+    }
+
+    public TextModel getModel() {
+        return model;
+    }
+
+    public void setModel(TextModel model) {
+        this.model = model;
     }
 }

@@ -264,7 +264,7 @@ public class CompatibilityEngine extends AbstractEngine {
             textManager.beginRendering();
             if (nodeClass.isEnabled()) {
                 textManager.defaultNodeColor();
-                if (textManager.isMouseMode()) {
+                if (textManager.isSelectedOnly()) {
                     for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
                         ModelImpl obj = itr.next();
                         if (obj.markTime != startTime) {
