@@ -55,7 +55,13 @@
             <file name="org-gephi-branding-desktop-actions-SaveAsProject.instance">
                 <attr name="position" intvalue="700"/>
             </file>
-            
+            <file name="Separator2_1.instance" url="Separator2_1.instance">
+                <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                <attr name="position" intvalue="1100"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-ProjectProperties.instance">
+                <attr name="position" intvalue="1200"/>
+            </file>
         </folder>
         <file name="GoTo_hidden"/>
         <folder name="View">

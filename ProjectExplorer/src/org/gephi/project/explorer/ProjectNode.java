@@ -29,7 +29,6 @@ import org.gephi.project.explorer.actions.CloseProject;
 import org.gephi.project.explorer.actions.OpenProject;
 import org.gephi.project.explorer.actions.ProjectProperties;
 import org.gephi.project.explorer.actions.RemoveProject;
-import org.gephi.project.explorer.actions.RenameProject;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.WeakListeners;
@@ -74,6 +73,6 @@ public class ProjectNode extends AbstractNode implements ChangeListener {
 
     @Override
     public Action[] getActions(boolean context) {
-        return new Action[]{new OpenProject(project), new CloseProject(project), new RemoveProject(project), new AddWorkspace(project), new RenameProject(project), new ProjectProperties(project)};
+        return new Action[]{new OpenProject(project), new CloseProject(project), new RemoveProject(project), new AddWorkspace(project), new ProjectProperties(project)};
     }
 }

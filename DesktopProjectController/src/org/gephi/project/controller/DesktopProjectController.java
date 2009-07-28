@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.controller;
 
+import org.gephi.branding.desktop.actions.ProjectProperties;
 import org.gephi.branding.desktop.actions.SaveAsProject;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
@@ -48,6 +49,7 @@ public class DesktopProjectController implements ProjectController {
         //Actions
         disableAction(SaveProject.class);
         disableAction(SaveAsProject.class);
+        disableAction(ProjectProperties.class);
     }
 
     public void newProject() {
@@ -95,6 +97,7 @@ public class DesktopProjectController implements ProjectController {
             currentProject.close();
             disableAction(SaveProject.class);
             disableAction(SaveAsProject.class);
+            disableAction(ProjectProperties.class);
             projects.closeCurrentProject();
         }
     }
@@ -150,6 +153,7 @@ public class DesktopProjectController implements ProjectController {
         projects.setCurrentProject(project);
         project.open();
         enableAction(SaveAsProject.class);
+        enableAction(ProjectProperties.class);
     }
 
     public Project getCurrentProject() {

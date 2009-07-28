@@ -21,8 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ui.project;
 
 import org.gephi.project.api.Project;
+import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectMetaData;
-import org.gephi.project.api.ProjectPropertiesUI;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -40,11 +41,8 @@ public class ProjectPropertiesEditor extends javax.swing.JPanel {
             fileLabel.setText(project.getDataObject().getName());
         }
         ProjectMetaData metaData = project.getMetaData();
-        if (metaData.getTitle().isEmpty()) {
-            titleTextField.setText(project.getName());
-        } else {
-            titleTextField.setText(metaData.getTitle());
-        }
+        nameTextField.setText(project.getName());
+        titleTextField.setText(metaData.getTitle());
         authorTextField.setText(metaData.getAuthor());
         keywordsTextField.setText(metaData.getKeywords());
         descriptionTextArea.setText(metaData.getDescription());
@@ -52,8 +50,10 @@ public class ProjectPropertiesEditor extends javax.swing.JPanel {
 
     public void save(Project project) {
         ProjectMetaData metaData = project.getMetaData();
+        metaData.setTitle(nameTextField.getText());
         if (!titleTextField.getText().isEmpty() && !titleTextField.getText().equals(project.getName())) {
-            metaData.setTitle(titleTextField.getText());
+            ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+            pc.renameProject(project, titleTextField.getText());
         }
         metaData.setAuthor(authorTextField.getText());
         metaData.setKeywords(keywordsTextField.getText());
@@ -77,10 +77,12 @@ public class ProjectPropertiesEditor extends javax.swing.JPanel {
         keywordsTextField = new javax.swing.JTextField();
         authorTextField = new javax.swing.JTextField();
         labelAuthor = new javax.swing.JLabel();
-        labelTitle = new javax.swing.JLabel();
-        titleTextField = new javax.swing.JTextField();
+        labelName = new javax.swing.JLabel();
+        nameTextField = new javax.swing.JTextField();
         fileLabel = new javax.swing.JLabel();
         labelFile = new javax.swing.JLabel();
+        labelTitle = new javax.swing.JLabel();
+        titleTextField = new javax.swing.JTextField();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(ProjectPropertiesEditor.class, "ProjectPropertiesEditor.jPanel1.border.title"))); // NOI18N
 
@@ -98,33 +100,39 @@ public class ProjectPropertiesEditor extends javax.swing.JPanel {
 
         labelAuthor.setText(org.openide.util.NbBundle.getMessage(ProjectPropertiesEditor.class, "ProjectPropertiesEditor.labelAuthor.text")); // NOI18N
 
-        labelTitle.setText(org.openide.util.NbBundle.getMessage(ProjectPropertiesEditor.class, "ProjectPropertiesEditor.labelTitle.text")); // NOI18N
+        labelName.setText(org.openide.util.NbBundle.getMessage(ProjectPropertiesEditor.class, "ProjectPropertiesEditor.labelName.text")); // NOI18N
 
-        titleTextField.setText(org.openide.util.NbBundle.getMessage(ProjectPropertiesEditor.class, "ProjectPropertiesEditor.titleTextField.text")); // NOI18N
+        nameTextField.setText(org.openide.util.NbBundle.getMessage(ProjectPropertiesEditor.class, "ProjectPropertiesEditor.nameTextField.text")); // NOI18N
 
         fileLabel.setText(org.openide.util.NbBundle.getMessage(ProjectPropertiesEditor.class, "ProjectPropertiesEditor.fileLabel.text")); // NOI18N
 
         labelFile.setText(org.openide.util.NbBundle.getMessage(ProjectPropertiesEditor.class, "ProjectPropertiesEditor.labelFile.text")); // NOI18N
 
+        labelTitle.setText(org.openide.util.NbBundle.getMessage(ProjectPropertiesEditor.class, "ProjectPropertiesEditor.labelTitle.text")); // NOI18N
+
+        titleTextField.setText(org.openide.util.NbBundle.getMessage(ProjectPropertiesEditor.class, "ProjectPropertiesEditor.titleTextField.text")); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(labelTitle)
                     .addComponent(labelAuthor)
                     .addComponent(labelFile)
-                    .addComponent(labelTitle)
+                    .addComponent(labelName)
                     .addComponent(labelKeywords)
                     .addComponent(labelDescription))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(descriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
-                    .addComponent(fileLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
-                    .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
-                    .addComponent(keywordsTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
-                    .addComponent(authorTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(descriptionScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+                    .addComponent(fileLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+                    .addComponent(nameTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+                    .addComponent(keywordsTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+                    .addComponent(authorTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+                    .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -136,8 +144,12 @@ public class ProjectPropertiesEditor extends javax.swing.JPanel {
                     .addComponent(labelFile))
                 .addGap(12, 12, 12)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelTitle))
+                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelName))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelTitle)
+                    .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelAuthor)
@@ -167,7 +179,7 @@ public class ProjectPropertiesEditor extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(182, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -181,7 +193,9 @@ public class ProjectPropertiesEditor extends javax.swing.JPanel {
     private javax.swing.JLabel labelDescription;
     private javax.swing.JLabel labelFile;
     private javax.swing.JLabel labelKeywords;
+    private javax.swing.JLabel labelName;
     private javax.swing.JLabel labelTitle;
+    private javax.swing.JTextField nameTextField;
     private javax.swing.JTextField titleTextField;
     // End of variables declaration//GEN-END:variables
 }
