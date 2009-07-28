@@ -98,7 +98,7 @@ public class DesktopProjectController implements ProjectController {
         Project project = getCurrentProject();
         project.setDataObject(gephiDataObject);
         gephiDataObject.setProject(project);
-        SaveTask saveTask = new SaveTask(dataObject);
+        SaveTask saveTask = new SaveTask(gephiDataObject);
         longTaskExecutor.execute(saveTask, saveTask);
 
         disableAction(SaveProject.class);
@@ -318,26 +318,6 @@ public class DesktopProjectController implements ProjectController {
 
         if (action != null) {
             action.setEnabled(false);
-        }
-    }
-
-    private static class SaveTask implements LongTask, Runnable {
-
-        private DataObject dataObject;
-
-        public SaveTask(DataObject dataObject) {
-            this.dataObject = dataObject;
-        }
-
-        public void run() {
-            System.out.println("Save " + dataObject.getName());
-        }
-
-        public boolean cancel() {
-            return true;
-        }
-
-        public void setProgressTicket(ProgressTicket progressTicket) {
         }
     }
 }

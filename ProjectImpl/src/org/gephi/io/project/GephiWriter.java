@@ -26,6 +26,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.Workspace;
+import org.openide.util.Cancellable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -33,7 +34,7 @@ import org.w3c.dom.Element;
  *
  * @author Mathieu
  */
-public class GephiWriter {
+public class GephiWriter implements Cancellable {
 
     private int tasks = 0;
     private Document doc;
@@ -48,6 +49,8 @@ public class GephiWriter {
 
         return document;
     }
+
+
 
     public Document writeAll(Project project) throws Exception {
         doc = createDocument();
@@ -126,5 +129,9 @@ public class GephiWriter {
         }
 
         return workspaceE;
+    }
+
+    public boolean cancel() {
+        return true;
     }
 }

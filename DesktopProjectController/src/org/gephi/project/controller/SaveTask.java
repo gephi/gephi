@@ -18,16 +18,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.io.project;
+package org.gephi.project.controller;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -35,62 +31,40 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.gephi.project.ProjectImpl;
-import org.gephi.project.api.Project;
+import org.gephi.io.project.GephiDataObject;
+import org.gephi.io.project.GephiFormatException;
+import org.gephi.io.project.GephiWriter;
+import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.progress.Progress;
+import org.gephi.utils.progress.ProgressTicket;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.loaders.DataNode;
-import org.openide.loaders.DataObjectExistsException;
-import org.openide.loaders.MultiDataObject;
-import org.openide.loaders.MultiFileLoader;
-import org.openide.nodes.Node;
-import org.openide.nodes.Children;
-import org.openide.util.Lookup;
+
+import org.openide.util.NbPreferences;
 import org.w3c.dom.Document;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class GephiDataObject extends MultiDataObject {
+public class SaveTask implements LongTask, Runnable {
 
-    private Project project;
+    private static final String ZIP_LEVEL_PREFERENCE = "ProjectIO_Save_ZipLevel_0_TO_9";
+    private GephiDataObject dataObject;
+    private GephiWriter gephiWriter;
+    private boolean cancel = false;
+    private ProgressTicket progressTicket;
 
-    public GephiDataObject(FileObject pf, MultiFileLoader loader) throws DataObjectExistsException, IOException {
-        super(pf, loader);
+    public SaveTask(GephiDataObject dataObject) {
+        this.dataObject = dataObject;
     }
 
-    public Project load() {
+    public void run() {
+        System.out.println("Save " + dataObject.getName());
         try {
-            FileObject fileObject = getPrimaryFile();
-            if (FileUtil.isArchiveFile(fileObject)) {
-                fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
-            }
-
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(fileObject.getInputStream());
-
-            //Project instance
-            if (project == null) {
-                project = new ProjectImpl();
-            }
-
-            project.setDataObject(this);
-
-            GephiReader gephiReader = new GephiReader();
-            return gephiReader.readAll(doc.getDocumentElement(), project);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new GephiFormatException(GephiReader.class, ex);
-        }
-    }
-
-    public void save() throws GephiFormatException {
-        
-        try {
-            FileObject fileObject = getPrimaryFile();
+            Progress.start(progressTicket);
+            FileObject fileObject = dataObject.getPrimaryFile();
             File outputFile = FileUtil.toFile(fileObject);
             File writeFile = outputFile;
             boolean useTempFile = false;
@@ -101,15 +75,16 @@ public class GephiDataObject extends MultiDataObject {
             }
 
             //Stream
+            int zipLevel = NbPreferences.forModule(SaveTask.class).getInt(ZIP_LEVEL_PREFERENCE, 0);
             FileOutputStream outputStream = new FileOutputStream(writeFile);
             ZipOutputStream zipOut = new ZipOutputStream(outputStream);
-            zipOut.setLevel(0);
+            zipOut.setLevel(zipLevel);
 
             zipOut.putNextEntry(new ZipEntry("Project"));
-            GephiWriter gephiWriter = new GephiWriter();
+            gephiWriter = new GephiWriter();
 
             //Write Document
-            Document document = gephiWriter.writeAll(project);
+            Document document = gephiWriter.writeAll(dataObject.getProject());
 
             //Write file output
             Source source = new DOMSource(document);
@@ -126,7 +101,7 @@ public class GephiDataObject extends MultiDataObject {
             zipOut.close();
 
             //Clean and copy
-            if (useTempFile) {
+            if (useTempFile && !cancel) {
                 String name = fileObject.getName();
                 String ext = fileObject.getExt();
 
@@ -138,29 +113,26 @@ public class GephiDataObject extends MultiDataObject {
                 FileLock lock = tempFileObject.lock();
                 tempFileObject.rename(lock, name, ext);
                 lock.releaseLock();
+            } else if (cancel) {
+                //Delete temp file
+                FileObject tempFileObject = FileUtil.toFileObject(writeFile);
+                tempFileObject.delete();
             }
-
+            Progress.finish(progressTicket);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new GephiFormatException(GephiWriter.class, ex);
         }
     }
 
-    public Project getProject() {
-        return project;
+    public boolean cancel() {
+        if (gephiWriter != null) {
+            gephiWriter.cancel();
+        }
+        return true;
     }
 
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
-    @Override
-    protected Node createNodeDelegate() {
-        return new DataNode(this, Children.LEAF, getLookup());
-    }
-
-    @Override
-    public Lookup getLookup() {
-        return getCookieSet().getLookup();
+    public void setProgressTicket(ProgressTicket progressTicket) {
+        this.progressTicket = progressTicket;
     }
 }
