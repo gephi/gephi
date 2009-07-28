@@ -45,7 +45,7 @@ public final class NewProject extends SystemAction {
 
     @Override
     public String getName() {
-        return NbBundle.getMessage(SaveProject.class, "CTL_NewProject");
+        return NbBundle.getMessage(NewProject.class, "CTL_NewProject");
     }
 
     @Override

@@ -88,7 +88,7 @@ public final class OpenProject extends SystemAction {
 
     @Override
     public String getName() {
-        return NbBundle.getMessage(SaveProject.class, "CTL_OpenProject");
+        return NbBundle.getMessage(OpenProject.class, "CTL_OpenProject");
     }
 
     @Override

@@ -61,6 +61,10 @@
             </folder>
         </folder>
     </folder>
+    <folder name="Actions">
+    </folder>
+    <folder name="Menu">
+    </folder>
     <folder name="Services">
         <folder name="MIMEResolver">
             <file name="GephiResolver.xml" url="GephiResolver.xml">

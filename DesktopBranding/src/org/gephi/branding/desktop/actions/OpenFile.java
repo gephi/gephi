@@ -45,7 +45,7 @@ public class OpenFile extends SystemAction {
 
     @Override
     public String getName() {
-        return NbBundle.getMessage(SaveProject.class, "CTL_OpenFile");
+        return NbBundle.getMessage(OpenFile.class, "CTL_OpenFile");
     }
 
     @Override

@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
 <filesystem>
+    <attr name="Menu\Edit\Separator1.instance\position" intvalue="300"/>
+    <attr name="Menu\Edit\Separator2.instance\position" intvalue="800"/>
+    <attr name="Menu\Edit\org-openide-actions-CopyAction.instance\position" intvalue="500"/>
+    <attr name="Menu\Edit\org-openide-actions-CutAction.instance\position" intvalue="400"/>
+    <attr name="Menu\Edit\org-openide-actions-DeleteAction.instance\position" intvalue="700"/>
+    <attr name="Menu\Edit\org-openide-actions-FindAction.instance\position" intvalue="900"/>
+    <attr name="Menu\Edit\org-openide-actions-PasteAction.instance\position" intvalue="600"/>
+    <attr name="Menu\Edit\org-openide-actions-RedoAction.instance\position" intvalue="200"/>
+    <attr name="Menu\Edit\org-openide-actions-ReplaceAction.instance\position" intvalue="1000"/>
+    <attr name="Menu\Edit\org-openide-actions-UndoAction.instance\position" intvalue="100"/>
     <attr name="Menu\File\Separator2.instance\position" intvalue="450"/>
     <attr name="Menu\File\Separator4.instance\position" intvalue="725"/>
     <attr name="Menu\File\org-netbeans-core-actions-SystemExit.instance\position" intvalue="2150"/>
@@ -18,6 +28,22 @@
     </folder>
     <folder name="Menu">
         <folder name="Edit">
+            <file name="org-gephi-branding-desktop-actions-NewWorkspace.instance">
+                <attr name="position" intvalue="2500"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-DeleteWorkspace.instance">
+                <attr name="position" intvalue="2600"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-CleanWorkspace.instance">
+                <attr name="position" intvalue="2700"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-DuplicateWorkspace.instance">
+                <attr name="position" intvalue="2800"/>
+            </file>
+            <file name="Separator2_1.instance" url="Separator2_1.instance">
+                <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                <attr name="position" intvalue="2400"/>
+            </file>
         </folder>
         <folder name="File">
             <file name="org-openide-actions-PageSetupAction.instance_hidden"/>

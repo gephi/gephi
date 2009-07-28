@@ -40,7 +40,7 @@ public final class CloseProject extends SystemAction {
 
     @Override
     public String getName() {
-        return NbBundle.getMessage(SaveProject.class, "CTL_CloseProject");
+        return NbBundle.getMessage(CloseProject.class, "CTL_CloseProject");
     }
 
     @Override
