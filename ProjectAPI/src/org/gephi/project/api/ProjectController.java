@@ -62,5 +62,11 @@ public interface ProjectController {
 
     public Workspace getCurrentWorkspace();
 
-    public void setCurrentWorkspace(Workspace workspace);
+    public void openWorkspace(Workspace workspace);
+
+    public void closeCurrentWorkspace();
+
+    public void cleanWorkspace(Workspace workspace);
+
+    public void duplicateWorkspace(Workspace workspace);
 }

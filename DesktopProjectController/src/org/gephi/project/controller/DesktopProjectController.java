@@ -25,8 +25,12 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import org.gephi.branding.desktop.actions.CleanWorkspace;
 import org.gephi.branding.desktop.actions.CloseProject;
+import org.gephi.branding.desktop.actions.DeleteWorkspace;
+import org.gephi.branding.desktop.actions.DuplicateWorkspace;
 import org.gephi.branding.desktop.actions.NewProject;
+import org.gephi.branding.desktop.actions.NewWorkspace;
 import org.gephi.branding.desktop.actions.OpenFile;
 import org.gephi.branding.desktop.actions.OpenProject;
 import org.gephi.branding.desktop.actions.ProjectProperties;
@@ -88,6 +92,10 @@ public class DesktopProjectController implements ProjectController {
         disableAction(SaveAsProject.class);
         disableAction(ProjectProperties.class);
         disableAction(CloseProject.class);
+        disableAction(NewWorkspace.class);
+        disableAction(DeleteWorkspace.class);
+        disableAction(CleanWorkspace.class);
+        disableAction(DuplicateWorkspace.class);
     }
 
     private void lockProjectActions() {
@@ -97,6 +105,10 @@ public class DesktopProjectController implements ProjectController {
         disableAction(CloseProject.class);
         disableAction(NewProject.class);
         disableAction(OpenFile.class);
+        disableAction(NewWorkspace.class);
+        disableAction(DeleteWorkspace.class);
+        disableAction(CleanWorkspace.class);
+        disableAction(DuplicateWorkspace.class);
     }
 
     private void unlockProjectActions() {
@@ -104,6 +116,12 @@ public class DesktopProjectController implements ProjectController {
             enableAction(SaveProject.class);
             enableAction(SaveAsProject.class);
             enableAction(CloseProject.class);
+            enableAction(NewWorkspace.class);
+            if (projects.getCurrentProject().hasCurrentWorkspace()) {
+                enableAction(DeleteWorkspace.class);
+                enableAction(CleanWorkspace.class);
+                enableAction(DuplicateWorkspace.class);
+            }
         }
         enableAction(OpenProject.class);
         enableAction(NewProject.class);
@@ -229,6 +247,10 @@ public class DesktopProjectController implements ProjectController {
             disableAction(SaveAsProject.class);
             disableAction(ProjectProperties.class);
             disableAction(CloseProject.class);
+            disableAction(NewWorkspace.class);
+            disableAction(DeleteWorkspace.class);
+            disableAction(CleanWorkspace.class);
+            disableAction(DuplicateWorkspace.class);
 
             //Title bar
             SwingUtilities.invokeLater(new Runnable() {
@@ -265,11 +287,14 @@ public class DesktopProjectController implements ProjectController {
     }
 
     public Workspace importFile() {
-        if (projects.getCurrentProject() == null) {
+        Project project = projects.getCurrentProject();
+        if (project == null) {
             newProject();
+            project = projects.getCurrentProject();
         }
+
         Workspace ws = newWorkspace(projects.getCurrentProject());
-        setCurrentWorkspace(ws);
+        openWorkspace(ws);
         return ws;
     }
 
@@ -280,7 +305,6 @@ public class DesktopProjectController implements ProjectController {
         }
 
         workspace.getProject().removeWorkspace(workspace);
-        enableAction(SaveProject.class);
     }
 
     public void openProject(final Project project) {
@@ -290,10 +314,25 @@ public class DesktopProjectController implements ProjectController {
         projects.addProject(project);
         projects.setCurrentProject(project);
         project.open();
+        if (!project.hasCurrentWorkspace()) {
+            if (project.getWorkspaces().length == 0) {
+                Workspace workspace = project.newWorkspace();
+                openWorkspace(workspace);
+            } else {
+                Workspace workspace = project.getWorkspaces()[0];
+                openWorkspace(workspace);
+            }
+        }
         enableAction(SaveAsProject.class);
         enableAction(ProjectProperties.class);
         enableAction(SaveProject.class);
         enableAction(CloseProject.class);
+        enableAction(NewWorkspace.class);
+        if (project.hasCurrentWorkspace()) {
+            enableAction(DeleteWorkspace.class);
+            enableAction(CleanWorkspace.class);
+            enableAction(DuplicateWorkspace.class);
+        }
 
         //Title bar
         SwingUtilities.invokeLater(new Runnable() {
@@ -317,12 +356,22 @@ public class DesktopProjectController implements ProjectController {
         return null;
     }
 
-    public void setCurrentWorkspace(Workspace workspace) {
+    public void closeCurrentWorkspace() {
         if (getCurrentWorkspace() != null) {
             getCurrentWorkspace().close();
         }
+    }
+
+    public void openWorkspace(Workspace workspace) {
+        closeCurrentWorkspace();
         getCurrentProject().setCurrentWorkspace(workspace);
         workspace.open();
+    }
+
+    public void cleanWorkspace(Workspace workspace) {
+    }
+
+    public void duplicateWorkspace(Workspace workspace) {
     }
 
     public void renameProject(Project project, final String name) {

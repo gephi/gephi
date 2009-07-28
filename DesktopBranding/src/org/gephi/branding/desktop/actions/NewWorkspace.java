@@ -36,7 +36,7 @@ public class NewWorkspace extends SystemAction {
 
     public void actionPerformed(ActionEvent e) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        
+        pc.newWorkspace(pc.getCurrentProject());
     }
 
     @Override

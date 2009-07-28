@@ -35,7 +35,7 @@ public class CleanWorkspace extends SystemAction {
 
     public void actionPerformed(ActionEvent e) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-
+        pc.cleanWorkspace(pc.getCurrentWorkspace());
     }
 
     @Override

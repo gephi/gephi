@@ -35,12 +35,12 @@ public class DuplicateWorkspace extends SystemAction {
 
     public void actionPerformed(ActionEvent e) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-
+        pc.duplicateWorkspace(pc.getCurrentWorkspace());
     }
 
     @Override
     protected String iconResource() {
-        return "org/gephi/branding/desktop/actions/duplicateWorkspace.gif";
+        return "org/gephi/branding/desktop/actions/duplicateWorkspace.png";
     }
 
     @Override

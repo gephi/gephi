@@ -46,7 +46,7 @@ public class OpenWorkspace extends AbstractAction {
 
     public void actionPerformed(ActionEvent e) {
        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-       pc.setCurrentWorkspace(workspace);
+       pc.openWorkspace(workspace);
     }
 
     @Override
