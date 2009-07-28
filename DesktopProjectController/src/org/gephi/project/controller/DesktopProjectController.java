@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.project.controller;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import org.gephi.branding.desktop.actions.ProjectProperties;
 import org.gephi.branding.desktop.actions.SaveAsProject;
 import org.gephi.project.api.Project;
@@ -32,8 +33,6 @@ import org.gephi.branding.desktop.actions.SaveProject;
 import org.gephi.io.project.GephiDataObject;
 import org.gephi.project.ProjectImpl;
 import org.gephi.project.ProjectsImpl;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.loaders.DataObject;
 import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
@@ -87,20 +86,34 @@ public class DesktopProjectController implements ProjectController {
 
     public void closeCurrentProject() {
         if (projects.hasCurrentProject()) {
-            NotifyDescriptor d = new NotifyDescriptor.Confirmation(
-                    NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_message"),
-                    NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_title"),
-                    NotifyDescriptor.YES_NO_OPTION);
-            if (DialogDisplayer.getDefault().notify(d) == NotifyDescriptor.YES_OPTION) {
-                // really do it...
+            Project currentProject = projects.getCurrentProject();
+
+            //Save ?
+            String messageBundle = NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_message");
+            String titleBundle = NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_title");
+            String saveBundle = NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_save");
+            String doNotSaveBundle = NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_doNotSave");
+            String cancelBundle = NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_cancel");
+            switch (JOptionPane.showOptionDialog(WindowManager.getDefault().getMainWindow(), messageBundle, titleBundle,
+                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
+                    null, new Object[]{saveBundle, doNotSaveBundle, cancelBundle}, saveBundle)) {
+                case JOptionPane.YES_OPTION:
+                    saveProject(currentProject);
+                    break;
+                case JOptionPane.NO_OPTION:
+                    break;
+                default:
+                    return;
             }
 
-            Project currentProject = projects.getCurrentProject();
+            //Close
             currentProject.close();
+            projects.closeCurrentProject();
+
+            //Actions
             disableAction(SaveProject.class);
             disableAction(SaveAsProject.class);
             disableAction(ProjectProperties.class);
-            projects.closeCurrentProject();
 
             //Title bar
             JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
