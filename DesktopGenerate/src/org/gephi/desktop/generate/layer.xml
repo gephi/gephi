@@ -4,7 +4,7 @@
     <folder name="Menu">
         <folder name="File">
             <file name="org-gephi-desktop-generate-Generate.instance">
-                <attr name="position" intvalue="1000"/>
+                <attr name="position" intvalue="700"/>
             </file>
         </folder>
     </folder>

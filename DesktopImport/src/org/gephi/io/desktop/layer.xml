@@ -4,7 +4,7 @@
     <folder name="Menu">
         <folder name="File">
             <file name="org-gephi-io-desktop-ImportDB.instance">
-                <attr name="position" intvalue="950"/>
+                <attr name="position" intvalue="600"/>
             </file>
         </folder>
     </folder>

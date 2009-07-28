@@ -25,6 +25,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import org.gephi.branding.desktop.actions.CloseProject;
 import org.gephi.branding.desktop.actions.NewProject;
 import org.gephi.branding.desktop.actions.OpenFile;
 import org.gephi.branding.desktop.actions.OpenProject;
@@ -86,12 +87,14 @@ public class DesktopProjectController implements ProjectController {
         disableAction(SaveProject.class);
         disableAction(SaveAsProject.class);
         disableAction(ProjectProperties.class);
+        disableAction(CloseProject.class);
     }
 
     private void lockProjectActions() {
         disableAction(SaveProject.class);
         disableAction(SaveAsProject.class);
         disableAction(OpenProject.class);
+        disableAction(CloseProject.class);
         disableAction(NewProject.class);
         disableAction(OpenFile.class);
     }
@@ -100,6 +103,7 @@ public class DesktopProjectController implements ProjectController {
         if (projects.hasCurrentProject()) {
             enableAction(SaveProject.class);
             enableAction(SaveAsProject.class);
+            enableAction(CloseProject.class);
         }
         enableAction(OpenProject.class);
         enableAction(NewProject.class);
@@ -224,6 +228,7 @@ public class DesktopProjectController implements ProjectController {
             disableAction(SaveProject.class);
             disableAction(SaveAsProject.class);
             disableAction(ProjectProperties.class);
+            disableAction(CloseProject.class);
 
             //Title bar
             SwingUtilities.invokeLater(new Runnable() {
@@ -252,14 +257,10 @@ public class DesktopProjectController implements ProjectController {
     public void setProjects(Projects projects) {
         this.projects = projects;
         projects.refresh();
-        if (getCurrentProject() != null) {
-            enableAction(SaveAsProject.class);
-        }
     }
 
     public Workspace newWorkspace(Project project) {
         Workspace ws = project.newWorkspace();
-        enableAction(SaveProject.class);
         return ws;
     }
 
@@ -292,6 +293,7 @@ public class DesktopProjectController implements ProjectController {
         enableAction(SaveAsProject.class);
         enableAction(ProjectProperties.class);
         enableAction(SaveProject.class);
+        enableAction(CloseProject.class);
 
         //Title bar
         SwingUtilities.invokeLater(new Runnable() {

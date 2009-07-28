@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
 <filesystem>
-    <attr name="Menu\File\Separator2.instance\position" intvalue="100"/>
-    <attr name="Menu\File\org-netbeans-core-actions-SystemExit.instance\position" intvalue="800"/>
+    <attr name="Menu\File\Separator2.instance\position" intvalue="450"/>
+    <attr name="Menu\File\Separator4.instance\position" intvalue="725"/>
+    <attr name="Menu\File\org-netbeans-core-actions-SystemExit.instance\position" intvalue="2150"/>
     <attr name="Menu\Window\ProjectAction.shadow\position" intvalue="250"/>
     <attr name="Menu\Window\org-netbeans-core-windows-actions-ResetWindowsAction.shadow\position" intvalue="2750"/>
     <folder name="Actions">
@@ -19,12 +20,6 @@
         <folder name="Edit">
         </folder>
         <folder name="File">
-            <file name="Separator2_1.instance" url="Separator2_1.instance">
-                <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
-                <attr name="position" intvalue="400"/>
-            </file>
-            <file name="Separator3.instance_hidden"/>
-            <file name="Separator4.instance_hidden"/>
             <file name="org-openide-actions-PageSetupAction.instance_hidden"/>
             <file name="org-openide-actions-PrintAction.instance_hidden"/>
             <file name="org-openide-actions-SaveAction.instance_hidden"/>
@@ -39,19 +34,22 @@
             <file name="org-gephi-branding-desktop-actions-OpenFile.instance">
                 <attr name="position" intvalue="300"/>
             </file>
-            <file name="org-gephi-branding-desktop-actions-SaveProject.instance">
-                <attr name="position" intvalue="600"/>
+            <file name="org-gephi-branding-desktop-actions-CloseProject.instance">
+                <attr name="position" intvalue="400"/>
             </file>
-            <file name="org-gephi-branding-desktop-actions-SaveAsProject.instance">
-                <attr name="position" intvalue="700"/>
+            <file name="org-gephi-branding-desktop-actions-ProjectProperties.instance">
+                <attr name="position" intvalue="500"/>
             </file>
             <file name="Separator2_1.instance" url="Separator2_1.instance">
                 <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                <attr name="position" intvalue="550"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-SaveProject.instance">
+                <attr name="position" intvalue="750"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-SaveAsProject.instance">
                 <attr name="position" intvalue="1100"/>
-            </file>
-            <file name="org-gephi-branding-desktop-actions-ProjectProperties.instance">
-                <attr name="position" intvalue="1200"/>
-            </file>
+            </file>          
         </folder>
         <file name="GoTo_hidden"/>
         <folder name="View">
