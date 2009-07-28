@@ -100,6 +100,7 @@ public class DesktopImportController implements ImportController {
 
             ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
             Workspace workspace = projectController.importFile();
+            workspace.setSource(fileObject.getNameExt());
 
             //Create Container
             final Container container = Lookup.getDefault().lookup(Container.class);
@@ -220,6 +221,7 @@ public class DesktopImportController implements ImportController {
             }
             ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
             Workspace workspace = projectController.importFile();
+            workspace.setSource("Database");
 
             //Create Container
             final Container container = Lookup.getDefault().lookup(Container.class);

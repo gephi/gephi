@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.project.explorer;
 
 import java.util.Collection;
@@ -32,7 +31,7 @@ import org.openide.util.LookupListener;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 class ProjectChildren extends Children.Keys<Workspace> implements LookupListener {
 
@@ -47,16 +46,16 @@ class ProjectChildren extends Children.Keys<Workspace> implements LookupListener
         result.addLookupListener(this);
     }
 
-
     @Override
     protected Node[] createNodes(Workspace workspace) {
-        return new Node[] { new WorkspaceNode(workspace)};
+        return new Node[]{new WorkspaceNode(workspace)};
     }
 
     @Override
     protected void addNotify() {
-        if(project.getWorkspaces()!=null)
+        if (project.getWorkspaces() != null) {
             setKeys(project.getWorkspaces());
+        }
     }
 
     public void resultChanged(LookupEvent lookupEvent) {
@@ -64,5 +63,4 @@ class ProjectChildren extends Children.Keys<Workspace> implements LookupListener
         Collection<? extends Workspace> c = r.allInstances();
         setKeys(c);
     }
-
 }

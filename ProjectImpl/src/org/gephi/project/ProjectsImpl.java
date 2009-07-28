@@ -36,8 +36,6 @@ import org.openide.util.lookup.InstanceContent;
  */
 public class ProjectsImpl implements Projects, Lookup.Provider, Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     //Project
     private List<Project> projects = new ArrayList<Project>();
     private Project currentProject;

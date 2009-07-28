@@ -47,6 +47,8 @@ public interface Project {
 
     public boolean hasFile();
 
+    public String getFileName();
+
     public void setDataObject(DataObject dataObject);
 
     public DataObject getDataObject();

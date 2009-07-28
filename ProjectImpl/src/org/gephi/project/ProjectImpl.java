@@ -177,6 +177,14 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
         return dataObject != null;
     }
 
+    public String getFileName() {
+        if(dataObject==null) {
+            return "";
+        } else {
+            return dataObject.getPrimaryFile().getNameExt();
+        }
+    }
+
     @Override
     public void setName(String name) {
         this.name = name;

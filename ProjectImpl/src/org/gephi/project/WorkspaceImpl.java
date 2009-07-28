@@ -41,10 +41,10 @@ public class WorkspaceImpl implements Workspace {
     private Project project;
     private String name;
     private Status status = Status.CLOSED;
+    private String source;
 
     //Lookup
     private transient List<ChangeListener> listeners = new ArrayList<ChangeListener>();
-    ;
 
     public WorkspaceImpl() {
         this("Workspace " + (count++));
@@ -78,6 +78,18 @@ public class WorkspaceImpl implements Workspace {
     public void setName(String name) {
         this.name = name;
         fireChangeEvent();
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public boolean hasSource() {
+        return source != null;
     }
 
     public void open() {

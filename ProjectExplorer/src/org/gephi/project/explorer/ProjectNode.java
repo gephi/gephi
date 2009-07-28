@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.explorer;
 
+import java.awt.Image;
 import javax.swing.event.ChangeEvent;
 import org.gephi.project.explorer.actions.AddWorkspace;
 import javax.swing.Action;
@@ -31,11 +32,12 @@ import org.gephi.project.explorer.actions.ProjectProperties;
 import org.gephi.project.explorer.actions.RemoveProject;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.util.ImageUtilities;
 import org.openide.util.WeakListeners;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class ProjectNode extends AbstractNode implements ChangeListener {
 
@@ -62,13 +64,40 @@ public class ProjectNode extends AbstractNode implements ChangeListener {
             setChildren(Children.LEAF);
         }
 
-        //Project name
-        setDisplayName(project.getName());
+        //Properties
+        fireDisplayNameChange("", "");
+        fireIconChange();
     }
 
     @Override
-    public String getDisplayName() {
-        return project.getName();
+    public String getHtmlDisplayName() {
+        if (project.isOpen()) {
+            String fileName = project.hasFile() ? project.getFileName() : "";
+            return "<font color='#000000'>" + project.getName() + "</font>" +
+                    "<font color='#999999'><i>" + fileName + "</i></font>";
+        } else {
+            String fileName = project.hasFile() ? project.getFileName() : "";
+            return "<font color='#888888'>" + project.getName() + "</font>" +
+                    "<font color='#BBBBBB'><i>" + fileName + "</i></font>";
+        }
+    }
+
+    @Override
+    public Image getIcon(int type) {
+        if (project.isOpen()) {
+            return ImageUtilities.loadImage("org/gephi/project/explorer/project_open.png");
+        } else {
+            return ImageUtilities.loadImage("org/gephi/project/explorer/project.png");
+        }
+    }
+
+    @Override
+    public Image getOpenedIcon(int type) {
+        if (project.isOpen()) {
+            return ImageUtilities.loadImage("org/gephi/project/explorer/project_open.png");
+        } else {
+            return ImageUtilities.loadImage("org/gephi/project/explorer/project.png");
+        }
     }
 
     @Override

@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.explorer;
 
+import java.awt.Image;
 import org.gephi.project.explorer.actions.CloseWorkspace;
 import javax.swing.Action;
 import javax.swing.event.ChangeEvent;
@@ -30,6 +31,7 @@ import org.gephi.project.explorer.actions.OpenWorkspace;
 import org.gephi.project.explorer.actions.RenameWorkspace;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.WeakListeners;
 
@@ -58,13 +60,31 @@ public class WorkspaceNode extends AbstractNode implements ChangeListener {
             //Not current
         }
 
-        //Workspace name
-        setDisplayName(workspace.getName());
+        //Properties
+        fireDisplayNameChange("", "");
+        fireIconChange();
     }
 
     @Override
-    public String getDisplayName() {
-        return workspace.toString();
+    public String getHtmlDisplayName() {
+        if (workspace.isOpen()) {
+            String fileName = workspace.hasSource() ? workspace.getSource() : "";
+            return "<font color='#000000'>" + workspace.getName() + "</font>" +
+                    "<font color='#999999'><i>" + fileName + "</i></font>";
+        } else {
+            String fileName = workspace.hasSource() ? workspace.getSource() : "";
+            return "<font color='#888888'>" + workspace.getName() + "</font>" +
+                    "<font color='#BBBBBB'><i>" + fileName + "</i></font>";
+        }
+    }
+
+    @Override
+    public Image getIcon(int type) {
+        if (workspace.isOpen()) {
+            return ImageUtilities.loadImage("org/gephi/project/explorer/workspace_open.png");
+        } else {
+            return ImageUtilities.loadImage("org/gephi/project/explorer/workspace.png");
+        }
     }
 
     @Override

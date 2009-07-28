@@ -43,6 +43,12 @@ public interface Workspace {
 
     public boolean isInvalid();
 
+    public boolean hasSource();
+
+    public String getSource();
+
+    public void setSource(String source);
+
     public void setProject(Project project);
 
     public Project getProject();
