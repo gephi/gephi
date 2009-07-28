@@ -222,7 +222,7 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
     /**
      * Meta-Data inner class
      */
-    private class ProjectMetaDataImpl implements ProjectMetaData {
+    private class ProjectMetaDataImpl implements ProjectMetaData, Serializable {
 
         private String author;
         private String title = "";
