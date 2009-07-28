@@ -72,6 +72,7 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
         lookup = new AbstractLookup(instanceContent);
         workspaces = new ArrayList<Workspace>();
         listeners = new ArrayList<ChangeListener>();
+        status = Status.CLOSED;
         if (dataObject != null) {
             if (dataObject.isValid()) {
                 dataObject.setProject(this);
@@ -82,16 +83,15 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
     }
 
     /*public void reloadFromFile() {
-        if (dataObject != null) {
-            if (dataObject.isValid()) {
-                dataObject.setProject(this);
-                dataObject.load();
-            } else {
-                this.status = Status.INVALID;
-            }
-        }
+    if (dataObject != null) {
+    if (dataObject.isValid()) {
+    dataObject.setProject(this);
+    dataObject.load();
+    } else {
+    this.status = Status.INVALID;
+    }
+    }
     }*/
-
     @Override
     public WorkspaceImpl newWorkspace() {
         if (workspaces == null) {
