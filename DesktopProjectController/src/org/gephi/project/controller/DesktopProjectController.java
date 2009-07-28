@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.controller;
 
+import javax.swing.JFrame;
 import org.gephi.branding.desktop.actions.ProjectProperties;
 import org.gephi.branding.desktop.actions.SaveAsProject;
 import org.gephi.project.api.Project;
@@ -35,6 +36,7 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.loaders.DataObject;
 import org.openide.util.NbBundle;
+import org.openide.windows.WindowManager;
 
 /**
  *
@@ -99,6 +101,12 @@ public class DesktopProjectController implements ProjectController {
             disableAction(SaveAsProject.class);
             disableAction(ProjectProperties.class);
             projects.closeCurrentProject();
+
+            //Title bar
+            JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+            String title = frame.getTitle();
+            title = title.substring(0, title.indexOf('-') - 1);
+            frame.setTitle(title);
         }
     }
 
@@ -154,6 +162,11 @@ public class DesktopProjectController implements ProjectController {
         project.open();
         enableAction(SaveAsProject.class);
         enableAction(ProjectProperties.class);
+
+        //Title bar
+        JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+        String title = frame.getTitle() + " - " + project.getName();
+        frame.setTitle(title);
     }
 
     public Project getCurrentProject() {
@@ -179,6 +192,13 @@ public class DesktopProjectController implements ProjectController {
     public void renameProject(Project project, String name) {
         project.setName(name);
         enableAction(SaveProject.class);
+
+        //Title bar
+        JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+        String title = frame.getTitle();
+        title = title.substring(0, title.indexOf('-') - 1);
+        title += " - " + name;
+        frame.setTitle(title);
     }
 
     public void renameWorkspace(Workspace workspace, String name) {
