@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import org.gephi.project.api.ProjectController;
@@ -30,11 +29,17 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.util.Exceptions;
+import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
+import org.openide.util.actions.SystemAction;
 
-public final class OpenProject implements ActionListener {
+/**
+ *
+ * @author Mathieu Bastian
+ */
+public final class OpenProject extends SystemAction {
 
     private static final String LAST_PATH = "OpenProject_Last_Path";
     private static final String LAST_PATH_DEFAULT = "OpenProject_Last_Path_Default";
@@ -66,7 +71,7 @@ public final class OpenProject implements ActionListener {
             NbPreferences.forModule(OpenProject.class).put(LAST_PATH, file.getAbsolutePath());
 
             try {
-                
+
                 DataObject doe = DataObject.find(fileObject);
                 pc.loadProject(doe);
 
@@ -74,5 +79,15 @@ public final class OpenProject implements ActionListener {
                 Exceptions.printStackTrace(ew);
             }
         }
+    }
+
+    @Override
+    public String getName() {
+        return NbBundle.getMessage(SaveProject.class, "CTL_OpenProject");
+    }
+
+    @Override
+    public HelpCtx getHelpCtx() {
+        return null;
     }
 }

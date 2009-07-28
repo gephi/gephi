@@ -31,19 +31,9 @@
             <file name="org-openide-actions-SaveAllAction.instance_hidden"/>
             <file name="org-openide-actions-SaveAsAction.shadow_hidden"/>
             <file name="org-gephi-branding-desktop-actions-NewProject.instance">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.actions.Bundle"/>
-                <attr name="delegate" newvalue="org.gephi.branding.desktop.actions.NewProject"/>
-                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.actions.Bundle#CTL_NewProject"/>
-                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
-                <attr name="noIconInMenu" stringvalue="false"/>
                 <attr name="position" intvalue="100"/>
             </file>
             <file name="org-gephi-branding-desktop-actions-OpenProject.instance">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
-                <attr name="delegate" newvalue="org.gephi.branding.desktop.actions.OpenProject"/>
-                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.actions.Bundle#CTL_OpenProject"/>
-                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
-                <attr name="noIconInMenu" stringvalue="false"/>
                 <attr name="position" intvalue="200"/>
             </file>
             <file name="org-gephi-branding-desktop-actions-OpenFile.instance">

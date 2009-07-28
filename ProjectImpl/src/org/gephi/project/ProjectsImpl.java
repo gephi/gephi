@@ -58,8 +58,10 @@ public class ProjectsImpl implements Projects, Lookup.Provider, Serializable {
 
     @Override
     public void addProject(Project project) {
-        projects.add(project);
-        ic.add(project);
+        if (!projects.contains(project)) {
+            projects.add(project);
+            ic.add(project);
+        }
     }
 
     @Override
@@ -89,7 +91,7 @@ public class ProjectsImpl implements Projects, Lookup.Provider, Serializable {
     }
 
     public boolean hasCurrentProject() {
-        return currentProject!=null;
+        return currentProject != null;
     }
 
     public void setCurrentProject(Project currentProject) {

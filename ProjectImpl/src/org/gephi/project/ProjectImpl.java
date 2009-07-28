@@ -81,7 +81,7 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
         }
     }
 
-    public void reloadFromFile() {
+    /*public void reloadFromFile() {
         if (dataObject != null) {
             if (dataObject.isValid()) {
                 dataObject.setProject(this);
@@ -90,7 +90,7 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
                 this.status = Status.INVALID;
             }
         }
-    }
+    }*/
 
     @Override
     public WorkspaceImpl newWorkspace() {

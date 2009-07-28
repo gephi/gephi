@@ -24,13 +24,16 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import org.gephi.branding.desktop.actions.NewProject;
+import org.gephi.branding.desktop.actions.OpenFile;
+import org.gephi.branding.desktop.actions.OpenProject;
 import org.gephi.branding.desktop.actions.ProjectProperties;
 import org.gephi.branding.desktop.actions.SaveAsProject;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Projects;
 import org.gephi.project.api.Workspace;
-import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.actions.SystemAction;
 import org.gephi.branding.desktop.actions.SaveProject;
 import org.gephi.io.project.GephiDataObject;
@@ -40,6 +43,7 @@ import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
+import org.gephi.utils.longtask.LongTaskListener;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
@@ -65,9 +69,16 @@ public class DesktopProjectController implements ProjectController {
         longTaskExecutor.setDefaultErrorHandler(new LongTaskErrorHandler() {
 
             public void fatalError(Throwable t) {
+                unlockProjectActions();
                 NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
                 DialogDisplayer.getDefault().notify(ex);
                 t.printStackTrace();
+            }
+        });
+        longTaskExecutor.setLongTaskListener(new LongTaskListener() {
+
+            public void taskFinished(LongTask task) {
+                unlockProjectActions();
             }
         });
 
@@ -75,6 +86,24 @@ public class DesktopProjectController implements ProjectController {
         disableAction(SaveProject.class);
         disableAction(SaveAsProject.class);
         disableAction(ProjectProperties.class);
+    }
+
+    private void lockProjectActions() {
+        disableAction(SaveProject.class);
+        disableAction(SaveAsProject.class);
+        disableAction(OpenProject.class);
+        disableAction(NewProject.class);
+        disableAction(OpenFile.class);
+    }
+
+    private void unlockProjectActions() {
+        if (projects.hasCurrentProject()) {
+            enableAction(SaveProject.class);
+            enableAction(SaveAsProject.class);
+        }
+        enableAction(OpenProject.class);
+        enableAction(NewProject.class);
+        enableAction(OpenFile.class);
     }
 
     public void newProject() {
@@ -85,12 +114,10 @@ public class DesktopProjectController implements ProjectController {
     }
 
     public void loadProject(DataObject dataObject) {
-        GephiDataObject gephiDataObject = (GephiDataObject) dataObject;
-        Project project = gephiDataObject.load();
-        if (project != null) {
-            projects.addProject(project);
-            enableAction(SaveAsProject.class);
-        }
+        final GephiDataObject gephiDataObject = (GephiDataObject) dataObject;
+        LoadTask loadTask = new LoadTask(gephiDataObject);
+        lockProjectActions();
+        longTaskExecutor.execute(loadTask, loadTask);
     }
 
     public void saveProject(DataObject dataObject) {
@@ -99,21 +126,17 @@ public class DesktopProjectController implements ProjectController {
         project.setDataObject(gephiDataObject);
         gephiDataObject.setProject(project);
         SaveTask saveTask = new SaveTask(gephiDataObject);
+        lockProjectActions();
         longTaskExecutor.execute(saveTask, saveTask);
-
-        disableAction(SaveProject.class);
     }
 
     public void saveProject(Project project) {
         if (project.hasFile()) {
             GephiDataObject gephiDataObject = (GephiDataObject) project.getDataObject();
-            gephiDataObject.setProject(project);
-            gephiDataObject.save();
+            saveProject(gephiDataObject);
         } else {
             saveAsProject(project);
         }
-
-        disableAction(SaveProject.class);
     }
 
     public void saveAsProject(Project project) {
@@ -203,10 +226,15 @@ public class DesktopProjectController implements ProjectController {
             disableAction(ProjectProperties.class);
 
             //Title bar
-            JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-            String title = frame.getTitle();
-            title = title.substring(0, title.indexOf('-') - 1);
-            frame.setTitle(title);
+            SwingUtilities.invokeLater(new Runnable() {
+
+                public void run() {
+                    JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+                    String title = frame.getTitle();
+                    title = title.substring(0, title.indexOf('-') - 1);
+                    frame.setTitle(title);
+                }
+            });
         }
     }
 
@@ -254,19 +282,26 @@ public class DesktopProjectController implements ProjectController {
         enableAction(SaveProject.class);
     }
 
-    public void openProject(Project project) {
+    public void openProject(final Project project) {
         if (projects.hasCurrentProject()) {
             closeCurrentProject();
         }
+        projects.addProject(project);
         projects.setCurrentProject(project);
         project.open();
         enableAction(SaveAsProject.class);
         enableAction(ProjectProperties.class);
+        enableAction(SaveProject.class);
 
         //Title bar
-        JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-        String title = frame.getTitle() + " - " + project.getName();
-        frame.setTitle(title);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+                String title = frame.getTitle() + " - " + project.getName();
+                frame.setTitle(title);
+            }
+        });
     }
 
     public Project getCurrentProject() {
@@ -286,24 +321,26 @@ public class DesktopProjectController implements ProjectController {
         }
         getCurrentProject().setCurrentWorkspace(workspace);
         workspace.open();
-        enableAction(SaveProject.class);
     }
 
-    public void renameProject(Project project, String name) {
+    public void renameProject(Project project, final String name) {
         project.setName(name);
-        enableAction(SaveProject.class);
 
         //Title bar
-        JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-        String title = frame.getTitle();
-        title = title.substring(0, title.indexOf('-') - 1);
-        title += " - " + name;
-        frame.setTitle(title);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+                String title = frame.getTitle();
+                title = title.substring(0, title.indexOf('-') - 1);
+                title += " - " + name;
+                frame.setTitle(title);
+            }
+        });
     }
 
     public void renameWorkspace(Workspace workspace, String name) {
         workspace.setName(name);
-        enableAction(SaveProject.class);
     }
 
     public void enableAction(Class clazz) {
