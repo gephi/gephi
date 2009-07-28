@@ -50,6 +50,11 @@ public class ProjectProperties extends SystemAction {
     }
 
     @Override
+    protected String iconResource() {
+        return "org/gephi/branding/desktop/actions/projectProperties.gif";
+    }
+
+    @Override
     public void actionPerformed(ActionEvent ev) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         Project project = pc.getCurrentProject();

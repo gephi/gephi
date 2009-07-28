@@ -82,6 +82,11 @@ public final class OpenProject extends SystemAction {
     }
 
     @Override
+    protected String iconResource() {
+        return "org/gephi/branding/desktop/actions/openProject.png";
+    }
+
+    @Override
     public String getName() {
         return NbBundle.getMessage(SaveProject.class, "CTL_OpenProject");
     }

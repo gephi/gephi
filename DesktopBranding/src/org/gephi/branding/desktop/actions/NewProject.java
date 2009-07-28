@@ -39,6 +39,11 @@ public final class NewProject extends SystemAction {
     }
 
     @Override
+    protected String iconResource() {
+        return "org/gephi/branding/desktop/actions/newProject.png";
+    }
+
+    @Override
     public String getName() {
         return NbBundle.getMessage(SaveProject.class, "CTL_NewProject");
     }
