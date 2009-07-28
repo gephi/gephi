@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
@@ -31,13 +30,13 @@ import org.openide.util.actions.SystemAction;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class SaveProject extends SystemAction {
 
     @Override
     public String getName() {
-       return NbBundle.getMessage(SaveProject.class, "CTL_SaveProject");
+        return NbBundle.getMessage(SaveProject.class, "CTL_SaveProject");
     }
 
     @Override
@@ -49,14 +48,6 @@ public class SaveProject extends SystemAction {
     public void actionPerformed(ActionEvent ev) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         Project project = pc.getCurrentProject();
-        if(project.hasFile())
-        {
-            pc.saveProject(project);
-        }
-        else
-        {
-            SystemAction.get(SaveAsProject.class).actionPerformed(null);
-        }
-
+        pc.saveProject(project);
     }
 }

@@ -49,6 +49,10 @@ import org.openide.nodes.Children;
 import org.openide.util.Lookup;
 import org.w3c.dom.Document;
 
+/**
+ *
+ * @author Mathieu Bastian
+ */
 public class GephiDataObject extends MultiDataObject {
 
     private Project project;

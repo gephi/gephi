@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.controller;
 
+import java.io.File;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.gephi.branding.desktop.actions.ProjectProperties;
@@ -28,13 +30,24 @@ import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Projects;
 import org.gephi.project.api.Workspace;
+import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.actions.SystemAction;
 import org.gephi.branding.desktop.actions.SaveProject;
 import org.gephi.io.project.GephiDataObject;
 import org.gephi.project.ProjectImpl;
 import org.gephi.project.ProjectsImpl;
+import org.gephi.ui.utils.DialogFileFilter;
+import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.longtask.LongTaskErrorHandler;
+import org.gephi.utils.longtask.LongTaskExecutor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 import org.openide.windows.WindowManager;
 
 /**
@@ -44,9 +57,20 @@ import org.openide.windows.WindowManager;
 public class DesktopProjectController implements ProjectController {
 
     private Projects projects = new ProjectsImpl();
-    private static boolean avoidDisableSaveProject = true;
+    private LongTaskExecutor longTaskExecutor;
 
     public DesktopProjectController() {
+        //Project IO executor
+        longTaskExecutor = new LongTaskExecutor(true, "Project IO");
+        longTaskExecutor.setDefaultErrorHandler(new LongTaskErrorHandler() {
+
+            public void fatalError(Throwable t) {
+                NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
+                DialogDisplayer.getDefault().notify(ex);
+                t.printStackTrace();
+            }
+        });
+
         //Actions
         disableAction(SaveProject.class);
         disableAction(SaveAsProject.class);
@@ -74,14 +98,77 @@ public class DesktopProjectController implements ProjectController {
         Project project = getCurrentProject();
         project.setDataObject(gephiDataObject);
         gephiDataObject.setProject(project);
-        gephiDataObject.save();
+        SaveTask saveTask = new SaveTask(dataObject);
+        longTaskExecutor.execute(saveTask, saveTask);
 
         disableAction(SaveProject.class);
     }
 
     public void saveProject(Project project) {
-        ((GephiDataObject) project.getDataObject()).save();
+        if (project.hasFile()) {
+            GephiDataObject gephiDataObject = (GephiDataObject) project.getDataObject();
+            gephiDataObject.setProject(project);
+            gephiDataObject.save();
+        } else {
+            saveAsProject(project);
+        }
+
         disableAction(SaveProject.class);
+    }
+
+    public void saveAsProject(Project project) {
+        final String LAST_PATH = "SaveAsProject_Last_Path";
+        final String LAST_PATH_DEFAULT = "SaveAsProject_Last_Path_Default";
+
+        DialogFileFilter filter = new DialogFileFilter(NbBundle.getMessage(DesktopProjectController.class, "SaveAsProject_filechooser_filter"));
+        filter.addExtension(".gephi");
+
+        //Get last directory
+        String lastPathDefault = NbPreferences.forModule(DesktopProjectController.class).get(LAST_PATH_DEFAULT, null);
+        String lastPath = NbPreferences.forModule(DesktopProjectController.class).get(LAST_PATH, lastPathDefault);
+
+        //File chooser
+        final JFileChooser chooser = new JFileChooser(lastPath);
+        chooser.addChoosableFileFilter(filter);
+        int returnFile = chooser.showSaveDialog(null);
+        if (returnFile == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+
+            //Save last path
+            NbPreferences.forModule(DesktopProjectController.class).put(LAST_PATH, file.getAbsolutePath());
+
+            //File management
+            try {
+                if (!file.getPath().endsWith(".gephi")) {
+                    file = new File(file.getPath() + ".gephi");
+                }
+                if (!file.exists()) {
+                    if (!file.createNewFile()) {
+                        String failMsg = NbBundle.getMessage(
+                                DesktopProjectController.class,
+                                "SaveAsProject_SaveFailed", new Object[]{file.getPath()});
+                        JOptionPane.showMessageDialog(null, failMsg);
+                        return;
+                    }
+                } else {
+                    String overwriteMsg = NbBundle.getMessage(
+                            DesktopProjectController.class,
+                            "SaveAsProject_Overwrite", new Object[]{file.getPath()});
+                    if (JOptionPane.showConfirmDialog(null, overwriteMsg) != JOptionPane.OK_OPTION) {
+                        return;
+                    }
+                }
+                file = FileUtil.normalizeFile(file);
+                FileObject fileObject = FileUtil.toFileObject(file);
+
+                //File exist now, Save project
+                DataObject dataObject = DataObject.find(fileObject);
+                saveProject(dataObject);
+
+            } catch (Exception e) {
+                Exceptions.printStackTrace(e);
+            }
+        }
     }
 
     public void closeCurrentProject() {
@@ -229,12 +316,28 @@ public class DesktopProjectController implements ProjectController {
     public void disableAction(Class clazz) {
         SystemAction action = SystemAction.get(clazz);
 
-        if (avoidDisableSaveProject && clazz.equals(SaveProject.class)) {
-            return;
-        }
-
         if (action != null) {
             action.setEnabled(false);
+        }
+    }
+
+    private static class SaveTask implements LongTask, Runnable {
+
+        private DataObject dataObject;
+
+        public SaveTask(DataObject dataObject) {
+            this.dataObject = dataObject;
+        }
+
+        public void run() {
+            System.out.println("Save " + dataObject.getName());
+        }
+
+        public boolean cancel() {
+            return true;
+        }
+
+        public void setProgressTicket(ProgressTicket progressTicket) {
         }
     }
 }

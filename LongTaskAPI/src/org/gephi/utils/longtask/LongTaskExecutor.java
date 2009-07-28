@@ -99,7 +99,9 @@ public final class LongTaskExecutor {
         if (executor == null) {
             this.executor = Executors.newSingleThreadExecutor(new NamedThreadFactory());
         }
-        this.errorHandler = errorHandler;
+        if(errorHandler!=null) {
+            this.errorHandler = errorHandler;
+        }
         runningTask = new RunningLongTask(task, runnable, taskName);
         if (inBackground) {
             runningTask.future = executor.submit(runningTask);
@@ -156,6 +158,17 @@ public final class LongTaskExecutor {
      */
     public void setLongTaskListener(LongTaskListener listener) {
         this.listener = listener;
+    }
+
+    /**
+     * Set the default error handler. Use error handlers to get errors and exceptions thrown during
+     * tasks execution.
+     * @param errorHandler the default error handler
+     */
+    public void setDefaultErrorHandler(LongTaskErrorHandler errorHandler) {
+        if(errorHandler!=null) {
+            this.errorHandler = errorHandler;
+        }
     }
 
     private synchronized void finished() {
