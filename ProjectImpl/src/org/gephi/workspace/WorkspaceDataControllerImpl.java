@@ -31,7 +31,7 @@ import org.openide.util.Lookup;
  *
  * @author Mathieu Bastian
  */
-public class WorkspaceDataControllerImpl implements WorkspaceDataController {
+public class WorkspaceDataControllerImpl implements WorkspaceDataController, Lookup.Provider {
 
     private Map<String, WorkspaceDataKey> keyMap;
     private WorkspaceDataProvider[] providers;
@@ -39,6 +39,7 @@ public class WorkspaceDataControllerImpl implements WorkspaceDataController {
     public WorkspaceDataControllerImpl() {
         keyMap = new HashMap<String, WorkspaceDataKey>();
         providers = Lookup.getDefault().lookupAll(WorkspaceDataProvider.class).toArray(new WorkspaceDataProvider[0]);
+        System.out.println("load providers");
         for (int index = 0; index < providers.length; index++) {
             String name = providers[index].getName();
             if (name == null) {
@@ -48,6 +49,7 @@ public class WorkspaceDataControllerImpl implements WorkspaceDataController {
             key.setIndex(index);
             keyMap.put(name, key);
             providers[index].setWorkspaceDataKey(key);
+            System.out.println(providers[index]);
         }
     }
 
@@ -61,5 +63,9 @@ public class WorkspaceDataControllerImpl implements WorkspaceDataController {
 
     public WorkspaceDataKey getKey(String name) {
         return keyMap.get(name);
+    }
+
+    public Lookup getLookup() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

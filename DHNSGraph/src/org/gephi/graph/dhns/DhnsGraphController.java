@@ -48,6 +48,8 @@ import org.gephi.graph.dhns.graph.ClusteredGraphImpl;
 import org.gephi.graph.dhns.graph.ClusteredMixedGraphImpl;
 import org.gephi.graph.dhns.graph.ClusteredUndirectedGraphImpl;
 import org.gephi.graph.dhns.graph.DynamicGraphImpl;
+import org.gephi.project.api.ProjectController;
+import org.gephi.workspace.api.Workspace;
 import org.openide.util.Lookup;
 
 /**
@@ -59,14 +61,12 @@ public class DhnsGraphController implements GraphController {
 
     protected IDGen iDGen;
     protected GraphFactoryImpl factory;
-    protected Dhns dhns;
     private AttributeRowFactory attributesFactory;
     private Executor eventBus;
-    private DynamicGraph centralDynamicGraph;
+    private GraphWorkspaceDataProvider workspaceDataProvider;
 
     public DhnsGraphController() {
         iDGen = new IDGen();
-        dhns = new Dhns(this);
 
         if (Lookup.getDefault().lookup(AttributeController.class) != null) {
             attributesFactory = Lookup.getDefault().lookup(AttributeController.class).rowFactory();
@@ -80,15 +80,11 @@ public class DhnsGraphController implements GraphController {
             }
         });
 
-        centralDynamicGraph = new DynamicGraphImpl(dhns, getClusteredDirectedGraph());
+        workspaceDataProvider = Lookup.getDefault().lookup(GraphWorkspaceDataProvider.class);
     }
 
     public Dhns newDhns() {
         return new Dhns(this);
-    }
-
-    public Dhns getMainDhns() {
-        return dhns;
     }
 
     public Executor getEventBus() {
@@ -103,88 +99,185 @@ public class DhnsGraphController implements GraphController {
         return iDGen;
     }
 
+    private Dhns getCurrentDhns() {
+        Workspace currentWorkspace = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace();
+        if (currentWorkspace == null) {
+            return null;
+        }
+        Dhns dhns = currentWorkspace.getWorkspaceData().getData(workspaceDataProvider.getWorkspaceDataKey());
+        if (dhns == null) {
+            dhns = new Dhns(this);
+            currentWorkspace.getWorkspaceData().setData(workspaceDataProvider.getWorkspaceDataKey(), dhns);
+        }
+        return dhns;
+    }
+
     public DirectedGraph getDirectedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredDirectedGraphImpl(dhns, false, false);
     }
 
     public DirectedGraph getVisibleDirectedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredDirectedGraphImpl(dhns, true, false);
     }
 
     public UndirectedGraph getUndirectedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredUndirectedGraphImpl(dhns, false, false);
     }
 
     public UndirectedGraph getVisibleUndirectedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredUndirectedGraphImpl(dhns, true, false);
     }
 
     public MixedGraph getMixedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredMixedGraphImpl(dhns, false, false);
     }
 
     public MixedGraph getVisibleMixedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredMixedGraphImpl(dhns, true, false);
     }
 
     public ClusteredDirectedGraph getClusteredDirectedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredDirectedGraphImpl(dhns, false, true);
     }
 
     public ClusteredDirectedGraph getVisibleClusteredDirectedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredDirectedGraphImpl(dhns, true, true);
     }
 
     public ClusteredUndirectedGraph getClusteredUndirectedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredUndirectedGraphImpl(dhns, false, true);
     }
 
     public ClusteredUndirectedGraph getVisibleClusteredUndirectedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredUndirectedGraphImpl(dhns, true, true);
     }
 
     public ClusteredMixedGraph getClusteredMixedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredMixedGraphImpl(dhns, false, true);
     }
 
     public ClusteredMixedGraph getVisibleClusteredMixedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredMixedGraphImpl(dhns, true, true);
     }
 
     public HierarchicalDirectedGraph getHierarchicalDirectedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredDirectedGraphImpl(dhns, false, false);
     }
 
     public HierarchicalDirectedGraph getVisibleHierarchicalDirectedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredDirectedGraphImpl(dhns, true, false);
     }
 
     public HierarchicalMixedGraph getHierarchicalMixedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredMixedGraphImpl(dhns, false, false);
     }
 
     public HierarchicalMixedGraph getVisibleHierarchicalMixedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredMixedGraphImpl(dhns, true, false);
     }
 
     public HierarchicalUndirectedGraph getHierarchicalUndirectedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredUndirectedGraphImpl(dhns, false, false);
     }
 
     public HierarchicalUndirectedGraph getVisibleHierarchicalUndirectedGraph() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new ClusteredUndirectedGraphImpl(dhns, true, false);
     }
 
     public <T extends Graph> FilteredGraph<T> getFilteredGraph(T graph) {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return copyGraph((ClusteredGraphImpl) graph);
     }
 
     public DynamicGraph getDynamicGraph(Graph graph) {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
         return new DynamicGraphImpl(dhns, copyGraph((ClusteredGraphImpl) graph));
     }
 
     public DynamicGraph getCentralDynamicGraph() {
-        return centralDynamicGraph;
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
+        return dhns.getCentralDynamicGraph();
     }
 
     public ClusteredGraphImpl copyGraph(ClusteredGraphImpl graph) {

@@ -22,6 +22,7 @@ package org.gephi.graph.dhns.core;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import org.gephi.graph.api.DynamicGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Node;
@@ -29,6 +30,7 @@ import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 import org.gephi.graph.dhns.graph.Condition;
+import org.gephi.graph.dhns.graph.DynamicGraphImpl;
 import org.gephi.graph.dhns.graph.EdgeIterableImpl;
 import org.gephi.graph.dhns.graph.NodeIterableImpl;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
@@ -59,6 +61,9 @@ public class Dhns {
     //Locking
     private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
+    //Temp
+    private DynamicGraph centralDynamicGraph;
+
     public Dhns(DhnsGraphController controller) {
         this.controller = controller;
         viewManager = new ViewManager(this);
@@ -69,9 +74,15 @@ public class Dhns {
         propositionManager = new PropositionManager(this);
         dynamicManager = new DynamicManager(this);
         init();
+
+        centralDynamicGraph = new DynamicGraphImpl(this, controller.getClusteredDirectedGraph());
     }
 
     public void init() {
+    }
+
+    public DynamicGraph getCentralDynamicGraph() {
+        return centralDynamicGraph;
     }
 
     public DhnsGraphController getController() {

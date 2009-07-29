@@ -24,7 +24,6 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.WorkspaceDataController;
 import org.openide.modules.ModuleInstall;
 import org.openide.util.Lookup;
-import org.openide.windows.WindowManager;
 
 /**
  * Manages a module's lifecycle. Remember that an installer is optional and
@@ -34,17 +33,11 @@ public class Installer extends ModuleInstall {
 
     @Override
     public void restored() {
-        WindowManager.getDefault().invokeWhenUIReady(
-                new Runnable() {
-
-                    public void run() {
-                        initGephi();
-                    }
-                });
+        initGephi();
     }
 
     private void initGephi() {
         WorkspaceDataController wdc = Lookup.getDefault().lookup(WorkspaceDataController.class);
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);  
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
     }
 }

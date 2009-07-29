@@ -18,13 +18,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.visualization;
 
-import org.gephi.project.api.ProjectController;
-import org.gephi.workspace.api.Workspace;
+package org.gephi.graph.dhns;
+
+import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.workspace.api.WorkspaceDataKey;
 import org.gephi.workspace.api.WorkspaceDataProvider;
-import org.openide.util.Lookup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -32,28 +31,16 @@ import org.w3c.dom.Element;
  *
  * @author Mathieu Bastian
  */
-public class VizWorkspaceDataProvider implements WorkspaceDataProvider<VizModel> {
+public class GraphWorkspaceDataProvider implements WorkspaceDataProvider<Dhns> {
 
-    private WorkspaceDataKey<VizModel> key;
-
-    public VizWorkspaceDataProvider() {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        Workspace workspace = pc.getCurrentWorkspace();
-        if (workspace != null) {
-            VizModel currentModel = workspace.getWorkspaceData().getData(key);
-        }
-    }
+    private WorkspaceDataKey<Dhns> workspaceDataKey;
 
     public Element writeXML(Document document) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public VizModel readXML(Element element) {
+    public Dhns readXML(Element element) {
         throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public VizModel getDefaultData() {
-        return null;
     }
 
     public boolean isPersistent() {
@@ -61,14 +48,18 @@ public class VizWorkspaceDataProvider implements WorkspaceDataProvider<VizModel>
     }
 
     public String getName() {
-        return "vizmodel";
+        return "dhns";
     }
 
-    public void setWorkspaceDataKey(WorkspaceDataKey<VizModel> key) {
-        this.key = key;
+    public Dhns getDefaultData() {
+        return null;
     }
 
-    public WorkspaceDataKey<VizModel> getWorkspaceDataKey() {
-        return key;
+    public void setWorkspaceDataKey(WorkspaceDataKey<Dhns> key) {
+        this.workspaceDataKey = key;
+    }
+
+    public WorkspaceDataKey<Dhns> getWorkspaceDataKey() {
+        return workspaceDataKey;
     }
 }

@@ -39,6 +39,9 @@ public class WorkspaceDataImpl implements WorkspaceData {
     }
 
     public Object getData(String key) {
+        if(key==null) {
+            throw new NullPointerException("WorkspaceDataKey can't be null. Check the provider is defined correctly");
+        }
         WorkspaceDataController wdc = Lookup.getDefault().lookup(WorkspaceDataController.class);
         WorkspaceDataKey dataKey = wdc.getKey(key);
         if (dataKey != null) {
@@ -48,6 +51,9 @@ public class WorkspaceDataImpl implements WorkspaceData {
     }
 
     public void setData(String key, Object object) {
+        if(key==null) {
+            throw new NullPointerException("WorkspaceDataKey can't be null. Check the provider is defined correctly");
+        }
         WorkspaceDataController wdc = Lookup.getDefault().lookup(WorkspaceDataController.class);
         WorkspaceDataKey dataKey = wdc.getKey(key);
         if (dataKey != null) {

@@ -29,15 +29,17 @@ import org.w3c.dom.Element;
  */
 public interface WorkspaceDataProvider<T> {
 
-    public abstract Element writeXML(Document document);
+    public Element writeXML(Document document);
 
-    public abstract T readXML(Element element);
+    public T readXML(Element element);
 
-    public abstract boolean isPersistent();
+    public boolean isPersistent();
 
-    public abstract String getName();
+    public String getName();
 
-    public abstract T getDefaultData();
+    public T getDefaultData();
 
     public void setWorkspaceDataKey(WorkspaceDataKey<T> key);
+
+    public WorkspaceDataKey<T> getWorkspaceDataKey();
 }
