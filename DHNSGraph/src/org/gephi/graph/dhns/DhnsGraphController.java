@@ -83,8 +83,11 @@ public class DhnsGraphController implements GraphController {
         workspaceDataProvider = Lookup.getDefault().lookup(GraphWorkspaceDataProvider.class);
     }
 
-    public Dhns newDhns() {
-        return new Dhns(this);
+    public Dhns newDhns(Workspace workspace) {
+        Dhns dhns = new Dhns(this);
+        workspace.getWorkspaceData().setData(workspaceDataProvider.getWorkspaceDataKey(), dhns);
+        dhns.setCentralDynamicGraph(new DynamicGraphImpl(dhns, getClusteredDirectedGraph()));
+        return dhns;
     }
 
     public Executor getEventBus() {
@@ -106,8 +109,7 @@ public class DhnsGraphController implements GraphController {
         }
         Dhns dhns = currentWorkspace.getWorkspaceData().getData(workspaceDataProvider.getWorkspaceDataKey());
         if (dhns == null) {
-            dhns = new Dhns(this);
-            currentWorkspace.getWorkspaceData().setData(workspaceDataProvider.getWorkspaceDataKey(), dhns);
+            dhns = newDhns(currentWorkspace);
         }
         return dhns;
     }

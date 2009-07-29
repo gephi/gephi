@@ -121,7 +121,7 @@ public abstract class AbstractGraphImpl implements FilteredGraph {
     }
 
     public Dhns getSubGraph(AbstractNodeIterator nodeIterator) {
-        Dhns newDhns = dhns.getController().newDhns();
+        //Dhns newDhns = dhns.getController().newDhns();
 
         /*TreeStructure tree = newDhns.getTreeStructure();
         PreNodeTree nodeIdTree = new PreNodeTree();
@@ -173,7 +173,8 @@ public abstract class AbstractGraphImpl implements FilteredGraph {
 
         }
          */
-        return newDhns;
+        //return newDhns;
+        return null;
     }
 
     public void readLock() {

@@ -275,6 +275,10 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     }
 
     public boolean requireUpdate() {
+        if (graph == null) {
+            //Try to get a graph
+            graph = controller.getHierarchicalDirectedGraph();
+        }
         //Refresh reader if sight changed
         if (graph != null) {
             if (vizConfig.isVisualizeTree()) {

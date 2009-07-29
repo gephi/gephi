@@ -74,8 +74,6 @@ public class Dhns {
         propositionManager = new PropositionManager(this);
         dynamicManager = new DynamicManager(this);
         init();
-
-        centralDynamicGraph = new DynamicGraphImpl(this, controller.getClusteredDirectedGraph());
     }
 
     public void init() {
@@ -83,6 +81,10 @@ public class Dhns {
 
     public DynamicGraph getCentralDynamicGraph() {
         return centralDynamicGraph;
+    }
+
+    public void setCentralDynamicGraph(DynamicGraph centralDynamicGraph) {
+        this.centralDynamicGraph = centralDynamicGraph;
     }
 
     public DhnsGraphController getController() {
