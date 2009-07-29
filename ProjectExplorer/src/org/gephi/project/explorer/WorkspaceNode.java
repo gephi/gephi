@@ -59,9 +59,9 @@ public class WorkspaceNode extends AbstractNode implements ChangeListener {
         } else {
             //Not current
         }
-
+        
         //Properties
-        fireDisplayNameChange("", "");
+        fireDisplayNameChange("a", "b");
         fireIconChange();
     }
 

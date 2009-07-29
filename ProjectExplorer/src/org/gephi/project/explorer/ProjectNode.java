@@ -65,7 +65,7 @@ public class ProjectNode extends AbstractNode implements ChangeListener {
         }
 
         //Properties
-        fireDisplayNameChange("", "");
+        fireDisplayNameChange("a", "b");
         fireIconChange();
     }
 

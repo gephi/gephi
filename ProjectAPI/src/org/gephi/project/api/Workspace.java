@@ -1,10 +1,3 @@
-package org.gephi.project.api;
-
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 /*
 Copyright 2008 WebAtlas
 Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
@@ -25,6 +18,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.gephi.project.api;
+
+import javax.swing.event.ChangeListener;
+
 /**
  *
  * @author Mathieu Bastian

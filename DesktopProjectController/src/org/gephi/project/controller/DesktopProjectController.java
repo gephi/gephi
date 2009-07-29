@@ -226,16 +226,15 @@ public class DesktopProjectController implements ProjectController {
             String saveBundle = NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_save");
             String doNotSaveBundle = NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_doNotSave");
             String cancelBundle = NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_cancel");
-            switch (JOptionPane.showOptionDialog(WindowManager.getDefault().getMainWindow(), messageBundle, titleBundle,
-                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
-                    null, new Object[]{saveBundle, doNotSaveBundle, cancelBundle}, saveBundle)) {
-                case JOptionPane.YES_OPTION:
-                    saveProject(currentProject);
-                    break;
-                case JOptionPane.NO_OPTION:
-                    break;
-                default:
-                    return;
+            NotifyDescriptor msg = new NotifyDescriptor(messageBundle, titleBundle,
+                    NotifyDescriptor.YES_NO_CANCEL_OPTION,
+                    NotifyDescriptor.INFORMATION_MESSAGE,
+                    new Object[]{saveBundle, doNotSaveBundle, cancelBundle}, saveBundle);
+            Object result = DialogDisplayer.getDefault().notify(msg);
+            if (result == saveBundle) {
+                saveProject(currentProject);
+            } else if (result == cancelBundle) {
+                return;
             }
 
             //Close

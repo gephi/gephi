@@ -25,7 +25,6 @@ import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.mode.ModeManager;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.openide.util.NbBundle;
@@ -71,8 +70,9 @@ final class GraphTopComponent extends TopComponent {
                 });
             }
         });
-    //add(drawable.getGraphComponent(), BorderLayout.CENTER);
     //remove(waitingLabel);
+    //add(drawable.getGraphComponent(), BorderLayout.CENTER);
+
     }
 
     private void initCollapsePanel() {
