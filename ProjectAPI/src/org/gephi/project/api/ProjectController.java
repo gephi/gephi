@@ -29,6 +29,8 @@ import org.openide.loaders.DataObject;
  */
 public interface ProjectController {
 
+    public void startup();
+
     public void newProject();
 
     public void loadProject(DataObject dataObject);

@@ -20,11 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization;
 
-import org.gephi.project.api.ProjectController;
-import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceDataKey;
 import org.gephi.workspace.api.WorkspaceDataProvider;
-import org.openide.util.Lookup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -37,11 +34,6 @@ public class VizWorkspaceDataProvider implements WorkspaceDataProvider<VizModel>
     private WorkspaceDataKey<VizModel> key;
 
     public VizWorkspaceDataProvider() {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        Workspace workspace = pc.getCurrentWorkspace();
-        if (workspace != null) {
-            VizModel currentModel = workspace.getWorkspaceData().getData(key);
-        }
     }
 
     public Element writeXML(Document document) {

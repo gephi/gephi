@@ -82,6 +82,9 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                     //Nodes from DHNS
 
                     HierarchicalDirectedGraph graph = Lookup.getDefault().lookup(GraphController.class).getHierarchicalDirectedGraph();
+                    if (graph == null) {
+                        return;
+                    }
                     graph.readLock();
                     org.gephi.graph.api.Node[] nodes = graph.getTopNodes().toArray();
 
@@ -118,6 +121,9 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
                     //Edges from DHNS
                     HierarchicalDirectedGraph graph = Lookup.getDefault().lookup(GraphController.class).getHierarchicalDirectedGraph();
+                    if (graph == null) {
+                        return;
+                    }
                     graph.readLock();
                     org.gephi.graph.api.Edge[] edges = graph.getEdges().toArray();
 

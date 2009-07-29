@@ -98,6 +98,11 @@ public class DesktopProjectController implements ProjectController {
         disableAction(DuplicateWorkspace.class);
     }
 
+    public void startup() {
+        //Default project
+        newProject();
+    }
+
     private void lockProjectActions() {
         disableAction(SaveProject.class);
         disableAction(SaveAsProject.class);
@@ -285,6 +290,8 @@ public class DesktopProjectController implements ProjectController {
         projects.refresh();
         if (openLastProject && lastOpenProject != null && !lastOpenProject.isInvalid() && lastOpenProject.hasFile()) {
             openProject(lastOpenProject);
+        } else {
+            //newProject();
         }
     }
 

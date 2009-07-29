@@ -179,7 +179,7 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
     }
 
     public String getFileName() {
-        if(dataObject==null) {
+        if (dataObject == null) {
             return "";
         } else {
             return dataObject.getPrimaryFile().getNameExt();
