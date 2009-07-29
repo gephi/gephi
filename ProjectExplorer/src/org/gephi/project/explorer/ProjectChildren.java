@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.project.explorer;
 
 import java.util.Collection;
-import org.gephi.project.api.Workspace;
+import org.gephi.workspace.api.Workspace;
 import org.gephi.project.api.Project;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;

@@ -47,7 +47,7 @@ import org.gephi.io.importer.XMLImporter;
 import org.gephi.io.logging.Report;
 import org.gephi.io.processor.Processor;
 import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.Workspace;
+import org.gephi.workspace.api.Workspace;
 import org.gephi.ui.database.DatabaseTypeUI;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.longtask.LongTaskErrorHandler;

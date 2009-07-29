@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.branding.desktop;
 
 import org.gephi.project.api.ProjectController;
+import org.gephi.workspace.api.WorkspaceDataController;
 import org.openide.modules.ModuleInstall;
 import org.openide.util.Lookup;
 import org.openide.windows.WindowManager;
@@ -43,6 +44,7 @@ public class Installer extends ModuleInstall {
     }
 
     private void initGephi() {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        WorkspaceDataController wdc = Lookup.getDefault().lookup(WorkspaceDataController.class);
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);  
     }
 }

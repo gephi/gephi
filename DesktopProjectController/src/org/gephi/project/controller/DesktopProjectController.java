@@ -38,7 +38,7 @@ import org.gephi.branding.desktop.actions.SaveAsProject;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Projects;
-import org.gephi.project.api.Workspace;
+import org.gephi.workspace.api.Workspace;
 import org.openide.util.actions.SystemAction;
 import org.gephi.branding.desktop.actions.SaveProject;
 import org.gephi.io.project.GephiDataObject;

@@ -25,7 +25,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 import org.gephi.project.api.Project;
-import org.gephi.project.api.Workspace;
+import org.gephi.workspace.api.Workspace;
 import org.openide.util.Cancellable;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;

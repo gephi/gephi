@@ -18,33 +18,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.gephi.workspace;
 
-package org.gephi.project.explorer.actions;
-
-import org.gephi.project.explorer.*;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import org.gephi.project.api.ProjectController;
-import org.gephi.workspace.api.Workspace;
-import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
+import org.gephi.workspace.api.WorkspaceDataKey;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class CloseWorkspace extends AbstractAction {
+public class WorkspaceDataKeyImpl<T> implements WorkspaceDataKey<T> {
 
-    private Workspace workspace;
+    private int index;
 
-    public CloseWorkspace(Workspace workspace) {
-        this.workspace = workspace;
-        putValue(Action.NAME, NbBundle.getMessage(ProjectNode.class, "WorkspaceNode_closeWorkspace"));
+    public int getIndex() {
+        return index;
     }
 
-    public void actionPerformed(ActionEvent e) {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.deleteWorkspace(workspace);
+    public void setIndex(int index) {
+        this.index = index;
     }
 }

@@ -50,6 +50,7 @@
             <public-packages>
                 <package>org.gephi.io.project</package>
                 <package>org.gephi.project</package>
+                <package>org.gephi.workspace</package>
             </public-packages>
         </data>
     </configuration>

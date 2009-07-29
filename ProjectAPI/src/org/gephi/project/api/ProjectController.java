@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.api;
 
+import org.gephi.workspace.api.Workspace;
 import org.openide.loaders.DataObject;
 
 /**

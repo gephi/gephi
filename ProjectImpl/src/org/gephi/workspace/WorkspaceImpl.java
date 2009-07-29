@@ -18,14 +18,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.project;
+package org.gephi.workspace;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.project.api.Project;
-import org.gephi.project.api.Workspace;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceData;
 
 /**
  *
@@ -43,6 +44,9 @@ public class WorkspaceImpl implements Workspace {
     private Status status = Status.CLOSED;
     private String source;
 
+    //Data
+    private transient WorkspaceDataImpl workspaceDataImpl = new WorkspaceDataImpl();
+
     //Lookup
     private transient List<ChangeListener> listeners = new ArrayList<ChangeListener>();
 
@@ -52,6 +56,10 @@ public class WorkspaceImpl implements Workspace {
 
     public WorkspaceImpl(String name) {
         this.name = name;
+    }
+
+    public WorkspaceData getWorkspaceData() {
+        return workspaceDataImpl;
     }
 
     @Override

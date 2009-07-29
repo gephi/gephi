@@ -18,41 +18,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.project.api;
-
-import javax.swing.event.ChangeListener;
+package org.gephi.workspace.api;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Workspace {
+public interface WorkspaceDataKey<T> {
 
-    public void open();
-
-    public void close();
-
-    public void invalid();
-
-    public boolean isOpen();
-
-    public boolean isClosed();
-
-    public boolean isInvalid();
-
-    public boolean hasSource();
-
-    public String getSource();
-
-    public void setSource(String source);
-
-    public void setProject(Project project);
-
-    public Project getProject();
-
-    public String getName();
-
-    public void setName(String name);
-
-    public void addChangeListener(ChangeListener listener);
+    public int getIndex();
 }

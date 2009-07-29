@@ -25,7 +25,7 @@ import java.util.Calendar;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.gephi.project.api.Project;
-import org.gephi.project.api.Workspace;
+import org.gephi.workspace.api.Workspace;
 import org.openide.util.Cancellable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

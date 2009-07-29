@@ -26,7 +26,7 @@ import javax.swing.Action;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.Workspace;
+import org.gephi.workspace.api.Workspace;
 import org.gephi.project.explorer.actions.OpenWorkspace;
 import org.gephi.project.explorer.actions.RenameWorkspace;
 import org.openide.nodes.AbstractNode;

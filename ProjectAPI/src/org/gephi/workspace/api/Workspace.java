@@ -18,23 +18,22 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.gephi.workspace.api;
 
-package org.gephi.project.api;
-
-import org.gephi.workspace.api.Workspace;
+import org.gephi.project.api.*;
 import javax.swing.event.ChangeListener;
-import org.openide.loaders.DataObject;
-import org.openide.util.Lookup;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Project {
+public interface Workspace {
 
     public void open();
 
     public void close();
+
+    public void invalid();
 
     public boolean isOpen();
 
@@ -42,35 +41,21 @@ public interface Project {
 
     public boolean isInvalid();
 
-    public void setName(String name);
+    public boolean hasSource();
+
+    public String getSource();
+
+    public void setSource(String source);
+
+    public void setProject(Project project);
+
+    public Project getProject();
 
     public String getName();
 
-    public boolean hasFile();
-
-    public String getFileName();
-
-    public void setDataObject(DataObject dataObject);
-
-    public DataObject getDataObject();
-
-    public Workspace newWorkspace();
-
-    public void addWorkspace(Workspace workspace);
-
-    public void removeWorkspace(Workspace workspace);
-
-    public void setCurrentWorkspace(Workspace workspace);
-
-    public Workspace[] getWorkspaces();
-
-    public Workspace getCurrentWorkspace();
-
-    public boolean hasCurrentWorkspace();
+    public void setName(String name);
 
     public void addChangeListener(ChangeListener listener);
 
-    public Lookup getLookup();
-
-    public ProjectMetaData getMetaData();
+    public WorkspaceData getWorkspaceData();
 }
