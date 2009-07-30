@@ -291,10 +291,19 @@ public class DesktopProjectController implements ProjectController {
         final String OPEN_LAST_PROJECT_ON_STARTUP = "Open_Last_Project_On_Startup";
         boolean openLastProject = NbPreferences.forModule(DesktopProjectController.class).getBoolean(OPEN_LAST_PROJECT_ON_STARTUP, false);
 
-        this.projects = projects;
-        Project lastOpenProject = projects.getCurrentProject();
-        projects.closeCurrentProject();
-        projects.refresh();
+        Project lastOpenProject = null;
+        for (Project p : ((ProjectsImpl) projects).getProjects()) {
+            if (p.hasFile()) {
+                ProjectImpl pImpl = (ProjectImpl) p;
+                pImpl.init();
+                this.projects.addProject(p);
+                pImpl.close();
+                if (p == projects.getCurrentProject()) {
+                    lastOpenProject = p;
+                }
+            }
+        }
+
         if (openLastProject && lastOpenProject != null && !lastOpenProject.isInvalid() && lastOpenProject.hasFile()) {
             openProject(lastOpenProject);
         } else {

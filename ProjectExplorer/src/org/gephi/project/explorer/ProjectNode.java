@@ -73,11 +73,11 @@ public class ProjectNode extends AbstractNode implements ChangeListener {
     public String getHtmlDisplayName() {
         if (project.isOpen()) {
             String fileName = project.hasFile() ? project.getFileName() : "";
-            return "<font color='#000000'>" + project.getName() + "</font>" +
+            return "<font color='#000000'>" + project.getName() + "</font> " +
                     "<font color='#999999'><i>" + fileName + "</i></font>";
         } else {
             String fileName = project.hasFile() ? project.getFileName() : "";
-            return "<font color='#888888'>" + project.getName() + "</font>" +
+            return "<font color='#888888'>" + project.getName() + "</font> " +
                     "<font color='#BBBBBB'><i>" + fileName + "</i></font>";
         }
     }

@@ -45,12 +45,11 @@ public class ProjectExplorer extends javax.swing.JPanel {
         jScrollPane1 = new BeanTreeView();
 
         setLayout(new java.awt.BorderLayout());
+
+        ((BeanTreeView)jScrollPane1).setRootVisible(false);
         add(jScrollPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
-
 }

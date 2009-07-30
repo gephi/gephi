@@ -40,8 +40,6 @@ public interface Projects {
 
     public void closeCurrentProject();
 
-    public void refresh();
-
     public Lookup getLookup();
 
     public void reinitLookup();

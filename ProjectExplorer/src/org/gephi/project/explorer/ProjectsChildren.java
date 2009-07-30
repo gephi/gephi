@@ -44,10 +44,13 @@ class ProjectsChildren extends Children.Keys<Project> implements LookupListener 
         //Init lookup
         result = projects.getLookup().lookupResult(Project.class);
         result.addLookupListener(this);
+
+        setKeys(result.allInstances());
     }
 
     @Override
     protected Node[] createNodes(Project project) {
+        System.out.println("node " + project);
         return new Node[]{new ProjectNode(project)};
     }
 

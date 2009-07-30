@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.project.explorer;
 
 import org.gephi.project.explorer.actions.AddProject;
@@ -26,8 +25,6 @@ import javax.swing.Action;
 import org.gephi.project.api.Projects;
 import org.openide.nodes.AbstractNode;
 import org.openide.util.NbBundle;
-import org.openide.util.actions.SystemAction;
-import org.openide.util.lookup.Lookups;
 
 /**
  *
@@ -49,7 +46,4 @@ public class ProjectsNode extends AbstractNode {
     public Action[] getActions(boolean context) {
         return new Action[]{new AddProject()};
     }
-
-
-
 }

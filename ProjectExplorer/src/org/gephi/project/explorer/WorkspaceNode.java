@@ -69,11 +69,11 @@ public class WorkspaceNode extends AbstractNode implements ChangeListener {
     public String getHtmlDisplayName() {
         if (workspace.isOpen()) {
             String fileName = workspace.hasSource() ? workspace.getSource() : "";
-            return "<font color='#000000'>" + workspace.getName() + "</font>" +
+            return "<font color='#000000'>" + workspace.getName() + "</font> " +
                     "<font color='#999999'><i>" + fileName + "</i></font>";
         } else {
             String fileName = workspace.hasSource() ? workspace.getSource() : "";
-            return "<font color='#888888'>" + workspace.getName() + "</font>" +
+            return "<font color='#888888'>" + workspace.getName() + "</font> " +
                     "<font color='#BBBBBB'><i>" + fileName + "</i></font>";
         }
     }

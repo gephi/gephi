@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project;
 
-import java.io.File;
 import org.gephi.workspace.WorkspaceImpl;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,11 +30,7 @@ import org.gephi.io.project.GephiDataObject;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectMetaData;
 import org.gephi.workspace.api.Workspace;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
-import org.openide.loaders.DataObjectNotFoundException;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -73,7 +68,9 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
     }
 
     public void init() {
-        metaData = new ProjectMetaDataImpl();
+        if (metaData == null) {
+            metaData = new ProjectMetaDataImpl();
+        }
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         workspaces = new ArrayList<Workspace>();

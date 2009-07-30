@@ -114,6 +114,7 @@ final class ProjectTopComponent extends TopComponent implements ExplorerManager.
 
     @Override
     public void componentOpened() {
+        //initExplorer();
     }
 
     @Override
@@ -158,7 +159,7 @@ final class ProjectTopComponent extends TopComponent implements ExplorerManager.
             if (this.projects != null) {
                 pc.setProjects(this.projects);
                 ptc.initExplorer();
-                projects.reinitLookup();
+            //pc.getProjects().reinitLookup();
             }
             return ptc;
         }

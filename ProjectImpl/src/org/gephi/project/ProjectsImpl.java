@@ -22,7 +22,6 @@ package org.gephi.project;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.Projects;
@@ -46,18 +45,6 @@ public class ProjectsImpl implements Projects, Lookup.Provider, Serializable {
     public ProjectsImpl() {
         ic = new InstanceContent();
         lookup = new AbstractLookup(ic);
-    }
-
-    @Override
-    public void refresh() {
-        for (Iterator<Project> itr = projects.iterator(); itr.hasNext();) {
-            ProjectImpl project = (ProjectImpl)itr.next();
-            if (project.hasFile()) {
-                ((ProjectImpl) project).init();
-            } else {
-                itr.remove();
-            }
-        }
     }
 
     @Override
