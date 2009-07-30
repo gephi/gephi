@@ -18,12 +18,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.branding.desktop;
+package org.gephi.workspace;
 
-import org.gephi.project.api.ProjectController;
 import org.openide.modules.ModuleInstall;
-import org.openide.util.Lookup;
-import org.openide.windows.WindowManager;
 
 /**
  * Manages a module's lifecycle. Remember that an installer is optional and
@@ -33,16 +30,8 @@ public class Installer extends ModuleInstall {
 
     @Override
     public void restored() {
-        initGephi();
-    }
-
-    private void initGephi() {
-        final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
-
-            public void run() {
-                pc.startup();
-            }
-        });
+        //Load WorkspaceData Providers statically
+        //Implementations of WorkspaceDataProvider needs to be discovered on startup only
+        WorkspaceDataControllerImpl.getInstance();
     }
 }

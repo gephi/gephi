@@ -23,7 +23,6 @@ package org.gephi.workspace;
 import org.gephi.workspace.api.WorkspaceData;
 import org.gephi.workspace.api.WorkspaceDataController;
 import org.gephi.workspace.api.WorkspaceDataKey;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -34,16 +33,15 @@ public class WorkspaceDataImpl implements WorkspaceData {
     private Object[] data;
 
     public WorkspaceDataImpl() {
-        WorkspaceDataController wdc = Lookup.getDefault().lookup(WorkspaceDataController.class);
-        data = wdc.getDefaultData();
+        WorkspaceDataController controller = WorkspaceDataControllerImpl.getInstance();
+        data = controller.getDefaultData();
     }
 
     public Object getData(String key) {
         if (key == null) {
-            throw new NullPointerException("WorkspaceDataKey can't be null. Check the provider is defined correctly");
+            throw new NullPointerException();
         }
-        WorkspaceDataController wdc = Lookup.getDefault().lookup(WorkspaceDataController.class);
-        WorkspaceDataKey dataKey = wdc.getKey(key);
+        WorkspaceDataKey dataKey = WorkspaceDataControllerImpl.getInstance().getKey(key);
         if (dataKey != null) {
             return getData(dataKey);
         }
@@ -52,16 +50,18 @@ public class WorkspaceDataImpl implements WorkspaceData {
 
     public void setData(String key, Object object) {
         if (key == null) {
-            throw new NullPointerException("WorkspaceDataKey can't be null. Check the provider is defined correctly");
+            throw new NullPointerException();
         }
-        WorkspaceDataController wdc = Lookup.getDefault().lookup(WorkspaceDataController.class);
-        WorkspaceDataKey dataKey = wdc.getKey(key);
+        WorkspaceDataKey dataKey = WorkspaceDataControllerImpl.getInstance().getKey(key);
         if (dataKey != null) {
             setData(key, object);
         }
     }
 
     public <T> T getData(WorkspaceDataKey<T> key) {
+        if (key == null) {
+            throw new NullPointerException("WorkspaceDataKey can't be null. Check the provider is defined correctly");
+        }
         if (key.getIndex() < data.length) {
             Object obj = data[key.getIndex()];
             return (T) obj;
@@ -70,6 +70,9 @@ public class WorkspaceDataImpl implements WorkspaceData {
     }
 
     public <T> void setData(WorkspaceDataKey<T> key, T data) {
+        if (key == null) {
+            throw new NullPointerException("WorkspaceDataKey can't be null. Check the provider is defined correctly");
+        }
         if (key.getIndex() < this.data.length) {
             this.data[key.getIndex()] = data;
         }

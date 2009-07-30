@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 OpenIDE-Module: org.gephi.project
+OpenIDE-Module-Install: org/gephi/workspace/Installer.class
 OpenIDE-Module-Layer: org/gephi/project/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/project/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.0
