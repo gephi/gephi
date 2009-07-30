@@ -51,8 +51,8 @@ public class ProjectsImpl implements Projects, Lookup.Provider, Serializable {
     @Override
     public void refresh() {
         for (Iterator<Project> itr = projects.iterator(); itr.hasNext();) {
-            Project project = itr.next();
-            if (project.hasFile()) {
+            ProjectImpl project = (ProjectImpl)itr.next();
+            if (project.absolutePath!=null) {
                 ((ProjectImpl) project).init();
             } else {
                 itr.remove();

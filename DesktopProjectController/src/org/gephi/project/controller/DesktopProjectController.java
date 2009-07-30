@@ -99,8 +99,15 @@ public class DesktopProjectController implements ProjectController {
     }
 
     public void startup() {
+        final String OPEN_LAST_PROJECT_ON_STARTUP = "Open_Last_Project_On_Startup";
+        final String NEW_PROJECT_ON_STARTUP = "New_Project_On_Startup";
+        boolean openLastProject = NbPreferences.forModule(DesktopProjectController.class).getBoolean(OPEN_LAST_PROJECT_ON_STARTUP, false);
+        boolean newProject = NbPreferences.forModule(DesktopProjectController.class).getBoolean(NEW_PROJECT_ON_STARTUP, true);
+
         //Default project
-        newProject();
+        if (!openLastProject && newProject) {
+            newProject();
+        }
     }
 
     private void lockProjectActions() {

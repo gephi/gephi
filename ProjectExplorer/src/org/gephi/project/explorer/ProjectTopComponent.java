@@ -41,26 +41,21 @@ final class ProjectTopComponent extends TopComponent implements ExplorerManager.
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "ProjectTopComponent";
     private final ExplorerManager manager = new ExplorerManager();
-    private Projects projects;
 
     private ProjectTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(ProjectTopComponent.class, "CTL_ProjectTopComponent"));
         setToolTipText(NbBundle.getMessage(ProjectTopComponent.class, "HINT_ProjectTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
-
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        projects = pc.getProjects();
-
         //associateLookup(ExplorerUtils.createLookup(manager, getActionMap()));
 
         initExplorer();
     }
 
-    private void initExplorer()
-    {     
+    private void initExplorer() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        Projects projects = pc.getProjects();
         manager.setRootContext(new ProjectsNode(projects));
-
     }
 
     /** This method is called from within the constructor to
@@ -134,6 +129,8 @@ final class ProjectTopComponent extends TopComponent implements ExplorerManager.
     /** replaces this in object stream */
     @Override
     public Object writeReplace() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        Projects projects = pc.getProjects();
         return new ResolvableHelper(projects);
     }
 
@@ -151,18 +148,15 @@ final class ProjectTopComponent extends TopComponent implements ExplorerManager.
         private static final long serialVersionUID = 1L;
         private Projects projects;
 
-        public ResolvableHelper(Projects projects)
-        {
+        public ResolvableHelper(Projects projects) {
             this.projects = projects;
         }
 
         public Object readResolve() {
             ProjectTopComponent ptc = ProjectTopComponent.getDefault();
             ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-            if(this.projects!=null)
-            {
+            if (this.projects != null) {
                 pc.setProjects(this.projects);
-                ptc.projects = this.projects;
                 ptc.initExplorer();
                 projects.reinitLookup();
             }

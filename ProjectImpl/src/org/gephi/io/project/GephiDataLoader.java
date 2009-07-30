@@ -21,45 +21,43 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.project;
 
 import java.io.IOException;
-
-import java.io.Serializable;
-import org.gephi.project.api.Project;
 import org.openide.filesystems.FileObject;
-import org.openide.loaders.DataNode;
 import org.openide.loaders.DataObjectExistsException;
 import org.openide.loaders.MultiDataObject;
+import org.openide.loaders.MultiDataObject.Entry;
 import org.openide.loaders.MultiFileLoader;
-import org.openide.nodes.Node;
-import org.openide.nodes.Children;
-import org.openide.util.Lookup;
+import org.openide.loaders.UniFileLoader;
 
 /**
  *
- * @author Mathieu Bastian
+ * @author Mathieu
  */
-public class GephiDataObject extends MultiDataObject implements Serializable {
+public class GephiDataLoader extends UniFileLoader {
 
-    private transient Project project;
+    public static final String REQUIRED_MIME = "application/gephi";
 
-    public GephiDataObject(FileObject pf, MultiFileLoader loader) throws DataObjectExistsException, IOException {
-        super(pf, loader);
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
+    public GephiDataLoader() {
+        super("org.gephi.project.GephiDataObject");
     }
 
     @Override
-    protected Node createNodeDelegate() {
-        return new DataNode(this, Children.LEAF, getLookup());
+    protected String defaultDisplayName() {
+        return "gephiloader";
     }
 
     @Override
-    public Lookup getLookup() {
-        return getCookieSet().getLookup();
+    protected void initialize() {
+        super.initialize();
+        getExtensions().addMimeType(REQUIRED_MIME);
+    }
+
+    @Override
+    protected MultiDataObject createMultiObject(FileObject primaryFile) throws DataObjectExistsException, IOException {
+        return new GephiDataObject(primaryFile, this);
+    }
+
+    @Override
+    protected String actionsContext() {
+        return "Loaders/" + REQUIRED_MIME + "/Actions";
     }
 }

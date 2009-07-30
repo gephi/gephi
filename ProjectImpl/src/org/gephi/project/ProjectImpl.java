@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project;
 
+import java.io.File;
 import org.gephi.workspace.WorkspaceImpl;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,7 +31,11 @@ import org.gephi.io.project.GephiDataObject;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectMetaData;
 import org.gephi.workspace.api.Workspace;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
+import org.openide.loaders.DataObjectNotFoundException;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -50,7 +55,8 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
     //Atributes
     private String name;
     private Status status = Status.CLOSED;
-    private GephiDataObject dataObject;
+    private transient GephiDataObject dataObject;
+    protected String absolutePath;
     private ProjectMetaDataImpl metaData;
 
     //Workspaces
@@ -74,10 +80,19 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
         workspaces = new ArrayList<Workspace>();
         listeners = new ArrayList<ChangeListener>();
         status = Status.CLOSED;
-        if (dataObject != null) {
-            if (dataObject.isValid()) {
-                dataObject.setProject(this);
-            } else {
+        if (absolutePath != null) {
+            FileObject fo = FileUtil.toFileObject(new File(absolutePath));
+            DataObject dataObj;
+            try {
+                dataObj = DataObject.find(fo);
+                if (dataObj.isValid()) {
+                    dataObject = (GephiDataObject) dataObj;
+                    dataObject.setProject(this);
+                } else {
+                    this.status = Status.INVALID;
+                }
+            } catch (DataObjectNotFoundException ex) {
+                ex.printStackTrace();
                 this.status = Status.INVALID;
             }
         }
@@ -205,6 +220,7 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
     @Override
     public void setDataObject(DataObject dataObject) {
         this.dataObject = (GephiDataObject) dataObject;
+        this.absolutePath = dataObject.getPrimaryFile().getPath();
         fireChangeEvent();
     }
 

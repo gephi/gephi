@@ -51,11 +51,8 @@
                     </file>
                 </folder>
                 <folder name="Factories">
-                    <file name="GephiDataLoader.instance">
-                        <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/gephi/io/project/icon16.png"/>
-                        <attr name="dataObjectClass" stringvalue="org.gephi.io.project.GephiDataObject"/>
-                        <attr name="instanceCreate" methodvalue="org.openide.loaders.DataLoaderPool.factory"/>
-                        <attr name="mimeType" stringvalue="application/gephi"/>
+                    <file name="org-gephi-io-project-GephiDataLoader.instance">
+                        <attr name="position" intvalue="100"/>
                     </file>
                 </folder>
             </folder>
