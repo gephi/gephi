@@ -141,6 +141,14 @@ public class ReportPanel extends javax.swing.JPanel {
         fillingThreads.interrupt();
     }
 
+    public ProcessorStrategyEnum getProcessorStrategy() {
+        if(processorStrategyRadio.getSelection()==appendGraphRadio.getModel()) {
+            return ProcessorStrategyEnum.APPEND;
+        } else {
+            return ProcessorStrategyEnum.FULL;
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -185,18 +193,18 @@ public class ReportPanel extends javax.swing.JPanel {
 
         jLabel1.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.jLabel1.text")); // NOI18N
 
-        labelNodeCount.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        labelNodeCount.setFont(new java.awt.Font("Tahoma", 1, 11));
         labelNodeCount.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelNodeCount.text")); // NOI18N
 
-        labelEdgeCount.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        labelEdgeCount.setFont(new java.awt.Font("Tahoma", 1, 11));
         labelEdgeCount.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelEdgeCount.text")); // NOI18N
 
         graphTypeCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Directed", "Undirected", "Mixed" }));
 
-        nodeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        nodeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
         nodeCountLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.nodeCountLabel.text")); // NOI18N
 
-        edgeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        edgeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
         edgeCountLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.edgeCountLabel.text")); // NOI18N
 
         processorStrategyRadio.add(fullGraphRadio);
@@ -205,7 +213,6 @@ public class ReportPanel extends javax.swing.JPanel {
 
         processorStrategyRadio.add(appendGraphRadio);
         appendGraphRadio.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.appendGraphRadio.text")); // NOI18N
-        appendGraphRadio.setEnabled(false);
 
         labelDynamic.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelDynamic.text")); // NOI18N
 

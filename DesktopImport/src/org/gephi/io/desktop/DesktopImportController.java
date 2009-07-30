@@ -98,10 +98,6 @@ public class DesktopImportController implements ImportController {
                 throw new ImportException(NbBundle.getMessage(getClass(), "error_no_matching_file_importer"));
             }
 
-            ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-            Workspace workspace = projectController.importFile();
-            workspace.setSource(fileObject.getNameExt());
-
             //Create Container
             final Container container = Lookup.getDefault().lookup(Container.class);
             container.setSource("" + im.getClass());
@@ -219,9 +215,6 @@ public class DesktopImportController implements ImportController {
                 ui.unsetup();
                 database = ui.getDatabase();
             }
-            ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-            Workspace workspace = projectController.importFile();
-            workspace.setSource("Database");
 
             //Create Container
             final Container container = Lookup.getDefault().lookup(Container.class);
@@ -280,6 +273,29 @@ public class DesktopImportController implements ImportController {
             return;
         }
         reportPanel.destroy();
+
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        Workspace workspace;
+        if (pc.getCurrentProject() == null) {
+            pc.newProject();
+            workspace = pc.getCurrentWorkspace();
+        } else {
+            if (reportPanel.getProcessorStrategy().equals(ProcessorStrategyEnum.FULL)) {
+                //New workspace
+                workspace = pc.newWorkspace(pc.getCurrentProject());
+                pc.openWorkspace(workspace);
+            } else if (pc.getCurrentWorkspace() == null) {
+                //Append mode but no workspace
+                workspace = pc.newWorkspace(pc.getCurrentProject());
+                pc.openWorkspace(workspace);
+            } else {
+                //Append mode, current workspace is fine
+                workspace = pc.getCurrentWorkspace();
+            }
+        }
+        if (container.getSource() != null) {
+            workspace.setSource(container.getSource());
+        }
 
         Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
     }
