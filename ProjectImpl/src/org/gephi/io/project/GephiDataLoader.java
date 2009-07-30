@@ -24,20 +24,18 @@ import java.io.IOException;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObjectExistsException;
 import org.openide.loaders.MultiDataObject;
-import org.openide.loaders.MultiDataObject.Entry;
-import org.openide.loaders.MultiFileLoader;
 import org.openide.loaders.UniFileLoader;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class GephiDataLoader extends UniFileLoader {
 
     public static final String REQUIRED_MIME = "application/gephi";
 
     public GephiDataLoader() {
-        super("org.gephi.project.GephiDataObject");
+        super("org.gephi.io.project.GephiDataObject");
     }
 
     @Override

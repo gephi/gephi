@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.project;
 
-import org.gephi.io.project.GephiDataObject;
 import junit.framework.TestCase;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.Repository;

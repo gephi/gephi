@@ -52,7 +52,7 @@ public class ProjectsImpl implements Projects, Lookup.Provider, Serializable {
     public void refresh() {
         for (Iterator<Project> itr = projects.iterator(); itr.hasNext();) {
             ProjectImpl project = (ProjectImpl)itr.next();
-            if (project.absolutePath!=null) {
+            if (project.hasFile()) {
                 ((ProjectImpl) project).init();
             } else {
                 itr.remove();

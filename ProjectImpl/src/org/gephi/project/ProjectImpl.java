@@ -55,8 +55,7 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
     //Atributes
     private String name;
     private Status status = Status.CLOSED;
-    private transient GephiDataObject dataObject;
-    protected String absolutePath;
+    private GephiDataObject dataObject;
     private ProjectMetaDataImpl metaData;
 
     //Workspaces
@@ -80,19 +79,10 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
         workspaces = new ArrayList<Workspace>();
         listeners = new ArrayList<ChangeListener>();
         status = Status.CLOSED;
-        if (absolutePath != null) {
-            FileObject fo = FileUtil.toFileObject(new File(absolutePath));
-            DataObject dataObj;
-            try {
-                dataObj = DataObject.find(fo);
-                if (dataObj.isValid()) {
-                    dataObject = (GephiDataObject) dataObj;
-                    dataObject.setProject(this);
-                } else {
-                    this.status = Status.INVALID;
-                }
-            } catch (DataObjectNotFoundException ex) {
-                ex.printStackTrace();
+        if (dataObject != null) {
+            if (dataObject.isValid()) {
+                dataObject.setProject(this);
+            } else {
                 this.status = Status.INVALID;
             }
         }
@@ -220,7 +210,6 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
     @Override
     public void setDataObject(DataObject dataObject) {
         this.dataObject = (GephiDataObject) dataObject;
-        this.absolutePath = dataObject.getPrimaryFile().getPath();
         fireChangeEvent();
     }
 

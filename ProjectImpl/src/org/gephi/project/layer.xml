@@ -64,14 +64,14 @@
     </folder>
     <folder name="Services">
         <folder name="MIMEResolver">
-            <file name="GephiResolver.xml" url="GephiResolver.xml">
+            <file name="GephiResolver.xml" url="/org/gephi/io/project/GephiResolver.xml">
                 <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.io.project.Bundle"/>
             </file>
         </folder>
     </folder>
     <folder name="Templates">
         <folder name="Other">
-            <file name="GephiTemplate.gephi" url="GephiTemplate.gephi">
+            <file name="GephiTemplate.gephi" url="/org/gephi/io/project/GephiTemplate.gephi">
                 <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.io.project.Bundle"/>
                 <attr name="template" boolvalue="true"/>
             </file>
