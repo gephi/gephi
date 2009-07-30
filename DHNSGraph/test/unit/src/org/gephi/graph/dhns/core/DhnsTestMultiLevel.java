@@ -59,7 +59,7 @@ public class DhnsTestMultiLevel {
     public void setUp() {
         nodeMap = new HashMap<String, AbstractNode>();
         DhnsGraphController controller = new DhnsGraphController();
-        dhns1 = controller.getMainDhns();
+        dhns1 = new Dhns(controller);
         graph1 = new ClusteredDirectedGraphImpl(dhns1, false, false);
         GraphFactoryImpl factory = controller.factory();
 
@@ -173,7 +173,7 @@ public class DhnsTestMultiLevel {
 
         //Test diamond
         DhnsGraphController controller = new DhnsGraphController();
-        Dhns dhns = controller.getMainDhns();
+        Dhns dhns = new Dhns(controller);
         ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
         GraphFactoryImpl factory = controller.factory();
 
