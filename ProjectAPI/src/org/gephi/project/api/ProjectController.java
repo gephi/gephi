@@ -61,8 +61,6 @@ public interface ProjectController {
 
     public void renameProject(Project project, String name);
 
-    public Workspace importFile();
-
     public Workspace getCurrentWorkspace();
 
     public void openWorkspace(Workspace workspace);

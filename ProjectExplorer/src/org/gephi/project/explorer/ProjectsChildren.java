@@ -50,7 +50,6 @@ class ProjectsChildren extends Children.Keys<Project> implements LookupListener 
 
     @Override
     protected Node[] createNodes(Project project) {
-        System.out.println("node " + project);
         return new Node[]{new ProjectNode(project)};
     }
 

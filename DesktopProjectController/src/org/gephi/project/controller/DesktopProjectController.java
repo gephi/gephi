@@ -316,18 +316,17 @@ public class DesktopProjectController implements ProjectController {
         return ws;
     }
 
-    public Workspace importFile() {
-        Project project = projects.getCurrentProject();
-        if (project == null) {
-            newProject();
-            project = projects.getCurrentProject();
-        }
-
-        Workspace ws = newWorkspace(projects.getCurrentProject());
-        openWorkspace(ws);
-        return ws;
+    /*public Workspace importFile() {
+    Project project = projects.getCurrentProject();
+    if (project == null) {
+    newProject();
+    project = projects.getCurrentProject();
     }
 
+    Workspace ws = newWorkspace(projects.getCurrentProject());
+    openWorkspace(ws);
+    return ws;
+    }*/
     public void deleteWorkspace(Workspace workspace) {
         if (getCurrentWorkspace() == workspace) {
             workspace.close();
