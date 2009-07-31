@@ -31,6 +31,7 @@ import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.project.api.ProjectController;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ColorLayer;
@@ -43,6 +44,8 @@ import org.gephi.visualization.mode.ModeManager;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.objects.ConvexHullModel;
 import org.gephi.visualization.opengl.compatibility.objects.Edge2dModel;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
 
 /**
@@ -72,6 +75,9 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.modeManager = VizController.getInstance().getModeManager();
         graph = controller.getHierarchicalDirectedGraph();
+
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.addWorkspaceListener(new VizWorkspaceListener());
     }
 
     public void updateWorld() {
@@ -88,6 +94,10 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             case HIGHLIGHT:
                 //graph = controller.getDirectedGraph();
                 break;
+        }
+
+        if (graph == null) {
+            return;
         }
 
         if (graph.isDynamic()) {
@@ -286,14 +296,13 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             } else {
                 return graph.getNodeVersion() > nodeVersion || graph.getEdgeVersion() > edgeVersion;
             }
-
         }
         return false;
     }
 
     public void reset() {
-        nodeVersion = 0;
-        edgeVersion = 0;
+        nodeVersion = -1;
+        edgeVersion = -1;
     }
 
     private void resetClasses() {
@@ -301,6 +310,26 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             if (objClass.isEnabled()) {
                 engine.resetObjectClass(objClass);
             }
+        }
+    }
+
+    private class VizWorkspaceListener implements WorkspaceListener {
+
+        public void initialize(Workspace workspace) {
+        }
+
+        public void select(Workspace workspace) {
+            reset();
+        }
+
+        public void unselect(Workspace workspace) {
+        }
+
+        public void close(Workspace workspace) {
+        }
+
+        public void disable() {
+            reset();
         }
     }
 }
