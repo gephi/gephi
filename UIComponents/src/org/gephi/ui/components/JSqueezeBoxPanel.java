@@ -30,6 +30,8 @@ import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -42,28 +44,24 @@ import org.gephi.ui.utils.UIUtils;
 public class JSqueezeBoxPanel extends JPanel {
 
     private static final Color CP_BACKGROUND_COLOR = UIUtils.getProfilerResultsBackground();
-    private JScrollPane scrollPane;
+    private final GridBagConstraints gbc = new GridBagConstraints();
+    private final JScrollPane scrollPane;
+    private final JPanel scrollPanel = new JPanel();
+    private final Map<JPanel, SnippetPanel> panelMap = new HashMap<JPanel, SnippetPanel>();
 
-    public JSqueezeBoxPanel(JPanel[] panels) {
+    public JSqueezeBoxPanel() {
         setName("JSqueezeBoxPanel"); // NOI18N
         setLayout(new BorderLayout());
 
         final SnippetPanel.Padding padding = new SnippetPanel.Padding();
 
-        //final JPanel scrollPanel = new CPMainPanel();
-        final JPanel scrollPanel = new JPanel();
+        //final JPanel scrollPanel = new CPMainPanel();     
         scrollPanel.setLayout(new VerticalLayout());
 
-        final GridBagConstraints gbc = new GridBagConstraints();
+        //GridBagConstraints
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1;
-
-        for (JPanel p : panels) {
-            configureSnippetPanel(p);
-            scrollPanel.add(new SnippetPanel(p.getName(), p), gbc);
-        }
-
         gbc.weighty = 1;
         scrollPanel.add(padding, gbc);
 
@@ -74,7 +72,6 @@ public class JSqueezeBoxPanel extends JPanel {
         scrollPane.getVerticalScrollBar().setUnitIncrement(50);
         scrollPane.getHorizontalScrollBar().setUnitIncrement(50);
         add(scrollPane, BorderLayout.CENTER);
-
 
         addComponentListener(new ComponentAdapter() {
 
@@ -96,11 +93,27 @@ public class JSqueezeBoxPanel extends JPanel {
     }
 
     public void addPanel(JPanel panel, String name) {
+        if (panelMap.containsKey(panel)) {
+            return;
+        }
         panel.setOpaque(true);
         panel.setName(name);
         panel.setBackground(CP_BACKGROUND_COLOR);
         setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
-    //panels.add(panel);
+        SnippetPanel snippetPanel = new SnippetPanel(panel.getName(), panel);
+        panelMap.put(panel, snippetPanel);
+        configureSnippetPanel(panel);
+        scrollPanel.add(snippetPanel, gbc);
+        scrollPanel.revalidate();
+    }
+
+    public void removePanel(JPanel panel) {
+        if (!panelMap.containsKey(panel)) {
+            return;
+        }
+        SnippetPanel snippetPanel = panelMap.remove(panel);
+        scrollPanel.remove(snippetPanel);
+        scrollPanel.revalidate();
     }
 
     public static final class VerticalLayout implements LayoutManager {

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="Window">
+            <file name="org-gephi-ui-filters-FiltersAction.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.ui.filters.Bundle"/>
+                <attr name="component" methodvalue="org.gephi.ui.filters.FiltersTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="org.gephi.ui.filters.Bundle#CTL_FiltersAction"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="FiltersAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-ui-filters-FiltersAction.instance"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="FiltersTopComponent.settings" url="FiltersTopComponentSettings.xml"/>
+        </folder>
+        <folder name="Modes">
+            <folder name="properties">
+                <file name="FiltersTopComponent.wstcref" url="FiltersTopComponentWstcref.xml"/>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>
