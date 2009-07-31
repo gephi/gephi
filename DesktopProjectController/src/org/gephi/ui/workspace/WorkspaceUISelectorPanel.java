@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.workspace;
 
+import org.gephi.workspace.api.Workspace;
+
 /**
  *
  * @author Mathieu Bastian
@@ -29,6 +31,14 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel {
     /** Creates new form WorkspaceUISelectorPanel */
     public WorkspaceUISelectorPanel() {
         initComponents();
+    }
+
+    public void setSelectedWorkspace(Workspace workspace) {
+        workspaceLabel.setText(workspace.getName());
+    }
+
+    public void noSelectedWorkspace() {
+        workspaceLabel.setText("Workspace");
     }
 
     /** This method is called from within the constructor to

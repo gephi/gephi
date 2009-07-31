@@ -21,16 +21,44 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ui.workspace;
 
 import java.awt.Component;
+import org.gephi.project.api.ProjectController;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.awt.StatusLineElementProvider;
+import org.openide.util.Lookup;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class WorkspaceUISelector implements StatusLineElementProvider {
+public class WorkspaceUISelector implements StatusLineElementProvider, WorkspaceListener {
+
+    private WorkspaceUISelectorPanel panel;
+
+    public WorkspaceUISelector() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.addWorkspaceListener(this);
+    }
 
     public Component getStatusLineElement() {
-        final WorkspaceUISelectorPanel panel = new WorkspaceUISelectorPanel();
+        panel = new WorkspaceUISelectorPanel();
         return panel;
+    }
+
+    public void initialize(Workspace workspace) {
+    }
+
+    public void select(Workspace workspace) {
+        panel.setSelectedWorkspace(workspace);
+    }
+
+    public void unselect(Workspace workspace) {
+    }
+
+    public void close(Workspace workspace) {
+    }
+
+    public void disable() {
+        panel.noSelectedWorkspace();
     }
 }
