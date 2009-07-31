@@ -29,6 +29,7 @@ import javax.swing.event.ChangeListener;
 import org.gephi.io.project.GephiDataObject;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectMetaData;
+import org.gephi.workspace.WorkspaceDataControllerImpl;
 import org.gephi.workspace.api.Workspace;
 import org.openide.loaders.DataObject;
 import org.openide.util.Lookup;

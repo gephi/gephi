@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.project.api;
 
 import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.loaders.DataObject;
 
 /**
@@ -70,4 +71,8 @@ public interface ProjectController {
     public void cleanWorkspace(Workspace workspace);
 
     public void duplicateWorkspace(Workspace workspace);
+
+    public void addWorkspaceListener(WorkspaceListener workspaceListener);
+
+    public void removeWorkspaceListener(WorkspaceListener workspaceListener);
 }

@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.project.controller;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -49,12 +51,14 @@ import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
 import org.gephi.utils.longtask.LongTaskListener;
+import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.windows.WindowManager;
@@ -65,8 +69,13 @@ import org.openide.windows.WindowManager;
  */
 public class DesktopProjectController implements ProjectController {
 
-    private Projects projects = new ProjectsImpl();
-    private LongTaskExecutor longTaskExecutor;
+    private enum EventType {
+
+        INITIALIZE, SELECT, UNSELECT, CLOSE, DISABLE
+    };
+    private final Projects projects = new ProjectsImpl();
+    private final LongTaskExecutor longTaskExecutor;
+    private final List<WorkspaceListener> listeners;
 
     public DesktopProjectController() {
         //Project IO executor
@@ -86,6 +95,10 @@ public class DesktopProjectController implements ProjectController {
                 unlockProjectActions();
             }
         });
+
+        //Listeners
+        listeners = new ArrayList<WorkspaceListener>();
+        listeners.addAll(Lookup.getDefault().lookupAll(WorkspaceListener.class));
 
         //Actions
         disableAction(SaveProject.class);
@@ -253,6 +266,7 @@ public class DesktopProjectController implements ProjectController {
             currentProject.close();
             projects.closeCurrentProject();
 
+
             //Actions
             disableAction(SaveProject.class);
             disableAction(SaveAsProject.class);
@@ -273,6 +287,15 @@ public class DesktopProjectController implements ProjectController {
                     frame.setTitle(title);
                 }
             });
+
+            //Event
+            if (currentProject.hasCurrentWorkspace()) {
+                fireWorkspaceEvent(EventType.UNSELECT, currentProject.getCurrentWorkspace());
+            }
+            for (Workspace ws : currentProject.getWorkspaces()) {
+                fireWorkspaceEvent(EventType.CLOSE, ws);
+            }
+            fireWorkspaceEvent(EventType.DISABLE, null);
         }
     }
 
@@ -312,8 +335,11 @@ public class DesktopProjectController implements ProjectController {
     }
 
     public Workspace newWorkspace(Project project) {
-        Workspace ws = project.newWorkspace();
-        return ws;
+        Workspace workspace = project.newWorkspace();
+
+        //Event
+        fireWorkspaceEvent(EventType.INITIALIZE, workspace);
+        return workspace;
     }
 
     /*public Workspace importFile() {
@@ -329,11 +355,18 @@ public class DesktopProjectController implements ProjectController {
     }*/
     public void deleteWorkspace(Workspace workspace) {
         if (getCurrentWorkspace() == workspace) {
-            workspace.close();
-            getCurrentProject().setCurrentWorkspace(workspace);
+            closeCurrentProject();
         }
 
         workspace.getProject().removeWorkspace(workspace);
+
+        //Event
+        fireWorkspaceEvent(EventType.CLOSE, workspace);
+
+        if (getCurrentProject().getWorkspaces().length == 0) {
+            //Event
+            fireWorkspaceEvent(EventType.DISABLE, workspace);
+        }
     }
 
     public void openProject(final Project project) {
@@ -386,8 +419,12 @@ public class DesktopProjectController implements ProjectController {
     }
 
     public void closeCurrentWorkspace() {
-        if (getCurrentWorkspace() != null) {
-            getCurrentWorkspace().close();
+        Workspace workspace = getCurrentWorkspace();
+        if (workspace != null) {
+            workspace.close();
+
+            //Event
+            fireWorkspaceEvent(EventType.UNSELECT, workspace);
         }
     }
 
@@ -395,6 +432,9 @@ public class DesktopProjectController implements ProjectController {
         closeCurrentWorkspace();
         getCurrentProject().setCurrentWorkspace(workspace);
         workspace.open();
+
+        //Event
+        fireWorkspaceEvent(EventType.SELECT, workspace);
     }
 
     public void cleanWorkspace(Workspace workspace) {
@@ -421,6 +461,44 @@ public class DesktopProjectController implements ProjectController {
 
     public void renameWorkspace(Workspace workspace, String name) {
         workspace.setName(name);
+    }
+
+    public void addWorkspaceListener(WorkspaceListener workspaceListener) {
+        synchronized (listeners) {
+            listeners.add(workspaceListener);
+        }
+    }
+
+    public void removeWorkspaceListener(WorkspaceListener workspaceListener) {
+        synchronized (listeners) {
+            listeners.remove(workspaceListener);
+        }
+    }
+
+    private void fireWorkspaceEvent(EventType event, Workspace workspace) {
+        WorkspaceListener[] listenersArray;
+        synchronized (listeners) {
+            listenersArray = listeners.toArray(new WorkspaceListener[0]);
+        }
+        for (WorkspaceListener wl : listenersArray) {
+            switch (event) {
+                case INITIALIZE:
+                    wl.initialize(workspace);
+                    break;
+                case SELECT:
+                    wl.select(workspace);
+                    break;
+                case UNSELECT:
+                    wl.unselect(workspace);
+                    break;
+                case CLOSE:
+                    wl.close(workspace);
+                    break;
+                case DISABLE:
+                    wl.disable();
+                    break;
+            }
+        }
     }
 
     public void enableAction(Class clazz) {
