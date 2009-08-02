@@ -1,11 +1,27 @@
 /*
- *  Copyright 2009 Helder Suzuki <heldersuzuki@gmail.com>.
+Copyright 2008-2009 Gephi
+Authors : Helder Suzuki <heldersuzuki@gmail.com>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.force.quadtree;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.gephi.graph.api.ClusteredDirectedGraph;
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Spatial;
@@ -28,12 +44,12 @@ public class QuadTree implements Spatial {
     public static final float eps = (float) 1e-6;
 
     public static QuadTree buildTree(ClusteredGraph graph, int maxLevel) {
-        float minX = Float.NEGATIVE_INFINITY;
-        float maxX = Float.POSITIVE_INFINITY;
-        float minY = Float.NEGATIVE_INFINITY;
-        float maxY = Float.POSITIVE_INFINITY;
+        float minX = Float.POSITIVE_INFINITY;
+        float maxX = Float.NEGATIVE_INFINITY;
+        float minY = Float.POSITIVE_INFINITY;
+        float maxY = Float.NEGATIVE_INFINITY;
 
-        for (Node node : graph.getNodes(0)) {
+        for (Node node : graph.getTopNodes()) {
             minX = Math.min(minX, node.getNodeData().x());
             maxX = Math.max(maxX, node.getNodeData().x());
             minY = Math.min(minY, node.getNodeData().y());
@@ -42,7 +58,7 @@ public class QuadTree implements Spatial {
 
         float size = Math.max(maxY - minY, maxX - minX);
         QuadTree tree = new QuadTree(minX, minY, size, maxLevel);
-        for (Node node : graph.getNodes(0)) {
+        for (Node node : graph.getTopNodes()) {
             tree.addNode(node.getNodeData());
         }
 
@@ -114,8 +130,8 @@ public class QuadTree implements Spatial {
     }
 
     public boolean addNode(Spatial node) {
-        if (posX <= node.x() && node.x() < posX + size + eps &&
-            posY <= node.y() && node.y() < posY + size + eps) {
+        if (posX <= node.x() && node.x() <= posX + size &&
+            posY <= node.y() && node.y() <= posY + size) {
             return add.addNode(node);
         } else {
             return false;

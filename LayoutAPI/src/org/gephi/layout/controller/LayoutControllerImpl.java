@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.gephi.graph.api.GraphController;
 import org.gephi.layout.api.Layout;
+import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutController;
 import org.openide.util.Lookup;
 
@@ -35,31 +36,31 @@ import org.openide.util.Lookup;
  */
 public class LayoutControllerImpl implements LayoutController {
 
-    private List<Layout> layouts;
+    private List<LayoutBuilder> layouts;
     private ExecutorService executor;
 
     public LayoutControllerImpl() {
-        layouts = new ArrayList<Layout>(Lookup.getDefault().lookupAll(Layout.class));
+        layouts = new ArrayList<LayoutBuilder>(Lookup.getDefault().lookupAll(LayoutBuilder.class));
         executor = Executors.newSingleThreadExecutor();
     }
 
     public void executeLayout() {
-        executeLayout(layouts.get(2));
+        executeLayout(layouts.get(3).buildLayout());
     }
 
     public void executeLayout(final Layout layout) {
+        System.out.println("Execute layout!");
         executor.execute(new Runnable() {
 
             public void run() {
                 GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-                // DirectedGraph graph = graphController.getDirectedGraph();
-
+                System.out.println("Layout start.");
                 layout.initAlgo(graphController);
                 layout.resetPropertiesValues();
                 while (layout.canAlgo()) {
                     layout.goAlgo();
                 }
-
+                System.out.println("Layout end.");
                 layout.endAlgo();
             }
         });

@@ -1,6 +1,6 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2009 Gephi
+Authors : Helder Suzuki <heldersuzuki@gmail.com>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -20,33 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.api;
 
-import javax.swing.Icon;
-import javax.swing.JPanel;
-import org.gephi.graph.api.GraphController;
-
 /**
  *
- * @author Mathieu Bastian
+ * @author Helder Suzuki <heldersuzuki@gmail.com>
  */
-public interface Layout {
+public interface LayoutBuilder {
 
-    public String getName();
-
-    public String getDescription();
-
-    public Icon getIcon();
-
-    public void initAlgo(GraphController graphController);
-
-    public void goAlgo();
-
-    public boolean canAlgo();
-
-    public void endAlgo();
-
-    public LayoutProperty[] getProperties();
-
-    public void resetPropertiesValues();
-
-    public JPanel getPanel();
+    public Layout buildLayout();
 }
