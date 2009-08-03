@@ -20,6 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.workspace;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import org.gephi.ui.components.JPopupPane;
 import org.gephi.workspace.api.Workspace;
 
 /**
@@ -28,9 +33,21 @@ import org.gephi.workspace.api.Workspace;
  */
 public class WorkspaceUISelectorPanel extends javax.swing.JPanel {
 
+    private JPopupPane pane;
+
     /** Creates new form WorkspaceUISelectorPanel */
     public WorkspaceUISelectorPanel() {
         initComponents();
+        JPanel contentPanel = new JPanel();
+        contentPanel.add(new JLabel("test"));
+        pane = new JPopupPane(this, contentPanel);
+        workspaceLabel.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                pane.showPopupPane();
+            }
+        });
     }
 
     public void setSelectedWorkspace(Workspace workspace) {
