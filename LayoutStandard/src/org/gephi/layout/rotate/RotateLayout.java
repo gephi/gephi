@@ -36,12 +36,14 @@ import org.gephi.layout.api.LayoutProperty;
 public class RotateLayout extends AbstractLayout implements Layout {
 
     private boolean converged;
+    private boolean initialized;
     public double angle;
     private Graph graph;
 
     public RotateLayout(LayoutBuilder layoutBuilder, double angle) {
         super(layoutBuilder);
         this.angle = angle;
+        initialized = false;
     }
 
     public void initAlgo() {
@@ -51,7 +53,7 @@ public class RotateLayout extends AbstractLayout implements Layout {
     @Override
     public void setGraphController(GraphController graphController) {
         super.setGraphController(graphController);
-        this.graph = graphController.getUndirectedGraph();
+        graph = graphController.getUndirectedGraph();
     }
 
     public void goAlgo() {

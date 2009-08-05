@@ -51,7 +51,7 @@ public class LayoutControllerImpl implements LayoutController {
 
     public void executeLayout() {
         layoutRun = new LayoutRun(layout);
-    //executor.execute(layoutRun);
+        executor.execute(layoutRun);
     }
 
     public void setLayout(Layout layout) {

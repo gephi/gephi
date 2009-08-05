@@ -18,8 +18,6 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-//import org.openide.util.Utilities;
-
 
 /**
  * Top component which displays something.
@@ -53,6 +51,7 @@ final class LayoutTopComponent extends TopComponent implements LayoutControllerO
 
     private void initLayoutController() {
         layoutController = Lookup.getDefault().lookup(LayoutController.class);
+        layoutController.addObserver(this);
     }
 
     private void initLayoutComboBox() {
@@ -189,11 +188,13 @@ final class LayoutTopComponent extends TopComponent implements LayoutControllerO
     }
 
     public void executeEvent() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        stopButton.setEnabled(true);
+        playButton.setEnabled(false);
     }
 
     public void stopEvent() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        stopButton.setEnabled(false);
+        playButton.setEnabled(true);
     }
 
     final static class ResolvableHelper implements Serializable {
@@ -209,8 +210,6 @@ final class LayoutTopComponent extends TopComponent implements LayoutControllerO
 
         public void actionPerformed(ActionEvent e) {
             layoutController.executeLayout();
-            stopButton.setEnabled(true);
-            playButton.setEnabled(false);
         }
     }
 
@@ -218,8 +217,6 @@ final class LayoutTopComponent extends TopComponent implements LayoutControllerO
 
         public void actionPerformed(ActionEvent e) {
             layoutController.stopLayout();
-            stopButton.setEnabled(false);
-            playButton.setEnabled(true);
         }
     }
 
@@ -233,6 +230,7 @@ final class LayoutTopComponent extends TopComponent implements LayoutControllerO
         }
     }
 }
+
 class LayoutBuilderWrapper {
 
     private LayoutBuilder layoutBuilder;
