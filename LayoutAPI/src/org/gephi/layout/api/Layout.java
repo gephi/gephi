@@ -20,8 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.api;
 
-import javax.swing.Icon;
-import javax.swing.JPanel;
+import java.util.List;
 import org.gephi.graph.api.GraphController;
 
 /**
@@ -29,12 +28,6 @@ import org.gephi.graph.api.GraphController;
  * @author Mathieu Bastian
  */
 public interface Layout {
-
-    public String getName();
-
-    public String getDescription();
-
-    public Icon getIcon();
 
     public void initAlgo(GraphController graphController);
 
@@ -44,9 +37,9 @@ public interface Layout {
 
     public void endAlgo();
 
-    public LayoutProperty[] getProperties();
+    public List<LayoutProperty> getProperties();
 
     public void resetPropertiesValues();
 
-    public JPanel getPanel();
+    public LayoutBuilder getBuilder();
 }

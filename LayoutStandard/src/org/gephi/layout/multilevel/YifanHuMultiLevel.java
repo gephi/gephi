@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.multilevel;
 
+import javax.swing.Icon;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.force.yifanHu.YifanHu;
@@ -36,5 +37,17 @@ public class YifanHuMultiLevel implements LayoutBuilder {
                                                        "Multilevel YifanHu",
                                                        "Multilevel YifanHu");
         return layout;
+    }
+
+    public String getName() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public String getDescription() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Icon getIcon() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.multilevel;
 
+import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.graph.api.ClusteredGraph;
@@ -92,7 +93,7 @@ public class MultiLevelLayout implements Layout {
     public void endAlgo() {
     }
 
-    public LayoutProperty[] getProperties() {
+    public List<LayoutProperty> getProperties() {
         return null;
     }
 
@@ -113,6 +114,10 @@ public class MultiLevelLayout implements Layout {
     }
 
     public Icon getIcon() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public LayoutBuilder getBuilder() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

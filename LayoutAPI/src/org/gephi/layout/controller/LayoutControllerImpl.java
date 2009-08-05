@@ -37,7 +37,9 @@ import org.openide.util.Lookup;
 public class LayoutControllerImpl implements LayoutController {
 
     private List<LayoutBuilder> layouts;
+    private Layout layout;
     private ExecutorService executor;
+    private LayoutRun layoutRun;
 
     public LayoutControllerImpl() {
         layouts = new ArrayList<LayoutBuilder>(Lookup.getDefault().lookupAll(LayoutBuilder.class));
@@ -45,24 +47,52 @@ public class LayoutControllerImpl implements LayoutController {
     }
 
     public void executeLayout() {
-        executeLayout(layouts.get(3).buildLayout());
+        // setLayout(layouts.);
+        layoutRun = new LayoutRun(layout);
+        executor.execute(layoutRun);
     }
 
-    public void executeLayout(final Layout layout) {
-        System.out.println("Execute layout!");
-        executor.execute(new Runnable() {
+    public void setLayout(Layout layout) {
+        this.layout = layout;
+    }
 
-            public void run() {
-                GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-                System.out.println("Layout start.");
-                layout.initAlgo(graphController);
-                layout.resetPropertiesValues();
-                while (layout.canAlgo()) {
-                    layout.goAlgo();
-                }
-                System.out.println("Layout end.");
-                layout.endAlgo();
-            }
-        });
+    public List<LayoutBuilder> getLayouts() {
+        return layouts;
+    }
+
+    public Layout getLayout() {
+        return layout;
+    }
+
+    public void stopLayout() {
+        layoutRun.stop();
+    }
+}
+
+class LayoutRun implements Runnable {
+
+    private Layout layout;
+    private boolean stopRequested;
+
+    public LayoutRun(Layout layout) {
+        this.layout = layout;
+    }
+
+    public void run() {
+        stopRequested = false;
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        System.out.println("Layout start.");
+        layout.initAlgo(graphController);
+        //layout.setGraph(graphController);
+        layout.resetPropertiesValues();
+        while (layout.canAlgo() && !stopRequested) {
+            layout.goAlgo();
+        }
+        System.out.println("Layout end.");
+        layout.endAlgo();
+    }
+
+    public void stop() {
+        stopRequested = true;
     }
 }

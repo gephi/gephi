@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.rotate;
 
+import javax.swing.Icon;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 
@@ -31,5 +32,17 @@ public class ClockwiseRotate implements LayoutBuilder {
 
     public Layout buildLayout() {
         return new RotateLayout(Math.PI / 2);
+    }
+
+    public String getName() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public String getDescription() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Icon getIcon() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -20,12 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.rotate;
 
+import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.api.Layout;
+import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutProperty;
 import org.openide.util.NbBundle;
 
@@ -83,10 +85,11 @@ public class RotateLayout implements Layout {
     public void endAlgo() {
     }
 
-    public LayoutProperty[] getProperties() {
-        LayoutProperty[] layoutProperties = new LayoutProperty[1];
-        layoutProperties[0] = LayoutProperty.createProperty(RotateLayout.class, "angle");
-        return layoutProperties;
+    public List<LayoutProperty> getProperties() {
+//        LayoutProperty[] layoutProperties = new LayoutProperty[1];
+//        layoutProperties[0] = LayoutProperty.createProperty(RotateLayout.class, "angle");
+//        return layoutProperties;
+        return null;
     }
 
     public JPanel getPanel() {
@@ -94,5 +97,9 @@ public class RotateLayout implements Layout {
     }
 
     public void resetPropertiesValues() {
+    }
+
+    public LayoutBuilder getBuilder() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

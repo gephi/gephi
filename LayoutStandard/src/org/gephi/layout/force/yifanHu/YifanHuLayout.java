@@ -20,9 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.force.yifanHu;
 
+import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.layout.GraphUtils;
+import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutProperty;
 import org.gephi.layout.force.AbstractForce;
 import org.gephi.layout.force.AbstractForceLayout;
@@ -80,12 +82,13 @@ public class YifanHuLayout extends AbstractForceLayout {
         }
     }
 
-    public LayoutProperty[] getProperties() {
-        LayoutProperty[] properties = new LayoutProperty[3];
-        properties[0] = LayoutProperty.createProperty(YifanHuLayout.class, "optimalDistance");
-        properties[1] = LayoutProperty.createProperty(YifanHuLayout.class, "relativeStrength");
-        properties[2] = LayoutProperty.createProperty(YifanHuLayout.class, "stepRatio");
-        return properties;
+    public List<LayoutProperty> getProperties() {
+//        LayoutProperty[] properties = new LayoutProperty[3];
+//        properties[0] = LayoutProperty.createProperty(YifanHuLayout.class, "optimalDistance");
+//        properties[1] = LayoutProperty.createProperty(YifanHuLayout.class, "relativeStrength");
+//        properties[2] = LayoutProperty.createProperty(YifanHuLayout.class, "stepRatio");
+//        return properties;
+        return null;
     }
 
     public void resetPropertiesValues() {
@@ -124,5 +127,9 @@ public class YifanHuLayout extends AbstractForceLayout {
     @Override
     protected int getQuadTreeMaxLevel() {
         return 10;
+    }
+
+    public LayoutBuilder getBuilder() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

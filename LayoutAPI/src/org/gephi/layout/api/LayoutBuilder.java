@@ -20,11 +20,19 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.api;
 
+import javax.swing.Icon;
+
 /**
  *
- * @author Helder Suzuki <heldersuzuki@gmail.com>
+ * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
 public interface LayoutBuilder {
+
+    public String getName();
+
+    public String getDescription();
+
+    public Icon getIcon();
 
     public Layout buildLayout();
 }

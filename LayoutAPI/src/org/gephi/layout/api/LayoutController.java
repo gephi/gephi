@@ -20,11 +20,19 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.api;
 
+import java.util.List;
+
 /**
  *
  * @author Mathieu Bastian
  */
 public interface LayoutController {
 
+    public void setLayout(Layout layout);
+
+    public List<LayoutBuilder> getLayouts();
+
     public void executeLayout();
+
+    public void stopLayout();
 }
