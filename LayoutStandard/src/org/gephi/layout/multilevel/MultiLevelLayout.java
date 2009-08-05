@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2009 Gephi
-Authors : Helder Suzuki <heldersuzuki@gmail.com>
+Authors : Helder Suzuki <heldersuzuki@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -21,51 +21,50 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.layout.multilevel;
 
 import java.util.List;
-import javax.swing.Icon;
-import javax.swing.JPanel;
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutProperty;
 
 /**
  *
- * @author Helder Suzuki <heldersuzuki@gmail.com>
+ * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
-public class MultiLevelLayout implements Layout {
+public class MultiLevelLayout extends AbstractLayout implements Layout {
 
     private ClusteredGraph graph;
     private boolean acabou;
     private int level;
-    private GraphController graphController;
     private Layout layout;
-    private LayoutBuilder layoutBuilder;
+    private LayoutBuilder subLayoutBuilder;
     private CoarseningStrategy coarseningStrategy;
-    private String name;
-    private String description;
 
-    public MultiLevelLayout(CoarseningStrategy coarseningStrategy,
-                            LayoutBuilder layoutBuilder,
-                            String name,
-                            String description) {
+    public MultiLevelLayout(LayoutBuilder layoutBuilder,
+                            CoarseningStrategy coarseningStrategy,
+                            LayoutBuilder subLayoutBuilder) {
+        super(layoutBuilder);
         this.coarseningStrategy = coarseningStrategy;
-        this.layoutBuilder = layoutBuilder;
-        this.name = name;
-        this.description = description;
+        this.subLayoutBuilder = subLayoutBuilder;
     }
 
-    public void initAlgo(GraphController graphController) {
-        this.graphController = graphController;
+    @Override
+    public void setGraphController(GraphController graphController) {
+        super.setGraphController(graphController);
         graph = graphController.getHierarchicalUndirectedGraph().getClusteredGraph();
+    }
+
+    public void initAlgo() {
         level = 0;
         while (level < 2) {
             coarseningStrategy.coarsen(graph);
             level++;
         }
         System.out.println("Level = " + level);
-        layout = layoutBuilder.buildLayout();
-        layout.initAlgo(graphController);
+        layout = subLayoutBuilder.buildLayout();
+        layout.setGraphController(graphController);
+        layout.initAlgo();
     }
 
     public void goAlgo() {
@@ -77,8 +76,9 @@ public class MultiLevelLayout implements Layout {
             if (level > 0) {
                 coarseningStrategy.refine(graph);
                 level--;
-                layout = layoutBuilder.buildLayout();
-                layout.initAlgo(graphController);
+                layout = subLayoutBuilder.buildLayout();
+                layout.setGraphController(graphController);
+                layout.initAlgo();
             } else {
                 acabou = true;
                 layout = null;
@@ -99,25 +99,5 @@ public class MultiLevelLayout implements Layout {
 
     public void resetPropertiesValues() {
         acabou = false;
-    }
-
-    public JPanel getPanel() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Icon getIcon() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public LayoutBuilder getBuilder() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

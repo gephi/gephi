@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009 Helder Suzuki <heldersuzuki@gmail.com>.
+ *  Copyright 2009 Helder Suzuki <heldersuzuki@gephi.org>.
  */
 package org.gephi.layout.force.yifanHu;
 
@@ -9,7 +9,7 @@ import org.gephi.layout.force.ForceVector;
 
 /**
  * Fa = (n2 - n1) * ||n2 - n1|| / K
- * @author Helder Suzuki <heldersuzuki@gmail.com>
+ * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
 class SpringForce extends AbstractForce {
 

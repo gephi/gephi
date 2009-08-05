@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2009 Gephi
-Authors : Helder Suzuki <heldersuzuki@gmail.com>
+Authors : Helder Suzuki <heldersuzuki@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -24,27 +24,26 @@ import javax.swing.Icon;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.force.yifanHu.YifanHu;
+import org.openide.util.NbBundle;
 
 /**
  *
- * @author Helder Suzuki <heldersuzuki@gmail.com>
+ * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
 public class YifanHuMultiLevel implements LayoutBuilder {
 
     public Layout buildLayout() {
-        MultiLevelLayout layout = new MultiLevelLayout(new MaximalMatchingCoarsening(),
-                                                       new YifanHu(),
-                                                       "Multilevel YifanHu",
-                                                       "Multilevel YifanHu");
+        MultiLevelLayout layout = new MultiLevelLayout(
+            this, new MaximalMatchingCoarsening(), new YifanHu());
         return layout;
     }
 
     public String getName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return NbBundle.getMessage(YifanHuMultiLevel.class, "TifanHuMultiLevel_name");
     }
 
     public String getDescription() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return NbBundle.getMessage(YifanHuMultiLevel.class, "TifanHuMultiLevel_description");
     }
 
     public Icon getIcon() {

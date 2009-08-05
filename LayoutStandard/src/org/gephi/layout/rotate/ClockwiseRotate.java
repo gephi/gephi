@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2009 Gephi
-Authors : Helder Suzuki <heldersuzuki@gmail.com>
+Authors : Helder Suzuki <heldersuzuki@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -23,23 +23,24 @@ package org.gephi.layout.rotate;
 import javax.swing.Icon;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
+import org.openide.util.NbBundle;
 
 /**
  *
- * @author Helder Suzuki <heldersuzuki@gmail.com>
+ * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
 public class ClockwiseRotate implements LayoutBuilder {
 
     public Layout buildLayout() {
-        return new RotateLayout(Math.PI / 2);
+        return new RotateLayout(this, Math.PI / 2);
     }
 
     public String getName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return NbBundle.getMessage(ClockwiseRotate.class, "clockwise_name");
     }
 
     public String getDescription() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return NbBundle.getMessage(ClockwiseRotate.class, "clockwise_description");
     }
 
     public Icon getIcon() {

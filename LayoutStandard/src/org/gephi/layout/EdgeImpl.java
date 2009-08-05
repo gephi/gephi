@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2009 Gephi
-Authors : Helder Suzuki <heldersuzuki@gmail.com>
+Authors : Helder Suzuki <heldersuzuki@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -26,7 +26,7 @@ import org.gephi.graph.api.Node;
 
 /**
  *
- * @author Helder Suzuki <heldersuzuki@gmail.com>
+ * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
 public class EdgeImpl implements Edge {
 

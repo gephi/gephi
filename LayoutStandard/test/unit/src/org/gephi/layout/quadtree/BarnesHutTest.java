@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2009 Gephi
-Authors : Helder Suzuki <heldersuzuki@gmail.com>
+Authors : Helder Suzuki <heldersuzuki@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Helder Suzuki <heldersuzuki@gmail.com>
+ * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
 public class BarnesHutTest {
 

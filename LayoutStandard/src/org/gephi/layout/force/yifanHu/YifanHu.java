@@ -1,15 +1,16 @@
 /*
- *  Copyright 2009 Helder Suzuki <heldersuzuki@gmail.com>.
+ *  Copyright 2009 Helder Suzuki <heldersuzuki@gephi.org>.
  */
 package org.gephi.layout.force.yifanHu;
 
 import javax.swing.Icon;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
+import org.openide.util.NbBundle;
 
 /**
  *
- * @author Helder Suzuki <heldersuzuki@gmail.com>
+ * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
 public class YifanHu implements LayoutBuilder {
 
@@ -19,11 +20,11 @@ public class YifanHu implements LayoutBuilder {
     }
 
     public String getName() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return NbBundle.getMessage(YifanHu.class, "YifanHu_name");
     }
 
     public String getDescription() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return NbBundle.getMessage(YifanHu.class, "YifanHu_description");
     }
 
     public Icon getIcon() {

@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2009 Gephi
-Authors : Helder Suzuki <heldersuzuki@gmail.com>
+Authors : Helder Suzuki <heldersuzuki@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -21,45 +21,37 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.layout.rotate;
 
 import java.util.List;
-import javax.swing.Icon;
-import javax.swing.JPanel;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
+import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutProperty;
-import org.openide.util.NbBundle;
 
 /**
  * Sample layout that simply rotates the graph.
- * @author Helder Suzuki <heldersuzuki@gmail.com>
+ * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
-public class RotateLayout implements Layout {
+public class RotateLayout extends AbstractLayout implements Layout {
 
     private boolean converged;
     public double angle;
     private Graph graph;
 
-    public RotateLayout(double angle) {
+    public RotateLayout(LayoutBuilder layoutBuilder, double angle) {
+        super(layoutBuilder);
         this.angle = angle;
     }
 
-    public String getName() {
-        return NbBundle.getMessage(RotateLayout.class, "name");
-    }
-
-    public String getDescription() {
-        return NbBundle.getMessage(RotateLayout.class, "description");
-    }
-
-    public Icon getIcon() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void initAlgo(GraphController graphController) {
-        this.graph = graphController.getUndirectedGraph();
+    public void initAlgo() {
         converged = false;
+    }
+
+    @Override
+    public void setGraphController(GraphController graphController) {
+        super.setGraphController(graphController);
+        this.graph = graphController.getUndirectedGraph();
     }
 
     public void goAlgo() {
@@ -92,14 +84,6 @@ public class RotateLayout implements Layout {
         return null;
     }
 
-    public JPanel getPanel() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public void resetPropertiesValues() {
-    }
-
-    public LayoutBuilder getBuilder() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

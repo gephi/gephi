@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2009 Gephi
-Authors : Helder Suzuki <heldersuzuki@gmail.com>
+Authors : Helder Suzuki <heldersuzuki@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -22,16 +22,16 @@ package org.gephi.layout.force;
 
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
+import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.GraphUtils;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.force.quadtree.QuadTree;
 
 /**
  *
- * @author Helder Suzuki <heldersuzuki@gmail.com>
+ * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
 public abstract class AbstractForceLayout implements Layout {
 
@@ -41,18 +41,13 @@ public abstract class AbstractForceLayout implements Layout {
     protected AbstractForce edgeForce;
     protected AbstractForce nodeForce;
 
-    public void initAlgo(ClusteredGraph graph) {
-        this.graph = graph;
-
-        for (Node n : graph.getTopNodes()) {
-            n.getNodeData().setLayoutData(new ForceVector());
-        }
+    public void initAlgo() {
         energy = Float.POSITIVE_INFINITY;
     }
 
-    public void initAlgo(GraphController graphController) {
-        initAlgo(graphController.getHierarchicalUndirectedGraph().getClusteredGraph());
-    }
+//    public void initAlgo() {
+//        //initAlgo(graphController.getHierarchicalUndirectedGraph().getClusteredGraph());
+//    }
 
     /* Maximum level for Barnes-Hut's quadtree */
     protected int getQuadTreeMaxLevel() {

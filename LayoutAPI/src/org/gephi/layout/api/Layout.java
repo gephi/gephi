@@ -29,7 +29,9 @@ import org.gephi.graph.api.GraphController;
  */
 public interface Layout {
 
-    public void initAlgo(GraphController graphController);
+    public void initAlgo();
+
+    public void setGraphController(GraphController graphController);
 
     public void goAlgo();
 

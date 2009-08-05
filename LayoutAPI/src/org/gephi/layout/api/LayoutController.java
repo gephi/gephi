@@ -35,4 +35,8 @@ public interface LayoutController {
     public void executeLayout();
 
     public void stopLayout();
+
+    public void addObserver(LayoutControllerObserver observer);
+
+    public void removeObserver(LayoutControllerObserver observer);
 }

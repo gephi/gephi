@@ -233,4 +233,12 @@ public class ForceAtlas extends AbstractForceVector {
     public LayoutBuilder getBuilder() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public void initAlgo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setGraphController(GraphController graphController) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

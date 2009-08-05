@@ -10,27 +10,30 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.ComboBoxModel;
+import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutController;
+import org.gephi.layout.api.LayoutControllerObserver;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 //import org.openide.util.Utilities;
 
+
 /**
  * Top component which displays something.
  */
-final class LayoutTopComponent extends TopComponent {
+final class LayoutTopComponent extends TopComponent implements LayoutControllerObserver {
 
     private static LayoutTopComponent instance;
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "LayoutTopComponent";
     private LayoutController layoutController;
-    private Action playAction;
-    private Action stopAction;
+    private Action requestPlayAction;
+    private Action requestStopAction;
+    private Action chooseLayoutAction;
 
     private LayoutTopComponent() {
         initActions();
@@ -43,12 +46,26 @@ final class LayoutTopComponent extends TopComponent {
     }
 
     private void initActions() {
-        playAction = new PlayAction("Play", "Run the spatialization slgorithm", 0);
-        stopAction = new StopAction("Stop", "Stop the algorithm", 0);
+        requestPlayAction = new RequestPlayAction();
+        requestStopAction = new RequestStopAction();
+        chooseLayoutAction = new ChooseLayoutAction();
     }
 
     private void initLayoutController() {
         layoutController = Lookup.getDefault().lookup(LayoutController.class);
+    }
+
+    private void initLayoutComboBox() {
+        layoutComboBox.setAction(chooseLayoutAction);
+        List<LayoutBuilder> layouts = layoutController.getLayouts();
+        System.out.println("layouts: " + layouts.size());
+        for (LayoutBuilder layoutBuilder : layouts) {
+            layoutComboBox.addItem(new LayoutBuilderWrapper(layoutBuilder));
+            System.out.println(layoutBuilder.getClass().getName());
+            System.out.println(layoutBuilder.getName());
+            System.out.println(layoutBuilder.getDescription() + "\n");
+        }
+        chooseLayoutAction.actionPerformed(null);
     }
 
     /** This method is called from within the constructor to
@@ -61,22 +78,19 @@ final class LayoutTopComponent extends TopComponent {
 
         layoutComboBox = new javax.swing.JComboBox();
         topLabel = new javax.swing.JLabel();
-        playButton = new javax.swing.JButton(playAction);
-        stopButton = new javax.swing.JButton(stopAction);
+        playButton = new javax.swing.JButton(requestPlayAction);
+        stopButton = new javax.swing.JButton(requestStopAction);
 
-        layoutComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        layoutComboBox.setFont(new java.awt.Font("Tahoma", 1, 14));
         initLayoutComboBox();
-        layoutComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                layoutComboBoxActionPerformed(evt);
-            }
-        });
 
         org.openide.awt.Mnemonics.setLocalizedText(topLabel, org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.topLabel.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(playButton, org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.playButton.text")); // NOI18N
+        playButton.setToolTipText(org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.playButton.toolTipText")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(stopButton, org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.stopButton.text")); // NOI18N
+        stopButton.setToolTipText(org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.stopButton.toolTipText")); // NOI18N
         stopButton.setActionCommand(org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.stopButton.actionCommand")); // NOI18N
         stopButton.setEnabled(false);
 
@@ -88,10 +102,10 @@ final class LayoutTopComponent extends TopComponent {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(topLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(layoutComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(layoutComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(playButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(stopButton)))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
@@ -100,25 +114,15 @@ final class LayoutTopComponent extends TopComponent {
             .addGroup(layout.createSequentialGroup()
                 .addGap(7, 7, 7)
                 .addComponent(topLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(layoutComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(59, 59, 59)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(playButton)
                     .addComponent(stopButton))
-                .addContainerGap(159, Short.MAX_VALUE))
+                .addContainerGap(136, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void initLayoutComboBox() {
-        List<LayoutBuilder> layouts = layoutController.getLayouts();
-        ComboBoxModel model = layoutComboBox.getModel();
-//        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    private void layoutComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_layoutComboBoxActionPerformed
-        // TODO add your handling code here:
-}//GEN-LAST:event_layoutComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox layoutComboBox;
@@ -184,6 +188,14 @@ final class LayoutTopComponent extends TopComponent {
         return PREFERRED_ID;
     }
 
+    public void executeEvent() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void stopEvent() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     final static class ResolvableHelper implements Serializable {
 
         private static final long serialVersionUID = 1L;
@@ -193,31 +205,48 @@ final class LayoutTopComponent extends TopComponent {
         }
     }
 
-    class PlayAction extends AbstractAction {
-
-        public PlayAction(String text, String desc, Integer mnemonic) {
-            putValue(SHORT_DESCRIPTION, desc);
-            putValue(MNEMONIC_KEY, mnemonic);
-        }
+    class RequestPlayAction extends AbstractAction {
 
         public void actionPerformed(ActionEvent e) {
-            System.out.println("Action: " + e.getActionCommand());
+            layoutController.executeLayout();
             stopButton.setEnabled(true);
             playButton.setEnabled(false);
         }
     }
 
-    class StopAction extends AbstractAction {
-
-        public StopAction(String text, String desc, Integer mnemonic) {
-            putValue(SHORT_DESCRIPTION, desc);
-            putValue(MNEMONIC_KEY, mnemonic);
-        }
+    class RequestStopAction extends AbstractAction {
 
         public void actionPerformed(ActionEvent e) {
-            System.out.println("Action: " + e.getActionCommand());
+            layoutController.stopLayout();
             stopButton.setEnabled(false);
             playButton.setEnabled(true);
         }
+    }
+
+    class ChooseLayoutAction extends AbstractAction {
+
+        public void actionPerformed(ActionEvent e) {
+            LayoutBuilderWrapper selected = (LayoutBuilderWrapper) layoutComboBox.getSelectedItem();
+            Layout layout = selected.getLayoutBuilder().buildLayout();
+            System.out.println(layout.getClass().getName());
+            layoutController.setLayout(layout);
+        }
+    }
+}
+class LayoutBuilderWrapper {
+
+    private LayoutBuilder layoutBuilder;
+
+    public LayoutBuilderWrapper(LayoutBuilder layoutBuilder) {
+        this.layoutBuilder = layoutBuilder;
+    }
+
+    public LayoutBuilder getLayoutBuilder() {
+        return layoutBuilder;
+    }
+
+    @Override
+    public String toString() {
+        return layoutBuilder.getName();
     }
 }
