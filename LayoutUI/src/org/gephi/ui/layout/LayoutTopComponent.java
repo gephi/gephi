@@ -14,15 +14,22 @@ import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.api.LayoutControllerObserver;
+import org.openide.explorer.ExplorerManager;
+import org.openide.explorer.view.ChoiceView;
+import org.openide.nodes.AbstractNode;
+import org.openide.nodes.Children;
+import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.Lookups;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
 /**
  * Top component which displays something.
  */
-final class LayoutTopComponent extends TopComponent implements LayoutControllerObserver {
+final class LayoutTopComponent extends TopComponent
+    implements LayoutControllerObserver, ExplorerManager.Provider {
 
     private static LayoutTopComponent instance;
     /** path to the icon used by the component and its open action */
@@ -32,11 +39,13 @@ final class LayoutTopComponent extends TopComponent implements LayoutControllerO
     private Action requestPlayAction;
     private Action requestStopAction;
     private Action chooseLayoutAction;
+    private final ExplorerManager mgr = new ExplorerManager();
 
     private LayoutTopComponent() {
         initActions();
         initLayoutController();
         initComponents();
+        mgr.setRootContext(new AbstractNode(new MyChildren()));
         setName(NbBundle.getMessage(LayoutTopComponent.class, "CTL_LayoutTopComponent"));
         setToolTipText(NbBundle.getMessage(LayoutTopComponent.class, "HINT_LayoutTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
@@ -52,6 +61,24 @@ final class LayoutTopComponent extends TopComponent implements LayoutControllerO
     private void initLayoutController() {
         layoutController = Lookup.getDefault().lookup(LayoutController.class);
         layoutController.addObserver(this);
+    }
+
+    class MyChildren extends Children.Keys {
+
+        public MyChildren() {
+        }
+
+        @Override
+        protected Node[] createNodes(Object o) {
+            LayoutBuilder obj = (LayoutBuilder) o;
+            AbstractNode result = new AbstractNode(new MyChildren(), Lookups.singleton(obj));
+            result.setDisplayName(obj.toString());
+            return new Node[]{result};
+        }
+
+        protected void addNotify() {
+            setKeys(layoutController.getLayouts().toArray());
+        }
     }
 
     private void initLayoutComboBox() {
@@ -79,6 +106,7 @@ final class LayoutTopComponent extends TopComponent implements LayoutControllerO
         topLabel = new javax.swing.JLabel();
         playButton = new javax.swing.JButton(requestPlayAction);
         stopButton = new javax.swing.JButton(requestStopAction);
+        jComboBox1 = new ChoiceView();
 
         layoutComboBox.setFont(new java.awt.Font("Tahoma", 1, 14));
         initLayoutComboBox();
@@ -93,6 +121,8 @@ final class LayoutTopComponent extends TopComponent implements LayoutControllerO
         stopButton.setActionCommand(org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.stopButton.actionCommand")); // NOI18N
         stopButton.setEnabled(false);
 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -100,6 +130,7 @@ final class LayoutTopComponent extends TopComponent implements LayoutControllerO
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(topLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(layoutComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
@@ -111,7 +142,7 @@ final class LayoutTopComponent extends TopComponent implements LayoutControllerO
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(7, 7, 7)
+                .addGap(11, 11, 11)
                 .addComponent(topLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(layoutComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -119,11 +150,14 @@ final class LayoutTopComponent extends TopComponent implements LayoutControllerO
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(playButton)
                     .addComponent(stopButton))
-                .addContainerGap(136, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(197, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox layoutComboBox;
     private javax.swing.JButton playButton;
     private javax.swing.JButton stopButton;
@@ -195,6 +229,10 @@ final class LayoutTopComponent extends TopComponent implements LayoutControllerO
     public void stopEvent() {
         stopButton.setEnabled(false);
         playButton.setEnabled(true);
+    }
+
+    public ExplorerManager getExplorerManager() {
+        return mgr;
     }
 
     final static class ResolvableHelper implements Serializable {

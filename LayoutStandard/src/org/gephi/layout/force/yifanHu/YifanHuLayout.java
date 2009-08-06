@@ -26,16 +26,13 @@ import org.gephi.layout.GraphUtils;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutProperty;
-import org.gephi.layout.force.AbstractForce;
-import org.gephi.layout.force.AbstractForceLayout;
-import org.gephi.layout.force.Displacement;
-import org.gephi.layout.force.StepDisplacement;
+import org.gephi.layout.force.SimpleForceLayout;
 
 /**
  * Hu's basic algorithm
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
-public class YifanHuLayout extends AbstractForceLayout implements Layout {
+public class YifanHuLayout extends SimpleForceLayout implements Layout {
 
     public float optimalDistance;
     public float relativeStrength;
@@ -44,22 +41,21 @@ public class YifanHuLayout extends AbstractForceLayout implements Layout {
     public float stepRatio;
     private boolean converged;
 
-    @Override
-    protected Displacement getDisplacement() {
-        return new StepDisplacement(step);
+    public YifanHuLayout(LayoutBuilder layoutBuilder) {
+        super(layoutBuilder);
     }
 
-    @Override
-    protected AbstractForce getNodeForce() {
-        return new ElectricalForce(relativeStrength, optimalDistance);
-    }
-
-    @Override
-    protected AbstractForce getEdgeForce() {
-        return new SpringForce(optimalDistance);
-    }
-
-    @Override
+//    protected Displacement getDisplacement() {
+//        return new StepDisplacement(step);
+//    }
+//
+//    protected AbstractForce getNodeForce() {
+//        return new ElectricalForce(relativeStrength, optimalDistance);
+//    }
+//
+//    protected AbstractForce getEdgeForce() {
+//        return new SpringForce(optimalDistance);
+//    }
     protected void postAlgo() {
         updateStep();
         if (Math.abs((energy - energy0) / energy) < 1e-3) {
@@ -99,28 +95,11 @@ public class YifanHuLayout extends AbstractForceLayout implements Layout {
         step = optimalDistance / 10000;
     }
 
-    @Override
     protected boolean hasConverged() {
         return converged;
     }
 
-    public void endAlgo() {
-    }
-
-    @Override
     protected int getQuadTreeMaxLevel() {
         return 10;
-    }
-
-    public void initAlgo() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setGraphController(GraphController graphController) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public LayoutBuilder getBuilder() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

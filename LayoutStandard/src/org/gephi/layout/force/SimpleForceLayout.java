@@ -20,42 +20,60 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.force;
 
+import java.util.List;
 import org.gephi.graph.api.ClusteredGraph;
+import org.gephi.graph.api.ClusteredUndirectedGraph;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
+import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.GraphUtils;
 import org.gephi.layout.api.Layout;
+import org.gephi.layout.api.LayoutBuilder;
+import org.gephi.layout.api.LayoutProperty;
 import org.gephi.layout.force.quadtree.QuadTree;
 
 /**
  *
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
-public abstract class AbstractForceLayout implements Layout {
+public class SimpleForceLayout extends AbstractLayout implements Layout {
 
-    protected ClusteredGraph graph;
-    protected float energy0;
-    protected float energy;
-    protected AbstractForce edgeForce;
-    protected AbstractForce nodeForce;
+    public ClusteredUndirectedGraph graph;
+    public float energy0;
+    public float energy;
+    private AbstractForce edgeForce;
+    private AbstractForce nodeForce;
+    private Displacement displacement;
+    private ConvergenceCriterium converenceCriterium;
+
+    public SimpleForceLayout(LayoutBuilder layoutBuilder) {
+        super(layoutBuilder);
+    }
 
     public void initAlgo() {
         energy = Float.POSITIVE_INFINITY;
     }
 
-//    public void initAlgo() {
-//        //initAlgo(graphController.getHierarchicalUndirectedGraph().getClusteredGraph());
-//    }
+    @Override
+    public void setGraphController(GraphController graphController) {
+        super.setGraphController(graphController);
+        graph = graphController.getHierarchicalUndirectedGraph().getClusteredGraph();
+    }
+
+    public void setGraph(ClusteredUndirectedGraph graph) {
+        this.graph = graph;
+    }
 
     /* Maximum level for Barnes-Hut's quadtree */
-    protected int getQuadTreeMaxLevel() {
+    private int getQuadTreeMaxLevel() {
         return Integer.MAX_VALUE;
     }
 
     /* theta is the parameter for Barnes-Hut opening criteria */
-    protected float getBarnesHutTheta() {
+    private float getBarnesHutTheta() {
         return (float) 1.2;
     }
 
@@ -96,25 +114,69 @@ public abstract class AbstractForceLayout implements Layout {
             energy += force.getEnergy();
             getDisplacement().moveNode(data, force);
         }
-
-        postAlgo();
     }
 
     public boolean canAlgo() {
-        return !hasConverged();
+        return getConverenceCriterium().hasConverged();
     }
 
-    protected AbstractForce getEdgeForce() {
+    public void endAlgo() {
+    }
+
+    /**
+     * @return the edgeForce
+     */
+    public AbstractForce getEdgeForce() {
         return edgeForce;
     }
 
-    protected AbstractForce getNodeForce() {
+    /**
+     * @param edgeForce the edgeForce to set
+     */
+    public void setEdgeForce(AbstractForce edgeForce) {
+        this.edgeForce = edgeForce;
+    }
+
+    /**
+     * @return the nodeForce
+     */
+    public AbstractForce getNodeForce() {
         return nodeForce;
     }
 
-    protected abstract Displacement getDisplacement();
+    /**
+     * @param nodeForce the nodeForce to set
+     */
+    public void setNodeForce(AbstractForce nodeForce) {
+        this.nodeForce = nodeForce;
+    }
 
-    protected abstract void postAlgo();
+    /**
+     * @return the displacement
+     */
+    public Displacement getDisplacement() {
+        return displacement;
+    }
 
-    protected abstract boolean hasConverged();
+    /**
+     * @param displacement the displacement to set
+     */
+    public void setDisplacement(Displacement displacement) {
+        this.displacement = displacement;
+    }
+
+    /**
+     * @return the converenceCriterium
+     */
+    public ConvergenceCriterium getConverenceCriterium() {
+        return converenceCriterium;
+    }
+
+    public List<LayoutProperty> getProperties() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void resetPropertiesValues() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

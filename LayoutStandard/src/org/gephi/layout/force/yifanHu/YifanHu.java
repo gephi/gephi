@@ -15,7 +15,7 @@ import org.openide.util.NbBundle;
 public class YifanHu implements LayoutBuilder {
 
     public Layout buildLayout() {
-        YifanHuLayout layout = new YifanHuLayout();
+        YifanHuLayout layout = new YifanHuLayout(this);
         return layout;
     }
 
