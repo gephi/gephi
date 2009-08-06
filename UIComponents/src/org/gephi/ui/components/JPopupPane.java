@@ -54,35 +54,31 @@ public class JPopupPane {
 
     private HideAWTListener hideListener;
     private JComponent ancestor;
-    private JPanel content;
     private boolean showingPopup = false;
     private JPopupPaneComponent pane;
     private JWindow popupWindow;
+    private JPanel view;
 
     public JPopupPane(JComponent ancestor, JPanel content) {
         this.ancestor = ancestor;
-        this.content = content;
+        this.view = content;
         hideListener = new HideAWTListener();
     }
 
     private class JPopupPaneComponent extends JScrollPane {
 
-        private JPanel view;
+        
 
         public JPopupPaneComponent() {
-            view = new JPanel();
             setName("jpopuppane");
             GridLayout grid = new GridLayout(0, 1);
             grid.setHgap(0);
             grid.setVgap(0);
-            view.setLayout(grid);
-            view.setBorder(BorderFactory.createEmptyBorder());
             setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             setViewportView(view);
             setFocusable(true);
             setRequestFocusEnabled(true);
             setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-            view.add(content);
         }
         static final int ITEM_WIDTH = 400;
 
