@@ -33,6 +33,7 @@ import org.gephi.io.container.Container;
 import org.gephi.io.container.ContainerUnloader;
 import org.gephi.io.logging.Issue;
 import org.gephi.io.logging.Report;
+import org.gephi.ui.components.JHTMLEditorPane;
 import org.gephi.ui.utils.BusyUtils;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.OutlineModel;
@@ -104,10 +105,10 @@ public class ReportPanel extends javax.swing.JPanel {
 
             public void run() {
                 String str = report.getHtml();
-                reportTextPane.setContentType("text/html");
-                reportTextPane.setText(str);
+                //reportEditor.setContentType("text/html");
+                reportEditor.setText(str);
             }
-        }, "Report Panel Issues Outline");
+        }, "Report Panel Issues Report");
         thread.start();
     }
 
@@ -142,7 +143,7 @@ public class ReportPanel extends javax.swing.JPanel {
     }
 
     public ProcessorStrategyEnum getProcessorStrategy() {
-        if(processorStrategyRadio.getSelection()==appendGraphRadio.getModel()) {
+        if (processorStrategyRadio.getSelection() == appendGraphRadio.getModel()) {
             return ProcessorStrategyEnum.APPEND;
         } else {
             return ProcessorStrategyEnum.FULL;
@@ -165,8 +166,8 @@ public class ReportPanel extends javax.swing.JPanel {
         tab1ScrollPane = new javax.swing.JScrollPane();
         issuesOutline = new org.netbeans.swing.outline.Outline();
         tab2ScrollPane = new javax.swing.JScrollPane();
-        reportTextPane = new javax.swing.JTextPane();
-        jLabel1 = new javax.swing.JLabel();
+        reportEditor = new JHTMLEditorPane();
+        labelGraphType = new javax.swing.JLabel();
         labelNodeCount = new javax.swing.JLabel();
         labelEdgeCount = new javax.swing.JLabel();
         graphTypeCombo = new javax.swing.JComboBox();
@@ -187,11 +188,11 @@ public class ReportPanel extends javax.swing.JPanel {
 
         tabbedPane.addTab(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.tab1ScrollPane.TabConstraints.tabTitle"), tab1ScrollPane); // NOI18N
 
-        tab2ScrollPane.setViewportView(reportTextPane);
+        tab2ScrollPane.setViewportView(reportEditor);
 
         tabbedPane.addTab(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.tab2ScrollPane.TabConstraints.tabTitle"), tab2ScrollPane); // NOI18N
 
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.jLabel1.text")); // NOI18N
+        labelGraphType.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelGraphType.text")); // NOI18N
 
         labelNodeCount.setFont(new java.awt.Font("Tahoma", 1, 11));
         labelNodeCount.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelNodeCount.text")); // NOI18N
@@ -239,7 +240,7 @@ public class ReportPanel extends javax.swing.JPanel {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel1)
+                                        .addComponent(labelGraphType)
                                         .addComponent(labelNodeCount)
                                         .addComponent(labelEdgeCount))
                                     .addGap(43, 43, 43))
@@ -273,7 +274,7 @@ public class ReportPanel extends javax.swing.JPanel {
                 .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                    .addComponent(labelGraphType)
                     .addComponent(fullGraphRadio)
                     .addComponent(graphTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -304,15 +305,15 @@ public class ReportPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox graphTypeCombo;
     private javax.swing.JLabel hierarchicalLabel;
     private org.netbeans.swing.outline.Outline issuesOutline;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel labelDynamic;
     private javax.swing.JLabel labelEdgeCount;
+    private javax.swing.JLabel labelGraphType;
     private javax.swing.JLabel labelHierarchical;
     private javax.swing.JLabel labelNodeCount;
     private javax.swing.JLabel labelSrc;
     private javax.swing.JLabel nodeCountLabel;
     private javax.swing.ButtonGroup processorStrategyRadio;
-    private javax.swing.JTextPane reportTextPane;
+    private javax.swing.JEditorPane reportEditor;
     private javax.swing.JLabel sourceLabel;
     private javax.swing.JScrollPane tab1ScrollPane;
     private javax.swing.JScrollPane tab2ScrollPane;
