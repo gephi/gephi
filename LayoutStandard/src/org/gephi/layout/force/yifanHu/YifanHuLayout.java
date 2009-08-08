@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.layout.force.yifanHu;
 
 import java.util.List;
-import org.gephi.graph.api.GraphController;
 import org.gephi.layout.GraphUtils;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
