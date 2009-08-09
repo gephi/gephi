@@ -9,7 +9,7 @@ package org.gephi.layout.api;
  */
 public interface LayoutControllerObserver {
 
-    public void executeEvent();
+    public void executeLayoutEvent();
 
-    public void stopEvent();
+    public void stopLayoutEvent();
 }

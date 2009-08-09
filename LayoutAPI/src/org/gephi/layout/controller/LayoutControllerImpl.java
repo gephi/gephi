@@ -80,13 +80,13 @@ public class LayoutControllerImpl implements LayoutController {
 
     private void notifyStop() {
         for (LayoutControllerObserver observer : observers) {
-            observer.stopEvent();
+            observer.stopLayoutEvent();
         }
     }
 
     private void notifyExecute() {
         for (LayoutControllerObserver observer : observers) {
-            observer.executeEvent();
+            observer.executeLayoutEvent();
         }
     }
 
