@@ -41,7 +41,7 @@ public class GraphUtils {
         return n;
     }
 
-    public static float getAverageEdge(ClusteredGraph graph) {
+    public static float getAverageEdgeLength(ClusteredGraph graph) {
         float edgeLength = 0;
         int count = 1;
         for (Edge e : getTopEdges(graph)) {

@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.rotate;
 
-import java.util.List;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
@@ -28,6 +27,8 @@ import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutProperty;
+import org.openide.nodes.Node.PropertySet;
+import org.openide.nodes.Sheet;
 
 /**
  * Sample layout that simply rotates the graph.
@@ -37,7 +38,7 @@ public class RotateLayout extends AbstractLayout implements Layout {
 
     private boolean converged;
     private boolean initialized;
-    public double angle;
+    private double angle;
     private Graph graph;
 
     public RotateLayout(LayoutBuilder layoutBuilder, double angle) {
@@ -57,8 +58,8 @@ public class RotateLayout extends AbstractLayout implements Layout {
     }
 
     public void goAlgo() {
-        double sin = Math.sin(angle);
-        double cos = Math.cos(angle);
+        double sin = Math.sin(getAngle() * Math.PI / 180);
+        double cos = Math.cos(getAngle() * Math.PI / 180);
         double px = 0f;
         double py = 0f;
 
@@ -79,13 +80,28 @@ public class RotateLayout extends AbstractLayout implements Layout {
     public void endAlgo() {
     }
 
-    public List<LayoutProperty> getProperties() {
-//        LayoutProperty[] layoutProperties = new LayoutProperty[1];
-//        layoutProperties[0] = LayoutProperty.createProperty(RotateLayout.class, "angle");
-//        return layoutProperties;
-        return null;
+    public void resetPropertiesValues() {
     }
 
-    public void resetPropertiesValues() {
+    public PropertySet[] getPropertySets() throws NoSuchMethodException {
+        Sheet.Set set = Sheet.createPropertiesSet();
+        set.put(LayoutProperty.createProperty(
+            this, Double.class, "Angle",
+            "Clockwise rotation angle in degrees", "getAngle", "setAngle"));
+        return new PropertySet[]{set};
+    }
+
+    /**
+     * @return the angle
+     */
+    public Double getAngle() {
+        return angle;
+    }
+
+    /**
+     * @param angle the angle to set
+     */
+    public void setAngle(Double angle) {
+        this.angle = angle;
     }
 }

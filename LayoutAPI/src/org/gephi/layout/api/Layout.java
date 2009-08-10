@@ -20,8 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.api;
 
-import java.util.List;
 import org.gephi.graph.api.GraphController;
+import org.openide.nodes.Node.PropertySet;
 
 /**
  *
@@ -39,7 +39,7 @@ public interface Layout {
 
     public void endAlgo();
 
-    public List<LayoutProperty> getProperties();
+    public PropertySet[] getPropertySets() throws NoSuchMethodException;
 
     public void resetPropertiesValues();
 

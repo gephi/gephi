@@ -8,7 +8,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyVetoException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,8 +20,8 @@ import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.api.LayoutControllerObserver;
+import org.gephi.layout.api.LayoutProperty;
 import org.openide.explorer.ExplorerManager;
-import org.openide.explorer.ExplorerUtils;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.explorer.view.ChoiceView;
 import org.openide.nodes.AbstractNode;
@@ -65,9 +64,6 @@ final class LayoutTopComponent extends TopComponent
         ActionMap map = this.getActionMap();
         explorerManager.setRootContext(new AbstractNode(rootNode));
         explorerManager.addPropertyChangeListener(this);
-//        map.put(DefaultEditorKit.copyAction, ExplorerUtils.actionCopy(explorerManager));
-//        map.put(DefaultEditorKit.cutAction, ExplorerUtils.actionCut(explorerManager));
-//        map.put(DefaultEditorKit.pasteAction, ExplorerUtils.actionPaste(explorerManager));
 
         // following line tells the top component which lookup should be associated with it
 //        associateLookup(ExplorerUtils.createLookup(explorerManager, map));
@@ -86,6 +82,8 @@ final class LayoutTopComponent extends TopComponent
         if ("selectedNodes".equals(evt.getPropertyName())) {
             propertySheet.setNodes(explorerManager.getSelectedNodes());
             layoutController.setLayout(getSelectedLayout());
+        } else {
+            System.out.println("evt: " + evt.getPropertyName());
         }
     }
 
@@ -103,7 +101,7 @@ final class LayoutTopComponent extends TopComponent
 
     public class LayoutNode extends AbstractNode {
 
-        private String valor;
+        private String valor,  valor2;
         private Layout layout;
 
         public void setValor(String valor) {
@@ -117,33 +115,61 @@ final class LayoutTopComponent extends TopComponent
         public LayoutNode(Layout layout) {
             super(Children.LEAF);
             this.layout = layout;
+            setName(layout.getBuilder().getName());
+            setShortDescription(layout.getBuilder().getDescription());
             setValor(layout.getBuilder().getName());
         }
 
         @Override
-        public String getName() {
-            return layout.getBuilder().getName();
-        }
-
-        @Override
-        public String getShortDescription() {
-            return layout.getBuilder().getDescription();
-        }
-
-        @Override
         public PropertySet[] getPropertySets() {
-            Sheet.Set set = Sheet.createPropertiesSet();
-            Layout obj = getLookup().lookup(Layout.class);
-
-            Property indexProp;
             try {
-                indexProp = new PropertySupport.Reflection(this, String.class, "getValor", "setValor");
-                indexProp.setName("valor");
-                set.put(indexProp);
+                return layout.getPropertySets();
+//            Sheet.Set set = Sheet.createPropertiesSet();
+//
+//            try {
+//                set.put(LayoutProperty.createProperty(
+//                    this, String.class, "Valor", "Valor DESC", "getValor",
+//                    "setValor"));
+//            } catch (NoSuchMethodException ex) {
+//                ex.printStackTrace();
+//            }
+//            Sheet.Set set2 = Sheet.createPropertiesSet();
+//            set2.setDisplayName("SET2");
+//
+//            Property indexProp;
+//            try {
+//                indexProp = new PropertySupport.Reflection(this, String.class, "getValor", "setValor");
+//                indexProp.setName("valor");
+//                set2.put(indexProp);
+//            } catch (NoSuchMethodException ex) {
+//                ex.printStackTrace();
+//            }
+//            return new PropertySet[]{set, set2};
             } catch (NoSuchMethodException ex) {
-                ex.printStackTrace();
+                Exceptions.printStackTrace(ex);
+                return null;
             }
-            return new PropertySet[]{set};
+//            Sheet.Set set = Sheet.createPropertiesSet();
+//
+//            try {
+//                set.put(LayoutProperty.createProperty(
+//                    this, String.class, "Valor", "Valor DESC", "getValor",
+//                    "setValor"));
+//            } catch (NoSuchMethodException ex) {
+//                ex.printStackTrace();
+//            }
+//            Sheet.Set set2 = Sheet.createPropertiesSet();
+//            set2.setDisplayName("SET2");
+//
+//            Property indexProp;
+//            try {
+//                indexProp = new PropertySupport.Reflection(this, String.class, "getValor", "setValor");
+//                indexProp.setName("valor");
+//                set2.put(indexProp);
+//            } catch (NoSuchMethodException ex) {
+//                ex.printStackTrace();
+//            }
+//            return new PropertySet[]{set, set2};
         }
 
         public Layout getLayout() {
@@ -186,11 +212,11 @@ final class LayoutTopComponent extends TopComponent
     }
 
     private void initLayoutComboBox() {
-        layoutComboBox.setAction(chooseLayoutAction);
+        layoutSourceComboBox.setAction(chooseLayoutAction);
         List<LayoutBuilder> layouts = layoutController.getLayouts();
         System.out.println("layouts: " + layouts.size());
         for (LayoutBuilder layoutBuilder : layouts) {
-            layoutComboBox.addItem(new LayoutBuilderWrapper(layoutBuilder));
+            layoutSourceComboBox.addItem(new LayoutBuilderWrapper(layoutBuilder));
             System.out.println(layoutBuilder.getClass().getName());
             System.out.println(layoutBuilder.getName());
             System.out.println(layoutBuilder.getDescription() + "\n");
@@ -208,10 +234,10 @@ final class LayoutTopComponent extends TopComponent
 
         topLabel = new javax.swing.JLabel();
         layoutSourcePanel = new javax.swing.JPanel();
-        layoutComboBox = new javax.swing.JComboBox();
+        layoutSourceComboBox = new javax.swing.JComboBox();
         addLayoutButton = new javax.swing.JButton(addLayoutAction);
         layoutsPanel = new javax.swing.JPanel();
-        jComboBox1 = new ChoiceView();
+        layoutComboBox = new ChoiceView();
         propertySheetPanel = new javax.swing.JPanel();
         playButton = new javax.swing.JButton(requestPlayAction);
         stopButton = new javax.swing.JButton(requestStopAction);
@@ -221,7 +247,7 @@ final class LayoutTopComponent extends TopComponent
 
         layoutSourcePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.layoutSourcePanel.border.title"))); // NOI18N
 
-        layoutComboBox.setFont(new java.awt.Font("Tahoma", 1, 14));
+        layoutSourceComboBox.setFont(new java.awt.Font("Tahoma", 1, 14));
         initLayoutComboBox();
 
         org.openide.awt.Mnemonics.setLocalizedText(addLayoutButton, org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.addLayoutButton.text")); // NOI18N
@@ -232,7 +258,7 @@ final class LayoutTopComponent extends TopComponent
             layoutSourcePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layoutSourcePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(layoutComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(layoutSourceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(addLayoutButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -242,7 +268,7 @@ final class LayoutTopComponent extends TopComponent
             .addGroup(layoutSourcePanelLayout.createSequentialGroup()
                 .addGroup(layoutSourcePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(addLayoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
-                    .addComponent(layoutComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(layoutSourceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -288,7 +314,7 @@ final class LayoutTopComponent extends TopComponent
                         .addComponent(playButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(stopButton))
-                    .addComponent(jComboBox1, 0, 234, Short.MAX_VALUE)
+                    .addComponent(layoutComboBox, 0, 234, Short.MAX_VALUE)
                     .addComponent(propertySheetPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -296,7 +322,7 @@ final class LayoutTopComponent extends TopComponent
             layoutsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layoutsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(layoutComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(propertySheetPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -339,8 +365,8 @@ final class LayoutTopComponent extends TopComponent
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addLayoutButton;
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox layoutComboBox;
+    private javax.swing.JComboBox layoutSourceComboBox;
     private javax.swing.JPanel layoutSourcePanel;
     private javax.swing.JPanel layoutsPanel;
     private javax.swing.JButton playButton;
@@ -433,7 +459,7 @@ final class LayoutTopComponent extends TopComponent
     class AddLayoutAction extends AbstractAction {
 
         public void actionPerformed(ActionEvent e) {
-            LayoutBuilderWrapper selected = (LayoutBuilderWrapper) layoutComboBox.getSelectedItem();
+            LayoutBuilderWrapper selected = (LayoutBuilderWrapper) layoutSourceComboBox.getSelectedItem();
             Layout layout = selected.getLayoutBuilder().buildLayout();
             System.out.println(layout.getClass().getName());
             rootNode.addLayout(layout);
@@ -442,7 +468,7 @@ final class LayoutTopComponent extends TopComponent
 //                Node node = explorerManager.getSelectedNodes()[0];
 //                PropertySet prop = node.getPropertySets()[0];
 //                System.out.println("Properties: ");
-//                for (Property p : prop.getProperties()) {
+//                for (Property p : prop.getPropertySets()) {
 //                    System.out.println(p.getDisplayName());
 //                }
 //            }
@@ -466,7 +492,7 @@ final class LayoutTopComponent extends TopComponent
     class ChooseLayoutAction extends AbstractAction {
 
         public void actionPerformed(ActionEvent e) {
-            LayoutBuilderWrapper selected = (LayoutBuilderWrapper) layoutComboBox.getSelectedItem();
+            LayoutBuilderWrapper selected = (LayoutBuilderWrapper) layoutSourceComboBox.getSelectedItem();
             Layout layout = selected.getLayoutBuilder().buildLayout();
             System.out.println(layout.getClass().getName());
             layoutController.setLayout(layout);

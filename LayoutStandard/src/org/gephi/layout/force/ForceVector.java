@@ -74,7 +74,7 @@ public class ForceVector implements Spatial, LayoutData {
         y *= s;
     }
 
-    void subtract(ForceVector f) {
+    public void subtract(ForceVector f) {
         if (f != null) {
             x -= f.x();
             y -= f.y();

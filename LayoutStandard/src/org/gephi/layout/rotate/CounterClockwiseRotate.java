@@ -32,7 +32,7 @@ import org.openide.util.NbBundle;
 public class CounterClockwiseRotate implements LayoutBuilder {
 
     public Layout buildLayout() {
-        return new RotateLayout(this, -Math.PI / 2);
+        return new RotateLayout(this, 90);
     }
 
     public String getName() {

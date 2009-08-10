@@ -27,4 +27,12 @@ class SpringForce extends AbstractForce {
         f.multiply(distance / optimalDistance);
         return f;
     }
+
+    public void setOptimalDistance(Float optimalDistance) {
+        this.optimalDistance = optimalDistance;
+    }
+
+    public Float getOptimalDistance() {
+        return optimalDistance;
+    }
 }

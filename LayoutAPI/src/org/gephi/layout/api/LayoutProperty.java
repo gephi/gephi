@@ -18,12 +18,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.layout.api;
 
 import java.lang.reflect.Field;
 import java.util.MissingResourceException;
-import org.openide.util.Exceptions;
+import org.openide.nodes.Node.Property;
+import org.openide.nodes.PropertySupport;
 import org.openide.util.NbBundle;
 
 /**
@@ -31,28 +31,40 @@ import org.openide.util.NbBundle;
  * @author Mathieu Bastian
  */
 public class LayoutProperty {
+
     protected String name;
     protected String description = "";
     protected Field field;
 
-    public static LayoutProperty createProperty(Class layoutClass, String fieldName)
-    {
+    public static LayoutProperty createProperty(Class layoutClass, String fieldName) {
         LayoutProperty lp = new LayoutProperty();
 
-        try
-        {
+        try {
             //Field
             lp.field = layoutClass.getField(fieldName);
 
             //Name
             lp.name = fieldName;
-            lp.name = NbBundle.getMessage(layoutClass, layoutClass.getName()+"_"+fieldName+"_name");
-            lp.description = NbBundle.getMessage(layoutClass, layoutClass.getName()+"_"+fieldName+"_desc");
+            lp.name = NbBundle.getMessage(layoutClass, layoutClass.getName() + "_" + fieldName + "_name");
+            lp.description = NbBundle.getMessage(layoutClass, layoutClass.getName() + "_" + fieldName + "_desc");
         } catch (NoSuchFieldException ex) {
             return null;
         } catch (SecurityException ex) {
             return null;
-        } catch(MissingResourceException ex) { }
+        } catch (MissingResourceException ex) {
+        }
         return lp;
+    }
+
+    public static Property createProperty(
+        Object obj, Class valueType, String propertyName, String propertyDesc,
+        String getMethod, String setMethod) throws NoSuchMethodException {
+        Property property = new PropertySupport.Reflection(
+            obj, valueType, getMethod, setMethod);
+
+        property.setName(propertyName);
+        property.setShortDescription(propertyDesc);
+
+        return property;
     }
 }

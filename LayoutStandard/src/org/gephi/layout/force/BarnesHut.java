@@ -22,6 +22,7 @@ package org.gephi.layout.force;
 
 import org.gephi.graph.api.Spatial;
 import org.gephi.layout.ForceVectorUtils;
+import org.gephi.layout.GraphUtils;
 import org.gephi.layout.force.quadtree.QuadTree;
 
 /**
@@ -32,7 +33,7 @@ public class BarnesHut {
 
     /* theta is the parameter for Barnes-Hut opening criteria
      */
-    public float theta = (float) 1.2;
+    private float theta = (float) 1.2;
     private AbstractForce force;
 
     public BarnesHut(AbstractForce force) {
@@ -47,11 +48,16 @@ public class BarnesHut {
             return null;
         }
 
+        float distance = ForceVectorUtils.distance(node, tree);
+
         if (tree.isIsLeaf() || tree.mass() == 1) {
+            // this is probably the case where tree contains node.
+            if (distance < 1e-8) {
+                return null;
+            }
             return force.calculateForce(node, tree);
         }
 
-        float distance = ForceVectorUtils.distance(node, tree);
         if (distance * theta > tree.size()) {
             ForceVector f = force.calculateForce(node, tree, distance);
             f.multiply(tree.mass());
@@ -63,5 +69,13 @@ public class BarnesHut {
             f.add(calculateForce(node, child));
         }
         return f;
+    }
+
+    public void setTheta(float theta) {
+        this.theta = theta;
+    }
+
+    public float getTheta() {
+        return theta;
     }
 }

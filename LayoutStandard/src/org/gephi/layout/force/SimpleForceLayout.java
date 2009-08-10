@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.force;
 
-import java.util.List;
 import org.gephi.graph.api.ClusteredUndirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
@@ -30,8 +29,8 @@ import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.GraphUtils;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
-import org.gephi.layout.api.LayoutProperty;
 import org.gephi.layout.force.quadtree.QuadTree;
+import org.openide.nodes.Node.PropertySet;
 
 /**
  *
@@ -78,7 +77,7 @@ public class SimpleForceLayout extends AbstractLayout implements Layout {
     public void goAlgo() {
         // Evaluates n^2 inter node forces using BarnesHut.
         BarnesHut barnes = new BarnesHut(getNodeForce());
-        barnes.theta = getBarnesHutTheta();
+        barnes.setTheta(getBarnesHutTheta());
         QuadTree tree = QuadTree.buildTree(graph,
                                            getQuadTreeMaxLevel());
         for (Node node : graph.getTopNodes()) {
@@ -170,11 +169,11 @@ public class SimpleForceLayout extends AbstractLayout implements Layout {
         return converenceCriterium;
     }
 
-    public List<LayoutProperty> getProperties() {
+    public void resetPropertiesValues() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void resetPropertiesValues() {
+    public PropertySet[] getPropertySets() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

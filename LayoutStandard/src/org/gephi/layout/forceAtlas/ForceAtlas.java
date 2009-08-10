@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.forceAtlas;
 
-import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.graph.api.Edge;
@@ -33,7 +32,7 @@ import org.gephi.layout.AbstractForceVector;
 import org.gephi.layout.ForceVectorUtils;
 import org.gephi.layout.ForceVectorNodeLayoutData;
 import org.gephi.layout.api.LayoutBuilder;
-import org.gephi.layout.api.LayoutProperty;
+import org.openide.nodes.Node.PropertySet;
 import org.openide.util.NbBundle;
 
 /**
@@ -205,23 +204,6 @@ public class ForceAtlas extends AbstractForceVector {
     public void endAlgo() {
     }
 
-    public List<LayoutProperty> getProperties() {
-//        LayoutProperty[] layoutProperties = new LayoutProperty[11];
-//        layoutProperties[0] = LayoutProperty.createProperty(ForceAtlas.class, "inertia");
-//        layoutProperties[1] = LayoutProperty.createProperty(ForceAtlas.class, "repulsionStrength");
-//        layoutProperties[2] = LayoutProperty.createProperty(ForceAtlas.class, "attractionStrength");
-//        layoutProperties[3] = LayoutProperty.createProperty(ForceAtlas.class, "maxDisplacement");
-//        layoutProperties[4] = LayoutProperty.createProperty(ForceAtlas.class, "freezeBalance");
-//        layoutProperties[5] = LayoutProperty.createProperty(ForceAtlas.class, "freezeStrength");
-//        layoutProperties[6] = LayoutProperty.createProperty(ForceAtlas.class, "freezeInertia");
-//        layoutProperties[7] = LayoutProperty.createProperty(ForceAtlas.class, "gravity");
-//        layoutProperties[8] = LayoutProperty.createProperty(ForceAtlas.class, "outboundAttractionDistribution");
-//        layoutProperties[9] = LayoutProperty.createProperty(ForceAtlas.class, "adjustSizes");
-//        layoutProperties[10] = LayoutProperty.createProperty(ForceAtlas.class, "speed");
-//        return new ArrayList<LayoutProperty> layoutProperties;
-        return null;
-    }
-
     public JPanel getPanel() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -239,6 +221,24 @@ public class ForceAtlas extends AbstractForceVector {
     }
 
     public void setGraphController(GraphController graphController) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public PropertySet[] getPropertySets() {
+        //        LayoutProperty[] layoutProperties = new LayoutProperty[11];
+//        layoutProperties[0] = LayoutProperty.createProperty(ForceAtlas.class, "inertia");
+//        layoutProperties[1] = LayoutProperty.createProperty(ForceAtlas.class, "repulsionStrength");
+//        layoutProperties[2] = LayoutProperty.createProperty(ForceAtlas.class, "attractionStrength");
+//        layoutProperties[3] = LayoutProperty.createProperty(ForceAtlas.class, "maxDisplacement");
+//        layoutProperties[4] = LayoutProperty.createProperty(ForceAtlas.class, "freezeBalance");
+//        layoutProperties[5] = LayoutProperty.createProperty(ForceAtlas.class, "freezeStrength");
+//        layoutProperties[6] = LayoutProperty.createProperty(ForceAtlas.class, "freezeInertia");
+//        layoutProperties[7] = LayoutProperty.createProperty(ForceAtlas.class, "gravity");
+//        layoutProperties[8] = LayoutProperty.createProperty(ForceAtlas.class, "outboundAttractionDistribution");
+//        layoutProperties[9] = LayoutProperty.createProperty(ForceAtlas.class, "adjustSizes");
+//        layoutProperties[10] = LayoutProperty.createProperty(ForceAtlas.class, "speed");
+//        return new ArrayList<LayoutProperty> layoutProperties;
+
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

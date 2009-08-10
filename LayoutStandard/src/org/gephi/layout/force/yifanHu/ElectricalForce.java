@@ -26,9 +26,22 @@ class ElectricalForce extends AbstractForce {
                                       float distance) {
         ForceVector f = new ForceVector(node2.x() - node1.x(),
                                         node2.y() - node1.y());
-        f.multiply(-relativeStrength * optimalDistance * optimalDistance / (distance * distance));
-        if (f.getNorm() > 100 || Float.isNaN(f.x()) || Float.isNaN(f.y())) {
-            f = new ForceVector(10, 10);
+        float scale = -relativeStrength * optimalDistance * optimalDistance / (distance * distance);
+        if (Float.isNaN(scale) || Float.isInfinite(scale)) {
+            System.out.println("infinite: nodes = (" + node1 + ", " + node2 + ")");
+            scale = -1;
+        }
+
+        f.multiply(scale);
+//        if (f.getNorm() > 100) {
+//            f.multiply(10 / f.getNorm());
+//        }
+
+        if (Float.isNaN(f.x()) || Float.isNaN(f.y())) {
+            System.out.println("NaN!!!");
+            System.out.println("relativeStrength = " + relativeStrength);
+            System.out.println("optimalDistance = " + optimalDistance);
+            System.out.println("distance = " + distance);
         }
         return f;
     }

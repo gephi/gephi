@@ -22,6 +22,7 @@ package org.gephi.layout.force.quadtree;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.ClusteredUndirectedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Spatial;
@@ -43,7 +44,7 @@ public class QuadTree implements Spatial {
     private boolean isLeaf;
     public static final float eps = (float) 1e-6;
 
-    public static QuadTree buildTree(ClusteredUndirectedGraph graph, int maxLevel) {
+    public static QuadTree buildTree(ClusteredGraph graph, int maxLevel) {
         float minX = Float.POSITIVE_INFINITY;
         float maxX = Float.NEGATIVE_INFINITY;
         float minY = Float.POSITIVE_INFINITY;

@@ -20,13 +20,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.multilevel;
 
-import java.util.List;
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
-import org.gephi.layout.api.LayoutProperty;
+import org.openide.nodes.Node.PropertySet;
 
 /**
  *
@@ -93,11 +92,11 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
     public void endAlgo() {
     }
 
-    public List<LayoutProperty> getProperties() {
-        return null;
-    }
-
     public void resetPropertiesValues() {
         acabou = false;
+    }
+
+    public PropertySet[] getPropertySets() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
