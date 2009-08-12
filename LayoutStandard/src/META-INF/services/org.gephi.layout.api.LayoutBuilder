@@ -3,3 +3,4 @@ org.gephi.layout.rotate.CounterClockwiseRotate
 org.gephi.layout.multilevel.YifanHuMultiLevel
 org.gephi.layout.force.yifanHu.YifanHu
 org.gephi.layout.random.Random
+org.gephi.layout.forceAtlas.ForceAtlas
