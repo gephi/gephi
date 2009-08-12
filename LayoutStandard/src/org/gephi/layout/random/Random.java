@@ -18,39 +18,32 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.layout.force;
+package org.gephi.layout.random;
 
-import org.gephi.graph.api.NodeData;
+import javax.swing.Icon;
+import org.gephi.layout.api.Layout;
+import org.gephi.layout.api.LayoutBuilder;
+import org.openide.util.NbBundle;
 
 /**
  *
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
-public class StepDisplacement implements Displacement {
+public class Random implements LayoutBuilder {
 
-    private float step;
-
-    public StepDisplacement(float step) {
-        this.step = step;
+    public String getName() {
+        return NbBundle.getMessage(Random.class, "Random_name");
     }
 
-    private boolean assertValue(float value) {
-        boolean ret = !Float.isInfinite(value) && !Float.isNaN(value);
-        return ret;
+    public String getDescription() {
+        return NbBundle.getMessage(Random.class, "Random_description");
     }
 
-    public void moveNode(NodeData node, ForceVector forceData) {
-        ForceVector displacement = forceData.normalize();
-        displacement.multiply(step);
+    public Icon getIcon() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
-        float x = node.x() + displacement.x();
-        float y = node.y() + displacement.y();
-
-        if (assertValue(x)) {
-            node.setX(x);
-        }
-        if (assertValue(y)) {
-            node.setY(y);
-        }
+    public Layout buildLayout() {
+        return new RandomLayout(this, 50);
     }
 }

@@ -56,6 +56,7 @@ public class LayoutControllerImpl implements LayoutController {
 
     public void setLayout(Layout layout) {
         this.layout = layout;
+        updateGraph();
     }
 
     public List<LayoutBuilder> getLayouts() {
@@ -90,6 +91,14 @@ public class LayoutControllerImpl implements LayoutController {
         }
     }
 
+    public void updateGraph() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (layout != null) {
+            layout.setGraphController(graphController);
+        }
+        System.out.println("LayoutController: Injecting graphController");
+    }
+
     class LayoutRun implements Runnable {
 
         private Layout layout;
@@ -100,23 +109,17 @@ public class LayoutControllerImpl implements LayoutController {
         }
 
         public void run() {
-            System.out.println("LayoutController: run():");
+            System.out.println("LayoutRun: run():");
             stopRequested = false;
-            GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
 
-            System.out.println("LayoutController: Injecting graphController");
-            layout.setGraphController(graphController);
-
-            System.out.println("LayoutController: resetPropertiesValues()");
-            layout.resetPropertiesValues();
             layout.initAlgo();
             notifyExecute();
             while (layout.canAlgo() && !stopRequested) {
                 layout.goAlgo();
             }
-            System.out.println("LayoutController: Layout end.");
             layout.endAlgo();
             notifyStop();
+            System.out.println("LayoutRun: Layout end.");
         }
 
         public void stop() {

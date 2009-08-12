@@ -18,39 +18,28 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.layout.force;
+package org.gephi.layout;
 
-import org.gephi.graph.api.NodeData;
+import org.gephi.layout.api.Layout;
+import org.gephi.layout.api.LayoutBuilder;
+import org.openide.util.Lookup;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
-public class StepDisplacement implements Displacement {
+public class GetPropertySetsTest {
 
-    private float step;
-
-    public StepDisplacement(float step) {
-        this.step = step;
-    }
-
-    private boolean assertValue(float value) {
-        boolean ret = !Float.isInfinite(value) && !Float.isNaN(value);
-        return ret;
-    }
-
-    public void moveNode(NodeData node, ForceVector forceData) {
-        ForceVector displacement = forceData.normalize();
-        displacement.multiply(step);
-
-        float x = node.x() + displacement.x();
-        float y = node.y() + displacement.y();
-
-        if (assertValue(x)) {
-            node.setX(x);
-        }
-        if (assertValue(y)) {
-            node.setY(y);
+    /* Tests if layouts can generate their propertySets without throwing
+     * exceptions (tipically NoSuchMethodException).
+     */
+    @org.junit.Test
+    public void testMaxLevel0() throws NoSuchMethodException {
+        for (LayoutBuilder layoutBuilder : Lookup.getDefault().lookupAll(LayoutBuilder.class)) {
+            Layout layout = layoutBuilder.buildLayout();
+            System.out.println("Layout: " + layoutBuilder.getName());
+            layout.getPropertySets();
         }
     }
 }

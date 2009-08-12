@@ -26,11 +26,11 @@ import org.gephi.graph.api.NodeData;
  *
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
-public class StepDisplacement implements Displacement {
+public class ProportionalDisplacement implements Displacement {
 
     private float step;
 
-    public StepDisplacement(float step) {
+    public ProportionalDisplacement(float step) {
         this.step = step;
     }
 
@@ -40,7 +40,7 @@ public class StepDisplacement implements Displacement {
     }
 
     public void moveNode(NodeData node, ForceVector forceData) {
-        ForceVector displacement = forceData.normalize();
+        ForceVector displacement = new ForceVector(forceData);
         displacement.multiply(step);
 
         float x = node.x() + displacement.x();

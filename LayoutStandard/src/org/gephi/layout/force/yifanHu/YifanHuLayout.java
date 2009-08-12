@@ -34,6 +34,7 @@ import org.gephi.layout.force.AbstractForce;
 import org.gephi.layout.force.BarnesHut;
 import org.gephi.layout.force.Displacement;
 import org.gephi.layout.force.ForceVector;
+import org.gephi.layout.force.ProportionalDisplacement;
 import org.gephi.layout.force.StepDisplacement;
 import org.gephi.layout.force.quadtree.QuadTree;
 import org.openide.nodes.Node.PropertySet;
@@ -51,8 +52,8 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     private int progress;
     private float stepRatio;
     private boolean converged;
-    private float energy0;
-    private float energy;
+    private double energy0;
+    private double energy;
     private ClusteredGraph graph;
 
     public YifanHuLayout(LayoutBuilder layoutBuilder) {
@@ -67,7 +68,8 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     }
 
     private Displacement getDisplacement() {
-        return new StepDisplacement(step);
+        // return new StepDisplacement(getStep());
+        return new ProportionalDisplacement(step);
     }
 
     private AbstractForce getEdgeForce() {
@@ -79,29 +81,25 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     }
 
     private void updateStep() {
-        System.out.println("energy: " + energy);
         if (energy < energy0) {
             progress++;
             if (progress >= 5) {
                 progress = 0;
-                step /= stepRatio;
+                setStep(getStep() / stepRatio);
             }
         } else {
             progress = 0;
-            step *= stepRatio;
+            setStep(getStep() * stepRatio);
         }
     }
 
     @Override
     public void resetPropertiesValues() {
         stepRatio = (float) 0.9;
-        progress = 0;
-        converged = false;
         setRelativeStrength((float) 0.2);
         setOptimalDistance((float) (Math.pow(getRelativeStrength(), 1.0 / 3) * GraphUtils.getAverageEdgeLength(graph)));
-        step = getOptimalDistance() / 10000;
+        setStep(1f);
     }
-
 
     /* Maximum level for Barnes-Hut's quadtree */
     protected int getQuadTreeMaxLevel() {
@@ -109,11 +107,6 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     }
 
     public PropertySet[] getPropertySets() throws NoSuchMethodException {
-        //        LayoutProperty[] properties = new LayoutProperty[3];
-//        properties[0] = LayoutProperty.createProperty(YifanHuLayout.class, "optimalDistance");
-//        properties[1] = LayoutProperty.createProperty(YifanHuLayout.class, "relativeStrength");
-//        properties[2] = LayoutProperty.createProperty(YifanHuLayout.class, "stepRatio");
-//        return properties;
         Sheet.Set set = Sheet.createPropertiesSet();
         set.setDisplayName("Yifan Hu's properties");
         set.put(LayoutProperty.createProperty(
@@ -124,6 +117,10 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             this, Float.class, "Relative Strength",
             "The relative electrical force strength (compared to the springs)",
             "getRelativeStrength", "setRelativeStrength"));
+        set.put(LayoutProperty.createProperty(
+            this, Float.class, "Step size",
+            "The step size used in the integration phase",
+            "getStep", "setStep"));
         return new PropertySet[]{set};
     }
 
@@ -144,6 +141,8 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             NodeData data = n.getNodeData();
             data.setLayoutData(new ForceVector());
         }
+        progress = 0;
+        converged = false;
     }
 
     public boolean canAlgo() {
@@ -157,6 +156,8 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         // Evaluates n^2 inter node forces using BarnesHut.
         QuadTree tree = QuadTree.buildTree(graph, getQuadTreeMaxLevel());
 
+        double electricEnergy = 0; ///////////////////////
+        double springEnergy = 0; ///////////////////////
         BarnesHut barnes = new BarnesHut(getNodeForce());
         barnes.setTheta(getBarnesHutTheta());
         for (Node node : graph.getTopNodes()) {
@@ -165,6 +166,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
             ForceVector f = barnes.calculateForce(data, tree);
             layoutData.add(f);
+            electricEnergy += f.getEnergy();
         }
 
         // Apply edge forces.
@@ -179,17 +181,30 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             f2.subtract(f);
         }
 
-        System.out.println("step = " + step);
-        // Apply displacements on nodes and calculate energy.
+        System.out.println("step = " + getStep());
+        // Calculate energy and max force.
         energy0 = energy;
         energy = 0;
+        double maxForce = 1;
         for (Node n : graph.getTopNodes()) {
             NodeData data = n.getNodeData();
             ForceVector force = data.getLayoutData();
 
             energy += force.getEnergy();
+            maxForce = Math.max(maxForce, force.getEnergy());
+        }
+
+        // Apply displacements on nodes.
+        for (Node n : graph.getTopNodes()) {
+            NodeData data = n.getNodeData();
+            ForceVector force = data.getLayoutData();
+
+            force.multiply((float) (1.0 / maxForce));
             getDisplacement().moveNode(data, force);
         }
+        updateStep();
+        springEnergy = energy - electricEnergy;
+        System.out.println("electric: " + electricEnergy + "    spring: " + springEnergy);
         System.out.println("energy0 = " + energy0 + "   energy = " + energy);
     }
 
@@ -219,5 +234,19 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
      */
     public void setRelativeStrength(Float relativeStrength) {
         this.relativeStrength = relativeStrength;
+    }
+
+    /**
+     * @return the step
+     */
+    public Float getStep() {
+        return step;
+    }
+
+    /**
+     * @param step the step to set
+     */
+    public void setStep(Float step) {
+        this.step = step;
     }
 }

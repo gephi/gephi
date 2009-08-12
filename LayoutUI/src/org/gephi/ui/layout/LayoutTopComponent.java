@@ -54,6 +54,7 @@ final class LayoutTopComponent extends TopComponent
     private final Action chooseLayoutAction = new ChooseLayoutAction();
     private final Action addLayoutAction = new AddLayoutAction();
     private final Action deleteLayoutAction = new DeleteLayoutAction();
+    private final Action resetLayoutAction = new ResetLayoutAction();
     private final RootNode rootNode = new RootNode();
     private final ExplorerManager explorerManager = new ExplorerManager();
     private final PropertySheet propertySheet = new PropertySheet();
@@ -241,7 +242,8 @@ final class LayoutTopComponent extends TopComponent
         propertySheetPanel = new javax.swing.JPanel();
         playButton = new javax.swing.JButton(requestPlayAction);
         stopButton = new javax.swing.JButton(requestStopAction);
-        jButton1 = new javax.swing.JButton(deleteLayoutAction);
+        deleteButton = new javax.swing.JButton(deleteLayoutAction);
+        resetButton = new javax.swing.JButton(resetLayoutAction);
 
         org.openide.awt.Mnemonics.setLocalizedText(topLabel, org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.topLabel.text")); // NOI18N
 
@@ -281,7 +283,7 @@ final class LayoutTopComponent extends TopComponent
         propertySheetPanel.setLayout(propertySheetPanelLayout);
         propertySheetPanelLayout.setHorizontalGroup(
             propertySheetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 230, Short.MAX_VALUE)
+            .addGap(0, 258, Short.MAX_VALUE)
         );
         propertySheetPanelLayout.setVerticalGroup(
             propertySheetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -299,7 +301,10 @@ final class LayoutTopComponent extends TopComponent
         stopButton.setActionCommand(org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.stopButton.actionCommand")); // NOI18N
         stopButton.setEnabled(false);
 
-        org.openide.awt.Mnemonics.setLocalizedText(jButton1, org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.jButton1.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(deleteButton, org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.deleteButton.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(resetButton, org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.resetButton.text")); // NOI18N
+        resetButton.setToolTipText(org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.resetButton.toolTipText")); // NOI18N
 
         javax.swing.GroupLayout layoutsPanelLayout = new javax.swing.GroupLayout(layoutsPanel);
         layoutsPanel.setLayout(layoutsPanelLayout);
@@ -309,12 +314,14 @@ final class LayoutTopComponent extends TopComponent
                 .addContainerGap()
                 .addGroup(layoutsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layoutsPanelLayout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                        .addComponent(deleteButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(resetButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                         .addComponent(playButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(stopButton))
-                    .addComponent(layoutComboBox, 0, 234, Short.MAX_VALUE)
+                    .addComponent(layoutComboBox, 0, 262, Short.MAX_VALUE)
                     .addComponent(propertySheetPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -329,7 +336,8 @@ final class LayoutTopComponent extends TopComponent
                 .addGroup(layoutsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(stopButton)
                     .addComponent(playButton)
-                    .addComponent(jButton1))
+                    .addComponent(deleteButton)
+                    .addComponent(resetButton))
                 .addContainerGap())
         );
 
@@ -364,13 +372,14 @@ final class LayoutTopComponent extends TopComponent
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addLayoutButton;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton deleteButton;
     private javax.swing.JComboBox layoutComboBox;
     private javax.swing.JComboBox layoutSourceComboBox;
     private javax.swing.JPanel layoutSourcePanel;
     private javax.swing.JPanel layoutsPanel;
     private javax.swing.JButton playButton;
     private javax.swing.JPanel propertySheetPanel;
+    private javax.swing.JButton resetButton;
     private javax.swing.JButton stopButton;
     private javax.swing.JLabel topLabel;
     // End of variables declaration//GEN-END:variables
@@ -442,6 +451,16 @@ final class LayoutTopComponent extends TopComponent
 
         public Object readResolve() {
             return LayoutTopComponent.getDefault();
+        }
+    }
+
+    class ResetLayoutAction extends AbstractAction {
+
+        public void actionPerformed(ActionEvent e) {
+            Layout layout = getSelectedLayout();
+            if (layout != null) {
+                layout.resetPropertiesValues();
+            }
         }
     }
 

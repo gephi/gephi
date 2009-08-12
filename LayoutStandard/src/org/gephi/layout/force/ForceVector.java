@@ -32,6 +32,11 @@ public class ForceVector implements Spatial, LayoutData {
     protected float x;
     protected float y;
 
+    public ForceVector(ForceVector vector) {
+        this.x = vector.x();
+        this.y = vector.y();
+    }
+
     public ForceVector(float x, float y) {
         this.x = x;
         this.y = y;
