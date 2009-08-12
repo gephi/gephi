@@ -97,6 +97,7 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
     }
 
     public PropertySet[] getPropertySets() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
 }
