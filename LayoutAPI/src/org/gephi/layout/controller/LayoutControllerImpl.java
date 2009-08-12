@@ -29,7 +29,6 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutController;
-import org.gephi.layout.api.LayoutControllerObserver;
 import org.openide.util.Lookup;
 
 /**
