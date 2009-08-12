@@ -25,9 +25,11 @@ import org.gephi.io.generator.Generator;
 import org.gephi.io.generator.GeneratorController;
 import org.gephi.io.logging.Report;
 import org.gephi.io.processor.Processor;
+import org.gephi.project.api.ProjectController;
 import org.gephi.ui.generator.GeneratorUI;
 import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
+import org.gephi.workspace.api.Workspace;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -83,8 +85,30 @@ public class DesktopGeneratorController implements GeneratorController {
 
             public void run() {
                 generator.generate(container.getLoader());
-                Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
+                finishGenerate(container);
             }
         }, taskname, errorHandler);
+    }
+
+    private void finishGenerate(Container container) {
+
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        Workspace workspace;
+        if (pc.getCurrentProject() == null) {
+            pc.newProject();
+            workspace = pc.getCurrentWorkspace();
+        } else {
+            if (pc.getCurrentWorkspace() == null) {
+                workspace = pc.newWorkspace(pc.getCurrentProject());
+                pc.openWorkspace(workspace);
+            } else {
+                workspace = pc.getCurrentWorkspace();
+            }
+        }
+        if (container.getSource() != null) {
+            workspace.setSource(container.getSource());
+        }
+
+        Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
     }
 }
