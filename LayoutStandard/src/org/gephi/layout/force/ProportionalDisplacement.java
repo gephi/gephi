@@ -34,6 +34,10 @@ public class ProportionalDisplacement implements Displacement {
         this.step = step;
     }
 
+    public void setStep(float step) {
+        this.step = step;
+    }
+
     private boolean assertValue(float value) {
         boolean ret = !Float.isInfinite(value) && !Float.isNaN(value);
         return ret;

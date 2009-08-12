@@ -53,4 +53,8 @@ public class StepDisplacement implements Displacement {
             node.setY(y);
         }
     }
+
+    public void setStep(float step) {
+        this.step = step;
+    }
 }

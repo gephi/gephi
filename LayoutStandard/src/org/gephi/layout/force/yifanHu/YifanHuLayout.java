@@ -35,7 +35,6 @@ import org.gephi.layout.force.AbstractForce;
 import org.gephi.layout.force.BarnesHut;
 import org.gephi.layout.force.Displacement;
 import org.gephi.layout.force.ForceVector;
-import org.gephi.layout.force.ProportionalDisplacement;
 import org.gephi.layout.force.quadtree.QuadTree;
 import org.openide.nodes.Node.PropertySet;
 import org.openide.nodes.Sheet;
@@ -51,13 +50,17 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     private float step;
     private int progress;
     private float stepRatio;
+    private int quadTreeMaxLevel;
+    private float barnesHutTheta;
     private boolean converged;
+    private Displacement displacement;
     private double energy0;
     private double energy;
     private ClusteredGraph graph;
 
-    public YifanHuLayout(LayoutBuilder layoutBuilder) {
+    public YifanHuLayout(LayoutBuilder layoutBuilder, Displacement displacement) {
         super(layoutBuilder);
+        this.displacement = displacement;
     }
 
     protected void postAlgo() {
@@ -68,8 +71,8 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     }
 
     private Displacement getDisplacement() {
-        // return new StepDisplacement(getStep());
-        return new ProportionalDisplacement(step);
+        displacement.setStep(step);
+        return displacement;
     }
 
     private AbstractForce getEdgeForce() {
@@ -99,11 +102,8 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         setRelativeStrength((float) 0.2);
         setOptimalDistance((float) (Math.pow(getRelativeStrength(), 1.0 / 3) * GraphUtils.getAverageEdgeLength(graph)));
         setStep(1f);
-    }
-
-    /* Maximum level for Barnes-Hut's quadtree */
-    protected int getQuadTreeMaxLevel() {
-        return 10;
+        setQuadTreeMaxLevel(10);
+        setBarnesHutTheta(1.2f);
     }
 
     public PropertySet[] getPropertySets() throws NoSuchMethodException {
@@ -121,12 +121,17 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             this, Float.class, "Step size",
             "The step size used in the integration phase",
             "getStep", "setStep"));
-        return new PropertySet[]{set};
-    }
-
-    /* theta is the parameter for Barnes-Hut opening criteria */
-    private float getBarnesHutTheta() {
-        return (float) 1.2;
+        Sheet.Set barnesSet = Sheet.createPropertiesSet();
+        barnesSet.setDisplayName("Barnes-Hut's properties");
+        barnesSet.put(LayoutProperty.createProperty(
+            this, Integer.class, "Quadtree Max Level",
+            "The max level to be used in the quadtree representation (smaller is less accurate, but faster)",
+            "getQuadTreeMaxLevel", "setQuadTreeMaxLevel"));
+        barnesSet.put(LayoutProperty.createProperty(
+            this, Float.class, "Theta",
+            "The theta parameter for Barnes-Hut opening criteria (smaller is more accurate, but more expensive)",
+            "getBarnesHutTheta", "setBarnesHutTheta"));
+        return new PropertySet[]{set, barnesSet};
     }
 
     @Override
@@ -206,6 +211,25 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         springEnergy = energy - electricEnergy;
         System.out.println("electric: " + electricEnergy + "    spring: " + springEnergy);
         System.out.println("energy0 = " + energy0 + "   energy = " + energy);
+    }
+
+
+    /* Maximum level for Barnes-Hut's quadtree */
+    public Integer getQuadTreeMaxLevel() {
+        return quadTreeMaxLevel;
+    }
+
+    public void setQuadTreeMaxLevel(Integer quadTreeMaxLevel) {
+        this.quadTreeMaxLevel = quadTreeMaxLevel;
+    }
+
+    /* theta is the parameter for Barnes-Hut opening criteria */
+    public Float getBarnesHutTheta() {
+        return barnesHutTheta;
+    }
+
+    public void setBarnesHutTheta(Float barnesHutTheta) {
+        this.barnesHutTheta = barnesHutTheta;
     }
 
     /**

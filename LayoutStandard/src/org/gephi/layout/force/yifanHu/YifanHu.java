@@ -23,6 +23,7 @@ package org.gephi.layout.force.yifanHu;
 import javax.swing.Icon;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
+import org.gephi.layout.force.ProportionalDisplacement;
 import org.openide.util.NbBundle;
 
 /**
@@ -32,7 +33,8 @@ import org.openide.util.NbBundle;
 public class YifanHu implements LayoutBuilder {
 
     public Layout buildLayout() {
-        YifanHuLayout layout = new YifanHuLayout(this);
+        //YifanHuLayout layout = new YifanHuLayout(this, new StepDisplacement(1f));
+        YifanHuLayout layout = new YifanHuLayout(this, new ProportionalDisplacement(1f));
         return layout;
     }
 

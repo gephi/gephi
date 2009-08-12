@@ -28,5 +28,7 @@ import org.gephi.graph.api.NodeData;
  */
 public interface Displacement {
 
+    public void setStep(float step);
+
     public void moveNode(NodeData node, ForceVector forceData);
 }
