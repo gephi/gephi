@@ -22,7 +22,6 @@ package org.gephi.layout.force;
 
 import org.gephi.graph.api.Spatial;
 import org.gephi.layout.ForceVectorUtils;
-import org.gephi.layout.GraphUtils;
 import org.gephi.layout.force.quadtree.QuadTree;
 
 /**
@@ -51,7 +50,7 @@ public class BarnesHut {
         float distance = ForceVectorUtils.distance(node, tree);
 
         if (tree.isIsLeaf() || tree.mass() == 1) {
-            // this is probably the case where tree contains node.
+            // this is probably the case where tree has only the node.
             if (distance < 1e-8) {
                 return null;
             }

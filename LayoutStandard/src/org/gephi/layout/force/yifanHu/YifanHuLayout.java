@@ -25,6 +25,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
+import org.gephi.graph.api.Spatial;
 import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.GraphUtils;
 import org.gephi.layout.api.Layout;
@@ -35,7 +36,6 @@ import org.gephi.layout.force.BarnesHut;
 import org.gephi.layout.force.Displacement;
 import org.gephi.layout.force.ForceVector;
 import org.gephi.layout.force.ProportionalDisplacement;
-import org.gephi.layout.force.StepDisplacement;
 import org.gephi.layout.force.quadtree.QuadTree;
 import org.openide.nodes.Node.PropertySet;
 import org.openide.nodes.Sheet;
@@ -248,5 +248,64 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
      */
     public void setStep(Float step) {
         this.step = step;
+    }
+
+    /**
+     * Fa = (n2 - n1) * ||n2 - n1|| / K
+     * @author Helder Suzuki <heldersuzuki@gephi.org>
+     */
+    public class SpringForce extends AbstractForce {
+
+        private float optimalDistance;
+
+        public SpringForce(float optimalDistance) {
+            this.optimalDistance = optimalDistance;
+        }
+
+        @Override
+        public ForceVector calculateForce(Spatial node1, Spatial node2,
+                                          float distance) {
+            ForceVector f = new ForceVector(node2.x() - node1.x(),
+                                            node2.y() - node1.y());
+            f.multiply(distance / optimalDistance);
+            return f;
+        }
+
+        public void setOptimalDistance(Float optimalDistance) {
+            this.optimalDistance = optimalDistance;
+        }
+
+        public Float getOptimalDistance() {
+            return optimalDistance;
+        }
+    }
+
+    /**
+     * Fr = -C*K*K*(n2-n1)/||n2-n1||
+     * @author Helder Suzuki <heldersuzuki@gephi.org>
+     */
+    public class ElectricalForce extends AbstractForce {
+
+        private float relativeStrength;
+        private float optimalDistance;
+
+        public ElectricalForce(float relativeStrength, float optimalDistance) {
+            this.relativeStrength = relativeStrength;
+            this.optimalDistance = optimalDistance;
+        }
+
+        @Override
+        public ForceVector calculateForce(Spatial node1, Spatial node2,
+                                          float distance) {
+            ForceVector f = new ForceVector(node2.x() - node1.x(),
+                                            node2.y() - node1.y());
+            float scale = -relativeStrength * optimalDistance * optimalDistance / (distance * distance);
+            if (Float.isNaN(scale) || Float.isInfinite(scale)) {
+                scale = -1;
+            }
+
+            f.multiply(scale);
+            return f;
+        }
     }
 }
