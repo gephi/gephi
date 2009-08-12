@@ -12,6 +12,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -19,18 +21,13 @@ import javax.swing.ActionMap;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutController;
-import org.gephi.layout.api.LayoutControllerObserver;
-import org.gephi.layout.api.LayoutProperty;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.explorer.view.ChoiceView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
-import org.openide.nodes.Node.Property;
 import org.openide.nodes.Node.PropertySet;
-import org.openide.nodes.PropertySupport;
-import org.openide.nodes.Sheet;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -41,7 +38,7 @@ import org.openide.windows.WindowManager;
  * Top component which displays something.
  */
 final class LayoutTopComponent extends TopComponent
-    implements LayoutControllerObserver, ExplorerManager.Provider,
+    implements Observer, ExplorerManager.Provider,
                PropertyChangeListener {
 
     private static LayoutTopComponent instance;
@@ -98,6 +95,11 @@ final class LayoutTopComponent extends TopComponent
             return null;
         }
 
+    }
+
+    public void update(Observable o, Object arg) {
+        playButton.setEnabled(layoutController.canExecute());
+        stopButton.setEnabled(layoutController.canStop());
     }
 
     public class LayoutNode extends AbstractNode {
@@ -429,16 +431,6 @@ final class LayoutTopComponent extends TopComponent
     @Override
     protected String preferredID() {
         return PREFERRED_ID;
-    }
-
-    public void executeLayoutEvent() {
-        stopButton.setEnabled(true);
-        playButton.setEnabled(false);
-    }
-
-    public void stopLayoutEvent() {
-        stopButton.setEnabled(false);
-        playButton.setEnabled(true);
     }
 
     public ExplorerManager getExplorerManager() {

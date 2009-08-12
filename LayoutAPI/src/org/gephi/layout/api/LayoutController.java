@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.layout.api;
 
 import java.util.List;
+import java.util.Observer;
 
 /**
  *
@@ -34,9 +35,13 @@ public interface LayoutController {
 
     public void executeLayout();
 
+    public boolean canExecute();
+
     public void stopLayout();
 
-    public void addObserver(LayoutControllerObserver observer);
+    public boolean canStop();
 
-    public void removeObserver(LayoutControllerObserver observer);
+    public void addObserver(Observer observer);
+
+    public void deleteObserver(Observer observer);
 }

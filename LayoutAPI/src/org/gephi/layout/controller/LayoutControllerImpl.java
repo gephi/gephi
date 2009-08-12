@@ -22,6 +22,7 @@ package org.gephi.layout.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.gephi.graph.api.GraphController;
@@ -35,28 +36,39 @@ import org.openide.util.Lookup;
  *
  * @author Mathieu Bastian
  */
-public class LayoutControllerImpl implements LayoutController {
+public class LayoutControllerImpl extends Observable implements LayoutController {
 
-    private ArrayList<LayoutControllerObserver> observers;
     private ArrayList<LayoutBuilder> layouts;
     private Layout layout;
     private ExecutorService executor;
     private LayoutRun layoutRun;
+    private boolean running;
 
     public LayoutControllerImpl() {
         layouts = new ArrayList<LayoutBuilder>(Lookup.getDefault().lookupAll(LayoutBuilder.class));
         executor = Executors.newSingleThreadExecutor();
-        observers = new ArrayList<LayoutControllerObserver>(2);
+        running = false;
     }
 
     public void executeLayout() {
         layoutRun = new LayoutRun(layout);
+        setRunning(true);
         executor.execute(layoutRun);
     }
 
     public void setLayout(Layout layout) {
         this.layout = layout;
-        updateGraph();
+        injectGraph();
+        setChanged();
+        notifyObservers();
+    }
+
+    public void injectGraph() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (layout != null) {
+            layout.setGraphController(graphController);
+        }
+        System.out.println("LayoutController: Injecting graphController");
     }
 
     public List<LayoutBuilder> getLayouts() {
@@ -68,41 +80,29 @@ public class LayoutControllerImpl implements LayoutController {
     }
 
     public void stopLayout() {
-        layoutRun.stop();
+        setRunning(false);
     }
 
-    public void addObserver(LayoutControllerObserver observer) {
-        observers.add(observer);
+    public boolean canExecute() {
+        return layout != null && running == false;
     }
 
-    public void removeObserver(LayoutControllerObserver observer) {
-        observers.remove(observer);
+    public boolean canStop() {
+        return running;
     }
 
-    private void notifyStop() {
-        for (LayoutControllerObserver observer : observers) {
-            observer.stopLayoutEvent();
-        }
-    }
-
-    private void notifyExecute() {
-        for (LayoutControllerObserver observer : observers) {
-            observer.executeLayoutEvent();
-        }
-    }
-
-    public void updateGraph() {
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        if (layout != null) {
-            layout.setGraphController(graphController);
-        }
-        System.out.println("LayoutController: Injecting graphController");
+    /**
+     * @param running the running to set
+     */
+    public void setRunning(boolean running) {
+        this.running = running;
+        setChanged();
+        notifyObservers();
     }
 
     class LayoutRun implements Runnable {
 
         private Layout layout;
-        private boolean stopRequested;
 
         public LayoutRun(Layout layout) {
             this.layout = layout;
@@ -110,20 +110,14 @@ public class LayoutControllerImpl implements LayoutController {
 
         public void run() {
             System.out.println("LayoutRun: run():");
-            stopRequested = false;
 
             layout.initAlgo();
-            notifyExecute();
-            while (layout.canAlgo() && !stopRequested) {
+            while (layout.canAlgo() && running) {
                 layout.goAlgo();
             }
             layout.endAlgo();
-            notifyStop();
+            setRunning(false);
             System.out.println("LayoutRun: Layout end.");
-        }
-
-        public void stop() {
-            stopRequested = true;
         }
     }
 }
