@@ -260,6 +260,10 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public EdgeIterable getEdgesAndMetaEdges() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     public EdgeIterable getMetaEdges(Node node) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

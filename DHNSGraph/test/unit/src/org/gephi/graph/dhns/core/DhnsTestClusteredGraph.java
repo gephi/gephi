@@ -806,6 +806,24 @@ public class DhnsTestClusteredGraph {
     }
 
     @Test
+    public void testEdgesAndMetaEdges() {
+        dhnsGlobal2.getTreeStructure().showTreeAsTable();
+        Edge[] metaedges = graphGlobal2Directed.getClusteredGraph().getMetaEdges().toArray();
+        int metaEdgesCount = metaedges.length;
+        assertEquals(3, metaEdgesCount);
+        Node parent0 = graphGlobal2Directed.getTopNodes().toArray()[0];
+        graphGlobal2Directed.expand(parent0);
+        assertEquals(4, graphGlobal2Directed.getClusteredGraph().getMetaEdges().toArray().length);
+        assertEquals(1, graphGlobal2Directed.getMetaEdges(nodeMap.get("Leaf 0")).toArray().length);
+        assertEquals(1, graphGlobal2Directed.getMetaEdges(nodeMap.get("Leaf 1")).toArray().length);
+        assertEquals(1, graphGlobal2Directed.getClusteredGraph().getEdges().toArray().length);
+        Edge uniqueEdge = graphGlobal2Directed.getClusteredGraph().getEdges().toArray()[0];
+        assertSame(nodeMap.get("Leaf 0"), uniqueEdge.getTarget());
+        assertSame(nodeMap.get("Leaf 1"), uniqueEdge.getSource());
+        assertEquals(5, graphGlobal2Directed.getClusteredGraph().getEdgesAndMetaEdges().toArray().length);
+    }
+
+    @Test
     public void testEvents() {
         GraphListener gl = new GraphListener() {
 

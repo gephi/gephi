@@ -30,6 +30,7 @@ import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
+import org.gephi.graph.dhns.edge.iterators.EdgeAndMetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.MetaEdgeContentIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
@@ -254,6 +255,11 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public EdgeIterable getMetaEdges() {
         readLock();
         return dhns.newEdgeIterable(new MetaEdgeIterator(view, dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
+    }
+
+    public EdgeIterable getEdgesAndMetaEdges() {
+        readLock();
+        return dhns.newEdgeIterable(new EdgeAndMetaEdgeIterator(view, dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
     }
 
     //ClusteredGraph

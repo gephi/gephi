@@ -139,6 +139,8 @@ public interface ClusteredGraph extends HierarchicalGraph {
      */
     public EdgeIterable getMetaEdges();
 
+    public EdgeIterable getEdgesAndMetaEdges();
+
     /**
      * Returns meta edges for <code>nodeGroup</code>.
      * @param nodeGroup the node whose meta edges are queried
