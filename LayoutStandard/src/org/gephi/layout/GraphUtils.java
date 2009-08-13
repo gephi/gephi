@@ -44,7 +44,7 @@ public class GraphUtils {
     public static float getAverageEdgeLength(ClusteredGraph graph) {
         float edgeLength = 0;
         int count = 1;
-        for (Edge e : getTopEdges(graph)) {
+        for (Edge e : graph.getEdgesAndMetaEdges()) {
             edgeLength += ForceVectorUtils.distance(
                 e.getSource().getNodeData(), e.getTarget().getNodeData());
             count++;

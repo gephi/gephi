@@ -21,42 +21,69 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.layout.multilevel;
 
 import org.gephi.graph.api.ClusteredGraph;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.Node;
-import org.gephi.layout.EdgeImpl;
-import org.gephi.layout.GraphUtils;
 
 /**
  *
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
-public class MaximalMatchingCoarsening implements CoarseningStrategy {
+public class MaximalMatchingCoarsening implements MultiLevelLayout.CoarseningStrategy {
 
-    public void coarsen(ClusteredGraph graph) {
-        for (EdgeImpl e : GraphUtils.getTopEdges(graph)) {
-            if (graph.getLevel(e.N1()) == 0 && graph.getLevel(e.N2()) == 0) {
-                float x = (e.N1().getNodeData().x() + e.N2().getNodeData().x()) / 2;
-                float y = (e.N1().getNodeData().y() + e.N2().getNodeData().y()) / 2;
+//    public void print(ClusteredGraph graph) {
+//        System.out.println("------ print ------");
+//        for (int i = 0; i <= graph.getHeight(); i++) {
+//            System.out.printf("Level %d: %d nodes\n", i, graph.getNodes(i).toArray().length);
+//        }
+//        System.out.println("Topnodes: " + graph.getTopNodes().toArray().length);
+//    }
+    public void coarsen(HierarchicalDirectedGraph g) {
+        ClusteredGraph graph = g.getClusteredGraph();
+        int retract = 0;
+        int count = 0;
+        //print(graph);
+        for (Edge e : graph.getEdgesAndMetaEdges().toArray()) {
+            Node a = e.getSource();
+            Node b = e.getTarget();
+            count++;
+            if (graph.getParent(a) == graph.getParent(b) && graph.getLevel(a) == 0) {
+                float x = (a.getNodeData().x() + b.getNodeData().x()) / 2;
+                float y = (a.getNodeData().y() + b.getNodeData().y()) / 2;
 
-                Node parent = graph.groupNodes(new Node[]{e.N1(), e.N2()});
+                Node parent = graph.groupNodes(new Node[]{a, b});
                 parent.getNodeData().setX(x);
                 parent.getNodeData().setY(y);
                 graph.retract(parent);
+                retract++;
             }
         }
+        System.out.println("count = " + count);
+        System.out.println("Retract: " + retract);
+    // print(graph);
     }
 
-    public void refine(ClusteredGraph graph) {
+    public void refine(HierarchicalDirectedGraph graph) {
+        double r = 10;
+        int count = 0;
+        int refined = 0;
         for (Node node : graph.getTopNodes().toArray()) {
+            count++;
             if (graph.getChildrenCount(node) == 2) {
+                refined++;
                 float x = node.getNodeData().x();
                 float y = node.getNodeData().y();
 
                 for (Node child : graph.getChildren(node)) {
-                    child.getNodeData().setX(x);
-                    child.getNodeData().setY(y);
+                    double t = Math.random();
+                    child.getNodeData().setX((float) (x + r * Math.cos(t)));
+                    child.getNodeData().setY((float) (y + r * Math.sin(t)));
                 }
                 graph.ungroupNodes(node);
             }
+//                    System.out.println("graph.getChildrenCount(node): " + graph.getChildrenCount(node));
         }
+        System.out.println("COUNT = " + count);
+        System.out.println("REFINED = " + refined);
     }
 }

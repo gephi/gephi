@@ -127,52 +127,10 @@ final class LayoutTopComponent extends TopComponent
         public PropertySet[] getPropertySets() {
             try {
                 return layout.getPropertySets();
-//            Sheet.Set set = Sheet.createPropertiesSet();
-//
-//            try {
-//                set.put(LayoutProperty.createProperty(
-//                    this, String.class, "Valor", "Valor DESC", "getValor",
-//                    "setValor"));
-//            } catch (NoSuchMethodException ex) {
-//                ex.printStackTrace();
-//            }
-//            Sheet.Set set2 = Sheet.createPropertiesSet();
-//            set2.setDisplayName("SET2");
-//
-//            Property indexProp;
-//            try {
-//                indexProp = new PropertySupport.Reflection(this, String.class, "getValor", "setValor");
-//                indexProp.setName("valor");
-//                set2.put(indexProp);
-//            } catch (NoSuchMethodException ex) {
-//                ex.printStackTrace();
-//            }
-//            return new PropertySet[]{set, set2};
             } catch (NoSuchMethodException ex) {
                 Exceptions.printStackTrace(ex);
                 return null;
             }
-//            Sheet.Set set = Sheet.createPropertiesSet();
-//
-//            try {
-//                set.put(LayoutProperty.createProperty(
-//                    this, String.class, "Valor", "Valor DESC", "getValor",
-//                    "setValor"));
-//            } catch (NoSuchMethodException ex) {
-//                ex.printStackTrace();
-//            }
-//            Sheet.Set set2 = Sheet.createPropertiesSet();
-//            set2.setDisplayName("SET2");
-//
-//            Property indexProp;
-//            try {
-//                indexProp = new PropertySupport.Reflection(this, String.class, "getValor", "setValor");
-//                indexProp.setName("valor");
-//                set2.put(indexProp);
-//            } catch (NoSuchMethodException ex) {
-//                ex.printStackTrace();
-//            }
-//            return new PropertySet[]{set, set2};
         }
 
         public Layout getLayout() {
@@ -251,7 +209,7 @@ final class LayoutTopComponent extends TopComponent
 
         layoutSourcePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.layoutSourcePanel.border.title"))); // NOI18N
 
-        layoutSourceComboBox.setFont(new java.awt.Font("Tahoma", 1, 14));
+        layoutSourceComboBox.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         initLayoutComboBox();
 
         org.openide.awt.Mnemonics.setLocalizedText(addLayoutButton, org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.addLayoutButton.text")); // NOI18N

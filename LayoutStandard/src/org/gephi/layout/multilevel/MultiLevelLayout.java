@@ -22,9 +22,13 @@ package org.gephi.layout.multilevel;
 
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
+import org.gephi.layout.force.yifanHu.YifanHuLayout;
+import org.gephi.layout.random.Random;
+import org.gephi.layout.random.RandomLayout;
 import org.openide.nodes.Node.PropertySet;
 
 /**
@@ -33,10 +37,10 @@ import org.openide.nodes.Node.PropertySet;
  */
 public class MultiLevelLayout extends AbstractLayout implements Layout {
 
-    private ClusteredGraph graph;
-    private boolean acabou;
+    private HierarchicalDirectedGraph graph;
+    private boolean converged;
     private int level;
-    private Layout layout;
+    private YifanHuLayout layout;
     private LayoutBuilder subLayoutBuilder;
     private CoarseningStrategy coarseningStrategy;
 
@@ -51,19 +55,29 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
     @Override
     public void setGraphController(GraphController graphController) {
         super.setGraphController(graphController);
-        graph = graphController.getHierarchicalUndirectedGraph().getClusteredGraph();
+        graph = graphController.getHierarchicalDirectedGraph();
     }
 
     public void initAlgo() {
+        converged = false;
         level = 0;
-        while (level < 2) {
+        while (graph.getClusteredGraph().getTopNodes().toArray().length > 20) {
             coarseningStrategy.coarsen(graph);
+            System.out.println("COARSEN!!");
             level++;
         }
+
+        Layout random = new RandomLayout(null, 1000);
+        random.setGraphController(graphController);
+        random.initAlgo();
+        random.goAlgo();
+
         System.out.println("Level = " + level);
         layout = subLayoutBuilder.buildLayout();
         layout.setGraphController(graphController);
+        layout.resetPropertiesValues();
         layout.initAlgo();
+
     }
 
     public void goAlgo() {
@@ -77,27 +91,34 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
                 level--;
                 layout = subLayoutBuilder.buildLayout();
                 layout.setGraphController(graphController);
+                layout.resetPropertiesValues();
                 layout.initAlgo();
+
             } else {
-                acabou = true;
+                converged = true;
                 layout = null;
             }
         }
     }
 
     public boolean canAlgo() {
-        return !acabou;
+        return !converged;
     }
 
     public void endAlgo() {
     }
 
     public void resetPropertiesValues() {
-        acabou = false;
     }
 
     public PropertySet[] getPropertySets() {
-        //throw new UnsupportedOperationException("Not supported yet.");
-        return null;
+        return new PropertySet[]{};
+    }
+
+    public interface CoarseningStrategy {
+
+        public void coarsen(HierarchicalDirectedGraph graph);
+
+        public void refine(HierarchicalDirectedGraph graph);
     }
 }

@@ -53,6 +53,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     private int quadTreeMaxLevel;
     private float barnesHutTheta;
     private boolean converged;
+    private boolean adaptiveCooling;
     private Displacement displacement;
     private double energy0;
     private double energy;
@@ -84,15 +85,19 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     }
 
     private void updateStep() {
-        if (energy < energy0) {
-            progress++;
-            if (progress >= 5) {
+        if (isAdaptiveCooling()) {
+            if (energy < energy0) {
+                progress++;
+                if (progress >= 5) {
+                    progress = 0;
+                    setStep(getStep() / stepRatio);
+                }
+            } else {
                 progress = 0;
-                setStep(getStep() / stepRatio);
+                setStep(getStep() * stepRatio);
             }
         } else {
-            progress = 0;
-            setStep(getStep() * stepRatio);
+            setStep(step * stepRatio);
         }
     }
 
@@ -101,7 +106,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         stepRatio = (float) 0.9;
         setRelativeStrength((float) 0.2);
         setOptimalDistance((float) (Math.pow(getRelativeStrength(), 1.0 / 3) * GraphUtils.getAverageEdgeLength(graph)));
-        setStep(1f);
+        setStep(100f);
         setQuadTreeMaxLevel(10);
         setBarnesHutTheta(1.2f);
     }
@@ -121,6 +126,11 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             this, Float.class, "Step size",
             "The step size used in the integration phase",
             "getStep", "setStep"));
+        set.put(LayoutProperty.createProperty(
+            this, Boolean.class, "Adaptive Cooling",
+            "Controls the use of adaptive cooling",
+            "isAdaptiveCooling", "setAdaptiveCooling"));
+
         Sheet.Set barnesSet = Sheet.createPropertiesSet();
         barnesSet.setDisplayName("Barnes-Hut's properties");
         barnesSet.put(LayoutProperty.createProperty(
@@ -175,7 +185,8 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         }
 
         // Apply edge forces.
-        for (Edge e : GraphUtils.getTopEdges(graph)) {
+
+        for (Edge e : graph.getEdgesAndMetaEdges()) {
             NodeData n1 = e.getSource().getNodeData();
             NodeData n2 = e.getTarget().getNodeData();
             ForceVector f1 = n1.getLayoutData();
@@ -195,8 +206,8 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             NodeData data = n.getNodeData();
             ForceVector force = data.getLayoutData();
 
-            energy += force.getEnergy();
-            maxForce = Math.max(maxForce, force.getEnergy());
+            energy += force.getNorm();
+            maxForce = Math.max(maxForce, force.getNorm());
         }
 
         // Apply displacements on nodes.
@@ -207,7 +218,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             force.multiply((float) (1.0 / maxForce));
             getDisplacement().moveNode(data, force);
         }
-        updateStep();
+        postAlgo();
         springEnergy = energy - electricEnergy;
         System.out.println("electric: " + electricEnergy + "    spring: " + springEnergy);
         System.out.println("energy0 = " + energy0 + "   energy = " + energy);
@@ -272,6 +283,20 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
      */
     public void setStep(Float step) {
         this.step = step;
+    }
+
+    /**
+     * @return the adaptiveCooling
+     */
+    public Boolean isAdaptiveCooling() {
+        return adaptiveCooling;
+    }
+
+    /**
+     * @param adaptiveCooling the adaptiveCooling to set
+     */
+    public void setAdaptiveCooling(Boolean adaptiveCooling) {
+        this.adaptiveCooling = adaptiveCooling;
     }
 
     /**
