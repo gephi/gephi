@@ -23,7 +23,6 @@ package org.gephi.layout.force.quadtree;
 import java.util.ArrayList;
 import java.util.List;
 import org.gephi.graph.api.ClusteredGraph;
-import org.gephi.graph.api.ClusteredUndirectedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Spatial;
 

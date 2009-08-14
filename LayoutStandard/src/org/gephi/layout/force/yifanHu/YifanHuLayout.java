@@ -32,7 +32,7 @@ import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutProperty;
 import org.gephi.layout.force.AbstractForce;
-import org.gephi.layout.force.BarnesHut;
+import org.gephi.layout.force.quadtree.BarnesHut;
 import org.gephi.layout.force.Displacement;
 import org.gephi.layout.force.ForceVector;
 import org.gephi.layout.force.quadtree.QuadTree;

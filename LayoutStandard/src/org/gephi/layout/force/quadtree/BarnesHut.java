@@ -18,11 +18,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.layout.force;
+package org.gephi.layout.force.quadtree;
 
+import org.gephi.layout.force.*;
 import org.gephi.graph.api.Spatial;
 import org.gephi.layout.ForceVectorUtils;
-import org.gephi.layout.force.quadtree.QuadTree;
 
 /**
  * Barnes-Hut's O(n log n) force calculation algorithm.

@@ -99,6 +99,7 @@ public class ForceVector implements Spatial, LayoutData {
         return new ForceVector(x / norm, y / norm);
     }
 
+    @Override
     public String toString() {
         return "(" + x + ", " + y + ")";
     }

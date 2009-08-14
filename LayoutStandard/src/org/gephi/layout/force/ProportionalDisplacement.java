@@ -23,7 +23,8 @@ package org.gephi.layout.force;
 import org.gephi.graph.api.NodeData;
 
 /**
- *
+ *  The movement of the node is in the direction of the force and it's proportional
+ * to is module.
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
 public class ProportionalDisplacement implements Displacement {

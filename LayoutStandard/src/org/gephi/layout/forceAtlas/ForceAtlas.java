@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.layout.forceAtlas;
 
 import javax.swing.Icon;
-import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.openide.util.NbBundle;
 
@@ -43,7 +42,7 @@ public class ForceAtlas implements LayoutBuilder {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Layout buildLayout() {
+    public ForceAtlasLayout buildLayout() {
         return new ForceAtlasLayout(this);
     }
 }

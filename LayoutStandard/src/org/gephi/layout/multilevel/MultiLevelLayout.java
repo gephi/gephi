@@ -20,14 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.multilevel;
 
-import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
+import org.gephi.layout.force.yifanHu.YifanHu;
 import org.gephi.layout.force.yifanHu.YifanHuLayout;
-import org.gephi.layout.random.Random;
 import org.gephi.layout.random.RandomLayout;
 import org.openide.nodes.Node.PropertySet;
 
@@ -41,15 +40,14 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
     private boolean converged;
     private int level;
     private YifanHuLayout layout;
-    private LayoutBuilder subLayoutBuilder;
+    private YifanHu yifanHu;
     private CoarseningStrategy coarseningStrategy;
 
     public MultiLevelLayout(LayoutBuilder layoutBuilder,
-                            CoarseningStrategy coarseningStrategy,
-                            LayoutBuilder subLayoutBuilder) {
+                            CoarseningStrategy coarseningStrategy) {
         super(layoutBuilder);
         this.coarseningStrategy = coarseningStrategy;
-        this.subLayoutBuilder = subLayoutBuilder;
+        this.yifanHu = new YifanHu();
     }
 
     @Override
@@ -73,7 +71,7 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
         random.goAlgo();
 
         System.out.println("Level = " + level);
-        layout = subLayoutBuilder.buildLayout();
+        layout = yifanHu.buildLayout();
         layout.setGraphController(graphController);
         layout.resetPropertiesValues();
         layout.initAlgo();
@@ -89,7 +87,7 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
             if (level > 0) {
                 coarseningStrategy.refine(graph);
                 level--;
-                layout = subLayoutBuilder.buildLayout();
+                layout = (YifanHuLayout) yifanHu.buildLayout();
                 layout.setGraphController(graphController);
                 layout.resetPropertiesValues();
                 layout.initAlgo();

@@ -23,7 +23,7 @@ package org.gephi.layout.force;
 import org.gephi.graph.api.NodeData;
 
 /**
- *
+ *  The node is moved a fixed distance (step) in the direction of the force.
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
 public class StepDisplacement implements Displacement {

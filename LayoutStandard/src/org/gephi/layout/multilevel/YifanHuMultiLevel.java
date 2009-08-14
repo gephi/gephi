@@ -34,7 +34,7 @@ public class YifanHuMultiLevel implements LayoutBuilder {
 
     public Layout buildLayout() {
         MultiLevelLayout layout = new MultiLevelLayout(
-            this, new MaximalMatchingCoarsening(), new YifanHu());
+            this, new MaximalMatchingCoarsening());
         return layout;
     }
 

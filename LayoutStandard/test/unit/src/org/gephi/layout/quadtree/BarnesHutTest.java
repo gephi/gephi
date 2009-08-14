@@ -22,7 +22,7 @@ package org.gephi.layout.quadtree;
 
 import org.gephi.graph.api.Spatial;
 import org.gephi.layout.force.AbstractForce;
-import org.gephi.layout.force.BarnesHut;
+import org.gephi.layout.force.quadtree.BarnesHut;
 import org.gephi.layout.force.ForceVector;
 import org.gephi.layout.force.quadtree.QuadTree;
 import static org.junit.Assert.*;

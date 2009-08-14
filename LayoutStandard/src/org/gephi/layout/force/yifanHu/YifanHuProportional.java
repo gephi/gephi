@@ -18,36 +18,33 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.layout;
+package org.gephi.layout.force.yifanHu;
 
-import org.gephi.graph.api.ClusteredGraph;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Node;
+import javax.swing.Icon;
+import org.gephi.layout.api.LayoutBuilder;
+import org.gephi.layout.force.ProportionalDisplacement;
+import org.openide.util.NbBundle;
 
 /**
  *
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
-public class GraphUtils {
+public class YifanHuProportional implements LayoutBuilder {
 
-    public static Node getTopmostParent(ClusteredGraph graph, Node n) {
-        Node parent = graph.getParent(n);
-        while (parent != null) {
-            n = parent;
-            parent = graph.getParent(n);
-        }
-        return n;
+    public YifanHuLayout buildLayout() {
+        YifanHuLayout layout = new YifanHuLayout(this, new ProportionalDisplacement(1f));
+        return layout;
     }
 
-    public static float getAverageEdgeLength(ClusteredGraph graph) {
-        float edgeLength = 0;
-        int count = 1;
-        for (Edge e : graph.getEdgesAndMetaEdges()) {
-            edgeLength += ForceVectorUtils.distance(
-                e.getSource().getNodeData(), e.getTarget().getNodeData());
-            count++;
-        }
+    public String getName() {
+        return NbBundle.getMessage(YifanHu.class, "YifanHuProportional_name");
+    }
 
-        return edgeLength / count;
+    public String getDescription() {
+        return NbBundle.getMessage(YifanHu.class, "YifanHuProportional_description");
+    }
+
+    public Icon getIcon() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
