@@ -26,6 +26,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.visualization.component;
 
+import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.VizConfig;
+
 /**
  *
  * @author Mathieu
@@ -48,18 +51,33 @@ public class VizBar extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        showHierarchyButton = new javax.swing.JToggleButton();
 
         jLabel1.setText(org.openide.util.NbBundle.getMessage(VizBar.class, "VizBar.jLabel1.text")); // NOI18N
         add(jLabel1);
 
         jLabel2.setText(org.openide.util.NbBundle.getMessage(VizBar.class, "VizBar.jLabel2.text")); // NOI18N
         add(jLabel2);
+
+        showHierarchyButton.setText(org.openide.util.NbBundle.getMessage(VizBar.class, "VizBar.showHierarchyButton.text")); // NOI18N
+        showHierarchyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showHierarchyButtonActionPerformed(evt);
+            }
+        });
+        add(showHierarchyButton);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void showHierarchyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showHierarchyButtonActionPerformed
+        VizConfig config = VizController.getInstance().getVizConfig();
+        config.setVisualizeTree(showHierarchyButton.isSelected());
+    }//GEN-LAST:event_showHierarchyButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JToggleButton showHierarchyButton;
     // End of variables declaration//GEN-END:variables
 
 }

@@ -148,15 +148,22 @@ public class CompatibilityEngine extends AbstractEngine {
     public boolean updateWorld() {
         boolean res = false;
         boolean changeMode = modeManager.requireModeChange();
+        boolean newConfig = configChanged;
         if (changeMode) {
             modeManager.unload();
         }
-        if (dataBridge.requireUpdate() || changeMode) {
+        if(newConfig) {
+            dataBridge.reset();
+        }
+        if (dataBridge.requireUpdate() || changeMode || newConfig) {
             dataBridge.updateWorld();
             res = true;
         }
         if (changeMode) {
             modeManager.changeMode();
+        }
+        if(newConfig) {
+            configChanged = false;
         }
         return res;
     }

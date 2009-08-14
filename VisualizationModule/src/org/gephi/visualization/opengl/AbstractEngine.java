@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import org.gephi.visualization.api.ModelImpl;
 
 import javax.media.opengl.GL;
@@ -73,6 +75,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     //States
     protected EngineLifeCycle lifeCycle = new EngineLifeCycle();
+    protected boolean configChanged = false;
 
     //Octree
     protected Octree octree;
@@ -88,6 +91,14 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         this.textManager = VizController.getInstance().getTextManager();
         initObject3dClass();
         initSelection();
+
+        //Vizconfig events
+        vizConfig.addPropertyChangeListener(new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                configChanged = true;
+            }
+        });
     }
 
     public abstract void beforeDisplay(GL gl, GLU glu);

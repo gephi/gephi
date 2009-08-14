@@ -86,7 +86,7 @@ public class VizConfig {
     protected float[] defaultEdgeLabelColor = {0.5f, 0.5f, 0.5f, 1f};
     protected Font defaultLabelFont = new Font("Arial", Font.BOLD, 20);
     protected boolean showLabelOnSelectedOnly = false;
-    protected boolean showVizVar = false;
+    protected boolean showVizVar = true;
     protected boolean visualizeTree = false;
     protected boolean contextMenu = true;
     protected boolean adjustByText = false;
@@ -342,6 +342,11 @@ public class VizConfig {
     public void setShowArrows(boolean showArrows) {
         this.showArrows = showArrows;
         fireProperyChange("showArrows", null, showArrows);
+    }
+
+    public void setVisualizeTree(boolean visualizeTree) {
+        this.visualizeTree = visualizeTree;
+        fireProperyChange("visualizeTree", null, visualizeTree);
     }
 
     //EVENTS

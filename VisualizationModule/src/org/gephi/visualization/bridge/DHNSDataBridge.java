@@ -149,6 +149,22 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         }
 
         for (Node node : nodeIterable) {
+
+            //Tree position
+            if (vizConfig.isVisualizeTree()) {
+                node.getNodeData().setX(node.getPre() * 5);
+                node.getNodeData().setY(node.getPost() * 5);
+                if (graph.getClusteredGraph().isInView(node)) {
+                    node.getNodeData().setR(1f);
+                    node.getNodeData().setG(0f);
+                    node.getNodeData().setB(0f);
+                } else {
+                    node.getNodeData().setR(0.2f);
+                    node.getNodeData().setG(0.2f);
+                    node.getNodeData().setB(0.2f);
+                }
+            }
+
             Model obj = node.getNodeData().getModel();
             if (obj == null) {
                 //Model is null, ADD
@@ -164,20 +180,6 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                 ModelImpl impl = (ModelImpl) obj;
                 if (!node.isVisible()) {
                     ColorLayer.layerColor(impl, 0.8f, 0.8f, 0.8f);
-                }
-            }
-            //Tree position
-            if (vizConfig.isVisualizeTree()) {
-                node.getNodeData().setX(node.getPre() * 25);
-                node.getNodeData().setY(node.getPost() * 25);
-                if (graph.getClusteredGraph().isInView(node)) {
-                    node.getNodeData().setR(1f);
-                    node.getNodeData().setG(0f);
-                    node.getNodeData().setB(0f);
-                } else {
-                    node.getNodeData().setR(0.2f);
-                    node.getNodeData().setG(0.2f);
-                    node.getNodeData().setB(0.2f);
                 }
             }
         }
@@ -242,6 +244,10 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     }
 
     public void updatePotatoes() {
+        if (vizConfig.isVisualizeTree()) {
+            return;
+        }
+
         ModelClass potatoClass = engine.getModelClasses()[AbstractEngine.CLASS_POTATO];
         if (potatoClass.isEnabled()) {
             Modeler potInit = engine.getModelClasses()[AbstractEngine.CLASS_POTATO].getCurrentModeler();
