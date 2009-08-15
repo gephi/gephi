@@ -29,14 +29,32 @@ import org.openide.nodes.Node.PropertySet;
  */
 public interface Layout {
 
+    /**
+     * initAlgo() is called to initialize the algorithm (prepare to run).
+     */
     public void initAlgo();
 
+    /**
+     *
+     * @param graphController
+     */
     public void setGraphController(GraphController graphController);
 
+    /**
+     * Run a step in the algorithm, should be called only if canAlgo() returns
+     * true.
+     */
     public void goAlgo();
 
+    /**
+     * Tests if the algorithm can run.
+     * @return
+     */
     public boolean canAlgo();
 
+    /**
+     * Called when the algorithm is finished (canAlgo() returns false).
+     */
     public void endAlgo();
 
     public PropertySet[] getPropertySets() throws NoSuchMethodException;

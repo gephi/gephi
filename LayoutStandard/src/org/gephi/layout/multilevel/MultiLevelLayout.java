@@ -37,11 +37,11 @@ import org.openide.nodes.Node.PropertySet;
 public class MultiLevelLayout extends AbstractLayout implements Layout {
 
     private HierarchicalDirectedGraph graph;
-    private boolean converged;
     private int level;
     private YifanHuLayout layout;
     private YifanHu yifanHu;
     private CoarseningStrategy coarseningStrategy;
+    private double optimalDistance;
 
     public MultiLevelLayout(LayoutBuilder layoutBuilder,
                             CoarseningStrategy coarseningStrategy) {
@@ -57,9 +57,9 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
     }
 
     public void initAlgo() {
-        converged = false;
+        setConverged(false);
         level = 0;
-        while (graph.getClusteredGraph().getTopNodes().toArray().length > 20) {
+        while (graph.getClusteredGraph().getTopNodes().toArray().length > 10) {
             coarseningStrategy.coarsen(graph);
             System.out.println("COARSEN!!");
             level++;
@@ -74,6 +74,7 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
         layout = yifanHu.buildLayout();
         layout.setGraphController(graphController);
         layout.resetPropertiesValues();
+        layout.setOptimalDistance(100f);
         layout.initAlgo();
 
     }
@@ -90,17 +91,14 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
                 layout = (YifanHuLayout) yifanHu.buildLayout();
                 layout.setGraphController(graphController);
                 layout.resetPropertiesValues();
+                layout.setOptimalDistance(100f);
                 layout.initAlgo();
 
             } else {
-                converged = true;
+                setConverged(true);
                 layout = null;
             }
         }
-    }
-
-    public boolean canAlgo() {
-        return !converged;
     }
 
     public void endAlgo() {
@@ -111,6 +109,20 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
 
     public PropertySet[] getPropertySets() {
         return new PropertySet[]{};
+    }
+
+    /**
+     * @return the optimalDistance
+     */
+    public Double getOptimalDistance() {
+        return optimalDistance;
+    }
+
+    /**
+     * @param optimalDistance the optimalDistance to set
+     */
+    public void setOptimalDistance(Double optimalDistance) {
+        this.optimalDistance = optimalDistance;
     }
 
     public interface CoarseningStrategy {

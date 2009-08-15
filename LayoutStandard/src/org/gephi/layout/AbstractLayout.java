@@ -8,13 +8,14 @@ import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 
 /**
- *
+ * Base class for layout algorithms.
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
 public abstract class AbstractLayout implements Layout {
 
     private LayoutBuilder layoutBuilder;
     protected GraphController graphController;
+    private boolean converged;
 
     public AbstractLayout(LayoutBuilder layoutBuilder) {
         this.layoutBuilder = layoutBuilder;
@@ -26,5 +27,17 @@ public abstract class AbstractLayout implements Layout {
 
     public void setGraphController(GraphController graphController) {
         this.graphController = graphController;
+    }
+
+    public boolean canAlgo() {
+        return !isConverged();
+    }
+
+    public void setConverged(boolean converged) {
+        this.converged = converged;
+    }
+
+    public boolean isConverged() {
+        return converged;
     }
 }

@@ -52,7 +52,6 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     private float stepRatio;
     private int quadTreeMaxLevel;
     private float barnesHutTheta;
-    private boolean converged;
     private boolean adaptiveCooling;
     private Displacement displacement;
     private double energy0;
@@ -67,7 +66,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     protected void postAlgo() {
         updateStep();
         if (Math.abs((energy - energy0) / energy) < 1e-3) {
-            converged = true;
+            setConverged(true);
         }
     }
 
@@ -157,11 +156,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             data.setLayoutData(new ForceVector());
         }
         progress = 0;
-        converged = false;
-    }
-
-    public boolean canAlgo() {
-        return !converged;
+        setConverged(false);
     }
 
     public void endAlgo() {

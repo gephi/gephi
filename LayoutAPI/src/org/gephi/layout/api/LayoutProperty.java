@@ -36,25 +36,25 @@ public class LayoutProperty {
     protected String description = "";
     protected Field field;
 
-    public static LayoutProperty createProperty(Class layoutClass, String fieldName) {
-        LayoutProperty lp = new LayoutProperty();
-
-        try {
-            //Field
-            lp.field = layoutClass.getField(fieldName);
-
-            //Name
-            lp.name = fieldName;
-            lp.name = NbBundle.getMessage(layoutClass, layoutClass.getName() + "_" + fieldName + "_name");
-            lp.description = NbBundle.getMessage(layoutClass, layoutClass.getName() + "_" + fieldName + "_desc");
-        } catch (NoSuchFieldException ex) {
-            return null;
-        } catch (SecurityException ex) {
-            return null;
-        } catch (MissingResourceException ex) {
-        }
-        return lp;
-    }
+//    public static LayoutProperty createProperty(Class layoutClass, String fieldName) {
+//        LayoutProperty lp = new LayoutProperty();
+//
+//        try {
+//            //Field
+//            lp.field = layoutClass.getField(fieldName);
+//
+//            //Name
+//            lp.name = fieldName;
+//            lp.name = NbBundle.getMessage(layoutClass, layoutClass.getName() + "_" + fieldName + "_name");
+//            lp.description = NbBundle.getMessage(layoutClass, layoutClass.getName() + "_" + fieldName + "_desc");
+//        } catch (NoSuchFieldException ex) {
+//            return null;
+//        } catch (SecurityException ex) {
+//            return null;
+//        } catch (MissingResourceException ex) {
+//        }
+//        return lp;
+//    }
 
     public static Property createProperty(
         Object obj, Class valueType, String propertyName, String propertyDesc,

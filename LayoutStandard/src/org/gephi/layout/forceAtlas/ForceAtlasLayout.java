@@ -201,6 +201,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
     public void endAlgo() {
     }
 
+    @Override
     public boolean canAlgo() {
         return true;
     }

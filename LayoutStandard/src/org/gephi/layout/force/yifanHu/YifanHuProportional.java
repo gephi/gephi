@@ -37,11 +37,11 @@ public class YifanHuProportional implements LayoutBuilder {
     }
 
     public String getName() {
-        return NbBundle.getMessage(YifanHu.class, "YifanHuProportional_name");
+        return NbBundle.getMessage(YifanHuProportional.class, "YifanHuProportional_name");
     }
 
     public String getDescription() {
-        return NbBundle.getMessage(YifanHu.class, "YifanHuProportional_description");
+        return NbBundle.getMessage(YifanHuProportional.class, "YifanHuProportional_description");
     }
 
     public Icon getIcon() {
