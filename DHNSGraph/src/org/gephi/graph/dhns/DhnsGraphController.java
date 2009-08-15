@@ -86,7 +86,7 @@ public class DhnsGraphController implements GraphController {
     public Dhns newDhns(Workspace workspace) {
         Dhns dhns = new Dhns(this);
         workspace.getWorkspaceData().setData(workspaceDataProvider.getWorkspaceDataKey(), dhns);
-        dhns.setCentralDynamicGraph(new DynamicGraphImpl(dhns, getClusteredDirectedGraph()));
+        dhns.setCentralDynamicGraph(new DynamicGraphImpl(dhns, getHierarchicalDirectedGraph()));
         return dhns;
     }
 

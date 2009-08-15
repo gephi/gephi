@@ -51,6 +51,9 @@ public class DynamicGraphImpl<T extends Graph> implements DynamicGraph {
         FilteredGraph filteredGraph = (FilteredGraph) graph;
         filteredGraph.addNodePredicate(new DynamicNodePredicate());
         filteredGraph.addEdgePredicate(new DynamicEdgePredicate());
+        filteredGraph = (FilteredGraph) ((ClusteredGraphImpl) graph).getClusteredGraph();
+        filteredGraph.addNodePredicate(new DynamicNodePredicate());
+        filteredGraph.addEdgePredicate(new DynamicEdgePredicate());
     }
 
     public void setRange(float from, float to) {
