@@ -34,7 +34,7 @@ public class HierarchicalGraph implements Generator {
 
     public void generate(ContainerLoader container) {
 
-        ContainerLoader.ContainerFactory factory = container.factory();
+        ContainerLoader.DraftFactory factory = container.factory();
 
         NodeDraft nodeA = factory.newNodeDraft();
         nodeA.setLabel("Node A");

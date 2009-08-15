@@ -97,7 +97,7 @@ public class EdgeListImporter implements DatabaseImporter {
     private void getNodes(Connection connection) throws SQLException {
 
         //Factory
-        ContainerLoader.ContainerFactory factory = container.factory();
+        ContainerLoader.DraftFactory factory = container.factory();
 
         //Properties
         PropertiesAssociations properties = database.getPropertiesAssociations();
@@ -140,7 +140,7 @@ public class EdgeListImporter implements DatabaseImporter {
     private void getEdges(Connection connection) throws SQLException {
 
         //Factory
-        ContainerLoader.ContainerFactory factory = container.factory();
+        ContainerLoader.DraftFactory factory = container.factory();
 
         //Properties
         PropertiesAssociations properties = database.getPropertiesAssociations();

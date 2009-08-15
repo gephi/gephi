@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.desktop.generate;
 
 import org.gephi.io.container.Container;
+import org.gephi.io.container.ContainerFactory;
 import org.gephi.io.generator.Generator;
 import org.gephi.io.generator.GeneratorController;
 import org.gephi.io.logging.Report;
@@ -65,7 +66,7 @@ public class DesktopGeneratorController implements GeneratorController {
             ui.unsetup();
         }
 
-        final Container container = Lookup.getDefault().lookup(Container.class);
+        final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
         container.setSource("" + generator.getName());
         container.setReport(new Report());
         String taskname = "Generate " + generator.getName();

@@ -38,7 +38,7 @@ public class DynamicGraph implements Generator {
 
     public void generate(ContainerLoader container) {
 
-        ContainerLoader.ContainerFactory factory = container.factory();
+        ContainerLoader.DraftFactory factory = container.factory();
 
         for (int i = 0; i < numberOfNodes; i++) {
             NodeDraft nodeDraft = factory.newNodeDraft();

@@ -86,7 +86,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         return this;
     }
 
-    public ContainerFactory factory() {
+    public DraftFactory factory() {
         return factory;
     }
 
@@ -250,7 +250,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     /**
      * Factory for draft objects
      */
-    public class FactoryImpl implements ContainerFactory {
+    public class FactoryImpl implements DraftFactory {
 
         private int nodeIDgen = 0;
         private int edgeIDgen = 0;

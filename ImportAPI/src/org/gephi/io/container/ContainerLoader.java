@@ -55,12 +55,12 @@ public interface ContainerLoader {
 
     public AttributeManager getAttributeManager();
 
-    public ContainerFactory factory();
+    public DraftFactory factory();
 
     /**
      * Node and edge draft factory. Creates node and edge to push in the container.
      */
-    public interface ContainerFactory {
+    public interface DraftFactory {
 
         /**
          * Returns an empy node draft instance.

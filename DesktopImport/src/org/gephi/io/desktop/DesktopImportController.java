@@ -34,6 +34,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.gephi.io.container.Container;
+import org.gephi.io.container.ContainerFactory;
 import org.gephi.io.database.Database;
 import org.gephi.io.importer.DatabaseImporter;
 import org.gephi.io.importer.FileFormatImporter;
@@ -58,7 +59,6 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.w3c.dom.Document;
@@ -99,7 +99,7 @@ public class DesktopImportController implements ImportController {
             }
 
             //Create Container
-            final Container container = Lookup.getDefault().lookup(Container.class);
+            final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
             container.setSource("" + im.getClass());
 
             //Report
@@ -217,7 +217,7 @@ public class DesktopImportController implements ImportController {
             }
 
             //Create Container
-            final Container container = Lookup.getDefault().lookup(Container.class);
+            final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
             container.setSource("" + importer.getClass());
 
             //Report
