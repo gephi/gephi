@@ -108,6 +108,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
         graph.readLock();
 
+
+
         ModelClass nodeClass = object3dClasses[AbstractEngine.CLASS_NODE];
         if (nodeClass.isEnabled() && (graph.getNodeVersion() > nodeVersion || modeManager.requireModeChange())) {
             updateNodes();

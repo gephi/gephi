@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.core;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Trace system to log node and edge modification. External modules can compare to their local integer
  * to know if they need to update the graph.
@@ -28,32 +30,40 @@ package org.gephi.graph.dhns.core;
  */
 public class GraphVersion {
 
-    private int nodeVersion;
-    private int edgeVersion;
+//    private int nodeVersion;
+//    private int edgeVersion;
+    private AtomicInteger nodeVersion = new AtomicInteger();
+    private AtomicInteger edgeVersion = new AtomicInteger();
 
     public GraphVersion() {
-        nodeVersion = 0;
-        edgeVersion = 0;
+//        nodeVersion = 0;
+//        edgeVersion = 0;
     }
 
     public int getNodeVersion() {
-        return nodeVersion;
+//        return nodeVersion;
+        return nodeVersion.get();
     }
 
     public int getEdgeVersion() {
-        return edgeVersion;
+//        return edgeVersion;
+        return edgeVersion.get();
     }
 
     public void incNodeVersion() {
-        nodeVersion++;
+//        nodeVersion++;
+        nodeVersion.incrementAndGet();
     }
 
     public void incEdgeVersion() {
-        edgeVersion++;
+//        edgeVersion++;
+        edgeVersion.incrementAndGet();
     }
 
     public void incNodeAndEdgeVersion() {
-        nodeVersion++;
-        edgeVersion++;
+//        nodeVersion++;
+//        edgeVersion++;
+        nodeVersion.incrementAndGet();
+        edgeVersion.incrementAndGet();
     }
 }

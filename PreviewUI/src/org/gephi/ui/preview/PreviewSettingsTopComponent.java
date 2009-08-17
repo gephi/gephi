@@ -1,24 +1,9 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
-Website : http://www.gephi.org
-
-This file is part of Gephi.
-
-Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Gephi is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
-package org.gephi.preview;
+
+package org.gephi.ui.preview;
 
 import java.io.Serializable;
 import java.util.logging.Logger;
@@ -30,19 +15,20 @@ import org.openide.windows.WindowManager;
 /**
  * Top component which displays something.
  */
-final class PreviewTopComponent extends TopComponent {
+final class PreviewSettingsTopComponent extends TopComponent {
 
-    private static PreviewTopComponent instance;
+    private static PreviewSettingsTopComponent instance;
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
-    private static final String PREFERRED_ID = "PreviewTopComponent";
 
-    private PreviewTopComponent() {
+    private static final String PREFERRED_ID = "PreviewSettingsTopComponent";
+
+    private PreviewSettingsTopComponent() {
         initComponents();
-        setName(NbBundle.getMessage(PreviewTopComponent.class, "CTL_PreviewTopComponent"));
-        setToolTipText(NbBundle.getMessage(PreviewTopComponent.class, "HINT_PreviewTopComponent"));
+        setName(NbBundle.getMessage(PreviewSettingsTopComponent.class, "CTL_PreviewSettingsTopComponent"));
+        setToolTipText(NbBundle.getMessage(PreviewSettingsTopComponent.class, "HINT_PreviewSettingsTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
-        putClientProperty("netbeans.winsys.tc.keep_preferred_size_when_slided_in", Boolean.TRUE);
+        
     }
 
     /** This method is called from within the constructor to
@@ -65,35 +51,35 @@ final class PreviewTopComponent extends TopComponent {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
      * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
      * To obtain the singleton instance, use {@link #findInstance}.
      */
-    public static synchronized PreviewTopComponent getDefault() {
+    public static synchronized PreviewSettingsTopComponent getDefault() {
         if (instance == null) {
-            instance = new PreviewTopComponent();
+            instance = new PreviewSettingsTopComponent();
         }
         return instance;
     }
 
     /**
-     * Obtain the PreviewTopComponent instance. Never call {@link #getDefault} directly!
+     * Obtain the PreviewSettingsTopComponent instance. Never call {@link #getDefault} directly!
      */
-    public static synchronized PreviewTopComponent findInstance() {
+    public static synchronized PreviewSettingsTopComponent findInstance() {
         TopComponent win = WindowManager.getDefault().findTopComponent(PREFERRED_ID);
         if (win == null) {
-            Logger.getLogger(PreviewTopComponent.class.getName()).warning(
+            Logger.getLogger(PreviewSettingsTopComponent.class.getName()).warning(
                     "Cannot find " + PREFERRED_ID + " component. It will not be located properly in the window system.");
             return getDefault();
         }
-        if (win instanceof PreviewTopComponent) {
-            return (PreviewTopComponent) win;
+        if (win instanceof PreviewSettingsTopComponent) {
+            return (PreviewSettingsTopComponent) win;
         }
-        Logger.getLogger(PreviewTopComponent.class.getName()).warning(
+        Logger.getLogger(PreviewSettingsTopComponent.class.getName()).warning(
                 "There seem to be multiple components with the '" + PREFERRED_ID +
                 "' ID. That is a potential source of errors and unexpected behavior.");
         return getDefault();
@@ -130,7 +116,7 @@ final class PreviewTopComponent extends TopComponent {
         private static final long serialVersionUID = 1L;
 
         public Object readResolve() {
-            return PreviewTopComponent.getDefault();
+            return PreviewSettingsTopComponent.getDefault();
         }
     }
 }
