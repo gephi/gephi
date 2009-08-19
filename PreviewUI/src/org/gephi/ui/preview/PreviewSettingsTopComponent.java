@@ -39,21 +39,116 @@ final class PreviewSettingsTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        propTable = new javax.swing.JTable();
+        refreshButton = new javax.swing.JButton();
+
+        propTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"Show Nodes", "y"},
+                {"Node Border Width", "1"},
+                {"Node Color", "original"},
+                {"Node Border Color", "0,0,0"},
+                {"Show Node Labels", "y"},
+                {"Node Label Font", "***"},
+                {"Node Label Font Size", "14"},
+                {"Node Label Max Char", "10"},
+                {"Node Label Color", "0,0,0"},
+                {"Bordered Node Labels", "y"},
+                {"Node Label Border Color", "255,255,255"},
+                {"Show Edges", "y"},
+                {"Curved Uni. Edges", "n"},
+                {"Curved Bi. Edges", "n"},
+                {"Uni. Edge Color", "b1"},
+                {"Bi. Edge Color", "both"},
+                {"Show Self-Loops", "y"},
+                {"Self-Loop Color", "0,0,0"},
+                {"Show Uni. Edge Labels", "y"},
+                {"Uni. Edge Labels Char Limit", "10"},
+                {"Uni. Edge Labels Font", "***"},
+                {"Uni. Edge Labels Font Size", "10"},
+                {"Uni. Edge Label Color", "parent"},
+                {"Show Uni. Edge Mini-Labels", "y"},
+                {"Uni. Edge Mini-Label Added Radius", "15"},
+                {"Uni. Edge Mini-Label Char Limit", "10"},
+                {"Uni. Edge Mini-Label Font", "***"},
+                {"Uni. Edge Mini-Label Font Size", "8"},
+                {"Uni. Edge Mini-Label Color", "parent"},
+                {"Show Uni. Edge Arrows", "y"},
+                {"Uni. Edge Arrow Added Radius", "65"},
+                {"Uni. Edge Arrow Size", "20"},
+                {"Uni. Edge Arrow Color", "parent"},
+                {"Show Bi. Edge Labels", "y"},
+                {"Bi. Edge Labels Char Limit", "10"},
+                {"Bi. Edge Labels Font", "***"},
+                {"Bi. Edge Labels Font Size", "10"},
+                {"Bi. Edge Label Color", "parent"},
+                {"Show Bi. Edge Mini-Labels", "y"},
+                {"Bi. Edge Mini-Label Added Radius", "15"},
+                {"Bi. Edge Mini-Label Char Limit", "10"},
+                {"Bi. Edge Mini-Label Font", "***"},
+                {"Bi. Edge Mini-Label Font Size", "8"},
+                {"Bi. Edge Mini-Label Color", "parent"},
+                {"Show Bi. Edge Arrows", "y"},
+                {"Bi. Edge Arrow Added Radius", "65"},
+                {"Bi. Edge Arrow Size", "20"},
+                {"Bi. Edge Arrow Color", "parent"}
+            },
+            new String [] {
+                "Property", "Value"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Object.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        propTable.setMaximumSize(new java.awt.Dimension(130, 288));
+        propTable.setMinimumSize(new java.awt.Dimension(130, 288));
+        propTable.setRowSelectionAllowed(false);
+        propTable.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(propTable);
+
+        org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.refreshButton.text")); // NOI18N
+        refreshButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(refreshButton)
+                .addContainerGap(221, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(refreshButton)
+                .addContainerGap(33, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+        PreviewTopComponent.findInstance().refreshPreview();
+}//GEN-LAST:event_refreshButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable propTable;
+    private javax.swing.JButton refreshButton;
     // End of variables declaration//GEN-END:variables
+
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
      * i.e. deserialization routines; otherwise you could get a non-deserialized instance.

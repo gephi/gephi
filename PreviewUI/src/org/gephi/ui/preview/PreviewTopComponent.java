@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.gephi.ui.preview;
 
 import java.io.Serializable;
@@ -25,6 +20,13 @@ final class PreviewTopComponent extends TopComponent {
 
     private PreviewTopComponent() {
         initComponents();
+
+        // Processing applet initialization
+        m_sketch = new processing.core.PApplet();
+        //m_sketch = new ProcessingPreview();
+        add(m_sketch, java.awt.BorderLayout.CENTER);
+        m_sketch.init();
+
         setName(NbBundle.getMessage(PreviewTopComponent.class, "CTL_PreviewTopComponent"));
         setToolTipText(NbBundle.getMessage(PreviewTopComponent.class, "HINT_PreviewTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
@@ -39,21 +41,13 @@ final class PreviewTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setLayout(new java.awt.BorderLayout());
     }// </editor-fold>//GEN-END:initComponents
 
-
+    private final processing.core.PApplet m_sketch;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
      * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
@@ -118,5 +112,9 @@ final class PreviewTopComponent extends TopComponent {
         public Object readResolve() {
             return PreviewTopComponent.getDefault();
         }
+    }
+
+    public void refreshPreview() {
+        m_sketch.redraw();
     }
 }
