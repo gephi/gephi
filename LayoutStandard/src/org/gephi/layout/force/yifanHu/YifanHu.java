@@ -33,7 +33,6 @@ public class YifanHu implements LayoutBuilder {
 
     public YifanHuLayout buildLayout() {
         YifanHuLayout layout = new YifanHuLayout(this, new StepDisplacement(1f));
-        //YifanHuLayout layout = new YifanHuLayout(this, new ProportionalDisplacement(1f));
         return layout;
     }
 

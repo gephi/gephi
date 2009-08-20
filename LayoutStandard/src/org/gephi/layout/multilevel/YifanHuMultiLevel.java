@@ -23,7 +23,6 @@ package org.gephi.layout.multilevel;
 import javax.swing.Icon;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
-import org.gephi.layout.force.yifanHu.YifanHu;
 import org.openide.util.NbBundle;
 
 /**
@@ -35,6 +34,7 @@ public class YifanHuMultiLevel implements LayoutBuilder {
     public Layout buildLayout() {
         MultiLevelLayout layout = new MultiLevelLayout(
             this, new MaximalMatchingCoarsening());
+        layout.resetPropertiesValues();
         return layout;
     }
 

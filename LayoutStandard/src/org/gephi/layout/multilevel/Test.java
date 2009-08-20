@@ -6,7 +6,6 @@ package org.gephi.layout.multilevel;
 import javax.swing.Icon;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
-import org.gephi.graph.api.Node;
 import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;

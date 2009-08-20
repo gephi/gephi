@@ -89,25 +89,26 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
                 progress++;
                 if (progress >= 5) {
                     progress = 0;
-                    setStep(getStep() / stepRatio);
+                    setStep(getStep() / getStepRatio());
                 }
             } else {
                 progress = 0;
-                setStep(getStep() * stepRatio);
+                setStep(getStep() * getStepRatio());
             }
         } else {
-            setStep(step * stepRatio);
+            setStep(step * getStepRatio());
         }
     }
 
     @Override
     public void resetPropertiesValues() {
-        stepRatio = (float) 0.9;
+        setStepRatio((float) 0.9);
         setRelativeStrength((float) 0.2);
         setOptimalDistance((float) (Math.pow(getRelativeStrength(), 1.0 / 3) * GraphUtils.getAverageEdgeLength(graph)));
         setStep(100f);
         setQuadTreeMaxLevel(10);
         setBarnesHutTheta(1.2f);
+        setAdaptiveCooling(true);
     }
 
     public PropertySet[] getPropertySets() throws NoSuchMethodException {
@@ -125,6 +126,10 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             this, Float.class, "Step size",
             "The step size used in the integration phase",
             "getStep", "setStep"));
+        set.put(LayoutProperty.createProperty(
+            this, Float.class, "Step ratio",
+            "The ratio used to update the step size across iterations.",
+            "getStepRatio", "setStepRatio"));
         set.put(LayoutProperty.createProperty(
             this, Boolean.class, "Adaptive Cooling",
             "Controls the use of adaptive cooling",
@@ -166,8 +171,8 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         // Evaluates n^2 inter node forces using BarnesHut.
         QuadTree tree = QuadTree.buildTree(graph, getQuadTreeMaxLevel());
 
-        double electricEnergy = 0; ///////////////////////
-        double springEnergy = 0; ///////////////////////
+//        double electricEnergy = 0; ///////////////////////
+//        double springEnergy = 0; ///////////////////////
         BarnesHut barnes = new BarnesHut(getNodeForce());
         barnes.setTheta(getBarnesHutTheta());
         for (Node node : graph.getTopNodes()) {
@@ -176,7 +181,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
             ForceVector f = barnes.calculateForce(data, tree);
             layoutData.add(f);
-            electricEnergy += f.getEnergy();
+//            electricEnergy += f.getEnergy();
         }
 
         // Apply edge forces.
@@ -192,7 +197,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             f2.subtract(f);
         }
 
-        System.out.println("step = " + getStep());
+        // System.out.println("step = " + getStep());
         // Calculate energy and max force.
         energy0 = energy;
         energy = 0;
@@ -214,9 +219,9 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             getDisplacement().moveNode(data, force);
         }
         postAlgo();
-        springEnergy = energy - electricEnergy;
-        System.out.println("electric: " + electricEnergy + "    spring: " + springEnergy);
-        System.out.println("energy0 = " + energy0 + "   energy = " + energy);
+//        springEnergy = energy - electricEnergy;
+//        System.out.println("electric: " + electricEnergy + "    spring: " + springEnergy);
+//        System.out.println("energy0 = " + energy0 + "   energy = " + energy);
     }
 
 
@@ -292,6 +297,20 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
      */
     public void setAdaptiveCooling(Boolean adaptiveCooling) {
         this.adaptiveCooling = adaptiveCooling;
+    }
+
+    /**
+     * @return the stepRatio
+     */
+    public Float getStepRatio() {
+        return stepRatio;
+    }
+
+    /**
+     * @param stepRatio the stepRatio to set
+     */
+    public void setStepRatio(Float stepRatio) {
+        this.stepRatio = stepRatio;
     }
 
     /**
