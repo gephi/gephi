@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.4" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+<Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="1"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -16,153 +16,26 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jScrollPane1" pref="293" max="32767" attributes="1"/>
+          <Component id="propertiesPanel" alignment="0" pref="292" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="refreshButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="221" max="32767" attributes="0"/>
+              <EmptySpace pref="220" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="jScrollPane1" min="-2" pref="353" max="-2" attributes="1"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="propertiesPanel" min="-2" pref="318" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="refreshButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="33" max="32767" attributes="0"/>
+              <EmptySpace pref="62" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JScrollPane" name="jScrollPane1">
-      <AuxValues>
-        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-      </AuxValues>
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-      <SubComponents>
-        <Component class="javax.swing.JTable" name="propTable">
-          <Properties>
-            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="2" rowCount="48">
-                <Column editable="true" title="Property" type="java.lang.String">
-                  <Data value="Show Nodes"/>
-                  <Data value="Node Border Width"/>
-                  <Data value="Node Color"/>
-                  <Data value="Node Border Color"/>
-                  <Data value="Show Node Labels"/>
-                  <Data value="Node Label Font"/>
-                  <Data value="Node Label Font Size"/>
-                  <Data value="Node Label Max Char"/>
-                  <Data value="Node Label Color"/>
-                  <Data value="Bordered Node Labels"/>
-                  <Data value="Node Label Border Color"/>
-                  <Data value="Show Edges"/>
-                  <Data value="Curved Uni. Edges"/>
-                  <Data value="Curved Bi. Edges"/>
-                  <Data value="Uni. Edge Color"/>
-                  <Data value="Bi. Edge Color"/>
-                  <Data value="Show Self-Loops"/>
-                  <Data value="Self-Loop Color"/>
-                  <Data value="Show Uni. Edge Labels"/>
-                  <Data value="Uni. Edge Labels Char Limit"/>
-                  <Data value="Uni. Edge Labels Font"/>
-                  <Data value="Uni. Edge Labels Font Size"/>
-                  <Data value="Uni. Edge Label Color"/>
-                  <Data value="Show Uni. Edge Mini-Labels"/>
-                  <Data value="Uni. Edge Mini-Label Added Radius"/>
-                  <Data value="Uni. Edge Mini-Label Char Limit"/>
-                  <Data value="Uni. Edge Mini-Label Font"/>
-                  <Data value="Uni. Edge Mini-Label Font Size"/>
-                  <Data value="Uni. Edge Mini-Label Color"/>
-                  <Data value="Show Uni. Edge Arrows"/>
-                  <Data value="Uni. Edge Arrow Added Radius"/>
-                  <Data value="Uni. Edge Arrow Size"/>
-                  <Data value="Uni. Edge Arrow Color"/>
-                  <Data value="Show Bi. Edge Labels"/>
-                  <Data value="Bi. Edge Labels Char Limit"/>
-                  <Data value="Bi. Edge Labels Font"/>
-                  <Data value="Bi. Edge Labels Font Size"/>
-                  <Data value="Bi. Edge Label Color"/>
-                  <Data value="Show Bi. Edge Mini-Labels"/>
-                  <Data value="Bi. Edge Mini-Label Added Radius"/>
-                  <Data value="Bi. Edge Mini-Label Char Limit"/>
-                  <Data value="Bi. Edge Mini-Label Font"/>
-                  <Data value="Bi. Edge Mini-Label Font Size"/>
-                  <Data value="Bi. Edge Mini-Label Color"/>
-                  <Data value="Show Bi. Edge Arrows"/>
-                  <Data value="Bi. Edge Arrow Added Radius"/>
-                  <Data value="Bi. Edge Arrow Size"/>
-                  <Data value="Bi. Edge Arrow Color"/>
-                </Column>
-                <Column editable="true" title="Value" type="java.lang.Object">
-                  <Data value="y"/>
-                  <Data value="1"/>
-                  <Data value="original"/>
-                  <Data value="0,0,0"/>
-                  <Data value="y"/>
-                  <Data value="***"/>
-                  <Data value="14"/>
-                  <Data value="10"/>
-                  <Data value="0,0,0"/>
-                  <Data value="y"/>
-                  <Data value="255,255,255"/>
-                  <Data value="y"/>
-                  <Data value="n"/>
-                  <Data value="n"/>
-                  <Data value="b1"/>
-                  <Data value="both"/>
-                  <Data value="y"/>
-                  <Data value="0,0,0"/>
-                  <Data value="y"/>
-                  <Data value="10"/>
-                  <Data value="***"/>
-                  <Data value="10"/>
-                  <Data value="parent"/>
-                  <Data value="y"/>
-                  <Data value="15"/>
-                  <Data value="10"/>
-                  <Data value="***"/>
-                  <Data value="8"/>
-                  <Data value="parent"/>
-                  <Data value="y"/>
-                  <Data value="65"/>
-                  <Data value="20"/>
-                  <Data value="parent"/>
-                  <Data value="y"/>
-                  <Data value="10"/>
-                  <Data value="***"/>
-                  <Data value="10"/>
-                  <Data value="parent"/>
-                  <Data value="y"/>
-                  <Data value="15"/>
-                  <Data value="10"/>
-                  <Data value="***"/>
-                  <Data value="8"/>
-                  <Data value="parent"/>
-                  <Data value="y"/>
-                  <Data value="65"/>
-                  <Data value="20"/>
-                  <Data value="parent"/>
-                </Column>
-              </Table>
-            </Property>
-            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[130, 288]"/>
-            </Property>
-            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[130, 288]"/>
-            </Property>
-            <Property name="rowSelectionAllowed" type="boolean" value="false"/>
-            <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
-              <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
-            </Property>
-          </Properties>
-        </Component>
-      </SubComponents>
-    </Container>
     <Component class="javax.swing.JButton" name="refreshButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -173,5 +46,9 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="refreshButtonActionPerformed"/>
       </Events>
     </Component>
+    <Container class="javax.swing.JPanel" name="propertiesPanel">
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+    </Container>
   </SubComponents>
 </Form>

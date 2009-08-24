@@ -21,12 +21,6 @@ final class PreviewTopComponent extends TopComponent {
     private PreviewTopComponent() {
         initComponents();
 
-        // Processing applet initialization
-        m_sketch = new processing.core.PApplet();
-        //m_sketch = new ProcessingPreview();
-        add(m_sketch, java.awt.BorderLayout.CENTER);
-        m_sketch.init();
-
         setName(NbBundle.getMessage(PreviewTopComponent.class, "CTL_PreviewTopComponent"));
         setToolTipText(NbBundle.getMessage(PreviewTopComponent.class, "HINT_PreviewTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
@@ -41,11 +35,15 @@ final class PreviewTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        sketch = new processing.core.PApplet();
+
         setLayout(new java.awt.BorderLayout());
+        add(sketch, java.awt.BorderLayout.CENTER);
+        ((processing.core.PApplet) sketch).init();
     }// </editor-fold>//GEN-END:initComponents
 
-    private final processing.core.PApplet m_sketch;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private java.awt.Panel sketch;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -115,6 +113,6 @@ final class PreviewTopComponent extends TopComponent {
     }
 
     public void refreshPreview() {
-        m_sketch.redraw();
+        ((processing.core.PApplet) sketch).redraw();
     }
 }
