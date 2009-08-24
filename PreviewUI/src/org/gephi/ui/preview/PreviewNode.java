@@ -22,8 +22,23 @@ public class PreviewNode extends AbstractNode {
     @Override
     protected Sheet createSheet() {
         Sheet sheet = Sheet.createDefault();
-        Sheet.Set set = Sheet.createPropertiesSet();
         GraphCustomizer obj = getLookup().lookup(GraphCustomizer.class);
+
+        Sheet.Set nodeSet = Sheet.createPropertiesSet();
+        nodeSet.setDisplayName("Node Settings");
+        nodeSet.setName("nodes");
+
+        Sheet.Set edgeSet = Sheet.createPropertiesSet();
+        edgeSet.setDisplayName("Edge Global Settings");
+        edgeSet.setName("edges");
+
+        Sheet.Set uniEdgeSet = Sheet.createPropertiesSet();
+        uniEdgeSet.setDisplayName("Unidirectional Edge Settings");
+        uniEdgeSet.setName("uniEdges");
+
+        Sheet.Set biEdgeSet = Sheet.createPropertiesSet();
+        biEdgeSet.setDisplayName("Bidirectional Edge Settings");
+        biEdgeSet.setName("biEdges");
 
         try {
 
@@ -178,60 +193,63 @@ public class PreviewNode extends AbstractNode {
             biEdgeArrowColorProp.setDisplayName("Bi. Edge Arrow Color");
 
             // add properties to the property set
-            set.put(showNodesProp);
-            set.put(nodeBorderWidthProp);
-            set.put(nodeColorProp);
-            set.put(nodeBorderColorProp);
-            set.put(showNodeLabelsProp);
-            set.put(nodeLabelFontProp);
-            set.put(nodeLabelFontSizeProp);
-            set.put(nodeLabelCharLimitProp);
-            set.put(nodeLabelColorProp);
-            set.put(borderedNodeLabelsProp);
-            set.put(nodeLabelBorderColorProp);
-            set.put(showEdgesProp);
-            set.put(curvedUniEdgesProp);
-            set.put(curvedBiEdgesProp);
-            set.put(uniEdgeColorProp);
-            set.put(biEdgeColorProp);
-            set.put(showSelfLoopsProp);
-            set.put(selfLoopColorProp);
-            set.put(showUniEdgeLabelsProp);
-            set.put(uniEdgeLabelCharLimitProp);
-            set.put(uniEdgeLabelFontProp);
-            set.put(uniEdgeLabelFontSizeProp);
-            set.put(uniEdgeLabelColorProp);
-            set.put(showUniEdgeMLProp);
-            set.put(uniEdgeMLAddedRadProp);
-            set.put(uniEdgeMLCharLimitProp);
-            set.put(uniEdgeMLFontProp);
-            set.put(uniEdgeMLFontSizeProp);
-            set.put(uniEdgeMLColorProp);
-            set.put(showUniEdgeArrowsProp);
-            set.put(uniEdgeArrowAddedRadProp);
-            set.put(uniEdgeArrowSizeProp);
-            set.put(uniEdgeArrowColorProp);
-            set.put(showBiEdgeLabelsProp);
-            set.put(biEdgeLabelCharLimitProp);
-            set.put(biEdgeLabelFontProp);
-            set.put(biEdgeLabelFontSizeProp);
-            set.put(biEdgeLabelColorProp);
-            set.put(showBiEdgeMLProp);
-            set.put(biEdgeMLAddedRadProp);
-            set.put(biEdgeMLCharLimitProp);
-            set.put(biEdgeMLFontProp);
-            set.put(biEdgeMLFontSizeProp);
-            set.put(biEdgeMLColorProp);
-            set.put(showBiEdgeArrowsProp);
-            set.put(biEdgeArrowAddedRadProp);
-            set.put(biEdgeArrowSizeProp);
-            set.put(biEdgeArrowColorProp);
+            nodeSet.put(showNodesProp);
+            nodeSet.put(nodeBorderWidthProp);
+            nodeSet.put(nodeColorProp);
+            nodeSet.put(nodeBorderColorProp);
+            nodeSet.put(showNodeLabelsProp);
+            nodeSet.put(nodeLabelFontProp);
+            nodeSet.put(nodeLabelFontSizeProp);
+            nodeSet.put(nodeLabelCharLimitProp);
+            nodeSet.put(nodeLabelColorProp);
+            nodeSet.put(borderedNodeLabelsProp);
+            nodeSet.put(nodeLabelBorderColorProp);
+            edgeSet.put(showEdgesProp);
+            uniEdgeSet.put(curvedUniEdgesProp);
+            biEdgeSet.put(curvedBiEdgesProp);
+            uniEdgeSet.put(uniEdgeColorProp);
+            biEdgeSet.put(biEdgeColorProp);
+            edgeSet.put(showSelfLoopsProp);
+            edgeSet.put(selfLoopColorProp);
+            uniEdgeSet.put(showUniEdgeLabelsProp);
+            uniEdgeSet.put(uniEdgeLabelCharLimitProp);
+            uniEdgeSet.put(uniEdgeLabelFontProp);
+            uniEdgeSet.put(uniEdgeLabelFontSizeProp);
+            uniEdgeSet.put(uniEdgeLabelColorProp);
+            uniEdgeSet.put(showUniEdgeMLProp);
+            uniEdgeSet.put(uniEdgeMLAddedRadProp);
+            uniEdgeSet.put(uniEdgeMLCharLimitProp);
+            uniEdgeSet.put(uniEdgeMLFontProp);
+            uniEdgeSet.put(uniEdgeMLFontSizeProp);
+            uniEdgeSet.put(uniEdgeMLColorProp);
+            uniEdgeSet.put(showUniEdgeArrowsProp);
+            uniEdgeSet.put(uniEdgeArrowAddedRadProp);
+            uniEdgeSet.put(uniEdgeArrowSizeProp);
+            uniEdgeSet.put(uniEdgeArrowColorProp);
+            biEdgeSet.put(showBiEdgeLabelsProp);
+            biEdgeSet.put(biEdgeLabelCharLimitProp);
+            biEdgeSet.put(biEdgeLabelFontProp);
+            biEdgeSet.put(biEdgeLabelFontSizeProp);
+            biEdgeSet.put(biEdgeLabelColorProp);
+            biEdgeSet.put(showBiEdgeMLProp);
+            biEdgeSet.put(biEdgeMLAddedRadProp);
+            biEdgeSet.put(biEdgeMLCharLimitProp);
+            biEdgeSet.put(biEdgeMLFontProp);
+            biEdgeSet.put(biEdgeMLFontSizeProp);
+            biEdgeSet.put(biEdgeMLColorProp);
+            biEdgeSet.put(showBiEdgeArrowsProp);
+            biEdgeSet.put(biEdgeArrowAddedRadProp);
+            biEdgeSet.put(biEdgeArrowSizeProp);
+            biEdgeSet.put(biEdgeArrowColorProp);
 
         } catch (NoSuchMethodException ex) {
             ErrorManager.getDefault();
         }
 
-        sheet.put(set);
+        sheet.put(nodeSet);
+        sheet.put(edgeSet);
+        sheet.put(uniEdgeSet);
+        sheet.put(biEdgeSet);
         return sheet;
     }
 }
