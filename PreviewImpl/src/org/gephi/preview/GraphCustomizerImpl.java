@@ -1,5 +1,6 @@
 package org.gephi.preview;
 
+import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
@@ -18,8 +19,7 @@ public class GraphCustomizerImpl implements GraphCustomizer {
     private String nodeColor = "original";
     private String nodeBorderColor = "0,0,0";
     private Boolean showNodeLabels = true;
-    private String nodeLabelFont = "Sans";
-    private Integer nodeLabelFontSize = 14;
+    private Font nodeLabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
     private Integer nodeLabelMaxChar = 10;
     private String nodeLabelColor = "0,0,0";
     private Boolean showNodeLabelBorders = true;
@@ -33,14 +33,12 @@ public class GraphCustomizerImpl implements GraphCustomizer {
     private String selfLoopColor = "0,0,0";
     private Boolean showUniEdgeLabels = true;
     private Integer uniEdgeLabelMaxChar = 10;
-    private String uniEdgeLabelFont = "Sans";
-    private Integer uniEdgeLabelFontSize = 10;
+    private Font uniEdgeLabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
     private String uniEdgeLabelColor = "parent";
     private Boolean showUniEdgeMiniLabels = true;
     private Float uniEdgeMiniLabelAddedRadius = 15f;
     private Integer uniEdgeMiniLabelMaxChar = 10;
-    private String uniEdgeMiniLabelFont = "Sans";
-    private Integer uniEdgeMiniLabelFontSize = 8;
+    private Font uniEdgeMiniLabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 8);
     private String uniEdgeMiniLabelColor = "parent";
     private Boolean showUniEdgeArrows = true;
     private Float uniEdgeArrowAddedRadius = 65f;
@@ -48,14 +46,12 @@ public class GraphCustomizerImpl implements GraphCustomizer {
     private String uniEdgeArrowColor = "parent";
     private Boolean showBiEdgeLabels = true;
     private Integer biEdgeLabelMaxChar = 10;
-    private String biEdgeLabelFont = "Sans";
-    private Integer biEdgeLabelFontSize = 10;
+    private Font biEdgeLabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
     private String biEdgeLabelColor = "parent";
     private Boolean showBiEdgeMiniLabels = true;
     private Float biEdgeMiniLabelAddedRadius = 15f;
     private Integer biEdgeMiniLabelMaxChar = 10;
-    private String biEdgeMiniLabelFont = "Sans";
-    private Integer biEdgeMiniLabelFontSize = 8;
+    private Font biEdgeMiniLabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 8);
     private String biEdgeMiniLabelColor = "parent";
     private Boolean showBiEdgeArrows = true;
     private Float biEdgeArrowAddedRadius = 65f;
@@ -97,12 +93,8 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         return showNodeLabels;
     }
 
-    public String getNodeLabelFont() {
+    public Font getNodeLabelFont() {
         return nodeLabelFont;
-    }
-
-    public Integer getNodeLabelFontSize() {
-        return nodeLabelFontSize;
     }
 
     public Integer getNodeLabelMaxChar() {
@@ -157,12 +149,8 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         return uniEdgeLabelMaxChar;
     }
 
-    public String getUniEdgeLabelFont() {
+    public Font getUniEdgeLabelFont() {
         return uniEdgeLabelFont;
-    }
-
-    public Integer getUniEdgeLabelFontSize() {
-        return uniEdgeLabelFontSize;
     }
 
     public String getUniEdgeLabelColor() {
@@ -181,12 +169,8 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         return uniEdgeMiniLabelMaxChar;
     }
 
-    public String getUniEdgeMiniLabelFont() {
+    public Font getUniEdgeMiniLabelFont() {
         return uniEdgeMiniLabelFont;
-    }
-
-    public Integer getUniEdgeMiniLabelFontSize() {
-        return uniEdgeMiniLabelFontSize;
     }
 
     public String getUniEdgeMiniLabelColor() {
@@ -217,12 +201,8 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         return biEdgeLabelMaxChar;
     }
 
-    public String getBiEdgeLabelFont() {
+    public Font getBiEdgeLabelFont() {
         return biEdgeLabelFont;
-    }
-
-    public Integer getBiEdgeLabelFontSize() {
-        return biEdgeLabelFontSize;
     }
 
     public String getBiEdgeLabelColor() {
@@ -241,12 +221,8 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         return biEdgeMiniLabelMaxChar;
     }
 
-    public String getBiEdgeMiniLabelFont() {
+    public Font getBiEdgeMiniLabelFont() {
         return biEdgeMiniLabelFont;
-    }
-
-    public Integer getBiEdgeMiniLabelFontSize() {
-        return biEdgeMiniLabelFontSize;
     }
 
     public String getBiEdgeMiniLabelColor() {
@@ -299,16 +275,10 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         fire("showNodeLabels", old, showNodeLabels);
     }
 
-    public void setNodeLabelFont(String value) {
-        String old = nodeLabelFont;
+    public void setNodeLabelFont(Font value) {
+        Font old = nodeLabelFont;
         nodeLabelFont = value;
         fire("nodeLabelFont", old, nodeLabelFont);
-    }
-
-    public void setNodeLabelFontSize(Integer value) {
-        Integer old = nodeLabelFontSize;
-        nodeLabelFontSize = value;
-        fire("nodeLabelFontSize", old, nodeLabelFontSize);
     }
 
     public void setNodeLabelMaxChar(Integer value) {
@@ -389,16 +359,10 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         fire("uniEdgeLabelMaxChar", old, uniEdgeLabelMaxChar);
     }
 
-    public void setUniEdgeLabelFont(String value) {
-        String old = uniEdgeLabelFont;
+    public void setUniEdgeLabelFont(Font value) {
+        Font old = uniEdgeLabelFont;
         uniEdgeLabelFont = value;
         fire("uniEdgeLabelFont", old, uniEdgeLabelFont);
-    }
-
-    public void setUniEdgeLabelFontSize(Integer value) {
-        Integer old = uniEdgeLabelFontSize;
-        uniEdgeLabelFontSize = value;
-        fire("uniEdgeLabelFontSize", old, uniEdgeLabelFontSize);
     }
 
     public void setUniEdgeLabelColor(String value) {
@@ -425,16 +389,10 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         fire("uniEdgeMiniLabelMaxChar", old, uniEdgeMiniLabelMaxChar);
     }
 
-    public void setUniEdgeMiniLabelFont(String value) {
-        String old = uniEdgeMiniLabelFont;
+    public void setUniEdgeMiniLabelFont(Font value) {
+        Font old = uniEdgeMiniLabelFont;
         uniEdgeMiniLabelFont = value;
         fire("uniEdgeMiniLabelFont", old, uniEdgeMiniLabelFont);
-    }
-
-    public void setUniEdgeMiniLabelFontSize(Integer value) {
-        Integer old = uniEdgeMiniLabelFontSize;
-        uniEdgeMiniLabelFontSize = value;
-        fire("uniEdgeMiniLabelFontSize", old, uniEdgeMiniLabelFontSize);
     }
 
     public void setUniEdgeMiniLabelColor(String value) {
@@ -479,16 +437,10 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         fire("biEdgeLabelMaxChar", old, biEdgeLabelMaxChar);
     }
 
-    public void setBiEdgeLabelFont(String value) {
-        String old = biEdgeLabelFont;
+    public void setBiEdgeLabelFont(Font value) {
+        Font old = biEdgeLabelFont;
         biEdgeLabelFont = value;
         fire("biEdgeLabelFont", old, biEdgeLabelFont);
-    }
-
-    public void setBiEdgeLabelFontSize(Integer value) {
-        Integer old = biEdgeLabelFontSize;
-        biEdgeLabelFontSize = value;
-        fire("biEdgeLabelFontSize", old, biEdgeLabelFontSize);
     }
 
     public void setBiEdgeLabelColor(String value) {
@@ -515,16 +467,10 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         fire("biEdgeMiniLabelMaxChar", old, biEdgeMiniLabelMaxChar);
     }
 
-    public void setBiEdgeMiniLabelFont(String value) {
-        String old = biEdgeMiniLabelFont;
+    public void setBiEdgeMiniLabelFont(Font value) {
+        Font old = biEdgeMiniLabelFont;
         biEdgeMiniLabelFont = value;
         fire("biEdgeMiniLabelFont", old, biEdgeMiniLabelFont);
-    }
-
-    public void setBiEdgeMiniLabelFontSize(Integer value) {
-        Integer old = biEdgeMiniLabelFontSize;
-        biEdgeMiniLabelFontSize = value;
-        fire("biEdgeMiniLabelFontSize", old, biEdgeMiniLabelFontSize);
     }
 
     public void setBiEdgeMiniLabelColor(String value) {

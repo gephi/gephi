@@ -1,5 +1,6 @@
 package org.gephi.preview.api;
 
+import java.awt.Font;
 import java.beans.PropertyChangeListener;
 
 /**
@@ -16,8 +17,7 @@ public interface GraphCustomizer {
     public String getNodeColor();
     public String getNodeBorderColor();
     public Boolean getShowNodeLabels();
-    public String getNodeLabelFont();
-    public Integer getNodeLabelFontSize();
+    public Font getNodeLabelFont();
     public Integer getNodeLabelMaxChar();
     public String getNodeLabelColor();
     public Boolean getShowNodeLabelBorders();
@@ -31,14 +31,12 @@ public interface GraphCustomizer {
     public String getSelfLoopColor();
     public Boolean getShowUniEdgeLabels();
     public Integer getUniEdgeLabelMaxChar();
-    public String getUniEdgeLabelFont();
-    public Integer getUniEdgeLabelFontSize();
+    public Font getUniEdgeLabelFont();
     public String getUniEdgeLabelColor();
     public Boolean getShowUniEdgeMiniLabels();
     public Float getUniEdgeMiniLabelAddedRadius();
     public Integer getUniEdgeMiniLabelMaxChar();
-    public String getUniEdgeMiniLabelFont();
-    public Integer getUniEdgeMiniLabelFontSize();
+    public Font getUniEdgeMiniLabelFont();
     public String getUniEdgeMiniLabelColor();
     public Boolean getShowUniEdgeArrows();
     public Float getUniEdgeArrowAddedRadius();
@@ -46,14 +44,12 @@ public interface GraphCustomizer {
     public String getUniEdgeArrowColor();
     public Boolean getShowBiEdgeLabels();
     public Integer getBiEdgeLabelMaxChar();
-    public String getBiEdgeLabelFont();
-    public Integer getBiEdgeLabelFontSize();
+    public Font getBiEdgeLabelFont();
     public String getBiEdgeLabelColor();
     public Boolean getShowBiEdgeMiniLabels();
     public Float getBiEdgeMiniLabelAddedRadius();
     public Integer getBiEdgeMiniLabelMaxChar();
-    public String getBiEdgeMiniLabelFont();
-    public Integer getBiEdgeMiniLabelFontSize();
+    public Font getBiEdgeMiniLabelFont();
     public String getBiEdgeMiniLabelColor();
     public Boolean getShowBiEdgeArrows();
     public Float getBiEdgeArrowAddedRadius();
@@ -65,8 +61,7 @@ public interface GraphCustomizer {
     public void setNodeColor(String value);
     public void setNodeBorderColor(String value);
     public void setShowNodeLabels(Boolean value);
-    public void setNodeLabelFont(String value);
-    public void setNodeLabelFontSize(Integer value);
+    public void setNodeLabelFont(Font value);
     public void setNodeLabelMaxChar(Integer value);
     public void setNodeLabelColor(String value);
     public void setShowNodeLabelBorders(Boolean value);
@@ -80,14 +75,12 @@ public interface GraphCustomizer {
     public void setSelfLoopColor(String value);
     public void setShowUniEdgeLabels(Boolean value);
     public void setUniEdgeLabelMaxChar(Integer value);
-    public void setUniEdgeLabelFont(String value);
-    public void setUniEdgeLabelFontSize(Integer value);
+    public void setUniEdgeLabelFont(Font value);
     public void setUniEdgeLabelColor(String value);
     public void setShowUniEdgeMiniLabels(Boolean value);
     public void setUniEdgeMiniLabelAddedRadius(Float value);
     public void setUniEdgeMiniLabelMaxChar(Integer value);
-    public void setUniEdgeMiniLabelFont(String value);
-    public void setUniEdgeMiniLabelFontSize(Integer value);
+    public void setUniEdgeMiniLabelFont(Font value);
     public void setUniEdgeMiniLabelColor(String value);
     public void setShowUniEdgeArrows(Boolean value);
     public void setUniEdgeArrowAddedRadius(Float value);
@@ -95,14 +88,12 @@ public interface GraphCustomizer {
     public void setUniEdgeArrowColor(String value);
     public void setShowBiEdgeLabels(Boolean value);
     public void setBiEdgeLabelMaxChar(Integer value);
-    public void setBiEdgeLabelFont(String value);
-    public void setBiEdgeLabelFontSize(Integer value);
+    public void setBiEdgeLabelFont(Font value);
     public void setBiEdgeLabelColor(String value);
     public void setShowBiEdgeMiniLabels(Boolean value);
     public void setBiEdgeMiniLabelAddedRadius(Float value);
     public void setBiEdgeMiniLabelMaxChar(Integer value);
-    public void setBiEdgeMiniLabelFont(String value);
-    public void setBiEdgeMiniLabelFontSize(Integer value);
+    public void setBiEdgeMiniLabelFont(Font value);
     public void setBiEdgeMiniLabelColor(String value);
     public void setShowBiEdgeArrows(Boolean value);
     public void setBiEdgeArrowAddedRadius(Float value);
