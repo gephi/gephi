@@ -7,6 +7,16 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.gephi.preview.api.GraphCustomizer;
+import org.gephi.preview.api.color.EdgeChildColorizer;
+import org.gephi.preview.api.color.EdgeColorizer;
+import org.gephi.preview.api.color.GenericColorizer;
+import org.gephi.preview.api.color.NodeChildColorizer;
+import org.gephi.preview.api.color.NodeColorizer;
+import org.gephi.preview.color.CustomColorMode;
+import org.gephi.preview.color.EdgeB1ColorMode;
+import org.gephi.preview.color.EdgeBothBColorMode;
+import org.gephi.preview.color.NodeOriginalColorMode;
+import org.gephi.preview.color.ParentEdgeColorMode;
 
 /**
  *
@@ -14,49 +24,51 @@ import org.gephi.preview.api.GraphCustomizer;
  */
 public class GraphCustomizerImpl implements GraphCustomizer {
 
+    //TODO set some parameters as static class fields
+
     private Boolean showNodes = true;
     private Float nodeBorderWidth = 1f;
-    private String nodeColor = "original";
-    private String nodeBorderColor = "0,0,0";
+    private NodeColorizer nodeColor = new NodeOriginalColorMode();
+    private GenericColorizer nodeBorderColor = new CustomColorMode(0, 0, 0);
     private Boolean showNodeLabels = true;
     private Font nodeLabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
     private Integer nodeLabelMaxChar = 10;
-    private String nodeLabelColor = "0,0,0";
+    private NodeChildColorizer nodeLabelColor = new CustomColorMode(0, 0, 0);
     private Boolean showNodeLabelBorders = true;
-    private String nodeLabelBorderColor = "255,255,255";
+    private NodeChildColorizer nodeLabelBorderColor = new CustomColorMode(255, 255, 255);
     private Boolean showEdges = true;
     private Boolean curvedUniEdges = false;
     private Boolean curvedBiEdges = false;
-    private String uniEdgeColor = "b1";
-    private String biEdgeColor = "both";
+    private EdgeColorizer uniEdgeColor = new EdgeB1ColorMode();
+    private EdgeColorizer biEdgeColor = new EdgeBothBColorMode();
     private Boolean showSelfLoops = true;
-    private String selfLoopColor = "0,0,0";
+    private EdgeColorizer selfLoopColor = new CustomColorMode(0, 0, 0);
     private Boolean showUniEdgeLabels = true;
     private Integer uniEdgeLabelMaxChar = 10;
     private Font uniEdgeLabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
-    private String uniEdgeLabelColor = "parent";
+    private EdgeChildColorizer uniEdgeLabelColor = new ParentEdgeColorMode();
     private Boolean showUniEdgeMiniLabels = true;
     private Float uniEdgeMiniLabelAddedRadius = 15f;
     private Integer uniEdgeMiniLabelMaxChar = 10;
     private Font uniEdgeMiniLabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 8);
-    private String uniEdgeMiniLabelColor = "parent";
+    private EdgeChildColorizer uniEdgeMiniLabelColor = new ParentEdgeColorMode();
     private Boolean showUniEdgeArrows = true;
     private Float uniEdgeArrowAddedRadius = 65f;
     private Float uniEdgeArrowSize = 20f;
-    private String uniEdgeArrowColor = "parent";
+    private EdgeChildColorizer uniEdgeArrowColor = new ParentEdgeColorMode();
     private Boolean showBiEdgeLabels = true;
     private Integer biEdgeLabelMaxChar = 10;
     private Font biEdgeLabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
-    private String biEdgeLabelColor = "parent";
+    private EdgeChildColorizer biEdgeLabelColor = new ParentEdgeColorMode();
     private Boolean showBiEdgeMiniLabels = true;
     private Float biEdgeMiniLabelAddedRadius = 15f;
     private Integer biEdgeMiniLabelMaxChar = 10;
     private Font biEdgeMiniLabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 8);
-    private String biEdgeMiniLabelColor = "parent";
+    private EdgeChildColorizer biEdgeMiniLabelColor = new ParentEdgeColorMode();
     private Boolean showBiEdgeArrows = true;
     private Float biEdgeArrowAddedRadius = 65f;
     private Float biEdgeArrowSize = 20f;
-    private String biEdgeArrowColor = "parent";
+    private EdgeChildColorizer biEdgeArrowColor = new ParentEdgeColorMode();
 
     private List<PropertyChangeListener> listeners = Collections.synchronizedList(new LinkedList());
 
@@ -81,11 +93,11 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         return nodeBorderWidth;
     }
 
-    public String getNodeColor() {
+    public NodeColorizer getNodeColorizer() {
         return nodeColor;
     }
 
-    public String getNodeBorderColor() {
+    public GenericColorizer getNodeBorderColorizer() {
         return nodeBorderColor;
     }
 
@@ -101,7 +113,7 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         return nodeLabelMaxChar;
     }
 
-    public String getNodeLabelColor() {
+    public NodeChildColorizer getNodeLabelColorizer() {
         return nodeLabelColor;
     }
 
@@ -109,7 +121,7 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         return showNodeLabelBorders;
     }
 
-    public String getNodeLabelBorderColor() {
+    public NodeChildColorizer getNodeLabelBorderColorizer() {
         return nodeLabelBorderColor;
     }
 
@@ -125,11 +137,11 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         return curvedBiEdges;
     }
 
-    public String getUniEdgeColor() {
+    public EdgeColorizer getUniEdgeColorizer() {
         return uniEdgeColor;
     }
 
-    public String getBiEdgeColor() {
+    public EdgeColorizer getBiEdgeColorizer() {
         return biEdgeColor;
     }
 
@@ -137,7 +149,7 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         return showSelfLoops;
     }
 
-    public String getSelfLoopColor() {
+    public EdgeColorizer getSelfLoopColorizer() {
         return selfLoopColor;
     }
 
@@ -153,7 +165,7 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         return uniEdgeLabelFont;
     }
 
-    public String getUniEdgeLabelColor() {
+    public EdgeChildColorizer getUniEdgeLabelColorizer() {
         return uniEdgeLabelColor;
     }
 
@@ -173,7 +185,7 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         return uniEdgeMiniLabelFont;
     }
 
-    public String getUniEdgeMiniLabelColor() {
+    public EdgeChildColorizer getUniEdgeMiniLabelColorizer() {
         return uniEdgeMiniLabelColor;
     }
 
@@ -189,7 +201,7 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         return uniEdgeArrowSize;
     }
 
-    public String getUniEdgeArrowColor() {
+    public EdgeChildColorizer getUniEdgeArrowColorizer() {
         return uniEdgeArrowColor;
     }
 
@@ -205,7 +217,7 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         return biEdgeLabelFont;
     }
 
-    public String getBiEdgeLabelColor() {
+    public EdgeChildColorizer getBiEdgeLabelColorizer() {
         return biEdgeLabelColor;
     }
 
@@ -225,7 +237,7 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         return biEdgeMiniLabelFont;
     }
 
-    public String getBiEdgeMiniLabelColor() {
+    public EdgeChildColorizer getBiEdgeMiniLabelColorizer() {
         return biEdgeMiniLabelColor;
     }
 
@@ -241,7 +253,7 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         return biEdgeArrowSize;
     }
 
-    public String getBiEdgeArrowColor() {
+    public EdgeChildColorizer getBiEdgeArrowColorizer() {
         return biEdgeArrowColor;
     }
 
@@ -257,14 +269,14 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         fire("nodeBorderWidth", old, nodeBorderWidth);
     }
 
-    public void setNodeColor(String value) {
-        String old = nodeColor;
+    public void setNodeColorizer(NodeColorizer value) {
+        NodeColorizer old = nodeColor;
         nodeColor = value;
         fire("nodeColor", old, nodeColor);
     }
 
-    public void setNodeBorderColor(String value) {
-        String old = nodeBorderColor;
+    public void setNodeBorderColorizer(GenericColorizer value) {
+        GenericColorizer old = nodeBorderColor;
         nodeBorderColor = value;
         fire("nodeBorderColor", old, nodeBorderColor);
     }
@@ -287,8 +299,8 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         fire("nodeLabelMaxChar", old, nodeLabelMaxChar);
     }
 
-    public void setNodeLabelColor(String value) {
-        String old = nodeLabelColor;
+    public void setNodeLabelColorizer(NodeChildColorizer value) {
+        NodeChildColorizer old = nodeLabelColor;
         nodeLabelColor = value;
         fire("nodeLabelColor", old, nodeLabelColor);
     }
@@ -299,8 +311,8 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         fire("showNodeLabelBorders", old, showNodeLabelBorders);
     }
 
-    public void setNodeLabelBorderColor(String value) {
-        String old = nodeLabelBorderColor;
+    public void setNodeLabelBorderColorizer(NodeChildColorizer value) {
+        NodeChildColorizer old = nodeLabelBorderColor;
         nodeLabelBorderColor = value;
         fire("nodeLabelBorderColor", old, nodeLabelBorderColor);
     }
@@ -323,14 +335,14 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         fire("curvedBiEdges", old, curvedBiEdges);
     }
 
-    public void setUniEdgeColor(String value) {
-        String old = uniEdgeColor;
+    public void setUniEdgeColorizer(EdgeColorizer value) {
+        EdgeColorizer old = uniEdgeColor;
         uniEdgeColor = value;
         fire("uniEdgeColor", old, uniEdgeColor);
     }
 
-    public void setBiEdgeColor(String value) {
-        String old = biEdgeColor;
+    public void setBiEdgeColorizer(EdgeColorizer value) {
+        EdgeColorizer old = biEdgeColor;
         biEdgeColor = value;
         fire("biEdgeColor", old, biEdgeColor);
     }
@@ -341,8 +353,8 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         fire("showSelfLoops", old, showSelfLoops);
     }
 
-    public void setSelfLoopColor(String value) {
-        String old = selfLoopColor;
+    public void setSelfLoopColorizer(EdgeColorizer value) {
+        EdgeColorizer old = selfLoopColor;
         selfLoopColor = value;
         fire("selfLoopColor", old, selfLoopColor);
     }
@@ -365,8 +377,8 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         fire("uniEdgeLabelFont", old, uniEdgeLabelFont);
     }
 
-    public void setUniEdgeLabelColor(String value) {
-        String old = uniEdgeLabelColor;
+    public void setUniEdgeLabelColorizer(EdgeChildColorizer value) {
+        EdgeChildColorizer old = uniEdgeLabelColor;
         uniEdgeLabelColor = value;
         fire("uniEdgeLabelColor", old, uniEdgeLabelColor);
     }
@@ -395,8 +407,8 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         fire("uniEdgeMiniLabelFont", old, uniEdgeMiniLabelFont);
     }
 
-    public void setUniEdgeMiniLabelColor(String value) {
-        String old = uniEdgeMiniLabelColor;
+    public void setUniEdgeMiniLabelColorizer(EdgeChildColorizer value) {
+        EdgeChildColorizer old = uniEdgeMiniLabelColor;
         uniEdgeMiniLabelColor = value;
         fire("uniEdgeMiniLabelColor", old, uniEdgeMiniLabelColor);
     }
@@ -419,8 +431,8 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         fire("uniEdgeArrowSize", old, uniEdgeArrowSize);
     }
 
-    public void setUniEdgeArrowColor(String value) {
-        String old = uniEdgeArrowColor;
+    public void setUniEdgeArrowColorizer(EdgeChildColorizer value) {
+        EdgeChildColorizer old = uniEdgeArrowColor;
         uniEdgeArrowColor = value;
         fire("uniEdgeArrowColor", old, uniEdgeArrowColor);
     }
@@ -443,8 +455,8 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         fire("biEdgeLabelFont", old, biEdgeLabelFont);
     }
 
-    public void setBiEdgeLabelColor(String value) {
-        String old = biEdgeLabelColor;
+    public void setBiEdgeLabelColorizer(EdgeChildColorizer value) {
+        EdgeChildColorizer old = biEdgeLabelColor;
         biEdgeLabelColor = value;
         fire("biEdgeLabelColor", old, biEdgeLabelColor);
     }
@@ -473,8 +485,8 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         fire("biEdgeMiniLabelFont", old, biEdgeMiniLabelFont);
     }
 
-    public void setBiEdgeMiniLabelColor(String value) {
-        String old = biEdgeMiniLabelColor;
+    public void setBiEdgeMiniLabelColorizer(EdgeChildColorizer value) {
+        EdgeChildColorizer old = biEdgeMiniLabelColor;
         biEdgeMiniLabelColor = value;
         fire("biEdgeMiniLabelColor", old, biEdgeMiniLabelColor);
     }
@@ -497,8 +509,8 @@ public class GraphCustomizerImpl implements GraphCustomizer {
         fire("biEdgeArrowSize", old, biEdgeArrowSize);
     }
 
-    public void setBiEdgeArrowColor(String value) {
-        String old = biEdgeArrowColor;
+    public void setBiEdgeArrowColorizer(EdgeChildColorizer value) {
+        EdgeChildColorizer old = biEdgeArrowColor;
         biEdgeArrowColor = value;
         fire("biEdgeArrowColor", old, biEdgeArrowColor);
     }

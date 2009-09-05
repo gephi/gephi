@@ -17,6 +17,7 @@
             </module-dependencies>
             <public-packages>
                 <package>org.gephi.preview.api</package>
+                <package>org.gephi.preview.api.color</package>
             </public-packages>
         </data>
     </configuration>

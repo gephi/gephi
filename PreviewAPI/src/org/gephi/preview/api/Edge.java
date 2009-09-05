@@ -1,5 +1,6 @@
 package org.gephi.preview.api;
 
+import org.gephi.preview.api.color.Color;
 import java.util.Iterator;
 
 /**
