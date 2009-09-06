@@ -54,7 +54,7 @@ public class CloseButton extends JButton {
             setIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/xp_bigclose_enabled.png")));
             setRolloverIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/xp_bigclose_rollover.png")));
             setPressedIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/xp_bigclose_pressed.png")));
-        } else if(UIUtils.isWindowsVistaLookAndFeel()) {
+        } else if (UIUtils.isWindowsVistaLookAndFeel()) {
             setIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/vista_bigclose_enabled.png")));
             setRolloverIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/vista_bigclose_rollover.png")));
             setPressedIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/vista_bigclose_pressed.png")));

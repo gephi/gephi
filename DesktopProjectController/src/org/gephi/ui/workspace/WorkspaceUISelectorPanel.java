@@ -59,6 +59,9 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel {
 
     public void setSelectedWorkspace(Workspace workspace) {
         workspaceLabel.setText(workspace.getName());
+        if (pane != null && pane.isPopupShown()) {
+            pane.hidePopup();
+        }
     }
 
     public void noSelectedWorkspace() {

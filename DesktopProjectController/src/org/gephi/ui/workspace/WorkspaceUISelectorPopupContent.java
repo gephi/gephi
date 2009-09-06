@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.ui.workspace;
 
 import java.awt.Color;
@@ -47,19 +46,20 @@ public class WorkspaceUISelectorPopupContent extends JPanel {
 
     public void addListComponent(JComponent lst) {
         if (getComponentCount() > 0) {
-            JComponent previous = (JComponent)getComponent(getComponentCount() - 1);
+            JComponent previous = (JComponent) getComponent(getComponentCount() - 1);
             previous.setBorder(new BottomLineBorder());
         }
         lst.setBorder(BorderFactory.createEmptyBorder());
         add(lst);
     }
-    
 
     private static class BottomLineBorder implements Border {
+
         private Insets ins = new Insets(0, 0, 1, 0);
         private Color col = new Color(221, 229, 248);
 
-        public BottomLineBorder () {}
+        public BottomLineBorder() {
+        }
 
         public Insets getBorderInsets(Component c) {
             return ins;
@@ -70,10 +70,10 @@ public class WorkspaceUISelectorPopupContent extends JPanel {
         }
 
         public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-           Color old = g.getColor();
-           g.setColor(col);
-           g.drawRect(x, y + height - 2,  width, 1);
-           g.setColor(old);
+            Color old = g.getColor();
+            g.setColor(col);
+            g.drawRect(x, y + height - 2, width, 1);
+            g.setColor(old);
         }
     }
 }

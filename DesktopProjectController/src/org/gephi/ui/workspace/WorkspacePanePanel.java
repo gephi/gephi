@@ -23,9 +23,7 @@ package org.gephi.ui.workspace;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Enumeration;
 import javax.swing.AbstractAction;
-import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import org.gephi.project.api.ProjectController;
 import org.gephi.ui.components.CloseButton;
@@ -41,12 +39,15 @@ import org.openide.util.NbBundle;
  */
 public final class WorkspacePanePanel extends javax.swing.JPanel implements MouseListener {
 
+    private Workspace workspace;
+
     /** Creates new form WorkspacePanePanel */
     public WorkspacePanePanel(Workspace workspace) {
+        this.workspace = workspace;
         initComponents();
         setOpaque(true);
         //detailsLabel.setFont(detailsLabel.getFont().deriveFont((float) (detailsLabel.getFont().getSize() - 2)));
-        closeButton.setAction(new DeleteAction(workspace));
+        closeButton.setAction(new DeleteAction());
 
         //Workspace info
         workspaceLabel.setText(workspace.getName());
@@ -119,6 +120,10 @@ public final class WorkspacePanePanel extends javax.swing.JPanel implements Mous
     // End of variables declaration//GEN-END:variables
 
     public void mouseClicked(MouseEvent e) {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        if (pc.getCurrentWorkspace() != workspace) {
+            pc.openWorkspace(workspace);
+        }
     }
 
     public void mousePressed(MouseEvent e) {
@@ -138,12 +143,6 @@ public final class WorkspacePanePanel extends javax.swing.JPanel implements Mous
 
     private class DeleteAction extends AbstractAction {
 
-        private Workspace workspace;
-
-        public DeleteAction(Workspace workspace) {
-            this.workspace = workspace;
-        }
-
         public void actionPerformed(ActionEvent actionEvent) {
             String message = NbBundle.getMessage(WorkspacePanePanel.class, "WorkspacePanePanel_closeWorkspace_Question");
             String title = NbBundle.getMessage(WorkspacePanePanel.class, "WorkspacePanePanel_closeWorkspace_Title");
@@ -152,6 +151,8 @@ public final class WorkspacePanePanel extends javax.swing.JPanel implements Mous
                     NotifyDescriptor.QUESTION_MESSAGE, null, null);
             Object retType = DialogDisplayer.getDefault().notify(dd);
             if (retType == NotifyDescriptor.YES_OPTION) {
+                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+                pc.deleteWorkspace(workspace);
             }
         }
     }
