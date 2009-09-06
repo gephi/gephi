@@ -22,10 +22,10 @@ package org.gephi.ui.workspace;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import org.gephi.project.api.ProjectController;
 import org.gephi.ui.components.JPopupPane;
 import org.gephi.workspace.api.Workspace;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -40,11 +40,17 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel {
         initComponents();
 
         workspaceLabel.addMouseListener(new MouseAdapter() {
+
             @Override
             public void mouseClicked(MouseEvent e) {
                 WorkspaceUISelectorPopupContent content = new WorkspaceUISelectorPopupContent();
-                content.addListComponent(new WorkspacePanePanel());
-                content.addListComponent(new WorkspacePanePanel());
+                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+                if (pc.getCurrentProject() == null) {
+                    return;
+                }
+                for (Workspace w : pc.getCurrentProject().getWorkspaces()) {
+                    content.addListComponent(new WorkspacePanePanel(w));
+                }
                 pane = new JPopupPane(WorkspaceUISelectorPanel.this, content);
                 pane.showPopupPane();
             }
@@ -56,7 +62,7 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel {
     }
 
     public void noSelectedWorkspace() {
-        workspaceLabel.setText("Workspace");
+        workspaceLabel.setText("---");
     }
 
     /** This method is called from within the constructor to
