@@ -21,7 +21,7 @@
                   <Component id="detailsLabel" alignment="0" max="32767" attributes="1"/>
                   <Component id="workspaceLabel" alignment="0" pref="141" max="32767" attributes="1"/>
               </Group>
-              <EmptySpace pref="88" max="32767" attributes="0"/>
+              <EmptySpace pref="154" max="32767" attributes="0"/>
               <Component id="closeButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -62,11 +62,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="closeButton">
-      <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="&quot;x&quot;" type="code"/>
-        </Property>
-      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new CloseButton()"/>
       </AuxValues>

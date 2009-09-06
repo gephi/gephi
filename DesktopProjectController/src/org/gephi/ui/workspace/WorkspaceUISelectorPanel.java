@@ -38,14 +38,14 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel {
     /** Creates new form WorkspaceUISelectorPanel */
     public WorkspaceUISelectorPanel() {
         initComponents();
-        WorkspaceUISelectorPopupContent content = new WorkspaceUISelectorPopupContent();
-        content.addListComponent(new WorkspacePanePanel());
-        content.addListComponent(new WorkspacePanePanel());
-        pane = new JPopupPane(this, content);
-        workspaceLabel.addMouseListener(new MouseAdapter() {
 
+        workspaceLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                WorkspaceUISelectorPopupContent content = new WorkspaceUISelectorPopupContent();
+                content.addListComponent(new WorkspacePanePanel());
+                content.addListComponent(new WorkspacePanePanel());
+                pane = new JPopupPane(WorkspaceUISelectorPanel.this, content);
                 pane.showPopupPane();
             }
         });

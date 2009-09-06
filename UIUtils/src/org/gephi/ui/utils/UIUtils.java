@@ -260,7 +260,7 @@ public final class UIUtils {
             return false;
         }
 
-        return (!isWindowsXPLookAndFeel());
+        return (!isWindowsXPLookAndFeel() && !isWindowsVistaLookAndFeel());
     }
 
     /** Determines if current L&F is WindowsLookAndFeel */
@@ -281,7 +281,25 @@ public final class UIUtils {
 
         boolean xpThemeDisabled = (System.getProperty("swing.noxp") != null); // NOI18N
 
-        return ((xpThemeActiveOS) && (!xpThemeDisabled));
+        boolean vistaOs = System.getProperty("os.version").startsWith("6.0");
+
+        return ((xpThemeActiveOS) && (!xpThemeDisabled) && !vistaOs);
+    }
+
+    public static boolean isWindowsVistaLookAndFeel() {
+        if (!isWindowsLookAndFeel()) {
+            return false;
+        }
+
+        // is XP theme active in the underlying OS?
+        boolean xpThemeActiveOS = Boolean.TRUE.equals(Toolkit.getDefaultToolkit().getDesktopProperty("win.xpstyle.themeActive")); //NOI18N
+        // is XP theme disabled by the application?
+
+        boolean xpThemeDisabled = (System.getProperty("swing.noxp") != null); // NOI18N
+
+        boolean vistaOs = System.getProperty("os.version").startsWith("6.0");
+
+        return ((xpThemeActiveOS) && (!xpThemeDisabled) && vistaOs);
     }
 
     private static BufferedImage createTableScreenshot(Component component) {

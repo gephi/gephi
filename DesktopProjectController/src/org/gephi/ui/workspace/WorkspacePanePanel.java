@@ -1,9 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
 Copyright 2008 WebAtlas
 Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
 Website : http://www.gephi.org
@@ -63,8 +58,6 @@ public class WorkspacePanePanel extends javax.swing.JPanel {
 
         detailsLabel.setText(org.openide.util.NbBundle.getMessage(WorkspacePanePanel.class, "WorkspacePanePanel.detailsLabel.text")); // NOI18N
 
-        closeButton.setText("x");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -73,7 +66,7 @@ public class WorkspacePanePanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(detailsLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(workspaceLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 154, Short.MAX_VALUE)
                 .addComponent(closeButton)
                 .addContainerGap())
         );
@@ -100,7 +93,7 @@ public class WorkspacePanePanel extends javax.swing.JPanel {
     private class DeleteAction extends AbstractAction {
 
         public void actionPerformed(ActionEvent actionEvent) {
-            String message = NbBundle.getMessage(WorkspacePanePanel.class, "WorkspacePanePanel_closeWorkspaceQuestion");
+            String message = NbBundle.getMessage(WorkspacePanePanel.class, "WorkspacePanePanel_closeWorkspace_Question");
             String title = NbBundle.getMessage(WorkspacePanePanel.class, "WorkspacePanePanel_closeWorkspace_Title");
             NotifyDescriptor dd = new NotifyDescriptor(message, title,
                     NotifyDescriptor.YES_NO_OPTION,
