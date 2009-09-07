@@ -25,14 +25,19 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import net.java.dev.colorchooser.ColorChooser;
+import org.gephi.ui.components.JColorButton;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.text.TextModel;
 import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
@@ -50,11 +55,12 @@ public class VizBarController {
     }
 
     private void createDefaultGroups() {
-        groups = new VizToolbarGroup[3];
+        groups = new VizToolbarGroup[4];
 
-        groups[0] = new NodeGroupBar();
-        groups[1] = new EdgeGroupBar();
-        groups[2] = new LabelGroupBar();
+        groups[0] = new GlobalGroupBar();
+        groups[1] = new NodeGroupBar();
+        groups[2] = new EdgeGroupBar();
+        groups[3] = new LabelGroupBar();
     }
 
     public VizToolbar getToolbar() {
@@ -67,6 +73,42 @@ public class VizBarController {
         return extendedBar;
     }
 
+    private static class GlobalGroupBar implements VizToolbarGroup {
+
+        public String getName() {
+            return "Global";
+        }
+
+        public JComponent[] getToolbarComponents() {
+            JComponent[] components = new JComponent[1];
+
+            final VizConfig vizConfig = VizController.getInstance().getVizConfig();
+            final JButton backgroundColorButton = new JColorButton(vizConfig.getBackgroundColor());
+            backgroundColorButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.background"));
+            backgroundColorButton.addPropertyChangeListener("color", new PropertyChangeListener() {
+
+                public void propertyChange(PropertyChangeEvent evt) {
+                    vizConfig.setBackgroundColor(((JColorButton) backgroundColorButton).getColor());
+                }
+            });
+            components[0] = backgroundColorButton;
+
+            return components;
+        }
+
+        public JComponent getExtendedComponent() {
+            return new JPanel();
+        }
+
+        public boolean hasToolbar() {
+            return true;
+        }
+
+        public boolean hasExtended() {
+            return true;
+        }
+    }
+
     private static class NodeGroupBar implements VizToolbarGroup {
 
         public String getName() {
@@ -74,13 +116,7 @@ public class VizBarController {
         }
 
         public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[1];
-
-            //Show nodes buttons
-            JButton showNodeButton = new JButton();
-            showNodeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Nodes.showNodes"));
-            showNodeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/showNodes.png")));
-            components[0] = showNodeButton;
+            JComponent[] components = new JComponent[0];
 
             return components;
         }
@@ -108,7 +144,7 @@ public class VizBarController {
             JComponent[] components = new JComponent[1];
 
             //Show edges buttons
-            JButton showEdgeButton = new JButton();
+            JToggleButton showEdgeButton = new JToggleButton();
             showEdgeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.showEdges"));
             showEdgeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/showEdges.png")));
             components[0] = showEdgeButton;
@@ -136,19 +172,14 @@ public class VizBarController {
         }
 
         public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[5];
+            JComponent[] components = new JComponent[4];
 
             //Show node labels buttons
-            JButton showNodeLabelsButton = new JButton();
-            showNodeLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.showNodeLabels"));
-            showNodeLabelsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/showNodeLabels.png")));
-            components[0] = showNodeLabelsButton;
+            JToggleButton showLabelsButton = new JToggleButton();
+            showLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.showLabels"));
+            showLabelsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/showLabels.png")));
+            components[0] = showLabelsButton;
 
-            //Show edge labels buttons
-            JButton showEdgeLabelsButton = new JButton();
-            showEdgeLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.showEdgeLabels"));
-            showEdgeLabelsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/showEdgeLabels.png")));
-            components[1] = showEdgeLabelsButton;
 
             //Font
             final TextModel model = VizController.getInstance().getTextManager().getModel();
@@ -168,7 +199,7 @@ public class VizBarController {
                     fontButton.setText(model.getFont().getFontName() + ", " + model.getFont().getSize());
                 }
             });
-            components[2] = fontButton;
+            components[1] = fontButton;
 
             //Font size
             final JSlider fontSizeSlider = new JSlider(0, 100, (int) (model.getSizeFactor() * 100f));
@@ -180,7 +211,7 @@ public class VizBarController {
             });
             fontSizeSlider.setPreferredSize(new Dimension(100, 20));
             fontSizeSlider.setMaximumSize(new Dimension(100, 20));
-            components[3] = fontSizeSlider;
+            components[2] = fontSizeSlider;
 
             //Color
             final ColorChooser colorChooser = new ColorChooser(model.getColor());
@@ -193,7 +224,7 @@ public class VizBarController {
                 }
             });
 
-            components[4] = colorChooser;
+            components[3] = colorChooser;
 
             return components;
         }
