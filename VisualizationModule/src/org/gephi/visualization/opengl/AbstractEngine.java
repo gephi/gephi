@@ -98,9 +98,11 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
             public void propertyChange(PropertyChangeEvent evt) {
                 configChanged = true;
-                if(evt.getPropertyName().equals("backgroundColor")) {
+                if (evt.getPropertyName().equals("backgroundColor")) {
                     backgroundChanged = true;
                 }
+                modelClassLibrary.createModelClassesCompatibility(AbstractEngine.this)[AbstractEngine.CLASS_EDGE].setEnabled(vizConfig.isShowEdges());
+                modelClassLibrary.createModelClassesCompatibility(AbstractEngine.this)[AbstractEngine.CLASS_ARROW].setEnabled(vizConfig.isShowEdges() && vizConfig.isShowArrows());
             }
         });
     }

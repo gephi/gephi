@@ -80,8 +80,9 @@ public class VizBarController {
         }
 
         public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[1];
+            JComponent[] components = new JComponent[3];
 
+            //Background color
             final VizConfig vizConfig = VizController.getInstance().getVizConfig();
             final JButton backgroundColorButton = new JColorButton(vizConfig.getBackgroundColor());
             backgroundColorButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.background"));
@@ -92,6 +93,30 @@ public class VizBarController {
                 }
             });
             components[0] = backgroundColorButton;
+
+            //Center on graph
+            final JButton centerOnGraphButton = new JButton();
+            centerOnGraphButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.centerOnGraph"));
+            centerOnGraphButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/centerOnGraph.png")));
+            centerOnGraphButton.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    VizController.getInstance().getGraphIO().centerOnGraph();
+                }
+            });
+            components[1] = centerOnGraphButton;
+
+            //Center on zero
+            final JButton centerOnZeroButton = new JButton();
+            centerOnZeroButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.centerOnZero"));
+            centerOnZeroButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/centerOnZero.png")));
+            centerOnZeroButton.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    VizController.getInstance().getGraphIO().centerOnZero();
+                }
+            });
+            components[2] = centerOnZeroButton;
 
             return components;
         }

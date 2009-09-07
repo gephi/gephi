@@ -363,40 +363,46 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
     public void centerOnZero() {
         graphDrawable.cameraLocation[0] = 0;
-		graphDrawable.cameraLocation[1] = 0;
-		graphDrawable.cameraLocation[2] = 100;
+        graphDrawable.cameraLocation[1] = 0;
+        graphDrawable.cameraLocation[2] = 100;
 
-		graphDrawable.cameraTarget[0] = 0;
-		graphDrawable.cameraTarget[1] = 0;
-		graphDrawable.cameraTarget[2] = 0;
+        graphDrawable.cameraTarget[0] = 0;
+        graphDrawable.cameraTarget[1] = 0;
+        graphDrawable.cameraTarget[2] = 0;
 
         //Refresh
         engine.getScheduler().requireUpdateVisible();
     }
 
     public void centerOnGraph() {
-		float graphWidth = Math.abs(limits.getMaxXoctree()-limits.getMinXoctree());
-		float graphHeight = Math.abs(limits.getMaxYoctree()-limits.getMinYoctree());
+        float graphWidth = Math.abs(limits.getMaxXoctree() - limits.getMinXoctree());
+        float graphHeight = Math.abs(limits.getMaxYoctree() - limits.getMinYoctree());
 
-		float currentDistanceGraphRatioX = Math.abs(graphDrawable.viewport.get(2)/(float)graphDrawable.getDraggingMarkerX())/graphDrawable.cameraLocation[2];
-		float currentDistanceGraphRatioY = Math.abs(graphDrawable.viewport.get(3)/(float)graphDrawable.getDraggingMarkerY())/graphDrawable.cameraLocation[2];
-		float newCameraLocationX = graphWidth/currentDistanceGraphRatioX;
-		float newCameraLocationY = graphHeight/currentDistanceGraphRatioY;
-		float newCameraLocation = Math.max(newCameraLocationX, newCameraLocationY);
+        float currentDistanceGraphRatioX = Math.abs(graphDrawable.viewport.get(2) / (float) graphDrawable.getDraggingMarkerX()) / graphDrawable.cameraLocation[2];
+        float currentDistanceGraphRatioY = Math.abs(graphDrawable.viewport.get(3) / (float) graphDrawable.getDraggingMarkerY()) / graphDrawable.cameraLocation[2];
+        float newCameraLocationX = graphWidth / currentDistanceGraphRatioX;
+        float newCameraLocationY = graphHeight / currentDistanceGraphRatioY;
+        float newCameraLocation = Math.max(newCameraLocationX, newCameraLocationY);
 
-		graphDrawable.cameraLocation[0] = limits.getMinXoctree()+graphWidth/2;
-		graphDrawable.cameraLocation[1] = limits.getMinYoctree()+graphWidth/2;
-		graphDrawable.cameraLocation[2] = newCameraLocation;
+        graphDrawable.cameraLocation[0] = limits.getMinXoctree() + graphWidth / 2;
+        graphDrawable.cameraLocation[1] = limits.getMinYoctree() + graphWidth / 2;
+        graphDrawable.cameraLocation[2] = newCameraLocation;
 
-		graphDrawable.cameraTarget[0] = graphDrawable.cameraLocation[0];
-		graphDrawable.cameraTarget[1] = graphDrawable.cameraLocation[1];
-		graphDrawable.cameraTarget[2] = 0;
+        graphDrawable.cameraTarget[0] = graphDrawable.cameraLocation[0];
+        graphDrawable.cameraTarget[1] = graphDrawable.cameraLocation[1];
+        graphDrawable.cameraTarget[2] = 0;
 
         //Refresh
         engine.getScheduler().requireUpdateVisible();
     }
 
     public void centerOnCoordinate(float x, float y, float z) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        graphDrawable.cameraTarget[0] = x;
+        graphDrawable.cameraTarget[1] = y;
+        graphDrawable.cameraTarget[2] = z;
+
+        graphDrawable.cameraLocation[0] = x;
+        graphDrawable.cameraLocation[1] = y;
+        graphDrawable.cameraLocation[1] = z + 100;
     }
 }

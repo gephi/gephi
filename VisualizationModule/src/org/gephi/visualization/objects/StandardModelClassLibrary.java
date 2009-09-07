@@ -23,6 +23,7 @@ package org.gephi.visualization.objects;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.objects.ModelClassLibrary;
 import org.gephi.visualization.api.objects.CompatibilityModelClass;
+import org.gephi.visualization.api.objects.ModelClass;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityArrowModeler;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityEdgeModeler;
@@ -37,34 +38,40 @@ import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityNodeSph
  */
 public class StandardModelClassLibrary implements ModelClassLibrary {
 
+    private CompatibilityModelClass[] compatibilityModelClasses;
+
     public CompatibilityModelClass[] createModelClassesCompatibility(AbstractEngine engine) {
-        CompatibilityModelClass[] modelClasses = new CompatibilityModelClass[4];
+        if (compatibilityModelClasses != null) {
+            return compatibilityModelClasses;
+        }
+
+        compatibilityModelClasses = new CompatibilityModelClass[4];
 
         //NODE
-        modelClasses[0] = new CompatibilityModelClass("NODE", true, true, true, false, false);
+        compatibilityModelClasses[0] = new CompatibilityModelClass("NODE", true, true, true, false, false);
         CompatibilityNodeSphereModeler modeler3d = new CompatibilityNodeSphereModeler(engine);
         CompatibilityNodeDiskModeler modeler2d = new CompatibilityNodeDiskModeler(engine);
         CompatibilityNodeRectangleModeler modelerRect = new CompatibilityNodeRectangleModeler(engine);
         /*if (VizController.getInstance().getVizConfig().use3d()) {
-            modelClasses[0].addModeler(modeler3d);
+        modelClasses[0].addModeler(modeler3d);
         } else {
-            modelClasses[0].addModeler(modeler2d);
+        modelClasses[0].addModeler(modeler2d);
         }*/
-        modelClasses[0].addModeler(modelerRect);
+        compatibilityModelClasses[0].addModeler(modelerRect);
 
         //EDGE
-        modelClasses[1] = new CompatibilityModelClass("EDGE", false, true, false, false, false);
-        modelClasses[1].addModeler(new CompatibilityEdgeModeler());
+        compatibilityModelClasses[1] = new CompatibilityModelClass("EDGE", false, true, false, false, false);
+        compatibilityModelClasses[1].addModeler(new CompatibilityEdgeModeler());
 
         //ARROW
-        modelClasses[2] = new CompatibilityModelClass("ARROW", true, false, false, false, false);
-        modelClasses[2].addModeler(new CompatibilityArrowModeler(engine));
+        compatibilityModelClasses[2] = new CompatibilityModelClass("ARROW", true, false, false, false, false);
+        compatibilityModelClasses[2].addModeler(new CompatibilityArrowModeler(engine));
 
         //POTATO
-        modelClasses[3] = new CompatibilityModelClass("POTATO", false, true, true, true, true);
-        modelClasses[3].addModeler(new CompatibilityHullModeler());
+        compatibilityModelClasses[3] = new CompatibilityModelClass("POTATO", false, true, true, true, true);
+        compatibilityModelClasses[3].addModeler(new CompatibilityHullModeler());
         //modelClasses[3] = new CompatibilityModelClass("POTATO", false, true, true);
         //modelClasses[3].addModeler(new CompatibilityPotatoModeler());
-        return modelClasses;
+        return compatibilityModelClasses;
     }
 }
