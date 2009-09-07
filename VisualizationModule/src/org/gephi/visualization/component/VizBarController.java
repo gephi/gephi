@@ -20,10 +20,19 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.component;
 
+import com.connectina.swing.fontchooser.JFontChooser;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.gephi.visualization.VizController;
+import org.gephi.visualization.opengl.text.TextModel;
 import org.openide.util.NbBundle;
+import org.openide.windows.WindowManager;
 
 /**
  *
@@ -124,7 +133,7 @@ public class VizBarController {
         }
 
         public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[2];
+            JComponent[] components = new JComponent[3];
 
             //Show node labels buttons
             JButton showNodeLabelsButton = new JButton();
@@ -138,6 +147,25 @@ public class VizBarController {
             showEdgeLabelsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/showEdgeLabels.png")));
             components[1] = showEdgeLabelsButton;
 
+            //Font
+            final TextModel model = VizController.getInstance().getTextManager().getModel();
+            final JButton fontButton = new JButton(model.getFont().getFontName() + ", " + model.getFont().getSize());
+            fontButton.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), model.getFont());
+                    if (font != null && font != model.getFont()) {
+                        model.setFont(font);
+                    }
+                }
+            });
+            model.addChangeListener(new ChangeListener() {
+
+                public void stateChanged(ChangeEvent e) {
+                    fontButton.setText(model.getFont().getFontName() + ", " + model.getFont().getSize());
+                }
+            });
+            components[2] = fontButton;
 
             return components;
         }

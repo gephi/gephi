@@ -32,8 +32,13 @@
                 </dependency>
             </module-dependencies>
             <public-packages>
+                <package>com.connectina.swing.fontchooser</package>
                 <package>org.gephi.ui.components</package>
             </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/FontChooser.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/FontChooser.jar</binary-origin>
+            </class-path-extension>
         </data>
     </configuration>
 </project>

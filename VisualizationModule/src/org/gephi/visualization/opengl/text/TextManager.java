@@ -21,9 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.opengl.text;
 
 import com.sun.opengl.util.j2d.TextRenderer;
-import java.awt.Font;
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
@@ -63,6 +63,16 @@ public class TextManager implements VizArchitecture {
         model.font = vizConfig.getDefaultLabelFont();
         model.setSelectedOnly(vizConfig.isShowLabelOnSelectedOnly());
         renderer = new TextRenderer(model.font, false, false, null, true);
+
+        //Model listening
+        model.addChangeListener(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                if (!renderer.getFont().equals(model.getFont())) {
+                    renderer = new TextRenderer(model.getFont(), false, false, null, true);
+                }
+            }
+        });
     }
 
     public void defaultNodeColor() {
@@ -100,10 +110,6 @@ public class TextManager implements VizArchitecture {
 
     public TextRenderer getRenderer() {
         return renderer;
-    }
-
-    public void setFont(Font font) {
-        renderer = new TextRenderer(font, false, false, null, true);
     }
 
     public TextData newTextData(NodeData node) {

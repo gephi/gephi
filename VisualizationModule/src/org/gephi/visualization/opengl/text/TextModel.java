@@ -21,6 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.opengl.text;
 
 import java.awt.Font;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -34,6 +38,22 @@ public class TextModel {
     protected SizeMode sizeMode;
     protected boolean selectedOnly;
     protected Font font;
+    protected List<ChangeListener> listeners = new ArrayList<ChangeListener>();
+
+    public void addChangeListener(ChangeListener changeListener) {
+        listeners.add(changeListener);
+    }
+
+    public void removeChangeListener(ChangeListener changeListener) {
+        listeners.remove(changeListener);
+    }
+
+    private void fireChangeEvent() {
+        ChangeEvent evt = new ChangeEvent(this);
+        for (ChangeListener l : listeners) {
+            l.stateChanged(evt);
+        }
+    }
 
     public Font getFont() {
         return font;
@@ -41,6 +61,7 @@ public class TextModel {
 
     public void setFont(Font font) {
         this.font = font;
+        fireChangeEvent();
     }
 
     public ColorMode getColorMode() {
@@ -49,6 +70,7 @@ public class TextModel {
 
     public void setColorMode(ColorMode colorMode) {
         this.colorMode = colorMode;
+        fireChangeEvent();
     }
 
     public boolean isSelectedOnly() {
@@ -57,6 +79,7 @@ public class TextModel {
 
     public void setSelectedOnly(boolean value) {
         this.selectedOnly = value;
+        fireChangeEvent();
     }
 
     public SizeMode getSizeMode() {
@@ -65,6 +88,7 @@ public class TextModel {
 
     public void setSizeMode(SizeMode sizeMode) {
         this.sizeMode = sizeMode;
+        fireChangeEvent();
     }
 
     public void readXML(Element textModelElement) {
