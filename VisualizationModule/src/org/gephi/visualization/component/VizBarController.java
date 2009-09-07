@@ -21,14 +21,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.component;
 
 import com.connectina.swing.fontchooser.JFontChooser;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.opengl.text.TextModel;
 import org.openide.util.NbBundle;
@@ -133,7 +136,7 @@ public class VizBarController {
         }
 
         public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[3];
+            JComponent[] components = new JComponent[5];
 
             //Show node labels buttons
             JButton showNodeLabelsButton = new JButton();
@@ -166,6 +169,31 @@ public class VizBarController {
                 }
             });
             components[2] = fontButton;
+
+            //Font size
+            final JSlider fontSizeSlider = new JSlider(0, 100, (int) (model.getSizeFactor() * 100f));
+            fontSizeSlider.addChangeListener(new ChangeListener() {
+
+                public void stateChanged(ChangeEvent e) {
+                    model.setSizeFactor(fontSizeSlider.getValue() / 100f);
+                }
+            });
+            fontSizeSlider.setPreferredSize(new Dimension(100, 20));
+            fontSizeSlider.setMaximumSize(new Dimension(100, 20));
+            components[3] = fontSizeSlider;
+
+            //Color
+            final ColorChooser colorChooser = new ColorChooser(model.getColor());
+            colorChooser.setPreferredSize(new Dimension(16, 16));
+            colorChooser.setMaximumSize(new Dimension(16, 16));
+            colorChooser.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent ae) {
+                    model.setColor(colorChooser.getColor());
+                }
+            });
+
+            components[4] = colorChooser;
 
             return components;
         }

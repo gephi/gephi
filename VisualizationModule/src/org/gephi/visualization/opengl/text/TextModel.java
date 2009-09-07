@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,8 @@ public class TextModel {
     protected boolean selectedOnly;
     protected Font font;
     protected List<ChangeListener> listeners = new ArrayList<ChangeListener>();
+    protected float sizeFactor = 0.5f;//Between 0 and 1
+    protected Color color = Color.BLACK;
 
     public void addChangeListener(ChangeListener changeListener) {
         listeners.add(changeListener);
@@ -88,6 +91,24 @@ public class TextModel {
 
     public void setSizeMode(SizeMode sizeMode) {
         this.sizeMode = sizeMode;
+        fireChangeEvent();
+    }
+
+    public float getSizeFactor() {
+        return sizeFactor;
+    }
+
+    public void setSizeFactor(float sizeFactor) {
+        this.sizeFactor = sizeFactor;
+        fireChangeEvent();
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
         fireChangeEvent();
     }
 
