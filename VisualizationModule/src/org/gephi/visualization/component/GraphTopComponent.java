@@ -41,6 +41,7 @@ final class GraphTopComponent extends TopComponent {
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "GraphTopComponent";
     private AbstractEngine engine;
+    private VizBarController vizBarController;
 
     private GraphTopComponent() {
         initComponents();
@@ -76,8 +77,9 @@ final class GraphTopComponent extends TopComponent {
     }
 
     private void initCollapsePanel() {
+        vizBarController = new VizBarController();
         if (VizController.getInstance().getVizConfig().isShowVizVar()) {
-            collapsePanel.init(new VizBar(), new VizExtendedBar(), false);
+            collapsePanel.init(vizBarController.getToolbar(), vizBarController.getExtendedBar(), false);
         } else {
             collapsePanel.setVisible(false);
         }
