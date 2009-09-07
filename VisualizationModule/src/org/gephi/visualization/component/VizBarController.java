@@ -144,9 +144,17 @@ public class VizBarController {
             JComponent[] components = new JComponent[1];
 
             //Show edges buttons
-            JToggleButton showEdgeButton = new JToggleButton();
+            final VizConfig vizConfig = VizController.getInstance().getVizConfig();
+            final JToggleButton showEdgeButton = new JToggleButton();
+            showEdgeButton.setSelected(vizConfig.isShowEdges());
             showEdgeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.showEdges"));
             showEdgeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/showEdges.png")));
+            showEdgeButton.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    vizConfig.setShowEdges(showEdgeButton.isSelected());
+                }
+            });
             components[0] = showEdgeButton;
 
             return components;
@@ -174,10 +182,18 @@ public class VizBarController {
         public JComponent[] getToolbarComponents() {
             JComponent[] components = new JComponent[4];
 
-            //Show node labels buttons
-            JToggleButton showLabelsButton = new JToggleButton();
+            //Show labels buttons
+            final VizConfig vizConfig = VizController.getInstance().getVizConfig();
+            final JToggleButton showLabelsButton = new JToggleButton();
+            showLabelsButton.setSelected(vizConfig.isShowLabels());
             showLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.showLabels"));
             showLabelsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/showLabels.png")));
+            showLabelsButton.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    vizConfig.setShowLabels(showLabelsButton.isSelected());
+                }
+            });
             components[0] = showLabelsButton;
 
 

@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.opengl.compatibility;
 
 import com.sun.opengl.util.BufferUtil;
+import java.awt.Color;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -152,7 +153,7 @@ public class CompatibilityEngine extends AbstractEngine {
         if (changeMode) {
             modeManager.unload();
         }
-        if(newConfig) {
+        if (newConfig) {
             dataBridge.reset();
         }
         if (dataBridge.requireUpdate() || changeMode || newConfig) {
@@ -162,7 +163,7 @@ public class CompatibilityEngine extends AbstractEngine {
         if (changeMode) {
             modeManager.changeMode();
         }
-        if(newConfig) {
+        if (newConfig) {
             configChanged = false;
         }
         return res;
@@ -190,6 +191,13 @@ public class CompatibilityEngine extends AbstractEngine {
                 lightenAnimationDelta = 0;
                 vizConfig.setLightenNonSelected(anySelected);
             }
+        }
+
+        if (backgroundChanged) {
+            Color backgroundColor = vizConfig.getBackgroundColor();
+            gl.glClearColor(backgroundColor.getRed() / 255f, backgroundColor.getGreen() / 255f, backgroundColor.getBlue() / 255f, 1f);
+            gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+            backgroundChanged = false;
         }
     }
 

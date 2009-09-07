@@ -76,6 +76,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     //States
     protected EngineLifeCycle lifeCycle = new EngineLifeCycle();
     protected boolean configChanged = false;
+    protected boolean backgroundChanged = false;
 
     //Octree
     protected Octree octree;
@@ -97,6 +98,9 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
             public void propertyChange(PropertyChangeEvent evt) {
                 configChanged = true;
+                if(evt.getPropertyName().equals("backgroundColor")) {
+                    backgroundChanged = true;
+                }
             }
         });
     }

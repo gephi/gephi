@@ -339,6 +339,10 @@ public class VizConfig {
         fireProperyChange("showEdges", null, showEdges);
     }
 
+    public void setShowLabels(boolean showLabels) {
+        this.showLabels = showLabels;
+        fireProperyChange("showLabels", null, showEdges);
+    }
     public void setShowArrows(boolean showArrows) {
         this.showArrows = showArrows;
         fireProperyChange("showArrows", null, showArrows);
