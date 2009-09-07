@@ -18,33 +18,31 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.visualization.opengl.text;
+package org.gephi.ui.components;
 
-import javax.swing.ImageIcon;
-import org.gephi.visualization.api.ModelImpl;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JPopupMenu;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class ProportionalSizeMode implements SizeMode {
+public class JPopupButton extends JButton {
 
-    private static float GLOBAL_FACTOR = 65f;
-    private static float FACTOR_LIMIT = 0.1f;
+    public JPopupButton() {
 
-    public void setSizeFactor(TextDataImpl text, ModelImpl model) {
-        float factor = GLOBAL_FACTOR / model.getCameraDistance() * model.getObj().getSize();
-        if (factor < FACTOR_LIMIT) {
-            factor = 0f;
-        }
-        text.setSizeFactor(factor);
+        addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                JPopupMenu menu = new JPopupMenu();
+                createPopup(menu);
+                menu.show(JPopupButton.this, 0, getHeight());
+            }
+        });
     }
 
-    public String getName() {
-        return "Node size";
-    }
-
-    public ImageIcon getIcon() {
-        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/sizeMode.png"));
+    public void createPopup(JPopupMenu popupMenu) {
     }
 }

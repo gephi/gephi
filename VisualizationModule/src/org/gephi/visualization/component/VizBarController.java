@@ -30,15 +30,29 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSlider;
 import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.ui.components.JColorButton;
+import org.gephi.ui.components.JPopupButton;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VizConfig;
+import org.gephi.visualization.opengl.text.SizeMode;
+import org.gephi.visualization.opengl.text.TextManager;
 import org.gephi.visualization.opengl.text.TextModel;
+import org.jvnet.flamingo.common.CommandButtonDisplayState;
+import org.jvnet.flamingo.common.JCommandButton;
+import org.jvnet.flamingo.common.JCommandMenuButton;
+import org.jvnet.flamingo.common.icon.ImageWrapperResizableIcon;
+import org.jvnet.flamingo.common.model.PopupButtonModel;
+import org.jvnet.flamingo.common.popup.JCommandPopupMenu;
+import org.jvnet.flamingo.common.popup.JPopupPanel;
+import org.jvnet.flamingo.common.popup.JPopupPanel.PopupPanelCustomizer;
+import org.jvnet.flamingo.common.popup.PopupPanelCallback;
 import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
 
@@ -205,7 +219,7 @@ public class VizBarController {
         }
 
         public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[4];
+            JComponent[] components = new JComponent[5];
 
             //Show labels buttons
             final VizConfig vizConfig = VizController.getInstance().getVizConfig();
@@ -221,10 +235,32 @@ public class VizBarController {
             });
             components[0] = showLabelsButton;
 
+            //Mode
+            JPopupButton labelSizeModeButton = new JPopupButton() {
+
+                @Override
+                public void createPopup(JPopupMenu popupMenu) {
+                    final TextManager textManager = VizController.getInstance().getTextManager();
+                    for (final SizeMode sm : textManager.getSizeModes()) {
+                        JRadioButtonMenuItem item = new JRadioButtonMenuItem(sm.getName(), sm.getIcon(), sm == textManager.getModel().getSizeMode());
+                        item.addActionListener(new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                textManager.getModel().setSizeMode(sm);
+                            }
+                        });
+                        popupMenu.add(item);
+                    }
+                }
+            };
+            labelSizeModeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/labelSizeMode.png")));
+            labelSizeModeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.sizeMode"));
+            components[1] = labelSizeModeButton;
 
             //Font
             final TextModel model = VizController.getInstance().getTextManager().getModel();
             final JButton fontButton = new JButton(model.getFont().getFontName() + ", " + model.getFont().getSize());
+            fontButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.font"));
             fontButton.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
@@ -240,7 +276,7 @@ public class VizBarController {
                     fontButton.setText(model.getFont().getFontName() + ", " + model.getFont().getSize());
                 }
             });
-            components[1] = fontButton;
+            components[2] = fontButton;
 
             //Font size
             final JSlider fontSizeSlider = new JSlider(0, 100, (int) (model.getSizeFactor() * 100f));
@@ -252,10 +288,11 @@ public class VizBarController {
             });
             fontSizeSlider.setPreferredSize(new Dimension(100, 20));
             fontSizeSlider.setMaximumSize(new Dimension(100, 20));
-            components[2] = fontSizeSlider;
+            components[3] = fontSizeSlider;
 
             //Color
             final ColorChooser colorChooser = new ColorChooser(model.getColor());
+            colorChooser.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.defaultColor"));
             colorChooser.setPreferredSize(new Dimension(16, 16));
             colorChooser.setMaximumSize(new Dimension(16, 16));
             colorChooser.addActionListener(new ActionListener() {
@@ -265,7 +302,7 @@ public class VizBarController {
                 }
             });
 
-            components[3] = colorChooser;
+            components[4] = colorChooser;
 
             return components;
         }

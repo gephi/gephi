@@ -41,6 +41,8 @@ public class TextManager implements VizArchitecture {
 
     //Architecture
     private VizConfig vizConfig;
+    //Configuration
+    private SizeMode[] sizeModes;
 
     //Processing
     private TextUtils textUtils;
@@ -54,12 +56,18 @@ public class TextManager implements VizArchitecture {
         textUtils = new TextUtils(this);
         builder = new TextDataBuilder();
         model = new TextModel();
+
+        //SizeMode init
+        sizeModes = new SizeMode[3];
+        sizeModes[0] = new FixedSizeMode();
+        sizeModes[1] = new ScaledSizeMode();
+        sizeModes[2] = new ProportionalSizeMode();
     }
 
     public void initArchitecture() {
         vizConfig = VizController.getInstance().getVizConfig();
         model.colorMode = new UniqueColorMode();
-        model.sizeMode = new ScaledSizeMode();
+        model.sizeMode = sizeModes[1];
         model.font = vizConfig.getDefaultLabelFont();
         model.setSelectedOnly(vizConfig.isShowLabelOnSelectedOnly());
         renderer = new TextRenderer(model.font, false, false, null, true);
@@ -130,5 +138,9 @@ public class TextManager implements VizArchitecture {
 
     public void setModel(TextModel model) {
         this.model = model;
+    }
+
+    public SizeMode[] getSizeModes() {
+        return sizeModes;
     }
 }
