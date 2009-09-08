@@ -29,8 +29,6 @@ import org.gephi.visualization.api.ModelImpl;
  */
 public class FixedSizeMode implements SizeMode {
 
-//    private static float GLOBAL_FACTOR = 65f;
-    private static float FACTOR_LIMIT = 0.1f;
     private TextModel textModel;
 
     public FixedSizeMode(TextModel model) {
@@ -38,10 +36,7 @@ public class FixedSizeMode implements SizeMode {
     }
 
     public void setSizeFactor(TextDataImpl text, ModelImpl model) {
-        float factor = textModel.sizeFactor * 100f / model.getCameraDistance();
-        if (factor < FACTOR_LIMIT) {
-            factor = 0f;
-        }
+        float factor = textModel.sizeFactor*1.9f +0.1f;        //Between 0.1 and 2
         text.setSizeFactor(factor);
     }
 
