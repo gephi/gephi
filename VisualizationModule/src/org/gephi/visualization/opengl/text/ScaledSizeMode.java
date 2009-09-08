@@ -36,7 +36,8 @@ public class ScaledSizeMode implements SizeMode {
     }
 
     public void setSizeFactor(TextDataImpl text, ModelImpl model) {
-        text.setSizeFactor(1f);
+        float factor = textModel.sizeFactor / 800f * model.getCameraDistance();
+        text.setSizeFactor(factor);
     }
 
     public String getName() {
