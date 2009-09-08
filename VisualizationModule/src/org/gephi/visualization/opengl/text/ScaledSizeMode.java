@@ -29,6 +29,12 @@ import org.gephi.visualization.api.ModelImpl;
  */
 public class ScaledSizeMode implements SizeMode {
 
+    private TextModel textModel;
+
+    public ScaledSizeMode(TextModel model) {
+        this.textModel = model;
+    }
+
     public void setSizeFactor(TextDataImpl text, ModelImpl model) {
         text.setSizeFactor(1f);
     }

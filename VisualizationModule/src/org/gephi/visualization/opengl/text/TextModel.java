@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.gephi.visualization.VizController;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -41,7 +42,8 @@ public class TextModel {
     protected Font font;
     protected List<ChangeListener> listeners = new ArrayList<ChangeListener>();
     protected float sizeFactor = 0.5f;//Between 0 and 1
-    protected Color color = Color.BLACK;
+    protected float[] nodeColor = {0f, 0f, 0f, 1f};
+    protected float[] edgeColor = {0f, 0f, 0f, 1f};
 
     public void addChangeListener(ChangeListener changeListener) {
         listeners.add(changeListener);
@@ -103,12 +105,21 @@ public class TextModel {
         fireChangeEvent();
     }
 
-    public Color getColor() {
-        return color;
+    public Color getNodeColor() {
+        return new Color(nodeColor[0], nodeColor[1], nodeColor[2], nodeColor[3]);
     }
 
-    public void setColor(Color color) {
-        this.color = color;
+    public void setNodeColor(Color color) {
+        this.nodeColor = color.getRGBComponents(null);
+        fireChangeEvent();
+    }
+
+    public Color getEdgeColor() {
+        return new Color(edgeColor[0], edgeColor[1], edgeColor[2], edgeColor[3]);
+    }
+
+    public void setEdgeColor(Color color) {
+        this.edgeColor = color.getRGBComponents(null);
         fireChangeEvent();
     }
 
@@ -121,13 +132,27 @@ public class TextModel {
         int fontStyle = Integer.parseInt(fontE.getAttribute("style"));
         font = new Font(fontName, fontStyle, fontSize);
 
+        //Color
+        Element nodeColorE = (Element) textModelElement.getElementsByTagName("nodecolor").item(0);
+        nodeColor = new float[]{Float.parseFloat(nodeColorE.getAttribute("r")),
+                    Float.parseFloat(nodeColorE.getAttribute("g")),
+                    Float.parseFloat(nodeColorE.getAttribute("b")),
+                    Float.parseFloat(nodeColorE.getAttribute("a"))};
+        Element edgeColorE = (Element) textModelElement.getElementsByTagName("edgecolor").item(0);
+        edgeColor = new float[]{Float.parseFloat(edgeColorE.getAttribute("r")),
+                    Float.parseFloat(edgeColorE.getAttribute("g")),
+                    Float.parseFloat(edgeColorE.getAttribute("b")),
+                    Float.parseFloat(edgeColorE.getAttribute("a"))};
+
+        //Size factor
+        Element sizeFactorE = (Element) textModelElement.getElementsByTagName("sizefactor").item(0);
+        sizeFactor = Float.parseFloat(sizeFactorE.getTextContent());
+
         //ColorMode
         Element colorModeE = (Element) textModelElement.getElementsByTagName("colormode").item(0);
         String colorModeClass = colorModeE.getAttribute("class");
         if (colorModeClass.equals("UniqueColorMode")) {
-            colorMode = new UniqueColorMode();
-            float[] color = new float[]{Float.parseFloat(colorModeE.getAttribute("color-r")), Float.parseFloat(colorModeE.getAttribute("color-g")), Float.parseFloat(colorModeE.getAttribute("color-b"))};
-            ((UniqueColorMode) colorMode).setColor(color);
+            colorMode = new UniqueColorMode(this);
         } else if (colorModeClass.equals("ObjectColorMode")) {
             colorMode = new ObjectColorMode();
         }
@@ -136,11 +161,14 @@ public class TextModel {
         Element sizeModeE = (Element) textModelElement.getElementsByTagName("colormode").item(0);
         String sizeModeClass = sizeModeE.getAttribute("class");
         if (sizeModeClass.equals("FixedSizeMode")) {
-            sizeMode = new FixedSizeMode();
+//            sizeMode = new FixedSizeMode(this);
+            sizeMode = VizController.getInstance().getTextManager().getSizeModes()[0];
         } else if (colorModeClass.equals("ProportionalSizeMode")) {
-            sizeMode = new ProportionalSizeMode();
+//            sizeMode = new ProportionalSizeMode(this);
+            sizeMode = VizController.getInstance().getTextManager().getSizeModes()[2];
         } else if (colorModeClass.equals("ScaledSizeMode")) {
-            sizeMode = new ScaledSizeMode();
+//            sizeMode = new ScaledSizeMode(this);
+            sizeMode = VizController.getInstance().getTextManager().getSizeModes()[1];
         }
     }
 
@@ -155,14 +183,29 @@ public class TextModel {
         fontE.setAttribute("style", Integer.toString(font.getStyle()));
         textModelE.appendChild(fontE);
 
+        //Size factor
+        Element sizeFactorE = document.createElement("sizefactor");
+        sizeFactorE.setTextContent(String.valueOf(sizeFactor));
+        textModelE.appendChild(sizeFactorE);
+
+        //Colors
+        Element nodeColorE = document.createElement("nodecolor");
+        nodeColorE.setAttribute("r", Float.toString(nodeColor[0]));
+        nodeColorE.setAttribute("g", Float.toString(nodeColor[1]));
+        nodeColorE.setAttribute("b", Float.toString(nodeColor[2]));
+        nodeColorE.setAttribute("a", Float.toString(nodeColor[3]));
+        textModelE.appendChild(nodeColorE);
+        Element edgeColorE = document.createElement("nodecolor");
+        edgeColorE.setAttribute("r", Float.toString(edgeColor[0]));
+        edgeColorE.setAttribute("g", Float.toString(edgeColor[1]));
+        edgeColorE.setAttribute("b", Float.toString(edgeColor[2]));
+        edgeColorE.setAttribute("a", Float.toString(edgeColor[3]));
+        textModelE.appendChild(edgeColorE);
+
         //Colormode
         Element colorModeE = document.createElement("colormode");
         if (colorMode instanceof UniqueColorMode) {
             colorModeE.setAttribute("class", "UniqueColorMode");
-            float[] uniqueColor = ((UniqueColorMode) colorMode).getColor();
-            colorModeE.setAttribute("color-r", Float.toString(uniqueColor[0]));
-            colorModeE.setAttribute("color-g", Float.toString(uniqueColor[1]));
-            colorModeE.setAttribute("color-b", Float.toString(uniqueColor[2]));
         } else if (colorMode instanceof ObjectColorMode) {
             colorModeE.setAttribute("class", "ObjectColorMode");
         }

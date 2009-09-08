@@ -44,15 +44,6 @@ import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.text.SizeMode;
 import org.gephi.visualization.opengl.text.TextManager;
 import org.gephi.visualization.opengl.text.TextModel;
-import org.jvnet.flamingo.common.CommandButtonDisplayState;
-import org.jvnet.flamingo.common.JCommandButton;
-import org.jvnet.flamingo.common.JCommandMenuButton;
-import org.jvnet.flamingo.common.icon.ImageWrapperResizableIcon;
-import org.jvnet.flamingo.common.model.PopupButtonModel;
-import org.jvnet.flamingo.common.popup.JCommandPopupMenu;
-import org.jvnet.flamingo.common.popup.JPopupPanel;
-import org.jvnet.flamingo.common.popup.JPopupPanel.PopupPanelCustomizer;
-import org.jvnet.flamingo.common.popup.PopupPanelCallback;
 import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
 
@@ -180,7 +171,7 @@ public class VizBarController {
         }
 
         public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[1];
+            JComponent[] components = new JComponent[2];
 
             //Show edges buttons
             final VizConfig vizConfig = VizController.getInstance().getVizConfig();
@@ -195,6 +186,19 @@ public class VizBarController {
                 }
             });
             components[0] = showEdgeButton;
+
+            //Edge color mode
+            final JToggleButton edgeHasNodeColorButton = new JToggleButton();
+            edgeHasNodeColorButton.setSelected(!vizConfig.isEdgeUniColor());
+            edgeHasNodeColorButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.edgeNodeColor"));
+            edgeHasNodeColorButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/edgeNodeColor.png")));
+            edgeHasNodeColorButton.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    vizConfig.setEdgeUniColor(!edgeHasNodeColorButton.isSelected());
+                }
+            });
+            components[1] = edgeHasNodeColorButton;
 
             return components;
         }
@@ -291,14 +295,14 @@ public class VizBarController {
             components[3] = fontSizeSlider;
 
             //Color
-            final ColorChooser colorChooser = new ColorChooser(model.getColor());
+            final ColorChooser colorChooser = new ColorChooser(model.getNodeColor());
             colorChooser.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.defaultColor"));
             colorChooser.setPreferredSize(new Dimension(16, 16));
             colorChooser.setMaximumSize(new Dimension(16, 16));
             colorChooser.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent ae) {
-                    model.setColor(colorChooser.getColor());
+                    model.setNodeColor(colorChooser.getColor());
                 }
             });
 

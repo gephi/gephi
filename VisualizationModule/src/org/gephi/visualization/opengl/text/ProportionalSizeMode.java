@@ -29,11 +29,16 @@ import org.gephi.visualization.api.ModelImpl;
  */
 public class ProportionalSizeMode implements SizeMode {
 
-    private static float GLOBAL_FACTOR = 65f;
+//    private static float GLOBAL_FACTOR = 65f;
     private static float FACTOR_LIMIT = 0.1f;
+    private TextModel textModel;
+
+    public ProportionalSizeMode(TextModel model) {
+        this.textModel = model;
+    }
 
     public void setSizeFactor(TextDataImpl text, ModelImpl model) {
-        float factor = GLOBAL_FACTOR / model.getCameraDistance() * model.getObj().getSize();
+        float factor = textModel.sizeFactor * 100f / model.getCameraDistance() * model.getObj().getSize();
         if (factor < FACTOR_LIMIT) {
             factor = 0f;
         }

@@ -79,7 +79,7 @@ public class VizConfig {
     protected float[] edgeBothSelectedColor = {0f, 0f, 0f};
     protected DisplayConfig displayConfig = DisplayConfig.DISPLAY_ALL;
     protected boolean edgeUniColor = false;
-    protected float[] edgeUniColorValue = {0.5f, 0.5f, 0.5f, 0.5f};
+    protected float[] defaultEdgeUniColor = {0.5f, 0.5f, 0.5f, 0.5f};
     protected int octreeDepth = 5;
     protected int octreeWidth = 100000;
     protected float[] defaultNodeLabelColor = {0f, 0f, 0f, 1f};
@@ -295,7 +295,7 @@ public class VizConfig {
     }
 
     public float[] getEdgeUniColorValue() {
-        return edgeUniColorValue;
+        return defaultEdgeUniColor;
     }
 
     public boolean isHideNonSelectedEdges() {
@@ -351,6 +351,11 @@ public class VizConfig {
     public void setVisualizeTree(boolean visualizeTree) {
         this.visualizeTree = visualizeTree;
         fireProperyChange("visualizeTree", null, visualizeTree);
+    }
+
+    public void setEdgeUniColor(boolean edgeUniColor) {
+        this.edgeUniColor = edgeUniColor;
+        fireProperyChange("edgeUniColor", null, visualizeTree);
     }
 
     //EVENTS

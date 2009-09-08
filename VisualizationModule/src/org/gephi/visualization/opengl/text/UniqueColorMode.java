@@ -21,9 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.opengl.text;
 
 import com.sun.opengl.util.j2d.TextRenderer;
-import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ModelImpl;
-import org.gephi.visualization.api.VizConfig;
 
 /**
  *
@@ -31,28 +29,19 @@ import org.gephi.visualization.api.VizConfig;
  */
 public class UniqueColorMode implements ColorMode {
 
-    private VizConfig config;
-    private float[] color;
+    private TextModel textModel;
 
-    public UniqueColorMode() {
-        config = VizController.getInstance().getVizConfig();
-    }
-
-    public float[] getColor() {
-        return color;
-    }
-
-    public void setColor(float[] color) {
-        this.color = color;
+    public UniqueColorMode(TextModel model) {
+        this.textModel = model;
     }
 
     public void defaultNodeColor(TextRenderer renderer) {
-        float[] defaultNodeColor = config.getDefaultNodeLabelColor();
+        float[] defaultNodeColor = textModel.nodeColor;
         renderer.setColor(defaultNodeColor[0], defaultNodeColor[1], defaultNodeColor[2], defaultNodeColor[3]);
     }
 
     public void defaultEdgeColor(TextRenderer renderer) {
-        float[] defaultEdgeColor = config.getDefaultEdgeLabelColor();
+        float[] defaultEdgeColor = textModel.edgeColor;
         renderer.setColor(defaultEdgeColor[0], defaultEdgeColor[1], defaultEdgeColor[2], defaultEdgeColor[3]);
     }
 
