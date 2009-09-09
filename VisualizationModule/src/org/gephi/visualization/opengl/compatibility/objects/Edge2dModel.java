@@ -203,6 +203,11 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
     }
 
     @Override
+    public float getCameraDistance() {
+        return (obj.getSource().getModel().getCameraDistance() + obj.getTarget().getModel().getCameraDistance()) / 2f;
+    }
+
+    @Override
     public boolean isAutoSelected() {
         return obj.getSource().getModel().isSelected() || obj.getTarget().getModel().isSelected();
     }

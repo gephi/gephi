@@ -304,6 +304,27 @@ public class CompatibilityEngine extends AbstractEngine {
             }
             if (edgeClass.isEnabled() && vizConfig.isShowEdgeLabels()) {
                 textManager.defaultEdgeColor();
+                if (textManager.isSelectedOnly()) {
+                    for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
+                        ModelImpl obj = itr.next();
+                        if (obj.markTime != startTime) {
+                            if ((obj.isSelected() || obj.isHighlight()) && obj.getObj().isLabelVisible()) {
+                                textManager.drawText(obj);
+                            }
+                            obj.markTime = startTime;
+                        }
+                    }
+                } else {
+                    for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
+                        ModelImpl obj = itr.next();
+                        if (obj.markTime != startTime) {
+                            //if (obj.getObj().isLabelVisible()) {
+                            textManager.drawText(obj);
+                            //}
+                            obj.markTime = startTime;
+                        }
+                    }
+                }
             }
             textManager.endRendering();
         }

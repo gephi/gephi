@@ -152,6 +152,11 @@ public class DefaultProcessor implements Processor {
             edge.getEdgeData().setG(edgeDraft.getColor().getGreen() / 255f);
             edge.getEdgeData().setB(edgeDraft.getColor().getBlue() / 255f);
         }
+
+        if (edgeDraft.getLabel() != null) {
+            edge.getEdgeData().setLabel(edgeDraft.getLabel());
+        }
+        edge.getEdgeData().setLabelVisible(edgeDraft.isLabelVisible());
     }
 }
 

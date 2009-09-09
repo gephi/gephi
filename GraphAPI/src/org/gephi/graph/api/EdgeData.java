@@ -36,6 +36,8 @@ public interface EdgeData extends Renderable {
 
     public LayoutData getLayoutData();
 
+    public void setLabel(String label);
+
     public void setLayoutData(LayoutData layoutData);
 
     public Attributes getAttributes();
