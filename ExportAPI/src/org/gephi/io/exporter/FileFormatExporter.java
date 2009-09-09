@@ -18,25 +18,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.io.importer;
 
-import java.io.InputStream;
-import org.gephi.io.container.ContainerLoader;
-import org.gephi.io.logging.Report;
+package org.gephi.io.exporter;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface StreamImporter extends Importer {
+public interface FileFormatExporter extends Exporter {
 
     /**
-     * Import data from undefined <code>streams</code> and push it to <code>container</code>. Informations,
-     * logs and issues are pushed to <code>report</code> for further analysis and verification.
-     * @param stream the input stream where data are pushed
-     * @param container container loading interface
-     * @param report the import report for logging informations and issues
-     * @throws java.lang.Exception for catching eventual exceptions
+     * Get default file types this importer can deal with.
+     * @return an array of file types this importer can read
      */
-    public void importData(InputStream stream, ContainerLoader containter, Report report) throws Exception;
+    public FileType[] getFileTypes();
 }
