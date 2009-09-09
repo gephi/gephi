@@ -74,7 +74,7 @@ public class VizBarController {
     }
 
     public VizExtendedBar getExtendedBar() {
-        VizExtendedBar extendedBar = new VizExtendedBar();
+        VizExtendedBar extendedBar = new VizExtendedBar(groups);
         return extendedBar;
     }
 
@@ -146,7 +146,21 @@ public class VizBarController {
         }
 
         public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[0];
+            JComponent[] components = new JComponent[1];
+
+            //Show labels buttons
+            final VizConfig vizConfig = VizController.getInstance().getVizConfig();
+            final JToggleButton showLabelsButton = new JToggleButton();
+            showLabelsButton.setSelected(vizConfig.isShowNodeLabels());
+            showLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.showLabels"));
+            showLabelsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/showLabels.png")));
+            showLabelsButton.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    vizConfig.setShowNodeLabels(showLabelsButton.isSelected());
+                }
+            });
+            components[0] = showLabelsButton;
 
             return components;
         }
@@ -171,7 +185,7 @@ public class VizBarController {
         }
 
         public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[2];
+            JComponent[] components = new JComponent[3];
 
             //Show edges buttons
             final VizConfig vizConfig = VizController.getInstance().getVizConfig();
@@ -200,6 +214,19 @@ public class VizBarController {
             });
             components[1] = edgeHasNodeColorButton;
 
+            //Show labels buttons
+            final JToggleButton showLabelsButton = new JToggleButton();
+            showLabelsButton.setSelected(vizConfig.isShowEdgeLabels());
+            showLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.showLabels"));
+            showLabelsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/showLabels.png")));
+            showLabelsButton.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    vizConfig.setShowEdgeLabels(showLabelsButton.isSelected());
+                }
+            });
+            components[2] = showLabelsButton;
+
             return components;
         }
 
@@ -223,21 +250,7 @@ public class VizBarController {
         }
 
         public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[5];
-
-            //Show labels buttons
-            final VizConfig vizConfig = VizController.getInstance().getVizConfig();
-            final JToggleButton showLabelsButton = new JToggleButton();
-            showLabelsButton.setSelected(vizConfig.isShowLabels());
-            showLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.showLabels"));
-            showLabelsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/showLabels.png")));
-            showLabelsButton.addActionListener(new ActionListener() {
-
-                public void actionPerformed(ActionEvent e) {
-                    vizConfig.setShowLabels(showLabelsButton.isSelected());
-                }
-            });
-            components[0] = showLabelsButton;
+            JComponent[] components = new JComponent[4];
 
             //Mode
             JPopupButton labelSizeModeButton = new JPopupButton() {
@@ -259,7 +272,7 @@ public class VizBarController {
             };
             labelSizeModeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/labelSizeMode.png")));
             labelSizeModeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.sizeMode"));
-            components[1] = labelSizeModeButton;
+            components[0] = labelSizeModeButton;
 
             //Font
             final TextModel model = VizController.getInstance().getTextManager().getModel();
@@ -280,7 +293,7 @@ public class VizBarController {
                     fontButton.setText(model.getFont().getFontName() + ", " + model.getFont().getSize());
                 }
             });
-            components[2] = fontButton;
+            components[1] = fontButton;
 
             //Font size
             final JSlider fontSizeSlider = new JSlider(0, 100, (int) (model.getSizeFactor() * 100f));
@@ -292,7 +305,7 @@ public class VizBarController {
             });
             fontSizeSlider.setPreferredSize(new Dimension(100, 20));
             fontSizeSlider.setMaximumSize(new Dimension(100, 20));
-            components[3] = fontSizeSlider;
+            components[2] = fontSizeSlider;
 
             //Color
             final ColorChooser colorChooser = new ColorChooser(model.getNodeColor());
@@ -306,7 +319,7 @@ public class VizBarController {
                 }
             });
 
-            components[4] = colorChooser;
+            components[3] = colorChooser;
 
             return components;
         }

@@ -274,10 +274,10 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
         //Labels
-        if (vizConfig.isShowLabels()) {
+        if (vizConfig.isShowNodeLabels() || vizConfig.isShowEdgeLabels()) {
             startTime -= 1;
             textManager.beginRendering();
-            if (nodeClass.isEnabled()) {
+            if (nodeClass.isEnabled() && vizConfig.isShowNodeLabels()) {
                 textManager.defaultNodeColor();
                 if (textManager.isSelectedOnly()) {
                     for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {

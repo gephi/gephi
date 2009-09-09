@@ -62,8 +62,8 @@ public class VizConfig {
     protected boolean showFPS = true;
     protected boolean showEdges = true;
     protected boolean showArrows = true;
-    protected boolean showLabels = false;
-    protected boolean showEdgeLabels = true;
+    protected boolean showNodeLabels = false;
+    protected boolean showEdgeLabels = false;
     protected boolean lightenNonSelectedAuto = true;
     protected boolean lightenNonSelected = true;
     protected float[] lightenNonSelectedColor = {0.95f, 0.95f, 0.95f, 1f};
@@ -194,8 +194,8 @@ public class VizConfig {
         return showFPS;
     }
 
-    public boolean isShowLabels() {
-        return showLabels;
+    public boolean isShowNodeLabels() {
+        return showNodeLabels;
     }
 
     public boolean isShowEdgeLabels() {
@@ -339,8 +339,8 @@ public class VizConfig {
         fireProperyChange("showEdges", null, showEdges);
     }
 
-    public void setShowLabels(boolean showLabels) {
-        this.showLabels = showLabels;
+    public void setShowNodeLabels(boolean showNodeLabels) {
+        this.showNodeLabels = showNodeLabels;
         fireProperyChange("showLabels", null, showEdges);
     }
     public void setShowArrows(boolean showArrows) {
@@ -356,6 +356,11 @@ public class VizConfig {
     public void setEdgeUniColor(boolean edgeUniColor) {
         this.edgeUniColor = edgeUniColor;
         fireProperyChange("edgeUniColor", null, visualizeTree);
+    }
+
+    public void setShowEdgeLabels(boolean showEdgeLabels) {
+        this.showEdgeLabels = showEdgeLabels;
+        fireProperyChange("showEdgeLabels", null, visualizeTree);
     }
 
     //EVENTS
