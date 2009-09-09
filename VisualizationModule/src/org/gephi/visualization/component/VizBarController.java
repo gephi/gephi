@@ -127,7 +127,7 @@ public class VizBarController {
         }
 
         public JComponent getExtendedComponent() {
-            return new JPanel();
+            return new GlobalSettingsPanel();
         }
 
         public boolean hasToolbar() {
@@ -166,7 +166,7 @@ public class VizBarController {
         }
 
         public JComponent getExtendedComponent() {
-            return new JPanel();
+            return new NodeSettingsPanel();
         }
 
         public boolean hasToolbar() {
@@ -231,7 +231,7 @@ public class VizBarController {
         }
 
         public JComponent getExtendedComponent() {
-            return new JPanel();
+            return new EdgeSettingsPanel();
         }
 
         public boolean hasToolbar() {

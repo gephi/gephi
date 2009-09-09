@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
+        <file>file:/H:/Travaux/Gephi/gephibzr/0.7/VisualizationModule/src/org/gephi/visualization/api/VizConfig.java</file>
+        <file>file:/H:/Travaux/Gephi/gephibzr/0.7/VisualizationModule/src/org/gephi/visualization/component/VizBarController.java</file>
+        <file>file:/H:/Travaux/Gephi/gephibzr/0.7/VisualizationModule/src/org/gephi/visualization/component/VizExtendedBar.java</file>
+        <file>file:/H:/Travaux/Gephi/gephibzr/0.7/VisualizationModule/src/org/gephi/visualization/component/VizToolbar.java</file>
+        <file>file:/H:/Travaux/Gephi/gephibzr/0.7/VisualizationModule/src/org/gephi/visualization/opengl/compatibility/CompatibilityEngine.java</file>
+    </open-files>
 </project-private>
