@@ -72,7 +72,7 @@ public class OpenFile extends SystemAction {
             graphFilter.addExtensions(fileType.getExtensions());
         }
         chooser.addChoosableFileFilter(graphFilter);
-
+        
         //Open dialog
         int returnFile = chooser.showOpenDialog(null);
 
