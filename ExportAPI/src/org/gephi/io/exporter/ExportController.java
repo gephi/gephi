@@ -29,7 +29,7 @@ import org.gephi.ui.exporter.ExporterUI;
  */
 public interface ExportController {
 
-    public FileFormatExporter[] getFileFormatExporters();
+    public GraphFileExporter[] getFileFormatExporters();
 
     public FileType[] getFileTypes();
 

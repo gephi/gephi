@@ -44,10 +44,10 @@ import org.openide.util.NbPreferences;
  *
  * @author Mathieu Bastian
  */
-public class FileExporterUI implements ExporterClassUI {
+public class GraphFileExporterUI implements ExporterClassUI {
 
     public String getName() {
-        return "File...";
+        return "Graph File...";
     }
 
     public boolean isEnable() {
@@ -55,17 +55,17 @@ public class FileExporterUI implements ExporterClassUI {
     }
 
     public void action() {
-        final String LAST_PATH = "FileExporter_Last_Path";
-        final String LAST_PATH_DEFAULT = "FileExporter_Last_Path_Default";
+        final String LAST_PATH = "GraphFileExporterUI_Last_Path";
+        final String LAST_PATH_DEFAULT = "GraphFileExporterUI_Last_Path_Default";
 
         //Get last directory
-        String lastPathDefault = NbPreferences.forModule(FileExporterUI.class).get(LAST_PATH_DEFAULT, null);
-        String lastPath = NbPreferences.forModule(FileExporterUI.class).get(LAST_PATH, lastPathDefault);
+        String lastPathDefault = NbPreferences.forModule(GraphFileExporterUI.class).get(LAST_PATH_DEFAULT, null);
+        String lastPath = NbPreferences.forModule(GraphFileExporterUI.class).get(LAST_PATH, lastPathDefault);
 
         //Options panel
         FlowLayout layout = new FlowLayout(FlowLayout.RIGHT);
         final JPanel optionsPanel = new JPanel(layout);
-        JButton optionsButton = new JButton(NbBundle.getMessage(FileExporterUI.class, "FileExporter_optionsButton_name"));
+        JButton optionsButton = new JButton(NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_optionsButton_name"));
         optionsPanel.add(optionsButton);
 
         //Optionable file chooser
@@ -84,6 +84,7 @@ public class FileExporterUI implements ExporterClassUI {
                 return dialog;
             }
         };
+        chooser.setDialogTitle(NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_filechooser_title"));
 
         //File filters
         ExportController exportController = Lookup.getDefault().lookup(ExportController.class);
@@ -103,7 +104,7 @@ public class FileExporterUI implements ExporterClassUI {
             File file = chooser.getSelectedFile();
 
             //Save last path
-            NbPreferences.forModule(FileExporterUI.class).put(LAST_PATH, file.getAbsolutePath());
+            NbPreferences.forModule(GraphFileExporterUI.class).put(LAST_PATH, file.getAbsolutePath());
         }
     }
 }

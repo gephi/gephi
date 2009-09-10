@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.standard;
 
-import org.gephi.io.exporter.FileFormatExporter;
+import org.gephi.io.exporter.GraphFileExporter;
 import org.gephi.io.exporter.FileType;
 import org.openide.util.NbBundle;
 
@@ -28,7 +28,7 @@ import org.openide.util.NbBundle;
  *
  * @author Mathieu Bastian
  */
-public class ExporterGDF implements FileFormatExporter {
+public class ExporterGDF implements GraphFileExporter {
 
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".gdf", NbBundle.getMessage(getClass(), "fileType_GDF_Name"));

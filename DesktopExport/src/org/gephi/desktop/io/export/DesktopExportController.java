@@ -23,7 +23,7 @@ package org.gephi.desktop.io.export;
 import java.util.ArrayList;
 import org.gephi.io.exporter.ExportController;
 import org.gephi.io.exporter.Exporter;
-import org.gephi.io.exporter.FileFormatExporter;
+import org.gephi.io.exporter.GraphFileExporter;
 import org.gephi.io.exporter.FileType;
 import org.gephi.ui.exporter.ExporterUI;
 import org.gephi.utils.longtask.LongTaskExecutor;
@@ -36,18 +36,18 @@ import org.openide.util.Lookup;
 public class DesktopExportController implements ExportController {
 
     private LongTaskExecutor executor;
-    private FileFormatExporter[] fileFormatExporters;
+    private GraphFileExporter[] fileFormatExporters;
 
     public DesktopExportController() {
 
         //Get FileFormatExporters
-        fileFormatExporters = new FileFormatExporter[0];
-        fileFormatExporters = Lookup.getDefault().lookupAll(FileFormatExporter.class).toArray(fileFormatExporters);
+        fileFormatExporters = new GraphFileExporter[0];
+        fileFormatExporters = Lookup.getDefault().lookupAll(GraphFileExporter.class).toArray(fileFormatExporters);
 
         executor = new LongTaskExecutor(true, "Exporter", 10);
     }
 
-    public FileFormatExporter[] getFileFormatExporters() {
+    public GraphFileExporter[] getFileFormatExporters() {
         return fileFormatExporters;
     }
 
@@ -58,7 +58,7 @@ public class DesktopExportController implements ExportController {
 
     public FileType[] getFileTypes() {
         ArrayList<FileType> list = new ArrayList<FileType>();
-        for (FileFormatExporter im : fileFormatExporters) {
+        for (GraphFileExporter im : fileFormatExporters) {
             for (FileType ft : im.getFileTypes()) {
                 list.add(ft);
             }

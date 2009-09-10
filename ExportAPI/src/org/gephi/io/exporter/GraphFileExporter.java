@@ -25,6 +25,11 @@ package org.gephi.io.exporter;
  *
  * @author Mathieu Bastian
  */
-public interface DatabaseExporter extends Exporter {
+public interface GraphFileExporter extends Exporter {
 
+    /**
+     * Get default file types this exporter can deal with.
+     * @return an array of file types this exporter can read
+     */
+    public FileType[] getFileTypes();
 }

@@ -25,6 +25,6 @@ package org.gephi.io.exporter;
  *
  * @author Mathieu Bastian
  */
-public interface TextExporter extends FileFormatExporter {
+public interface TextExporter extends GraphFileExporter {
 
 }

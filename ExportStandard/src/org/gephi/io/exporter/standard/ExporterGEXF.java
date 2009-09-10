@@ -20,11 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.standard;
 
-import org.gephi.io.exporter.FileFormatExporter;
+import org.gephi.io.exporter.GraphFileExporter;
 import org.gephi.io.exporter.FileType;
 import org.openide.util.NbBundle;
 
-public class ExporterGEXF implements FileFormatExporter {
+public class ExporterGEXF implements GraphFileExporter {
 
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".gexf", NbBundle.getMessage(getClass(), "fileType_GEXF_Name"));
