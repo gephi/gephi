@@ -195,6 +195,8 @@ public class GraphFileExporterUI implements ExporterClassUI {
         try {
             if (!file.getPath().endsWith(defaultExtention)) {
                 file = new File(file.getPath() + defaultExtention);
+                selectedFile = file;
+                chooser.setSelectedFile(file);
             }
             if (!file.exists()) {
                 if (!file.createNewFile()) {
