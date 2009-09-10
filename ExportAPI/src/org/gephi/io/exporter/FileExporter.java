@@ -21,13 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.io.exporter;
 
-import org.w3c.dom.Document;
-
 /**
  *
  * @author Mathieu Bastian
  */
-public interface XMLExporter extends FileExporter {
+public interface FileExporter extends Exporter {
 
-    public void exportData(Document document);
 }

@@ -45,6 +45,8 @@ import org.gephi.ui.utils.DialogFileFilter;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -143,9 +145,14 @@ public class GraphFileExporterUI implements ExporterClassUI {
         int returnFile = chooser.showSaveDialog(null);
         if (returnFile == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
+            file = FileUtil.normalizeFile(file);
+            FileObject fileObject = FileUtil.toFileObject(file);
 
             //Save last path
             NbPreferences.forModule(GraphFileExporterUI.class).put(LAST_PATH, file.getAbsolutePath());
+
+            //Do
+            exportController.doExport(selectedExporter, fileObject);
         }
     }
 

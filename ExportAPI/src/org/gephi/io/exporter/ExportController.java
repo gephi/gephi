@@ -22,12 +22,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.exporter;
 
 import org.gephi.ui.exporter.ExporterUI;
+import org.openide.filesystems.FileObject;
 
 /**
  *
  * @author Mathieu Bastian
  */
 public interface ExportController {
+
+    public void doExport(Exporter exporter, FileObject fileObject);
+
+    public void doExport(FileObject fileObject);
 
     public GraphFileExporter[] getGraphFileExporters();
 

@@ -22,10 +22,18 @@ package org.gephi.desktop.io.export;
 
 import org.gephi.io.exporter.ExportController;
 import org.gephi.io.exporter.Exporter;
+import org.gephi.io.exporter.FileExporter;
+import org.gephi.io.exporter.FileType;
 import org.gephi.io.exporter.GraphFileExporter;
+import org.gephi.io.exporter.TextExporter;
+import org.gephi.io.exporter.XMLExporter;
 import org.gephi.ui.exporter.ExporterUI;
 import org.gephi.utils.longtask.LongTaskExecutor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.openide.filesystems.FileObject;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -34,19 +42,51 @@ import org.openide.util.Lookup;
 public class DesktopExportController implements ExportController {
 
     private LongTaskExecutor executor;
-    private GraphFileExporter[] fileFormatExporters;
+    private GraphFileExporter[] graphFileExporters;
 
     public DesktopExportController() {
 
         //Get FileFormatExporters
-        fileFormatExporters = new GraphFileExporter[0];
-        fileFormatExporters = Lookup.getDefault().lookupAll(GraphFileExporter.class).toArray(fileFormatExporters);
+        graphFileExporters = new GraphFileExporter[0];
+        graphFileExporters = Lookup.getDefault().lookupAll(GraphFileExporter.class).toArray(graphFileExporters);
 
         executor = new LongTaskExecutor(true, "Exporter", 10);
     }
 
     public GraphFileExporter[] getGraphFileExporters() {
-        return fileFormatExporters;
+        return graphFileExporters;
+    }
+
+    public void doExport(Exporter exporter, FileObject fileObject) {
+        try {
+            if (exporter instanceof TextExporter) {
+                exportText(exporter);
+            } else if (exporter instanceof XMLExporter) {
+                exportXML(exporter);
+            }
+
+        } catch (Exception ex) {
+            NotifyDescriptor.Message e = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
+            DialogDisplayer.getDefault().notifyLater(e);
+            ex.printStackTrace();
+        }
+    }
+
+    public void doExport(FileObject fileObject) {
+        FileExporter exporter = getMatchingExporter(fileObject);
+        if (exporter == null) {
+            throw new RuntimeException(NbBundle.getMessage(getClass(), "error_no_matching_file_importer"));
+        }
+        doExport(exporter, fileObject);
+    }
+
+    private void exportText(Exporter exporter) {
+        TextExporter textExporter = (TextExporter) exporter;
+    }
+
+    private void exportXML(Exporter exporter) {
+        XMLExporter xmlExporter = (XMLExporter) exporter;
+
     }
 
     public boolean hasUI(Exporter exporter) {
@@ -64,6 +104,19 @@ public class DesktopExportController implements ExportController {
         for (ExporterUI ui : exporterUIs) {
             if (ui.isMatchingExporter(exporter)) {
                 return ui;
+            }
+        }
+        return null;
+    }
+
+    private FileExporter getMatchingExporter(FileObject fileObject) {
+        for (GraphFileExporter im : graphFileExporters) {
+            for (FileType ft : im.getFileTypes()) {
+                for (String ex : ft.getExtensions()) {
+                    if (fileObject.hasExt(ex)) {
+                        return im;
+                    }
+                }
             }
         }
         return null;

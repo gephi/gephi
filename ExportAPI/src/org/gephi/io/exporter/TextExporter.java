@@ -21,10 +21,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.io.exporter;
 
+import java.io.BufferedWriter;
+
 /**
  *
  * @author Mathieu Bastian
  */
-public interface TextExporter extends GraphFileExporter {
+public interface TextExporter extends FileExporter {
 
+    public void exportData(BufferedWriter writer);
 }
