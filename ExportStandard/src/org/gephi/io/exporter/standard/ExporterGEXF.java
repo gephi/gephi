@@ -23,16 +23,35 @@ package org.gephi.io.exporter.standard;
 import org.gephi.io.exporter.GraphFileExporter;
 import org.gephi.io.exporter.FileType;
 import org.gephi.io.exporter.XMLExporter;
+import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.progress.Progress;
+import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.NbBundle;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class ExporterGEXF implements GraphFileExporter, XMLExporter {
+public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
 
-    public void exportData(Document document) throws Exception {
+    private boolean cancel = false;
+    private ProgressTicket progressTicket;
+
+    public boolean exportData(Document document) throws Exception {
+        Progress.start(progressTicket);
 
         Element root = document.createElementNS("http://www.gephi.org/gexf", "gexf");
         document.appendChild(root);
+
+        Progress.finish(progressTicket);
+        return !cancel;
+    }
+
+    public boolean cancel() {
+        cancel = true;
+        return true;
+    }
+
+    public void setProgressTicket(ProgressTicket progressTicket) {
+        this.progressTicket = progressTicket;
     }
 
     public String getName() {

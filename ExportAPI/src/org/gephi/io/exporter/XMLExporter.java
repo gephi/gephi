@@ -29,5 +29,5 @@ import org.w3c.dom.Document;
  */
 public interface XMLExporter extends FileExporter {
 
-    public void exportData(Document document) throws Exception;
+    public boolean exportData(Document document) throws Exception;
 }

@@ -171,15 +171,15 @@ public class DesktopExportController implements ExportController {
 
                 public void run() {
                     try {
-                        xmlExporter.exportData(document);
-
-                        //Write XML Document
-                        Source source = new DOMSource(document);
-                        Result result = new StreamResult(outputFile);
-                        Transformer transformer = TransformerFactory.newInstance().newTransformer();
-                        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-                        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-                        transformer.transform(source, result);
+                        if (xmlExporter.exportData(document)) {
+                            //Write XML Document
+                            Source source = new DOMSource(document);
+                            Result result = new StreamResult(outputFile);
+                            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+                            transformer.transform(source, result);
+                        }
                     } catch (TransformerConfigurationException ex) {
                         throw new RuntimeException(NbBundle.getMessage(getClass(), "error_transformer"));
                     } catch (TransformerException ex) {

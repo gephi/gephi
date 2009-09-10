@@ -24,16 +24,37 @@ import java.io.BufferedWriter;
 import org.gephi.io.exporter.GraphFileExporter;
 import org.gephi.io.exporter.FileType;
 import org.gephi.io.exporter.TextExporter;
+import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.progress.Progress;
+import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.NbBundle;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class ExporterGDF implements GraphFileExporter, TextExporter {
+public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
-    public void exportData(BufferedWriter writer) throws Exception {
+    private boolean cancel = false;
+    private ProgressTicket progressTicket;
+
+    public boolean exportData(BufferedWriter writer) throws Exception {
+
+        Progress.start(progressTicket);
+
         writer.write("test");
+
+        Progress.finish(progressTicket);
+        return !cancel;
+    }
+
+    public boolean cancel() {
+        cancel = true;
+        return true;
+    }
+
+    public void setProgressTicket(ProgressTicket progressTicket) {
+        this.progressTicket = progressTicket;
     }
 
     public String getName() {
