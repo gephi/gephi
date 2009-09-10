@@ -30,11 +30,13 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.gephi.desktop.io.export.api.ExporterClassUI;
 import org.gephi.io.exporter.ExportController;
@@ -58,6 +60,7 @@ import org.openide.util.NbPreferences;
 public class GraphFileExporterUI implements ExporterClassUI {
 
     private GraphFileExporter selectedExporter;
+    private File selectedFile;
 
     public String getName() {
         return "Graph File...";
@@ -116,17 +119,43 @@ public class GraphFileExporterUI implements ExporterClassUI {
 
                 return dialog;
             }
+
+            @Override
+            public void approveSelection() {
+                if (canExport(this)) {
+                    super.approveSelection();
+                }
+            }
         };
         chooser.setDialogTitle(NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_filechooser_title"));
-        chooser.addPropertyChangeListener("fileFilterChanged", new PropertyChangeListener() {
+        chooser.addPropertyChangeListener(JFileChooser.FILE_FILTER_CHANGED_PROPERTY, new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
                 DialogFileFilter fileFilter = (DialogFileFilter) evt.getNewValue();
+
+                //Options panel enabling
                 selectedExporter = getExporter(fileFilter);
                 if (selectedExporter != null && exportController.hasUI(selectedExporter)) {
                     optionsButton.setEnabled(true);
                 } else {
                     optionsButton.setEnabled(false);
+                }
+
+                //Selected file extension change
+                if (selectedFile != null) {
+                    String filePath = selectedFile.getAbsolutePath();
+                    filePath = filePath.substring(0, filePath.lastIndexOf("."));
+                    filePath = filePath.concat(fileFilter.getExtensions().get(0));
+                    selectedFile = new File(filePath);
+                    chooser.setSelectedFile(selectedFile);
+                }
+            }
+        });
+        chooser.addPropertyChangeListener(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY, new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getNewValue() != null) {
+                    selectedFile = (File) evt.getNewValue();
                 }
             }
         });
@@ -140,6 +169,9 @@ public class GraphFileExporterUI implements ExporterClassUI {
             }
         }
         chooser.setAcceptAllFileFilterUsed(false);
+        String defaultExtention = ((DialogFileFilter) chooser.getFileFilter()).getExtensions().get(0);
+        selectedFile = new File(chooser.getCurrentDirectory(), "Untilted" + defaultExtention);
+        chooser.setSelectedFile(selectedFile);
 
         //Show
         int returnFile = chooser.showSaveDialog(null);
@@ -154,6 +186,35 @@ public class GraphFileExporterUI implements ExporterClassUI {
             //Do
             exportController.doExport(selectedExporter, fileObject);
         }
+    }
+
+    private boolean canExport(JFileChooser chooser) {
+        File file = chooser.getSelectedFile();
+        String defaultExtention = selectedExporter.getFileTypes()[0].getExtension();
+
+        try {
+            if (!file.getPath().endsWith(defaultExtention)) {
+                file = new File(file.getPath() + defaultExtention);
+            }
+            if (!file.exists()) {
+                if (!file.createNewFile()) {
+                    String failMsg = NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_SaveFailed", new Object[]{file.getPath()});
+                    JOptionPane.showMessageDialog(null, failMsg);
+                    return false;
+                }
+            } else {
+                String overwriteMsg = NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_overwriteDialog_message", new Object[]{file.getPath()});
+                if (JOptionPane.showConfirmDialog(null, overwriteMsg, NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_overwriteDialog_title"), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+                    return false;
+                }
+            }
+        } catch (IOException ex) {
+            NotifyDescriptor.Message msg = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
+            DialogDisplayer.getDefault().notifyLater(msg);
+            return false;
+        }
+
+        return true;
     }
 
     private GraphFileExporter getExporter(DialogFileFilter fileFilter) {

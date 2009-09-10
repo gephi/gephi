@@ -27,9 +27,5 @@ package org.gephi.io.exporter;
  */
 public interface GraphFileExporter extends FileExporter {
 
-    /**
-     * Get default file types this exporter can deal with.
-     * @return an array of file types this exporter can read
-     */
-    public FileType[] getFileTypes();
+    
 }

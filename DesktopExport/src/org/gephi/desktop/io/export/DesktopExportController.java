@@ -44,6 +44,8 @@ import org.gephi.io.exporter.GraphFileExporter;
 import org.gephi.io.exporter.TextExporter;
 import org.gephi.io.exporter.XMLExporter;
 import org.gephi.ui.exporter.ExporterUI;
+import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -100,53 +102,96 @@ public class DesktopExportController implements ExportController {
     }
 
     private void exportText(Exporter exporter, FileObject fileObject) {
-        TextExporter textExporter = (TextExporter) exporter;
+        final TextExporter textExporter = (TextExporter) exporter;
 
         try {
             //Create Writer
             File outputFile = FileUtil.toFile(fileObject);
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+            final BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
 
-            //Export
-            //textExporter.exportData(bufferedWriter);
+            //Export Task
+            LongTask task = null;
+            if (textExporter instanceof LongTask) {
+                task = (LongTask) textExporter;
+            }
+            final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
 
-            //Close
-            bufferedWriter.flush();
-            bufferedWriter.close();
+                public void fatalError(Throwable t) {
+                    NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
+                    DialogDisplayer.getDefault().notify(ex);
+                }
+            };
+
+            //Export, execute task
+            executor.execute(task, new Runnable() {
+
+                public void run() {
+                    try {
+                        textExporter.exportData(bufferedWriter);
+                        bufferedWriter.flush();
+                        bufferedWriter.close();
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }, "Export to " + fileObject.getNameExt(), errorHandler);
+
         } catch (IOException e) {
             throw new RuntimeException(NbBundle.getMessage(getClass(), "error_io"));
         }
     }
 
     private void exportXML(Exporter exporter, FileObject fileObject) {
-        XMLExporter xmlExporter = (XMLExporter) exporter;
+        final XMLExporter xmlExporter = (XMLExporter) exporter;
 
         try {
             //Create document
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = factory.newDocumentBuilder();
-            Document document = documentBuilder.newDocument();
+            final Document document = documentBuilder.newDocument();
             document.setXmlVersion("1.0");
             document.setXmlStandalone(true);
+            final File outputFile = FileUtil.toFile(fileObject);
 
-            //Export
-            //xmlExporter.exportData(document);
+            //Export Task
+            LongTask task = null;
+            if (xmlExporter instanceof LongTask) {
+                task = (LongTask) xmlExporter;
+            }
+            final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
 
-            //Write XML Document
-            File outputFile = FileUtil.toFile(fileObject);
-            Source source = new DOMSource(document);
-            Result result = new StreamResult(outputFile);
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            transformer.transform(source, result);
+                public void fatalError(Throwable t) {
+                    NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
+                    DialogDisplayer.getDefault().notify(ex);
+                }
+            };
+
+            //Export, execute task
+            executor.execute(task, new Runnable() {
+
+                public void run() {
+                    try {
+                        xmlExporter.exportData(document);
+
+                        //Write XML Document
+                        Source source = new DOMSource(document);
+                        Result result = new StreamResult(outputFile);
+                        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+                        transformer.transform(source, result);
+                    } catch (TransformerConfigurationException ex) {
+                        throw new RuntimeException(NbBundle.getMessage(getClass(), "error_transformer"));
+                    } catch (TransformerException ex) {
+                        throw new RuntimeException(NbBundle.getMessage(getClass(), "error_transformer"));
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }, "Export to " + fileObject.getNameExt(), errorHandler);
 
         } catch (ParserConfigurationException ex) {
             throw new RuntimeException(NbBundle.getMessage(getClass(), "error_missing_document_instance_factory"));
-        } catch (TransformerConfigurationException ex) {
-            throw new RuntimeException(NbBundle.getMessage(getClass(), "error_transformer"));
-        } catch (TransformerException ex) {
-            throw new RuntimeException(NbBundle.getMessage(getClass(), "error_transformer"));
         }
     }
 
