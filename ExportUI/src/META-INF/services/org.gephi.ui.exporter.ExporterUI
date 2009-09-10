@@ -1,1 +1,2 @@
-org.gephi.ui.exporter.FileExporterUI
+org.gephi.ui.exporter.standard.UIExporterGDF
+org.gephi.ui.exporter.standard.UIExporterGEXF

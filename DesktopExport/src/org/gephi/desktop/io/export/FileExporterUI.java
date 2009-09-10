@@ -20,7 +20,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.io.export;
 
+import java.io.File;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
 import org.gephi.desktop.io.export.api.ExporterClassUI;
+import org.gephi.io.exporter.ExportController;
+import org.gephi.io.exporter.FileType;
+import org.gephi.ui.utils.DialogFileFilter;
+import org.openide.util.Lookup;
+import org.openide.util.NbPreferences;
 
 /**
  *
@@ -37,5 +45,32 @@ public class FileExporterUI implements ExporterClassUI {
     }
 
     public void action() {
+        final String LAST_PATH = "FileExporter_Last_Path";
+        final String LAST_PATH_DEFAULT = "FileExporter_Last_Path_Default";
+
+        //Get last directory
+        String lastPathDefault = NbPreferences.forModule(FileExporterUI.class).get(LAST_PATH_DEFAULT, null);
+        String lastPath = NbPreferences.forModule(FileExporterUI.class).get(LAST_PATH, lastPathDefault);
+
+        //File Chooser filters
+        final JFileChooser chooser = new JFileChooser(lastPath);
+        ExportController exportController = Lookup.getDefault().lookup(ExportController.class);
+        if (exportController == null) {
+            return;
+        }
+        for (FileType fileType : exportController.getFileTypes()) {
+            DialogFileFilter dialogFileFilter = new DialogFileFilter(fileType.getName());
+            dialogFileFilter.addExtensions(fileType.getExtensions());
+            chooser.addChoosableFileFilter(dialogFileFilter);
+        }
+
+        //Show
+        int returnFile = chooser.showSaveDialog(null);
+        if (returnFile == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+
+            //Save last path
+            NbPreferences.forModule(FileExporterUI.class).put(LAST_PATH, file.getAbsolutePath());
+        }
     }
 }

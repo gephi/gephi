@@ -21,10 +21,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.io.exporter;
 
+import org.gephi.ui.exporter.ExporterUI;
+
 /**
  *
  * @author Mathieu Bastian
  */
 public interface ExportController {
 
+    public FileFormatExporter[] getFileFormatExporters();
+
+    public FileType[] getFileTypes();
+
+    public ExporterUI getUI(Exporter exporter);
 }

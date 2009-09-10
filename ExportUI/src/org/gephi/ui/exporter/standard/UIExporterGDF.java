@@ -18,22 +18,36 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ui.exporter;
+
+package org.gephi.ui.exporter.standard;
 
 import javax.swing.JPanel;
 import org.gephi.io.exporter.Exporter;
+import org.gephi.io.exporter.standard.ExporterGDF;
+import org.gephi.ui.exporter.ExporterUI;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface ExporterUI {
+public class UIExporterGDF implements ExporterUI {
 
-    public JPanel getPanel();
+    private JPanel panel;
 
-    public void setup(Exporter exporter);
+    public void setup(Exporter exporter) {
+        ExporterGDF exporterGDF = (ExporterGDF)exporter;
+    }
 
-    public void unsetup();
+    public void unsetup() {
+        panel = null;
+    }
 
-    public Class getMatchingExporter();
+    public JPanel getPanel() {
+        panel = new JPanel();
+        return panel;
+    }
+
+    public Class getMatchingExporter() {
+        return ExporterGDF.class;
+    }
 }

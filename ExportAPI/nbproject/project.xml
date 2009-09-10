@@ -8,6 +8,7 @@
             <module-dependencies/>
             <public-packages>
                 <package>org.gephi.io.exporter</package>
+                <package>org.gephi.ui.exporter</package>
             </public-packages>
         </data>
     </configuration>

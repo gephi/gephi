@@ -23,7 +23,10 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages/>
+            <public-packages>
+                <package>org.gephi.io.exporter.standard</package>
+                <package>org.gephi.ui.exporter.standard</package>
+            </public-packages>
         </data>
     </configuration>
 </project>
