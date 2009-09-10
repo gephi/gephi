@@ -64,6 +64,7 @@ public class Export extends CallableSystemAction {
                 }
             });
             menu.add(menuItem);
+            menuItem.setEnabled(ui.isEnable());
         }
         return menu;
     }
