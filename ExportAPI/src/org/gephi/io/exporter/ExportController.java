@@ -29,9 +29,9 @@ import org.gephi.ui.exporter.ExporterUI;
  */
 public interface ExportController {
 
-    public GraphFileExporter[] getFileFormatExporters();
+    public GraphFileExporter[] getGraphFileExporters();
 
-    public FileType[] getFileTypes();
+    public boolean hasUI(Exporter exporter);
 
     public ExporterUI getUI(Exporter exporter);
 }

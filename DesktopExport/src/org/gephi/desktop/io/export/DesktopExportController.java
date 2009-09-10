@@ -20,11 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.io.export;
 
-import java.util.ArrayList;
 import org.gephi.io.exporter.ExportController;
 import org.gephi.io.exporter.Exporter;
 import org.gephi.io.exporter.GraphFileExporter;
-import org.gephi.io.exporter.FileType;
 import org.gephi.ui.exporter.ExporterUI;
 import org.gephi.utils.longtask.LongTaskExecutor;
 import org.openide.util.Lookup;
@@ -47,22 +45,27 @@ public class DesktopExportController implements ExportController {
         executor = new LongTaskExecutor(true, "Exporter", 10);
     }
 
-    public GraphFileExporter[] getFileFormatExporters() {
+    public GraphFileExporter[] getGraphFileExporters() {
         return fileFormatExporters;
     }
 
-    public ExporterUI getUI(Exporter exporter) {
-        Exporter[] exs = Lookup.getDefault().lookupAll(Exporter.class).toArray(new Exporter[0]);
-        return null;
-    }
-
-    public FileType[] getFileTypes() {
-        ArrayList<FileType> list = new ArrayList<FileType>();
-        for (GraphFileExporter im : fileFormatExporters) {
-            for (FileType ft : im.getFileTypes()) {
-                list.add(ft);
+    public boolean hasUI(Exporter exporter) {
+        ExporterUI[] exporterUIs = Lookup.getDefault().lookupAll(ExporterUI.class).toArray(new ExporterUI[0]);
+        for (ExporterUI ui : exporterUIs) {
+            if (ui.isMatchingExporter(exporter)) {
+                return true;
             }
         }
-        return list.toArray(new FileType[0]);
+        return false;
+    }
+
+    public ExporterUI getUI(Exporter exporter) {
+        ExporterUI[] exporterUIs = Lookup.getDefault().lookupAll(ExporterUI.class).toArray(new ExporterUI[0]);
+        for (ExporterUI ui : exporterUIs) {
+            if (ui.isMatchingExporter(exporter)) {
+                return ui;
+            }
+        }
+        return null;
     }
 }

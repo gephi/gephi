@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.ui.exporter.standard;
 
 import javax.swing.JPanel;
@@ -35,7 +34,7 @@ public class UIExporterGDF implements ExporterUI {
     private JPanel panel;
 
     public void setup(Exporter exporter) {
-        ExporterGDF exporterGDF = (ExporterGDF)exporter;
+        ExporterGDF exporterGDF = (ExporterGDF) exporter;
     }
 
     public void unsetup() {
@@ -47,7 +46,7 @@ public class UIExporterGDF implements ExporterUI {
         return panel;
     }
 
-    public Class getMatchingExporter() {
-        return ExporterGDF.class;
+    public boolean isMatchingExporter(Exporter exporter) {
+        return exporter instanceof ExporterGDF;
     }
 }

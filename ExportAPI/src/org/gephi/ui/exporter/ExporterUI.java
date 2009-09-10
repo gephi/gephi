@@ -35,5 +35,5 @@ public interface ExporterUI {
 
     public void unsetup();
 
-    public Class getMatchingExporter();
+    public boolean isMatchingExporter(Exporter exporter);
 }

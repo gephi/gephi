@@ -25,6 +25,10 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.HeadlessException;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -35,7 +39,12 @@ import javax.swing.JPanel;
 import org.gephi.desktop.io.export.api.ExporterClassUI;
 import org.gephi.io.exporter.ExportController;
 import org.gephi.io.exporter.FileType;
+import org.gephi.io.exporter.GraphFileExporter;
+import org.gephi.ui.exporter.ExporterUI;
 import org.gephi.ui.utils.DialogFileFilter;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -45,6 +54,8 @@ import org.openide.util.NbPreferences;
  * @author Mathieu Bastian
  */
 public class GraphFileExporterUI implements ExporterClassUI {
+
+    private GraphFileExporter selectedExporter;
 
     public String getName() {
         return "Graph File...";
@@ -58,6 +69,11 @@ public class GraphFileExporterUI implements ExporterClassUI {
         final String LAST_PATH = "GraphFileExporterUI_Last_Path";
         final String LAST_PATH_DEFAULT = "GraphFileExporterUI_Last_Path_Default";
 
+        final ExportController exportController = Lookup.getDefault().lookup(ExportController.class);
+        if (exportController == null) {
+            return;
+        }
+
         //Get last directory
         String lastPathDefault = NbPreferences.forModule(GraphFileExporterUI.class).get(LAST_PATH_DEFAULT, null);
         String lastPath = NbPreferences.forModule(GraphFileExporterUI.class).get(LAST_PATH, lastPathDefault);
@@ -65,8 +81,23 @@ public class GraphFileExporterUI implements ExporterClassUI {
         //Options panel
         FlowLayout layout = new FlowLayout(FlowLayout.RIGHT);
         final JPanel optionsPanel = new JPanel(layout);
-        JButton optionsButton = new JButton(NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_optionsButton_name"));
+        final JButton optionsButton = new JButton(NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_optionsButton_name"));
         optionsPanel.add(optionsButton);
+        optionsButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                ExporterUI exporterUI = exportController.getUI(selectedExporter);
+                if (exporterUI != null) {
+                    exporterUI.setup(selectedExporter);
+                    DialogDescriptor dd = new DialogDescriptor(exporterUI.getPanel(), NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_optionsButton_name"));
+                    Object result = DialogDisplayer.getDefault().notify(dd);
+                    if (result != NotifyDescriptor.OK_OPTION) {
+                        return;
+                    }
+                    exporterUI.unsetup();
+                }
+            }
+        });
 
         //Optionable file chooser
         final JFileChooser chooser = new JFileChooser(lastPath) {
@@ -85,16 +116,26 @@ public class GraphFileExporterUI implements ExporterClassUI {
             }
         };
         chooser.setDialogTitle(NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_filechooser_title"));
+        chooser.addPropertyChangeListener("fileFilterChanged", new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                DialogFileFilter fileFilter = (DialogFileFilter) evt.getNewValue();
+                selectedExporter = getExporter(fileFilter);
+                if (selectedExporter != null && exportController.hasUI(selectedExporter)) {
+                    optionsButton.setEnabled(true);
+                } else {
+                    optionsButton.setEnabled(false);
+                }
+            }
+        });
 
         //File filters
-        ExportController exportController = Lookup.getDefault().lookup(ExportController.class);
-        if (exportController == null) {
-            return;
-        }
-        for (FileType fileType : exportController.getFileTypes()) {
-            DialogFileFilter dialogFileFilter = new DialogFileFilter(fileType.getName());
-            dialogFileFilter.addExtensions(fileType.getExtensions());
-            chooser.addChoosableFileFilter(dialogFileFilter);
+        for (GraphFileExporter graphFileExporter : exportController.getGraphFileExporters()) {
+            for (FileType fileType : graphFileExporter.getFileTypes()) {
+                DialogFileFilter dialogFileFilter = new DialogFileFilter(fileType.getName());
+                dialogFileFilter.addExtensions(fileType.getExtensions());
+                chooser.addChoosableFileFilter(dialogFileFilter);
+            }
         }
         chooser.setAcceptAllFileFilterUsed(false);
 
@@ -106,5 +147,20 @@ public class GraphFileExporterUI implements ExporterClassUI {
             //Save last path
             NbPreferences.forModule(GraphFileExporterUI.class).put(LAST_PATH, file.getAbsolutePath());
         }
+    }
+
+    private GraphFileExporter getExporter(DialogFileFilter fileFilter) {
+        final ExportController exportController = Lookup.getDefault().lookup(ExportController.class);
+        //Find fileFilter
+        for (GraphFileExporter graphFileExporter : exportController.getGraphFileExporters()) {
+            for (FileType fileType : graphFileExporter.getFileTypes()) {
+                DialogFileFilter tempFilter = new DialogFileFilter(fileType.getName());
+                tempFilter.addExtensions(fileType.getExtensions());
+                if (tempFilter.equals(fileFilter)) {
+                    return graphFileExporter;
+                }
+            }
+        }
+        return null;
     }
 }

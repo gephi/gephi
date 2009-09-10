@@ -46,7 +46,7 @@ public class UIExporterGEXF implements ExporterUI {
         return panel;
     }
 
-    public Class getMatchingExporter() {
-        return ExporterGEXF.class;
+    public boolean isMatchingExporter(Exporter exporter) {
+        return exporter instanceof ExporterGEXF;
     }
 }
