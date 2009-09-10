@@ -42,7 +42,7 @@ public class UIExporterGEXF implements ExporterUI {
     }
 
     public JPanel getPanel() {
-        panel = new JPanel();
+        panel = new UIExporterGEXFPanel();
         return panel;
     }
 

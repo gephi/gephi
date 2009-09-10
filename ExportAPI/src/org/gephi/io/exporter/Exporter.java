@@ -27,4 +27,5 @@ package org.gephi.io.exporter;
  */
 public interface Exporter {
 
+    public String getName();
 }

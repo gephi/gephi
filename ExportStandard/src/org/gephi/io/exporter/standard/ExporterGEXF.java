@@ -26,6 +26,10 @@ import org.openide.util.NbBundle;
 
 public class ExporterGEXF implements GraphFileExporter {
 
+    public String getName() {
+        return NbBundle.getMessage(getClass(), "ExporterGEXF_name");
+    }
+
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".gexf", NbBundle.getMessage(getClass(), "fileType_GEXF_Name"));
         return new FileType[]{ft};

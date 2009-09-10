@@ -30,6 +30,10 @@ import org.openide.util.NbBundle;
  */
 public class ExporterGDF implements GraphFileExporter {
 
+    public String getName() {
+        return NbBundle.getMessage(getClass(), "ExporterGDF_name");
+    }
+
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".gdf", NbBundle.getMessage(getClass(), "fileType_GDF_Name"));
         return new FileType[]{ft};

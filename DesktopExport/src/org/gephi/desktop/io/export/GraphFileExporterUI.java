@@ -89,7 +89,7 @@ public class GraphFileExporterUI implements ExporterClassUI {
                 ExporterUI exporterUI = exportController.getUI(selectedExporter);
                 if (exporterUI != null) {
                     exporterUI.setup(selectedExporter);
-                    DialogDescriptor dd = new DialogDescriptor(exporterUI.getPanel(), NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_optionsButton_name"));
+                    DialogDescriptor dd = new DialogDescriptor(exporterUI.getPanel(), NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_optionsDialog_title", selectedExporter.getName()));
                     Object result = DialogDisplayer.getDefault().notify(dd);
                     if (result != NotifyDescriptor.OK_OPTION) {
                         return;
