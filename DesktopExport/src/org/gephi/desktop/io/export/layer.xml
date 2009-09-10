@@ -3,7 +3,7 @@
 <filesystem>
      <folder name="Menu">
         <folder name="File">
-            <file name="Separator3_1.instance" url="Separator3_1.instance">
+            <file name="Separator.instance" url="Separator.instance">
                 <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
                 <attr name="position" intvalue="1150"/>
             </file>
