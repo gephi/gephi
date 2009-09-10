@@ -29,5 +29,5 @@ import java.io.BufferedWriter;
  */
 public interface TextExporter extends FileExporter {
 
-    public void exportData(BufferedWriter writer);
+    public void exportData(BufferedWriter writer) throws Exception;
 }

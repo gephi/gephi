@@ -20,15 +20,21 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.standard;
 
+import java.io.BufferedWriter;
 import org.gephi.io.exporter.GraphFileExporter;
 import org.gephi.io.exporter.FileType;
+import org.gephi.io.exporter.TextExporter;
 import org.openide.util.NbBundle;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class ExporterGDF implements GraphFileExporter {
+public class ExporterGDF implements GraphFileExporter, TextExporter {
+
+    public void exportData(BufferedWriter writer) throws Exception {
+        writer.write("test");
+    }
 
     public String getName() {
         return NbBundle.getMessage(getClass(), "ExporterGDF_name");

@@ -22,9 +22,18 @@ package org.gephi.io.exporter.standard;
 
 import org.gephi.io.exporter.GraphFileExporter;
 import org.gephi.io.exporter.FileType;
+import org.gephi.io.exporter.XMLExporter;
 import org.openide.util.NbBundle;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
-public class ExporterGEXF implements GraphFileExporter {
+public class ExporterGEXF implements GraphFileExporter, XMLExporter {
+
+    public void exportData(Document document) throws Exception {
+
+        Element root = document.createElementNS("http://www.gephi.org/gexf", "gexf");
+        document.appendChild(root);
+    }
 
     public String getName() {
         return NbBundle.getMessage(getClass(), "ExporterGEXF_name");

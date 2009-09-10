@@ -20,6 +20,22 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.io.export;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import org.gephi.io.exporter.ExportController;
 import org.gephi.io.exporter.Exporter;
 import org.gephi.io.exporter.FileExporter;
@@ -32,8 +48,10 @@ import org.gephi.utils.longtask.LongTaskExecutor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.w3c.dom.Document;
 
 /**
  *
@@ -59,10 +77,11 @@ public class DesktopExportController implements ExportController {
 
     public void doExport(Exporter exporter, FileObject fileObject) {
         try {
+
             if (exporter instanceof TextExporter) {
-                exportText(exporter);
+                exportText(exporter, fileObject);
             } else if (exporter instanceof XMLExporter) {
-                exportXML(exporter);
+                exportXML(exporter, fileObject);
             }
 
         } catch (Exception ex) {
@@ -80,13 +99,55 @@ public class DesktopExportController implements ExportController {
         doExport(exporter, fileObject);
     }
 
-    private void exportText(Exporter exporter) {
+    private void exportText(Exporter exporter, FileObject fileObject) {
         TextExporter textExporter = (TextExporter) exporter;
+
+        try {
+            //Create Writer
+            File outputFile = FileUtil.toFile(fileObject);
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+
+            //Export
+            //textExporter.exportData(bufferedWriter);
+
+            //Close
+            bufferedWriter.flush();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(NbBundle.getMessage(getClass(), "error_io"));
+        }
     }
 
-    private void exportXML(Exporter exporter) {
+    private void exportXML(Exporter exporter, FileObject fileObject) {
         XMLExporter xmlExporter = (XMLExporter) exporter;
 
+        try {
+            //Create document
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+            Document document = documentBuilder.newDocument();
+            document.setXmlVersion("1.0");
+            document.setXmlStandalone(true);
+
+            //Export
+            //xmlExporter.exportData(document);
+
+            //Write XML Document
+            File outputFile = FileUtil.toFile(fileObject);
+            Source source = new DOMSource(document);
+            Result result = new StreamResult(outputFile);
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.transform(source, result);
+
+        } catch (ParserConfigurationException ex) {
+            throw new RuntimeException(NbBundle.getMessage(getClass(), "error_missing_document_instance_factory"));
+        } catch (TransformerConfigurationException ex) {
+            throw new RuntimeException(NbBundle.getMessage(getClass(), "error_transformer"));
+        } catch (TransformerException ex) {
+            throw new RuntimeException(NbBundle.getMessage(getClass(), "error_transformer"));
+        }
     }
 
     public boolean hasUI(Exporter exporter) {
