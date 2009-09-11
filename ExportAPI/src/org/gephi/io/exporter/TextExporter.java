@@ -18,10 +18,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.io.exporter;
 
 import java.io.BufferedWriter;
+import org.gephi.graph.api.Graph;
 
 /**
  *
@@ -29,5 +29,5 @@ import java.io.BufferedWriter;
  */
 public interface TextExporter extends FileExporter {
 
-    public boolean exportData(BufferedWriter writer) throws Exception;
+    public boolean exportData(BufferedWriter writer, Graph graph) throws Exception;
 }

@@ -22,7 +22,9 @@ package org.gephi.io.exporter.standard;
 
 import java.io.BufferedWriter;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 import org.gephi.io.exporter.GraphFileExporter;
 import org.gephi.io.exporter.FileType;
 import org.gephi.io.exporter.TextExporter;
@@ -44,11 +46,102 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
     private NodeColumnsGDF[] defaultNodeColumnsGDFs;
     private EdgeColumnsGDF[] defaultEdgeColumnsGDFs;
 
-    public boolean exportData(BufferedWriter writer) throws Exception {
+    public boolean exportData(BufferedWriter writer, Graph graph) throws Exception {
 
         Progress.start(progressTicket);
 
-        writer.write("test");
+        defaultNodeColumns();
+        defaultEdgeColumns();
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        //Node intro
+        stringBuilder.append("nodedef> name VARCHAR,");
+
+        //Node columns title
+        for (NodeColumnsGDF c : defaultNodeColumnsGDFs) {
+            if (c.isEnable()) {
+                stringBuilder.append(c.getTitle());
+                stringBuilder.append(" ");
+                stringBuilder.append(c.getType().toString().toUpperCase());
+                if (c.getDefaultValue() != null) {
+                    stringBuilder.append(" default ");
+                    stringBuilder.append(c.getDefaultValue().toString());
+                }
+                stringBuilder.append(",");
+            }
+        }
+
+        //Remove last coma
+        stringBuilder.setLength(stringBuilder.length() - 1);
+        stringBuilder.append("\n");
+
+        //Node lines
+        for (Node node : graph.getNodes()) {
+            NodeData nodeData = node.getNodeData();
+
+            //Id
+            stringBuilder.append(nodeData.getId());
+            stringBuilder.append(",");
+
+            //Default columns
+            for (NodeColumnsGDF c : defaultNodeColumnsGDFs) {
+                if (c.isEnable()) {
+                    c.writeData(stringBuilder, node);
+                }
+                stringBuilder.append(",");
+            }
+
+            //Remove last coma
+            stringBuilder.setLength(stringBuilder.length() - 1);
+            stringBuilder.append("\n");
+        }
+
+        //Edge intro
+        stringBuilder.append("edgedef> node1,node2,");
+
+        //Edge columns title
+        for (EdgeColumnsGDF c : defaultEdgeColumnsGDFs) {
+            if (c.isEnable()) {
+                stringBuilder.append(c.getTitle());
+                stringBuilder.append(" ");
+                stringBuilder.append(c.getType().toString().toUpperCase());
+                if (c.getDefaultValue() != null) {
+                    stringBuilder.append(" default ");
+                    stringBuilder.append(c.getDefaultValue().toString());
+                }
+                stringBuilder.append(",");
+            }
+        }
+
+        //Remove last coma
+        stringBuilder.setLength(stringBuilder.length() - 1);
+        stringBuilder.append("\n");
+
+        //Edge lines
+        for (Edge edge : graph.getEdges()) {
+
+            //Source & Target
+            stringBuilder.append(edge.getSource().getNodeData().getId());
+            stringBuilder.append(",");
+            stringBuilder.append(edge.getTarget().getNodeData().getId());
+            stringBuilder.append(",");
+
+            //Default columns
+            for (EdgeColumnsGDF c : defaultEdgeColumnsGDFs) {
+                if (c.isEnable()) {
+                    c.writeData(stringBuilder, edge);
+                }
+                stringBuilder.append(",");
+            }
+
+            //Remove last coma
+            stringBuilder.setLength(stringBuilder.length() - 1);
+            stringBuilder.append("\n");
+        }
+
+        //Write StringBuilder
+        writer.append(stringBuilder);
 
         Progress.finish(progressTicket);
         return !cancel;

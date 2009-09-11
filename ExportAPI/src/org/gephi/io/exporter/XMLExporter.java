@@ -18,9 +18,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.io.exporter;
 
+import org.gephi.graph.api.Graph;
 import org.w3c.dom.Document;
 
 /**
@@ -29,5 +29,5 @@ import org.w3c.dom.Document;
  */
 public interface XMLExporter extends FileExporter {
 
-    public boolean exportData(Document document) throws Exception;
+    public boolean exportData(Document document, Graph graph) throws Exception;
 }

@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.standard;
 
+import org.gephi.graph.api.Graph;
 import org.gephi.io.exporter.GraphFileExporter;
 import org.gephi.io.exporter.FileType;
 import org.gephi.io.exporter.XMLExporter;
@@ -35,7 +36,7 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
     private boolean cancel = false;
     private ProgressTicket progressTicket;
 
-    public boolean exportData(Document document) throws Exception {
+    public boolean exportData(Document document, Graph graph) throws Exception {
         Progress.start(progressTicket);
 
         Element root = document.createElementNS("http://www.gephi.org/gexf", "gexf");

@@ -36,6 +36,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.io.exporter.ExportController;
 import org.gephi.io.exporter.Exporter;
 import org.gephi.io.exporter.FileExporter;
@@ -43,10 +45,12 @@ import org.gephi.io.exporter.FileType;
 import org.gephi.io.exporter.GraphFileExporter;
 import org.gephi.io.exporter.TextExporter;
 import org.gephi.io.exporter.XMLExporter;
+import org.gephi.project.api.ProjectController;
 import org.gephi.ui.exporter.ExporterUI;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
+import org.gephi.workspace.api.Workspace;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
@@ -80,10 +84,13 @@ public class DesktopExportController implements ExportController {
     public void doExport(Exporter exporter, FileObject fileObject) {
         try {
 
+            Workspace currentWorkspace = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace();
+            Graph graph = Lookup.getDefault().lookup(GraphController.class).getDirectedGraph();
+
             if (exporter instanceof TextExporter) {
-                exportText(exporter, fileObject);
+                exportText(exporter, fileObject, graph);
             } else if (exporter instanceof XMLExporter) {
-                exportXML(exporter, fileObject);
+                exportXML(exporter, fileObject, graph);
             }
 
         } catch (Exception ex) {
@@ -101,7 +108,7 @@ public class DesktopExportController implements ExportController {
         doExport(exporter, fileObject);
     }
 
-    private void exportText(Exporter exporter, FileObject fileObject) {
+    private void exportText(Exporter exporter, FileObject fileObject, final Graph graph) {
         final TextExporter textExporter = (TextExporter) exporter;
 
         try {
@@ -127,7 +134,7 @@ public class DesktopExportController implements ExportController {
 
                 public void run() {
                     try {
-                        textExporter.exportData(bufferedWriter);
+                        textExporter.exportData(bufferedWriter, graph);
                         bufferedWriter.flush();
                         bufferedWriter.close();
                     } catch (Exception ex) {
@@ -141,7 +148,7 @@ public class DesktopExportController implements ExportController {
         }
     }
 
-    private void exportXML(Exporter exporter, FileObject fileObject) {
+    private void exportXML(Exporter exporter, FileObject fileObject, final Graph graph) {
         final XMLExporter xmlExporter = (XMLExporter) exporter;
 
         try {
@@ -171,7 +178,7 @@ public class DesktopExportController implements ExportController {
 
                 public void run() {
                     try {
-                        if (xmlExporter.exportData(document)) {
+                        if (xmlExporter.exportData(document, graph)) {
                             //Write XML Document
                             Source source = new DOMSource(document);
                             Result result = new StreamResult(outputFile);
