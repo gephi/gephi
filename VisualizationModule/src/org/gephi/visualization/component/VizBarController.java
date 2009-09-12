@@ -29,6 +29,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
@@ -38,6 +39,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.ui.components.JColorButton;
+import org.gephi.ui.components.JDropDownButton;
 import org.gephi.ui.components.JPopupButton;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VizConfig;
@@ -85,7 +87,7 @@ public class VizBarController {
         }
 
         public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[3];
+            JComponent[] components = new JComponent[4];
 
             //Background color
             final VizConfig vizConfig = VizController.getInstance().getVizConfig();
@@ -122,6 +124,20 @@ public class VizBarController {
                 }
             });
             components[2] = centerOnZeroButton;
+
+            //Screenshots
+            JPopupMenu screenshotPopup = new JPopupMenu();
+            JMenuItem configureScreenshotItem = new JMenuItem(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.screenshot.configure"));
+            screenshotPopup.add(configureScreenshotItem);
+            final JButton screenshotButton = new JDropDownButton(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/screenshot.png")), screenshotPopup);
+            screenshotButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.screenshot"));
+            screenshotButton.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    
+                }
+            });
+            components[3] = screenshotButton;
 
             return components;
         }
