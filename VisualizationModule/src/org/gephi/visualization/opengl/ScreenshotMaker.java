@@ -20,18 +20,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl;
 
+import com.sun.opengl.util.FileUtil;
 import com.sun.opengl.util.ImageUtil;
 import com.sun.opengl.util.TileRenderer;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Iterator;
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.FileImageOutputStream;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilities;
@@ -138,19 +135,22 @@ public class ScreenshotMaker implements VizArchitecture {
 
         //Write image
         ImageUtil.flipImageVertically(image);
-        Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("png");
-        if (iter.hasNext()) {
-            ImageWriter writer = iter.next();
-            ImageWriteParam iwp = writer.getDefaultWriteParam();
-            //iwp.setCompressionType("DEFAULT");
-            //iwp.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
-            //iwp.setCompressionQuality((int)(9*pngCompresssion));
-            FileImageOutputStream output = new FileImageOutputStream(file);
-            writer.setOutput(output);
-            IIOImage img = new IIOImage(image, null, null);
-            writer.write(null, img, iwp);
-            writer.dispose();
+        if (!ImageIO.write(image, FileUtil.getFileSuffix(file), file)) {
+            throw new IOException("Unsupported file format");
         }
+    /*Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("png");
+    if (iter.hasNext()) {
+    ImageWriter writer = iter.next();
+    ImageWriteParam iwp = writer.getDefaultWriteParam();
+    //iwp.setCompressionType("DEFAULT");
+    //iwp.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
+    //iwp.setCompressionQuality((int)(9*pngCompresssion));
+    FileImageOutputStream output = new FileImageOutputStream(file);
+    writer.setOutput(output);
+    IIOImage img = new IIOImage(image, null, null);
+    writer.write(null, img, iwp);
+    writer.dispose();
+    }*/
 
     //oldContext.makeCurrent();
     }

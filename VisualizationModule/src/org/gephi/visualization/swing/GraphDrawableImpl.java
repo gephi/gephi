@@ -164,9 +164,8 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
         } else {
             gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         }
-
+        //gl.glReadBuffer(GL.GL_FRONT);
         scheduler.display(gl, glu);
-
     }
 
     public void display() {
