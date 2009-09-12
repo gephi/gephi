@@ -76,6 +76,13 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
         stringBuilder.setLength(stringBuilder.length() - 1);
         stringBuilder.append("\n");
 
+        //Lock
+        graph.readLock();
+
+        //Calculate max
+        int max = graph.getNodeCount() + graph.getEdgeCount();
+        Progress.switchToDeterminate(progressTicket, max);
+
         //Node lines
         for (Node node : graph.getNodes()) {
             NodeData nodeData = node.getNodeData();
@@ -95,6 +102,8 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
             //Remove last coma
             stringBuilder.setLength(stringBuilder.length() - 1);
             stringBuilder.append("\n");
+
+            Progress.progress(progressTicket);
         }
 
         //Edge intro
@@ -138,7 +147,12 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
             //Remove last coma
             stringBuilder.setLength(stringBuilder.length() - 1);
             stringBuilder.append("\n");
+
+            Progress.progress(progressTicket);
         }
+
+        //Unlock
+        graph.readUnlock();
 
         //Write StringBuilder
         writer.append(stringBuilder);
@@ -256,11 +270,11 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
             @Override
             public void writeData(StringBuilder builder, Node node) {
                 builder.append("'");
-                builder.append(node.getNodeData().r());
+                builder.append((int) (node.getNodeData().r() * 255f));
                 builder.append(",");
-                builder.append(node.getNodeData().g());
+                builder.append((int) (node.getNodeData().g() * 255f));
                 builder.append(",");
-                builder.append(node.getNodeData().b());
+                builder.append((int) (node.getNodeData().b() * 255f));
                 builder.append("'");
             }
         };
@@ -356,11 +370,11 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
             @Override
             public void writeData(StringBuilder builder, Edge edge) {
                 builder.append("'");
-                builder.append(edge.getEdgeData().r());
+                builder.append((int) (edge.getEdgeData().r() * 255f));
                 builder.append(",");
-                builder.append(edge.getEdgeData().g());
+                builder.append((int) (edge.getEdgeData().g() * 255f));
                 builder.append(",");
-                builder.append(edge.getEdgeData().b());
+                builder.append((int) (edge.getEdgeData().b() * 255f));
                 builder.append("'");
             }
         };
