@@ -42,6 +42,20 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
     private boolean cancel = false;
     private ProgressTicket progressTicket;
 
+    //Settings
+    private boolean uniformScale = false;
+    private boolean exportColors = true;
+    private boolean exportPosition = true;
+    private boolean exportAttributes = true;
+
+    //Settings Helper
+    private float minSize;
+    private float maxSize;
+    private float minX;
+    private float maxX;
+    private float minY;
+    private float maxY;
+
     //Columns
     private NodeColumnsGDF[] defaultNodeColumnsGDFs;
     private EdgeColumnsGDF[] defaultEdgeColumnsGDFs;
@@ -79,7 +93,12 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
         //Lock
         graph.readLock();
 
-        //Calculate max
+        //Options
+        if (uniformScale) {
+            calculateMinMax(graph);
+        }
+
+        //Calculate progress units count
         int max = graph.getNodeCount() + graph.getEdgeCount();
         Progress.switchToDeterminate(progressTicket, max);
 
@@ -159,8 +178,15 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
         Progress.finish(progressTicket);
 
+        //Reset
         defaultNodeColumnsGDFs = null;
         defaultEdgeColumnsGDFs = null;
+        minSize = 0f;
+        maxSize = 0f;
+        minX = 0f;
+        maxX = 0f;
+        minY = 0f;
+        maxY = 0f;
 
         return !cancel;
     }
@@ -217,7 +243,11 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                builder.append(node.getNodeData().getSize());
+                float size = node.getNodeData().getSize();
+                if (uniformScale) {
+                    size = (size - minSize) / (maxSize - minSize);
+                }
+                builder.append(size);
             }
         };
 
@@ -230,7 +260,11 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                builder.append(node.getNodeData().getSize());
+                float size = node.getNodeData().getSize();
+                if (uniformScale) {
+                    size = (size - minSize) / (maxSize - minSize);
+                }
+                builder.append(size);
             }
         };
 
@@ -238,12 +272,16 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return true;
+                return exportPosition;
             }
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                builder.append(node.getNodeData().x());
+                float x = node.getNodeData().getSize();
+                if (uniformScale) {
+                    x = (x - minX) / (maxX - minX);
+                }
+                builder.append(x);
             }
         };
 
@@ -251,12 +289,16 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return true;
+                return exportPosition;
             }
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                builder.append(node.getNodeData().y());
+                float y = node.getNodeData().getSize();
+                if (uniformScale) {
+                    y = (y - minY) / (maxY - minY);
+                }
+                builder.append(y);
             }
         };
 
@@ -264,7 +306,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return true;
+                return exportColors;
             }
 
             @Override
@@ -414,6 +456,25 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
         defaultEdgeColumnsGDFs[5] = labelVisibleColumn;
     }
 
+    private void calculateMinMax(Graph graph) {
+        minX = Float.POSITIVE_INFINITY;
+        maxX = Float.NEGATIVE_INFINITY;
+        minY = Float.POSITIVE_INFINITY;
+        maxY = Float.NEGATIVE_INFINITY;
+        minSize = Float.POSITIVE_INFINITY;
+        maxSize = Float.NEGATIVE_INFINITY;
+
+        for (Node node : graph.getNodes()) {
+            NodeData nodeData = node.getNodeData();
+            minX = Math.min(minX, nodeData.x());
+            maxX = Math.max(maxX, nodeData.x());
+            minY = Math.min(minY, nodeData.y());
+            maxY = Math.max(maxY, nodeData.y());
+            minSize = Math.min(minSize, nodeData.getSize());
+            maxSize = Math.max(maxSize, nodeData.getSize());
+        }
+    }
+
     public boolean cancel() {
         cancel = true;
         return true;
@@ -430,6 +491,30 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".gdf", NbBundle.getMessage(getClass(), "fileType_GDF_Name"));
         return new FileType[]{ft};
+    }
+
+    public void setExportAttributes(boolean exportAttributes) {
+        this.exportAttributes = exportAttributes;
+    }
+
+    public void setExportColors(boolean exportColors) {
+        this.exportColors = exportColors;
+    }
+
+    public void setExportPosition(boolean exportPosition) {
+        this.exportPosition = exportPosition;
+    }
+
+    public boolean isExportAttributes() {
+        return exportAttributes;
+    }
+
+    public boolean isExportColors() {
+        return exportColors;
+    }
+
+    public boolean isExportPosition() {
+        return exportPosition;
     }
 
     private enum DataTypeGDF {
