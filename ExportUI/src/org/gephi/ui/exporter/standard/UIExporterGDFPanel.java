@@ -18,8 +18,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.ui.exporter.standard;
+
+import org.gephi.io.exporter.standard.ExporterGDF;
 
 /**
  *
@@ -32,6 +33,22 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
         initComponents();
     }
 
+    public void setup(ExporterGDF exporterGDF) {
+        graphButtonGroup.setSelected((exporterGDF.isVisibleOnlyGraph() ? visibleOnlyRadio.getModel() : fullGraphRadio.getModel()), true);
+        colorsExportCheckbox.setSelected(exporterGDF.isExportColors());
+        positionExportCheckbox.setSelected(exporterGDF.isExportPosition());
+        attributesExportCheckbox.setSelected(exporterGDF.isExportAttributes());
+        normalizeCheckbox.setSelected(exporterGDF.isNormalize());
+    }
+
+    public void unsetup(ExporterGDF exporterGDF) {
+        exporterGDF.setVisibleOnlyGraph(graphButtonGroup.isSelected(visibleOnlyRadio.getModel()));
+        exporterGDF.setExportAttributes(attributesExportCheckbox.isSelected());
+        exporterGDF.setExportColors(colorsExportCheckbox.isSelected());
+        exporterGDF.setExportPosition(positionExportCheckbox.isSelected());
+        exporterGDF.setNormalize(normalizeCheckbox.isSelected());
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -41,10 +58,48 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        graphButtonGroup = new javax.swing.ButtonGroup();
+        labelGraph = new javax.swing.JLabel();
+        fullGraphRadio = new javax.swing.JRadioButton();
+        visibleOnlyRadio = new javax.swing.JRadioButton();
+        labelFullgraph = new javax.swing.JLabel();
+        labelVisibleOnly = new javax.swing.JLabel();
+        labelExport = new javax.swing.JLabel();
+        positionExportCheckbox = new javax.swing.JCheckBox();
+        colorsExportCheckbox = new javax.swing.JCheckBox();
+        attributesExportCheckbox = new javax.swing.JCheckBox();
+        normalizeCheckbox = new javax.swing.JCheckBox();
+        labelNormalize = new javax.swing.JLabel();
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.jLabel1.text")); // NOI18N
+        labelGraph.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.labelGraph.text")); // NOI18N
+
+        graphButtonGroup.add(fullGraphRadio);
+        fullGraphRadio.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.fullGraphRadio.text")); // NOI18N
+
+        graphButtonGroup.add(visibleOnlyRadio);
+        visibleOnlyRadio.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.visibleOnlyRadio.text")); // NOI18N
+
+        labelFullgraph.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelFullgraph.setForeground(new java.awt.Color(102, 102, 102));
+        labelFullgraph.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.labelFullgraph.text")); // NOI18N
+
+        labelVisibleOnly.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelVisibleOnly.setForeground(new java.awt.Color(102, 102, 102));
+        labelVisibleOnly.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.labelVisibleOnly.text")); // NOI18N
+
+        labelExport.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.labelExport.text")); // NOI18N
+
+        positionExportCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.positionExportCheckbox.text")); // NOI18N
+
+        colorsExportCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.colorsExportCheckbox.text")); // NOI18N
+
+        attributesExportCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.attributesExportCheckbox.text")); // NOI18N
+
+        normalizeCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.normalizeCheckbox.text")); // NOI18N
+
+        labelNormalize.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelNormalize.setForeground(new java.awt.Color(102, 102, 102));
+        labelNormalize.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.labelNormalize.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -52,21 +107,71 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(441, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(normalizeCheckbox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(labelNormalize))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(labelGraph)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(visibleOnlyRadio)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(labelVisibleOnly))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(fullGraphRadio)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(labelFullgraph))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(labelExport)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(positionExportCheckbox)
+                            .addComponent(colorsExportCheckbox)
+                            .addComponent(attributesExportCheckbox))))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(345, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelGraph)
+                    .addComponent(fullGraphRadio)
+                    .addComponent(labelFullgraph))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(visibleOnlyRadio)
+                    .addComponent(labelVisibleOnly))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelExport)
+                    .addComponent(positionExportCheckbox))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(colorsExportCheckbox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(attributesExportCheckbox)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(normalizeCheckbox)
+                    .addComponent(labelNormalize))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JCheckBox attributesExportCheckbox;
+    private javax.swing.JCheckBox colorsExportCheckbox;
+    private javax.swing.JRadioButton fullGraphRadio;
+    private javax.swing.ButtonGroup graphButtonGroup;
+    private javax.swing.JLabel labelExport;
+    private javax.swing.JLabel labelFullgraph;
+    private javax.swing.JLabel labelGraph;
+    private javax.swing.JLabel labelNormalize;
+    private javax.swing.JLabel labelVisibleOnly;
+    private javax.swing.JCheckBox normalizeCheckbox;
+    private javax.swing.JCheckBox positionExportCheckbox;
+    private javax.swing.JRadioButton visibleOnlyRadio;
     // End of variables declaration//GEN-END:variables
-
 }

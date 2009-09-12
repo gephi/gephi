@@ -33,7 +33,7 @@ public interface ExporterUI {
 
     public void setup(Exporter exporter);
 
-    public void unsetup();
+    public void unsetup(boolean update);
 
     public boolean isMatchingExporter(Exporter exporter);
 }

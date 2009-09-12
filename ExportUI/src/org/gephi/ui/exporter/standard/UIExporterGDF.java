@@ -31,14 +31,20 @@ import org.gephi.ui.exporter.ExporterUI;
  */
 public class UIExporterGDF implements ExporterUI {
 
-    private JPanel panel;
+    private UIExporterGDFPanel panel;
+    private ExporterGDF exporterGDF;
 
     public void setup(Exporter exporter) {
-        ExporterGDF exporterGDF = (ExporterGDF) exporter;
+        exporterGDF = (ExporterGDF) exporter;
+        panel.setup(exporterGDF);
     }
 
-    public void unsetup() {
+    public void unsetup(boolean update) {
+        if(update) {
+            panel.unsetup(exporterGDF);
+        }
         panel = null;
+        exporterGDF = null;
     }
 
     public JPanel getPanel() {

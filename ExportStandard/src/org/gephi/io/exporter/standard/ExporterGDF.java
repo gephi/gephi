@@ -43,7 +43,8 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
     private ProgressTicket progressTicket;
 
     //Settings
-    private boolean uniformScale = false;
+    private boolean visibleOnlyGraph = false;
+    private boolean normalize = false;
     private boolean exportColors = true;
     private boolean exportPosition = true;
     private boolean exportAttributes = true;
@@ -94,7 +95,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
         graph.readLock();
 
         //Options
-        if (uniformScale) {
+        if (normalize) {
             calculateMinMax(graph);
         }
 
@@ -244,7 +245,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
             @Override
             public void writeData(StringBuilder builder, Node node) {
                 float size = node.getNodeData().getSize();
-                if (uniformScale) {
+                if (normalize) {
                     size = (size - minSize) / (maxSize - minSize);
                 }
                 builder.append(size);
@@ -261,7 +262,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
             @Override
             public void writeData(StringBuilder builder, Node node) {
                 float size = node.getNodeData().getSize();
-                if (uniformScale) {
+                if (normalize) {
                     size = (size - minSize) / (maxSize - minSize);
                 }
                 builder.append(size);
@@ -278,7 +279,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
             @Override
             public void writeData(StringBuilder builder, Node node) {
                 float x = node.getNodeData().getSize();
-                if (uniformScale) {
+                if (normalize) {
                     x = (x - minX) / (maxX - minX);
                 }
                 builder.append(x);
@@ -295,7 +296,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
             @Override
             public void writeData(StringBuilder builder, Node node) {
                 float y = node.getNodeData().getSize();
-                if (uniformScale) {
+                if (normalize) {
                     y = (y - minY) / (maxY - minY);
                 }
                 builder.append(y);
@@ -505,6 +506,14 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
         this.exportPosition = exportPosition;
     }
 
+    public void setNormalize(boolean normalize) {
+        this.normalize = normalize;
+    }
+
+    public void setVisibleOnlyGraph(boolean visibleOnlyGraph) {
+        this.visibleOnlyGraph = visibleOnlyGraph;
+    }
+
     public boolean isExportAttributes() {
         return exportAttributes;
     }
@@ -515,6 +524,14 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
     public boolean isExportPosition() {
         return exportPosition;
+    }
+
+    public boolean isNormalize() {
+        return normalize;
+    }
+
+    public boolean isVisibleOnlyGraph() {
+        return visibleOnlyGraph;
     }
 
     private enum DataTypeGDF {
