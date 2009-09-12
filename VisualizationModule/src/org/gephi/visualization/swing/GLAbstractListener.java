@@ -12,6 +12,7 @@ import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.config.GraphicalConfiguration;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.Lighting;
+import org.gephi.visualization.opengl.ScreenshotMaker;
 
 /**
  *
@@ -21,18 +22,20 @@ public abstract class GLAbstractListener implements GLEventListener {
 
     protected GLAutoDrawable drawable;
     protected VizConfig vizConfig;
-    protected static final GLU glu = new GLU();
+    public static final GLU glu = new GLU();
     private static final boolean DEBUG = true;
     private long startTime = 0;
     protected float fps;
     private volatile boolean resizing = false;
-    private final float viewField = 30.0f;
+    public final float viewField = 30.0f;
     public final float nearDistance = 1.0f;
     public final float farDistance = 100000f;
     private double aspectRatio = 0;
     protected DoubleBuffer projMatrix = BufferUtil.newDoubleBuffer(16);
     protected DoubleBuffer modelMatrix = BufferUtil.newDoubleBuffer(16);
     protected IntBuffer viewport = BufferUtil.newIntBuffer(4);
+    protected GraphicalConfiguration graphicalConfiguration;
+    protected ScreenshotMaker screenshotMaker;
 
     protected void initDrawable(GLAutoDrawable drawable) {
         this.drawable = drawable;
@@ -170,7 +173,7 @@ public abstract class GLAbstractListener implements GLEventListener {
     public void init(GLAutoDrawable drawable) {
         GL gl = drawable.getGL();
 
-        GraphicalConfiguration graphicalConfiguration = new GraphicalConfiguration();
+        graphicalConfiguration = new GraphicalConfiguration();
         graphicalConfiguration.checkGeneralCompatibility(gl);
 
         //Reinit viewport, to ensure reshape to perform
@@ -183,16 +186,21 @@ public abstract class GLAbstractListener implements GLEventListener {
 
     @Override
     public void display(GLAutoDrawable drawable) {
+
+        //Screenshot
+        screenshotMaker.openglSignal(drawable);
+
+        //FPS
         if (startTime == 0) {
             startTime = System.currentTimeMillis() - 1;
         }
-
         long endTime = System.currentTimeMillis();
         long tpsEcoule = endTime - startTime;
         startTime = endTime;
         fps = (int) (1000.0f / tpsEcoule);
 
         GL gl = drawable.getGL();
+
         if (vizConfig.use3d()) {
             gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
         } else {

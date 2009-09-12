@@ -21,8 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.config;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GLDrawableFactory;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
+import org.openide.windows.WindowManager;
 
 /**
  * Class dedicated to the analysis and tuning of the engine for the detected configuration
@@ -33,6 +36,8 @@ import org.openide.util.NbBundle;
 public class GraphicalConfiguration {
 
     private static boolean messageDelivered = false;
+    private boolean vboSupport = false;
+    private boolean pBufferSupport = false;
 
     public void checkGeneralCompatibility(GL gl) {
         if (messageDelivered) {
@@ -47,7 +52,6 @@ public class GraphicalConfiguration {
             String currentConfig = String.format(NbBundle.getMessage(GraphicalConfiguration.class, "graphicalConfiguration_currentConfig"), vendor, renderer, versionStr);
 
             // Check version.
-
             if (!gl.isExtensionAvailable("GL_VERSION_1_2")) {
                 String err = String.format(NbBundle.getMessage(GraphicalConfiguration.class, "graphicalConfiguration_exception"), versionStr, currentConfig);
                 throw new GraphicalConfigurationException(err);
@@ -59,7 +63,10 @@ public class GraphicalConfiguration {
                     gl.isFunctionAvailable("glBindBufferARB") &&
                     gl.isFunctionAvailable("glBufferDataARB") &&
                     gl.isFunctionAvailable("glDeleteBuffersARB");
-            boolean vboSupported = vboExtension && vboFunctions;
+            vboSupport = vboExtension && vboFunctions;
+
+            //Pbuffer
+            pBufferSupport = GLDrawableFactory.getFactory().canCreateGLPbuffer();
 
         } catch (final GraphicalConfigurationException exc) {
             messageDelivered = true;
@@ -67,12 +74,18 @@ public class GraphicalConfiguration {
 
                 @Override
                 public void run() {
-                    //JOptionPane.showMessageDialog(MainFrame.getInstance(),exc.getMessage(),"Configuration graphique",JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), exc.getMessage(), "Configuration", JOptionPane.WARNING_MESSAGE);
                     exc.printStackTrace();
                 }
             });
-
         }
+    }
 
+    public boolean isPBufferSupported() {
+        return pBufferSupport;
+    }
+
+    public boolean isVboSupported() {
+        return vboSupport;
     }
 }

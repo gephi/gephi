@@ -37,6 +37,7 @@ import org.gephi.visualization.bridge.DHNSEventBridge;
 import org.gephi.visualization.bridge.DataBridge;
 import org.gephi.visualization.bridge.EventBridge;
 import org.gephi.visualization.mode.ModeManager;
+import org.gephi.visualization.opengl.ScreenshotMaker;
 import org.gephi.visualization.opengl.text.TextManager;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.gephi.visualization.swing.StandardGraphIO;
@@ -72,6 +73,7 @@ public class VizController {
     private EventBridge eventBridge;
     private ModeManager modeManager;
     private TextManager textManager;
+    private ScreenshotMaker screenshotMaker;
 
     public void initInstances() {
         VizCommander commander = new VizCommander();
@@ -88,6 +90,7 @@ public class VizController {
         //dataBridge = new TestDataBridge();
         modeManager = new ModeManager();
         textManager = new TextManager();
+        screenshotMaker = new ScreenshotMaker();
 
         if (vizConfig.useGLJPanel()) {
             drawable = commander.createPanel();
@@ -103,6 +106,7 @@ public class VizController {
         eventBridge.initArchitecture();
         modeManager.initArchitecture();
         textManager.initArchitecture();
+        screenshotMaker.initArchitecture();
     }
 
     public GraphDrawableImpl getDrawable() {
@@ -151,5 +155,9 @@ public class VizController {
 
     public TextManager getTextManager() {
         return textManager;
+    }
+
+    public ScreenshotMaker getScreenshotMaker() {
+        return screenshotMaker;
     }
 }

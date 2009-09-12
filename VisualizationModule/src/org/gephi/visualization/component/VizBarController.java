@@ -134,7 +134,7 @@ public class VizBarController {
             screenshotButton.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    
+                    VizController.getInstance().getScreenshotMaker().takeScreenshot();
                 }
             });
             components[3] = screenshotButton;

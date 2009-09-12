@@ -26,6 +26,7 @@ import java.awt.Cursor;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import javax.media.opengl.GL;
+import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
@@ -56,6 +57,7 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
     public void initArchitecture() {
         this.engine = VizController.getInstance().getEngine();
         this.scheduler = VizController.getInstance().getScheduler();
+        this.screenshotMaker = VizController.getInstance().getScreenshotMaker();
 
         cameraLocation = vizConfig.getDefaultCameraPosition();
         cameraTarget = vizConfig.getDefaultCameraTarget();
@@ -153,6 +155,18 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
     gl.glVertex3f(1.0f, -1.0f, -1.0f);	// Bottom Right Of The Quad (Right)
     gl.glEnd();			// End Drawing The Cube
      */
+    }
+
+    public void renderScreenshot(GLAutoDrawable drawable) {
+        GL gl = drawable.getGL();
+        if (vizConfig.use3d()) {
+            gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+        } else {
+            gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+        }
+
+        scheduler.display(gl, glu);
+
     }
 
     public void display() {
