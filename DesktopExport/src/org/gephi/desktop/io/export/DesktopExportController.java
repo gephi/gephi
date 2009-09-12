@@ -81,7 +81,7 @@ public class DesktopExportController implements ExportController {
         return graphFileExporters;
     }
 
-    public void doExport(Exporter exporter, FileObject fileObject) {
+    public void doExport(Exporter exporter, FileObject fileObject, boolean visibleGraphOnly) {
         try {
 
             Workspace currentWorkspace = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace();
@@ -105,7 +105,7 @@ public class DesktopExportController implements ExportController {
         if (exporter == null) {
             throw new RuntimeException(NbBundle.getMessage(getClass(), "error_no_matching_file_importer"));
         }
-        doExport(exporter, fileObject);
+        doExport(exporter, fileObject, true);
     }
 
     private void exportText(Exporter exporter, FileObject fileObject, final Graph graph) {
@@ -126,6 +126,7 @@ public class DesktopExportController implements ExportController {
                 public void fatalError(Throwable t) {
                     NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
                     DialogDisplayer.getDefault().notify(ex);
+                    t.printStackTrace();
                 }
             };
 
@@ -170,6 +171,7 @@ public class DesktopExportController implements ExportController {
                 public void fatalError(Throwable t) {
                     NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
                     DialogDisplayer.getDefault().notify(ex);
+                    t.printStackTrace();
                 }
             };
 

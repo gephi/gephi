@@ -61,6 +61,7 @@ public class GraphFileExporterUI implements ExporterClassUI {
 
     private GraphFileExporter selectedExporter;
     private File selectedFile;
+    private boolean visibleOnlyGraph = false;
 
     public String getName() {
         return "Graph File...";
@@ -85,7 +86,7 @@ public class GraphFileExporterUI implements ExporterClassUI {
 
         //Options panel
         FlowLayout layout = new FlowLayout(FlowLayout.RIGHT);
-        final JPanel optionsPanel = new JPanel(layout);
+        JPanel optionsPanel = new JPanel(layout);
         final JButton optionsButton = new JButton(NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_optionsButton_name"));
         optionsPanel.add(optionsButton);
         optionsButton.addActionListener(new ActionListener() {
@@ -102,6 +103,13 @@ public class GraphFileExporterUI implements ExporterClassUI {
             }
         });
 
+        //Graph Settings Panel
+        final JPanel southPanel = new JPanel(new BorderLayout());
+        southPanel.add(optionsPanel, BorderLayout.NORTH);
+        GraphFileExporterUIPanel graphSettings = new GraphFileExporterUIPanel();
+        graphSettings.setVisibleOnlyGraph(visibleOnlyGraph);
+        southPanel.add(graphSettings, BorderLayout.CENTER);
+
         //Optionable file chooser
         final JFileChooser chooser = new JFileChooser(lastPath) {
 
@@ -111,9 +119,9 @@ public class GraphFileExporterUI implements ExporterClassUI {
                 Component c = dialog.getContentPane().getComponent(0);
                 if (c != null && c instanceof JComponent) {
                     Insets insets = ((JComponent) c).getInsets();
-                    optionsPanel.setBorder(BorderFactory.createEmptyBorder(insets.top, insets.left, insets.bottom, insets.right));
+                    southPanel.setBorder(BorderFactory.createEmptyBorder(insets.top, insets.left, insets.bottom, insets.right));
                 }
-                dialog.getContentPane().add(optionsPanel, BorderLayout.SOUTH);
+                dialog.getContentPane().add(southPanel, BorderLayout.SOUTH);
 
                 return dialog;
             }
@@ -181,8 +189,11 @@ public class GraphFileExporterUI implements ExporterClassUI {
             //Save last path
             NbPreferences.forModule(GraphFileExporterUI.class).put(LAST_PATH, file.getAbsolutePath());
 
+            //Save variable
+            visibleOnlyGraph = graphSettings.isVisibleOnlyGraph();
+
             //Do
-            exportController.doExport(selectedExporter, fileObject);
+            exportController.doExport(selectedExporter, fileObject, visibleOnlyGraph);
         }
     }
 

@@ -43,7 +43,6 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
     private ProgressTicket progressTicket;
 
     //Settings
-    private boolean visibleOnlyGraph = false;
     private boolean normalize = false;
     private boolean exportColors = true;
     private boolean exportPosition = true;
@@ -510,10 +509,6 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
         this.normalize = normalize;
     }
 
-    public void setVisibleOnlyGraph(boolean visibleOnlyGraph) {
-        this.visibleOnlyGraph = visibleOnlyGraph;
-    }
-
     public boolean isExportAttributes() {
         return exportAttributes;
     }
@@ -528,10 +523,6 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
     public boolean isNormalize() {
         return normalize;
-    }
-
-    public boolean isVisibleOnlyGraph() {
-        return visibleOnlyGraph;
     }
 
     private enum DataTypeGDF {

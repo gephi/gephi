@@ -30,7 +30,7 @@ import org.openide.filesystems.FileObject;
  */
 public interface ExportController {
 
-    public void doExport(Exporter exporter, FileObject fileObject);
+    public void doExport(Exporter exporter, FileObject fileObject, boolean visibleOnly);
 
     public void doExport(FileObject fileObject);
 

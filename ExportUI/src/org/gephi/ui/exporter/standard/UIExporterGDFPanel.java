@@ -34,7 +34,6 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
     }
 
     public void setup(ExporterGDF exporterGDF) {
-        graphButtonGroup.setSelected((exporterGDF.isVisibleOnlyGraph() ? visibleOnlyRadio.getModel() : fullGraphRadio.getModel()), true);
         colorsExportCheckbox.setSelected(exporterGDF.isExportColors());
         positionExportCheckbox.setSelected(exporterGDF.isExportPosition());
         attributesExportCheckbox.setSelected(exporterGDF.isExportAttributes());
@@ -42,7 +41,6 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
     }
 
     public void unsetup(ExporterGDF exporterGDF) {
-        exporterGDF.setVisibleOnlyGraph(graphButtonGroup.isSelected(visibleOnlyRadio.getModel()));
         exporterGDF.setExportAttributes(attributesExportCheckbox.isSelected());
         exporterGDF.setExportColors(colorsExportCheckbox.isSelected());
         exporterGDF.setExportPosition(positionExportCheckbox.isSelected());
@@ -58,34 +56,12 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        graphButtonGroup = new javax.swing.ButtonGroup();
-        labelGraph = new javax.swing.JLabel();
-        fullGraphRadio = new javax.swing.JRadioButton();
-        visibleOnlyRadio = new javax.swing.JRadioButton();
-        labelFullgraph = new javax.swing.JLabel();
-        labelVisibleOnly = new javax.swing.JLabel();
         labelExport = new javax.swing.JLabel();
         positionExportCheckbox = new javax.swing.JCheckBox();
         colorsExportCheckbox = new javax.swing.JCheckBox();
         attributesExportCheckbox = new javax.swing.JCheckBox();
         normalizeCheckbox = new javax.swing.JCheckBox();
         labelNormalize = new javax.swing.JLabel();
-
-        labelGraph.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.labelGraph.text")); // NOI18N
-
-        graphButtonGroup.add(fullGraphRadio);
-        fullGraphRadio.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.fullGraphRadio.text")); // NOI18N
-
-        graphButtonGroup.add(visibleOnlyRadio);
-        visibleOnlyRadio.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.visibleOnlyRadio.text")); // NOI18N
-
-        labelFullgraph.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        labelFullgraph.setForeground(new java.awt.Color(102, 102, 102));
-        labelFullgraph.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.labelFullgraph.text")); // NOI18N
-
-        labelVisibleOnly.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        labelVisibleOnly.setForeground(new java.awt.Color(102, 102, 102));
-        labelVisibleOnly.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.labelVisibleOnly.text")); // NOI18N
 
         labelExport.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.labelExport.text")); // NOI18N
 
@@ -113,39 +89,18 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(labelNormalize))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelGraph)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(visibleOnlyRadio)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(labelVisibleOnly))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(fullGraphRadio)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(labelFullgraph))))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(labelExport)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(positionExportCheckbox)
                             .addComponent(colorsExportCheckbox)
                             .addComponent(attributesExportCheckbox))))
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelGraph)
-                    .addComponent(fullGraphRadio)
-                    .addComponent(labelFullgraph))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(visibleOnlyRadio)
-                    .addComponent(labelVisibleOnly))
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelExport)
                     .addComponent(positionExportCheckbox))
@@ -163,15 +118,9 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox attributesExportCheckbox;
     private javax.swing.JCheckBox colorsExportCheckbox;
-    private javax.swing.JRadioButton fullGraphRadio;
-    private javax.swing.ButtonGroup graphButtonGroup;
     private javax.swing.JLabel labelExport;
-    private javax.swing.JLabel labelFullgraph;
-    private javax.swing.JLabel labelGraph;
     private javax.swing.JLabel labelNormalize;
-    private javax.swing.JLabel labelVisibleOnly;
     private javax.swing.JCheckBox normalizeCheckbox;
     private javax.swing.JCheckBox positionExportCheckbox;
-    private javax.swing.JRadioButton visibleOnlyRadio;
     // End of variables declaration//GEN-END:variables
 }
