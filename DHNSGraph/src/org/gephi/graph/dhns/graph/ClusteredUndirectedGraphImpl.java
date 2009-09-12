@@ -164,6 +164,12 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
         return getEdge(node1, node2) != null;
     }
 
+    //Graph
+    public boolean isDirected(Edge edge) {
+        checkEdge(edge);
+        return false;
+    }
+
     public Edge getEdge(Node node1, Node node2) {
         AbstractNode sourceNode = checkNode(node1);
         AbstractNode targetNode = checkNode(node2);

@@ -194,6 +194,17 @@ public interface Graph {
     public boolean isSelfLoop(Edge edge);
 
     /**
+     * Returns <code>true</code> if <code>edge</code> is a directed edge in the current graph. Always
+     * returns <code>true</code> when the graph is <b>directed</b> and <code>false</code> when the graph
+     * is <b>undirected</b>. In case of a <b>mixed</b> graph returns </code>Edge.isDirected()</code>.
+     * @param edge
+     * @return <code>true</code> is <code>edge</code> is directed
+     * @throws IllegalArgumentException if <code>edge</code> is <code>null</code> or adjacent nodes not
+     * legal in the graph
+     */
+    public boolean isDirected(Edge edge);
+
+    /**
      * Returns <code>true</code> if <code>node1</code> is adjacent to <code>node2</code>. Is adjacent
      * when an edge exists between <code>node1</code> and <code>node2</code>.
      * @param node1 the first node to be queried

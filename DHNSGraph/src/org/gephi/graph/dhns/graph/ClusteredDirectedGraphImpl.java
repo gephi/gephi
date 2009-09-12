@@ -237,6 +237,12 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         return isSuccessor(node1, node2) || isPredecessor(node1, node2);
     }
 
+    //Graph
+    public boolean isDirected(Edge edge) {
+        checkEdge(edge);
+        return true;
+    }
+
     //ClusteredGraph
     public EdgeIterable getInnerEdges(Node nodeGroup) {
         AbstractNode absNode = checkNode(nodeGroup);
