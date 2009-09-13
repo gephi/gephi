@@ -37,7 +37,7 @@ import org.gephi.visualization.bridge.DHNSEventBridge;
 import org.gephi.visualization.bridge.DataBridge;
 import org.gephi.visualization.bridge.EventBridge;
 import org.gephi.visualization.mode.ModeManager;
-import org.gephi.visualization.opengl.ScreenshotMaker;
+import org.gephi.visualization.screenshot.ScreenshotMaker;
 import org.gephi.visualization.opengl.text.TextManager;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.gephi.visualization.swing.StandardGraphIO;

@@ -18,8 +18,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.visualization.opengl;
+package org.gephi.visualization.screenshot;
 
+import org.gephi.visualization.opengl.*;
 import com.sun.opengl.util.FileUtil;
 import com.sun.opengl.util.ImageUtil;
 import com.sun.opengl.util.TileRenderer;
@@ -41,12 +42,15 @@ import javax.media.opengl.GLDrawableFactory;
 import javax.media.opengl.GLPbuffer;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.tools.FileObject;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.swing.GLAbstractListener;
 import org.gephi.visualization.swing.GraphDrawableImpl;
+import org.netbeans.validation.api.ui.ValidationPanel;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.windows.WindowManager;
@@ -67,8 +71,8 @@ public class ScreenshotMaker implements VizArchitecture {
 
     //Settings
     private int antiAliasing = 0;
-    private int width;
-    private int height;
+    private int width = 1024;
+    private int height = 768;
     private boolean transparentBackground = false;
     private boolean finishedMessage = true;
     private boolean askForFilePath = true;
@@ -243,5 +247,60 @@ public class ScreenshotMaker implements VizArchitecture {
         String datetime = dateFormat.format(cal.getTime());
 
         return "screenshot_" + datetime;
+    }
+
+    public void configure() {
+        ScreenshotSettingsPanel panel = new ScreenshotSettingsPanel();
+        panel.setup(this);
+        ValidationPanel validationPanel = ScreenshotSettingsPanel.createValidationPanel(panel);
+        if (validationPanel.showOkCancelDialog(NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.configure.title"))) {
+            panel.unsetup(this);
+            return;
+        }
+//        DialogDescriptor dd = new DialogDescriptor(validationPanel, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.configure.title"));
+//        Object result = DialogDisplayer.getDefault().notify(dd);
+//        if (result == NotifyDescriptor.OK_OPTION) {
+//            panel.unsetup(this);
+//        }
+    }
+
+    public int getAntiAliasing() {
+        return antiAliasing;
+    }
+
+    public void setAntiAliasing(int antiAliasing) {
+        this.antiAliasing = antiAliasing;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public boolean isAskForFilePath() {
+        return askForFilePath;
+    }
+
+    public void setAskForFilePath(boolean askForFilePath) {
+        this.askForFilePath = askForFilePath;
+    }
+
+    public boolean isTransparentBackground() {
+        return transparentBackground;
+    }
+
+    public void setTransparentBackground(boolean transparentBackground) {
+        this.transparentBackground = transparentBackground;
     }
 }

@@ -12,7 +12,7 @@ import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.config.GraphicalConfiguration;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.Lighting;
-import org.gephi.visualization.opengl.ScreenshotMaker;
+import org.gephi.visualization.screenshot.ScreenshotMaker;
 
 /**
  *

@@ -46,6 +46,9 @@ import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.text.SizeMode;
 import org.gephi.visualization.opengl.text.TextManager;
 import org.gephi.visualization.opengl.text.TextModel;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
 
@@ -128,6 +131,12 @@ public class VizBarController {
             //Screenshots
             JPopupMenu screenshotPopup = new JPopupMenu();
             JMenuItem configureScreenshotItem = new JMenuItem(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.screenshot.configure"));
+            configureScreenshotItem.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    VizController.getInstance().getScreenshotMaker().configure();
+                }
+            });
             screenshotPopup.add(configureScreenshotItem);
             final JButton screenshotButton = new JDropDownButton(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/screenshot.png")), screenshotPopup);
             screenshotButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.screenshot"));
