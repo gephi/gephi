@@ -112,49 +112,53 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
     protected void render3DScene(GL gl, GLU glu) {
 
         scheduler.display(gl, glu);
+    //renderTestCube(gl);
+    }
 
-    /* gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-    gl.glLoadIdentity();
-    glu.gluLookAt(cameraLocation[0],cameraLocation[1],cameraLocation[2],cameraTarget[0],cameraTarget[1],cameraTarget[2],0,1,0);
+    private void renderTestCube(GL gl) {
+        float cubeSize = 100f;
 
-    gl.glColor3f(0f, 0f, 0f);
+        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+        gl.glLoadIdentity();
+        glu.gluLookAt(cameraLocation[0], cameraLocation[1], cameraLocation[2], cameraTarget[0], cameraTarget[1], cameraTarget[2], 0, 1, 0);
 
-    gl.glRotatef(15.0f, 0.0f, 1.0f, 0.0f);	// Rotate The cube around the Y axis
-    gl.glRotatef(15.0f, 1.0f, 1.0f, 1.0f);
+        gl.glColor3f(0f, 0f, 0f);
 
-    gl.glBegin(GL.GL_QUADS);		// Draw The Cube Using quads
-    gl.glColor3f(0.0f, 1.0f, 0.0f);	// Color Blue
-    gl.glVertex3f(1.0f, 1.0f, -1.0f);	// Top Right Of The Quad (Top)
-    gl.glVertex3f(-1.0f, 1.0f, -1.0f);	// Top Left Of The Quad (Top)
-    gl.glVertex3f(-1.0f, 1.0f, 1.0f);	// Bottom Left Of The Quad (Top)
-    gl.glVertex3f(1.0f, 1.0f, 1.0f);	// Bottom Right Of The Quad (Top)
-    gl.glColor3f(1.0f, 0.5f, 0.0f);	// Color Orange
-    gl.glVertex3f(1.0f, -1.0f, 1.0f);	// Top Right Of The Quad (Bottom)
-    gl.glVertex3f(-1.0f, -1.0f, 1.0f);	// Top Left Of The Quad (Bottom)
-    gl.glVertex3f(-1.0f, -1.0f, -1.0f);	// Bottom Left Of The Quad (Bottom)
-    gl.glVertex3f(1.0f, -1.0f, -1.0f);	// Bottom Right Of The Quad (Bottom)
-    gl.glColor3f(1.0f, 0.0f, 0.0f);	// Color Red
-    gl.glVertex3f(1.0f, 1.0f, 1.0f);	// Top Right Of The Quad (Front)
-    gl.glVertex3f(-1.0f, 1.0f, 1.0f);	// Top Left Of The Quad (Front)
-    gl.glVertex3f(-1.0f, -1.0f, 1.0f);	// Bottom Left Of The Quad (Front)
-    gl.glVertex3f(1.0f, -1.0f, 1.0f);	// Bottom Right Of The Quad (Front)
-    gl.glColor3f(1.0f, 1.0f, 0.0f);	// Color Yellow
-    gl.glVertex3f(1.0f, -1.0f, -1.0f);	// Top Right Of The Quad (Back)
-    gl.glVertex3f(-1.0f, -1.0f, -1.0f);	// Top Left Of The Quad (Back)
-    gl.glVertex3f(-1.0f, 1.0f, -1.0f);	// Bottom Left Of The Quad (Back)
-    gl.glVertex3f(1.0f, 1.0f, -1.0f);	// Bottom Right Of The Quad (Back)
-    gl.glColor3f(0.0f, 0.0f, 1.0f);	// Color Blue
-    gl.glVertex3f(-1.0f, 1.0f, 1.0f);	// Top Right Of The Quad (Left)
-    gl.glVertex3f(-1.0f, 1.0f, -1.0f);	// Top Left Of The Quad (Left)
-    gl.glVertex3f(-1.0f, -1.0f, -1.0f);	// Bottom Left Of The Quad (Left)
-    gl.glVertex3f(-1.0f, -1.0f, 1.0f);	// Bottom Right Of The Quad (Left)
-    gl.glColor3f(1.0f, 0.0f, 1.0f);	// Color Violet
-    gl.glVertex3f(1.0f, 1.0f, -1.0f);	// Top Right Of The Quad (Right)
-    gl.glVertex3f(1.0f, 1.0f, 1.0f);	// Top Left Of The Quad (Right)
-    gl.glVertex3f(1.0f, -1.0f, 1.0f);	// Bottom Left Of The Quad (Right)
-    gl.glVertex3f(1.0f, -1.0f, -1.0f);	// Bottom Right Of The Quad (Right)
-    gl.glEnd();			// End Drawing The Cube
-     */
+        gl.glRotatef(15.0f, 0.0f, 1.0f, 0.0f);	// Rotate The cube around the Y axis
+        gl.glRotatef(15.0f, 1.0f, 1.0f, 1.0f);
+
+        gl.glBegin(GL.GL_QUADS);		// Draw The Cube Using quads
+        gl.glColor3f(0.0f, 1.0f, 0.0f);	// Color Blue
+        gl.glVertex3f(cubeSize, cubeSize, -cubeSize);	// Top Right Of The Quad (Top)
+        gl.glVertex3f(-cubeSize, cubeSize, -cubeSize);	// Top Left Of The Quad (Top)
+        gl.glVertex3f(-cubeSize, cubeSize, cubeSize);	// Bottom Left Of The Quad (Top)
+        gl.glVertex3f(cubeSize, cubeSize, 1.0f);	// Bottom Right Of The Quad (Top)
+        gl.glColor3f(1.0f, 0.5f, 0.0f);	// Color Orange
+        gl.glVertex3f(cubeSize, -cubeSize, cubeSize);	// Top Right Of The Quad (Bottom)
+        gl.glVertex3f(-cubeSize, -cubeSize, cubeSize);	// Top Left Of The Quad (Bottom)
+        gl.glVertex3f(-cubeSize, -cubeSize, -cubeSize);	// Bottom Left Of The Quad (Bottom)
+        gl.glVertex3f(cubeSize, -cubeSize, -cubeSize);	// Bottom Right Of The Quad (Bottom)
+        gl.glColor3f(1.0f, 0.0f, 0.0f);	// Color Red
+        gl.glVertex3f(cubeSize, cubeSize, cubeSize);	// Top Right Of The Quad (Front)
+        gl.glVertex3f(-cubeSize, cubeSize, cubeSize);	// Top Left Of The Quad (Front)
+        gl.glVertex3f(-cubeSize, -cubeSize, cubeSize);	// Bottom Left Of The Quad (Front)
+        gl.glVertex3f(cubeSize, -cubeSize, cubeSize);	// Bottom Right Of The Quad (Front)
+        gl.glColor3f(1.0f, 1.0f, 0.0f);	// Color Yellow
+        gl.glVertex3f(cubeSize, -cubeSize, -cubeSize);	// Top Right Of The Quad (Back)
+        gl.glVertex3f(-cubeSize, -cubeSize, -cubeSize);	// Top Left Of The Quad (Back)
+        gl.glVertex3f(-cubeSize, cubeSize, -cubeSize);	// Bottom Left Of The Quad (Back)
+        gl.glVertex3f(cubeSize, cubeSize, -cubeSize);	// Bottom Right Of The Quad (Back)
+        gl.glColor3f(0.0f, 0.0f, 1.0f);	// Color Blue
+        gl.glVertex3f(-cubeSize, cubeSize, cubeSize);	// Top Right Of The Quad (Left)
+        gl.glVertex3f(-cubeSize, cubeSize, -cubeSize);	// Top Left Of The Quad (Left)
+        gl.glVertex3f(-cubeSize, -cubeSize, -cubeSize);	// Bottom Left Of The Quad (Left)
+        gl.glVertex3f(-cubeSize, -cubeSize, cubeSize);	// Bottom Right Of The Quad (Left)
+        gl.glColor3f(1.0f, 0.0f, 1.0f);	// Color Violet
+        gl.glVertex3f(cubeSize, cubeSize, -cubeSize);	// Top Right Of The Quad (Right)
+        gl.glVertex3f(cubeSize, cubeSize, cubeSize);	// Top Left Of The Quad (Right)
+        gl.glVertex3f(cubeSize, -cubeSize, cubeSize);	// Bottom Left Of The Quad (Right)
+        gl.glVertex3f(cubeSize, -cubeSize, -cubeSize);	// Bottom Right Of The Quad (Right)
+        gl.glEnd();			// End Drawing The Cube
     }
 
     public void renderScreenshot(GLAutoDrawable drawable) {
@@ -164,8 +168,8 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
         } else {
             gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         }
-        //gl.glReadBuffer(GL.GL_FRONT);
-        scheduler.display(gl, glu);
+        setCameraPosition(gl, glu);
+        engine.display(gl, glu);
     }
 
     public void display() {

@@ -50,6 +50,8 @@ import org.gephi.visualization.selection.Rectangle;
 public class CompatibilityEngine extends AbstractEngine {
 
     private CompatibilityScheduler scheduler;
+    private long markTime = 0;
+    private long markTime2 = 0;
 
     //User config
     protected CompatibilityModelClass[] modelClasses;
@@ -209,7 +211,7 @@ public class CompatibilityEngine extends AbstractEngine {
             setViewportPosition(obj);
         }
 
-        long startTime = System.currentTimeMillis();
+        markTime++;
 
         CompatibilityModelClass edgeClass = modelClasses[AbstractEngine.CLASS_EDGE];
         CompatibilityModelClass nodeClass = modelClasses[AbstractEngine.CLASS_NODE];
@@ -222,9 +224,9 @@ public class CompatibilityEngine extends AbstractEngine {
             for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_POTATO); itr.hasNext();) {
                 ModelImpl obj = itr.next();
 
-                if (obj.markTime != startTime) {
+                if (obj.markTime != markTime) {
                     obj.display(gl, glu);
-                    obj.markTime = startTime;
+                    obj.markTime = markTime;
                 }
 
             }
@@ -238,9 +240,9 @@ public class CompatibilityEngine extends AbstractEngine {
                 ModelImpl obj = itr.next();
                 //Renderable renderable = obj.getObj();
 
-                if (obj.markTime != startTime) {
+                if (obj.markTime != markTime) {
                     obj.display(gl, glu);
-                    obj.markTime = startTime;
+                    obj.markTime = markTime;
                 }
 
             }
@@ -252,9 +254,9 @@ public class CompatibilityEngine extends AbstractEngine {
             arrowClass.beforeDisplay(gl, glu);
             for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_ARROW); itr.hasNext();) {
                 ModelImpl obj = itr.next();
-                if (obj.markTime != startTime) {
+                if (obj.markTime != markTime) {
                     obj.display(gl, glu);
-                    obj.markTime = startTime;
+                    obj.markTime = markTime;
                 }
             }
             arrowClass.afterDisplay(gl, glu);
@@ -265,9 +267,9 @@ public class CompatibilityEngine extends AbstractEngine {
             nodeClass.beforeDisplay(gl, glu);
             for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
                 ModelImpl obj = itr.next();
-                if (obj.markTime != startTime) {
+                if (obj.markTime != markTime) {
                     obj.display(gl, glu);
-                    obj.markTime = startTime;
+                    obj.markTime = markTime;
                 }
             }
             nodeClass.afterDisplay(gl, glu);
@@ -275,28 +277,28 @@ public class CompatibilityEngine extends AbstractEngine {
 
         //Labels
         if (vizConfig.isShowNodeLabels() || vizConfig.isShowEdgeLabels()) {
-            startTime -= 1;
+            markTime++;
             textManager.beginRendering();
             if (nodeClass.isEnabled() && vizConfig.isShowNodeLabels()) {
                 textManager.defaultNodeColor();
                 if (textManager.isSelectedOnly()) {
                     for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
                         ModelImpl obj = itr.next();
-                        if (obj.markTime != startTime) {
+                        if (obj.markTime != markTime) {
                             if ((obj.isSelected() || obj.isHighlight()) && obj.getObj().isLabelVisible()) {
                                 textManager.drawText(obj);
                             }
-                            obj.markTime = startTime;
+                            obj.markTime = markTime;
                         }
                     }
                 } else {
                     for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
                         ModelImpl obj = itr.next();
-                        if (obj.markTime != startTime) {
+                        if (obj.markTime != markTime) {
                             //if (obj.getObj().isLabelVisible()) {
                             textManager.drawText(obj);
                             //}
-                            obj.markTime = startTime;
+                            obj.markTime = markTime;
                         }
                     }
                 }
@@ -307,21 +309,21 @@ public class CompatibilityEngine extends AbstractEngine {
                 if (textManager.isSelectedOnly()) {
                     for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
                         ModelImpl obj = itr.next();
-                        if (obj.markTime != startTime) {
+                        if (obj.markTime != markTime) {
                             if ((obj.isSelected() || obj.isHighlight()) && obj.getObj().isLabelVisible()) {
                                 textManager.drawText(obj);
                             }
-                            obj.markTime = startTime;
+                            obj.markTime = markTime;
                         }
                     }
                 } else {
                     for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
                         ModelImpl obj = itr.next();
-                        if (obj.markTime != startTime) {
+                        if (obj.markTime != markTime) {
                             //if (obj.getObj().isLabelVisible()) {
                             textManager.drawText(obj);
                             //}
-                            obj.markTime = startTime;
+                            obj.markTime = markTime;
                         }
                     }
                 }
@@ -350,6 +352,11 @@ public class CompatibilityEngine extends AbstractEngine {
         scheduler.cameraMoved.set(true);
         scheduler.mouseMoved.set(true);
         lifeCycle.setInited();
+    }
+
+    @Override
+    public void initScreenshot(GL gl, GLU glu) {
+        initDisplayLists(gl, glu);
     }
 
     @Override
@@ -422,7 +429,7 @@ public class CompatibilityEngine extends AbstractEngine {
             unSelectedObjects = new ArrayList<ModelImpl>();
         }
 
-        long markTime = System.currentTimeMillis();
+        markTime2++;
         int i = 0;
         boolean someSelection = false;
         boolean forceUnselect = false;
@@ -442,7 +449,7 @@ public class CompatibilityEngine extends AbstractEngine {
                         }
                         selectedObjects[i].add(obj);
                     }
-                    obj.selectionMark = markTime;
+                    obj.selectionMark = markTime2;
                 } else if (currentSelectionArea.unselect(obj.getObj())) {
                     if (forceUnselect) {
                         obj.setAutoSelect(false);
@@ -454,7 +461,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
             for (Iterator<ModelImpl> itr = selectedObjects[i].iterator(); itr.hasNext();) {
                 ModelImpl o = itr.next();
-                if (o.selectionMark != markTime) {
+                if (o.selectionMark != markTime2) {
                     itr.remove();
                     o.setSelected(false);
                 }

@@ -35,6 +35,7 @@ import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLContext;
 import javax.media.opengl.GLDrawableFactory;
 import javax.media.opengl.GLPbuffer;
+import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.swing.GLAbstractListener;
@@ -47,10 +48,10 @@ import org.gephi.visualization.swing.GraphDrawableImpl;
 public class ScreenshotMaker implements VizArchitecture {
 
     private GraphDrawableImpl drawable;
-    private int antiAliasing = 2;
+    private int antiAliasing = 0;
     private int width;
     private int height;
-    private boolean transparentBackground;
+    private boolean transparentBackground = false;
     private AbstractEngine engine;
     private File file;
 
@@ -63,8 +64,8 @@ public class ScreenshotMaker implements VizArchitecture {
     }
 
     public void takeScreenshot() {
-        this.width = 2048;
-        this.height = 2048;
+        this.width = 1024;
+        this.height = 1024;
 
         this.file = new File("test.png");
 
@@ -109,7 +110,7 @@ public class ScreenshotMaker implements VizArchitecture {
         tileRenderer.trPerspective(drawable.viewField, (float) imageWidth / (float) imageHeight, drawable.nearDistance, drawable.farDistance);
 
         //Get gl
-        GLContext oldContext = GLContext.getCurrent();
+        //GLContext oldContext = GLContext.getCurrent();
         GLContext context = pbuffer.getContext();
         if (context.makeCurrent() == GLContext.CONTEXT_NOT_CURRENT) {
             throw new RuntimeException("Error making pbuffer's context current");
@@ -120,13 +121,12 @@ public class ScreenshotMaker implements VizArchitecture {
 
         //Init
         drawable.initConfig(gl);
-        engine.initEngine(gl, GLAbstractListener.glu);
+        engine.initScreenshot(gl, GLAbstractListener.glu);
 
         //Render in buffer
         do {
             tileRenderer.beginTile(gl);
             drawable.renderScreenshot(pbuffer);
-        //drawable.display(pbuffer);
         } while (tileRenderer.endTile(gl));
 
         //Clean

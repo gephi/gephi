@@ -38,7 +38,7 @@ public class VizConfig {
         DISPLAY_ALL, DISPLAY_NODES_ONLY, DISPLAY_NODES_EDGES, DISPLAY_ALPHA
     }
     private int antialiasing = 4;
-    private boolean use3d = false;
+    private boolean use3d = true;
     private boolean lineSmooth = false;
     private boolean lineSmoothNicest = false;
     private boolean pointSmooth = false;
@@ -343,6 +343,7 @@ public class VizConfig {
         this.showNodeLabels = showNodeLabels;
         fireProperyChange("showLabels", null, showEdges);
     }
+
     public void setShowArrows(boolean showArrows) {
         this.showArrows = showArrows;
         fireProperyChange("showArrows", null, showArrows);

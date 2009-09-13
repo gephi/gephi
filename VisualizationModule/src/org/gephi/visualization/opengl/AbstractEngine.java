@@ -115,6 +115,8 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public abstract void initEngine(GL gl, GLU glu);
 
+    public abstract void initScreenshot(GL gl, GLU glu);
+
     public abstract void cameraHasBeenMoved(GL gl, GLU glu);
 
     public abstract void mouseMove();
