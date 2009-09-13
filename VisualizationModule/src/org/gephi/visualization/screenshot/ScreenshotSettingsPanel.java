@@ -50,7 +50,7 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
     }
 
     public void setup(final ScreenshotMaker screenshotMaker) {
-        autoSaveCheckBox.setSelected(!screenshotMaker.isAskForFilePath());
+        autoSaveCheckBox.setSelected(screenshotMaker.isAutoSave());
         selectDirectoryButton.setEnabled(autoSaveCheckBox.isSelected());
         widthTextField.setText(String.valueOf(screenshotMaker.getWidth()));
         heightTextField.setText(String.valueOf(screenshotMaker.getHeight()));
@@ -89,7 +89,7 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
     }
 
     public void unsetup(ScreenshotMaker screenshotMaker) {
-        screenshotMaker.setAskForFilePath(!autoSaveCheckBox.isSelected());
+        screenshotMaker.setAutoSave(autoSaveCheckBox.isSelected());
         screenshotMaker.setWidth(Integer.parseInt(widthTextField.getText()));
         screenshotMaker.setHeight(Integer.parseInt(heightTextField.getText()));
         switch (antiAliasingCombo.getSelectedIndex()) {
@@ -192,7 +192,7 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(antiAliasingCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(transparentBackgroundCheckBox))
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         imagePanelLayout.setVerticalGroup(
             imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -233,13 +233,12 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(imagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(autoSaveCheckBox)
-                    .addComponent(selectDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(selectDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

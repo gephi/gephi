@@ -61,18 +61,25 @@ public class ScreenshotMaker implements VizArchitecture {
     //Const
     private final String LAST_PATH = "ScreenshotMaker_Last_Path";
     private final String LAST_PATH_DEFAULT = "ScreenshotMaker_Last_Path_Default";
+    private final String ANTIALIASING_DEFAULT = "ScreenshotMaker_Antialiasing_Default";
+    private final String WIDTH_DEFAULT = "ScreenshotMaker_Width_Default";
+    private final String HEIGHT_DEFAULT = "ScreenshotMaker_Height_Default";
+    private final String TRANSPARENT_BACKGROUND_DEFAULT = "ScreenshotMaker_TransparentBackground_Default";
+    private final String AUTOSAVE_DEFAULT = "ScreenshotMaker_Autosave_Default";
+    private final String SHOW_MESSAGE = "ScreenshotMaker_Show_Message";
 
     //Architecture
     private GraphDrawableImpl drawable;
     private AbstractEngine engine;
 
     //Settings
-    private int antiAliasing = 0;
+    private int antiAliasing = 2;
     private int width = 1024;
     private int height = 768;
     private boolean transparentBackground = false;
     private boolean finishedMessage = true;
-    private boolean askForFilePath = true;
+    private boolean autoSave = false;
+    private String defaultDirectory;
 
     //Running
     private File file;
@@ -80,17 +87,25 @@ public class ScreenshotMaker implements VizArchitecture {
     //State
     private boolean takeTicket = false;
 
+    public ScreenshotMaker() {
+
+        //Preferences
+        String lastPathDefault = NbPreferences.forModule(ScreenshotMaker.class).get(LAST_PATH_DEFAULT, null);
+        defaultDirectory = NbPreferences.forModule(ScreenshotMaker.class).get(LAST_PATH, lastPathDefault);
+        antiAliasing = NbPreferences.forModule(ScreenshotMaker.class).getInt(ANTIALIASING_DEFAULT, antiAliasing);
+        width = NbPreferences.forModule(ScreenshotMaker.class).getInt(WIDTH_DEFAULT, width);
+        height = NbPreferences.forModule(ScreenshotMaker.class).getInt(HEIGHT_DEFAULT, height);
+        transparentBackground = NbPreferences.forModule(ScreenshotMaker.class).getBoolean(TRANSPARENT_BACKGROUND_DEFAULT, transparentBackground);
+        autoSave = NbPreferences.forModule(ScreenshotMaker.class).getBoolean(AUTOSAVE_DEFAULT, autoSave);
+        finishedMessage = NbPreferences.forModule(ScreenshotMaker.class).getBoolean(SHOW_MESSAGE, finishedMessage);
+    }
+
     public void initArchitecture() {
         drawable = VizController.getInstance().getDrawable();
         engine = VizController.getInstance().getEngine();
     }
 
     public void takeScreenshot() {
-        this.width = 1024;
-        this.height = 1024;
-
-        this.file = new File("test.png");
-
         takeTicket = true;
     }
 
@@ -179,7 +194,7 @@ public class ScreenshotMaker implements VizArchitecture {
     }
 
     private void writeImage(BufferedImage image) throws Exception {
-        if (askForFilePath) {
+        if (!autoSave) {
             //Get last directory
             String lastPathDefault = NbPreferences.forModule(ScreenshotMaker.class).get(LAST_PATH_DEFAULT, null);
             String lastPath = NbPreferences.forModule(ScreenshotMaker.class).get(LAST_PATH, lastPathDefault);
@@ -192,16 +207,20 @@ public class ScreenshotMaker implements VizArchitecture {
             File selectedFile = new File(chooser.getCurrentDirectory(), getDefaultFileName() + ".png");
             chooser.setSelectedFile(selectedFile);
             int returnFile = chooser.showSaveDialog(null);
-            if (returnFile == JFileChooser.APPROVE_OPTION) {
-                file = chooser.getSelectedFile();
-
-                if (!file.getPath().endsWith(".png")) {
-                    file = new File(file.getPath() + ".png");
-                }
-
-                //Save last path
-                NbPreferences.forModule(ScreenshotMaker.class).put(LAST_PATH, file.getAbsolutePath());
+            if (returnFile != JFileChooser.APPROVE_OPTION) {
+                return;
             }
+            file = chooser.getSelectedFile();
+
+            if (!file.getPath().endsWith(".png")) {
+                file = new File(file.getPath() + ".png");
+            }
+
+            //Save last path
+            NbPreferences.forModule(ScreenshotMaker.class).put(LAST_PATH, file.getAbsolutePath());
+
+        } else {
+            file = new File(defaultDirectory, getDefaultFileName() + ".png");
         }
         if (!ImageIO.write(image, FileUtil.getFileSuffix(file), file)) {
             throw new IOException("Unsupported file format");
@@ -285,12 +304,12 @@ public class ScreenshotMaker implements VizArchitecture {
         this.height = height;
     }
 
-    public boolean isAskForFilePath() {
-        return askForFilePath;
+    public boolean isAutoSave() {
+        return autoSave;
     }
 
-    public void setAskForFilePath(boolean askForFilePath) {
-        this.askForFilePath = askForFilePath;
+    public void setAutoSave(boolean autoSave) {
+        this.autoSave = autoSave;
     }
 
     public boolean isTransparentBackground() {
@@ -301,22 +320,14 @@ public class ScreenshotMaker implements VizArchitecture {
         this.transparentBackground = transparentBackground;
     }
 
-    public File getDefaultDirectory() {
-        String lastPathDefault = NbPreferences.forModule(ScreenshotMaker.class).get(LAST_PATH_DEFAULT, null);
-        String lastPath = NbPreferences.forModule(ScreenshotMaker.class).get(LAST_PATH, lastPathDefault);
-        File directory = null;
-        if (lastPath != null) {
-            directory = new File(lastPath);
-            if (directory.isFile()) {
-                directory = directory.getParentFile();
-            }
-        }
-        return directory;
+    public String getDefaultDirectory() {
+        return defaultDirectory;
     }
 
     public void setDefaultDirectory(File directory) {
         if (directory != null && directory.exists()) {
-            NbPreferences.forModule(ScreenshotMaker.class).put(LAST_PATH, directory.getAbsolutePath());
+            defaultDirectory = directory.getAbsolutePath();
+            NbPreferences.forModule(ScreenshotMaker.class).put(LAST_PATH, defaultDirectory);
         }
     }
 }
