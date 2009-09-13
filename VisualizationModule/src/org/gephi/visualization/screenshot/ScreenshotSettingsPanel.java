@@ -82,7 +82,7 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 int result = fileChooser.showOpenDialog(WindowManager.getDefault().getMainWindow());
                 if (result == JFileChooser.APPROVE_OPTION) {
-                    screenshotMaker.setDefaultDirectory(fileChooser.getCurrentDirectory());
+                    screenshotMaker.setDefaultDirectory(fileChooser.getSelectedFile());
                 }
             }
         });

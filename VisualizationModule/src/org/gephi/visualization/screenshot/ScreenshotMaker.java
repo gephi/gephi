@@ -217,12 +217,17 @@ public class ScreenshotMaker implements VizArchitecture {
             }
 
             //Save last path
-            NbPreferences.forModule(ScreenshotMaker.class).put(LAST_PATH, file.getAbsolutePath());
+            defaultDirectory = file.getParentFile().getAbsolutePath();
+            NbPreferences.forModule(ScreenshotMaker.class).put(LAST_PATH, defaultDirectory);
 
         } else {
             file = new File(defaultDirectory, getDefaultFileName() + ".png");
         }
-        if (!ImageIO.write(image, FileUtil.getFileSuffix(file), file)) {
+        String format = "png";
+        if (file != null) {
+            format = FileUtil.getFileSuffix(file);
+        }
+        if (!ImageIO.write(image, format, file)) {
             throw new IOException("Unsupported file format");
         }
     }
@@ -249,7 +254,7 @@ public class ScreenshotMaker implements VizArchitecture {
 
     private void afterTaking() {
         WindowManager.getDefault().getMainWindow().setCursor(Cursor.getDefaultCursor());
-        if (finishedMessage) {
+        if (finishedMessage && file != null) {
             String msg = NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.message", file.getName());
             JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.title"), JOptionPane.INFORMATION_MESSAGE);
         }
