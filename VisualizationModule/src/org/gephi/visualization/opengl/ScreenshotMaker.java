@@ -29,6 +29,9 @@ import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
@@ -36,12 +39,16 @@ import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLContext;
 import javax.media.opengl.GLDrawableFactory;
 import javax.media.opengl.GLPbuffer;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.tools.FileObject;
+import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.swing.GLAbstractListener;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 import org.openide.windows.WindowManager;
 
 /**
@@ -49,6 +56,10 @@ import org.openide.windows.WindowManager;
  * @author Mathieu Bastian
  */
 public class ScreenshotMaker implements VizArchitecture {
+
+    //Const
+    private final String LAST_PATH = "ScreenshotMaker_Last_Path";
+    private final String LAST_PATH_DEFAULT = "ScreenshotMaker_Last_Path_Default";
 
     //Architecture
     private GraphDrawableImpl drawable;
@@ -149,24 +160,48 @@ public class ScreenshotMaker implements VizArchitecture {
         ImageUtil.flipImageVertically(image);
         writeImage(image);
 
-        /*Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("png");
-        if (iter.hasNext()) {
-        ImageWriter writer = iter.next();
-        ImageWriteParam iwp = writer.getDefaultWriteParam();
-        //iwp.setCompressionType("DEFAULT");
-        //iwp.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
-        //iwp.setCompressionQuality((int)(9*pngCompresssion));
-        FileImageOutputStream output = new FileImageOutputStream(file);
-        writer.setOutput(output);
-        IIOImage img = new IIOImage(image, null, null);
-        writer.write(null, img, iwp);
-        writer.dispose();
-        }*/
+    /*Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("png");
+    if (iter.hasNext()) {
+    ImageWriter writer = iter.next();
+    ImageWriteParam iwp = writer.getDefaultWriteParam();
+    //iwp.setCompressionType("DEFAULT");
+    //iwp.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
+    //iwp.setCompressionQuality((int)(9*pngCompresssion));
+    FileImageOutputStream output = new FileImageOutputStream(file);
+    writer.setOutput(output);
+    IIOImage img = new IIOImage(image, null, null);
+    writer.write(null, img, iwp);
+    writer.dispose();
+    }*/
 
-        //oldContext.makeCurrent();
+    //oldContext.makeCurrent();
     }
 
     private void writeImage(BufferedImage image) throws Exception {
+        if (askForFilePath) {
+            //Get last directory
+            String lastPathDefault = NbPreferences.forModule(ScreenshotMaker.class).get(LAST_PATH_DEFAULT, null);
+            String lastPath = NbPreferences.forModule(ScreenshotMaker.class).get(LAST_PATH, lastPathDefault);
+            final JFileChooser chooser = new JFileChooser(lastPath);
+            chooser.setAcceptAllFileFilterUsed(false);
+            chooser.setDialogTitle(NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.filechooser.title"));
+            DialogFileFilter dialogFileFilter = new DialogFileFilter(NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.filechooser.pngDescription"));
+            dialogFileFilter.addExtension("png");
+            chooser.addChoosableFileFilter(dialogFileFilter);
+            File selectedFile = new File(chooser.getCurrentDirectory(), getDefaultFileName() + ".png");
+            chooser.setSelectedFile(selectedFile);
+            int returnFile = chooser.showSaveDialog(null);
+            if (returnFile == JFileChooser.APPROVE_OPTION) {
+                file = chooser.getSelectedFile();
+
+                if (!file.getPath().endsWith(".png")) {
+                    file = new File(file.getPath() + ".png");
+                }
+
+                //Save last path
+                NbPreferences.forModule(ScreenshotMaker.class).put(LAST_PATH, file.getAbsolutePath());
+            }
+        }
         if (!ImageIO.write(image, FileUtil.getFileSuffix(file), file)) {
             throw new IOException("Unsupported file format");
         }
@@ -198,5 +233,15 @@ public class ScreenshotMaker implements VizArchitecture {
             String msg = NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.message", file.getName());
             JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.title"), JOptionPane.INFORMATION_MESSAGE);
         }
+    }
+    private static final String DATE_FORMAT_NOW = "HHmmss";
+
+    private String getDefaultFileName() {
+
+        Calendar cal = Calendar.getInstance();
+        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_NOW);
+        String datetime = dateFormat.format(cal.getTime());
+
+        return "screenshot_" + datetime;
     }
 }
