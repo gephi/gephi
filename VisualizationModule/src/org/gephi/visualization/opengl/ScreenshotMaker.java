@@ -23,6 +23,7 @@ package org.gephi.visualization.opengl;
 import com.sun.opengl.util.FileUtil;
 import com.sun.opengl.util.ImageUtil;
 import com.sun.opengl.util.TileRenderer;
+import java.awt.Cursor;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
@@ -35,11 +36,13 @@ import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLContext;
 import javax.media.opengl.GLDrawableFactory;
 import javax.media.opengl.GLPbuffer;
-import javax.media.opengl.glu.GLU;
+import javax.swing.JOptionPane;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.swing.GLAbstractListener;
 import org.gephi.visualization.swing.GraphDrawableImpl;
+import org.openide.util.NbBundle;
+import org.openide.windows.WindowManager;
 
 /**
  *
@@ -47,12 +50,19 @@ import org.gephi.visualization.swing.GraphDrawableImpl;
  */
 public class ScreenshotMaker implements VizArchitecture {
 
+    //Architecture
     private GraphDrawableImpl drawable;
+    private AbstractEngine engine;
+
+    //Settings
     private int antiAliasing = 0;
     private int width;
     private int height;
     private boolean transparentBackground = false;
-    private AbstractEngine engine;
+    private boolean finishedMessage = true;
+    private boolean askForFilePath = true;
+
+    //Running
     private File file;
 
     //State
@@ -73,6 +83,8 @@ public class ScreenshotMaker implements VizArchitecture {
     }
 
     private void take(File file) throws Exception {
+
+        //System.out.println("Take Screenshot to " + file.getName());
 
         // Fix the image size for now
         int tileWidth = width / 16;
@@ -135,36 +147,56 @@ public class ScreenshotMaker implements VizArchitecture {
 
         //Write image
         ImageUtil.flipImageVertically(image);
+        writeImage(image);
+
+        /*Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("png");
+        if (iter.hasNext()) {
+        ImageWriter writer = iter.next();
+        ImageWriteParam iwp = writer.getDefaultWriteParam();
+        //iwp.setCompressionType("DEFAULT");
+        //iwp.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
+        //iwp.setCompressionQuality((int)(9*pngCompresssion));
+        FileImageOutputStream output = new FileImageOutputStream(file);
+        writer.setOutput(output);
+        IIOImage img = new IIOImage(image, null, null);
+        writer.write(null, img, iwp);
+        writer.dispose();
+        }*/
+
+        //oldContext.makeCurrent();
+    }
+
+    private void writeImage(BufferedImage image) throws Exception {
         if (!ImageIO.write(image, FileUtil.getFileSuffix(file), file)) {
             throw new IOException("Unsupported file format");
         }
-    /*Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("png");
-    if (iter.hasNext()) {
-    ImageWriter writer = iter.next();
-    ImageWriteParam iwp = writer.getDefaultWriteParam();
-    //iwp.setCompressionType("DEFAULT");
-    //iwp.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
-    //iwp.setCompressionQuality((int)(9*pngCompresssion));
-    FileImageOutputStream output = new FileImageOutputStream(file);
-    writer.setOutput(output);
-    IIOImage img = new IIOImage(image, null, null);
-    writer.write(null, img, iwp);
-    writer.dispose();
-    }*/
-
-    //oldContext.makeCurrent();
     }
 
     public void openglSignal(GLAutoDrawable drawable) {
         if (takeTicket) {
+            takeTicket = false;
             try {
+                beforeTaking();
                 take(file);
-                file = null;
                 drawable.getContext().makeCurrent();
+                afterTaking();
+                file = null;
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            takeTicket = false;
+
+        }
+    }
+
+    private void beforeTaking() {
+        WindowManager.getDefault().getMainWindow().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+    }
+
+    private void afterTaking() {
+        WindowManager.getDefault().getMainWindow().setCursor(Cursor.getDefaultCursor());
+        if (finishedMessage) {
+            String msg = NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.message", file.getName());
+            JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.title"), JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }
