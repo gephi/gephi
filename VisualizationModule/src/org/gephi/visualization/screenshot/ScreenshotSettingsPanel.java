@@ -18,13 +18,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.visualization.screenshot;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JFileChooser;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.validation.Multiple4NumberValidator;
 import org.netbeans.validation.api.builtin.Validators;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
+import org.openide.windows.WindowManager;
 
 /**
  *
@@ -35,21 +40,28 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
     /** Creates new form ScreenshotSettingsPanel */
     public ScreenshotSettingsPanel() {
         initComponents();
+
+        autoSaveCheckBox.addChangeListener(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                selectDirectoryButton.setEnabled(autoSaveCheckBox.isSelected());
+            }
+        });
     }
 
-    public void setup(ScreenshotMaker screenshotMaker) {
+    public void setup(final ScreenshotMaker screenshotMaker) {
         autoSaveCheckBox.setSelected(!screenshotMaker.isAskForFilePath());
         selectDirectoryButton.setEnabled(autoSaveCheckBox.isSelected());
         widthTextField.setText(String.valueOf(screenshotMaker.getWidth()));
         heightTextField.setText(String.valueOf(screenshotMaker.getHeight()));
-        switch(screenshotMaker.getAntiAliasing()) {
+        switch (screenshotMaker.getAntiAliasing()) {
             case 0:
                 antiAliasingCombo.setSelectedIndex(0);
                 break;
             case 2:
                 antiAliasingCombo.setSelectedIndex(1);
                 break;
-            case 4 :
+            case 4:
                 antiAliasingCombo.setSelectedIndex(2);
                 break;
             case 8:
@@ -63,20 +75,31 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
                 break;
         }
         transparentBackgroundCheckBox.setSelected(screenshotMaker.isTransparentBackground());
+        selectDirectoryButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser(screenshotMaker.getDefaultDirectory());
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int result = fileChooser.showOpenDialog(WindowManager.getDefault().getMainWindow());
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    screenshotMaker.setDefaultDirectory(fileChooser.getCurrentDirectory());
+                }
+            }
+        });
     }
 
     public void unsetup(ScreenshotMaker screenshotMaker) {
         screenshotMaker.setAskForFilePath(!autoSaveCheckBox.isSelected());
         screenshotMaker.setWidth(Integer.parseInt(widthTextField.getText()));
         screenshotMaker.setHeight(Integer.parseInt(heightTextField.getText()));
-        switch(antiAliasingCombo.getSelectedIndex()) {
+        switch (antiAliasingCombo.getSelectedIndex()) {
             case 0:
                 screenshotMaker.setAntiAliasing(0);
                 break;
             case 1:
                 screenshotMaker.setAntiAliasing(2);
                 break;
-            case 2 :
+            case 2:
                 screenshotMaker.setAntiAliasing(4);
                 break;
             case 3:
@@ -108,6 +131,7 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
         //Edge field
         group.add(innerPanel.heightTextField, Validators.REQUIRE_NON_EMPTY_STRING,
                 new Multiple4NumberValidator());
+
 
         return validationPanel;
     }
@@ -218,8 +242,6 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox antiAliasingCombo;
     private javax.swing.JCheckBox autoSaveCheckBox;
@@ -232,5 +254,4 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox transparentBackgroundCheckBox;
     private javax.swing.JTextField widthTextField;
     // End of variables declaration//GEN-END:variables
-
 }

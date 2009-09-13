@@ -48,9 +48,6 @@ import org.gephi.visualization.VizController;
 import org.gephi.visualization.swing.GLAbstractListener;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.netbeans.validation.api.ui.ValidationPanel;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.windows.WindowManager;
@@ -302,5 +299,24 @@ public class ScreenshotMaker implements VizArchitecture {
 
     public void setTransparentBackground(boolean transparentBackground) {
         this.transparentBackground = transparentBackground;
+    }
+
+    public File getDefaultDirectory() {
+        String lastPathDefault = NbPreferences.forModule(ScreenshotMaker.class).get(LAST_PATH_DEFAULT, null);
+        String lastPath = NbPreferences.forModule(ScreenshotMaker.class).get(LAST_PATH, lastPathDefault);
+        File directory = null;
+        if (lastPath != null) {
+            directory = new File(lastPath);
+            if (directory.isFile()) {
+                directory = directory.getParentFile();
+            }
+        }
+        return directory;
+    }
+
+    public void setDefaultDirectory(File directory) {
+        if (directory != null && directory.exists()) {
+            NbPreferences.forModule(ScreenshotMaker.class).put(LAST_PATH, directory.getAbsolutePath());
+        }
     }
 }
