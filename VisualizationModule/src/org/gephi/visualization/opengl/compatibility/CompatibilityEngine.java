@@ -357,6 +357,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public void initScreenshot(GL gl, GLU glu) {
         initDisplayLists(gl, glu);
+        textManager.initRenderer();
     }
 
     @Override
