@@ -112,7 +112,7 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     }
 
     public float getRadius() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return 0;
     }
 
     public float getSize() {
