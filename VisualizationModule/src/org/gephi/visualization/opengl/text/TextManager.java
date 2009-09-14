@@ -53,6 +53,12 @@ public class TextManager implements VizArchitecture {
     //Variables
     private TextModel model;
 
+    //Preferences
+    private boolean mipmap;
+    private boolean fractionalMetrics;
+    private boolean antialised;
+
+
     public TextManager() {
         textUtils = new TextUtils(this);
         builder = new TextDataBuilder();
@@ -69,18 +75,18 @@ public class TextManager implements VizArchitecture {
         vizConfig = VizController.getInstance().getVizConfig();
         model.colorMode = new UniqueColorMode(model);
         model.sizeMode = sizeModes[1];
-        model.font = vizConfig.getDefaultLabelFont();
+        model.font = vizConfig.getLabelFont();
         model.nodeColor = vizConfig.getDefaultNodeLabelColor();
         model.edgeColor = vizConfig.getDefaultEdgeLabelColor();
         model.setSelectedOnly(vizConfig.isShowLabelOnSelectedOnly());
-        renderer = new TextRenderer(model.font, false, false, null, true);
+        initRenderer();
 
         //Model listening
         model.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
                 if (!renderer.getFont().equals(model.getFont())) {
-                    renderer = new TextRenderer(model.getFont(), false, false, null, true);
+                    initRenderer();
                 }
             }
         });
@@ -92,6 +98,15 @@ public class TextManager implements VizArchitecture {
 
     public void defaultEdgeColor() {
         model.colorMode.defaultEdgeColor(renderer);
+    }
+
+    public void initRenderer() {
+        renderer = new TextRenderer(model.getFont(), antialised, fractionalMetrics, null, mipmap);
+    }
+
+    public void disposeRenderer() {
+        renderer.flush();
+        renderer.dispose();
     }
 
     public void beginRendering() {

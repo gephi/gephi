@@ -84,7 +84,10 @@ public class VizConfig {
     protected int octreeWidth = 100000;
     protected float[] defaultNodeLabelColor = {0f, 0f, 0f, 1f};
     protected float[] defaultEdgeLabelColor = {0.5f, 0.5f, 0.5f, 1f};
-    protected Font defaultLabelFont = new Font("Arial", Font.BOLD, 20);
+    protected Font labelFont = new Font("Arial", Font.BOLD, 20);
+    protected boolean labelMipMap = true;
+    protected boolean labelAntialiased = true;
+    protected boolean labelFractionalMetrics = true;
     protected boolean showLabelOnSelectedOnly = false;
     protected boolean showVizVar = true;
     protected boolean visualizeTree = false;
@@ -310,8 +313,20 @@ public class VizConfig {
         return defaultNodeLabelColor;
     }
 
-    public Font getDefaultLabelFont() {
-        return defaultLabelFont;
+    public Font getLabelFont() {
+        return labelFont;
+    }
+
+    public boolean isLabelMipMap() {
+        return labelMipMap;
+    }
+
+    public boolean isLabelAntialiased() {
+        return labelAntialiased;
+    }
+
+    public boolean isLabelFractionalMetrics() {
+        return labelFractionalMetrics;
     }
 
     public void setAntialiasing(int antialiasing) {
