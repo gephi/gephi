@@ -278,7 +278,7 @@ public class CompatibilityEngine extends AbstractEngine {
         //Labels
         if (vizConfig.isShowNodeLabels() || vizConfig.isShowEdgeLabels()) {
             markTime++;
-            textManager.beginRendering();
+            textManager.getRenderer().beginRendering();
             if (nodeClass.isEnabled() && vizConfig.isShowNodeLabels()) {
                 textManager.defaultNodeColor();
                 if (textManager.isSelectedOnly()) {
@@ -286,7 +286,7 @@ public class CompatibilityEngine extends AbstractEngine {
                         ModelImpl obj = itr.next();
                         if (obj.markTime != markTime) {
                             if ((obj.isSelected() || obj.isHighlight()) && obj.getObj().isLabelVisible()) {
-                                textManager.drawText(obj);
+                                textManager.getRenderer().drawText(obj);
                             }
                             obj.markTime = markTime;
                         }
@@ -296,7 +296,7 @@ public class CompatibilityEngine extends AbstractEngine {
                         ModelImpl obj = itr.next();
                         if (obj.markTime != markTime) {
                             //if (obj.getObj().isLabelVisible()) {
-                            textManager.drawText(obj);
+                            textManager.getRenderer().drawText(obj);
                             //}
                             obj.markTime = markTime;
                         }
@@ -311,7 +311,7 @@ public class CompatibilityEngine extends AbstractEngine {
                         ModelImpl obj = itr.next();
                         if (obj.markTime != markTime) {
                             if ((obj.isSelected() || obj.isHighlight()) && obj.getObj().isLabelVisible()) {
-                                textManager.drawText(obj);
+                                textManager.getRenderer().drawText(obj);
                             }
                             obj.markTime = markTime;
                         }
@@ -321,14 +321,14 @@ public class CompatibilityEngine extends AbstractEngine {
                         ModelImpl obj = itr.next();
                         if (obj.markTime != markTime) {
                             //if (obj.getObj().isLabelVisible()) {
-                            textManager.drawText(obj);
+                            textManager.getRenderer().drawText(obj);
                             //}
                             obj.markTime = markTime;
                         }
                     }
                 }
             }
-            textManager.endRendering();
+            textManager.getRenderer().endRendering();
         }
 
 
@@ -357,7 +357,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public void initScreenshot(GL gl, GLU glu) {
         initDisplayLists(gl, glu);
-        textManager.initRenderer();
+        textManager.getRenderer().initRenderer();
     }
 
     @Override

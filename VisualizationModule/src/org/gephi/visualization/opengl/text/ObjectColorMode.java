@@ -20,9 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
-import com.sun.opengl.util.j2d.TextRenderer;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.opengl.text.TextManager.Renderer;
 
 /**
  *
@@ -30,13 +30,13 @@ import org.gephi.visualization.api.ModelImpl;
  */
 public class ObjectColorMode implements ColorMode {
 
-    public void defaultEdgeColor(TextRenderer renderer) {
+    public void defaultEdgeColor(Renderer renderer) {
     }
 
-    public void defaultNodeColor(TextRenderer renderer) {
+    public void defaultNodeColor(Renderer renderer) {
     }
 
-    public void textColor(TextRenderer renderer, TextDataImpl text, ModelImpl model) {
+    public void textColor(Renderer renderer, TextDataImpl text, ModelImpl model) {
         Renderable renderable = model.getObj();
         renderer.setColor(renderable.r(), renderable.g(), renderable.b(), renderable.alpha());
     }

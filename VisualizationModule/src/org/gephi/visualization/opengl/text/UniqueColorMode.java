@@ -20,8 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
-import com.sun.opengl.util.j2d.TextRenderer;
 import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.opengl.text.TextManager.Renderer;
 
 /**
  *
@@ -35,17 +35,17 @@ public class UniqueColorMode implements ColorMode {
         this.textModel = model;
     }
 
-    public void defaultNodeColor(TextRenderer renderer) {
+    public void defaultNodeColor(Renderer renderer) {
         float[] defaultNodeColor = textModel.nodeColor;
         renderer.setColor(defaultNodeColor[0], defaultNodeColor[1], defaultNodeColor[2], defaultNodeColor[3]);
     }
 
-    public void defaultEdgeColor(TextRenderer renderer) {
+    public void defaultEdgeColor(Renderer renderer) {
         float[] defaultEdgeColor = textModel.edgeColor;
         renderer.setColor(defaultEdgeColor[0], defaultEdgeColor[1], defaultEdgeColor[2], defaultEdgeColor[3]);
     }
 
-    public void textColor(TextRenderer renderer, TextDataImpl text, ModelImpl model) {
+    public void textColor(Renderer renderer, TextDataImpl text, ModelImpl model) {
         if (text.hasCustomColor()) {
             renderer.setColor(text.r, text.g, text.b, text.a);
         }

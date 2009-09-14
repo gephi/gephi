@@ -46,7 +46,7 @@ public class TextUtils {
     public void reflow(int width, TextDataImpl text) {
         flowList.clear();
         int numLines = 0;
-        TextRenderer renderer = manager.getRenderer();
+        TextRenderer renderer = manager.getRenderer().getJOGLRenderer();
         FontRenderContext frc = renderer.getFontRenderContext();
 
         String paragraph = text.getLine().text;
