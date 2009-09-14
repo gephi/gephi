@@ -30,7 +30,7 @@ public abstract class NodeSphereModeler implements NodeModeler {
 
     @Override
     public String getName() {
-        return "nodeModeler_Sphere_name";
+        return "Sphere";
     }
 
     @Override

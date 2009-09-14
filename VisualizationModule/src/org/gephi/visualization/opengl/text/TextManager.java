@@ -176,12 +176,10 @@ public class TextManager implements VizArchitecture {
 
         public void beginRendering() {
             renderer.begin3DRendering();
-        //renderer.beginRendering(drawable.getViewportWidth(), drawable.getViewportHeight());
         }
 
         public void endRendering() {
             renderer.end3DRendering();
-        //renderer.endRendering();
         }
 
         public void drawText(ModelImpl objectModel) {

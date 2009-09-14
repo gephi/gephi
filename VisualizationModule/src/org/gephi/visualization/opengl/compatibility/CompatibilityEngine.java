@@ -157,6 +157,13 @@ public class CompatibilityEngine extends AbstractEngine {
         }
         if (newConfig) {
             dataBridge.reset();
+            //Reset model classes
+            for (ModelClass objClass : getModelClasses()) {
+                if (objClass.isEnabled()) {
+                    objClass.swapModelers();
+                    resetObjectClass(objClass);
+                }
+            }
         }
         if (dataBridge.requireUpdate() || changeMode || newConfig) {
             dataBridge.updateWorld();

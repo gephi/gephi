@@ -68,7 +68,7 @@ public class CompatibilityNodeSphereModeler extends NodeSphereModeler implements
         n.setModel(obj);
         obj.setConfig(config);
 
-        if(n.getTextData()==null) {
+        if (n.getTextData() == null) {
             n.setTextData(textManager.newTextData(nd));
         }
 

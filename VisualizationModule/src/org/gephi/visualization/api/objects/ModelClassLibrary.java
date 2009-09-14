@@ -29,4 +29,6 @@ import org.gephi.visualization.opengl.AbstractEngine;
 public interface ModelClassLibrary {
 
     public CompatibilityModelClass[] createModelClassesCompatibility(AbstractEngine engine);
+
+    public ModelClass getNodeClass();
 }

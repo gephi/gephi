@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.objects;
 
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.objects.ModelClass;
 import org.gephi.visualization.api.objects.ModelClassLibrary;
 import org.gephi.visualization.api.objects.CompatibilityModelClass;
 import org.gephi.visualization.opengl.AbstractEngine;
@@ -28,6 +29,7 @@ import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityArrowMo
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityEdgeModeler;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityHullModeler;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityNodeDiskModeler;
+import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityNodeRectangleModeler;
 import org.gephi.visualization.opengl.compatibility.modeler.CompatibilityNodeSphereModeler;
 
 /**
@@ -49,13 +51,13 @@ public class StandardModelClassLibrary implements ModelClassLibrary {
         compatibilityModelClasses[0] = new CompatibilityModelClass("NODE", true, true, true, false, false);
         CompatibilityNodeSphereModeler modeler3d = new CompatibilityNodeSphereModeler(engine);
         CompatibilityNodeDiskModeler modeler2d = new CompatibilityNodeDiskModeler(engine);
-        //CompatibilityNodeRectangleModeler modelerRect = new CompatibilityNodeRectangleModeler(engine);
+        CompatibilityNodeRectangleModeler modelerRect = new CompatibilityNodeRectangleModeler(engine);
         if (VizController.getInstance().getVizConfig().use3d()) {
             compatibilityModelClasses[0].addModeler(modeler3d);
         } else {
             compatibilityModelClasses[0].addModeler(modeler2d);
         }
-        //compatibilityModelClasses[0].addModeler(modelerRect);
+        compatibilityModelClasses[0].addModeler(modelerRect);
 
         //EDGE
         compatibilityModelClasses[1] = new CompatibilityModelClass("EDGE", false, true, false, false, false);
@@ -71,5 +73,9 @@ public class StandardModelClassLibrary implements ModelClassLibrary {
         //modelClasses[3] = new CompatibilityModelClass("POTATO", false, true, true);
         //modelClasses[3].addModeler(new CompatibilityPotatoModeler());
         return compatibilityModelClasses;
+    }
+
+    public ModelClass getNodeClass() {
+        return compatibilityModelClasses[0];
     }
 }

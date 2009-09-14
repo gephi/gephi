@@ -146,6 +146,11 @@ public class CompatibilityNodeDiskModeler implements CompatibilityNodeModeler {
     }
 
     public String getName() {
-        return "nodeModeler_Disk_name";
+        return "Sphere";
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

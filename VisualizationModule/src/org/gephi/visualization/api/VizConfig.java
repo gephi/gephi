@@ -82,6 +82,7 @@ public class VizConfig {
     protected float[] defaultEdgeUniColor = {0.5f, 0.5f, 0.5f, 0.5f};
     protected int octreeDepth = 5;
     protected int octreeWidth = 100000;
+    protected boolean cleanDeletedModels = false;
     protected float[] defaultNodeLabelColor = {0f, 0f, 0f, 1f};
     protected float[] defaultEdgeLabelColor = {0.5f, 0.5f, 0.5f, 1f};
     protected Font labelFont = new Font("Arial", Font.BOLD, 20);
@@ -263,6 +264,10 @@ public class VizConfig {
 
     public int getOctreeWidth() {
         return octreeWidth;
+    }
+
+    public boolean isCleanDeletedModels() {
+        return cleanDeletedModels;
     }
 
     public boolean isWireFrame() {

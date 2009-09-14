@@ -191,7 +191,9 @@ public class VizBarController {
         }
 
         public JComponent getExtendedComponent() {
-            return new NodeSettingsPanel();
+            NodeSettingsPanel panel = new NodeSettingsPanel();
+            panel.setup();
+            return panel;
         }
 
         public boolean hasToolbar() {

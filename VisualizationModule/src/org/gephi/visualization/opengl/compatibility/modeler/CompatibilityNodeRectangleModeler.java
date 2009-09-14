@@ -104,6 +104,11 @@ public class CompatibilityNodeRectangleModeler implements CompatibilityNodeModel
     }
 
     public String getName() {
-        return "nodeModeler_Rectangle_name";
+        return "Rectangle";
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

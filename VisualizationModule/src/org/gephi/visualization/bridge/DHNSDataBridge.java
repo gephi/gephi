@@ -172,6 +172,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                 //Model is null, ADD
                 obj = nodeInit.initModel(node.getNodeData());
                 engine.addObject(AbstractEngine.CLASS_NODE, (ModelImpl) obj);
+                System.out.println("inti object" + obj);
             } else if (!obj.isValid()) {
                 engine.addObject(AbstractEngine.CLASS_NODE, (ModelImpl) obj);
             }

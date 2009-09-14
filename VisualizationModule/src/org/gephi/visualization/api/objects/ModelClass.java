@@ -65,6 +65,8 @@ public abstract class ModelClass {
 
     public abstract List<? extends Modeler> getModelers();
 
+    public abstract void swapModelers();
+
     public int getClassId() {
         return classId;
     }
