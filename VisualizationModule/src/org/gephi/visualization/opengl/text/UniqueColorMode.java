@@ -20,7 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
+import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.text.TextManager.Renderer;
 
 /**
@@ -30,24 +32,45 @@ import org.gephi.visualization.opengl.text.TextManager.Renderer;
 public class UniqueColorMode implements ColorMode {
 
     private TextModel textModel;
+    private VizConfig vizConfig;
+    private float[] color;
 
     public UniqueColorMode(TextModel model) {
         this.textModel = model;
+        this.vizConfig = VizController.getInstance().getVizConfig();
     }
 
     public void defaultNodeColor(Renderer renderer) {
-        float[] defaultNodeColor = textModel.nodeColor;
-        renderer.setColor(defaultNodeColor[0], defaultNodeColor[1], defaultNodeColor[2], defaultNodeColor[3]);
+        color = textModel.nodeColor;
+        renderer.setColor(color[0], color[1], color[2], color[3]);
     }
 
     public void defaultEdgeColor(Renderer renderer) {
-        float[] defaultEdgeColor = textModel.edgeColor;
-        renderer.setColor(defaultEdgeColor[0], defaultEdgeColor[1], defaultEdgeColor[2], defaultEdgeColor[3]);
+        color = textModel.edgeColor;
+        renderer.setColor(color[0], color[1], color[2], color[3]);
     }
 
     public void textColor(Renderer renderer, TextDataImpl text, ModelImpl model) {
         if (text.hasCustomColor()) {
-            renderer.setColor(text.r, text.g, text.b, text.a);
+            if (vizConfig.isLightenNonSelected()) {
+                if (!model.isSelected() && !model.isHighlight()) {
+                    float lightColorFactor = 1 - vizConfig.getLightenNonSelectedFactor();
+                    renderer.setColor(text.r, text.g, text.b, lightColorFactor);
+                } else {
+                    renderer.setColor(text.r, text.g, text.b, 1);
+                }
+            } else {
+                renderer.setColor(text.r, text.g, text.b, text.a);
+            }
+        } else {
+            if (vizConfig.isLightenNonSelected()) {
+                if (!model.isSelected() && !model.isHighlight()) {
+                    float lightColorFactor = 1 - vizConfig.getLightenNonSelectedFactor();
+                    renderer.setColor(color[0], color[1], color[2], lightColorFactor);
+                } else {
+                    renderer.setColor(color[0], color[1], color[2], 1);
+                }
+            }
         }
     }
 }

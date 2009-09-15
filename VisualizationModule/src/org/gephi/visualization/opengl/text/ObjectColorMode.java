@@ -21,7 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.opengl.text;
 
 import org.gephi.graph.api.Renderable;
+import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.text.TextManager.Renderer;
 
 /**
@@ -30,6 +32,12 @@ import org.gephi.visualization.opengl.text.TextManager.Renderer;
  */
 public class ObjectColorMode implements ColorMode {
 
+    private VizConfig vizConfig;
+
+    public ObjectColorMode() {
+        this.vizConfig = VizController.getInstance().getVizConfig();
+    }
+
     public void defaultEdgeColor(Renderer renderer) {
     }
 
@@ -37,7 +45,29 @@ public class ObjectColorMode implements ColorMode {
     }
 
     public void textColor(Renderer renderer, TextDataImpl text, ModelImpl model) {
-        Renderable renderable = model.getObj();
-        renderer.setColor(renderable.r(), renderable.g(), renderable.b(), renderable.alpha());
+        if (text.hasCustomColor()) {
+            if (vizConfig.isLightenNonSelected()) {
+                if (!model.isSelected() && !model.isHighlight()) {
+                    float lightColorFactor = 1 - vizConfig.getLightenNonSelectedFactor();
+                    renderer.setColor(text.r, text.g, text.b, lightColorFactor);
+                } else {
+                    renderer.setColor(text.r, text.g, text.b, 1);
+                }
+            } else {
+                renderer.setColor(text.r, text.g, text.b, text.a);
+            }
+        } else {
+            Renderable renderable = model.getObj();
+            if (vizConfig.isLightenNonSelected()) {
+                if (!model.isSelected() && !model.isHighlight()) {
+                    float lightColorFactor = 1 - vizConfig.getLightenNonSelectedFactor();
+                    renderer.setColor(renderable.r(), renderable.g(), renderable.b(), lightColorFactor);
+                } else {
+                    renderer.setColor(renderable.r(), renderable.g(), renderable.b(), 1);
+                }
+            } else {
+                renderer.setColor(renderable.r(), renderable.g(), renderable.b(), renderable.alpha());
+            }
+        }
     }
 }
