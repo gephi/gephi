@@ -23,6 +23,8 @@ package org.gephi.visualization.component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.initializer.Modeler;
@@ -42,6 +44,12 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
     public void setup() {
         final VizConfig vizConfig = VizController.getInstance().getVizConfig();
         adjustTextCheckbox.setSelected(vizConfig.isAdjustByText());
+        adjustTextCheckbox.addChangeListener(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                vizConfig.setAdjustByText(adjustTextCheckbox.isSelected());
+            }
+        });
 
         final DefaultComboBoxModel comboModel = new DefaultComboBoxModel();
         final ModelClass nodeClass = VizController.getInstance().getModelClassLibrary().getNodeClass();

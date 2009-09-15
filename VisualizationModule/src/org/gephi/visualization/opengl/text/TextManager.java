@@ -82,7 +82,7 @@ public class TextManager implements VizArchitecture {
         model.nodeColor = vizConfig.getDefaultNodeLabelColor();
         model.edgeColor = vizConfig.getDefaultEdgeLabelColor();
         model.setSelectedOnly(vizConfig.isShowLabelOnSelectedOnly());
-        renderer = new Renderer3D();
+        renderer = new Renderer2D();
         renderer.initRenderer();
 
         //Model listening
@@ -197,6 +197,64 @@ public class TextManager implements VizArchitecture {
                 float posZ = renderable.getRadius();
 
                 renderer.draw3D(txt, posX, posY, posZ, textData.sizeFactor);
+            }
+        }
+
+        public void setColor(float r, float g, float b, float a) {
+            renderer.setColor(r, g, b, a);
+        }
+
+        public TextRenderer getJOGLRenderer() {
+            return renderer;
+        }
+    }
+
+    private class Renderer2D implements Renderer {
+
+        private TextRenderer renderer;
+        private static final float PIXEL_LIMIT = 3.5f;
+
+        public void initRenderer() {
+            renderer = new TextRenderer(model.getFont(), antialised, fractionalMetrics, null, mipmap);
+        }
+
+        public void disposeRenderer() {
+            renderer.flush();
+            renderer.dispose();
+        }
+
+        public Font getFont() {
+            return renderer.getFont();
+        }
+
+        public void setFont(Font font) {
+            initRenderer();
+        }
+
+        public void beginRendering() {
+            renderer.beginRendering(drawable.getViewportWidth(), drawable.getViewportHeight());
+        }
+
+        public void endRendering() {
+            renderer.endRendering();
+        }
+
+        public void drawText(ModelImpl objectModel) {
+            Renderable renderable = objectModel.getObj();
+            TextDataImpl textData = (TextDataImpl) renderable.getTextData();
+            if (textData != null) {
+                model.colorMode.textColor(this, textData, objectModel);
+                model.sizeMode.setSizeFactor(textData, objectModel);
+                if (textData.sizeFactor * renderer.getCharWidth('a') < PIXEL_LIMIT) {
+                    return;
+                }
+                String txt = textData.line.text;
+                Rectangle2D r = renderer.getBounds(txt);
+                textData.line.setBounds(r);
+                float posX = renderable.getModel().getViewportX() + (float) r.getWidth() / -2 * textData.sizeFactor;
+                float posY = renderable.getModel().getViewportY() + (float) r.getHeight() / -2 * textData.sizeFactor;
+
+                renderer.draw3D(txt, posX, posY, 0, textData.sizeFactor);
             }
         }
 
