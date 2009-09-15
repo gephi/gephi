@@ -25,7 +25,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="separator" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="tabbedPane" pref="150" max="32767" attributes="0"/>
+              <Component id="tabbedPane" pref="97" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

@@ -362,7 +362,7 @@ public class VizConfig {
 
     public void setShowNodeLabels(boolean showNodeLabels) {
         this.showNodeLabels = showNodeLabels;
-        fireProperyChange("showLabels", null, showEdges);
+        fireProperyChange("showLabels", null, showNodeLabels);
     }
 
     public void setShowArrows(boolean showArrows) {
@@ -377,12 +377,17 @@ public class VizConfig {
 
     public void setEdgeUniColor(boolean edgeUniColor) {
         this.edgeUniColor = edgeUniColor;
-        fireProperyChange("edgeUniColor", null, visualizeTree);
+        fireProperyChange("edgeUniColor", null, edgeUniColor);
     }
 
     public void setShowEdgeLabels(boolean showEdgeLabels) {
         this.showEdgeLabels = showEdgeLabels;
-        fireProperyChange("showEdgeLabels", null, visualizeTree);
+        fireProperyChange("showEdgeLabels", null, showEdgeLabels);
+    }
+
+    public void setDefaultEdgeUniColor(float[] defaultEdgeUniColor) {
+        this.defaultEdgeUniColor = defaultEdgeUniColor;
+        fireProperyChange("defaultEdgeUniColor", null, showEdges);
     }
 
     public void setAdjustByText(boolean adjustByText) {

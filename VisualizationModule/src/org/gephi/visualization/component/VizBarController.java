@@ -227,6 +227,16 @@ public class VizBarController {
                     vizConfig.setShowEdges(showEdgeButton.isSelected());
                 }
             });
+            vizConfig.addPropertyChangeListener(new PropertyChangeListener() {
+
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (evt.getPropertyName().equals("showEdges")) {
+                        if (showEdgeButton.isSelected() != vizConfig.isShowEdges()) {
+                            showEdgeButton.setSelected(vizConfig.isShowEdges());
+                        }
+                    }
+                }
+            });
             components[0] = showEdgeButton;
 
             //Edge color mode
@@ -240,7 +250,18 @@ public class VizBarController {
                     vizConfig.setEdgeUniColor(!edgeHasNodeColorButton.isSelected());
                 }
             });
+            vizConfig.addPropertyChangeListener(new PropertyChangeListener() {
+
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (evt.getPropertyName().equals("edgeUniColor")) {
+                        if (edgeHasNodeColorButton.isSelected() != !vizConfig.isEdgeUniColor()) {
+                            edgeHasNodeColorButton.setSelected(!vizConfig.isEdgeUniColor());
+                        }
+                    }
+                }
+            });
             components[1] = edgeHasNodeColorButton;
+
 
             //Show labels buttons
             final JToggleButton showLabelsButton = new JToggleButton();
@@ -253,13 +274,25 @@ public class VizBarController {
                     vizConfig.setShowEdgeLabels(showLabelsButton.isSelected());
                 }
             });
+            vizConfig.addPropertyChangeListener(new PropertyChangeListener() {
+
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (evt.getPropertyName().equals("showEdgeLabels")) {
+                        if (showLabelsButton.isSelected() != vizConfig.isShowEdgeLabels()) {
+                            showLabelsButton.setSelected(vizConfig.isShowEdgeLabels());
+                        }
+                    }
+                }
+            });
             components[2] = showLabelsButton;
 
             return components;
         }
 
         public JComponent getExtendedComponent() {
-            return new EdgeSettingsPanel();
+            EdgeSettingsPanel panel = new EdgeSettingsPanel();
+            panel.setup();
+            return panel;
         }
 
         public boolean hasToolbar() {

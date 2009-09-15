@@ -86,4 +86,8 @@ public class JColorButton extends JButton {
     public Color getColor() {
         return color;
     }
+
+    public float[] getColorArray() {
+        return new float[]{color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f};
+    }
 }
