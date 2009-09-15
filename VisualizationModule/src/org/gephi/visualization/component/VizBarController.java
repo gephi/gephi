@@ -298,7 +298,8 @@ public class VizBarController {
                     }
                 }
             };
-            labelSizeModeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.colorMode"));
+            labelSizeModeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/labelSizeMode.png")));
+            labelSizeModeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.sizeMode"));
             components[0] = labelSizeModeButton;
 
             //Color mode
@@ -319,6 +320,7 @@ public class VizBarController {
                     }
                 }
             };
+            labelColorModeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/labelColorMode.png")));
             labelColorModeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.sizeMode"));
             components[1] = labelColorModeButton;
 
@@ -341,7 +343,7 @@ public class VizBarController {
                     fontButton.setText(model.getFont().getFontName() + ", " + model.getFont().getSize());
                 }
             });
-            components[1] = fontButton;
+            components[2] = fontButton;
 
             //Font size
             final JSlider fontSizeSlider = new JSlider(0, 100, (int) (model.getSizeFactor() * 100f));
@@ -353,7 +355,7 @@ public class VizBarController {
             });
             fontSizeSlider.setPreferredSize(new Dimension(100, 20));
             fontSizeSlider.setMaximumSize(new Dimension(100, 20));
-            components[2] = fontSizeSlider;
+            components[3] = fontSizeSlider;
 
             //Color
             final ColorChooser colorChooser = new ColorChooser(model.getNodeColor());
@@ -367,7 +369,7 @@ public class VizBarController {
                 }
             });
 
-            components[3] = colorChooser;
+            components[4] = colorChooser;
 
             return components;
         }
