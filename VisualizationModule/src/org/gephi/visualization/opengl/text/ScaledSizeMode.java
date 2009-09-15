@@ -47,6 +47,6 @@ public class ScaledSizeMode implements SizeMode {
     }
 
     public ImageIcon getIcon() {
-        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/sizeMode.png"));
+        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/ScaledSizeMode.png"));
     }
 }

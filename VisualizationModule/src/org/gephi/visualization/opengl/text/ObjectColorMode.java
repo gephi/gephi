@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
+import javax.swing.ImageIcon;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ModelImpl;
@@ -69,5 +70,13 @@ public class ObjectColorMode implements ColorMode {
                 renderer.setColor(renderable.r(), renderable.g(), renderable.b(), renderable.alpha());
             }
         }
+    }
+
+    public String getName() {
+        return "Object";
+    }
+
+    public ImageIcon getIcon() {
+        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/ObjectColorMode.png"));
     }
 }

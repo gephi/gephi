@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
+import javax.swing.ImageIcon;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.VizConfig;
@@ -72,5 +73,13 @@ public class UniqueColorMode implements ColorMode {
                 }
             }
         }
+    }
+
+    public String getName() {
+        return "Unique";
+    }
+
+    public ImageIcon getIcon() {
+        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/UniqueColorMode.png"));
     }
 }

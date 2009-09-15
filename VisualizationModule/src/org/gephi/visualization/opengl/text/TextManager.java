@@ -47,6 +47,7 @@ public class TextManager implements VizArchitecture {
 
     //Configuration
     private SizeMode[] sizeModes;
+    private ColorMode[] colorModes;;
 
     //Processing
     private TextUtils textUtils;
@@ -71,6 +72,11 @@ public class TextManager implements VizArchitecture {
         sizeModes[0] = new FixedSizeMode(model);
         sizeModes[1] = new ScaledSizeMode(model);
         sizeModes[2] = new ProportionalSizeMode(model);
+
+        //ColorMode init
+        colorModes = new ColorMode[2];
+        colorModes[0] = new UniqueColorMode(model);
+        colorModes[1] = new ObjectColorMode();
     }
 
     public void initArchitecture() {
@@ -78,6 +84,7 @@ public class TextManager implements VizArchitecture {
         drawable = VizController.getInstance().getDrawable();
         model.colorMode = new UniqueColorMode(model);
         model.sizeMode = sizeModes[1];
+        model.colorMode = colorModes[0];
         model.font = vizConfig.getLabelFont();
         model.nodeColor = vizConfig.getDefaultNodeLabelColor();
         model.edgeColor = vizConfig.getDefaultEdgeLabelColor();
@@ -126,6 +133,10 @@ public class TextManager implements VizArchitecture {
 
     public SizeMode[] getSizeModes() {
         return sizeModes;
+    }
+
+    public ColorMode[] getColorModes() {
+        return colorModes;
     }
 
     public Renderer getRenderer() {

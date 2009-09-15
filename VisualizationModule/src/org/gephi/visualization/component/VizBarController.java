@@ -43,6 +43,7 @@ import org.gephi.ui.components.JDropDownButton;
 import org.gephi.ui.components.JPopupButton;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VizConfig;
+import org.gephi.visualization.opengl.text.ColorMode;
 import org.gephi.visualization.opengl.text.SizeMode;
 import org.gephi.visualization.opengl.text.TextManager;
 import org.gephi.visualization.opengl.text.TextModel;
@@ -277,7 +278,7 @@ public class VizBarController {
         }
 
         public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[4];
+            JComponent[] components = new JComponent[5];
 
             //Mode
             JPopupButton labelSizeModeButton = new JPopupButton() {
@@ -297,9 +298,29 @@ public class VizBarController {
                     }
                 }
             };
-            labelSizeModeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/labelSizeMode.png")));
-            labelSizeModeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.sizeMode"));
+            labelSizeModeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.colorMode"));
             components[0] = labelSizeModeButton;
+
+            //Color mode
+            JPopupButton labelColorModeButton = new JPopupButton() {
+
+                @Override
+                public void createPopup(JPopupMenu popupMenu) {
+                    final TextManager textManager = VizController.getInstance().getTextManager();
+                    for (final ColorMode cm : textManager.getColorModes()) {
+                        JRadioButtonMenuItem item = new JRadioButtonMenuItem(cm.getName(), cm.getIcon(), cm == textManager.getModel().getColorMode());
+                        item.addActionListener(new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                textManager.getModel().setColorMode(cm);
+                            }
+                        });
+                        popupMenu.add(item);
+                    }
+                }
+            };
+            labelColorModeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.sizeMode"));
+            components[1] = labelColorModeButton;
 
             //Font
             final TextModel model = VizController.getInstance().getTextManager().getModel();

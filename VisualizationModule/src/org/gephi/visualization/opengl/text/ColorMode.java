@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
+import javax.swing.ImageIcon;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.opengl.text.TextManager.Renderer;
 
@@ -28,6 +29,10 @@ import org.gephi.visualization.opengl.text.TextManager.Renderer;
  * @author Mathieu Bastian
  */
 public interface ColorMode {
+
+    public String getName();
+
+    public ImageIcon getIcon();
 
     public void defaultNodeColor(Renderer renderer);
 
