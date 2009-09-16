@@ -340,8 +340,6 @@ public class VizConfig {
         return labelFractionalMetrics;
     }
 
-
-
     public void setAutoSelectNeighbor(boolean autoSelectNeighbor) {
         this.autoSelectNeighbor = autoSelectNeighbor;
         fireProperyChange("autoSelectNeighbor", null, autoSelectNeighbor);
@@ -349,7 +347,7 @@ public class VizConfig {
 
     public void setLightenNonSelectedAuto(boolean lightenNonSelectedAuto) {
         this.lightenNonSelectedAuto = lightenNonSelectedAuto;
-        if(!lightenNonSelectedAuto) {
+        if (!lightenNonSelectedAuto) {
             lightenNonSelected = false;
         }
         fireProperyChange("lightenNonSelectedAuto", null, lightenNonSelectedAuto);
@@ -357,7 +355,7 @@ public class VizConfig {
 
     public void setUse3d(boolean use3d) {
         this.use3d = use3d;
-        if(use3d) {
+        if (use3d) {
             this.lighting = true;
             this.culling = true;
             this.material = true;

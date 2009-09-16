@@ -89,12 +89,12 @@ public class JPopupButton extends JButton {
     }
 
     public void setChangeListener(ChangeListener changeListener) {
-        this.listener = changeListener;
+        listener = changeListener;
     }
 
     private void fireChangeEvent() {
-        if (changeListener != null) {
-            changeListener.stateChanged(new ChangeEvent(selectedItem.object));
+        if (listener != null) {
+            listener.stateChanged(new ChangeEvent(selectedItem.object));
         }
     }
 

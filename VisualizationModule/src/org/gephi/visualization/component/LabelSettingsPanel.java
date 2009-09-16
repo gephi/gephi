@@ -127,10 +127,8 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         //General
         final TextManager textManager = VizController.getInstance().getTextManager();
         final DefaultComboBoxModel sizeModeModel = new DefaultComboBoxModel(textManager.getSizeModes());
-        sizeModeModel.setSelectedItem(model.getSizeMode());
         sizeModeCombo.setModel(sizeModeModel);
         final DefaultComboBoxModel colorModeModel = new DefaultComboBoxModel(textManager.getColorModes());
-        colorModeModel.setSelectedItem(model.getColorMode());
         colorModeCombo.setModel(colorModeModel);
         sizeModeCombo.addActionListener(new ActionListener() {
 
@@ -210,10 +208,10 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
             hideNonSelectedCheckbox.setSelected(model.isSelectedOnly());
         }
         if (sizeModeCombo.getSelectedItem() != model.getSizeMode()) {
-            sizeModeCombo.getModel().setSelectedItem(model.getSizeMode());
+            sizeModeCombo.setSelectedItem(model.getSizeMode());
         }
         if (colorModeCombo.getSelectedItem() != model.getColorMode()) {
-            colorModeCombo.getModel().setSelectedItem(model.getColorMode());
+            colorModeCombo.setSelectedItem(model.getColorMode());
         }
     }
 

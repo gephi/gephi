@@ -323,7 +323,7 @@ public class VizBarController {
             labelSizeModeButton.setChangeListener(new ChangeListener() {
 
                 public void stateChanged(ChangeEvent e) {
-                    SizeMode sm = (SizeMode)e.getSource();
+                    SizeMode sm = (SizeMode) e.getSource();
                     TextModel model = VizController.getInstance().getTextManager().getModel();
                     model.setSizeMode(sm);
                 }
@@ -334,7 +334,7 @@ public class VizBarController {
 
                 public void stateChanged(ChangeEvent e) {
                     TextModel model = VizController.getInstance().getTextManager().getModel();
-                    if(model.getSizeMode()!=labelSizeModeButton.getSelectedItem()) {
+                    if (model.getSizeMode() != labelSizeModeButton.getSelectedItem()) {
                         labelSizeModeButton.setSelectedItem(model.getSizeMode());
                     }
                 }
@@ -350,7 +350,7 @@ public class VizBarController {
             labelColorModeButton.setChangeListener(new ChangeListener() {
 
                 public void stateChanged(ChangeEvent e) {
-                    ColorMode cm = (ColorMode)e.getSource();
+                    ColorMode cm = (ColorMode) e.getSource();
                     TextModel model = VizController.getInstance().getTextManager().getModel();
                     model.setColorMode(cm);
                 }
@@ -361,7 +361,7 @@ public class VizBarController {
 
                 public void stateChanged(ChangeEvent e) {
                     TextModel model = VizController.getInstance().getTextManager().getModel();
-                    if(model.getColorMode()!=labelColorModeButton.getSelectedItem()) {
+                    if (model.getColorMode() != labelColorModeButton.getSelectedItem()) {
                         labelColorModeButton.setSelectedItem(model.getColorMode());
                     }
                 }
