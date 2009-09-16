@@ -21,11 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.component;
 
 import java.awt.Color;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.plaf.basic.BasicComboBoxUI.PropertyChangeHandler;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VizConfig;
@@ -57,9 +56,9 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         });
         refreshSharedConfig();
 
-        showEdgesCheckbox.addChangeListener(new ChangeListener() {
+        showEdgesCheckbox.addItemListener(new ItemListener() {
 
-            public void stateChanged(ChangeEvent e) {
+            public void itemStateChanged(ItemEvent e) {
                 vizConfig.setShowEdges(showEdgesCheckbox.isSelected());
             }
         });
@@ -69,9 +68,9 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
                 vizConfig.setDefaultEdgeUniColor(((JColorButton) edgeColorButton).getColorArray());
             }
         });
-        sourceNodeColorCheckbox.addChangeListener(new ChangeListener() {
+        sourceNodeColorCheckbox.addItemListener(new ItemListener() {
 
-            public void stateChanged(ChangeEvent e) {
+            public void itemStateChanged(ItemEvent e) {
                 vizConfig.setEdgeUniColor(!sourceNodeColorCheckbox.isSelected());
             }
         });
@@ -112,6 +111,10 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         edgeColorButton.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.edgeColorButton.text")); // NOI18N
 
         sourceNodeColorCheckbox.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.sourceNodeColorCheckbox.text")); // NOI18N
+        sourceNodeColorCheckbox.setBorder(null);
+        sourceNodeColorCheckbox.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        sourceNodeColorCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        sourceNodeColorCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -125,12 +128,12 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(19, 19, 19)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(sourceNodeColorCheckbox)
+                            .addComponent(sourceNodeColorCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(labelEdgeColor)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(edgeColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(486, Short.MAX_VALUE))
+                .addContainerGap(445, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -144,7 +147,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(32, 32, 32)
                         .addComponent(edgeColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(sourceNodeColorCheckbox)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );

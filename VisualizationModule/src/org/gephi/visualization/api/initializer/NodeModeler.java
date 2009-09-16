@@ -34,4 +34,6 @@ import org.gephi.visualization.opengl.AbstractEngine;
  * @see AbstractEngine
  */
 public interface NodeModeler extends Modeler {
+
+    public boolean is3d();
 }

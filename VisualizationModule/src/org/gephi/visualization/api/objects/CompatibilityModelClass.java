@@ -62,11 +62,6 @@ public class CompatibilityModelClass extends ModelClass {
     }
 
     public void addModeler(Modeler modeler) {
-        if (modelers.isEmpty()) //Set first one as current
-        {
-            setCurrentModeler(modeler);
-        }
-
         modelers.add((CompatibilityModeler) modeler);
     }
 

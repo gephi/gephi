@@ -22,15 +22,18 @@ package org.gephi.visualization.component;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.JOptionPane;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.initializer.Modeler;
+import org.gephi.visualization.api.initializer.NodeModeler;
 import org.gephi.visualization.api.objects.ModelClass;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -46,9 +49,9 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
     public void setup() {
         final VizConfig vizConfig = VizController.getInstance().getVizConfig();
         adjustTextCheckbox.setSelected(vizConfig.isAdjustByText());
-        adjustTextCheckbox.addChangeListener(new ChangeListener() {
+        adjustTextCheckbox.addItemListener(new ItemListener() {
 
-            public void stateChanged(ChangeEvent e) {
+            public void itemStateChanged(ItemEvent e) {
                 vizConfig.setAdjustByText(adjustTextCheckbox.isSelected());
             }
         });
@@ -63,7 +66,32 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
         shapeCombo.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                nodeClass.setCurrentModeler((Modeler) comboModel.getSelectedItem());
+                if (nodeClass.getCurrentModeler() == comboModel.getSelectedItem()) {
+                    return;
+                }
+                NodeModeler modeler = (NodeModeler) comboModel.getSelectedItem();
+                nodeClass.setCurrentModeler(modeler);
+                if (modeler.is3d() && !vizConfig.use3d()) {
+                    /*String overwriteMsg = NbBundle.getMessage(NodeSettingsPanel.class, "GraphFileExporterUI_overwriteDialog_message");
+                    if (JOptionPane.showConfirmDialog(null, overwriteMsg, NbBundle.getMessage(NodeSettingsPanel.class, "GraphFileExporterUI_overwriteDialog_title"), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+                    return false;
+                    }*/
+                    //enable 3d
+                    vizConfig.setUse3d(true);
+                } else if (!modeler.is3d() && vizConfig.use3d()) {
+                    //disable 3d
+                    vizConfig.setUse3d(false);
+                }
+            }
+        });
+        vizConfig.addPropertyChangeListener(new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals("defaultShape")) {
+                    if (comboModel.getSelectedItem() != nodeClass.getCurrentModeler()) {
+                        comboModel.setSelectedItem(nodeClass.getCurrentModeler());
+                    }
+                }
             }
         });
     }

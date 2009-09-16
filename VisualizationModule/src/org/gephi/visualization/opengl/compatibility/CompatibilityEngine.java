@@ -155,6 +155,9 @@ public class CompatibilityEngine extends AbstractEngine {
         if (changeMode) {
             modeManager.unload();
         }
+        if (reinit) {
+            graphIO.centerOnGraph();
+        }
         if (newConfig) {
             dataBridge.reset();
             //Reset model classes
@@ -207,6 +210,11 @@ public class CompatibilityEngine extends AbstractEngine {
             gl.glClearColor(backgroundColor.getRed() / 255f, backgroundColor.getGreen() / 255f, backgroundColor.getBlue() / 255f, 1f);
             gl.glClear(GL.GL_COLOR_BUFFER_BIT);
             backgroundChanged = false;
+        }
+
+        if (reinit) {
+            graphDrawable.initConfig(gl);
+            reinit = false;
         }
     }
 

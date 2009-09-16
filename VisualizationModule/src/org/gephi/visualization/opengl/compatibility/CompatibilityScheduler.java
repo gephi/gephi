@@ -74,7 +74,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     }
     private ThreadPoolExecutor pool1;
     private ThreadPoolExecutor pool2;
-    private List<Runnable> modelSegments = new ArrayList<Runnable>();
+    private List<Runnable> modelSegments;
     private Semaphore pool1Semaphore = new Semaphore(0);
     private Semaphore pool2Semaphore = new Semaphore(0);
     private Runnable selectionSegment;
@@ -114,6 +114,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     }
 
     public void init() {
+        modelSegments = new ArrayList<Runnable>();
         for (final CompatibilityModelClass objClass : engine.lodClasses) {
             modelSegments.add(new Runnable() {
 

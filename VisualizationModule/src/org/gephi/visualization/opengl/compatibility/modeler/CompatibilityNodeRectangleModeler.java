@@ -111,4 +111,8 @@ public class CompatibilityNodeRectangleModeler implements CompatibilityNodeModel
     public String toString() {
         return getName();
     }
+
+    public boolean is3d() {
+        return false;
+    }
 }

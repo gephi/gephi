@@ -58,7 +58,7 @@ public class VizConfig {
     protected float[] rectangleSelectionColor = {0.16f, 0.48f, 0.81f, 0.2f};
     protected boolean draggingEnable = true;
     protected boolean cameraControlEnable = true;
-    protected boolean rotatingEnable = true;
+    protected boolean rotatingEnable = false;
     protected boolean showFPS = true;
     protected boolean showEdges = true;
     protected boolean showArrows = true;
@@ -333,6 +333,37 @@ public class VizConfig {
 
     public boolean isLabelFractionalMetrics() {
         return labelFractionalMetrics;
+    }
+
+
+
+    public void setAutoSelectNeighbor(boolean autoSelectNeighbor) {
+        this.autoSelectNeighbor = autoSelectNeighbor;
+        fireProperyChange("autoSelectNeighbor", null, autoSelectNeighbor);
+    }
+
+    public void setLightenNonSelectedAuto(boolean lightenNonSelectedAuto) {
+        this.lightenNonSelectedAuto = lightenNonSelectedAuto;
+        if(!lightenNonSelectedAuto) {
+            lightenNonSelected = false;
+        }
+        fireProperyChange("lightenNonSelectedAuto", null, lightenNonSelectedAuto);
+    }
+
+    public void setUse3d(boolean use3d) {
+        this.use3d = use3d;
+        if(use3d) {
+            this.lighting = true;
+            this.culling = true;
+            this.material = true;
+            this.rotatingEnable = true;
+        } else {
+            this.lighting = false;
+            this.culling = false;
+            this.material = false;
+            this.rotatingEnable = false;
+        }
+        fireProperyChange("use3d", null, use3d);
     }
 
     public void setAntialiasing(int antialiasing) {

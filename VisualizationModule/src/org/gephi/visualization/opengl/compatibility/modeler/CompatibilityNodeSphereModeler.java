@@ -133,4 +133,8 @@ public class CompatibilityNodeSphereModeler extends NodeSphereModeler implements
     public JPanel getPanel() {
         return null;
     }
+
+    public boolean is3d() {
+        return true;
+    }
 }

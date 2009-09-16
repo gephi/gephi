@@ -77,6 +77,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected EngineLifeCycle lifeCycle = new EngineLifeCycle();
     protected boolean configChanged = false;
     protected boolean backgroundChanged = false;
+    protected boolean reinit = false;
 
     //Octree
     protected Octree octree;
@@ -100,9 +101,12 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
                 configChanged = true;
                 if (evt.getPropertyName().equals("backgroundColor")) {
                     backgroundChanged = true;
+                } else if (evt.getPropertyName().equals("use3d")) {
+                    reinit = true;
                 }
-                modelClassLibrary.createModelClassesCompatibility(AbstractEngine.this)[AbstractEngine.CLASS_EDGE].setEnabled(vizConfig.isShowEdges());
-                modelClassLibrary.createModelClassesCompatibility(AbstractEngine.this)[AbstractEngine.CLASS_ARROW].setEnabled(vizConfig.isShowEdges() && vizConfig.isShowArrows());
+
+                getModelClasses()[AbstractEngine.CLASS_EDGE].setEnabled(vizConfig.isShowEdges());
+                getModelClasses()[AbstractEngine.CLASS_ARROW].setEnabled(vizConfig.isShowEdges() && vizConfig.isShowArrows());
             }
         });
     }

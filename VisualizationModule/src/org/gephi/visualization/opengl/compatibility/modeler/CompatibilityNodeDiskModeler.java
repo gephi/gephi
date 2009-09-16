@@ -33,7 +33,6 @@ import org.gephi.visualization.api.initializer.CompatibilityNodeModeler;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.opengl.compatibility.objects.NodeDiskModel;
-import org.gephi.visualization.opengl.compatibility.objects.NodeSphereModel;
 import org.gephi.visualization.opengl.text.TextManager;
 
 /**
@@ -152,5 +151,9 @@ public class CompatibilityNodeDiskModeler implements CompatibilityNodeModeler {
     @Override
     public String toString() {
         return getName();
+    }
+
+    public boolean is3d() {
+        return false;
     }
 }

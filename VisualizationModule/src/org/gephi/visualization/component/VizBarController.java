@@ -47,9 +47,6 @@ import org.gephi.visualization.opengl.text.ColorMode;
 import org.gephi.visualization.opengl.text.SizeMode;
 import org.gephi.visualization.opengl.text.TextManager;
 import org.gephi.visualization.opengl.text.TextModel;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
 
@@ -153,7 +150,9 @@ public class VizBarController {
         }
 
         public JComponent getExtendedComponent() {
-            return new GlobalSettingsPanel();
+            GlobalSettingsPanel panel = new GlobalSettingsPanel();
+            panel.setup();
+            return panel;
         }
 
         public boolean hasToolbar() {
