@@ -137,4 +137,9 @@ public class CompatibilityNodeSphereModeler extends NodeSphereModeler implements
     public boolean is3d() {
         return true;
     }
+
+    @Override
+    public String getName() {
+        return "Sphere 3d";
+    }
 }

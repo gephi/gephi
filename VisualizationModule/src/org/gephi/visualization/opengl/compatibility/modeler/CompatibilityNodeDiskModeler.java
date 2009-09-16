@@ -145,7 +145,7 @@ public class CompatibilityNodeDiskModeler implements CompatibilityNodeModeler {
     }
 
     public String getName() {
-        return "Sphere";
+        return "Disk 2d";
     }
 
     @Override

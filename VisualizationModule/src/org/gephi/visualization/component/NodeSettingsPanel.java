@@ -34,6 +34,7 @@ import org.gephi.visualization.api.initializer.Modeler;
 import org.gephi.visualization.api.initializer.NodeModeler;
 import org.gephi.visualization.api.objects.ModelClass;
 import org.openide.util.NbBundle;
+import org.openide.windows.WindowManager;
 
 /**
  *
@@ -70,17 +71,21 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
                     return;
                 }
                 NodeModeler modeler = (NodeModeler) comboModel.getSelectedItem();
-                nodeClass.setCurrentModeler(modeler);
                 if (modeler.is3d() && !vizConfig.use3d()) {
-                    /*String overwriteMsg = NbBundle.getMessage(NodeSettingsPanel.class, "GraphFileExporterUI_overwriteDialog_message");
-                    if (JOptionPane.showConfirmDialog(null, overwriteMsg, NbBundle.getMessage(NodeSettingsPanel.class, "GraphFileExporterUI_overwriteDialog_title"), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
-                    return false;
-                    }*/
-                    //enable 3d
-                    vizConfig.setUse3d(true);
+                    String msg = NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message3d");
+                    if (JOptionPane.showConfirmDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                        nodeClass.setCurrentModeler(modeler);
+                        //enable 3d
+                        vizConfig.setUse3d(true);
+                    }
+
                 } else if (!modeler.is3d() && vizConfig.use3d()) {
-                    //disable 3d
-                    vizConfig.setUse3d(false);
+                    String msg = NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message2d");
+                    if (JOptionPane.showConfirmDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                        nodeClass.setCurrentModeler(modeler);
+                        //disable 3d
+                        vizConfig.setUse3d(false);
+                    }
                 }
             }
         });
