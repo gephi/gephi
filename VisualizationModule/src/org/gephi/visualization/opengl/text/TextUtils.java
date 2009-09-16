@@ -24,7 +24,6 @@ import com.sun.opengl.util.j2d.TextRenderer;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
-import java.awt.geom.Rectangle2D;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,15 +42,15 @@ public class TextUtils {
         this.manager = manager;
     }
 
-    public void reflow(int width, TextDataImpl text) {
+    public void reflow(TextManager.Renderer renderer, int width, TextDataImpl text) {
         flowList.clear();
         int numLines = 0;
-        TextRenderer renderer = manager.getRenderer().getJOGLRenderer();
-        FontRenderContext frc = renderer.getFontRenderContext();
+        TextRenderer joglRenderer = renderer.getJOGLRenderer();
+        FontRenderContext frc = joglRenderer.getFontRenderContext();
 
         String paragraph = text.getLine().text;
         Map attrs = new HashMap();
-        attrs.put(TextAttribute.FONT, renderer.getFont());
+        attrs.put(TextAttribute.FONT, joglRenderer.getFont());
         AttributedString str = new AttributedString(paragraph, attrs);
         LineBreakMeasurer measurer = new LineBreakMeasurer(str.getIterator(), frc);
         int curPos = 0;

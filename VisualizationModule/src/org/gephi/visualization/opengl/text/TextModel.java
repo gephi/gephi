@@ -39,11 +39,13 @@ public class TextModel {
     protected ColorMode colorMode;
     protected SizeMode sizeMode;
     protected boolean selectedOnly;
-    protected Font font;
-    protected List<ChangeListener> listeners = new ArrayList<ChangeListener>();
-    protected float sizeFactor = 0.5f;//Between 0 and 1
+    protected Font nodeFont;
+    protected Font edgeFont;
     protected float[] nodeColor = {0f, 0f, 0f, 1f};
     protected float[] edgeColor = {0f, 0f, 0f, 1f};
+    protected float nodeSizeFactor = 0.5f;//Between 0 and 1
+    protected float edgeSizeFactor = 0.5f;
+    protected List<ChangeListener> listeners = new ArrayList<ChangeListener>();
 
     public void addChangeListener(ChangeListener changeListener) {
         listeners.add(changeListener);
@@ -60,13 +62,40 @@ public class TextModel {
         }
     }
 
-    public Font getFont() {
-        return font;
+    public void setEdgeFont(Font edgeFont) {
+        this.edgeFont = edgeFont;
+        fireChangeEvent();
     }
 
-    public void setFont(Font font) {
-        this.font = font;
+    public void setEdgeSizeFactor(float edgeSizeFactor) {
+        this.edgeSizeFactor = edgeSizeFactor;
         fireChangeEvent();
+    }
+
+    public void setNodeFont(Font nodeFont) {
+        this.nodeFont = nodeFont;
+        fireChangeEvent();
+    }
+
+    public void setNodeSizeFactor(float nodeSizeFactor) {
+        this.nodeSizeFactor = nodeSizeFactor;
+        fireChangeEvent();
+    }
+
+    public Font getEdgeFont() {
+        return edgeFont;
+    }
+
+    public float getEdgeSizeFactor() {
+        return edgeSizeFactor;
+    }
+
+    public Font getNodeFont() {
+        return nodeFont;
+    }
+
+    public float getNodeSizeFactor() {
+        return nodeSizeFactor;
     }
 
     public ColorMode getColorMode() {
@@ -96,15 +125,6 @@ public class TextModel {
         fireChangeEvent();
     }
 
-    public float getSizeFactor() {
-        return sizeFactor;
-    }
-
-    public void setSizeFactor(float sizeFactor) {
-        this.sizeFactor = sizeFactor;
-        fireChangeEvent();
-    }
-
     public Color getNodeColor() {
         return new Color(nodeColor[0], nodeColor[1], nodeColor[2], nodeColor[3]);
     }
@@ -126,11 +146,17 @@ public class TextModel {
     public void readXML(Element textModelElement) {
 
         //Font
-        Element fontE = (Element) textModelElement.getElementsByTagName("font").item(0);
-        String fontName = fontE.getAttribute("name");
-        int fontSize = Integer.parseInt(fontE.getAttribute("size"));
-        int fontStyle = Integer.parseInt(fontE.getAttribute("style"));
-        font = new Font(fontName, fontStyle, fontSize);
+        Element nodeFontE = (Element) textModelElement.getElementsByTagName("nodefont").item(0);
+        String nodeFontName = nodeFontE.getAttribute("name");
+        int nodeFontSize = Integer.parseInt(nodeFontE.getAttribute("size"));
+        int nodeFontStyle = Integer.parseInt(nodeFontE.getAttribute("style"));
+        nodeFont = new Font(nodeFontName, nodeFontSize, nodeFontStyle);
+
+        Element edgeFontE = (Element) textModelElement.getElementsByTagName("edgefont").item(0);
+        String edgeFontName = edgeFontE.getAttribute("name");
+        int edgeFontSize = Integer.parseInt(edgeFontE.getAttribute("size"));
+        int edgeFontStyle = Integer.parseInt(edgeFontE.getAttribute("style"));
+        edgeFont = new Font(edgeFontName, edgeFontSize, edgeFontStyle);
 
         //Color
         Element nodeColorE = (Element) textModelElement.getElementsByTagName("nodecolor").item(0);
@@ -145,8 +171,11 @@ public class TextModel {
                     Float.parseFloat(edgeColorE.getAttribute("a"))};
 
         //Size factor
-        Element sizeFactorE = (Element) textModelElement.getElementsByTagName("sizefactor").item(0);
-        sizeFactor = Float.parseFloat(sizeFactorE.getTextContent());
+        Element nodeSizeFactorE = (Element) textModelElement.getElementsByTagName("nodesizefactor").item(0);
+        nodeSizeFactor = Float.parseFloat(nodeSizeFactorE.getTextContent());
+
+        Element edgeSizeFactorE = (Element) textModelElement.getElementsByTagName("edgesizefactor").item(0);
+        edgeSizeFactor = Float.parseFloat(edgeSizeFactorE.getTextContent());
 
         //ColorMode
         Element colorModeE = (Element) textModelElement.getElementsByTagName("colormode").item(0);
@@ -177,16 +206,26 @@ public class TextModel {
         Element textModelE = document.createElement("textmodel");
 
         //Font
-        Element fontE = document.createElement("font");
-        fontE.setAttribute("name", font.getName());
-        fontE.setAttribute("size", Integer.toString(font.getSize()));
-        fontE.setAttribute("style", Integer.toString(font.getStyle()));
-        textModelE.appendChild(fontE);
+        Element nodeFontE = document.createElement("nodefont");
+        nodeFontE.setAttribute("name", nodeFont.getName());
+        nodeFontE.setAttribute("size", Integer.toString(nodeFont.getSize()));
+        nodeFontE.setAttribute("style", Integer.toString(nodeFont.getStyle()));
+        textModelE.appendChild(nodeFontE);
+
+        Element edgeFontE = document.createElement("edgefont");
+        edgeFontE.setAttribute("name", edgeFont.getName());
+        edgeFontE.setAttribute("size", Integer.toString(edgeFont.getSize()));
+        edgeFontE.setAttribute("style", Integer.toString(edgeFont.getStyle()));
+        textModelE.appendChild(edgeFontE);
 
         //Size factor
-        Element sizeFactorE = document.createElement("sizefactor");
-        sizeFactorE.setTextContent(String.valueOf(sizeFactor));
-        textModelE.appendChild(sizeFactorE);
+        Element nodeSizeFactorE = document.createElement("nodesizefactor");
+        nodeSizeFactorE.setTextContent(String.valueOf(nodeSizeFactor));
+        textModelE.appendChild(nodeSizeFactorE);
+
+        Element edgeSizeFactorE = document.createElement("edgesizefactor");
+        edgeSizeFactorE.setTextContent(String.valueOf(edgeSizeFactor));
+        textModelE.appendChild(edgeSizeFactorE);
 
         //Colors
         Element nodeColorE = document.createElement("nodecolor");

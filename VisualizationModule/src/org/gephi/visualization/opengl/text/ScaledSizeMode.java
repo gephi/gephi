@@ -30,14 +30,9 @@ import org.gephi.visualization.api.ModelImpl;
 public class ScaledSizeMode implements SizeMode {
 
     private static float FACTOR = 2000f;
-    private TextModel textModel;
-
-    public ScaledSizeMode(TextModel model) {
-        this.textModel = model;
-    }
-
-    public void setSizeFactor(TextDataImpl text, ModelImpl model) {
-        float factor = FACTOR * textModel.sizeFactor / model.getCameraDistance();
+    
+    public void setSizeFactor(float sizeFactor, TextDataImpl text, ModelImpl model) {
+        float factor = FACTOR * sizeFactor / model.getCameraDistance();
         //float factor = textModel.sizeFactor / FACTOR * model.getCameraDistance();   //Renderer3D FACTOR=800
         text.setSizeFactor(factor);
     }

@@ -85,7 +85,8 @@ public class VizConfig {
     protected boolean cleanDeletedModels = false;
     protected float[] defaultNodeLabelColor = {0f, 0f, 0f, 1f};
     protected float[] defaultEdgeLabelColor = {0.5f, 0.5f, 0.5f, 1f};
-    protected Font labelFont = new Font("Arial", Font.BOLD, 20);
+    protected Font nodeLabelFont = new Font("Arial", Font.BOLD, 20);
+    protected Font edgeLabelFont = new Font("Arial", Font.BOLD, 20);
     protected boolean labelMipMap = true;
     protected boolean labelAntialiased = true;
     protected boolean labelFractionalMetrics = true;
@@ -319,8 +320,12 @@ public class VizConfig {
         return defaultNodeLabelColor;
     }
 
-    public Font getLabelFont() {
-        return labelFont;
+    public Font getNodeLabelFont() {
+        return nodeLabelFont;
+    }
+
+    public Font getEdgeLabelFont() {
+        return edgeLabelFont;
     }
 
     public boolean isLabelMipMap() {

@@ -293,15 +293,15 @@ public class CompatibilityEngine extends AbstractEngine {
         //Labels
         if (vizConfig.isShowNodeLabels() || vizConfig.isShowEdgeLabels()) {
             markTime++;
-            textManager.getRenderer().beginRendering();
             if (nodeClass.isEnabled() && vizConfig.isShowNodeLabels()) {
+                textManager.getNodeRenderer().beginRendering();
                 textManager.defaultNodeColor();
                 if (textManager.isSelectedOnly()) {
                     for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
                         ModelImpl obj = itr.next();
                         if (obj.markTime != markTime) {
                             if ((obj.isSelected() || obj.isHighlight()) && obj.getObj().isLabelVisible()) {
-                                textManager.getRenderer().drawText(obj);
+                                textManager.getNodeRenderer().drawTextNode(obj);
                             }
                             obj.markTime = markTime;
                         }
@@ -311,22 +311,23 @@ public class CompatibilityEngine extends AbstractEngine {
                         ModelImpl obj = itr.next();
                         if (obj.markTime != markTime) {
                             //if (obj.getObj().isLabelVisible()) {
-                            textManager.getRenderer().drawText(obj);
+                            textManager.getNodeRenderer().drawTextNode(obj);
                             //}
                             obj.markTime = markTime;
                         }
                     }
                 }
-
+                textManager.getNodeRenderer().endRendering();
             }
             if (edgeClass.isEnabled() && vizConfig.isShowEdgeLabels()) {
+                textManager.getEdgeRenderer().beginRendering();
                 textManager.defaultEdgeColor();
                 if (textManager.isSelectedOnly()) {
                     for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
                         ModelImpl obj = itr.next();
                         if (obj.markTime != markTime) {
                             if ((obj.isSelected() || obj.isHighlight()) && obj.getObj().isLabelVisible()) {
-                                textManager.getRenderer().drawText(obj);
+                                textManager.getEdgeRenderer().drawTextEdge(obj);
                             }
                             obj.markTime = markTime;
                         }
@@ -336,14 +337,15 @@ public class CompatibilityEngine extends AbstractEngine {
                         ModelImpl obj = itr.next();
                         if (obj.markTime != markTime) {
                             //if (obj.getObj().isLabelVisible()) {
-                            textManager.getRenderer().drawText(obj);
+                            textManager.getEdgeRenderer().drawTextEdge(obj);
                             //}
                             obj.markTime = markTime;
                         }
                     }
                 }
+                textManager.getEdgeRenderer().endRendering();
             }
-            textManager.getRenderer().endRendering();
+            
         }
 
 
@@ -372,7 +374,8 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public void initScreenshot(GL gl, GLU glu) {
         initDisplayLists(gl, glu);
-        textManager.getRenderer().initRenderer();
+        textManager.getNodeRenderer().reinitRenderer();
+        textManager.getEdgeRenderer().reinitRenderer();
     }
 
     @Override

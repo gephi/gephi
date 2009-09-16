@@ -51,7 +51,8 @@ public class TextManager implements VizArchitecture {
 
     //Processing
     private TextUtils textUtils;
-    private Renderer renderer;
+    private Renderer nodeRenderer;
+    private Renderer edgeRenderer;
     private TextDataBuilder builder;
 
     //Variables
@@ -69,9 +70,9 @@ public class TextManager implements VizArchitecture {
 
         //SizeMode init
         sizeModes = new SizeMode[3];
-        sizeModes[0] = new FixedSizeMode(model);
-        sizeModes[1] = new ScaledSizeMode(model);
-        sizeModes[2] = new ProportionalSizeMode(model);
+        sizeModes[0] = new FixedSizeMode();
+        sizeModes[1] = new ScaledSizeMode();
+        sizeModes[2] = new ProportionalSizeMode();
 
         //ColorMode init
         colorModes = new ColorMode[2];
@@ -85,30 +86,36 @@ public class TextManager implements VizArchitecture {
         model.colorMode = new UniqueColorMode(model);
         model.sizeMode = sizeModes[1];
         model.colorMode = colorModes[0];
-        model.font = vizConfig.getLabelFont();
+        model.nodeFont = vizConfig.getNodeLabelFont();
+        model.edgeFont = vizConfig.getEdgeLabelFont();
         model.nodeColor = vizConfig.getDefaultNodeLabelColor();
         model.edgeColor = vizConfig.getDefaultEdgeLabelColor();
         model.setSelectedOnly(vizConfig.isShowLabelOnSelectedOnly());
-        renderer = new Renderer2D();
-        renderer.initRenderer();
+        nodeRenderer = new Renderer2D();
+        nodeRenderer.initRenderer(model.getNodeFont());
+        edgeRenderer = new Renderer2D();
+        edgeRenderer.initRenderer(model.getEdgeFont());
 
         //Model listening
         model.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
-                if (!renderer.getFont().equals(model.getFont())) {
-                    renderer.setFont(model.getFont());
+                if (!nodeRenderer.getFont().equals(model.getNodeFont())) {
+                    nodeRenderer.setFont(model.getNodeFont());
+                }
+                if (!edgeRenderer.getFont().equals(model.getEdgeFont())) {
+                    edgeRenderer.setFont(model.getEdgeFont());
                 }
             }
         });
     }
 
     public void defaultNodeColor() {
-        model.colorMode.defaultNodeColor(renderer);
+        model.colorMode.defaultNodeColor(nodeRenderer);
     }
 
     public void defaultEdgeColor() {
-        model.colorMode.defaultEdgeColor(renderer);
+        model.colorMode.defaultEdgeColor(edgeRenderer);
     }
 
     public TextData newTextData(NodeData node) {
@@ -139,13 +146,19 @@ public class TextManager implements VizArchitecture {
         return colorModes;
     }
 
-    public Renderer getRenderer() {
-        return renderer;
+    public Renderer getNodeRenderer() {
+        return nodeRenderer;
+    }
+
+    public Renderer getEdgeRenderer() {
+        return edgeRenderer;
     }
 
     public static interface Renderer {
 
-        public void initRenderer();
+        public void initRenderer(Font font);
+
+        public void reinitRenderer();
 
         public void disposeRenderer();
 
@@ -153,7 +166,9 @@ public class TextManager implements VizArchitecture {
 
         public void endRendering();
 
-        public void drawText(ModelImpl model);
+        public void drawTextNode(ModelImpl model);
+
+        public void drawTextEdge(ModelImpl model);
 
         public Font getFont();
 
@@ -168,8 +183,12 @@ public class TextManager implements VizArchitecture {
 
         private TextRenderer renderer;
 
-        public void initRenderer() {
-            renderer = new TextRenderer(model.getFont(), antialised, fractionalMetrics, null, mipmap);
+        public void initRenderer(Font font) {
+            renderer = new TextRenderer(font, antialised, fractionalMetrics, null, mipmap);
+        }
+
+        public void reinitRenderer() {
+            renderer = new TextRenderer(renderer.getFont(), antialised, fractionalMetrics, null, mipmap);
         }
 
         public void disposeRenderer() {
@@ -182,7 +201,7 @@ public class TextManager implements VizArchitecture {
         }
 
         public void setFont(Font font) {
-            initRenderer();
+            initRenderer(font);
         }
 
         public void beginRendering() {
@@ -193,12 +212,30 @@ public class TextManager implements VizArchitecture {
             renderer.end3DRendering();
         }
 
-        public void drawText(ModelImpl objectModel) {
+        public void drawTextNode(ModelImpl objectModel) {
             Renderable renderable = objectModel.getObj();
             TextDataImpl textData = (TextDataImpl) renderable.getTextData();
             if (textData != null) {
                 model.colorMode.textColor(this, textData, objectModel);
-                model.sizeMode.setSizeFactor(textData, objectModel);
+                model.sizeMode.setSizeFactor(model.nodeSizeFactor, textData, objectModel);
+
+                String txt = textData.line.text;
+                Rectangle2D r = renderer.getBounds(txt);
+                textData.line.setBounds(r);
+                float posX = renderable.x() + (float) r.getWidth() / -2 * textData.sizeFactor;
+                float posY = renderable.y() + (float) r.getHeight() / -2 * textData.sizeFactor;
+                float posZ = renderable.getRadius();
+
+                renderer.draw3D(txt, posX, posY, posZ, textData.sizeFactor);
+            }
+        }
+
+        public void drawTextEdge(ModelImpl objectModel) {
+            Renderable renderable = objectModel.getObj();
+            TextDataImpl textData = (TextDataImpl) renderable.getTextData();
+            if (textData != null) {
+                model.colorMode.textColor(this, textData, objectModel);
+                model.sizeMode.setSizeFactor(model.edgeSizeFactor, textData, objectModel);
 
                 String txt = textData.line.text;
                 Rectangle2D r = renderer.getBounds(txt);
@@ -225,8 +262,12 @@ public class TextManager implements VizArchitecture {
         private TextRenderer renderer;
         private static final float PIXEL_LIMIT = 3.5f;
 
-        public void initRenderer() {
-            renderer = new TextRenderer(model.getFont(), antialised, fractionalMetrics, null, mipmap);
+        public void initRenderer(Font font) {
+            renderer = new TextRenderer(font, antialised, fractionalMetrics, null, mipmap);
+        }
+
+        public void reinitRenderer() {
+            renderer = new TextRenderer(renderer.getFont(), antialised, fractionalMetrics, null, mipmap);
         }
 
         public void disposeRenderer() {
@@ -239,7 +280,7 @@ public class TextManager implements VizArchitecture {
         }
 
         public void setFont(Font font) {
-            initRenderer();
+            initRenderer(font);
         }
 
         public void beginRendering() {
@@ -250,12 +291,31 @@ public class TextManager implements VizArchitecture {
             renderer.endRendering();
         }
 
-        public void drawText(ModelImpl objectModel) {
+        public void drawTextNode(ModelImpl objectModel) {
             Renderable renderable = objectModel.getObj();
             TextDataImpl textData = (TextDataImpl) renderable.getTextData();
             if (textData != null) {
                 model.colorMode.textColor(this, textData, objectModel);
-                model.sizeMode.setSizeFactor(textData, objectModel);
+                model.sizeMode.setSizeFactor(model.nodeSizeFactor, textData, objectModel);
+                if (textData.sizeFactor * renderer.getCharWidth('a') < PIXEL_LIMIT) {
+                    return;
+                }
+                String txt = textData.line.text;
+                Rectangle2D r = renderer.getBounds(txt);
+                textData.line.setBounds(r);
+                float posX = renderable.getModel().getViewportX() + (float) r.getWidth() / -2 * textData.sizeFactor;
+                float posY = renderable.getModel().getViewportY() + (float) r.getHeight() / -2 * textData.sizeFactor;
+
+                renderer.draw3D(txt, posX, posY, 0, textData.sizeFactor);
+            }
+        }
+
+        public void drawTextEdge(ModelImpl objectModel) {
+            Renderable renderable = objectModel.getObj();
+            TextDataImpl textData = (TextDataImpl) renderable.getTextData();
+            if (textData != null) {
+                model.colorMode.textColor(this, textData, objectModel);
+                model.sizeMode.setSizeFactor(model.edgeSizeFactor, textData, objectModel);
                 if (textData.sizeFactor * renderer.getCharWidth('a') < PIXEL_LIMIT) {
                     return;
                 }

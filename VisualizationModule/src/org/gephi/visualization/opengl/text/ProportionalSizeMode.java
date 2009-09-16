@@ -30,14 +30,9 @@ import org.gephi.visualization.api.ModelImpl;
 public class ProportionalSizeMode implements SizeMode {
 
     private static float FACTOR = 5f;
-    private TextModel textModel;
 
-    public ProportionalSizeMode(TextModel model) {
-        this.textModel = model;
-    }
-
-    public void setSizeFactor(TextDataImpl text, ModelImpl model) {
-        float factor = textModel.sizeFactor*model.getObj().getSize()/FACTOR +0.1f;
+    public void setSizeFactor(float sizeFactor, TextDataImpl text, ModelImpl model) {
+        float factor = sizeFactor*model.getObj().getSize()/FACTOR +0.1f;
         text.setSizeFactor(factor);
     }
 

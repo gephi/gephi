@@ -29,14 +29,8 @@ import org.gephi.visualization.api.ModelImpl;
  */
 public class FixedSizeMode implements SizeMode {
 
-    private TextModel textModel;
-
-    public FixedSizeMode(TextModel model) {
-        this.textModel = model;
-    }
-
-    public void setSizeFactor(TextDataImpl text, ModelImpl model) {
-        float factor = textModel.sizeFactor*1.9f +0.1f;        //Between 0.1 and 2
+    public void setSizeFactor(float sizeFactor, TextDataImpl text, ModelImpl model) {
+        float factor = sizeFactor*1.9f +0.1f;        //Between 0.1 and 2
         text.setSizeFactor(factor);
     }
 

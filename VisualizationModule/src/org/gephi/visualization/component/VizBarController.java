@@ -358,31 +358,31 @@ public class VizBarController {
 
             //Font
             final TextModel model = VizController.getInstance().getTextManager().getModel();
-            final JButton fontButton = new JButton(model.getFont().getFontName() + ", " + model.getFont().getSize());
+            final JButton fontButton = new JButton(model.getNodeFont().getFontName() + ", " + model.getNodeFont().getSize());
             fontButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.font"));
             fontButton.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), model.getFont());
-                    if (font != null && font != model.getFont()) {
-                        model.setFont(font);
+                    Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), model.getNodeFont());
+                    if (font != null && font != model.getNodeFont()) {
+                        model.setNodeFont(font);
                     }
                 }
             });
             model.addChangeListener(new ChangeListener() {
 
                 public void stateChanged(ChangeEvent e) {
-                    fontButton.setText(model.getFont().getFontName() + ", " + model.getFont().getSize());
+                    fontButton.setText(model.getNodeFont().getFontName() + ", " + model.getNodeFont().getSize());
                 }
             });
             components[2] = fontButton;
 
             //Font size
-            final JSlider fontSizeSlider = new JSlider(0, 100, (int) (model.getSizeFactor() * 100f));
+            final JSlider fontSizeSlider = new JSlider(0, 100, (int) (model.getNodeSizeFactor() * 100f));
             fontSizeSlider.addChangeListener(new ChangeListener() {
 
                 public void stateChanged(ChangeEvent e) {
-                    model.setSizeFactor(fontSizeSlider.getValue() / 100f);
+                    model.setNodeSizeFactor(fontSizeSlider.getValue() / 100f);
                 }
             });
             fontSizeSlider.setPreferredSize(new Dimension(100, 20));
