@@ -263,4 +263,14 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
     public void setArrow(ModelImpl arrow) {
         this.arrow = arrow;
     }
+
+    @Override
+    public float getViewportX() {
+        return (obj.getSource().getModel().getViewportX()+obj.getTarget().getModel().getViewportX())/2f;
+    }
+
+    @Override
+    public float getViewportY() {
+        return (obj.getSource().getModel().getViewportY()+obj.getTarget().getModel().getViewportY())/2f;
+    }
 }

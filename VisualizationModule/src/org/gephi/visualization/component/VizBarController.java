@@ -353,7 +353,7 @@ public class VizBarController {
                 }
             };
             labelColorModeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/labelColorMode.png")));
-            labelColorModeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.sizeMode"));
+            labelColorModeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.colorMode"));
             components[1] = labelColorModeButton;
 
             //Font
