@@ -311,53 +311,64 @@ public class VizBarController {
 
         public JComponent[] getToolbarComponents() {
             JComponent[] components = new JComponent[5];
+            TextModel model = VizController.getInstance().getTextManager().getModel();
 
             //Mode
-            JPopupButton labelSizeModeButton = new JPopupButton() {
+            final JPopupButton labelSizeModeButton = new JPopupButton();
+            TextManager textManager = VizController.getInstance().getTextManager();
+            for (final SizeMode sm : textManager.getSizeModes()) {
+                labelSizeModeButton.addItem(sm, sm.getIcon());
+            }
+            labelSizeModeButton.setSelectedItem(textManager.getModel().getSizeMode());
+            labelSizeModeButton.setChangeListener(new ChangeListener() {
 
-                @Override
-                public void createPopup(JPopupMenu popupMenu) {
-                    final TextManager textManager = VizController.getInstance().getTextManager();
-                    for (final SizeMode sm : textManager.getSizeModes()) {
-                        JRadioButtonMenuItem item = new JRadioButtonMenuItem(sm.getName(), sm.getIcon(), sm == textManager.getModel().getSizeMode());
-                        item.addActionListener(new ActionListener() {
-
-                            public void actionPerformed(ActionEvent e) {
-                                textManager.getModel().setSizeMode(sm);
-                            }
-                        });
-                        popupMenu.add(item);
-                    }
+                public void stateChanged(ChangeEvent e) {
+                    SizeMode sm = (SizeMode)e.getSource();
+                    TextModel model = VizController.getInstance().getTextManager().getModel();
+                    model.setSizeMode(sm);
                 }
-            };
+            });
             labelSizeModeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/labelSizeMode.png")));
             labelSizeModeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.sizeMode"));
+            model.addChangeListener(new ChangeListener() {
+
+                public void stateChanged(ChangeEvent e) {
+                    TextModel model = VizController.getInstance().getTextManager().getModel();
+                    if(model.getSizeMode()!=labelSizeModeButton.getSelectedItem()) {
+                        labelSizeModeButton.setSelectedItem(model.getSizeMode());
+                    }
+                }
+            });
             components[0] = labelSizeModeButton;
 
             //Color mode
-            JPopupButton labelColorModeButton = new JPopupButton() {
+            final JPopupButton labelColorModeButton = new JPopupButton();
+            for (final ColorMode cm : textManager.getColorModes()) {
+                labelColorModeButton.addItem(cm, cm.getIcon());
+            }
+            labelColorModeButton.setSelectedItem(textManager.getModel().getColorMode());
+            labelColorModeButton.setChangeListener(new ChangeListener() {
 
-                @Override
-                public void createPopup(JPopupMenu popupMenu) {
-                    final TextManager textManager = VizController.getInstance().getTextManager();
-                    for (final ColorMode cm : textManager.getColorModes()) {
-                        JRadioButtonMenuItem item = new JRadioButtonMenuItem(cm.getName(), cm.getIcon(), cm == textManager.getModel().getColorMode());
-                        item.addActionListener(new ActionListener() {
-
-                            public void actionPerformed(ActionEvent e) {
-                                textManager.getModel().setColorMode(cm);
-                            }
-                        });
-                        popupMenu.add(item);
-                    }
+                public void stateChanged(ChangeEvent e) {
+                    ColorMode cm = (ColorMode)e.getSource();
+                    TextModel model = VizController.getInstance().getTextManager().getModel();
+                    model.setColorMode(cm);
                 }
-            };
+            });
             labelColorModeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/labelColorMode.png")));
             labelColorModeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.colorMode"));
+            model.addChangeListener(new ChangeListener() {
+
+                public void stateChanged(ChangeEvent e) {
+                    TextModel model = VizController.getInstance().getTextManager().getModel();
+                    if(model.getColorMode()!=labelColorModeButton.getSelectedItem()) {
+                        labelColorModeButton.setSelectedItem(model.getColorMode());
+                    }
+                }
+            });
             components[1] = labelColorModeButton;
 
             //Font
-            TextModel model = VizController.getInstance().getTextManager().getModel();
             final JButton fontButton = new JButton(model.getNodeFont().getFontName() + ", " + model.getNodeFont().getSize());
             fontButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.font"));
             fontButton.addActionListener(new ActionListener() {

@@ -22,8 +22,13 @@ package org.gephi.ui.components;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -31,18 +36,76 @@ import javax.swing.JPopupMenu;
  */
 public class JPopupButton extends JButton {
 
+    private ArrayList<JPopupButtonItem> items;
+    private JPopupButtonItem selectedItem;
+    private ChangeListener listener;
+
     public JPopupButton() {
 
+        items = new ArrayList<JPopupButtonItem>();
         addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                JPopupMenu menu = new JPopupMenu();
-                createPopup(menu);
+                JPopupMenu menu = createPopup();
                 menu.show(JPopupButton.this, 0, getHeight());
             }
         });
     }
 
-    public void createPopup(JPopupMenu popupMenu) {
+    public JPopupMenu createPopup() {
+        JPopupMenu menu = new JPopupMenu();
+        for (final JPopupButtonItem item : items) {
+            JRadioButtonMenuItem r = new JRadioButtonMenuItem(item.object.toString(), item.icon, item == selectedItem);
+            r.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    if (item != selectedItem) {
+                        selectedItem = item;
+                        fireChangeEvent();
+                    }
+                }
+            });
+            menu.add(r);
+        }
+        return menu;
+    }
+
+    public void addItem(Object object, Icon icon) {
+        items.add(new JPopupButtonItem(object, icon));
+    }
+
+    public void setSelectedItem(Object item) {
+        for (JPopupButtonItem i : items) {
+            if (i.object == item) {
+                selectedItem = i;
+                return;
+            }
+        }
+        throw new IllegalArgumentException("This elemen doesn't exist.");
+    }
+
+    public Object getSelectedItem() {
+        return selectedItem.object;
+    }
+
+    public void setChangeListener(ChangeListener changeListener) {
+        this.listener = changeListener;
+    }
+
+    private void fireChangeEvent() {
+        if (changeListener != null) {
+            changeListener.stateChanged(new ChangeEvent(selectedItem.object));
+        }
+    }
+
+    private class JPopupButtonItem {
+
+        private final Object object;
+        private final Icon icon;
+
+        public JPopupButtonItem(Object object, Icon icon) {
+            this.object = object;
+            this.icon = icon;
+        }
     }
 }
