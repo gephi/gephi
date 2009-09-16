@@ -345,7 +345,7 @@ public class CompatibilityEngine extends AbstractEngine {
                 }
                 textManager.getEdgeRenderer().endRendering();
             }
-            
+
         }
 
 

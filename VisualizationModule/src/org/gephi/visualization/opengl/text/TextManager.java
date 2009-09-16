@@ -47,7 +47,8 @@ public class TextManager implements VizArchitecture {
 
     //Configuration
     private SizeMode[] sizeModes;
-    private ColorMode[] colorModes;;
+    private ColorMode[] colorModes;
+    ;
 
     //Processing
     private TextUtils textUtils;

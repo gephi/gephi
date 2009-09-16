@@ -357,12 +357,13 @@ public class VizBarController {
             components[1] = labelColorModeButton;
 
             //Font
-            final TextModel model = VizController.getInstance().getTextManager().getModel();
+            TextModel model = VizController.getInstance().getTextManager().getModel();
             final JButton fontButton = new JButton(model.getNodeFont().getFontName() + ", " + model.getNodeFont().getSize());
             fontButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.font"));
             fontButton.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
+                    TextModel model = VizController.getInstance().getTextManager().getModel();
                     Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), model.getNodeFont());
                     if (font != null && font != model.getNodeFont()) {
                         model.setNodeFont(font);
@@ -372,6 +373,7 @@ public class VizBarController {
             model.addChangeListener(new ChangeListener() {
 
                 public void stateChanged(ChangeEvent e) {
+                    TextModel model = VizController.getInstance().getTextManager().getModel();
                     fontButton.setText(model.getNodeFont().getFontName() + ", " + model.getNodeFont().getSize());
                 }
             });
@@ -382,6 +384,7 @@ public class VizBarController {
             fontSizeSlider.addChangeListener(new ChangeListener() {
 
                 public void stateChanged(ChangeEvent e) {
+                    TextModel model = VizController.getInstance().getTextManager().getModel();
                     model.setNodeSizeFactor(fontSizeSlider.getValue() / 100f);
                 }
             });
@@ -397,6 +400,7 @@ public class VizBarController {
             colorChooser.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent ae) {
+                    TextModel model = VizController.getInstance().getTextManager().getModel();
                     model.setNodeColor(colorChooser.getColor());
                 }
             });
@@ -407,7 +411,9 @@ public class VizBarController {
         }
 
         public JComponent getExtendedComponent() {
-            return new JPanel();
+            LabelSettingsPanel panel = new LabelSettingsPanel();
+            panel.setup();
+            return panel;
         }
 
         public boolean hasToolbar() {

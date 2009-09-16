@@ -82,4 +82,9 @@ public class UniqueColorMode implements ColorMode {
     public ImageIcon getIcon() {
         return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/UniqueColorMode.png"));
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

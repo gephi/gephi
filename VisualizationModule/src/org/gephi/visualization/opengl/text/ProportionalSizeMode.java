@@ -43,4 +43,9 @@ public class ProportionalSizeMode implements SizeMode {
     public ImageIcon getIcon() {
         return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/ProportionalSizeMode.png"));
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

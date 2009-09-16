@@ -398,7 +398,7 @@ public class VizConfig {
 
     public void setShowNodeLabels(boolean showNodeLabels) {
         this.showNodeLabels = showNodeLabels;
-        fireProperyChange("showLabels", null, showNodeLabels);
+        fireProperyChange("showNodeLabels", null, showNodeLabels);
     }
 
     public void setShowArrows(boolean showArrows) {

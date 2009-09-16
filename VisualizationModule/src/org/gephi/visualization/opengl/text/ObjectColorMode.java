@@ -79,4 +79,9 @@ public class ObjectColorMode implements ColorMode {
     public ImageIcon getIcon() {
         return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/ObjectColorMode.png"));
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
