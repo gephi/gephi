@@ -67,8 +67,7 @@ public class TextManager implements VizArchitecture {
     public TextManager() {
         textUtils = new TextUtils(this);
         builder = new TextDataBuilder();
-        model = VizController.getInstance().getVizModel().getTextModel();
-
+        
         //SizeMode init
         sizeModes = new SizeMode[3];
         sizeModes[0] = new FixedSizeMode();
@@ -77,23 +76,14 @@ public class TextManager implements VizArchitecture {
 
         //ColorMode init
         colorModes = new ColorMode[2];
-        colorModes[0] = new UniqueColorMode(model);
+        colorModes[0] = new UniqueColorMode();
         colorModes[1] = new ObjectColorMode();
     }
 
     public void initArchitecture() {
+        model = VizController.getInstance().getVizModel().getTextModel();
         vizConfig = VizController.getInstance().getVizConfig();
         drawable = VizController.getInstance().getDrawable();
-        model.colorMode = new UniqueColorMode(model);
-        model.sizeMode = sizeModes[1];
-        model.colorMode = colorModes[0];
-        model.showNodeLabels = vizConfig.isDefaultShowNodeLabels();
-        model.showEdgeLabels = vizConfig.isDefaultShowEdgeLabels();
-        model.nodeFont = vizConfig.getDefaultNodeLabelFont();
-        model.edgeFont = vizConfig.getDefaultEdgeLabelFont();
-        model.nodeColor = vizConfig.getDefaultNodeLabelColor();
-        model.edgeColor = vizConfig.getDefaultEdgeLabelColor();
-        model.setSelectedOnly(vizConfig.isDefaultShowLabelOnSelectedOnly());
         nodeRenderer = new Renderer2D();
         nodeRenderer.initRenderer(model.getNodeFont());
         edgeRenderer = new Renderer2D();

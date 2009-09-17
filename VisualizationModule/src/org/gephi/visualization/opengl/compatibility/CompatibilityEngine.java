@@ -157,9 +157,6 @@ public class CompatibilityEngine extends AbstractEngine {
         if (changeMode) {
             modeManager.unload();
         }
-        if (reinit) {
-            graphIO.centerOnGraph();
-        }
         if (newConfig) {
             dataBridge.reset();
             //Reset model classes
@@ -215,6 +212,8 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
         if (reinit) {
+            VizController.getInstance().refreshWorkspace();
+            dataBridge.reset();
             graphDrawable.initConfig(gl);
             reinit = false;
         }

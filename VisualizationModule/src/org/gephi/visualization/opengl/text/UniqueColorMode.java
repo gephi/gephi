@@ -32,22 +32,20 @@ import org.gephi.visualization.opengl.text.TextManager.Renderer;
  */
 public class UniqueColorMode implements ColorMode {
 
-    private TextModel textModel;
     private VizConfig vizConfig;
     private float[] color;
 
-    public UniqueColorMode(TextModel model) {
-        this.textModel = model;
+    public UniqueColorMode() {
         this.vizConfig = VizController.getInstance().getVizConfig();
     }
 
     public void defaultNodeColor(Renderer renderer) {
-        color = textModel.nodeColor;
+        color = VizController.getInstance().getVizModel().getTextModel().nodeColor;
         renderer.setColor(color[0], color[1], color[2], color[3]);
     }
 
     public void defaultEdgeColor(Renderer renderer) {
-        color = textModel.edgeColor;
+        color = VizController.getInstance().getVizModel().getTextModel().edgeColor;
         renderer.setColor(color[0], color[1], color[2], color[3]);
     }
 

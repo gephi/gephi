@@ -27,6 +27,7 @@ import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.VizConfig;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -48,6 +49,23 @@ public class TextModel {
     protected float nodeSizeFactor = 0.5f;//Between 0 and 1
     protected float edgeSizeFactor = 0.5f;
     protected List<ChangeListener> listeners = new ArrayList<ChangeListener>();
+
+    public TextModel() {
+        defaultValues();
+    }
+
+    private void defaultValues() {
+        VizConfig vizConfig = VizController.getInstance().getVizConfig();
+        showNodeLabels = vizConfig.isDefaultShowNodeLabels();
+        showEdgeLabels = vizConfig.isDefaultShowEdgeLabels();
+        nodeFont = vizConfig.getDefaultNodeLabelFont();
+        edgeFont = vizConfig.getDefaultEdgeLabelFont();
+        nodeColor = vizConfig.getDefaultNodeLabelColor();
+        edgeColor = vizConfig.getDefaultEdgeLabelColor();
+        selectedOnly = vizConfig.isDefaultShowLabelOnSelectedOnly();
+        colorMode = VizController.getInstance().getTextManager().getColorModes()[0];
+        sizeMode = VizController.getInstance().getTextManager().getSizeModes()[0];
+    }
 
     //Event
     public void addChangeListener(ChangeListener changeListener) {
@@ -211,7 +229,7 @@ public class TextModel {
         Element colorModeE = (Element) textModelElement.getElementsByTagName("colormode").item(0);
         String colorModeClass = colorModeE.getAttribute("class");
         if (colorModeClass.equals("UniqueColorMode")) {
-            colorMode = new UniqueColorMode(this);
+            colorMode = new UniqueColorMode();
         } else if (colorModeClass.equals("ObjectColorMode")) {
             colorMode = new ObjectColorMode();
         }

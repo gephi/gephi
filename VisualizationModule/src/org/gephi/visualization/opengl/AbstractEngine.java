@@ -186,6 +186,10 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         object.setViewportRadius(rad);
     }
 
+    public void reinit() {
+        reinit = true;
+    }
+
     protected boolean isUnderMouse(ModelImpl obj) {
         if (obj.isAutoSelected()) {
             return true;

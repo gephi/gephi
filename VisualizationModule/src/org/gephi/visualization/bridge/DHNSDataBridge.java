@@ -44,8 +44,6 @@ import org.gephi.visualization.mode.ModeManager;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.objects.ConvexHullModel;
 import org.gephi.visualization.opengl.compatibility.objects.Edge2dModel;
-import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
 
 /**
@@ -75,9 +73,6 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.modeManager = VizController.getInstance().getModeManager();
         graph = controller.getHierarchicalDirectedGraph();
-
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.addWorkspaceListener(new VizWorkspaceListener());
     }
 
     public void updateWorld() {
@@ -99,6 +94,9 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         if (graph == null) {
             return;
         }
+
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        System.out.println("workspace="+pc.getCurrentWorkspace().getName());
 
         if (graph.isDynamic()) {
             graph = (ClusteredDirectedGraph) controller.getCentralDynamicGraph().getGraph();
@@ -318,26 +316,6 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             if (objClass.isEnabled()) {
                 engine.resetObjectClass(objClass);
             }
-        }
-    }
-
-    private class VizWorkspaceListener implements WorkspaceListener {
-
-        public void initialize(Workspace workspace) {
-        }
-
-        public void select(Workspace workspace) {
-            reset();
-        }
-
-        public void unselect(Workspace workspace) {
-        }
-
-        public void close(Workspace workspace) {
-        }
-
-        public void disable() {
-            reset();
         }
     }
 }

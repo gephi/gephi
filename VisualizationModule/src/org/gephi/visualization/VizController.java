@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization;
 
 import java.awt.Dimension;
+import org.gephi.project.api.ProjectController;
 import org.gephi.visualization.api.GraphIO;
 import org.gephi.visualization.api.VizEventManager;
 import org.gephi.visualization.config.VizCommander;
@@ -41,6 +42,9 @@ import org.gephi.visualization.screenshot.ScreenshotMaker;
 import org.gephi.visualization.opengl.text.TextManager;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.gephi.visualization.swing.StandardGraphIO;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceListener;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -50,8 +54,10 @@ public class VizController {
 
     //Singleton
     private static VizController instance;
+
     private VizController() {
     }
+
     public synchronized static VizController getInstance() {
         if (instance == null) {
             instance = new VizController();
@@ -81,7 +87,6 @@ public class VizController {
         VizCommander commander = new VizCommander();
 
         vizConfig = new VizConfig();
-        currentModel = new VizModel();
         graphIO = new StandardGraphIO();
         engine = new CompatibilityEngine();
         vizEventManager = new StandardVizEventManager();
@@ -94,6 +99,7 @@ public class VizController {
         modeManager = new ModeManager();
         textManager = new TextManager();
         screenshotMaker = new ScreenshotMaker();
+        currentModel = new VizModel();
 
         if (vizConfig.isUseGLJPanel()) {
             drawable = commander.createPanel();
@@ -110,6 +116,38 @@ public class VizController {
         modeManager.initArchitecture();
         textManager.initArchitecture();
         screenshotMaker.initArchitecture();
+
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.addWorkspaceListener(new WorkspaceListener() {
+
+            public void initialize(Workspace workspace) {
+            }
+
+            public void select(Workspace workspace) {
+                engine.reinit();
+            }
+
+            public void unselect(Workspace workspace) {
+            }
+
+            public void close(Workspace workspace) {
+            }
+
+            public void disable() {
+                engine.reinit();
+            }
+        });
+    }
+
+    public void refreshWorkspace() {
+        final VizWorkspaceDataProvider vizWorkspaceDataProvider = Lookup.getDefault().lookup(VizWorkspaceDataProvider.class);
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        VizModel model = pc.getCurrentWorkspace().getWorkspaceData().getData(vizWorkspaceDataProvider.getWorkspaceDataKey());
+        if (model != currentModel) {
+            model.setListeners(currentModel.getListeners());
+            currentModel.setListeners(null);
+            currentModel = model;
+        }
     }
 
     public VizModel getVizModel() {

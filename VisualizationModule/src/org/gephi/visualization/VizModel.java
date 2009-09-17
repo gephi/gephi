@@ -67,18 +67,12 @@ public class VizModel {
         defaultValues();
     }
 
-    public void writeModel() {
-        GraphDrawable drawable = VizController.getInstance().getDrawable();
-        cameraPosition = Arrays.copyOf(drawable.getCameraLocation(), 3);
-        cameraTarget = Arrays.copyOf(drawable.getCameraTarget(), 3);
-        textModel = VizController.getInstance().getTextManager().getModel();
+    public List<PropertyChangeListener> getListeners() {
+        return listeners;
     }
 
-    public void loadModel() {
-        GraphDrawable drawable = VizController.getInstance().getDrawable();
-        drawable.setCameraLocation(Arrays.copyOf(cameraPosition, 3));
-        drawable.setCameraTarget(Arrays.copyOf(cameraTarget, 3));
-        VizController.getInstance().getTextManager().setModel(textModel);
+    public void setListeners(List<PropertyChangeListener> listeners) {
+        this.listeners = listeners;
     }
 
     private void defaultValues() {
