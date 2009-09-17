@@ -23,6 +23,8 @@ package org.gephi.visualization.opengl.text;
 import com.sun.opengl.util.j2d.TextRenderer;
 import java.awt.Font;
 import java.awt.geom.Rectangle2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.EdgeData;
@@ -98,6 +100,15 @@ public class TextManager implements VizArchitecture {
                 }
                 if (!edgeRenderer.getFont().equals(model.getEdgeFont())) {
                     edgeRenderer.setFont(model.getEdgeFont());
+                }
+            }
+        });
+
+        VizController.getInstance().getVizModel().addPropertyChangeListener(new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                if(evt.getPropertyName().equals("init")) {
+                    TextManager.this.model = VizController.getInstance().getVizModel().getTextModel();
                 }
             }
         });

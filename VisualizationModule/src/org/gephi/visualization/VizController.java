@@ -145,7 +145,9 @@ public class VizController {
         VizModel model = pc.getCurrentWorkspace().getWorkspaceData().getData(vizWorkspaceDataProvider.getWorkspaceDataKey());
         if (model != currentModel) {
             model.setListeners(currentModel.getListeners());
+            model.getTextModel().setListeners(currentModel.getTextModel().getListeners());
             currentModel.setListeners(null);
+            currentModel.getTextModel().setListeners(null);
             currentModel = model;
             currentModel.init();
         }

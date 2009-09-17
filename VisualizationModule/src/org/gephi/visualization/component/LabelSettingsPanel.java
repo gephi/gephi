@@ -43,7 +43,7 @@ import org.openide.windows.WindowManager;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class LabelSettingsPanel extends javax.swing.JPanel {
 
@@ -69,7 +69,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
 
             public void itemStateChanged(ItemEvent e) {
                 boolean value = showNodeLabelsCheckbox.isSelected();
-                TextModel model = VizController.getInstance().getTextManager().getModel();
+                TextModel model = VizController.getInstance().getVizModel().getTextModel();
                 model.setShowNodeLabels(value);
                 setEnable(true);
             }
@@ -77,7 +77,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         nodeFontButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                TextModel model = VizController.getInstance().getTextManager().getModel();
+                TextModel model = VizController.getInstance().getVizModel().getTextModel();
                 Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), model.getNodeFont());
                 if (font != null && font != model.getNodeFont()) {
                     model.setNodeFont(font);
@@ -87,14 +87,14 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         ((JColorButton) nodeColorButton).addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
-                TextModel model = VizController.getInstance().getTextManager().getModel();
+                TextModel model = VizController.getInstance().getVizModel().getTextModel();
                 model.setNodeColor(((JColorButton) nodeColorButton).getColor());
             }
         });
         nodeSizeSlider.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
-                TextModel model = VizController.getInstance().getTextManager().getModel();
+                TextModel model = VizController.getInstance().getVizModel().getTextModel();
                 model.setNodeSizeFactor(nodeSizeSlider.getValue() / 100f);
             }
         });
@@ -104,7 +104,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
 
             public void itemStateChanged(ItemEvent e) {
                 boolean value = showEdgeLabelsCheckbox.isSelected();
-                TextModel model = VizController.getInstance().getTextManager().getModel();
+                TextModel model = VizController.getInstance().getVizModel().getTextModel();
                 model.setShowEdgeLabels(value);
                 setEnable(true);
             }
@@ -112,7 +112,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         edgeFontButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                TextModel model = VizController.getInstance().getTextManager().getModel();
+                TextModel model = VizController.getInstance().getVizModel().getTextModel();
                 Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), model.getEdgeFont());
                 if (font != null && font != model.getEdgeFont()) {
                     model.setEdgeFont(font);
@@ -122,14 +122,14 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         ((JColorButton) edgeColorButton).addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
-                TextModel model = VizController.getInstance().getTextManager().getModel();
+                TextModel model = VizController.getInstance().getVizModel().getTextModel();
                 model.setEdgeColor(((JColorButton) edgeColorButton).getColor());
             }
         });
         edgeSizeSlider.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
-                TextModel model = VizController.getInstance().getTextManager().getModel();
+                TextModel model = VizController.getInstance().getVizModel().getTextModel();
                 model.setEdgeSizeFactor(edgeSizeSlider.getValue() / 100f);
             }
         });
@@ -143,7 +143,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         sizeModeCombo.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                TextModel model = VizController.getInstance().getTextManager().getModel();
+                TextModel model = VizController.getInstance().getVizModel().getTextModel();
                 if (model.getSizeMode() != sizeModeModel.getSelectedItem()) {
                     model.setSizeMode((SizeMode) sizeModeModel.getSelectedItem());
                 }
@@ -152,7 +152,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         colorModeCombo.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                TextModel model = VizController.getInstance().getTextManager().getModel();
+                TextModel model = VizController.getInstance().getVizModel().getTextModel();
                 if (model.getColorMode() != colorModeModel.getSelectedItem()) {
                     model.setColorMode((ColorMode) colorModeModel.getSelectedItem());
                 }
@@ -161,7 +161,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         hideNonSelectedCheckbox.addItemListener(new ItemListener() {
 
             public void itemStateChanged(ItemEvent e) {
-                TextModel model = VizController.getInstance().getTextManager().getModel();
+                TextModel model = VizController.getInstance().getVizModel().getTextModel();
                 if (model.isSelectedOnly() != hideNonSelectedCheckbox.isSelected()) {
                     model.setSelectedOnly(hideNonSelectedCheckbox.isSelected());
                 }

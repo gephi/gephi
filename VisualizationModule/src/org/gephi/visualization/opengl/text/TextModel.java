@@ -83,6 +83,14 @@ public class TextModel {
         }
     }
 
+    public void setListeners(List<ChangeListener> listeners) {
+        this.listeners = listeners;
+    }
+
+    public List<ChangeListener> getListeners() {
+        return listeners;
+    }
+
     //Getter & Setters
     public boolean isShowEdgeLabels() {
         return showEdgeLabels;
