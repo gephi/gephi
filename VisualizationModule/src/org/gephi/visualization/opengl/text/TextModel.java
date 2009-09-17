@@ -165,6 +165,16 @@ public class TextModel {
 
     public void readXML(Element textModelElement) {
 
+        //Show
+        Element showNodeE = (Element) textModelElement.getElementsByTagName("shownodelabels").item(0);
+        showNodeLabels = Boolean.parseBoolean(showNodeE.getAttribute("enable"));
+        Element showEdgeE = (Element) textModelElement.getElementsByTagName("showedgelabels").item(0);
+        showEdgeLabels = Boolean.parseBoolean(showEdgeE.getAttribute("enable"));
+
+        //Selectedonly
+        Element selectedOnlyE = (Element) textModelElement.getElementsByTagName("selectedOnly").item(0);
+        selectedOnly = Boolean.parseBoolean(selectedOnlyE.getAttribute("value"));
+
         //Font
         Element nodeFontE = (Element) textModelElement.getElementsByTagName("nodefont").item(0);
         String nodeFontName = nodeFontE.getAttribute("name");
@@ -224,6 +234,19 @@ public class TextModel {
     public Element writeXML(Document document) {
 
         Element textModelE = document.createElement("textmodel");
+
+        //Show
+        Element showNodeE =  document.createElement("shownodelabels");
+        showNodeE.setAttribute("enable", String.valueOf(showNodeLabels));
+        textModelE.appendChild(showNodeE);
+        Element showEdgeE =  document.createElement("showedgelabels");
+        showEdgeE.setAttribute("enable", String.valueOf(showEdgeLabels));
+        textModelE.appendChild(showEdgeE);
+
+        //Selectedonly
+        Element selectedOnlyE = document.createElement("selectedOnly");
+        selectedOnlyE.setAttribute("value", String.valueOf(selectedOnly));
+        textModelE.appendChild(selectedOnlyE);
 
         //Font
         Element nodeFontE = document.createElement("nodefont");
