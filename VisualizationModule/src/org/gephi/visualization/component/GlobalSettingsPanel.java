@@ -31,7 +31,7 @@ import org.gephi.visualization.VizModel;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class GlobalSettingsPanel extends javax.swing.JPanel {
 
@@ -45,7 +45,9 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
         vizModel.addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals("backgroundColor")) {
+                if (evt.getPropertyName().equals("init")) {
+                    refreshSharedConfig();
+                } else if (evt.getPropertyName().equals("backgroundColor")) {
                     refreshSharedConfig();
                 } else if (evt.getPropertyName().equals("autoSelectNeighbor")) {
                     refreshSharedConfig();
@@ -82,6 +84,10 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
 
     private void refreshSharedConfig() {
         VizModel vizModel = VizController.getInstance().getVizModel();
+        setEnable(!vizModel.isDefaultModel());
+        if (vizModel.isDefaultModel()) {
+            return;
+        }
         if (autoSelectNeigborCheckbox.isSelected() != vizModel.isAutoSelectNeighbor()) {
             autoSelectNeigborCheckbox.setSelected(vizModel.isAutoSelectNeighbor());
         }
@@ -89,6 +95,13 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
         if (hightlightCheckBox.isSelected() != vizModel.isLightenNonSelectedAuto()) {
             hightlightCheckBox.setSelected(vizModel.isLightenNonSelectedAuto());
         }
+    }
+
+    private void setEnable(boolean enable) {
+        autoSelectNeigborCheckbox.setEnabled(enable);
+        backgroundColorButton.setEnabled(enable);
+        hightlightCheckBox.setEnabled(enable);
+        labelBackgroundColor.setEnabled(enable);
     }
 
     /** This method is called from within the constructor to
@@ -140,9 +153,9 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(autoSelectNeigborCheckbox, javax.swing.GroupLayout.DEFAULT_SIZE, 19, Short.MAX_VALUE)
-                    .addComponent(labelBackgroundColor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 19, Short.MAX_VALUE)
-                    .addComponent(backgroundColorButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 19, Short.MAX_VALUE))
+                    .addComponent(autoSelectNeigborCheckbox, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                    .addComponent(labelBackgroundColor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                    .addComponent(backgroundColorButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(hightlightCheckBox)
                 .addGap(42, 42, 42))

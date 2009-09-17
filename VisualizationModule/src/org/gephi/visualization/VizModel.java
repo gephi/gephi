@@ -62,9 +62,26 @@ public class VizModel {
 
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
+    private boolean defaultModel = false;
 
     public VizModel() {
         defaultValues();
+    }
+
+    public VizModel(boolean defaultModel) {
+        this.defaultModel = defaultModel;
+        defaultValues();
+    }
+
+    public void init() {
+        PropertyChangeEvent evt = new PropertyChangeEvent(this, "init", null, null);
+        for(PropertyChangeListener l : listeners) {
+            l.propertyChange(evt);
+        }
+    }
+
+    public boolean isDefaultModel() {
+        return defaultModel;
     }
 
     public List<PropertyChangeListener> getListeners() {

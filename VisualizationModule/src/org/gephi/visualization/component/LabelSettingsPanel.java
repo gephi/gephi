@@ -55,6 +55,14 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
     public void setup() {
         VizModel vizModel = VizController.getInstance().getVizModel();
         TextModel model = vizModel.getTextModel();
+        vizModel.addPropertyChangeListener(new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals("init")) {
+                    refreshSharedConfig();
+                }
+            }
+        });
 
         //NodePanel
         showNodeLabelsCheckbox.addItemListener(new ItemListener() {
@@ -63,7 +71,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
                 boolean value = showNodeLabelsCheckbox.isSelected();
                 TextModel model = VizController.getInstance().getTextManager().getModel();
                 model.setShowNodeLabels(value);
-                refreshEnableState();
+                setEnable(true);
             }
         });
         nodeFontButton.addActionListener(new ActionListener() {
@@ -98,7 +106,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
                 boolean value = showEdgeLabelsCheckbox.isSelected();
                 TextModel model = VizController.getInstance().getTextManager().getModel();
                 model.setShowEdgeLabels(value);
-                refreshEnableState();
+                setEnable(true);
             }
         });
         edgeFontButton.addActionListener(new ActionListener() {
@@ -168,11 +176,14 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
             }
         });
         refreshSharedConfig();
-        refreshEnableState();
     }
 
     private void refreshSharedConfig() {
         VizModel vizModel = VizController.getInstance().getVizModel();
+        setEnable(!vizModel.isDefaultModel());
+        if (vizModel.isDefaultModel()) {
+            return;
+        }
         TextModel model = vizModel.getTextModel();
 
         //node
@@ -207,21 +218,29 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         }
     }
 
-    private void refreshEnableState() {
+    public void setEnable(boolean enable) {
+        showEdgeLabelsCheckbox.setEnabled(enable);
+        showNodeLabelsCheckbox.setEnabled(enable);
+        sizeModeCombo.setEnabled(enable);
+        colorModeCombo.setEnabled(enable);
+        hideNonSelectedCheckbox.setEnabled(enable);
+        labelColorMode.setEnabled(enable);
+        labelSizeMode.setEnabled(enable);
+
         boolean edgeValue = showEdgeLabelsCheckbox.isSelected();
-        edgeFontButton.setEnabled(edgeValue);
-        edgeColorButton.setEnabled(edgeValue);
-        edgeSizeSlider.setEnabled(edgeValue);
-        labelEdgeColor.setEnabled(edgeValue);
-        labelEdgeFont.setEnabled(edgeValue);
-        labelEdgeSize.setEnabled(edgeValue);
+        edgeFontButton.setEnabled(enable && edgeValue);
+        edgeColorButton.setEnabled(enable && edgeValue);
+        edgeSizeSlider.setEnabled(enable && edgeValue);
+        labelEdgeColor.setEnabled(enable && edgeValue);
+        labelEdgeFont.setEnabled(enable && edgeValue);
+        labelEdgeSize.setEnabled(enable && edgeValue);
         boolean nodeValue = showNodeLabelsCheckbox.isSelected();
-        nodeFontButton.setEnabled(nodeValue);
-        nodeColorButton.setEnabled(nodeValue);
-        nodeSizeSlider.setEnabled(nodeValue);
-        labelNodeColor.setEnabled(nodeValue);
-        labelNodeFont.setEnabled(nodeValue);
-        labelNodeSize.setEnabled(nodeValue);
+        nodeFontButton.setEnabled(enable && nodeValue);
+        nodeColorButton.setEnabled(enable && nodeValue);
+        nodeSizeSlider.setEnabled(enable && nodeValue);
+        labelNodeColor.setEnabled(enable && nodeValue);
+        labelNodeFont.setEnabled(enable && nodeValue);
+        labelNodeSize.setEnabled(enable && nodeValue);
     }
 
     /** This method is called from within the constructor to

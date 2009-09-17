@@ -37,9 +37,9 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="autoSelectNeigborCheckbox" alignment="1" pref="19" max="32767" attributes="0"/>
-                  <Component id="labelBackgroundColor" alignment="0" pref="19" max="32767" attributes="1"/>
-                  <Component id="backgroundColorButton" alignment="0" pref="19" max="32767" attributes="1"/>
+                  <Component id="autoSelectNeigborCheckbox" alignment="1" pref="24" max="32767" attributes="0"/>
+                  <Component id="labelBackgroundColor" alignment="0" pref="24" max="32767" attributes="1"/>
+                  <Component id="backgroundColorButton" alignment="0" min="-2" pref="24" max="-2" attributes="1"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="hightlightCheckBox" min="-2" max="-2" attributes="0"/>

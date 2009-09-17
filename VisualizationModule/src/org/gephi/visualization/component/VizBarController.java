@@ -71,6 +71,7 @@ public class VizBarController {
 
     public VizToolbar getToolbar() {
         VizToolbar toolbar = new VizToolbar(groups);
+        toolbar.setEnabled(false);
         return toolbar;
     }
 

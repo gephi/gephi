@@ -95,12 +95,31 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
 
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("defaultShape")) {
-                    if (comboModel.getSelectedItem() != nodeClass.getCurrentModeler()) {
-                        comboModel.setSelectedItem(nodeClass.getCurrentModeler());
-                    }
+                    refreshSharedConfig();
+                } else if (evt.getPropertyName().equals("init")) {
+                    refreshSharedConfig();
                 }
             }
         });
+        refreshSharedConfig();
+    }
+
+    private void refreshSharedConfig() {
+        VizModel vizModel = VizController.getInstance().getVizModel();
+        setEnable(!vizModel.isDefaultModel());
+        if (vizModel.isDefaultModel()) {
+            return;
+        }
+        final ModelClass nodeClass = VizController.getInstance().getModelClassLibrary().getNodeClass();
+        if (shapeCombo.getSelectedItem() != nodeClass.getCurrentModeler()) {
+            shapeCombo.setSelectedItem(nodeClass.getCurrentModeler());
+        }
+    }
+
+    public void setEnable(boolean enable) {
+        labelShape.setEnabled(enable);
+        adjustTextCheckbox.setEnabled(enable);
+        shapeCombo.setEnabled(enable);
     }
 
     /** This method is called from within the constructor to

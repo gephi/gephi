@@ -51,6 +51,13 @@ public class VizToolbar extends JToolBar {
     }
 
     @Override
+    public void setEnabled(boolean enabled) {
+        for(Component c : getComponents()) {
+            c.setEnabled(enabled);
+        }
+    }
+
+    @Override
     public Component add(Component comp) {
         if (comp instanceof JButton) {
             UIUtils.fixButtonUI((JButton) comp);

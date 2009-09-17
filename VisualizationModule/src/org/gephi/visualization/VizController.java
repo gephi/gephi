@@ -99,7 +99,7 @@ public class VizController {
         modeManager = new ModeManager();
         textManager = new TextManager();
         screenshotMaker = new ScreenshotMaker();
-        currentModel = new VizModel();
+        currentModel = new VizModel(true);
 
         if (vizConfig.isUseGLJPanel()) {
             drawable = commander.createPanel();
@@ -147,6 +147,7 @@ public class VizController {
             model.setListeners(currentModel.getListeners());
             currentModel.setListeners(null);
             currentModel = model;
+            currentModel.init();
         }
     }
 

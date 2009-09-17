@@ -45,7 +45,9 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         vizModel.addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals("edgeHasUniColor")) {
+                if (evt.getPropertyName().equals("init")) {
+                    refreshSharedConfig();
+                } else if (evt.getPropertyName().equals("edgeHasUniColor")) {
                     refreshSharedConfig();
                 } else if (evt.getPropertyName().equals("showEdges")) {
                     refreshSharedConfig();
@@ -61,6 +63,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
             public void itemStateChanged(ItemEvent e) {
                 VizModel vizModel = VizController.getInstance().getVizModel();
                 vizModel.setShowEdges(showEdgesCheckbox.isSelected());
+                setEnable(true);
             }
         });
         ((JColorButton) edgeColorButton).addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
@@ -81,6 +84,10 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
 
     private void refreshSharedConfig() {
         VizModel vizModel = VizController.getInstance().getVizModel();
+        setEnable(!vizModel.isDefaultModel());
+        if (vizModel.isDefaultModel()) {
+            return;
+        }
         if (showEdgesCheckbox.isSelected() != vizModel.isShowEdges()) {
             showEdgesCheckbox.setSelected(vizModel.isShowEdges());
         }
@@ -90,6 +97,13 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         if (sourceNodeColorCheckbox.isSelected() != !vizModel.isEdgeHasUniColor()) {
             sourceNodeColorCheckbox.setSelected(!vizModel.isEdgeHasUniColor());
         }
+    }
+
+    private void setEnable(boolean enable) {
+        showEdgesCheckbox.setEnabled(enable);
+        edgeColorButton.setEnabled(enable && showEdgesCheckbox.isSelected());
+        sourceNodeColorCheckbox.setEnabled(enable && showEdgesCheckbox.isSelected());
+        labelEdgeColor.setEnabled(enable && showEdgesCheckbox.isSelected());
     }
 
     /** This method is called from within the constructor to
