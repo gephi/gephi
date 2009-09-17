@@ -69,6 +69,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected ModelClassLibrary modelClassLibrary;
     protected DataBridge dataBridge;
     protected EventBridge eventBridge;
+    protected VizController vizController;
     protected VizConfig vizConfig;
     protected ModeManager modeManager;
     protected TextManager textManager;
@@ -88,6 +89,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         this.modelClassLibrary = VizController.getInstance().getModelClassLibrary();
         this.dataBridge = VizController.getInstance().getDataBridge();
         this.eventBridge = VizController.getInstance().getEventBridge();
+        this.vizController = VizController.getInstance();
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.modeManager = VizController.getInstance().getModeManager();
         this.textManager = VizController.getInstance().getTextManager();
@@ -95,7 +97,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         initSelection();
 
         //Vizconfig events
-        vizConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        vizController.getVizModel().addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
                 configChanged = true;
@@ -105,8 +107,8 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
                     reinit = true;
                 }
 
-                getModelClasses()[AbstractEngine.CLASS_EDGE].setEnabled(vizConfig.isShowEdges());
-                getModelClasses()[AbstractEngine.CLASS_ARROW].setEnabled(vizConfig.isShowEdges() && vizConfig.isShowArrows());
+                getModelClasses()[AbstractEngine.CLASS_EDGE].setEnabled(vizController.getVizModel().isShowEdges());
+                getModelClasses()[AbstractEngine.CLASS_ARROW].setEnabled(vizController.getVizModel().isShowEdges() && vizConfig.isShowArrows());
             }
         });
     }

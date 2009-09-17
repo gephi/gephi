@@ -33,6 +33,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.objects.ModelClass;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.api.ModelImpl;
@@ -81,6 +82,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
     public void updateSelection(GL gl, GLU glu) {
         if (currentSelectionArea.isEnabled()) {
+            VizModel vizModel = VizController.getInstance().getVizModel();
             octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
 
             for (int i = 0; i < selectableClasses.length; i++) {
@@ -122,7 +124,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
                         array[hitName - 1] = obj;
                         gl.glLoadName(hitName);
-                        obj.display(gl, glu);
+                        obj.display(gl, glu, vizModel);
                         hitName++;
 
                     }
@@ -206,7 +208,7 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
         if (backgroundChanged) {
-            Color backgroundColor = vizConfig.getBackgroundColor();
+            Color backgroundColor = vizController.getVizModel().getBackgroundColor();
             gl.glClearColor(backgroundColor.getRed() / 255f, backgroundColor.getGreen() / 255f, backgroundColor.getBlue() / 255f, 1f);
             gl.glClear(GL.GL_COLOR_BUFFER_BIT);
             backgroundChanged = false;
@@ -233,6 +235,8 @@ public class CompatibilityEngine extends AbstractEngine {
         CompatibilityModelClass arrowClass = modelClasses[AbstractEngine.CLASS_ARROW];
         CompatibilityModelClass potatoClass = modelClasses[AbstractEngine.CLASS_POTATO];
 
+        VizModel vizModel = VizController.getInstance().getVizModel();
+
         //Potato
         if (potatoClass.isEnabled()) {
             potatoClass.beforeDisplay(gl, glu);
@@ -240,7 +244,7 @@ public class CompatibilityEngine extends AbstractEngine {
                 ModelImpl obj = itr.next();
 
                 if (obj.markTime != markTime) {
-                    obj.display(gl, glu);
+                    obj.display(gl, glu, vizModel);
                     obj.markTime = markTime;
                 }
 
@@ -256,7 +260,7 @@ public class CompatibilityEngine extends AbstractEngine {
                 //Renderable renderable = obj.getObj();
 
                 if (obj.markTime != markTime) {
-                    obj.display(gl, glu);
+                    obj.display(gl, glu, vizModel);
                     obj.markTime = markTime;
                 }
 
@@ -270,7 +274,7 @@ public class CompatibilityEngine extends AbstractEngine {
             for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_ARROW); itr.hasNext();) {
                 ModelImpl obj = itr.next();
                 if (obj.markTime != markTime) {
-                    obj.display(gl, glu);
+                    obj.display(gl, glu, vizModel);
                     obj.markTime = markTime;
                 }
             }
@@ -283,7 +287,7 @@ public class CompatibilityEngine extends AbstractEngine {
             for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
                 ModelImpl obj = itr.next();
                 if (obj.markTime != markTime) {
-                    obj.display(gl, glu);
+                    obj.display(gl, glu, vizModel);
                     obj.markTime = markTime;
                 }
             }
@@ -291,9 +295,9 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
         //Labels
-        if (vizConfig.isShowNodeLabels() || vizConfig.isShowEdgeLabels()) {
+        if (vizModel.getTextModel().isShowNodeLabels() || vizModel.getTextModel().isShowEdgeLabels()) {
             markTime++;
-            if (nodeClass.isEnabled() && vizConfig.isShowNodeLabels()) {
+            if (nodeClass.isEnabled() && vizModel.getTextModel().isShowNodeLabels()) {
                 textManager.getNodeRenderer().beginRendering();
                 textManager.defaultNodeColor();
                 if (textManager.isSelectedOnly()) {
@@ -319,7 +323,7 @@ public class CompatibilityEngine extends AbstractEngine {
                 }
                 textManager.getNodeRenderer().endRendering();
             }
-            if (edgeClass.isEnabled() && vizConfig.isShowEdgeLabels()) {
+            if (edgeClass.isEnabled() && vizModel.getTextModel().isShowEdgeLabels()) {
                 textManager.getEdgeRenderer().beginRendering();
                 textManager.defaultEdgeColor();
                 if (textManager.isSelectedOnly()) {
@@ -488,7 +492,7 @@ public class CompatibilityEngine extends AbstractEngine {
             i++;
         }
 
-        if (vizConfig.isLightenNonSelectedAuto()) {
+        if (vizController.getVizModel().isLightenNonSelectedAuto()) {
 
             if (vizConfig.isLightenNonSelectedAnimation()) {
                 if (!anySelected && someSelection) {
@@ -618,7 +622,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
 
         modelClasses[CLASS_NODE].setEnabled(true);
-        modelClasses[CLASS_EDGE].setEnabled(vizConfig.isShowEdges());
+        modelClasses[CLASS_EDGE].setEnabled(vizController.getVizModel().isShowEdges());
         modelClasses[CLASS_ARROW].setEnabled(vizConfig.isShowArrows());
         modelClasses[CLASS_POTATO].setEnabled(true);
 

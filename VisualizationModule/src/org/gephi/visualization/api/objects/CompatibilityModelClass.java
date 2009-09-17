@@ -72,7 +72,7 @@ public class CompatibilityModelClass extends ModelClass {
         }
         if (modeler != currentModeler) {
             newModeler = (CompatibilityModeler) modeler;
-            VizController.getInstance().getVizConfig().fireProperyChange("nodeModel", null, newModeler);
+            VizController.getInstance().getVizModel().setNodeModeler(newModeler.getClass().getName());
         }
     }
 

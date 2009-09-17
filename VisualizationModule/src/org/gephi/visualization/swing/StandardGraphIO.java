@@ -24,7 +24,6 @@ import java.awt.Cursor;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import org.gephi.visualization.GraphLimits;
 import org.gephi.visualization.VizArchitecture;
@@ -32,7 +31,6 @@ import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.GraphContextMenu;
 import org.gephi.visualization.api.GraphIO;
 import org.gephi.visualization.api.VizEventManager;
-import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.gleem.linalg.MathUtil;
 import org.gephi.visualization.gleem.linalg.Vec3f;
@@ -48,7 +46,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     protected GraphDrawableImpl graphDrawable;
     protected AbstractEngine engine;
     protected VizEventManager vizEventManager;
-    protected VizConfig vizConfig;
+    protected VizController vizController;
     protected GraphLimits limits;
     //Listeners data
     protected float[] rightButtonMoving = {-1f, 0f, 0f};
@@ -66,18 +64,18 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         this.graphDrawable = VizController.getInstance().getDrawable();
         this.engine = VizController.getInstance().getEngine();
         this.vizEventManager = VizController.getInstance().getVizEventManager();
-        this.vizConfig = VizController.getInstance().getVizConfig();
+        this.vizController = VizController.getInstance();
         this.limits = VizController.getInstance().getLimits();
     }
 
     public void startMouseListening() {
         stopMouseListening();
-        if (vizConfig.isCameraControlEnable()) {
+        if (vizController.getVizConfig().isCameraControlEnable()) {
             graphDrawable.graphComponent.addMouseListener(this);
             graphDrawable.graphComponent.addMouseWheelListener(this);
         }
 
-        if (vizConfig.isSelectionEnable()) {
+        if (vizController.getVizConfig().isSelectionEnable()) {
             graphDrawable.graphComponent.addMouseMotionListener(this);
         }
 
@@ -104,7 +102,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             rightButtonMoving[1] = y;
             graphDrawable.graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
             vizEventManager.mouseRightPress();
-        } else if (vizConfig.isRotatingEnable() && SwingUtilities.isMiddleMouseButton(e)) {
+        } else if (vizController.getVizModel().isRotatingEnable() && SwingUtilities.isMiddleMouseButton(e)) {
             middleButtonMoving[0] = x;
             middleButtonMoving[1] = y;
             graphDrawable.graphComponent.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
@@ -176,7 +174,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             engine.getScheduler().requireMouseClick();
             vizEventManager.mouseLeftClick();
         } else if (SwingUtilities.isRightMouseButton(e)) {
-            if (vizConfig.isContextMenu()) {
+            if (vizController.getVizConfig().isContextMenu()) {
                 GraphContextMenu popupMenu = new GraphContextMenu();
                 popupMenu.getMenu().show(graphDrawable.getGraphComponent(), (int) mousePosition[0], (int) (graphDrawable.viewport.get(3) - mousePosition[1]));
             }
@@ -222,12 +220,12 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         }
 
         if (leftButtonMoving[0] != -1) {
-            if (vizConfig.isDraggingEnable()) {
+            if (vizController.getVizConfig().isDraggingEnable()) {
                 //Remet à jour aussi la mousePosition pendant le drag, notamment pour coller quand drag released
                 mousePosition[0] = x;
                 mousePosition[1] = graphDrawable.viewport.get(3) - y;
 
-                if (vizConfig.isRectangleSelection()) {
+                if (vizController.getVizConfig().isRectangleSelection()) {
                     if (!dragging) {
                         //Start drag
                         dragging = true;

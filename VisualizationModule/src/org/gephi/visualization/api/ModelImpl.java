@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.api;
 
-import java.util.Arrays;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
@@ -28,6 +27,7 @@ import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.datastructure.avl.simple.AVLItem;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Renderable;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
 
@@ -43,7 +43,6 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
     //Architecture
     protected Octant[] octants;
     protected ObjectType obj;
-    protected VizConfig config;
 
     //Graphical data
     protected float viewportX;
@@ -65,7 +64,7 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
 
     public abstract boolean isInOctreeLeaf(Octant leaf);
 
-    public abstract void display(GL gl, GLU glu);
+    public abstract void display(GL gl, GLU glu, VizModel model);
 
     public abstract boolean selectionTest(Vecf distanceFromMouse, float selectionSize);
 
@@ -181,10 +180,6 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
 
     public boolean isCacheMatching(int cacheMarker) {
         return cacheMarker == this.cacheMarker;
-    }
-
-    public void setConfig(VizConfig config) {
-        this.config = config;
     }
 
     public boolean isHighlight() {

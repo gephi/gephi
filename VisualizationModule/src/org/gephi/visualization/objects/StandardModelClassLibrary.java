@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.objects;
 
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.initializer.CompatibilityModeler;
 import org.gephi.visualization.api.objects.ModelClass;
 import org.gephi.visualization.api.objects.ModelClassLibrary;
 import org.gephi.visualization.api.objects.CompatibilityModelClass;
@@ -54,7 +53,7 @@ public class StandardModelClassLibrary implements ModelClassLibrary {
         compatibilityModelClasses[0].addModeler(modeler3d);
         compatibilityModelClasses[0].addModeler(modeler2d);
         compatibilityModelClasses[0].addModeler(modelerRect);
-        if (VizController.getInstance().getVizConfig().use3d()) {
+        if (VizController.getInstance().getVizModel().isUse3d()) {
             compatibilityModelClasses[0].setCurrentModeler(modeler3d);
         } else {
             compatibilityModelClasses[0].setCurrentModeler(modeler2d);

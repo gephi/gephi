@@ -30,9 +30,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSlider;
 import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
@@ -42,7 +40,7 @@ import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.components.JDropDownButton;
 import org.gephi.ui.components.JPopupButton;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.VizConfig;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.opengl.text.ColorMode;
 import org.gephi.visualization.opengl.text.SizeMode;
 import org.gephi.visualization.opengl.text.TextManager;
@@ -91,13 +89,14 @@ public class VizBarController {
             JComponent[] components = new JComponent[4];
 
             //Background color
-            final VizConfig vizConfig = VizController.getInstance().getVizConfig();
-            final JButton backgroundColorButton = new JColorButton(vizConfig.getBackgroundColor());
+            VizModel vizModel = VizController.getInstance().getVizModel();
+            final JButton backgroundColorButton = new JColorButton(vizModel.getBackgroundColor());
             backgroundColorButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.background"));
             backgroundColorButton.addPropertyChangeListener("color", new PropertyChangeListener() {
 
                 public void propertyChange(PropertyChangeEvent evt) {
-                    vizConfig.setBackgroundColor(((JColorButton) backgroundColorButton).getColor());
+                    VizModel vizModel = VizController.getInstance().getVizModel();
+                    vizModel.setBackgroundColor(((JColorButton) backgroundColorButton).getColor());
                 }
             });
             components[0] = backgroundColorButton;
@@ -174,15 +173,16 @@ public class VizBarController {
             JComponent[] components = new JComponent[1];
 
             //Show labels buttons
-            final VizConfig vizConfig = VizController.getInstance().getVizConfig();
+            VizModel vizModel = VizController.getInstance().getVizModel();
             final JToggleButton showLabelsButton = new JToggleButton();
-            showLabelsButton.setSelected(vizConfig.isShowNodeLabels());
+            showLabelsButton.setSelected(vizModel.getTextModel().isShowNodeLabels());
             showLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.showLabels"));
             showLabelsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/showLabels.png")));
             showLabelsButton.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    vizConfig.setShowNodeLabels(showLabelsButton.isSelected());
+                    VizModel vizModel = VizController.getInstance().getVizModel();
+                    vizModel.getTextModel().setShowNodeLabels(showLabelsButton.isSelected());
                 }
             });
             components[0] = showLabelsButton;
@@ -215,23 +215,25 @@ public class VizBarController {
             JComponent[] components = new JComponent[3];
 
             //Show edges buttons
-            final VizConfig vizConfig = VizController.getInstance().getVizConfig();
+            VizModel vizModel = VizController.getInstance().getVizModel();
             final JToggleButton showEdgeButton = new JToggleButton();
-            showEdgeButton.setSelected(vizConfig.isShowEdges());
+            showEdgeButton.setSelected(vizModel.isShowEdges());
             showEdgeButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.showEdges"));
             showEdgeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/showEdges.png")));
             showEdgeButton.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    vizConfig.setShowEdges(showEdgeButton.isSelected());
+                    VizModel vizModel = VizController.getInstance().getVizModel();
+                    vizModel.setShowEdges(showEdgeButton.isSelected());
                 }
             });
-            vizConfig.addPropertyChangeListener(new PropertyChangeListener() {
+            vizModel.addPropertyChangeListener(new PropertyChangeListener() {
 
                 public void propertyChange(PropertyChangeEvent evt) {
                     if (evt.getPropertyName().equals("showEdges")) {
-                        if (showEdgeButton.isSelected() != vizConfig.isShowEdges()) {
-                            showEdgeButton.setSelected(vizConfig.isShowEdges());
+                        VizModel vizModel = VizController.getInstance().getVizModel();
+                        if (showEdgeButton.isSelected() != vizModel.isShowEdges()) {
+                            showEdgeButton.setSelected(vizModel.isShowEdges());
                         }
                     }
                 }
@@ -240,21 +242,23 @@ public class VizBarController {
 
             //Edge color mode
             final JToggleButton edgeHasNodeColorButton = new JToggleButton();
-            edgeHasNodeColorButton.setSelected(!vizConfig.isEdgeUniColor());
+            edgeHasNodeColorButton.setSelected(!vizModel.isEdgeHasUniColor());
             edgeHasNodeColorButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.edgeNodeColor"));
             edgeHasNodeColorButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/edgeNodeColor.png")));
             edgeHasNodeColorButton.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    vizConfig.setEdgeUniColor(!edgeHasNodeColorButton.isSelected());
+                    VizModel vizModel = VizController.getInstance().getVizModel();
+                    vizModel.setEdgeHasUniColor(!edgeHasNodeColorButton.isSelected());
                 }
             });
-            vizConfig.addPropertyChangeListener(new PropertyChangeListener() {
+            vizModel.addPropertyChangeListener(new PropertyChangeListener() {
 
                 public void propertyChange(PropertyChangeEvent evt) {
                     if (evt.getPropertyName().equals("edgeUniColor")) {
-                        if (edgeHasNodeColorButton.isSelected() != !vizConfig.isEdgeUniColor()) {
-                            edgeHasNodeColorButton.setSelected(!vizConfig.isEdgeUniColor());
+                        VizModel vizModel = VizController.getInstance().getVizModel();
+                        if (edgeHasNodeColorButton.isSelected() != !vizModel.isEdgeHasUniColor()) {
+                            edgeHasNodeColorButton.setSelected(!vizModel.isEdgeHasUniColor());
                         }
                     }
                 }
@@ -264,21 +268,23 @@ public class VizBarController {
 
             //Show labels buttons
             final JToggleButton showLabelsButton = new JToggleButton();
-            showLabelsButton.setSelected(vizConfig.isShowEdgeLabels());
+            showLabelsButton.setSelected(vizModel.getTextModel().isShowEdgeLabels());
             showLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.showLabels"));
             showLabelsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/showLabels.png")));
             showLabelsButton.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    vizConfig.setShowEdgeLabels(showLabelsButton.isSelected());
+                    VizModel vizModel = VizController.getInstance().getVizModel();
+                    vizModel.getTextModel().setShowEdgeLabels(showLabelsButton.isSelected());
                 }
             });
-            vizConfig.addPropertyChangeListener(new PropertyChangeListener() {
+            vizModel.addPropertyChangeListener(new PropertyChangeListener() {
 
                 public void propertyChange(PropertyChangeEvent evt) {
                     if (evt.getPropertyName().equals("showEdgeLabels")) {
-                        if (showLabelsButton.isSelected() != vizConfig.isShowEdgeLabels()) {
-                            showLabelsButton.setSelected(vizConfig.isShowEdgeLabels());
+                        VizModel vizModel = VizController.getInstance().getVizModel();
+                        if (showLabelsButton.isSelected() != vizModel.getTextModel().isShowEdgeLabels()) {
+                            showLabelsButton.setSelected(vizModel.getTextModel().isShowEdgeLabels());
                         }
                     }
                 }

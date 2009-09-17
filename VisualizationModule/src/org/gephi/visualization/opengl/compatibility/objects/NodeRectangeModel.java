@@ -23,6 +23,7 @@ package org.gephi.visualization.opengl.compatibility.objects;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.NodeData;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
@@ -70,17 +71,17 @@ public class NodeRectangeModel extends ModelImpl<NodeData> {
     }
 
     @Override
-    public void display(GL gl, GLU glu) {
+    public void display(GL gl, GLU glu, VizModel vizModel) {
         boolean selec = selected;
         boolean neighbor = false;
         highlight = false;
-        if (config.isAutoSelectNeighbor() && mark && !selec) {
+        if (vizModel.isAutoSelectNeighbor() && mark && !selec) {
             selec = true;
             highlight = true;
             neighbor = true;
         }
         mark = false;
-        if (config.isAdjustByText()) {
+        if (vizModel.isAdjustByText()) {
             width = obj.getTextData().getWidth() * 1.2f;
             height = obj.getTextData().getHeight() * 1.2f;
         } else {
@@ -97,9 +98,9 @@ public class NodeRectangeModel extends ModelImpl<NodeData> {
         float borderSize = 1f;
 
         if (!selec) {
-            if (config.isLightenNonSelected()) {
-                float[] lightColor = config.getLightenNonSelectedColor();
-                float lightColorFactor = config.getLightenNonSelectedFactor();
+            if (vizModel.getConfig().isLightenNonSelected()) {
+                float[] lightColor = vizModel.getConfig().getLightenNonSelectedColor();
+                float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
                 float r = obj.r();
                 float g = obj.g();
                 float b = obj.b();
@@ -139,15 +140,15 @@ public class NodeRectangeModel extends ModelImpl<NodeData> {
             float r;
             float g;
             float b;
-            if (config.isUniColorSelected()) {
+            if (vizModel.isUniColorSelected()) {
                 if (neighbor) {
-                    r = config.getUniColorSelectedNeigborColor()[0];
-                    g = config.getUniColorSelectedNeigborColor()[1];
-                    b = config.getUniColorSelectedNeigborColor()[2];
+                    r = vizModel.getConfig().getUniColorSelectedNeigborColor()[0];
+                    g = vizModel.getConfig().getUniColorSelectedNeigborColor()[1];
+                    b = vizModel.getConfig().getUniColorSelectedNeigborColor()[2];
                 } else {
-                    r = config.getUniColorSelectedColor()[0];
-                    g = config.getUniColorSelectedColor()[1];
-                    b = config.getUniColorSelectedColor()[2];
+                    r = vizModel.getConfig().getUniColorSelectedColor()[0];
+                    g = vizModel.getConfig().getUniColorSelectedColor()[1];
+                    b = vizModel.getConfig().getUniColorSelectedColor()[2];
                 }
             } else {
                 r = obj.r();

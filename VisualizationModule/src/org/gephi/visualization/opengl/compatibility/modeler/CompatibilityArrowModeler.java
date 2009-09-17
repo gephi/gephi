@@ -55,7 +55,6 @@ public class CompatibilityArrowModeler implements CompatibilityModeler<NodeData>
 
         Arrow2dModel arrow = new Arrow2dModel(e);
         arrow.setObj(e.getTarget());
-        arrow.setConfig(config);
 
         return arrow;
     }

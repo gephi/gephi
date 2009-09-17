@@ -51,7 +51,7 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
 
     public GraphDrawableImpl() {
         super();
-        this.vizConfig = VizController.getInstance().getVizConfig();
+        this.vizController = VizController.getInstance();
     }
 
     public void initArchitecture() {
@@ -59,8 +59,8 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
         this.scheduler = VizController.getInstance().getScheduler();
         this.screenshotMaker = VizController.getInstance().getScreenshotMaker();
 
-        cameraLocation = vizConfig.getDefaultCameraPosition();
-        cameraTarget = vizConfig.getDefaultCameraTarget();
+        cameraLocation = vizController.getVizConfig().getDefaultCameraPosition();
+        cameraTarget = vizController.getVizConfig().getDefaultCameraTarget();
     }
 
     @Override
@@ -163,7 +163,7 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
 
     public void renderScreenshot(GLAutoDrawable drawable) {
         GL gl = drawable.getGL();
-        if (vizConfig.use3d()) {
+        if (vizController.getVizModel().isUse3d()) {
             gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
         } else {
             gl.glClear(GL.GL_COLOR_BUFFER_BIT);

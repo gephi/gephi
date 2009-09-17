@@ -48,7 +48,7 @@ public class TextManager implements VizArchitecture {
     //Configuration
     private SizeMode[] sizeModes;
     private ColorMode[] colorModes;
-    ;
+    
 
     //Processing
     private TextUtils textUtils;
@@ -67,7 +67,7 @@ public class TextManager implements VizArchitecture {
     public TextManager() {
         textUtils = new TextUtils(this);
         builder = new TextDataBuilder();
-        model = new TextModel();
+        model = VizController.getInstance().getVizModel().getTextModel();
 
         //SizeMode init
         sizeModes = new SizeMode[3];
@@ -87,11 +87,13 @@ public class TextManager implements VizArchitecture {
         model.colorMode = new UniqueColorMode(model);
         model.sizeMode = sizeModes[1];
         model.colorMode = colorModes[0];
-        model.nodeFont = vizConfig.getNodeLabelFont();
-        model.edgeFont = vizConfig.getEdgeLabelFont();
+        model.showNodeLabels = vizConfig.isDefaultShowNodeLabels();
+        model.showEdgeLabels = vizConfig.isDefaultShowEdgeLabels();
+        model.nodeFont = vizConfig.getDefaultNodeLabelFont();
+        model.edgeFont = vizConfig.getDefaultEdgeLabelFont();
         model.nodeColor = vizConfig.getDefaultNodeLabelColor();
         model.edgeColor = vizConfig.getDefaultEdgeLabelColor();
-        model.setSelectedOnly(vizConfig.isShowLabelOnSelectedOnly());
+        model.setSelectedOnly(vizConfig.isDefaultShowLabelOnSelectedOnly());
         nodeRenderer = new Renderer2D();
         nodeRenderer.initRenderer(model.getNodeFont());
         edgeRenderer = new Renderer2D();

@@ -24,6 +24,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
@@ -120,14 +121,14 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
     }
 
     @Override
-    public void display(GL gl, GLU glu) {
+    public void display(GL gl, GLU glu, VizModel vizModel) {
         if (this.arrow != null) {
             this.arrow.setSelected(selected);
         }
-        if (!selected && config.isHideNonSelectedEdges()) {
+        if (!selected && vizModel.isHideNonSelectedEdges()) {
             return;
         }
-        if (selected && config.isAutoSelectNeighbor()) {
+        if (selected && vizModel.isAutoSelectNeighbor()) {
             ModelImpl m1 = (ModelImpl) obj.getSource().getModel();
             ModelImpl m2 = (ModelImpl) obj.getTarget().getModel();
             m1.mark = true;
@@ -156,8 +157,8 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
             float g;
             float b;
             float a;
-            if (config.isEdgeUniColor()) {
-                float[] uni = config.getEdgeUniColorValue();
+            if (vizModel.isEdgeHasUniColor()) {
+                float[] uni = vizModel.getEdgeUniColor();
                 r = uni[0];
                 g = uni[1];
                 b = uni[2];
@@ -168,8 +169,8 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
                 b = obj.b();
                 a = obj.alpha();
             }
-            if (config.isLightenNonSelected()) {
-                float lightColorFactor = config.getLightenNonSelectedFactor();
+            if (vizModel.getConfig().isLightenNonSelected()) {
+                float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
                 a = a - (a - 0.01f) * lightColorFactor;
                 gl.glColor4f(r, g, b, a);
             } else {
@@ -266,11 +267,11 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
 
     @Override
     public float getViewportX() {
-        return (obj.getSource().getModel().getViewportX()+obj.getTarget().getModel().getViewportX())/2f;
+        return (obj.getSource().getModel().getViewportX() + obj.getTarget().getModel().getViewportX()) / 2f;
     }
 
     @Override
     public float getViewportY() {
-        return (obj.getSource().getModel().getViewportY()+obj.getTarget().getModel().getViewportY())/2f;
+        return (obj.getSource().getModel().getViewportY() + obj.getTarget().getModel().getViewportY()) / 2f;
     }
 }

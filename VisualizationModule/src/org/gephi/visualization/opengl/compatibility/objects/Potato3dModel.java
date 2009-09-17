@@ -26,6 +26,7 @@ import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 
 import org.gephi.graph.api.NodeData;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
@@ -71,7 +72,7 @@ public class Potato3dModel extends ModelImpl<NodeData> {
     }
 
     @Override
-    public void display(GL gl, GLU glu) {
+    public void display(GL gl, GLU glu, VizModel model) {
         /*if (mark) {
         this.display = obj.getDisplay();
         }

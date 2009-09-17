@@ -27,7 +27,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.VizConfig;
+import org.gephi.visualization.VizModel;
 
 /**
  *
@@ -41,8 +41,8 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
     }
 
     public void setup() {
-        final VizConfig vizConfig = VizController.getInstance().getVizConfig();
-        vizConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        VizModel vizModel = VizController.getInstance().getVizModel();
+        vizModel.addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("backgroundColor")) {
@@ -60,31 +60,34 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
         hightlightCheckBox.addItemListener(new ItemListener() {
 
             public void itemStateChanged(ItemEvent e) {
-                vizConfig.setLightenNonSelectedAuto(hightlightCheckBox.isSelected());
+                VizModel vizModel = VizController.getInstance().getVizModel();
+                vizModel.setLightenNonSelectedAuto(hightlightCheckBox.isSelected());
             }
         });
         ((JColorButton) backgroundColorButton).addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
-                vizConfig.setBackgroundColor(((JColorButton) backgroundColorButton).getColor());
+                VizModel vizModel = VizController.getInstance().getVizModel();
+                vizModel.setBackgroundColor(((JColorButton) backgroundColorButton).getColor());
             }
         });
         autoSelectNeigborCheckbox.addItemListener(new ItemListener() {
 
             public void itemStateChanged(ItemEvent e) {
-                vizConfig.setAutoSelectNeighbor(autoSelectNeigborCheckbox.isSelected());
+                VizModel vizModel = VizController.getInstance().getVizModel();
+                vizModel.setAutoSelectNeighbor(autoSelectNeigborCheckbox.isSelected());
             }
         });
     }
 
     private void refreshSharedConfig() {
-        final VizConfig vizConfig = VizController.getInstance().getVizConfig();
-        if (autoSelectNeigborCheckbox.isSelected() != vizConfig.isAutoSelectNeighbor()) {
-            autoSelectNeigborCheckbox.setSelected(vizConfig.isAutoSelectNeighbor());
+        VizModel vizModel = VizController.getInstance().getVizModel();
+        if (autoSelectNeigborCheckbox.isSelected() != vizModel.isAutoSelectNeighbor()) {
+            autoSelectNeigborCheckbox.setSelected(vizModel.isAutoSelectNeighbor());
         }
-        ((JColorButton) backgroundColorButton).setColor(vizConfig.getBackgroundColor());
-        if (hightlightCheckBox.isSelected() != vizConfig.isLightenNonSelectedAuto()) {
-            hightlightCheckBox.setSelected(vizConfig.isLightenNonSelectedAuto());
+        ((JColorButton) backgroundColorButton).setColor(vizModel.getBackgroundColor());
+        if (hightlightCheckBox.isSelected() != vizModel.isLightenNonSelectedAuto()) {
+            hightlightCheckBox.setSelected(vizModel.isLightenNonSelectedAuto());
         }
     }
 

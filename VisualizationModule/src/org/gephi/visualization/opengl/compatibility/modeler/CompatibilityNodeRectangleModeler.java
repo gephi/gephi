@@ -57,7 +57,6 @@ public class CompatibilityNodeRectangleModeler implements CompatibilityNodeModel
         NodeRectangeModel obj = new NodeRectangeModel();
         obj.setObj((NodeData) n);
         obj.setSelected(false);
-        obj.setConfig(config);
         obj.setDragDistanceFromMouse(new float[2]);
         n.setModel(obj);
 

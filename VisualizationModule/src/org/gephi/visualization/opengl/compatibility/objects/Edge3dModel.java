@@ -23,6 +23,7 @@ package org.gephi.visualization.opengl.compatibility.objects;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.ModelImpl;
 
 /**
@@ -39,14 +40,14 @@ public class Edge3dModel extends Edge2dModel {
     }
 
     @Override
-    public void display(GL gl, GLU glu) {
+    public void display(GL gl, GLU glu, VizModel vizModel) {
         if (this.arrow != null) {
             this.arrow.setSelected(selected);
         }
-        if (!selected && config.isHideNonSelectedEdges()) {
+        if (!selected && vizModel.isHideNonSelectedEdges()) {
             return;
         }
-        if (selected && config.isAutoSelectNeighbor()) {
+        if (selected && vizModel.isAutoSelectNeighbor()) {
             ModelImpl m1 = (ModelImpl) obj.getSource().getModel();
             ModelImpl m2 = (ModelImpl) obj.getTarget().getModel();
             m1.mark = true;
@@ -108,8 +109,8 @@ public class Edge3dModel extends Edge2dModel {
             float g;
             float b;
             float a;
-            if (config.isEdgeUniColor()) {
-                float[] uni = config.getEdgeUniColorValue();
+            if (vizModel.isEdgeHasUniColor()) {
+                float[] uni = vizModel.getEdgeUniColor();
                 r = uni[0];
                 g = uni[1];
                 b = uni[2];
@@ -120,8 +121,8 @@ public class Edge3dModel extends Edge2dModel {
                 b = obj.b();
                 a = obj.alpha();
             }
-            if (config.isLightenNonSelected()) {
-                float lightColorFactor = config.getLightenNonSelectedFactor();
+            if (vizModel.getConfig().isLightenNonSelected()) {
+                float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
                 a = a - (a - 0.1f) * lightColorFactor;
                 gl.glColor4f(r, g, b, a);
             } else {

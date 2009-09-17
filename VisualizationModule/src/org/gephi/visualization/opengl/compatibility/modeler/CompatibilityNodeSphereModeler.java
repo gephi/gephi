@@ -66,7 +66,6 @@ public class CompatibilityNodeSphereModeler extends NodeSphereModeler implements
         obj.setSelected(false);
         obj.setDragDistanceFromMouse(new float[2]);
         n.setModel(obj);
-        obj.setConfig(config);
 
         if (n.getTextData() == null) {
             n.setTextData(textManager.newTextData(nd));

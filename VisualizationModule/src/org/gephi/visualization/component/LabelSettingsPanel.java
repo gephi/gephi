@@ -34,7 +34,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.VizConfig;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.opengl.text.ColorMode;
 import org.gephi.visualization.opengl.text.SizeMode;
 import org.gephi.visualization.opengl.text.TextManager;
@@ -53,15 +53,16 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
     }
 
     public void setup() {
-        final VizConfig vizConfig = VizController.getInstance().getVizConfig();
-        TextModel model = VizController.getInstance().getTextManager().getModel();
+        VizModel vizModel = VizController.getInstance().getVizModel();
+        TextModel model = vizModel.getTextModel();
 
         //NodePanel
         showNodeLabelsCheckbox.addItemListener(new ItemListener() {
 
             public void itemStateChanged(ItemEvent e) {
                 boolean value = showNodeLabelsCheckbox.isSelected();
-                vizConfig.setShowNodeLabels(value);
+                TextModel model = VizController.getInstance().getTextManager().getModel();
+                model.setShowNodeLabels(value);
                 refreshEnableState();
             }
         });
@@ -95,7 +96,8 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
 
             public void itemStateChanged(ItemEvent e) {
                 boolean value = showEdgeLabelsCheckbox.isSelected();
-                vizConfig.setShowEdgeLabels(value);
+                TextModel model = VizController.getInstance().getTextManager().getModel();
+                model.setShowEdgeLabels(value);
                 refreshEnableState();
             }
         });
@@ -165,29 +167,19 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
                 refreshSharedConfig();
             }
         });
-        vizConfig.addPropertyChangeListener(new PropertyChangeListener() {
-
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals("showNodeLabels")) {
-                    refreshSharedConfig();
-                } else if (evt.getPropertyName().equals("showEdgeLabels")) {
-                    refreshSharedConfig();
-                }
-            }
-        });
         refreshSharedConfig();
         refreshEnableState();
     }
 
     private void refreshSharedConfig() {
-        TextModel model = VizController.getInstance().getTextManager().getModel();
-        VizConfig vizConfig = VizController.getInstance().getVizConfig();
+        VizModel vizModel = VizController.getInstance().getVizModel();
+        TextModel model = vizModel.getTextModel();
 
         //node
         nodeFontButton.setText(model.getNodeFont().getFontName() + ", " + model.getNodeFont().getSize());
         ((JColorButton) nodeColorButton).setColor(model.getNodeColor());
-        if (showNodeLabelsCheckbox.isSelected() != vizConfig.isShowNodeLabels()) {
-            showNodeLabelsCheckbox.setSelected(vizConfig.isShowNodeLabels());
+        if (showNodeLabelsCheckbox.isSelected() != model.isShowNodeLabels()) {
+            showNodeLabelsCheckbox.setSelected(model.isShowNodeLabels());
         }
         if (nodeSizeSlider.getValue() / 100f != model.getNodeSizeFactor()) {
             nodeSizeSlider.setValue((int) (model.getNodeSizeFactor() * 100f));
@@ -196,8 +188,8 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         //edge
         edgeFontButton.setText(model.getEdgeFont().getFontName() + ", " + model.getEdgeFont().getSize());
         ((JColorButton) edgeColorButton).setColor(model.getEdgeColor());
-        if (showEdgeLabelsCheckbox.isSelected() != vizConfig.isShowEdgeLabels()) {
-            showEdgeLabelsCheckbox.setSelected(vizConfig.isShowEdgeLabels());
+        if (showEdgeLabelsCheckbox.isSelected() != model.isShowEdgeLabels()) {
+            showEdgeLabelsCheckbox.setSelected(model.isShowEdgeLabels());
         }
         if (edgeSizeSlider.getValue() / 100f != model.getEdgeSizeFactor()) {
             edgeSizeSlider.setValue((int) (model.getEdgeSizeFactor() * 100f));

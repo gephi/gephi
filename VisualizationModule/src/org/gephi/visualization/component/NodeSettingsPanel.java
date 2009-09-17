@@ -29,7 +29,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.VizConfig;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.initializer.Modeler;
 import org.gephi.visualization.api.initializer.NodeModeler;
 import org.gephi.visualization.api.objects.ModelClass;
@@ -48,12 +48,13 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
     }
 
     public void setup() {
-        final VizConfig vizConfig = VizController.getInstance().getVizConfig();
-        adjustTextCheckbox.setSelected(vizConfig.isAdjustByText());
+        VizModel vizModel = VizController.getInstance().getVizModel();
+        adjustTextCheckbox.setSelected(vizModel.isAdjustByText());
         adjustTextCheckbox.addItemListener(new ItemListener() {
 
             public void itemStateChanged(ItemEvent e) {
-                vizConfig.setAdjustByText(adjustTextCheckbox.isSelected());
+                VizModel vizModel = VizController.getInstance().getVizModel();
+                vizModel.setAdjustByText(adjustTextCheckbox.isSelected());
             }
         });
 
@@ -70,26 +71,27 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
                 if (nodeClass.getCurrentModeler() == comboModel.getSelectedItem()) {
                     return;
                 }
+                VizModel vizModel = VizController.getInstance().getVizModel();
                 NodeModeler modeler = (NodeModeler) comboModel.getSelectedItem();
-                if (modeler.is3d() && !vizConfig.use3d()) {
+                if (modeler.is3d() && !vizModel.isUse3d()) {
                     String msg = NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message3d");
                     if (JOptionPane.showConfirmDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                         nodeClass.setCurrentModeler(modeler);
                         //enable 3d
-                        vizConfig.setUse3d(true);
+                        vizModel.setUse3d(true);
                     }
 
-                } else if (!modeler.is3d() && vizConfig.use3d()) {
+                } else if (!modeler.is3d() && vizModel.isUse3d()) {
                     String msg = NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message2d");
                     if (JOptionPane.showConfirmDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                         nodeClass.setCurrentModeler(modeler);
                         //disable 3d
-                        vizConfig.setUse3d(false);
+                        vizModel.setUse3d(false);
                     }
                 }
             }
         });
-        vizConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        vizModel.addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("defaultShape")) {

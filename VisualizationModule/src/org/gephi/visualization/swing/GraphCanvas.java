@@ -55,7 +55,7 @@ public class GraphCanvas extends GraphDrawableImpl {
 
     @Override
     protected void render3DScene(GL gl, GLU glu) {
-        if (vizConfig.isShowFPS()) {
+        if (vizController.getVizConfig().isShowFPS()) {
             gl.glPushMatrix();
             gl.glLoadIdentity();
             gl.glMatrixMode(gl.GL_PROJECTION);

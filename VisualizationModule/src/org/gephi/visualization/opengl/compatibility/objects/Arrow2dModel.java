@@ -25,6 +25,7 @@ import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vec2f;
 import org.gephi.visualization.gleem.linalg.Vecf;
@@ -53,8 +54,8 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
     }
 
     @Override
-    public void display(GL gl, GLU glu) {
-        if (!selected && config.isHideNonSelectedEdges()) {
+    public void display(GL gl, GLU glu, VizModel vizModel) {
+        if (!selected && vizModel.isHideNonSelectedEdges()) {
             return;
         }
         NodeData nodeFrom = edge.getSource();
@@ -99,8 +100,8 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
             float g;
             float b;
             float a;
-            if (config.isEdgeUniColor()) {
-                float[] uni = config.getEdgeUniColorValue();
+            if (vizModel.isEdgeHasUniColor()) {
+                float[] uni = vizModel.getEdgeUniColor();
                 r = uni[0];
                 g = uni[1];
                 b = uni[2];
@@ -111,8 +112,8 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
                 b = edge.b();
                 a = edge.alpha();
             }
-            if (config.isLightenNonSelected()) {
-                float lightColorFactor = config.getLightenNonSelectedFactor();
+            if (vizModel.getConfig().isLightenNonSelected()) {
+                float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
                 a = a - (a - 0.1f) * lightColorFactor;
                 gl.glColor4f(r, g, b, a);
             } else {

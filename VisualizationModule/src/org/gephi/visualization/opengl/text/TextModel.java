@@ -39,6 +39,8 @@ public class TextModel {
     protected ColorMode colorMode;
     protected SizeMode sizeMode;
     protected boolean selectedOnly;
+    protected boolean showNodeLabels;
+    protected boolean showEdgeLabels;
     protected Font nodeFont;
     protected Font edgeFont;
     protected float[] nodeColor = {0f, 0f, 0f, 1f};
@@ -47,6 +49,7 @@ public class TextModel {
     protected float edgeSizeFactor = 0.5f;
     protected List<ChangeListener> listeners = new ArrayList<ChangeListener>();
 
+    //Event
     public void addChangeListener(ChangeListener changeListener) {
         listeners.add(changeListener);
     }
@@ -60,6 +63,23 @@ public class TextModel {
         for (ChangeListener l : listeners) {
             l.stateChanged(evt);
         }
+    }
+
+    //Getter & Setters
+    public boolean isShowEdgeLabels() {
+        return showEdgeLabels;
+    }
+
+    public boolean isShowNodeLabels() {
+        return showNodeLabels;
+    }
+
+    public void setShowEdgeLabels(boolean showEdgeLabels) {
+        this.showEdgeLabels = showEdgeLabels;
+    }
+
+    public void setShowNodeLabels(boolean showNodeLabels) {
+        this.showNodeLabels = showNodeLabels;
     }
 
     public void setEdgeFont(Font edgeFont) {

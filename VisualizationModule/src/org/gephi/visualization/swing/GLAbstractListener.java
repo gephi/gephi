@@ -9,8 +9,8 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
+import org.gephi.visualization.VizController;
 import org.gephi.visualization.config.GraphicalConfiguration;
-import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.Lighting;
 import org.gephi.visualization.screenshot.ScreenshotMaker;
 
@@ -21,7 +21,7 @@ import org.gephi.visualization.screenshot.ScreenshotMaker;
 public abstract class GLAbstractListener implements GLEventListener {
 
     protected GLAutoDrawable drawable;
-    protected VizConfig vizConfig;
+    protected VizController vizController;
     public static final GLU glu = new GLU();
     private static final boolean DEBUG = true;
     private long startTime = 0;
@@ -57,16 +57,16 @@ public abstract class GLAbstractListener implements GLEventListener {
         caps.setHardwareAccelerated(true);
 
         //FSAA
-        if (vizConfig.getAntialiasing() == 2) {
+        if (vizController.getVizConfig().getAntialiasing() == 2) {
             caps.setSampleBuffers(true);
             caps.setNumSamples(2);
-        } else if (vizConfig.getAntialiasing() == 4) {
+        } else if (vizController.getVizConfig().getAntialiasing() == 4) {
             caps.setSampleBuffers(true);
             caps.setNumSamples(4);
-        } else if (vizConfig.getAntialiasing() == 8) {
+        } else if (vizController.getVizConfig().getAntialiasing() == 8) {
             caps.setSampleBuffers(true);
             caps.setNumSamples(8);
-        } else if (vizConfig.getAntialiasing() == 16) {
+        } else if (vizController.getVizConfig().getAntialiasing() == 16) {
             caps.setSampleBuffers(true);
             caps.setNumSamples(16);
         }
@@ -79,7 +79,7 @@ public abstract class GLAbstractListener implements GLEventListener {
         gl.setSwapInterval(0);
 
         //Depth
-        if (vizConfig.use3d()) {
+        if (vizController.getVizModel().isUse3d()) {
             gl.glEnable(GL.GL_DEPTH_TEST);      //Enable Z-Ordering
             gl.glDepthFunc(GL.GL_LEQUAL);
             gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);	//Correct texture & colors perspective calculations
@@ -88,13 +88,13 @@ public abstract class GLAbstractListener implements GLEventListener {
         }
 
         //Cull face
-        if (vizConfig.isCulling()) {        //When enabled, increases performance but polygons must be drawn counterclockwise
+        if (vizController.getVizModel().isCulling()) {        //When enabled, increases performance but polygons must be drawn counterclockwise
             gl.glEnable(GL.GL_CULL_FACE);
             gl.glCullFace(GL.GL_BACK);      //Hide back face of polygons
         }
 
         //Point Smooth
-        if (vizConfig.isPointSmooth()) {        //Only for GL_POINTS
+        if (vizController.getVizConfig().isPointSmooth()) {        //Only for GL_POINTS
             gl.glEnable(GL.GL_POINT_SMOOTH);
             gl.glHint(GL.GL_POINT_SMOOTH_HINT, GL.GL_NICEST); //Point smoothing
         } else {
@@ -102,9 +102,9 @@ public abstract class GLAbstractListener implements GLEventListener {
         }
 
         //Light Smooth
-        if (vizConfig.isLineSmooth()) {         //Only for GL_LINES
+        if (vizController.getVizConfig().isLineSmooth()) {         //Only for GL_LINES
             gl.glEnable(GL.GL_LINE_SMOOTH);
-            if (vizConfig.isLineSmoothNicest()) {
+            if (vizController.getVizConfig().isLineSmoothNicest()) {
                 gl.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST);
             } else {
                 gl.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_FASTEST);
@@ -116,11 +116,11 @@ public abstract class GLAbstractListener implements GLEventListener {
         gl.glClearDepth(1.0f);
 
         //Background
-        Color backgroundColor = vizConfig.getBackgroundColor();
+        Color backgroundColor = vizController.getVizModel().getBackgroundColor();
         gl.glClearColor(backgroundColor.getRed() / 255f, backgroundColor.getGreen() / 255f, backgroundColor.getBlue() / 255f, 1f);
 
         //Lighting
-        if (vizConfig.isLighting()) {
+        if (vizController.getVizModel().isLighting()) {
             gl.glEnable(GL.GL_LIGHTING);
             setLighting(gl);
             gl.glEnable(GL.GL_NORMALIZE);       //Normalise colors when glScale used
@@ -131,9 +131,9 @@ public abstract class GLAbstractListener implements GLEventListener {
         }
 
         //Blending
-        if (vizConfig.isBlending()) {
+        if (vizController.getVizConfig().isBlending()) {
             gl.glEnable(GL.GL_BLEND);
-            if (vizConfig.isBlendingCinema()) {
+            if (vizController.getVizConfig().isBlendCinema()) {
                 gl.glBlendFunc(GL.GL_CONSTANT_COLOR, GL.GL_ONE_MINUS_SRC_ALPHA);        //Black display
             } else {
                 gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);             //Use alpha values correctly
@@ -142,12 +142,12 @@ public abstract class GLAbstractListener implements GLEventListener {
 
 
         //Material
-        if (vizConfig.isMaterial()) {
+        if (vizController.getVizModel().isMaterial()) {
             gl.glColorMaterial(GL.GL_FRONT, GL.GL_AMBIENT_AND_DIFFUSE);
             gl.glEnable(GL.GL_COLOR_MATERIAL);                                      //Use color and avoid using glMaterial
         }
         //Mesh view
-        if (vizConfig.isWireFrame()) {
+        if (vizController.getVizConfig().isWireFrame()) {
             gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
         }
 
@@ -201,7 +201,7 @@ public abstract class GLAbstractListener implements GLEventListener {
 
         GL gl = drawable.getGL();
 
-        if (vizConfig.use3d()) {
+        if (vizController.getVizModel().isUse3d()) {
             gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
         } else {
             gl.glClear(GL.GL_COLOR_BUFFER_BIT);
@@ -270,8 +270,8 @@ public abstract class GLAbstractListener implements GLEventListener {
     public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
     }
 
-    public void setVizConfig(VizConfig vizConfig) {
-        this.vizConfig = vizConfig;
+    public void setVizController(VizController vizController) {
+        this.vizController = vizController;
     }
 
     public GLAutoDrawable getGLAutoDrawable() {

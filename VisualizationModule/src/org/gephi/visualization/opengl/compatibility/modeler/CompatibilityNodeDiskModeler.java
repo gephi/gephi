@@ -62,7 +62,6 @@ public class CompatibilityNodeDiskModeler implements CompatibilityNodeModeler {
         NodeDiskModel obj = new NodeDiskModel();
         obj.setObj(nd);
         obj.setSelected(false);
-        obj.setConfig(config);
         obj.setDragDistanceFromMouse(new float[2]);
         n.setModel(obj);
 

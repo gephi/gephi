@@ -48,11 +48,10 @@ import org.gephi.visualization.swing.StandardGraphIO;
  */
 public class VizController {
 
+    //Singleton
     private static VizController instance;
-
     private VizController() {
     }
-
     public synchronized static VizController getInstance() {
         if (instance == null) {
             instance = new VizController();
@@ -75,10 +74,14 @@ public class VizController {
     private TextManager textManager;
     private ScreenshotMaker screenshotMaker;
 
+    //Variable
+    private VizModel currentModel;
+
     public void initInstances() {
         VizCommander commander = new VizCommander();
 
         vizConfig = new VizConfig();
+        currentModel = new VizModel();
         graphIO = new StandardGraphIO();
         engine = new CompatibilityEngine();
         vizEventManager = new StandardVizEventManager();
@@ -92,7 +95,7 @@ public class VizController {
         textManager = new TextManager();
         screenshotMaker = new ScreenshotMaker();
 
-        if (vizConfig.useGLJPanel()) {
+        if (vizConfig.isUseGLJPanel()) {
             drawable = commander.createPanel();
         } else {
             drawable = commander.createCanvas();
@@ -107,6 +110,10 @@ public class VizController {
         modeManager.initArchitecture();
         textManager.initArchitecture();
         screenshotMaker.initArchitecture();
+    }
+
+    public VizModel getVizModel() {
+        return currentModel;
     }
 
     public GraphDrawableImpl getDrawable() {

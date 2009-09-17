@@ -23,6 +23,7 @@ package org.gephi.visualization.opengl.compatibility.objects;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Node;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.hull.ConvexHull;
@@ -60,7 +61,7 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
     }
 
     @Override
-    public void display(GL gl, GLU glu) {
+    public void display(GL gl, GLU glu, VizModel model) {
         if (requestUpdate) {
             requestUpdate = false;
             obj.recompute();
