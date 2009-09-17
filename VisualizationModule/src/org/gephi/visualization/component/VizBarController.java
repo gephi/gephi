@@ -55,7 +55,9 @@ import org.openide.windows.WindowManager;
 public class VizBarController {
 
     private VizToolbarGroup[] groups;
-
+    private VizToolbar toolbar;
+    private VizExtendedBar extendedBar;
+    
     public VizBarController() {
         createDefaultGroups();
     }
@@ -67,16 +69,28 @@ public class VizBarController {
         groups[1] = new NodeGroupBar();
         groups[2] = new EdgeGroupBar();
         groups[3] = new LabelGroupBar();
+
+        VizModel model = VizController.getInstance().getVizModel();
+        model.addPropertyChangeListener(new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                if(evt.getPropertyName().equals("init")) {
+                    VizModel model = VizController.getInstance().getVizModel();
+                    toolbar.setEnable(!model.isDefaultModel());
+                }
+            }
+        });
+
     }
 
     public VizToolbar getToolbar() {
-        VizToolbar toolbar = new VizToolbar(groups);
-        toolbar.setEnabled(false);
+        toolbar = new VizToolbar(groups);
+        toolbar.setEnable(false);
         return toolbar;
     }
 
     public VizExtendedBar getExtendedBar() {
-        VizExtendedBar extendedBar = new VizExtendedBar(groups);
+        extendedBar = new VizExtendedBar(groups);
         return extendedBar;
     }
 
@@ -93,11 +107,22 @@ public class VizBarController {
             VizModel vizModel = VizController.getInstance().getVizModel();
             final JButton backgroundColorButton = new JColorButton(vizModel.getBackgroundColor());
             backgroundColorButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.background"));
-            backgroundColorButton.addPropertyChangeListener("color", new PropertyChangeListener() {
+            backgroundColorButton.addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
 
                 public void propertyChange(PropertyChangeEvent evt) {
                     VizModel vizModel = VizController.getInstance().getVizModel();
                     vizModel.setBackgroundColor(((JColorButton) backgroundColorButton).getColor());
+                }
+            });
+            vizModel.addPropertyChangeListener(new PropertyChangeListener() {
+
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if(evt.getPropertyName().equals("backgroundColor")) {
+                        VizModel vizModel = VizController.getInstance().getVizModel();
+                        if(!(((JColorButton) backgroundColorButton).getColor()).equals(vizModel.getBackgroundColor())) {
+                            ((JColorButton) backgroundColorButton).setColor(vizModel.getBackgroundColor());
+                        }
+                    }
                 }
             });
             components[0] = backgroundColorButton;
@@ -186,6 +211,15 @@ public class VizBarController {
                     vizModel.getTextModel().setShowNodeLabels(showLabelsButton.isSelected());
                 }
             });
+            vizModel.getTextModel().addChangeListener(new ChangeListener() {
+
+                public void stateChanged(ChangeEvent e) {
+                    TextModel textModel = VizController.getInstance().getVizModel().getTextModel();
+                    if(showLabelsButton.isSelected()!=textModel.isShowNodeLabels()) {
+                        showLabelsButton.setSelected(textModel.isShowNodeLabels());
+                    }
+                }
+            });
             components[0] = showLabelsButton;
 
             return components;
@@ -256,7 +290,7 @@ public class VizBarController {
             vizModel.addPropertyChangeListener(new PropertyChangeListener() {
 
                 public void propertyChange(PropertyChangeEvent evt) {
-                    if (evt.getPropertyName().equals("edgeUniColor")) {
+                    if (evt.getPropertyName().equals("edgeHasUniColor")) {
                         VizModel vizModel = VizController.getInstance().getVizModel();
                         if (edgeHasNodeColorButton.isSelected() != !vizModel.isEdgeHasUniColor()) {
                             edgeHasNodeColorButton.setSelected(!vizModel.isEdgeHasUniColor());
@@ -279,14 +313,12 @@ public class VizBarController {
                     vizModel.getTextModel().setShowEdgeLabels(showLabelsButton.isSelected());
                 }
             });
-            vizModel.addPropertyChangeListener(new PropertyChangeListener() {
+            vizModel.getTextModel().addChangeListener(new ChangeListener() {
 
-                public void propertyChange(PropertyChangeEvent evt) {
-                    if (evt.getPropertyName().equals("showEdgeLabels")) {
-                        VizModel vizModel = VizController.getInstance().getVizModel();
-                        if (showLabelsButton.isSelected() != vizModel.getTextModel().isShowEdgeLabels()) {
-                            showLabelsButton.setSelected(vizModel.getTextModel().isShowEdgeLabels());
-                        }
+                public void stateChanged(ChangeEvent e) {
+                    TextModel textModel = VizController.getInstance().getVizModel().getTextModel();
+                    if(showLabelsButton.isSelected()!=textModel.isShowEdgeLabels()) {
+                        showLabelsButton.setSelected(textModel.isShowEdgeLabels());
                     }
                 }
             });
@@ -318,7 +350,7 @@ public class VizBarController {
 
         public JComponent[] getToolbarComponents() {
             JComponent[] components = new JComponent[5];
-            TextModel model = VizController.getInstance().getTextManager().getModel();
+            TextModel model = VizController.getInstance().getVizModel().getTextModel();
 
             //Mode
             final JPopupButton labelSizeModeButton = new JPopupButton();
@@ -326,12 +358,12 @@ public class VizBarController {
             for (final SizeMode sm : textManager.getSizeModes()) {
                 labelSizeModeButton.addItem(sm, sm.getIcon());
             }
-            labelSizeModeButton.setSelectedItem(textManager.getModel().getSizeMode());
+            labelSizeModeButton.setSelectedItem(model.getSizeMode());
             labelSizeModeButton.setChangeListener(new ChangeListener() {
 
                 public void stateChanged(ChangeEvent e) {
                     SizeMode sm = (SizeMode) e.getSource();
-                    TextModel model = VizController.getInstance().getTextManager().getModel();
+                    TextModel model = VizController.getInstance().getVizModel().getTextModel();
                     model.setSizeMode(sm);
                 }
             });
@@ -340,7 +372,7 @@ public class VizBarController {
             model.addChangeListener(new ChangeListener() {
 
                 public void stateChanged(ChangeEvent e) {
-                    TextModel model = VizController.getInstance().getTextManager().getModel();
+                    TextModel model = VizController.getInstance().getVizModel().getTextModel();
                     if (model.getSizeMode() != labelSizeModeButton.getSelectedItem()) {
                         labelSizeModeButton.setSelectedItem(model.getSizeMode());
                     }
@@ -358,7 +390,7 @@ public class VizBarController {
 
                 public void stateChanged(ChangeEvent e) {
                     ColorMode cm = (ColorMode) e.getSource();
-                    TextModel model = VizController.getInstance().getTextManager().getModel();
+                    TextModel model = VizController.getInstance().getVizModel().getTextModel();
                     model.setColorMode(cm);
                 }
             });
@@ -367,7 +399,7 @@ public class VizBarController {
             model.addChangeListener(new ChangeListener() {
 
                 public void stateChanged(ChangeEvent e) {
-                    TextModel model = VizController.getInstance().getTextManager().getModel();
+                    TextModel model = VizController.getInstance().getVizModel().getTextModel();
                     if (model.getColorMode() != labelColorModeButton.getSelectedItem()) {
                         labelColorModeButton.setSelectedItem(model.getColorMode());
                     }
@@ -381,7 +413,7 @@ public class VizBarController {
             fontButton.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    TextModel model = VizController.getInstance().getTextManager().getModel();
+                    TextModel model = VizController.getInstance().getVizModel().getTextModel();
                     Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), model.getNodeFont());
                     if (font != null && font != model.getNodeFont()) {
                         model.setNodeFont(font);
@@ -391,7 +423,7 @@ public class VizBarController {
             model.addChangeListener(new ChangeListener() {
 
                 public void stateChanged(ChangeEvent e) {
-                    TextModel model = VizController.getInstance().getTextManager().getModel();
+                    TextModel model = VizController.getInstance().getVizModel().getTextModel();
                     fontButton.setText(model.getNodeFont().getFontName() + ", " + model.getNodeFont().getSize());
                 }
             });
@@ -402,7 +434,7 @@ public class VizBarController {
             fontSizeSlider.addChangeListener(new ChangeListener() {
 
                 public void stateChanged(ChangeEvent e) {
-                    TextModel model = VizController.getInstance().getTextManager().getModel();
+                    TextModel model = VizController.getInstance().getVizModel().getTextModel();
                     model.setNodeSizeFactor(fontSizeSlider.getValue() / 100f);
                 }
             });
@@ -418,11 +450,19 @@ public class VizBarController {
             colorChooser.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent ae) {
-                    TextModel model = VizController.getInstance().getTextManager().getModel();
+                    TextModel model = VizController.getInstance().getVizModel().getTextModel();
                     model.setNodeColor(colorChooser.getColor());
                 }
             });
+            model.addChangeListener(new ChangeListener() {
 
+                public void stateChanged(ChangeEvent e) {
+                    TextModel model = VizController.getInstance().getVizModel().getTextModel();
+                    if(!model.getNodeColor().equals(colorChooser.getColor())) {
+                        colorChooser.setColor(model.getNodeColor());
+                    }
+                }
+            });
             components[4] = colorChooser;
 
             return components;

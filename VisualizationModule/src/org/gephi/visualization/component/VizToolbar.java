@@ -50,8 +50,8 @@ public class VizToolbar extends JToolBar {
         setBorder(BorderFactory.createEmptyBorder(2, 0, 4, 0));
     }
 
-    @Override
-    public void setEnabled(boolean enabled) {
+
+    public void setEnable(boolean enabled) {
         for(Component c : getComponents()) {
             c.setEnabled(enabled);
         }
