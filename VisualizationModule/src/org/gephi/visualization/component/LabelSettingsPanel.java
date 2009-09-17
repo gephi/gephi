@@ -70,8 +70,10 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
             public void itemStateChanged(ItemEvent e) {
                 boolean value = showNodeLabelsCheckbox.isSelected();
                 TextModel model = VizController.getInstance().getVizModel().getTextModel();
-                model.setShowNodeLabels(value);
-                setEnable(true);
+                if (value != model.isShowNodeLabels()) {
+                    model.setShowNodeLabels(value);
+                    setEnable(true);
+                }
             }
         });
         nodeFontButton.addActionListener(new ActionListener() {
@@ -105,8 +107,10 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
             public void itemStateChanged(ItemEvent e) {
                 boolean value = showEdgeLabelsCheckbox.isSelected();
                 TextModel model = VizController.getInstance().getVizModel().getTextModel();
-                model.setShowEdgeLabels(value);
-                setEnable(true);
+                if (value != model.isShowEdgeLabels()) {
+                    model.setShowEdgeLabels(value);
+                    setEnable(true);
+                }
             }
         });
         edgeFontButton.addActionListener(new ActionListener() {
@@ -227,14 +231,15 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         labelColorMode.setEnabled(enable);
         labelSizeMode.setEnabled(enable);
 
-        boolean edgeValue = showEdgeLabelsCheckbox.isSelected();
+        TextModel model = VizController.getInstance().getVizModel().getTextModel();
+        boolean edgeValue = model.isShowEdgeLabels();
         edgeFontButton.setEnabled(enable && edgeValue);
         edgeColorButton.setEnabled(enable && edgeValue);
         edgeSizeSlider.setEnabled(enable && edgeValue);
         labelEdgeColor.setEnabled(enable && edgeValue);
         labelEdgeFont.setEnabled(enable && edgeValue);
         labelEdgeSize.setEnabled(enable && edgeValue);
-        boolean nodeValue = showNodeLabelsCheckbox.isSelected();
+        boolean nodeValue = model.isShowNodeLabels();
         nodeFontButton.setEnabled(enable && nodeValue);
         nodeColorButton.setEnabled(enable && nodeValue);
         nodeSizeSlider.setEnabled(enable && nodeValue);

@@ -102,10 +102,12 @@ public class TextModel {
 
     public void setShowEdgeLabels(boolean showEdgeLabels) {
         this.showEdgeLabels = showEdgeLabels;
+        fireChangeEvent();
     }
 
     public void setShowNodeLabels(boolean showNodeLabels) {
         this.showNodeLabels = showNodeLabels;
+        fireChangeEvent();
     }
 
     public void setEdgeFont(Font edgeFont) {
