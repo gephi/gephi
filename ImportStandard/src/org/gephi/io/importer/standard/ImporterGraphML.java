@@ -177,6 +177,29 @@ public class ImporterGraphML implements XMLImporter, LongTask {
             NodeDraft nodeTarget = container.getNode(targetStr);
             edge.setTarget(nodeTarget);
 
+            //Id
+            String idStr = edgeE.getAttribute("id");
+            if(!idStr.isEmpty()) {
+                edge.setId(idStr);
+            }
+
+            //Label?
+            String labelStr = edgeE.getAttribute("label");
+            if(!labelStr.isEmpty()) {
+                edge.setLabel(labelStr);
+            }
+
+            //Get Data child nodes, avoiding using descendants
+            Node child = edgeE.getFirstChild();
+            if (child != null) {
+                do {
+                    if (child.getNodeName().equals("data")) {
+                        Element dataE = (Element) child;
+                        setEdgeData(dataE, edge, idStr);
+                    }
+                } while ((child = child.getNextSibling()) != null);
+            }
+
             //Append
             container.addEdge(edge);
         }
@@ -189,53 +212,6 @@ public class ImporterGraphML implements XMLImporter, LongTask {
         this.report = null;
         this.nodePropertiesAttributes = null;
         this.edgePropertiesAttributes = null;
-    }
-
-    private void setNodeData(Element dataE, NodeDraft nodeDraft, String nodeId) {
-        //Key
-        String dataKey = dataE.getAttribute("key");
-        if (dataKey.isEmpty()) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datakey", nodeDraft), Issue.Level.SEVERE));
-            return;
-        }
-
-        String dataValue = dataE.getTextContent();
-        if (!dataValue.isEmpty()) {
-            //Look for a property datakey
-            NodeProperties prop = nodePropertiesAttributes.get(dataKey);
-            if (prop != null) {
-                try {
-                    switch (prop) {
-                        case X:
-                            nodeDraft.setX(Float.parseFloat(dataValue));
-                            break;
-                        case Y:
-                            nodeDraft.setY(Float.parseFloat(dataValue));
-                            break;
-                        case Z:
-                            nodeDraft.setZ(Float.parseFloat(dataValue));
-                            break;
-                        case SIZE:
-                            nodeDraft.setSize(Float.parseFloat(dataValue));
-                            break;
-                    }
-                } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datavalue1", dataKey, nodeId, prop.toString()), Issue.Level.SEVERE));
-                }
-                return;
-            }
-
-            //Data attribute value
-            AttributeColumn column = container.getAttributeManager().getNodeClass().getAttributeColumn(dataKey);
-            if (column != null) {
-                try {
-                    Object value = column.getAttributeType().parse(dataValue);
-                    nodeDraft.addAttributeValue(column, value);
-                } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datavalue2", dataKey, nodeId, column.getTitle()), Issue.Level.SEVERE));
-                }
-            }
-        }
     }
 
     private void getAttributesKeys(NodeList keyListE) {
@@ -325,6 +301,94 @@ public class ImporterGraphML implements XMLImporter, LongTask {
                 AttributeClass edgeClass = container.getAttributeManager().getEdgeClass();
                 edgeClass.addAttributeColumn(keyId, keyName, attributeType, AttributeOrigin.DATA, defaultValue);
                 report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_edgeattribute", keyName, attributeType.getTypeString()));
+            }
+        }
+    }
+
+    private void setNodeData(Element dataE, NodeDraft nodeDraft, String nodeId) {
+        //Key
+        String dataKey = dataE.getAttribute("key");
+        if (dataKey.isEmpty()) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datakey", nodeDraft), Issue.Level.SEVERE));
+            return;
+        }
+
+        String dataValue = dataE.getTextContent();
+        if (!dataValue.isEmpty()) {
+            //Look for a property datakey
+            NodeProperties prop = nodePropertiesAttributes.get(dataKey);
+            if (prop != null) {
+                try {
+                    switch (prop) {
+                        case X:
+                            nodeDraft.setX(Float.parseFloat(dataValue));
+                            break;
+                        case Y:
+                            nodeDraft.setY(Float.parseFloat(dataValue));
+                            break;
+                        case Z:
+                            nodeDraft.setZ(Float.parseFloat(dataValue));
+                            break;
+                        case SIZE:
+                            nodeDraft.setSize(Float.parseFloat(dataValue));
+                            break;
+                    }
+                } catch (Exception e) {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datavalue1", dataKey, nodeId, prop.toString()), Issue.Level.SEVERE));
+                }
+                return;
+            }
+
+            //Data attribute value
+            AttributeColumn column = container.getAttributeManager().getNodeClass().getAttributeColumn(dataKey);
+            if (column != null) {
+                try {
+                    Object value = column.getAttributeType().parse(dataValue);
+                    nodeDraft.addAttributeValue(column, value);
+                } catch (Exception e) {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datavalue2", dataKey, nodeId, column.getTitle()), Issue.Level.SEVERE));
+                }
+            }
+        }
+    }
+
+    private void setEdgeData(Element dataE, EdgeDraft edgeDraft, String edgeId) {
+        //Key
+        String dataKey = dataE.getAttribute("key");
+        if (dataKey.isEmpty()) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datakey", edgeId), Issue.Level.SEVERE));
+            return;
+        }
+
+        String dataValue = dataE.getTextContent();
+        if (!dataValue.isEmpty()) {
+            //Look for a property datakey
+            EdgeProperties prop = edgePropertiesAttributes.get(dataKey);
+            if (prop != null) {
+                try {
+                    switch (prop) {
+                        case WEIGHT:
+                            edgeDraft.setWeight(Float.parseFloat(dataValue));
+                            break;
+                        case LABEL:
+                            edgeDraft.setLabel(dataValue);
+                            break;
+                    }
+                } catch (Exception e) {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datavalue1", dataKey, edgeId, prop.toString()), Issue.Level.SEVERE));
+                }
+                return;
+            }
+
+            //Data attribute value
+            AttributeColumn column = container.getAttributeManager().getEdgeClass().getAttributeColumn(dataKey);
+            if (column != null) {
+                try {
+                    Object value = column.getAttributeType().parse(dataValue);
+                    edgeDraft.addAttributeValue(column, value);
+                } catch (Exception e) {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datavalue2", dataKey, edgeId, column.getTitle()), Issue.Level.SEVERE));
+                }
             }
         }
     }
