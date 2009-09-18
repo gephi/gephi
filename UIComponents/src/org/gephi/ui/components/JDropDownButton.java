@@ -95,6 +95,9 @@ public class JDropDownButton extends JButton {
 
             @Override
             public void mousePressed(MouseEvent e) {
+                if(!isEnabled()) {
+                    return;
+                }
                 popupMenuOperation = false;
                 JPopupMenu menu = getPopupMenu();
                 if (menu != null && getModel() instanceof Model) {

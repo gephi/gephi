@@ -40,6 +40,8 @@ public class JColorButton extends JButton {
     private Color color;
     private final static int ICON_WIDTH = 16;
     private final static int ICON_HEIGHT = 16;
+    private final static Color DISABLED_BORDER = new Color(200, 200, 200);
+    private final static Color DISABLED_FILL = new Color(220, 220, 220);
 
     public JColorButton(Color originalColor) {
         this.color = originalColor;
@@ -54,12 +56,20 @@ public class JColorButton extends JButton {
             }
 
             public void paintIcon(Component c, Graphics g, int x, int y) {
-                g.setColor(Color.BLACK);
-                g.drawRect(x + 2, y + 2, ICON_WIDTH - 5, ICON_HEIGHT - 5);
-                if (color != null) {
-                    g.setColor(color);
+                if (c.isEnabled()) {
+                    g.setColor(Color.BLACK);
+                    g.drawRect(x + 2, y + 2, ICON_WIDTH - 5, ICON_HEIGHT - 5);
+                    if (color != null) {
+                        g.setColor(color);
+                        g.fillRect(x + 3, y + 3, ICON_WIDTH - 6, ICON_HEIGHT - 6);
+                    }
+                } else {
+                    g.setColor(DISABLED_BORDER);
+                    g.drawRect(x + 2, y + 2, ICON_WIDTH - 5, ICON_HEIGHT - 5);
+                    g.setColor(DISABLED_FILL);
                     g.fillRect(x + 3, y + 3, ICON_WIDTH - 6, ICON_HEIGHT - 6);
                 }
+
             }
         });
 
