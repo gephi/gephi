@@ -68,8 +68,12 @@ public class Painter implements Tool {
                 return pnl;
             }
 
+            public String getName() {
+                return NbBundle.getMessage(Painter.class, "Painter.name");
+            }
+
             public Icon getIcon() {
-                return new ImageIcon("/org/gephi/tools/resources/painter.png");
+                return new ImageIcon(getClass().getResource("/org/gephi/tools/resources/painter.png"));
             }
 
             public String getDescription() {

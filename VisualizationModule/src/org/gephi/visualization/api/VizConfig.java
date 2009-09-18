@@ -91,6 +91,8 @@ public class VizConfig {
     protected boolean showVizVar = true;
     protected boolean visualizeTree = false;
     protected boolean contextMenu = true;
+    protected boolean toolbar = true;
+    protected boolean propertiesbar = true;
 
     public int getAntialiasing() {
         return antialiasing;
@@ -328,6 +330,14 @@ public class VizConfig {
         return defaultNodeModeler;
     }
 
+    public boolean isToolbar() {
+        return toolbar;
+    }
+
+    public boolean isPropertiesbar() {
+        return propertiesbar;
+    }
+
     //Setters
     public void setLightenNonSelectedFactor(float lightenNonSelectedFactor) {
         this.lightenNonSelectedFactor = lightenNonSelectedFactor;
@@ -336,8 +346,4 @@ public class VizConfig {
     public void setLightenNonSelected(boolean lightenNonSelected) {
         this.lightenNonSelected = lightenNonSelected;
     }
-
-
-
-
 }

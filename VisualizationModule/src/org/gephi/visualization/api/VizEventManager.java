@@ -48,7 +48,9 @@ public interface VizEventManager extends VizArchitecture {
 
     public void mouseMove();
 
+    public void addListener(VizEventListener listener);
 
+    public void removeListener(VizEventListener listener);
 
     public boolean hasListeners(VizEvent.Type type);
 }

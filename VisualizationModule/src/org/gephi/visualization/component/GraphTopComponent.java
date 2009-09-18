@@ -23,10 +23,13 @@ package org.gephi.visualization.component;
 import java.awt.BorderLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
+import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
+import org.gephi.tools.api.ToolController;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.swing.GraphDrawableImpl;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -53,6 +56,7 @@ final class GraphTopComponent extends TopComponent {
         //Init
         VizController.getInstance().initInstances();
         initCollapsePanel();
+        initToolPanels();
         engine = VizController.getInstance().getEngine();
         final GraphDrawableImpl drawable = VizController.getInstance().getDrawable();
 
@@ -82,6 +86,24 @@ final class GraphTopComponent extends TopComponent {
             collapsePanel.init(vizBarController.getToolbar(), vizBarController.getExtendedBar(), false);
         } else {
             collapsePanel.setVisible(false);
+        }
+    }
+
+    private void initToolPanels() {
+        ToolController tc = Lookup.getDefault().lookup(ToolController.class);
+        if(tc!=null) {
+            if(VizController.getInstance().getVizConfig().isToolbar()) {
+                JComponent toolbar = tc.getToolbar();
+                if(toolbar!=null) {
+                    add(toolbar, BorderLayout.WEST);
+                }
+            }
+            if(VizController.getInstance().getVizConfig().isPropertiesbar()) {
+                JComponent propertiesBar = tc.getPropertiesBar();
+                if(propertiesBar!=null) {
+                    add(propertiesBar, BorderLayout.NORTH);
+                }
+            }
         }
     }
 

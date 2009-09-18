@@ -34,6 +34,8 @@ public interface ToolUI {
 
     public Icon getIcon();
 
+    public String getName();
+
     public String getDescription();
 
     public int getPosition();

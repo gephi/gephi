@@ -134,6 +134,14 @@ public class StandardVizEventManager implements VizEventManager {
         return handlers[type.ordinal()].hasListeners();
     }
 
+    public void addListener(VizEventListener listener) {
+        handlers[listener.getType().ordinal()].addListener(listener);
+    }
+
+    public void removeListener(VizEventListener listener) {
+        handlers[listener.getType().ordinal()].removeListener(listener);
+    }
+
     private class VizEventTypeHandler {
 
         //Settings
@@ -208,7 +216,7 @@ public class StandardVizEventManager implements VizEventManager {
             for (int i = 0; i < listeners.size(); i++) {
                 WeakReference<VizEventListener> weakListener = listeners.get(i);
                 VizEventListener v = weakListener.get();
-                v.vizEvent(event);
+                v.handleEvent(event);
             }
         }
 
