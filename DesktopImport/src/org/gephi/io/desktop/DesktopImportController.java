@@ -135,6 +135,7 @@ public class DesktopImportController implements ImportController {
             public void fatalError(Throwable t) {
                 NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
                 DialogDisplayer.getDefault().notify(ex);
+                t.printStackTrace();
             }
         };
 

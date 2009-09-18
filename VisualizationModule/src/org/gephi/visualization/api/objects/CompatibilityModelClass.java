@@ -76,6 +76,14 @@ public class CompatibilityModelClass extends ModelClass {
         }
     }
 
+    public void setCurrentModeler(String className) {
+        for(CompatibilityModeler mod : modelers) {
+            if(mod.getClass().getName().equals(className)) {
+                setCurrentModeler(mod);
+            }
+        }
+    }
+
     @Override
     public CompatibilityModeler getCurrentModeler() {
         return currentModeler;

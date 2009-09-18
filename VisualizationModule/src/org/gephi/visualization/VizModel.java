@@ -186,6 +186,10 @@ public class VizModel {
         return config;
     }
 
+    public String getNodeModeler() {
+        return nodeModeler;
+    }
+
     //SETTERS
     public void setAdjustByText(boolean adjustByText) {
         this.adjustByText = adjustByText;

@@ -78,9 +78,17 @@ public abstract class AbstractAttributeClass implements AttributeClass, Lookup.P
     }
 
     public synchronized AttributeColumnImpl addAttributeColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue) {
-        //TODO check if defaultValue is type AttributeType
-        Object managedValue = manager.getManagedValue(defaultValue, type);
-        AttributeColumnImpl column = new AttributeColumnImpl(columns.size(), id, title, type, origin, managedValue);
+        if(defaultValue!=null) {
+            if(defaultValue.getClass() != type.getType()) {
+                if(defaultValue.getClass() == String.class) {
+                    defaultValue = type.parse((String)defaultValue);
+                } else {
+                    throw new IllegalArgumentException("The default value type cannot be cast to the type");
+                }
+            }
+            defaultValue = manager.getManagedValue(defaultValue, type);
+        }
+        AttributeColumnImpl column = new AttributeColumnImpl(columns.size(), id, title, type, origin, defaultValue);
         columns.add(column);
         columnsMap.put(id, column);
         if (title != null && !title.equals(id)) {

@@ -149,6 +149,7 @@ public class VizController {
             currentModel.setListeners(null);
             currentModel.getTextModel().setListeners(null);
             currentModel = model;
+            VizController.getInstance().getModelClassLibrary().getNodeClass().setCurrentModeler(currentModel.getNodeModeler());
             currentModel.init();
         }
     }

@@ -61,6 +61,8 @@ public abstract class ModelClass {
 
     public abstract void setCurrentModeler(Modeler modeler);
 
+    public abstract void setCurrentModeler(String className);
+
     public abstract List<? extends Modeler> getModelers();
 
     public abstract void swapModelers();
