@@ -116,6 +116,7 @@ public class VizController {
         modeManager.initArchitecture();
         textManager.initArchitecture();
         screenshotMaker.initArchitecture();
+        vizEventManager.initArchitecture();
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {

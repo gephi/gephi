@@ -159,7 +159,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     protected abstract void stopAnimating();
 
-    public abstract ModelImpl[] getSelectedObjects(ModelClass modelClass);
+    public abstract ModelImpl[] getSelectedObjects(int modelClass);
 
     /**
      * Reset contents of octree for the given class

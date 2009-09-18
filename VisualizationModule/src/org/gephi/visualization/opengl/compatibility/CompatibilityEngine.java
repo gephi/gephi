@@ -443,13 +443,13 @@ public class CompatibilityEngine extends AbstractEngine {
             return;
         }
 
-        List<ModelImpl> newSelectedObjects = null;
+        /*List<ModelImpl> newSelectedObjects = null;
         List<ModelImpl> unSelectedObjects = null;
 
         if (vizEventManager.hasSelectionListeners()) {
             newSelectedObjects = new ArrayList<ModelImpl>();
             unSelectedObjects = new ArrayList<ModelImpl>();
-        }
+        }*/
 
         markTime2++;
         int i = 0;
@@ -466,18 +466,18 @@ public class CompatibilityEngine extends AbstractEngine {
                     if (!obj.isSelected()) {
                         //New selected
                         obj.setSelected(true);
-                        if (vizEventManager.hasSelectionListeners()) {
+                        /*if (vizEventManager.hasSelectionListeners()) {
                             newSelectedObjects.add(obj);
-                        }
+                        }*/
                         selectedObjects[i].add(obj);
                     }
                     obj.selectionMark = markTime2;
                 } else if (currentSelectionArea.unselect(obj.getObj())) {
                     if (forceUnselect) {
                         obj.setAutoSelect(false);
-                    } else if (vizEventManager.hasSelectionListeners() && obj.isSelected()) {
+                    } /*else if (vizEventManager.hasSelectionListeners() && obj.isSelected()) {
                         unSelectedObjects.add(obj);
-                    }
+                    }*/
                 }
             }
 
@@ -550,8 +550,8 @@ public class CompatibilityEngine extends AbstractEngine {
     }
 
     @Override
-    public ModelImpl[] getSelectedObjects(ModelClass modelClass) {
-        return selectedObjects[modelClass.getSelectionId()].toArray(new ModelImpl[0]);
+    public ModelImpl[] getSelectedObjects(int modelClass) {
+        return selectedObjects[modelClasses[modelClass].getSelectionId()].toArray(new ModelImpl[0]);
     }
 
     private void initDisplayLists(GL gl, GLU glu) {

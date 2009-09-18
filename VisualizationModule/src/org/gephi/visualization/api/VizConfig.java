@@ -22,8 +22,6 @@ package org.gephi.visualization.api;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.beans.PropertyChangeListener;
-import java.util.List;
 
 /**
  *
@@ -68,7 +66,7 @@ public class VizConfig {
     protected boolean useGLJPanel = false;
     protected float[] nodeSelectedColor = {1f, 1f, 1f};
     protected boolean selectionEnable = true;
-    protected boolean rectangleSelection = true;
+    protected boolean rectangleSelection = false;
     protected float[] rectangleSelectionColor = {0.16f, 0.48f, 0.81f, 0.2f};
     protected boolean draggingEnable = true;
     protected boolean cameraControlEnable = true;

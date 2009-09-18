@@ -21,12 +21,22 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.events;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
+import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.VizEvent;
 import org.gephi.visualization.api.VizEventListener;
 import org.gephi.visualization.api.VizEventManager;
+import org.gephi.visualization.opengl.AbstractEngine;
 
 /**
  *
@@ -35,311 +45,179 @@ import org.gephi.visualization.api.VizEventManager;
 public class StandardVizEventManager implements VizEventManager {
 
     private ThreadPoolExecutor pool;
-
-    //Cached Runnable
-    protected Runnable dragRunnable;
-    protected Runnable mouseMoveRunnable;
-    protected boolean mouseMoveRunning = false;
-    protected boolean mouseDragRunning = false;
+    private VizEventTypeHandler[] handlers;
+    private AbstractEngine engine;
 
     public StandardVizEventManager() {
         pool = new ThreadPoolExecutor(0, 1, 60L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(10));
+    }
 
-        //Init Cached Runnable
-        dragRunnable = new Runnable() {
+    public void initArchitecture() {
+        engine = VizController.getInstance().getEngine();
 
-            public void run() {
-                fireVizEvent(VizEvent.Type.DRAG);
-                mouseDragRunning = false;
+        //Set handlers
+        ArrayList<VizEventTypeHandler> handlersList = new ArrayList<VizEventTypeHandler>();
+        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_LEFT_CLICK, false));
+        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_LEFT_PRESS, false));
+        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_MIDDLE_CLICK, false));
+        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_MIDDLE_PRESS, false));
+        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_RIGHT_CLICK, false));
+        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_RIGHT_PRESS, false));
+        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_MOVE, true));
+        handlersList.add(new VizEventTypeHandler(VizEvent.Type.START_DRAG, false));
+        handlersList.add(new VizEventTypeHandler(VizEvent.Type.DRAG, true));
+        handlersList.add(new VizEventTypeHandler(VizEvent.Type.STOP_DRAG, false));
+        handlersList.add(new VizEventTypeHandler(VizEvent.Type.NODE_LEFT_CLICK, false));
+        handlersList.add(new VizEventTypeHandler(VizEvent.Type.NODE_LEFT_PRESS, false));
+        Collections.sort(handlersList, new Comparator() {
+
+            public int compare(Object o1, Object o2) {
+                VizEvent.Type t1 = ((VizEventTypeHandler) o1).type;
+                VizEvent.Type t2 = ((VizEventTypeHandler) o2).type;
+                return t1.compareTo(t2);
             }
-        };
-
-        mouseMoveRunnable = new Runnable() {
-
-            public void run() {
-                fireVizEvent(VizEvent.Type.MOUSE_MOVE);
-                mouseMoveRunning = false;
-            }
-        };
+        });
+        handlers = handlersList.toArray(new VizEventTypeHandler[0]);
     }
 
     public void mouseLeftClick() {
-        pool.submit(new Runnable() {
-
-            public void run() {
-                fireVizEvent(VizEvent.Type.MOUSE_LEFT_CLICK);
+        handlers[VizEvent.Type.MOUSE_LEFT_CLICK.ordinal()].dispatch();
+        VizEventTypeHandler nodeHandler = handlers[VizEvent.Type.NODE_LEFT_CLICK.ordinal()];
+        if (nodeHandler.hasListeners()) {
+            //Check if some node are selected
+            ModelImpl[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+            Node[] nodeArray = new Node[modelArray.length];
+            for (int i = 0; i < modelArray.length; i++) {
+                nodeArray[i] = ((NodeData) modelArray[i].getObj()).getNode();
             }
-        });
+            nodeHandler.dispatch(nodeArray);
+        }
     }
 
     public void mouseLeftPress() {
-        pool.submit(new Runnable() {
-
-            public void run() {
-                fireVizEvent(VizEvent.Type.MOUSE_LEFT_PRESS);
-            }
-        });
+        handlers[VizEvent.Type.MOUSE_LEFT_PRESS.ordinal()].dispatch();
     }
 
     public void mouseMiddleClick() {
-        pool.submit(new Runnable() {
-
-            public void run() {
-                fireVizEvent(VizEvent.Type.MOUSE_MIDDLE_CLICK);
-            }
-        });
+        handlers[VizEvent.Type.MOUSE_MIDDLE_CLICK.ordinal()].dispatch();
     }
 
     public void mouseMiddlePress() {
-        pool.submit(new Runnable() {
-
-            public void run() {
-                fireVizEvent(VizEvent.Type.MOUSE_MIDDLE_PRESS);
-            }
-        });
+        handlers[VizEvent.Type.MOUSE_LEFT_PRESS.ordinal()].dispatch();
     }
 
     public void mouseMove() {
-        if (!mouseMoveRunning) {
-            pool.submit(mouseMoveRunnable);
-        }
+        handlers[VizEvent.Type.MOUSE_MOVE.ordinal()].dispatch();
     }
 
     public void mouseRightClick() {
-        pool.submit(new Runnable() {
-
-            public void run() {
-                fireVizEvent(VizEvent.Type.MOUSE_RIGHT_CLICK);
-            }
-        });
+        handlers[VizEvent.Type.MOUSE_RIGHT_CLICK.ordinal()].dispatch();
     }
 
     public void mouseRightPress() {
-        pool.submit(new Runnable() {
-
-            public void run() {
-                fireVizEvent(VizEvent.Type.MOUSE_RIGHT_PRESS);
-            }
-        });
+        handlers[VizEvent.Type.MOUSE_RIGHT_PRESS.ordinal()].dispatch();
     }
 
     public void startDrag() {
-        pool.submit(new Runnable() {
-
-            public void run() {
-                fireVizEvent(VizEvent.Type.START_DRAG);
-            }
-        });
+        handlers[VizEvent.Type.START_DRAG.ordinal()].dispatch();
     }
 
     public void stopDrag() {
-        pool.submit(new Runnable() {
-
-            public void run() {
-                fireVizEvent(VizEvent.Type.STOP_DRAG);
-            }
-        });
+        handlers[VizEvent.Type.STOP_DRAG.ordinal()].dispatch();
     }
 
     public void drag() {
-        if (!mouseDragRunning) {
-            pool.submit(dragRunnable);
-        }
-    }
-    protected WeakReference<VizEventListener>[] startDragArray = new WeakReference[0];
-    protected WeakReference<VizEventListener>[] dragArray = new WeakReference[0];
-    protected WeakReference<VizEventListener>[] stopDragArray = new WeakReference[0];
-    protected WeakReference<VizEventListener>[] mouseLeftPressArray = new WeakReference[0];
-    protected WeakReference<VizEventListener>[] mouseMiddlePressArray = new WeakReference[0];
-    protected WeakReference<VizEventListener>[] mouseRightPressArray = new WeakReference[0];
-    protected WeakReference<VizEventListener>[] mouseLeftClickArray = new WeakReference[0];
-    protected WeakReference<VizEventListener>[] mouseMiddleClickArray = new WeakReference[0];
-    protected WeakReference<VizEventListener>[] mouseRightClickArray = new WeakReference[0];
-    protected WeakReference<VizEventListener>[] mouseMoveArray = new WeakReference[0];
-
-    private void fireVizEvent(VizEvent event, WeakReference<VizEventListener>[] array) {
-        for (int i = 0; i < array.length; i++) {
-            WeakReference<VizEventListener> weakListener = array[i];
-            if (weakListener != null) {
-                weakListener.get().vizEvent(event);
-            }
-        }
+        handlers[VizEvent.Type.DRAG.ordinal()].dispatch();
     }
 
-    public boolean hasSelectionListeners() {
-        return dragArray.length > 0;
+    public boolean hasListeners(VizEvent.Type type) {
+        return handlers[type.ordinal()].hasListeners();
     }
 
-    public synchronized void fireVizEvent(VizEvent.Type type) {
-        VizEvent event = new VizEvent(this, type);
-        switch (type) {
-            case START_DRAG:
-                fireVizEvent(event, startDragArray);
-                break;
-            case DRAG:
-                fireVizEvent(event, dragArray);
-                break;
-            case STOP_DRAG:
-                fireVizEvent(event, stopDragArray);
-                break;
-            case MOUSE_LEFT_CLICK:
-                fireVizEvent(event, mouseLeftClickArray);
-                break;
-            case MOUSE_LEFT_PRESS:
-                fireVizEvent(event, mouseLeftPressArray);
-                break;
-            case MOUSE_MIDDLE_CLICK:
-                fireVizEvent(event, mouseMiddleClickArray);
-                break;
-            case MOUSE_MIDDLE_PRESS:
-                fireVizEvent(event, mouseMiddlePressArray);
-                break;
-            case MOUSE_MOVE:
-                fireVizEvent(event, mouseMoveArray);
-                break;
-            case MOUSE_RIGHT_CLICK:
-                fireVizEvent(event, mouseRightClickArray);
-                break;
-            case MOUSE_RIGHT_PRESS:
-                fireVizEvent(event, mouseRightPressArray);
-                break;
-        }
-    }
+    private class VizEventTypeHandler {
 
-    @Override
-    public synchronized void addListener(VizEventListener listener, VizEvent.Type[] types) {
-        WeakReference<VizEventListener> weakListener = new WeakReference<VizEventListener>(listener);
-        for (VizEvent.Type eventType : types) {
-            try {
-                switch (eventType) {
-                    case START_DRAG:
-                        startDragArray = addToArray(startDragArray, weakListener);
-                        break;
-                    case DRAG:
-                        dragArray = addToArray(dragArray, weakListener);
-                        break;
-                    case STOP_DRAG:
-                        stopDragArray = addToArray(stopDragArray, weakListener);
-                        break;
-                    case MOUSE_LEFT_CLICK:
-                        mouseLeftClickArray = addToArray(mouseLeftClickArray, weakListener);
-                        break;
-                    case MOUSE_LEFT_PRESS:
-                        mouseLeftPressArray = addToArray(mouseLeftPressArray, weakListener);
-                        break;
-                    case MOUSE_MIDDLE_CLICK:
-                        mouseMiddleClickArray = addToArray(mouseMiddleClickArray, weakListener);
-                        break;
-                    case MOUSE_MIDDLE_PRESS:
-                        mouseMiddlePressArray = addToArray(mouseMiddlePressArray, weakListener);
-                        break;
-                    case MOUSE_MOVE:
-                        mouseMoveArray = addToArray(mouseMoveArray, weakListener);
-                        break;
-                    case MOUSE_RIGHT_CLICK:
-                        mouseRightClickArray = addToArray(mouseRightClickArray, weakListener);
-                        break;
-                    case MOUSE_RIGHT_PRESS:
-                        mouseRightPressArray = addToArray(mouseRightPressArray, weakListener);
-                        break;
+        //Settings
+        private final boolean limitRunning;
+
+        //Data
+        protected List<WeakReference<VizEventListener>> listeners;
+        protected final VizEvent.Type type;
+        protected Runnable runnable;
+        //States
+        protected boolean running;
+
+        public VizEventTypeHandler(VizEvent.Type type, boolean limitRunning) {
+            this.limitRunning = limitRunning;
+            this.type = type;
+            this.listeners = new ArrayList<WeakReference<VizEventListener>>();
+            runnable = new Runnable() {
+
+                public void run() {
+                    fireVizEvent(null);
+                    running = false;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public synchronized void removeListener(VizEventListener listener, VizEvent.Type[] types) {
-        for (VizEvent.Type eventType : types) {
-            try {
-                switch (eventType) {
-                    case START_DRAG:
-                        startDragArray = removeFromArray(startDragArray, listener);
-                        break;
-                    case DRAG:
-                        dragArray = removeFromArray(dragArray, listener);
-                        break;
-                    case STOP_DRAG:
-                        stopDragArray = removeFromArray(stopDragArray, listener);
-                        break;
-                    case MOUSE_LEFT_CLICK:
-                        mouseLeftClickArray = removeFromArray(mouseLeftClickArray, listener);
-                        break;
-                    case MOUSE_LEFT_PRESS:
-                        mouseLeftPressArray = removeFromArray(mouseLeftPressArray, listener);
-                        break;
-                    case MOUSE_MIDDLE_CLICK:
-                        mouseMiddleClickArray = removeFromArray(mouseMiddleClickArray, listener);
-                        break;
-                    case MOUSE_MIDDLE_PRESS:
-                        mouseMiddlePressArray = removeFromArray(mouseMiddlePressArray, listener);
-                        break;
-                    case MOUSE_MOVE:
-                        mouseMoveArray = removeFromArray(mouseMoveArray, listener);
-                        break;
-                    case MOUSE_RIGHT_CLICK:
-                        mouseRightClickArray = removeFromArray(mouseRightClickArray, listener);
-                        break;
-                    case MOUSE_RIGHT_PRESS:
-                        mouseRightPressArray = removeFromArray(mouseRightPressArray, listener);
-                        break;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public WeakReference<VizEventListener>[] addToArray(WeakReference<VizEventListener>[] array, WeakReference<VizEventListener> listener) throws Exception {
-        int newLenght = 1;
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] != null) {
-                newLenght++;
-            }
+            };
         }
 
-        int j = 0;
-        WeakReference<VizEventListener>[] newArray = new WeakReference[newLenght];
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] != null) {
-                newArray[j] = array[i];
-                j++;
-            }
+        protected synchronized void addListener(VizEventListener listener) {
+            WeakReference<VizEventListener> weakListener = new WeakReference<VizEventListener>(listener);
+            listeners.add(weakListener);
         }
-        newArray[j] = listener;
 
-        return newArray;
-    }
-
-    public WeakReference<VizEventListener>[] removeFromArray(WeakReference<VizEventListener>[] array, VizEventListener listener) throws Exception {
-        int newLenght = 0;
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] != null) {
-                newLenght++;
-            }
-
-            if (array[i] != null) {
-                WeakReference<VizEventListener> weakListener = array[i];
-                if (weakListener.get() == listener) {
-                    newLenght--;
+        protected synchronized void removeListener(VizEventListener listener) {
+            for (Iterator<WeakReference<VizEventListener>> itr = listeners.iterator(); itr.hasNext();) {
+                WeakReference<VizEventListener> li = itr.next();
+                if (li.get() == listener) {
+                    itr.remove();
                 }
             }
         }
 
-        int j = 0;
-        WeakReference<VizEventListener>[] newArray = new WeakReference[newLenght];
-        if (newLenght > 0) {
-            for (int i = 0; i < array.length; i++) {
-                if (array[i] != null) {
-                    WeakReference<VizEventListener> weakListener = array[i];
-                    if (weakListener.get() != listener) {
-                        newArray[j] = array[i];
-                        j++;
+        protected void dispatch() {
+            if (limitRunning && running) {
+                return;
+            }
+            if (listeners.size() > 0) {
+                running = true;
+                pool.submit(runnable);
+            }
+        }
+
+        protected void dispatch(final Object data) {
+            if (limitRunning && running) {
+                return;
+            }
+            if (listeners.size() > 0) {
+                running = true;
+                pool.submit(new Runnable() {
+
+                    public void run() {
+                        fireVizEvent(data);
+                        running = false;
                     }
-                }
+                });
             }
         }
-        return newArray;
+
+        protected boolean isRunning() {
+            return running;
+        }
+
+        private synchronized void fireVizEvent(Object data) {
+            VizEvent event = new VizEvent(this, type, data);
+            for (int i = 0; i < listeners.size(); i++) {
+                WeakReference<VizEventListener> weakListener = listeners.get(i);
+                VizEventListener v = weakListener.get();
+                v.vizEvent(event);
+            }
+        }
+
+        public boolean hasListeners() {
+            return listeners.size() > 0;
+        }
+
+        protected int getIndex() {
+            return type.ordinal();
+        }
     }
 }

@@ -61,7 +61,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     }
 
     public boolean canExpand() {
-        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_NODE]);
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
         if (selectedNodeModels.length == 1) {
             ModelImpl metaModel = selectedNodeModels[0];
             //TODO check it is a metaNode
@@ -71,7 +71,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     }
 
     public boolean canContract() {
-        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_POTATO]);
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_POTATO);
         if (selectedNodeModels.length == 1) {
             ModelImpl metaModel = selectedNodeModels[0];
             //TODO check it is a metaNode
@@ -91,7 +91,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     public void expand() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         this.graph = graphController.getHierarchicalDirectedGraph();
-        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_NODE]);
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
         if (selectedNodeModels.length == 1) {
             ModelImpl metaModel = selectedNodeModels[0];
             //TODO check it is a metaNode
@@ -104,7 +104,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     public void contract() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         this.graph = graphController.getHierarchicalDirectedGraph();
-        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_POTATO]);
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_POTATO);
         if (selectedNodeModels.length == 1) {
             ModelImpl metaModel = selectedNodeModels[0];
             //TODO check it is a metaNode
@@ -117,7 +117,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     public void group() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         this.graph = graphController.getHierarchicalDirectedGraph();
-        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_NODE]);
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
         Node[] newGroup = new Node[selectedNodeModels.length];
         for (int i = 0; i < selectedNodeModels.length; i++) {
             newGroup[i] = ((NodeData) selectedNodeModels[i].getObj()).getNode();
@@ -142,7 +142,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     public void ungroup() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         this.graph = graphController.getHierarchicalDirectedGraph();
-        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(engine.getModelClasses()[AbstractEngine.CLASS_NODE]);
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
         if (selectedNodeModels.length == 1) {
             ModelImpl metaModel = selectedNodeModels[0];
             //TODO check it is a metaNode
