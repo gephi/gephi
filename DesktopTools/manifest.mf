@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.desktop.tools
+OpenIDE-Module-Layer: org/gephi/desktop/tools/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/tools/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
