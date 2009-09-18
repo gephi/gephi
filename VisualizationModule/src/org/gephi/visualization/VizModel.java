@@ -75,7 +75,7 @@ public class VizModel {
 
     public void init() {
         PropertyChangeEvent evt = new PropertyChangeEvent(this, "init", null, null);
-        for(PropertyChangeListener l : listeners) {
+        for (PropertyChangeListener l : listeners) {
             l.propertyChange(evt);
         }
     }
@@ -238,6 +238,11 @@ public class VizModel {
 
     public void setUse3d(boolean use3d) {
         this.use3d = use3d;
+        //Additional
+        this.lighting = use3d;
+        this.culling = use3d;
+        this.rotatingEnable = use3d;
+        this.material = use3d;
         fireProperyChange("use3d", null, use3d);
     }
 

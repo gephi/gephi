@@ -76,27 +76,31 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
                 if (modeler.is3d() && !vizModel.isUse3d()) {
                     String msg = NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message3d");
                     if (JOptionPane.showConfirmDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                        nodeClass.setCurrentModeler(modeler);
                         //enable 3d
                         vizModel.setUse3d(true);
+                        nodeClass.setCurrentModeler(modeler);
                     }
 
                 } else if (!modeler.is3d() && vizModel.isUse3d()) {
                     String msg = NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message2d");
                     if (JOptionPane.showConfirmDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                        nodeClass.setCurrentModeler(modeler);
                         //disable 3d
                         vizModel.setUse3d(false);
+                        nodeClass.setCurrentModeler(modeler);
                     }
+                } else {
+                    nodeClass.setCurrentModeler(modeler);
                 }
             }
         });
         vizModel.addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals("defaultShape")) {
+                if (evt.getPropertyName().equals("nodeModeler")) {
                     refreshSharedConfig();
                 } else if (evt.getPropertyName().equals("init")) {
+                    refreshSharedConfig();
+                } else if (evt.getPropertyName().equals("adjustByText")) {
                     refreshSharedConfig();
                 }
             }
@@ -113,6 +117,9 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
         final ModelClass nodeClass = VizController.getInstance().getModelClassLibrary().getNodeClass();
         if (shapeCombo.getSelectedItem() != nodeClass.getCurrentModeler()) {
             shapeCombo.setSelectedItem(nodeClass.getCurrentModeler());
+        }
+        if (adjustTextCheckbox.isSelected() != vizModel.isAdjustByText()) {
+            adjustTextCheckbox.setSelected(vizModel.isAdjustByText());
         }
     }
 
