@@ -55,7 +55,7 @@ public class VizConfig {
     protected Font defaultEdgeLabelFont = new Font("Arial", Font.BOLD, 20);
     protected boolean defaultAdjustByText = false;
     protected boolean defaultShowLabelOnSelectedOnly = false;
-    protected String defaultNodeModeler = "CompatibilityNodeSphereModeler";
+    protected String defaultNodeModeler = "CompatibilityNodeDiskModeler";
 
     //Preferences
     protected int antialiasing = 4;

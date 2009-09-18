@@ -72,13 +72,13 @@ public class CompatibilityModelClass extends ModelClass {
         }
         if (modeler != currentModeler) {
             newModeler = (CompatibilityModeler) modeler;
-            VizController.getInstance().getVizModel().setNodeModeler(newModeler.getClass().getName());
+            VizController.getInstance().getVizModel().setNodeModeler(newModeler.getClass().getSimpleName());
         }
     }
 
     public void setCurrentModeler(String className) {
-        for(CompatibilityModeler mod : modelers) {
-            if(mod.getClass().getName().equals(className)) {
+        for (CompatibilityModeler mod : modelers) {
+            if (mod.getClass().getSimpleName().equals(className)) {
                 setCurrentModeler(mod);
             }
         }
@@ -98,7 +98,7 @@ public class CompatibilityModelClass extends ModelClass {
         if (newModeler != null) {
             currentModeler = newModeler;
             newModeler = null;
-            VizController.getInstance().getVizModel().setNodeModeler(currentModeler.getClass().getName());
+            VizController.getInstance().getVizModel().setNodeModeler(currentModeler.getClass().getSimpleName());
         }
     }
 }
