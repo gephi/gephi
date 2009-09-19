@@ -39,6 +39,8 @@ public interface GraphIO extends MouseListener, MouseWheelListener, MouseMotionL
 
     public void stopMouseListening();
 
+    public void trigger();
+
     public void centerOnZero();
 
     public void centerOnGraph();

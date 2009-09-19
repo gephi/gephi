@@ -69,6 +69,8 @@ public class StandardVizEventManager implements VizEventManager {
         handlersList.add(new VizEventTypeHandler(VizEvent.Type.STOP_DRAG, false));
         handlersList.add(new VizEventTypeHandler(VizEvent.Type.NODE_LEFT_CLICK, false));
         handlersList.add(new VizEventTypeHandler(VizEvent.Type.NODE_LEFT_PRESS, false));
+        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_LEFT_PRESSING, false));
+        handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_RELEASED, false));
         Collections.sort(handlersList, new Comparator() {
 
             public int compare(Object o1, Object o2) {
@@ -96,6 +98,16 @@ public class StandardVizEventManager implements VizEventManager {
 
     public void mouseLeftPress() {
         handlers[VizEvent.Type.MOUSE_LEFT_PRESS.ordinal()].dispatch();
+        VizEventTypeHandler nodeHandler = handlers[VizEvent.Type.NODE_LEFT_PRESS.ordinal()];
+        if (nodeHandler.hasListeners()) {
+            //Check if some node are selected
+            ModelImpl[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+            Node[] nodeArray = new Node[modelArray.length];
+            for (int i = 0; i < modelArray.length; i++) {
+                nodeArray[i] = ((NodeData) modelArray[i].getObj()).getNode();
+            }
+            nodeHandler.dispatch(nodeArray);
+        }
     }
 
     public void mouseMiddleClick() {
@@ -118,6 +130,10 @@ public class StandardVizEventManager implements VizEventManager {
         handlers[VizEvent.Type.MOUSE_RIGHT_PRESS.ordinal()].dispatch();
     }
 
+    public void mouseLeftPressing() {
+        handlers[VizEvent.Type.MOUSE_LEFT_PRESSING.ordinal()].dispatch();
+    }
+
     public void startDrag() {
         handlers[VizEvent.Type.START_DRAG.ordinal()].dispatch();
     }
@@ -130,6 +146,11 @@ public class StandardVizEventManager implements VizEventManager {
         handlers[VizEvent.Type.DRAG.ordinal()].dispatch();
     }
 
+    public void mouseReleased() {
+        handlers[VizEvent.Type.MOUSE_RELEASED.ordinal()].dispatch();
+    }
+
+    //Listeners
     public boolean hasListeners(VizEvent.Type type) {
         return handlers[type.ordinal()].hasListeners();
     }
@@ -140,6 +161,18 @@ public class StandardVizEventManager implements VizEventManager {
 
     public void removeListener(VizEventListener listener) {
         handlers[listener.getType().ordinal()].removeListener(listener);
+    }
+
+    public void addListener(VizEventListener[] listeners) {
+        for(int i=0;i<listeners.length;i++) {
+            handlers[listeners[i].getType().ordinal()].addListener(listeners[i]);
+        }
+    }
+
+    public void removeListener(VizEventListener[] listeners) {
+        for(int i=0;i<listeners.length;i++) {
+            handlers[listeners[i].getType().ordinal()].removeListener(listeners[i]);
+        }
     }
 
     private class VizEventTypeHandler {

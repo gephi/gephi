@@ -18,12 +18,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.gephi.tools.api;
+
+import org.gephi.graph.api.Node;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface ToolEventListener {
+public interface NodeClickEventListener extends ToolEventListener {
+
+    public void clickNodes(Node[] nodes);
 
 }

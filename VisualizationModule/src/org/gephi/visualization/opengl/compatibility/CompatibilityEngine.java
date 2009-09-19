@@ -360,6 +360,7 @@ public class CompatibilityEngine extends AbstractEngine {
         if (vizConfig.isSelectionEnable()) {
             currentSelectionArea.drawArea(gl, glu);
         }
+        graphIO.trigger();
     }
 
     @Override

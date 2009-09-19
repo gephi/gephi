@@ -31,7 +31,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import org.gephi.graph.api.Node;
-import org.gephi.tools.api.NodeEventListener;
+import org.gephi.tools.api.NodeClickEventListener;
+import org.gephi.tools.api.NodePressingEventListener;
 import org.gephi.tools.api.Tool;
 import org.gephi.tools.api.ToolController;
 import org.gephi.tools.api.ToolEventListener;
@@ -40,7 +41,6 @@ import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VizEvent;
 import org.gephi.visualization.api.VizEvent.Type;
 import org.gephi.visualization.api.VizEventListener;
-import org.gephi.visualization.api.VizEventManager;
 import org.openide.util.Lookup;
 
 /**
@@ -54,58 +54,45 @@ public class DesktopToolController implements ToolController {
 
     //Current tool
     private Tool currentTool;
-    private List<VizEventListener> currentListeners;
+    private ToolEventHandler[] currentHandlers;
 
     public DesktopToolController() {
         //Init tools
         tools = Lookup.getDefault().lookupAll(Tool.class).toArray(new Tool[0]);
-        currentListeners = new ArrayList<VizEventListener>();
     }
 
     public void select(Tool tool) {
 
         unselect();
-        currentTool = tool;
 
         //Connect events
+        ArrayList<ToolEventHandler> handlers = new ArrayList<ToolEventHandler>();
         for (ToolEventListener toolListener : tool.getListeners()) {
-            VizEventListener listener = null;
-            switch (toolListener.getType()) {
-                case NODE_CLICKED:
-                    final NodeEventListener nodeListener = (NodeEventListener) toolListener;
-                    listener = new VizEventListener() {
-
-                        public void handleEvent(VizEvent event) {
-                            nodeListener.handleEvent((Node[]) event.getData());
-                        }
-
-                        public Type getType() {
-                            return VizEvent.Type.NODE_LEFT_CLICK;
-                        }
-                    };
-                    break;
-                case NODE_PRESSED:
-
-                    break;
-            }
-
-            if (listener != null) {
-                currentListeners.add(listener);
-                VizController.getInstance().getVizEventManager().addListener(listener);
+            if (toolListener instanceof NodeClickEventListener) {
+                NodeClickEventHandler h = new NodeClickEventHandler(toolListener);
+                h.select();
+                handlers.add(h);
+            } else if (toolListener instanceof NodePressingEventListener) {
+                NodePressingEventHandler h = new NodePressingEventHandler(toolListener);
+                h.select();
+                handlers.add(h);
+            } else {
+                throw new RuntimeException("The ToolEventListener " + toolListener.getClass().getSimpleName() + " cannot be recognized");
             }
         }
+        currentHandlers = handlers.toArray(new ToolEventHandler[0]);
+        currentTool = tool;
     }
 
     public void unselect() {
 
         if (currentTool != null) {
             //Disconnect events
-            VizEventManager vizEventManager = VizController.getInstance().getVizEventManager();
-            for (VizEventListener listener : currentListeners) {
-                vizEventManager.removeListener(listener);
+            for (ToolEventHandler handler : currentHandlers) {
+                handler.unselect();
             }
+            currentHandlers = null;
             currentTool = null;
-            currentListeners.clear();
         }
     }
 
@@ -152,5 +139,94 @@ public class DesktopToolController implements ToolController {
 
     public JComponent getPropertiesBar() {
         return new JPanel();
+    }
+
+    //Event handlers classes
+    private static interface ToolEventHandler {
+
+        public void select();
+
+        public void unselect();
+    }
+
+    private static class NodeClickEventHandler implements ToolEventHandler {
+
+        private NodeClickEventListener toolEventListener;
+        private VizEventListener currentListener;
+
+        public NodeClickEventHandler(ToolEventListener toolListener) {
+            this.toolEventListener = (NodeClickEventListener) toolListener;
+        }
+
+        public void select() {
+            currentListener = new VizEventListener() {
+
+                public void handleEvent(VizEvent event) {
+                    toolEventListener.clickNodes((Node[]) event.getData());
+                }
+
+                public Type getType() {
+                    return VizEvent.Type.NODE_LEFT_CLICK;
+                }
+            };
+            VizController.getInstance().getVizEventManager().addListener(currentListener);
+        }
+
+        public void unselect() {
+            VizController.getInstance().getVizEventManager().removeListener(currentListener);
+            currentListener = null;
+            toolEventListener = null;
+        }
+    }
+
+    private static class NodePressingEventHandler implements ToolEventHandler {
+
+        private NodePressingEventListener toolEventListener;
+        private VizEventListener[] currentListeners;
+
+        public NodePressingEventHandler(ToolEventListener toolListener) {
+            this.toolEventListener = (NodePressingEventListener) toolListener;
+        }
+
+        public void select() {
+            currentListeners = new VizEventListener[3];
+            currentListeners[0] = new VizEventListener() {
+
+                public void handleEvent(VizEvent event) {
+                    toolEventListener.pressNodes((Node[]) event.getData());
+                }
+
+                public Type getType() {
+                    return VizEvent.Type.NODE_LEFT_PRESS;
+                }
+            };
+            currentListeners[1] = new VizEventListener() {
+
+                public void handleEvent(VizEvent event) {
+                    toolEventListener.pressing();
+                }
+
+                public Type getType() {
+                    return VizEvent.Type.MOUSE_LEFT_PRESSING;
+                }
+            };
+            currentListeners[2] = new VizEventListener() {
+
+                public void handleEvent(VizEvent event) {
+                    toolEventListener.released();
+                }
+
+                public Type getType() {
+                    return VizEvent.Type.MOUSE_RELEASED;
+                }
+            };
+            VizController.getInstance().getVizEventManager().addListener(currentListeners);
+        }
+
+        public void unselect() {
+            VizController.getInstance().getVizEventManager().removeListener(currentListeners);
+            toolEventListener = null;
+            currentListeners = null;
+        }
     }
 }

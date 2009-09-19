@@ -58,6 +58,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     //Flags
     protected boolean draggingEnable = true;
     protected boolean dragging = false;
+    protected boolean pressing = false;
 
     @Override
     public void initArchitecture() {
@@ -110,6 +111,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         } else if (SwingUtilities.isLeftMouseButton(e)) {
             leftButtonMoving[0] = x;
             leftButtonMoving[1] = y;
+            pressing = true;
             vizEventManager.mouseLeftPress();
         }
     }
@@ -135,6 +137,10 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             vizEventManager.stopDrag();
         } else {
             graphDrawable.graphComponent.setCursor(Cursor.getDefaultCursor());
+        }
+
+        if(pressing) {
+            pressing = false;
         }
     }
 
@@ -340,6 +346,12 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     graphDrawable.rotationX = (float)Math.atan(((graphDrawable.cameraLocation[1]-graphDrawable.cameraTarget[1])/(graphDrawable.cameraLocation[2]-graphDrawable.cameraTarget[2])));
     engine.getScheduler().requireUpdateVisible();
     }*/
+    }
+
+    public void trigger() {
+        if(pressing) {
+            vizEventManager.mouseLeftPressing();
+        }
     }
 
     public void keyPressed(KeyEvent e) {

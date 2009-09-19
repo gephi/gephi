@@ -25,10 +25,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.gephi.graph.api.Node;
-import org.gephi.tools.api.NodeClickEventListener;
+import org.gephi.tools.api.NodePressingEventListener;
 import org.gephi.tools.api.Tool;
 import org.gephi.tools.api.ToolEventListener;
-import org.gephi.tools.api.ToolEventType;
 import org.gephi.ui.tools.ToolUI;
 import org.openide.util.NbBundle;
 
@@ -36,23 +35,27 @@ import org.openide.util.NbBundle;
  *
  * @author Mathieu Bastian
  */
-public class Painter implements Tool {
+public class Brush implements Tool {
 
     private ToolEventListener[] listeners;
 
     public ToolEventListener[] getListeners() {
         listeners = new ToolEventListener[1];
-        listeners[0] = new NodeClickEventListener() {
+        listeners[0] = new NodePressingEventListener() {
 
-            public ToolEventType getType() {
-                return ToolEventType.NODE_CLICKED;
-            }
-
-            public void clickNodes(Node[] nodes) {
-                System.out.println("-------Nodes clicked");
+            public void pressNodes(Node[] nodes) {
+                System.out.println("-------Nodes pressed");
                 for (int i = 0; i < nodes.length; i++) {
                     System.out.println(nodes[i].getNodeData().getLabel());
                 }
+            }
+
+            public void pressing() {
+                System.out.println("--pressing");
+            }
+
+            public void released() {
+                System.out.println("-----released");
             }
         };
         return listeners;
@@ -62,26 +65,26 @@ public class Painter implements Tool {
         return new ToolUI() {
 
             public JPanel getPropertiesBar(Tool tool) {
-                JLabel lbl = new JLabel("painter");
+                JLabel lbl = new JLabel("brusher");
                 JPanel pnl = new JPanel();
                 pnl.add(lbl);
                 return pnl;
             }
 
             public String getName() {
-                return NbBundle.getMessage(Painter.class, "Painter.name");
+                return NbBundle.getMessage(Brush.class, "Brush.name");
             }
 
             public Icon getIcon() {
-                return new ImageIcon(getClass().getResource("/org/gephi/tools/resources/painter.png"));
+                return new ImageIcon(getClass().getResource("/org/gephi/tools/resources/brush.png"));
             }
 
             public String getDescription() {
-                return NbBundle.getMessage(Painter.class, "Painter.description");
+                return NbBundle.getMessage(Painter.class, "Brush.description");
             }
 
             public int getPosition() {
-                return 100;
+                return 110;
             }
         };
     }
