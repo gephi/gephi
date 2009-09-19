@@ -28,6 +28,7 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VizEvent;
+import org.gephi.visualization.api.VizEvent.Type;
 import org.gephi.visualization.api.VizEventListener;
 import org.gephi.visualization.api.VizEventManager;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
@@ -59,8 +60,12 @@ public class Tester extends JFrame {
         VizEvent.Type[] types = {VizEvent.Type.DRAG, VizEvent.Type.MOUSE_LEFT_PRESS, VizEvent.Type.MOUSE_MOVE, VizEvent.Type.MOUSE_RIGHT_CLICK};
         listener = new VizEventListener() {
 
-            public void vizEvent(VizEvent event) {
+            public void handleEvent(VizEvent event) {
                 System.out.println(event.getType());
+            }
+
+            public Type getType() {
+                throw new UnsupportedOperationException("Not supported yet.");
             }
         };
         //vizEventManager.addListener(listener,types );

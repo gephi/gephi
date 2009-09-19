@@ -95,7 +95,7 @@ public class DesktopToolController implements ToolController {
     }
 
     public JComponent getToolbar() {
-
+    
         //Get tools ui
         HashMap<ToolUI, Tool> toolMap = new HashMap<ToolUI, Tool>();
         List<ToolUI> toolsUI = new ArrayList<ToolUI>();
