@@ -40,6 +40,7 @@ import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VizEvent;
 import org.gephi.visualization.api.VizEvent.Type;
 import org.gephi.visualization.api.VizEventListener;
+import org.gephi.visualization.api.VizEventManager;
 import org.openide.util.Lookup;
 
 /**
@@ -48,17 +49,23 @@ import org.openide.util.Lookup;
  */
 public class DesktopToolController implements ToolController {
 
+    //Architecture
     private Tool[] tools;
+
+    //Current tool
     private Tool currentTool;
-    private HashMap<Tool, VizEventListener> currentListeners;
+    private List<VizEventListener> currentListeners;
 
     public DesktopToolController() {
         //Init tools
         tools = Lookup.getDefault().lookupAll(Tool.class).toArray(new Tool[0]);
-        currentListeners = new HashMap<Tool, VizEventListener>();
+        currentListeners = new ArrayList<VizEventListener>();
     }
 
     public void select(Tool tool) {
+
+        unselect();
+        currentTool = tool;
 
         //Connect events
         for (ToolEventListener toolListener : tool.getListeners()) {
@@ -83,19 +90,27 @@ public class DesktopToolController implements ToolController {
             }
 
             if (listener != null) {
-                currentListeners.put(tool, listener);
+                currentListeners.add(listener);
                 VizController.getInstance().getVizEventManager().addListener(listener);
             }
         }
     }
 
     public void unselect() {
+
         if (currentTool != null) {
+            //Disconnect events
+            VizEventManager vizEventManager = VizController.getInstance().getVizEventManager();
+            for (VizEventListener listener : currentListeners) {
+                vizEventManager.removeListener(listener);
+            }
+            currentTool = null;
+            currentListeners.clear();
         }
     }
 
     public JComponent getToolbar() {
-    
+
         //Get tools ui
         HashMap<ToolUI, Tool> toolMap = new HashMap<ToolUI, Tool>();
         List<ToolUI> toolsUI = new ArrayList<ToolUI>();
