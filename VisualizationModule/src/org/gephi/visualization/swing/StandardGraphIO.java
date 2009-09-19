@@ -139,6 +139,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             graphDrawable.graphComponent.setCursor(Cursor.getDefaultCursor());
         }
 
+        vizEventManager.mouseReleased();
         if(pressing) {
             pressing = false;
         }
