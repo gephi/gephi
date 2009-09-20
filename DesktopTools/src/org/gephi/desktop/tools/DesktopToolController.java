@@ -51,6 +51,7 @@ public class DesktopToolController implements ToolController {
 
     //Architecture
     private Tool[] tools;
+    private PropertiesBar propertiesBar;
 
     //Current tool
     private Tool currentTool;
@@ -121,14 +122,16 @@ public class DesktopToolController implements ToolController {
 
         //Create toolbar
         Toolbar toolbar = new Toolbar();
-        for (ToolUI toolUI : toolsUI) {
+        for (final ToolUI toolUI : toolsUI) {
             final Tool tool = toolMap.get(toolUI);
             JToggleButton btn = new JToggleButton(toolUI.getIcon());
             btn.setToolTipText(toolUI.getName() + " - " + toolUI.getDescription());
             btn.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
+                    propertiesBar.unselect();
                     select(tool);
+                    propertiesBar.select(toolUI.getPropertiesBar(tool));
                 }
             });
             toolbar.add(btn);
@@ -138,7 +141,8 @@ public class DesktopToolController implements ToolController {
     }
 
     public JComponent getPropertiesBar() {
-        return new JPanel();
+        propertiesBar = new PropertiesBar();
+        return propertiesBar;
     }
 
     //Event handlers classes
