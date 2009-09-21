@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.xml.parsers.DocumentBuilder;
@@ -93,6 +94,7 @@ public class DesktopImportController implements ImportController {
 
     public void doImport(FileObject fileObject) {
         try {
+            fileObject = getArchivedFile(fileObject);   //Unzip and return content file
             FileFormatImporter im = getMatchingImporter(fileObject);
             if (im == null) {
                 throw new ImportException(NbBundle.getMessage(getClass(), "error_no_matching_file_importer"));
@@ -302,12 +304,15 @@ public class DesktopImportController implements ImportController {
     }
 
     private BufferedReader getTextReader(FileObject fileObject) throws ImportException {
-        File file = FileUtil.toFile(fileObject);
+
+        //File file = FileUtil.toFile(fileObject);
         try {
-            if (file == null) {
-                throw new FileNotFoundException();
+            InputStreamReader im = new InputStreamReader(fileObject.getInputStream());
+            /*if (file == null) {
+            throw new FileNotFoundException();
             }
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+            BufferedReader reader = new BufferedReader(new FileReader(file));*/
+            BufferedReader reader = new BufferedReader(im);
             return reader;
         } catch (FileNotFoundException ex) {
             throw new ImportException(NbBundle.getMessage(getClass(), "error_file_not_found"));
@@ -315,12 +320,13 @@ public class DesktopImportController implements ImportController {
     }
 
     private Document getDocument(FileObject fileObject) throws ImportException {
-        File file = FileUtil.toFile(fileObject);
+        //File file = FileUtil.toFile(fileObject);
         try {
-            if (file == null) {
-                throw new FileNotFoundException();
+            /*if (file == null) {
+            throw new FileNotFoundException();
             }
-            InputStream stream = new FileInputStream(file);
+            InputStream stream = new FileInputStream(file);*/
+            InputStream stream = fileObject.getInputStream();
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(stream);
@@ -334,6 +340,14 @@ public class DesktopImportController implements ImportController {
         } catch (IOException ex) {
             throw new ImportException(NbBundle.getMessage(getClass(), "error_io"));
         }
+    }
+
+    private FileObject getArchivedFile(FileObject fileObject) {
+        if (FileUtil.isArchiveFile(fileObject)) {
+            //Unzip
+            fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
+        }
+        return fileObject;
     }
 
     private FileFormatImporter getMatchingImporter(FileObject fileObject) {
