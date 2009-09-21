@@ -37,6 +37,7 @@ import org.gephi.visualization.gleem.linalg.Vecf;
  */
 public class Rectangle implements SelectionArea {
 
+    private static float[] pointRect = {1, 1};
     private float[] startPosition;
     private float[] rectangle = new float[2];
     private float[] center = new float[2];
@@ -44,7 +45,7 @@ public class Rectangle implements SelectionArea {
     private GraphDrawable drawable;
     private boolean stop = true;
     private VizConfig config;
-    private boolean blocking = false;
+    private boolean blocking = true;
 
     public Rectangle() {
         drawable = VizController.getInstance().getDrawable();
@@ -52,6 +53,9 @@ public class Rectangle implements SelectionArea {
     }
 
     public float[] getSelectionAreaRectancle() {
+        if(stop) {
+            return pointRect;
+        }
         rectangleSize[0] = Math.abs(rectangle[0] - startPosition[0]);
         rectangleSize[1] = Math.abs(rectangle[1] - startPosition[1]);
         if (rectangleSize[0] < 1f) {
@@ -64,14 +68,17 @@ public class Rectangle implements SelectionArea {
     }
 
     public float[] getSelectionAreaCenter() {
+        if(stop) {
+            return null;
+        }
         center[0] = -(rectangle[0] - startPosition[0]) / 2f;
         center[1] = -(rectangle[1] - startPosition[1]) / 2f;
         return center;
     }
 
     public boolean mouseTest(Vecf distanceFromMouse, ModelImpl object) {
-        if (stop) {
-            return false;
+        if(stop) {
+            return object.selectionTest(distanceFromMouse, 0);
         }
         float x = object.getViewportX();
         float y = object.getViewportY();
@@ -128,7 +135,7 @@ public class Rectangle implements SelectionArea {
     }
 
     public boolean isEnabled() {
-        return !stop;
+        return true;
     }
 
     public boolean blockSelection() {

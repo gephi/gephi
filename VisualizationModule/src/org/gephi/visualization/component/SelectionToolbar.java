@@ -56,7 +56,7 @@ public class SelectionToolbar extends JToolBar {
         rectangleButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                if(rectangleButton.isSelected()) {
+                if (rectangleButton.isSelected()) {
                     VizController.getInstance().getEngine().setRectangleSelection(true);
                 }
             }
@@ -69,7 +69,7 @@ public class SelectionToolbar extends JToolBar {
         mouseButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                if(mouseButton.isSelected()) {
+                if (mouseButton.isSelected()) {
                     VizController.getInstance().getEngine().setRectangleSelection(false);
                 }
             }

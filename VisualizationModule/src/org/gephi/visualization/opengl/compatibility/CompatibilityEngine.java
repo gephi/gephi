@@ -418,6 +418,38 @@ public class CompatibilityEngine extends AbstractEngine {
                     }
                 }
             }
+
+            //Select with click
+            int i = 0;
+            boolean someSelection = false;
+            for (ModelClass objClass : selectableClasses) {
+                markTime2++;
+                for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(objClass.getClassId()); itr.hasNext();) {
+                    ModelImpl obj = itr.next();
+                    if (isUnderMouse(obj) && currentSelectionArea.select(obj.getObj())) {
+                        if (!obj.isSelected()) {
+                            //New selected
+                            obj.setSelected(true);
+                            someSelection = true;
+                            /*if (vizEventManager.hasSelectionListeners()) {
+                            newSelectedObjects.add(obj);
+                            }*/
+                            selectedObjects[i].add(obj);
+                        }
+                        obj.selectionMark = markTime2;
+                    }
+                }
+                for (Iterator<ModelImpl> itr = selectedObjects[i].iterator(); itr.hasNext();) {
+                    ModelImpl o = itr.next();
+                    if (o.selectionMark != markTime2) {
+                        itr.remove();
+                        o.setSelected(false);
+                    }
+                }
+                i++;
+            }
+            rectangle.setBlocking(someSelection);
+
             scheduler.requireUpdateSelection();
         }
     }
@@ -445,12 +477,13 @@ public class CompatibilityEngine extends AbstractEngine {
             return;
         }
 
+
         /*List<ModelImpl> newSelectedObjects = null;
         List<ModelImpl> unSelectedObjects = null;
 
         if (vizEventManager.hasSelectionListeners()) {
-            newSelectedObjects = new ArrayList<ModelImpl>();
-            unSelectedObjects = new ArrayList<ModelImpl>();
+        newSelectedObjects = new ArrayList<ModelImpl>();
+        unSelectedObjects = new ArrayList<ModelImpl>();
         }*/
 
         markTime2++;
@@ -469,7 +502,7 @@ public class CompatibilityEngine extends AbstractEngine {
                         //New selected
                         obj.setSelected(true);
                         /*if (vizEventManager.hasSelectionListeners()) {
-                            newSelectedObjects.add(obj);
+                        newSelectedObjects.add(obj);
                         }*/
                         selectedObjects[i].add(obj);
                     }
@@ -478,8 +511,8 @@ public class CompatibilityEngine extends AbstractEngine {
                     if (forceUnselect) {
                         obj.setAutoSelect(false);
                     } /*else if (vizEventManager.hasSelectionListeners() && obj.isSelected()) {
-                        unSelectedObjects.add(obj);
-                    }*/
+                unSelectedObjects.add(obj);
+                }*/
                 }
             }
 
