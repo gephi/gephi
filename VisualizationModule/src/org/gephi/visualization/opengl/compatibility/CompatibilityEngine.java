@@ -166,6 +166,7 @@ public class CompatibilityEngine extends AbstractEngine {
                     resetObjectClass(objClass);
                 }
             }
+            initSelection();
         }
         if (dataBridge.requireUpdate() || changeMode || newConfig) {
             dataBridge.updateWorld();
@@ -406,7 +407,7 @@ public class CompatibilityEngine extends AbstractEngine {
             }
         }
 
-        if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
+        if (vizConfig.isSelectionEnable() && rectangleSelection) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
             rectangle.setBlocking(false);
             //Clean opengl picking
@@ -435,7 +436,7 @@ public class CompatibilityEngine extends AbstractEngine {
     public void mouseMove() {
 
         //Selection
-        if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
+        if (vizConfig.isSelectionEnable() && rectangleSelection) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
             rectangle.setMousePosition(graphIO.getMousePosition());
         }
@@ -534,7 +535,7 @@ public class CompatibilityEngine extends AbstractEngine {
         scheduler.requireUpdatePosition();
 
         //Selection
-        if (vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection()) {
+        if (vizConfig.isSelectionEnable() && rectangleSelection) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
             rectangle.stop();
             scheduler.requireUpdateSelection();
@@ -666,8 +667,10 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public void initSelection() {
         if (vizConfig.isRectangleSelection()) {
+            rectangleSelection = true;
             currentSelectionArea = new Rectangle();
         } else {
+            rectangleSelection = false;
             currentSelectionArea = new Point();
         }
     }

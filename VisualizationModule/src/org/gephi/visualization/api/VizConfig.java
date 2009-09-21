@@ -346,4 +346,8 @@ public class VizConfig {
     public void setLightenNonSelected(boolean lightenNonSelected) {
         this.lightenNonSelected = lightenNonSelected;
     }
+
+    public void setRectangleSelection(boolean rectangleSelection) {
+        this.rectangleSelection = rectangleSelection;
+    }
 }

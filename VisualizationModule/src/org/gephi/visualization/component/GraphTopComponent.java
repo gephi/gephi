@@ -24,6 +24,7 @@ import java.awt.BorderLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.gephi.tools.api.ToolController;
 import org.gephi.visualization.VizController;
@@ -95,7 +96,11 @@ final class GraphTopComponent extends TopComponent {
             if(VizController.getInstance().getVizConfig().isToolbar()) {
                 JComponent toolbar = tc.getToolbar();
                 if(toolbar!=null) {
-                    add(toolbar, BorderLayout.WEST);
+                    JComponent selectionToolbar = new SelectionToolbar();
+                    JPanel westPanel = new JPanel(new BorderLayout(0,0));
+                    westPanel.add(selectionToolbar, BorderLayout.NORTH);
+                    westPanel.add(toolbar, BorderLayout.CENTER);
+                    add(westPanel, BorderLayout.WEST);
                 }
             }
             if(VizController.getInstance().getVizConfig().isPropertiesbar()) {

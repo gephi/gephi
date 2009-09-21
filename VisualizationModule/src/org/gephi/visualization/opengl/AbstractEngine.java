@@ -75,6 +75,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected TextManager textManager;
 
     //States
+    protected boolean rectangleSelection;
     protected EngineLifeCycle lifeCycle = new EngineLifeCycle();
     protected boolean configChanged = false;
     protected boolean backgroundChanged = false;
@@ -221,6 +222,11 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public SelectionArea getCurrentSelectionArea() {
         return currentSelectionArea;
+    }
+
+    public void setRectangleSelection(boolean rectangleSelection) {
+        vizConfig.setRectangleSelection(rectangleSelection);
+        configChanged = true;
     }
 
     public void startDisplay() {
