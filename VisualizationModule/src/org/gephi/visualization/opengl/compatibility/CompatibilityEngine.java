@@ -450,6 +450,25 @@ public class CompatibilityEngine extends AbstractEngine {
             }
             rectangle.setBlocking(someSelection);
 
+            if (vizController.getVizModel().isLightenNonSelectedAuto()) {
+
+                if (vizConfig.isLightenNonSelectedAnimation()) {
+                    if (!anySelected && someSelection) {
+                        //Start animation
+                        lightenAnimationDelta = 0.07f;
+                    } else if (anySelected && !someSelection) {
+                        //Stop animation
+                        lightenAnimationDelta = -0.07f;
+                    }
+
+                    vizConfig.setLightenNonSelected(someSelection || lightenAnimationDelta != 0);
+                } else {
+                    vizConfig.setLightenNonSelected(someSelection);
+                }
+            }
+
+            anySelected = someSelection;
+
             scheduler.requireUpdateSelection();
         }
     }
@@ -471,6 +490,9 @@ public class CompatibilityEngine extends AbstractEngine {
         if (vizConfig.isSelectionEnable() && rectangleSelection) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
             rectangle.setMousePosition(graphIO.getMousePosition());
+            if (rectangle.isStop()) {
+                return;
+            }
         }
 
         if (currentSelectionArea.blockSelection()) {

@@ -188,4 +188,8 @@ public class Rectangle implements SelectionArea {
             startPosition = null;
         }
     }
+
+    public boolean isStop() {
+        return stop;
+    }
 }
