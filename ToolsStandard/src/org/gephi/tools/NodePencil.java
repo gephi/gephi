@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.tools;
 
+import java.awt.Color;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -29,6 +30,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.tools.api.MouseClickEventListener;
 import org.gephi.tools.api.Tool;
 import org.gephi.tools.api.ToolEventListener;
+import org.gephi.ui.tools.NodePencilPanel;
 import org.gephi.ui.tools.ToolUI;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -39,14 +41,26 @@ import org.openide.util.NbBundle;
  */
 public class NodePencil implements Tool {
 
+    //Architecture
     private ToolEventListener[] listeners;
+    private NodePencilPanel nodePencilPanel;
+
+    //Settings
+    private Color color;
+    private float size;
+
+    public NodePencil() {
+        //Default settings
+        color = Color.BLACK;
+        size = 1f;
+    }
 
     public void select() {
-        
     }
 
     public void unselect() {
         listeners = null;
+        nodePencilPanel = null;
     }
 
     public ToolEventListener[] getListeners() {
@@ -54,11 +68,17 @@ public class NodePencil implements Tool {
         listeners[0] = new MouseClickEventListener() {
 
             public void mouseClick(int[] positionViewport, float[] position3d) {
+                color = nodePencilPanel.getColor();
+                size = nodePencilPanel.getNodeSize();
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
                 DirectedGraph graph = gc.getVisibleDirectedGraph();
                 Node node = gc.factory().newNode();
                 node.getNodeData().setX(position3d[0]);
                 node.getNodeData().setY(position3d[1]);
+                node.getNodeData().setSize(size);
+                node.getNodeData().setR(color.getRed() / 255f);
+                node.getNodeData().setG(color.getGreen() / 255f);
+                node.getNodeData().setB(color.getBlue() / 255f);
                 graph.addNode(node);
             }
         };
@@ -69,8 +89,10 @@ public class NodePencil implements Tool {
         return new ToolUI() {
 
             public JPanel getPropertiesBar(Tool tool) {
-                JPanel panel = new JPanel();
-                return panel;
+                nodePencilPanel = new NodePencilPanel();
+                nodePencilPanel.setColor(color);
+                nodePencilPanel.setNodeSize(size);
+                return nodePencilPanel;
             }
 
             public String getName() {
