@@ -97,9 +97,11 @@ final class GraphTopComponent extends TopComponent {
                 JComponent toolbar = tc.getToolbar();
                 if(toolbar!=null) {
                     JComponent selectionToolbar = new SelectionToolbar();
+                    JComponent actionsToolbar = new ActionsToolbar();
                     JPanel westPanel = new JPanel(new BorderLayout(0,0));
                     westPanel.add(selectionToolbar, BorderLayout.NORTH);
                     westPanel.add(toolbar, BorderLayout.CENTER);
+                    westPanel.add(actionsToolbar, BorderLayout.SOUTH);
                     add(westPanel, BorderLayout.WEST);
                 }
             }

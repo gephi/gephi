@@ -26,8 +26,11 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.SwingUtilities;
 import org.openide.windows.WindowManager;
 
 /**
@@ -44,6 +47,11 @@ public class JColorButton extends JButton {
     private final static Color DISABLED_FILL = new Color(220, 220, 220);
 
     public JColorButton(Color originalColor) {
+        this(originalColor, false);
+    }
+
+    public JColorButton(Color originalColor, boolean rightClick) {
+
         this.color = originalColor;
         setIcon(new Icon() {
 
@@ -72,16 +80,31 @@ public class JColorButton extends JButton {
 
             }
         });
+        if (rightClick) {
+            addMouseListener(new MouseAdapter() {
 
-        addActionListener(new ActionListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
 
-            public void actionPerformed(ActionEvent e) {
-                Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color);
-                if (newColor != null) {
-                    setColor(newColor);
+                    if (SwingUtilities.isRightMouseButton(e)) {
+                        Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color);
+                        if (newColor != null) {
+                            setColor(newColor);
+                        }
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color);
+                    if (newColor != null) {
+                        setColor(newColor);
+                    }
+                }
+            });
+        }
     }
 
     public void setColor(Color color) {
