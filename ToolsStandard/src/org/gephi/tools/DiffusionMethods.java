@@ -20,29 +20,41 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.tools;
 
+import java.util.ArrayList;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class PropagationMethods {
+public class DiffusionMethods {
 
-    public static Node[] getNeighbours(Node[] nodes) {
-        NodeTree nodeTree = new NodeTree();
+    public static Node[] getNeighbors(Node[] nodes, boolean withDoubles) {
         GraphController gc = Lookup.getDefault().lookup(GraphController.class);
         DirectedGraph graph = gc.getVisibleDirectedGraph();
-        for (Node n : nodes) {
-            for (Node neighbor : graph.getNeighbors(n).toArray()) {
-                nodeTree.add(neighbor);
+        if (withDoubles) {
+            ArrayList<Node> nodeList = new ArrayList<Node>();
+            for (Node n : nodes) {
+                for (Node neighbor : graph.getNeighbors(n).toArray()) {
+                    nodeList.add(neighbor);
+                }
             }
+            return nodeList.toArray(new Node[0]);
+        } else {
+            NodeTree nodeTree = new NodeTree();
+            for (Node n : nodes) {
+                for (Node neighbor : graph.getNeighbors(n).toArray()) {
+                    nodeTree.add(neighbor);
+                }
+            }
+            return nodeTree.toArray(new Node[0]);
         }
-        return nodeTree.toArray(new Node[0]);
     }
 
     public static Node[] getPredecessors(Node[] nodes) {
@@ -69,25 +81,27 @@ public class PropagationMethods {
         return nodeTree.toArray(new Node[0]);
     }
 
-    public static Node[] getNeigboursOfNeighbours(Node[] nodes) {
-        NodeTree nodeTree = new NodeTree();
-        GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        DirectedGraph graph = gc.getVisibleDirectedGraph();
-        for (Node n : nodes) {
-            for (Node neighbor : graph.getNeighbors(n).toArray()) {
-                nodeTree.add(neighbor);
-            }
-        }
-        Node[] neigbours = nodeTree.toArray(new Node[0]);
-        nodeTree.clear();
-        for (Node n : neigbours) {
-            for (Node neighbor : graph.getNeighbors(n).toArray()) {
-                nodeTree.add(neighbor);
-            }
-        }
-        return nodeTree.toArray(new Node[0]);
-    }
+    public static enum DiffusionMethod {
 
+        NEIGHBORS("DiffusionMethod.Neighbors"),
+        NEIGHBORS_OF_NEIGHBORS("DiffusionMethod.NeighborsOfNeighbors"),
+        PREDECESSORS("DiffusionMethod.Predecessors"),
+        SUCCESSORS("DiffusionMethod.Successors");
+        private final String name;
+
+        DiffusionMethod(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return NbBundle.getMessage(DiffusionMethods.class, name);
+        }
+
+        @Override
+        public String toString() {
+            return getName();
+        }
+    }
 
     //NodeTree
     private static class NodeTree extends ParamAVLTree<Node> {

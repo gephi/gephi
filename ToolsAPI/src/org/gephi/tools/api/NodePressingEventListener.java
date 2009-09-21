@@ -29,9 +29,7 @@ import org.gephi.graph.api.Node;
  */
 public interface NodePressingEventListener extends ToolEventListener {
 
-    public void pressNodes(Node[] nodes);
-
-    public void pressing();
+    public void pressingNodes(Node[] nodes);
 
     public void released();
 }

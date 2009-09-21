@@ -1,9 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
 Copyright 2008 WebAtlas
 Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
 Website : http://www.gephi.org
@@ -26,6 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.tools;
 
+import java.awt.Color;
+import javax.swing.DefaultComboBoxModel;
+import org.gephi.ui.components.JColorButton;
+
 /**
  *
  * @author Mathieu Bastian
@@ -35,6 +34,33 @@ public class BrushPanel extends javax.swing.JPanel {
     /** Creates new form BrushPanel */
     public BrushPanel() {
         initComponents();
+
+        DefaultComboBoxModel diffusionComboModel = new DefaultComboBoxModel(DiffusionMethods.DiffusionMethod.values());
+        diffusionCombobox.setModel(diffusionComboModel);
+    }
+
+    public void setIntensity(float intensity) {
+        intensitySpinner.setValue((int)(intensity*100));
+    }
+
+    public float getIntensity() {
+        return ((Integer)intensitySpinner.getModel().getValue()).floatValue()/100f;
+    }
+
+    public void setColor(Color color) {
+        ((JColorButton)colorButton).setColor(color);
+    }
+
+    public Color getColor() {
+        return ((JColorButton)colorButton).getColor();
+    }
+
+    public void setDiffusionMethod(DiffusionMethods.DiffusionMethod diffusionMethod) {
+        diffusionCombobox.setSelectedItem(diffusionMethod);
+    }
+
+    public DiffusionMethods.DiffusionMethod getDiffusionMethod() {
+        return (DiffusionMethods.DiffusionMethod)diffusionCombobox.getSelectedItem();
     }
 
     /** This method is called from within the constructor to
@@ -46,20 +72,72 @@ public class BrushPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        labelDiffusion = new javax.swing.JLabel();
+        labelColor = new javax.swing.JLabel();
+        diffusionCombobox = new javax.swing.JComboBox();
+        colorButton = new JColorButton(Color.BLACK);
+        labelIntensity = new javax.swing.JLabel();
+        intensitySpinner = new javax.swing.JSpinner();
         jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+
+        labelDiffusion.setText(org.openide.util.NbBundle.getMessage(BrushPanel.class, "BrushPanel.labelDiffusion.text")); // NOI18N
+
+        labelColor.setText(org.openide.util.NbBundle.getMessage(BrushPanel.class, "BrushPanel.labelColor.text")); // NOI18N
+
+        diffusionCombobox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        colorButton.setText(org.openide.util.NbBundle.getMessage(BrushPanel.class, "BrushPanel.colorButton.text")); // NOI18N
+
+        labelIntensity.setText(org.openide.util.NbBundle.getMessage(BrushPanel.class, "BrushPanel.labelIntensity.text")); // NOI18N
+
+        intensitySpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 100, 1));
 
         jLabel1.setText(org.openide.util.NbBundle.getMessage(BrushPanel.class, "BrushPanel.jLabel1.text")); // NOI18N
-        add(jLabel1);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        add(jComboBox1);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(labelColor)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(labelIntensity)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(intensitySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 338, Short.MAX_VALUE)
+                .addComponent(labelDiffusion)
+                .addGap(10, 10, 10)
+                .addComponent(diffusionCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(labelColor)
+                .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(labelIntensity)
+                .addComponent(intensitySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel1))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(labelDiffusion)
+                .addComponent(diffusionCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JButton colorButton;
+    private javax.swing.JComboBox diffusionCombobox;
+    private javax.swing.JSpinner intensitySpinner;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel labelColor;
+    private javax.swing.JLabel labelDiffusion;
+    private javax.swing.JLabel labelIntensity;
     // End of variables declaration//GEN-END:variables
 
 }

@@ -68,9 +68,9 @@ public class StandardVizEventManager implements VizEventManager {
         handlersList.add(new VizEventTypeHandler(VizEvent.Type.DRAG, true));
         handlersList.add(new VizEventTypeHandler(VizEvent.Type.STOP_DRAG, false));
         handlersList.add(new VizEventTypeHandler(VizEvent.Type.NODE_LEFT_CLICK, false));
-        handlersList.add(new VizEventTypeHandler(VizEvent.Type.NODE_LEFT_PRESS, false));
         handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_LEFT_PRESSING, false));
         handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_RELEASED, false));
+        handlersList.add(new VizEventTypeHandler(VizEvent.Type.NODE_LEFT_PRESSING, false));
         Collections.sort(handlersList, new Comparator() {
 
             public int compare(Object o1, Object o2) {
@@ -98,16 +98,7 @@ public class StandardVizEventManager implements VizEventManager {
 
     public void mouseLeftPress() {
         handlers[VizEvent.Type.MOUSE_LEFT_PRESS.ordinal()].dispatch();
-        VizEventTypeHandler nodeHandler = handlers[VizEvent.Type.NODE_LEFT_PRESS.ordinal()];
-        if (nodeHandler.hasListeners()) {
-            //Check if some node are selected
-            ModelImpl[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
-            Node[] nodeArray = new Node[modelArray.length];
-            for (int i = 0; i < modelArray.length; i++) {
-                nodeArray[i] = ((NodeData) modelArray[i].getObj()).getNode();
-            }
-            nodeHandler.dispatch(nodeArray);
-        }
+        pressingTick = PRESSING_FREQUENCY;
     }
 
     public void mouseMiddleClick() {
@@ -129,9 +120,23 @@ public class StandardVizEventManager implements VizEventManager {
     public void mouseRightPress() {
         handlers[VizEvent.Type.MOUSE_RIGHT_PRESS.ordinal()].dispatch();
     }
+    private static final int PRESSING_FREQUENCY = 5;
+    private int pressingTick = 0;
 
     public void mouseLeftPressing() {
-        handlers[VizEvent.Type.MOUSE_LEFT_PRESSING.ordinal()].dispatch();
+        if (pressingTick++ >= PRESSING_FREQUENCY) {
+            pressingTick = 0;
+            VizEventTypeHandler nodeHandler = handlers[VizEvent.Type.NODE_LEFT_PRESSING.ordinal()];
+            if (nodeHandler.hasListeners()) {
+                //Check if some node are selected
+                ModelImpl[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+                Node[] nodeArray = new Node[modelArray.length];
+                for (int i = 0; i < modelArray.length; i++) {
+                    nodeArray[i] = ((NodeData) modelArray[i].getObj()).getNode();
+                }
+                nodeHandler.dispatch(nodeArray);
+            }
+        }
     }
 
     public void startDrag() {
@@ -164,13 +169,13 @@ public class StandardVizEventManager implements VizEventManager {
     }
 
     public void addListener(VizEventListener[] listeners) {
-        for(int i=0;i<listeners.length;i++) {
+        for (int i = 0; i < listeners.length; i++) {
             handlers[listeners[i].getType().ordinal()].addListener(listeners[i]);
         }
     }
 
     public void removeListener(VizEventListener[] listeners) {
-        for(int i=0;i<listeners.length;i++) {
+        for (int i = 0; i < listeners.length; i++) {
             handlers[listeners[i].getType().ordinal()].removeListener(listeners[i]);
         }
     }

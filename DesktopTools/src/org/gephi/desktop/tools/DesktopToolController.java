@@ -193,28 +193,18 @@ public class DesktopToolController implements ToolController {
         }
 
         public void select() {
-            currentListeners = new VizEventListener[3];
+            currentListeners = new VizEventListener[2];
             currentListeners[0] = new VizEventListener() {
 
                 public void handleEvent(VizEvent event) {
-                    toolEventListener.pressNodes((Node[]) event.getData());
+                    toolEventListener.pressingNodes((Node[]) event.getData());
                 }
 
                 public Type getType() {
-                    return VizEvent.Type.NODE_LEFT_PRESS;
+                    return VizEvent.Type.NODE_LEFT_PRESSING;
                 }
             };
             currentListeners[1] = new VizEventListener() {
-
-                public void handleEvent(VizEvent event) {
-                    toolEventListener.pressing();
-                }
-
-                public Type getType() {
-                    return VizEvent.Type.MOUSE_LEFT_PRESSING;
-                }
-            };
-            currentListeners[2] = new VizEventListener() {
 
                 public void handleEvent(VizEvent event) {
                     toolEventListener.released();

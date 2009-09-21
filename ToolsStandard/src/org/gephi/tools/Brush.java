@@ -20,9 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.tools;
 
+import java.awt.Color;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.gephi.graph.api.Node;
 import org.gephi.tools.api.NodePressingEventListener;
@@ -37,21 +37,48 @@ import org.openide.util.NbBundle;
  */
 public class Brush implements Tool {
 
+    //Architecture
     private ToolEventListener[] listeners;
+    private BrushPanel brushPanel;
+
+    //Settings
+    private float[] color = {1f, 0f, 0f};
+    private float intensity = 0.1f;
+    private DiffusionMethods.DiffusionMethod diffusionMethod = DiffusionMethods.DiffusionMethod.NEIGHBORS;
+
+    private void brush(Node[] nodes) {
+
+        for (Node node : getDiffusedNodes(nodes)) {
+            float r = node.getNodeData().r();
+            float g = node.getNodeData().g();
+            float b = node.getNodeData().b();
+            r = intensity * color[0] + (1 - intensity) * r;
+            g = intensity * color[1] + (1 - intensity) * g;
+            b = intensity * color[2] + (1 - intensity) * b;
+            node.getNodeData().setR(r);
+            node.getNodeData().setG(g);
+            node.getNodeData().setB(b);
+        }
+    }
+
+    private Node[] getDiffusedNodes(Node[] input) {
+        switch (diffusionMethod) {
+            case NEIGHBORS:
+                return DiffusionMethods.getNeighbors(input, true);
+        }
+        return input;
+    }
 
     public ToolEventListener[] getListeners() {
         listeners = new ToolEventListener[1];
         listeners[0] = new NodePressingEventListener() {
 
-            public void pressNodes(Node[] nodes) {
+            public void pressingNodes(Node[] nodes) {
                 System.out.println("-------Nodes pressed");
-                for (int i = 0; i < nodes.length; i++) {
-                    System.out.println(nodes[i].getNodeData().getLabel());
-                }
-            }
-
-            public void pressing() {
-                System.out.println("--pressing");
+                diffusionMethod = brushPanel.getDiffusionMethod();
+                color = brushPanel.getColor().getColorComponents(color);
+                intensity = brushPanel.getIntensity();
+                brush(nodes);
             }
 
             public void released() {
@@ -65,10 +92,11 @@ public class Brush implements Tool {
         return new ToolUI() {
 
             public JPanel getPropertiesBar(Tool tool) {
-                JLabel lbl = new JLabel("brusher");
-                JPanel pnl = new JPanel();
-                pnl.add(lbl);
-                return pnl;
+                brushPanel = new BrushPanel();
+                brushPanel.setDiffusionMethod(diffusionMethod);
+                brushPanel.setColor(new Color(color[0], color[1], color[2]));
+                brushPanel.setIntensity(intensity);
+                return brushPanel;
             }
 
             public String getName() {
