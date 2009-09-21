@@ -40,6 +40,14 @@ public class Painter implements Tool {
 
     private ToolEventListener[] listeners;
 
+    public void select() {
+        
+    }
+
+    public void unselect() {
+        listeners = null;
+    }
+
     public ToolEventListener[] getListeners() {
         listeners = new ToolEventListener[1];
         listeners[0] = new NodeClickEventListener() {

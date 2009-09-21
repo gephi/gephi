@@ -87,6 +87,7 @@ public class DesktopToolController implements ToolController {
         }
         currentHandlers = handlers.toArray(new ToolEventHandler[0]);
         currentTool = tool;
+        currentTool.select();
     }
 
     public void unselect() {
@@ -96,6 +97,7 @@ public class DesktopToolController implements ToolController {
             for (ToolEventHandler handler : currentHandlers) {
                 handler.unselect();
             }
+            currentTool.unselect();
             currentHandlers = null;
             currentTool = null;
         }

@@ -29,6 +29,10 @@ import org.gephi.ui.tools.ToolUI;
  */
 public interface Tool {
 
+    public void select();
+
+    public void unselect();
+
     public ToolEventListener[] getListeners();
 
     public ToolUI getUI();

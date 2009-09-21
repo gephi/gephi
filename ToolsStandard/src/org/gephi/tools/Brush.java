@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.tools;
 
+import org.gephi.ui.tools.BrushPanel;
 import java.awt.Color;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -45,6 +46,15 @@ public class Brush implements Tool {
     private float[] color = {1f, 0f, 0f};
     private float intensity = 0.1f;
     private DiffusionMethods.DiffusionMethod diffusionMethod = DiffusionMethods.DiffusionMethod.NEIGHBORS;
+
+    public void select() {
+
+    }
+
+    public void unselect() {
+        listeners = null;
+        brushPanel = null;
+    }
 
     private void brush(Node[] nodes) {
 

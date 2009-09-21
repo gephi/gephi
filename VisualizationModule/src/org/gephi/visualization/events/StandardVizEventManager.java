@@ -88,15 +88,6 @@ public class StandardVizEventManager implements VizEventManager {
     }
 
     public void mouseLeftClick() {
-        //Mouse left click
-        VizEventTypeHandler mouseLeftHandler = handlers[VizEvent.Type.MOUSE_LEFT_CLICK.ordinal()];
-        if (mouseLeftHandler.hasListeners()) {
-            float[] mousePositionViewport = graphIO.getMousePosition();
-            float[] mousePosition3d = graphIO.getMousePosition3d();
-            float[] mousePos = new float[]{mousePositionViewport[0], mousePositionViewport[1], mousePosition3d[0], mousePosition3d[1]};
-            handlers[VizEvent.Type.MOUSE_LEFT_CLICK.ordinal()].dispatch(mousePos);
-        }
-
         //Node Left click
         VizEventTypeHandler nodeLeftHandler = handlers[VizEvent.Type.NODE_LEFT_CLICK.ordinal()];
         if (nodeLeftHandler.hasListeners()) {
@@ -107,6 +98,18 @@ public class StandardVizEventManager implements VizEventManager {
                 nodeArray[i] = ((NodeData) modelArray[i].getObj()).getNode();
             }
             nodeLeftHandler.dispatch(nodeArray);
+        }
+
+        //Mouse left click
+        VizEventTypeHandler mouseLeftHandler = handlers[VizEvent.Type.MOUSE_LEFT_CLICK.ordinal()];
+        if (mouseLeftHandler.hasListeners()) {
+            ModelImpl[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+            if (modelArray.length == 0) {
+                float[] mousePositionViewport = graphIO.getMousePosition();
+                float[] mousePosition3d = graphIO.getMousePosition3d();
+                float[] mousePos = new float[]{mousePositionViewport[0], mousePositionViewport[1], mousePosition3d[0], mousePosition3d[1]};
+                handlers[VizEvent.Type.MOUSE_LEFT_CLICK.ordinal()].dispatch(mousePos);
+            }
         }
     }
 

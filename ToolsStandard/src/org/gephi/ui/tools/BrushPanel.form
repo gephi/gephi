@@ -27,9 +27,9 @@
               <Component id="intensitySpinner" min="-2" pref="41" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="338" max="32767" attributes="0"/>
+              <EmptySpace pref="225" max="32767" attributes="0"/>
               <Component id="labelDiffusion" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="diffusionCombobox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -38,15 +38,15 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-              <Component id="labelColor" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Component id="labelColor" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
               <Component id="colorButton" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
-              <Component id="labelIntensity" alignment="3" min="-2" max="-2" attributes="0"/>
-              <Component id="intensitySpinner" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Component id="labelIntensity" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
+              <Component id="intensitySpinner" alignment="3" min="-2" pref="22" max="-2" attributes="0"/>
               <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
           </Group>
           <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-              <Component id="labelDiffusion" alignment="3" min="-2" max="-2" attributes="0"/>
-              <Component id="diffusionCombobox" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Component id="diffusionCombobox" alignment="3" min="-2" pref="22" max="-2" attributes="0"/>
+              <Component id="labelDiffusion" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -55,14 +55,14 @@
     <Component class="javax.swing.JLabel" name="labelDiffusion">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/tools/Bundle.properties" key="BrushPanel.labelDiffusion.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/ui/tools/Bundle.properties" key="BrushPanel.labelDiffusion.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="labelColor">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/tools/Bundle.properties" key="BrushPanel.labelColor.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/ui/tools/Bundle.properties" key="BrushPanel.labelColor.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
@@ -81,7 +81,7 @@
     <Component class="javax.swing.JButton" name="colorButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/tools/Bundle.properties" key="BrushPanel.colorButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/ui/tools/Bundle.properties" key="BrushPanel.colorButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <AuxValues>
@@ -91,7 +91,7 @@
     <Component class="javax.swing.JLabel" name="labelIntensity">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/tools/Bundle.properties" key="BrushPanel.labelIntensity.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/ui/tools/Bundle.properties" key="BrushPanel.labelIntensity.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
@@ -105,7 +105,7 @@
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/tools/Bundle.properties" key="BrushPanel.jLabel1.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/ui/tools/Bundle.properties" key="BrushPanel.jLabel1.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>

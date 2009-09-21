@@ -41,6 +41,14 @@ public class NodePencil implements Tool {
 
     private ToolEventListener[] listeners;
 
+    public void select() {
+        
+    }
+
+    public void unselect() {
+        listeners = null;
+    }
+
     public ToolEventListener[] getListeners() {
         listeners = new ToolEventListener[1];
         listeners[0] = new MouseClickEventListener() {
@@ -52,7 +60,6 @@ public class NodePencil implements Tool {
                 node.getNodeData().setX(position3d[0]);
                 node.getNodeData().setY(position3d[1]);
                 graph.addNode(node);
-                System.out.println("addNode "+position3d[0]+" - "+position3d[1]);
             }
         };
         return listeners;
