@@ -18,34 +18,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.visualization.api;
 
-import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelListener;
+package org.gephi.tools.api;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface GraphIO extends MouseListener, MouseWheelListener, MouseMotionListener, KeyListener {
+public interface MouseClickEventListener extends ToolEventListener {
 
-    public float[] getMousePosition();
-
-    public float [] getMousePosition3d();
-
-    public float[] getMouseDrag();
-
-    public void startMouseListening();
-
-    public void stopMouseListening();
-
-    public void trigger();
-
-    public void centerOnZero();
-
-    public void centerOnGraph();
-
-    public void centerOnCoordinate(float x, float y, float z);
+    public void mouseClick(int[] positionViewport, float[] position3d);
 }

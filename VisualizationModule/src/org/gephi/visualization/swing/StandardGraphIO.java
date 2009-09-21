@@ -140,7 +140,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         }
 
         vizEventManager.mouseReleased();
-        if(pressing) {
+        if (pressing) {
             pressing = false;
         }
     }
@@ -349,8 +349,20 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     }*/
     }
 
+    public float[] getMousePosition3d() {
+        float[] m = new float[2];
+        m[0] = mousePosition[0] - graphDrawable.viewport.get(2) / 2f;       //Set to centric coordinates
+        m[1] = mousePosition[1] - graphDrawable.viewport.get(3) / 2f;
+        m[0] /= -graphDrawable.draggingMarker[0];        //Transform in 3d coordinates
+        m[1] /= -graphDrawable.draggingMarker[1];
+        m[0] += graphDrawable.cameraTarget[0];
+        m[1] += graphDrawable.cameraTarget[1];
+
+        return m;
+    }
+
     public void trigger() {
-        if(pressing) {
+        if (pressing) {
             vizEventManager.mouseLeftPressing();
         }
     }

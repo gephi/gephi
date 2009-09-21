@@ -28,9 +28,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import org.gephi.graph.api.Node;
+import org.gephi.tools.api.MouseClickEventListener;
 import org.gephi.tools.api.NodeClickEventListener;
 import org.gephi.tools.api.NodePressingEventListener;
 import org.gephi.tools.api.Tool;
@@ -75,6 +75,10 @@ public class DesktopToolController implements ToolController {
                 handlers.add(h);
             } else if (toolListener instanceof NodePressingEventListener) {
                 NodePressingEventHandler h = new NodePressingEventHandler(toolListener);
+                h.select();
+                handlers.add(h);
+            } else if (toolListener instanceof MouseClickEventListener) {
+                MouseClickEventHandler h = new MouseClickEventHandler(toolListener);
                 h.select();
                 handlers.add(h);
             } else {
@@ -221,6 +225,39 @@ public class DesktopToolController implements ToolController {
             VizController.getInstance().getVizEventManager().removeListener(currentListeners);
             toolEventListener = null;
             currentListeners = null;
+        }
+    }
+
+    private static class MouseClickEventHandler implements ToolEventHandler {
+
+        private MouseClickEventListener toolEventListener;
+        private VizEventListener currentListener;
+
+        public MouseClickEventHandler(ToolEventListener toolListener) {
+            this.toolEventListener = (MouseClickEventListener) toolListener;
+        }
+
+        public void select() {
+            currentListener = new VizEventListener() {
+
+                public void handleEvent(VizEvent event) {
+                    float[] data = (float[]) event.getData();
+                    int[] viewport = new int[]{(int) data[0], (int) data[1]};
+                    float[] threed = new float[]{data[2], data[3]};
+                    toolEventListener.mouseClick(viewport, threed);
+                }
+
+                public Type getType() {
+                    return VizEvent.Type.MOUSE_LEFT_CLICK;
+                }
+            };
+            VizController.getInstance().getVizEventManager().addListener(currentListener);
+        }
+
+        public void unselect() {
+            VizController.getInstance().getVizEventManager().removeListener(currentListener);
+            toolEventListener = null;
+            currentListener = null;
         }
     }
 }
