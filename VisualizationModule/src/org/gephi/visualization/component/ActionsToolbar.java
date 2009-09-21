@@ -27,9 +27,14 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
+import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.Node;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.VizController;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -40,6 +45,7 @@ public class ActionsToolbar extends JToolBar {
 
     //Settings
     private Color color = Color.BLACK;
+    private float size = 1f;
 
     public ActionsToolbar() {
         initDesign();
@@ -73,15 +79,45 @@ public class ActionsToolbar extends JToolBar {
         add(centerOnZeroButton);
 
         //Reset colors
-        JColorButton resetColorButton = new JColorButton(color, true);
+        final JColorButton resetColorButton = new JColorButton(color, true);
         resetColorButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetColors"));
         resetColorButton.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("reset");
+            public void actionPerformed(ActionEvent evt) {
+                color = resetColorButton.getColor();
+                GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+                DirectedGraph graph = gc.getVisibleDirectedGraph();
+                for (Node n : graph.getNodes().toArray()) {
+                    n.getNodeData().setR(color.getRed() / 255f);
+                    n.getNodeData().setG(color.getGreen() / 255f);
+                    n.getNodeData().setB(color.getBlue() / 255f);
+                    n.getNodeData().setAlpha(1f);
+                }
+                for (Edge e : graph.getEdges().toArray()) {
+                    e.getEdgeData().setR(color.getRed() / 255f);
+                    e.getEdgeData().setG(color.getGreen() / 255f);
+                    e.getEdgeData().setB(color.getBlue() / 255f);
+                    e.getEdgeData().setAlpha(1f);
+                }
             }
         });
         add(resetColorButton);
+
+        //Reset sizes
+        JButton resetSizeButton = new JButton();
+        resetSizeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/resetSize.png")));
+        resetSizeButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetSizes"));
+        resetSizeButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+                DirectedGraph graph = gc.getVisibleDirectedGraph();
+                for (Node n : graph.getNodes().toArray()) {
+                    n.getNodeData().setSize(size);
+                }
+            }
+        });
+        add(resetSizeButton);
     }
 
     private void initDesign() {
