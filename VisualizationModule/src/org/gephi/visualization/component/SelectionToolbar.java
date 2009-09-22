@@ -58,6 +58,7 @@ public class SelectionToolbar extends JToolBar {
             public void actionPerformed(ActionEvent e) {
                 if (rectangleButton.isSelected()) {
                     VizController.getInstance().getEngine().setRectangleSelection(true);
+                    VizController.getInstance().getVizConfig().setDraggingEnable(false);
                 }
             }
         });
@@ -71,13 +72,30 @@ public class SelectionToolbar extends JToolBar {
             public void actionPerformed(ActionEvent e) {
                 if (mouseButton.isSelected()) {
                     VizController.getInstance().getEngine().setRectangleSelection(false);
+                    VizController.getInstance().getVizConfig().setDraggingEnable(false);
                 }
             }
         });
         add(mouseButton);
+
+        //Drag
+        final JToggleButton dragButton = new JToggleButton(new ImageIcon(getClass().getResource("/org/gephi/visualization/component/hand.png")));
+        dragButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.drag.tooltip"));
+        dragButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (dragButton.isSelected()) {
+                    VizController.getInstance().getVizConfig().setDraggingEnable(true);
+                    VizController.getInstance().getEngine().setRectangleSelection(false);
+                }
+            }
+        });
+        add(dragButton);
         addSeparator();
 
         buttonGroup.setSelected(rectangleButton.getModel(), VizController.getInstance().getVizConfig().isRectangleSelection());
+        buttonGroup.setSelected(mouseButton.getModel(), !VizController.getInstance().getVizConfig().isRectangleSelection());
+        buttonGroup.setSelected(dragButton.getModel(), VizController.getInstance().getVizConfig().isDraggingEnable());
     }
 
     private void initDesign() {

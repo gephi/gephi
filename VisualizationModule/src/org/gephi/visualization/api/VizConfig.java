@@ -68,7 +68,7 @@ public class VizConfig {
     protected boolean selectionEnable = true;
     protected boolean rectangleSelection = false;
     protected float[] rectangleSelectionColor = {0.16f, 0.48f, 0.81f, 0.2f};
-    protected boolean draggingEnable = true;
+    protected boolean draggingEnable = false;
     protected boolean cameraControlEnable = true;
     protected boolean showFPS = true;
     protected boolean showArrows = true;
@@ -349,5 +349,9 @@ public class VizConfig {
 
     public void setRectangleSelection(boolean rectangleSelection) {
         this.rectangleSelection = rectangleSelection;
+    }
+
+    public void setDraggingEnable(boolean draggingEnable) {
+        this.draggingEnable = draggingEnable;
     }
 }
