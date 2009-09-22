@@ -38,6 +38,7 @@ import org.gephi.tools.api.NodePressingEventListener;
 import org.gephi.tools.api.Tool;
 import org.gephi.tools.api.ToolController;
 import org.gephi.tools.api.ToolEventListener;
+import org.gephi.tools.api.ToolSelectionType;
 import org.gephi.ui.tools.ToolUI;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VizEvent;
@@ -89,14 +90,15 @@ public class DesktopToolController implements ToolController {
             }
         }
         currentHandlers = handlers.toArray(new ToolEventHandler[0]);
-        currentTool = tool;
-        switch(tool.getSelectionType()) {
+        switch (tool.getSelectionType()) {
             case NO_SELECTION:
+                VizController.getInstance().getSelectionManager().disableSelection();
                 break;
             case SELECTION:
                 VizController.getInstance().getSelectionManager().blockSelection(true);
                 break;
         }
+        currentTool = tool;
         currentTool.select();
     }
 
@@ -158,8 +160,12 @@ public class DesktopToolController implements ToolController {
 
             public void stateChanged(ChangeEvent e) {
                 SelectionManager selectionManager = VizController.getInstance().getSelectionManager();
-                if(selectionManager.isRectangleSelection()) {
+                if (selectionManager.isRectangleSelection() && currentTool != null) {
                     toolbar.clearSelection();
+                    unselect();
+                } else if(selectionManager.isSelectionEnabled() && currentTool!=null && currentTool.getSelectionType()==ToolSelectionType.NO_SELECTION) {
+                    toolbar.clearSelection();
+                    unselect();
                 }
             }
         });

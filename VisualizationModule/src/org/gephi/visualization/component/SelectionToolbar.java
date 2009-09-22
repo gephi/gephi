@@ -53,19 +53,6 @@ public class SelectionToolbar extends JToolBar {
 
     private void initContent() {
 
-        //Rectangle
-        final JToggleButton rectangleButton = new JToggleButton(new ImageIcon(getClass().getResource("/org/gephi/visualization/component/rectangle.png")));
-        rectangleButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.rectangle.tooltip"));
-        rectangleButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                if (rectangleButton.isSelected()) {
-                    VizController.getInstance().getSelectionManager().setRectangleSelection(true);
-                }
-            }
-        });
-        add(rectangleButton);
-
         //Mouse
         final JToggleButton mouseButton = new JToggleButton(new ImageIcon(getClass().getResource("/org/gephi/visualization/component/mouse.png")));
         mouseButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.mouse.tooltip"));
@@ -73,11 +60,24 @@ public class SelectionToolbar extends JToolBar {
 
             public void actionPerformed(ActionEvent e) {
                 if (mouseButton.isSelected()) {
-                    VizController.getInstance().getSelectionManager().setDirectMouseSelection(true);
+                    VizController.getInstance().getSelectionManager().setDirectMouseSelection();
                 }
             }
         });
         add(mouseButton);
+
+        //Rectangle
+        final JToggleButton rectangleButton = new JToggleButton(new ImageIcon(getClass().getResource("/org/gephi/visualization/component/rectangle.png")));
+        rectangleButton.setToolTipText(NbBundle.getMessage(SelectionToolbar.class, "SelectionToolbar.rectangle.tooltip"));
+        rectangleButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (rectangleButton.isSelected()) {
+                    VizController.getInstance().getSelectionManager().setRectangleSelection();
+                }
+            }
+        });
+        add(rectangleButton);
 
         //Drag
         final JToggleButton dragButton = new JToggleButton(new ImageIcon(getClass().getResource("/org/gephi/visualization/component/hand.png")));
@@ -86,7 +86,7 @@ public class SelectionToolbar extends JToolBar {
 
             public void actionPerformed(ActionEvent e) {
                 if (dragButton.isSelected()) {
-                    VizController.getInstance().getSelectionManager().setDraggingMouseSelection(true);
+                    VizController.getInstance().getSelectionManager().setDraggingMouseSelection();
                 }
             }
         });
@@ -104,6 +104,12 @@ public class SelectionToolbar extends JToolBar {
                 SelectionManager selectionManager = VizController.getInstance().getSelectionManager();
                 if(selectionManager.isBlocked()) {
                     buttonGroup.clearSelection();
+                } else if(!selectionManager.isSelectionEnabled()) {
+                    buttonGroup.clearSelection();
+                } else if(selectionManager.isDirectMouseSelection()) {
+                    if(!buttonGroup.isSelected(mouseButton.getModel())) {
+                        buttonGroup.setSelected(mouseButton.getModel(), true);
+                    }
                 }
             }
         });

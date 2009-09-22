@@ -56,24 +56,37 @@ public class SelectionManager implements VizArchitecture {
             this.blocked = block;
             vizConfig.setSelectionEnable(block);
             fireChangeEvent();
+        } else {
+            setDirectMouseSelection();
         }
     }
 
-    public void setRectangleSelection(boolean rectangleSelection) {
-        engine.setRectangleSelection(rectangleSelection);
-        vizConfig.setDraggingEnable(false);
+    public void disableSelection() {
+        vizConfig.setSelectionEnable(false);
         fireChangeEvent();
     }
 
-    public void setDirectMouseSelection(boolean directMouseSelection) {
-        engine.setRectangleSelection(directMouseSelection);
+    public void setRectangleSelection() {
+        engine.setRectangleSelection(true);
         vizConfig.setDraggingEnable(false);
+        vizConfig.setSelectionEnable(true);
+        this.blocked = false;
         fireChangeEvent();
     }
 
-    public void setDraggingMouseSelection(boolean draggingMouseSelection) {
-        engine.setRectangleSelection(draggingMouseSelection);
+    public void setDirectMouseSelection() {
+        engine.setRectangleSelection(false);
+        vizConfig.setSelectionEnable(true);
+        vizConfig.setDraggingEnable(false);
+        this.blocked = false;
+        fireChangeEvent();
+    }
+
+    public void setDraggingMouseSelection() {
+        engine.setRectangleSelection(false);
         vizConfig.setDraggingEnable(true);
+        vizConfig.setSelectionEnable(true);
+        this.blocked = false;
         fireChangeEvent();
     }
 
@@ -83,6 +96,14 @@ public class SelectionManager implements VizArchitecture {
 
     public boolean isRectangleSelection() {
         return vizConfig.isSelectionEnable() && vizConfig.isRectangleSelection();
+    }
+
+    public boolean isDirectMouseSelection() {
+        return vizConfig.isSelectionEnable() && !vizConfig.isRectangleSelection() && !vizConfig.isDraggingEnable();
+    }
+
+    public boolean isSelectionEnabled() {
+        return vizConfig.isSelectionEnable();
     }
 
     //Event
