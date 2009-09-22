@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JToggleButton;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.Node;
 import org.gephi.tools.api.MouseClickEventListener;
 import org.gephi.tools.api.NodeClickEventListener;
@@ -41,6 +43,7 @@ import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VizEvent;
 import org.gephi.visualization.api.VizEvent.Type;
 import org.gephi.visualization.api.VizEventListener;
+import org.gephi.visualization.api.selection.SelectionManager;
 import org.openide.util.Lookup;
 
 /**
@@ -87,6 +90,13 @@ public class DesktopToolController implements ToolController {
         }
         currentHandlers = handlers.toArray(new ToolEventHandler[0]);
         currentTool = tool;
+        switch(tool.getSelectionType()) {
+            case NO_SELECTION:
+                break;
+            case SELECTION:
+                VizController.getInstance().getSelectionManager().blockSelection(true);
+                break;
+        }
         currentTool.select();
     }
 
@@ -127,7 +137,7 @@ public class DesktopToolController implements ToolController {
         });
 
         //Create toolbar
-        Toolbar toolbar = new Toolbar();
+        final Toolbar toolbar = new Toolbar();
         for (final ToolUI toolUI : toolsUI) {
             final Tool tool = toolMap.get(toolUI);
             JToggleButton btn = new JToggleButton(toolUI.getIcon());
@@ -142,6 +152,17 @@ public class DesktopToolController implements ToolController {
             });
             toolbar.add(btn);
         }
+
+        //SelectionManager events
+        VizController.getInstance().getSelectionManager().addChangeListener(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                SelectionManager selectionManager = VizController.getInstance().getSelectionManager();
+                if(selectionManager.isRectangleSelection()) {
+                    toolbar.clearSelection();
+                }
+            }
+        });
 
         return toolbar;
     }

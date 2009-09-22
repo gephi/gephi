@@ -33,6 +33,7 @@ import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.opengl.compatibility.CompatibilityScheduler;
 import org.gephi.visualization.api.Scheduler;
+import org.gephi.visualization.api.selection.SelectionManager;
 import org.gephi.visualization.bridge.DHNSDataBridge;
 import org.gephi.visualization.bridge.DHNSEventBridge;
 import org.gephi.visualization.bridge.DataBridge;
@@ -79,6 +80,7 @@ public class VizController {
     private ModeManager modeManager;
     private TextManager textManager;
     private ScreenshotMaker screenshotMaker;
+    private SelectionManager selectionManager;
 
     //Variable
     private VizModel currentModel;
@@ -100,6 +102,7 @@ public class VizController {
         textManager = new TextManager();
         screenshotMaker = new ScreenshotMaker();
         currentModel = new VizModel(true);
+        selectionManager = new SelectionManager();
 
         if (vizConfig.isUseGLJPanel()) {
             drawable = commander.createPanel();
@@ -117,6 +120,7 @@ public class VizController {
         textManager.initArchitecture();
         screenshotMaker.initArchitecture();
         vizEventManager.initArchitecture();
+        selectionManager.initArchitecture();
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
@@ -209,5 +213,9 @@ public class VizController {
 
     public ScreenshotMaker getScreenshotMaker() {
         return screenshotMaker;
+    }
+
+    public SelectionManager getSelectionManager() {
+        return selectionManager;
     }
 }

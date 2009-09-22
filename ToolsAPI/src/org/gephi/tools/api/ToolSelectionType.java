@@ -18,24 +18,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
 package org.gephi.tools.api;
-
-import org.gephi.ui.tools.ToolUI;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Tool {
-
-    public void select();
-
-    public void unselect();
-
-    public ToolEventListener[] getListeners();
-
-    public ToolUI getUI();
-
-    public ToolSelectionType getSelectionType();
+public enum ToolSelectionType {
+    NO_SELECTION, SELECTION;
 }

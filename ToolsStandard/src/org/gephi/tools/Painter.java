@@ -29,6 +29,7 @@ import org.gephi.tools.api.NodeClickEventListener;
 import org.gephi.tools.api.Tool;
 import org.gephi.tools.api.ToolEventListener;
 import org.gephi.tools.api.ToolEventType;
+import org.gephi.tools.api.ToolSelectionType;
 import org.gephi.ui.tools.ToolUI;
 import org.openide.util.NbBundle;
 
@@ -41,7 +42,6 @@ public class Painter implements Tool {
     private ToolEventListener[] listeners;
 
     public void select() {
-        
     }
 
     public void unselect() {
@@ -92,5 +92,9 @@ public class Painter implements Tool {
                 return 100;
             }
         };
+    }
+
+    public ToolSelectionType getSelectionType() {
+        return ToolSelectionType.SELECTION;
     }
 }

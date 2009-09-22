@@ -354,4 +354,8 @@ public class VizConfig {
     public void setDraggingEnable(boolean draggingEnable) {
         this.draggingEnable = draggingEnable;
     }
+
+    public void setSelectionEnable(boolean selectionEnable) {
+        this.selectionEnable = selectionEnable;
+    }
 }

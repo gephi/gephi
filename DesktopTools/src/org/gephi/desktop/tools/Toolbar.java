@@ -54,6 +54,10 @@ public class Toolbar extends JToolBar {
         }
     }
 
+    public void clearSelection() {
+        buttonGroup.clearSelection();
+    }
+
     @Override
     public Component add(Component comp) {
         if (comp instanceof JButton) {

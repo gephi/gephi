@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.tools;
 
+import org.gephi.tools.api.ToolSelectionType;
 import org.gephi.ui.tools.BrushPanel;
 import java.awt.Color;
 import javax.swing.Icon;
@@ -125,5 +126,9 @@ public class Brush implements Tool {
                 return 110;
             }
         };
+    }
+
+    public ToolSelectionType getSelectionType() {
+        return ToolSelectionType.SELECTION;
     }
 }

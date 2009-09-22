@@ -33,6 +33,7 @@ import org.gephi.tools.api.MouseClickEventListener;
 import org.gephi.tools.api.NodeClickEventListener;
 import org.gephi.tools.api.Tool;
 import org.gephi.tools.api.ToolEventListener;
+import org.gephi.tools.api.ToolSelectionType;
 import org.gephi.ui.tools.ToolUI;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -82,9 +83,9 @@ public class EdgePencil implements Tool {
                     GraphController gc = Lookup.getDefault().lookup(GraphController.class);
                     DirectedGraph graph = gc.getVisibleDirectedGraph();
                     Edge edge = gc.factory().newEdge(sourceNode, n, weight, true);
-                    edge.getEdgeData().setR(color.getRed()/255f);
-                    edge.getEdgeData().setG(color.getGreen()/255f);
-                    edge.getEdgeData().setB(color.getBlue()/255f);
+                    edge.getEdgeData().setR(color.getRed() / 255f);
+                    edge.getEdgeData().setG(color.getGreen() / 255f);
+                    edge.getEdgeData().setB(color.getBlue() / 255f);
                     graph.addEdge(edge);
                     sourceNode = null;
                     edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));
@@ -131,5 +132,9 @@ public class EdgePencil implements Tool {
                 return 130;
             }
         };
+    }
+
+    public ToolSelectionType getSelectionType() {
+        return ToolSelectionType.NO_SELECTION;
     }
 }

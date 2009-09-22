@@ -30,6 +30,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.tools.api.MouseClickEventListener;
 import org.gephi.tools.api.Tool;
 import org.gephi.tools.api.ToolEventListener;
+import org.gephi.tools.api.ToolSelectionType;
 import org.gephi.ui.tools.NodePencilPanel;
 import org.gephi.ui.tools.ToolUI;
 import org.openide.util.Lookup;
@@ -111,5 +112,9 @@ public class NodePencil implements Tool {
                 return 120;
             }
         };
+    }
+
+    public ToolSelectionType getSelectionType() {
+        return ToolSelectionType.NO_SELECTION;
     }
 }
