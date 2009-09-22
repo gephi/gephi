@@ -106,6 +106,10 @@ public class SelectionManager implements VizArchitecture {
         return vizConfig.isSelectionEnable();
     }
 
+    public boolean isDraggingEnabled() {
+        return vizConfig.isDraggingEnable();
+    }
+
     //Event
     public void addChangeListener(ChangeListener changeListener) {
         listeners.add(changeListener);
