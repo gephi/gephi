@@ -55,7 +55,6 @@ final class GraphTopComponent extends TopComponent {
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
 
         //Init
-        VizController.getInstance().initInstances();
         initCollapsePanel();
         initToolPanels();
         engine = VizController.getInstance().getEngine();

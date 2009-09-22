@@ -100,7 +100,7 @@ public class NodeRowModel implements RowModel {
                     return row.getValue(attributeColumn);
                 }
             } else if (propertyColumn == PropertyColumn.ID) {
-                return "" + node.getId();
+                return "" + node.getNodeData().getId();
             }
             return null;
         }

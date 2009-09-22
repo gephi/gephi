@@ -62,6 +62,7 @@ public class VizController {
     public synchronized static VizController getInstance() {
         if (instance == null) {
             instance = new VizController();
+            instance.initInstances();
         }
         return instance;
     }

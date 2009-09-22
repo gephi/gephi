@@ -102,9 +102,9 @@ public class EdgeRowModel implements RowModel {
             } else if (propertyColumn == PropertyColumn.ID) {
                 return ""+edge.getId();
             } else if (propertyColumn == PropertyColumn.SOURCE) {
-                return ""+edge.getSource().getId();
+                return ""+edge.getSource().getNodeData().getId();
             } else if (propertyColumn == PropertyColumn.TARGET) {
-                return ""+edge.getTarget().getId();
+                return ""+edge.getTarget().getNodeData().getId();
             }
             return null;
         }
