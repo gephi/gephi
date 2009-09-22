@@ -96,6 +96,7 @@ public class ImporterGDF implements TextImporter, LongTask {
 
             Matcher m = pattern.matcher(nodeLine);
             int count = 0;
+            String id = "";
             while (m.find()) {
                 int start = m.start();
                 int end = m.end();
@@ -105,9 +106,12 @@ public class ImporterGDF implements TextImporter, LongTask {
                     if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
                         if (count == 0) {
                             //Id
+                            id = data;
                             node.setId(data);
                         } else if (count - 1 < nodeColumns.length) {
                             setNodeData(node, nodeColumns[count - 1], data);
+                        } else {
+                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat7", id), Issue.Level.SEVERE));
                         }
                     }
                 }
@@ -129,6 +133,7 @@ public class ImporterGDF implements TextImporter, LongTask {
 
             Matcher m = pattern.matcher(edgeLine);
             int count = 0;
+            String id = "";
             while (m.find()) {
                 int start = m.start();
                 int end = m.end();
@@ -139,11 +144,15 @@ public class ImporterGDF implements TextImporter, LongTask {
                         if (count == 0) {
                             NodeDraft nodeSource = container.getNode(data);
                             edge.setSource(nodeSource);
+                            id = data;
                         } else if (count == 1) {
                             NodeDraft nodeTarget = container.getNode(data);
                             edge.setTarget(nodeTarget);
+                            id += "," + data;
                         } else if (count - 2 < edgeColumns.length) {
                             setEdgeData(edge, edgeColumns[count - 2], data);
+                        } else {
+                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat7", id), Issue.Level.SEVERE));
                         }
                     }
                 }
