@@ -46,6 +46,7 @@ public class Rectangle implements SelectionArea {
     private boolean stop = true;
     private VizConfig config;
     private boolean blocking = true;
+    private boolean ctrl = false;
 
     public Rectangle() {
         drawable = VizController.getInstance().getDrawable();
@@ -191,5 +192,13 @@ public class Rectangle implements SelectionArea {
 
     public boolean isStop() {
         return stop;
+    }
+
+    public void setCtrl(boolean ctrl) {
+        this.ctrl = ctrl;
+    }
+
+    public boolean isCtrl() {
+        return ctrl;
     }
 }

@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.swing;
 
 import java.awt.Cursor;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -178,8 +179,13 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
      */
     public void mouseClicked(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
+            if(vizController.getVizConfig().isSelectionEnable() && vizController.getVizConfig().isRectangleSelection()) {
+                Rectangle r = (Rectangle)engine.getCurrentSelectionArea();
+                boolean ctrl = (e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0 || (e.getModifiers() & InputEvent.CTRL_MASK) != 0;
+                r.setCtrl(ctrl);
+            }
             engine.getScheduler().requireMouseClick();
-            vizEventManager.mouseLeftClick();
+            vizEventManager.mouseLeftClick();         
         } else if (SwingUtilities.isRightMouseButton(e)) {
             if (vizController.getVizConfig().isContextMenu()) {
                 GraphContextMenu popupMenu = new GraphContextMenu();

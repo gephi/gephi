@@ -409,7 +409,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
         if (vizConfig.isSelectionEnable() && rectangleSelection) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
-            rectangle.setBlocking(false);
+            //rectangle.setBlocking(false);
             //Clean opengl picking
             for (ModelClass objClass : selectableClasses) {
                 if (objClass.isEnabled() && objClass.isGlSelection()) {
@@ -430,22 +430,25 @@ public class CompatibilityEngine extends AbstractEngine {
                         if (!obj.isSelected()) {
                             //New selected
                             obj.setSelected(true);
-                            someSelection = true;
                             /*if (vizEventManager.hasSelectionListeners()) {
                             newSelectedObjects.add(obj);
                             }*/
                             selectedObjects[i].add(obj);
                         }
+                        someSelection = true;
                         obj.selectionMark = markTime2;
                     }
                 }
-                for (Iterator<ModelImpl> itr = selectedObjects[i].iterator(); itr.hasNext();) {
-                    ModelImpl o = itr.next();
-                    if (o.selectionMark != markTime2) {
-                        itr.remove();
-                        o.setSelected(false);
+                if (!(rectangle.isCtrl() && someSelection)) {
+                    for (Iterator<ModelImpl> itr = selectedObjects[i].iterator(); itr.hasNext();) {
+                        ModelImpl o = itr.next();
+                        if (o.selectionMark != markTime2) {
+                            itr.remove();
+                            o.setSelected(false);
+                        }
                     }
                 }
+
                 i++;
             }
             rectangle.setBlocking(someSelection);
