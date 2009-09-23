@@ -70,15 +70,19 @@ public class EdgePencilPanel extends javax.swing.JPanel {
         colorButton = new JColorButton(Color.BLACK);
         labelColor = new javax.swing.JLabel();
 
-        statusLabel.setFont(new java.awt.Font("Tahoma", 0, 10));
+        statusLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         statusLabel.setText(org.openide.util.NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.statusLabel.text")); // NOI18N
 
+        weightSpinner.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         weightSpinner.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(0.0f), null, Float.valueOf(0.1f)));
 
+        labelWeight.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         labelWeight.setText(org.openide.util.NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.labelWeight.text")); // NOI18N
 
         colorButton.setText(org.openide.util.NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.colorButton.text")); // NOI18N
+        colorButton.setContentAreaFilled(false);
 
+        labelColor.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         labelColor.setText(org.openide.util.NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.labelColor.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -87,10 +91,10 @@ public class EdgePencilPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(statusLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 195, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 200, Short.MAX_VALUE)
                 .addComponent(labelColor)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(labelWeight)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -99,11 +103,11 @@ public class EdgePencilPanel extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(statusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(statusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(weightSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(labelWeight)
-                .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(labelColor))
+                .addComponent(labelWeight, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(labelColor, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

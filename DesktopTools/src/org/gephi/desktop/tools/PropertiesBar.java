@@ -51,7 +51,7 @@ public class PropertiesBar extends JPanel {
 
     public void select(JPanel propertiesBar) {
         this.propertiesBar = propertiesBar;
-        propertiesBar.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        propertiesBar.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
         add(propertiesBar, BorderLayout.CENTER);
         revalidate();
     }
