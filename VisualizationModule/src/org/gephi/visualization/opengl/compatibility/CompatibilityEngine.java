@@ -27,7 +27,6 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
@@ -41,7 +40,7 @@ import org.gephi.visualization.api.initializer.CompatibilityModeler;
 import org.gephi.visualization.opengl.octree.Octree;
 import org.gephi.visualization.api.Scheduler;
 import org.gephi.visualization.api.objects.CompatibilityModelClass;
-import org.gephi.visualization.selection.Point;
+import org.gephi.visualization.selection.Cylinder;
 import org.gephi.visualization.selection.Rectangle;
 
 /**
@@ -359,7 +358,18 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public void afterDisplay(GL gl, GLU glu) {
         if (vizConfig.isSelectionEnable()) {
+            gl.glMatrixMode(GL.GL_PROJECTION);
+            gl.glPushMatrix();
+            gl.glLoadIdentity();
+            gl.glOrtho(0, graphDrawable.getViewportWidth(), 0, graphDrawable.getViewportHeight(), -1, 1);
+            gl.glMatrixMode(GL.GL_MODELVIEW);
+            gl.glPushMatrix();
+            gl.glLoadIdentity();
             currentSelectionArea.drawArea(gl, glu);
+            gl.glMatrixMode(GL.GL_PROJECTION);
+            gl.glPopMatrix();
+            gl.glMatrixMode(GL.GL_MODELVIEW);
+            gl.glPopMatrix();
         }
         graphIO.trigger();
     }
@@ -729,7 +739,7 @@ public class CompatibilityEngine extends AbstractEngine {
             currentSelectionArea = new Rectangle();
         } else {
             rectangleSelection = false;
-            currentSelectionArea = new Point();
+            currentSelectionArea = new Cylinder();
         }
     }
 
