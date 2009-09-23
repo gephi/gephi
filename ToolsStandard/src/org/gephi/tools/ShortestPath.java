@@ -96,15 +96,13 @@ public class ShortestPath implements Tool {
                             predecessorEdge.getSource().getNodeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
                             predecessorEdge = algorithm.getPredecessorIncoming(predecessorEdge.getSource());
                         }
+                        predecessorEdge.getEdgeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
                         sourceNode.getNodeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
-                        shortestPathPanel.setResult("A " + distance + " distance path has been found.");
+                        shortestPathPanel.setResult(NbBundle.getMessage(ShortestPath.class, "ShortestPath.result", distance));
                     } else {
                         //No path
-                        shortestPathPanel.setResult("No path exist between these two nodes");
+                        shortestPathPanel.setResult(NbBundle.getMessage(ShortestPath.class, "ShortestPath.noresult"));
                     }
-                    /*for (Entry<Node, Double> entry : algorithm.getDistances().entrySet()) {
-                    System.out.println(entry.getKey().getNodeData().getLabel() + " - " + entry.getValue());
-                    }*/
 
                     sourceNode = null;
                     shortestPathPanel.setStatus(NbBundle.getMessage(ShortestPath.class, "ShortestPath.status1"));
