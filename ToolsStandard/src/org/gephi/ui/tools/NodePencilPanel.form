@@ -17,8 +17,9 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="statusLabel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="261" max="32767" attributes="0"/>
+              <EmptySpace pref="251" max="32767" attributes="0"/>
               <Component id="labelColor" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="colorButton" min="-2" pref="21" max="-2" attributes="0"/>
@@ -34,8 +35,8 @@
           <Group type="103" groupAlignment="3" attributes="0">
               <Component id="sizeSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
               <Component id="labelSize" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
-              <Component id="statusLabel" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
               <Component id="labelColor" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+              <Component id="statusLabel" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
           </Group>
           <Component id="colorButton" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
       </Group>

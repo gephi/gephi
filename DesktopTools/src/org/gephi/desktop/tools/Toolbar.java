@@ -48,7 +48,8 @@ public class Toolbar extends JToolBar {
         setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
     }
 
-    public void setEnable(boolean enabled) {
+    @Override
+    public void setEnabled(boolean enabled) {
         for (Component c : getComponents()) {
             c.setEnabled(enabled);
         }
@@ -63,8 +64,8 @@ public class Toolbar extends JToolBar {
         if (comp instanceof JButton) {
             UIUtils.fixButtonUI((JButton) comp);
         }
-        if(comp instanceof AbstractButton) {
-            buttonGroup.add((AbstractButton)comp);
+        if (comp instanceof AbstractButton) {
+            buttonGroup.add((AbstractButton) comp);
         }
 
         return super.add(comp);

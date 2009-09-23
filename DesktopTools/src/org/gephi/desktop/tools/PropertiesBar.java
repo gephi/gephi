@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.desktop.tools;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,12 +41,13 @@ import org.openide.util.lookup.Lookups;
 public class PropertiesBar extends JPanel {
 
     private JPanel propertiesBar;
+    private SelectionBar selectionBar;
 
     public PropertiesBar() {
         super(new BorderLayout());
         JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.add(getFullScreenIcon(), BorderLayout.WEST);
-        leftPanel.add(new SelectionBar(), BorderLayout.CENTER);
+        leftPanel.add(selectionBar = new SelectionBar(), BorderLayout.CENTER);
         add(leftPanel, BorderLayout.WEST);
     }
 
@@ -85,5 +87,13 @@ public class PropertiesBar extends JPanel {
             }
         });
         return fullScreenButton;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        for (Component c : getComponents()) {
+            c.setEnabled(enabled);
+        }
+        selectionBar.setEnabled(enabled);
     }
 }

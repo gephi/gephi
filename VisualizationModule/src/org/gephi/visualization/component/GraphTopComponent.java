@@ -26,10 +26,13 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import org.gephi.project.api.ProjectController;
 import org.gephi.tools.api.ToolController;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.swing.GraphDrawableImpl;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -88,29 +91,69 @@ final class GraphTopComponent extends TopComponent {
             collapsePanel.setVisible(false);
         }
     }
+    private SelectionToolbar selectionToolbar;
+    private ActionsToolbar actionsToolbar;
+    private JComponent toolbar;
+    private JComponent propertiesBar;
 
     private void initToolPanels() {
         ToolController tc = Lookup.getDefault().lookup(ToolController.class);
-        if(tc!=null) {
-            if(VizController.getInstance().getVizConfig().isToolbar()) {
-                JComponent toolbar = tc.getToolbar();
-                if(toolbar!=null) {
-                    JComponent selectionToolbar = new SelectionToolbar();
-                    JComponent actionsToolbar = new ActionsToolbar();
-                    JPanel westPanel = new JPanel(new BorderLayout(0,0));
-                    westPanel.add(selectionToolbar, BorderLayout.NORTH);
+        if (tc != null) {
+            if (VizController.getInstance().getVizConfig().isToolbar()) {
+                JPanel westPanel = new JPanel(new BorderLayout(0, 0));
+
+                toolbar = tc.getToolbar();
+                if (toolbar != null) {
                     westPanel.add(toolbar, BorderLayout.CENTER);
-                    westPanel.add(actionsToolbar, BorderLayout.SOUTH);
-                    add(westPanel, BorderLayout.WEST);
                 }
+                selectionToolbar = new SelectionToolbar();
+                actionsToolbar = new ActionsToolbar();
+
+                westPanel.add(selectionToolbar, BorderLayout.NORTH);
+                westPanel.add(actionsToolbar, BorderLayout.SOUTH);
+                add(westPanel, BorderLayout.WEST);
             }
-            if(VizController.getInstance().getVizConfig().isPropertiesbar()) {
-                JComponent propertiesBar = tc.getPropertiesBar();
-                if(propertiesBar!=null) {
+
+            if (VizController.getInstance().getVizConfig().isPropertiesbar()) {
+                propertiesBar = tc.getPropertiesBar();
+                if (propertiesBar != null) {
                     add(propertiesBar, BorderLayout.NORTH);
                 }
             }
         }
+
+        //Workspace events
+        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+        projectController.addWorkspaceListener(new WorkspaceListener() {
+
+            public void initialize(Workspace workspace) {
+            }
+
+            public void select(Workspace workspace) {
+                toolbar.setEnabled(true);
+                propertiesBar.setEnabled(true);
+                actionsToolbar.setEnabled(true);
+                selectionToolbar.setEnabled(true);
+            }
+
+            public void unselect(Workspace workspace) {
+            }
+
+            public void close(Workspace workspace) {
+            }
+
+            public void disable() {
+                toolbar.setEnabled(false);
+                propertiesBar.setEnabled(false);
+                actionsToolbar.setEnabled(false);
+                selectionToolbar.setEnabled(false);
+            }
+        });
+
+        toolbar.setEnabled(false);
+        propertiesBar.setEnabled(false);
+        actionsToolbar.setEnabled(false);
+        selectionToolbar.setEnabled(false);
     }
 
     /** This method is called from within the constructor to

@@ -122,7 +122,8 @@ public class SelectionToolbar extends JToolBar {
         setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
     }
 
-    public void setEnable(boolean enabled) {
+    @Override
+    public void setEnabled(boolean enabled) {
         for (Component c : getComponents()) {
             c.setEnabled(enabled);
         }

@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.tools;
 
+import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JPopupMenu;
@@ -52,7 +53,7 @@ public class SelectionBar extends javax.swing.JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if (mouseSelection) {
+                if (mouseSelection && statusLabel.isEnabled()) {
                     JPopupMenu menu = createPopup();
                     menu.show(statusLabel, 0, statusLabel.getHeight());
                 }
@@ -141,4 +142,11 @@ public class SelectionBar extends javax.swing.JPanel {
     private javax.swing.JSeparator endSeparator;
     private javax.swing.JLabel statusLabel;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        for (Component c : getComponents()) {
+            c.setEnabled(enabled);
+        }
+    }
 }
