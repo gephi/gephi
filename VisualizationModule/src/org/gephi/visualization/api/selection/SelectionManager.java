@@ -59,7 +59,7 @@ public class SelectionManager implements VizArchitecture {
     public void blockSelection(boolean block) {
         if (vizConfig.isRectangleSelection()) {
             this.blocked = block;
-            vizConfig.setSelectionEnable(block);
+            vizConfig.setSelectionEnable(!block);
             fireChangeEvent();
         } else {
             setDirectMouseSelection();

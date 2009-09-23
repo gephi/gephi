@@ -62,7 +62,6 @@ public class CompatibilityEngine extends AbstractEngine {
     //Selection
     private ConcurrentLinkedQueue<ModelImpl>[] selectedObjects;
     private boolean anySelected = false;
-    private float lightenAnimationDelta = 0f;
 
     public CompatibilityEngine() {
         super();

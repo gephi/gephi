@@ -238,7 +238,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             mousePosition[0] = x;
             mousePosition[1] = graphDrawable.viewport.get(3) - y;
 
-            if (vizController.getVizConfig().isRectangleSelection()) {
+            if (vizController.getVizConfig().isSelectionEnable() && vizController.getVizConfig().isRectangleSelection()) {
                 if (!dragging) {
                     //Start drag
                     dragging = true;

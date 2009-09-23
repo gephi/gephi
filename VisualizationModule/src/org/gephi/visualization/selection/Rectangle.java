@@ -54,7 +54,7 @@ public class Rectangle implements SelectionArea {
     }
 
     public float[] getSelectionAreaRectancle() {
-        if(stop) {
+        if (stop) {
             return pointRect;
         }
         rectangleSize[0] = Math.abs(rectangle[0] - startPosition[0]);
@@ -69,7 +69,7 @@ public class Rectangle implements SelectionArea {
     }
 
     public float[] getSelectionAreaCenter() {
-        if(stop) {
+        if (stop) {
             return null;
         }
         center[0] = -(rectangle[0] - startPosition[0]) / 2f;
@@ -78,7 +78,7 @@ public class Rectangle implements SelectionArea {
     }
 
     public boolean mouseTest(Vecf distanceFromMouse, ModelImpl object) {
-        if(stop) {
+        if (stop) {
             return object.selectionTest(distanceFromMouse, 0);
         }
         float x = object.getViewportX();

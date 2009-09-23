@@ -75,7 +75,7 @@ public class VizConfig {
     protected boolean lightenNonSelected = true;
     protected float[] lightenNonSelectedColor = {0.95f, 0.95f, 0.95f, 1f};
     protected boolean lightenNonSelectedAnimation = true;
-    protected float lightenNonSelectedFactor = 0.5f;    
+    protected float lightenNonSelectedFactor = 0.5f;
     protected float[] uniColorSelectedColor = {0.8f, 0.2f, 0.2f};
     protected float[] uniColorSelectedNeigborColor = {0.2f, 1f, 0.3f};
     protected float[] edgeInSelectedColor = {1f, 0f, 0f};

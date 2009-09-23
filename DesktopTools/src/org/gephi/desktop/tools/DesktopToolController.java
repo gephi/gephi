@@ -163,7 +163,7 @@ public class DesktopToolController implements ToolController {
                 if (selectionManager.isRectangleSelection() && currentTool != null) {
                     toolbar.clearSelection();
                     unselect();
-                } else if(selectionManager.isSelectionEnabled() && currentTool!=null && currentTool.getSelectionType()==ToolSelectionType.NO_SELECTION) {
+                } else if (selectionManager.isSelectionEnabled() && currentTool != null && currentTool.getSelectionType() == ToolSelectionType.NO_SELECTION) {
                     toolbar.clearSelection();
                     unselect();
                 }

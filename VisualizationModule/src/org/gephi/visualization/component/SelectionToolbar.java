@@ -102,12 +102,12 @@ public class SelectionToolbar extends JToolBar {
 
             public void stateChanged(ChangeEvent e) {
                 SelectionManager selectionManager = VizController.getInstance().getSelectionManager();
-                if(selectionManager.isBlocked()) {
+                if (selectionManager.isBlocked()) {
                     buttonGroup.clearSelection();
-                } else if(!selectionManager.isSelectionEnabled()) {
+                } else if (!selectionManager.isSelectionEnabled()) {
                     buttonGroup.clearSelection();
-                } else if(selectionManager.isDirectMouseSelection()) {
-                    if(!buttonGroup.isSelected(mouseButton.getModel())) {
+                } else if (selectionManager.isDirectMouseSelection()) {
+                    if (!buttonGroup.isSelected(mouseButton.getModel())) {
                         buttonGroup.setSelected(mouseButton.getModel(), true);
                     }
                 }

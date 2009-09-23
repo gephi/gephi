@@ -80,6 +80,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected boolean configChanged = false;
     protected boolean backgroundChanged = false;
     protected boolean reinit = false;
+    protected float lightenAnimationDelta = 0f;
 
     //Octree
     protected Octree octree;
@@ -227,6 +228,8 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     public void setRectangleSelection(boolean rectangleSelection) {
         vizConfig.setRectangleSelection(rectangleSelection);
         configChanged = true;
+        lightenAnimationDelta = 0;
+        vizConfig.setLightenNonSelected(false);
     }
 
     public void startDisplay() {
