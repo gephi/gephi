@@ -93,6 +93,8 @@ public class VizConfig {
     protected boolean contextMenu = true;
     protected boolean toolbar = true;
     protected boolean propertiesbar = true;
+    protected int mouseSelectionDiameter = 1;
+    protected boolean mouseSelectionZoomProportionnal = false;
 
     public int getAntialiasing() {
         return antialiasing;
@@ -336,6 +338,14 @@ public class VizConfig {
 
     public boolean isPropertiesbar() {
         return propertiesbar;
+    }
+
+    public int getMouseSelectionDiameter() {
+        return mouseSelectionDiameter;
+    }
+
+    public boolean isMouseSelectionZoomProportionnal() {
+        return mouseSelectionZoomProportionnal;
     }
 
     //Setters

@@ -20,16 +20,24 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.tools;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JPopupMenu;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.selection.SelectionManager;
+import org.openide.util.NbBundle;
 
 /**
  *
  * @author Mathieu Bastian
  */
 public class SelectionBar extends javax.swing.JPanel {
+
+    private boolean mouseSelection;
 
     /** Creates new form SelectionBar */
     public SelectionBar() {
@@ -41,17 +49,57 @@ public class SelectionBar extends javax.swing.JPanel {
             }
         });
         refresh();
+
+        statusLabel.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (mouseSelection) {
+                    JPopupMenu menu = createPopup();
+                    menu.show(statusLabel, 0, statusLabel.getHeight());
+                }
+            }
+        });
+    }
+
+    public JPopupMenu createPopup() {
+
+        SelectionManager manager = VizController.getInstance().getSelectionManager();
+        final MouseSelectionPopupPanel popupPanel = new MouseSelectionPopupPanel();
+        popupPanel.setDiameter(manager.getMouseSelectionDiameter());
+        popupPanel.setProportionnalToZoom(manager.isMouseSelectionZoomProportionnal());
+
+        JPopupMenu menu = new JPopupMenu();
+        menu.add(popupPanel);
+        menu.addPopupMenuListener(new PopupMenuListener() {
+
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+            }
+
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                SelectionManager manager = VizController.getInstance().getSelectionManager();
+                manager.setMouseSelectionDiameter(popupPanel.getDiameter());
+                manager.setMouseSelectionZoomProportionnal(popupPanel.isProportionnalToZoom());
+            }
+
+            public void popupMenuCanceled(PopupMenuEvent e) {
+            }
+        });
+        return menu;
     }
 
     public void refresh() {
         SelectionManager manager = VizController.getInstance().getSelectionManager();
         if (manager.isSelectionEnabled()) {
             if (manager.isRectangleSelection()) {
-                statusLabel.setText("Rectangle selection");
+                mouseSelection = false;
+                statusLabel.setText(NbBundle.getMessage(SelectionBar.class, "SelectionBar.statusLabel.rectangleSelection"));
             } else if (manager.isDirectMouseSelection()) {
-                statusLabel.setText("Mouse selection");
+                mouseSelection = true;
+                statusLabel.setText(NbBundle.getMessage(SelectionBar.class, "SelectionBar.statusLabel.mouseSelection"));
             } else if (manager.isDraggingEnabled()) {
-                statusLabel.setText("Dragging");
+                mouseSelection = true;
+                statusLabel.setText(NbBundle.getMessage(SelectionBar.class, "SelectionBar.statusLabel.dragging"));
             }
         } else {
             statusLabel.setText("No selection");

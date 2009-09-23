@@ -39,6 +39,10 @@ public class SelectionManager implements VizArchitecture {
     private AbstractEngine engine;
     private List<ChangeListener> listeners;
 
+    //Settings
+    private int mouseSelectionDiameter;
+    private boolean mouseSelectionZoomProportionnal;
+
     //States
     private boolean blocked = false;
 
@@ -49,6 +53,7 @@ public class SelectionManager implements VizArchitecture {
     public void initArchitecture() {
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.engine = VizController.getInstance().getEngine();
+        mouseSelectionDiameter = vizConfig.getMouseSelectionDiameter();
     }
 
     public void blockSelection(boolean block) {
@@ -88,6 +93,22 @@ public class SelectionManager implements VizArchitecture {
         vizConfig.setSelectionEnable(true);
         this.blocked = false;
         fireChangeEvent();
+    }
+
+    public void setMouseSelectionDiameter(int mouseSelectionDiameter) {
+        this.mouseSelectionDiameter = mouseSelectionDiameter;
+    }
+
+    public int getMouseSelectionDiameter() {
+        return mouseSelectionDiameter;
+    }
+
+    public void setMouseSelectionZoomProportionnal(boolean mouseSelectionZoomProportionnal) {
+        this.mouseSelectionZoomProportionnal = mouseSelectionZoomProportionnal;
+    }
+
+    public boolean isMouseSelectionZoomProportionnal() {
+        return mouseSelectionZoomProportionnal;
     }
 
     public boolean isBlocked() {
