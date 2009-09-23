@@ -60,6 +60,7 @@ public class PropertiesBar extends JPanel {
         if (propertiesBar != null) {
             remove(propertiesBar);
             revalidate();
+            repaint();
             propertiesBar = null;
         }
     }

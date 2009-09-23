@@ -112,6 +112,9 @@ public class DesktopToolController implements ToolController {
             currentTool.unselect();
             currentHandlers = null;
             currentTool = null;
+            if (propertiesBar != null) {
+                propertiesBar.unselect();
+            }
         }
     }
 
@@ -147,7 +150,6 @@ public class DesktopToolController implements ToolController {
             btn.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    propertiesBar.unselect();
                     select(tool);
                     propertiesBar.select(toolUI.getPropertiesBar(tool));
                 }

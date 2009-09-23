@@ -25,8 +25,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPopupMenu;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.selection.SelectionManager;
 import org.openide.util.NbBundle;
