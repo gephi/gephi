@@ -179,13 +179,13 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
      */
     public void mouseClicked(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
-            if(vizController.getVizConfig().isSelectionEnable() && vizController.getVizConfig().isRectangleSelection()) {
-                Rectangle r = (Rectangle)engine.getCurrentSelectionArea();
+            if (vizController.getVizConfig().isSelectionEnable() && vizController.getVizConfig().isRectangleSelection()) {
+                Rectangle r = (Rectangle) engine.getCurrentSelectionArea();
                 boolean ctrl = (e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0 || (e.getModifiers() & InputEvent.CTRL_MASK) != 0;
                 r.setCtrl(ctrl);
             }
             engine.getScheduler().requireMouseClick();
-            vizEventManager.mouseLeftClick();         
+            vizEventManager.mouseLeftClick();
         } else if (SwingUtilities.isRightMouseButton(e)) {
             if (vizController.getVizConfig().isContextMenu()) {
                 GraphContextMenu popupMenu = new GraphContextMenu();
@@ -233,38 +233,37 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         }
 
         if (leftButtonMoving[0] != -1) {
-            if (vizController.getVizConfig().isDraggingEnable()) {
-                //Remet à jour aussi la mousePosition pendant le drag, notamment pour coller quand drag released
-                mousePosition[0] = x;
-                mousePosition[1] = graphDrawable.viewport.get(3) - y;
 
-                if (vizController.getVizConfig().isRectangleSelection()) {
-                    if (!dragging) {
-                        //Start drag
-                        dragging = true;
-                        Rectangle rectangle = (Rectangle) engine.getCurrentSelectionArea();
-                        rectangle.start(mousePosition);
-                    }
-                    engine.getScheduler().requireUpdateSelection();
-                } else {
-                    mouseDrag[0] = (float) ((graphDrawable.viewport.get(2) / 2 - x) / graphDrawable.draggingMarker[0] + graphDrawable.cameraTarget[0]);
-                    mouseDrag[1] = (float) ((y - graphDrawable.viewport.get(3) / 2) / graphDrawable.draggingMarker[1] + graphDrawable.cameraTarget[1]);
+            //Remet à jour aussi la mousePosition pendant le drag, notamment pour coller quand drag released
+            mousePosition[0] = x;
+            mousePosition[1] = graphDrawable.viewport.get(3) - y;
 
-                    if (!dragging) {
-                        //Start drag
-                        dragging = true;
-                        vizEventManager.startDrag();
-                        engine.getScheduler().requireStartDrag();
-                    }
+            if (vizController.getVizConfig().isRectangleSelection()) {
+                if (!dragging) {
+                    //Start drag
+                    dragging = true;
+                    Rectangle rectangle = (Rectangle) engine.getCurrentSelectionArea();
+                    rectangle.start(mousePosition);
+                }
+                engine.getScheduler().requireUpdateSelection();
+            } else if (vizController.getVizConfig().isDraggingEnable()) {
+                mouseDrag[0] = (float) ((graphDrawable.viewport.get(2) / 2 - x) / graphDrawable.draggingMarker[0] + graphDrawable.cameraTarget[0]);
+                mouseDrag[1] = (float) ((y - graphDrawable.viewport.get(3) / 2) / graphDrawable.draggingMarker[1] + graphDrawable.cameraTarget[1]);
 
-                    vizEventManager.drag();
-                    engine.getScheduler().requireDrag();
+                if (!dragging) {
+                    //Start drag
+                    dragging = true;
+                    vizEventManager.startDrag();
+                    engine.getScheduler().requireStartDrag();
                 }
 
-
-                leftButtonMoving[0] = x;
-                leftButtonMoving[1] = y;
+                vizEventManager.drag();
+                engine.getScheduler().requireDrag();
             }
+
+
+            leftButtonMoving[0] = x;
+            leftButtonMoving[1] = y;
         }
     }
 

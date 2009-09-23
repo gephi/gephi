@@ -96,6 +96,7 @@ public class SelectionBar extends javax.swing.JPanel {
                 statusLabel.setText(NbBundle.getMessage(SelectionBar.class, "SelectionBar.statusLabel.dragging"));
             }
         } else {
+            mouseSelection = false;
             statusLabel.setText("No selection");
         }
     }

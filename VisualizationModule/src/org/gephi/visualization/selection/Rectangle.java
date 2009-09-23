@@ -117,8 +117,8 @@ public class Rectangle implements SelectionArea {
 
     public void start(float[] mousePosition) {
         this.startPosition = Arrays.copyOf(mousePosition, 2);
-        this.rectangle[0] = 0f;
-        this.rectangle[1] = 0f;
+        this.rectangle[0] = startPosition[0];
+        this.rectangle[1] = startPosition[1];
         stop = false;
         blocking = false;
     }

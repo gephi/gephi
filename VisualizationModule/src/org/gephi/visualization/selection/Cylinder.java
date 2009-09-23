@@ -139,7 +139,7 @@ public class Cylinder implements SelectionArea {
     }
 
     public boolean isEnabled() {
-        return true;
+        return selectionManager.isSelectionEnabled();
     }
 
     public boolean blockSelection() {
