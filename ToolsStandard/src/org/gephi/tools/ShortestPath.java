@@ -80,6 +80,7 @@ public class ShortestPath implements Tool {
                     shortestPathPanel.setResult("");
                     shortestPathPanel.setStatus(NbBundle.getMessage(ShortestPath.class, "ShortestPath.status2"));
                 } else {
+                    color = shortestPathPanel.getColor();
                     float[] colorArray = new float[]{color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f};
                     Node targetNode = n;
                     GraphController gc = Lookup.getDefault().lookup(GraphController.class);
@@ -127,6 +128,7 @@ public class ShortestPath implements Tool {
 
             public JPanel getPropertiesBar(Tool tool) {
                 shortestPathPanel = new ShortestPathPanel();
+                shortestPathPanel.setColor(color);
                 shortestPathPanel.setStatus(NbBundle.getMessage(ShortestPath.class, "ShortestPath.status1"));
                 return shortestPathPanel;
             }

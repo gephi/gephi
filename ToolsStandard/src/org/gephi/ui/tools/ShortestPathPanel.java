@@ -18,8 +18,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.ui.tools;
+
+import java.awt.Color;
+import org.gephi.ui.components.JColorButton;
 
 /**
  *
@@ -40,6 +42,14 @@ public class ShortestPathPanel extends javax.swing.JPanel {
         resultLabel.setText(result);
     }
 
+    public void setColor(Color color) {
+        ((JColorButton) colorButton).setColor(color);
+    }
+
+    public Color getColor() {
+        return ((JColorButton) colorButton).getColor();
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -51,14 +61,22 @@ public class ShortestPathPanel extends javax.swing.JPanel {
 
         statusLabel = new javax.swing.JLabel();
         resultLabel = new javax.swing.JLabel();
+        labelColor = new javax.swing.JLabel();
+        colorButton = new JColorButton(Color.BLACK);
 
         setPreferredSize(new java.awt.Dimension(400, 28));
 
-        statusLabel.setFont(new java.awt.Font("Tahoma", 0, 10));
+        statusLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         statusLabel.setText(org.openide.util.NbBundle.getMessage(ShortestPathPanel.class, "ShortestPathPanel.statusLabel.text")); // NOI18N
 
         resultLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         resultLabel.setText(org.openide.util.NbBundle.getMessage(ShortestPathPanel.class, "ShortestPathPanel.resultLabel.text")); // NOI18N
+
+        labelColor.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelColor.setText(org.openide.util.NbBundle.getMessage(ShortestPathPanel.class, "ShortestPathPanel.labelColor.text")); // NOI18N
+
+        colorButton.setText(org.openide.util.NbBundle.getMessage(ShortestPathPanel.class, "ShortestPathPanel.colorButton.text")); // NOI18N
+        colorButton.setContentAreaFilled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -68,20 +86,25 @@ public class ShortestPathPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(statusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(resultLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))
+                .addComponent(resultLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(labelColor)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(statusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(resultLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(labelColor, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton colorButton;
+    private javax.swing.JLabel labelColor;
     private javax.swing.JLabel resultLabel;
     private javax.swing.JLabel statusLabel;
     // End of variables declaration//GEN-END:variables
-
 }
