@@ -20,11 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.tools;
 
-import org.gephi.ui.tools.EdgePencilPanel;
 import java.awt.Color;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import org.gephi.algorithms.shortestpath.BellmanFordShortestPathAlgorithm;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
@@ -34,6 +34,7 @@ import org.gephi.tools.api.NodeClickEventListener;
 import org.gephi.tools.api.Tool;
 import org.gephi.tools.api.ToolEventListener;
 import org.gephi.tools.api.ToolSelectionType;
+import org.gephi.ui.tools.ShortestPathPanel;
 import org.gephi.ui.tools.ToolUI;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -42,21 +43,21 @@ import org.openide.util.NbBundle;
  *
  * @author Mathieu Bastian
  */
-public class EdgePencil implements Tool {
+public class ShortestPath implements Tool {
 
     //Architecture
     private ToolEventListener[] listeners;
-    private EdgePencilPanel edgePencilPanel;
+    private ShortestPathPanel shortestPathPanel;
+
     //Settings
     private Color color;
-    private float weight;
+
     //State
     private Node sourceNode;
 
-    public EdgePencil() {
+    public ShortestPath() {
         //Default settings
-        color = Color.BLACK;
-        weight = 1f;
+        color = Color.RED;
     }
 
     public void select() {
@@ -65,7 +66,7 @@ public class EdgePencil implements Tool {
     public void unselect() {
         listeners = null;
         sourceNode = null;
-        edgePencilPanel = null;
+        shortestPathPanel = null;
     }
 
     public ToolEventListener[] getListeners() {
@@ -76,19 +77,37 @@ public class EdgePencil implements Tool {
                 Node n = nodes[0];
                 if (sourceNode == null) {
                     sourceNode = n;
-                    edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status2"));
+                    shortestPathPanel.setResult("");
+                    shortestPathPanel.setStatus(NbBundle.getMessage(ShortestPath.class, "ShortestPath.status2"));
                 } else {
-                    color = edgePencilPanel.getColor();
-                    weight = edgePencilPanel.getWeight();
+                    float[] colorArray = new float[]{color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f};
+                    Node targetNode = n;
                     GraphController gc = Lookup.getDefault().lookup(GraphController.class);
                     DirectedGraph graph = gc.getVisibleDirectedGraph();
-                    Edge edge = gc.factory().newEdge(sourceNode, n, weight, true);
-                    edge.getEdgeData().setR(color.getRed() / 255f);
-                    edge.getEdgeData().setG(color.getGreen() / 255f);
-                    edge.getEdgeData().setB(color.getBlue() / 255f);
-                    graph.addEdge(edge);
+
+                    BellmanFordShortestPathAlgorithm algorithm = new BellmanFordShortestPathAlgorithm(graph, sourceNode);
+                    algorithm.compute();
+                    double distance;
+                    if ((distance = algorithm.getDistances().get(targetNode)) != Double.POSITIVE_INFINITY) {
+                        targetNode.getNodeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
+                        Edge predecessorEdge = algorithm.getPredecessorIncoming(targetNode);
+                        while (predecessorEdge != null && predecessorEdge.getSource() != sourceNode) {
+                            predecessorEdge.getEdgeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
+                            predecessorEdge.getSource().getNodeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
+                            predecessorEdge = algorithm.getPredecessorIncoming(predecessorEdge.getSource());
+                        }
+                        sourceNode.getNodeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
+                        shortestPathPanel.setResult("A " + distance + " distance path has been found.");
+                    } else {
+                        //No path
+                        shortestPathPanel.setResult("No path exist between these two nodes");
+                    }
+                    /*for (Entry<Node, Double> entry : algorithm.getDistances().entrySet()) {
+                    System.out.println(entry.getKey().getNodeData().getLabel() + " - " + entry.getValue());
+                    }*/
+
                     sourceNode = null;
-                    edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));
+                    shortestPathPanel.setStatus(NbBundle.getMessage(ShortestPath.class, "ShortestPath.status1"));
                 }
             }
         };
@@ -97,7 +116,7 @@ public class EdgePencil implements Tool {
             public void mouseClick(int[] positionViewport, float[] position3d) {
                 if (sourceNode != null) {
                     //Cancel
-                    edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));
+                    shortestPathPanel.setStatus(NbBundle.getMessage(ShortestPath.class, "ShortestPath.status1"));
                     sourceNode = null;
                 }
             }
@@ -109,27 +128,25 @@ public class EdgePencil implements Tool {
         return new ToolUI() {
 
             public JPanel getPropertiesBar(Tool tool) {
-                edgePencilPanel = new EdgePencilPanel();
-                edgePencilPanel.setColor(color);
-                edgePencilPanel.setWeight(weight);
-                edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));
-                return edgePencilPanel;
+                shortestPathPanel = new ShortestPathPanel();
+                shortestPathPanel.setStatus(NbBundle.getMessage(ShortestPath.class, "ShortestPath.status1"));
+                return shortestPathPanel;
             }
 
             public String getName() {
-                return NbBundle.getMessage(EdgePencil.class, "EdgePencil.name");
+                return NbBundle.getMessage(ShortestPath.class, "ShortestPath.name");
             }
 
             public Icon getIcon() {
-                return new ImageIcon(getClass().getResource("/org/gephi/tools/resources/edgepencil.png"));
+                return new ImageIcon(getClass().getResource("/org/gephi/tools/resources/shortestpath.png"));
             }
 
             public String getDescription() {
-                return NbBundle.getMessage(EdgePencil.class, "EdgePencil.description");
+                return NbBundle.getMessage(ShortestPath.class, "ShortestPath.description");
             }
 
             public int getPosition() {
-                return 130;
+                return 140;
             }
         };
     }

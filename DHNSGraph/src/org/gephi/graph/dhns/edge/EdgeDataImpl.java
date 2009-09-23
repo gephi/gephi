@@ -147,6 +147,12 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
         this.b = b;
     }
 
+    public void setColor(float r, float g, float b) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+    }
+
     public float alpha() {
         return alpha;
     }

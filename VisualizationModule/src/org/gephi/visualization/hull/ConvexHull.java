@@ -143,6 +143,10 @@ public class ConvexHull implements Renderable {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public void setColor(float r, float g, float b) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     public float alpha() {
         return alpha;
     }

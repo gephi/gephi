@@ -51,6 +51,8 @@ public interface Renderable extends Spatial {
 
     public void setB(float b);
 
+    public void setColor(float r, float g, float b);
+
     public float alpha();
 
     public void setAlpha(float alpha);

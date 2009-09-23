@@ -32,15 +32,15 @@ import org.gephi.graph.api.Node;
 public class BellmanFordShortestPathAlgorithm extends AbstractShortestPathAlgorithm {
 
     protected DirectedGraph graph;
-    protected HashMap<Node, Node> predecessors;
+    protected HashMap<Node, Edge> predecessors;
 
     public BellmanFordShortestPathAlgorithm(DirectedGraph graph, Node sourceNode) {
         super(sourceNode);
         this.graph = graph;
-        predecessors = new HashMap<Node, Node>();
+        predecessors = new HashMap<Node, Edge>();
     }
 
-    protected void compute() {
+    public void compute() {
 
         graph.readLock();
 
@@ -58,11 +58,10 @@ public class BellmanFordShortestPathAlgorithm extends AbstractShortestPathAlgori
 
             boolean relaxed = false;
             for (Edge edge : graph.getEdges()) {
-                Node source = edge.getSource();
                 Node target = edge.getTarget();
                 if (relax(edge)) {
                     relaxed = true;
-                    predecessors.put(target, source);
+                    predecessors.put(target, edge);
                 }
             }
             if (!relaxed) {
@@ -80,5 +79,13 @@ public class BellmanFordShortestPathAlgorithm extends AbstractShortestPathAlgori
         }
 
         graph.readUnlock();
+    }
+
+    public Node getPredecessor(Node node) {
+        return predecessors.get(node).getSource();
+    }
+
+    public Edge getPredecessorIncoming(Node node) {
+        return predecessors.get(node);
     }
 }

@@ -150,6 +150,12 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
         this.b = b;
     }
 
+    public void setColor(float r, float g, float b) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+    }
+
     public void setLabel(String label) {
         this.label = label;
     }
