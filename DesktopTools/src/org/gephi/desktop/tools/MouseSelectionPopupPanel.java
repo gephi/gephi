@@ -20,15 +20,40 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.tools;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 /**
  *
  * @author Mathieu Bastian
  */
 public class MouseSelectionPopupPanel extends javax.swing.JPanel {
 
+    private ChangeListener changeListener;
+
     /** Creates new form MouseSelectionPopupPanel */
     public MouseSelectionPopupPanel() {
         initComponents();
+
+        diameterSlider.addChangeListener(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                JSlider source = (JSlider) e.getSource();
+                if (!source.getValueIsAdjusting()) {
+                    fireChangeEvent(source);
+                }
+            }
+        });
+
+        proportionnalZoomCheckbox.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                fireChangeEvent(proportionnalZoomCheckbox);
+            }
+        });
     }
 
     public boolean isProportionnalToZoom() {
@@ -45,6 +70,17 @@ public class MouseSelectionPopupPanel extends javax.swing.JPanel {
 
     public void setDiameter(int diameter) {
         diameterSlider.setValue(diameter);
+    }
+
+    public void setChangeListener(ChangeListener changeListener) {
+        this.changeListener = changeListener;
+    }
+
+    private void fireChangeEvent(Object source) {
+        if (changeListener != null) {
+            ChangeEvent changeEvent = new ChangeEvent(source);
+            changeListener.stateChanged(changeEvent);
+        }
     }
 
     /** This method is called from within the constructor to

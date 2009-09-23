@@ -68,23 +68,17 @@ public class SelectionBar extends javax.swing.JPanel {
         final MouseSelectionPopupPanel popupPanel = new MouseSelectionPopupPanel();
         popupPanel.setDiameter(manager.getMouseSelectionDiameter());
         popupPanel.setProportionnalToZoom(manager.isMouseSelectionZoomProportionnal());
+        popupPanel.setChangeListener(new ChangeListener() {
 
-        JPopupMenu menu = new JPopupMenu();
-        menu.add(popupPanel);
-        menu.addPopupMenuListener(new PopupMenuListener() {
-
-            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-            }
-
-            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+            public void stateChanged(ChangeEvent e) {
                 SelectionManager manager = VizController.getInstance().getSelectionManager();
                 manager.setMouseSelectionDiameter(popupPanel.getDiameter());
                 manager.setMouseSelectionZoomProportionnal(popupPanel.isProportionnalToZoom());
             }
-
-            public void popupMenuCanceled(PopupMenuEvent e) {
-            }
         });
+
+        JPopupMenu menu = new JPopupMenu();
+        menu.add(popupPanel);
         return menu;
     }
 
