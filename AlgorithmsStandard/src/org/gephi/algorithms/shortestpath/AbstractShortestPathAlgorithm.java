@@ -34,6 +34,7 @@ public abstract class AbstractShortestPathAlgorithm {
     protected HashMap<Node, Color> colors;
     protected HashMap<Node, Double> distances;
     protected Node sourceNode;
+    protected double maxDistance = 0;
 
     public AbstractShortestPathAlgorithm(Node sourceNode) {
         this.sourceNode = sourceNode;
@@ -51,6 +52,7 @@ public abstract class AbstractShortestPathAlgorithm {
         double sourceWeight = distSource + weight;
         if (sourceWeight < distTarget) {
             distances.put(target, sourceWeight);
+            maxDistance = Math.max(maxDistance, sourceWeight);
             return true;
         } else {
             return false;
@@ -59,5 +61,9 @@ public abstract class AbstractShortestPathAlgorithm {
 
     public HashMap<Node, Double> getDistances() {
         return distances;
+    }
+
+    public double getMaxDistance() {
+        return maxDistance;
     }
 }
