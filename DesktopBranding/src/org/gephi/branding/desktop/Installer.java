@@ -42,6 +42,7 @@ public class Installer extends ModuleInstall {
 
             public void run() {
                 pc.startup();
+                DragNDropFrameAdapter.register();
             }
         });
     }

@@ -39,4 +39,6 @@ public interface ImportController {
     public DatabaseType[] getDatabaseTypes();
 
     public Database[] getDatabases(DatabaseType type);
+
+    public boolean isFileSupported(FileObject fileObject);
 }

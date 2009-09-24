@@ -22,10 +22,7 @@ package org.gephi.io.desktop;
 
 import org.gephi.io.database.DatabaseType;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -395,5 +392,17 @@ public class DesktopImportController implements ImportController {
     public Database[] getDatabases(DatabaseType type) {
         Database[] dbs = new Database[0];
         return Lookup.getDefault().lookupAll(type.getDatabaseClass()).toArray(dbs);
+    }
+
+    public boolean isFileSupported(FileObject fileObject) {
+        for (FileFormatImporter im : fileFormatImporters) {
+            if (im.isMatchingImporter(fileObject)) {
+                return true;
+            }
+        }
+        if (fileObject.hasExt("zip")) {
+            return true;
+        }
+        return false;
     }
 }
