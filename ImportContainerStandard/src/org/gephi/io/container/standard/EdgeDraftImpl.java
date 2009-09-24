@@ -48,7 +48,7 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
     //Topology
     private NodeDraftImpl source;
     private NodeDraftImpl target;
-    private float weight;
+    private float weight = 1f;
     private EdgeType edgeType;
 
     //Viz
@@ -130,6 +130,10 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
     public void addAttributeValue(AttributeColumn column, Object value) {
         AttributeValue attValue = container.getFactory().newValue(column, value);
         attributeValues.add(attValue);
+    }
+
+    public List<AttributeValue> getAttributeValues() {
+        return attributeValues;
     }
 
     //GETTERS

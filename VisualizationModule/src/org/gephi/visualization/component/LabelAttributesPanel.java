@@ -95,8 +95,8 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
         List<AttributeColumn> selectedColumns = new ArrayList<AttributeColumn>();
         AttributesCheckBox[] target;
         if (elementButtonGroup.getSelection() == nodesToggleButton.getModel()) {
-            for(AttributeColumn c : attributeController.getTemporaryAttributeManager().getNodeClass().getAttributeColumns()) {
-                if(showProperties || c.getAttributeOrigin().equals(AttributeOrigin.DATA)) {
+            for (AttributeColumn c : attributeController.getTemporaryAttributeManager().getNodeClass().getAttributeColumns()) {
+                if (showProperties || c.getAttributeOrigin().equals(AttributeOrigin.DATA)) {
                     availableColumns.add(c);
                 }
             }
@@ -107,8 +107,8 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
             nodeCheckBoxs = new AttributesCheckBox[availableColumns.size()];
             target = nodeCheckBoxs;
         } else {
-            for(AttributeColumn c : attributeController.getTemporaryAttributeManager().getEdgeClass().getAttributeColumns()) {
-                if(showProperties || c.getAttributeOrigin().equals(AttributeOrigin.DATA)) {
+            for (AttributeColumn c : attributeController.getTemporaryAttributeManager().getEdgeClass().getAttributeColumns()) {
+                if (showProperties || c.getAttributeOrigin().equals(AttributeOrigin.DATA)) {
                     availableColumns.add(c);
                 }
             }
@@ -133,23 +133,27 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
 
     public void unsetup() {
         List<AttributeColumn> columnsList = new ArrayList<AttributeColumn>();
-        if(nodeCheckBoxs!=null) {
-            for(AttributesCheckBox c : nodeCheckBoxs) {
-                if(c.isSelected()) {
+        if (nodeCheckBoxs != null) {
+            for (AttributesCheckBox c : nodeCheckBoxs) {
+                if (c.isSelected()) {
                     columnsList.add(c.getColumn());
                 }
             }
         }
-        textModel.setNodeTextColumns(columnsList.toArray(new AttributeColumn[0]));
+        if (columnsList.size() > 0) {
+            textModel.setNodeTextColumns(columnsList.toArray(new AttributeColumn[0]));
+        }
         columnsList.clear();
-         if(edgeCheckBoxs!=null) {
-            for(AttributesCheckBox c : edgeCheckBoxs) {
-                if(c.isSelected()) {
+        if (edgeCheckBoxs != null) {
+            for (AttributesCheckBox c : edgeCheckBoxs) {
+                if (c.isSelected()) {
                     columnsList.add(c.getColumn());
                 }
             }
         }
-        textModel.setEdgeTextColumns(columnsList.toArray(new AttributeColumn[0]));
+        if (columnsList.size() > 0) {
+            textModel.setEdgeTextColumns(columnsList.toArray(new AttributeColumn[0]));
+        }
     }
 
     /** This method is called from within the constructor to
