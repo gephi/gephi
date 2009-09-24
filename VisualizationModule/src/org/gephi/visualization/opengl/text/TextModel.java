@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VizConfig;
 import org.w3c.dom.Document;
@@ -49,6 +50,8 @@ public class TextModel {
     protected float nodeSizeFactor = 0.5f;//Between 0 and 1
     protected float edgeSizeFactor = 0.5f;
     protected List<ChangeListener> listeners = new ArrayList<ChangeListener>();
+    protected AttributeColumn[] nodeTextColumns;
+    protected AttributeColumn[] edgeTextColumns;
 
     public TextModel() {
         defaultValues();
@@ -189,6 +192,22 @@ public class TextModel {
     public void setEdgeColor(Color color) {
         this.edgeColor = color.getRGBComponents(null);
         fireChangeEvent();
+    }
+
+    public AttributeColumn[] getEdgeTextColumns() {
+        return edgeTextColumns;
+    }
+
+    public void setEdgeTextColumns(AttributeColumn[] edgeTextColumns) {
+        this.edgeTextColumns = edgeTextColumns;
+    }
+
+    public AttributeColumn[] getNodeTextColumns() {
+        return nodeTextColumns;
+    }
+
+    public void setNodeTextColumns(AttributeColumn[] nodeTextColumns) {
+        this.nodeTextColumns = nodeTextColumns;
     }
 
     public void readXML(Element textModelElement) {

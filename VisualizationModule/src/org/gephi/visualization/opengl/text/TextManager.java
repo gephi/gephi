@@ -90,6 +90,7 @@ public class TextManager implements VizArchitecture {
         nodeRenderer.initRenderer(model.getNodeFont());
         edgeRenderer = new Renderer2D();
         edgeRenderer.initRenderer(model.getEdgeFont());
+        builder.initBuilder(this);
 
         //Model listening
         model.addChangeListener(new ChangeListener() {

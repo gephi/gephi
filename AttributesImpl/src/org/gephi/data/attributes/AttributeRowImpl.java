@@ -97,6 +97,15 @@ public class AttributeRowImpl implements AttributeRow {
         return null;
     }
 
+    public Object getValue(int index) {
+        updateColumns();
+        if (checkIndexRange(index)) {
+            AttributeColumn attributeColumn = attributeClass.getAttributeColumn(index);
+            return getValue(attributeColumn);
+        }
+        return null;
+    }
+
     public Object getValue(String column) {
         AttributeColumn attributeColumn = attributeClass.getAttributeColumn(column);
         if (attributeColumn != null) {
