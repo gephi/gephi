@@ -42,7 +42,7 @@ public class HeatMapPanel extends javax.swing.JPanel {
         Color[] colors = new Color[]{color1, color2};
         float[] positions = new float[]{0f, 1f};
         slider = new GradientSlider(GradientSlider.HORIZONTAL, positions, colors);
-        slider.putClientProperty("GradientSlider.colorPickerIncludesOpacity", "false");
+        slider.putClientProperty("GradientSlider.includeOpacity", "false");
         slider.setBlocked(true);
         gradientPanel.add(slider);
         initEvents();

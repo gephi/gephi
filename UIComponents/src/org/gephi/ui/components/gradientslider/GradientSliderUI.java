@@ -58,7 +58,7 @@ import javax.swing.JComponent;
  * <TD>GradientSlider.showTranslucency</TD><TD>"true"</TD><TD>If this is <code>true</code>, then the slider will reflect the opacity of the colors in the gradient, and paint a checkered background underneath the colors to indicate opacity.  If this is <code>false</code>, then this slider will always paint with completely opaque colors, although the actual colors may be translucent.</DT>
  * </TR>
  * <TR>
- * <TD>GradientSlider.colorPickerIncludesOpacity</TD><TD>"true"</TD><TD>This is used when the user double-clicks a color and a ColorPicker dialog is invoked.  (So this value may not have any meaning if you override <code>GradientSlider.doDoubleClick()</code>.)  This controls whether the opacity/alpha controls are available in that dialog.  This does <i>not</i> control whether translucent colors can be used in this slider: translucent colors are always allowed, if the user can enter them.</TD>
+ * <TD>GradientSlider.includeOpacity</TD><TD>"true"</TD><TD>This is used when the user double-clicks a color and a ColorPicker dialog is invoked.  (So this value may not have any meaning if you override <code>GradientSlider.doDoubleClick()</code>.)  This controls whether the opacity/alpha controls are available in that dialog.  This does <i>not</i> control whether translucent colors can be used in this slider: translucent colors are always allowed, if the user can enter them.</TD>
  * </TR>
  * <TR>
  * <TD>MultiThumbSlider.indicateComponent</TD><TD>"true"</TD><TD>If this is <code>true</code>, then the thumbs will only paint on this component when the mouse is inside this slider <i>or</i> when this slider as the keyboard focus.</DT>
