@@ -69,9 +69,7 @@ public class CompatibilityEdgeModeler implements CompatibilityModeler<EdgeData> 
         edge.setObj(e);
         e.setModel(edge);
 
-        if (n.getTextData() == null) {
-            n.setTextData(controller.getTextManager().newTextData(e));
-        }
+        controller.getTextManager().initTextData(e);
 
         return edge;
     }

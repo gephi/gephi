@@ -60,9 +60,7 @@ public class CompatibilityNodeRectangleModeler implements CompatibilityNodeModel
         obj.setDragDistanceFromMouse(new float[2]);
         n.setModel(obj);
 
-        if (n.getTextData() == null) {
-            n.setTextData(textManager.newTextData(nd));
-        }
+        textManager.initTextData(nd);
 
         chooseModel(obj);
         return obj;

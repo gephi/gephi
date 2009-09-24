@@ -132,27 +132,24 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
     }
 
     public void unsetup() {
-        List<AttributeColumn> columnsList = new ArrayList<AttributeColumn>();
+        List<AttributeColumn> nodeColumnsList = new ArrayList<AttributeColumn>();
+        List<AttributeColumn> edgeColumnsList = new ArrayList<AttributeColumn>();
         if (nodeCheckBoxs != null) {
             for (AttributesCheckBox c : nodeCheckBoxs) {
                 if (c.isSelected()) {
-                    columnsList.add(c.getColumn());
+                    nodeColumnsList.add(c.getColumn());
                 }
             }
         }
-        if (columnsList.size() > 0) {
-            textModel.setNodeTextColumns(columnsList.toArray(new AttributeColumn[0]));
-        }
-        columnsList.clear();
         if (edgeCheckBoxs != null) {
             for (AttributesCheckBox c : edgeCheckBoxs) {
                 if (c.isSelected()) {
-                    columnsList.add(c.getColumn());
+                    edgeColumnsList.add(c.getColumn());
                 }
             }
         }
-        if (columnsList.size() > 0) {
-            textModel.setEdgeTextColumns(columnsList.toArray(new AttributeColumn[0]));
+        if (edgeColumnsList.size() > 0 || nodeColumnsList.size() > 0) {
+            textModel.setTextColumns(nodeColumnsList.toArray(new AttributeColumn[0]), edgeColumnsList.toArray(new AttributeColumn[0]));
         }
     }
 

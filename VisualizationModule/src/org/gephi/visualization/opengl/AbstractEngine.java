@@ -232,6 +232,10 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         vizConfig.setLightenNonSelected(false);
     }
 
+    public void setConfigChanged(boolean configChanged) {
+        this.configChanged = configChanged;
+    }
+
     public void startDisplay() {
         lifeCycle.requestStartAnimating();
     }

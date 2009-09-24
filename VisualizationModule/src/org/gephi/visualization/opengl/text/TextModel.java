@@ -198,16 +198,14 @@ public class TextModel {
         return edgeTextColumns;
     }
 
-    public void setEdgeTextColumns(AttributeColumn[] edgeTextColumns) {
+    public void setTextColumns(AttributeColumn[] nodeTextColumns, AttributeColumn[] edgeTextColumns) {
+        this.nodeTextColumns = nodeTextColumns;
         this.edgeTextColumns = edgeTextColumns;
+        fireChangeEvent();
     }
 
     public AttributeColumn[] getNodeTextColumns() {
         return nodeTextColumns;
-    }
-
-    public void setNodeTextColumns(AttributeColumn[] nodeTextColumns) {
-        this.nodeTextColumns = nodeTextColumns;
     }
 
     public void readXML(Element textModelElement) {

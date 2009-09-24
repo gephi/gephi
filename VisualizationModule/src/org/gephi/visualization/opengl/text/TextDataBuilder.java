@@ -39,13 +39,8 @@ public class TextDataBuilder {
 
     public void initBuilder(TextManager manager) {
         this.textManager = manager;
-        textManager.getModel().addChangeListener(new ChangeListener() {
-
-            public void stateChanged(ChangeEvent e) {
-                nodeColumns = textManager.getModel().getNodeTextColumns();
-                edgeColumns = textManager.getModel().getEdgeTextColumns();
-            }
-        });
+        nodeColumns = textManager.getModel().getNodeTextColumns();
+        edgeColumns = textManager.getModel().getEdgeTextColumns();
     }
 
     public TextData buildTextNode(NodeData n) {
@@ -62,9 +57,25 @@ public class TextDataBuilder {
         return t;
     }
 
-    public TextData buildTextEdge(EdgeData n) {
+    public TextData buildTextEdge(EdgeData e) {
         TextDataImpl t = new TextDataImpl();
-        t.setLine(n.getLabel());
+        if (edgeColumns != null) {
+            String str = "";
+            for (AttributeColumn c : edgeColumns) {
+                str += e.getAttributes().getValue(c.getIndex());
+            }
+            t.setLine(str);
+        } else {
+            t.setLine(e.getLabel());
+        }
         return t;
+    }
+
+    public AttributeColumn[] getNodeColumns() {
+        return nodeColumns;
+    }
+
+    public AttributeColumn[] getEdgeColumns() {
+        return edgeColumns;
     }
 }

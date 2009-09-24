@@ -50,8 +50,6 @@ public class TextManager implements VizArchitecture {
     //Configuration
     private SizeMode[] sizeModes;
     private ColorMode[] colorModes;
-    
-
     //Processing
     private TextUtils textUtils;
     private Renderer nodeRenderer;
@@ -69,7 +67,7 @@ public class TextManager implements VizArchitecture {
     public TextManager() {
         textUtils = new TextUtils(this);
         builder = new TextDataBuilder();
-        
+
         //SizeMode init
         sizeModes = new SizeMode[3];
         sizeModes[0] = new FixedSizeMode();
@@ -102,13 +100,17 @@ public class TextManager implements VizArchitecture {
                 if (!edgeRenderer.getFont().equals(model.getEdgeFont())) {
                     edgeRenderer.setFont(model.getEdgeFont());
                 }
+                if (builder.getNodeColumns() != model.getNodeTextColumns() || builder.getEdgeColumns() != model.getEdgeTextColumns()) {
+                    builder.initBuilder(TextManager.this);
+                    VizController.getInstance().getEngine().setConfigChanged(true);
+                }
             }
         });
 
         VizController.getInstance().getVizModel().addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
-                if(evt.getPropertyName().equals("init")) {
+                if (evt.getPropertyName().equals("init")) {
                     TextManager.this.model = VizController.getInstance().getVizModel().getTextModel();
                 }
             }
@@ -123,12 +125,12 @@ public class TextManager implements VizArchitecture {
         model.colorMode.defaultEdgeColor(edgeRenderer);
     }
 
-    public TextData newTextData(NodeData node) {
-        return builder.buildTextNode(node);
+    public void initTextData(NodeData node) {
+        node.setTextData(builder.buildTextNode(node));
     }
 
-    public TextData newTextData(EdgeData edge) {
-        return builder.buildTextEdge(edge);
+    public void initTextData(EdgeData edge) {
+        edge.setTextData(builder.buildTextEdge(edge));
     }
 
     public boolean isSelectedOnly() {
