@@ -446,7 +446,7 @@ public class VizBarController {
 
             //Attributes
             final JButton attributesButton = new JButton();
-            attributesButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/labelAttributes.png")));
+            attributesButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/configureLabels.png")));
             attributesButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.attributes"));
             attributesButton.addActionListener(new ActionListener() {
 

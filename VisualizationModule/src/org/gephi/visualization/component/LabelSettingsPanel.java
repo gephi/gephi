@@ -39,6 +39,10 @@ import org.gephi.visualization.opengl.text.ColorMode;
 import org.gephi.visualization.opengl.text.SizeMode;
 import org.gephi.visualization.opengl.text.TextManager;
 import org.gephi.visualization.opengl.text.TextModel;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
 
 /**
@@ -172,6 +176,21 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
             }
         });
 
+        //Attributes
+        configureLabelsButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                TextModel model = VizController.getInstance().getVizModel().getTextModel();
+                LabelAttributesPanel panel = new LabelAttributesPanel();
+                panel.setup(model);
+                DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(VizBarController.class, "LabelAttributesPanel.title"), true, NotifyDescriptor.OK_CANCEL_OPTION, null, null);
+                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                    panel.unsetup();
+                    return;
+                }
+            }
+        });
+
         //Evt
         model.addChangeListener(new ChangeListener() {
 
@@ -230,6 +249,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         hideNonSelectedCheckbox.setEnabled(enable);
         labelColorMode.setEnabled(enable);
         labelSizeMode.setEnabled(enable);
+        configureLabelsButton.setEnabled(enable);
 
         TextModel model = VizController.getInstance().getVizModel().getTextModel();
         boolean edgeValue = model.isShowEdgeLabels();
@@ -280,6 +300,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         labelColorMode = new javax.swing.JLabel();
         colorModeCombo = new javax.swing.JComboBox();
         hideNonSelectedCheckbox = new javax.swing.JCheckBox();
+        configureLabelsButton = new javax.swing.JButton();
 
         showNodeLabelsCheckbox.setText(org.openide.util.NbBundle.getMessage(LabelSettingsPanel.class, "LabelSettingsPanel.showNodeLabelsCheckbox.text")); // NOI18N
         showNodeLabelsCheckbox.setBorder(null);
@@ -429,6 +450,12 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         hideNonSelectedCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         hideNonSelectedCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
 
+        configureLabelsButton.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        configureLabelsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/configureLabels.png"))); // NOI18N
+        configureLabelsButton.setText(org.openide.util.NbBundle.getMessage(LabelSettingsPanel.class, "LabelSettingsPanel.configureLabelsButton.text")); // NOI18N
+        configureLabelsButton.setBorder(null);
+        configureLabelsButton.setMargin(new java.awt.Insets(2, 7, 2, 7));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -443,6 +470,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(hideNonSelectedCheckbox)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(labelColorMode)
@@ -450,9 +478,10 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
                         .addGap(10, 10, 10)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(colorModeCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(sizeModeCombo, 0, 91, Short.MAX_VALUE)))
-                    .addComponent(hideNonSelectedCheckbox))
-                .addGap(77, 77, 77))
+                            .addComponent(sizeModeCombo, 0, 91, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                        .addComponent(configureLabelsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -472,10 +501,15 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(hideNonSelectedCheckbox)
                 .addContainerGap(23, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(configureLabelsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(49, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox colorModeCombo;
+    private javax.swing.JButton configureLabelsButton;
     private javax.swing.JButton edgeColorButton;
     private javax.swing.JButton edgeFontButton;
     private javax.swing.JPanel edgePanel;
