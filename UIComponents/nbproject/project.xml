@@ -37,6 +37,7 @@
                 <package>com.connectina.swing.fontchooser</package>
                 <package>net.java.dev.colorchooser</package>
                 <package>org.gephi.ui.components</package>
+                <package>org.gephi.ui.components.gradientslider</package>
                 <package>org.jvnet.flamingo.bcb</package>
                 <package>org.jvnet.flamingo.bcb.core</package>
                 <package>org.jvnet.flamingo.bcb.ui</package>
