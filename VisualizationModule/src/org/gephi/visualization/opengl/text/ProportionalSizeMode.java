@@ -31,10 +31,16 @@ public class ProportionalSizeMode implements SizeMode {
 
     private static float FACTOR = 5f;
 
-    public void setSizeFactor(float sizeFactor, TextDataImpl text, ModelImpl model) {
+    public void setSizeFactor2d(float sizeFactor, TextDataImpl text, ModelImpl model) {
         float factor = sizeFactor*model.getObj().getSize()/FACTOR +0.1f;
         text.setSizeFactor(factor);
     }
+
+    public void setSizeFactor3d(float sizeFactor, TextDataImpl text, ModelImpl model) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    
 
     public String getName() {
         return "Node size";

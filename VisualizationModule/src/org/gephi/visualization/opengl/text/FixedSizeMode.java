@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.opengl.text;
 
 import javax.swing.ImageIcon;
+import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.GraphDrawable;
 import org.gephi.visualization.api.ModelImpl;
 
 /**
@@ -29,10 +31,24 @@ import org.gephi.visualization.api.ModelImpl;
  */
 public class FixedSizeMode implements SizeMode {
 
-    public void setSizeFactor(float sizeFactor, TextDataImpl text, ModelImpl model) {
+    private static float FACTOR_3D = 800f;
+
+    private GraphDrawable drawable;
+    
+    public FixedSizeMode() {
+        drawable = VizController.getInstance().getDrawable();
+    }
+
+    public void setSizeFactor2d(float sizeFactor, TextDataImpl text, ModelImpl model) {
         float factor = sizeFactor*1.9f +0.1f;        //Between 0.1 and 2
         text.setSizeFactor(factor);
     }
+
+    public void setSizeFactor3d(float sizeFactor, TextDataImpl text, ModelImpl model) {
+        float factor = sizeFactor / FACTOR_3D * model.getCameraDistance();
+        text.setSizeFactor(factor);
+    }
+
 
     public String getName() {
         return "Fixed";
