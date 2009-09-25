@@ -54,6 +54,7 @@ public class HeatMap implements Tool {
     //Settings
     private Color[] gradientColors;
     private float[] gradientPositions;  //All between 0 and 1
+    private boolean dontPaintUnreachable = true;
 
     public HeatMap() {
         //Default settings
@@ -78,6 +79,7 @@ public class HeatMap implements Tool {
                     Node n = nodes[0];
                     gradientColors = heatMapPanel.getGradientColors();
                     gradientPositions = heatMapPanel.getGradientPositions();
+                    dontPaintUnreachable = heatMapPanel.isDontPaintUnreachable();
                     GraphController gc = Lookup.getDefault().lookup(GraphController.class);
                     DirectedGraph graph = gc.getVisibleDirectedGraph();
 
@@ -88,7 +90,10 @@ public class HeatMap implements Tool {
                     BellmanFordShortestPathAlgorithm algorithm = new BellmanFordShortestPathAlgorithm(graph, n);
                     algorithm.compute();
 
-                    double maxDistance = algorithm.getMaxDistance() + 1;  //+1 to have the maxdistance nodes a ratio<1
+                    double maxDistance = algorithm.getMaxDistance();
+                    if (!dontPaintUnreachable) {
+                        maxDistance++;   //+1 to have the maxdistance nodes a ratio<1
+                    }
                     if (maxDistance > 0) {
                         for (Entry<Node, Double> entry : algorithm.getDistances().entrySet()) {
                             NodeData node = entry.getKey().getNodeData();
@@ -96,7 +101,7 @@ public class HeatMap implements Tool {
                                 float ratio = (float) (entry.getValue() / maxDistance);
                                 Color c = linearGradient.getValue(ratio);
                                 node.setColor(c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f);
-                            } else {
+                            } else if (!dontPaintUnreachable) {
                                 Color c = gradientColors[gradientColors.length - 1];
                                 node.setColor(c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f);
                             }
@@ -117,7 +122,7 @@ public class HeatMap implements Tool {
         return new ToolUI() {
 
             public JPanel getPropertiesBar(Tool tool) {
-                heatMapPanel = new HeatMapPanel(gradientColors, gradientPositions);
+                heatMapPanel = new HeatMapPanel(gradientColors, gradientPositions, dontPaintUnreachable);
                 return heatMapPanel;
             }
 

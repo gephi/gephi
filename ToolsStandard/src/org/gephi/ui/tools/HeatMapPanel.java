@@ -21,10 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ui.tools;
 
 import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JCheckBox;
 import org.gephi.ui.components.gradientslider.GradientSlider;
 
 /**
@@ -34,15 +33,24 @@ import org.gephi.ui.components.gradientslider.GradientSlider;
 public class HeatMapPanel extends javax.swing.JPanel {
 
     private GradientSlider slider;
+    private JCheckBox dontPaintUnreachableCheckbox;
 
     /** Creates new form HeatMapPanel */
-    public HeatMapPanel(Color[] gradientColors, float[] gradientPositions) {
+    public HeatMapPanel(Color[] gradientColors, float[] gradientPositions, boolean dontPaintUnreachable) {
         initComponents();
 
+        //Slider
         slider = new GradientSlider(GradientSlider.HORIZONTAL, gradientPositions, gradientColors);
         slider.putClientProperty("GradientSlider.includeOpacity", "false");
-        //slider.setBlocked(true);
         gradientPanel.add(slider);
+
+        //Checkbox
+        dontPaintUnreachableCheckbox = new JCheckBox();
+        dontPaintUnreachableCheckbox.setSelected(dontPaintUnreachable);
+        dontPaintUnreachableCheckbox.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        dontPaintUnreachableCheckbox.setText(org.openide.util.NbBundle.getMessage(HeatMapPanel.class, "HeatMapPanel.dontPaintUnreachableCheckbox.text")); // NOI18N
+        dontPaintUnreachableCheckbox.setPreferredSize(new java.awt.Dimension(139, 28));
+        gradientPanel.add(dontPaintUnreachableCheckbox);
         initEvents();
     }
 
@@ -56,6 +64,10 @@ public class HeatMapPanel extends javax.swing.JPanel {
 
     public float[] getGradientPositions() {
         return slider.getThumbPositions();
+    }
+
+    public boolean isDontPaintUnreachable() {
+        return dontPaintUnreachableCheckbox.isSelected();
     }
 
     private void initEvents() {
@@ -84,7 +96,6 @@ public class HeatMapPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         statusLabel = new javax.swing.JLabel();
         labelMode = new javax.swing.JLabel();
@@ -96,13 +107,13 @@ public class HeatMapPanel extends javax.swing.JPanel {
 
         setPreferredSize(new java.awt.Dimension(654, 28));
 
-        statusLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        statusLabel.setFont(new java.awt.Font("Tahoma", 0, 10));
         statusLabel.setText(org.openide.util.NbBundle.getMessage(HeatMapPanel.class, "HeatMapPanel.statusLabel.text")); // NOI18N
 
-        labelMode.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelMode.setFont(new java.awt.Font("Tahoma", 0, 10));
         labelMode.setText(org.openide.util.NbBundle.getMessage(HeatMapPanel.class, "HeatMapPanel.labelMode.text")); // NOI18N
 
-        modeComboBox.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        modeComboBox.setFont(new java.awt.Font("Tahoma", 0, 10));
         modeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Gradient", "Palette" }));
 
         gradientPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
@@ -114,7 +125,7 @@ public class HeatMapPanel extends javax.swing.JPanel {
 
         palettePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        labelPalette.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelPalette.setFont(new java.awt.Font("Tahoma", 0, 10));
         labelPalette.setText(org.openide.util.NbBundle.getMessage(HeatMapPanel.class, "HeatMapPanel.labelPalette.text")); // NOI18N
         labelPalette.setPreferredSize(new java.awt.Dimension(45, 28));
         palettePanel.add(labelPalette);
@@ -134,7 +145,7 @@ public class HeatMapPanel extends javax.swing.JPanel {
                 .addComponent(gradientPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(palettePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(127, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
