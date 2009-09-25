@@ -32,7 +32,7 @@
               <Component id="gradientPanel" min="-2" pref="247" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="palettePanel" min="-2" pref="129" max="-2" attributes="0"/>
-              <EmptySpace pref="127" max="32767" attributes="0"/>
+              <EmptySpace pref="16" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

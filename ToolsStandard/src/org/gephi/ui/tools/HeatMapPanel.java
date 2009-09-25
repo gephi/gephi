@@ -36,14 +36,12 @@ public class HeatMapPanel extends javax.swing.JPanel {
     private GradientSlider slider;
 
     /** Creates new form HeatMapPanel */
-    public HeatMapPanel(Color color1, Color color2) {
+    public HeatMapPanel(Color[] gradientColors, float[] gradientPositions) {
         initComponents();
 
-        Color[] colors = new Color[]{color1, color2};
-        float[] positions = new float[]{0f, 1f};
-        slider = new GradientSlider(GradientSlider.HORIZONTAL, positions, colors);
+        slider = new GradientSlider(GradientSlider.HORIZONTAL, gradientPositions, gradientColors);
         slider.putClientProperty("GradientSlider.includeOpacity", "false");
-        slider.setBlocked(true);
+        //slider.setBlocked(true);
         gradientPanel.add(slider);
         initEvents();
     }
@@ -52,12 +50,12 @@ public class HeatMapPanel extends javax.swing.JPanel {
         statusLabel.setText(status);
     }
 
-    public Color getColor1() {
-        return (Color) slider.getValues()[0];
+    public Color[] getGradientColors() {
+        return (Color[]) slider.getColors();
     }
 
-    public Color getColor2() {
-        return (Color) slider.getValues()[1];
+    public float[] getGradientPositions() {
+        return slider.getThumbPositions();
     }
 
     private void initEvents() {

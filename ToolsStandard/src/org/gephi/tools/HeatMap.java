@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.tools;
 
 import java.awt.Color;
+import java.awt.LinearGradientPaint;
 import java.util.Map.Entry;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -36,6 +37,7 @@ import org.gephi.tools.api.ToolEventListener;
 import org.gephi.tools.api.ToolSelectionType;
 import org.gephi.ui.tools.HeatMapPanel;
 import org.gephi.ui.tools.ToolUI;
+import org.gephi.ui.utils.GradientUtils.LinearGradient;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -50,13 +52,13 @@ public class HeatMap implements Tool {
     private HeatMapPanel heatMapPanel;
 
     //Settings
-    private Color startColor;
-    private Color stopColor;
+    private Color[] gradientColors;
+    private float[] gradientPositions;  //All between 0 and 1
 
     public HeatMap() {
         //Default settings
-        startColor = Color.RED;
-        stopColor = new Color(0.95f, 0.95f, 0.95f);
+        gradientColors = new Color[]{new Color(254, 232, 200), new Color(253, 187, 132), new Color(227, 74, 51)};
+        gradientPositions = new float[]{0f, 0.5f, 1f};
     }
 
     public void select() {
@@ -72,31 +74,40 @@ public class HeatMap implements Tool {
         listeners[0] = new NodeClickEventListener() {
 
             public void clickNodes(Node[] nodes) {
-                Node n = nodes[0];
-                startColor = heatMapPanel.getColor1();
-                stopColor = heatMapPanel.getColor2();
-                float[] color1 = new float[]{startColor.getRed() / 255f, startColor.getGreen() / 255f, startColor.getBlue() / 255f};
-                float[] color2 = new float[]{stopColor.getRed() / 255f, stopColor.getGreen() / 255f, stopColor.getBlue() / 255f};
-                GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                DirectedGraph graph = gc.getVisibleDirectedGraph();
+                try {
+                    Node n = nodes[0];
+                    gradientColors = heatMapPanel.getGradientColors();
+                    gradientPositions = heatMapPanel.getGradientPositions();
+                    GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+                    DirectedGraph graph = gc.getVisibleDirectedGraph();
 
-                BellmanFordShortestPathAlgorithm algorithm = new BellmanFordShortestPathAlgorithm(graph, n);
-                algorithm.compute();
-                double maxDistance = algorithm.getMaxDistance() + 1;  //+1 to have the maxdistance nodes a ratio<1
-                if (maxDistance > 0) {
-                    for (Entry<Node, Double> entry : algorithm.getDistances().entrySet()) {
-                        NodeData node = entry.getKey().getNodeData();
-                        if (entry.getValue() != Double.POSITIVE_INFINITY) {
-                            float ratio = (float) (entry.getValue() / maxDistance);
-                            node.setR(color1[0] + (color2[0] - color1[0]) * ratio);
-                            node.setG(color1[1] + (color2[1] - color1[1]) * ratio);
-                            node.setB(color1[2] + (color2[2] - color1[2]) * ratio);
-                        } else {
-                            node.setColor(color2[0], color2[1], color2[2]);
+                    //Color
+                    LinearGradient linearGradient = new LinearGradient(gradientColors, gradientPositions);
+
+                    //Algorithm
+                    BellmanFordShortestPathAlgorithm algorithm = new BellmanFordShortestPathAlgorithm(graph, n);
+                    algorithm.compute();
+
+                    double maxDistance = algorithm.getMaxDistance() + 1;  //+1 to have the maxdistance nodes a ratio<1
+                    if (maxDistance > 0) {
+                        for (Entry<Node, Double> entry : algorithm.getDistances().entrySet()) {
+                            NodeData node = entry.getKey().getNodeData();
+                            if (!Double.isInfinite(entry.getValue())) {
+                                float ratio = (float) (entry.getValue() / maxDistance);
+                                Color c = linearGradient.getValue(ratio);
+                                node.setColor(c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f);
+                            } else {
+                                Color c = gradientColors[gradientColors.length - 1];
+                                node.setColor(c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f);
+                            }
                         }
                     }
+                    Color c = gradientColors[0];
+                    n.getNodeData().setColor(c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                n.getNodeData().setColor(color1[0], color1[1], color1[2]);
+
             }
         };
         return listeners;
@@ -106,7 +117,7 @@ public class HeatMap implements Tool {
         return new ToolUI() {
 
             public JPanel getPropertiesBar(Tool tool) {
-                heatMapPanel = new HeatMapPanel(startColor, stopColor);
+                heatMapPanel = new HeatMapPanel(gradientColors, gradientPositions);
                 return heatMapPanel;
             }
 

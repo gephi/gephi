@@ -95,6 +95,9 @@ public class GradientSlider extends MultiThumbSlider {
      */
     public Object getValue(float pos) {
         for (int a = 0; a < thumbPositions.length - 1; a++) {
+            if (thumbPositions[a] == pos) {
+                return values[a];
+            }
             if (thumbPositions[a] < pos && pos < thumbPositions[a + 1]) {
                 float v = (pos - thumbPositions[a]) / (thumbPositions[a + 1] - thumbPositions[a]);
                 return tween((Color) values[a], (Color) values[a + 1], v);
