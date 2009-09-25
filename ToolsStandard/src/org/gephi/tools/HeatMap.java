@@ -77,14 +77,22 @@ public class HeatMap implements Tool {
             public void clickNodes(Node[] nodes) {
                 try {
                     Node n = nodes[0];
-                    gradientColors = heatMapPanel.getGradientColors();
-                    gradientPositions = heatMapPanel.getGradientPositions();
-                    dontPaintUnreachable = heatMapPanel.isDontPaintUnreachable();
+                    Color[] colors;
+                    float[] positions;
+                    if (heatMapPanel.isUsePalette()) {
+                        colors = heatMapPanel.getSelectedPalette().getColors();
+                        positions = heatMapPanel.getSelectedPalette().getPositions();
+                        dontPaintUnreachable = true;
+                    } else {
+                        gradientColors = colors = heatMapPanel.getGradientColors();
+                        gradientPositions = positions = heatMapPanel.getGradientPositions();
+                        dontPaintUnreachable = heatMapPanel.isDontPaintUnreachable();
+                    }
                     GraphController gc = Lookup.getDefault().lookup(GraphController.class);
                     DirectedGraph graph = gc.getVisibleDirectedGraph();
 
                     //Color
-                    LinearGradient linearGradient = new LinearGradient(gradientColors, gradientPositions);
+                    LinearGradient linearGradient = new LinearGradient(colors, positions);
 
                     //Algorithm
                     BellmanFordShortestPathAlgorithm algorithm = new BellmanFordShortestPathAlgorithm(graph, n);
@@ -102,12 +110,12 @@ public class HeatMap implements Tool {
                                 Color c = linearGradient.getValue(ratio);
                                 node.setColor(c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f);
                             } else if (!dontPaintUnreachable) {
-                                Color c = gradientColors[gradientColors.length - 1];
+                                Color c = colors[colors.length - 1];
                                 node.setColor(c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f);
                             }
                         }
                     }
-                    Color c = gradientColors[0];
+                    Color c = colors[0];
                     n.getNodeData().setColor(c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f);
                 } catch (Exception e) {
                     e.printStackTrace();

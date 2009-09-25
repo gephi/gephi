@@ -57,6 +57,14 @@ public class PaletteUtils {
         return new Palette[]{p1, p2, p3, p4};
     }
 
+    public static Palette reversePalette(Palette palette) {
+        Color[] c = new Color[palette.colors.length];
+        for(int i=0;i<palette.getColors().length;i++) {
+            c[c.length-1-i] = palette.colors[i];
+        }
+        return new Palette(c);
+    }
+
     public static class Palette {
 
         private Color colors[];
@@ -67,6 +75,14 @@ public class PaletteUtils {
 
         public Color[] getColors() {
             return colors;
+        }
+
+        public float[] getPositions() {
+            float[] pos = new float[colors.length];
+            for (int i = 0; i < pos.length; i++) {
+                pos[i] = i / (float) pos.length;
+            }
+            return pos;
         }
     }
 }

@@ -26,6 +26,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -42,8 +45,11 @@ import org.gephi.ui.utils.PaletteUtils.Palette;
  */
 public class HeatMapPanel extends javax.swing.JPanel {
 
+    private PaletteComboBox paletteComboBox;
     private GradientSlider slider;
     private JCheckBox dontPaintUnreachableCheckbox;
+    private JCheckBox invertPaletteCheckbox;
+    private boolean usePalette = false;
 
     /** Creates new form HeatMapPanel */
     public HeatMapPanel(Color[] gradientColors, float[] gradientPositions, boolean dontPaintUnreachable) {
@@ -54,7 +60,7 @@ public class HeatMapPanel extends javax.swing.JPanel {
         slider.putClientProperty("GradientSlider.includeOpacity", "false");
         gradientPanel.add(slider);
 
-        //Checkbox
+        //Paint
         dontPaintUnreachableCheckbox = new JCheckBox();
         dontPaintUnreachableCheckbox.setSelected(dontPaintUnreachable);
         dontPaintUnreachableCheckbox.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
@@ -62,10 +68,52 @@ public class HeatMapPanel extends javax.swing.JPanel {
         dontPaintUnreachableCheckbox.setPreferredSize(new java.awt.Dimension(139, 28));
         gradientPanel.add(dontPaintUnreachableCheckbox);
 
+        //Invert
+        invertPaletteCheckbox = new JCheckBox();
+        invertPaletteCheckbox.setSelected(dontPaintUnreachable);
+        invertPaletteCheckbox.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        invertPaletteCheckbox.setText(org.openide.util.NbBundle.getMessage(HeatMapPanel.class, "HeatMapPanel.invertPalette.text")); // NOI18N
+        invertPaletteCheckbox.setPreferredSize(new java.awt.Dimension(139, 28));
+        invertPaletteCheckbox.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                paletteComboBox.initReverse();
+            }
+        });
+
         //Palette combo
-        PaletteComboBox paletteComboBox = new PaletteComboBox(PaletteUtils.getSequencialPalettes());
+        paletteComboBox = new PaletteComboBox(PaletteUtils.getSequencialPalettes());
         palettePanel.add(paletteComboBox);
-        initEvents();
+        palettePanel.add(invertPaletteCheckbox);
+
+        //Init events
+        modeComboBox.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (modeComboBox.getSelectedIndex() == 0) {
+                    usePalette = false;
+                    initMode();
+                } else {
+                    usePalette = true;
+                    initMode();
+                }
+            }
+        });
+        initMode();
+    }
+
+    private void initMode() {
+        if (usePalette) {
+            gradientPanel.setVisible(false);
+            palettePanel.setVisible(true);
+        } else {
+            gradientPanel.setVisible(true);
+            palettePanel.setVisible(false);
+        }
+    }
+
+    public boolean isUsePalette() {
+        return usePalette;
     }
 
     public void setStatus(String status) {
@@ -84,22 +132,8 @@ public class HeatMapPanel extends javax.swing.JPanel {
         return dontPaintUnreachableCheckbox.isSelected();
     }
 
-    private void initEvents() {
-        modeComboBox.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                if (modeComboBox.getSelectedIndex() == 0) {
-                    //Gradient
-                    gradientPanel.setVisible(true);
-                    palettePanel.setVisible(false);
-                } else {
-                    //Palette
-                    gradientPanel.setVisible(false);
-                    palettePanel.setVisible(true);
-                }
-            }
-        });
-        palettePanel.setVisible(false);
+    public Palette getSelectedPalette() {
+        return (Palette) paletteComboBox.getSelectedItem();
     }
 
     /** This method is called from within the constructor to
@@ -139,7 +173,7 @@ public class HeatMapPanel extends javax.swing.JPanel {
 
         palettePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        labelPalette.setFont(new java.awt.Font("Tahoma", 0, 10));
+        labelPalette.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         labelPalette.setText(org.openide.util.NbBundle.getMessage(HeatMapPanel.class, "HeatMapPanel.labelPalette.text")); // NOI18N
         labelPalette.setPreferredSize(new java.awt.Dimension(45, 28));
         palettePanel.add(labelPalette);
@@ -157,9 +191,9 @@ public class HeatMapPanel extends javax.swing.JPanel {
                 .addComponent(modeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(gradientPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 399, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(palettePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(palettePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -167,8 +201,8 @@ public class HeatMapPanel extends javax.swing.JPanel {
                 .addComponent(statusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(labelMode, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(modeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(palettePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addComponent(gradientPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(palettePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -183,12 +217,32 @@ public class HeatMapPanel extends javax.swing.JPanel {
 
     private class PaletteComboBox extends JComboBox {
 
+        private Palette[] palettes;
+
         public PaletteComboBox(Palette[] pallettes) {
             super(pallettes);
+            this.palettes = pallettes;
             PaletteListCellRenderer r = new PaletteListCellRenderer();
             r.setPreferredSize(new Dimension(70, 18));
             r.setOpaque(true);
             setRenderer(r);
+            initReverse();
+        }
+
+        public void initReverse() {
+            if (invertPaletteCheckbox.isSelected()) {
+                int selectedIndex = getSelectedIndex();
+                DefaultComboBoxModel newModel = new DefaultComboBoxModel();
+                for (int i = 0; i < getModel().getSize(); i++) {
+                    newModel.addElement(PaletteUtils.reversePalette((Palette) getModel().getElementAt(i)));
+                }
+                setModel(newModel);
+                setSelectedIndex(selectedIndex);
+            } else {
+                int selectedIndex = getSelectedIndex();
+                setModel(new DefaultComboBoxModel(palettes));
+                setSelectedIndex(selectedIndex);
+            }
         }
 
         //Renderer

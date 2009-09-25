@@ -30,9 +30,9 @@
               <Component id="modeComboBox" min="-2" pref="97" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="gradientPanel" min="-2" pref="399" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="palettePanel" min="-2" pref="292" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="palettePanel" min="-2" pref="363" max="-2" attributes="0"/>
+              <EmptySpace pref="23" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -43,8 +43,8 @@
               <Component id="labelMode" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
               <Component id="modeComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
           </Group>
-          <Component id="palettePanel" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
           <Component id="gradientPanel" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
+          <Component id="palettePanel" alignment="0" min="-2" pref="28" max="-2" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
