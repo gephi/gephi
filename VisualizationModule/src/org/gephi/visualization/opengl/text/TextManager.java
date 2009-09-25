@@ -88,6 +88,11 @@ public class TextManager implements VizArchitecture {
         initRenderer();
         builder.initBuilder(this);
 
+        //Init sizemodes
+        for(SizeMode s : sizeModes) {
+            s.init();
+        }
+
         //Model listening
         model.addChangeListener(new ChangeListener() {
 

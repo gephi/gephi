@@ -33,6 +33,8 @@ public interface SizeMode {
 
     public ImageIcon getIcon();
 
+    public void init();
+
     public void setSizeFactor2d(float sizeFactor, TextDataImpl text, ModelImpl model);
 
     public void setSizeFactor3d(float sizeFactor, TextDataImpl text, ModelImpl model);

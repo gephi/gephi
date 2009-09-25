@@ -29,18 +29,20 @@ import org.gephi.visualization.api.ModelImpl;
  */
 public class ProportionalSizeMode implements SizeMode {
 
-    private static float FACTOR = 5f;
+    private static float FACTOR = 200f;
+
+    public void init() {
+    }
 
     public void setSizeFactor2d(float sizeFactor, TextDataImpl text, ModelImpl model) {
-        float factor = sizeFactor*model.getObj().getSize()/FACTOR +0.1f;
+        float factor = FACTOR * model.getObj().getSize() * sizeFactor / model.getCameraDistance();
         text.setSizeFactor(factor);
     }
 
     public void setSizeFactor3d(float sizeFactor, TextDataImpl text, ModelImpl model) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        float factor = sizeFactor * model.getObj().getSize() / 10f;        //Between 0.1 and 2
+        text.setSizeFactor(factor);
     }
-
-    
 
     public String getName() {
         return "Node size";

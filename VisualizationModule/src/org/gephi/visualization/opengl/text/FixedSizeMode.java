@@ -31,11 +31,11 @@ import org.gephi.visualization.api.ModelImpl;
  */
 public class FixedSizeMode implements SizeMode {
 
-    private static float FACTOR_3D = 800f;
+    //private static float FACTOR_3D = 800f;
 
     private GraphDrawable drawable;
-    
-    public FixedSizeMode() {
+
+    public void init() {
         drawable = VizController.getInstance().getDrawable();
     }
 
@@ -45,7 +45,7 @@ public class FixedSizeMode implements SizeMode {
     }
 
     public void setSizeFactor3d(float sizeFactor, TextDataImpl text, ModelImpl model) {
-        float factor = sizeFactor / FACTOR_3D * model.getCameraDistance();
+        float factor = sizeFactor / drawable.getViewportWidth() * model.getCameraDistance();
         text.setSizeFactor(factor);
     }
 
