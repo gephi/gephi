@@ -21,10 +21,20 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ui.tools;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.Icon;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 import org.gephi.ui.components.gradientslider.GradientSlider;
+import org.gephi.ui.utils.PaletteUtils;
+import org.gephi.ui.utils.PaletteUtils.Palette;
 
 /**
  *
@@ -51,6 +61,10 @@ public class HeatMapPanel extends javax.swing.JPanel {
         dontPaintUnreachableCheckbox.setText(org.openide.util.NbBundle.getMessage(HeatMapPanel.class, "HeatMapPanel.dontPaintUnreachableCheckbox.text")); // NOI18N
         dontPaintUnreachableCheckbox.setPreferredSize(new java.awt.Dimension(139, 28));
         gradientPanel.add(dontPaintUnreachableCheckbox);
+
+        //Palette combo
+        PaletteComboBox paletteComboBox = new PaletteComboBox(PaletteUtils.getSequencialPalettes());
+        palettePanel.add(paletteComboBox);
         initEvents();
     }
 
@@ -166,4 +180,67 @@ public class HeatMapPanel extends javax.swing.JPanel {
     private javax.swing.JPanel palettePanel;
     private javax.swing.JLabel statusLabel;
     // End of variables declaration//GEN-END:variables
+
+    private class PaletteComboBox extends JComboBox {
+
+        public PaletteComboBox(Palette[] pallettes) {
+            super(pallettes);
+            PaletteListCellRenderer r = new PaletteListCellRenderer();
+            r.setPreferredSize(new Dimension(70, 18));
+            r.setOpaque(true);
+            setRenderer(r);
+        }
+
+        //Renderer
+        private class PaletteListCellRenderer extends JLabel implements ListCellRenderer {
+
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                //int selectedIndex = ((Integer) value).intValue();
+
+                if (isSelected) {
+                    setBackground(list.getSelectionBackground());
+                    setForeground(list.getSelectionForeground());
+                } else {
+                    setBackground(list.getBackground());
+                    setForeground(list.getForeground());
+                }
+
+                //Set icon
+                Palette p = (Palette) value;
+                PaletteIcon icon = new PaletteIcon(p.getColors());
+                setIcon(icon);
+                return this;
+            }
+        }
+    }
+
+    private static class PaletteIcon implements Icon {
+
+        private static int COLOR_WIDTH = 13;
+        private static int COLOR_HEIGHT = 13;
+        private static Color BORDER_COLOR = new Color(0x444444);
+        private Color[] colors;
+
+        public PaletteIcon(Color[] colors) {
+            this.colors = colors;
+        }
+
+        public int getIconWidth() {
+            return COLOR_WIDTH * colors.length;
+        }
+
+        public int getIconHeight() {
+            return COLOR_HEIGHT + 2;
+        }
+
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+
+            for (int i = 0; i < colors.length; i++) {
+                g.setColor(BORDER_COLOR);
+                g.drawRect(x + 2 + i * COLOR_WIDTH, y, COLOR_WIDTH, COLOR_HEIGHT);
+                g.setColor(colors[i]);
+                g.fillRect(x + 2 + i * COLOR_WIDTH + 1, y + 1, COLOR_WIDTH - 1, COLOR_HEIGHT - 1);
+            }
+        }
+    }
 }
