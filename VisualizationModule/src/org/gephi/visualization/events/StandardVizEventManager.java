@@ -93,11 +93,13 @@ public class StandardVizEventManager implements VizEventManager {
         if (nodeLeftHandler.hasListeners()) {
             //Check if some node are selected
             ModelImpl[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
-            Node[] nodeArray = new Node[modelArray.length];
-            for (int i = 0; i < modelArray.length; i++) {
-                nodeArray[i] = ((NodeData) modelArray[i].getObj()).getNode();
+            if (modelArray.length > 0) {
+                Node[] nodeArray = new Node[modelArray.length];
+                for (int i = 0; i < modelArray.length; i++) {
+                    nodeArray[i] = ((NodeData) modelArray[i].getObj()).getNode();
+                }
+                nodeLeftHandler.dispatch(nodeArray);
             }
-            nodeLeftHandler.dispatch(nodeArray);
         }
 
         //Mouse left click
@@ -147,11 +149,13 @@ public class StandardVizEventManager implements VizEventManager {
             if (nodeHandler.hasListeners()) {
                 //Check if some node are selected
                 ModelImpl[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
-                Node[] nodeArray = new Node[modelArray.length];
-                for (int i = 0; i < modelArray.length; i++) {
-                    nodeArray[i] = ((NodeData) modelArray[i].getObj()).getNode();
+                if (modelArray.length > 0) {
+                    Node[] nodeArray = new Node[modelArray.length];
+                    for (int i = 0; i < modelArray.length; i++) {
+                        nodeArray[i] = ((NodeData) modelArray[i].getObj()).getNode();
+                    }
+                    nodeHandler.dispatch(nodeArray);
                 }
-                nodeHandler.dispatch(nodeArray);
             }
         }
     }
