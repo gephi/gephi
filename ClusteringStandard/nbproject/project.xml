@@ -16,6 +16,7 @@
                 </dependency>
             </module-dependencies>
             <public-packages>
+                <package>org.gephi.algorithms.cluster</package>
                 <package>org.gephi.algorithms.cluster.mcl</package>
             </public-packages>
         </data>

@@ -96,6 +96,7 @@ public interface HierarchicalGraph extends Graph {
      * @return a node iterable of nodes at the top of the tree
      */
     public NodeIterable getTopNodes();
+    
 
     /**
      * Returns nodes at the given <code>level</code> in the hierarchy. Top nodes

@@ -5,11 +5,16 @@
 
 package org.gephi.desktop.algorithms.cluster;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.io.Serializable;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import org.gephi.algorithms.cluster.Dendrogram;
 import org.gephi.algorithms.cluster.mcl.MarkovClustering;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -52,6 +57,7 @@ final class ClusteringTopComponent extends TopComponent {
         gamma = new javax.swing.JTextField();
         loop = new javax.swing.JTextField();
         maxresidual = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
 
         org.openide.awt.Mnemonics.setLocalizedText(mclButton, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.mclButton.text")); // NOI18N
         mclButton.addActionListener(new java.awt.event.ActionListener() {
@@ -76,6 +82,13 @@ final class ClusteringTopComponent extends TopComponent {
 
         maxresidual.setText(org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.maxresidual.text")); // NOI18N
 
+        org.openide.awt.Mnemonics.setLocalizedText(jButton1, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.jButton1.text")); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -83,7 +96,10 @@ final class ClusteringTopComponent extends TopComponent {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(mclButton)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(mclButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
+                        .addComponent(jButton1))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
@@ -96,13 +112,15 @@ final class ClusteringTopComponent extends TopComponent {
                             .addComponent(gamma)
                             .addComponent(zeromax)
                             .addComponent(maxresidual, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(145, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(mclButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(mclButton)
+                    .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
@@ -134,9 +152,21 @@ final class ClusteringTopComponent extends TopComponent {
         markovClustering.run(graph);
     }//GEN-LAST:event_mclButtonActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        JFrame frame = new JFrame("Dendrogram");
+        frame.setSize(new Dimension(400,400));
+        frame.getContentPane().setLayout(new BorderLayout());
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        HierarchicalGraph graph = graphController.getHierarchicalDirectedGraph();
+        Dendrogram dendrogram = new Dendrogram(graph);
+        frame.getContentPane().add(dendrogram, BorderLayout.CENTER);
+        frame.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField gamma;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
