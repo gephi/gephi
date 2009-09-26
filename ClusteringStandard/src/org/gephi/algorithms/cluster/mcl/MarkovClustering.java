@@ -20,7 +20,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.algorithms.cluster.mcl;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 
 /**
  * MarkovClustering implements the Markov clustering (MCL) algorithm for graphs,
@@ -76,10 +86,54 @@ public class MarkovClustering {
 
     public void run(Graph graph) {
 
-        SparseMatrix matrix = MatrixLoader.loadSparse(graph);
+        HashMap<Integer, Node> nodeMap = new HashMap<Integer, Node>();
+        HashMap<Node, Integer> intMap = new HashMap<Node, Integer>();
+
+        //Load matrix
+        SparseMatrix matrix = new SparseMatrix();
+        int nodeId = 0;
+        for (Edge e : graph.getEdges()) {
+            Node source = e.getSource();
+            Node target = e.getTarget();
+            Integer sourceId;
+            Integer targetId;
+            if ((sourceId = intMap.get(source)) == null) {
+                sourceId = nodeId++;
+                intMap.put(source, sourceId);
+                nodeMap.put(sourceId, source);
+            }
+            if ((targetId = intMap.get(target)) == null) {
+                targetId = nodeId++;
+                intMap.put(target, targetId);
+                nodeMap.put(targetId, target);
+            }
+            double weight = e.getWeight();
+            matrix.add(sourceId, targetId, weight);
+        }
+
         matrix = matrix.transpose();
         matrix = run(matrix, maxResidual, gammaExp, loopGain, zeroMax);
-        System.out.println("result\n" + matrix.transpose().toStringDense());
+        //System.out.println("result\n" + matrix.transpose().toStringDense());
+
+        Map<Integer, ArrayList<Integer>> map = getClusters(matrix);
+
+        int clusterNumber = 1;
+        Set<ArrayList<Integer>> sortedClusters = new HashSet<ArrayList<Integer>>();
+        for (ArrayList<Integer> c : map.values()) {
+            if (!sortedClusters.contains(c)) {
+                sortedClusters.add(c);
+                System.out.print(clusterNumber + " : ");
+                Color colorc = new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255));
+                for (Integer in : c) {        
+                    NodeData node = nodeMap.get(in).getNodeData();
+                    node.setColor(colorc.getRed()/255f, colorc.getGreen()/255f, colorc.getBlue()/255f);
+                    System.out.print(node.getLabel() + " ");
+                }
+                System.out.println();
+                clusterNumber++;
+            }
+        }
+        System.out.flush();
     }
 
     /**
@@ -95,14 +149,14 @@ public class MarkovClustering {
      */
     public SparseMatrix run(SparseMatrix a, double maxResidual, double pGamma, double loopGain, double maxZero) {
 
-        System.out.println("original matrix\n" + a.transpose().toStringDense());
+        //System.out.println("original matrix\n" + a.transpose().toStringDense());
 
         // add cycles
         addLoops(a, loopGain);
 
         // make stochastic
         a.normaliseRows();
-        System.out.println("normalised\n" + a.transpose().toStringDense());
+        //System.out.println("normalised\n" + a.transpose().toStringDense());
 
         double residual = 1.;
         int i = 0;
@@ -115,12 +169,6 @@ public class MarkovClustering {
             System.out.println("residual energy = " + residual);
         }
         return a;
-    }
-
-    private static void print(SparseMatrix a, String label) {
-        System.out.println(label + ":");
-        // use transpose to compare with van Dongen's thesis
-        System.out.println(a.transpose().toStringDense());
     }
 
     /**
@@ -228,5 +276,64 @@ public class MarkovClustering {
      */
     public void setZeroMax(double zeroMax) {
         this.zeroMax = zeroMax;
+    }
+
+    private Map<Integer, ArrayList<Integer>> getClusters(SparseMatrix matrix) {
+
+        Map<Integer, ArrayList<Integer>> clusters = new HashMap<Integer, ArrayList<Integer>>();
+        int clusterCount = 0;
+
+        double[][] mat = matrix.getDense();
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat[0].length; j++) {
+                double value = mat[i][j];
+                if (value != 0.0) {
+                    if (i == j) {
+                        continue;
+                    }
+
+                    if (clusters.containsKey(j)) {
+                        // Already seen "column" -- get the cluster and add column
+                        ArrayList<Integer> columnCluster = clusters.get(j);
+                        if (clusters.containsKey(i)) {
+                            // We've already seen row also -- join them
+                            ArrayList<Integer> rowCluster = clusters.get(i);
+                            if (rowCluster == columnCluster) {
+                                continue;
+                            }
+                            columnCluster.addAll(rowCluster);
+                            clusterCount--;
+                        } else {
+                            // debugln("Adding "+row+" to "+columnCluster.getClusterNumber());
+                            columnCluster.add(i);
+                        }
+                        for (Integer in : columnCluster) {
+                            clusters.put(in, columnCluster);
+                        }
+                    } else {
+                        ArrayList<Integer> rowCluster;
+                        // First time we've seen "column" -- have we already seen "row"
+                        if (clusters.containsKey(i)) {
+                            // Yes, just add column to row's cluster
+                            rowCluster = clusters.get(i);
+                            // debugln("Adding "+column+" to "+rowCluster.getClusterNumber());
+                            rowCluster.add(j);
+                        } else {
+                            rowCluster = new ArrayList<Integer>();
+                            clusterCount++;
+                            // debugln("Created new cluster "+rowCluster.getClusterNumber()+" with "+row+" and "+column);
+                            rowCluster.add(j);
+                            rowCluster.add(i);
+                        }
+                        for (Integer in : rowCluster) {
+                            clusters.put(in, rowCluster);
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println("cluster count " + clusterCount);
+
+        return clusters;
     }
 }

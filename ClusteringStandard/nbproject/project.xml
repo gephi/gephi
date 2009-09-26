@@ -15,7 +15,9 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages/>
+            <public-packages>
+                <package>org.gephi.algorithms.cluster.mcl</package>
+            </public-packages>
         </data>
     </configuration>
 </project>

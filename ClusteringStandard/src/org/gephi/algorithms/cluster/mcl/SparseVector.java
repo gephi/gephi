@@ -226,7 +226,7 @@ public class SparseVector extends HashMap<Integer, Double> {
      * @param s
      */
     public void hadamardPower(double s) {
-        for (int i : keySet()) {
+        for (int i : keySet().toArray(new Integer[0])) {
             put(i, Math.pow(get(i), s));
         }
     }
