@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.algorithms.cluster
+OpenIDE-Module-Layer: org/gephi/algorithms/cluster/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/gephi/algorithms/cluster/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
