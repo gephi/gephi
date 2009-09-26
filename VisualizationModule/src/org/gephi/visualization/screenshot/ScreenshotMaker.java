@@ -45,6 +45,7 @@ import javax.swing.JOptionPane;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.text.TextManager;
 import org.gephi.visualization.swing.GLAbstractListener;
 import org.gephi.visualization.swing.GraphDrawableImpl;
@@ -73,6 +74,7 @@ public class ScreenshotMaker implements VizArchitecture {
     private GraphDrawableImpl drawable;
     private AbstractEngine engine;
     private TextManager textManager;
+    private VizConfig vizConfig;
 
     //Settings
     private int antiAliasing = 2;
@@ -106,6 +108,7 @@ public class ScreenshotMaker implements VizArchitecture {
         drawable = VizController.getInstance().getDrawable();
         engine = VizController.getInstance().getEngine();
         textManager = VizController.getInstance().getTextManager();
+        vizConfig = VizController.getInstance().getVizConfig();
     }
 
     public void takeScreenshot() {
@@ -163,6 +166,7 @@ public class ScreenshotMaker implements VizArchitecture {
 
         //Init
         drawable.initConfig(gl);
+        vizConfig.setDisableLOD(true);
         engine.initScreenshot(gl, GLAbstractListener.glu);
 
         //Textrender - swap to 3D
@@ -180,7 +184,7 @@ public class ScreenshotMaker implements VizArchitecture {
 
         //Textrender - back to 2D
         textManager.setRenderer3d(false);
-
+        vizConfig.setDisableLOD(false);
         //Write image
         ImageUtil.flipImageVertically(image);
         writeImage(image);

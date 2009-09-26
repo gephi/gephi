@@ -59,7 +59,6 @@ public class CompatibilityNodeRectangleModeler implements CompatibilityNodeModel
         obj.setSelected(false);
         obj.setDragDistanceFromMouse(new float[2]);
         n.setModel(obj);
-
         textManager.initTextData(nd);
 
         chooseModel(obj);
@@ -69,6 +68,10 @@ public class CompatibilityNodeRectangleModeler implements CompatibilityNodeModel
     @Override
     public void chooseModel(ModelImpl object3d) {
         NodeRectangeModel obj = (NodeRectangeModel) object3d;
+        if (config.isDisableLOD()) {
+            obj.border = true;
+            return;
+        }
 
         float distance = engine.cameraDistance(object3d) / object3d.getObj().getRadius();
         if (distance > 600) {

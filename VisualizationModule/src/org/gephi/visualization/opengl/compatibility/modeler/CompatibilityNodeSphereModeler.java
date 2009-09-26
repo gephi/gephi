@@ -47,6 +47,7 @@ public class CompatibilityNodeSphereModeler extends NodeSphereModeler implements
     public int SHAPE_DIAMOND;
     public int SHAPE_SPHERE16;
     public int SHAPE_SPHERE32;
+    public int SHAPE_SPHERE64;
     public int SHAPE_BILLBOARD;
     private CompatibilityEngine engine;
     private VizConfig config;
@@ -65,17 +66,22 @@ public class CompatibilityNodeSphereModeler extends NodeSphereModeler implements
         obj.setObj(nd);
         obj.setSelected(false);
         obj.setDragDistanceFromMouse(new float[2]);
+        obj.modelType = SHAPE_SPHERE64;
         n.setModel(obj);
 
         textManager.initTextData(nd);
-
         chooseModel(obj);
+
         return obj;
     }
 
     @Override
     public void chooseModel(ModelImpl object3d) {
         NodeSphereModel obj = (NodeSphereModel) object3d;
+        if (config.isDisableLOD()) {
+            obj.modelType = SHAPE_SPHERE64;
+            return;
+        }
 
         float distance = engine.cameraDistance(object3d) / object3d.getObj().getRadius();
         if (distance > 600) {
@@ -113,7 +119,14 @@ public class CompatibilityNodeSphereModeler extends NodeSphereModeler implements
         glu.gluSphere(quadric, 0.5f, 32, 16);
         gl.glEndList();
 
-        return SHAPE_SPHERE32;
+        // Sphere32 display list
+        SHAPE_SPHERE64 = SHAPE_SPHERE32 + 1;
+        gl.glNewList(SHAPE_SPHERE64, GL.GL_COMPILE);
+        gl.glCallList(ptr);
+        glu.gluSphere(quadric, 0.5f, 64, 32);
+        gl.glEndList();
+
+        return SHAPE_SPHERE64;
     }
 
     public void beforeDisplay(GL gl, GLU glu) {

@@ -33,6 +33,7 @@ import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.Scheduler;
+import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.objects.CompatibilityModelClass;
 import org.gephi.visualization.scheduler.SimpleFPSAnimator;
 import org.gephi.visualization.swing.GraphDrawableImpl;
@@ -56,6 +57,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     //Architeture
     private GraphDrawableImpl graphDrawable;
     private CompatibilityEngine engine;
+    private VizConfig vizConfig;
 
     //Current GL
     private GL gl;
@@ -69,6 +71,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     public void initArchitecture() {
         this.graphDrawable = VizController.getInstance().getDrawable();
         this.engine = (CompatibilityEngine) VizController.getInstance().getEngine();
+        this.vizConfig = VizController.getInstance().getVizConfig();
         initPools();
         init();
     }

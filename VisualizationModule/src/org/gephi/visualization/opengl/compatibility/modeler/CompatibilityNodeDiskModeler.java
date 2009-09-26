@@ -44,8 +44,10 @@ public class CompatibilityNodeDiskModeler implements CompatibilityNodeModeler {
     public int SHAPE_DIAMOND;
     public int SHAPE_DISK16;
     public int SHAPE_DISK32;
+    public int SHAPE_DISK64;
     public int BORDER16;
     public int BORDER32;
+    public int BORDER64;
     private CompatibilityEngine engine;
     protected VizConfig config;
     protected TextManager textManager;
@@ -63,10 +65,11 @@ public class CompatibilityNodeDiskModeler implements CompatibilityNodeModeler {
         obj.setObj(nd);
         obj.setSelected(false);
         obj.setDragDistanceFromMouse(new float[2]);
+        obj.modelType = SHAPE_DISK64;
+        obj.modelBorderType = BORDER64;
         n.setModel(obj);
 
         textManager.initTextData(nd);
-
         chooseModel(obj);
         return obj;
     }
@@ -74,6 +77,11 @@ public class CompatibilityNodeDiskModeler implements CompatibilityNodeModeler {
     @Override
     public void chooseModel(ModelImpl object3d) {
         NodeDiskModel obj = (NodeDiskModel) object3d;
+        if (config.isDisableLOD()) {
+            obj.modelType = SHAPE_DISK64;
+            obj.modelBorderType = BORDER64;
+            return;
+        }
 
         float distance = engine.cameraDistance(object3d) / object3d.getObj().getRadius();
         if (distance > 600) {
@@ -110,9 +118,15 @@ public class CompatibilityNodeDiskModeler implements CompatibilityNodeModeler {
         glu.gluDisk(quadric, 0, 0.5, 12, 2);
         gl.glEndList();
 
+        //Disk64
+        SHAPE_DISK64 = SHAPE_DISK32 + 1;
+        gl.glNewList(SHAPE_DISK64, GL.GL_COMPILE);
+        glu.gluDisk(quadric, 0, 0.5, 32, 4);
+        gl.glEndList();
+
 
         //Border16
-        BORDER16 = SHAPE_DISK32 + 1;
+        BORDER16 = SHAPE_DISK64 + 1;
         gl.glNewList(BORDER16, GL.GL_COMPILE);
         glu.gluDisk(quadric, 0.42, 0.50, 24, 2);
         gl.glEndList();
@@ -123,7 +137,13 @@ public class CompatibilityNodeDiskModeler implements CompatibilityNodeModeler {
         glu.gluDisk(quadric, 0.42, 0.50, 48, 2);
         gl.glEndList();
 
-        return BORDER32;
+        //Border32
+        BORDER64 = BORDER32 + 1;
+        gl.glNewList(BORDER64, GL.GL_COMPILE);
+        glu.gluDisk(quadric, 0.42, 0.50, 96, 4);
+        gl.glEndList();
+
+        return BORDER64;
     }
 
     public void beforeDisplay(GL gl, GLU glu) {

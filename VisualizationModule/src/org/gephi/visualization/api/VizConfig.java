@@ -95,6 +95,7 @@ public class VizConfig {
     protected boolean propertiesbar = true;
     protected int mouseSelectionDiameter = 1;
     protected boolean mouseSelectionZoomProportionnal = false;
+    protected boolean disableLOD = false;
 
     public int getAntialiasing() {
         return antialiasing;
@@ -367,5 +368,13 @@ public class VizConfig {
 
     public void setSelectionEnable(boolean selectionEnable) {
         this.selectionEnable = selectionEnable;
+    }
+
+    public boolean isDisableLOD() {
+        return disableLOD;
+    }
+
+    public void setDisableLOD(boolean disableLOD) {
+        this.disableLOD = disableLOD;
     }
 }

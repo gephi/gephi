@@ -390,6 +390,7 @@ public class CompatibilityEngine extends AbstractEngine {
         initDisplayLists(gl, glu);
         textManager.getNodeRenderer().reinitRenderer();
         textManager.getEdgeRenderer().reinitRenderer();
+        scheduler.cameraMoved.set(true);
     }
 
     @Override
