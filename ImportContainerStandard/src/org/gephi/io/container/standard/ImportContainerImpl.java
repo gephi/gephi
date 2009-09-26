@@ -169,22 +169,25 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             return;
         }
 
-        switch (parameters.getEdgeDefault()) {
-            case DIRECTED:
-                EdgeDraft.EdgeType type1 = edgeDraftImpl.getType();
-                if (type1.equals(EdgeDraft.EdgeType.UNDIRECTED)) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Bad_Edge_Type"), Level.WARNING));
-                }
-                break;
-            case UNDIRECTED:
-                EdgeDraft.EdgeType type2 = edgeDraftImpl.getType();
-                if (type2.equals(EdgeDraft.EdgeType.DIRECTED)) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Bad_Edge_Type"), Level.WARNING));
-                }
-                break;
-            case MIXED:
-                break;
+        if (edgeDraftImpl.getType() != null) {
+            switch (parameters.getEdgeDefault()) {
+                case DIRECTED:
+                    EdgeDraft.EdgeType type1 = edgeDraftImpl.getType();
+                    if (type1.equals(EdgeDraft.EdgeType.UNDIRECTED)) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Bad_Edge_Type"), Level.WARNING));
+                    }
+                    break;
+                case UNDIRECTED:
+                    EdgeDraft.EdgeType type2 = edgeDraftImpl.getType();
+                    if (type2.equals(EdgeDraft.EdgeType.DIRECTED)) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Bad_Edge_Type"), Level.WARNING));
+                    }
+                    break;
+                case MIXED:
+                    break;
+            }
         }
+
 
         String id = edgeDraftImpl.getId();
         String sourceTargetId = edgeDraftImpl.getSource().getId() + "-" + edgeDraftImpl.getTarget().getId();
