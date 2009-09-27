@@ -21,6 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ui.control.visibility;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import org.openide.util.NbBundle;
@@ -38,14 +41,44 @@ final class GraphVisibilityTopComponent extends TopComponent {
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "GraphVisibilityTopComponent";
 
+    //Components
+    private VisibilityToolbar toolbar;
+    private VisibilityDetailsPanel detailsPanel;
+    private VisibilityPieChart visibilityPieChart;
+    private Component currentModeComponent;
+
     private GraphVisibilityTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(GraphVisibilityTopComponent.class, "CTL_GraphVisibilityTopComponent"));
         setToolTipText(NbBundle.getMessage(GraphVisibilityTopComponent.class, "HINT_GraphVisibilityTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
 
-        VisibilityPieChart pieChart = new VisibilityPieChart();
-        add(pieChart.getChartPanel(), BorderLayout.CENTER);
+        visibilityPieChart = new VisibilityPieChart();
+        toolbar = new VisibilityToolbar();
+        detailsPanel = new VisibilityDetailsPanel();
+        refreshMode();
+        toolbar.addPropertyChangeListener("mode", new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                refreshMode();
+            }
+        });
+        add(toolbar, BorderLayout.SOUTH);
+    }
+
+    private void refreshMode() {
+        if (currentModeComponent != null) {
+            remove(currentModeComponent);
+        }
+        if (toolbar.getVisibilityDisplayMode().equals(VisibilityToolbar.VisibilityDisplayMode.DETAILS)) {
+            add(detailsPanel, BorderLayout.CENTER);
+            currentModeComponent = detailsPanel;
+        } else {
+            add(visibilityPieChart.getChartPanel(), BorderLayout.CENTER);
+            currentModeComponent = visibilityPieChart.getChartPanel();
+        }
+        revalidate();
+        repaint();
     }
 
     /** This method is called from within the constructor to

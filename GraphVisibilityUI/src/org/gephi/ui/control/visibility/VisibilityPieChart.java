@@ -47,6 +47,7 @@ public class VisibilityPieChart {
 
         final JFreeChart chart = ChartFactory.createPieChart("Employee Survey", data, false, false, false);
         chart.setTitle(new TextTitle());
+        chart.setBackgroundPaint(null);
         PiePlot plot = (PiePlot) chart.getPlot();
         plot.setShadowPaint(null);
         plot.setSimpleLabels(true);
@@ -58,10 +59,12 @@ public class VisibilityPieChart {
         plot.setLabelPaint(Color.WHITE);
         plot.setLabelGap(0.5);
         plot.setCircular(true);
-        plot.setBackgroundAlpha(0f);
+        plot.setBackgroundPaint(null);
+        plot.setBackgroundAlpha(1f);
         plot.setExplodePercent("Visible", 0.1);
         chartPanel = new ChartPanel(chart, true);
-
+        chartPanel.setOpaque(false);
+        chartPanel.setPopupMenu(null);
     }
 
     public ChartPanel getChartPanel() {
