@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="Window">
+            <file name="org-gephi-ui-control-visibility-GraphVisibilityAction.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.ui.control.visibility.Bundle"/>
+                <attr name="component" methodvalue="org.gephi.ui.control.visibility.GraphVisibilityTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="org.gephi.ui.control.visibility.Bundle#CTL_GraphVisibilityAction"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="GraphVisibilityAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-ui-control-visibility-GraphVisibilityAction.instance"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="GraphVisibilityTopComponent.settings" url="GraphVisibilityTopComponentSettings.xml"/>
+        </folder>
+        <folder name="Modes">
+            <folder name="layoutmode">
+                <file name="GraphVisibilityTopComponent.wstcref" url="GraphVisibilityTopComponentWstcref.xml"/>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>
