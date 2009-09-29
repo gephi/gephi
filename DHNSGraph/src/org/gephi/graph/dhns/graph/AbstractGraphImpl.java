@@ -56,8 +56,12 @@ public abstract class AbstractGraphImpl implements FilteredGraph {
     protected View view;
 
     //Filter
-    protected boolean filtered = true;
+    protected boolean filtered = false;
     protected FilterControl filterControl;
+
+    public FilterControl getFilterControl() {
+        return filterControl;
+    }
 
     public void addNodePredicate(NodePredicate nodePredicate) {
         nodeProposition.addPredicate(nodePredicate);

@@ -35,7 +35,9 @@ public class FilterResult {
     private NodeInFilterResultPredicate nodePredicate;
     private EdgeInFilterResultPredicate edgePredicate;
 
-    public FilterResult() {
+    public FilterResult(AbstractNodeTree nodeTree, AbstractEdgeTree edgeTree) {
+        this.nodeTree = nodeTree;
+        this.edgeTree = edgeTree;
         nodePredicate = new NodeInFilterResultPredicate();
         edgePredicate = new EdgeInFilterResultPredicate();
     }

@@ -29,6 +29,7 @@ import org.gephi.graph.api.Tree;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.PropositionManager;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.filter.FilterControl;
 import org.gephi.graph.dhns.filter.FilterResult;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.CloneNode;
@@ -53,7 +54,7 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         this.view = dhns.getViewManager().getMainView();
         this.nodeProposition = new PropositionImpl<AbstractNode>();
         this.edgeProposition = new PropositionImpl<AbstractEdge>();
-
+        this.filterControl  = new FilterControl(dhns);
         PropositionManager propositionManager = dhns.getPropositionManager();
 
         if (visible) {
@@ -127,10 +128,10 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         return res;
     }
 
-    public NodeIterable getNodes() {
+    public NodeIterable getNodes() {   
         readLock();
         if (filtered) {
-            FilterResult filterResult = filterControl.getCurrentFilterResult();
+             FilterResult filterResult = filterControl.getCurrentFilterResult();
             return dhns.newNodeIterable(filterResult.nodeIterator());
         }
         return dhns.newNodeIterable(new TreeIterator(dhns.getTreeStructure(), nodeProposition));

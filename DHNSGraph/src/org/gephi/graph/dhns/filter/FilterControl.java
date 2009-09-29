@@ -21,6 +21,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.graph.dhns.filter;
 
+import org.gephi.graph.dhns.core.Dhns;
+import org.gephi.graph.dhns.node.iterators.TreeIterator;
+import org.gephi.graph.dhns.proposition.Tautology;
+import org.gephi.graph.dhns.utils.avl.AbstractEdgeTree;
+import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
+
 /**
  *  Cette classe contient un etant du graphe, après filtrage. Un graphe non filtré na pas besoin de cache car les iterateurs directs
  * sont assez rapides pour fonctionner en boucle continue. Cette cache doit être regénéré à la demande de lecture du graphe après une
@@ -38,8 +44,34 @@ package org.gephi.graph.dhns.filter;
 public class FilterControl {
 
     private FilterResult currentResult;
+    private Dhns dhns;
+
+    public FilterControl(Dhns dhns) {
+        this.dhns = dhns;
+        currentResult = new FilterResult(new AbstractNodeTree(), new AbstractEdgeTree());
+    }
 
     public FilterResult getCurrentFilterResult() {
         return currentResult;
+    }
+
+    private boolean update() {
+        AbstractNodeTree nodeTree = new AbstractNodeTree();
+        TreeIterator nodeIterator = new TreeIterator(dhns.getTreeStructure(), new Tautology());
+        for(;nodeIterator.hasNext();) {
+            nodeTree.add(nodeIterator.next());
+        }
+        AbstractEdgeTree edgeTree = new AbstractEdgeTree();
+
+        FilterResult filterResult = new FilterResult(nodeTree, edgeTree);
+        currentResult = filterResult;
+        
+        return true;
+    }
+
+    public void filterParameterUpdated() {
+        dhns.getWriteLock().lock();
+        update();
+        dhns.getWriteLock().unlock();
     }
 }
