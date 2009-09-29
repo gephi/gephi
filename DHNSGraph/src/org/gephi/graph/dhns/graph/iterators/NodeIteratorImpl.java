@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.graph;
+package org.gephi.graph.dhns.graph.iterators;
 
 import java.util.concurrent.locks.Lock;
 import org.gephi.graph.api.Node;
@@ -55,5 +55,13 @@ public class NodeIteratorImpl implements NodeIterator {
 
     public void remove() {
         iterator.remove();
+    }
+
+    public AbstractNodeIterator getIterator() {
+        return iterator;
+    }
+
+    public Lock getLock() {
+        return lock;
     }
 }

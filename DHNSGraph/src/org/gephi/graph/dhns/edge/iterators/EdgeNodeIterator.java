@@ -23,10 +23,10 @@ package org.gephi.graph.dhns.edge.iterators;
 import java.util.Iterator;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
@@ -48,9 +48,9 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
     protected boolean undirected;
 
     //Proposition
-    protected Proposition<AbstractEdge> proposition;
+    protected Predicate<AbstractEdge> proposition;
 
-    public EdgeNodeIterator(AbstractNode node, EdgeNodeIteratorMode mode, boolean undirected, Proposition<AbstractEdge> proposition) {
+    public EdgeNodeIterator(AbstractNode node, EdgeNodeIteratorMode mode, boolean undirected, Predicate<AbstractEdge> proposition) {
         this.node = node;
         this.mode = mode;
         this.undirected = undirected;

@@ -18,31 +18,32 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.graph;
+package org.gephi.graph.dhns.graph.iterators;
 
 import java.util.concurrent.locks.Lock;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 
 /**
- * Iterator for {@link NodeIterableImpl} which validates the given condition.
  *
  * @author Mathieu Bastian
  */
-public class EdgeIteratorConditionImpl extends EdgeIteratorImpl {
+public class FilteredEdgeIteratorImpl extends EdgeIteratorImpl {
 
-    protected Condition<Edge> condition;
+    protected Predicate<Edge> predicate;
     protected Edge pointer;
 
-    public EdgeIteratorConditionImpl(AbstractEdgeIterator iterator, Lock lock, Condition<Edge> condition) {
+    public FilteredEdgeIteratorImpl(AbstractEdgeIterator iterator, Lock lock, Predicate<Edge> predicate) {
         super(iterator, lock);
+        this.predicate = predicate;
     }
 
     @Override
     public boolean hasNext() {
         while (iterator.hasNext()) {
             pointer = iterator.next();
-            if (condition.isValid(pointer)) {
+            if (predicate.evaluate(pointer)) {
                 return true;
             }
         }

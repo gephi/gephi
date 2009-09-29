@@ -29,6 +29,7 @@ import org.gephi.graph.api.Tree;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.PropositionManager;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.filter.FilterResult;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.CloneNode;
 import org.gephi.graph.dhns.node.PreNode;
@@ -115,8 +116,11 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         readLock();
         boolean res = false;
         if (absNode.isValid()) {
-            if (nodeProposition.evaluate(absNode) && dhns.getTreeStructure().getTree().contains(absNode)) {
-                res = true;
+            if (filtered) {
+                res = dhns.getTreeStructure().getTree().contains(absNode);
+            } else {
+                FilterResult filterResult = filterControl.getCurrentFilterResult();
+                res = filterResult.evaluateNode(absNode);
             }
         }
         readUnlock();
@@ -125,18 +129,28 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
 
     public NodeIterable getNodes() {
         readLock();
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newNodeIterable(filterResult.nodeIterator());
+        }
         return dhns.newNodeIterable(new TreeIterator(dhns.getTreeStructure(), nodeProposition));
+
     }
 
     public int getNodeCount() {
         readLock();
         int count = 0;
-        if (nodeProposition.isTautology()) {
-            count = dhns.getTreeStructure().getTreeSize() - 1;// -1 Exclude virtual root
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            count = filterResult.getNodeCount();
         } else {
-            for (TreeListIterator itr = new TreeListIterator(dhns.getTreeStructure().getTree(), 1); itr.hasNext();) {
-                if (nodeProposition.evaluate(itr.next())) {
-                    count++;
+            if (nodeProposition.isTautology()) {
+                count = dhns.getTreeStructure().getTreeSize() - 1;// -1 Exclude virtual root
+            } else {
+                for (TreeListIterator itr = new TreeListIterator(dhns.getTreeStructure().getTree(), 1); itr.hasNext();) {
+                    if (nodeProposition.evaluate(itr.next())) {
+                        count++;
+                    }
                 }
             }
         }
@@ -152,7 +166,12 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
             readUnlock();
             throw new IllegalArgumentException("Level must be between 0 and the height of the tree, currently height=" + (height - 1));
         }
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newNodeIterable(new LevelIterator(dhns.getTreeStructure(), level, filterResult.getNodePredicate()));
+        }
         return dhns.newNodeIterable(new LevelIterator(dhns.getTreeStructure(), level, nodeProposition));
+
     }
 
     public int getLevelSize(int level) {
@@ -164,11 +183,18 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
             throw new IllegalArgumentException("Level must be between 0 and the height of the tree, currently height=" + (height - 1));
         }
         int res = 0;
-        for (LevelIterator itr = new LevelIterator(dhns.getTreeStructure(), level, nodeProposition); itr.hasNext();) {
-            itr.next();
-            res++;
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            for (LevelIterator itr = new LevelIterator(dhns.getTreeStructure(), level, filterResult.getNodePredicate()); itr.hasNext();) {
+                itr.next();
+                res++;
+            }
+        } else {
+            for (LevelIterator itr = new LevelIterator(dhns.getTreeStructure(), level, nodeProposition); itr.hasNext();) {
+                itr.next();
+                res++;
+            }
         }
-
         readUnlock();
         return res;
     }
@@ -232,10 +258,19 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        ChildrenIterator itr = new ChildrenIterator(dhns.getTreeStructure(), absNode, nodeProposition);
-        for (; itr.hasNext();) {
-            itr.next();
-            count++;
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            ChildrenIterator itr = new ChildrenIterator(dhns.getTreeStructure(), absNode, filterResult.getNodePredicate());
+            for (; itr.hasNext();) {
+                itr.next();
+                count++;
+            }
+        } else {
+            ChildrenIterator itr = new ChildrenIterator(dhns.getTreeStructure(), absNode, nodeProposition);
+            for (; itr.hasNext();) {
+                itr.next();
+                count++;
+            }
         }
         readUnlock();
         return count;
@@ -255,17 +290,29 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     public NodeIterable getChildren(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
+        if(filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newNodeIterable(new ChildrenIterator(dhns.getTreeStructure(), absNode, filterResult.getNodePredicate()));
+        }
         return dhns.newNodeIterable(new ChildrenIterator(dhns.getTreeStructure(), absNode, nodeProposition));
     }
 
     public NodeIterable getDescendant(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
+        if(filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newNodeIterable(new DescendantIterator(dhns.getTreeStructure(), absNode, filterResult.getNodePredicate()));
+        }
         return dhns.newNodeIterable(new DescendantIterator(dhns.getTreeStructure(), absNode, nodeProposition));
     }
 
     public NodeIterable getTopNodes() {
         readLock();
+        if(filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newNodeIterable(new ChildrenIterator(dhns.getTreeStructure(), filterResult.getNodePredicate()));
+        }
         return dhns.newNodeIterable(new ChildrenIterator(dhns.getTreeStructure(), nodeProposition));
     }
 

@@ -30,6 +30,7 @@ import org.gephi.graph.api.NodePredicate;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
+import org.gephi.graph.dhns.filter.FilterControl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 import org.gephi.graph.dhns.proposition.PropositionImpl;
@@ -53,6 +54,10 @@ public abstract class AbstractGraphImpl implements FilteredGraph {
 
     //View
     protected View view;
+
+    //Filter
+    protected boolean filtered = true;
+    protected FilterControl filterControl;
 
     public void addNodePredicate(NodePredicate nodePredicate) {
         nodeProposition.addPredicate(nodePredicate);

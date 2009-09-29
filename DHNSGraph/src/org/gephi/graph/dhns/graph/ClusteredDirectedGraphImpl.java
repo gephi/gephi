@@ -37,6 +37,7 @@ import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
 import org.gephi.graph.dhns.edge.iterators.MetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.MetaEdgeNodeIterator;
 import org.gephi.graph.dhns.edge.iterators.RangeEdgeIterator;
+import org.gephi.graph.dhns.filter.FilterResult;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
@@ -103,6 +104,10 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public NodeIterable getSuccessors(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT, false, filterResult.getEdgePredicate()), absNode, filterResult.getNodePredicate()));
+        }
         return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT, false, edgeProposition), absNode, nodeProposition));
     }
 
@@ -110,6 +115,10 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public NodeIterable getPredecessors(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT, false, filterResult.getEdgePredicate()), absNode, filterResult.getNodePredicate()));
+        }
         return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.IN, false, edgeProposition), absNode, nodeProposition));
     }
 
@@ -128,14 +137,25 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
-            for (Iterator<AbstractEdge> itr = absNode.getEdgesInTree().iterator(); itr.hasNext();) {
-                if (edgeProposition.evaluate(itr.next())) {
-                    count++;
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            if (!absNode.getEdgesInTree().isEmpty()) {
+                for (Iterator<AbstractEdge> itr = absNode.getEdgesInTree().iterator(); itr.hasNext();) {
+                    if (filterResult.getEdgePredicate().evaluate(itr.next())) {
+                        count++;
+                    }
                 }
             }
         } else {
-            count = absNode.getEdgesInTree().getCount();
+            if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
+                for (Iterator<AbstractEdge> itr = absNode.getEdgesInTree().iterator(); itr.hasNext();) {
+                    if (edgeProposition.evaluate(itr.next())) {
+                        count++;
+                    }
+                }
+            } else {
+                count = absNode.getEdgesInTree().getCount();
+            }
         }
         readUnlock();
         return count;
@@ -146,14 +166,25 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
-            for (Iterator<AbstractEdge> itr = absNode.getEdgesOutTree().iterator(); itr.hasNext();) {
-                if (edgeProposition.evaluate(itr.next())) {
-                    count++;
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            if (!absNode.getEdgesOutTree().isEmpty()) {
+                for (Iterator<AbstractEdge> itr = absNode.getEdgesOutTree().iterator(); itr.hasNext();) {
+                    if (filterResult.getEdgePredicate().evaluate(itr.next())) {
+                        count++;
+                    }
                 }
             }
         } else {
-            count = absNode.getEdgesOutTree().getCount();
+            if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
+                for (Iterator<AbstractEdge> itr = absNode.getEdgesOutTree().iterator(); itr.hasNext();) {
+                    if (edgeProposition.evaluate(itr.next())) {
+                        count++;
+                    }
+                }
+            } else {
+                count = absNode.getEdgesOutTree().getCount();
+            }
         }
         readUnlock();
         return count;
@@ -167,6 +198,10 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     //Graph
     public EdgeIterable getEdges() {
         readLock();
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), filterResult.nodeIterator(), false, filterResult.getEdgePredicate()));
+        }
         return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
     }
 
@@ -174,6 +209,10 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public EdgeIterable getInEdges(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.IN, false, filterResult.getEdgePredicate()));
+        }
         return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.IN, false, edgeProposition));
     }
 
@@ -181,6 +220,10 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public EdgeIterable getOutEdges(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT, false, filterResult.getEdgePredicate()));
+        }
         return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT, false, edgeProposition));
     }
 
@@ -188,6 +231,10 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public EdgeIterable getEdges(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, filterResult.getEdgePredicate()));
+        }
         return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, edgeProposition));
     }
 
@@ -195,6 +242,10 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public NodeIterable getNeighbors(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, filterResult.getEdgePredicate()), absNode, filterResult.getNodePredicate()));
+        }
         return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition), absNode, nodeProposition));
     }
 
@@ -205,8 +256,15 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         readLock();
         AbstractEdge res = null;
         AbstractEdge edge = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
-        if (edge != null && edgeProposition.evaluate(edge)) {
-            res = edge;
+        if (edge != null) {
+            if (filtered) {
+                FilterResult filterResult = filterControl.getCurrentFilterResult();
+                if (filterResult.evaluateEdge(edge)) {
+                    res = edge;
+                }
+            } else if (edgeProposition.evaluate(edge)) {
+                res = edge;
+            }
         }
         readUnlock();
         return res;
@@ -216,9 +274,14 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public int getEdgeCount() {
         readLock();
         int count = 0;
-        for (EdgeIterator itr = new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition); itr.hasNext();) {
-            itr.next();
-            count++;
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            count = filterResult.getEdgeCount();
+        } else {
+            for (EdgeIterator itr = new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition); itr.hasNext();) {
+                itr.next();
+                count++;
+            }
         }
         readUnlock();
         return count;
@@ -247,6 +310,10 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public EdgeIterable getInnerEdges(Node nodeGroup) {
         AbstractNode absNode = checkNode(nodeGroup);
         readLock();
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newEdgeIterable(new RangeEdgeIterator(dhns.getTreeStructure(), absNode, absNode, true, false, filterResult.getNodePredicate(), filterResult.getEdgePredicate()));
+        }
         return dhns.newEdgeIterable(new RangeEdgeIterator(dhns.getTreeStructure(), absNode, absNode, true, false, nodeProposition, edgeProposition));
     }
 
@@ -254,17 +321,29 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public EdgeIterable getOuterEdges(Node nodeGroup) {
         AbstractNode absNode = checkNode(nodeGroup);
         readLock();
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newEdgeIterable(new RangeEdgeIterator(dhns.getTreeStructure(), absNode, absNode, false, false, filterResult.getNodePredicate(), filterResult.getEdgePredicate()));
+        }
         return dhns.newEdgeIterable(new RangeEdgeIterator(dhns.getTreeStructure(), absNode, absNode, false, false, nodeProposition, edgeProposition));
     }
 
     //ClusteredGraph
     public EdgeIterable getMetaEdges() {
         readLock();
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newEdgeIterable(new MetaEdgeIterator(view, dhns.getTreeStructure(), filterResult.nodeIterator(), false, filterResult.getEdgePredicate()));
+        }
         return dhns.newEdgeIterable(new MetaEdgeIterator(view, dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
     }
 
     public EdgeIterable getEdgesAndMetaEdges() {
         readLock();
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newEdgeIterable(new EdgeAndMetaEdgeIterator(view, dhns.getTreeStructure(), filterResult.nodeIterator(), false, filterResult.getEdgePredicate()));
+        }
         return dhns.newEdgeIterable(new EdgeAndMetaEdgeIterator(view, dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
     }
 
@@ -272,6 +351,10 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public EdgeIterable getMetaEdges(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newEdgeIterable(new MetaEdgeNodeIterator(view, absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, filterResult.getEdgePredicate()));
+        }
         return dhns.newEdgeIterable(new MetaEdgeNodeIterator(view, absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, edgeProposition));
     }
 
@@ -279,6 +362,10 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public EdgeIterable getMetaInEdges(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newEdgeIterable(new MetaEdgeNodeIterator(view, absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.IN, false, filterResult.getEdgePredicate()));
+        }
         return dhns.newEdgeIterable(new MetaEdgeNodeIterator(view, absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.IN, false, edgeProposition));
     }
 
@@ -286,6 +373,10 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     public EdgeIterable getMetaOutEdges(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newEdgeIterable(new MetaEdgeNodeIterator(view, absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.OUT, false, filterResult.getEdgePredicate()));
+        }
         return dhns.newEdgeIterable(new MetaEdgeNodeIterator(view, absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.OUT, false, edgeProposition));
     }
 
@@ -294,14 +385,25 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        if (!edgeProposition.isTautology() && !absNode.getMetaEdgesInTree(view).isEmpty()) {
-            for (Iterator<MetaEdgeImpl> itr = absNode.getMetaEdgesInTree(view).iterator(); itr.hasNext();) {
-                if (edgeProposition.evaluate(itr.next())) {
-                    count++;
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            if (!absNode.getMetaEdgesInTree(view).isEmpty()) {
+                for (Iterator<MetaEdgeImpl> itr = absNode.getMetaEdgesInTree(view).iterator(); itr.hasNext();) {
+                    if (filterResult.evaluateEdge(itr.next())) {
+                        count++;
+                    }
                 }
             }
         } else {
-            count = absNode.getMetaEdgesInTree(view).getCount();
+            if (!edgeProposition.isTautology() && !absNode.getMetaEdgesInTree(view).isEmpty()) {
+                for (Iterator<MetaEdgeImpl> itr = absNode.getMetaEdgesInTree(view).iterator(); itr.hasNext();) {
+                    if (edgeProposition.evaluate(itr.next())) {
+                        count++;
+                    }
+                }
+            } else {
+                count = absNode.getMetaEdgesInTree(view).getCount();
+            }
         }
         readUnlock();
         return count;
@@ -312,14 +414,25 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
         AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        if (!edgeProposition.isTautology() && !absNode.getMetaEdgesOutTree(view).isEmpty()) {
-            for (Iterator<MetaEdgeImpl> itr = absNode.getMetaEdgesOutTree(view).iterator(); itr.hasNext();) {
-                if (edgeProposition.evaluate(itr.next())) {
-                    count++;
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            if (!absNode.getMetaEdgesOutTree(view).isEmpty()) {
+                for (Iterator<MetaEdgeImpl> itr = absNode.getMetaEdgesOutTree(view).iterator(); itr.hasNext();) {
+                    if (filterResult.evaluateEdge(itr.next())) {
+                        count++;
+                    }
                 }
             }
         } else {
-            count = absNode.getMetaEdgesOutTree(view).getCount();
+            if (!edgeProposition.isTautology() && !absNode.getMetaEdgesOutTree(view).isEmpty()) {
+                for (Iterator<MetaEdgeImpl> itr = absNode.getMetaEdgesOutTree(view).iterator(); itr.hasNext();) {
+                    if (edgeProposition.evaluate(itr.next())) {
+                        count++;
+                    }
+                }
+            } else {
+                count = absNode.getMetaEdgesOutTree(view).getCount();
+            }
         }
         readUnlock();
         return count;

@@ -26,8 +26,8 @@ import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
@@ -45,9 +45,9 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
     protected DurableAVLNode currentNode;
 
     //Proposition
-    protected Proposition<AbstractNode> proposition;
+    protected Predicate<AbstractNode> proposition;
 
-    public TreeIterator(TreeStructure treeStructure, Proposition<AbstractNode> proposition) {
+    public TreeIterator(TreeStructure treeStructure, Predicate<AbstractNode> proposition) {
         this.treeList = treeStructure.getTree();
         nextIndex = 1;
         diffIndex = 2;
@@ -104,13 +104,13 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
     }
 
     public AbstractNode next() {
-        if (proposition.isSkipping()) {
-            nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
-            diffIndex = nextIndex - currentNode.getValue().pre;
-        } else {
-            nextIndex++;
-            diffIndex = 1;
-        }
+        //if (proposition.isSkipping()) {
+        nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
+        diffIndex = nextIndex - currentNode.getValue().pre;
+        /*} else {
+        nextIndex++;
+        diffIndex = 1;
+        }*/
         return currentNode.getValue();
     }
 

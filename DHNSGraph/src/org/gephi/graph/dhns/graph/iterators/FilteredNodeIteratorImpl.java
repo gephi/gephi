@@ -18,41 +18,43 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.graph;
+package org.gephi.graph.dhns.graph.iterators;
 
 import java.util.concurrent.locks.Lock;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.EdgeIterator;
-import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Predicate;
+import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 
 /**
- * Iterator for {@link EdgeIterableImpl}.
  *
  * @author Mathieu Bastian
  */
-public class EdgeIteratorImpl implements EdgeIterator {
+public class FilteredNodeIteratorImpl extends NodeIteratorImpl {
 
-    protected AbstractEdgeIterator iterator;
-    protected Lock lock;
+    protected Predicate<Node> predicate;
+    protected Node pointer;
 
-    public EdgeIteratorImpl(AbstractEdgeIterator iterator, Lock lock) {
-        this.iterator = iterator;
-        this.lock = lock;
+    public FilteredNodeIteratorImpl(AbstractNodeIterator iterator, Lock lock, Predicate<Node> predicate) {
+        super(iterator, lock);
+        this.predicate = predicate;
     }
 
+    @Override
     public boolean hasNext() {
-        boolean res = iterator.hasNext();
-        if (!res && lock != null) {
+        while (iterator.hasNext()) {
+            pointer = iterator.next();
+            if (predicate.evaluate(pointer)) {
+                return true;
+            }
+        }
+        if (lock != null) {
             lock.unlock();
         }
-        return res;
+        return false;
     }
 
-    public Edge next() {
-        return iterator.next();
-    }
-
-    public void remove() {
-        iterator.remove();
+    @Override
+    public Node next() {
+        return pointer;
     }
 }

@@ -23,6 +23,7 @@ package org.gephi.graph.dhns.edge.iterators;
 import java.util.Iterator;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.node.AbstractNode;
@@ -50,9 +51,9 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
     protected boolean undirected;
 
     //Proposition
-    protected Proposition<AbstractEdge> edgeProposition;
+    protected Predicate<AbstractEdge> edgeProposition;
 
-    public RangeEdgeIterator(TreeStructure treeStructure, AbstractNode nodeGroup, AbstractNode target, boolean inner, boolean undirected, Proposition<AbstractNode> nodeProposition, Proposition<AbstractEdge> edgeProposition) {
+    public RangeEdgeIterator(TreeStructure treeStructure, AbstractNode nodeGroup, AbstractNode target, boolean inner, boolean undirected, Predicate<AbstractNode> nodeProposition, Predicate<AbstractEdge> edgeProposition) {
         nodeIterator = new DescendantAndSelfIterator(treeStructure, nodeGroup, nodeProposition);
         this.inner = inner;
         this.nodeGroup = nodeGroup;

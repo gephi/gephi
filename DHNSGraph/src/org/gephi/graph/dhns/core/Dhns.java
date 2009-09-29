@@ -27,12 +27,11 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
-import org.gephi.graph.dhns.graph.Condition;
-import org.gephi.graph.dhns.graph.DynamicGraphImpl;
-import org.gephi.graph.dhns.graph.EdgeIterableImpl;
-import org.gephi.graph.dhns.graph.NodeIterableImpl;
+import org.gephi.graph.dhns.graph.iterators.EdgeIterableImpl;
+import org.gephi.graph.dhns.graph.iterators.NodeIterableImpl;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 import org.gephi.graph.dhns.view.ViewManager;
 
@@ -135,12 +134,12 @@ public class Dhns {
         return new EdgeIterableImpl(iterator, readWriteLock.readLock());
     }
 
-    public NodeIterable newNodeIterable(AbstractNodeIterator iterator, Condition<Node> condition) {
-        return new NodeIterableImpl(iterator, readWriteLock.readLock(), condition);
+    public NodeIterable newNodeIterable(AbstractNodeIterator iterator, Predicate<Node> predicate) {
+        return new NodeIterableImpl(iterator, readWriteLock.readLock());
     }
 
-    public EdgeIterable newEdgeIterable(AbstractEdgeIterator iterator, Condition<Edge> condition) {
-        return new EdgeIterableImpl(iterator, readWriteLock.readLock(), condition);
+    public EdgeIterable newEdgeIterable(AbstractEdgeIterator iterator, Predicate<Edge> predicate) {
+        return new EdgeIterableImpl(iterator, readWriteLock.readLock(), predicate);
     }
 
     //Locking

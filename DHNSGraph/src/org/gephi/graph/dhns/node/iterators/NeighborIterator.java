@@ -22,10 +22,10 @@ package org.gephi.graph.dhns.node.iterators;
 
 import java.util.Iterator;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
@@ -39,9 +39,9 @@ public class NeighborIterator extends AbstractNodeIterator implements Iterator<N
     private AbstractNode owner;
     private AbstractNode pointer;
     //Propostion
-    private Proposition<AbstractNode> proposition;
+    private Predicate<AbstractNode> proposition;
 
-    public NeighborIterator(AbstractEdgeIterator edgeIterator, AbstractNode owner, Proposition<AbstractNode> proposition) {
+    public NeighborIterator(AbstractEdgeIterator edgeIterator, AbstractNode owner, Predicate<AbstractNode> proposition) {
         this.edgeIterator = edgeIterator;
         this.owner = owner;
         if (proposition == null) {

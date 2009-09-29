@@ -24,8 +24,8 @@ import java.util.Iterator;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.proposition.Proposition;
 
 /**
  * {@link AbstractNode} iterator for children of a node, enabled or not.
@@ -35,11 +35,11 @@ import org.gephi.graph.dhns.proposition.Proposition;
  */
 public class DescendantAndSelfIterator extends DescendantIterator implements Iterator<Node>, ResetableIterator {
 
-    public DescendantAndSelfIterator(TreeStructure treeStructure, Proposition<AbstractNode> proposition) {
+    public DescendantAndSelfIterator(TreeStructure treeStructure, Predicate<AbstractNode> proposition) {
         super(treeStructure, proposition);
     }
 
-    public DescendantAndSelfIterator(TreeStructure treeStructure, AbstractNode node, Proposition<AbstractNode> proposition) {
+    public DescendantAndSelfIterator(TreeStructure treeStructure, AbstractNode node, Predicate<AbstractNode> proposition) {
         super(treeStructure, node, proposition);
     }
 

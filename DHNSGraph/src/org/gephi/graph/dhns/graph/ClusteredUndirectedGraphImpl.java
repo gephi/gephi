@@ -36,6 +36,7 @@ import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
 import org.gephi.graph.dhns.edge.iterators.MetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.MetaEdgeNodeIterator;
 import org.gephi.graph.dhns.edge.iterators.RangeEdgeIterator;
+import org.gephi.graph.dhns.filter.FilterResult;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
@@ -115,12 +116,20 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
 
     public EdgeIterable getEdges() {
         readLock();
+        if(filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), filterResult.nodeIterator(), true, filterResult.getEdgePredicate()));
+        }
         return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), true, edgeProposition));
     }
 
     public EdgeIterable getEdges(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
+        if(filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, filterResult.getEdgePredicate()));
+        }
         return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition));
     }
 

@@ -18,36 +18,41 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.graph;
+package org.gephi.graph.dhns.graph.iterators;
 
 import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
-import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeIterable;
-import org.gephi.graph.api.NodeIterator;
-import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.EdgeIterator;
+import org.gephi.graph.api.Predicate;
+import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 
 /**
- * Implementation of <code>NodeIterable</code> with automatic lock unlocking when <code>hasNext</code>
+ * Implementation of <code>EdgeIterable</code> with automatic lock unlocking when <code>hasNext</code>
  * returns <code>false</code>.
  * <p>
  * The <code>doBreak</code> method has to be called if the loop is interrupted.
  *
  * @author Mathieu Bastian
  */
-public class NodeIterableImpl implements NodeIterable {
+public class EdgeIterableImpl implements EdgeIterable {
 
-    private NodeIteratorImpl iterator;
+    private EdgeIteratorImpl iterator;
 
-    public NodeIterableImpl(AbstractNodeIterator iterator, Lock lock) {
-        this.iterator = new NodeIteratorImpl(iterator, lock);
+    public EdgeIterableImpl(AbstractEdgeIterator iterator, Lock lock) {
+        this.iterator = new EdgeIteratorImpl(iterator, lock);
     }
 
-    public NodeIterableImpl(AbstractNodeIterator iterator, Lock lock, Condition<Node> condition) {
-        this.iterator = new NodeIteratorConditionImpl(iterator, lock, condition);
+    public EdgeIterableImpl(AbstractEdgeIterator iterator, Lock lock, Predicate<Edge> predicate) {
+        this.iterator = new FilteredEdgeIteratorImpl(iterator, lock, predicate);
     }
 
-    public NodeIterator iterator() {
+    public EdgeIterableImpl(EdgeIterableImpl iterable, Predicate<Edge> predicate) {
+        this(iterable.getIterator().getIterator(), iterable.getIterator().getLock(), predicate);
+    }
+
+    public EdgeIterator iterator() {
         return iterator;
     }
 
@@ -57,11 +62,15 @@ public class NodeIterableImpl implements NodeIterable {
         }
     }
 
-    public Node[] toArray() {
-        ArrayList<Node> list = new ArrayList<Node>();
+    public Edge[] toArray() {
+        ArrayList<Edge> list = new ArrayList<Edge>();
         for (; iterator.hasNext();) {
             list.add(iterator.next());
         }
-        return list.toArray(new Node[0]);
+        return list.toArray(new Edge[0]);
+    }
+
+    public EdgeIteratorImpl getIterator() {
+        return iterator;
     }
 }

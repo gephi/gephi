@@ -23,6 +23,7 @@ package org.gephi.graph.dhns.edge.iterators;
 import java.util.Iterator;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
@@ -50,9 +51,9 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
     protected View view;
 
     //Proposition
-    protected Proposition<AbstractEdge> proposition;
+    protected Predicate<AbstractEdge> proposition;
 
-    public MetaEdgeNodeIterator(View view, AbstractNode node, EdgeNodeIteratorMode mode, boolean undirected, Proposition<AbstractEdge> proposition) {
+    public MetaEdgeNodeIterator(View view, AbstractNode node, EdgeNodeIteratorMode mode, boolean undirected, Predicate<AbstractEdge> proposition) {
         this.node = node;
         this.mode = mode;
         this.view = view;

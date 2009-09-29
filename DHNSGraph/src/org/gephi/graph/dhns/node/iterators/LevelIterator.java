@@ -22,6 +22,7 @@ package org.gephi.graph.dhns.node.iterators;
 
 import java.util.Iterator;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.core.DurableTreeList;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.graph.dhns.core.TreeStructure;
@@ -44,9 +45,9 @@ public class LevelIterator extends AbstractNodeIterator implements Iterator<Node
     protected int level;
 
     //Proposition
-    protected Proposition<AbstractNode> proposition;
+    protected Predicate<AbstractNode> proposition;
 
-    public LevelIterator(TreeStructure treeStructure, int level, Proposition<AbstractNode> proposition) {
+    public LevelIterator(TreeStructure treeStructure, int level, Predicate<AbstractNode> proposition) {
         this.treeList = treeStructure.getTree();
         this.nextIndex = 1;
         this.diffIndex = 2;

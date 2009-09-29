@@ -26,6 +26,7 @@ import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
@@ -46,9 +47,9 @@ public class DescendantIterator extends AbstractNodeIterator implements Iterator
     protected boolean loopStart = true;
 
     //Proposition
-    protected Proposition<AbstractNode> proposition;
+    protected Predicate<AbstractNode> proposition;
 
-    public DescendantIterator(TreeStructure treeStructure, Proposition<AbstractNode> proposition) {
+    public DescendantIterator(TreeStructure treeStructure, Predicate<AbstractNode> proposition) {
         this.treeList = treeStructure.getTree();
         nextIndex = 0;
         diffIndex = 2;
@@ -60,7 +61,7 @@ public class DescendantIterator extends AbstractNodeIterator implements Iterator
         }
     }
 
-    public DescendantIterator(TreeStructure treeStructure, AbstractNode node, Proposition<AbstractNode> proposition) {
+    public DescendantIterator(TreeStructure treeStructure, AbstractNode node, Predicate<AbstractNode> proposition) {
         this(treeStructure, proposition);
         setNode(node);
     }

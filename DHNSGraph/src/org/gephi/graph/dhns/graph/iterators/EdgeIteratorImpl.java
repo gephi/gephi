@@ -18,42 +18,49 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.graph;
+package org.gephi.graph.dhns.graph.iterators;
 
 import java.util.concurrent.locks.Lock;
-import org.gephi.graph.api.Node;
-import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeIterator;
+import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 
 /**
- * Iterator for {@link NodeIterableImpl} which validates the given condition.
+ * Iterator for {@link EdgeIterableImpl}.
  *
  * @author Mathieu Bastian
  */
-public class NodeIteratorConditionImpl extends NodeIteratorImpl {
+public class EdgeIteratorImpl implements EdgeIterator {
 
-    protected Condition<Node> condition;
-    protected Node pointer;
+    protected AbstractEdgeIterator iterator;
+    protected Lock lock;
 
-    public NodeIteratorConditionImpl(AbstractNodeIterator iterator, Lock lock, Condition<Node> condition) {
-        super(iterator, lock);
+    public EdgeIteratorImpl(AbstractEdgeIterator iterator, Lock lock) {
+        this.iterator = iterator;
+        this.lock = lock;
     }
 
-    @Override
     public boolean hasNext() {
-        while (iterator.hasNext()) {
-            pointer = iterator.next();
-            if (condition.isValid(pointer)) {
-                return true;
-            }
-        }
-        if (lock != null) {
+        boolean res = iterator.hasNext();
+        if (!res && lock != null) {
             lock.unlock();
         }
-        return false;
+        return res;
     }
 
-    @Override
-    public Node next() {
-        return pointer;
+    public Edge next() {
+        return iterator.next();
+    }
+
+    public void remove() {
+        iterator.remove();
+    }
+
+    public AbstractEdgeIterator getIterator() {
+        return iterator;
+    }
+
+    public Lock getLock() {
+        return lock;
     }
 }

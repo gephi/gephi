@@ -28,6 +28,7 @@ import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
@@ -44,20 +45,20 @@ import org.gephi.graph.dhns.node.iterators.TreeIterator;
 public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements ClusteredMixedGraph {
 
     protected ClusteredMixedGraphImpl clusteredCopy;
-    private Condition<Edge> undirectedCondition;
-    private Condition<Edge> directedCondition;
+    private Predicate<Edge> undirectedPredicate;
+    private Predicate<Edge> directedPredicate;
 
     public ClusteredMixedGraphImpl(Dhns dhns, boolean visible, boolean clustered) {
         super(dhns, visible, clustered);
-        directedCondition = new Condition<Edge>() {
+        directedPredicate = new Predicate<Edge>() {
 
-            public boolean isValid(Edge t) {
+            public boolean evaluate(Edge t) {
                 return t.isDirected();
             }
         };
-        undirectedCondition = new Condition<Edge>() {
+        undirectedPredicate = new Predicate<Edge>() {
 
-            public boolean isValid(Edge t) {
+            public boolean evaluate(Edge t) {
                 return !t.isDirected();
             }
         };
@@ -130,12 +131,12 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
 
     public EdgeIterable getDirectedEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition), directedCondition);
+        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition), directedPredicate);
     }
 
     public EdgeIterable getUndirectedEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition), undirectedCondition);
+        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition), undirectedPredicate);
     }
 
     public boolean isDirected(Edge edge) {
