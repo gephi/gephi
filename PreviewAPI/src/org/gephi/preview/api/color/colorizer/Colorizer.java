@@ -1,4 +1,4 @@
-package org.gephi.preview.api.color;
+package org.gephi.preview.api.color.colorizer;
 
 /**
  *
@@ -7,5 +7,4 @@ package org.gephi.preview.api.color;
 public interface Colorizer {
 
     public ColorizerType getColorizerType();
-//    void colorClient();
 }

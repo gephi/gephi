@@ -1,10 +1,12 @@
 package org.gephi.preview.color;
 
+import org.gephi.preview.api.color.Color;
+
 /**
  *
  * @author jeremy
  */
-public class SimpleColor extends Color {
+public class SimpleColor implements Color {
 
     private final java.awt.Color m_color;
 
@@ -17,17 +19,17 @@ public class SimpleColor extends Color {
     }
 
     @Override
-    public int getRed() {
+    public Integer getRed() {
         return m_color.getRed();
     }
 
     @Override
-    public int getGreen() {
+    public Integer getGreen() {
         return m_color.getGreen();
     }
 
     @Override
-    public int getBlue() {
+    public Integer getBlue() {
         return m_color.getBlue();
     }
 

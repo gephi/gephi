@@ -13,17 +13,17 @@ public interface Edge {
 
     public Color getColor();
 
-    public boolean isCurved(GraphCustomizer m_customizer);
+    public boolean isCurved();
 
-    public boolean showArrows(GraphCustomizer m_customizer);
+    public boolean showArrows();
 
     public Iterator<EdgeArrow> getArrows();
 
-    public boolean showLabel(GraphCustomizer m_customizer);
+    public boolean showLabel();
 
     public EdgeLabel getLabel();
 
-    public boolean showMiniLabels(GraphCustomizer m_customizer);
+    public boolean showMiniLabels();
 
     public Iterator<EdgeMiniLabel> getMiniLabels();
 

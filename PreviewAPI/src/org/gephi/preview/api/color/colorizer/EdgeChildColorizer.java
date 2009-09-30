@@ -1,4 +1,6 @@
-package org.gephi.preview.api.color;
+package org.gephi.preview.api.color.colorizer;
+
+import org.gephi.preview.api.color.colorizer.Colorizer;
 
 /**
  *

@@ -1,12 +1,13 @@
 package org.gephi.preview.color;
 
-import org.gephi.preview.util.Holder;
+import org.gephi.preview.api.Holder;
+import org.gephi.preview.api.color.Color;
 
 /**
  *
  * @author jeremy
  */
-public class InheritedColor extends Color {
+public class InheritedColor implements Color {
 
     private final Holder<Color> m_colorHolder;
 
@@ -15,17 +16,17 @@ public class InheritedColor extends Color {
     }
 
     @Override
-    public int getRed() {
+    public Integer getRed() {
         return m_colorHolder.getComponent().getRed();
     }
 
     @Override
-    public int getGreen() {
+    public Integer getGreen() {
         return m_colorHolder.getComponent().getGreen();
     }
 
     @Override
-    public int getBlue() {
+    public Integer getBlue() {
         return m_colorHolder.getComponent().getBlue();
     }
 

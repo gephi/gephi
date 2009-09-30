@@ -1,12 +1,19 @@
 package org.gephi.preview.color;
 
-import org.gephi.preview.api.color.ColorizerFactory;
-import org.gephi.preview.api.color.ColorizerType;
-import org.gephi.preview.api.color.EdgeChildColorizer;
-import org.gephi.preview.api.color.EdgeColorizer;
-import org.gephi.preview.api.color.GenericColorizer;
-import org.gephi.preview.api.color.NodeChildColorizer;
-import org.gephi.preview.api.color.NodeColorizer;
+import org.gephi.preview.color.colormode.CustomColorMode;
+import org.gephi.preview.color.colormode.EdgeBothBColorMode;
+import org.gephi.preview.color.colormode.ParentNodeColorMode;
+import org.gephi.preview.color.colormode.EdgeB1ColorMode;
+import org.gephi.preview.color.colormode.NodeOriginalColorMode;
+import org.gephi.preview.color.colormode.EdgeB2ColorMode;
+import org.gephi.preview.color.colormode.ParentEdgeColorMode;
+import org.gephi.preview.api.color.colorizer.ColorizerFactory;
+import org.gephi.preview.api.color.colorizer.ColorizerType;
+import org.gephi.preview.api.color.colorizer.EdgeChildColorizer;
+import org.gephi.preview.api.color.colorizer.EdgeColorizer;
+import org.gephi.preview.api.color.colorizer.GenericColorizer;
+import org.gephi.preview.api.color.colorizer.NodeChildColorizer;
+import org.gephi.preview.api.color.colorizer.NodeColorizer;
 
 /**
  *

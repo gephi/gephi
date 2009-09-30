@@ -1,7 +1,7 @@
-package org.gephi.preview.color;
+package org.gephi.preview.color.colormode;
 
-import org.gephi.preview.api.color.ColorizerType;
-import org.gephi.preview.api.color.EdgeChildColorizer;
+import org.gephi.preview.api.color.colorizer.ColorizerType;
+import org.gephi.preview.api.color.colorizer.EdgeChildColorizer;
 
 /**
  *

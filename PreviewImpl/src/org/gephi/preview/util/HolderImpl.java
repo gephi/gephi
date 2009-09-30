@@ -1,10 +1,12 @@
 package org.gephi.preview.util;
 
+import org.gephi.preview.api.Holder;
+
 /**
  *
  * @author jeremy
  */
-public class Holder<T> {
+public class HolderImpl<T> implements Holder<T> {
 
     private T m_component;
 

@@ -1,4 +1,9 @@
-package org.gephi.preview.api.color;
+package org.gephi.preview.api.color.colorizer;
+
+import org.gephi.preview.api.color.colorizer.EdgeColorizer;
+import org.gephi.preview.api.color.colorizer.GenericColorizer;
+import org.gephi.preview.api.color.colorizer.NodeColorizer;
+import org.gephi.preview.api.color.colorizer.NodeChildColorizer;
 
 /**
  *

@@ -12,4 +12,5 @@ public interface Color {
 
     public Integer getBlue();
 
+    public String toHexString();
 }

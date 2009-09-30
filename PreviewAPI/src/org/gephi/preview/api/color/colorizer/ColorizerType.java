@@ -1,4 +1,4 @@
-package org.gephi.preview.api.color;
+package org.gephi.preview.api.color.colorizer;
 
 /**
  *

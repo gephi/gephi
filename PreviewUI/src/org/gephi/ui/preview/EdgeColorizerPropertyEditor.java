@@ -1,8 +1,8 @@
 package org.gephi.ui.preview;
 
-import org.gephi.preview.api.color.Colorizer;
-import org.gephi.preview.api.color.ColorizerFactory;
-import org.gephi.preview.api.color.ColorizerType;
+import org.gephi.preview.api.color.colorizer.Colorizer;
+import org.gephi.preview.api.color.colorizer.ColorizerFactory;
+import org.gephi.preview.api.color.colorizer.ColorizerType;
 import org.openide.util.Lookup;
 
 /**

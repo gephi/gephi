@@ -1,18 +1,18 @@
-package org.gephi.preview.color;
+package org.gephi.preview.color.colormode;
 
-import org.gephi.preview.api.color.ColorizerType;
-import org.gephi.preview.api.color.EdgeChildColorizer;
-import org.gephi.preview.api.color.EdgeColorizer;
+import org.gephi.preview.api.color.colorizer.ColorizerType;
+import org.gephi.preview.api.color.colorizer.EdgeChildColorizer;
+import org.gephi.preview.api.color.colorizer.EdgeColorizer;
 
 /**
  *
  * @author jeremy
  */
-public class EdgeB1ColorMode
+public class EdgeB2ColorMode
         implements EdgeColorizer, EdgeChildColorizer {
 
     public ColorizerType getColorizerType() {
-        return ColorizerType.EDGE_B1;
+        return ColorizerType.EDGE_B2;
     }
 
 //    ColorizedEdge m_client;
@@ -30,6 +30,6 @@ public class EdgeB1ColorMode
 //    @Override
 //    public void colorClient() {
 //        m_client.setColor(new InheritedColor(
-//                m_client.getNode1().getColorHolder()));
+//                m_client.getNode2().getColorHolder()));
 //    }
 }

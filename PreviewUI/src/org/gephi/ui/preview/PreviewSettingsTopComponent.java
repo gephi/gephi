@@ -36,7 +36,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
 
         // property sheet
         PropertySheet ps = new PropertySheet();
-        ps.setNodes(new Node[] { new PreviewNode(controller.getCustomizer()) });
+        ps.setNodes(new Node[] { new PreviewNode(controller) });
         propertiesPanel.add(ps, BorderLayout.CENTER);
     }
 

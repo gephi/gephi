@@ -18,4 +18,14 @@ public interface Node {
     public NodeLabelBorder getLabelBorder();
 
     public NodeLabel getLabel();
+
+    public Color getBorderColor();
+
+    public Float getBorderWidth();
+
+    public Boolean showLabels();
+
+    public Boolean showLabelBorders();
+
+    public Holder<Color> getColorHolder();
 }

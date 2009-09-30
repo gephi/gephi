@@ -13,12 +13,13 @@ public interface Graph {
 
     public PVector getMaxPos();
 
-    public Iterator<UnidirectionalEdge> getUnidirectionalEdges();
+//    public Iterator<UnidirectionalEdge> getUnidirectionalEdges();
 
-    public Iterator<BidirectionalEdge> getBidirectionalEdges();
+//    public Iterator<BidirectionalEdge> getBidirectionalEdges();
 
-    public Iterator<SelfLoop> getSelfLoops();
+//    public Iterator<SelfLoop> getSelfLoops();
 
     public Iterator<Node> getNodes();
 
+    public boolean showNodes();
 }

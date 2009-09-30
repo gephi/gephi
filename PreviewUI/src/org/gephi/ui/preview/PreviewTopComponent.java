@@ -2,6 +2,7 @@ package org.gephi.ui.preview;
 
 import java.io.Serializable;
 import java.util.logging.Logger;
+import org.gephi.preview.api.PreviewController;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -15,7 +16,6 @@ final class PreviewTopComponent extends TopComponent {
     private static PreviewTopComponent instance;
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
-
     private static final String PREFERRED_ID = "PreviewTopComponent";
 
     private PreviewTopComponent() {
@@ -24,7 +24,7 @@ final class PreviewTopComponent extends TopComponent {
         setName(NbBundle.getMessage(PreviewTopComponent.class, "CTL_PreviewTopComponent"));
         setToolTipText(NbBundle.getMessage(PreviewTopComponent.class, "HINT_PreviewTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
-        
+
     }
 
     /** This method is called from within the constructor to
@@ -35,13 +35,12 @@ final class PreviewTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        sketch = new processing.core.PApplet();
+        sketch = new ProcessingPreview();
 
         setLayout(new java.awt.BorderLayout());
         add(sketch, java.awt.BorderLayout.CENTER);
-        ((processing.core.PApplet) sketch).init();
+        ((ProcessingPreview) sketch).init();
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Panel sketch;
     // End of variables declaration//GEN-END:variables
@@ -113,6 +112,9 @@ final class PreviewTopComponent extends TopComponent {
     }
 
     public void refreshPreview() {
-        ((processing.core.PApplet) sketch).redraw();
+        PreviewController c = PreviewSettingsTopComponent.findInstance().
+                getLookup().lookup(PreviewController.class);
+        ((ProcessingPreview) sketch).setGraph(c.getGraph(), c);
+        ((ProcessingPreview) sketch).redraw();
     }
 }

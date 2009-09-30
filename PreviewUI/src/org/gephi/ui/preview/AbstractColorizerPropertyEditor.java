@@ -18,8 +18,8 @@ import javax.swing.JColorChooser;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import org.gephi.preview.api.color.Colorizer;
-import org.gephi.preview.api.color.ColorizerType;
+import org.gephi.preview.api.color.colorizer.Colorizer;
+import org.gephi.preview.api.color.colorizer.ColorizerType;
 
 /**
  *
