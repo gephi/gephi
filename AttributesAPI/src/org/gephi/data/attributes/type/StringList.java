@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Sebastien Heymann
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -25,6 +25,7 @@ import java.util.Arrays;
 /**
  *
  * @author Mathieu Bastian
+ * @author Sebastien Heymann
  */
 public final class StringList {
 
@@ -69,6 +70,15 @@ public final class StringList {
             return null;
         }
         return list[index];
+    }
+
+    public boolean contains(String value) {
+        for (int i = 0; i < list.length; i++) {
+            if(value.equals(list[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

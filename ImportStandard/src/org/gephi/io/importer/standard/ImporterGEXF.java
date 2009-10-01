@@ -30,6 +30,7 @@ import org.gephi.data.attributes.api.AttributeClass;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.type.StringList;
 import org.gephi.data.properties.EdgeProperties;
 import org.gephi.data.properties.NodeProperties;
 import org.gephi.io.container.EdgeDraft;
@@ -73,6 +74,9 @@ public class ImporterGEXF implements XMLImporter, LongTask {
     private HashMap<String, NodeProperties> nodePropertiesAttributes;
     private HashMap<String, EdgeProperties> edgePropertiesAttributes;
 
+    //Attributes options
+    private HashMap<String, StringList> optionsAttributes;
+
     public ImporterGEXF() {
         //Default node associations
         properties.addNodePropertyAssociation(new PropertyAssociation<NodeProperties>(NodeProperties.LABEL, "label"));
@@ -91,6 +95,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
         this.report = report;
         this.nodePropertiesAttributes = new HashMap<String, NodeProperties>();
         this.edgePropertiesAttributes = new HashMap<String, EdgeProperties>();
+        this.optionsAttributes = new HashMap<String, StringList>();
 
         Progress.start(progressTicket);        //Progress
 
@@ -99,7 +104,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
 
         //Version
         String version = root.getAttribute("version");
-        if(version == null || version.equals("1.0")) {
+        if(version.isEmpty() || version.equals("1.0")) {
             ImporterGEXF10 importer = new ImporterGEXF10();
             importer.importData(document, container, report);
         }
@@ -138,7 +143,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 } else if(defaultEdgeType.equals("directed")) {
                     container.setEdgeDefault(EdgeDefault.DIRECTED);
                 } else if(defaultEdgeType.equals("double")) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGEXF_error_edgedouble"), Issue.Level.WARNING));
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgedouble"), Issue.Level.WARNING));
                 } else {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_defaultedgetype", defaultEdgeType), Issue.Level.SEVERE));
                 }
@@ -251,7 +256,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
 
                 // Type
                 String edgeType = edgeE.getAttribute("type");
-                if (edgeType != null) {
+                if (!edgeType.isEmpty()) {
                     if(edgeType.equals("undirected")) {
                         edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
                     } else if(edgeType.equals("directed")) {
@@ -308,6 +313,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
         this.report = null;
         this.nodePropertiesAttributes = null;
         this.edgePropertiesAttributes = null;
+        this.optionsAttributes= null;
     }
 
     private void setAttributesColumns(NodeList columnListE) {
@@ -336,14 +342,14 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 NodeProperties prop = properties.getNodeProperty(colTitle);
                 if (prop != null) {
                     nodePropertiesAttributes.put(colId, prop);
-                    report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGEXF_log_nodeproperty", colTitle));
+                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_nodeproperty", colTitle));
                     continue;
                 }
             } else if (colClass.equals("edge")) {
                 EdgeProperties prop = properties.getEdgeProperty(colTitle);
                 if (prop != null) {
                     edgePropertiesAttributes.put(colId, prop);
-                    report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGEXF_log_edgeeproperty", colTitle));
+                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_edgeeproperty", colTitle));
                     continue;
                 }
             }
@@ -365,13 +371,13 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 attributeType = AttributeType.STRING;
             } else if (keyType.equals("liststring")) {
                 attributeType = AttributeType.LIST_STRING;
-            } else if (keyType.equals("url")) {
+            } else if (keyType.equals("anyURI")) {
                 attributeType = AttributeType.STRING; //need to create a new type?
             } else {
                 if (keepComplexAndEmptyAttributeTypes) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGEXF_error_attributetype1", colTitle), Issue.Level.WARNING));
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributetype1", colTitle), Issue.Level.WARNING));
                 } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGEXF_error_attributetype2", colTitle), Issue.Level.WARNING));
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributetype2", colTitle), Issue.Level.WARNING));
                     continue;
                 }
             }
@@ -384,8 +390,23 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 String defaultValueStr = defaultE.getTextContent();
                 try {
                     defaultValue = attributeType.parse(defaultValueStr);
+                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_default", defaultValueStr, colTitle));
                 } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGEXF_error_attributedefault", colTitle, attributeType.getTypeString()), Issue.Level.SEVERE));
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributedefault", colTitle, attributeType.getTypeString()), Issue.Level.SEVERE));
+                }
+            }
+
+            // Options
+            NodeList optionsList = columnE.getElementsByTagName("options");
+            if (optionsList.getLength() > 0) {
+                Element optionE = (Element) optionsList.item(0);
+                String optionsValueStr = optionE.getTextContent();
+                try {
+                    StringList optionValues = new StringList(optionsValueStr, "|");
+                    optionsAttributes.put(colId, optionValues);
+                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_options", optionsValueStr, colTitle));
+                } catch (Exception e) {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributeoptions", colTitle, attributeType.getTypeString()), Issue.Level.SEVERE));
                 }
             }
 
@@ -393,11 +414,11 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             if (colClass.equals("node")) {
                 AttributeClass nodeClass = container.getAttributeManager().getNodeClass();
                 nodeClass.addAttributeColumn(colId, colTitle, attributeType, AttributeOrigin.DATA, defaultValue);
-                report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGEXF_log_nodeattribute", colTitle, attributeType.getTypeString()));
+                report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_nodeattribute", colTitle, attributeType.getTypeString()));
             } else if (colClass.equals("edge")) {
                 AttributeClass edgeClass = container.getAttributeManager().getEdgeClass();
                 edgeClass.addAttributeColumn(colId, colTitle, attributeType, AttributeOrigin.DATA, defaultValue);
-                report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGEXF_log_edgeattribute", colTitle, attributeType.getTypeString()));
+                report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_edgeattribute", colTitle, attributeType.getTypeString()));
             }
         }
     }
@@ -406,7 +427,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
         //Key
         String dataKey = dataE.getAttribute("for");
         if (dataKey.isEmpty()) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGEXF_error_datakey", nodeDraft), Issue.Level.SEVERE));
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datakey", nodeDraft), Issue.Level.SEVERE));
             return;
         }
         String dataValue = dataE.getAttribute("value");
@@ -417,9 +438,19 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             if (column != null) {
                 try {
                     Object value = column.getAttributeType().parse(dataValue);
+
+                    //Check value
+                    if(column.getAttributeType() != AttributeType.LIST_STRING) { //otherwise this is a nonsense
+                        StringList options = optionsAttributes.get(dataKey);
+                        if(options != null && !options.contains(value.toString())) {
+                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_dataoptionsvalue", dataValue, nodeId, column.getTitle()), Issue.Level.SEVERE));
+                            return;
+                        }
+                    }
+
                     nodeDraft.addAttributeValue(column, value);
                 } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGEXF_error_datavalue", dataKey, nodeId, column.getTitle()), Issue.Level.SEVERE));
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", dataKey, nodeId, column.getTitle()), Issue.Level.SEVERE));
                 }
             }
         }
@@ -429,7 +460,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
         //Key
         String dataKey = dataE.getAttribute("for");
         if (dataKey.isEmpty()) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGEXF_error_datakey", edgeDraft), Issue.Level.SEVERE));
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datakey", edgeDraft), Issue.Level.SEVERE));
             return;
         }
         String dataValue = dataE.getAttribute("value");
@@ -440,9 +471,19 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             if (column != null) {
                 try {
                     Object value = column.getAttributeType().parse(dataValue);
+                    
+                    //Check value
+                    if(column.getAttributeType() != AttributeType.LIST_STRING) { //otherwise this is a nonsense
+                        StringList options = optionsAttributes.get(dataKey);
+                        if(options != null && !options.contains(value.toString())) {
+                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_dataoptionsvalue", dataValue, edgeId, column.getTitle()), Issue.Level.SEVERE));
+                            return;
+                        }
+                    }
+
                     edgeDraft.addAttributeValue(column, value);
                 } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGEXF_error_datavalue", dataKey, edgeId, column.getTitle()), Issue.Level.SEVERE));
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", dataKey, edgeId, column.getTitle()), Issue.Level.SEVERE));
                 }
             }
         }
@@ -466,7 +507,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
         this.progressTicket = progressTicket;
     }
 
-    public class ImporterGEXF10 {
+    public final class ImporterGEXF10 {
 
         /**
          * GEXF 1.0 import
@@ -504,14 +545,16 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             if(edgeTypeE != null && edgeTypeE.getLength() > 0) {
                 String defaultEdgeType = ((Element) edgeTypeE.item(0)).getAttribute("defaultedgetype");
 
-                if(defaultEdgeType.equals("simple")) {
-                    container.setEdgeDefault(EdgeDefault.UNDIRECTED);
-                } else if(defaultEdgeType.equals("directed")) {
-                    container.setEdgeDefault(EdgeDefault.DIRECTED);
-                } else if(defaultEdgeType.equals("double")) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGEXF_error_edgedouble"), Issue.Level.WARNING));
-                } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_defaultedgetype"), Issue.Level.SEVERE));
+                if(!defaultEdgeType.isEmpty()) {
+                    if(defaultEdgeType.equals("simple")) {
+                        container.setEdgeDefault(EdgeDefault.UNDIRECTED);
+                    } else if(defaultEdgeType.equals("directed")) {
+                        container.setEdgeDefault(EdgeDefault.DIRECTED);
+                    } else if(defaultEdgeType.equals("double")) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgedouble"), Issue.Level.WARNING));
+                    } else {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_defaultedgetype"), Issue.Level.SEVERE));
+                    }
                 }
             }
 
@@ -621,7 +664,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
 
                 // Type
                 String edgeType = edgeE.getAttribute("type");
-                if (edgeType != null) {
+                if (!edgeType.isEmpty()) {
                     if(edgeType.equals("sim")) {
                         edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
                     } else if(edgeType.equals("dir")) {
@@ -668,7 +711,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             //Key
             String dataKey = dataE.getAttribute("id");
             if (dataKey.isEmpty()) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGEXF_error_datakey1", nodeDraft), Issue.Level.SEVERE));
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datakey1", nodeDraft), Issue.Level.SEVERE));
                 return;
             }
             String dataValue = dataE.getAttribute("value");
@@ -681,7 +724,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                         Object value = column.getAttributeType().parse(dataValue);
                         nodeDraft.addAttributeValue(column, value);
                     } catch (Exception e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGEXF_error_datavalue", dataKey, nodeId, column.getTitle()), Issue.Level.SEVERE));
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", dataKey, nodeId, column.getTitle()), Issue.Level.SEVERE));
                     }
                 }
             }
@@ -691,7 +734,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             //Key
             String dataKey = dataE.getAttribute("id");
             if (dataKey.isEmpty()) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGEXF_error_datakey", edgeDraft), Issue.Level.SEVERE));
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datakey", edgeDraft), Issue.Level.SEVERE));
                 return;
             }
             String dataValue = dataE.getAttribute("value");
@@ -704,7 +747,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                         Object value = column.getAttributeType().parse(dataValue);
                         edgeDraft.addAttributeValue(column, value);
                     } catch (Exception e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGEXF_error_datavalue", dataKey, edgeId, column.getTitle()), Issue.Level.SEVERE));
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", dataKey, edgeId, column.getTitle()), Issue.Level.SEVERE));
                     }
                 }
             }
