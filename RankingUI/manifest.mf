@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.ui.ranking
+OpenIDE-Module-Layer: org/gephi/ui/ranking/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/gephi/ui/ranking/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
