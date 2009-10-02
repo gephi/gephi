@@ -34,11 +34,11 @@ import org.w3c.dom.Element;
 public class RankingUIModel {
 
     //Const
-    public static final int NODE_TRANSFORMER = 1;
-    public static final int EDGE_TRANSFORMER = 2;
+    public static final int NODE_RANKING = 1;
+    public static final int EDGE_RANKING = 2;
 
     //Model
-    protected int transformer;
+    protected int ranking;
     protected boolean barChartVisible;
     protected boolean listVisible;
 
@@ -47,13 +47,13 @@ public class RankingUIModel {
 
     public RankingUIModel() {
         //DefaultValues
-        transformer = NODE_TRANSFORMER;
+        ranking = NODE_RANKING;
         barChartVisible = false;
         listVisible = false;
     }
 
-    public int getTransformer() {
-        return transformer;
+    public int getRanking() {
+        return ranking;
     }
 
     public boolean isBarChartVisible() {
@@ -82,16 +82,16 @@ public class RankingUIModel {
         firePropertyChangeEvent("barChartVisible", oldValue, barChartVisible);
     }
 
-    public void setTransformer(int transformer) {
-        if (transformer != NODE_TRANSFORMER && transformer != EDGE_TRANSFORMER) {
-            throw new IllegalArgumentException("Transformer must be NODE_TRANSFORMER or EDGE_TRANSFORMER");
+    public void setRanking(int ranking) {
+        if (ranking != NODE_RANKING && ranking != EDGE_RANKING) {
+            throw new IllegalArgumentException("Ranking must be NODE_RANKING or EDGE_RANKING");
         }
-        if (this.transformer == transformer) {
+        if (this.ranking == ranking) {
             return;
         }
-        int oldValue = this.transformer;
-        this.transformer = transformer;
-        firePropertyChangeEvent("transformer", oldValue, transformer);
+        int oldValue = this.ranking;
+        this.ranking = ranking;
+        firePropertyChangeEvent("ranking", oldValue, ranking);
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -113,8 +113,8 @@ public class RankingUIModel {
 
     //XML
     public void readXML(Element modelElement) {
-        Element transformerE = (Element) modelElement.getElementsByTagName("transformer").item(0);
-        transformer = Integer.parseInt(transformerE.getTextContent());
+        Element rankingE = (Element) modelElement.getElementsByTagName("ranking").item(0);
+        ranking = Integer.parseInt(rankingE.getTextContent());
 
         Element barchartvisibleE = (Element) modelElement.getElementsByTagName("barchartvisible").item(0);
         barChartVisible = Boolean.parseBoolean(barchartvisibleE.getTextContent());
@@ -126,9 +126,9 @@ public class RankingUIModel {
     public Element writeXML(Document document) {
         Element rankingModelE = document.createElement("rankinguimodel");
 
-        Element transformerE = document.createElement("transformer");
-        transformerE.setTextContent(String.valueOf(transformer));
-        rankingModelE.appendChild(transformerE);
+        Element rankingE = document.createElement("ranking");
+        rankingE.setTextContent(String.valueOf(ranking));
+        rankingModelE.appendChild(rankingE);
 
         Element barChartE = document.createElement("barchartvisible");
         barChartE.setTextContent(String.valueOf(barChartVisible));
