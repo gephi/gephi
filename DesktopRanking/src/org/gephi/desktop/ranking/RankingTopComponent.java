@@ -26,10 +26,13 @@ import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import org.gephi.project.api.ProjectController;
 import org.gephi.ranking.RankingUIModel;
 import org.gephi.ui.ranking.EdgeRankingPanel;
 import org.gephi.ui.ranking.NodeRankingPanel;
+import org.gephi.ui.ranking.RankingBarChartPanel;
+import org.gephi.ui.ranking.RankingListPanel;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
@@ -47,13 +50,26 @@ final class RankingTopComponent extends TopComponent {
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "RankingTopComponent";
+
+    //UI
     private JPanel contentPanel;
+    private JPanel barChartPanel;
+    private JScrollPane listPanel;
 
     private RankingTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(RankingTopComponent.class, "CTL_RankingTopComponent"));
         setToolTipText(NbBundle.getMessage(RankingTopComponent.class, "HINT_RankingTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
+
+        JPanel southPanel = new JPanel(new BorderLayout());
+        barChartPanel = new RankingBarChartPanel();
+        listPanel = new RankingListPanel();
+        southPanel.add(barChartPanel, BorderLayout.NORTH);
+        southPanel.add(listPanel, BorderLayout.CENTER);
+        listPanel.setVisible(false);
+        barChartPanel.setVisible(false);
+        add(southPanel, BorderLayout.SOUTH);
 
         initEvents();
     }
@@ -79,7 +95,10 @@ final class RankingTopComponent extends TopComponent {
                 listButton.setSelected(model.isListVisible());
                 transformerGroup.setSelected(nodeButton.getModel(), model.getTransformer() == RankingUIModel.NODE_TRANSFORMER);
                 transformerGroup.setSelected(edgeButton.getModel(), model.getTransformer() == RankingUIModel.EDGE_TRANSFORMER);
+
+                //Refresh ui
                 refreshContentPanel(true);
+                refreshSouthPanel(true);
             }
 
             public void unselect(Workspace workspace) {
@@ -94,6 +113,7 @@ final class RankingTopComponent extends TopComponent {
                 barChartButton.setEnabled(false);
                 listButton.setEnabled(false);
                 refreshContentPanel(false);
+                refreshSouthPanel(false);
             }
         });
 
@@ -102,6 +122,7 @@ final class RankingTopComponent extends TopComponent {
             public void actionPerformed(ActionEvent arg0) {
                 RankingUIModel model = pc.getCurrentWorkspace().getWorkspaceData().getData(dataProvider.getWorkspaceDataKey());
                 model.setBarChartVisible(barChartButton.isSelected());
+                refreshSouthPanel(true);
             }
         });
 
@@ -110,6 +131,7 @@ final class RankingTopComponent extends TopComponent {
             public void actionPerformed(ActionEvent arg0) {
                 RankingUIModel model = pc.getCurrentWorkspace().getWorkspaceData().getData(dataProvider.getWorkspaceDataKey());
                 model.setListVisible(listButton.isSelected());
+                refreshSouthPanel(true);
             }
         });
 
@@ -119,6 +141,7 @@ final class RankingTopComponent extends TopComponent {
                 RankingUIModel model = pc.getCurrentWorkspace().getWorkspaceData().getData(dataProvider.getWorkspaceDataKey());
                 model.setTransformer(transformerGroup.getSelection() == nodeButton.getModel() ? RankingUIModel.NODE_TRANSFORMER : RankingUIModel.EDGE_TRANSFORMER);
                 refreshContentPanel(true);
+                refreshSouthPanel(true);
             }
         });
 
@@ -128,13 +151,16 @@ final class RankingTopComponent extends TopComponent {
                 RankingUIModel model = pc.getCurrentWorkspace().getWorkspaceData().getData(dataProvider.getWorkspaceDataKey());
                 model.setTransformer(transformerGroup.getSelection() == nodeButton.getModel() ? RankingUIModel.NODE_TRANSFORMER : RankingUIModel.EDGE_TRANSFORMER);
                 refreshContentPanel(true);
+                refreshSouthPanel(true);
             }
         });
     }
 
     private void refreshContentPanel(boolean enable) {
-        if (!enable && contentPanel != null) {
+        if (contentPanel != null) {
             remove(contentPanel);
+        }
+        if (!enable) {
             contentPanel = null;
         }
         if (transformerGroup.getSelection() == nodeButton.getModel()) {
@@ -146,6 +172,18 @@ final class RankingTopComponent extends TopComponent {
             contentPanel = new EdgeRankingPanel();
             add(contentPanel, BorderLayout.CENTER);
         }
+        revalidate();
+        repaint();
+    }
+
+    private void refreshSouthPanel(boolean enable) {
+        if (!enable) {
+            barChartPanel.setVisible(false);
+            listPanel.setVisible(false);
+        }
+        barChartPanel.setVisible(barChartButton.isSelected());
+        listPanel.setVisible(listButton.isSelected());
+
         revalidate();
         repaint();
     }
@@ -174,21 +212,11 @@ final class RankingTopComponent extends TopComponent {
         transformerGroup.add(nodeButton);
         org.openide.awt.Mnemonics.setLocalizedText(nodeButton, org.openide.util.NbBundle.getMessage(RankingTopComponent.class, "RankingTopComponent.nodeButton.text")); // NOI18N
         nodeButton.setEnabled(false);
-        nodeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nodeButtonActionPerformed(evt);
-            }
-        });
         rankingToolbar.add(nodeButton);
 
         transformerGroup.add(edgeButton);
         org.openide.awt.Mnemonics.setLocalizedText(edgeButton, org.openide.util.NbBundle.getMessage(RankingTopComponent.class, "RankingTopComponent.edgeButton.text")); // NOI18N
         edgeButton.setEnabled(false);
-        edgeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                edgeButtonActionPerformed(evt);
-            }
-        });
         rankingToolbar.add(edgeButton);
 
         org.openide.awt.Mnemonics.setLocalizedText(box, org.openide.util.NbBundle.getMessage(RankingTopComponent.class, "RankingTopComponent.box.text")); // NOI18N
@@ -214,13 +242,6 @@ final class RankingTopComponent extends TopComponent {
         add(rankingToolbar, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void nodeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nodeButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_nodeButtonActionPerformed
-
-    private void edgeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edgeButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_edgeButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton barChartButton;
     private javax.swing.JLabel box;
