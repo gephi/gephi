@@ -20,15 +20,60 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.ranking;
 
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JPanel;
+import org.gephi.ranking.RankingUIModel;
+
 /**
  *
  * @author Mathieu Bastian
  */
 public class NodeRankingPanel extends javax.swing.JPanel {
 
-    /** Creates new form NodeRankingPanel */
-    public NodeRankingPanel() {
+    private JPanel contentPanel;
+    private final RankingUIModel model;
+
+    public NodeRankingPanel(RankingUIModel model) {
+        this.model = model;
         initComponents();
+        initEvents();
+    }
+
+    private void initEvents() {
+        colorButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                model.setNodeTransformer(RankingUIModel.COLOR_TRANSFORMER);
+                refreshContentPanel();
+            }
+        });
+        sizeButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                model.setNodeTransformer(RankingUIModel.SIZE_TRANSFORMER);
+                refreshContentPanel();
+            }
+        });
+        refreshContentPanel();
+        transformerGroup.setSelected(colorButton.getModel(), model.getNodeTransformer() == RankingUIModel.COLOR_TRANSFORMER);
+        transformerGroup.setSelected(sizeButton.getModel(), model.getNodeTransformer() == RankingUIModel.SIZE_TRANSFORMER);
+    }
+
+    private void refreshContentPanel() {
+        if (contentPanel != null) {
+            remove(contentPanel);
+        }
+        if (model.getNodeTransformer() == RankingUIModel.COLOR_TRANSFORMER) {
+            contentPanel = new ColorTransformerPanel();
+            add(contentPanel, BorderLayout.CENTER);
+        } else if (model.getEdgeTransformer() == RankingUIModel.SIZE_TRANSFORMER) {
+            contentPanel = new SizeTransformerPanel();
+            add(contentPanel, BorderLayout.CENTER);
+        }
+        revalidate();
+        repaint();
     }
 
     /** This method is called from within the constructor to
@@ -39,51 +84,53 @@ public class NodeRankingPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        rankComboBox = new javax.swing.JComboBox();
+        transformerGroup = new javax.swing.ButtonGroup();
         transformerButtons = new javax.swing.JPanel();
+        rankComboBox = new javax.swing.JComboBox();
         colorButton = new javax.swing.JToggleButton();
         sizeButton = new javax.swing.JToggleButton();
 
+        setLayout(new java.awt.BorderLayout());
+
+        transformerButtons.setLayout(new java.awt.GridBagLayout());
+
         rankComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(8, 4, 6, 8);
+        transformerButtons.add(rankComboBox, gridBagConstraints);
 
-        transformerButtons.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
-
+        transformerGroup.add(colorButton);
         colorButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/ranking/resources/color.png"))); // NOI18N
         colorButton.setText(org.openide.util.NbBundle.getMessage(NodeRankingPanel.class, "NodeRankingPanel.colorButton.text")); // NOI18N
         colorButton.setMargin(new java.awt.Insets(2, 4, 2, 4));
-        transformerButtons.add(colorButton);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 6, 0);
+        transformerButtons.add(colorButton, gridBagConstraints);
 
+        transformerGroup.add(sizeButton);
         sizeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/ranking/resources/size.png"))); // NOI18N
         sizeButton.setText(org.openide.util.NbBundle.getMessage(NodeRankingPanel.class, "NodeRankingPanel.sizeButton.text")); // NOI18N
         sizeButton.setMargin(new java.awt.Insets(2, 4, 2, 4));
-        transformerButtons.add(sizeButton);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 6, 4);
+        transformerButtons.add(sizeButton, gridBagConstraints);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(rankComboBox, 0, 293, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(transformerButtons, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(rankComboBox, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(transformerButtons, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(193, Short.MAX_VALUE))
-        );
+        add(transformerButtons, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton colorButton;
     private javax.swing.JComboBox rankComboBox;
     private javax.swing.JToggleButton sizeButton;
     private javax.swing.JPanel transformerButtons;
+    private javax.swing.ButtonGroup transformerGroup;
     // End of variables declaration//GEN-END:variables
 }

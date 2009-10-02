@@ -93,8 +93,8 @@ final class RankingTopComponent extends TopComponent {
                 RankingUIModel model = workspace.getWorkspaceData().getData(dataProvider.getWorkspaceDataKey());
                 barChartButton.setSelected(model.isBarChartVisible());
                 listButton.setSelected(model.isListVisible());
-                transformerGroup.setSelected(nodeButton.getModel(), model.getTransformer() == RankingUIModel.NODE_TRANSFORMER);
-                transformerGroup.setSelected(edgeButton.getModel(), model.getTransformer() == RankingUIModel.EDGE_TRANSFORMER);
+                elementGroup.setSelected(nodeButton.getModel(), model.getRanking() == RankingUIModel.NODE_RANKING);
+                elementGroup.setSelected(edgeButton.getModel(), model.getRanking() == RankingUIModel.EDGE_RANKING);
 
                 //Refresh ui
                 refreshContentPanel(true);
@@ -139,7 +139,7 @@ final class RankingTopComponent extends TopComponent {
 
             public void actionPerformed(ActionEvent arg0) {
                 RankingUIModel model = pc.getCurrentWorkspace().getWorkspaceData().getData(dataProvider.getWorkspaceDataKey());
-                model.setTransformer(transformerGroup.getSelection() == nodeButton.getModel() ? RankingUIModel.NODE_TRANSFORMER : RankingUIModel.EDGE_TRANSFORMER);
+                model.setRanking(elementGroup.getSelection() == nodeButton.getModel() ? RankingUIModel.NODE_RANKING : RankingUIModel.EDGE_RANKING);
                 refreshContentPanel(true);
                 refreshSouthPanel(true);
             }
@@ -149,7 +149,7 @@ final class RankingTopComponent extends TopComponent {
 
             public void actionPerformed(ActionEvent arg0) {
                 RankingUIModel model = pc.getCurrentWorkspace().getWorkspaceData().getData(dataProvider.getWorkspaceDataKey());
-                model.setTransformer(transformerGroup.getSelection() == nodeButton.getModel() ? RankingUIModel.NODE_TRANSFORMER : RankingUIModel.EDGE_TRANSFORMER);
+                model.setRanking(elementGroup.getSelection() == nodeButton.getModel() ? RankingUIModel.NODE_RANKING : RankingUIModel.EDGE_RANKING);
                 refreshContentPanel(true);
                 refreshSouthPanel(true);
             }
@@ -163,13 +163,16 @@ final class RankingTopComponent extends TopComponent {
         if (!enable) {
             contentPanel = null;
         }
-        if (transformerGroup.getSelection() == nodeButton.getModel()) {
+        final RankingUIWorkspaceDataProvider dataProvider = Lookup.getDefault().lookup(RankingUIWorkspaceDataProvider.class);
+        final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        RankingUIModel model = pc.getCurrentWorkspace().getWorkspaceData().getData(dataProvider.getWorkspaceDataKey());
+        if (elementGroup.getSelection() == nodeButton.getModel()) {
             //Node
-            contentPanel = new NodeRankingPanel();
+            contentPanel = new NodeRankingPanel(model);
             add(contentPanel, BorderLayout.CENTER);
         } else {
             //Edge
-            contentPanel = new EdgeRankingPanel();
+            contentPanel = new EdgeRankingPanel(model);
             add(contentPanel, BorderLayout.CENTER);
         }
         revalidate();
@@ -196,7 +199,7 @@ final class RankingTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        transformerGroup = new javax.swing.ButtonGroup();
+        elementGroup = new javax.swing.ButtonGroup();
         rankingToolbar = new javax.swing.JToolBar();
         nodeButton = new javax.swing.JToggleButton();
         edgeButton = new javax.swing.JToggleButton();
@@ -209,12 +212,12 @@ final class RankingTopComponent extends TopComponent {
         rankingToolbar.setFloatable(false);
         rankingToolbar.setRollover(true);
 
-        transformerGroup.add(nodeButton);
+        elementGroup.add(nodeButton);
         org.openide.awt.Mnemonics.setLocalizedText(nodeButton, org.openide.util.NbBundle.getMessage(RankingTopComponent.class, "RankingTopComponent.nodeButton.text")); // NOI18N
         nodeButton.setEnabled(false);
         rankingToolbar.add(nodeButton);
 
-        transformerGroup.add(edgeButton);
+        elementGroup.add(edgeButton);
         org.openide.awt.Mnemonics.setLocalizedText(edgeButton, org.openide.util.NbBundle.getMessage(RankingTopComponent.class, "RankingTopComponent.edgeButton.text")); // NOI18N
         edgeButton.setEnabled(false);
         rankingToolbar.add(edgeButton);
@@ -246,10 +249,10 @@ final class RankingTopComponent extends TopComponent {
     private javax.swing.JToggleButton barChartButton;
     private javax.swing.JLabel box;
     private javax.swing.JToggleButton edgeButton;
+    private javax.swing.ButtonGroup elementGroup;
     private javax.swing.JToggleButton listButton;
     private javax.swing.JToggleButton nodeButton;
     private javax.swing.JToolBar rankingToolbar;
-    private javax.swing.ButtonGroup transformerGroup;
     // End of variables declaration//GEN-END:variables
 
     /**

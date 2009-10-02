@@ -1,4 +1,8 @@
 /*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+/*
 Copyright 2008 WebAtlas
 Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
 Website : http://www.gephi.org
@@ -20,19 +24,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.ranking;
 
-import org.gephi.ranking.RankingUIModel;
-
 /**
  *
  * @author Mathieu Bastian
  */
-public class EdgeRankingPanel extends javax.swing.JPanel {
+public class SizeTransformerPanel extends javax.swing.JPanel {
 
-    private final RankingUIModel model;
-
-    /** Creates new form EdgeRankingPanel */
-    public EdgeRankingPanel(RankingUIModel model) {
-        this.model = model;
+    /** Creates new form SizeTransformerPanel */
+    public SizeTransformerPanel() {
         initComponents();
     }
 
@@ -47,7 +46,7 @@ public class EdgeRankingPanel extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
 
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(EdgeRankingPanel.class, "EdgeRankingPanel.jLabel1.text")); // NOI18N
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(SizeTransformerPanel.class, "SizeTransformerPanel.jLabel1.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -56,17 +55,20 @@ public class EdgeRankingPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addContainerGap(356, Short.MAX_VALUE))
+                .addContainerGap(283, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addContainerGap(275, Short.MAX_VALUE))
+                .addContainerGap(180, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
+
 }

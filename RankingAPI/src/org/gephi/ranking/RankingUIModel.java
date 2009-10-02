@@ -36,11 +36,16 @@ public class RankingUIModel {
     //Const
     public static final int NODE_RANKING = 1;
     public static final int EDGE_RANKING = 2;
+    public static final int COLOR_TRANSFORMER = 1;
+    public static final int SIZE_TRANSFORMER = 2;
+    public static final int WEIGHT_TRANSFORMER = 3;
 
     //Model
     protected int ranking;
     protected boolean barChartVisible;
     protected boolean listVisible;
+    protected int nodeTransformer;
+    protected int edgeTransformer;
 
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
@@ -50,10 +55,44 @@ public class RankingUIModel {
         ranking = NODE_RANKING;
         barChartVisible = false;
         listVisible = false;
+        nodeTransformer = COLOR_TRANSFORMER;
+        edgeTransformer = COLOR_TRANSFORMER;
     }
 
     public int getRanking() {
         return ranking;
+    }
+
+    public int getNodeTransformer() {
+        return nodeTransformer;
+    }
+
+    public int getEdgeTransformer() {
+        return edgeTransformer;
+    }
+
+    public void setNodeTransformer(int nodeTransformer) {
+        if (nodeTransformer != COLOR_TRANSFORMER && nodeTransformer != SIZE_TRANSFORMER) {
+            throw new IllegalArgumentException("Transformer must be COLOR_TRANSFORMER or SIZE_TRANSFORMER");
+        }
+        if (nodeTransformer == this.nodeTransformer) {
+            return;
+        }
+        int oldValue = this.nodeTransformer;
+        this.nodeTransformer = nodeTransformer;
+        firePropertyChangeEvent("nodeTransformer", oldValue, nodeTransformer);
+    }
+
+    public void setEdgeTransformer(int edgeTransformer) {
+        if (edgeTransformer != COLOR_TRANSFORMER && edgeTransformer != WEIGHT_TRANSFORMER) {
+            throw new IllegalArgumentException("Transformer must be COLOR_TRANSFORMER or WEIGHT_TRANSFORMER");
+        }
+        if (edgeTransformer == this.edgeTransformer) {
+            return;
+        }
+        int oldValue = this.edgeTransformer;
+        this.edgeTransformer = edgeTransformer;
+        firePropertyChangeEvent("edgeTransformer", oldValue, edgeTransformer);
     }
 
     public boolean isBarChartVisible() {
@@ -121,6 +160,12 @@ public class RankingUIModel {
 
         Element listvisibleE = (Element) modelElement.getElementsByTagName("listvisible").item(0);
         listVisible = Boolean.parseBoolean(listvisibleE.getTextContent());
+
+        Element nodeTransformerE = (Element) modelElement.getElementsByTagName("nodetransformer").item(0);
+        nodeTransformer = Integer.parseInt(nodeTransformerE.getTextContent());
+
+        Element edgeTransformerE = (Element) modelElement.getElementsByTagName("edgetransformer").item(0);
+        edgeTransformer = Integer.parseInt(edgeTransformerE.getTextContent());
     }
 
     public Element writeXML(Document document) {
@@ -137,6 +182,14 @@ public class RankingUIModel {
         Element listE = document.createElement("listvisible");
         listE.setTextContent(String.valueOf(listVisible));
         rankingModelE.appendChild(barChartE);
+
+        Element nodeTransformerE = document.createElement("nodetransformer");
+        nodeTransformerE.setTextContent(String.valueOf(nodeTransformer));
+        rankingModelE.appendChild(nodeTransformerE);
+
+        Element edgeTransformerE = document.createElement("edgetransformer");
+        edgeTransformerE.setTextContent(String.valueOf(edgeTransformer));
+        rankingModelE.appendChild(edgeTransformerE);
 
         return rankingModelE;
     }
