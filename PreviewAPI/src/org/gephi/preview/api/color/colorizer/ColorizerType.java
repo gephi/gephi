@@ -6,6 +6,8 @@ package org.gephi.preview.api.color.colorizer;
  */
 public enum ColorizerType {
 
+	//TODO enum to remove
+
     CUSTOM,
     NODE_ORIGINAL,
     PARENT_NODE,

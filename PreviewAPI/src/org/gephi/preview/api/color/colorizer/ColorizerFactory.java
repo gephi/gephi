@@ -1,23 +1,20 @@
 package org.gephi.preview.api.color.colorizer;
 
-import org.gephi.preview.api.color.colorizer.EdgeColorizer;
-import org.gephi.preview.api.color.colorizer.GenericColorizer;
-import org.gephi.preview.api.color.colorizer.NodeColorizer;
-import org.gephi.preview.api.color.colorizer.NodeChildColorizer;
-
 /**
  *
  * @author jeremy
  */
 public interface ColorizerFactory {
 
-    public GenericColorizer createGenericColorizer(ColorizerType type);
+    public boolean matchCustomColorMode(String s);
 
-    public NodeColorizer createNodeColorizer(ColorizerType type);
+    public boolean matchNodeOriginalColorMode(String s);
 
-    public NodeChildColorizer createNodeChildColorizer(ColorizerType type);
+    public boolean matchParentNodeColorMode(String s);
 
-    public EdgeColorizer createEdgeColorizer(ColorizerType type);
+    public Colorizer createCustomColorMode(int r, int g, int b);
 
-    public EdgeChildColorizer createEdgeChildColorizer(ColorizerType type);
+    public Colorizer createNodeOriginalColorMode();
+
+    public Colorizer createParentNodeColorMode();
 }

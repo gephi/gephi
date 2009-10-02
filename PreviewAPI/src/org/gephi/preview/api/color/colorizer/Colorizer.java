@@ -6,5 +6,6 @@ package org.gephi.preview.api.color.colorizer;
  */
 public interface Colorizer {
 
-    public ColorizerType getColorizerType();
+    @Override
+    public String toString();
 }

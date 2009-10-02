@@ -11,6 +11,8 @@ import org.gephi.preview.api.color.colorizer.NodeColorizerClient;
  */
 public class NodeOriginalColorMode implements NodeColorizer {
 
+    private static final String IDENTIFIER = "original";
+
     public ColorizerType getColorizerType() {
         return ColorizerType.NODE_ORIGINAL;
     }
@@ -18,5 +20,14 @@ public class NodeOriginalColorMode implements NodeColorizer {
     public void color(NodeColorizerClient client) {
         Color color = client.getOriginalColor();
         client.setColor(color);
+    }
+
+    @Override
+    public String toString() {
+        return IDENTIFIER;
+    }
+
+    public static String getIdentifier() {
+        return IDENTIFIER;
     }
 }

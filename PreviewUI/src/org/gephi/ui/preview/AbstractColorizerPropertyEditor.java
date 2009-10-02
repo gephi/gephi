@@ -1,25 +1,11 @@
 package org.gephi.ui.preview;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.beans.PropertyEditorSupport;
-import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.ButtonGroup;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
-import javax.swing.JButton;
-import javax.swing.JColorChooser;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import org.gephi.preview.api.color.colorizer.Colorizer;
-import org.gephi.preview.api.color.colorizer.ColorizerType;
+import org.gephi.preview.api.color.colorizer.ColorizerFactory;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -27,118 +13,49 @@ import org.gephi.preview.api.color.colorizer.ColorizerType;
  */
 public abstract class AbstractColorizerPropertyEditor extends PropertyEditorSupport {
 
-    private final HashSet<ColorizerType> supportedColorizerTypes = new HashSet<ColorizerType>();
-    private static final String CUSTOM_ID = "custom";
-    private static final String NODE_ORIGINAL_ID = "original";
-    private static final String PARENT_NODE_ID = "parent";
-    private static final String EDGE_B1_ID = "b1";
-    private static final String EDGE_B2_ID = "b2";
-    private static final String EDGE_BOTH_ID = "both";
-    private static final String PARENT_EDGE_ID = "parent";
-
-    public AbstractColorizerPropertyEditor() {
-        setSupportedColorizerTypes();
-    }
-
-    protected void addSupportedColorizerType(ColorizerType type) {
-        supportedColorizerTypes.add(type);
-    }
-
-    private boolean isSupported(ColorizerType type) {
-        return supportedColorizerTypes.contains(type);
-    }
-
-    protected abstract void setSupportedColorizerTypes();
-
-    protected abstract Colorizer createColorizer(ColorizerType type);
-
-    protected ColorizerType getColorizerTypeValue() {
-        Colorizer c = (Colorizer) getValue();
-        return c.getColorizerType();
-    }
+    private final ColorizerFactory colorizerFactory = Lookup.getDefault().lookup(ColorizerFactory.class);
 
     @Override
     public String getAsText() {
-        ColorizerType t = getColorizerTypeValue();
-
-        if (isSupported(t)) {
-            switch (t) {
-                default:
-                    throw new UnsupportedOperationException(
-                            "Unsupported colorizer.");
-                case CUSTOM:
-                    return CUSTOM_ID + " [" + t.getCustomColorRed() + "," +
-                            t.getCustomColorGreen() + "," +
-                            t.getCustomColorBlue() + "]";
-                case NODE_ORIGINAL:
-                    return NODE_ORIGINAL_ID;
-                case PARENT_NODE:
-                    return PARENT_NODE_ID;
-                case EDGE_B1:
-                    return EDGE_B1_ID;
-                case EDGE_B2:
-                    return EDGE_B2_ID;
-                case EDGE_BOTH:
-                    return EDGE_BOTH_ID;
-                case PARENT_EDGE:
-                    return PARENT_EDGE_ID;
-            }
-        } else {
-            throw new UnsupportedOperationException(
-                    "Error while retrieving colorizer.");
-        }
+         Colorizer c = (Colorizer) getValue();
+         return c.toString();
     }
 
     @Override
     public void setAsText(String s) {
-        if (isSupported(ColorizerType.CUSTOM)) {
-            Pattern p = Pattern.compile(CUSTOM_ID +
-                    "\\s*\\[\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\]");
+
+        if (supportsCustomColorMode() && colorizerFactory.matchCustomColorMode(s)) {
+            Pattern p = Pattern.compile("\\w+\\s*\\[\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\]");
             Matcher m = p.matcher(s);
             if (m.lookingAt()) {
                 int r = Integer.valueOf(m.group(1));
                 int g = Integer.valueOf(m.group(2));
                 int b = Integer.valueOf(m.group(3));
 
-                ColorizerType t = ColorizerType.CUSTOM;
-                t.setCustomColor(r, g, b);
-                setValue(createColorizer(t));
+                setValue(colorizerFactory.createCustomColorMode(r, g, b));
             }
         }
-
-        if (isSupported(ColorizerType.NODE_ORIGINAL)) {
-            setGenericColorizer(ColorizerType.NODE_ORIGINAL, NODE_ORIGINAL_ID, s);
+        else if (supportsNodeOriginalColorMode() && colorizerFactory.matchNodeOriginalColorMode(s)) {
+            setValue(colorizerFactory.createNodeOriginalColorMode());
         }
-
-        if (isSupported(ColorizerType.PARENT_NODE)) {
-            setGenericColorizer(ColorizerType.PARENT_NODE, PARENT_NODE_ID, s);
-        }
-
-        if (isSupported(ColorizerType.EDGE_B1)) {
-            setGenericColorizer(ColorizerType.EDGE_B1, EDGE_B1_ID, s);
-        }
-
-        if (isSupported(ColorizerType.EDGE_B2)) {
-            setGenericColorizer(ColorizerType.EDGE_B2, EDGE_B2_ID, s);
-        }
-
-        if (isSupported(ColorizerType.EDGE_BOTH)) {
-            setGenericColorizer(ColorizerType.EDGE_BOTH, EDGE_BOTH_ID, s);
-        }
-
-        if (isSupported(ColorizerType.PARENT_EDGE)) {
-            setGenericColorizer(ColorizerType.PARENT_EDGE, PARENT_EDGE_ID, s);
+        else if (supportsParentNodeColorMode() && colorizerFactory.matchParentNodeColorMode(s)) {
+            setValue(colorizerFactory.createParentNodeColorMode());
         }
     }
 
-    private void setGenericColorizer(ColorizerType type, String typeId, String s) {
-        Pattern p = Pattern.compile("\\s*" + typeId + "\\s*");
-        Matcher m = p.matcher(s);
-        if (m.lookingAt()) {
-            setValue(createColorizer(type));
-        }
+    public boolean supportsCustomColorMode() {
+        return false;
     }
 
+    public boolean supportsNodeOriginalColorMode() {
+        return false;
+    }
+
+    public boolean supportsParentNodeColorMode() {
+        return false;
+    }
+
+    /*
     @Override
     public boolean supportsCustomEditor() {
         return true;
@@ -267,4 +184,5 @@ public abstract class AbstractColorizerPropertyEditor extends PropertyEditorSupp
         hg.addComponent(radioButton);
         vg.addComponent(radioButton);
     }
+*/
 }

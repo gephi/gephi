@@ -13,6 +13,8 @@ import org.gephi.preview.color.InheritedColor;
  */
 public class ParentNodeColorMode implements NodeChildColorizer {
 
+    public static final String IDENTIFIER = "parent";
+
     public ColorizerType getColorizerType() {
         return ColorizerType.PARENT_NODE;
     }
@@ -20,5 +22,14 @@ public class ParentNodeColorMode implements NodeChildColorizer {
     public void color(NodeChildColorizerClient client) {
         Holder<Color> parentColorHolder = client.getParentNode().getColorHolder();
         client.setColor(new InheritedColor(parentColorHolder));
+    }
+
+    @Override
+    public String toString() {
+        return IDENTIFIER;
+    }
+
+    public static String getIdentifier() {
+        return IDENTIFIER;
     }
 }

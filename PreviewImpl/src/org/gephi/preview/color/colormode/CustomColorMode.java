@@ -19,6 +19,7 @@ import org.gephi.preview.color.SimpleColor;
 public class CustomColorMode
         implements GenericColorizer, NodeColorizer, NodeChildColorizer, EdgeColorizer, EdgeChildColorizer {
 
+    private static final String IDENTIFIER = "custom";
     private final Color color;
 
     public CustomColorMode(int r, int g, int b) {
@@ -37,7 +38,7 @@ public class CustomColorMode
     private void doColor(ColorizerClient client) {
         client.setColor(color);
     }
-    
+
     public void color(ColorizerClient client) {
         doColor(client);
     }
@@ -48,5 +49,19 @@ public class CustomColorMode
 
     public void color(NodeChildColorizerClient client) {
         doColor(client);
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "%s [%d,%d,%d]",
+                IDENTIFIER,
+                color.getRed(),
+                color.getGreen(),
+                color.getBlue());
+    }
+
+    public static String getIdentifier() {
+        return IDENTIFIER;
     }
 }
