@@ -1,5 +1,8 @@
 package org.gephi.ui.preview;
 
+import org.gephi.ui.preview.propertyeditor.NodeChildColorizerPropertyEditor;
+import org.gephi.ui.preview.propertyeditor.GenericColorizerPropertyEditor;
+import org.gephi.ui.preview.propertyeditor.NodeColorizerPropertyEditor;
 import java.awt.Font;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.color.colorizer.EdgeChildColorizer;

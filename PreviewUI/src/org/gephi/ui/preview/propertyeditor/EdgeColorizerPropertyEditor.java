@@ -1,4 +1,4 @@
-package org.gephi.ui.preview;
+package org.gephi.ui.preview.propertyeditor;
 
 /**
  *
