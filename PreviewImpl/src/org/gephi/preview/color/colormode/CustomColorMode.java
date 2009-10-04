@@ -4,7 +4,6 @@ import org.gephi.preview.api.color.colorizer.ColorizerClient;
 import org.gephi.preview.api.color.colorizer.NodeChildColorizerClient;
 import org.gephi.preview.api.color.colorizer.NodeColorizerClient;
 import org.gephi.preview.api.color.Color;
-import org.gephi.preview.api.color.colorizer.ColorizerType;
 import org.gephi.preview.api.color.colorizer.EdgeChildColorizer;
 import org.gephi.preview.api.color.colorizer.EdgeColorizer;
 import org.gephi.preview.api.color.colorizer.GenericColorizer;
@@ -24,15 +23,6 @@ public class CustomColorMode
 
     public CustomColorMode(int r, int g, int b) {
         color = new SimpleColor(r, g, b);
-    }
-
-    public ColorizerType getColorizerType() {
-        ColorizerType c = ColorizerType.CUSTOM;
-        c.setCustomColor(
-                color.getRed(),
-                color.getGreen(),
-                color.getBlue());
-        return c;
     }
 
     private void doColor(ColorizerClient client) {
@@ -64,6 +54,10 @@ public class CustomColorMode
     public static String getIdentifier() {
         return IDENTIFIER;
     }
+
+	public Color getColor() {
+		return color;
+	}
 
 	public java.awt.Color getAwtColor() {
 		return new java.awt.Color(color.getRed(), color.getBlue(), color.getGreen());

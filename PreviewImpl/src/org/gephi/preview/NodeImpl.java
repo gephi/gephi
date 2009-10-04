@@ -109,8 +109,7 @@ public class NodeImpl implements Node, NodeColorizerClient {
     }
 
     public Color getBorderColor() {
-        //TODO manage node border color
-        return new SimpleColor(0, 0, 0);
+        return supervisor.getNodeBorderColorizer().getColor();
     }
 
     public Float getBorderWidth() {

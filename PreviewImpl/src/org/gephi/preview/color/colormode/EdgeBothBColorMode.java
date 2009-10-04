@@ -1,6 +1,5 @@
 package org.gephi.preview.color.colormode;
 
-import org.gephi.preview.api.color.colorizer.ColorizerType;
 import org.gephi.preview.api.color.colorizer.EdgeChildColorizer;
 import org.gephi.preview.api.color.colorizer.EdgeColorizer;
 
@@ -10,10 +9,6 @@ import org.gephi.preview.api.color.colorizer.EdgeColorizer;
  */
 public class EdgeBothBColorMode
         implements EdgeColorizer, EdgeChildColorizer {
-
-    public ColorizerType getColorizerType() {
-        return ColorizerType.EDGE_BOTH;
-    }
 
 //    ColorizedEdge m_client;
 
