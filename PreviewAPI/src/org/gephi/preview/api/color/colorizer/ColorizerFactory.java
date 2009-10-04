@@ -12,7 +12,15 @@ public interface ColorizerFactory {
 
     public boolean matchParentNodeColorMode(String s);
 
+	public boolean isCustomColorMode(Colorizer colorizer);
+
+	public boolean isNodeOriginalColorMode(Colorizer colorizer);
+
+	public boolean isParentNodeColorMode(Colorizer colorizer);
+
     public Colorizer createCustomColorMode(int r, int g, int b);
+
+	public Colorizer createCustomColorMode(java.awt.Color color);
 
     public Colorizer createNodeOriginalColorMode();
 

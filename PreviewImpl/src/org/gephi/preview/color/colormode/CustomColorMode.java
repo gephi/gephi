@@ -64,4 +64,8 @@ public class CustomColorMode
     public static String getIdentifier() {
         return IDENTIFIER;
     }
+
+	public java.awt.Color getAwtColor() {
+		return new java.awt.Color(color.getRed(), color.getBlue(), color.getGreen());
+	}
 }

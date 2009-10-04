@@ -33,8 +33,24 @@ public class ColorizerFactoryImpl implements ColorizerFactory {
 		return matchColorMode(s, ParentNodeColorMode.getIdentifier());
 	}
 
+	public boolean isCustomColorMode(Colorizer colorizer) {
+		return matchCustomColorMode(colorizer.toString());
+	}
+
+	public boolean isNodeOriginalColorMode(Colorizer colorizer) {
+		return matchNodeOriginalColorMode(colorizer.toString());
+	}
+
+	public boolean isParentNodeColorMode(Colorizer colorizer) {
+		return matchParentNodeColorMode(colorizer.toString());
+	}
+
 	public Colorizer createCustomColorMode(int r, int g, int b) {
 		return new CustomColorMode(r, g, b);
+	}
+
+	public Colorizer createCustomColorMode(java.awt.Color color) {
+		return createCustomColorMode(color.getRed(), color.getGreen(), color.getBlue());
 	}
 
 	public Colorizer createNodeOriginalColorMode() {

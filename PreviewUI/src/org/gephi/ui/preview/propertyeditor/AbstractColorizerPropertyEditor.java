@@ -1,10 +1,25 @@
 package org.gephi.ui.preview.propertyeditor;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyEditorSupport;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.ButtonGroup;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
+import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import org.gephi.preview.api.color.colorizer.Colorizer;
 import org.gephi.preview.api.color.colorizer.ColorizerFactory;
+import org.gephi.preview.api.color.colorizer.GenericColorizer;
 import org.openide.util.Lookup;
 
 /**
@@ -55,7 +70,6 @@ public abstract class AbstractColorizerPropertyEditor extends PropertyEditorSupp
         return false;
     }
 
-    /*
     @Override
     public boolean supportsCustomEditor() {
         return true;
@@ -80,31 +94,55 @@ public abstract class AbstractColorizerPropertyEditor extends PropertyEditorSupp
                 addGroup(vg).
                 addContainerGap());
 
-        if (isSupported(ColorizerType.NODE_ORIGINAL)) {
-            generateGenericComponent(ColorizerType.NODE_ORIGINAL, "Original Color", hg, vg, bg);
+        if (supportsNodeOriginalColorMode()) {
+            // radio button
+			JRadioButton radioButton = new JRadioButton();
+			radioButton.setText("Original Color");
+			bg.add(radioButton);
+
+			// initialization
+			radioButton.setSelected(colorizerFactory.isNodeOriginalColorMode((Colorizer) getValue()));
+
+			// listener
+			radioButton.addItemListener(new ItemListener() {
+
+				public void itemStateChanged(ItemEvent e) {
+					if (e.getStateChange() == ItemEvent.SELECTED) {
+						setValue(colorizerFactory.createNodeOriginalColorMode());
+					}
+				}
+			});
+
+			// positioning
+			hg.addComponent(radioButton);
+			vg.addComponent(radioButton);
         }
 
-        if (isSupported(ColorizerType.PARENT_NODE)) {
-            generateGenericComponent(ColorizerType.PARENT_NODE, "Parent Node Color", hg, vg, bg);
+        if (supportsParentNodeColorMode()) {
+            // radio button
+			JRadioButton radioButton = new JRadioButton();
+			radioButton.setText("Parent Node Color");
+			bg.add(radioButton);
+
+			// initialization
+			radioButton.setSelected(colorizerFactory.isNodeOriginalColorMode((Colorizer) getValue()));
+
+			// listener
+			radioButton.addItemListener(new ItemListener() {
+
+				public void itemStateChanged(ItemEvent e) {
+					if (e.getStateChange() == ItemEvent.SELECTED) {
+						setValue(colorizerFactory.createParentNodeColorMode());
+					}
+				}
+			});
+
+			// positioning
+			hg.addComponent(radioButton);
+			vg.addComponent(radioButton);
         }
 
-        if (isSupported(ColorizerType.EDGE_B1)) {
-            generateGenericComponent(ColorizerType.EDGE_B1, "Edge Boundary 1 Color", hg, vg, bg);
-        }
-
-        if (isSupported(ColorizerType.EDGE_B2)) {
-            generateGenericComponent(ColorizerType.EDGE_B2, "Edge Boundary 2 Color", hg, vg, bg);
-        }
-
-        if (isSupported(ColorizerType.EDGE_BOTH)) {
-            generateGenericComponent(ColorizerType.EDGE_BOTH, "Edge Both Boundaries Color", hg, vg, bg);
-        }
-
-        if (isSupported(ColorizerType.PARENT_EDGE)) {
-            generateGenericComponent(ColorizerType.PARENT_EDGE, "Parent Edge Color", hg, vg, bg);
-        }
-
-        if (isSupported(ColorizerType.CUSTOM)) {
+        if (supportsCustomColorMode()) {
             // radio button
             JRadioButton radioButton = new JRadioButton();
             radioButton.setText("Custom Color");
@@ -115,7 +153,7 @@ public abstract class AbstractColorizerPropertyEditor extends PropertyEditorSupp
             customColorButton.setText("Choose Color");
 
             // initialization
-            if (getColorizerTypeValue() == ColorizerType.CUSTOM) {
+            if (colorizerFactory.isCustomColorMode((Colorizer) getValue())) {
                 radioButton.setSelected(true);
                 customColorButton.setEnabled(true);
             } else {
@@ -127,9 +165,7 @@ public abstract class AbstractColorizerPropertyEditor extends PropertyEditorSupp
 
                 public void itemStateChanged(ItemEvent e) {
                     customColorButton.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
-                    ColorizerType t = ColorizerType.CUSTOM;
-                    t.setCustomColor(java.awt.Color.BLACK);
-                    setValue(createColorizer(t));
+                    setValue(colorizerFactory.createCustomColorMode(0, 0, 0));
                 }
             });
 
@@ -137,13 +173,12 @@ public abstract class AbstractColorizerPropertyEditor extends PropertyEditorSupp
             customColorButton.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    ColorizerType initialType = getColorizerTypeValue();
-                    java.awt.Color initialColor = initialType == ColorizerType.CUSTOM ? initialType.getCustomColor() : java.awt.Color.BLACK;
-                    java.awt.Color newColor = JColorChooser.showDialog(panel, "Choose Color", initialColor);
-                    if (newColor != null) {
-                        ColorizerType t = ColorizerType.CUSTOM;
-                        t.setCustomColor(newColor);
-                        setValue(createColorizer(t));
+                    java.awt.Color newColor = JColorChooser.showDialog(
+							panel,
+							"Choose Color",
+							((GenericColorizer) getValue()).getAwtColor());
+                    if (null != newColor) {
+                        setValue(colorizerFactory.createCustomColorMode(newColor));
                     }
                 }
             });
@@ -160,29 +195,4 @@ public abstract class AbstractColorizerPropertyEditor extends PropertyEditorSupp
 
         return panel;
     }
-
-    private void generateGenericComponent(final ColorizerType type, final String label, final ParallelGroup hg, final SequentialGroup vg, final ButtonGroup bg) {
-        // radio button
-        JRadioButton radioButton = new JRadioButton();
-        radioButton.setText(label);
-        bg.add(radioButton);
-
-        // initialization
-        radioButton.setSelected(getColorizerTypeValue() == type);
-
-        // listener
-        radioButton.addItemListener(new ItemListener() {
-
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    setValue(createColorizer(type));
-                }
-            }
-        });
-
-        // positioning
-        hg.addComponent(radioButton);
-        vg.addComponent(radioButton);
-    }
-*/
 }
