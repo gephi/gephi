@@ -29,30 +29,39 @@ import org.gephi.data.attributes.api.AttributeColumn;
  */
 public class TransformerFactory {
 
-    public ColorTransformer getColorTransformer(AttributeColumn attributeColumn) {
-        AbstractColorTransformer colorTransformer=null;
-        switch(attributeColumn.getAttributeType()) {
-            case DOUBLE:
-                colorTransformer = getDoubleColorTransformer();
-                break;
-            case FLOAT:
-                colorTransformer = getFloatColorTransformer();
-                break;
-            case INT:
-                colorTransformer = getIntegerColorTransformer();
-                break;
-            case LONG:
-                colorTransformer = getLongColorTransformer();
-                break;
+    public ColorTransformer getColorTransformer(Ranking ranking) {
+        AbstractColorTransformer colorTransformer = null;
+        if (ranking.getType().equals(Double.class)) {
+            colorTransformer = getDoubleColorTransformer();
+        } else if (ranking.getType().equals(Float.class)) {
+            colorTransformer = getFloatColorTransformer();
+        } else if (ranking.getType().equals(Integer.class)) {
+            colorTransformer = getIntegerColorTransformer();
+        } else if (ranking.getType().equals(Long.class)) {
+            colorTransformer = getLongColorTransformer();
         }
         return colorTransformer;
+    }
+
+    public SizeTransformer getSizeTransformer(Ranking ranking) {
+        AbstractSizeTransformer sizeTransformer = null;
+        if (ranking.getType().equals(Double.class)) {
+            sizeTransformer = getDoubleSizeTransformer();
+        } else if (ranking.getType().equals(Float.class)) {
+            sizeTransformer = getFloatSizeTransformer();
+        } else if (ranking.getType().equals(Integer.class)) {
+            sizeTransformer = getIntegerSizeTransformer();
+        } else if (ranking.getType().equals(Long.class)) {
+            sizeTransformer = getLongSizeTransformer();
+        }
+        return sizeTransformer;
     }
 
     private AbstractColorTransformer<Double> getDoubleColorTransformer() {
         return new AbstractColorTransformer<Double>() {
 
             public Color transform(Double value) {
-                float ratio = (float)(value-lowerBound/(upperBound-lowerBound));
+                float ratio = (float) (value - lowerBound / (upperBound - lowerBound));
                 return linearGradient.getValue(ratio);
             }
         };
@@ -62,7 +71,7 @@ public class TransformerFactory {
         return new AbstractColorTransformer<Float>() {
 
             public Color transform(Float value) {
-                float ratio = value-lowerBound/(upperBound-lowerBound);
+                float ratio = value - lowerBound / (upperBound - lowerBound);
                 return linearGradient.getValue(ratio);
             }
         };
@@ -72,7 +81,7 @@ public class TransformerFactory {
         return new AbstractColorTransformer<Integer>() {
 
             public Color transform(Integer value) {
-                float ratio = (float)(value-lowerBound)/(upperBound-lowerBound);
+                float ratio = (float) (value - lowerBound) / (upperBound - lowerBound);
                 return linearGradient.getValue(ratio);
             }
         };
@@ -82,8 +91,48 @@ public class TransformerFactory {
         return new AbstractColorTransformer<Long>() {
 
             public Color transform(Long value) {
-                float ratio = (float)((double)(value-lowerBound)/(upperBound-lowerBound));
+                float ratio = (float) ((double) (value - lowerBound) / (upperBound - lowerBound));
                 return linearGradient.getValue(ratio);
+            }
+        };
+    }
+
+    private AbstractSizeTransformer<Double> getDoubleSizeTransformer() {
+        return new AbstractSizeTransformer<Double>() {
+
+            public float transform(Double value) {
+                float ratio = (float) (value - lowerBound / (upperBound - lowerBound));
+                return ratio * maxSize + minSize;
+            }
+        };
+    }
+
+    private AbstractSizeTransformer<Float> getFloatSizeTransformer() {
+        return new AbstractSizeTransformer<Float>() {
+
+            public float transform(Float value) {
+                float ratio = value - lowerBound / (upperBound - lowerBound);
+                return ratio * maxSize + minSize;
+            }
+        };
+    }
+
+    private AbstractSizeTransformer<Integer> getIntegerSizeTransformer() {
+        return new AbstractSizeTransformer<Integer>() {
+
+            public float transform(Integer value) {
+                float ratio = (float) (value - lowerBound) / (upperBound - lowerBound);
+                return ratio * maxSize + minSize;
+            }
+        };
+    }
+
+    private AbstractSizeTransformer<Long> getLongSizeTransformer() {
+        return new AbstractSizeTransformer<Long>() {
+
+            public float transform(Long value) {
+                float ratio = (float) ((double) (value - lowerBound) / (upperBound - lowerBound));
+                return ratio * maxSize + minSize;
             }
         };
     }

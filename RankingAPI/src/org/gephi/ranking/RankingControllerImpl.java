@@ -30,4 +30,15 @@ public class RankingControllerImpl implements RankingController {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public ColorTransformer getColorTransformer(NodeRanking ranking) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public ColorTransformer getColorTransformer(EdgeRanking ranking) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public SizeTransformer getSizeTransformer(NodeRanking nodeRanking) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

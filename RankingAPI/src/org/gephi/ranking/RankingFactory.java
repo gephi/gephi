@@ -69,6 +69,15 @@ public class RankingFactory {
         public Type getValue(Node node) {
             return (Type) node.getNodeData().getAttributes().getValue(column.getIndex());
         }
+
+        public String getName() {
+            return column.getTitle();
+        }
+
+        @Override
+        public String toString() {
+            return getName();
+        }
     }
 
     private static class EdgeAttributeRanking<Type> implements EdgeRanking<Type> {
@@ -81,6 +90,15 @@ public class RankingFactory {
 
         public Type getValue(Edge edge) {
             return (Type) edge.getEdgeData().getAttributes().getValue(column.getIndex());
+        }
+
+        public String getName() {
+            return column.getTitle();
+        }
+
+        @Override
+        public String toString() {
+            return getName();
         }
     }
 }

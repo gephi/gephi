@@ -25,5 +25,11 @@ package org.gephi.ranking;
  * @author Mathieu Bastian
  */
 public interface Ranking<Element, Type> {
+
     public Type getValue(Element element);
+
+    public String getName();
+
+    @Override
+    public String toString();
 }

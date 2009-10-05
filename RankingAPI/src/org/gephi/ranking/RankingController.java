@@ -27,4 +27,10 @@ package org.gephi.ranking;
 public interface RankingController {
 
     public Ranking[] getNodeRanking();
+
+    public ColorTransformer getColorTransformer(NodeRanking ranking);
+
+    public ColorTransformer getColorTransformer(EdgeRanking ranking);
+
+    public SizeTransformer getSizeTransformer(NodeRanking nodeRanking);
 }
