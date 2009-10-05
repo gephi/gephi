@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ranking;
 
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
@@ -30,7 +31,7 @@ import org.gephi.graph.api.Node;
  */
 public class RankingFactory {
 
-    public NodeRanking getNodeAttributeRanking(AttributeColumn column) {
+    public static NodeRanking getNodeAttributeRanking(AttributeColumn column) {
         switch (column.getAttributeType()) {
             case DOUBLE:
                 return new NodeAttributeRanking<Double>(column);
@@ -44,7 +45,7 @@ public class RankingFactory {
         throw new IllegalArgumentException("The column must be a Number type");
     }
 
-    public EdgeRanking getEdgeAttributeRanking(AttributeColumn column) {
+    public static EdgeRanking getEdgeAttributeRanking(AttributeColumn column) {
         switch (column.getAttributeType()) {
             case DOUBLE:
                 return new EdgeAttributeRanking<Double>(column);
@@ -56,6 +57,17 @@ public class RankingFactory {
                 return new EdgeAttributeRanking<Integer>(column);
         }
         throw new IllegalArgumentException("The column must be a Number type");
+    }
+
+    public static boolean isNumberColumn(AttributeColumn column) {
+        AttributeType type = column.getAttributeType();
+        if (type == AttributeType.DOUBLE ||
+                type == AttributeType.FLOAT ||
+                type == AttributeType.INT ||
+                type == AttributeType.LONG) {
+            return true;
+        }
+        return false;
     }
 
     private static class NodeAttributeRanking<Type> implements NodeRanking<Type> {
@@ -78,6 +90,10 @@ public class RankingFactory {
         public String toString() {
             return getName();
         }
+
+        public Class getType() {
+            return column.getAttributeType().getType();
+        }
     }
 
     private static class EdgeAttributeRanking<Type> implements EdgeRanking<Type> {
@@ -99,6 +115,10 @@ public class RankingFactory {
         @Override
         public String toString() {
             return getName();
+        }
+
+        public Class getType() {
+            return column.getAttributeType().getType();
         }
     }
 }

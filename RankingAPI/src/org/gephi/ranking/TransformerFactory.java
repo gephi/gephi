@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ranking;
 
 import java.awt.Color;
-import org.gephi.data.attributes.api.AttributeColumn;
 
 /**
  *
@@ -29,7 +28,7 @@ import org.gephi.data.attributes.api.AttributeColumn;
  */
 public class TransformerFactory {
 
-    public ColorTransformer getColorTransformer(Ranking ranking) {
+    public static ColorTransformer getColorTransformer(Ranking ranking) {
         AbstractColorTransformer colorTransformer = null;
         if (ranking.getType().equals(Double.class)) {
             colorTransformer = getDoubleColorTransformer();
@@ -43,7 +42,7 @@ public class TransformerFactory {
         return colorTransformer;
     }
 
-    public SizeTransformer getSizeTransformer(Ranking ranking) {
+    public static SizeTransformer getSizeTransformer(Ranking ranking) {
         AbstractSizeTransformer sizeTransformer = null;
         if (ranking.getType().equals(Double.class)) {
             sizeTransformer = getDoubleSizeTransformer();
@@ -57,7 +56,7 @@ public class TransformerFactory {
         return sizeTransformer;
     }
 
-    private AbstractColorTransformer<Double> getDoubleColorTransformer() {
+    private static AbstractColorTransformer<Double> getDoubleColorTransformer() {
         return new AbstractColorTransformer<Double>() {
 
             public Color transform(Double value) {
@@ -67,7 +66,7 @@ public class TransformerFactory {
         };
     }
 
-    private AbstractColorTransformer<Float> getFloatColorTransformer() {
+    private static AbstractColorTransformer<Float> getFloatColorTransformer() {
         return new AbstractColorTransformer<Float>() {
 
             public Color transform(Float value) {
@@ -77,7 +76,7 @@ public class TransformerFactory {
         };
     }
 
-    private AbstractColorTransformer<Integer> getIntegerColorTransformer() {
+    private static AbstractColorTransformer<Integer> getIntegerColorTransformer() {
         return new AbstractColorTransformer<Integer>() {
 
             public Color transform(Integer value) {
@@ -87,7 +86,7 @@ public class TransformerFactory {
         };
     }
 
-    private AbstractColorTransformer<Long> getLongColorTransformer() {
+    private static AbstractColorTransformer<Long> getLongColorTransformer() {
         return new AbstractColorTransformer<Long>() {
 
             public Color transform(Long value) {
@@ -97,7 +96,7 @@ public class TransformerFactory {
         };
     }
 
-    private AbstractSizeTransformer<Double> getDoubleSizeTransformer() {
+    private static AbstractSizeTransformer<Double> getDoubleSizeTransformer() {
         return new AbstractSizeTransformer<Double>() {
 
             public float transform(Double value) {
@@ -107,7 +106,7 @@ public class TransformerFactory {
         };
     }
 
-    private AbstractSizeTransformer<Float> getFloatSizeTransformer() {
+    private static AbstractSizeTransformer<Float> getFloatSizeTransformer() {
         return new AbstractSizeTransformer<Float>() {
 
             public float transform(Float value) {
@@ -117,7 +116,7 @@ public class TransformerFactory {
         };
     }
 
-    private AbstractSizeTransformer<Integer> getIntegerSizeTransformer() {
+    private static AbstractSizeTransformer<Integer> getIntegerSizeTransformer() {
         return new AbstractSizeTransformer<Integer>() {
 
             public float transform(Integer value) {
@@ -127,7 +126,7 @@ public class TransformerFactory {
         };
     }
 
-    private AbstractSizeTransformer<Long> getLongSizeTransformer() {
+    private static AbstractSizeTransformer<Long> getLongSizeTransformer() {
         return new AbstractSizeTransformer<Long>() {
 
             public float transform(Long value) {

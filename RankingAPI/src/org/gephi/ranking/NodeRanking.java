@@ -27,4 +27,6 @@ import org.gephi.graph.api.Node;
  * @author Mathieu Bastian
  */
 public interface NodeRanking<Type> extends Ranking<Node, Type> {
+
+    public Type getValue(Node node);
 }

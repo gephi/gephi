@@ -32,4 +32,6 @@ public interface Ranking<Element, Type> {
 
     @Override
     public String toString();
+
+    public Class getType();
 }

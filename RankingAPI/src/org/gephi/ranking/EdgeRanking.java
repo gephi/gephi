@@ -27,4 +27,6 @@ import org.gephi.graph.api.Edge;
  * @author Mathieu Bastian
  */
 public interface EdgeRanking<Type> extends Ranking<Edge, Type> {
+
+    public Type getValue(Edge edge);
 }

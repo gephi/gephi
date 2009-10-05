@@ -32,7 +32,6 @@ public class AbstractTransformer<T> implements Transformer<T> {
     protected T upperBound;
 
     public AbstractTransformer() {
-        
     }
 
     public AbstractTransformer(T minimum, T maximum) {
@@ -63,6 +62,9 @@ public class AbstractTransformer<T> implements Transformer<T> {
 
     public void setMaximumValue(T maximum) {
         this.maximum = maximum;
+        if (upperBound == null) {
+            this.upperBound = maximum;
+        }
     }
 
     public T getMinimumValue() {
@@ -71,6 +73,9 @@ public class AbstractTransformer<T> implements Transformer<T> {
 
     public void setMinimumValue(T minimum) {
         this.minimum = minimum;
+        if (lowerBound == null) {
+            this.lowerBound = minimum;
+        }
     }
 
     public T getUpperBound() {
