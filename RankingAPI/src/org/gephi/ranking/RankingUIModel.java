@@ -39,6 +39,8 @@ public class RankingUIModel {
     public static final int COLOR_TRANSFORMER = 1;
     public static final int SIZE_TRANSFORMER = 2;
     public static final int WEIGHT_TRANSFORMER = 3;
+    public static final int LABEL_COLOR_TRANSFORMER = 4;
+    public static final int LABEL_SIZE_TRANSFORMER = 5;
 
     //Model
     protected int ranking;
@@ -72,8 +74,8 @@ public class RankingUIModel {
     }
 
     public void setNodeTransformer(int nodeTransformer) {
-        if (nodeTransformer != COLOR_TRANSFORMER && nodeTransformer != SIZE_TRANSFORMER) {
-            throw new IllegalArgumentException("Transformer must be COLOR_TRANSFORMER or SIZE_TRANSFORMER");
+        if (nodeTransformer != COLOR_TRANSFORMER && nodeTransformer != SIZE_TRANSFORMER && nodeTransformer!=LABEL_COLOR_TRANSFORMER && nodeTransformer!=LABEL_SIZE_TRANSFORMER) {
+            throw new IllegalArgumentException("Transformer must be COLOR_TRANSFORMER or SIZE_TRANSFORMER or LABEL_COLOR_TRANSFORMER or LABEL_SIZE_TRANSFORMER");
         }
         if (nodeTransformer == this.nodeTransformer) {
             return;

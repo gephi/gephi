@@ -24,7 +24,9 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import org.gephi.ranking.RankingUIModel;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -34,43 +36,40 @@ public class NodeRankingPanel extends javax.swing.JPanel {
 
     private JPanel contentPanel;
     private final RankingUIModel model;
+    private TransformerUI[] transformerUIs;
 
     public NodeRankingPanel(RankingUIModel model) {
         this.model = model;
         initComponents();
-        initEvents();
+        initTransformers();
     }
 
-    private void initEvents() {
-        colorButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                model.setNodeTransformer(RankingUIModel.COLOR_TRANSFORMER);
-                refreshContentPanel();
-            }
-        });
-        sizeButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                model.setNodeTransformer(RankingUIModel.SIZE_TRANSFORMER);
-                refreshContentPanel();
-            }
-        });
-        refreshContentPanel();
-        transformerGroup.setSelected(colorButton.getModel(), model.getNodeTransformer() == RankingUIModel.COLOR_TRANSFORMER);
-        transformerGroup.setSelected(sizeButton.getModel(), model.getNodeTransformer() == RankingUIModel.SIZE_TRANSFORMER);
+    private void initTransformers() {
+        transformerUIs = new TransformerUI[4];
+        TransformerUI colorTransformerUI = new TransformerUI("color.png", "ColorTransformerUI.tooltip", ColorTransformerPanel.class, RankingUIModel.COLOR_TRANSFORMER);
+        tranformersPanel.add(colorTransformerUI.getButton());
+        transformerUIs[0] = colorTransformerUI;
+        TransformerUI sizeTransformerUI = new TransformerUI("size.png", "SizeTransformerUI.tooltip", SizeTransformerPanel.class, RankingUIModel.SIZE_TRANSFORMER);
+        tranformersPanel.add(sizeTransformerUI.getButton());
+        transformerUIs[1] = sizeTransformerUI;
+        TransformerUI labelColorTransformerUI = new TransformerUI("labelcolor.png", "LabelColorTransformerUI.tooltip", ColorTransformerPanel.class, RankingUIModel.LABEL_COLOR_TRANSFORMER);
+        tranformersPanel.add(labelColorTransformerUI.getButton());
+        transformerUIs[2] = labelColorTransformerUI;
+        TransformerUI labelSizeTransformerUI = new TransformerUI("labelsize.png", "LabelSizeTransformerUI.tooltip", SizeTransformerPanel.class, RankingUIModel.LABEL_SIZE_TRANSFORMER);
+        tranformersPanel.add(labelSizeTransformerUI.getButton());
+        transformerUIs[3] = labelSizeTransformerUI;
     }
 
     private void refreshContentPanel() {
         if (contentPanel != null) {
             remove(contentPanel);
         }
-        if (model.getNodeTransformer() == RankingUIModel.COLOR_TRANSFORMER) {
-            contentPanel = new ColorTransformerPanel();
-            add(contentPanel, BorderLayout.CENTER);
-        } else if (model.getEdgeTransformer() == RankingUIModel.SIZE_TRANSFORMER) {
-            contentPanel = new SizeTransformerPanel();
-            add(contentPanel, BorderLayout.CENTER);
+        for (TransformerUI transformerUI : transformerUIs) {
+            if (model.getNodeTransformer() == transformerUI.transformer) {
+                contentPanel = transformerUI.getContentPanel();
+                add(contentPanel, BorderLayout.CENTER);
+                transformerGroup.setSelected(transformerUI.button.getModel(), true);
+            }
         }
         revalidate();
         repaint();
@@ -89,8 +88,7 @@ public class NodeRankingPanel extends javax.swing.JPanel {
         transformerGroup = new javax.swing.ButtonGroup();
         transformerButtons = new javax.swing.JPanel();
         rankComboBox = new javax.swing.JComboBox();
-        colorButton = new javax.swing.JToggleButton();
-        sizeButton = new javax.swing.JToggleButton();
+        tranformersPanel = new javax.swing.JPanel();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -103,34 +101,70 @@ public class NodeRankingPanel extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(8, 4, 6, 8);
+        gridBagConstraints.insets = new java.awt.Insets(6, 4, 6, 8);
         transformerButtons.add(rankComboBox, gridBagConstraints);
 
-        transformerGroup.add(colorButton);
-        colorButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/ranking/resources/color.png"))); // NOI18N
-        colorButton.setText(org.openide.util.NbBundle.getMessage(NodeRankingPanel.class, "NodeRankingPanel.colorButton.text")); // NOI18N
-        colorButton.setMargin(new java.awt.Insets(2, 4, 2, 4));
+        tranformersPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 5));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.insets = new java.awt.Insets(8, 0, 6, 0);
-        transformerButtons.add(colorButton, gridBagConstraints);
-
-        transformerGroup.add(sizeButton);
-        sizeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/ranking/resources/size.png"))); // NOI18N
-        sizeButton.setText(org.openide.util.NbBundle.getMessage(NodeRankingPanel.class, "NodeRankingPanel.sizeButton.text")); // NOI18N
-        sizeButton.setMargin(new java.awt.Insets(2, 4, 2, 4));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.insets = new java.awt.Insets(8, 0, 6, 4);
-        transformerButtons.add(sizeButton, gridBagConstraints);
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 4);
+        transformerButtons.add(tranformersPanel, gridBagConstraints);
 
         add(transformerButtons, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton colorButton;
     private javax.swing.JComboBox rankComboBox;
-    private javax.swing.JToggleButton sizeButton;
+    private javax.swing.JPanel tranformersPanel;
     private javax.swing.JPanel transformerButtons;
     private javax.swing.ButtonGroup transformerGroup;
     // End of variables declaration//GEN-END:variables
+
+    private class TransformerUI {
+
+        private JToggleButton button;
+        private Class<JPanel> contentPanel;
+        private int transformer;
+
+        public TransformerUI(String iconFile, String tooltipText, Class contentPanel, int transformerID) {
+            button = new JToggleButton();
+            button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/ranking/resources/" + iconFile)));
+            button.setToolTipText(org.openide.util.NbBundle.getMessage(NodeRankingPanel.class, tooltipText));
+            button.setMargin(new java.awt.Insets(2, 4, 2, 4));
+            button.setRolloverEnabled(true);
+            button.setFocusPainted(false);
+            transformerGroup.add(button);
+            this.contentPanel = contentPanel;
+            this.transformer = transformerID;
+            button.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    if (button.isSelected()) {
+                        model.setNodeTransformer(transformer);
+                        refreshContentPanel();
+                    }
+                }
+            });
+        }
+
+        public JPanel getContentPanel() {
+            try {
+                return contentPanel.newInstance();
+            } catch (InstantiationException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IllegalAccessException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+            return null;
+        }
+
+        public int getTransformer() {
+            return transformer;
+        }
+
+        public JToggleButton getButton() {
+            return button;
+        }
+    }
 }
