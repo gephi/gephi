@@ -70,5 +70,21 @@ public class GradientUtils {
                     (int) (c1.getBlue() * (1 - p) + c2.getBlue() * (p)),
                     (int) (c1.getAlpha() * (1 - p) + c2.getAlpha() * (p)));
         }
+
+        public Color[] getColors() {
+            return colors;
+        }
+
+        public float[] getPositions() {
+            return positions;
+        }
+
+        public void setColors(Color[] colors) {
+            this.colors = colors;
+        }
+
+        public void setPositions(float[] positions) {
+            this.positions = positions;
+        }
     }
 }

@@ -24,7 +24,9 @@ import java.awt.Color;
 import java.util.Arrays;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.gephi.ranking.ColorTransformer;
 import org.gephi.ranking.RankingUIModel;
+import org.gephi.ui.components.JRangeSlider;
 import org.gephi.ui.components.gradientslider.GradientSlider;
 
 /**
@@ -32,41 +34,37 @@ import org.gephi.ui.components.gradientslider.GradientSlider;
  */
 public class ColorTransformerPanel extends javax.swing.JPanel {
 
+    private ColorTransformer colorTransformer;
+
     /** Creates new form ColorTransformerPanel */
     public ColorTransformerPanel(final RankingUIModel model) {
         initComponents();
 
         if (model.getRanking() == RankingUIModel.NODE_RANKING) {
             //NODE
-            //Gradient
-            final GradientSlider gradientSlider = new GradientSlider(GradientSlider.HORIZONTAL, model.getNodeColorTransformerThumbPositions(), model.getNodeColorTransformerColors());
-            gradientSlider.putClientProperty("GradientSlider.includeOpacity", "false");
-            gradientSlider.addChangeListener(new ChangeListener() {
-
-                public void stateChanged(ChangeEvent e) {
-                    Color[] colors = gradientSlider.getColors();
-                    float[] positions = gradientSlider.getThumbPositions();
-                    model.setNodeColorTransformerColors(Arrays.copyOf(colors, colors.length));
-                    model.setNodeColorTransformerThumbPositions(Arrays.copyOf(positions, positions.length));
-                }
-            });
-            gradientPanel.add(gradientSlider);
+            colorTransformer = model.getNodeColorTransformer();
         } else {
-            //EDGE
-            //Gradient
-            final GradientSlider gradientSlider = new GradientSlider(GradientSlider.HORIZONTAL, model.getEdgeColorTransformerThumbPositions(), model.getEdgeColorTransformerColors());
-            gradientSlider.putClientProperty("GradientSlider.includeOpacity", "false");
-            gradientSlider.addChangeListener(new ChangeListener() {
-
-                public void stateChanged(ChangeEvent e) {
-                    Color[] colors = gradientSlider.getColors();
-                    float[] positions = gradientSlider.getThumbPositions();
-                    model.setEdgeColorTransformerColors(Arrays.copyOf(colors, colors.length));
-                    model.setEdgeColorTransformerThumbPositions(Arrays.copyOf(positions, positions.length));
-                }
-            });
-            gradientPanel.add(gradientSlider);
+            colorTransformer = model.getEdgeColorTransformer();
         }
+
+        //Gradient
+        final GradientSlider gradientSlider = new GradientSlider(GradientSlider.HORIZONTAL, colorTransformer.getColorPositions(), colorTransformer.getColors());
+        gradientSlider.putClientProperty("GradientSlider.includeOpacity", "false");
+        gradientSlider.addChangeListener(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                Color[] colors = gradientSlider.getColors();
+                float[] positions = gradientSlider.getThumbPositions();
+                colorTransformer.setColors(Arrays.copyOf(colors, colors.length));
+                colorTransformer.setColorPositions(Arrays.copyOf(positions, positions.length));
+            }
+        });
+        gradientPanel.add(gradientSlider);
+
+        //Range
+        ((JRangeSlider) rangeSlider).setValue(0);
+        ((JRangeSlider) rangeSlider).setUpperValue(100);
+
 
     }
 
@@ -81,6 +79,8 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
 
         labelColor = new javax.swing.JLabel();
         gradientPanel = new javax.swing.JPanel();
+        rangeSlider = new JRangeSlider();
+        labelRange = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -89,15 +89,25 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
         gradientPanel.setOpaque(false);
         gradientPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
+        rangeSlider.setOpaque(false);
+
+        labelRange.setText(org.openide.util.NbBundle.getMessage(ColorTransformerPanel.class, "ColorTransformerPanel.labelRange.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(labelColor)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gradientPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(labelColor)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(gradientPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(labelRange)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(rangeSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -107,11 +117,17 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(labelColor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(gradientPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE))
-                .addContainerGap(157, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(labelRange, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(rangeSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
+                .addGap(67, 67, 67))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel gradientPanel;
     private javax.swing.JLabel labelColor;
+    private javax.swing.JLabel labelRange;
+    private javax.swing.JSlider rangeSlider;
     // End of variables declaration//GEN-END:variables
 }

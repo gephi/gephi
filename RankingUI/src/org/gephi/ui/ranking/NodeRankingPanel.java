@@ -26,7 +26,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import org.gephi.ranking.RankingUIModel;
-import org.openide.util.Exceptions;
 
 /**
  *
