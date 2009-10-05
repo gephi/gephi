@@ -148,13 +148,11 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         return new PropertySet[]{set, barnesSet};
     }
 
-    @Override
-    public void setGraphController(GraphController graphController) {
-        super.setGraphController(graphController);
-        graph = graphController.getHierarchicalUndirectedGraph().getClusteredGraph();
-    }
-
     public void initAlgo() {
+        if (graphController == null) {
+            return;
+        }
+        graph = graphController.getHierarchicalUndirectedGraph().getClusteredGraph();
         energy = Float.POSITIVE_INFINITY;
         for (Node n : graph.getTopNodes()) {
             NodeData data = n.getNodeData();
