@@ -1,8 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-/*
 Copyright 2008 WebAtlas
 Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
 Website : http://www.gephi.org
@@ -24,6 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.ranking;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.gephi.ranking.RankingUIModel;
+
 /**
  *
  * @author Mathieu Bastian
@@ -31,8 +31,44 @@ package org.gephi.ui.ranking;
 public class SizeTransformerPanel extends javax.swing.JPanel {
 
     /** Creates new form SizeTransformerPanel */
-    public SizeTransformerPanel() {
+    public SizeTransformerPanel(final RankingUIModel model) {
         initComponents();
+
+        if (model.getRanking() == RankingUIModel.NODE_RANKING) {
+            //NODE
+            minSize.setValue(model.getNodeSizeTransformerMinSize());
+            maxSize.setValue(model.getNodeSizeTransformerMaxSize());
+            minSize.addChangeListener(new ChangeListener() {
+
+                public void stateChanged(ChangeEvent e) {
+                    model.setNodeSizeTransformerMinSize((Float) minSize.getValue());
+                }
+            });
+            maxSize.addChangeListener(new ChangeListener() {
+
+                public void stateChanged(ChangeEvent e) {
+                    model.setNodeSizeTransformerMaxSize((Float) maxSize.getValue());
+                }
+            });
+        } else {
+            //EDGE
+            minSize.setValue(model.getEdgeSizeTransformerMinSize());
+            maxSize.setValue(model.getEdgeSizeTransformerMaxSize());
+            minSize.addChangeListener(new ChangeListener() {
+
+                public void stateChanged(ChangeEvent e) {
+                    model.setEdgeSizeTransformerMinSize((Float) minSize.getValue());
+                }
+            });
+            maxSize.addChangeListener(new ChangeListener() {
+
+                public void stateChanged(ChangeEvent e) {
+                    model.setEdgeSizeTransformerMaxSize((Float) maxSize.getValue());
+                }
+            });
+        }
+
+
     }
 
     /** This method is called from within the constructor to
@@ -44,9 +80,20 @@ public class SizeTransformerPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        labelMinSize = new javax.swing.JLabel();
+        minSize = new javax.swing.JSpinner();
+        labelMaxSize = new javax.swing.JLabel();
+        maxSize = new javax.swing.JSpinner();
 
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(SizeTransformerPanel.class, "SizeTransformerPanel.jLabel1.text")); // NOI18N
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        labelMinSize.setText(org.openide.util.NbBundle.getMessage(SizeTransformerPanel.class, "SizeTransformerPanel.labelMinSize.text")); // NOI18N
+
+        minSize.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(0.1f), null, Float.valueOf(0.5f)));
+
+        labelMaxSize.setText(org.openide.util.NbBundle.getMessage(SizeTransformerPanel.class, "SizeTransformerPanel.labelMaxSize.text")); // NOI18N
+
+        maxSize.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(4.0f), Float.valueOf(0.5f), null, Float.valueOf(0.5f)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -54,21 +101,31 @@ public class SizeTransformerPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(283, Short.MAX_VALUE))
+                .addComponent(labelMinSize)
+                .addGap(8, 8, 8)
+                .addComponent(minSize, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(labelMaxSize)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(maxSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(72, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(180, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelMinSize)
+                    .addComponent(minSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelMaxSize)
+                    .addComponent(maxSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(174, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel labelMaxSize;
+    private javax.swing.JLabel labelMinSize;
+    private javax.swing.JSpinner maxSize;
+    private javax.swing.JSpinner minSize;
     // End of variables declaration//GEN-END:variables
-
 }

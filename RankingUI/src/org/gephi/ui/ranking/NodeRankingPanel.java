@@ -46,18 +46,43 @@ public class NodeRankingPanel extends javax.swing.JPanel {
 
     private void initTransformers() {
         transformerUIs = new TransformerUI[4];
-        TransformerUI colorTransformerUI = new TransformerUI("color.png", "ColorTransformerUI.tooltip", ColorTransformerPanel.class, RankingUIModel.COLOR_TRANSFORMER);
+        TransformerUI colorTransformerUI = new TransformerUI("color.png", "ColorTransformerUI.tooltip", RankingUIModel.COLOR_TRANSFORMER) {
+
+            @Override
+            public JPanel getContentPanel() {
+                return new ColorTransformerPanel(model);
+            }
+        };
         tranformersPanel.add(colorTransformerUI.getButton());
         transformerUIs[0] = colorTransformerUI;
-        TransformerUI sizeTransformerUI = new TransformerUI("size.png", "SizeTransformerUI.tooltip", SizeTransformerPanel.class, RankingUIModel.SIZE_TRANSFORMER);
+        TransformerUI sizeTransformerUI = new TransformerUI("size.png", "SizeTransformerUI.tooltip", RankingUIModel.SIZE_TRANSFORMER) {
+
+            @Override
+            public JPanel getContentPanel() {
+                return new SizeTransformerPanel(model);
+            }
+        };
         tranformersPanel.add(sizeTransformerUI.getButton());
         transformerUIs[1] = sizeTransformerUI;
-        TransformerUI labelColorTransformerUI = new TransformerUI("labelcolor.png", "LabelColorTransformerUI.tooltip", ColorTransformerPanel.class, RankingUIModel.LABEL_COLOR_TRANSFORMER);
+        TransformerUI labelColorTransformerUI = new TransformerUI("labelcolor.png", "LabelColorTransformerUI.tooltip", RankingUIModel.LABEL_COLOR_TRANSFORMER) {
+
+            @Override
+            public JPanel getContentPanel() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
         tranformersPanel.add(labelColorTransformerUI.getButton());
         transformerUIs[2] = labelColorTransformerUI;
-        TransformerUI labelSizeTransformerUI = new TransformerUI("labelsize.png", "LabelSizeTransformerUI.tooltip", SizeTransformerPanel.class, RankingUIModel.LABEL_SIZE_TRANSFORMER);
+        TransformerUI labelSizeTransformerUI = new TransformerUI("labelsize.png", "LabelSizeTransformerUI.tooltip", RankingUIModel.LABEL_SIZE_TRANSFORMER) {
+
+            @Override
+            public JPanel getContentPanel() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
         tranformersPanel.add(labelSizeTransformerUI.getButton());
         transformerUIs[3] = labelSizeTransformerUI;
+        refreshContentPanel();
     }
 
     private void refreshContentPanel() {
@@ -121,13 +146,12 @@ public class NodeRankingPanel extends javax.swing.JPanel {
     private javax.swing.ButtonGroup transformerGroup;
     // End of variables declaration//GEN-END:variables
 
-    private class TransformerUI {
+    private abstract class TransformerUI {
 
         private JToggleButton button;
-        private Class<JPanel> contentPanel;
         private int transformer;
 
-        public TransformerUI(String iconFile, String tooltipText, Class contentPanel, int transformerID) {
+        public TransformerUI(String iconFile, String tooltipText, int transformerID) {
             button = new JToggleButton();
             button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/ranking/resources/" + iconFile)));
             button.setToolTipText(org.openide.util.NbBundle.getMessage(NodeRankingPanel.class, tooltipText));
@@ -135,7 +159,6 @@ public class NodeRankingPanel extends javax.swing.JPanel {
             button.setRolloverEnabled(true);
             button.setFocusPainted(false);
             transformerGroup.add(button);
-            this.contentPanel = contentPanel;
             this.transformer = transformerID;
             button.addActionListener(new ActionListener() {
 
@@ -148,16 +171,7 @@ public class NodeRankingPanel extends javax.swing.JPanel {
             });
         }
 
-        public JPanel getContentPanel() {
-            try {
-                return contentPanel.newInstance();
-            } catch (InstantiationException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IllegalAccessException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-            return null;
-        }
+        public abstract JPanel getContentPanel();
 
         public int getTransformer() {
             return transformer;

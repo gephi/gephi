@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking;
 
+import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -49,6 +50,30 @@ public class RankingUIModel {
     protected int nodeTransformer;
     protected int edgeTransformer;
 
+    //ColorTransformer - Node
+    protected float[] nodeColorTransformerThumbPositions;
+    protected Color[] nodecolorTransformerColors;
+    protected Number nodeColorTransformerMinValue;
+    protected Number nodeColorTransformerMaxValue;
+
+    //ColorTransformer - Edge
+    protected float[] edgeColorTransformerThumbPositions;
+    protected Color[] edgeColorTransformerColors;
+    protected Number edgeColorTransformerMinValue;
+    protected Number edgeColorTransformerMaxValue;
+
+    //SizeTransformer - Node
+    protected float nodeSizeTransformerMinSize;
+    protected float nodeSizeTransformerMaxSize;
+    protected Number nodeSizeTransformerMinValue;
+    protected Number nodeSizeTransformerMaxValue;
+
+    //SizeTransformer - Edge
+    protected float edgeSizeTransformerMinSize;
+    protected float edgeSizeTransformerMaxSize;
+    protected Number edgeSizeTransformerMinValue;
+    protected Number edgeSizeTransformerMaxValue;
+
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
 
@@ -59,6 +84,14 @@ public class RankingUIModel {
         listVisible = false;
         nodeTransformer = COLOR_TRANSFORMER;
         edgeTransformer = COLOR_TRANSFORMER;
+        nodeColorTransformerThumbPositions = new float[]{0f, 1f};
+        nodecolorTransformerColors = new Color[]{Color.WHITE, Color.BLACK};
+        nodeSizeTransformerMinSize = 1f;
+        nodeSizeTransformerMaxSize = 10f;
+        edgeColorTransformerThumbPositions = new float[]{0f, 1f};
+        edgeColorTransformerColors = new Color[]{Color.WHITE, Color.BLACK};
+        edgeSizeTransformerMinSize = 1f;
+        edgeSizeTransformerMaxSize = 10f;
     }
 
     public int getRanking() {
@@ -74,7 +107,7 @@ public class RankingUIModel {
     }
 
     public void setNodeTransformer(int nodeTransformer) {
-        if (nodeTransformer != COLOR_TRANSFORMER && nodeTransformer != SIZE_TRANSFORMER && nodeTransformer!=LABEL_COLOR_TRANSFORMER && nodeTransformer!=LABEL_SIZE_TRANSFORMER) {
+        if (nodeTransformer != COLOR_TRANSFORMER && nodeTransformer != SIZE_TRANSFORMER && nodeTransformer != LABEL_COLOR_TRANSFORMER && nodeTransformer != LABEL_SIZE_TRANSFORMER) {
             throw new IllegalArgumentException("Transformer must be COLOR_TRANSFORMER or SIZE_TRANSFORMER or LABEL_COLOR_TRANSFORMER or LABEL_SIZE_TRANSFORMER");
         }
         if (nodeTransformer == this.nodeTransformer) {
@@ -103,6 +136,166 @@ public class RankingUIModel {
 
     public boolean isListVisible() {
         return listVisible;
+    }
+
+    public Color[] getNodeColorTransformerColors() {
+        return nodecolorTransformerColors;
+    }
+
+    public Number getNodeColorTransformerMaxValue() {
+        return nodeColorTransformerMaxValue;
+    }
+
+    public Number getNodeColorTransformerMinValue() {
+        return nodeColorTransformerMinValue;
+    }
+
+    public float[] getNodeColorTransformerThumbPositions() {
+        return nodeColorTransformerThumbPositions;
+    }
+
+    public float getNodeSizeTransformerMaxSize() {
+        return nodeSizeTransformerMaxSize;
+    }
+
+    public Number getNodeSizeTransformerMaxValue() {
+        return nodeSizeTransformerMaxValue;
+    }
+
+    public float getNodeSizeTransformerMinSize() {
+        return nodeSizeTransformerMinSize;
+    }
+
+    public Number getNodeSizeTransformerMinValue() {
+        return nodeSizeTransformerMinValue;
+    }
+
+    public Number getEdgeColorTransformerMaxValue() {
+        return edgeColorTransformerMaxValue;
+    }
+
+    public Number getEdgeColorTransformerMinValue() {
+        return edgeColorTransformerMinValue;
+    }
+
+    public float[] getEdgeColorTransformerThumbPositions() {
+        return edgeColorTransformerThumbPositions;
+    }
+
+    public float getEdgeSizeTransformerMaxSize() {
+        return edgeSizeTransformerMaxSize;
+    }
+
+    public Number getEdgeSizeTransformerMaxValue() {
+        return edgeSizeTransformerMaxValue;
+    }
+
+    public float getEdgeSizeTransformerMinSize() {
+        return edgeSizeTransformerMinSize;
+    }
+
+    public Number getEdgeSizeTransformerMinValue() {
+        return edgeSizeTransformerMinValue;
+    }
+
+    public Color[] getEdgeColorTransformerColors() {
+        return edgeColorTransformerColors;
+    }
+
+    public void setNodeColorTransformerColors(Color[] colorTransformerColors) {
+        Color[] oldValue = this.nodecolorTransformerColors;
+        this.nodecolorTransformerColors = colorTransformerColors;
+        firePropertyChangeEvent("nodeColorTransformerColors", oldValue, colorTransformerColors);
+    }
+
+    public void setNodeColorTransformerMaxValue(Number colorTransformerMaxValue) {
+        Number oldValue = this.nodeColorTransformerMaxValue;
+        this.nodeColorTransformerMaxValue = colorTransformerMaxValue;
+        firePropertyChangeEvent("nodeColorTransformerMaxValue", oldValue, colorTransformerMaxValue);
+    }
+
+    public void setNodeColorTransformerMinValue(Number colorTransformerMinValue) {
+        Number oldValue = this.nodeColorTransformerMinValue;
+        this.nodeColorTransformerMinValue = colorTransformerMinValue;
+        firePropertyChangeEvent("nodeColorTransformerMinValue", oldValue, colorTransformerMinValue);
+    }
+
+    public void setNodeColorTransformerThumbPositions(float[] colorTransformerThumbPositions) {
+        float[] oldValue = this.nodeColorTransformerThumbPositions;
+        this.nodeColorTransformerThumbPositions = colorTransformerThumbPositions;
+        firePropertyChangeEvent("nodeColorTransformerThumbPositions", oldValue, colorTransformerThumbPositions);
+    }
+
+    public void setNodeSizeTransformerMaxSize(float sizeTransformerMaxSize) {
+        float oldValue = this.nodeSizeTransformerMaxSize;
+        this.nodeSizeTransformerMaxSize = sizeTransformerMaxSize;
+        firePropertyChangeEvent("nodeSizeTransformerMaxSize", oldValue, sizeTransformerMaxSize);
+    }
+
+    public void setNodeSizeTransformerMaxValue(Number sizeTransformerMaxValue) {
+        Number oldValue = this.nodeSizeTransformerMaxValue;
+        this.nodeSizeTransformerMaxValue = sizeTransformerMaxValue;
+        firePropertyChangeEvent("nodeSizeTransformerMaxValue", oldValue, sizeTransformerMaxValue);
+    }
+
+    public void setNodeSizeTransformerMinSize(float sizeTransformerMinSize) {
+        float oldValue = this.nodeSizeTransformerMinSize;
+        this.nodeSizeTransformerMinSize = sizeTransformerMinSize;
+        firePropertyChangeEvent("nodeSizeTransformerMinSize", oldValue, sizeTransformerMinSize);
+    }
+
+    public void setNodeSizeTransformerMinValue(Number sizeTransformerMinValue) {
+        Number oldValue = this.nodeSizeTransformerMinValue;
+        this.nodeSizeTransformerMinValue = sizeTransformerMinValue;
+        firePropertyChangeEvent("nodeSizeTransformerMinValue", oldValue, sizeTransformerMinValue);
+    }
+
+    public void setEdgeColorTransformerColors(Color[] colorTransformerColors) {
+        Color[] oldValue = this.edgeColorTransformerColors;
+        this.edgeColorTransformerColors = colorTransformerColors;
+        firePropertyChangeEvent("edgeColorTransformerColors", oldValue, colorTransformerColors);
+    }
+
+    public void setEdgeColorTransformerMaxValue(Number colorTransformerMaxValue) {
+        Number oldValue = this.edgeColorTransformerMaxValue;
+        this.edgeColorTransformerMaxValue = colorTransformerMaxValue;
+        firePropertyChangeEvent("edgeColorTransformerMaxValue", oldValue, colorTransformerMaxValue);
+    }
+
+    public void setEdgeColorTransformerMinValue(Number colorTransformerMinValue) {
+        Number oldValue = this.edgeColorTransformerMinValue;
+        this.edgeColorTransformerMinValue = colorTransformerMinValue;
+        firePropertyChangeEvent("edgeColorTransformerMinValue", oldValue, colorTransformerMinValue);
+    }
+
+    public void setEdgeColorTransformerThumbPositions(float[] colorTransformerThumbPositions) {
+        float[] oldValue = this.edgeColorTransformerThumbPositions;
+        this.edgeColorTransformerThumbPositions = colorTransformerThumbPositions;
+        firePropertyChangeEvent("edgeColorTransformerThumbPositions", oldValue, colorTransformerThumbPositions);
+    }
+
+    public void setEdgeSizeTransformerMaxSize(float sizeTransformerMaxSize) {
+        float oldValue = this.edgeSizeTransformerMaxSize;
+        this.edgeSizeTransformerMaxSize = sizeTransformerMaxSize;
+        firePropertyChangeEvent("edgeSizeTransformerMaxSize", oldValue, sizeTransformerMaxSize);
+    }
+
+    public void setEdgeSizeTransformerMaxValue(Number sizeTransformerMaxValue) {
+        Number oldValue = this.edgeSizeTransformerMaxValue;
+        this.edgeSizeTransformerMaxValue = sizeTransformerMaxValue;
+        firePropertyChangeEvent("edgeSizeTransformerMaxValue", oldValue, sizeTransformerMaxValue);
+    }
+
+    public void setEdgeSizeTransformerMinSize(float sizeTransformerMinSize) {
+        float oldValue = this.edgeSizeTransformerMinSize;
+        this.edgeSizeTransformerMinSize = sizeTransformerMinSize;
+        firePropertyChangeEvent("edgeSizeTransformerMinSize", oldValue, sizeTransformerMinSize);
+    }
+
+    public void setEdgeSizeTransformerMinValue(Number sizeTransformerMinValue) {
+        Number oldValue = this.edgeSizeTransformerMinValue;
+        this.edgeSizeTransformerMinValue = sizeTransformerMinValue;
+        firePropertyChangeEvent("edgeSizeTransformerMinValue", oldValue, sizeTransformerMinValue);
     }
 
     public void setListVisible(boolean listVisible) {

@@ -20,16 +20,54 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.ranking;
 
+import java.awt.Color;
+import java.util.Arrays;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.gephi.ranking.RankingUIModel;
+import org.gephi.ui.components.gradientslider.GradientSlider;
+
 /**
  * @author Mathieu Bastian
  */
 public class ColorTransformerPanel extends javax.swing.JPanel {
 
     /** Creates new form ColorTransformerPanel */
-    public ColorTransformerPanel() {
+    public ColorTransformerPanel(final RankingUIModel model) {
         initComponents();
 
-        //Gradient
+        if (model.getRanking() == RankingUIModel.NODE_RANKING) {
+            //NODE
+            //Gradient
+            final GradientSlider gradientSlider = new GradientSlider(GradientSlider.HORIZONTAL, model.getNodeColorTransformerThumbPositions(), model.getNodeColorTransformerColors());
+            gradientSlider.putClientProperty("GradientSlider.includeOpacity", "false");
+            gradientSlider.addChangeListener(new ChangeListener() {
+
+                public void stateChanged(ChangeEvent e) {
+                    Color[] colors = gradientSlider.getColors();
+                    float[] positions = gradientSlider.getThumbPositions();
+                    model.setNodeColorTransformerColors(Arrays.copyOf(colors, colors.length));
+                    model.setNodeColorTransformerThumbPositions(Arrays.copyOf(positions, positions.length));
+                }
+            });
+            gradientPanel.add(gradientSlider);
+        } else {
+            //EDGE
+            //Gradient
+            final GradientSlider gradientSlider = new GradientSlider(GradientSlider.HORIZONTAL, model.getEdgeColorTransformerThumbPositions(), model.getEdgeColorTransformerColors());
+            gradientSlider.putClientProperty("GradientSlider.includeOpacity", "false");
+            gradientSlider.addChangeListener(new ChangeListener() {
+
+                public void stateChanged(ChangeEvent e) {
+                    Color[] colors = gradientSlider.getColors();
+                    float[] positions = gradientSlider.getThumbPositions();
+                    model.setEdgeColorTransformerColors(Arrays.copyOf(colors, colors.length));
+                    model.setEdgeColorTransformerThumbPositions(Arrays.copyOf(positions, positions.length));
+                }
+            });
+            gradientPanel.add(gradientSlider);
+        }
+
     }
 
     /** This method is called from within the constructor to
@@ -44,7 +82,12 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
         labelColor = new javax.swing.JLabel();
         gradientPanel = new javax.swing.JPanel();
 
+        setBackground(new java.awt.Color(255, 255, 255));
+
         labelColor.setText(org.openide.util.NbBundle.getMessage(ColorTransformerPanel.class, "ColorTransformerPanel.labelColor.text")); // NOI18N
+
+        gradientPanel.setOpaque(false);
+        gradientPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -54,7 +97,7 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(labelColor)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(gradientPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE)
+                .addComponent(gradientPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -67,11 +110,8 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
                 .addContainerGap(157, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel gradientPanel;
     private javax.swing.JLabel labelColor;
     // End of variables declaration//GEN-END:variables
-
 }
