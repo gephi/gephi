@@ -23,9 +23,16 @@ package org.gephi.ui.ranking;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import org.gephi.ranking.NodeRanking;
+import org.gephi.ranking.Ranking;
+import org.gephi.ranking.RankingController;
 import org.gephi.ranking.RankingUIModel;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -36,11 +43,29 @@ public class NodeRankingPanel extends javax.swing.JPanel {
     private JPanel contentPanel;
     private final RankingUIModel model;
     private TransformerUI[] transformerUIs;
+    private NodeRanking selectedRanking;
 
     public NodeRankingPanel(RankingUIModel model) {
         this.model = model;
         initComponents();
+        initRanking();
         initTransformers();
+    }
+
+    private void initRanking() {
+        final RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
+        DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel(rankingController.getNodeRanking());
+        rankComboBox.setModel(comboBoxModel);
+        rankComboBox.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                if (rankComboBox.getSelectedItem() != selectedRanking) {
+                    selectedRanking = (NodeRanking) rankComboBox.getSelectedItem();
+                    refreshContentPanel();
+                }
+            }
+        });
+        selectedRanking = (NodeRanking)comboBoxModel.getSelectedItem();
     }
 
     private void initTransformers() {
@@ -49,6 +74,10 @@ public class NodeRankingPanel extends javax.swing.JPanel {
 
             @Override
             public JPanel getContentPanel() {
+                if (model.getNodeColorTransformer() == null) {
+                    final RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
+                    model.setNodeColorTransformer(rankingController.getColorTransformer(selectedRanking));
+                }
                 return new ColorTransformerPanel(model);
             }
         };
@@ -58,6 +87,10 @@ public class NodeRankingPanel extends javax.swing.JPanel {
 
             @Override
             public JPanel getContentPanel() {
+                if (model.getNodeSizeTransformer() == null) {
+                    final RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
+                    model.setNodeSizeTransformer(rankingController.getSizeTransformer(selectedRanking));
+                }
                 return new SizeTransformerPanel(model);
             }
         };
@@ -81,7 +114,6 @@ public class NodeRankingPanel extends javax.swing.JPanel {
         };
         tranformersPanel.add(labelSizeTransformerUI.getButton());
         transformerUIs[3] = labelSizeTransformerUI;
-        refreshContentPanel();
     }
 
     private void refreshContentPanel() {
