@@ -20,16 +20,27 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.ranking;
 
-import javax.swing.JLabel;
+import javax.swing.Icon;
 import javax.swing.JPanel;
+import org.gephi.ranking.Transformer;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class RankingBarChartPanel extends JPanel {
+public interface TransformerUI {
 
-    public RankingBarChartPanel() {
-        add(new JLabel("RankingBarChartPanel"));
-    }
+    public Icon getIcon();
+
+    public String getName();
+
+    public boolean isNodeTransformer();
+
+    public boolean isEdgeTransformer();
+
+    public Class getTransformerClass();
+
+    public Transformer buildTransformer();
+
+    public JPanel getPanel(Transformer transformer);
 }

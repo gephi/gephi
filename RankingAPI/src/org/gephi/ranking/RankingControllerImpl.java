@@ -29,12 +29,17 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.AbstractLookup;
+import org.openide.util.lookup.InstanceContent;
 
 /**
  *
  * @author Mathieu Bastian
  */
 public class RankingControllerImpl implements RankingController {
+
+    public AbstractLookup rankingLookup;
+    public InstanceContent rankingContent;
 
     public Ranking[] getNodeRanking() {
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);

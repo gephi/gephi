@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking;
 
-import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -37,23 +36,15 @@ public class RankingUIModel {
     //Const
     public static final int NODE_RANKING = 1;
     public static final int EDGE_RANKING = 2;
-    public static final int COLOR_TRANSFORMER = 1;
-    public static final int SIZE_TRANSFORMER = 2;
-    public static final int WEIGHT_TRANSFORMER = 3;
-    public static final int LABEL_COLOR_TRANSFORMER = 4;
-    public static final int LABEL_SIZE_TRANSFORMER = 5;
 
     //Model
     protected int ranking;
     protected boolean barChartVisible;
     protected boolean listVisible;
-    protected int nodeTransformer;
-    protected int edgeTransformer;
-    protected ColorTransformer nodeColorTransformer;
-    protected ColorTransformer edgeColorTransformer;
-    protected ColorTransformer nodeLabelColorTransformer;
-    protected ColorTransformer edgeLabelColorTransformer;
-    protected SizeTransformer nodeSizeTransformer;
+    protected String nodeTransformer;
+    protected String edgeTransformer;
+    protected List<Transformer> transformers;
+    protected String selectedRanking;
 
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
@@ -63,68 +54,37 @@ public class RankingUIModel {
         ranking = NODE_RANKING;
         barChartVisible = false;
         listVisible = false;
-        nodeTransformer = COLOR_TRANSFORMER;
-        edgeTransformer = COLOR_TRANSFORMER;
+    }
+
+    public String getNodeTransformer() {
+        return nodeTransformer;
+    }
+
+    public String getEdgeTransformer() {
+        return edgeTransformer;
+    }
+
+    public void setNodeTransformer(String nodeTransformer) {
+        this.nodeTransformer = nodeTransformer;
+    }
+
+    public void setEdgeTransformer(String edgeTransformer) {
+        this.edgeTransformer = edgeTransformer;
+    }
+
+    public String getSelectedRanking() {
+        return selectedRanking;
+    }
+
+    public void setSelectedRanking(String selectedRanking) {
+        this.selectedRanking = selectedRanking;
+    }
+
+    public void resetTransformers() {
     }
 
     public int getRanking() {
         return ranking;
-    }
-
-    public int getNodeTransformer() {
-        return nodeTransformer;
-    }
-
-    public int getEdgeTransformer() {
-        return edgeTransformer;
-    }
-
-    public ColorTransformer getNodeColorTransformer() {
-        return nodeColorTransformer;
-    }
-
-    public void setNodeColorTransformer(ColorTransformer nodeColorTransformer) {
-        this.nodeColorTransformer = nodeColorTransformer;
-    }
-
-    public SizeTransformer getNodeSizeTransformer() {
-        return nodeSizeTransformer;
-    }
-
-    public void setNodeSizeTransformer(SizeTransformer nodeSizeTransformer) {
-        this.nodeSizeTransformer = nodeSizeTransformer;
-    }
-
-    public ColorTransformer getEdgeColorTransformer() {
-        return edgeColorTransformer;
-    }
-
-    public void setEdgeColorTransformer(ColorTransformer edgeColorTransformer) {
-        this.edgeColorTransformer = edgeColorTransformer;
-    }
-
-    public void setNodeTransformer(int nodeTransformer) {
-        if (nodeTransformer != COLOR_TRANSFORMER && nodeTransformer != SIZE_TRANSFORMER && nodeTransformer != LABEL_COLOR_TRANSFORMER && nodeTransformer != LABEL_SIZE_TRANSFORMER) {
-            throw new IllegalArgumentException("Transformer must be COLOR_TRANSFORMER or SIZE_TRANSFORMER or LABEL_COLOR_TRANSFORMER or LABEL_SIZE_TRANSFORMER");
-        }
-        if (nodeTransformer == this.nodeTransformer) {
-            return;
-        }
-        int oldValue = this.nodeTransformer;
-        this.nodeTransformer = nodeTransformer;
-        firePropertyChangeEvent("nodeTransformer", oldValue, nodeTransformer);
-    }
-
-    public void setEdgeTransformer(int edgeTransformer) {
-        if (edgeTransformer != COLOR_TRANSFORMER && edgeTransformer != WEIGHT_TRANSFORMER) {
-            throw new IllegalArgumentException("Transformer must be COLOR_TRANSFORMER or WEIGHT_TRANSFORMER");
-        }
-        if (edgeTransformer == this.edgeTransformer) {
-            return;
-        }
-        int oldValue = this.edgeTransformer;
-        this.edgeTransformer = edgeTransformer;
-        firePropertyChangeEvent("edgeTransformer", oldValue, edgeTransformer);
     }
 
     public boolean isBarChartVisible() {
@@ -135,7 +95,28 @@ public class RankingUIModel {
         return listVisible;
     }
 
-   
+    public RankingUIModel saveModel() {
+        RankingUIModel save = new RankingUIModel();
+        save.barChartVisible = this.barChartVisible;
+        save.edgeTransformer = this.edgeTransformer;
+        save.listVisible = this.listVisible;
+        save.nodeTransformer = this.nodeTransformer;
+        save.ranking = this.ranking;
+        save.selectedRanking = this.selectedRanking;
+        save.transformers.addAll(this.transformers);
+        return save;
+    }
+
+    public void loadModel(RankingUIModel model) {
+        this.transformers.clear();
+        this.barChartVisible = model.barChartVisible;
+        this.edgeTransformer = model.edgeTransformer;
+        this.listVisible = model.listVisible;
+        this.nodeTransformer = model.nodeTransformer;
+        this.ranking = model.ranking;
+        this.selectedRanking = model.selectedRanking;
+        this.transformers.addAll(model.transformers);
+    }
 
     public void setListVisible(boolean listVisible) {
         if (this.listVisible == listVisible) {
@@ -195,11 +176,6 @@ public class RankingUIModel {
         Element listvisibleE = (Element) modelElement.getElementsByTagName("listvisible").item(0);
         listVisible = Boolean.parseBoolean(listvisibleE.getTextContent());
 
-        Element nodeTransformerE = (Element) modelElement.getElementsByTagName("nodetransformer").item(0);
-        nodeTransformer = Integer.parseInt(nodeTransformerE.getTextContent());
-
-        Element edgeTransformerE = (Element) modelElement.getElementsByTagName("edgetransformer").item(0);
-        edgeTransformer = Integer.parseInt(edgeTransformerE.getTextContent());
     }
 
     public Element writeXML(Document document) {

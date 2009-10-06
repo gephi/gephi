@@ -51,7 +51,7 @@ public class RankingUIWorkspaceDataProvider implements WorkspaceDataProvider<Ran
     }
 
     public RankingUIModel getDefaultData() {
-        return new RankingUIModel();
+        return null;
     }
 
     public void setWorkspaceDataKey(WorkspaceDataKey<RankingUIModel> key) {

@@ -18,14 +18,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ui.ranking;
+package org.gephi.ui.ranking.transformer;
 
 import java.awt.Color;
 import java.util.Arrays;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.ranking.ColorTransformer;
-import org.gephi.ranking.RankingUIModel;
+import org.gephi.ranking.Transformer;
 import org.gephi.ui.components.JRangeSlider;
 import org.gephi.ui.components.gradientslider.GradientSlider;
 
@@ -34,18 +34,10 @@ import org.gephi.ui.components.gradientslider.GradientSlider;
  */
 public class ColorTransformerPanel extends javax.swing.JPanel {
 
-    private ColorTransformer colorTransformer;
-
-    /** Creates new form ColorTransformerPanel */
-    public ColorTransformerPanel(final RankingUIModel model) {
+    public ColorTransformerPanel(Transformer transformer) {
         initComponents();
 
-        if (model.getRanking() == RankingUIModel.NODE_RANKING) {
-            //NODE
-            colorTransformer = model.getNodeColorTransformer();
-        } else {
-            colorTransformer = model.getEdgeColorTransformer();
-        }
+        final ColorTransformer colorTransformer = (ColorTransformer) transformer;
 
         //Gradient
         final GradientSlider gradientSlider = new GradientSlider(GradientSlider.HORIZONTAL, colorTransformer.getColorPositions(), colorTransformer.getColors());
@@ -64,8 +56,6 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
         //Range
         ((JRangeSlider) rangeSlider).setValue(0);
         ((JRangeSlider) rangeSlider).setUpperValue(100);
-
-
     }
 
     /** This method is called from within the constructor to

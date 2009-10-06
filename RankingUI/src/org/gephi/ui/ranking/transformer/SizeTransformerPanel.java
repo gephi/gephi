@@ -18,12 +18,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ui.ranking;
+package org.gephi.ui.ranking.transformer;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.gephi.ranking.RankingUIModel;
 import org.gephi.ranking.SizeTransformer;
+import org.gephi.ranking.Transformer;
 import org.gephi.ui.components.JRangeSlider;
 
 /**
@@ -32,11 +32,10 @@ import org.gephi.ui.components.JRangeSlider;
  */
 public class SizeTransformerPanel extends javax.swing.JPanel {
 
-    /** Creates new form SizeTransformerPanel */
-    public SizeTransformerPanel(final RankingUIModel model) {
+    public SizeTransformerPanel(Transformer transformer) {
         initComponents();
 
-        final SizeTransformer sizeTransformer = model.getNodeSizeTransformer();
+        final SizeTransformer sizeTransformer = (SizeTransformer) transformer;
 
         minSize.setValue(sizeTransformer.getMinSize());
         maxSize.setValue(sizeTransformer.getMaxSize());

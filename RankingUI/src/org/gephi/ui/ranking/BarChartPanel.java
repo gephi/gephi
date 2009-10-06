@@ -22,18 +22,14 @@ package org.gephi.ui.ranking;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class RankingListPanel extends JScrollPane {
+public class BarChartPanel extends JPanel {
 
-    private JPanel listPanel;
-
-    public RankingListPanel() {
-        listPanel = new JPanel();
-        listPanel.add(new JLabel("RankingListPanel"));
+    public BarChartPanel() {
+        add(new JLabel("RankingBarChartPanel"));
     }
 }
