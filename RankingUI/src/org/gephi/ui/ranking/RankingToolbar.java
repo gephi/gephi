@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.ranking;
 
+import java.awt.Component;
 import org.gephi.ui.ranking.TransformerUI;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -153,6 +154,14 @@ public class RankingToolbar extends JToolBar {
             }
         });
     }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        for(Component c : getComponents()) {
+            c.setEnabled(enabled);
+        }
+    }
+
     private javax.swing.JLabel box;
     private javax.swing.JToggleButton edgeButton;
     private javax.swing.ButtonGroup elementGroup;

@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.desktop.ranking;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
@@ -53,7 +55,6 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
     //UI
     private JToggleButton barChartButton;
     private JToggleButton listButton;
-    private JPanel contentPanel;
     private JPanel barChartPanel;
     private JScrollPane listPanel;
     private RankingChooser rankingChooser;
@@ -61,6 +62,7 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
 
     //Model
     private RankingUIModel model;
+    private boolean enabled = false;
     private AbstractLookup rankingLookup;
 
     private RankingTopComponent() {
@@ -75,6 +77,8 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
         rankingChooser = new RankingChooser(model, rankingLookup);
         add(rankingChooser, BorderLayout.CENTER);
         initSouth();
+
+        refreshModel();
     }
 
     private void initSouth() {
@@ -106,6 +110,22 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
         listPanel.setVisible(false);
         barChartPanel.setVisible(false);
         add(southPanel, BorderLayout.SOUTH);
+
+        listButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                model.setListVisible(listButton.isSelected());
+                refreshModel();
+            }
+        });
+
+        barChartButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                model.setBarChartVisible(barChartButton.isSelected());
+                refreshModel();
+            }
+        });
     }
 
     private void initEvents() {
@@ -123,14 +143,12 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
 
             public void select(Workspace workspace) {
                 //Enable
-                barChartButton.setEnabled(true);
-                listButton.setEnabled(true);
-                rankingChooser.setEnabled(true);
-                rankingToolbar.setEnabled(true);
+                enabled = true;
                 RankingUIModel newModel = workspace.getWorkspaceData().getData(key);
                 if (newModel != null) {
                     model.loadModel(newModel);
                 }
+                refreshModel();
             }
 
             public void unselect(Workspace workspace) {
@@ -141,12 +159,29 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
             }
 
             public void disable() {
-                barChartButton.setEnabled(false);
-                listButton.setEnabled(false);
-                rankingChooser.setEnabled(false);
-                rankingToolbar.setEnabled(false);
+                enabled = false;
+                refreshModel();
             }
         });
+    }
+
+    private void refreshModel() {
+        //South visible
+        if (barChartPanel.isVisible() != model.isBarChartVisible()) {
+            barChartPanel.setVisible(model.isBarChartVisible());
+        }
+        if (listPanel.isVisible() != model.isListVisible()) {
+            listPanel.setVisible(model.isListVisible());
+        }
+
+        //Enabled
+        barChartButton.setEnabled(enabled);
+        listButton.setEnabled(enabled);
+        rankingChooser.setEnabled(enabled);
+        rankingToolbar.setEnabled(enabled);
+
+        barChartButton.setSelected(model.isBarChartVisible());
+        listButton.setSelected(model.isListVisible());
     }
 
     /** This method is called from within the constructor to
