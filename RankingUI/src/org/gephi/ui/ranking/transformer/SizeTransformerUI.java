@@ -24,8 +24,11 @@ import org.gephi.ui.ranking.TransformerUI;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import org.gephi.ranking.Ranking;
+import org.gephi.ranking.RankingController;
 import org.gephi.ranking.SizeTransformer;
 import org.gephi.ranking.Transformer;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -58,7 +61,8 @@ public class SizeTransformerUI implements TransformerUI {
         return SizeTransformer.class;
     }
 
-    public Transformer buildTransformer() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Transformer buildTransformer(Ranking ranking) {
+        RankingController rc = Lookup.getDefault().lookup(RankingController.class);
+        return rc.getSizeTransformer(ranking);
     }
 }

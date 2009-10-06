@@ -38,8 +38,11 @@ import org.openide.util.lookup.InstanceContent;
  */
 public class RankingControllerImpl implements RankingController {
 
-    public AbstractLookup rankingLookup;
-    public InstanceContent rankingContent;
+    private RankingModelImpl rankingModelImpl = new RankingModelImpl();
+
+    public RankingModel getRankingModel() {
+        return rankingModelImpl;
+    }
 
     public Ranking[] getNodeRanking() {
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
@@ -52,24 +55,26 @@ public class RankingControllerImpl implements RankingController {
         return rankingList.toArray(new Ranking[0]);
     }
 
-    public ColorTransformer getColorTransformer(NodeRanking ranking) {
+    public ColorTransformer getColorTransformer(Ranking ranking) {
         ColorTransformer colorTransformer = TransformerFactory.getColorTransformer(ranking);
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getVisibleDirectedGraph();
-        setNodeMinMax(ranking, graph, colorTransformer);
+        if (ranking instanceof NodeRanking) {
+            setNodeMinMax((NodeRanking) ranking, graph, colorTransformer);
+        } else {
+            setEdgeMinMax((EdgeRanking) ranking, graph, colorTransformer);
+        }
+
         return colorTransformer;
     }
 
-    public ColorTransformer getColorTransformer(EdgeRanking ranking) {
-        ColorTransformer colorTransformer = TransformerFactory.getColorTransformer(ranking);
-        Graph graph = Lookup.getDefault().lookup(GraphController.class).getVisibleDirectedGraph();
-        setEdgeMinMax(ranking, graph, colorTransformer);
-        return colorTransformer;
-    }
-
-    public SizeTransformer getSizeTransformer(NodeRanking ranking) {
+    public SizeTransformer getSizeTransformer(Ranking ranking) {
         SizeTransformer sizeTransformer = TransformerFactory.getSizeTransformer(ranking);
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getVisibleDirectedGraph();
-        setNodeMinMax(ranking, graph, sizeTransformer);
+        if (ranking instanceof NodeRanking) {
+            setNodeMinMax((NodeRanking) ranking, graph, sizeTransformer);
+        } else {
+            setEdgeMinMax((EdgeRanking) ranking, graph, sizeTransformer);
+        }
         return sizeTransformer;
     }
 

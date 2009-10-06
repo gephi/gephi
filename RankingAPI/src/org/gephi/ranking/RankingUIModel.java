@@ -92,6 +92,36 @@ public class RankingUIModel {
         this.selectedNodeRanking = selectedNodeRanking;
     }
 
+    public Transformer getSelectedNodeTransformer() {
+        if(nodeTransformer!=null) {
+            for(Transformer t : nodeTransformers) {
+                if(t.getClass().getSimpleName().equals(nodeTransformer)) {
+                    return t;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Transformer getSelectedEdgeTransformer() {
+        if(edgeTransformer!=null) {
+            for(Transformer t : edgeTransformers) {
+                if(t.getClass().getSimpleName().equals(edgeTransformer)) {
+                    return t;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void addNodeTransformer(Transformer transformer) {
+        nodeTransformers.add(transformer);
+    }
+
+    public void addEdgeTransformer(Transformer transformer) {
+        edgeTransformers.add(transformer);
+    }
+
     public void resetNodeTransformers() {
         nodeTransformers.clear();
     }

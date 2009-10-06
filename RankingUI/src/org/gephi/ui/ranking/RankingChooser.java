@@ -20,15 +20,20 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.ranking;
 
+import java.awt.BorderLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.ranking.Ranking;
+import org.gephi.ranking.RankingModel;
 import org.gephi.ranking.RankingUIModel;
+import org.gephi.ranking.Transformer;
 import org.openide.util.Lookup;
-import org.openide.util.LookupEvent;
-import org.openide.util.LookupListener;
 
 /**
  *
@@ -37,16 +42,15 @@ import org.openide.util.LookupListener;
 public class RankingChooser extends javax.swing.JPanel {
 
     private final String NO_SELECTION;
-    private RankingUIModel model;
-    private Lookup nodeRankingLookup;
-    private Lookup edgeRankingLookup;
+    private RankingUIModel modelUI;
+    private RankingModel model;
     private JPanel centerPanel;
     private Ranking selectedRanking;
+    private TransformerUI[] transformerUIs;
 
-    public RankingChooser(RankingUIModel model, Lookup nodeRankingLookup, Lookup edgeRankingLookup) {
-        this.model = model;
-        this.nodeRankingLookup = nodeRankingLookup;
-        this.edgeRankingLookup = edgeRankingLookup;
+    public RankingChooser(RankingUIModel modelUI, RankingModel rankingModel) {
+        this.modelUI = modelUI;
+        this.model = rankingModel;
         NO_SELECTION = "----------------";
         initComponents();
         initRanking();
@@ -71,27 +75,30 @@ public class RankingChooser extends javax.swing.JPanel {
                 }
             }
         });
-        nodeRankingLookup.lookupResult(Ranking.class).addLookupListener(new LookupListener() {
+        model.addChangeListener(new ChangeListener() {
 
-            public void resultChanged(LookupEvent ev) {
+            public void stateChanged(ChangeEvent e) {
                 refreshModel();
             }
         });
-        edgeRankingLookup.lookupResult(Ranking.class).addLookupListener(new LookupListener() {
+        modelUI.addPropertyChangeListener(new PropertyChangeListener() {
 
-            public void resultChanged(LookupEvent ev) {
-                refreshModel();
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals("ranking")) {
+                    refreshModel();
+                }
             }
         });
+        transformerUIs = Lookup.getDefault().lookupAll(TransformerUI.class).toArray(new TransformerUI[0]);
     }
 
     private synchronized void refreshModel() {
         refreshSelectedRankings();
         Ranking[] rankings = new Ranking[0];
-        if (model.getRanking() == RankingUIModel.NODE_RANKING) {
-            rankings = nodeRankingLookup.lookupAll(Ranking.class).toArray(new Ranking[0]);
+        if (modelUI.getRanking() == RankingUIModel.NODE_RANKING) {
+            rankings = model.getNodeRanking();
         } else {
-            rankings = edgeRankingLookup.lookupAll(Ranking.class).toArray(new Ranking[0]);
+            rankings = model.getEdgeRanking();
         }
         //Ranking list
         DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
@@ -100,7 +107,7 @@ public class RankingChooser extends javax.swing.JPanel {
         for (Ranking r : rankings) {
             String elem = r.toString();
             comboBoxModel.addElement(elem);
-            if (selectedRanking == r) {
+            if (selectedRanking != null && selectedRanking.toString().equals(r.toString())) {
                 comboBoxModel.setSelectedItem(elem);
             }
         }
@@ -111,56 +118,123 @@ public class RankingChooser extends javax.swing.JPanel {
             remove(centerPanel);
         }
 
-        System.out.println(getSelectedRanking() + " " + model.getNodeTransformer());
+        if (selectedRanking != null) {
+            Transformer transformer = getSelectedTransformer();
+            TransformerUI transformerUI;
+            if (transformer != null) {
+                //Saved Transformer in the model
+                transformerUI = getUIForTransformer(transformer);
+            } else {
+                transformerUI = getUIForTransformer(modelUI.getNodeTransformer());
+                if (transformerUI != null) {
+                    transformer = transformerUI.buildTransformer(selectedRanking);     //Create transformer
+                    addTransformer(transformer);
+                }
+            }
+            centerPanel = transformerUI.getPanel(transformer);
+            add(centerPanel, BorderLayout.CENTER);
+        }
     }
 
     private void refreshSelectedRankings() {
         selectedRanking = null;
-        if (model.getRanking() == RankingUIModel.NODE_RANKING) {
-            if (model.getSelectedNodeRanking() != null) {
-                for (Ranking r : nodeRankingLookup.lookupAll(Ranking.class)) {
+        if (modelUI.getRanking() == RankingUIModel.NODE_RANKING) {
+            if (modelUI.getSelectedNodeRanking() != null) {
+                for (Ranking r : model.getNodeRanking()) {
                     String elem = r.toString();
-                    if (elem.equals(model.getSelectedNodeRanking())) {
+                    if (elem.equals(modelUI.getSelectedNodeRanking())) {
                         selectedRanking = r;
+                        break;
                     }
                 }
             }
-            model.setSelectedNodeRanking(selectedRanking.toString());
+            if (selectedRanking != null) {
+                modelUI.setSelectedNodeRanking(selectedRanking.toString());
+            } else {
+                modelUI.setSelectedNodeRanking(null);
+            }
         } else {
-            if (model.getSelectedEdgeRanking() != null) {
-                for (Ranking r : edgeRankingLookup.lookupAll(Ranking.class)) {
+            if (modelUI.getSelectedEdgeRanking() != null) {
+                for (Ranking r : model.getEdgeRanking()) {
                     String elem = r.toString();
-                    if (elem.equals(model.getSelectedEdgeRanking())) {
+                    if (elem.equals(modelUI.getSelectedEdgeRanking())) {
                         selectedRanking = r;
+                        break;
                     }
                 }
             }
-            model.setSelectedEdgeRanking(selectedRanking.toString());
+            if (selectedRanking != null) {
+                modelUI.setSelectedEdgeRanking(selectedRanking.toString());
+            } else {
+                modelUI.setSelectedEdgeRanking(null);
+            }
         }
     }
 
     private String getSelectedRanking() {
-        if (model.getRanking() == RankingUIModel.NODE_RANKING) {
-            return model.getSelectedNodeRanking();
+        if (modelUI.getRanking() == RankingUIModel.NODE_RANKING) {
+            return modelUI.getSelectedNodeRanking();
         } else {
-            return model.getSelectedEdgeRanking();
+            return modelUI.getSelectedEdgeRanking();
         }
     }
 
     private void setSelectedRanking(String selectedRanking) {
-        if (model.getRanking() == RankingUIModel.NODE_RANKING) {
-            model.setSelectedNodeRanking(selectedRanking);
+        if (modelUI.getRanking() == RankingUIModel.NODE_RANKING) {
+            modelUI.setSelectedNodeRanking(selectedRanking);
         } else {
-            model.setSelectedEdgeRanking(selectedRanking);
+            modelUI.setSelectedEdgeRanking(selectedRanking);
         }
     }
 
     private void resetTransformers() {
-        if (model.getRanking() == RankingUIModel.NODE_RANKING) {
-            model.resetNodeTransformers();
+        if (modelUI.getRanking() == RankingUIModel.NODE_RANKING) {
+            modelUI.resetNodeTransformers();
         } else {
-            model.resetEdgeTransformers();
+            modelUI.resetEdgeTransformers();
         }
+    }
+
+    private Transformer getSelectedTransformer() {
+        if (modelUI.getRanking() == RankingUIModel.NODE_RANKING) {
+            return modelUI.getSelectedNodeTransformer();
+        } else {
+            return modelUI.getSelectedEdgeTransformer();
+        }
+    }
+
+    private TransformerUI getUIForTransformer(Transformer transformer) {
+        if (transformer != null) {
+            for (TransformerUI u : transformerUIs) {
+                if (u.getTransformerClass().equals(transformer.getClass())) {
+                    return u;
+                }
+            }
+        }
+        return null;
+    }
+
+    private TransformerUI getUIForTransformer(String className) {
+        for (TransformerUI u : transformerUIs) {
+            if (u.getTransformerClass().getSimpleName().equals(className)) {
+                return u;
+            }
+        }
+        return null;
+    }
+
+    private void addTransformer(Transformer transformer) {
+        if (modelUI.getRanking() == RankingUIModel.NODE_RANKING) {
+            modelUI.addNodeTransformer(transformer);
+        } else {
+            modelUI.addEdgeTransformer(transformer);
+        }
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        applyButton.setEnabled(enabled);
+        rankingComboBox.setEnabled(enabled);
     }
 
     /** This method is called from within the constructor to

@@ -30,6 +30,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import org.gephi.project.api.ProjectController;
+import org.gephi.ranking.RankingController;
+import org.gephi.ranking.RankingModel;
 import org.gephi.ranking.RankingUIModel;
 import org.gephi.ui.ranking.BarChartPanel;
 import org.gephi.ui.ranking.RankingChooser;
@@ -63,8 +65,6 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
     //Model
     private RankingUIModel model;
     private boolean enabled = false;
-    private AbstractLookup edgeRankingLookup;
-    private AbstractLookup nodeRankingLookup;
 
     private RankingTopComponent() {
         initComponents();
@@ -72,10 +72,13 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
         setToolTipText(NbBundle.getMessage(RankingTopComponent.class, "HINT_RankingTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
 
+        RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
+        RankingModel rankingModel = rankingController.getRankingModel();
+
         initEvents();
         rankingToolbar = new RankingToolbar(model);
         add(rankingToolbar, BorderLayout.NORTH);
-        rankingChooser = new RankingChooser(model, nodeRankingLookup, edgeRankingLookup);
+        rankingChooser = new RankingChooser(model, rankingModel);
         add(rankingChooser, BorderLayout.CENTER);
         initSouth();
 
@@ -130,10 +133,6 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
     }
 
     private void initEvents() {
-        //Lookup
-        nodeRankingLookup = new AbstractLookup(new InstanceContent());
-        edgeRankingLookup = new AbstractLookup(new InstanceContent());
-
         model = new RankingUIModel();
 
         final WorkspaceDataKey<RankingUIModel> key = Lookup.getDefault().lookup(RankingUIWorkspaceDataProvider.class).getWorkspaceDataKey();

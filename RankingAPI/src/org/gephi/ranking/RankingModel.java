@@ -18,30 +18,24 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ui.ranking;
+package org.gephi.ranking;
 
-import javax.swing.Icon;
-import javax.swing.JPanel;
-import org.gephi.ranking.Ranking;
-import org.gephi.ranking.Transformer;
+import javax.swing.event.ChangeListener;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface TransformerUI {
+public interface RankingModel {
 
-    public Icon getIcon();
+    public NodeRanking[] getNodeRanking();
 
-    public String getName();
+    public EdgeRanking[] getEdgeRanking();
 
-    public boolean isNodeTransformer();
+    public void addChangeListener(ChangeListener changeListener);
 
-    public boolean isEdgeTransformer();
+    public void removeChangeListener(ChangeListener changeListener);
 
-    public Class getTransformerClass();
 
-    public Transformer buildTransformer(Ranking ranking);
-
-    public JPanel getPanel(Transformer transformer);
+    
 }
