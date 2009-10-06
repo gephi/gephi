@@ -72,8 +72,6 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
         rangeSlider = new JRangeSlider();
         labelRange = new javax.swing.JLabel();
 
-        setBackground(new java.awt.Color(255, 255, 255));
-
         labelColor.setText(org.openide.util.NbBundle.getMessage(ColorTransformerPanel.class, "ColorTransformerPanel.labelColor.text")); // NOI18N
 
         gradientPanel.setOpaque(false);

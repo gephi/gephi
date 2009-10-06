@@ -84,7 +84,9 @@ public class RankingChooser extends javax.swing.JPanel {
         modelUI.addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals("ranking")) {
+                if (evt.getPropertyName().equals("ranking") ||
+                        evt.getPropertyName().equals("nodeTransformer") ||
+                        evt.getPropertyName().equals("edgeTransformer")) {
                     refreshModel();
                 }
             }
@@ -134,6 +136,9 @@ public class RankingChooser extends javax.swing.JPanel {
             centerPanel = transformerUI.getPanel(transformer);
             add(centerPanel, BorderLayout.CENTER);
         }
+
+        revalidate();
+        repaint();
     }
 
     private void refreshSelectedRankings() {

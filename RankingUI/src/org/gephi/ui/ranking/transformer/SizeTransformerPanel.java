@@ -69,8 +69,6 @@ public class SizeTransformerPanel extends javax.swing.JPanel {
         labelRange = new javax.swing.JLabel();
         rangeSlider = new JRangeSlider();
 
-        setBackground(new java.awt.Color(255, 255, 255));
-
         labelMinSize.setText(org.openide.util.NbBundle.getMessage(SizeTransformerPanel.class, "SizeTransformerPanel.labelMinSize.text")); // NOI18N
 
         minSize.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(0.1f), null, Float.valueOf(0.5f)));

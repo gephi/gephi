@@ -68,34 +68,54 @@ public class RankingUIModel {
         return edgeTransformer;
     }
 
-    public void setNodeTransformer(String nodeTransformer) {
-        this.nodeTransformer = nodeTransformer;
-    }
-
-    public void setEdgeTransformer(String edgeTransformer) {
-        this.edgeTransformer = edgeTransformer;
-    }
-
     public String getSelectedEdgeRanking() {
         return selectedEdgeRanking;
-    }
-
-    public void setSelectedEdgeRanking(String selectedEdgeRanking) {
-        this.selectedEdgeRanking = selectedEdgeRanking;
     }
 
     public String getSelectedNodeRanking() {
         return selectedNodeRanking;
     }
 
+    public void setNodeTransformer(String nodeTransformer) {
+        if (this.nodeTransformer != null && this.nodeTransformer.equals(nodeTransformer)) {
+            return;
+        }
+        String oldValue = this.nodeTransformer;
+        this.nodeTransformer = nodeTransformer;
+        firePropertyChangeEvent("nodeTransformer", oldValue, nodeTransformer);
+    }
+
+    public void setEdgeTransformer(String edgeTransformer) {
+        if (this.edgeTransformer != null && this.edgeTransformer.equals(edgeTransformer)) {
+            return;
+        }
+        String oldValue = this.edgeTransformer;
+        this.edgeTransformer = edgeTransformer;
+        firePropertyChangeEvent("edgeTransformer", oldValue, edgeTransformer);
+    }
+
+    public void setSelectedEdgeRanking(String selectedEdgeRanking) {
+        if (this.selectedEdgeRanking != null && this.selectedEdgeRanking.equals(selectedEdgeRanking)) {
+            return;
+        }
+        String oldValue = this.selectedEdgeRanking;
+        this.selectedEdgeRanking = selectedEdgeRanking;
+        firePropertyChangeEvent("selectedEdgeRanking", oldValue, selectedEdgeRanking);
+    }
+
     public void setSelectedNodeRanking(String selectedNodeRanking) {
+        if (this.selectedNodeRanking != null && this.selectedNodeRanking.equals(selectedNodeRanking)) {
+            return;
+        }
+        String oldValue = this.selectedNodeRanking;
         this.selectedNodeRanking = selectedNodeRanking;
+        firePropertyChangeEvent("selectedNodeRanking", oldValue, selectedNodeRanking);
     }
 
     public Transformer getSelectedNodeTransformer() {
-        if(nodeTransformer!=null) {
-            for(Transformer t : nodeTransformers) {
-                if(t.getClass().getSimpleName().equals(nodeTransformer)) {
+        if (nodeTransformer != null) {
+            for (Transformer t : nodeTransformers) {
+                if (t.getClass().getSimpleName().equals(nodeTransformer)) {
                     return t;
                 }
             }
@@ -104,9 +124,9 @@ public class RankingUIModel {
     }
 
     public Transformer getSelectedEdgeTransformer() {
-        if(edgeTransformer!=null) {
-            for(Transformer t : edgeTransformers) {
-                if(t.getClass().getSimpleName().equals(edgeTransformer)) {
+        if (edgeTransformer != null) {
+            for (Transformer t : edgeTransformers) {
+                if (t.getClass().getSimpleName().equals(edgeTransformer)) {
                     return t;
                 }
             }
