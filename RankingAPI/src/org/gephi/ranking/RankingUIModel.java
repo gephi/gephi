@@ -43,8 +43,10 @@ public class RankingUIModel {
     protected boolean listVisible;
     protected String nodeTransformer;
     protected String edgeTransformer;
-    protected List<Transformer> transformers;
-    protected String selectedRanking;
+    protected List<Transformer> nodeTransformers;
+    protected List<Transformer> edgeTransformers;
+    protected String selectedNodeRanking;
+    protected String selectedEdgeRanking;
 
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
@@ -54,6 +56,8 @@ public class RankingUIModel {
         ranking = NODE_RANKING;
         barChartVisible = false;
         listVisible = false;
+        nodeTransformers = new ArrayList<Transformer>();
+        edgeTransformers = new ArrayList<Transformer>();
     }
 
     public String getNodeTransformer() {
@@ -72,15 +76,28 @@ public class RankingUIModel {
         this.edgeTransformer = edgeTransformer;
     }
 
-    public String getSelectedRanking() {
-        return selectedRanking;
+    public String getSelectedEdgeRanking() {
+        return selectedEdgeRanking;
     }
 
-    public void setSelectedRanking(String selectedRanking) {
-        this.selectedRanking = selectedRanking;
+    public void setSelectedEdgeRanking(String selectedEdgeRanking) {
+        this.selectedEdgeRanking = selectedEdgeRanking;
     }
 
-    public void resetTransformers() {
+    public String getSelectedNodeRanking() {
+        return selectedNodeRanking;
+    }
+
+    public void setSelectedNodeRanking(String selectedNodeRanking) {
+        this.selectedNodeRanking = selectedNodeRanking;
+    }
+
+    public void resetNodeTransformers() {
+        nodeTransformers.clear();
+    }
+
+    public void resetEdgeTransformers() {
+        edgeTransformers.clear();
     }
 
     public int getRanking() {
@@ -102,20 +119,25 @@ public class RankingUIModel {
         save.listVisible = this.listVisible;
         save.nodeTransformer = this.nodeTransformer;
         save.ranking = this.ranking;
-        save.selectedRanking = this.selectedRanking;
-        save.transformers.addAll(this.transformers);
+        save.selectedNodeRanking = this.selectedNodeRanking;
+        save.selectedEdgeRanking = this.selectedEdgeRanking;
+        save.nodeTransformers.addAll(this.nodeTransformers);
+        save.edgeTransformers.addAll(this.edgeTransformers);
         return save;
     }
 
     public void loadModel(RankingUIModel model) {
-        this.transformers.clear();
+        this.nodeTransformers.clear();
+        this.edgeTransformers.clear();
         this.barChartVisible = model.barChartVisible;
         this.edgeTransformer = model.edgeTransformer;
         this.listVisible = model.listVisible;
         this.nodeTransformer = model.nodeTransformer;
         this.ranking = model.ranking;
-        this.selectedRanking = model.selectedRanking;
-        this.transformers.addAll(model.transformers);
+        this.selectedNodeRanking = model.selectedNodeRanking;
+        this.selectedEdgeRanking = model.selectedEdgeRanking;
+        this.nodeTransformers.addAll(model.nodeTransformers);
+        this.edgeTransformers.addAll(model.edgeTransformers);
     }
 
     public void setListVisible(boolean listVisible) {

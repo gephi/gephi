@@ -24,6 +24,7 @@ import org.gephi.ui.ranking.TransformerUI;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import org.gephi.ranking.SizeTransformer;
 import org.gephi.ranking.Transformer;
 import org.openide.util.NbBundle;
 
@@ -54,7 +55,7 @@ public class SizeTransformerUI implements TransformerUI {
     }
 
     public Class getTransformerClass() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return SizeTransformer.class;
     }
 
     public Transformer buildTransformer() {

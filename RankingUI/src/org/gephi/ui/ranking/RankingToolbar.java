@@ -55,6 +55,7 @@ public class RankingToolbar extends JToolBar {
                 refreshModel();
             }
         });
+        refreshModel();
     }
 
     private void refreshModel() {
@@ -94,7 +95,8 @@ public class RankingToolbar extends JToolBar {
         }
 
         for (final TransformerUI t : nodeTrans) {
-            JToggleButton btn = new JToggleButton(t.getName(), t.getIcon());
+            JToggleButton btn = new JToggleButton(t.getIcon());
+            btn.setToolTipText(t.getName());
             btn.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
@@ -103,10 +105,12 @@ public class RankingToolbar extends JToolBar {
             });
             btn.setName(t.getClass().getSimpleName());
             nodeTransformerGroup.add(btn);
+            add(btn);
         }
 
         for (final TransformerUI t : edgeTrans) {
-            JToggleButton btn = new JToggleButton(t.getName(), t.getIcon());
+            JToggleButton btn = new JToggleButton(t.getIcon());
+            btn.setToolTipText(t.getName());
             btn.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
@@ -115,14 +119,24 @@ public class RankingToolbar extends JToolBar {
             });
             btn.setName(t.getClass().getSimpleName());
             edgeTransformerGroup.add(btn);
+            add(btn);
         }
 
+        //Init first
+        if(!nodeTrans.isEmpty()) {
+            model.setNodeTransformer(nodeTrans.get(0).getTransformerClass().getSimpleName());
+        }
+        if(!edgeTrans.isEmpty()) {
+            model.setEdgeTransformer(edgeTrans.get(0).getTransformerClass().getSimpleName());
+        }
     }
 
     private void initComponents() {
         elementGroup = new javax.swing.ButtonGroup();
         nodeButton = new javax.swing.JToggleButton();
         edgeButton = new javax.swing.JToggleButton();
+        nodeButton.setFocusPainted(false);
+        edgeButton.setFocusPainted(false);
         box = new javax.swing.JLabel();
 
         setFloatable(false);

@@ -24,6 +24,7 @@ import org.gephi.ui.ranking.TransformerUI;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import org.gephi.ranking.ColorTransformer;
 import org.gephi.ranking.Transformer;
 import org.openide.util.NbBundle;
 
@@ -50,7 +51,7 @@ public class ColorTransformerUI implements TransformerUI {
     }
 
     public Class getTransformerClass() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return ColorTransformer.class;
     }
 
     public Transformer buildTransformer() {

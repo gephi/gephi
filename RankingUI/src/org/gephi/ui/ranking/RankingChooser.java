@@ -38,13 +38,15 @@ public class RankingChooser extends javax.swing.JPanel {
 
     private final String NO_SELECTION;
     private RankingUIModel model;
-    private Lookup rankingLookup;
+    private Lookup nodeRankingLookup;
+    private Lookup edgeRankingLookup;
     private JPanel centerPanel;
     private Ranking selectedRanking;
 
-    public RankingChooser(RankingUIModel model, Lookup rankingLookup) {
+    public RankingChooser(RankingUIModel model, Lookup nodeRankingLookup, Lookup edgeRankingLookup) {
         this.model = model;
-        this.rankingLookup = rankingLookup;
+        this.nodeRankingLookup = nodeRankingLookup;
+        this.edgeRankingLookup = edgeRankingLookup;
         NO_SELECTION = "----------------";
         initComponents();
         initRanking();
@@ -58,18 +60,24 @@ public class RankingChooser extends javax.swing.JPanel {
         rankingComboBox.addItemListener(new ItemListener() {
 
             public void itemStateChanged(ItemEvent e) {
-                if (rankingComboBox.getSelectedItem() != model.getSelectedRanking()) {
+                if (!rankingComboBox.getSelectedItem().equals(getSelectedRanking())) {
                     if (!rankingComboBox.getSelectedItem().equals(NO_SELECTION)) {
-                        model.setSelectedRanking((String) rankingComboBox.getSelectedItem());
+                        setSelectedRanking((String) rankingComboBox.getSelectedItem());
                     } else {
-                        model.setSelectedRanking(null);
+                        setSelectedRanking(null);
                     }
-                    model.resetTransformers();
+                    resetTransformers();
                     refreshModel();
                 }
             }
         });
-        rankingLookup.lookupResult(Ranking.class).addLookupListener(new LookupListener() {
+        nodeRankingLookup.lookupResult(Ranking.class).addLookupListener(new LookupListener() {
+
+            public void resultChanged(LookupEvent ev) {
+                refreshModel();
+            }
+        });
+        edgeRankingLookup.lookupResult(Ranking.class).addLookupListener(new LookupListener() {
 
             public void resultChanged(LookupEvent ev) {
                 refreshModel();
@@ -78,22 +86,23 @@ public class RankingChooser extends javax.swing.JPanel {
     }
 
     private synchronized void refreshModel() {
+        refreshSelectedRankings();
+        Ranking[] rankings = new Ranking[0];
+        if (model.getRanking() == RankingUIModel.NODE_RANKING) {
+            rankings = nodeRankingLookup.lookupAll(Ranking.class).toArray(new Ranking[0]);
+        } else {
+            rankings = edgeRankingLookup.lookupAll(Ranking.class).toArray(new Ranking[0]);
+        }
         //Ranking list
         DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
         comboBoxModel.addElement(NO_SELECTION);
         comboBoxModel.setSelectedItem(NO_SELECTION);
-        selectedRanking = null;
-        for (Ranking r : rankingLookup.lookupAll(Ranking.class)) {
+        for (Ranking r : rankings) {
             String elem = r.toString();
             comboBoxModel.addElement(elem);
-            if (model.getSelectedRanking() != null && elem.equals(model.getSelectedRanking())) {
+            if (selectedRanking == r) {
                 comboBoxModel.setSelectedItem(elem);
-                selectedRanking = r;
             }
-        }
-        if (selectedRanking == null) {
-            model.setSelectedRanking(null);
-            model.resetTransformers();
         }
         rankingComboBox.setModel(comboBoxModel);
 
@@ -102,7 +111,56 @@ public class RankingChooser extends javax.swing.JPanel {
             remove(centerPanel);
         }
 
-        System.out.println(model.getSelectedRanking() + " " + model.getNodeTransformer());
+        System.out.println(getSelectedRanking() + " " + model.getNodeTransformer());
+    }
+
+    private void refreshSelectedRankings() {
+        selectedRanking = null;
+        if (model.getRanking() == RankingUIModel.NODE_RANKING) {
+            if (model.getSelectedNodeRanking() != null) {
+                for (Ranking r : nodeRankingLookup.lookupAll(Ranking.class)) {
+                    String elem = r.toString();
+                    if (elem.equals(model.getSelectedNodeRanking())) {
+                        selectedRanking = r;
+                    }
+                }
+            }
+            model.setSelectedNodeRanking(selectedRanking.toString());
+        } else {
+            if (model.getSelectedEdgeRanking() != null) {
+                for (Ranking r : edgeRankingLookup.lookupAll(Ranking.class)) {
+                    String elem = r.toString();
+                    if (elem.equals(model.getSelectedEdgeRanking())) {
+                        selectedRanking = r;
+                    }
+                }
+            }
+            model.setSelectedEdgeRanking(selectedRanking.toString());
+        }
+    }
+
+    private String getSelectedRanking() {
+        if (model.getRanking() == RankingUIModel.NODE_RANKING) {
+            return model.getSelectedNodeRanking();
+        } else {
+            return model.getSelectedEdgeRanking();
+        }
+    }
+
+    private void setSelectedRanking(String selectedRanking) {
+        if (model.getRanking() == RankingUIModel.NODE_RANKING) {
+            model.setSelectedNodeRanking(selectedRanking);
+        } else {
+            model.setSelectedEdgeRanking(selectedRanking);
+        }
+    }
+
+    private void resetTransformers() {
+        if (model.getRanking() == RankingUIModel.NODE_RANKING) {
+            model.resetNodeTransformers();
+        } else {
+            model.resetEdgeTransformers();
+        }
     }
 
     /** This method is called from within the constructor to

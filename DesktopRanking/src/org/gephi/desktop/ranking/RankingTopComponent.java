@@ -63,7 +63,8 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
     //Model
     private RankingUIModel model;
     private boolean enabled = false;
-    private AbstractLookup rankingLookup;
+    private AbstractLookup edgeRankingLookup;
+    private AbstractLookup nodeRankingLookup;
 
     private RankingTopComponent() {
         initComponents();
@@ -74,7 +75,7 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
         initEvents();
         rankingToolbar = new RankingToolbar(model);
         add(rankingToolbar, BorderLayout.NORTH);
-        rankingChooser = new RankingChooser(model, rankingLookup);
+        rankingChooser = new RankingChooser(model, nodeRankingLookup, edgeRankingLookup);
         add(rankingChooser, BorderLayout.CENTER);
         initSouth();
 
@@ -130,7 +131,8 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
 
     private void initEvents() {
         //Lookup
-        rankingLookup = new AbstractLookup(new InstanceContent());
+        nodeRankingLookup = new AbstractLookup(new InstanceContent());
+        edgeRankingLookup = new AbstractLookup(new InstanceContent());
 
         model = new RankingUIModel();
 
