@@ -33,7 +33,10 @@ import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
 import org.gephi.ranking.RankingUIModel;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -123,10 +126,10 @@ public class RankingToolbar extends JToolBar {
         }
 
         //Init first
-        if(!nodeTrans.isEmpty()) {
+        if (!nodeTrans.isEmpty()) {
             model.setNodeTransformer(nodeTrans.get(0).getTransformerClass().getSimpleName());
         }
-        if(!edgeTrans.isEmpty()) {
+        if (!edgeTrans.isEmpty()) {
             model.setEdgeTransformer(edgeTrans.get(0).getTransformerClass().getSimpleName());
         }
     }
@@ -141,6 +144,11 @@ public class RankingToolbar extends JToolBar {
 
         setFloatable(false);
         setRollover(true);
+        Border b = (Border) UIManager.get("Nb.Editor.Toolbar.border"); //NOI18N
+        setBorder(b);
+        if (UIUtils.isAquaLookAndFeel()) {
+            setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
 
         elementGroup.add(nodeButton);
         nodeButton.setText(NbBundle.getMessage(RankingToolbar.class, "RankingToolbar.nodes.label"));
@@ -151,6 +159,7 @@ public class RankingToolbar extends JToolBar {
         edgeButton.setText(NbBundle.getMessage(RankingToolbar.class, "RankingToolbar.edges.label"));
         edgeButton.setEnabled(false);
         add(edgeButton);
+        addSeparator();
 
         box.setMaximumSize(new java.awt.Dimension(32767, 32767));
         add(box);
@@ -171,11 +180,10 @@ public class RankingToolbar extends JToolBar {
 
     @Override
     public void setEnabled(boolean enabled) {
-        for(Component c : getComponents()) {
+        for (Component c : getComponents()) {
             c.setEnabled(enabled);
         }
     }
-
     private javax.swing.JLabel box;
     private javax.swing.JToggleButton edgeButton;
     private javax.swing.ButtonGroup elementGroup;
