@@ -11,7 +11,7 @@ the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
+but WITHOUType ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
@@ -24,7 +24,7 @@ package org.gephi.ranking;
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractSizeTransformer<T> extends AbstractTransformer<T> implements SizeTransformer<T> {
+public abstract class AbstractSizeTransformer<Type, Target> extends AbstractTransformer<Type, Target> implements SizeTransformer<Type, Target> {
 
     protected float minSize;
     protected float maxSize;
@@ -32,21 +32,21 @@ public abstract class AbstractSizeTransformer<T> extends AbstractTransformer<T> 
     public AbstractSizeTransformer() {
     }
 
-    public AbstractSizeTransformer(T minimum, T maximum) {
+    public AbstractSizeTransformer(Type minimum, Type maximum) {
         super(minimum, maximum);
     }
 
-    public AbstractSizeTransformer(T minimum, T maximum, T lowerBound, T upperBound) {
+    public AbstractSizeTransformer(Type minimum, Type maximum, Type lowerBound, Type upperBound) {
         super(minimum, maximum, lowerBound, upperBound);
     }
 
-    public AbstractSizeTransformer(T minimum, T maximum, T lowerBound, T upperBound, float minSize, float maxSize) {
+    public AbstractSizeTransformer(Type minimum, Type maximum, Type lowerBound, Type upperBound, float minSize, float maxSize) {
         super(minimum, maximum, lowerBound, upperBound);
         this.minSize = minSize;
         this.maxSize = maxSize;
     }
 
-    public AbstractSizeTransformer(T minimum, T maximum, float minSize, float maxSize) {
+    public AbstractSizeTransformer(Type minimum, Type maximum, float minSize, float maxSize) {
         super(minimum, maximum);
         this.minSize = minSize;
         this.maxSize = maxSize;

@@ -24,7 +24,7 @@ package org.gephi.ranking;
  *
  * @author Mathieu Bastian
  */
-public interface SizeTransformer<T> extends Transformer<T> {
+public interface SizeTransformer<Type, Target> extends Transformer<Type, Target> {
 
     public float getMinSize();
 
@@ -34,5 +34,5 @@ public interface SizeTransformer<T> extends Transformer<T> {
 
     public void setMaxSize(float maxSize);
 
-    public float transform(T value);
+    public float getResult(Type value);
 }

@@ -1,17 +1,17 @@
 /*
-Copyright 2008 WebAtlas
+CopyrighType 2008 WebAtlas
 Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
 Website : http://www.gephi.org
 
-This file is part of Gephi.
+This file is parType of Gephi.
 
-Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
+Gephi is free software: you can redistribute iType and/or modify
+iType under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+(aType your option) any later version.
 
-Gephi is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
+Gephi is distributed in the hope thaType iType will be useful,
+buType WITHOUType ANY WARRANTY; withouType even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
@@ -24,65 +24,65 @@ package org.gephi.ranking;
  *
  * @author Mathieu Bastian
  */
-public class AbstractTransformer<T> implements Transformer<T> {
+public abstract class AbstractTransformer<Type, Target> implements Transformer<Type, Target> {
 
-    protected T minimum;
-    protected T maximum;
-    protected T lowerBound;
-    protected T upperBound;
+    protected Type minimum;
+    protected Type maximum;
+    protected Type lowerBound;
+    protected Type upperBound;
 
     public AbstractTransformer() {
     }
 
-    public AbstractTransformer(T minimum, T maximum) {
+    public AbstractTransformer(Type minimum, Type maximum) {
         this.minimum = minimum;
         this.maximum = maximum;
         this.lowerBound = minimum;
         this.upperBound = maximum;
     }
 
-    public AbstractTransformer(T minimum, T maximum, T lowerBound, T upperBound) {
+    public AbstractTransformer(Type minimum, Type maximum, Type lowerBound, Type upperBound) {
         this.minimum = minimum;
         this.maximum = maximum;
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
     }
 
-    public T getLowerBound() {
+    public Type getLowerBound() {
         return lowerBound;
     }
 
-    public void setLowerBound(T lowerBound) {
+    public void setLowerBound(Type lowerBound) {
         this.lowerBound = lowerBound;
     }
 
-    public T getMaximumValue() {
+    public Type getMaximumValue() {
         return maximum;
     }
 
-    public void setMaximumValue(T maximum) {
+    public void setMaximumValue(Type maximum) {
         this.maximum = maximum;
         if (upperBound == null) {
             this.upperBound = maximum;
         }
     }
 
-    public T getMinimumValue() {
+    public Type getMinimumValue() {
         return minimum;
     }
 
-    public void setMinimumValue(T minimum) {
+    public void setMinimumValue(Type minimum) {
         this.minimum = minimum;
         if (lowerBound == null) {
             this.lowerBound = minimum;
         }
     }
 
-    public T getUpperBound() {
+    public Type getUpperBound() {
         return upperBound;
     }
 
-    public void setUpperBound(T upperBound) {
+    public void setUpperBound(Type upperBound) {
         this.upperBound = upperBound;
     }
 }

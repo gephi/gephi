@@ -26,7 +26,7 @@ import java.awt.Color;
  *
  * @author Mathieu Bastian
  */
-public interface ColorTransformer<T> extends Transformer<T> {
+public interface ColorTransformer<Type, Target> extends Transformer<Type, Target> {
 
     public float[] getColorPositions();
 
@@ -36,5 +36,5 @@ public interface ColorTransformer<T> extends Transformer<T> {
 
     public void setColors(Color[] colors);
 
-    public Color transform(T value);
+    public Color getResult(Type value);
 }

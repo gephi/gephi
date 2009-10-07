@@ -24,17 +24,19 @@ package org.gephi.ranking;
  *
  * @author Mathieu Bastian
  */
-public interface Transformer<T> {
+public interface Transformer<Type, Target> {
 
-    public T getMinimumValue();
+    public Type getMinimumValue();
 
-    public T getMaximumValue();
+    public Type getMaximumValue();
 
-    public void setMinimumValue(T value);
+    public void setMinimumValue(Type value);
 
-    public void setMaximumValue(T value);
+    public void setMaximumValue(Type value);
 
-    public void setLowerBound(T lowerBound);
+    public void setLowerBound(Type lowerBound);
 
-    public void setUpperBound(T upperBound);
+    public void setUpperBound(Type upperBound);
+
+    public void transform(Target target, Type value);
 }
