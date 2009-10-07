@@ -230,7 +230,7 @@ public class RankingChooser extends javax.swing.JPanel {
     private TransformerUI getUIForTransformer(Transformer transformer) {
         if (transformer != null) {
             for (TransformerUI u : transformerUIs) {
-                if (u.getTransformerClass().equals(transformer.getClass())) {
+                if (u.getTransformerClass().isAssignableFrom(transformer.getClass())) {
                     return u;
                 }
             }

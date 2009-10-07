@@ -115,7 +115,7 @@ public class RankingUIModel {
     public Transformer getSelectedNodeTransformer() {
         if (nodeTransformer != null) {
             for (Transformer t : nodeTransformers) {
-                if(nodeTransformer.isAssignableFrom(t.getClass())) {
+                if (nodeTransformer.isAssignableFrom(t.getClass())) {
                     return t;
                 }
             }

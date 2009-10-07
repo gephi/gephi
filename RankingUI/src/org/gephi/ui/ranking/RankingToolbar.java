@@ -73,14 +73,14 @@ public class RankingToolbar extends JToolBar {
         for (Enumeration<AbstractButton> btns = nodeTransformerGroup.getElements(); btns.hasMoreElements();) {
             AbstractButton btn = btns.nextElement();
             btn.setVisible(nodeSelected);
-            if (btn.getName().equals(model.getNodeTransformer())) {
+            if (btn.getName().equals(model.getNodeTransformer().getSimpleName())) {
                 nodeTransformerGroup.setSelected(btn.getModel(), true);
             }
         }
         for (Enumeration<AbstractButton> btns = edgeTransformerGroup.getElements(); btns.hasMoreElements();) {
             AbstractButton btn = btns.nextElement();
             btn.setVisible(edgeSelected);
-            if (btn.getName().equals(model.getEdgeTransformer())) {
+            if (btn.getName().equals(model.getEdgeTransformer().getSimpleName())) {
                 edgeTransformerGroup.setSelected(btn.getModel(), true);
             }
         }

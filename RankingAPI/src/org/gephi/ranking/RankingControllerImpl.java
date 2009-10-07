@@ -46,14 +46,14 @@ public class RankingControllerImpl implements RankingController {
             for (Node node : graph.getNodes().toArray()) {
                 Object value = ranking.getValue(node);
                 if (value != null) {
-                    transformer.transform(value, node);
+                    transformer.transform(node, value);
                 }
             }
         } else {
             for (Edge edge : graph.getEdges().toArray()) {
                 Object value = ranking.getValue(edge);
                 if (value != null) {
-                    transformer.transform(value, edge);
+                    transformer.transform(edge, value);
                 }
             }
         }
