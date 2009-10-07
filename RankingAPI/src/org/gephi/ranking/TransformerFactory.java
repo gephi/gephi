@@ -80,9 +80,10 @@ public class TransformerFactory {
                 return linearGradient.getValue(ratio);
             }
 
-            public void transform(Node target, Double value) {
+            public Object transform(Node target, Double value) {
                 Color color = getResult(value);
                 target.getNodeData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
+                return color;
             }
 
             public boolean isInBounds(Double value) {
@@ -99,9 +100,10 @@ public class TransformerFactory {
                 return linearGradient.getValue(ratio);
             }
 
-            public void transform(Node target, Float value) {
+            public Object transform(Node target, Float value) {
                 Color color = getResult(value);
                 target.getNodeData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
+                return color;
             }
 
             public boolean isInBounds(Float value) {
@@ -118,9 +120,10 @@ public class TransformerFactory {
                 return linearGradient.getValue(ratio);
             }
 
-            public void transform(Node target, Integer value) {
+            public Object transform(Node target, Integer value) {
                 Color color = getResult(value);
                 target.getNodeData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
+                return color;
             }
 
             public boolean isInBounds(Integer value) {
@@ -137,9 +140,10 @@ public class TransformerFactory {
                 return linearGradient.getValue(ratio);
             }
 
-            public void transform(Node target, Long value) {
+            public Object transform(Node target, Long value) {
                 Color color = getResult(value);
                 target.getNodeData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
+                return color;
             }
 
             public boolean isInBounds(Long value) {
@@ -156,8 +160,10 @@ public class TransformerFactory {
                 return ratio * maxSize + minSize;
             }
 
-            public void transform(Node target, Double value) {
-                target.getNodeData().setSize(getResult(value));
+            public Object transform(Node target, Double value) {
+                float size = getResult(value);
+                target.getNodeData().setSize(size);
+                return Float.valueOf(size);
             }
 
             public boolean isInBounds(Double value) {
@@ -174,8 +180,10 @@ public class TransformerFactory {
                 return ratio * maxSize + minSize;
             }
 
-            public void transform(Node target, Float value) {
-                target.getNodeData().setSize(getResult(value));
+            public Object transform(Node target, Float value) {
+                float size = getResult(value);
+                target.getNodeData().setSize(size);
+                return Float.valueOf(size);
             }
 
             public boolean isInBounds(Float value) {
@@ -192,8 +200,10 @@ public class TransformerFactory {
                 return ratio * maxSize + minSize;
             }
 
-            public void transform(Node target, Integer value) {
-                target.getNodeData().setSize(getResult(value));
+            public Object transform(Node target, Integer value) {
+                float size = getResult(value);
+                target.getNodeData().setSize(size);
+                return Float.valueOf(size);
             }
 
             public boolean isInBounds(Integer value) {
@@ -210,8 +220,10 @@ public class TransformerFactory {
                 return ratio * maxSize + minSize;
             }
 
-            public void transform(Node target, Long value) {
-                target.getNodeData().setSize(getResult(value));
+            public Object transform(Node target, Long value) {
+                float size = getResult(value);
+                target.getNodeData().setSize(size);
+                return Float.valueOf(size);
             }
 
             public boolean isInBounds(Long value) {
@@ -228,9 +240,10 @@ public class TransformerFactory {
                 return linearGradient.getValue(ratio);
             }
 
-            public void transform(Edge target, Double value) {
+            public Object transform(Edge target, Double value) {
                 Color color = getResult(value);
                 target.getEdgeData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
+                return color;
             }
 
             public boolean isInBounds(Double value) {
@@ -247,9 +260,10 @@ public class TransformerFactory {
                 return linearGradient.getValue(ratio);
             }
 
-            public void transform(Edge target, Float value) {
+            public Object transform(Edge target, Float value) {
                 Color color = getResult(value);
                 target.getEdgeData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
+                return color;
             }
 
             public boolean isInBounds(Float value) {
@@ -266,9 +280,10 @@ public class TransformerFactory {
                 return linearGradient.getValue(ratio);
             }
 
-            public void transform(Edge target, Integer value) {
+            public Object transform(Edge target, Integer value) {
                 Color color = getResult(value);
                 target.getEdgeData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
+                return color;
             }
 
             public boolean isInBounds(Integer value) {
@@ -285,9 +300,10 @@ public class TransformerFactory {
                 return linearGradient.getValue(ratio);
             }
 
-            public void transform(Edge target, Long value) {
+            public Object transform(Edge target, Long value) {
                 Color color = getResult(value);
                 target.getEdgeData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
+                return color;
             }
 
             public boolean isInBounds(Long value) {

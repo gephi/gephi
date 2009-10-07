@@ -44,5 +44,5 @@ public interface Transformer<Type, Target> {
 
     public boolean isInBounds(Type value);
 
-    public void transform(Target target, Type value);
+    public Object transform(Target target, Type value);
 }

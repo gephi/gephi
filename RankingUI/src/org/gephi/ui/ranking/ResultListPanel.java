@@ -23,17 +23,33 @@ package org.gephi.ui.ranking;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import org.gephi.ranking.RankingController;
+import org.gephi.ranking.RankingResult;
+import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class ResultListPanel extends JScrollPane {
+public class ResultListPanel extends JScrollPane implements LookupListener {
 
-    private JPanel listPanel;
+    private Lookup.Result<RankingResult> result;
 
     public ResultListPanel() {
-        listPanel = new JPanel();
-        listPanel.add(new JLabel("RankingListPanel"));
+        RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
+        Lookup eventBus = rankingController.getEventBus();
+        result = eventBus.lookupResult(RankingResult.class);
+        result.addLookupListener(this);
+    }
+
+    public void resultChanged(LookupEvent ev) {
+        Lookup.Result<RankingResult> r = (Lookup.Result<RankingResult>) ev.getSource();
+        RankingResult[] res = r.allInstances().toArray(new RankingResult[0]);
+        if (res.length > 0) {
+            RankingResult lastResult = res[0];
+            System.out.println(lastResult.getResults().length + " results arrived");
+        }
     }
 }

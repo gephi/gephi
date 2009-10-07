@@ -20,21 +20,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking;
 
-import org.openide.util.Lookup;
-
 /**
  *
  * @author Mathieu Bastian
  */
-public interface RankingController {
+public interface RankingResult {
 
-    public RankingModel getRankingModel();
+    public Transformer getTransformer();
 
-    public void transform(Transformer transformer);
+    public Object[] getTargets();
 
-    public ColorTransformer getColorTransformer(Ranking ranking);
-
-    public SizeTransformer getSizeTransformer(Ranking nodeRanking);
-
-    public Lookup getEventBus();
+    public Object[] getResults();
 }

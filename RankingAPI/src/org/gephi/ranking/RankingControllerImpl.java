@@ -33,6 +33,7 @@ import org.openide.util.Lookup;
 public class RankingControllerImpl implements RankingController {
 
     private RankingModelImpl rankingModelImpl = new RankingModelImpl();
+    private RankingEventBus rankingEventBus = new RankingEventBus();
 
     public RankingModel getRankingModel() {
         return rankingModelImpl;
@@ -41,22 +42,43 @@ public class RankingControllerImpl implements RankingController {
     public void transform(Transformer transformer) {
         AbstractTransformer abstractTransformer = (AbstractTransformer) transformer;
         Ranking ranking = abstractTransformer.getRanking();
+
+        RankingResultImpl rankingResult = new RankingResultImpl();
+        rankingResult.transformer = transformer;
+        Object[] results;
+        int i=0;
+
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getVisibleDirectedGraph();
         if (ranking instanceof NodeRanking) {
-            for (Node node : graph.getNodes().toArray()) {
+            Node[] nodes = graph.getNodes().toArray();
+            results = new Object[nodes.length];
+            rankingResult.targets = nodes;
+            for (Node node : nodes) {
                 Object value = ranking.getValue(node);
                 if (value != null && transformer.isInBounds(value)) {
-                    transformer.transform(node, value);
+                    results[i] = transformer.transform(node, value);
+                } else {
+                    results[i] = null;
                 }
+                i++;
             }
         } else {
-            for (Edge edge : graph.getEdges().toArray()) {
+            Edge[] edges = graph.getEdges().toArray();
+            results = new Object[edges.length];
+            rankingResult.targets = edges;
+            for (Edge edge : edges) {
                 Object value = ranking.getValue(edge);
                 if (value != null && transformer.isInBounds(value)) {
-                    transformer.transform(edge, value);
+                    results[i] = transformer.transform(edge, value);
+                } else {
+                    results[i] = null;
                 }
+                i++;
             }
         }
+
+        rankingResult.results = results;
+        rankingEventBus.publishResults(rankingResult);
     }
 
     public ColorTransformer getColorTransformer(Ranking ranking) {
@@ -69,6 +91,10 @@ public class RankingControllerImpl implements RankingController {
         }
 
         return colorTransformer;
+    }
+
+    public Lookup getEventBus() {
+        return rankingEventBus.getLookup();
     }
 
     public SizeTransformer getSizeTransformer(Ranking ranking) {
@@ -183,6 +209,25 @@ public class RankingControllerImpl implements RankingController {
             }
             transformer.setMinimumValue(minValue);
             transformer.setMaximumValue(maxValue);
+        }
+    }
+
+    private static class RankingResultImpl implements RankingResult {
+
+        private Transformer transformer;
+        private Object[] targets;
+        private Object[] results;
+
+        public Transformer getTransformer() {
+            return transformer;
+        }
+
+        public Object[] getTargets() {
+            return targets;
+        }
+
+        public Object[] getResults() {
+            return results;
         }
     }
 }
