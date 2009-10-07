@@ -107,7 +107,7 @@ public class RankingToolbar extends JToolBar {
             btn.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    model.setNodeTransformer(t.getTransformerClass().getSimpleName());
+                    model.setNodeTransformer(t.getTransformerClass());
                 }
             });
             btn.setName(t.getTransformerClass().getSimpleName());
@@ -122,7 +122,7 @@ public class RankingToolbar extends JToolBar {
             btn.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    model.setEdgeTransformer(t.getTransformerClass().getSimpleName());
+                    model.setEdgeTransformer(t.getTransformerClass());
                 }
             });
             btn.setName(t.getTransformerClass().getSimpleName());
@@ -133,10 +133,10 @@ public class RankingToolbar extends JToolBar {
 
         //Init first
         if (!nodeTrans.isEmpty()) {
-            model.setNodeTransformer(nodeTrans.get(0).getTransformerClass().getSimpleName());
+            model.setNodeTransformer(nodeTrans.get(0).getTransformerClass());
         }
         if (!edgeTrans.isEmpty()) {
-            model.setEdgeTransformer(edgeTrans.get(0).getTransformerClass().getSimpleName());
+            model.setEdgeTransformer(edgeTrans.get(0).getTransformerClass());
         }
     }
 

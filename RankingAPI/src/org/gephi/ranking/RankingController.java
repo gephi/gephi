@@ -28,7 +28,7 @@ public interface RankingController {
 
     public RankingModel getRankingModel();
 
-    public Ranking[] getNodeRanking();
+    public void transform(Transformer transformer);
 
     public ColorTransformer getColorTransformer(Ranking ranking);
 

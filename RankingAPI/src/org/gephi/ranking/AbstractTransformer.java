@@ -26,6 +26,7 @@ package org.gephi.ranking;
  */
 public abstract class AbstractTransformer<Type, Target> implements Transformer<Type, Target> {
 
+    protected Ranking ranking;
     protected Type minimum;
     protected Type maximum;
     protected Type lowerBound;
@@ -84,5 +85,13 @@ public abstract class AbstractTransformer<Type, Target> implements Transformer<T
 
     public void setUpperBound(Type upperBound) {
         this.upperBound = upperBound;
+    }
+
+    public Ranking getRanking() {
+        return ranking;
+    }
+
+    public void setRanking(Ranking ranking) {
+        this.ranking = ranking;
     }
 }

@@ -103,7 +103,7 @@ public class RankingChooser extends javax.swing.JPanel {
 
             public void actionPerformed(ActionEvent e) {
                 Transformer transformer = getSelectedTransformer();
-                if(transformer!=null) {
+                if (transformer != null) {
                     RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
                     rankingController.transform(transformer);
                 }
@@ -239,14 +239,14 @@ public class RankingChooser extends javax.swing.JPanel {
     }
 
     private TransformerUI getUIForTransformer() {
-        String className;
+        Class classTransformer;
         if (modelUI.getRanking() == RankingUIModel.NODE_RANKING) {
-            className = modelUI.getNodeTransformer();
+            classTransformer = modelUI.getNodeTransformer();
         } else {
-            className = modelUI.getEdgeTransformer();
+            classTransformer = modelUI.getEdgeTransformer();
         }
         for (TransformerUI u : transformerUIs) {
-            if (u.getTransformerClass().getSimpleName().equals(className)) {
+            if (u.getTransformerClass().equals(classTransformer)) {
                 return u;
             }
         }

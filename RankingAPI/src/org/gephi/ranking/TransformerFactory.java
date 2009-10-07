@@ -53,8 +53,7 @@ public class TransformerFactory {
                 colorTransformer = getEdgeLongColorTransformer();
             }
         }
-
-
+        colorTransformer.setRanking(ranking);
         return colorTransformer;
     }
 
@@ -69,6 +68,7 @@ public class TransformerFactory {
         } else if (ranking.getType().equals(Long.class)) {
             sizeTransformer = getNodeLongSizeTransformer();
         }
+        sizeTransformer.setRanking(ranking);
         return sizeTransformer;
     }
 

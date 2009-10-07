@@ -20,17 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.AbstractLookup;
-import org.openide.util.lookup.InstanceContent;
 
 /**
  *
@@ -44,15 +38,25 @@ public class RankingControllerImpl implements RankingController {
         return rankingModelImpl;
     }
 
-    public Ranking[] getNodeRanking() {
-        AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
-        List<Ranking> rankingList = new ArrayList<Ranking>();
-        for (AttributeColumn column : attributeController.getTemporaryAttributeManager().getNodeClass().getAttributeColumns()) {
-            if (RankingFactory.isNumberColumn(column)) {
-                rankingList.add(RankingFactory.getNodeAttributeRanking(column));
+    public void transform(Transformer transformer) {
+        AbstractTransformer abstractTransformer = (AbstractTransformer) transformer;
+        Ranking ranking = abstractTransformer.getRanking();
+        Graph graph = Lookup.getDefault().lookup(GraphController.class).getVisibleDirectedGraph();
+        if (ranking instanceof NodeRanking) {
+            for (Node node : graph.getNodes().toArray()) {
+                Object value = ranking.getValue(node);
+                if (value != null) {
+                    transformer.transform(value, node);
+                }
+            }
+        } else {
+            for (Edge edge : graph.getEdges().toArray()) {
+                Object value = ranking.getValue(edge);
+                if (value != null) {
+                    transformer.transform(value, edge);
+                }
             }
         }
-        return rankingList.toArray(new Ranking[0]);
     }
 
     public ColorTransformer getColorTransformer(Ranking ranking) {
@@ -84,8 +88,10 @@ public class RankingControllerImpl implements RankingController {
             Double maxValue = Double.NEGATIVE_INFINITY;
             for (Node node : graph.getNodes().toArray()) {
                 Double value = (Double) ranking.getValue(node);
-                minValue = Math.min(value, minValue);
-                maxValue = Math.max(value, maxValue);
+                if (value != null) {
+                    minValue = Math.min(value, minValue);
+                    maxValue = Math.max(value, maxValue);
+                }
             }
             transformer.setMinimumValue(minValue);
             transformer.setMaximumValue(maxValue);
@@ -94,8 +100,10 @@ public class RankingControllerImpl implements RankingController {
             Float maxValue = Float.NEGATIVE_INFINITY;
             for (Node node : graph.getNodes().toArray()) {
                 Float value = (Float) ranking.getValue(node);
-                minValue = Math.min(value, minValue);
-                maxValue = Math.max(value, maxValue);
+                if (value != null) {
+                    minValue = Math.min(value, minValue);
+                    maxValue = Math.max(value, maxValue);
+                }
             }
             transformer.setMinimumValue(minValue);
             transformer.setMaximumValue(maxValue);
@@ -104,8 +112,10 @@ public class RankingControllerImpl implements RankingController {
             Integer maxValue = Integer.MIN_VALUE;
             for (Node node : graph.getNodes().toArray()) {
                 Integer value = (Integer) ranking.getValue(node);
-                minValue = Math.min(value, minValue);
-                maxValue = Math.max(value, maxValue);
+                if (value != null) {
+                    minValue = Math.min(value, minValue);
+                    maxValue = Math.max(value, maxValue);
+                }
             }
             transformer.setMinimumValue(minValue);
             transformer.setMaximumValue(maxValue);
@@ -114,8 +124,10 @@ public class RankingControllerImpl implements RankingController {
             Long maxValue = Long.MIN_VALUE;
             for (Node node : graph.getNodes().toArray()) {
                 Long value = (Long) ranking.getValue(node);
-                minValue = Math.min(value, minValue);
-                maxValue = Math.max(value, maxValue);
+                if (value != null) {
+                    minValue = Math.min(value, minValue);
+                    maxValue = Math.max(value, maxValue);
+                }
             }
             transformer.setMinimumValue(minValue);
             transformer.setMaximumValue(maxValue);
@@ -128,8 +140,10 @@ public class RankingControllerImpl implements RankingController {
             Double maxValue = Double.NEGATIVE_INFINITY;
             for (Edge edge : graph.getEdges().toArray()) {
                 Double value = (Double) ranking.getValue(edge);
-                minValue = Math.min(value, minValue);
-                maxValue = Math.max(value, maxValue);
+                if (value != null) {
+                    minValue = Math.min(value, minValue);
+                    maxValue = Math.max(value, maxValue);
+                }
             }
             transformer.setMinimumValue(minValue);
             transformer.setMaximumValue(maxValue);
@@ -138,8 +152,10 @@ public class RankingControllerImpl implements RankingController {
             Float maxValue = Float.NEGATIVE_INFINITY;
             for (Edge edge : graph.getEdges().toArray()) {
                 Float value = (Float) ranking.getValue(edge);
-                minValue = Math.min(value, minValue);
-                maxValue = Math.max(value, maxValue);
+                if (value != null) {
+                    minValue = Math.min(value, minValue);
+                    maxValue = Math.max(value, maxValue);
+                }
             }
             transformer.setMinimumValue(minValue);
             transformer.setMaximumValue(maxValue);
@@ -148,8 +164,10 @@ public class RankingControllerImpl implements RankingController {
             Integer maxValue = Integer.MIN_VALUE;
             for (Edge edge : graph.getEdges().toArray()) {
                 Integer value = (Integer) ranking.getValue(edge);
-                minValue = Math.min(value, minValue);
-                maxValue = Math.max(value, maxValue);
+                if (value != null) {
+                    minValue = Math.min(value, minValue);
+                    maxValue = Math.max(value, maxValue);
+                }
             }
             transformer.setMinimumValue(minValue);
             transformer.setMaximumValue(maxValue);
@@ -158,8 +176,10 @@ public class RankingControllerImpl implements RankingController {
             Long maxValue = Long.MIN_VALUE;
             for (Edge edge : graph.getEdges().toArray()) {
                 Long value = (Long) ranking.getValue(edge);
-                minValue = Math.min(value, minValue);
-                maxValue = Math.max(value, maxValue);
+                if (value != null) {
+                    minValue = Math.min(value, minValue);
+                    maxValue = Math.max(value, maxValue);
+                }
             }
             transformer.setMinimumValue(minValue);
             transformer.setMaximumValue(maxValue);

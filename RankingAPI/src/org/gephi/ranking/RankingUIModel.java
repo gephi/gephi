@@ -41,8 +41,8 @@ public class RankingUIModel {
     protected int ranking;
     protected boolean barChartVisible;
     protected boolean listVisible;
-    protected String nodeTransformer;
-    protected String edgeTransformer;
+    protected Class nodeTransformer;
+    protected Class edgeTransformer;
     protected List<Transformer> nodeTransformers;
     protected List<Transformer> edgeTransformers;
     protected String selectedNodeRanking;
@@ -60,11 +60,11 @@ public class RankingUIModel {
         edgeTransformers = new ArrayList<Transformer>();
     }
 
-    public String getNodeTransformer() {
+    public Class getNodeTransformer() {
         return nodeTransformer;
     }
 
-    public String getEdgeTransformer() {
+    public Class getEdgeTransformer() {
         return edgeTransformer;
     }
 
@@ -76,20 +76,20 @@ public class RankingUIModel {
         return selectedNodeRanking;
     }
 
-    public void setNodeTransformer(String nodeTransformer) {
+    public void setNodeTransformer(Class nodeTransformer) {
         if (this.nodeTransformer != null && this.nodeTransformer.equals(nodeTransformer)) {
             return;
         }
-        String oldValue = this.nodeTransformer;
+        Class oldValue = this.nodeTransformer;
         this.nodeTransformer = nodeTransformer;
         firePropertyChangeEvent("nodeTransformer", oldValue, nodeTransformer);
     }
 
-    public void setEdgeTransformer(String edgeTransformer) {
+    public void setEdgeTransformer(Class edgeTransformer) {
         if (this.edgeTransformer != null && this.edgeTransformer.equals(edgeTransformer)) {
             return;
         }
-        String oldValue = this.edgeTransformer;
+        Class oldValue = this.edgeTransformer;
         this.edgeTransformer = edgeTransformer;
         firePropertyChangeEvent("edgeTransformer", oldValue, edgeTransformer);
     }
@@ -115,7 +115,7 @@ public class RankingUIModel {
     public Transformer getSelectedNodeTransformer() {
         if (nodeTransformer != null) {
             for (Transformer t : nodeTransformers) {
-                if (t.getClass().getSimpleName().equals(nodeTransformer)) {
+                if(nodeTransformer.isAssignableFrom(t.getClass())) {
                     return t;
                 }
             }
