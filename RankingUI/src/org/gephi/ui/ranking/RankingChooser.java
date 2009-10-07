@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ui.ranking;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
@@ -30,6 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.ranking.Ranking;
+import org.gephi.ranking.RankingController;
 import org.gephi.ranking.RankingModel;
 import org.gephi.ranking.RankingUIModel;
 import org.gephi.ranking.Transformer;
@@ -54,6 +57,7 @@ public class RankingChooser extends javax.swing.JPanel {
         NO_SELECTION = "----------------";
         initComponents();
         initRanking();
+        initApply();
     }
 
     private void initRanking() {
@@ -94,6 +98,19 @@ public class RankingChooser extends javax.swing.JPanel {
         transformerUIs = Lookup.getDefault().lookupAll(TransformerUI.class).toArray(new TransformerUI[0]);
     }
 
+    private void initApply() {
+        applyButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                Transformer transformer = getSelectedTransformer();
+                if(transformer!=null) {
+                    RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
+                    rankingController.transform(transformer);
+                }
+            }
+        });
+    }
+
     private synchronized void refreshModel() {
         refreshSelectedRankings();
         Ranking[] rankings = new Ranking[0];
@@ -119,6 +136,7 @@ public class RankingChooser extends javax.swing.JPanel {
         if (centerPanel != null) {
             remove(centerPanel);
         }
+        applyButton.setEnabled(false);
 
         if (selectedRanking != null) {
             Transformer transformer = getSelectedTransformer();
@@ -135,6 +153,7 @@ public class RankingChooser extends javax.swing.JPanel {
             }
             centerPanel = transformerUI.getPanel(transformer);
             add(centerPanel, BorderLayout.CENTER);
+            applyButton.setEnabled(true);
         }
 
         revalidate();

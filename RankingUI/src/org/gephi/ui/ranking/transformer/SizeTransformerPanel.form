@@ -34,7 +34,7 @@
                       <Component id="rangeSlider" min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="72" max="32767" attributes="0"/>
+              <EmptySpace pref="50" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -53,7 +53,7 @@
                   <Component id="labelRange" min="-2" pref="23" max="-2" attributes="1"/>
                   <Component id="rangeSlider" alignment="0" min="-2" max="-2" attributes="1"/>
               </Group>
-              <EmptySpace min="-2" pref="133" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

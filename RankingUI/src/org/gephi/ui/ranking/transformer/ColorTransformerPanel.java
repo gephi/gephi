@@ -91,11 +91,11 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(labelColor)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(gradientPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE))
+                        .addComponent(gradientPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(labelRange)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(rangeSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)))
+                        .addComponent(rangeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -108,8 +108,8 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(labelRange, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rangeSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
-                .addGap(67, 67, 67))
+                    .addComponent(rangeSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

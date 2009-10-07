@@ -22,12 +22,12 @@
                   <Group type="102" attributes="0">
                       <Component id="labelColor" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="gradientPanel" pref="187" max="32767" attributes="0"/>
+                      <Component id="gradientPanel" pref="283" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="labelRange" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="rangeSlider" pref="175" max="32767" attributes="0"/>
+                      <Component id="rangeSlider" min="-2" pref="159" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -45,9 +45,9 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="labelRange" max="32767" attributes="1"/>
-                  <Component id="rangeSlider" alignment="0" pref="23" max="32767" attributes="1"/>
+                  <Component id="rangeSlider" alignment="0" max="32767" attributes="1"/>
               </Group>
-              <EmptySpace min="-2" pref="67" max="-2" attributes="0"/>
+              <EmptySpace pref="27" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
