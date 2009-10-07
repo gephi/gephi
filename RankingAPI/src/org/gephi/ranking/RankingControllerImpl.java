@@ -45,16 +45,20 @@ public class RankingControllerImpl implements RankingController {
 
         RankingResultImpl rankingResult = new RankingResultImpl();
         rankingResult.transformer = transformer;
+        rankingResult.ranking = ranking;
         Object[] results;
+        Object[] ranks;
         int i=0;
 
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getVisibleDirectedGraph();
         if (ranking instanceof NodeRanking) {
             Node[] nodes = graph.getNodes().toArray();
             results = new Object[nodes.length];
+            ranks = new Object[nodes.length];
             rankingResult.targets = nodes;
             for (Node node : nodes) {
                 Object value = ranking.getValue(node);
+                ranks[i] = value;
                 if (value != null && transformer.isInBounds(value)) {
                     results[i] = transformer.transform(node, value);
                 } else {
@@ -65,9 +69,11 @@ public class RankingControllerImpl implements RankingController {
         } else {
             Edge[] edges = graph.getEdges().toArray();
             results = new Object[edges.length];
+            ranks = new Object[edges.length];
             rankingResult.targets = edges;
             for (Edge edge : edges) {
                 Object value = ranking.getValue(edge);
+                ranks[i] = value;
                 if (value != null && transformer.isInBounds(value)) {
                     results[i] = transformer.transform(edge, value);
                 } else {
@@ -78,6 +84,7 @@ public class RankingControllerImpl implements RankingController {
         }
 
         rankingResult.results = results;
+        rankingResult.ranks = ranks;
         rankingEventBus.publishResults(rankingResult);
     }
 
@@ -217,6 +224,8 @@ public class RankingControllerImpl implements RankingController {
         private Transformer transformer;
         private Object[] targets;
         private Object[] results;
+        private Object[] ranks;
+        private Ranking ranking;
 
         public Transformer getTransformer() {
             return transformer;
@@ -228,6 +237,14 @@ public class RankingControllerImpl implements RankingController {
 
         public Object[] getResults() {
             return results;
+        }
+
+        public Ranking getRanking() {
+            return ranking;
+        }
+
+        public Object[] getRanks() {
+            return ranks;
         }
     }
 }

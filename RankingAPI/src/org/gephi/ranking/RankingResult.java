@@ -28,7 +28,11 @@ public interface RankingResult {
 
     public Transformer getTransformer();
 
+    public Ranking getRanking();
+
     public Object[] getTargets();
 
     public Object[] getResults();
+
+    public Object[] getRanks();
 }
