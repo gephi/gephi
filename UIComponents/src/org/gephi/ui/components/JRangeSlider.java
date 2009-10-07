@@ -41,7 +41,7 @@ import javax.swing.plaf.basic.BasicSliderUI.TrackListener;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class JRangeSlider extends JSlider {
 

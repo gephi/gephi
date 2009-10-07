@@ -26,8 +26,8 @@ package org.gephi.ranking;
  */
 public abstract class AbstractSizeTransformer<Type, Target> extends AbstractTransformer<Type, Target> implements SizeTransformer<Type, Target> {
 
-    protected float minSize;
-    protected float maxSize;
+    protected float minSize = 1f;
+    protected float maxSize = 4f;
 
     public AbstractSizeTransformer() {
     }

@@ -265,13 +265,13 @@ public class RankingUIModel {
         listE.setTextContent(String.valueOf(listVisible));
         rankingModelE.appendChild(barChartE);
 
-        Element nodeTransformerE = document.createElement("nodetransformer");
+        /*Element nodeTransformerE = document.createElement("nodetransformer");
         nodeTransformerE.setTextContent(String.valueOf(nodeTransformer));
         rankingModelE.appendChild(nodeTransformerE);
 
         Element edgeTransformerE = document.createElement("edgetransformer");
         edgeTransformerE.setTextContent(String.valueOf(edgeTransformer));
-        rankingModelE.appendChild(edgeTransformerE);
+        rankingModelE.appendChild(edgeTransformerE);*/
 
         return rankingModelE;
     }

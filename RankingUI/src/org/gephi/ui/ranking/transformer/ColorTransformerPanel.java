@@ -34,10 +34,13 @@ import org.gephi.ui.components.gradientslider.GradientSlider;
  */
 public class ColorTransformerPanel extends javax.swing.JPanel {
 
+    private static final int SLIDER_MAXIMUM = 100;
+    private ColorTransformer colorTransformer;
+
     public ColorTransformerPanel(Transformer transformer) {
         initComponents();
 
-        final ColorTransformer colorTransformer = (ColorTransformer) transformer;
+        colorTransformer = (ColorTransformer) transformer;
 
         //Gradient
         final GradientSlider gradientSlider = new GradientSlider(GradientSlider.HORIZONTAL, colorTransformer.getColorPositions(), colorTransformer.getColors());
@@ -54,8 +57,67 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
         gradientPanel.add(gradientSlider);
 
         //Range
-        ((JRangeSlider) rangeSlider).setValue(0);
-        ((JRangeSlider) rangeSlider).setUpperValue(100);
+        JRangeSlider slider = (JRangeSlider) rangeSlider;
+        slider.setMinimum(0);
+        slider.setMaximum(SLIDER_MAXIMUM);
+        slider.setValue(0);
+        slider.setUpperValue(SLIDER_MAXIMUM);
+        slider.addChangeListener(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                JRangeSlider source = (JRangeSlider) e.getSource();
+                if (!source.getValueIsAdjusting()) {
+                    setRangeValues();
+                }
+            }
+        });
+        refreshRangeValues();
+    }
+
+    private void setRangeValues() {
+        JRangeSlider slider = (JRangeSlider) rangeSlider;
+        Object minVal = colorTransformer.getMinimumValue();
+        Object maxVal = colorTransformer.getMaximumValue();
+        if (minVal instanceof Float) {
+            Float low = slider.getValue() * ((Float) maxVal - (Float) minVal) / SLIDER_MAXIMUM;
+            Float up = slider.getUpperValue() * ((Float) maxVal - (Float) minVal) / SLIDER_MAXIMUM;
+            colorTransformer.setLowerBound(low);
+            colorTransformer.setUpperBound(up);
+        } else if (minVal instanceof Double) {
+            Double low = slider.getValue() * ((Double) maxVal - (Double) minVal) / SLIDER_MAXIMUM;
+            Double up = slider.getUpperValue() * ((Double) maxVal - (Double) minVal) / SLIDER_MAXIMUM;
+            colorTransformer.setLowerBound(low);
+            colorTransformer.setUpperBound(up);
+        } else if (minVal instanceof Integer) {
+            Integer low = slider.getValue() * ((Integer) maxVal - (Integer) minVal) / SLIDER_MAXIMUM;
+            Integer up = slider.getUpperValue() * ((Integer) maxVal - (Integer) minVal) / SLIDER_MAXIMUM;
+            colorTransformer.setLowerBound(low);
+            colorTransformer.setUpperBound(up);
+        } else if (minVal instanceof Long) {
+            Integer low = slider.getValue() * ((Integer) maxVal - (Integer) minVal) / SLIDER_MAXIMUM;
+            Integer up = slider.getUpperValue() * ((Integer) maxVal - (Integer) minVal) / SLIDER_MAXIMUM;
+            colorTransformer.setLowerBound(low);
+            colorTransformer.setUpperBound(up);
+        }
+    }
+
+    private void refreshRangeValues() {
+        JRangeSlider slider = (JRangeSlider) rangeSlider;
+        Object minVal = colorTransformer.getMinimumValue();
+        Object maxVal = colorTransformer.getMaximumValue();
+        if (minVal instanceof Float) {
+            slider.setValue((int)(((Float)colorTransformer.getLowerBound())*SLIDER_MAXIMUM/((Float) maxVal - (Float) minVal)));
+            slider.setUpperValue((int)(((Float)colorTransformer.getUpperBound())*SLIDER_MAXIMUM/((Float) maxVal - (Float) minVal)));
+        } else if (minVal instanceof Double) {
+            slider.setValue((int)(((Double)colorTransformer.getLowerBound())*SLIDER_MAXIMUM/((Double) maxVal - (Double) minVal)));
+            slider.setUpperValue((int)(((Double)colorTransformer.getUpperBound())*SLIDER_MAXIMUM/((Double) maxVal - (Double) minVal)));
+        } else if (minVal instanceof Integer) {
+            slider.setValue((int)(((Integer)colorTransformer.getLowerBound())*SLIDER_MAXIMUM/((Integer) maxVal - (Integer) minVal)));
+            slider.setUpperValue((int)(((Integer)colorTransformer.getUpperBound())*SLIDER_MAXIMUM/((Integer) maxVal - (Integer) minVal)));
+        } else if (minVal instanceof Long) {
+            slider.setValue((int)(((Long)colorTransformer.getLowerBound())*SLIDER_MAXIMUM/((Long) maxVal - (Long) minVal)));
+            slider.setUpperValue((int)(((Long)colorTransformer.getUpperBound())*SLIDER_MAXIMUM/((Long) maxVal - (Long) minVal)));
+        }
     }
 
     /** This method is called from within the constructor to

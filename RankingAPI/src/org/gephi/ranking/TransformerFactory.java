@@ -84,6 +84,10 @@ public class TransformerFactory {
                 Color color = getResult(value);
                 target.getNodeData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
             }
+
+            public boolean isInBounds(Double value) {
+                return value >= lowerBound && value <= upperBound;
+            }
         };
     }
 
@@ -98,6 +102,10 @@ public class TransformerFactory {
             public void transform(Node target, Float value) {
                 Color color = getResult(value);
                 target.getNodeData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
+            }
+
+            public boolean isInBounds(Float value) {
+                return value >= lowerBound && value <= upperBound;
             }
         };
     }
@@ -114,6 +122,10 @@ public class TransformerFactory {
                 Color color = getResult(value);
                 target.getNodeData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
             }
+
+            public boolean isInBounds(Integer value) {
+                return value >= lowerBound && value <= upperBound;
+            }
         };
     }
 
@@ -129,6 +141,10 @@ public class TransformerFactory {
                 Color color = getResult(value);
                 target.getNodeData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
             }
+
+            public boolean isInBounds(Long value) {
+                return value >= lowerBound && value <= upperBound;
+            }
         };
     }
 
@@ -142,6 +158,10 @@ public class TransformerFactory {
 
             public void transform(Node target, Double value) {
                 target.getNodeData().setSize(getResult(value));
+            }
+
+            public boolean isInBounds(Double value) {
+                return value >= lowerBound && value <= upperBound;
             }
         };
     }
@@ -157,6 +177,10 @@ public class TransformerFactory {
             public void transform(Node target, Float value) {
                 target.getNodeData().setSize(getResult(value));
             }
+
+            public boolean isInBounds(Float value) {
+                return value >= lowerBound && value <= upperBound;
+            }
         };
     }
 
@@ -171,6 +195,10 @@ public class TransformerFactory {
             public void transform(Node target, Integer value) {
                 target.getNodeData().setSize(getResult(value));
             }
+
+            public boolean isInBounds(Integer value) {
+                return value >= lowerBound && value <= upperBound;
+            }
         };
     }
 
@@ -184,6 +212,10 @@ public class TransformerFactory {
 
             public void transform(Node target, Long value) {
                 target.getNodeData().setSize(getResult(value));
+            }
+
+            public boolean isInBounds(Long value) {
+                return value >= lowerBound && value <= upperBound;
             }
         };
     }
@@ -200,6 +232,10 @@ public class TransformerFactory {
                 Color color = getResult(value);
                 target.getEdgeData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
             }
+
+            public boolean isInBounds(Double value) {
+                return value >= lowerBound && value <= upperBound;
+            }
         };
     }
 
@@ -214,6 +250,10 @@ public class TransformerFactory {
             public void transform(Edge target, Float value) {
                 Color color = getResult(value);
                 target.getEdgeData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
+            }
+
+            public boolean isInBounds(Float value) {
+                return value >= lowerBound && value <= upperBound;
             }
         };
     }
@@ -230,6 +270,10 @@ public class TransformerFactory {
                 Color color = getResult(value);
                 target.getEdgeData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
             }
+
+            public boolean isInBounds(Integer value) {
+                return value >= lowerBound && value <= upperBound;
+            }
         };
     }
 
@@ -244,6 +288,10 @@ public class TransformerFactory {
             public void transform(Edge target, Long value) {
                 Color color = getResult(value);
                 target.getEdgeData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
+            }
+
+            public boolean isInBounds(Long value) {
+                return value >= lowerBound && value <= upperBound;
             }
         };
     }

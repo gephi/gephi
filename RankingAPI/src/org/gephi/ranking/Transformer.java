@@ -38,5 +38,11 @@ public interface Transformer<Type, Target> {
 
     public void setUpperBound(Type upperBound);
 
+    public Type getLowerBound();
+
+    public Type getUpperBound();
+
+    public boolean isInBounds(Type value);
+
     public void transform(Target target, Type value);
 }
