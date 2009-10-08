@@ -202,7 +202,6 @@ public class ResultListPanel extends JScrollPane implements LookupListener {
 
         public void render(JLabel label) {
             label.setBackground(color);
-            System.out.println(color);
             label.setText(rank.toString());
         }
     }

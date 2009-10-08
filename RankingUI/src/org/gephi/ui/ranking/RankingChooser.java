@@ -27,6 +27,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
@@ -136,7 +137,7 @@ public class RankingChooser extends javax.swing.JPanel {
         if (centerPanel != null) {
             remove(centerPanel);
         }
-        applyButton.setEnabled(false);
+        applyButton.setVisible(false);
 
         if (selectedRanking != null) {
             Transformer transformer = getSelectedTransformer();
@@ -152,8 +153,9 @@ public class RankingChooser extends javax.swing.JPanel {
                 }
             }
             centerPanel = transformerUI.getPanel(transformer);
+            centerPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5), BorderFactory.createEtchedBorder()));
             add(centerPanel, BorderLayout.CENTER);
-            applyButton.setEnabled(true);
+            applyButton.setVisible(true);
         }
 
         revalidate();
@@ -299,13 +301,16 @@ public class RankingChooser extends javax.swing.JPanel {
 
         controlPanel.setLayout(new java.awt.GridBagLayout());
 
+        applyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/ranking/apply.gif"))); // NOI18N
         applyButton.setText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.applyButton.text")); // NOI18N
+        applyButton.setMargin(new java.awt.Insets(0, 4, 0, 4));
+        applyButton.setPreferredSize(new java.awt.Dimension(65, 22));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 5);
         controlPanel.add(applyButton, gridBagConstraints);
 
         add(controlPanel, java.awt.BorderLayout.PAGE_END);

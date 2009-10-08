@@ -141,6 +141,8 @@ public class SizeTransformerPanel extends javax.swing.JPanel {
         upperBoundLabel = new javax.swing.JLabel();
         lowerBoundLabel = new javax.swing.JLabel();
 
+        setPreferredSize(new java.awt.Dimension(225, 114));
+
         labelMinSize.setText(org.openide.util.NbBundle.getMessage(SizeTransformerPanel.class, "SizeTransformerPanel.labelMinSize.text")); // NOI18N
 
         minSize.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(0.1f), null, Float.valueOf(0.5f)));
@@ -151,14 +153,15 @@ public class SizeTransformerPanel extends javax.swing.JPanel {
 
         labelRange.setText(org.openide.util.NbBundle.getMessage(SizeTransformerPanel.class, "SizeTransformerPanel.labelRange.text")); // NOI18N
 
+        rangeSlider.setFocusable(false);
         rangeSlider.setOpaque(false);
 
-        upperBoundLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        upperBoundLabel.setFont(new java.awt.Font("Tahoma", 0, 10));
         upperBoundLabel.setForeground(new java.awt.Color(102, 102, 102));
         upperBoundLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         upperBoundLabel.setText(org.openide.util.NbBundle.getMessage(SizeTransformerPanel.class, "SizeTransformerPanel.upperBoundLabel.text")); // NOI18N
 
-        lowerBoundLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        lowerBoundLabel.setFont(new java.awt.Font("Tahoma", 0, 10));
         lowerBoundLabel.setForeground(new java.awt.Color(102, 102, 102));
         lowerBoundLabel.setText(org.openide.util.NbBundle.getMessage(SizeTransformerPanel.class, "SizeTransformerPanel.lowerBoundLabel.text")); // NOI18N
 
@@ -204,7 +207,7 @@ public class SizeTransformerPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lowerBoundLabel)
                     .addComponent(upperBoundLabel))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

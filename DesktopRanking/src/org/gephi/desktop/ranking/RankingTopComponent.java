@@ -20,20 +20,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.ranking;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.logging.Logger;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
 import org.gephi.project.api.ProjectController;
 import org.gephi.ranking.RankingController;
 import org.gephi.ranking.RankingModel;
 import org.gephi.ranking.RankingUIModel;
-import org.gephi.ui.ranking.BarChartPanel;
 import org.gephi.ui.ranking.RankingChooser;
 import org.gephi.ui.ranking.RankingToolbar;
 import org.gephi.ui.ranking.ResultListPanel;
@@ -42,8 +37,6 @@ import org.gephi.workspace.api.WorkspaceDataKey;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.AbstractLookup;
-import org.openide.util.lookup.InstanceContent;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -55,65 +48,44 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
     private static final String PREFERRED_ID = "RankingTopComponent";
 
     //UI
-    private JToggleButton barChartButton;
     private JToggleButton listButton;
-    private JPanel barChartPanel;
-    private JScrollPane listPanel;
-    private RankingChooser rankingChooser;
-    private RankingToolbar rankingToolbar;
 
     //Model
     private RankingUIModel model;
+    private RankingModel rankingModel;
     private boolean enabled = false;
 
     private RankingTopComponent() {
-        initComponents();
         setName(NbBundle.getMessage(RankingTopComponent.class, "CTL_RankingTopComponent"));
         setToolTipText(NbBundle.getMessage(RankingTopComponent.class, "HINT_RankingTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
 
         RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
-        RankingModel rankingModel = rankingController.getRankingModel();
-
+        rankingModel = rankingController.getRankingModel();
+        
         initEvents();
-        rankingToolbar = new RankingToolbar(model);
-        add(rankingToolbar, BorderLayout.NORTH);
-        rankingChooser = new RankingChooser(model, rankingModel);
-        add(rankingChooser, BorderLayout.CENTER);
+        initComponents();
         initSouth();
 
         refreshModel();
     }
 
     private void initSouth() {
-        //SouthToolbar
-        JToolBar southToolbar = new JToolBar();
-        southToolbar.setFloatable(false);
-        southToolbar.setRollover(true);
         listButton = new JToggleButton();
         listButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/ranking/resources/list.png"))); // NOI18N
         NbBundle.getMessage(RankingTopComponent.class, "RankingTopComponent.listButton.text");
         listButton.setEnabled(false);
         listButton.setFocusable(false);
         southToolbar.add(listButton);
-        barChartButton = new JToggleButton();
+        /*barChartButton = new JToggleButton();
         barChartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/ranking/resources/barchart.png"))); // NOI18N
         NbBundle.getMessage(RankingTopComponent.class, "RankingTopComponent.barchartButton.text");
         barChartButton.setEnabled(false);
         barChartButton.setFocusable(false);
-        southToolbar.add(barChartButton);
+        southToolbar.add(barChartButton);*/
 
         //BarChartPanel & ListPanel
-        JPanel southPanel = new JPanel(new BorderLayout());
-        barChartPanel = new BarChartPanel();
-        listPanel = new ResultListPanel();
-        southPanel.add(barChartPanel, BorderLayout.NORTH);
-        southPanel.add(listPanel, BorderLayout.CENTER);
-        southPanel.add(southToolbar, BorderLayout.SOUTH);
-
-        listPanel.setVisible(false);
-        barChartPanel.setVisible(false);
-        add(southPanel, BorderLayout.SOUTH);
+        listResultPanel.setVisible(false);
 
         listButton.addActionListener(new ActionListener() {
 
@@ -123,13 +95,13 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
             }
         });
 
-        barChartButton.addActionListener(new ActionListener() {
+    /*barChartButton.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                model.setBarChartVisible(barChartButton.isSelected());
-                refreshModel();
-            }
-        });
+    public void actionPerformed(ActionEvent e) {
+    model.setBarChartVisible(barChartButton.isSelected());
+    refreshModel();
+    }
+    });*/
     }
 
     private void initEvents() {
@@ -168,20 +140,25 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
 
     private void refreshModel() {
         //South visible
-        if (barChartPanel.isVisible() != model.isBarChartVisible()) {
-            barChartPanel.setVisible(model.isBarChartVisible());
-        }
-        if (listPanel.isVisible() != model.isListVisible()) {
-            listPanel.setVisible(model.isListVisible());
+        /*if (barChartPanel.isVisible() != model.isBarChartVisible()) {
+        barChartPanel.setVisible(model.isBarChartVisible());
+        revalidate();
+        repaint();
+        }*/
+        if (listResultPanel.isVisible() != model.isListVisible()) {
+            listResultPanel.setVisible(model.isListVisible());
+            revalidate();
+            repaint();
         }
 
         //Enabled
-        barChartButton.setEnabled(enabled);
+        //barChartButton.setEnabled(enabled);
         listButton.setEnabled(enabled);
         rankingChooser.setEnabled(enabled);
         rankingToolbar.setEnabled(enabled);
+        listResultPanel.setEnabled(enabled);
 
-        barChartButton.setSelected(model.isBarChartVisible());
+        //barChartButton.setSelected(model.isBarChartVisible());
         listButton.setSelected(model.isListVisible());
     }
 
@@ -192,12 +169,67 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        setLayout(new java.awt.BorderLayout());
+        rankingToolbar = new RankingToolbar(model);
+        rankingChooser = new RankingChooser(model, rankingModel);
+        listResultContainerPanel = new javax.swing.JPanel();
+        listResultPanel = new ResultListPanel();
+        southToolbar = new javax.swing.JToolBar();
+
+        setLayout(new java.awt.GridBagLayout());
+
+        rankingToolbar.setFloatable(false);
+        rankingToolbar.setRollover(true);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.weightx = 1.0;
+        add(rankingToolbar, gridBagConstraints);
+
+        rankingChooser.setPreferredSize(new java.awt.Dimension(100, 110));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        add(rankingChooser, gridBagConstraints);
+
+        listResultContainerPanel.setLayout(new java.awt.GridLayout());
+
+        listResultPanel.setBorder(null);
+        listResultContainerPanel.add(listResultPanel);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 5, 1, 5);
+        add(listResultContainerPanel, gridBagConstraints);
+
+        southToolbar.setFloatable(false);
+        southToolbar.setRollover(true);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LAST_LINE_END;
+        gridBagConstraints.weightx = 1.0;
+        add(southToolbar, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel listResultContainerPanel;
+    private javax.swing.JScrollPane listResultPanel;
+    private javax.swing.JPanel rankingChooser;
+    private javax.swing.JToolBar rankingToolbar;
+    private javax.swing.JToolBar southToolbar;
     // End of variables declaration//GEN-END:variables
+
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
      * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
