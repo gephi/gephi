@@ -125,7 +125,6 @@ public class ResultListPanel extends JScrollPane implements LookupListener {
             public void actionPerformed(ActionEvent e) {
                 try {
                     BufferedImage image = UIUtils.createComponentScreenshot(table);
-                    image = null;
                     writeImage(image);
                 } catch (Exception ex) {
                     String msg = NbBundle.getMessage(ResultListPanel.class, "ResultListPanel.tablescreenshot.error", new Object[]{ex.getClass().getSimpleName(), ex.getLocalizedMessage(), ex.getStackTrace()[0].getClassName(), ex.getStackTrace()[0].getLineNumber()});
