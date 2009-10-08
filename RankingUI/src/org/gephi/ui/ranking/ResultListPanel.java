@@ -23,6 +23,7 @@ package org.gephi.ui.ranking;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -68,7 +69,6 @@ public class ResultListPanel extends JScrollPane implements LookupListener {
         RankingResult[] res = r.allInstances().toArray(new RankingResult[0]);
         if (res.length > 0) {
             RankingResult lastResult = res[0];
-            System.out.println(lastResult.getResults().length + " results arrived");
             if (isVisible()) {
                 fetchTable(lastResult);
             }
@@ -95,26 +95,27 @@ public class ResultListPanel extends JScrollPane implements LookupListener {
     }
 
     private void fetchTable(RankingResult result) {
-        Object[] results = result.getResults();
+        List<RankingResult.RankingResultLine> results = new ArrayList<RankingResult.RankingResultLine>();
+        results.addAll(result.getResultLines());
+        Collections.reverse(results);
         boolean nodeRanking = result.getRanking() instanceof NodeRanking;
         List<RankCell> cells = new ArrayList<RankCell>();
         List<String> labels = new ArrayList<String>();
-        for (int i = 0; i < results.length; i++) {
-            Object o = results[i];
-            if (o != null) {
+        for (RankingResult.RankingResultLine line : results) {
+            if (line.getResult() != null) {
                 if (result.getTransformer() instanceof ColorTransformer) {
-                    RankCellColor rankCellColor = new RankCellColor((Color) o, result.getRanks()[i]);
+                    RankCellColor rankCellColor = new RankCellColor((Color) line.getResult(), line.getRank());
                     cells.add(rankCellColor);
                 } else if (result.getTransformer() instanceof SizeTransformer) {
-                    RankCellSize rankCellSize = new RankCellSize((Float) o, result.getRanks()[i]);
+                    RankCellSize rankCellSize = new RankCellSize((Float) line.getResult(), line.getRank());
                     cells.add(rankCellSize);
                 } else {
                 }
                 if (nodeRanking) {
-                    Node n = (Node) result.getTargets()[i];
+                    Node n = (Node) line.getTarget();
                     labels.add(n.getNodeData().getLabel());
                 } else {
-                    Edge e = (Edge) result.getTargets()[i];
+                    Edge e = (Edge) line.getTarget();
                     labels.add(e.getEdgeData().getLabel());
                 }
             }

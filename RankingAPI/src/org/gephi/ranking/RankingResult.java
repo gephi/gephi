@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking;
 
+import java.util.List;
+
 /**
  *
  * @author Mathieu Bastian
@@ -30,9 +32,14 @@ public interface RankingResult {
 
     public Ranking getRanking();
 
-    public Object[] getTargets();
+    public List<RankingResultLine> getResultLines();
 
-    public Object[] getResults();
+    public static interface RankingResultLine {
 
-    public Object[] getRanks();
+        public Object getTarget();
+
+        public Object getResult();
+
+        public Object getRank();
+    }
 }

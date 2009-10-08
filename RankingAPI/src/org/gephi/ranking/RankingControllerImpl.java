@@ -20,6 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -46,45 +50,27 @@ public class RankingControllerImpl implements RankingController {
         RankingResultImpl rankingResult = new RankingResultImpl();
         rankingResult.transformer = transformer;
         rankingResult.ranking = ranking;
-        Object[] results;
-        Object[] ranks;
-        int i=0;
 
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getVisibleDirectedGraph();
         if (ranking instanceof NodeRanking) {
-            Node[] nodes = graph.getNodes().toArray();
-            results = new Object[nodes.length];
-            ranks = new Object[nodes.length];
-            rankingResult.targets = nodes;
-            for (Node node : nodes) {
-                Object value = ranking.getValue(node);
-                ranks[i] = value;
-                if (value != null && transformer.isInBounds(value)) {
-                    results[i] = transformer.transform(node, value);
-                } else {
-                    results[i] = null;
+            for (Node node : graph.getNodes().toArray()) {
+                Object rank = ranking.getValue(node);
+                Object result = null;
+                if (rank != null && transformer.isInBounds(rank)) {
+                    result = transformer.transform(node, rank);
                 }
-                i++;
+                rankingResult.addResult(node, rank, result);
             }
         } else {
-            Edge[] edges = graph.getEdges().toArray();
-            results = new Object[edges.length];
-            ranks = new Object[edges.length];
-            rankingResult.targets = edges;
-            for (Edge edge : edges) {
-                Object value = ranking.getValue(edge);
-                ranks[i] = value;
-                if (value != null && transformer.isInBounds(value)) {
-                    results[i] = transformer.transform(edge, value);
-                } else {
-                    results[i] = null;
+            for (Edge edge : graph.getEdges().toArray()) {
+                Object rank = ranking.getValue(edge);
+                Object result = null;
+                if (rank != null && transformer.isInBounds(rank)) {
+                    result = transformer.transform(edge, rank);
                 }
-                i++;
+                rankingResult.addResult(edge, rank, result);
             }
         }
-
-        rankingResult.results = results;
-        rankingResult.ranks = ranks;
         rankingEventBus.publishResults(rankingResult);
     }
 
@@ -222,29 +208,59 @@ public class RankingControllerImpl implements RankingController {
     private static class RankingResultImpl implements RankingResult {
 
         private Transformer transformer;
-        private Object[] targets;
-        private Object[] results;
-        private Object[] ranks;
         private Ranking ranking;
+        private List<RankingResultLine> lines = new ArrayList<RankingResultLine>();
 
         public Transformer getTransformer() {
             return transformer;
-        }
-
-        public Object[] getTargets() {
-            return targets;
-        }
-
-        public Object[] getResults() {
-            return results;
         }
 
         public Ranking getRanking() {
             return ranking;
         }
 
-        public Object[] getRanks() {
-            return ranks;
+        public void addResult(Object target, Object rank, Object result) {
+            if (target == null || rank == null || result == null) {
+                return;
+            }
+            lines.add(new RankingResultLineImpl(target, rank, result));
+        }
+
+        public List<RankingResultLine> getResultLines() {
+            Collections.sort(lines, new Comparator() {
+
+                public int compare(Object o1, Object o2) {
+                    RankingResultLineImpl r1 = (RankingResultLineImpl) o1;
+                    RankingResultLineImpl r2 = (RankingResultLineImpl) o2;
+                    return ((Comparable) r1.rank).compareTo(r2.rank);
+                }
+            });
+            return lines;
+        }
+
+        private static class RankingResultLineImpl implements RankingResultLine {
+
+            private Object target;
+            private Object rank;
+            private Object result;
+
+            public RankingResultLineImpl(Object target, Object rank, Object result) {
+                this.target = target;
+                this.rank = rank;
+                this.result = result;
+            }
+
+            public Object getTarget() {
+                return target;
+            }
+
+            public Object getResult() {
+                return result;
+            }
+
+            public Object getRank() {
+                return rank;
+            }
         }
     }
 }
