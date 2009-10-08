@@ -485,7 +485,7 @@ public final class UIUtils {
         }
     }
 
-    private static BufferedImage createComponentScreenshot(final Component component) {
+    public static BufferedImage createComponentScreenshot(final Component component) {
         final BufferedImage[] result = new BufferedImage[1];
 
         final Runnable screenshotPerformer = new Runnable() {

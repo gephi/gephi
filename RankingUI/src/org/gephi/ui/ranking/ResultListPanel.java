@@ -22,10 +22,22 @@ package org.gephi.ui.ranking;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -39,11 +51,15 @@ import org.gephi.ranking.NodeRanking;
 import org.gephi.ranking.RankingController;
 import org.gephi.ranking.RankingResult;
 import org.gephi.ranking.SizeTransformer;
+import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.ui.utils.UIUtils;
 import org.jdesktop.swingx.JXTable;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
+import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
+import org.openide.windows.WindowManager;
 
 /**
  *
@@ -51,8 +67,14 @@ import org.openide.util.LookupListener;
  */
 public class ResultListPanel extends JScrollPane implements LookupListener {
 
+    //Const
+    private final String LAST_PATH = "ResultListPanel_TableScreenshot_Last_Path";
+    private final String LAST_PATH_DEFAULT = "ResultListPanel_TableScreenshot_Last_Path_Default";
+
+    //Variable
     private Lookup.Result<RankingResult> result;
     private JXTable table;
+    private JPopupMenu popupMenu;
 
     public ResultListPanel() {
         //Lookup listener
@@ -62,6 +84,7 @@ public class ResultListPanel extends JScrollPane implements LookupListener {
         result.addLookupListener(this);
 
         initTable();
+        initTablePopup();
     }
 
     public void resultChanged(LookupEvent ev) {
@@ -92,6 +115,78 @@ public class ResultListPanel extends JScrollPane implements LookupListener {
         table.getTableHeader().setReorderingAllowed(false);
         table.getTableHeader().setResizingAllowed(true);
         setViewportView(table);
+    }
+
+    private void initTablePopup() {
+        popupMenu = new JPopupMenu();
+        JMenuItem screenshotItem = new JMenuItem(NbBundle.getMessage(ResultListPanel.class, "ResultListPanel.action.tablescreenshot"));
+        screenshotItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    BufferedImage image = UIUtils.createComponentScreenshot(table);
+                    image = null;
+                    writeImage(image);
+                } catch (Exception ex) {
+                    String msg = NbBundle.getMessage(ResultListPanel.class, "ResultListPanel.tablescreenshot.error", new Object[]{ex.getClass().getSimpleName(), ex.getLocalizedMessage(), ex.getStackTrace()[0].getClassName(), ex.getStackTrace()[0].getLineNumber()});
+                    JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(ResultListPanel.class, "ResultListPanel.tablescreenshot.error.title"), JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            }
+        });
+        popupMenu.add(screenshotItem);
+
+        table.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                showPopup(e);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                showPopup(e);
+            }
+
+            private void showPopup(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
+    }
+
+    private void writeImage(BufferedImage image) throws Exception {
+        //Get last directory
+        String lastPathDefault = NbPreferences.forModule(ResultListPanel.class).get(LAST_PATH_DEFAULT, null);
+        String lastPath = NbPreferences.forModule(ResultListPanel.class).get(LAST_PATH, lastPathDefault);
+        final JFileChooser chooser = new JFileChooser(lastPath);
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.setDialogTitle(NbBundle.getMessage(ResultListPanel.class, "ResultListPanel.tablescreenshot.filechooser.title"));
+        DialogFileFilter dialogFileFilter = new DialogFileFilter(NbBundle.getMessage(ResultListPanel.class, "ResultListPanel.tablescreenshot.filechooser.pngDescription"));
+        dialogFileFilter.addExtension("png");
+        chooser.addChoosableFileFilter(dialogFileFilter);
+        File selectedFile = new File(chooser.getCurrentDirectory(), "rank_table.png");
+        chooser.setSelectedFile(selectedFile);
+        int returnFile = chooser.showSaveDialog(null);
+        if (returnFile != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        selectedFile = chooser.getSelectedFile();
+
+        if (!selectedFile.getPath().endsWith(".png")) {
+            selectedFile = new File(selectedFile.getPath() + ".png");
+        }
+
+        //Save last path
+        String defaultDirectory = selectedFile.getParentFile().getAbsolutePath();
+        NbPreferences.forModule(ResultListPanel.class).put(LAST_PATH, defaultDirectory);
+
+
+        String format = "png";
+        if (!ImageIO.write(image, format, selectedFile)) {
+            throw new IOException("Unsupported file format");
+        }
     }
 
     private void fetchTable(RankingResult result) {

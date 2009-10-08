@@ -62,7 +62,7 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
 
         RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
         rankingModel = rankingController.getRankingModel();
-        
+
         initEvents();
         initComponents();
         initSouth();
