@@ -38,6 +38,7 @@ import org.gephi.ranking.NodeRanking;
 import org.gephi.ranking.RankingController;
 import org.gephi.ranking.RankingResult;
 import org.gephi.ranking.SizeTransformer;
+import org.gephi.ui.utils.UIUtils;
 import org.jdesktop.swingx.JXTable;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
@@ -202,6 +203,7 @@ public class ResultListPanel extends JScrollPane implements LookupListener {
 
         public void render(JLabel label) {
             label.setBackground(color);
+            label.setForeground(UIUtils.getForegroundColorForBackground(color));
             label.setText(rank.toString());
         }
     }

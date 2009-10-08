@@ -66,6 +66,10 @@ public final class UIUtils {
                 (int) (c.getBlue() * ALTERNATE_ROW_DARKER_FACTOR));
     }
 
+    public static Color getForegroundColorForBackground(Color background) {
+        return (background.getRed() < 100 || background.getGreen() < 100 || background.getRed() < 100) ? Color.white : Color.black;
+    }
+
     public static Color getDarkerLine(Color c, float alternateRowDarkerFactor) {
         return getSafeColor((int) (c.getRed() * alternateRowDarkerFactor), (int) (c.getGreen() * alternateRowDarkerFactor),
                 (int) (c.getBlue() * alternateRowDarkerFactor));

@@ -188,8 +188,6 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 1.0;
         add(rankingToolbar, gridBagConstraints);
-
-        rankingChooser.setPreferredSize(new java.awt.Dimension(100, 110));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;

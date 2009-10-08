@@ -141,6 +141,8 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
         upperBoundLabel = new javax.swing.JLabel();
         lowerBoundLabel = new javax.swing.JLabel();
 
+        setPreferredSize(new java.awt.Dimension(225, 114));
+
         labelColor.setText(org.openide.util.NbBundle.getMessage(ColorTransformerPanel.class, "ColorTransformerPanel.labelColor.text")); // NOI18N
 
         gradientPanel.setOpaque(false);
