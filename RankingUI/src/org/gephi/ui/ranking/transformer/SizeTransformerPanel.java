@@ -78,26 +78,28 @@ public class SizeTransformerPanel extends javax.swing.JPanel {
         Object minVal = sizeTransformer.getMinimumValue();
         Object maxVal = sizeTransformer.getMaximumValue();
         if (minVal instanceof Float) {
-            Float low = slider.getValue() * ((Float) maxVal - (Float) minVal) / SLIDER_MAXIMUM;
-            Float up = slider.getUpperValue() * ((Float) maxVal - (Float) minVal) / SLIDER_MAXIMUM;
+            Float low = slider.getValue() * ((Float) maxVal - (Float) minVal) / SLIDER_MAXIMUM + (Float) minVal;
+            Float up = slider.getUpperValue() * ((Float) maxVal - (Float) minVal) / SLIDER_MAXIMUM + (Float) minVal;
             sizeTransformer.setLowerBound(low);
             sizeTransformer.setUpperBound(up);
         } else if (minVal instanceof Double) {
-            Double low = slider.getValue() * ((Double) maxVal - (Double) minVal) / SLIDER_MAXIMUM;
-            Double up = slider.getUpperValue() * ((Double) maxVal - (Double) minVal) / SLIDER_MAXIMUM;
+            Double low = slider.getValue() * ((Double) maxVal - (Double) minVal) / SLIDER_MAXIMUM + (Double) minVal;
+            Double up = slider.getUpperValue() * ((Double) maxVal - (Double) minVal) / SLIDER_MAXIMUM + (Double) minVal;
             sizeTransformer.setLowerBound(low);
             sizeTransformer.setUpperBound(up);
         } else if (minVal instanceof Integer) {
-            Integer low = slider.getValue() * ((Integer) maxVal - (Integer) minVal) / SLIDER_MAXIMUM;
-            Integer up = slider.getUpperValue() * ((Integer) maxVal - (Integer) minVal) / SLIDER_MAXIMUM;
+            Integer low = slider.getValue() * ((Integer) maxVal - (Integer) minVal) / SLIDER_MAXIMUM + (Integer) minVal;
+            Integer up = slider.getUpperValue() * ((Integer) maxVal - (Integer) minVal) / SLIDER_MAXIMUM + (Integer) minVal;
             sizeTransformer.setLowerBound(low);
             sizeTransformer.setUpperBound(up);
         } else if (minVal instanceof Long) {
-            Integer low = slider.getValue() * ((Integer) maxVal - (Integer) minVal) / SLIDER_MAXIMUM;
-            Integer up = slider.getUpperValue() * ((Integer) maxVal - (Integer) minVal) / SLIDER_MAXIMUM;
+            Long low = slider.getValue() * ((Long) maxVal - (Long) minVal) / SLIDER_MAXIMUM + (Long) minVal;
+            Long up = slider.getUpperValue() * ((Long) maxVal - (Long) minVal) / SLIDER_MAXIMUM + (Long) minVal;
             sizeTransformer.setLowerBound(low);
             sizeTransformer.setUpperBound(up);
         }
+        lowerBoundLabel.setText(sizeTransformer.getLowerBound().toString());
+        upperBoundLabel.setText(sizeTransformer.getUpperBound().toString());
     }
 
     private void refreshRangeValues() {
@@ -117,6 +119,8 @@ public class SizeTransformerPanel extends javax.swing.JPanel {
             slider.setValue((int) (((Long) sizeTransformer.getLowerBound()) * SLIDER_MAXIMUM / ((Long) maxVal - (Long) minVal)));
             slider.setUpperValue((int) (((Long) sizeTransformer.getUpperBound()) * SLIDER_MAXIMUM / ((Long) maxVal - (Long) minVal)));
         }
+        lowerBoundLabel.setText(sizeTransformer.getLowerBound().toString());
+        upperBoundLabel.setText(sizeTransformer.getUpperBound().toString());
     }
 
     /** This method is called from within the constructor to
@@ -134,6 +138,8 @@ public class SizeTransformerPanel extends javax.swing.JPanel {
         maxSize = new javax.swing.JSpinner();
         labelRange = new javax.swing.JLabel();
         rangeSlider = new JRangeSlider();
+        upperBoundLabel = new javax.swing.JLabel();
+        lowerBoundLabel = new javax.swing.JLabel();
 
         labelMinSize.setText(org.openide.util.NbBundle.getMessage(SizeTransformerPanel.class, "SizeTransformerPanel.labelMinSize.text")); // NOI18N
 
@@ -147,26 +153,39 @@ public class SizeTransformerPanel extends javax.swing.JPanel {
 
         rangeSlider.setOpaque(false);
 
+        upperBoundLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        upperBoundLabel.setForeground(new java.awt.Color(102, 102, 102));
+        upperBoundLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        upperBoundLabel.setText(org.openide.util.NbBundle.getMessage(SizeTransformerPanel.class, "SizeTransformerPanel.upperBoundLabel.text")); // NOI18N
+
+        lowerBoundLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        lowerBoundLabel.setForeground(new java.awt.Color(102, 102, 102));
+        lowerBoundLabel.setText(org.openide.util.NbBundle.getMessage(SizeTransformerPanel.class, "SizeTransformerPanel.lowerBoundLabel.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelMinSize)
-                        .addGap(8, 8, 8)
-                        .addComponent(minSize, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(labelMaxSize)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(maxSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelRange)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(rangeSlider, 0, 0, Short.MAX_VALUE)))
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(labelMinSize)
+                            .addGap(8, 8, 8)
+                            .addComponent(minSize, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(labelMaxSize)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(maxSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(labelRange)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(rangeSlider, 0, 0, Short.MAX_VALUE)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(lowerBoundLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(upperBoundLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -181,15 +200,21 @@ public class SizeTransformerPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(labelRange, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(rangeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(25, 25, 25))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lowerBoundLabel)
+                    .addComponent(upperBoundLabel))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel labelMaxSize;
     private javax.swing.JLabel labelMinSize;
     private javax.swing.JLabel labelRange;
+    private javax.swing.JLabel lowerBoundLabel;
     private javax.swing.JSpinner maxSize;
     private javax.swing.JSpinner minSize;
     private javax.swing.JSlider rangeSlider;
+    private javax.swing.JLabel upperBoundLabel;
     // End of variables declaration//GEN-END:variables
 }
