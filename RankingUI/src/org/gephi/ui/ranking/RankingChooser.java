@@ -37,7 +37,10 @@ import org.gephi.ranking.RankingController;
 import org.gephi.ranking.RankingModel;
 import org.gephi.ranking.RankingUIModel;
 import org.gephi.ranking.Transformer;
+import org.gephi.ui.components.SplineEditor.SplineEditor;
+import org.jdesktop.animation.timing.interpolation.Interpolator;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -51,6 +54,10 @@ public class RankingChooser extends javax.swing.JPanel {
     private JPanel centerPanel;
     private Ranking selectedRanking;
     private TransformerUI[] transformerUIs;
+
+    //Spline
+    private SplineEditor splineEditor;
+    private Interpolator interpolator;
 
     public RankingChooser(RankingUIModel modelUI, RankingModel rankingModel) {
         this.modelUI = modelUI;
@@ -110,6 +117,17 @@ public class RankingChooser extends javax.swing.JPanel {
                 }
             }
         });
+
+        splineButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (splineEditor == null) {
+                    splineEditor = new SplineEditor(NbBundle.getMessage(RankingChooser.class, "RankingChooser.splineEditor.title"));
+                }
+                splineEditor.setVisible(true);
+                interpolator = splineEditor.getCurrentInterpolator();
+            }
+        });
     }
 
     private synchronized void refreshModel() {
@@ -138,6 +156,7 @@ public class RankingChooser extends javax.swing.JPanel {
             remove(centerPanel);
         }
         applyButton.setVisible(false);
+        splineButton.setVisible(false);
 
         if (selectedRanking != null) {
             Transformer transformer = getSelectedTransformer();
@@ -156,6 +175,7 @@ public class RankingChooser extends javax.swing.JPanel {
             centerPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5), BorderFactory.createEtchedBorder()));
             add(centerPanel, BorderLayout.CENTER);
             applyButton.setVisible(true);
+            splineButton.setVisible(true);
         }
 
         revalidate();
@@ -267,6 +287,7 @@ public class RankingChooser extends javax.swing.JPanel {
     public void setEnabled(boolean enabled) {
         applyButton.setEnabled(enabled);
         rankingComboBox.setEnabled(enabled);
+        splineButton.setEnabled(enabled);
     }
 
     /** This method is called from within the constructor to
@@ -283,6 +304,7 @@ public class RankingChooser extends javax.swing.JPanel {
         rankingComboBox = new javax.swing.JComboBox();
         controlPanel = new javax.swing.JPanel();
         applyButton = new javax.swing.JButton();
+        splineButton = new org.jdesktop.swingx.JXHyperlink();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -306,12 +328,21 @@ public class RankingChooser extends javax.swing.JPanel {
         applyButton.setMargin(new java.awt.Insets(0, 4, 0, 4));
         applyButton.setPreferredSize(new java.awt.Dimension(65, 22));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 5);
         controlPanel.add(applyButton, gridBagConstraints);
+
+        splineButton.setClickedColor(new java.awt.Color(0, 51, 255));
+        splineButton.setText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.splineButton.text")); // NOI18N
+        splineButton.setToolTipText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.splineButton.toolTipText")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
+        controlPanel.add(splineButton, gridBagConstraints);
 
         add(controlPanel, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
@@ -320,5 +351,6 @@ public class RankingChooser extends javax.swing.JPanel {
     private javax.swing.JPanel chooserPanel;
     private javax.swing.JPanel controlPanel;
     private javax.swing.JComboBox rankingComboBox;
+    private org.jdesktop.swingx.JXHyperlink splineButton;
     // End of variables declaration//GEN-END:variables
 }
