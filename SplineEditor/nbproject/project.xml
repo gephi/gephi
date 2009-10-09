@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>org.gephi.ui.components.SplineEditor</code-name-base>
+            <suite-component/>
+            <module-dependencies>
+                <dependency>
+                    <code-name-base>org.jdesktop.swingx</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.util</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>7.18.1.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.windows</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>6.24.1</specification-version>
+                    </run-dependency>
+                </dependency>
+            </module-dependencies>
+            <public-packages>
+                <package>org.gephi.ui.components.SplineEditor</package>
+                <package>org.gephi.ui.components.SplineEditor.equation</package>
+                <package>org.jdesktop.animation.timing</package>
+                <package>org.jdesktop.animation.timing.interpolation</package>
+                <package>org.jdesktop.animation.timing.triggers</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/TimingFramework-1.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/TimingFramework-1.0.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>
