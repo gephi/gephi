@@ -30,7 +30,7 @@ import org.gephi.ui.utils.UIUtils;
 
 /**
  *
- * @author Mathieu
+ * @author Mathieu Bastian
  */
 public class Toolbar extends JToolBar {
 

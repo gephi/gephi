@@ -22,6 +22,7 @@ package org.gephi.desktop.tools;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -75,6 +76,7 @@ public class PropertiesBar extends JPanel {
         fullScreenButton.setToolTipText(NbBundle.getMessage(PropertiesBar.class, "PropertiesBar.fullScreenButton.tooltip"));
         fullScreenButton.setBorderPainted(false);
         fullScreenButton.setContentAreaFilled(false);
+        fullScreenButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         fullScreenButton.setBorder(BorderFactory.createEmptyBorder());
         fullScreenButton.setPreferredSize(new Dimension(27, 28));
         fullScreenButton.addActionListener(new ActionListener() {
