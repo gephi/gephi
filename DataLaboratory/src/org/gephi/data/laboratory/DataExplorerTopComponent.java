@@ -12,14 +12,13 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
-import javax.swing.SwingUtilities;
-import javax.swing.tree.TreeModel;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
-import org.netbeans.swing.outline.DefaultOutlineModel;
-import org.netbeans.swing.outline.OutlineModel;
+import org.gephi.ui.utils.BusyUtils;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -45,6 +44,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
     //Lookup
     final Lookup.Result<AttributeColumn> nodeColumnsResult;
     final Lookup.Result<AttributeColumn> edgeColumnsResult;
+    private NodeDataTable nodeTable;
 
     //States
     ClassDisplayed classDisplayed = ClassDisplayed.NONE;
@@ -54,7 +54,6 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
     private DataExplorerTopComponent() {
 
         taskExecutor = new ThreadPoolExecutor(0, 1, 10L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(20));
-
 
         initComponents();
         setName(NbBundle.getMessage(DataExplorerTopComponent.class, "CTL_DataExplorerTopComponent"));
@@ -67,6 +66,10 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         edgeColumnsResult = attributeController.getEdgeColumnsLookup().lookupResult(AttributeColumn.class);
         nodeColumnsResult.addLookupListener(this);
         edgeColumnsResult.addLookupListener(this);
+
+        //Init table
+        nodeTable = new NodeDataTable();
+
         initNodesView();
     }
 
@@ -75,35 +78,26 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
             public void run() {
                 try {
+                    String busyMsg = NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.tableScrollPane.busyMessage");
+                    BusyUtils.BusyLabel busylabel = BusyUtils.createCenteredBusyLabel(tableScrollPane, busyMsg, nodeTable.getTreeTable());
+                    busylabel.setBusy(true);
+
                     //Attributes columns
                     Collection<? extends AttributeColumn> attributeColumns = nodeColumnsResult.allInstances();
                     final AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
 
                     //Nodes from DHNS
-
                     HierarchicalDirectedGraph graph = Lookup.getDefault().lookup(GraphController.class).getHierarchicalDirectedGraph();
                     if (graph == null) {
+                        tableScrollPane.setViewportView(null);
                         return;
                     }
-                    graph.readLock();
-                    org.gephi.graph.api.Node[] nodes = graph.getTopNodes().toArray();
-
-                    //TreeModel
-                    final TreeModel treeMdl = new NodeTreeModel(nodes, graph);
-                    graph.readUnlock();
-
-                    //Outline
-                    SwingUtilities.invokeLater(new Runnable() {
-
-                        public void run() {
-                            OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new NodeRowModel(cols), true);
-                            outline1.setRootVisible(false);
-                            outline1.setRenderDataProvider(new NodeRenderer());
-                            outline1.setModel(mdl);
-                        }
-                    });
+                    nodeTable.refreshModel(graph, cols);
+                    busylabel.setBusy(false);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    JLabel errorLabel = new JLabel(NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.tableScrollPane.error"), SwingConstants.CENTER);
+                    tableScrollPane.setViewportView(errorLabel);
                 }
             }
         };
@@ -115,32 +109,6 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
             public void run() {
                 try {
-                    //Attributes columns
-                    Collection<? extends AttributeColumn> attributeColumns = edgeColumnsResult.allInstances();
-                    final AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
-
-                    //Edges from DHNS
-                    HierarchicalDirectedGraph graph = Lookup.getDefault().lookup(GraphController.class).getHierarchicalDirectedGraph();
-                    if (graph == null) {
-                        return;
-                    }
-                    graph.readLock();
-                    org.gephi.graph.api.Edge[] edges = graph.getEdges().toArray();
-
-                    //TreeModel
-                    final TreeModel treeMdl = new EdgeTreeModel(edges);
-                    graph.readUnlock();
-
-                    //Outline
-                    SwingUtilities.invokeLater(new Runnable() {
-
-                        public void run() {
-                            OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new EdgeRowModel(cols), true);
-                            outline1.setRootVisible(false);
-                            outline1.setRenderDataProvider(new EdgeRenderer());
-                            outline1.setModel(mdl);
-                        }
-                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -168,8 +136,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         controlPanel = new javax.swing.JPanel();
         nodesButton = new javax.swing.JButton();
         edgesButton = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        outline1 = new org.netbeans.swing.outline.Outline();
+        tableScrollPane = new javax.swing.JScrollPane();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -208,10 +175,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         );
 
         add(controlPanel, java.awt.BorderLayout.PAGE_START);
-
-        jScrollPane1.setViewportView(outline1);
-
-        add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        add(tableScrollPane, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     private void nodesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nodesButtonActionPerformed
@@ -226,9 +190,8 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel controlPanel;
     private javax.swing.JButton edgesButton;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton nodesButton;
-    private org.netbeans.swing.outline.Outline outline1;
+    private javax.swing.JScrollPane tableScrollPane;
     // End of variables declaration//GEN-END:variables
 
     /**
