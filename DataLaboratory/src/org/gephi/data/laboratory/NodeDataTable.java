@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.laboratory;
 
 import java.util.ArrayList;
-import javax.swing.JScrollPane;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -30,6 +29,7 @@ import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
 import org.gephi.graph.api.Node;
 import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
 /**
@@ -44,6 +44,7 @@ public class NodeDataTable {
     public NodeDataTable() {
         treeTable = new JXTreeTable();
         treeTable.setRootVisible(false);
+        treeTable.setHighlighters(HighlighterFactory.createAlternateStriping());
 
         propertiesColumns = new PropertyNodeDataColumn[2];
 

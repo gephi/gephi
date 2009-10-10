@@ -26,10 +26,8 @@ import javax.swing.table.TableModel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.HierarchicalGraph;
-import org.gephi.graph.api.ImmutableTreeNode;
-import org.gephi.graph.api.Node;
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
 
 /**
  *
@@ -42,7 +40,8 @@ public class EdgeDataTable {
 
     public EdgeDataTable() {
         table = new JXTable();
-
+        table.setHighlighters(HighlighterFactory.createAlternateStriping());
+        
         propertiesColumns = new PropertyEdgeDataColumn[3];
 
         propertiesColumns[0] = new PropertyEdgeDataColumn("Label") {
