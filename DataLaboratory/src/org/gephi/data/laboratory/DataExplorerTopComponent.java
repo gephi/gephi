@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.laboratory;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
@@ -31,9 +33,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.table.TableColumn;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.graph.api.GraphController;
@@ -45,6 +49,7 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.ui.utils.BusyUtils;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
+import org.jdesktop.swingx.treetable.TreeTableModel;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -158,6 +163,18 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         edgeColumnsResult = attributeController.getEdgeColumnsLookup().lookupResult(AttributeColumn.class);
         nodeColumnsResult.addLookupListener(this);
         edgeColumnsResult.addLookupListener(this);
+
+        //Filter
+        filterTextField.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (classDisplayed.equals(ClassDisplayed.NODE)) {
+                    
+                } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
+                    edgeTable.setPattern(filterTextField.getText(), columnComboBox.getSelectedIndex());
+                }
+            }
+        });
     }
 
     private void initNodesView() {
@@ -183,7 +200,10 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                     //Listener
                     graph.addGraphListener(DataExplorerTopComponent.this);
 
+                    //Model
                     nodeTable.refreshModel(graph, cols);
+                    refreshFilterColumns();
+
                     busylabel.setBusy(false);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -201,7 +221,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
             public void run() {
                 try {
                     String busyMsg = NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.tableScrollPane.busyMessage");
-                    BusyUtils.BusyLabel busylabel = BusyUtils.createCenteredBusyLabel(tableScrollPane, busyMsg, edgeTable.getTreeTable());
+                    BusyUtils.BusyLabel busylabel = BusyUtils.createCenteredBusyLabel(tableScrollPane, busyMsg, edgeTable.getTable());
                     busylabel.setBusy(true);
 
                     //Attributes columns
@@ -217,7 +237,10 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                     //Listener
                     graph.addGraphListener(DataExplorerTopComponent.this);
 
+                    //Model
                     edgeTable.refreshModel(graph, cols);
+                    refreshFilterColumns();
+
                     busylabel.setBusy(false);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -251,6 +274,27 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         }
     }
 
+    private void refreshFilterColumns() {
+        if (classDisplayed.equals(ClassDisplayed.NODE)) {
+            DefaultComboBoxModel model = new DefaultComboBoxModel();
+            for (int i = 0; i < nodeTable.getTreeTable().getColumnCount(); i++) {
+                if (nodeTable.getTreeTable().getColumnExt(i).isVisible()) {
+                    model.addElement(nodeTable.getTreeTable().getColumnExt(i).getTitle());
+                }
+            }
+
+            columnComboBox.setModel(model);
+        } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
+            DefaultComboBoxModel model = new DefaultComboBoxModel();
+            for (int i = 0; i < edgeTable.getTable().getColumnCount(); i++) {
+                if (edgeTable.getTable().getColumnExt(i).isVisible()) {
+                    model.addElement(edgeTable.getTable().getColumnExt(i).getTitle());
+                }
+            }
+            columnComboBox.setModel(model);
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -264,9 +308,12 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         controlToolbar = new javax.swing.JToolBar();
         nodesButton = new javax.swing.JToggleButton();
         edgesButton = new javax.swing.JToggleButton();
+        separator = new javax.swing.JToolBar.Separator();
         boxGlue = new javax.swing.JLabel();
         labelFilter = new org.jdesktop.swingx.JXLabel();
         filterTextField = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        columnComboBox = new javax.swing.JComboBox();
         tableScrollPane = new javax.swing.JScrollPane();
         bannerPanel = new javax.swing.JPanel();
         labelBanner = new javax.swing.JLabel();
@@ -300,6 +347,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
             }
         });
         controlToolbar.add(edgesButton);
+        controlToolbar.add(separator);
 
         org.openide.awt.Mnemonics.setLocalizedText(boxGlue, org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.boxGlue.text")); // NOI18N
         boxGlue.setMaximumSize(new java.awt.Dimension(32767, 32767));
@@ -312,6 +360,13 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         filterTextField.setMaximumSize(new java.awt.Dimension(1000, 30));
         filterTextField.setPreferredSize(new java.awt.Dimension(150, 20));
         controlToolbar.add(filterTextField);
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.jLabel1.text")); // NOI18N
+        controlToolbar.add(jLabel1);
+
+        columnComboBox.setMaximumSize(new java.awt.Dimension(2000, 20));
+        columnComboBox.setPreferredSize(new java.awt.Dimension(120, 20));
+        controlToolbar.add(columnComboBox);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -387,14 +442,17 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bannerPanel;
     private javax.swing.JLabel boxGlue;
+    private javax.swing.JComboBox columnComboBox;
     private javax.swing.JToolBar controlToolbar;
     private javax.swing.JToggleButton edgesButton;
     private javax.swing.ButtonGroup elementGroup;
     private javax.swing.JTextField filterTextField;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel labelBanner;
     private org.jdesktop.swingx.JXLabel labelFilter;
     private javax.swing.JToggleButton nodesButton;
     private javax.swing.JButton refreshButton;
+    private javax.swing.JToolBar.Separator separator;
     private javax.swing.JScrollPane tableScrollPane;
     // End of variables declaration//GEN-END:variables
 

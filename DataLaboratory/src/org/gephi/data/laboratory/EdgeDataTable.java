@@ -21,13 +21,16 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.laboratory;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.decorator.PatternFilter;
 
 /**
  *
@@ -37,11 +40,18 @@ public class EdgeDataTable {
 
     private JXTable table;
     private PropertyEdgeDataColumn[] propertiesColumns;
+    private PatternFilter patternFilter;
 
     public EdgeDataTable() {
         table = new JXTable();
         table.setHighlighters(HighlighterFactory.createAlternateStriping());
-        
+        table.setColumnControlVisible(true);
+        table.setSortable(true);
+        table.setColumnControlVisible(true);
+        patternFilter = new PatternFilter();
+        table.setFilters(new FilterPipeline(patternFilter));
+
+
         propertiesColumns = new PropertyEdgeDataColumn[3];
 
         propertiesColumns[0] = new PropertyEdgeDataColumn("Label") {
@@ -97,8 +107,15 @@ public class EdgeDataTable {
         };
     }
 
-    public JXTable getTreeTable() {
+    public JXTable getTable() {
         return table;
+    }
+
+    public void setPattern(String regularExpr, int column) {
+        if (patternFilter.getColumnIndex() != column) {
+            patternFilter.setColumnIndex(column);
+        }
+        patternFilter.setPattern(regularExpr, Pattern.CASE_INSENSITIVE);
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols) {
