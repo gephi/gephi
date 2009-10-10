@@ -37,7 +37,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.table.TableColumn;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.graph.api.GraphController;
@@ -49,7 +48,7 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.ui.utils.BusyUtils;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
-import org.jdesktop.swingx.treetable.TreeTableModel;
+import org.netbeans.swing.etable.ETableColumnModel;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -169,7 +168,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
             public void actionPerformed(ActionEvent e) {
                 if (classDisplayed.equals(ClassDisplayed.NODE)) {
-                    
+                    nodeTable.setFilter(filterTextField.getText(), columnComboBox.getSelectedIndex());
                 } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
                     edgeTable.setPattern(filterTextField.getText(), columnComboBox.getSelectedIndex());
                 }
@@ -183,7 +182,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
             public void run() {
                 try {
                     String busyMsg = NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.tableScrollPane.busyMessage");
-                    BusyUtils.BusyLabel busylabel = BusyUtils.createCenteredBusyLabel(tableScrollPane, busyMsg, nodeTable.getTreeTable());
+                    BusyUtils.BusyLabel busylabel = BusyUtils.createCenteredBusyLabel(tableScrollPane, busyMsg, nodeTable.getOutlineTable());
                     busylabel.setBusy(true);
 
                     //Attributes columns
@@ -276,13 +275,13 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
     private void refreshFilterColumns() {
         if (classDisplayed.equals(ClassDisplayed.NODE)) {
+            ETableColumnModel columnModel = (ETableColumnModel) nodeTable.getOutlineTable().getColumnModel();
             DefaultComboBoxModel model = new DefaultComboBoxModel();
-            for (int i = 0; i < nodeTable.getTreeTable().getColumnCount(); i++) {
-                if (nodeTable.getTreeTable().getColumnExt(i).isVisible()) {
-                    model.addElement(nodeTable.getTreeTable().getColumnExt(i).getTitle());
+            for (int i = 0; i < columnModel.getColumnCount(); i++) {
+                if (!columnModel.isColumnHidden(columnModel.getColumn(i))) {
+                    model.addElement(columnModel.getColumn(i).getHeaderValue());
                 }
             }
-
             columnComboBox.setModel(model);
         } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
             DefaultComboBoxModel model = new DefaultComboBoxModel();

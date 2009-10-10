@@ -23,17 +23,19 @@ package org.gephi.data.laboratory;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import javax.swing.event.TreeModelListener;
+import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
 import org.gephi.graph.api.Node;
-import org.jdesktop.swingx.JXTreeTable;
-import org.jdesktop.swingx.decorator.FilterPipeline;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.decorator.PatternFilter;
-import org.jdesktop.swingx.treetable.TreeTableModel;
+import org.netbeans.swing.etable.QuickFilter;
+import org.netbeans.swing.outline.DefaultOutlineModel;
+import org.netbeans.swing.outline.Outline;
+import org.netbeans.swing.outline.OutlineModel;
+import org.netbeans.swing.outline.RenderDataProvider;
+import org.netbeans.swing.outline.RowModel;
 
 /**
  *
@@ -41,115 +43,47 @@ import org.jdesktop.swingx.treetable.TreeTableModel;
  */
 public class NodeDataTable {
 
-    private JXTreeTable treeTable;
-    private PropertyNodeDataColumn[] propertiesColumns;
+    private Outline outlineTable;
+    private QuickFilter quickFilter;
+    private Pattern pattern;
 
     public NodeDataTable() {
-        treeTable = new JXTreeTable();
-        treeTable.setRootVisible(false);
-        treeTable.setHighlighters(HighlighterFactory.createAlternateStriping());
-        treeTable.setColumnControlVisible(true);
-        treeTable.setSortable(true);
+        outlineTable = new Outline();
 
-        propertiesColumns = new PropertyNodeDataColumn[2];
+        quickFilter = new QuickFilter() {
 
-        propertiesColumns[0] = new PropertyNodeDataColumn("Label") {
-
-            @Override
-            public Class getColumnClass() {
-                return String.class;
-            }
-
-            @Override
-            public Object getValueFor(ImmutableTreeNode node) {
-                Node graphNode = node.getNode();
-                return graphNode.getNodeData().getLabel();
-            }
-
-            @Override
-            public void setValueFor(ImmutableTreeNode node, Object value) {
-                Node graphNode = node.getNode();
-                graphNode.getNodeData().setLabel((String) value);
-            }
-
-            @Override
-            public boolean isEditable() {
-                return true;
-            }
-        };
-
-        propertiesColumns[1] = new PropertyNodeDataColumn("ID") {
-
-            @Override
-            public Class getColumnClass() {
-                return Integer.class;
-            }
-
-            @Override
-            public Object getValueFor(ImmutableTreeNode node) {
-                Node graphNode = node.getNode();
-                return graphNode.getId();
+            public boolean accept(Object value) {
+                if (value instanceof ImmutableTreeNode) {
+                    return pattern.matcher(((ImmutableTreeNode) value).getNode().getNodeData().getLabel()).find();
+                }
+                return pattern.matcher(value.toString()).find();
             }
         };
     }
 
-    public JXTreeTable getTreeTable() {
-        return treeTable;
+    public Outline getOutlineTable() {
+        return outlineTable;
+    }
+
+    public void setFilter(String regularExpr, int columnIndex) {
+        pattern = Pattern.compile(regularExpr, Pattern.CASE_INSENSITIVE);
+        outlineTable.setQuickFilter(columnIndex, quickFilter);
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols) {
-        ArrayList<NodeDataColumn> columns = new ArrayList<NodeDataColumn>();
-
-        for (PropertyNodeDataColumn p : propertiesColumns) {
-            columns.add(p);
-        }
-
-        for (AttributeColumn c : cols) {
-            columns.add(new AttributeNodeDataColumn(c));
-        }
-
-        NodeDataTreeTableModel model = new NodeDataTreeTableModel(graph.wrapToTreeNode(), columns.toArray(new NodeDataColumn[0]));
-        treeTable.setTreeTableModel(model);
+        NodeTreeModel nodeTreeModel = new NodeTreeModel(graph.wrapToTreeNode());
+        OutlineModel mdl = DefaultOutlineModel.createOutlineModel(nodeTreeModel, new NodeRowModel(cols), true);
+        outlineTable.setRootVisible(false);
+        outlineTable.setRenderDataProvider(new NodeRenderer());
+        outlineTable.setModel(mdl);
     }
 
-    private class NodeDataTreeTableModel implements TreeTableModel {
+    private static class NodeTreeModel implements TreeModel {
 
         private ImmutableTreeNode root;
-        private NodeDataColumn[] columns;
 
-        public NodeDataTreeTableModel(ImmutableTreeNode root, NodeDataColumn[] columns) {
+        public NodeTreeModel(ImmutableTreeNode root) {
             this.root = root;
-            this.columns = columns;
-        }
-
-        public Class<?> getColumnClass(int arg0) {
-            return columns[arg0].getColumnClass();
-        }
-
-        public int getColumnCount() {
-            return columns.length;
-        }
-
-        public String getColumnName(int arg0) {
-            return columns[arg0].getColumnName();
-        }
-
-        public int getHierarchicalColumn() {
-            return 0;
-        }
-
-        public Object getValueAt(Object arg0, int arg1) {
-            ImmutableTreeNode node = (ImmutableTreeNode) arg0;
-            return columns[arg1].getValueFor(node);
-        }
-
-        public boolean isCellEditable(Object arg0, int arg1) {
-            return columns[arg1].isEditable();
-        }
-
-        public void setValueAt(Object arg0, Object arg1, int arg2) {
-            ImmutableTreeNode node = (ImmutableTreeNode) arg1;
-            columns[arg2].setValueFor(node, arg0);
         }
 
         public Object getRoot() {
@@ -157,29 +91,100 @@ public class NodeDataTable {
         }
 
         public Object getChild(Object parent, int index) {
-            return ((ImmutableTreeNode) parent).getChildAt(index);
+            TreeNode node = (TreeNode) parent;
+            return node.getChildAt(index);
         }
 
         public int getChildCount(Object parent) {
-            return ((ImmutableTreeNode) parent).getChildCount();
+
+            TreeNode node = (TreeNode) parent;
+            return node.getChildCount();
+
         }
 
         public boolean isLeaf(Object node) {
-            return ((ImmutableTreeNode) node).isLeaf();
+
+            TreeNode n = (TreeNode) node;
+            return n.isLeaf();
+
         }
 
         public void valueForPathChanged(TreePath path, Object newValue) {
-            throw new UnsupportedOperationException("Not supported yet.");
         }
 
         public int getIndexOfChild(Object parent, Object child) {
-            return ((ImmutableTreeNode) parent).getIndex(((TreeNode) child));
+            if (parent == null || child == null) {
+                return -1;
+            }
+            TreeNode node = (TreeNode) parent;
+            return node.getIndex((TreeNode) child);
         }
 
         public void addTreeModelListener(TreeModelListener l) {
         }
 
         public void removeTreeModelListener(TreeModelListener l) {
+        }
+    }
+
+    private static class NodeRowModel implements RowModel {
+
+        private NodeDataColumn[] columns;
+        private PropertyNodeDataColumn[] propertiesColumns;
+
+        public NodeRowModel(AttributeColumn[] attributeColumns) {
+
+            //Properties
+            propertiesColumns = new PropertyNodeDataColumn[1];
+
+            propertiesColumns[0] = new PropertyNodeDataColumn("ID") {
+
+                @Override
+                public Class getColumnClass() {
+                    return Integer.class;
+                }
+
+                @Override
+                public Object getValueFor(ImmutableTreeNode node) {
+                    Node graphNode = node.getNode();
+                    return graphNode.getId();
+                }
+            };
+
+            ArrayList<NodeDataColumn> cols = new ArrayList<NodeDataColumn>();
+
+            for (PropertyNodeDataColumn p : propertiesColumns) {
+                cols.add(p);
+            }
+
+            for (AttributeColumn c : attributeColumns) {
+                cols.add(new AttributeNodeDataColumn(c));
+            }
+            columns = cols.toArray(new NodeDataColumn[0]);
+        }
+
+        public int getColumnCount() {
+            return columns.length;
+        }
+
+        public Object getValueFor(Object node, int column) {
+            ImmutableTreeNode treeNode = (ImmutableTreeNode) node;
+            return columns[column].getValueFor(treeNode);
+        }
+
+        public Class getColumnClass(int column) {
+            return columns[column].getColumnClass();
+        }
+
+        public boolean isCellEditable(Object node, int column) {
+            return false;
+        }
+
+        public void setValueFor(Object node, int column, Object value) {
+        }
+
+        public String getColumnName(int column) {
+            return columns[column].getColumnName();
         }
     }
 
@@ -196,7 +201,7 @@ public class NodeDataTable {
         public boolean isEditable();
     }
 
-    private static class AttributeNodeDataColumn implements NodeDataTable.NodeDataColumn {
+    private static class AttributeNodeDataColumn implements NodeDataColumn {
 
         private AttributeColumn column;
 
@@ -230,7 +235,7 @@ public class NodeDataTable {
         }
     }
 
-    private static abstract class PropertyNodeDataColumn implements NodeDataTable.NodeDataColumn {
+    private static abstract class PropertyNodeDataColumn implements NodeDataColumn {
 
         private String name;
 
@@ -250,6 +255,40 @@ public class NodeDataTable {
         }
 
         public boolean isEditable() {
+            return false;
+        }
+    }
+
+    private static class NodeRenderer implements RenderDataProvider {
+
+        @Override
+        public java.awt.Color getBackground(Object o) {
+            return null;
+        }
+
+        @Override
+        public String getDisplayName(Object o) {
+            return ((ImmutableTreeNode) o).getNode().getNodeData().getLabel();
+        }
+
+        @Override
+        public java.awt.Color getForeground(Object o) {
+            return null;
+        }
+
+        @Override
+        public javax.swing.Icon getIcon(Object o) {
+            return null;
+
+        }
+
+        @Override
+        public String getTooltipText(Object o) {
+            return "";
+        }
+
+        @Override
+        public boolean isHtmlDisplayName(Object o) {
             return false;
         }
     }
