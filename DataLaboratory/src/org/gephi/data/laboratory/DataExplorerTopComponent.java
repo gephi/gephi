@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -44,7 +45,10 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
     //Lookup
     final Lookup.Result<AttributeColumn> nodeColumnsResult;
     final Lookup.Result<AttributeColumn> edgeColumnsResult;
+
+    //Table
     private NodeDataTable nodeTable;
+    private EdgeDataTable edgeTable;
 
     //States
     ClassDisplayed classDisplayed = ClassDisplayed.NONE;
@@ -53,7 +57,12 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
     private DataExplorerTopComponent() {
 
-        taskExecutor = new ThreadPoolExecutor(0, 1, 10L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(20));
+        taskExecutor = new ThreadPoolExecutor(0, 1, 10L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(20), new ThreadFactory() {
+
+            public Thread newThread(Runnable r) {
+                return new Thread(r, "Data Laboratory fetching");
+            }
+        });
 
         initComponents();
         setName(NbBundle.getMessage(DataExplorerTopComponent.class, "CTL_DataExplorerTopComponent"));
@@ -69,6 +78,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
         //Init table
         nodeTable = new NodeDataTable();
+        edgeTable = new EdgeDataTable();
 
         initNodesView();
     }
@@ -109,8 +119,26 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
             public void run() {
                 try {
+                    String busyMsg = NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.tableScrollPane.busyMessage");
+                    BusyUtils.BusyLabel busylabel = BusyUtils.createCenteredBusyLabel(tableScrollPane, busyMsg, edgeTable.getTreeTable());
+                    busylabel.setBusy(true);
+
+                    //Attributes columns
+                    Collection<? extends AttributeColumn> attributeColumns = edgeColumnsResult.allInstances();
+                    final AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
+
+                    //Nodes from DHNS
+                    HierarchicalDirectedGraph graph = Lookup.getDefault().lookup(GraphController.class).getHierarchicalDirectedGraph();
+                    if (graph == null) {
+                        tableScrollPane.setViewportView(null);
+                        return;
+                    }
+                    edgeTable.refreshModel(graph, cols);
+                    busylabel.setBusy(false);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    JLabel errorLabel = new JLabel(NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.tableScrollPane.error"), SwingConstants.CENTER);
+                    tableScrollPane.setViewportView(errorLabel);
                 }
             }
         };

@@ -38,7 +38,6 @@ import org.jdesktop.swingx.treetable.TreeTableModel;
  */
 public class NodeDataTable {
 
-    private JScrollPane scrollPane;
     private JXTreeTable treeTable;
     private PropertyNodeDataColumn[] propertiesColumns;
 
@@ -65,6 +64,11 @@ public class NodeDataTable {
             public void setValueFor(ImmutableTreeNode node, Object value) {
                 Node graphNode = node.getNode();
                 graphNode.getNodeData().setLabel((String) value);
+            }
+
+            @Override
+            public boolean isEditable() {
+                return true;
             }
         };
 
