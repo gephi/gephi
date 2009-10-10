@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.tree;
 
+import javax.swing.tree.TreeNode;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.NodeIterable;
@@ -29,6 +30,7 @@ import org.gephi.graph.dhns.edge.iterators.HierarchyEdgeIterator;
 import org.gephi.graph.dhns.graph.AbstractGraphImpl;
 import org.gephi.graph.dhns.node.iterators.PreNodeTreeListIterator;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
+import org.gephi.graph.dhns.utils.TreeNodeWrapper;
 
 /**
  *

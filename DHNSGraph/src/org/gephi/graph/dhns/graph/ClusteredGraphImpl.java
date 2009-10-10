@@ -20,9 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
+import javax.swing.tree.TreeNode;
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.ImmutableTreeNode;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Tree;
@@ -41,6 +43,7 @@ import org.gephi.graph.dhns.node.iterators.LevelIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
 import org.gephi.graph.dhns.proposition.PropositionImpl;
 import org.gephi.graph.dhns.tree.HierarchyTreeImpl;
+import org.gephi.graph.dhns.utils.TreeNodeWrapper;
 
 /**
  * Abstract Clustered graph class. Implements methods for both directed and undirected graphs.
@@ -54,7 +57,7 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         this.view = dhns.getViewManager().getMainView();
         this.nodeProposition = new PropositionImpl<AbstractNode>();
         this.edgeProposition = new PropositionImpl<AbstractEdge>();
-        this.filterControl  = new FilterControl(dhns);
+        this.filterControl = new FilterControl(dhns);
         PropositionManager propositionManager = dhns.getPropositionManager();
 
         if (visible) {
@@ -128,10 +131,10 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         return res;
     }
 
-    public NodeIterable getNodes() {   
+    public NodeIterable getNodes() {
         readLock();
         if (filtered) {
-             FilterResult filterResult = filterControl.getCurrentFilterResult();
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
             return dhns.newNodeIterable(filterResult.nodeIterator());
         }
         return dhns.newNodeIterable(new TreeIterator(dhns.getTreeStructure(), nodeProposition));
@@ -255,6 +258,20 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         dhns.getStructureModifier().clearMetaEdges(view, node);
     }
 
+    public ImmutableTreeNode wrapToTreeNode() {
+        TreeNodeWrapper wrapper = new TreeNodeWrapper(dhns.getTreeStructure());
+        ImmutableTreeNode treeNode;
+        readLock();
+        if (filtered) {
+            FilterResult filterResult = filterControl.getCurrentFilterResult();
+            treeNode = wrapper.wrap(filterResult.nodeIterator());
+        } else {
+            treeNode = wrapper.wrap(new TreeIterator(dhns.getTreeStructure(), nodeProposition));
+        }
+        readUnlock();
+        return treeNode;
+    }
+
     public int getChildrenCount(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
@@ -291,7 +308,7 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     public NodeIterable getChildren(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
-        if(filtered) {
+        if (filtered) {
             FilterResult filterResult = filterControl.getCurrentFilterResult();
             return dhns.newNodeIterable(new ChildrenIterator(dhns.getTreeStructure(), absNode, filterResult.getNodePredicate()));
         }
@@ -301,7 +318,7 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     public NodeIterable getDescendant(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
-        if(filtered) {
+        if (filtered) {
             FilterResult filterResult = filterControl.getCurrentFilterResult();
             return dhns.newNodeIterable(new DescendantIterator(dhns.getTreeStructure(), absNode, filterResult.getNodePredicate()));
         }
@@ -310,7 +327,7 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
 
     public NodeIterable getTopNodes() {
         readLock();
-        if(filtered) {
+        if (filtered) {
             FilterResult filterResult = filterControl.getCurrentFilterResult();
             return dhns.newNodeIterable(new ChildrenIterator(dhns.getTreeStructure(), filterResult.getNodePredicate()));
         }

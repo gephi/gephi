@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.api;
 
+import javax.swing.tree.TreeNode;
+
 /**
  *
  * @author Mathieu Bastian
@@ -231,6 +233,8 @@ public interface HierarchicalGraph extends Graph {
      * @return the tree which represents the clusterd graph hierarchy
      */
     public Tree getHierarchyTree();
+
+    public ImmutableTreeNode wrapToTreeNode();
 
     /**
      * Returns the <b>clustered</b> interface of the current graph. It returns the same graph, but

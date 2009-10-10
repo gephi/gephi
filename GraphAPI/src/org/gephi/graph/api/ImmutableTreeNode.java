@@ -18,23 +18,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 package org.gephi.graph.api;
+
+import javax.swing.tree.TreeNode;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Attributes {
+public interface ImmutableTreeNode extends TreeNode {
 
-    public Object getValue(String column);
-
-    public Object getValue(int index);
-
-    public void setValue(String column, Object value);
-
-    public void setValue(int index, Object value);
-
-    public void reset();
+    public Node getNode();
 }
