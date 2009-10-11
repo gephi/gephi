@@ -306,7 +306,6 @@ public class RankingChooser extends javax.swing.JPanel {
         applyButton = new javax.swing.JButton();
         splineButton = new org.jdesktop.swingx.JXHyperlink();
 
-        setMinimumSize(new java.awt.Dimension(130, 55));
         setLayout(new java.awt.BorderLayout());
 
         chooserPanel.setLayout(new java.awt.GridBagLayout());

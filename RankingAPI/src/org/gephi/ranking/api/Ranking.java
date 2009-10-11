@@ -34,6 +34,8 @@ public interface Ranking<Element, Type> {
 
     public float normalize(Type value);
 
+    public Type unNormalize(float normalizedValue);
+
     public String getName();
 
     @Override

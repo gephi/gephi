@@ -141,7 +141,6 @@ public class RankingFactory {
                 ranking.setMaximumValue(maxValue);
             }
         } else if (ranking instanceof EdgeRanking) {
-
             if (ranking.getType().equals(Double.class)) {
                 Double minValue = Double.POSITIVE_INFINITY;
                 Double maxValue = Double.NEGATIVE_INFINITY;
@@ -247,6 +246,10 @@ public class RankingFactory {
         public float normalize(Float value) {
             return value - minimum / (maximum - minimum);
         }
+
+        public Float unNormalize(float normalizedValue) {
+            return (normalizedValue * (maximum - minimum)) + minimum;
+        }
     }
 
     private static class EdgeAttributeDoubleRanking extends EdgeAttributeRanking<Double> {
@@ -257,6 +260,10 @@ public class RankingFactory {
 
         public float normalize(Double value) {
             return (float) (value - minimum / (maximum - minimum));
+        }
+
+        public Double unNormalize(float normalizedValue) {
+            return (normalizedValue * (maximum - minimum)) + minimum;
         }
     }
 
@@ -269,6 +276,10 @@ public class RankingFactory {
         public float normalize(Integer value) {
             return (float) (value - minimum / (float) (maximum - minimum));
         }
+
+        public Integer unNormalize(float normalizedValue) {
+            return (int) (normalizedValue * (maximum - minimum)) + minimum;
+        }
     }
 
     private static class EdgeAttributeLongRanking extends EdgeAttributeRanking<Long> {
@@ -279,6 +290,10 @@ public class RankingFactory {
 
         public float normalize(Long value) {
             return (float) (value - minimum / (float) (maximum - minimum));
+        }
+
+        public Long unNormalize(float normalizedValue) {
+            return (long) (normalizedValue * (maximum - minimum)) + minimum;
         }
     }
 
@@ -291,6 +306,10 @@ public class RankingFactory {
         public float normalize(Float value) {
             return value - minimum / (maximum - minimum);
         }
+
+        public Float unNormalize(float normalizedValue) {
+            return (normalizedValue * (maximum - minimum)) + minimum;
+        }
     }
 
     private static class NodeAttributeDoubleRanking extends NodeAttributeRanking<Double> {
@@ -301,6 +320,10 @@ public class RankingFactory {
 
         public float normalize(Double value) {
             return (float) (value - minimum / (maximum - minimum));
+        }
+
+        public Double unNormalize(float normalizedValue) {
+            return (normalizedValue * (maximum - minimum)) + minimum;
         }
     }
 
@@ -313,6 +336,10 @@ public class RankingFactory {
         public float normalize(Integer value) {
             return (float) (value - minimum / (float) (maximum - minimum));
         }
+
+        public Integer unNormalize(float normalizedValue) {
+            return (int) (normalizedValue * (maximum - minimum)) + minimum;
+        }
     }
 
     private static class NodeAttributeLongRanking extends NodeAttributeRanking<Long> {
@@ -323,6 +350,10 @@ public class RankingFactory {
 
         public float normalize(Long value) {
             return (float) (value - minimum / (float) (maximum - minimum));
+        }
+
+        public Long unNormalize(float normalizedValue) {
+            return (long) (normalizedValue * (maximum - minimum)) + minimum;
         }
     }
 }

@@ -85,8 +85,8 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
         colorTransformer.setLowerBound(low);
         colorTransformer.setUpperBound(high);
 
-    //lowerBoundLabel.setText(sizeTransformer.getLowerBound().toString());
-    //upperBoundLabel.setText(sizeTransformer.getUpperBound().toString());
+        lowerBoundLabel.setText(ranking.unNormalize(colorTransformer.getLowerBound()).toString());
+        upperBoundLabel.setText(ranking.unNormalize(colorTransformer.getUpperBound()).toString());
     }
 
     private void refreshRangeValues() {
@@ -94,8 +94,8 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
         slider.setValue((int) (colorTransformer.getLowerBound() * 100f));
         slider.setUpperValue((int) (colorTransformer.getUpperBound() * 100f));
 
-    //lowerBoundLabel.setText(sizeTransformer.getLowerBound().toString());
-    //upperBoundLabel.setText(sizeTransformer.getUpperBound().toString());
+        lowerBoundLabel.setText(ranking.unNormalize(colorTransformer.getLowerBound()).toString());
+        upperBoundLabel.setText(ranking.unNormalize(colorTransformer.getUpperBound()).toString());
     }
 
     /** This method is called from within the constructor to

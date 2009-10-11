@@ -83,8 +83,8 @@ public class SizeTransformerPanel extends javax.swing.JPanel {
         sizeTransformer.setLowerBound(low);
         sizeTransformer.setUpperBound(high);
 
-        //lowerBoundLabel.setText(sizeTransformer.getLowerBound().toString());
-        //upperBoundLabel.setText(sizeTransformer.getUpperBound().toString());
+        lowerBoundLabel.setText(ranking.unNormalize(sizeTransformer.getLowerBound()).toString());
+        upperBoundLabel.setText(ranking.unNormalize(sizeTransformer.getUpperBound()).toString());
     }
 
     private void refreshRangeValues() {
@@ -92,8 +92,8 @@ public class SizeTransformerPanel extends javax.swing.JPanel {
         slider.setValue((int)(sizeTransformer.getLowerBound()*100f));
         slider.setUpperValue((int)(sizeTransformer.getUpperBound()*100f));
 
-        //lowerBoundLabel.setText(sizeTransformer.getLowerBound().toString());
-        //upperBoundLabel.setText(sizeTransformer.getUpperBound().toString());
+        lowerBoundLabel.setText(ranking.unNormalize(sizeTransformer.getLowerBound()).toString());
+        upperBoundLabel.setText(ranking.unNormalize(sizeTransformer.getUpperBound()).toString());
     }
 
     /** This method is called from within the constructor to
