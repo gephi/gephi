@@ -244,7 +244,7 @@ public class RankingFactory {
         }
 
         public float normalize(Float value) {
-            return value - minimum / (maximum - minimum);
+            return (value - minimum) / (maximum - minimum);
         }
 
         public Float unNormalize(float normalizedValue) {
@@ -259,7 +259,7 @@ public class RankingFactory {
         }
 
         public float normalize(Double value) {
-            return (float) (value - minimum / (maximum - minimum));
+            return (float) ((value - minimum) / (maximum - minimum));
         }
 
         public Double unNormalize(float normalizedValue) {
@@ -274,7 +274,7 @@ public class RankingFactory {
         }
 
         public float normalize(Integer value) {
-            return (float) (value - minimum / (float) (maximum - minimum));
+            return (float) ((value - minimum) / (float) (maximum - minimum));
         }
 
         public Integer unNormalize(float normalizedValue) {
@@ -289,7 +289,7 @@ public class RankingFactory {
         }
 
         public float normalize(Long value) {
-            return (float) (value - minimum / (float) (maximum - minimum));
+            return (float) ((value - minimum) / (float) (maximum - minimum));
         }
 
         public Long unNormalize(float normalizedValue) {
@@ -304,7 +304,7 @@ public class RankingFactory {
         }
 
         public float normalize(Float value) {
-            return value - minimum / (maximum - minimum);
+            return (value - minimum) / (maximum - minimum);
         }
 
         public Float unNormalize(float normalizedValue) {
@@ -319,7 +319,7 @@ public class RankingFactory {
         }
 
         public float normalize(Double value) {
-            return (float) (value - minimum / (maximum - minimum));
+            return (float) ((value - minimum) / (maximum - minimum));
         }
 
         public Double unNormalize(float normalizedValue) {
@@ -334,7 +334,7 @@ public class RankingFactory {
         }
 
         public float normalize(Integer value) {
-            return (float) (value - minimum / (float) (maximum - minimum));
+            return (float) ((value - minimum) / (float) (maximum - minimum));
         }
 
         public Integer unNormalize(float normalizedValue) {
@@ -349,7 +349,7 @@ public class RankingFactory {
         }
 
         public float normalize(Long value) {
-            return (float) (value - minimum / (float) (maximum - minimum));
+            return (float) ((value - minimum) / (float) (maximum - minimum));
         }
 
         public Long unNormalize(float normalizedValue) {

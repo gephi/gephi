@@ -57,7 +57,7 @@ public class RankingChooser extends javax.swing.JPanel {
 
     //Spline
     private SplineEditor splineEditor;
-    private Interpolator interpolator;
+    private org.jdesktop.animation.timing.interpolation.Interpolator interpolator;
 
     public RankingChooser(RankingUIModel modelUI, RankingModel rankingModel) {
         this.modelUI = modelUI;
@@ -113,6 +113,14 @@ public class RankingChooser extends javax.swing.JPanel {
                 Transformer transformer = getSelectedTransformer();
                 if (transformer != null) {
                     RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
+                    if(interpolator!=null) {
+                        transformer.setInterpolator(new org.gephi.ranking.api.Interpolator() {
+
+                            public float interpolate(float x) {
+                                return interpolator.interpolate(x);
+                            }
+                        });
+                    }
                     rankingController.transform(transformer);
                 }
             }

@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking;
 
+import org.gephi.ranking.api.Interpolator;
 import org.gephi.ranking.api.Transformer;
 import org.gephi.ranking.api.Ranking;
 
@@ -32,6 +33,7 @@ public abstract class AbstractTransformer<Target> implements Transformer<Target>
     protected Ranking ranking;
     protected float lowerBound = 0f;
     protected float upperBound = 1f;
+    protected Interpolator interpolator;
 
     public AbstractTransformer() {
     }
@@ -67,5 +69,9 @@ public abstract class AbstractTransformer<Target> implements Transformer<Target>
 
     public void setRanking(Ranking ranking) {
         this.ranking = ranking;
+    }
+
+    public void setInterpolator(Interpolator interpolator) {
+        this.interpolator = interpolator;
     }
 }

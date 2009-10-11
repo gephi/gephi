@@ -21,22 +21,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ranking.api;
 
 /**
- *
+ * Interface that defines the single {@link interpolate(float)} method. This interface is implemented by built-in interpolators.
  * @author Mathieu Bastian
  */
-public interface Transformer<Target> {
+public interface Interpolator {
 
-    public void setLowerBound(float lowerBound);
-
-    public void setUpperBound(float upperBound);
-
-    public float getLowerBound();
-
-    public float getUpperBound();
-
-    public boolean isInBounds(float value);
-
-    public Object transform(Target target, float normalizedValue);
-
-    public void setInterpolator(Interpolator interpolator);
+    /**
+     * This function takes an input value between 0 and 1 and returns another value, also between 0 and 1.
+     * @param x a value between 0 and 1
+     * @return a value between 0 and 1. Values outside of this boundary may be clamped to the interval [0,1] and cause undefined results.
+     */
+    public float interpolate(float x);
 }

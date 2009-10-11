@@ -65,6 +65,9 @@ public abstract class AbstractColorTransformer<Target> extends AbstractTransform
     }
 
     public Color getColor(float normalizedValue) {
+        if(interpolator!=null) {
+            normalizedValue = interpolator.interpolate(normalizedValue);
+        }
         return linearGradient.getValue(normalizedValue);
     }
 }
