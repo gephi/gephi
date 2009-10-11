@@ -306,10 +306,12 @@ public class RankingChooser extends javax.swing.JPanel {
         applyButton = new javax.swing.JButton();
         splineButton = new org.jdesktop.swingx.JXHyperlink();
 
+        setMinimumSize(new java.awt.Dimension(130, 55));
         setLayout(new java.awt.BorderLayout());
 
         chooserPanel.setLayout(new java.awt.GridBagLayout());
 
+        rankingComboBox.setFocusable(false);
         rankingComboBox.setPreferredSize(new java.awt.Dimension(56, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -325,19 +327,19 @@ public class RankingChooser extends javax.swing.JPanel {
 
         applyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/ranking/apply.gif"))); // NOI18N
         applyButton.setText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.applyButton.text")); // NOI18N
-        applyButton.setMargin(new java.awt.Insets(0, 4, 0, 4));
-        applyButton.setPreferredSize(new java.awt.Dimension(65, 22));
+        applyButton.setMargin(new java.awt.Insets(0, 14, 0, 14));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 5);
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 5);
         controlPanel.add(applyButton, gridBagConstraints);
 
         splineButton.setClickedColor(new java.awt.Color(0, 51, 255));
         splineButton.setText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.splineButton.text")); // NOI18N
         splineButton.setToolTipText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.splineButton.toolTipText")); // NOI18N
+        splineButton.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;

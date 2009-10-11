@@ -191,11 +191,11 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         add(rankingChooser, gridBagConstraints);
 
-        listResultContainerPanel.setLayout(new java.awt.GridLayout());
+        listResultContainerPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         listResultPanel.setBorder(null);
         listResultContainerPanel.add(listResultPanel);
