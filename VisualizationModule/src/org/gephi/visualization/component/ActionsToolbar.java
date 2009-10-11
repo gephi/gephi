@@ -121,7 +121,7 @@ public class ActionsToolbar extends JToolBar {
 
         //Reset label size
         JButton resetLabelSizeButton = new JButton();
-        resetLabelSizeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/resetSize.png")));
+        resetLabelSizeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/resetLabelSize.png")));
         resetLabelSizeButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetLabelSizes"));
         resetLabelSizeButton.addActionListener(new ActionListener() {
 
