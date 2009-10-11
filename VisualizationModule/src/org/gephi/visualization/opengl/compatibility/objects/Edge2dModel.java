@@ -267,11 +267,11 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
 
     @Override
     public float getViewportX() {
-        return (obj.getSource().getModel().getViewportX() + obj.getTarget().getModel().getViewportX()) / 2f;
+        return (obj.getSource().getModel().getViewportX() + 2*obj.getTarget().getModel().getViewportX()) / 3f ;
     }
 
     @Override
     public float getViewportY() {
-        return (obj.getSource().getModel().getViewportY() + obj.getTarget().getModel().getViewportY()) / 2f;
+        return (obj.getSource().getModel().getViewportY() + 2*obj.getTarget().getModel().getViewportY()) / 3f;
     }
 }

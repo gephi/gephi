@@ -88,15 +88,15 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     }
 
     public float x() {
-        return (getSource().x() + getTarget().x()) / 2f;
+        return (getSource().x() + getTarget().x()) / 3f;
     }
 
     public float y() {
-        return (getSource().y() + getTarget().y()) / 2f;
+        return (getSource().y() + getTarget().y()) / 3f;
     }
 
     public float z() {
-        return (getSource().z() + getTarget().z()) / 2f;
+        return (getSource().z() + getTarget().z()) / 3f;
     }
 
     public void setX(float x) {
