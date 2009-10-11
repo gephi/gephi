@@ -53,6 +53,9 @@ public class NodeDataTable {
         quickFilter = new QuickFilter() {
 
             public boolean accept(Object value) {
+                if(value==null) {
+                    return false;
+                }
                 if (value instanceof ImmutableTreeNode) {
                     return pattern.matcher(((ImmutableTreeNode) value).getNode().getNodeData().getLabel()).find();
                 }
