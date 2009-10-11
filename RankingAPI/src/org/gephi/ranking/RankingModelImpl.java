@@ -73,7 +73,10 @@ public class RankingModelImpl implements RankingModel {
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getVisibleDirectedGraph();
         for (AttributeColumn column : attributeController.getTemporaryAttributeManager().getNodeClass().getAttributeColumns()) {
             if (RankingFactory.isNumberColumn(column)) {
-                rankingList.add(RankingFactory.getNodeAttributeRanking(column, graph));
+                NodeRanking r = RankingFactory.getNodeAttributeRanking(column, graph);
+                if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {
+                    rankingList.add(r);
+                }
             }
         }
         return rankingList.toArray(new NodeRanking[0]);
@@ -85,7 +88,10 @@ public class RankingModelImpl implements RankingModel {
         List<Ranking> rankingList = new ArrayList<Ranking>();
         for (AttributeColumn column : attributeController.getTemporaryAttributeManager().getEdgeClass().getAttributeColumns()) {
             if (RankingFactory.isNumberColumn(column)) {
-                rankingList.add(RankingFactory.getEdgeAttributeRanking(column, graph));
+                EdgeRanking r = RankingFactory.getEdgeAttributeRanking(column, graph);
+                if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {
+                    rankingList.add(r);
+                }
             }
         }
         return rankingList.toArray(new EdgeRanking[0]);

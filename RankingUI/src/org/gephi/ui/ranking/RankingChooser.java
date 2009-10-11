@@ -62,7 +62,7 @@ public class RankingChooser extends javax.swing.JPanel {
     public RankingChooser(RankingUIModel modelUI, RankingModel rankingModel) {
         this.modelUI = modelUI;
         this.model = rankingModel;
-        NO_SELECTION = "----------------";
+        NO_SELECTION = NbBundle.getMessage(RankingChooser.class, "RankingChooser.choose.text");
         initComponents();
         initRanking();
         initApply();
@@ -318,7 +318,7 @@ public class RankingChooser extends javax.swing.JPanel {
 
         chooserPanel.setLayout(new java.awt.GridBagLayout());
 
-        rankingComboBox.setFocusable(false);
+        rankingComboBox.setToolTipText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.rankingComboBox.toolTipText")); // NOI18N
         rankingComboBox.setPreferredSize(new java.awt.Dimension(56, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -334,6 +334,7 @@ public class RankingChooser extends javax.swing.JPanel {
 
         applyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/ranking/apply.gif"))); // NOI18N
         applyButton.setText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.applyButton.text")); // NOI18N
+        applyButton.setToolTipText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.applyButton.toolTipText")); // NOI18N
         applyButton.setMargin(new java.awt.Insets(0, 14, 0, 14));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -346,7 +347,7 @@ public class RankingChooser extends javax.swing.JPanel {
         splineButton.setClickedColor(new java.awt.Color(0, 51, 255));
         splineButton.setText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.splineButton.text")); // NOI18N
         splineButton.setToolTipText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.splineButton.toolTipText")); // NOI18N
-        splineButton.setFocusable(false);
+        splineButton.setFocusPainted(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;

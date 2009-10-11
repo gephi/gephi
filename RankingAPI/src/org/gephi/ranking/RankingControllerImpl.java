@@ -27,7 +27,6 @@ import org.gephi.ranking.api.ColorTransformer;
 import org.gephi.ranking.api.SizeTransformer;
 import org.gephi.ranking.api.Transformer;
 import org.gephi.ranking.api.NodeRanking;
-import org.gephi.ranking.api.EdgeRanking;
 import org.gephi.ranking.api.Ranking;
 import java.util.ArrayList;
 import java.util.Collections;
