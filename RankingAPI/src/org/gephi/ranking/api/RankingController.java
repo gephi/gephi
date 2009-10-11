@@ -18,21 +18,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ranking;
+package org.gephi.ranking.api;
+
+import org.openide.util.Lookup;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface SizeTransformer<Type, Target> extends Transformer<Type, Target> {
+public interface RankingController {
 
-    public float getMinSize();
+    public RankingModel getRankingModel();
 
-    public float getMaxSize();
+    public void transform(Transformer transformer);
 
-    public void setMinSize(float minSize);
+    public ColorTransformer getColorTransformer(Ranking ranking);
 
-    public void setMaxSize(float maxSize);
+    public SizeTransformer getSizeTransformer(Ranking nodeRanking);
 
-    public float getResult(Type value);
+    public Lookup getEventBus();
 }

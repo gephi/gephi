@@ -18,23 +18,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ranking;
+package org.gephi.ranking.api;
 
-import org.openide.util.Lookup;
+import javax.swing.event.ChangeListener;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface RankingController {
+public interface RankingModel {
 
-    public RankingModel getRankingModel();
+    public NodeRanking[] getNodeRanking();
 
-    public void transform(Transformer transformer);
+    public EdgeRanking[] getEdgeRanking();
 
-    public ColorTransformer getColorTransformer(Ranking ranking);
+    public void addChangeListener(ChangeListener changeListener);
 
-    public SizeTransformer getSizeTransformer(Ranking nodeRanking);
-
-    public Lookup getEventBus();
+    public void removeChangeListener(ChangeListener changeListener);
 }

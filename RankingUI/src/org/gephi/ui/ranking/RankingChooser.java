@@ -32,11 +32,11 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.gephi.ranking.Ranking;
-import org.gephi.ranking.RankingController;
-import org.gephi.ranking.RankingModel;
-import org.gephi.ranking.RankingUIModel;
-import org.gephi.ranking.Transformer;
+import org.gephi.ranking.api.Ranking;
+import org.gephi.ranking.api.RankingController;
+import org.gephi.ranking.api.RankingModel;
+import org.gephi.ranking.api.RankingUIModel;
+import org.gephi.ranking.api.Transformer;
 import org.gephi.ui.components.SplineEditor.SplineEditor;
 import org.jdesktop.animation.timing.interpolation.Interpolator;
 import org.openide.util.Lookup;
@@ -171,7 +171,7 @@ public class RankingChooser extends javax.swing.JPanel {
                     addTransformer(transformer);
                 }
             }
-            centerPanel = transformerUI.getPanel(transformer);
+            centerPanel = transformerUI.getPanel(transformer, selectedRanking);
             centerPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5), BorderFactory.createEtchedBorder()));
             add(centerPanel, BorderLayout.CENTER);
             applyButton.setVisible(true);

@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking;
 
+import org.gephi.ranking.api.ColorTransformer;
 import java.awt.Color;
 import org.gephi.ui.utils.GradientUtils.LinearGradient;
 
@@ -27,28 +28,23 @@ import org.gephi.ui.utils.GradientUtils.LinearGradient;
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractColorTransformer<Type, Target> extends AbstractTransformer<Type, Target> implements ColorTransformer<Type, Target> {
+public abstract class AbstractColorTransformer<Target> extends AbstractTransformer<Target> implements ColorTransformer<Target> {
 
     protected LinearGradient linearGradient = new LinearGradient(new Color[]{Color.WHITE, Color.BLACK}, new float[]{0f, 1f});
 
     public AbstractColorTransformer() {
     }
 
-    public AbstractColorTransformer(Type minimum, Type maximum) {
-        super(minimum, maximum);
+    public AbstractColorTransformer(float lowerBound, float upperBound) {
+        super(lowerBound, upperBound);
     }
 
-    public AbstractColorTransformer(Type minimum, Type maximum, Type lowerBound, Type upperBound) {
-        super(minimum, maximum, lowerBound, upperBound);
-    }
-
-    public AbstractColorTransformer(Type minimum, Type maximum, Type lowerBound, Type upperBound, Color[] colors, float[] positions) {
-        super(minimum, maximum, lowerBound, upperBound);
+    public AbstractColorTransformer(float lowerBound, float upperBound, Color[] colors, float[] positions) {
+        super(lowerBound, upperBound);
         this.linearGradient = new LinearGradient(colors, positions);
     }
 
-    public AbstractColorTransformer(Type minimum, Type maximum, Color[] colors, float[] positions) {
-        super(minimum, maximum);
+    public AbstractColorTransformer(Color[] colors, float[] positions) {
         this.linearGradient = new LinearGradient(colors, positions);
     }
 
@@ -66,5 +62,9 @@ public abstract class AbstractColorTransformer<Type, Target> extends AbstractTra
 
     public void setColors(Color[] colors) {
         linearGradient.setColors(colors);
+    }
+
+    public Color getColor(float normalizedValue) {
+        return linearGradient.getValue(normalizedValue);
     }
 }

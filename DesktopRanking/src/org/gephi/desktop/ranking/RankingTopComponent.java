@@ -26,9 +26,9 @@ import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.JToggleButton;
 import org.gephi.project.api.ProjectController;
-import org.gephi.ranking.RankingController;
-import org.gephi.ranking.RankingModel;
-import org.gephi.ranking.RankingUIModel;
+import org.gephi.ranking.api.RankingController;
+import org.gephi.ranking.api.RankingModel;
+import org.gephi.ranking.api.RankingUIModel;
 import org.gephi.ui.ranking.RankingChooser;
 import org.gephi.ui.ranking.RankingToolbar;
 import org.gephi.ui.ranking.ResultListPanel;
@@ -261,7 +261,7 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
 
     @Override
     public int getPersistenceType() {
-        return TopComponent.PERSISTENCE_ALWAYS;
+        return TopComponent.PERSISTENCE_NEVER;
     }
 
     @Override

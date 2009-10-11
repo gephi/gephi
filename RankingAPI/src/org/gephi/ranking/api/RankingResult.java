@@ -18,31 +18,28 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ranking;
+package org.gephi.ranking.api;
+
+import java.util.List;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Transformer<Type, Target> {
+public interface RankingResult {
 
-    public Type getMinimumValue();
+    public Transformer getTransformer();
 
-    public Type getMaximumValue();
+    public Ranking getRanking();
 
-    public void setMinimumValue(Type value);
+    public List<RankingResultLine> getResultLines();
 
-    public void setMaximumValue(Type value);
+    public static interface RankingResultLine {
 
-    public void setLowerBound(Type lowerBound);
+        public Object getTarget();
 
-    public void setUpperBound(Type upperBound);
+        public Object getResult();
 
-    public Type getLowerBound();
-
-    public Type getUpperBound();
-
-    public boolean isInBounds(Type value);
-
-    public Object transform(Target target, Type value);
+        public Object getRank();
+    }
 }

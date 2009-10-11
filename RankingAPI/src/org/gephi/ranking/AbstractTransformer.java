@@ -20,71 +20,45 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking;
 
+import org.gephi.ranking.api.Transformer;
+import org.gephi.ranking.api.Ranking;
+
 /**
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractTransformer<Type, Target> implements Transformer<Type, Target> {
+public abstract class AbstractTransformer<Target> implements Transformer<Target> {
 
     protected Ranking ranking;
-    protected Type minimum;
-    protected Type maximum;
-    protected Type lowerBound;
-    protected Type upperBound;
+    protected float lowerBound = 0f;
+    protected float upperBound = 1f;
 
     public AbstractTransformer() {
     }
 
-    public AbstractTransformer(Type minimum, Type maximum) {
-        this.minimum = minimum;
-        this.maximum = maximum;
-        this.lowerBound = minimum;
-        this.upperBound = maximum;
-    }
-
-    public AbstractTransformer(Type minimum, Type maximum, Type lowerBound, Type upperBound) {
-        this.minimum = minimum;
-        this.maximum = maximum;
+    public AbstractTransformer(float lowerBound, float upperBound) {
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
     }
 
-    public Type getLowerBound() {
+    public float getLowerBound() {
         return lowerBound;
     }
 
-    public void setLowerBound(Type lowerBound) {
+    public void setLowerBound(float lowerBound) {
         this.lowerBound = lowerBound;
     }
 
-    public Type getMaximumValue() {
-        return maximum;
-    }
-
-    public void setMaximumValue(Type maximum) {
-        this.maximum = maximum;
-        if (upperBound == null) {
-            this.upperBound = maximum;
-        }
-    }
-
-    public Type getMinimumValue() {
-        return minimum;
-    }
-
-    public void setMinimumValue(Type minimum) {
-        this.minimum = minimum;
-        if (lowerBound == null) {
-            this.lowerBound = minimum;
-        }
-    }
-
-    public Type getUpperBound() {
+    public float getUpperBound() {
         return upperBound;
     }
 
-    public void setUpperBound(Type upperBound) {
+    public void setUpperBound(float upperBound) {
         this.upperBound = upperBound;
+    }
+
+    public boolean isInBounds(float value) {
+        return value >= lowerBound && value <= upperBound;
     }
 
     public Ranking getRanking() {

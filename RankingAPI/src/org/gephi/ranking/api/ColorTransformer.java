@@ -18,30 +18,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ui.ranking;
+package org.gephi.ranking.api;
 
-import javax.swing.Icon;
-import javax.swing.JPanel;
-import org.gephi.ranking.api.Ranking;
-import org.gephi.ranking.api.Transformer;
+import java.awt.Color;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface TransformerUI {
+public interface ColorTransformer<Target> extends Transformer<Target> {
 
-    public Icon getIcon();
+    public float[] getColorPositions();
 
-    public String getName();
+    public Color[] getColors();
 
-    public boolean isNodeTransformer();
+    public void setColorPositions(float[] positions);
 
-    public boolean isEdgeTransformer();
+    public void setColors(Color[] colors);
 
-    public Class getTransformerClass();
-
-    public Transformer buildTransformer(Ranking ranking);
-
-    public JPanel getPanel(Transformer transformer, Ranking ranking);
+    public Color getColor(float normalizedValue);
 }

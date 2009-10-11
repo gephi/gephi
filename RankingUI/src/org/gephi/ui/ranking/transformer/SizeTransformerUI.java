@@ -24,10 +24,10 @@ import org.gephi.ui.ranking.TransformerUI;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import org.gephi.ranking.Ranking;
-import org.gephi.ranking.RankingController;
-import org.gephi.ranking.SizeTransformer;
-import org.gephi.ranking.Transformer;
+import org.gephi.ranking.api.Ranking;
+import org.gephi.ranking.api.RankingController;
+import org.gephi.ranking.api.SizeTransformer;
+import org.gephi.ranking.api.Transformer;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -53,8 +53,8 @@ public class SizeTransformerUI implements TransformerUI {
         return false;
     }
 
-    public JPanel getPanel(Transformer transformer) {
-        return new SizeTransformerPanel(transformer);
+    public JPanel getPanel(Transformer transformer, Ranking ranking) {
+        return new SizeTransformerPanel(transformer, ranking);
     }
 
     public Class getTransformerClass() {

@@ -20,11 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking;
 
+import org.gephi.ranking.api.SizeTransformer;
+
 /**
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractSizeTransformer<Type, Target> extends AbstractTransformer<Type, Target> implements SizeTransformer<Type, Target> {
+public abstract class AbstractSizeTransformer<Target> extends AbstractTransformer<Target> implements SizeTransformer<Target> {
 
     protected float minSize = 1f;
     protected float maxSize = 4f;
@@ -32,22 +34,12 @@ public abstract class AbstractSizeTransformer<Type, Target> extends AbstractTran
     public AbstractSizeTransformer() {
     }
 
-    public AbstractSizeTransformer(Type minimum, Type maximum) {
-        super(minimum, maximum);
+    public AbstractSizeTransformer(float lowerBound, float upperBound) {
+        super(lowerBound, upperBound);
     }
 
-    public AbstractSizeTransformer(Type minimum, Type maximum, Type lowerBound, Type upperBound) {
-        super(minimum, maximum, lowerBound, upperBound);
-    }
-
-    public AbstractSizeTransformer(Type minimum, Type maximum, Type lowerBound, Type upperBound, float minSize, float maxSize) {
-        super(minimum, maximum, lowerBound, upperBound);
-        this.minSize = minSize;
-        this.maxSize = maxSize;
-    }
-
-    public AbstractSizeTransformer(Type minimum, Type maximum, float minSize, float maxSize) {
-        super(minimum, maximum);
+    public AbstractSizeTransformer(float lowerBound, float upperBound, float minSize, float maxSize) {
+        super(lowerBound, upperBound);
         this.minSize = minSize;
         this.maxSize = maxSize;
     }
@@ -66,5 +58,9 @@ public abstract class AbstractSizeTransformer<Type, Target> extends AbstractTran
 
     public void setMaxSize(float maxSize) {
         this.maxSize = maxSize;
+    }
+
+    public float getSize(float normalizedValue) {
+        return normalizedValue * maxSize + minSize;
     }
 }

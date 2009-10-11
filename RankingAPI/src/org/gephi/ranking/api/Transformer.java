@@ -18,15 +18,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ranking;
-
-import org.gephi.graph.api.Edge;
+package org.gephi.ranking.api;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface EdgeRanking<Type> extends Ranking<Edge, Type> {
+public interface Transformer<Target> {
 
-    public Type getValue(Edge edge);
+    public void setLowerBound(float lowerBound);
+
+    public void setUpperBound(float upperBound);
+
+    public float getLowerBound();
+
+    public float getUpperBound();
+
+    public boolean isInBounds(float value);
+
+    public Object transform(Target target, float normalizedValue);
 }

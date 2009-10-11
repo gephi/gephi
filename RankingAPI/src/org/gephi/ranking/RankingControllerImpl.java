@@ -20,6 +20,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking;
 
+import org.gephi.ranking.api.RankingResult;
+import org.gephi.ranking.api.RankingModel;
+import org.gephi.ranking.api.RankingController;
+import org.gephi.ranking.api.ColorTransformer;
+import org.gephi.ranking.api.SizeTransformer;
+import org.gephi.ranking.api.Transformer;
+import org.gephi.ranking.api.NodeRanking;
+import org.gephi.ranking.api.EdgeRanking;
+import org.gephi.ranking.api.Ranking;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -56,8 +65,11 @@ public class RankingControllerImpl implements RankingController {
             for (Node node : graph.getNodes().toArray()) {
                 Object rank = ranking.getValue(node);
                 Object result = null;
-                if (rank != null && transformer.isInBounds(rank)) {
-                    result = transformer.transform(node, rank);
+                if (rank != null) {
+                    float normalizedValue = ranking.normalize(rank);
+                    if (transformer.isInBounds(normalizedValue)) {
+                        result = transformer.transform(node, normalizedValue);
+                    }
                 }
                 rankingResult.addResult(node, rank, result);
             }
@@ -65,8 +77,11 @@ public class RankingControllerImpl implements RankingController {
             for (Edge edge : graph.getEdges().toArray()) {
                 Object rank = ranking.getValue(edge);
                 Object result = null;
-                if (rank != null && transformer.isInBounds(rank)) {
-                    result = transformer.transform(edge, rank);
+                if (rank != null) {
+                    float normalizedValue = ranking.normalize(rank);
+                    if (transformer.isInBounds(normalizedValue)) {
+                        result = transformer.transform(edge, normalizedValue);
+                    }
                 }
                 rankingResult.addResult(edge, rank, result);
             }
@@ -76,13 +91,6 @@ public class RankingControllerImpl implements RankingController {
 
     public ColorTransformer getColorTransformer(Ranking ranking) {
         ColorTransformer colorTransformer = TransformerFactory.getColorTransformer(ranking);
-        Graph graph = Lookup.getDefault().lookup(GraphController.class).getVisibleDirectedGraph();
-        if (ranking instanceof NodeRanking) {
-            setNodeMinMax((NodeRanking) ranking, graph, colorTransformer);
-        } else {
-            setEdgeMinMax((EdgeRanking) ranking, graph, colorTransformer);
-        }
-
         return colorTransformer;
     }
 
@@ -92,119 +100,10 @@ public class RankingControllerImpl implements RankingController {
 
     public SizeTransformer getSizeTransformer(Ranking ranking) {
         SizeTransformer sizeTransformer = TransformerFactory.getSizeTransformer(ranking);
-        Graph graph = Lookup.getDefault().lookup(GraphController.class).getVisibleDirectedGraph();
-        if (ranking instanceof NodeRanking) {
-            setNodeMinMax((NodeRanking) ranking, graph, sizeTransformer);
-        } else {
-            setEdgeMinMax((EdgeRanking) ranking, graph, sizeTransformer);
-        }
         return sizeTransformer;
     }
 
-    private void setNodeMinMax(NodeRanking ranking, Graph graph, Transformer transformer) {
-        if (ranking.getType().equals(Double.class)) {
-            Double minValue = Double.POSITIVE_INFINITY;
-            Double maxValue = Double.NEGATIVE_INFINITY;
-            for (Node node : graph.getNodes().toArray()) {
-                Double value = (Double) ranking.getValue(node);
-                if (value != null) {
-                    minValue = Math.min(value, minValue);
-                    maxValue = Math.max(value, maxValue);
-                }
-            }
-            transformer.setMinimumValue(minValue);
-            transformer.setMaximumValue(maxValue);
-        } else if (ranking.getType().equals(Float.class)) {
-            Float minValue = Float.POSITIVE_INFINITY;
-            Float maxValue = Float.NEGATIVE_INFINITY;
-            for (Node node : graph.getNodes().toArray()) {
-                Float value = (Float) ranking.getValue(node);
-                if (value != null) {
-                    minValue = Math.min(value, minValue);
-                    maxValue = Math.max(value, maxValue);
-                }
-            }
-            transformer.setMinimumValue(minValue);
-            transformer.setMaximumValue(maxValue);
-        } else if (ranking.getType().equals(Integer.class)) {
-            Integer minValue = Integer.MAX_VALUE;
-            Integer maxValue = Integer.MIN_VALUE;
-            for (Node node : graph.getNodes().toArray()) {
-                Integer value = (Integer) ranking.getValue(node);
-                if (value != null) {
-                    minValue = Math.min(value, minValue);
-                    maxValue = Math.max(value, maxValue);
-                }
-            }
-            transformer.setMinimumValue(minValue);
-            transformer.setMaximumValue(maxValue);
-        } else if (ranking.getType().equals(Long.class)) {
-            Long minValue = Long.MAX_VALUE;
-            Long maxValue = Long.MIN_VALUE;
-            for (Node node : graph.getNodes().toArray()) {
-                Long value = (Long) ranking.getValue(node);
-                if (value != null) {
-                    minValue = Math.min(value, minValue);
-                    maxValue = Math.max(value, maxValue);
-                }
-            }
-            transformer.setMinimumValue(minValue);
-            transformer.setMaximumValue(maxValue);
-        }
-    }
-
-    private void setEdgeMinMax(EdgeRanking ranking, Graph graph, Transformer transformer) {
-        if (ranking.getType().equals(Double.class)) {
-            Double minValue = Double.POSITIVE_INFINITY;
-            Double maxValue = Double.NEGATIVE_INFINITY;
-            for (Edge edge : graph.getEdges().toArray()) {
-                Double value = (Double) ranking.getValue(edge);
-                if (value != null) {
-                    minValue = Math.min(value, minValue);
-                    maxValue = Math.max(value, maxValue);
-                }
-            }
-            transformer.setMinimumValue(minValue);
-            transformer.setMaximumValue(maxValue);
-        } else if (ranking.getType().equals(Float.class)) {
-            Float minValue = Float.POSITIVE_INFINITY;
-            Float maxValue = Float.NEGATIVE_INFINITY;
-            for (Edge edge : graph.getEdges().toArray()) {
-                Float value = (Float) ranking.getValue(edge);
-                if (value != null) {
-                    minValue = Math.min(value, minValue);
-                    maxValue = Math.max(value, maxValue);
-                }
-            }
-            transformer.setMinimumValue(minValue);
-            transformer.setMaximumValue(maxValue);
-        } else if (ranking.getType().equals(Integer.class)) {
-            Integer minValue = Integer.MAX_VALUE;
-            Integer maxValue = Integer.MIN_VALUE;
-            for (Edge edge : graph.getEdges().toArray()) {
-                Integer value = (Integer) ranking.getValue(edge);
-                if (value != null) {
-                    minValue = Math.min(value, minValue);
-                    maxValue = Math.max(value, maxValue);
-                }
-            }
-            transformer.setMinimumValue(minValue);
-            transformer.setMaximumValue(maxValue);
-        } else if (ranking.getType().equals(Long.class)) {
-            Long minValue = Long.MAX_VALUE;
-            Long maxValue = Long.MIN_VALUE;
-            for (Edge edge : graph.getEdges().toArray()) {
-                Long value = (Long) ranking.getValue(edge);
-                if (value != null) {
-                    minValue = Math.min(value, minValue);
-                    maxValue = Math.max(value, maxValue);
-                }
-            }
-            transformer.setMinimumValue(minValue);
-            transformer.setMaximumValue(maxValue);
-        }
-    }
-
+    //Result
     private static class RankingResultImpl implements RankingResult {
 
         private Transformer transformer;

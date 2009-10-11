@@ -20,9 +20,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking;
 
+import org.gephi.ranking.api.NodeRanking;
+import org.gephi.ranking.api.EdgeRanking;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 
 /**
@@ -31,32 +34,48 @@ import org.gephi.graph.api.Node;
  */
 public class RankingFactory {
 
-    public static NodeRanking getNodeAttributeRanking(AttributeColumn column) {
+    public static NodeRanking getNodeAttributeRanking(AttributeColumn column, Graph graph) {
+        NodeRanking nodeRanking = null;
         switch (column.getAttributeType()) {
             case DOUBLE:
-                return new NodeAttributeRanking<Double>(column);
+                nodeRanking = new NodeAttributeDoubleRanking(column);
+                break;
             case FLOAT:
-                return new NodeAttributeRanking<Float>(column);
+                nodeRanking = new NodeAttributeFloatRanking(column);
+                break;
             case LONG:
-                return new NodeAttributeRanking<Long>(column);
+                nodeRanking = new NodeAttributeLongRanking(column);
+                break;
             case INT:
-                return new NodeAttributeRanking<Integer>(column);
+                nodeRanking = new NodeAttributeIntegerRanking(column);
+                break;
+            default:
+                throw new IllegalArgumentException("The column must be a Number type");
         }
-        throw new IllegalArgumentException("The column must be a Number type");
+        setMinMax((AbstractRanking) nodeRanking, graph);
+        return nodeRanking;
     }
 
-    public static EdgeRanking getEdgeAttributeRanking(AttributeColumn column) {
+    public static EdgeRanking getEdgeAttributeRanking(AttributeColumn column, Graph graph) {
+        EdgeRanking edgeRanking = null;
         switch (column.getAttributeType()) {
             case DOUBLE:
-                return new EdgeAttributeRanking<Double>(column);
+                edgeRanking = new EdgeAttributeDoubleRanking(column);
+                break;
             case FLOAT:
-                return new EdgeAttributeRanking<Float>(column);
+                edgeRanking = new EdgeAttributeFloatRanking(column);
+                break;
             case LONG:
-                return new EdgeAttributeRanking<Long>(column);
+                edgeRanking = new EdgeAttributeLongRanking(column);
+                break;
             case INT:
-                return new EdgeAttributeRanking<Integer>(column);
+                edgeRanking = new EdgeAttributeIntegerRanking(column);
+                break;
+            default:
+                throw new IllegalArgumentException("The column must be a Number type");
         }
-        throw new IllegalArgumentException("The column must be a Number type");
+        setMinMax((AbstractRanking) edgeRanking, graph);
+        return edgeRanking;
     }
 
     public static boolean isNumberColumn(AttributeColumn column) {
@@ -70,16 +89,117 @@ public class RankingFactory {
         return false;
     }
 
-    private static class NodeAttributeRanking<Type> implements NodeRanking<Type> {
+    protected static void setMinMax(AbstractRanking ranking, Graph graph) {
+        if (ranking instanceof NodeRanking) {
+            if (ranking.getType().equals(Double.class)) {
+                Double minValue = Double.POSITIVE_INFINITY;
+                Double maxValue = Double.NEGATIVE_INFINITY;
+                for (Node node : graph.getNodes().toArray()) {
+                    Double value = (Double) ranking.getValue(node);
+                    if (value != null) {
+                        minValue = Math.min(value, minValue);
+                        maxValue = Math.max(value, maxValue);
+                    }
+                }
+                ranking.setMinimumValue(minValue);
+                ranking.setMaximumValue(maxValue);
+            } else if (ranking.getType().equals(Float.class)) {
+                Float minValue = Float.POSITIVE_INFINITY;
+                Float maxValue = Float.NEGATIVE_INFINITY;
+                for (Node node : graph.getNodes().toArray()) {
+                    Float value = (Float) ranking.getValue(node);
+                    if (value != null) {
+                        minValue = Math.min(value, minValue);
+                        maxValue = Math.max(value, maxValue);
+                    }
+                }
+                ranking.setMinimumValue(minValue);
+                ranking.setMaximumValue(maxValue);
+            } else if (ranking.getType().equals(Integer.class)) {
+                Integer minValue = Integer.MAX_VALUE;
+                Integer maxValue = Integer.MIN_VALUE;
+                for (Node node : graph.getNodes().toArray()) {
+                    Integer value = (Integer) ranking.getValue(node);
+                    if (value != null) {
+                        minValue = Math.min(value, minValue);
+                        maxValue = Math.max(value, maxValue);
+                    }
+                }
+                ranking.setMinimumValue(minValue);
+                ranking.setMaximumValue(maxValue);
+            } else if (ranking.getType().equals(Long.class)) {
+                Long minValue = Long.MAX_VALUE;
+                Long maxValue = Long.MIN_VALUE;
+                for (Node node : graph.getNodes().toArray()) {
+                    Long value = (Long) ranking.getValue(node);
+                    if (value != null) {
+                        minValue = Math.min(value, minValue);
+                        maxValue = Math.max(value, maxValue);
+                    }
+                }
+                ranking.setMinimumValue(minValue);
+                ranking.setMaximumValue(maxValue);
+            }
+        } else if (ranking instanceof EdgeRanking) {
 
-        private AttributeColumn column;
-
-        public NodeAttributeRanking(AttributeColumn column) {
-            this.column = column;
+            if (ranking.getType().equals(Double.class)) {
+                Double minValue = Double.POSITIVE_INFINITY;
+                Double maxValue = Double.NEGATIVE_INFINITY;
+                for (Edge edge : graph.getEdges().toArray()) {
+                    Double value = (Double) ranking.getValue(edge);
+                    if (value != null) {
+                        minValue = Math.min(value, minValue);
+                        maxValue = Math.max(value, maxValue);
+                    }
+                }
+                ranking.setMinimumValue(minValue);
+                ranking.setMaximumValue(maxValue);
+            } else if (ranking.getType().equals(Float.class)) {
+                Float minValue = Float.POSITIVE_INFINITY;
+                Float maxValue = Float.NEGATIVE_INFINITY;
+                for (Edge edge : graph.getEdges().toArray()) {
+                    Float value = (Float) ranking.getValue(edge);
+                    if (value != null) {
+                        minValue = Math.min(value, minValue);
+                        maxValue = Math.max(value, maxValue);
+                    }
+                }
+                ranking.setMinimumValue(minValue);
+                ranking.setMaximumValue(maxValue);
+            } else if (ranking.getType().equals(Integer.class)) {
+                Integer minValue = Integer.MAX_VALUE;
+                Integer maxValue = Integer.MIN_VALUE;
+                for (Edge edge : graph.getEdges().toArray()) {
+                    Integer value = (Integer) ranking.getValue(edge);
+                    if (value != null) {
+                        minValue = Math.min(value, minValue);
+                        maxValue = Math.max(value, maxValue);
+                    }
+                }
+                ranking.setMinimumValue(minValue);
+                ranking.setMaximumValue(maxValue);
+            } else if (ranking.getType().equals(Long.class)) {
+                Long minValue = Long.MAX_VALUE;
+                Long maxValue = Long.MIN_VALUE;
+                for (Edge edge : graph.getEdges().toArray()) {
+                    Long value = (Long) ranking.getValue(edge);
+                    if (value != null) {
+                        minValue = Math.min(value, minValue);
+                        maxValue = Math.max(value, maxValue);
+                    }
+                }
+                ranking.setMinimumValue(minValue);
+                ranking.setMaximumValue(maxValue);
+            }
         }
+    }
 
-        public Type getValue(Node node) {
-            return (Type) node.getNodeData().getAttributes().getValue(column.getIndex());
+    protected abstract static class AttributeRanking<Element, Type> extends AbstractRanking<Element, Type> {
+
+        protected AttributeColumn column;
+
+        public AttributeRanking(AttributeColumn attributeColumn) {
+            this.column = attributeColumn;
         }
 
         public String getName() {
@@ -96,29 +216,113 @@ public class RankingFactory {
         }
     }
 
-    private static class EdgeAttributeRanking<Type> implements EdgeRanking<Type> {
+    private abstract static class NodeAttributeRanking<Type> extends AttributeRanking<Node, Type> implements NodeRanking<Type> {
 
-        private AttributeColumn column;
+        public NodeAttributeRanking(AttributeColumn column) {
+            super(column);
+        }
+
+        public Type getValue(Node node) {
+            return (Type) node.getNodeData().getAttributes().getValue(column.getIndex());
+        }
+    }
+
+    private abstract static class EdgeAttributeRanking<Type> extends AttributeRanking<Edge, Type> implements EdgeRanking<Type> {
 
         public EdgeAttributeRanking(AttributeColumn column) {
-            this.column = column;
+            super(column);
         }
 
         public Type getValue(Edge edge) {
             return (Type) edge.getEdgeData().getAttributes().getValue(column.getIndex());
         }
+    }
 
-        public String getName() {
-            return column.getTitle();
+    private static class EdgeAttributeFloatRanking extends EdgeAttributeRanking<Float> {
+
+        public EdgeAttributeFloatRanking(AttributeColumn column) {
+            super(column);
         }
 
-        @Override
-        public String toString() {
-            return getName();
+        public float normalize(Float value) {
+            return value - minimum / (maximum - minimum);
+        }
+    }
+
+    private static class EdgeAttributeDoubleRanking extends EdgeAttributeRanking<Double> {
+
+        public EdgeAttributeDoubleRanking(AttributeColumn column) {
+            super(column);
         }
 
-        public Class getType() {
-            return column.getAttributeType().getType();
+        public float normalize(Double value) {
+            return (float) (value - minimum / (maximum - minimum));
+        }
+    }
+
+    private static class EdgeAttributeIntegerRanking extends EdgeAttributeRanking<Integer> {
+
+        public EdgeAttributeIntegerRanking(AttributeColumn column) {
+            super(column);
+        }
+
+        public float normalize(Integer value) {
+            return (float) (value - minimum / (float) (maximum - minimum));
+        }
+    }
+
+    private static class EdgeAttributeLongRanking extends EdgeAttributeRanking<Long> {
+
+        public EdgeAttributeLongRanking(AttributeColumn column) {
+            super(column);
+        }
+
+        public float normalize(Long value) {
+            return (float) (value - minimum / (float) (maximum - minimum));
+        }
+    }
+
+    private static class NodeAttributeFloatRanking extends NodeAttributeRanking<Float> {
+
+        public NodeAttributeFloatRanking(AttributeColumn column) {
+            super(column);
+        }
+
+        public float normalize(Float value) {
+            return value - minimum / (maximum - minimum);
+        }
+    }
+
+    private static class NodeAttributeDoubleRanking extends NodeAttributeRanking<Double> {
+
+        public NodeAttributeDoubleRanking(AttributeColumn column) {
+            super(column);
+        }
+
+        public float normalize(Double value) {
+            return (float) (value - minimum / (maximum - minimum));
+        }
+    }
+
+    private static class NodeAttributeIntegerRanking extends NodeAttributeRanking<Integer> {
+
+        public NodeAttributeIntegerRanking(AttributeColumn column) {
+            super(column);
+        }
+
+        public float normalize(Integer value) {
+            return (float) (value - minimum / (float) (maximum - minimum));
+        }
+    }
+
+    private static class NodeAttributeLongRanking extends NodeAttributeRanking<Long> {
+
+        public NodeAttributeLongRanking(AttributeColumn column) {
+            super(column);
+        }
+
+        public float normalize(Long value) {
+            return (float) (value - minimum / (float) (maximum - minimum));
         }
     }
 }

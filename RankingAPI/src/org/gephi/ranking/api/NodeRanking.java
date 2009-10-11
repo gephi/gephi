@@ -18,28 +18,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ranking;
+package org.gephi.ranking.api;
 
-import java.util.List;
+import org.gephi.graph.api.Node;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface RankingResult {
+public interface NodeRanking<Type> extends Ranking<Node, Type> {
 
-    public Transformer getTransformer();
-
-    public Ranking getRanking();
-
-    public List<RankingResultLine> getResultLines();
-
-    public static interface RankingResultLine {
-
-        public Object getTarget();
-
-        public Object getResult();
-
-        public Object getRank();
-    }
+    public Type getValue(Node node);
 }

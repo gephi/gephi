@@ -18,24 +18,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ranking;
+package org.gephi.ranking.api;
 
-import javax.swing.event.ChangeListener;
+import org.gephi.graph.api.Edge;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface RankingModel {
+public interface EdgeRanking<Type> extends Ranking<Edge, Type> {
 
-    public NodeRanking[] getNodeRanking();
-
-    public EdgeRanking[] getEdgeRanking();
-
-    public void addChangeListener(ChangeListener changeListener);
-
-    public void removeChangeListener(ChangeListener changeListener);
-
-
-    
+    public Type getValue(Edge edge);
 }

@@ -35,7 +35,7 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
-import org.gephi.ranking.RankingUIModel;
+import org.gephi.ranking.api.RankingUIModel;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;

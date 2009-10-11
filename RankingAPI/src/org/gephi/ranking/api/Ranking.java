@@ -18,23 +18,26 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ranking;
-
-import java.awt.Color;
+package org.gephi.ranking.api;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface ColorTransformer<Type, Target> extends Transformer<Type, Target> {
+public interface Ranking<Element, Type> {
 
-    public float[] getColorPositions();
+    public Type getValue(Element element);
 
-    public Color[] getColors();
+    public Type getMinimumValue();
 
-    public void setColorPositions(float[] positions);
+    public Type getMaximumValue();
 
-    public void setColors(Color[] colors);
+    public float normalize(Type value);
 
-    public Color getResult(Type value);
+    public String getName();
+
+    @Override
+    public String toString();
+
+    public Class getType();
 }

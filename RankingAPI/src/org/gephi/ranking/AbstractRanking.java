@@ -20,13 +20,30 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking;
 
-import org.gephi.graph.api.Node;
+import org.gephi.ranking.api.Ranking;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface NodeRanking<Type> extends Ranking<Node, Type> {
+public abstract class AbstractRanking<Element, Type> implements Ranking<Element, Type> {
 
-    public Type getValue(Node node);
+    protected Type minimum;
+    protected Type maximum;
+
+    public Type getMinimumValue() {
+        return minimum;
+    }
+
+    public Type getMaximumValue() {
+        return maximum;
+    }
+
+    public void setMinimumValue(Type value) {
+        this.minimum = value;
+    }
+
+    public void setMaximumValue(Type value) {
+        this.maximum = value;
+    }
 }

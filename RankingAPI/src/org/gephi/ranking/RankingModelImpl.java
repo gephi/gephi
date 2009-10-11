@@ -20,12 +20,18 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking;
 
+import org.gephi.ranking.api.RankingModel;
+import org.gephi.ranking.api.NodeRanking;
+import org.gephi.ranking.api.EdgeRanking;
+import org.gephi.ranking.api.Ranking;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
@@ -64,9 +70,10 @@ public class RankingModelImpl implements RankingModel {
     public NodeRanking[] getNodeRanking() {
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
         List<Ranking> rankingList = new ArrayList<Ranking>();
+        Graph graph = Lookup.getDefault().lookup(GraphController.class).getVisibleDirectedGraph();
         for (AttributeColumn column : attributeController.getTemporaryAttributeManager().getNodeClass().getAttributeColumns()) {
             if (RankingFactory.isNumberColumn(column)) {
-                rankingList.add(RankingFactory.getNodeAttributeRanking(column));
+                rankingList.add(RankingFactory.getNodeAttributeRanking(column, graph));
             }
         }
         return rankingList.toArray(new NodeRanking[0]);
@@ -74,10 +81,11 @@ public class RankingModelImpl implements RankingModel {
 
     public EdgeRanking[] getEdgeRanking() {
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
+        Graph graph = Lookup.getDefault().lookup(GraphController.class).getVisibleDirectedGraph();
         List<Ranking> rankingList = new ArrayList<Ranking>();
         for (AttributeColumn column : attributeController.getTemporaryAttributeManager().getEdgeClass().getAttributeColumns()) {
             if (RankingFactory.isNumberColumn(column)) {
-                rankingList.add(RankingFactory.getEdgeAttributeRanking(column));
+                rankingList.add(RankingFactory.getEdgeAttributeRanking(column, graph));
             }
         }
         return rankingList.toArray(new EdgeRanking[0]);

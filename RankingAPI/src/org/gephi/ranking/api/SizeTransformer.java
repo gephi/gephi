@@ -18,20 +18,22 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ranking;
+package org.gephi.ranking.api;
+
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Ranking<Element, Type> {
+public interface SizeTransformer<Target> extends Transformer<Target> {
 
-    public Type getValue(Element element);
+    public float getMinSize();
 
-    public String getName();
+    public float getMaxSize();
 
-    @Override
-    public String toString();
+    public void setMinSize(float minSize);
 
-    public Class getType();
+    public void setMaxSize(float maxSize);
+
+    public float getSize(float normalizedValue);
 }

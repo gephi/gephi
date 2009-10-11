@@ -24,10 +24,10 @@ import org.gephi.ui.ranking.TransformerUI;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import org.gephi.ranking.ColorTransformer;
-import org.gephi.ranking.Ranking;
-import org.gephi.ranking.RankingController;
-import org.gephi.ranking.Transformer;
+import org.gephi.ranking.api.ColorTransformer;
+import org.gephi.ranking.api.Ranking;
+import org.gephi.ranking.api.RankingController;
+import org.gephi.ranking.api.Transformer;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -62,7 +62,7 @@ public class ColorTransformerUI implements TransformerUI {
         return rc.getColorTransformer(ranking);
     }
 
-    public JPanel getPanel(Transformer transformer) {
-        return new ColorTransformerPanel(transformer);
+    public JPanel getPanel(Transformer transformer, Ranking ranking) {
+        return new ColorTransformerPanel(transformer, ranking);
     }
 }
