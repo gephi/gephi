@@ -112,6 +112,10 @@ public class DefaultProcessor implements Processor {
         }
         node.getNodeData().setLabelVisible(nodeDraft.isLabelVisible());
 
+        if(nodeDraft.getLabelSize()!=-1f) {
+            node.getNodeData().setLabelSize(nodeDraft.getLabelSize());
+        }
+
         if (nodeDraft.getX() != 0) {
             node.getNodeData().setX(nodeDraft.getX());
         } else {
@@ -173,6 +177,10 @@ public class DefaultProcessor implements Processor {
             edge.getEdgeData().setLabel(edgeDraft.getLabel());
         }
         edge.getEdgeData().setLabelVisible(edgeDraft.isLabelVisible());
+
+        if(edgeDraft.getLabelSize()!=-1f) {
+            edge.getEdgeData().setLabelSize(edgeDraft.getLabelSize());
+        }
 
         //Attributes
         if (edge.getEdgeData().getAttributes() != null) {

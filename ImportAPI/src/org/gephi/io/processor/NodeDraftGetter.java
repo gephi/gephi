@@ -55,6 +55,8 @@ public interface NodeDraftGetter extends NodeDraft {
 
     public boolean isVisible();
 
+    public float getLabelSize();
+
     public void setNode(Node node);
 
     public Node getNode();

@@ -419,6 +419,15 @@ public class VizBarController {
             });
             fontSizeSlider.setPreferredSize(new Dimension(100, 20));
             fontSizeSlider.setMaximumSize(new Dimension(100, 20));
+            model.addChangeListener(new ChangeListener() {
+
+                public void stateChanged(ChangeEvent e) {
+                    TextModel model = VizController.getInstance().getVizModel().getTextModel();
+                    if(((int)(model.getNodeSizeFactor() * 100f))!=fontSizeSlider.getValue()) {
+                        fontSizeSlider.setValue((int) (model.getNodeSizeFactor() * 100f));
+                    }
+                }
+            });
             components[3] = fontSizeSlider;
 
             //Color

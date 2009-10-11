@@ -43,8 +43,8 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     protected float g = 0f;
     protected float b = 0f;
     protected float alpha = 1f;
-    protected float cardinal = 1f;
     protected boolean labelVisible = true;
+    protected float labelSize = -1f;
     private Model model;
     protected Attributes attributes;
     protected TextData textData;
@@ -116,7 +116,7 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     }
 
     public float getSize() {
-        return cardinal;
+        return edge.getWeight();
     }
 
     public void setSize(float size) {
@@ -187,6 +187,14 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
 
     public void setLabelVisible(boolean value) {
         this.labelVisible = value;
+    }
+
+    public float getLabelSize() {
+        return labelSize;
+    }
+
+    public void setLabelSize(float labelSize) {
+        this.labelSize = labelSize;
     }
 
     public DynamicData getDynamicData() {

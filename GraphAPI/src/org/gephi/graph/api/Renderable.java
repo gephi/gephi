@@ -68,4 +68,8 @@ public interface Renderable extends Spatial {
     public void setLabelVisible(boolean value);
 
     public boolean isLabelVisible();
+
+    public void setLabelSize(float labelSize);
+
+    public float getLabelSize();
 }
