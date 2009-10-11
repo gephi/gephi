@@ -5,4 +5,32 @@
 <project name="0.7" basedir=".">
     <description>Builds the module suite 0.7.</description>
     <import file="nbproject/build-impl.xml"/>
+
+    <condition property="isWindows">
+        <os family="windows" />
+    </condition>
+
+    <target name="build-launchers" depends="suite.build-launchers">
+		<!-- Replace the icon for the Windows launcher exe. -->
+        <antcall target="replaceWindowsLauncherIcon"/>
+    </target>
+
+	<!-- Windows-only target that replaces the icon for the launcher exe with our own icon. -->
+    <target name="replaceWindowsLauncherIcon" if="isWindows" description="Replace the icon for the Windows launcher exe">
+        <echo message="Replacing icon of Windows launcher executable."/>
+        <exec executable="ReplaceVistaIcon.exe" resolveexecutable="true">
+            <arg line="build/launcher/bin/${app.name}.exe ${app.name}.ico"/>
+        </exec>
+    </target>
+
+<!-- Override to change Mac application icon. -->
+    <target name="build-mac" depends="suite.build-mac" description="Build Mac OS X Application">
+        <property name="nbdist-contents.dir" value="${dist.dir}/${app.name}.app/Contents"/>
+        <property name="nbdist-resources.dir" value="${nbdist-contents.dir}/Resources"/>
+
+		<!-- Replace the icns file. -->
+        <delete file="${nbdist-resources.dir}/${app.name}.icns"/>
+        <copy tofile="${nbdist-resources.dir}/${app.name}.icns" file="${app.name}.icns" />
+    </target>
+
 </project>
