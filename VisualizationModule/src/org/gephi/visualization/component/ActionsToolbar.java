@@ -118,6 +118,22 @@ public class ActionsToolbar extends JToolBar {
             }
         });
         add(resetSizeButton);
+
+        //Reset label size
+        JButton resetLabelSizeButton = new JButton();
+        resetLabelSizeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/resetSize.png")));
+        resetLabelSizeButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetLabelSizes"));
+        resetLabelSizeButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+                DirectedGraph graph = gc.getVisibleDirectedGraph();
+                for (Node n : graph.getNodes().toArray()) {
+                    n.getNodeData().setLabelSize(-1f);
+                }
+            }
+        });
+        add(resetLabelSizeButton);
     }
 
     private void initDesign() {
