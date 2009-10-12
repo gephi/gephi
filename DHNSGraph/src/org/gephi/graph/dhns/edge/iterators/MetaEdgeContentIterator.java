@@ -51,7 +51,7 @@ public class MetaEdgeContentIterator extends AbstractEdgeIterator implements Ite
         this.metaEdge = metaEdge;
         this.undirected = undirected;
         if (proposition == null) {
-            this.proposition = new Tautology();
+            this.proposition = Tautology.instance;
         } else {
             this.proposition = proposition;
         }

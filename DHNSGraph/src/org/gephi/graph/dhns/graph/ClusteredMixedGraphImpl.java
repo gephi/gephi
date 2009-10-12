@@ -131,12 +131,14 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
 
     public EdgeIterable getDirectedEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition), directedPredicate);
+//        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition, nodeProposition), directedPredicate);
+        return null;
     }
 
     public EdgeIterable getUndirectedEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition), undirectedPredicate);
+//        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition, nodeProposition), undirectedPredicate);
+        return null;
     }
 
     public boolean isDirected(Edge edge) {
@@ -153,41 +155,44 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
         AbstractNode targetNode = checkNode(node2);
         readLock();
         AbstractEdge res = null;
-        AbstractEdge edge = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
-        if (edge == null) {
-            edge = sourceNode.getEdgesInTree().getItem(targetNode.getNumber());
-        }
-        if (edgeProposition.evaluate(edge)) {
-            res = edge;
-        }
+//        AbstractEdge edge = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
+//        if (edge == null) {
+//            edge = sourceNode.getEdgesInTree().getItem(targetNode.getNumber());
+//        }
+//        if (edgeProposition.evaluate(edge)) {
+//            res = edge;
+//        }
         readUnlock();
         return res;
     }
 
     public EdgeIterable getEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
+//        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition, nodeProposition));
+        return null;
     }
 
     public NodeIterable getNeighbors(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
-        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition), absNode, nodeProposition));
+//        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition), absNode, nodeProposition));
+        return null;
     }
 
     public EdgeIterable getEdges(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
-        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, edgeProposition));
+//        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, edgeProposition));
+        return null;
     }
 
     public int getEdgeCount() {
         readLock();
         int count = 0;
-        for (EdgeIterator itr = new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition); itr.hasNext();) {
-            itr.next();
-            count++;
-        }
+//        for (EdgeIterator itr = new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition, nodeProposition); itr.hasNext();) {
+//            itr.next();
+//            count++;
+//        }
         readUnlock();
         return count;
     }
@@ -201,15 +206,15 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
         AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
-            for (Iterator<AbstractEdge> itr = absNode.getEdgesInTree().iterator(); itr.hasNext();) {
-                if (edgeProposition.evaluate(itr.next())) {
-                    count++;
-                }
-            }
-        } else {
-            count = absNode.getEdgesInTree().getCount();
-        }
+//        if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
+//            for (Iterator<AbstractEdge> itr = absNode.getEdgesInTree().iterator(); itr.hasNext();) {
+//                if (edgeProposition.evaluate(itr.next())) {
+//                    count++;
+//                }
+//            }
+//        } else {
+//            count = absNode.getEdgesInTree().getCount();
+//        }
         readUnlock();
         return count;
     }
@@ -219,15 +224,15 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
         AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
-            for (Iterator<AbstractEdge> itr = absNode.getEdgesOutTree().iterator(); itr.hasNext();) {
-                if (edgeProposition.evaluate(itr.next())) {
-                    count++;
-                }
-            }
-        } else {
-            count = absNode.getEdgesOutTree().getCount();
-        }
+//        if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
+//            for (Iterator<AbstractEdge> itr = absNode.getEdgesOutTree().iterator(); itr.hasNext();) {
+//                if (edgeProposition.evaluate(itr.next())) {
+//                    count++;
+//                }
+//            }
+//        } else {
+//            count = absNode.getEdgesOutTree().getCount();
+//        }
         readUnlock();
         return count;
     }

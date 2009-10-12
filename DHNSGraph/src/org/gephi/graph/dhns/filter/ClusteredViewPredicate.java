@@ -18,20 +18,26 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.edge.iterators;
+package org.gephi.graph.dhns.filter;
 
-import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodePredicate;
+import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.view.View;
 
 /**
- * Abstract Iterator.
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractEdgeIterator {
+public class ClusteredViewPredicate implements NodePredicate {
 
-    public abstract boolean hasNext();
+    private View view;
 
-    public abstract AbstractEdge next();
+    public ClusteredViewPredicate(View view) {
+        this.view = view;
+    }
 
-    public abstract void remove();
+    public boolean evaluate(Node element) {
+        return ((AbstractNode) element).isEnabled(view);
+    }
 }

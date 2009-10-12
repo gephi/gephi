@@ -18,20 +18,28 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.edge.iterators;
+package org.gephi.graph.dhns.filter;
 
-import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgePredicate;
+import org.gephi.graph.api.Predicate;
 
 /**
- * Abstract Iterator.
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractEdgeIterator {
+public class WeightPredicate implements EdgePredicate, Predicate<Edge> {
 
-    public abstract boolean hasNext();
+    private float rangeStart;
+    private float rangeEnd;
 
-    public abstract AbstractEdge next();
+    public WeightPredicate(float start, float end) {
+        this.rangeStart = start;
+        this.rangeEnd = end;
+    }
 
-    public abstract void remove();
+    public boolean evaluate(Edge element) {
+        float weight = element.getWeight();
+        return weight >= rangeStart && weight <= rangeEnd;
+    }
 }

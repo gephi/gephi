@@ -22,7 +22,6 @@ package org.gephi.graph.dhns.graph;
 
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgePredicate;
-import org.gephi.graph.api.FilteredGraph;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.Node;
@@ -33,7 +32,6 @@ import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.filter.FilterControl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
-import org.gephi.graph.dhns.proposition.PropositionImpl;
 import org.gephi.graph.dhns.view.View;
 
 /**
@@ -41,13 +39,11 @@ import org.gephi.graph.dhns.view.View;
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractGraphImpl implements FilteredGraph {
+public abstract class AbstractGraphImpl {
 
     protected Dhns dhns;
 
-    //Proposition
-    protected PropositionImpl<AbstractNode> nodeProposition;
-    protected PropositionImpl<AbstractEdge> edgeProposition;
+    //Propositio
 
     //Config
     protected boolean allowMultilevel = true;
@@ -56,27 +52,10 @@ public abstract class AbstractGraphImpl implements FilteredGraph {
     protected View view;
 
     //Filter
-    protected boolean filtered = false;
     protected FilterControl filterControl;
 
     public FilterControl getFilterControl() {
         return filterControl;
-    }
-
-    public void addNodePredicate(NodePredicate nodePredicate) {
-        nodeProposition.addPredicate(nodePredicate);
-    }
-
-    public void addEdgePredicate(EdgePredicate edgePredicate) {
-        edgeProposition.addPredicate(edgePredicate);
-    }
-
-    public void removeEdgePredicate(EdgePredicate edgePredicate) {
-        edgeProposition.removePredicate(edgePredicate);
-    }
-
-    public void removeNodePredicate(NodePredicate nodePredicate) {
-        nodeProposition.removePredicate(nodePredicate);
     }
 
     public NodePredicate[] getNodePredicates() {
@@ -87,28 +66,12 @@ public abstract class AbstractGraphImpl implements FilteredGraph {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void setNodeProposition(PropositionImpl<AbstractNode> nodeProposition) {
-        this.nodeProposition = nodeProposition;
-    }
-
-    public void setEdgeProposition(PropositionImpl<AbstractEdge> edgeProposition) {
-        this.edgeProposition = edgeProposition;
-    }
-
     public void setView(View view) {
         this.view = view;
     }
 
     public void setAllowMultilevel(boolean allowMultilevel) {
         this.allowMultilevel = allowMultilevel;
-    }
-
-    public PropositionImpl<AbstractNode> getNodeProposition() {
-        return nodeProposition;
-    }
-
-    public PropositionImpl<AbstractEdge> getEdgeProposition() {
-        return edgeProposition;
     }
 
     public boolean isAllowMultilevel() {

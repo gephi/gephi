@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.proposition;
 
+import org.gephi.graph.api.Predicate;
+
 /**
  *
  * @author Mathieu Bastian
@@ -38,5 +40,9 @@ public class Tautology implements Proposition {
 
     public boolean isSkipping() {
         return false;
+    }
+
+    public static boolean isTautology(Predicate predicate) {
+        return predicate==Tautology.instance;
     }
 }

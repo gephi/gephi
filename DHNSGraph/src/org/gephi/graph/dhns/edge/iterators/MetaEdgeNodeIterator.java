@@ -65,7 +65,7 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
         }
         this.undirected = undirected;
         if (proposition == null) {
-            this.proposition = new Tautology();
+            this.proposition = Tautology.instance;
         } else {
             this.proposition = proposition;
         }

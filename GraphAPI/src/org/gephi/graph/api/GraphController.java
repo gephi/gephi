@@ -52,8 +52,6 @@ public interface GraphController {
 
     public HierarchicalMixedGraph getVisibleHierarchicalMixedGraph();
 
-    public <T extends Graph> FilteredGraph<T> getFilteredGraph(T graph);
-
     public <T extends Graph> DynamicGraph<T> getDynamicGraph(T graph);
 
     public DynamicGraph getCentralDynamicGraph();

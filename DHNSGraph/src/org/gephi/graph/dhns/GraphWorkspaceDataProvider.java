@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns;
 
 import org.gephi.graph.dhns.core.Dhns;
-import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceDataKey;
 import org.gephi.workspace.api.WorkspaceDataProvider;
 import org.w3c.dom.Document;

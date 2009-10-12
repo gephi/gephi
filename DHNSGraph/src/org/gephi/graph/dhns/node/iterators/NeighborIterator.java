@@ -22,11 +22,9 @@ package org.gephi.graph.dhns.node.iterators;
 
 import java.util.Iterator;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
  * Iterator on neighbour of a node. The edge iterator is given to the constructor.
@@ -39,16 +37,16 @@ public class NeighborIterator extends AbstractNodeIterator implements Iterator<N
     private AbstractNode owner;
     private AbstractNode pointer;
     //Propostion
-    private Predicate<AbstractNode> proposition;
+//    private Predicate<AbstractNode> proposition;
 
-    public NeighborIterator(AbstractEdgeIterator edgeIterator, AbstractNode owner, Predicate<AbstractNode> proposition) {
+    public NeighborIterator(AbstractEdgeIterator edgeIterator, AbstractNode owner/*, Predicate<AbstractNode> proposition*/) {
         this.edgeIterator = edgeIterator;
         this.owner = owner;
-        if (proposition == null) {
-            this.proposition = new Tautology();
-        } else {
-            this.proposition = proposition;
-        }
+//        if (proposition == null) {
+//            this.proposition = Tautology.instance;
+//        } else {
+//            this.proposition = proposition;
+//        }
     }
 
     public boolean hasNext() {
@@ -60,9 +58,9 @@ public class NeighborIterator extends AbstractNodeIterator implements Iterator<N
                 } else {
                     pointer = edge.getSource();
                 }
-                if (proposition.evaluate(pointer)) {
-                    return true;
-                }
+//                if (proposition.evaluate(pointer)) {
+//                    return true;
+//                }
             }
         }
         return false;

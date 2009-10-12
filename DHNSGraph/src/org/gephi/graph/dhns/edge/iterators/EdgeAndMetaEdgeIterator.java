@@ -58,7 +58,7 @@ public class EdgeAndMetaEdgeIterator extends AbstractEdgeIterator implements Ite
         edgeIterator = new ParamAVLIterator<MetaEdgeImpl>();
         this.undirected = undirected;
         if (proposition == null) {
-            this.proposition = new Tautology();
+            this.proposition = Tautology.instance;
         } else {
             this.proposition = proposition;
         }

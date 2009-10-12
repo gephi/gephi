@@ -18,20 +18,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.edge.iterators;
-
-import org.gephi.graph.dhns.edge.AbstractEdge;
+package org.gephi.graph.api;
 
 /**
- * Abstract Iterator.
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractEdgeIterator {
+public interface TopologicalPredicate<T> extends Predicate<T> {
 
-    public abstract boolean hasNext();
-
-    public abstract AbstractEdge next();
-
-    public abstract void remove();
+    public boolean evaluate(T element, Graph graph);
 }

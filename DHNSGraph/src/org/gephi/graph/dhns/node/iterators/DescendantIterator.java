@@ -28,7 +28,6 @@ import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
@@ -55,7 +54,7 @@ public class DescendantIterator extends AbstractNodeIterator implements Iterator
         diffIndex = 2;
         treeSize = treeList.size();
         if (proposition == null) {
-            this.proposition = new Tautology();
+            this.proposition = Tautology.instance;
         } else {
             this.proposition = proposition;
         }

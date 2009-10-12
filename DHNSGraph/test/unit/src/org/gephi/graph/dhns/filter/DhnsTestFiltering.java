@@ -84,14 +84,14 @@ public class DhnsTestFiltering {
         Node node7 = nodeMap.get("Node 7");
         Node node8 = nodeMap.get("Node 8");
 
-        AbstractEdge edge1 = factory.newEdge(node4, node5);
-        AbstractEdge edge2 = factory.newEdge(node5, node6);
-        AbstractEdge edge3 = factory.newEdge(node6, node5);
-        AbstractEdge edge4 = factory.newEdge(node7, node7);
-        AbstractEdge edge5 = factory.newEdge(node4, node4);
-        AbstractEdge edge6 = factory.newEdge(node2, node1);
-        AbstractEdge edge7 = factory.newEdge(node2, node3);
-        AbstractEdge edge8 = factory.newEdge(node2, node5);
+        AbstractEdge edge1 = factory.newEdge(node4, node5, 1f, true);
+        AbstractEdge edge2 = factory.newEdge(node5, node6, 4f, true);
+        AbstractEdge edge3 = factory.newEdge(node6, node5, 3f, true);
+        AbstractEdge edge4 = factory.newEdge(node7, node7, 5f, true);
+        AbstractEdge edge5 = factory.newEdge(node4, node4, 2f, true);
+        AbstractEdge edge6 = factory.newEdge(node2, node1, 1f, true);
+        AbstractEdge edge7 = factory.newEdge(node2, node3, 10f, true);
+        AbstractEdge edge8 = factory.newEdge(node2, node5, 12f, true);
 
         graphGlobal.addEdge(edge1);
         graphGlobal.addEdge(edge2);
@@ -114,7 +114,6 @@ public class DhnsTestFiltering {
 
     @Test
     public void testSetUp() {
-        graphGlobal.getFilterControl().filterParameterUpdated();
         Node[] expected = new Node[10];
         for (int i = 0; i < nodeMap.size(); i++) {
             expected[i] = nodeMap.get("Node " + i);
@@ -125,5 +124,14 @@ public class DhnsTestFiltering {
 
     @Test
     public void testFiltering() {
+        FilterControl fc = graphGlobal.getFilterControl();
+        fc.addPredicate(new DegreePredicate(1, 3));
+        fc.addPredicate(new WeightPredicate(0, 5));
+        for (Node n : graphGlobal.getNodes().toArray()) {
+            System.out.println(n.getNodeData().getLabel());
+        }
+        for (Edge e : graphGlobal.getEdges().toArray()) {
+            System.out.println(e.getSource().getNodeData().getLabel() + "-" + e.getTarget().getNodeData().getLabel());
+        }
     }
 }

@@ -18,10 +18,22 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.graph.dhns.filter;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.NodePredicate;
+import org.gephi.graph.api.Predicate;
+import org.gephi.graph.api.TopologicalPredicate;
 import org.gephi.graph.dhns.core.Dhns;
+import org.gephi.graph.dhns.core.GraphVersion;
+import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
+import org.gephi.graph.dhns.graph.ClusteredGraphImpl;
+import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
 import org.gephi.graph.dhns.proposition.Tautology;
 import org.gephi.graph.dhns.utils.avl.AbstractEdgeTree;
@@ -45,33 +57,159 @@ public class FilterControl {
 
     private FilterResult currentResult;
     private Dhns dhns;
+    private ClusteredGraphImpl graph;
+    private List<Predicate> predicates = new ArrayList<Predicate>();
+    private boolean filtered = false;
+    private GraphVersion graphVersion;
+    private ReentrantLock lock;
 
-    public FilterControl(Dhns dhns) {
+    //Versionning
+    private int nodeVersion = -1;
+    private int edgeVersion = -1;
+
+    public FilterControl(Dhns dhns, ClusteredGraphImpl graph) {
         this.dhns = dhns;
+        this.graphVersion = dhns.getGraphVersion();
+        this.graph = graph;
         currentResult = new FilterResult(new AbstractNodeTree(), new AbstractEdgeTree());
+
+        lock = new ReentrantLock();
     }
 
-    public FilterResult getCurrentFilterResult() {
-        return currentResult;
+    private void checkUpdate() {
+        if (lock.isHeldByCurrentThread()) {
+            return;
+        }
+        int nv = graphVersion.getNodeVersion();
+        int ev = graphVersion.getEdgeVersion();
+        if (nodeVersion != nv || edgeVersion != ev) {
+            lock.lock();
+            update();
+            nodeVersion = nv;
+            edgeVersion = ev;
+            lock.unlock();
+        }
     }
 
     private boolean update() {
-        AbstractNodeTree nodeTree = new AbstractNodeTree();
-        TreeIterator nodeIterator = new TreeIterator(dhns.getTreeStructure(), new Tautology());
-        for(;nodeIterator.hasNext();) {
-            nodeTree.add(nodeIterator.next());
-        }
-        AbstractEdgeTree edgeTree = new AbstractEdgeTree();
 
-        FilterResult filterResult = new FilterResult(nodeTree, edgeTree);
-        currentResult = filterResult;
-        
+        //Initial
+        filtered = false;
+        AbstractEdgeTree initialEdges = new AbstractEdgeTree();
+        AbstractNodeTree initialNodes = new AbstractNodeTree();
+        for (TreeIterator treeIterator = new TreeIterator(dhns.getTreeStructure(), Tautology.instance); treeIterator.hasNext();) {
+            initialNodes.add(treeIterator.next());
+        }
+        for (Edge edge : graph.getEdges()) {
+            initialEdges.add((AbstractEdge) edge);
+        }
+        currentResult = new FilterResult(initialNodes, initialEdges);
+        filtered = true;
+
+        for (Predicate p : predicates) {
+            AbstractEdgeTree edgeTree = currentResult.getEdgeTree();
+            AbstractNodeTree nodeTree = currentResult.getNodeTree();
+            if (p instanceof NodePredicate) {
+                nodeTree = new AbstractNodeTree();
+                for (AbstractNodeIterator itr = currentResult.nodeIterator(); itr.hasNext();) {
+                    AbstractNode node = itr.next();
+                    boolean val;
+                    if (p instanceof TopologicalPredicate) {
+                        val = ((TopologicalPredicate) p).evaluate(node, graph);
+                    } else {
+                        val = p.evaluate(node);
+                    }
+                    if (val) {
+                        nodeTree.add(node);
+                    }
+                }
+
+                //Clean edges
+                for (AbstractEdgeIterator itr = edgeTree.iterator(); itr.hasNext();) {
+                    AbstractEdge e = itr.next();
+                    if (!nodeTree.contains(e.getSource()) || !nodeTree.contains(e.getTarget())) {
+                        itr.remove();
+                    }
+                }
+            } else {
+                edgeTree = new AbstractEdgeTree();
+                for (AbstractEdgeIterator itr = currentResult.edgeIterator(); itr.hasNext();) {
+                    AbstractEdge edge = itr.next();
+                    boolean val;
+                    if (p instanceof TopologicalPredicate) {
+                        val = ((TopologicalPredicate) p).evaluate(edge, graph);
+                    } else {
+                        val = p.evaluate(edge);
+                    }
+                    if (val) {
+                        edgeTree.add(edge);
+                    }
+                }
+            }
+
+            currentResult = new FilterResult(nodeTree, edgeTree);
+        }
         return true;
     }
 
-    public void filterParameterUpdated() {
-        dhns.getWriteLock().lock();
-        update();
-        dhns.getWriteLock().unlock();
+    public void addPredicate(Predicate predicate) {
+        predicates.add(predicate);
+        filtered = true;
+    }
+
+    public boolean isFiltered() {
+        return filtered;
+    }
+
+    public boolean evaluateNode(AbstractNode node) {
+        if (filtered) {
+            checkUpdate();
+            return currentResult.evaluateNode(node);
+        }
+        return true;
+    }
+
+    public boolean evaluateEdge(AbstractEdge edge) {
+        if (filtered) {
+            checkUpdate();
+            return currentResult.evaluateEdge(edge);
+        }
+        return true;
+    }
+
+    public int getNodeCount() {
+        checkUpdate();
+        return currentResult.getNodeCount();
+    }
+
+    public int getEdgeCount() {
+        checkUpdate();
+        return currentResult.getEdgeCount();
+    }
+
+    public Predicate<AbstractNode> getNodePredicate() {
+        if (filtered) {
+            checkUpdate();
+            return currentResult.getNodePredicate();
+        }
+        return Tautology.instance;
+    }
+
+    public Predicate<AbstractEdge> getEdgePredicate() {
+        if (filtered) {
+            checkUpdate();
+            return currentResult.getEdgePredicate();
+        }
+        return Tautology.instance;
+    }
+
+    public AbstractNodeIterator nodeIterator() {
+        checkUpdate();
+        return currentResult.nodeIterator();
+    }
+
+    public AbstractEdgeIterator edgeIterator() {
+        checkUpdate();
+        return currentResult.edgeIterator();
     }
 }

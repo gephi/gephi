@@ -86,7 +86,6 @@ public class DhnsGraphController implements GraphController {
     public Dhns newDhns(Workspace workspace) {
         Dhns dhns = new Dhns(this);
         workspace.getWorkspaceData().setData(workspaceDataProvider.getWorkspaceDataKey(), dhns);
-        dhns.setCentralDynamicGraph(new DynamicGraphImpl(dhns, getHierarchicalDirectedGraph()));
         return dhns;
     }
 
@@ -258,14 +257,6 @@ public class DhnsGraphController implements GraphController {
         return new ClusteredUndirectedGraphImpl(dhns, true, false);
     }
 
-    public <T extends Graph> FilteredGraph<T> getFilteredGraph(T graph) {
-        Dhns dhns = getCurrentDhns();
-        if (dhns == null) {
-            return null;
-        }
-        return copyGraph((ClusteredGraphImpl) graph);
-    }
-
     public DynamicGraph getDynamicGraph(Graph graph) {
         Dhns dhns = getCurrentDhns();
         if (dhns == null) {
@@ -285,8 +276,6 @@ public class DhnsGraphController implements GraphController {
     public ClusteredGraphImpl copyGraph(ClusteredGraphImpl graph) {
         ClusteredGraphImpl absGraph = (ClusteredGraphImpl) graph;
         ClusteredGraphImpl copy = absGraph.copy(absGraph);
-        copy.setNodeProposition(absGraph.getNodeProposition().copy());
-        copy.setEdgeProposition(absGraph.getEdgeProposition().copy());
         copy.setAllowMultilevel(absGraph.isAllowMultilevel());
         copy.setView(absGraph.getView());
         return copy;

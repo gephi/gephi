@@ -74,6 +74,14 @@ public class FilterResult {
         return edgeTree.getCount();
     }
 
+    public AbstractNodeTree getNodeTree() {
+        return nodeTree;
+    }
+
+    public AbstractEdgeTree getEdgeTree() {
+        return edgeTree;
+    }
+
     private class NodeInFilterResultPredicate implements Predicate<AbstractNode> {
 
         public boolean evaluate(AbstractNode element) {
@@ -84,6 +92,9 @@ public class FilterResult {
     private class EdgeInFilterResultPredicate implements Predicate<AbstractEdge> {
 
         public boolean evaluate(AbstractEdge element) {
+            if (element.isMetaEdge()) {
+                return true;
+            }
             return edgeTree.contains(element);
         }
     }

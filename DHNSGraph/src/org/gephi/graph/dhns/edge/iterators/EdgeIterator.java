@@ -46,22 +46,28 @@ public class EdgeIterator extends AbstractEdgeIterator implements Iterator<Edge>
     protected boolean undirected;
 
     //Proposition
-    protected Predicate<AbstractEdge> proposition;
+    protected Predicate<AbstractNode> nodePredicate;
+    protected Predicate<AbstractEdge> edgePredicate;
 
-    public EdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected, Predicate<AbstractEdge> proposition) {
+    public EdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected, Predicate<AbstractEdge> edgePredicate, Predicate<AbstractNode> nodePredicate) {
         this.nodeIterator = nodeIterator;
         edgeIterator = new ParamAVLIterator<ProperEdgeImpl>();
         this.undirected = undirected;
-        if (proposition == null) {
-            this.proposition = new Tautology();
+        if (nodePredicate == null) {
+            this.nodePredicate = Tautology.instance;
         } else {
-            this.proposition = proposition;
+            this.nodePredicate = nodePredicate;
+        }
+        if (edgePredicate == null) {
+            this.edgePredicate = Tautology.instance;
+        } else {
+            this.edgePredicate = edgePredicate;
         }
     }
 
     @Override
     public boolean hasNext() {
-        while (pointer == null || (undirected && pointer.getUndirected() != pointer) || !proposition.evaluate(pointer)) {
+        while (pointer == null || (undirected && pointer.getUndirected() != pointer) || !edgePredicate.evaluate(pointer)) {
             while (!edgeIterator.hasNext()) {
                 if (nodeIterator.hasNext()) {
                     currentNode = nodeIterator.next();
@@ -74,6 +80,9 @@ public class EdgeIterator extends AbstractEdgeIterator implements Iterator<Edge>
             }
 
             pointer = edgeIterator.next();
+            if (!nodePredicate.evaluate(pointer.getTarget())) {
+                pointer = null;
+            }
         }
         return true;
     }
