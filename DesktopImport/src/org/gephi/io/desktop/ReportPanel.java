@@ -39,12 +39,17 @@ import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.OutlineModel;
 import org.netbeans.swing.outline.RenderDataProvider;
 import org.netbeans.swing.outline.RowModel;
+import org.openide.util.NbPreferences;
 
 /**
  *
  * @author Mathieu Bastian
  */
 public class ReportPanel extends javax.swing.JPanel {
+
+    //Preferences
+    private final static String SHOW_ISSUES = "ReportPanel_Show_Issues";
+    private final static String SHOW_REPORT = "ReportPanel_Show_Report";
 
     private ThreadGroup fillingThreads;
 
@@ -96,7 +101,9 @@ public class ReportPanel extends javax.swing.JPanel {
                     busyLabel.setBusy(false);
                 }
             }, "Report Panel Issues Outline");
-            thread.start();
+            if (NbPreferences.forModule(ReportPanel.class).getBoolean(SHOW_ISSUES, true)) {
+                thread.start();
+            }
         }
     }
 
@@ -109,7 +116,9 @@ public class ReportPanel extends javax.swing.JPanel {
                 reportEditor.setText(str);
             }
         }, "Report Panel Issues Report");
-        thread.start();
+        if (NbPreferences.forModule(ReportPanel.class).getBoolean(SHOW_REPORT, true)) {
+            thread.start();
+        }
     }
 
     private void fillStats(Container container) {
