@@ -104,7 +104,12 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     public void resetPropertiesValues() {
         setStepRatio((float) 0.9);
         setRelativeStrength((float) 0.2);
-        setOptimalDistance((float) (Math.pow(getRelativeStrength(), 1.0 / 3) * GraphUtils.getAverageEdgeLength(graph)));
+        if (graph != null) {
+            setOptimalDistance((float) (Math.pow(getRelativeStrength(), 1.0 / 3) * GraphUtils.getAverageEdgeLength(graph)));
+        } else {
+            setOptimalDistance(1.0f);
+        }
+
         setStep(100f);
         setQuadTreeMaxLevel(10);
         setBarnesHutTheta(1.2f);
