@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Filters;
+import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.NodePredicate;
 import org.gephi.graph.api.Predicate;
 import org.gephi.graph.api.TopologicalPredicate;
@@ -53,7 +55,7 @@ import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
  * evaluate(Node) que l'iterateurs de getNieighbors donne le bon resultat.
  * @author Mathieu
  */
-public class FilterControl {
+public class FilterControl implements Filters {
 
     private FilterResult currentResult;
     private Dhns dhns;
@@ -154,6 +156,9 @@ public class FilterControl {
 
     public void addPredicate(Predicate predicate) {
         predicates.add(predicate);
+        if(graph.getClusteredGraph()!=null) {
+            graph.getClusteredGraph().getFilters().addPredicate(predicate);
+        }
         filtered = true;
     }
 
@@ -211,5 +216,10 @@ public class FilterControl {
     public AbstractEdgeIterator edgeIterator() {
         checkUpdate();
         return currentResult.edgeIterator();
+    }
+
+    public void predicateParametersUpdates() {
+        dhns.getGraphVersion().incNodeAndEdgeVersion();
+        dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 }

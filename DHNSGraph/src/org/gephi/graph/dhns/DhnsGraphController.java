@@ -30,6 +30,7 @@ import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.graph.api.ClusteredDirectedGraph;
 import org.gephi.graph.api.ClusteredMixedGraph;
 import org.gephi.graph.api.ClusteredUndirectedGraph;
+import org.gephi.graph.api.DecoratorFactory;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.DynamicGraph;
 import org.gephi.graph.api.FilteredGraph;
@@ -40,6 +41,7 @@ import org.gephi.graph.api.HierarchicalMixedGraph;
 import org.gephi.graph.api.HierarchicalUndirectedGraph;
 import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.UndirectedGraph;
+import org.gephi.graph.dhns.core.DecoratorFactoryImpl;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphFactoryImpl;
 import org.gephi.graph.dhns.core.IDGen;
@@ -86,6 +88,7 @@ public class DhnsGraphController implements GraphController {
     public Dhns newDhns(Workspace workspace) {
         Dhns dhns = new Dhns(this);
         workspace.getWorkspaceData().setData(workspaceDataProvider.getWorkspaceDataKey(), dhns);
+        dhns.setVisualizedGraph(getHierarchicalDirectedGraph());
         return dhns;
     }
 
@@ -95,6 +98,14 @@ public class DhnsGraphController implements GraphController {
 
     public GraphFactoryImpl factory() {
         return factory;
+    }
+
+    public DecoratorFactory decorators() {
+        Dhns dhns = getCurrentDhns();
+        if (dhns == null) {
+            return null;
+        }
+        return dhns.getDecoratorFactory();
     }
 
     public IDGen getIDGen() {
@@ -265,12 +276,12 @@ public class DhnsGraphController implements GraphController {
         return new DynamicGraphImpl(dhns, copyGraph((ClusteredGraphImpl) graph));
     }
 
-    public DynamicGraph getCentralDynamicGraph() {
+    public Graph getVisualizedGraph() {
         Dhns dhns = getCurrentDhns();
         if (dhns == null) {
             return null;
         }
-        return dhns.getCentralDynamicGraph();
+        return dhns.getVisualizedGraph();
     }
 
     public ClusteredGraphImpl copyGraph(ClusteredGraphImpl graph) {

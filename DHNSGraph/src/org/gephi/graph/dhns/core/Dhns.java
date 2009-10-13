@@ -25,6 +25,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.gephi.graph.api.DynamicGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Predicate;
@@ -51,6 +52,7 @@ public class Dhns {
     private ViewManager viewManager;
     private PropositionManager propositionManager;
     private DynamicManager dynamicManager;
+    private DecoratorFactoryImpl decoratorFactory;
 
     //Type
     private boolean directed = false;
@@ -61,7 +63,7 @@ public class Dhns {
     private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
     //Temp
-    private DynamicGraph centralDynamicGraph;
+    private Graph visualizedGraph;
 
     public Dhns(DhnsGraphController controller) {
         this.controller = controller;
@@ -72,18 +74,20 @@ public class Dhns {
         eventManager = new EventManager(this);
         propositionManager = new PropositionManager(this);
         dynamicManager = new DynamicManager(this);
+        decoratorFactory = new DecoratorFactoryImpl(this);
+        
         init();
     }
 
     public void init() {
     }
 
-    public DynamicGraph getCentralDynamicGraph() {
-        return centralDynamicGraph;
+    public Graph getVisualizedGraph() {
+        return visualizedGraph;
     }
 
-    public void setCentralDynamicGraph(DynamicGraph centralDynamicGraph) {
-        this.centralDynamicGraph = centralDynamicGraph;
+    public void setVisualizedGraph(Graph visualizedGraph) {
+        this.visualizedGraph = visualizedGraph;
     }
 
     public DhnsGraphController getController() {
@@ -124,6 +128,10 @@ public class Dhns {
 
     public DynamicManager getDynamicManager() {
         return dynamicManager;
+    }
+
+    public DecoratorFactoryImpl getDecoratorFactory() {
+        return decoratorFactory;
     }
 
     public NodeIterable newNodeIterable(AbstractNodeIterator iterator) {

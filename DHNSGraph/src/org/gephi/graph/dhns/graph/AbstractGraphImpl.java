@@ -54,7 +54,7 @@ public abstract class AbstractGraphImpl {
     //Filter
     protected FilterControl filterControl;
 
-    public FilterControl getFilterControl() {
+    public FilterControl getFilters() {
         return filterControl;
     }
 

@@ -20,16 +20,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
-import org.gephi.graph.api.DynamicData;
 import org.gephi.graph.api.DynamicGraph;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.EdgePredicate;
-import org.gephi.graph.api.FilteredGraph;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphEvent.EventType;
-import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodePredicate;
 import org.gephi.graph.dhns.core.Dhns;
+import org.gephi.graph.dhns.filter.DynamicEdgePredicate;
+import org.gephi.graph.dhns.filter.DynamicNodePredicate;
+import org.gephi.graph.dhns.filter.FilterControl;
 
 /**
  *
@@ -41,28 +37,30 @@ public class DynamicGraphImpl<T extends Graph> implements DynamicGraph {
     private T graph;
     private Dhns dhns;
 
-    //Range
+    //Predicates
+    private DynamicNodePredicate nodePredicate;
+    private DynamicEdgePredicate edgePredicate;
     private float from = 0;
     private float to = 1;
 
     public DynamicGraphImpl(Dhns dhns, T graph) {
         this.graph = graph;
         this.dhns = dhns;
-        FilteredGraph filteredGraph = (FilteredGraph) graph;
-        filteredGraph.addNodePredicate(new DynamicNodePredicate());
-        filteredGraph.addEdgePredicate(new DynamicEdgePredicate());
-        filteredGraph = (FilteredGraph) ((ClusteredGraphImpl) graph).getClusteredGraph();
-        filteredGraph.addNodePredicate(new DynamicNodePredicate());
-        filteredGraph.addEdgePredicate(new DynamicEdgePredicate());
+        nodePredicate = new DynamicNodePredicate();
+        edgePredicate = new DynamicEdgePredicate();
+        graph.getFilters().addPredicate(edgePredicate);
+        graph.getFilters().addPredicate(nodePredicate);
+        
     }
 
     public void setRange(float from, float to) {
         graph.writeLock();
         this.from = from;
         this.to = to;
+        nodePredicate.setRange(from, to);
+        edgePredicate.setRange(from, to);
         graph.writeUnlock();
-        dhns.getGraphVersion().incNodeAndEdgeVersion();
-        dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
+        ((FilterControl) graph.getFilters()).predicateParametersUpdates();
     }
 
     public float getRangeFrom() {
@@ -75,33 +73,5 @@ public class DynamicGraphImpl<T extends Graph> implements DynamicGraph {
 
     public T getGraph() {
         return graph;
-    }
-
-    private class DynamicNodePredicate implements NodePredicate {
-
-        public boolean evaluate(Node element) {
-            //Check if element is in the range
-            DynamicData dd = element.getNodeData().getDynamicData();
-            if (dd.getRangeFrom() == -1 || dd.getRangeTo() == -1) {
-                return true;
-            }
-            return dd.getRangeFrom() >= from && dd.getRangeTo() <= to;
-        }
-    }
-
-    private class DynamicEdgePredicate implements EdgePredicate {
-
-        public boolean evaluate(Edge element) {
-            //Check if element is in the range
-            DynamicData dd = element.getEdgeData().getDynamicData();
-            if (dd.getRangeFrom() == -1 || dd.getRangeTo() == -1) {
-                DynamicData ddTarget = element.getTarget().getNodeData().getDynamicData();
-                if (!(ddTarget.getRangeFrom() >= from && ddTarget.getRangeTo() <= to)) {
-                    return false;
-                }
-                return true;
-            }
-            return dd.getRangeFrom() >= from && dd.getRangeTo() <= to;
-        }
     }
 }

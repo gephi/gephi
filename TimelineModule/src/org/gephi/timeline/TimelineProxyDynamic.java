@@ -23,6 +23,7 @@ package org.gephi.timeline;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.gephi.graph.api.DynamicGraph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.timeline.TimelineQuartzSimple;
 import org.gephi.timeline.api.TimelineProxy;
@@ -48,11 +49,11 @@ public class TimelineProxyDynamic implements TimelineProxy, TimelineQuartzListen
     private List<Float> data;
     private int data_getNbOfFakeRevisions = 800;
     private Float speed;
-
     TimelinePlayMode playMode = TimelinePlayMode.YOUNGEST;
+    DynamicGraph dynamicGraph;
 
     public TimelineProxyDynamic() {
-        
+
         // defaults
         from = 0.15f; // defaut position of the left hook when we start the GUI
         to = 0.85f; // default position of the right hook when we start the GUI
@@ -70,6 +71,8 @@ public class TimelineProxyDynamic implements TimelineProxy, TimelineQuartzListen
         quartz = new TimelineQuartzSimple();
         quartz.addTimelineQuartzListener(this);
         quartz.setDelay(500);
+
+
     }
 
     public List<Float> getOverviewSample(int resolution) {
@@ -90,8 +93,10 @@ public class TimelineProxyDynamic implements TimelineProxy, TimelineQuartzListen
 
     public List<Float> getZoomSample(int resolution) {
 
-        if (resolution < 1) resolution = 1;
-        
+        if (resolution < 1) {
+            resolution = 1;
+        }
+
         // TODO put a call to the timeline engine here ?
         // get size from the timeline
         int size = data.size(); // eg 200000000
@@ -105,7 +110,9 @@ public class TimelineProxyDynamic implements TimelineProxy, TimelineQuartzListen
         List<Float> tmp = new ArrayList<Float>();
 
         int unit = (totalt - totalf) / resolution; // eg.  16 = 10000 / 600
-        if (unit < 1) unit = 1;
+        if (unit < 1) {
+            unit = 1;
+        }
         //System.out.println("unit: " + unit);
 
         for (int i = 0; i < resolution; i++) {
@@ -114,27 +121,39 @@ public class TimelineProxyDynamic implements TimelineProxy, TimelineQuartzListen
         return tmp;
     }
 
+    private boolean getDynamicGraph() {
+        if (dynamicGraph == null) {
+            GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+            if (gc.decorators() != null) {
+                dynamicGraph = gc.decorators().getDynamicGraph(gc.getVisualizedGraph());
+                if (dynamicGraph != null) {
+                    return true;
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void selectInterval(Float from, Float to) {
-        if (0.0f < to && to < 1.0f && 0.0f < from && from < 1.0f && from < to) {
+        if (0.0f < to && to < 1.0f && 0.0f < from && from < 1.0f && from < to && getDynamicGraph()) {
             this.to = to;
             this.from = from;
-            GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-            gc.getCentralDynamicGraph().setRange(from, to);
+            dynamicGraph.setRange(from, to);
         }
     }
+
     public void selectTo(Float to) {
-        if (0.0f < to && to < 1.0f && from < to) {
+        if (0.0f < to && to < 1.0f && from < to && getDynamicGraph()) {
             this.to = to;
-            GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-            gc.getCentralDynamicGraph().setRange(from, to);
+            dynamicGraph.setRange(from, to);
         }
     }
 
     public void selectFrom(Float from) {
-        if (0.0f < from && from < 1.0f && from < to) {
+        if (0.0f < from && from < 1.0f && from < to && getDynamicGraph()) {
             this.from = from;
-            GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-            gc.getCentralDynamicGraph().setRange(from, to);
+            dynamicGraph.setRange(from, to);
         }
 
     }
@@ -142,8 +161,9 @@ public class TimelineProxyDynamic implements TimelineProxy, TimelineQuartzListen
     public Comparable getFirstComparable() {
         return data.get(0);
     }
+
     public Comparable getLastComparable() {
-        return data.get(data.size()-1);
+        return data.get(data.size() - 1);
     }
 
     public Float getSelectionFrom() {
@@ -151,13 +171,15 @@ public class TimelineProxyDynamic implements TimelineProxy, TimelineQuartzListen
     }
 
     public Comparable getSelectionFromAsComparable() {
-        return data.get((int) (from * (float)data.size()));
+        return data.get((int) (from * (float) data.size()));
     }
+
     public Float getSelectionTo() {
         return to;
     }
+
     public Comparable getSelectionToAsComparable() {
-        return data.get((int) (to * (float)data.size()));
+        return data.get((int) (to * (float) data.size()));
     }
 
     public void play() {
@@ -166,9 +188,10 @@ public class TimelineProxyDynamic implements TimelineProxy, TimelineQuartzListen
 
     public void play(TimelinePlayMode playMode) {
         this.playMode = playMode;
-        if (quartz.isRunning()) 
+        if (quartz.isRunning()) {
             quartz.start();
-        
+        }
+
     }
 
     public void pause() {
@@ -187,20 +210,19 @@ public class TimelineProxyDynamic implements TimelineProxy, TimelineQuartzListen
         // delay is the current "resolution" of the quartz
         // this is provided ases convenience, in case you would need it for your
         // calculations
-        switch(playMode) {
+        switch (playMode) {
             case OLDEST:
                 selectFrom(getSelectionFrom() + speed);
                 break;
             case BOTH:
                 selectInterval(getSelectionFrom() + speed,
-                               getSelectionTo() + speed);
+                        getSelectionTo() + speed);
                 break;
             case YOUNGEST:
                 selectTo(getSelectionTo() + speed);
                 break;
         }
     }
-
 
     public void setTimelinePlayMode(TimelinePlayMode playMode) {
         this.playMode = playMode;

@@ -96,10 +96,10 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         }
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        System.out.println("workspace="+pc.getCurrentWorkspace().getName());
 
         if (graph.isDynamic()) {
-            graph = (ClusteredDirectedGraph) controller.getCentralDynamicGraph().getGraph();
+            System.out.println("dynamic graph");
+            graph = (ClusteredDirectedGraph) controller.getVisualizedGraph();
         }
 
         ModelClass[] object3dClasses = engine.getModelClasses();

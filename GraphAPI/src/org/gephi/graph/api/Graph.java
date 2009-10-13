@@ -341,4 +341,6 @@ public interface Graph {
      * Release the write lock on the graph. Must be called from the same thread that locked the graph.
      */
     public void writeUnlock();
+
+    public Filters getFilters();
 }

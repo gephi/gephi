@@ -28,6 +28,8 @@ public interface GraphController {
 
     public GraphFactory factory();
 
+    public DecoratorFactory decorators();
+
     public DirectedGraph getDirectedGraph();
 
     public DirectedGraph getVisibleDirectedGraph();
@@ -54,5 +56,5 @@ public interface GraphController {
 
     public <T extends Graph> DynamicGraph<T> getDynamicGraph(T graph);
 
-    public DynamicGraph getCentralDynamicGraph();
+    public Graph getVisualizedGraph();
 }
