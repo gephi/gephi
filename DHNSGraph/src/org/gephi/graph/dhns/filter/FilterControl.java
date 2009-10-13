@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.filter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 import org.gephi.graph.api.Edge;
@@ -40,6 +41,7 @@ import org.gephi.graph.dhns.node.iterators.TreeIterator;
 import org.gephi.graph.dhns.proposition.Tautology;
 import org.gephi.graph.dhns.utils.avl.AbstractEdgeTree;
 import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
+import org.openide.util.Exceptions;
 
 /**
  *  Cette classe contient un etant du graphe, après filtrage. Un graphe non filtré na pas besoin de cache car les iterateurs directs
@@ -60,10 +62,11 @@ public class FilterControl implements Filters {
     private FilterResult currentResult;
     private Dhns dhns;
     private ClusteredGraphImpl graph;
-    private List<Predicate> predicates = new ArrayList<Predicate>();
+    private final List<Predicate> predicates = new ArrayList<Predicate>();
     private boolean filtered = false;
     private GraphVersion graphVersion;
     private ReentrantLock lock;
+    private DispatchThread dispatchThread;
 
     //Versionning
     private int nodeVersion = -1;
@@ -74,7 +77,7 @@ public class FilterControl implements Filters {
         this.graphVersion = dhns.getGraphVersion();
         this.graph = graph;
         currentResult = new FilterResult(new AbstractNodeTree(), new AbstractEdgeTree());
-
+        dispatchThread = new DispatchThread();
         lock = new ReentrantLock();
     }
 
@@ -155,8 +158,11 @@ public class FilterControl implements Filters {
     }
 
     public void addPredicate(Predicate predicate) {
-        predicates.add(predicate);
-        if(graph.getClusteredGraph()!=null) {
+        if (!dispatchThread.isAlive()) {
+            dispatchThread.start();
+        }
+        dispatchThread.addPredicate(predicate);
+        if (graph.getClusteredGraph() != null) {
             graph.getClusteredGraph().getFilters().addPredicate(predicate);
         }
         filtered = true;
@@ -221,5 +227,76 @@ public class FilterControl implements Filters {
     public void predicateParametersUpdates() {
         dhns.getGraphVersion().incNodeAndEdgeVersion();
         dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
+    }
+
+    public void updatePredicate(Predicate oldPredicate, Predicate newPredicate) {
+        synchronized (predicates) {
+            predicates.set(predicates.indexOf(oldPredicate), newPredicate);
+            predicateParametersUpdates();
+        }
+        if (graph.getClusteredGraph() != null) {
+            graph.getClusteredGraph().getFilters().updatePredicate(oldPredicate, newPredicate);
+        }
+    }
+
+    public void updatePredicate(Predicate[] oldPredicate, Predicate[] newPredicate) {
+        dispatchThread.updatePredicate(oldPredicate, newPredicate);
+        if (graph.getClusteredGraph() != null) {
+            graph.getClusteredGraph().getFilters().updatePredicate(oldPredicate, newPredicate);
+        }
+        predicateParametersUpdates();
+    }
+
+    private class DispatchThread extends Thread {
+
+        private final List<Predicate> predicateQueue = new ArrayList<Predicate>();
+        private final Object monitor = new Object();
+        private boolean waiting = false;
+
+        @Override
+        public void run() {
+            synchronized (monitor) {
+                while (true) {
+                    try {
+                        monitor.wait();
+                    } catch (InterruptedException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+
+                    //Action
+                    waiting = true;
+                    graph.writeLock();
+                    synchronized (predicateQueue) {
+                        predicates.clear();
+                        predicates.addAll(predicateQueue);
+                    }
+                    graph.writeUnlock();
+                    waiting = false;
+                }
+            }
+        }
+
+        public void addPredicate(Predicate predicate) {
+            synchronized (predicateQueue) {
+                predicateQueue.add(predicate);
+            }
+            synchronized (monitor) {
+                monitor.notify();
+            }
+        }
+
+        public void updatePredicate(Predicate[] oldPredicate, Predicate[] newPredicate) {
+            synchronized (predicateQueue) {
+                for (int i = 0; i < oldPredicate.length; i++) {
+                    predicateQueue.set(predicateQueue.indexOf(oldPredicate[i]), newPredicate[i]);
+                }
+            }
+            if (waiting) {
+                return;
+            }
+            synchronized (monitor) {
+                monitor.notify();
+            }
+        }
     }
 }

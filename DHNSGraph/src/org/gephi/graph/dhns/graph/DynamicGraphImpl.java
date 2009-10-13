@@ -22,6 +22,7 @@ package org.gephi.graph.dhns.graph;
 
 import org.gephi.graph.api.DynamicGraph;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.filter.DynamicEdgePredicate;
 import org.gephi.graph.dhns.filter.DynamicNodePredicate;
@@ -46,21 +47,21 @@ public class DynamicGraphImpl<T extends Graph> implements DynamicGraph {
     public DynamicGraphImpl(Dhns dhns, T graph) {
         this.graph = graph;
         this.dhns = dhns;
-        nodePredicate = new DynamicNodePredicate();
-        edgePredicate = new DynamicEdgePredicate();
+        nodePredicate = new DynamicNodePredicate(from, to);
+        edgePredicate = new DynamicEdgePredicate(from, to);
         graph.getFilters().addPredicate(edgePredicate);
         graph.getFilters().addPredicate(nodePredicate);
         
     }
 
     public void setRange(float from, float to) {
-        graph.writeLock();
         this.from = from;
         this.to = to;
-        nodePredicate.setRange(from, to);
-        edgePredicate.setRange(from, to);
-        graph.writeUnlock();
-        ((FilterControl) graph.getFilters()).predicateParametersUpdates();
+        Predicate[] oldPredicate = new Predicate[] {edgePredicate, nodePredicate};
+        nodePredicate = new DynamicNodePredicate(from, to);
+        edgePredicate = new DynamicEdgePredicate(from, to);
+        graph.getFilters().updatePredicate(oldPredicate, new Predicate[] {edgePredicate, nodePredicate});
+        //((FilterControl) graph.getFilters()).predicateParametersUpdates();
     }
 
     public float getRangeFrom() {

@@ -33,6 +33,11 @@ public class DynamicNodePredicate implements NodePredicate {
     private float from = 0;
     private float to = 1;
 
+    public DynamicNodePredicate(float from, float to) {
+        this.from  = from;
+        this.to = to;
+    }
+
     public boolean evaluate(Node element) {
         //Check if element is in the range
         DynamicData dd = element.getNodeData().getDynamicData();
@@ -40,10 +45,5 @@ public class DynamicNodePredicate implements NodePredicate {
             return true;
         }
         return dd.getRangeFrom() >= from && dd.getRangeTo() <= to;
-    }
-
-    public void setRange(float from, float to) {
-        this.from = from;
-        this.to = to;
     }
 }

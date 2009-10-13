@@ -33,6 +33,11 @@ public class DynamicEdgePredicate implements EdgePredicate {
     private float from = 0;
     private float to = 1;
 
+    public DynamicEdgePredicate(float from, float to) {
+        this.from  = from;
+        this.to = to;
+    }
+
     public boolean evaluate(Edge element) {
         //Check if element is in the range
         DynamicData dd = element.getEdgeData().getDynamicData();
@@ -44,10 +49,5 @@ public class DynamicEdgePredicate implements EdgePredicate {
             return true;
         }
         return dd.getRangeFrom() >= from && dd.getRangeTo() <= to;
-    }
-
-    public void setRange(float from, float to) {
-        this.from = from;
-        this.to = to;
     }
 }
