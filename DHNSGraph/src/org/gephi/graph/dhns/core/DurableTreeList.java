@@ -378,21 +378,15 @@ public class DurableTreeList extends AbstractList<AbstractNode> implements Itera
             parent = parentNode;
             preConsistent = tree.preConsistent;
         }
-        private static int counter;
 
         public int getIndex() {
             if (preConsistent != tree.preConsistent) {
                 //The Pre is not consistent
                 DurableAVLNode currentParent = parent;
                 int index = relativePosition;
-                counter = 0;
                 while (currentParent != null) {
                     index += currentParent.relativePosition;
                     currentParent = currentParent.parent;
-                    counter++;
-
-                    //TODO Remove This assert
-                    assert counter < 10000;
                 }
                 value.pre = index;
                 value.getPost();
