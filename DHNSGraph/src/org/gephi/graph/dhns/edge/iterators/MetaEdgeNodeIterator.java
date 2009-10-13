@@ -51,9 +51,10 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
     protected View view;
 
     //Proposition
-    protected Predicate<AbstractEdge> proposition;
+    protected Predicate<AbstractEdge> edgePredicate;
+    protected Predicate<AbstractNode> nodePredicate;
 
-    public MetaEdgeNodeIterator(View view, AbstractNode node, EdgeNodeIteratorMode mode, boolean undirected, Predicate<AbstractEdge> proposition) {
+    public MetaEdgeNodeIterator(View view, AbstractNode node, EdgeNodeIteratorMode mode, boolean undirected, Predicate<AbstractEdge> edgePredicate, Predicate<AbstractNode> nodePredicate) {
         this.node = node;
         this.mode = mode;
         this.view = view;
@@ -64,20 +65,28 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
             this.edgeIterator.setNode(node.getMetaEdgesInTree(view));
         }
         this.undirected = undirected;
-        if (proposition == null) {
-            this.proposition = Tautology.instance;
+        if (nodePredicate == null) {
+            this.nodePredicate = Tautology.instance;
         } else {
-            this.proposition = proposition;
+            this.nodePredicate = nodePredicate;
+        }
+        if (edgePredicate == null) {
+            this.edgePredicate = Tautology.instance;
+        } else {
+            this.edgePredicate = edgePredicate;
         }
     }
 
     public boolean hasNext() {
-        while (pointer == null || (undirected && pointer.getUndirected(view) != pointer) || !proposition.evaluate(pointer)) {
+        while (pointer == null || (undirected && pointer.getUndirected() != pointer) || !edgePredicate.evaluate(pointer)) {
             if (mode.equals(EdgeNodeIteratorMode.BOTH)) {
                 boolean res = edgeIterator.hasNext();
                 if (res) {
                     pointer = edgeIterator.next();
                     if (pointer.isSelfLoop()) {  //Ignore self loop here to avoid double iteration
+                        pointer = null;
+                    }
+                    if (!nodePredicate.evaluate(pointer.getTarget())) {
                         pointer = null;
                     }
                 } else {
@@ -87,6 +96,9 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
             } else {
                 if (edgeIterator.hasNext()) {
                     pointer = edgeIterator.next();
+                    if (!nodePredicate.evaluate(mode.equals(EdgeNodeIteratorMode.IN) ? pointer.getSource() : pointer.getTarget())) {
+                        pointer = null;
+                    }
                 } else {
                     return false;
                 }

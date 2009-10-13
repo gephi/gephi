@@ -77,7 +77,7 @@ public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
         return this;
     }
 
-    public Iterable<AbstractEdge> getEdges() {
+    public EdgeTree getEdges() {
         return edges;
     }
 

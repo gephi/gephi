@@ -28,6 +28,8 @@ public interface Filters {
 
     public void addPredicate(Predicate predicate);
 
+    public void removePredicate(Predicate predicate);
+
     public void updatePredicate(Predicate oldPredicate, Predicate newPredicate);
 
     public void updatePredicate(Predicate[] oldPredicate, Predicate[] newPredicate);

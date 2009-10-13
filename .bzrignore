@@ -4,3 +4,4 @@ nbproject/private/platform-private.properties
 nbproject/platform.properties
 nbproject/project.properties
 **/dist
+nbproject/private/profiler/**

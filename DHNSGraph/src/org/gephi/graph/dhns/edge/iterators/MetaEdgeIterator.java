@@ -49,23 +49,29 @@ public class MetaEdgeIterator extends AbstractEdgeIterator implements Iterator<E
     protected View view;
 
     //Proposition
-    protected Predicate<AbstractEdge> proposition;
+    protected Predicate<AbstractNode> nodePredicate;
+    protected Predicate<AbstractEdge> edgePredicate;
 
-    public MetaEdgeIterator(View view, TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected, Predicate<AbstractEdge> proposition) {
+    public MetaEdgeIterator(View view, TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected, Predicate<AbstractEdge> edgePredicate, Predicate<AbstractNode> nodePredicate) {
         this.nodeIterator = nodeIterator;
         this.view = view;
         edgeIterator = new ParamAVLIterator<MetaEdgeImpl>();
         this.undirected = undirected;
-        if (proposition == null) {
-            this.proposition = Tautology.instance;
+        if (nodePredicate == null) {
+            this.nodePredicate = Tautology.instance;
         } else {
-            this.proposition = proposition;
+            this.nodePredicate = nodePredicate;
+        }
+        if (edgePredicate == null) {
+            this.edgePredicate = Tautology.instance;
+        } else {
+            this.edgePredicate = edgePredicate;
         }
     }
 
     @Override
     public boolean hasNext() {
-        while (pointer == null || (undirected && pointer.getUndirected(view) != pointer) || !proposition.evaluate(pointer)) {
+        while (pointer == null || (undirected && pointer.getUndirected(view) != pointer) || !edgePredicate.evaluate(pointer)) {
             while (!edgeIterator.hasNext()) {
                 if (nodeIterator.hasNext()) {
                     currentNode = nodeIterator.next();
@@ -78,6 +84,9 @@ public class MetaEdgeIterator extends AbstractEdgeIterator implements Iterator<E
             }
 
             pointer = edgeIterator.next();
+            if (!nodePredicate.evaluate(pointer.getTarget())) {
+                pointer = null;
+            }
         }
         return true;
     }

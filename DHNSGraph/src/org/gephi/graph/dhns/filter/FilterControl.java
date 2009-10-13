@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
+import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Filters;
 import org.gephi.graph.api.GraphEvent.EventType;
@@ -33,6 +34,7 @@ import org.gephi.graph.api.TopologicalPredicate;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphVersion;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 import org.gephi.graph.dhns.graph.ClusteredGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
@@ -76,7 +78,7 @@ public class FilterControl implements Filters {
         this.dhns = dhns;
         this.graphVersion = dhns.getGraphVersion();
         this.graph = graph;
-        currentResult = new FilterResult(new AbstractNodeTree(), new AbstractEdgeTree());
+        currentResult = new FilterResult(new AbstractNodeTree(), new AbstractEdgeTree(), new AbstractEdgeTree());
         dispatchThread = new DispatchThread();
         lock = new ReentrantLock();
     }
@@ -102,18 +104,23 @@ public class FilterControl implements Filters {
         filtered = false;
         AbstractEdgeTree initialEdges = new AbstractEdgeTree();
         AbstractNodeTree initialNodes = new AbstractNodeTree();
+        AbstractEdgeTree initialMetaEdges = new AbstractEdgeTree();
         for (TreeIterator treeIterator = new TreeIterator(dhns.getTreeStructure(), Tautology.instance); treeIterator.hasNext();) {
             initialNodes.add(treeIterator.next());
         }
         for (Edge edge : graph.getEdges()) {
             initialEdges.add((AbstractEdge) edge);
         }
-        currentResult = new FilterResult(initialNodes, initialEdges);
+        for (Edge metaEdge : graph.getMetaEdges()) {
+            initialMetaEdges.add((AbstractEdge) metaEdge);
+        }
+        currentResult = new FilterResult(initialNodes, initialEdges, initialMetaEdges);
         filtered = true;
 
         for (Predicate p : predicates) {
             AbstractEdgeTree edgeTree = currentResult.getEdgeTree();
             AbstractNodeTree nodeTree = currentResult.getNodeTree();
+            AbstractEdgeTree metaEdgeTree = currentResult.getMetaEdgeTree();
             if (p instanceof NodePredicate) {
                 nodeTree = new AbstractNodeTree();
                 for (AbstractNodeIterator itr = currentResult.nodeIterator(); itr.hasNext();) {
@@ -152,7 +159,28 @@ public class FilterControl implements Filters {
                 }
             }
 
-            currentResult = new FilterResult(nodeTree, edgeTree);
+            //Clean meta Edges
+            ParamAVLIterator<AbstractEdge> innerEdgeIterator = new ParamAVLIterator<AbstractEdge>();
+            for (AbstractEdgeIterator itr = metaEdgeTree.iterator(); itr.hasNext();) {
+                AbstractEdge e = itr.next();
+                if (!nodeTree.contains(e.getSource()) || !nodeTree.contains(e.getTarget())) {
+                    itr.remove();
+                } /*else {
+            MetaEdgeImpl metaEdge = (MetaEdgeImpl)e;
+            boolean atLeastOneInnerEdgeIsNotFiltered = false;
+            for(innerEdgeIterator.setNode(metaEdge.getEdges());innerEdgeIterator.hasNext();) {
+            if(edgeTree.contains(innerEdgeIterator.next())) {
+            atLeastOneInnerEdgeIsNotFiltered = true;
+            break;
+            }
+            }
+            if(!atLeastOneInnerEdgeIsNotFiltered) {
+            itr.remove();
+            }
+            }*/
+            }
+
+            currentResult = new FilterResult(nodeTree, edgeTree, metaEdgeTree);
         }
         return true;
     }
@@ -214,6 +242,14 @@ public class FilterControl implements Filters {
         return Tautology.instance;
     }
 
+    public Predicate<AbstractEdge> getMetaEdgePredicate() {
+        if (filtered) {
+            checkUpdate();
+            return currentResult.getMetaEdgePredicate();
+        }
+        return Tautology.instance;
+    }
+
     public AbstractNodeIterator nodeIterator() {
         checkUpdate();
         return currentResult.nodeIterator();
@@ -224,19 +260,22 @@ public class FilterControl implements Filters {
         return currentResult.edgeIterator();
     }
 
+    public AbstractEdgeIterator metaEdgeIterator() {
+        checkUpdate();
+        return currentResult.metaEdgeIterator();
+    }
+
     public void predicateParametersUpdates() {
         dhns.getGraphVersion().incNodeAndEdgeVersion();
         dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
     public void updatePredicate(Predicate oldPredicate, Predicate newPredicate) {
-        synchronized (predicates) {
-            predicates.set(predicates.indexOf(oldPredicate), newPredicate);
-            predicateParametersUpdates();
-        }
+        dispatchThread.updatePredicate(new Predicate[]{oldPredicate}, new Predicate[]{newPredicate});
         if (graph.getClusteredGraph() != null) {
             graph.getClusteredGraph().getFilters().updatePredicate(oldPredicate, newPredicate);
         }
+        predicateParametersUpdates();
     }
 
     public void updatePredicate(Predicate[] oldPredicate, Predicate[] newPredicate) {
@@ -245,6 +284,9 @@ public class FilterControl implements Filters {
             graph.getClusteredGraph().getFilters().updatePredicate(oldPredicate, newPredicate);
         }
         predicateParametersUpdates();
+    }
+
+    public void removePredicate(Predicate predicate) {
     }
 
     private class DispatchThread extends Thread {

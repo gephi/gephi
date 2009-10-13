@@ -32,14 +32,18 @@ public class FilterResult {
 
     private AbstractNodeTree nodeTree;
     private AbstractEdgeTree edgeTree;
+    private AbstractEdgeTree metaEdgeTree;
     private NodeInFilterResultPredicate nodePredicate;
     private EdgeInFilterResultPredicate edgePredicate;
+    private MetaEdgeInFilterResultPredicate metaEdgePredicate;
 
-    public FilterResult(AbstractNodeTree nodeTree, AbstractEdgeTree edgeTree) {
+    public FilterResult(AbstractNodeTree nodeTree, AbstractEdgeTree edgeTree, AbstractEdgeTree metaEdgeTree) {
         this.nodeTree = nodeTree;
         this.edgeTree = edgeTree;
+        this.metaEdgeTree = metaEdgeTree;
         nodePredicate = new NodeInFilterResultPredicate();
         edgePredicate = new EdgeInFilterResultPredicate();
+        metaEdgePredicate = new MetaEdgeInFilterResultPredicate();
     }
 
     public AbstractNodeIterator nodeIterator() {
@@ -50,6 +54,11 @@ public class FilterResult {
         return edgeTree.iterator();
     }
 
+    public AbstractEdgeIterator metaEdgeIterator() {
+        return metaEdgeTree.iterator();
+    }
+
+
     public Predicate<AbstractNode> getNodePredicate() {
         return nodePredicate;
     }
@@ -58,12 +67,20 @@ public class FilterResult {
         return edgePredicate;
     }
 
+    public Predicate<AbstractEdge> getMetaEdgePredicate() {
+        return metaEdgePredicate;
+    }
+
     public boolean evaluateNode(AbstractNode node) {
         return nodePredicate.evaluate(node);
     }
 
     public boolean evaluateEdge(AbstractEdge edge) {
         return edgePredicate.evaluate(edge);
+    }
+
+    public boolean evaluateMetaEdge(AbstractEdge edge) {
+        return metaEdgePredicate.evaluate(edge);
     }
 
     public int getNodeCount() {
@@ -82,6 +99,10 @@ public class FilterResult {
         return edgeTree;
     }
 
+    public AbstractEdgeTree getMetaEdgeTree() {
+        return metaEdgeTree;
+    }
+
     private class NodeInFilterResultPredicate implements Predicate<AbstractNode> {
 
         public boolean evaluate(AbstractNode element) {
@@ -92,10 +113,14 @@ public class FilterResult {
     private class EdgeInFilterResultPredicate implements Predicate<AbstractEdge> {
 
         public boolean evaluate(AbstractEdge element) {
-            if (element.isMetaEdge()) {
-                return true;
-            }
             return edgeTree.contains(element);
+        }
+    }
+
+    private class MetaEdgeInFilterResultPredicate implements Predicate<AbstractEdge> {
+
+        public boolean evaluate(AbstractEdge element) {
+            return metaEdgeTree.contains(element);
         }
     }
 }
