@@ -148,7 +148,12 @@ public class VizController {
     public void refreshWorkspace() {
         final VizWorkspaceDataProvider vizWorkspaceDataProvider = Lookup.getDefault().lookup(VizWorkspaceDataProvider.class);
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        VizModel model = pc.getCurrentWorkspace().getWorkspaceData().getData(vizWorkspaceDataProvider.getWorkspaceDataKey());
+        VizModel model = null;
+        if (pc.getCurrentWorkspace() == null) {
+            model = new VizModel(true);
+        } else {
+            model = pc.getCurrentWorkspace().getWorkspaceData().getData(vizWorkspaceDataProvider.getWorkspaceDataKey());
+        }
         if (model != currentModel) {
             model.setListeners(currentModel.getListeners());
             model.getTextModel().setListeners(currentModel.getTextModel().getListeners());

@@ -97,8 +97,10 @@ public class VizModel {
     }
 
     private void defaultValues() {
-        textModel = new TextModel();
         config = VizController.getInstance().getVizConfig();
+        cameraPosition = Arrays.copyOf(config.getDefaultCameraPosition(), 3);
+        cameraTarget = Arrays.copyOf(config.getDefaultCameraTarget(), 3);
+        textModel = new TextModel();
         use3d = config.isDefaultUse3d();
         lighting = config.isDefaultLighting();
         culling = config.isDefaultCulling();

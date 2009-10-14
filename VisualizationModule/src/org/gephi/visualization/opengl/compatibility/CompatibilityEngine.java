@@ -214,6 +214,8 @@ public class CompatibilityEngine extends AbstractEngine {
             VizController.getInstance().refreshWorkspace();
             dataBridge.reset();
             graphDrawable.initConfig(gl);
+            graphDrawable.setCameraLocation(vizController.getVizModel().getCameraPosition());
+            graphDrawable.setCameraTarget(vizController.getVizModel().getCameraTarget());
             reinit = false;
         }
     }
