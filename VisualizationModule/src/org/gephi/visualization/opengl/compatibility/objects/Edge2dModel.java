@@ -165,9 +165,17 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
                 a = uni[3];
             } else {
                 r = obj.r();
-                g = obj.g();
-                b = obj.b();
-                a = obj.alpha();
+                if (r == -1f) {
+                    NodeData source = obj.getSource();
+                    r = source.r();
+                    g = source.g();
+                    b = source.b();
+                    a = obj.alpha();
+                } else {
+                    g = obj.g();
+                    b = obj.b();
+                    a = obj.alpha();
+                }
             }
             if (vizModel.getConfig().isLightenNonSelected()) {
                 float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
@@ -177,10 +185,34 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
                 gl.glColor4f(r, g, b, a);
             }
         } else {
-            float rdark = 0.498f * obj.r();
-            float gdark = 0.498f * obj.g();
-            float bdark = 0.498f * obj.b();
-            gl.glColor4f(rdark, gdark, bdark, 1f);
+            float r = 0f;
+            float g = 0f;
+            float b = 0f;
+            if (vizModel.isEdgeSelectionColor()) {
+                ModelImpl m1 = (ModelImpl) obj.getSource().getModel();
+                ModelImpl m2 = (ModelImpl) obj.getTarget().getModel();
+                if (m1.isSelected() && m2.isSelected()) {
+                    float[] both = vizModel.getEdgeBothSelectionColor();
+                    r = both[0];
+                    g = both[1];
+                    b = both[2];
+                } else if (m1.isSelected()) {
+                    float[] out = vizModel.getEdgeOutSelectionColor();
+                    r = out[0];
+                    g = out[1];
+                    b = out[2];
+                } else if (m2.isSelected()) {
+                    float[] in = vizModel.getEdgeInSelectionColor();
+                    r = in[0];
+                    g = in[1];
+                    b = in[2];
+                }
+            } else {
+                r = 0.498f * obj.r();
+                g = 0.498f * obj.g();
+                b = 0.498f * obj.b();
+            }
+            gl.glColor4f(r, g, b, 1f);
         }
 
         gl.glVertex2f(x1 + x1Thick, y1 + y1Thick);
@@ -267,11 +299,11 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
 
     @Override
     public float getViewportX() {
-        return (obj.getSource().getModel().getViewportX() + 2*obj.getTarget().getModel().getViewportX()) / 3f ;
+        return (obj.getSource().getModel().getViewportX() + 2 * obj.getTarget().getModel().getViewportX()) / 3f;
     }
 
     @Override
     public float getViewportY() {
-        return (obj.getSource().getModel().getViewportY() + 2*obj.getTarget().getModel().getViewportY()) / 3f;
+        return (obj.getSource().getModel().getViewportY() + 2 * obj.getTarget().getModel().getViewportY()) / 3f;
     }
 }

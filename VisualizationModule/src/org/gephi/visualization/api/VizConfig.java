@@ -54,6 +54,10 @@ public class VizConfig {
     protected boolean defaultAdjustByText = false;
     protected boolean defaultShowLabelOnSelectedOnly = false;
     protected String defaultNodeModeler = "CompatibilityNodeDiskModeler";
+    protected boolean defaultEdgeSelectionColor = false;
+    protected float[] defaultEdgeInSelectedColor = {32 / 255f, 95 / 255f, 154 / 255f};
+    protected float[] defaultEdgeOutSelectedColor = {196 / 255f, 66 / 255f, 79 / 255f};
+    protected float[] defaultEdgeBothSelectedColor = {248 / 255f, 215 / 255f, 83 / 255f};
 
     //Preferences
     protected int antialiasing = 4;
@@ -78,9 +82,6 @@ public class VizConfig {
     protected float lightenNonSelectedFactor = 0.5f;
     protected float[] uniColorSelectedColor = {0.8f, 0.2f, 0.2f};
     protected float[] uniColorSelectedNeigborColor = {0.2f, 1f, 0.3f};
-    protected float[] edgeInSelectedColor = {1f, 0f, 0f};
-    protected float[] edgeOutSelectedColor = {1f, 1f, 0f};
-    protected float[] edgeBothSelectedColor = {0f, 0f, 0f};
     protected int octreeDepth = 5;
     protected int octreeWidth = 100000;
     protected boolean cleanDeletedModels = false;
@@ -217,16 +218,20 @@ public class VizConfig {
         return draggingEnable;
     }
 
-    public float[] getEdgeBothSelectedColor() {
-        return edgeBothSelectedColor;
+    public boolean isDefaultEdgeSelectionColor() {
+        return defaultEdgeSelectionColor;
     }
 
-    public float[] getEdgeInSelectedColor() {
-        return edgeInSelectedColor;
+    public float[] getDefaultEdgeBothSelectedColor() {
+        return defaultEdgeBothSelectedColor;
     }
 
-    public float[] getEdgeOutSelectedColor() {
-        return edgeOutSelectedColor;
+    public float[] getDefaultEdgeInSelectedColor() {
+        return defaultEdgeInSelectedColor;
+    }
+
+    public float[] getDefaultEdgeOutSelectedColor() {
+        return defaultEdgeOutSelectedColor;
     }
 
     public boolean isLabelAntialiased() {

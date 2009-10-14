@@ -21,6 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.component;
 
 import java.awt.Color;
+import java.awt.color.ColorSpace;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
@@ -53,6 +56,14 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
                     refreshSharedConfig();
                 } else if (evt.getPropertyName().equals("edgeUniColor")) {
                     refreshSharedConfig();
+                } else if (evt.getPropertyName().equals("edgeSelectionColor")) {
+                    refreshSharedConfig();
+                } else if (evt.getPropertyName().equals("edgeInSelectionColor")) {
+                    refreshSharedConfig();
+                } else if (evt.getPropertyName().equals("edgeOutSelectionColor")) {
+                    refreshSharedConfig();
+                } else if (evt.getPropertyName().equals("edgeBothSelectionColor")) {
+                    refreshSharedConfig();
                 }
             }
         });
@@ -80,6 +91,34 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
                 vizModel.setEdgeHasUniColor(!sourceNodeColorCheckbox.isSelected());
             }
         });
+        selectionColorCheckbox.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                VizModel vizModel = VizController.getInstance().getVizModel();
+                vizModel.setEdgeSelectionColor(selectionColorCheckbox.isSelected());
+            }
+        });
+        edgeInSelectionColorChooser.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent ae) {
+                VizModel vizModel = VizController.getInstance().getVizModel();
+                vizModel.setEdgeInSelectionColor(edgeInSelectionColorChooser.getColor().getComponents(null));
+            }
+        });
+        edgeOutSelectionColorChooser.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent ae) {
+                VizModel vizModel = VizController.getInstance().getVizModel();
+                vizModel.setEdgeOutSelectionColor(edgeOutSelectionColorChooser.getColor().getComponents(null));
+            }
+        });
+        edgeBothSelectionColorChooser.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent ae) {
+                VizModel vizModel = VizController.getInstance().getVizModel();
+                vizModel.setEdgeBothSelectionColor(edgeBothSelectionColorChooser.getColor().getComponents(null));
+            }
+        });
     }
 
     private void refreshSharedConfig() {
@@ -97,6 +136,21 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         if (sourceNodeColorCheckbox.isSelected() != !vizModel.isEdgeHasUniColor()) {
             sourceNodeColorCheckbox.setSelected(!vizModel.isEdgeHasUniColor());
         }
+        if (selectionColorCheckbox.isSelected() != vizModel.isEdgeSelectionColor()) {
+            selectionColorCheckbox.setSelected(vizModel.isEdgeSelectionColor());
+        }
+        Color in = new Color(ColorSpace.getInstance(ColorSpace.CS_sRGB), vizModel.getEdgeInSelectionColor(), 1f);
+        Color out = new Color(ColorSpace.getInstance(ColorSpace.CS_sRGB), vizModel.getEdgeOutSelectionColor(), 1f);
+        Color both = new Color(ColorSpace.getInstance(ColorSpace.CS_sRGB), vizModel.getEdgeBothSelectionColor(), 1f);
+        if (!edgeInSelectionColorChooser.getColor().equals(in)) {
+            edgeInSelectionColorChooser.setColor(in);
+        }
+        if (!edgeOutSelectionColorChooser.getColor().equals(out)) {
+            edgeOutSelectionColorChooser.setColor(out);
+        }
+        if (!edgeBothSelectionColorChooser.getColor().equals(both)) {
+            edgeBothSelectionColorChooser.setColor(both);
+        }
     }
 
     private void setEnable(boolean enable) {
@@ -104,6 +158,10 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         edgeColorButton.setEnabled(enable && showEdgesCheckbox.isSelected());
         sourceNodeColorCheckbox.setEnabled(enable && showEdgesCheckbox.isSelected());
         labelEdgeColor.setEnabled(enable && showEdgesCheckbox.isSelected());
+        selectionColorCheckbox.setEnabled(enable && showEdgesCheckbox.isSelected());
+        edgeInSelectionColorChooser.setEnabled(enable && showEdgesCheckbox.isSelected() && selectionColorCheckbox.isSelected());
+        edgeOutSelectionColorChooser.setEnabled(enable && showEdgesCheckbox.isSelected() && selectionColorCheckbox.isSelected());
+        edgeBothSelectionColorChooser.setEnabled(enable && showEdgesCheckbox.isSelected() && selectionColorCheckbox.isSelected());
     }
 
     /** This method is called from within the constructor to
@@ -119,8 +177,12 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         labelEdgeColor = new javax.swing.JLabel();
         edgeColorButton = new JColorButton(Color.BLACK);
         sourceNodeColorCheckbox = new javax.swing.JCheckBox();
+        selectionColorCheckbox = new javax.swing.JCheckBox();
+        edgeInSelectionColorChooser = new net.java.dev.colorchooser.ColorChooser();
+        edgeBothSelectionColorChooser = new net.java.dev.colorchooser.ColorChooser();
+        edgeOutSelectionColorChooser = new net.java.dev.colorchooser.ColorChooser();
 
-        showEdgesCheckbox.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        showEdgesCheckbox.setFont(new java.awt.Font("Tahoma", 1, 11));
         showEdgesCheckbox.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.showEdgesCheckbox.text")); // NOI18N
 
         labelEdgeColor.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.labelEdgeColor.text")); // NOI18N
@@ -132,6 +194,53 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         sourceNodeColorCheckbox.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         sourceNodeColorCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         sourceNodeColorCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
+
+        selectionColorCheckbox.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.selectionColorCheckbox.text")); // NOI18N
+        selectionColorCheckbox.setToolTipText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.selectionColorCheckbox.toolTipText")); // NOI18N
+        selectionColorCheckbox.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        selectionColorCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+
+        edgeInSelectionColorChooser.setPreferredSize(new java.awt.Dimension(14, 14));
+        edgeInSelectionColorChooser.setToolTipText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.edgeInSelectionColorChooser.toolTipText")); // NOI18N
+
+        javax.swing.GroupLayout edgeInSelectionColorChooserLayout = new javax.swing.GroupLayout(edgeInSelectionColorChooser);
+        edgeInSelectionColorChooser.setLayout(edgeInSelectionColorChooserLayout);
+        edgeInSelectionColorChooserLayout.setHorizontalGroup(
+            edgeInSelectionColorChooserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 12, Short.MAX_VALUE)
+        );
+        edgeInSelectionColorChooserLayout.setVerticalGroup(
+            edgeInSelectionColorChooserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 12, Short.MAX_VALUE)
+        );
+
+        edgeBothSelectionColorChooser.setPreferredSize(new java.awt.Dimension(14, 14));
+        edgeBothSelectionColorChooser.setToolTipText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.edgeBothSelectionColorChooser.toolTipText")); // NOI18N
+
+        javax.swing.GroupLayout edgeBothSelectionColorChooserLayout = new javax.swing.GroupLayout(edgeBothSelectionColorChooser);
+        edgeBothSelectionColorChooser.setLayout(edgeBothSelectionColorChooserLayout);
+        edgeBothSelectionColorChooserLayout.setHorizontalGroup(
+            edgeBothSelectionColorChooserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 12, Short.MAX_VALUE)
+        );
+        edgeBothSelectionColorChooserLayout.setVerticalGroup(
+            edgeBothSelectionColorChooserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 12, Short.MAX_VALUE)
+        );
+
+        edgeOutSelectionColorChooser.setPreferredSize(new java.awt.Dimension(14, 14));
+        edgeOutSelectionColorChooser.setToolTipText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.edgeOutSelectionColorChooser.toolTipText")); // NOI18N
+
+        javax.swing.GroupLayout edgeOutSelectionColorChooserLayout = new javax.swing.GroupLayout(edgeOutSelectionColorChooser);
+        edgeOutSelectionColorChooser.setLayout(edgeOutSelectionColorChooserLayout);
+        edgeOutSelectionColorChooserLayout.setHorizontalGroup(
+            edgeOutSelectionColorChooserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 12, Short.MAX_VALUE)
+        );
+        edgeOutSelectionColorChooserLayout.setVerticalGroup(
+            edgeOutSelectionColorChooserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 12, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -145,12 +254,22 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(19, 19, 19)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(sourceNodeColorCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(labelEdgeColor)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(edgeColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(445, Short.MAX_VALUE))
+                                .addComponent(edgeColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(sourceNodeColorCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(23, 23, 23)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addComponent(edgeInSelectionColorChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(edgeOutSelectionColorChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(edgeBothSelectionColorChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(selectionColorCheckbox))))
+                .addContainerGap(327, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -163,15 +282,25 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
                         .addComponent(labelEdgeColor))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(32, 32, 32)
-                        .addComponent(edgeColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(selectionColorCheckbox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(edgeColorButton, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(sourceNodeColorCheckbox)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(sourceNodeColorCheckbox)
+                    .addComponent(edgeInSelectionColorChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(edgeOutSelectionColorChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(edgeBothSelectionColorChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private net.java.dev.colorchooser.ColorChooser edgeBothSelectionColorChooser;
     private javax.swing.JButton edgeColorButton;
+    private net.java.dev.colorchooser.ColorChooser edgeInSelectionColorChooser;
+    private net.java.dev.colorchooser.ColorChooser edgeOutSelectionColorChooser;
     private javax.swing.JLabel labelEdgeColor;
+    private javax.swing.JCheckBox selectionColorCheckbox;
     private javax.swing.JCheckBox showEdgesCheckbox;
     private javax.swing.JCheckBox sourceNodeColorCheckbox;
     // End of variables declaration//GEN-END:variables

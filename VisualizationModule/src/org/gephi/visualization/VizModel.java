@@ -57,6 +57,10 @@ public class VizModel {
     protected boolean uniColorSelected;
     protected boolean edgeHasUniColor;
     protected float[] edgeUniColor;
+    protected boolean edgeSelectionColor;
+    protected float[] edgeInSelectionColor;
+    protected float[] edgeOutSelectionColor;
+    protected float[] edgeBothSelectionColor;
     protected boolean adjustByText;
     protected String nodeModeler;
 
@@ -111,6 +115,10 @@ public class VizModel {
         edgeUniColor = config.getDefaultEdgeUniColor();
         adjustByText = config.isDefaultAdjustByText();
         nodeModeler = config.getDefaultNodeModeler();
+        edgeSelectionColor = config.isDefaultEdgeSelectionColor();
+        edgeInSelectionColor = config.getDefaultEdgeInSelectedColor();
+        edgeOutSelectionColor = config.getDefaultEdgeOutSelectedColor();
+        edgeBothSelectionColor = config.getDefaultEdgeBothSelectedColor();
     }
 
     //GETTERS
@@ -190,6 +198,22 @@ public class VizModel {
         return nodeModeler;
     }
 
+    public boolean isEdgeSelectionColor() {
+        return edgeSelectionColor;
+    }
+
+    public float[] getEdgeInSelectionColor() {
+        return edgeInSelectionColor;
+    }
+
+    public float[] getEdgeOutSelectionColor() {
+        return edgeOutSelectionColor;
+    }
+
+    public float[] getEdgeBothSelectionColor() {
+        return edgeBothSelectionColor;
+    }
+
     //SETTERS
     public void setAdjustByText(boolean adjustByText) {
         this.adjustByText = adjustByText;
@@ -249,6 +273,26 @@ public class VizModel {
     public void setNodeModeler(String nodeModeler) {
         this.nodeModeler = nodeModeler;
         fireProperyChange("nodeModeler", null, nodeModeler);
+    }
+
+    public void setEdgeSelectionColor(boolean edgeSelectionColor) {
+        this.edgeSelectionColor = edgeSelectionColor;
+        fireProperyChange("edgeSelectionColor", null, edgeSelectionColor);
+    }
+
+    public void setEdgeInSelectionColor(float[] edgeInSelectionColor) {
+        this.edgeInSelectionColor = edgeInSelectionColor;
+        fireProperyChange("edgeInSelectionColor", null, edgeInSelectionColor);
+    }
+
+    public void setEdgeOutSelectionColor(float[] edgeOutSelectionColor) {
+        this.edgeOutSelectionColor = edgeOutSelectionColor;
+        fireProperyChange("edgeOutSelectionColor", null, edgeOutSelectionColor);
+    }
+
+    public void setEdgeBothSelectionColor(float[] edgeBothSelectionColor) {
+        this.edgeBothSelectionColor = edgeBothSelectionColor;
+        fireProperyChange("edgeBothSelectionColor", null, edgeBothSelectionColor);
     }
 
     //EVENTS

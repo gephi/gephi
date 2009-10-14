@@ -108,9 +108,17 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
                 a = uni[3];
             } else {
                 r = edge.r();
-                g = edge.g();
-                b = edge.b();
-                a = edge.alpha();
+                if (r == -1f) {
+                    NodeData source = edge.getSource();
+                    r = source.r();
+                    g = source.g();
+                    b = source.b();
+                    a = edge.alpha();
+                } else {
+                    g = edge.g();
+                    b = edge.b();
+                    a = edge.alpha();
+                }
             }
             if (vizModel.getConfig().isLightenNonSelected()) {
                 float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
@@ -120,10 +128,34 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
                 gl.glColor4f(r, g, b, a);
             }
         } else {
-            float rdark = 0.498f * edge.r();
-            float gdark = 0.498f * edge.g();
-            float bdark = 0.498f * edge.b();
-            gl.glColor4f(rdark, gdark, bdark, 1f);
+            float r = 0f;
+            float g = 0f;
+            float b = 0f;
+            if (vizModel.isEdgeSelectionColor()) {
+                ModelImpl m1 = (ModelImpl) nodeFrom.getModel();
+                ModelImpl m2 = (ModelImpl) nodeTo.getModel();
+                if (m1.isSelected() && m2.isSelected()) {
+                    float[] both = vizModel.getEdgeBothSelectionColor();
+                    r = both[0];
+                    g = both[1];
+                    b = both[2];
+                } else if (m1.isSelected()) {
+                    float[] out = vizModel.getEdgeOutSelectionColor();
+                    r = out[0];
+                    g = out[1];
+                    b = out[2];
+                } else if (m2.isSelected()) {
+                    float[] in = vizModel.getEdgeInSelectionColor();
+                    r = in[0];
+                    g = in[1];
+                    b = in[2];
+                }
+            } else {
+                r = 0.498f * obj.r();
+                g = 0.498f * obj.g();
+                b = 0.498f * obj.b();
+            }
+            gl.glColor4f(r, g, b, 1f);
         }
 
         //Draw the triangle
