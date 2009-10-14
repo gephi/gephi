@@ -162,6 +162,14 @@ public class ImporterGDF implements TextImporter, LongTask {
             container.addEdge(edge);
             Progress.progress(progressTicket);      //Progress
         }
+
+        container = null;
+        report = null;
+        nodeColumns = null;
+        edgeColumns = null;
+        nodeLines.clear();
+        edgeLines.clear();
+        progressTicket = null;
     }
 
     private void walkFile(BufferedReader reader) throws Exception {
