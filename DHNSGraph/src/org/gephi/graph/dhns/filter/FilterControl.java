@@ -160,7 +160,7 @@ public class FilterControl implements Filters {
             }
 
             //Clean meta Edges
-            ParamAVLIterator<AbstractEdge> innerEdgeIterator = new ParamAVLIterator<AbstractEdge>();
+            //ParamAVLIterator<AbstractEdge> innerEdgeIterator = new ParamAVLIterator<AbstractEdge>();
             for (AbstractEdgeIterator itr = metaEdgeTree.iterator(); itr.hasNext();) {
                 AbstractEdge e = itr.next();
                 if (!nodeTree.contains(e.getSource()) || !nodeTree.contains(e.getTarget())) {

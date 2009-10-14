@@ -20,24 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.filter;
 
-import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodePredicate;
-import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.view.View;
-
 /**
  *
  * @author Mathieu Bastian
  */
-public class ClusteredViewPredicate implements NodePredicate {
+public class DescendantClusteredViewPredicate {
 
-    private View view;
-
-    public ClusteredViewPredicate(View view) {
-        this.view = view;
-    }
-
-    public boolean evaluate(Node element) {
-        return ((AbstractNode) element).isEnabled(view);
-    }
 }

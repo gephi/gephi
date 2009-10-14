@@ -36,7 +36,7 @@ import org.gephi.graph.dhns.edge.iterators.MetaEdgeContentIterator;
 import org.gephi.graph.dhns.edge.iterators.MetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.MetaEdgeNodeIterator;
 import org.gephi.graph.dhns.edge.iterators.RangeEdgeIterator;
-import org.gephi.graph.dhns.filter.ClusteredViewPredicate;
+import org.gephi.graph.dhns.filter.FlatClusteredViewPredicate;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
@@ -57,7 +57,7 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
         if (!clustered) {
             clusteredCopy = new ClusteredUndirectedGraphImpl(dhns, visible, true);
         } else {
-            filterControl.addPredicate(new ClusteredViewPredicate(dhns.getViewManager().getMainView()));
+            filterControl.addPredicate(new FlatClusteredViewPredicate(dhns.getViewManager().getMainView()));
         }
     }
 

@@ -22,7 +22,6 @@ package org.gephi.graph.dhns.core;
 
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.edge.DefaultMetaEdgeBuilder;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.PreNodeTreeListIterator;
@@ -39,20 +38,18 @@ public class EdgeProcessor {
     //Architecture
     private TreeStructure treeStructure;
     private IDGen idGen;
-    //Config
-    private boolean enableMetaEdges = true;
-    //Utils
-    private MetaEdgeBuilder metaEdgeBuilder;
+    private Dhns dhns;
+
     //Cache
     private ParamAVLIterator<AbstractEdge> edgeIterator;
     private ViewAVLIterator viewIterator;
 
     public EdgeProcessor(Dhns dhns) {
+        this.dhns = dhns;
         this.treeStructure = dhns.getTreeStructure();
         this.idGen = dhns.getIdGen();
         this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
         this.viewIterator = new ViewAVLIterator();
-        this.metaEdgeBuilder = new DefaultMetaEdgeBuilder();
     }
 
     public void clearEdges(AbstractNode node) {
@@ -170,7 +167,7 @@ public class EdgeProcessor {
     }
 
     public void computeMetaEdges(View view, AbstractNode node, AbstractNode enabledAncestor) {
-        if (!enableMetaEdges) {
+        if (!dhns.getSettingsManager().isAutoMetaEdgeCreation()) {
             return;
         }
         if (enabledAncestor == null) {
@@ -236,9 +233,9 @@ public class EdgeProcessor {
             metaEdge = createMetaEdge(view, source, target);
         }
         if (metaEdge != null) {
-             if(metaEdge.addEdge(edge)) {
-                 metaEdgeBuilder.pushEdge(edge, metaEdge);
-             }
+            if (metaEdge.addEdge(edge)) {
+                dhns.getSettingsManager().getMetaEdgeBuilder().pushEdge(edge, metaEdge);
+            }
         }
     }
 
@@ -253,7 +250,7 @@ public class EdgeProcessor {
     }
 
     public void createMetaEdge(AbstractEdge edge) {
-        if (!enableMetaEdges) {
+        if (!dhns.getSettingsManager().isAutoMetaEdgeCreation()) {
             return;
         }
         if (edge.isSelfLoop()) {
@@ -288,7 +285,7 @@ public class EdgeProcessor {
     }
 
     public void removeEdgeFromMetaEdge(AbstractEdge edge) {
-        if (!enableMetaEdges) {
+        if (!dhns.getSettingsManager().isAutoMetaEdgeCreation()) {
             return;
         }
         if (edge.isSelfLoop()) {
@@ -300,8 +297,8 @@ public class EdgeProcessor {
             if (edge.getTarget().isInView(view)) {
                 MetaEdgeImpl metaEdge = getMetaEdge(view, edge);
                 if (metaEdge != null) {
-                    if(metaEdge.removeEdge(edge)) {
-                        metaEdgeBuilder.pullEdge(edge, metaEdge);
+                    if (metaEdge.removeEdge(edge)) {
+                        dhns.getSettingsManager().getMetaEdgeBuilder().pullEdge(edge, metaEdge);
                     }
                     if (metaEdge.isEmpty()) {
                         metaEdge.getSource().getMetaEdgesOutTree(view).remove(metaEdge);
@@ -330,12 +327,5 @@ public class EdgeProcessor {
             return getMetaEdge(view, sourceParent, targetParent);
         }
         return null;
-    }
-
-    public interface MetaEdgeBuilder {
-
-        public void pushEdge(AbstractEdge edge, MetaEdgeImpl metaEdge);
-
-        public void pullEdge(AbstractEdge edge, MetaEdgeImpl metaEdge);
     }
 }

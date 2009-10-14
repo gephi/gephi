@@ -50,9 +50,9 @@ public class Dhns {
     private GraphVersion graphVersion;
     private EventManager eventManager;
     private ViewManager viewManager;
-    private PropositionManager propositionManager;
     private DynamicManager dynamicManager;
     private DecoratorFactoryImpl decoratorFactory;
+    private SettingsManager settingsManager;
 
     //Type
     private boolean directed = false;
@@ -72,7 +72,6 @@ public class Dhns {
         graphVersion = new GraphVersion();
         structureModifier = new StructureModifier(this);
         eventManager = new EventManager(this);
-        propositionManager = new PropositionManager(this);
         dynamicManager = new DynamicManager(this);
         decoratorFactory = new DecoratorFactoryImpl(this);
         
@@ -118,10 +117,6 @@ public class Dhns {
         return viewManager;
     }
 
-    public PropositionManager getPropositionManager() {
-        return propositionManager;
-    }
-
     public IDGen getIdGen() {
         return controller.getIDGen();
     }
@@ -132,6 +127,10 @@ public class Dhns {
 
     public DecoratorFactoryImpl getDecoratorFactory() {
         return decoratorFactory;
+    }
+
+    public SettingsManager getSettingsManager() {
+        return settingsManager;
     }
 
     public NodeIterable newNodeIterable(AbstractNodeIterator iterator) {

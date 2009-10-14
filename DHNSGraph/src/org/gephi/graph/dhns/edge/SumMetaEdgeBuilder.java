@@ -20,19 +20,26 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.edge;
 
-import org.gephi.graph.dhns.core.EdgeProcessor.MetaEdgeBuilder;
-
 /**
  *
  * @author Mathieu Bastian
  */
-public class DefaultMetaEdgeBuilder implements MetaEdgeBuilder {
+public class SumMetaEdgeBuilder implements MetaEdgeBuilder {
 
-    private static final float WEIGHT_MINIMUM = 0.1f;
-    private static final float WEIGHT_LIMIT = 10f;
+    private float weightMinimum = Float.NEGATIVE_INFINITY;
+    private float weightLimit = Float.POSITIVE_INFINITY;
     //If the edge pushed to the metaEdge has a common adjacent node with the metaEdge, it is called
     //a non-deep edge and should be considered less important and thus less weighted
-    private static final float NON_DEEP_DIVISOR = 10f;
+    private float nonDeepDivisor = 1f;
+
+    public SumMetaEdgeBuilder() {
+    }
+
+    public SumMetaEdgeBuilder(float minimum, float limit, float divisor) {
+        this.weightMinimum = minimum;
+        this.weightLimit = limit;
+        this.nonDeepDivisor = divisor;
+    }
 
     public void pushEdge(AbstractEdge edge, MetaEdgeImpl metaEdge) {
         float edgeWeight = edge.weight;
@@ -42,11 +49,11 @@ public class DefaultMetaEdgeBuilder implements MetaEdgeBuilder {
                 edge.getSource() == metaEdge.getTarget() ||
                 edge.getTarget() == metaEdge.getTarget() ||
                 edge.getTarget() == metaEdge.getSource()) {
-            div = NON_DEEP_DIVISOR;
+            div = nonDeepDivisor;
         }
         metaWeight += edgeWeight / div;
-        if (metaWeight > WEIGHT_LIMIT) {
-            metaWeight = WEIGHT_LIMIT;
+        if (metaWeight > weightLimit) {
+            metaWeight = weightLimit;
         }
         metaEdge.setWeight(metaWeight);
     }
@@ -59,11 +66,11 @@ public class DefaultMetaEdgeBuilder implements MetaEdgeBuilder {
                 edge.getSource() == metaEdge.getTarget() ||
                 edge.getTarget() == metaEdge.getTarget() ||
                 edge.getTarget() == metaEdge.getSource()) {
-            div = NON_DEEP_DIVISOR;
+            div = nonDeepDivisor;
         }
         metaWeight -= edgeWeight / div;
-        if (metaWeight < WEIGHT_MINIMUM) {
-            metaWeight = WEIGHT_MINIMUM;
+        if (metaWeight < weightMinimum) {
+            metaWeight = weightMinimum;
         }
         metaEdge.setWeight(metaWeight);
     }

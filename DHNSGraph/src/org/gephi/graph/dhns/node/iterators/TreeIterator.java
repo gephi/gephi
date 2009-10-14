@@ -27,7 +27,7 @@ import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Predicate;
-import org.gephi.graph.dhns.filter.ClusteredViewPredicate;
+import org.gephi.graph.dhns.filter.FlatClusteredViewPredicate;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.proposition.Tautology;
 
@@ -106,7 +106,7 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
 
     public AbstractNode next() {
         //if (predicate.isSkipping()) {
-        if (predicate instanceof ClusteredViewPredicate) {
+        if (predicate instanceof FlatClusteredViewPredicate) {
             nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
             diffIndex = nextIndex - currentNode.getValue().pre;
         } else {
