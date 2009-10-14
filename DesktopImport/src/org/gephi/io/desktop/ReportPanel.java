@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.desktop;
 
 import java.awt.Color;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -31,6 +33,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import org.gephi.io.container.Container;
 import org.gephi.io.container.ContainerUnloader;
+import org.gephi.io.container.EdgeDefault;
 import org.gephi.io.logging.Issue;
 import org.gephi.io.logging.Report;
 import org.gephi.ui.components.JHTMLEditorPane;
@@ -50,7 +53,6 @@ public class ReportPanel extends javax.swing.JPanel {
     //Preferences
     private final static String SHOW_ISSUES = "ReportPanel_Show_Issues";
     private final static String SHOW_REPORT = "ReportPanel_Show_Report";
-
     private ThreadGroup fillingThreads;
 
     //Icons
@@ -59,10 +61,31 @@ public class ReportPanel extends javax.swing.JPanel {
     private ImageIcon severeIcon;
     private ImageIcon criticalIcon;
 
+    //Container
+    private Container container;
+
     public ReportPanel() {
         initComponents();
         initIcons();
         fillingThreads = new ThreadGroup("Report Panel Issues");
+
+        graphTypeCombo.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                int g = graphTypeCombo.getSelectedIndex();
+                switch (g) {
+                    case 0:
+                        container.getLoader().setEdgeDefault(EdgeDefault.DIRECTED);
+                        break;
+                    case 1:
+                        container.getLoader().setEdgeDefault(EdgeDefault.UNDIRECTED);
+                        break;
+                    case 2:
+                        container.getLoader().setEdgeDefault(EdgeDefault.MIXED);
+                        break;
+                }
+            }
+        });
     }
 
     public void initIcons() {
@@ -73,6 +96,7 @@ public class ReportPanel extends javax.swing.JPanel {
     }
 
     public void setData(Report report, Container container) {
+        this.container = container;
         fillIssues(report);
         fillReport(report);
         fillStats(container);
@@ -135,10 +159,13 @@ public class ReportPanel extends javax.swing.JPanel {
 
         switch (unloader.getEdgeDefault()) {
             case DIRECTED:
+                graphTypeCombo.setSelectedIndex(0);
                 break;
             case UNDIRECTED:
+                graphTypeCombo.setSelectedIndex(1);
                 break;
             case MIXED:
+                graphTypeCombo.setSelectedIndex(2);
                 break;
         }
 

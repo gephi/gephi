@@ -48,7 +48,7 @@ public class DefaultProcessor implements Processor {
     private AttributeColumn edgeWeightColumn;
 
     public void process(ContainerUnloader container) {
-
+        System.out.println("process " + container.getEdgeDefault());
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         HierarchicalGraph graph = graphController.getHierarchicalDirectedGraph();
         GraphFactory factory = graphController.factory();
@@ -112,7 +112,7 @@ public class DefaultProcessor implements Processor {
         }
         node.getNodeData().setLabelVisible(nodeDraft.isLabelVisible());
 
-        if(nodeDraft.getLabelSize()!=-1f) {
+        if (nodeDraft.getLabelSize() != -1f) {
             node.getNodeData().setLabelSize(nodeDraft.getLabelSize());
         }
 
@@ -182,7 +182,7 @@ public class DefaultProcessor implements Processor {
         }
         edge.getEdgeData().setLabelVisible(edgeDraft.isLabelVisible());
 
-        if(edgeDraft.getLabelSize()!=-1f) {
+        if (edgeDraft.getLabelSize() != -1f) {
             edge.getEdgeData().setLabelSize(edgeDraft.getLabelSize());
         }
 

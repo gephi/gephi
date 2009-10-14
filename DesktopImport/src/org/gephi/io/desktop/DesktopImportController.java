@@ -261,43 +261,44 @@ public class DesktopImportController implements ImportController {
     }
 
     private void finishImport(Container container) {
+        if (container.verify()) {
+            Report report = container.getReport();
 
-        Report report = container.getReport();
-
-        //Report panel
-        ReportPanel reportPanel = new ReportPanel();
-        reportPanel.setData(report, container);
-        DialogDescriptor dd = new DialogDescriptor(reportPanel, "Import report");
-        if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.CANCEL_OPTION)) {
-            reportPanel.destroy();
-            return;
-        }
-        reportPanel.destroy();
-
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        Workspace workspace;
-        if (pc.getCurrentProject() == null) {
-            pc.newProject();
-            workspace = pc.getCurrentWorkspace();
-        } else {
-            if (reportPanel.getProcessorStrategy().equals(ProcessorStrategyEnum.FULL)) {
-                //New workspace
-                workspace = pc.newWorkspace(pc.getCurrentProject());
-                pc.openWorkspace(workspace);
-            } else if (pc.getCurrentWorkspace() == null) {
-                //Append mode but no workspace
-                workspace = pc.newWorkspace(pc.getCurrentProject());
-                pc.openWorkspace(workspace);
-            } else {
-                //Append mode, current workspace is fine
-                workspace = pc.getCurrentWorkspace();
+            //Report panel
+            ReportPanel reportPanel = new ReportPanel();
+            reportPanel.setData(report, container);
+            DialogDescriptor dd = new DialogDescriptor(reportPanel, "Import report");
+            if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.CANCEL_OPTION)) {
+                reportPanel.destroy();
+                return;
             }
-        }
-        if (container.getSource() != null) {
-            workspace.setSource(container.getSource());
-        }
+            reportPanel.destroy();
 
-        Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
+            ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+            Workspace workspace;
+            if (pc.getCurrentProject() == null) {
+                pc.newProject();
+                workspace = pc.getCurrentWorkspace();
+            } else {
+                if (reportPanel.getProcessorStrategy().equals(ProcessorStrategyEnum.FULL)) {
+                    //New workspace
+                    workspace = pc.newWorkspace(pc.getCurrentProject());
+                    pc.openWorkspace(workspace);
+                } else if (pc.getCurrentWorkspace() == null) {
+                    //Append mode but no workspace
+                    workspace = pc.newWorkspace(pc.getCurrentProject());
+                    pc.openWorkspace(workspace);
+                } else {
+                    //Append mode, current workspace is fine
+                    workspace = pc.getCurrentWorkspace();
+                }
+            }
+            if (container.getSource() != null) {
+                workspace.setSource(container.getSource());
+            }
+
+            Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
+        }
     }
 
     private BufferedReader getTextReader(FileObject fileObject) throws ImportException {

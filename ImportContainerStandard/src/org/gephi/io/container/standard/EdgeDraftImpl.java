@@ -42,7 +42,7 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
     private String id;
     private String label;
 
-     //Flag
+    //Flag
     private boolean autoId;
 
     //Topology
@@ -137,10 +137,6 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
     }
 
     //GETTERS
-    public EdgeType getEdgeType() {
-        return edgeType;
-    }
-
     public float getLabelSize() {
         return labelSize;
     }
@@ -184,12 +180,12 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
     @Override
     public String toString() {
         String res = "edge";
-        if(!autoId) {
-            res+=" id="+id;
-        } else if(label!=null) {
-            res+=" label="+label;
+        if (!autoId) {
+            res += " id=" + id;
+        } else if (label != null) {
+            res += " label=" + label;
         } else {
-            res+=id;
+            res += id;
         }
         return res;
     }
