@@ -90,7 +90,6 @@ public class VizConfig {
     protected boolean labelFractionalMetrics = true;
     protected boolean useLabelRenderer3d = false;//no working   
     protected boolean showVizVar = true;
-    protected boolean visualizeTree = false;
     protected boolean contextMenu = true;
     protected boolean toolbar = true;
     protected boolean propertiesbar = true;
@@ -324,10 +323,6 @@ public class VizConfig {
 
     public boolean isUseLabelRenderer3d() {
         return useLabelRenderer3d;
-    }
-
-    public boolean isVisualizeTree() {
-        return visualizeTree;
     }
 
     public boolean isWireFrame() {

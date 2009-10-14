@@ -115,7 +115,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         }
 
         ModelClass edgeClass = object3dClasses[AbstractEngine.CLASS_EDGE];
-        if (edgeClass.isEnabled() && (graph.getEdgeVersion() > edgeVersion || modeManager.requireModeChange() || vizConfig.isVisualizeTree())) {
+        if (edgeClass.isEnabled() && (graph.getEdgeVersion() > edgeVersion || modeManager.requireModeChange())) {
             updateEdges();
             updateMetaEdges();
             edgeClass.setCacheMarker(cacheMarker);
@@ -142,28 +142,10 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         Modeler nodeInit = engine.getModelClasses()[AbstractEngine.CLASS_NODE].getCurrentModeler();
 
         NodeIterable nodeIterable;
-        if (vizConfig.isVisualizeTree()) {
-            nodeIterable = graph.getHierarchyTree().getNodes();
-        } else {
-            nodeIterable = graph.getClusteredGraph().getNodes();
-        }
+        nodeIterable = graph.getClusteredGraph().getNodes();
+
 
         for (Node node : nodeIterable) {
-
-            //Tree position
-            if (vizConfig.isVisualizeTree()) {
-                node.getNodeData().setX(node.getPre() * 5);
-                node.getNodeData().setY(node.getPost() * 5);
-                if (graph.getClusteredGraph().isInView(node)) {
-                    node.getNodeData().setR(1f);
-                    node.getNodeData().setG(0f);
-                    node.getNodeData().setB(0f);
-                } else {
-                    node.getNodeData().setR(0.2f);
-                    node.getNodeData().setG(0.2f);
-                    node.getNodeData().setB(0.2f);
-                }
-            }
 
             Model obj = node.getNodeData().getModel();
             if (obj == null) {
@@ -190,11 +172,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         Modeler arrowInit = engine.getModelClasses()[AbstractEngine.CLASS_ARROW].getCurrentModeler();
 
         EdgeIterable edgeIterable;
-        if (vizConfig.isVisualizeTree()) {
-            edgeIterable = graph.getHierarchyTree().getEdges();
-        } else {
-            edgeIterable = graph.getClusteredGraph().getEdges();
-        }
+        edgeIterable = graph.getClusteredGraph().getEdges();
+
 
         for (Edge edge : edgeIterable) {
             Model obj = edge.getEdgeData().getModel();
@@ -224,9 +203,6 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     public void updateMetaEdges() {
         Modeler edgeInit = engine.getModelClasses()[AbstractEngine.CLASS_EDGE].getCurrentModeler();
 
-        if (vizConfig.isVisualizeTree()) {
-            return;
-        }
 
         for (Edge edge : graph.getClusteredGraph().getMetaEdges()) {
 
@@ -244,9 +220,6 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     }
 
     public void updatePotatoes() {
-        if (vizConfig.isVisualizeTree()) {
-            return;
-        }
 
         ModelClass potatoClass = engine.getModelClasses()[AbstractEngine.CLASS_POTATO];
         if (potatoClass.isEnabled()) {
@@ -297,11 +270,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         }
         //Refresh reader if sight changed
         if (graph != null) {
-            if (vizConfig.isVisualizeTree()) {
-                return graph.getNodeVersion() > nodeVersion;
-            } else {
                 return graph.getNodeVersion() > nodeVersion || graph.getEdgeVersion() > edgeVersion;
-            }
+            
         }
         return false;
     }

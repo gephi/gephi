@@ -228,11 +228,7 @@ public interface HierarchicalGraph extends Graph {
      */
     public void ungroupNodes(Node nodeGroup);
 
-    /**
-     * Get the clustered graph hierarchy as a <code>Tree</code>.
-     * @return the tree which represents the clusterd graph hierarchy
-     */
-    public Tree getHierarchyTree();
+    public EdgeIterable getHierarchyEdges();
 
     public ImmutableTreeNode wrapToTreeNode();
 

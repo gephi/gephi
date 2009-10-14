@@ -40,4 +40,6 @@ public class DecoratorFactoryImpl implements DecoratorFactory {
     public DynamicGraph getDynamicGraph(Graph graph) {
         return new DynamicGraphImpl(dhns, graph);
     }
+
+
 }

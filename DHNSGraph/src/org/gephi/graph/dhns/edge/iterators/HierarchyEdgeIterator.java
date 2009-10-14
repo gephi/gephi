@@ -22,11 +22,13 @@ package org.gephi.graph.dhns.edge.iterators;
 
 import java.util.Iterator;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.HierarchyEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
+import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
  *
@@ -38,10 +40,17 @@ public class HierarchyEdgeIterator extends AbstractEdgeIterator implements Itera
     private AbstractNodeIterator nodeIterator;
     private HierarchyEdgeImpl hierarchyEdge;
     private int count = 0;
+    private Predicate<AbstractNode> predicate;
 
-    public HierarchyEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator) {
+    public HierarchyEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, Predicate<AbstractNode> predicate) {
         this.treeStructure = treeStructure;
         this.nodeIterator = nodeIterator;
+
+        if (predicate == null) {
+            this.predicate = Tautology.instance;
+        } else {
+            this.predicate = predicate;
+        }
     }
 
     @Override
@@ -50,7 +59,7 @@ public class HierarchyEdgeIterator extends AbstractEdgeIterator implements Itera
             AbstractNode children = nodeIterator.next();
             AbstractNode parent = children.parent.getOriginalNode();
 
-            if (parent != treeStructure.getRoot()) {
+            if (parent != treeStructure.getRoot() && predicate.evaluate(parent)) {
                 hierarchyEdge = new HierarchyEdgeImpl(count, children);
                 return true;
             }

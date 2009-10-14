@@ -22,13 +22,14 @@ package org.gephi.graph.dhns.graph;
 
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.ImmutableTreeNode;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
-import org.gephi.graph.api.Tree;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.iterators.HierarchyEdgeIterator;
 import org.gephi.graph.dhns.filter.FilterControl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.CloneNode;
@@ -39,7 +40,6 @@ import org.gephi.graph.dhns.node.iterators.DescendantIterator;
 import org.gephi.graph.dhns.node.iterators.LevelIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
 import org.gephi.graph.dhns.proposition.Tautology;
-import org.gephi.graph.dhns.tree.HierarchyTreeImpl;
 import org.gephi.graph.dhns.utils.TreeNodeWrapper;
 
 /**
@@ -475,7 +475,8 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         return dhns.getDynamicManager().isDynamic();
     }
 
-    public Tree getHierarchyTree() {
-        return new HierarchyTreeImpl(dhns);
+    public EdgeIterable getHierarchyEdges() {
+        readLock();
+        return dhns.newEdgeIterable(new HierarchyEdgeIterator(dhns.getTreeStructure(), new TreeListIterator(dhns.getTreeStructure().getTree(), 1), filterControl.getNodePredicate()));
     }
 }
