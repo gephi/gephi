@@ -74,6 +74,7 @@ public class Dhns {
         eventManager = new EventManager(this);
         dynamicManager = new DynamicManager(this);
         decoratorFactory = new DecoratorFactoryImpl(this);
+        settingsManager = new SettingsManager(this);
         
         init();
     }
