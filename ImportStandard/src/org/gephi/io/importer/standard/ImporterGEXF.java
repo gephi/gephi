@@ -133,7 +133,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             Progress.switchToDeterminate(progressTicket, taskMax);
 
             // Default edge type
-            exp = xpath.compile("./graph/edges[@defaultedgetype]");
+            exp = xpath.compile("./graph[@defaultedgetype]");
             NodeList edgeTypeE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
             if(edgeTypeE != null && edgeTypeE.getLength() > 0) {
                 String defaultEdgeType = ((Element) edgeTypeE.item(0)).getAttribute("defaultedgetype");
