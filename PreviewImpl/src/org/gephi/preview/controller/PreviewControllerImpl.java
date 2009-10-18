@@ -1,6 +1,7 @@
 package org.gephi.preview.controller;
 
 import java.awt.Font;
+import org.gephi.graph.api.GraphController;
 import org.gephi.preview.GraphImpl;
 import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.PreviewController;
@@ -8,6 +9,7 @@ import org.gephi.preview.api.color.colorizer.GenericColorizer;
 import org.gephi.preview.api.color.colorizer.NodeChildColorizer;
 import org.gephi.preview.api.color.colorizer.NodeColorizer;
 import org.gephi.preview.supervisor.GraphSupervisor;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -15,12 +17,35 @@ import org.gephi.preview.supervisor.GraphSupervisor;
  */
 public class PreviewControllerImpl implements PreviewController {
 
-    private GraphImpl graph;
+    private GraphImpl previewGraph = null;
     protected final GraphSupervisor gs = new GraphSupervisor();
+	private final PreviewGraphFactory factory = new PreviewGraphFactory();
 
     public Graph getGraph() {
-        return graph;
+		if (null == previewGraph) {
+			buildGraph();
+		}
+
+        return previewGraph;
     }
+
+	private void buildGraph() {
+		GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+
+		org.gephi.graph.api.Graph sourceGraph = null;
+
+		if (gc.getDirectedGraph().isDirected()) {
+			sourceGraph = gc.getDirectedGraph();
+		}
+		else if (gc.getDirectedGraph().isUndirected()) {
+			sourceGraph = gc.getUndirectedGraph();
+		}
+		else if (gc.getDirectedGraph().isMixed()) {
+			sourceGraph = gc.getMixedGraph();
+		}
+
+		previewGraph = factory.createPreviewGraph(sourceGraph, gs);
+	}
 
     public Boolean getShowNodes() {
         return gs.getNodeSupervisor().getShowNodes();

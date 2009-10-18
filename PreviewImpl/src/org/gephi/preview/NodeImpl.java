@@ -27,7 +27,7 @@ public class NodeImpl implements Node, NodeColorizerClient {
     private final NodeLabelImpl label;
     private final NodeLabelBorderImpl labelBorder;
 
-    public NodeImpl(GraphImpl parent, String label, float x, float y, float radius, int r, int g, int b) {
+    public NodeImpl(GraphImpl parent, String label, float x, float y, float radius, float r, float g, float b) {
         this.parent = parent;
         this.supervisor = parent.getSupervisor().getNodeSupervisor();
         this.position = new PVector(x, y);

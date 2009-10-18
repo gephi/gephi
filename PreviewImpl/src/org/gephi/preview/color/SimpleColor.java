@@ -14,7 +14,15 @@ public class SimpleColor implements Color {
         m_color = new java.awt.Color(r, g, b);
     }
 
+	public SimpleColor(float r, float g, float b) {
+        m_color = new java.awt.Color(r, g, b);
+    }
+
     public SimpleColor(int r, int g, int b, int a) {
+        m_color = new java.awt.Color(r, g, b, a);
+    }
+
+	public SimpleColor(float r, float g, float b, float a) {
         m_color = new java.awt.Color(r, g, b, a);
     }
 
