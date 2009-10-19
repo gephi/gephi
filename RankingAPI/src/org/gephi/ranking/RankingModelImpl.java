@@ -70,7 +70,7 @@ public class RankingModelImpl implements RankingModel {
     public NodeRanking[] getNodeRanking() {
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
         List<Ranking> rankingList = new ArrayList<Ranking>();
-        Graph graph = Lookup.getDefault().lookup(GraphController.class).getVisibleDirectedGraph();
+        Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
         for (AttributeColumn column : attributeController.getTemporaryAttributeManager().getNodeClass().getAttributeColumns()) {
             if (RankingFactory.isNumberColumn(column)) {
                 NodeRanking r = RankingFactory.getNodeAttributeRanking(column, graph);
@@ -84,7 +84,7 @@ public class RankingModelImpl implements RankingModel {
 
     public EdgeRanking[] getEdgeRanking() {
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
-        Graph graph = Lookup.getDefault().lookup(GraphController.class).getVisibleDirectedGraph();
+        Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
         List<Ranking> rankingList = new ArrayList<Ranking>();
         for (AttributeColumn column : attributeController.getTemporaryAttributeManager().getEdgeClass().getAttributeColumns()) {
             if (RankingFactory.isNumberColumn(column)) {

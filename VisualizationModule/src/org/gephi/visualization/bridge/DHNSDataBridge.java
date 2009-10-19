@@ -22,12 +22,13 @@ package org.gephi.visualization.bridge;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.gephi.graph.api.ClusteredDirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Group;
-import org.gephi.graph.api.HierarchicalDirectedGraph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.NodeIterable;
@@ -55,7 +56,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     //Architecture
     protected AbstractEngine engine;
     protected GraphController controller;
-    protected HierarchicalDirectedGraph graph;
+    protected HierarchicalGraph graph;
     private VizConfig vizConfig;
     protected ModeManager modeManager;
 
@@ -72,35 +73,30 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         controller = Lookup.getDefault().lookup(GraphController.class);
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.modeManager = VizController.getInstance().getModeManager();
-        graph = controller.getHierarchicalDirectedGraph();
     }
 
     public void updateWorld() {
         System.out.println("update world");
         cacheMarker++;
 
-        switch (modeManager.getMode()) {
-            case FULL:
-                graph = controller.getHierarchicalDirectedGraph();
-                break;
-            case VISIBLE:
-                //graph = controller.getVisibleDirectedGraph();
-                break;
-            case HIGHLIGHT:
-                //graph = controller.getDirectedGraph();
-                break;
-        }
-
-        if (graph == null) {
+        GraphModel graphModel = controller.getModel();
+        if (graphModel.isDirected()) {
+            graph = graphModel.getHierarchicalDirectedGraphVisible();
+        } else if (graphModel.isUndirected()) {
+            graph = graphModel.getHierarchicalUndirectedGraphVisible();
+        } else if (graphModel.isMixed()) {
+            graph = graphModel.getHierarchicalMixedGraphVisible();
+        } else {
+            //No visualized graph inited yet
             return;
         }
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
 
-        if (graph.isDynamic()) {
-            System.out.println("dynamic graph");
-            graph = (ClusteredDirectedGraph) controller.getVisualizedGraph();
-        }
+        /*if (graph.isDynamic()) {
+        System.out.println("dynamic graph");
+        graph = (ClusteredDirectedGraph) controller.getVisualizedGraph();
+        }*/
 
         ModelClass[] object3dClasses = engine.getModelClasses();
 
@@ -142,7 +138,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         Modeler nodeInit = engine.getModelClasses()[AbstractEngine.CLASS_NODE].getCurrentModeler();
 
         NodeIterable nodeIterable;
-        nodeIterable = graph.getClusteredGraph().getNodes();
+        nodeIterable = graph.getNodes();
 
 
         for (Node node : nodeIterable) {
@@ -172,7 +168,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         Modeler arrowInit = engine.getModelClasses()[AbstractEngine.CLASS_ARROW].getCurrentModeler();
 
         EdgeIterable edgeIterable;
-        edgeIterable = graph.getClusteredGraph().getEdges();
+        edgeIterable = graph.getEdges();
 
 
         for (Edge edge : edgeIterable) {
@@ -266,12 +262,19 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     public boolean requireUpdate() {
         if (graph == null) {
             //Try to get a graph
-            graph = controller.getHierarchicalDirectedGraph();
+            if (controller.getModel() != null) {
+                GraphModel graphModel = controller.getModel();
+                if (!graphModel.isDirected() && !graphModel.isUndirected() && !graphModel.isMixed()) {
+                    return false;
+                } else {
+                    graph = graphModel.getHierarchicalGraphVisible();
+                }
+            }
         }
         //Refresh reader if sight changed
         if (graph != null) {
-                return graph.getNodeVersion() > nodeVersion || graph.getEdgeVersion() > edgeVersion;
-            
+            return graph.getNodeVersion() > nodeVersion || graph.getEdgeVersion() > edgeVersion;
+
         }
         return false;
     }

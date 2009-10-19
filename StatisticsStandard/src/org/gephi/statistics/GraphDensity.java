@@ -40,7 +40,7 @@ public class GraphDensity implements Statistics {
      * @param graphController
      */
     public void execute(GraphController graphController) {
-        DirectedGraph graph = graphController.getDirectedGraph();
+        DirectedGraph graph = graphController.getModel().getDirectedGraphVisible();
         int edgesCount = graph.getEdgeCount();
         int nodesCount = graph.getNodeCount();
         density = (float) edgesCount / (nodesCount * nodesCount - nodesCount);

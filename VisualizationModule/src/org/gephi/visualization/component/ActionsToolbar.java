@@ -29,6 +29,7 @@ import javax.swing.JButton;
 import javax.swing.JToolBar;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.ui.components.JColorButton;
@@ -86,7 +87,7 @@ public class ActionsToolbar extends JToolBar {
             public void actionPerformed(ActionEvent evt) {
                 color = resetColorButton.getColor();
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                DirectedGraph graph = gc.getVisibleDirectedGraph();
+                Graph graph = gc.getModel().getGraph();
                 for (Node n : graph.getNodes().toArray()) {
                     n.getNodeData().setR(color.getRed() / 255f);
                     n.getNodeData().setG(color.getGreen() / 255f);
@@ -111,7 +112,7 @@ public class ActionsToolbar extends JToolBar {
 
             public void actionPerformed(ActionEvent e) {
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                DirectedGraph graph = gc.getVisibleDirectedGraph();
+                Graph graph = gc.getModel().getGraph();
                 for (Node n : graph.getNodes().toArray()) {
                     n.getNodeData().setSize(size);
                 }
@@ -127,7 +128,7 @@ public class ActionsToolbar extends JToolBar {
 
             public void actionPerformed(ActionEvent e) {
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                DirectedGraph graph = gc.getVisibleDirectedGraph();
+                Graph graph = gc.getModel().getGraph();
                 for (Node n : graph.getNodes().toArray()) {
                     n.getNodeData().setLabelSize(-1f);
                 }

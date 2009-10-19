@@ -144,7 +144,7 @@ final class ClusteringTopComponent extends TopComponent {
     private void mclButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mclButtonActionPerformed
         MarkovClustering markovClustering = new MarkovClustering();
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        Graph graph = graphController.getVisibleDirectedGraph();
+        Graph graph = graphController.getModel().getGraphVisible();
         markovClustering.setGammaExp(Double.parseDouble(gamma.getText()));
         markovClustering.setLoopGain(Double.parseDouble(loop.getText()));
         markovClustering.setMaxResidual(Double.parseDouble(maxresidual.getText()));
@@ -157,7 +157,7 @@ final class ClusteringTopComponent extends TopComponent {
         frame.setSize(new Dimension(400,400));
         frame.getContentPane().setLayout(new BorderLayout());
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        HierarchicalGraph graph = graphController.getHierarchicalDirectedGraph();
+        HierarchicalGraph graph = graphController.getModel().getHierarchicalGraph();
         Dendrogram dendrogram = new Dendrogram(graph);
         frame.getContentPane().add(dendrogram, BorderLayout.CENTER);
         frame.setVisible(true);

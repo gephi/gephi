@@ -157,7 +157,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         if (graphController == null) {
             return;
         }
-        graph = graphController.getHierarchicalUndirectedGraph().getClusteredGraph();
+        graph = graphController.getModel().getHierarchicalGraphVisible().getClusteredGraph();
         energy = Float.POSITIVE_INFINITY;
         for (Node n : graph.getTopNodes()) {
             NodeData data = n.getNodeData();

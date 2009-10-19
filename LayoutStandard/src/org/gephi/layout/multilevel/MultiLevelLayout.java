@@ -22,11 +22,11 @@ package org.gephi.layout.multilevel;
 
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutProperty;
-import org.gephi.layout.force.yifanHu.YifanHu;
 import org.gephi.layout.force.yifanHu.YifanHuLayout;
 import org.gephi.layout.force.yifanHu.YifanHuProportional;
 import org.gephi.layout.random.RandomLayout;
@@ -39,7 +39,7 @@ import org.openide.nodes.Sheet;
  */
 public class MultiLevelLayout extends AbstractLayout implements Layout {
 
-    private HierarchicalDirectedGraph graph;
+    private HierarchicalGraph graph;
     private int level;
     private YifanHuLayout layout;
     private YifanHuProportional yifanHu;
@@ -59,7 +59,7 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
     @Override
     public void setGraphController(GraphController graphController) {
         super.setGraphController(graphController);
-        graph = graphController.getHierarchicalDirectedGraph();
+        graph = graphController.getModel().getHierarchicalGraphVisible();
     }
 
     public void initAlgo() {
@@ -183,8 +183,8 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
 
     public interface CoarseningStrategy {
 
-        public void coarsen(HierarchicalDirectedGraph graph);
+        public void coarsen(HierarchicalGraph graph);
 
-        public void refine(HierarchicalDirectedGraph graph);
+        public void refine(HierarchicalGraph graph);
     }
 }

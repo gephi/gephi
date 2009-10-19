@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.tools;
 
 import java.awt.Color;
-import java.awt.LinearGradientPaint;
 import java.util.Map.Entry;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -89,7 +88,12 @@ public class HeatMap implements Tool {
                         dontPaintUnreachable = heatMapPanel.isDontPaintUnreachable();
                     }
                     GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                    DirectedGraph graph = gc.getVisibleDirectedGraph();
+                    DirectedGraph graph=null;
+                    if(gc.getModel().getGraph() instanceof DirectedGraph) {
+                        graph = (DirectedGraph)gc.getModel().getGraph();
+                    } else {
+                        return;
+                    }
 
                     //Color
                     LinearGradient linearGradient = new LinearGradient(colors, positions);

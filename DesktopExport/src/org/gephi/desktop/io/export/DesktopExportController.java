@@ -83,9 +83,16 @@ public class DesktopExportController implements ExportController {
 
     public void doExport(Exporter exporter, FileObject fileObject, boolean visibleGraphOnly) {
         try {
-
-            Workspace currentWorkspace = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace();
-            Graph graph = Lookup.getDefault().lookup(GraphController.class).getDirectedGraph();
+            GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+            if(gc.getModel()==null) {
+                return;
+            }
+            Graph graph=null;
+            if(visibleGraphOnly) {
+                graph = gc.getModel().getGraphVisible();
+            } else {
+                graph = gc.getModel().getGraph();
+            }
 
             if (exporter instanceof TextExporter) {
                 exportText(exporter, fileObject, graph);

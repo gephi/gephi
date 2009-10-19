@@ -29,6 +29,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphFactory;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.io.container.ContainerUnloader;
@@ -49,9 +50,20 @@ public class DefaultProcessor implements Processor {
 
     public void process(ContainerUnloader container) {
         System.out.println("process " + container.getEdgeDefault());
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        HierarchicalGraph graph = graphController.getHierarchicalDirectedGraph();
-        GraphFactory factory = graphController.factory();
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        HierarchicalGraph graph = null;
+        switch (container.getEdgeDefault()) {
+            case DIRECTED:
+                graph = graphModel.getHierarchicalDirectedGraph();
+                break;
+            case UNDIRECTED:
+                graph = graphModel.getHierarchicalUndirectedGraph();
+                break;
+            case MIXED:
+                graph = graphModel.getHierarchicalMixedGraph();
+                break;
+        }
+        GraphFactory factory = graphModel.factory();
 
         //Attributes - Creates columns for properties
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);

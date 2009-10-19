@@ -73,6 +73,14 @@ public class TextDataImpl implements TextData {
         return (float) line.bounds.getHeight() * sizeFactor;
     }
 
+    public String getText() {
+        return line.text;
+    }
+
+    public float getSize() {
+        return sizeFactor;
+    }
+
     public static class TextLine {
 
         String text = "rien";

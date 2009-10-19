@@ -80,7 +80,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
     @Override
     public void setGraphController(GraphController graphController) {
         super.setGraphController(graphController);
-        this.graph = graphController.getDirectedGraph();
+        this.graph = graphController.getModel().getGraphVisible();
     }
 
     public void initAlgo() {

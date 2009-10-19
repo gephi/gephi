@@ -59,7 +59,7 @@ public class LayoutControllerImpl extends Observable implements LayoutController
 
     public void injectGraph() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        if (layout != null) {
+        if (layout != null && graphController.getModel()!=null) {
             layout.setGraphController(graphController);
         }
         System.out.println("LayoutController: Injecting graphController");

@@ -51,7 +51,7 @@ public class RotateLayout extends AbstractLayout implements Layout {
     @Override
     public void setGraphController(GraphController graphController) {
         super.setGraphController(graphController);
-        graph = graphController.getUndirectedGraph();
+        graph = graphController.getModel().getGraphVisible();
     }
 
     public void goAlgo() {

@@ -42,6 +42,7 @@ import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphEvent;
 import org.gephi.graph.api.GraphListener;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.project.api.ProjectController;
@@ -75,7 +76,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
     //Data
     private Lookup.Result<AttributeColumn> nodeColumnsResult;
     private Lookup.Result<AttributeColumn> edgeColumnsResult;
-    private HierarchicalGraph graph;
+    private GraphModel graphModel;
 
     //Table
     private NodeDataTable nodeTable;
@@ -121,6 +122,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
     private void initEvents() {
         //Workspace Listener
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        final GraphController gc = Lookup.getDefault().lookup(GraphController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
@@ -134,13 +136,13 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                 filterTextField.setEnabled(true);
                 labelFilter.setEnabled(true);
                 bannerPanel.setVisible(false);
+                graphModel = gc.getModel();
+                graphModel.addGraphListener(DataExplorerTopComponent.this);
             }
 
             public void unselect(Workspace workspace) {
-                if (graph != null) {
-                    graph.removeGraphListener(DataExplorerTopComponent.this);
-                }
-                graph = null;
+                graphModel.removeGraphListener(DataExplorerTopComponent.this);
+                graphModel = null;
             }
 
             public void close(Workspace workspace) {
@@ -190,14 +192,12 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                     final AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
 
                     //Nodes from DHNS
-                    graph = Lookup.getDefault().lookup(GraphController.class).getHierarchicalDirectedGraph();
+                    graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+                    HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
                     if (graph == null) {
                         tableScrollPane.setViewportView(null);
                         return;
                     }
-
-                    //Listener
-                    graph.addGraphListener(DataExplorerTopComponent.this);
 
                     //Model
                     nodeTable.refreshModel(graph, cols);
@@ -228,13 +228,12 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                     final AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
 
                     //Edges from DHNS
-                    HierarchicalDirectedGraph graph = Lookup.getDefault().lookup(GraphController.class).getHierarchicalDirectedGraph();
+                    graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+                    HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
                     if (graph == null) {
                         tableScrollPane.setViewportView(null);
                         return;
                     }
-                    //Listener
-                    graph.addGraphListener(DataExplorerTopComponent.this);
 
                     //Model
                     edgeTable.refreshModel(graph, cols);

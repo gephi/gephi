@@ -5,7 +5,7 @@ package org.gephi.layout.multilevel;
 
 import javax.swing.Icon;
 import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.HierarchicalDirectedGraph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
@@ -40,7 +40,7 @@ public class Test implements LayoutBuilder {
         private boolean converged;
         private boolean refine = false;
         private MaximalMatchingCoarsening x = new MaximalMatchingCoarsening();
-        private HierarchicalDirectedGraph graph;
+        private HierarchicalGraph graph;
 
         private TestLayout(LayoutBuilder layoutBuilder) {
             super(layoutBuilder);
@@ -49,7 +49,7 @@ public class Test implements LayoutBuilder {
         @Override
         public void setGraphController(GraphController graphController) {
             super.setGraphController(graphController);
-            graph = graphController.getHierarchicalDirectedGraph();
+            graph = (HierarchicalGraph)graphController.getModel().getGraphVisible();
         }
 
         public void initAlgo() {

@@ -47,7 +47,7 @@ public class ScaleLayout extends AbstractLayout implements Layout {
     @Override
     public void setGraphController(GraphController graphController) {
         super.setGraphController(graphController);
-        graph = graphController.getDirectedGraph();
+        graph = graphController.getModel().getGraphVisible();
     }
 
     public void initAlgo() {

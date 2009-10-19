@@ -59,7 +59,7 @@ public class RankingControllerImpl implements RankingController {
         rankingResult.transformer = transformer;
         rankingResult.ranking = ranking;
 
-        Graph graph = Lookup.getDefault().lookup(GraphController.class).getVisibleDirectedGraph();
+        Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
         if (ranking instanceof NodeRanking) {
             for (Node node : graph.getNodes().toArray()) {
                 Object rank = ranking.getValue(node);

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
@@ -37,7 +38,7 @@ public class DiffusionMethods {
 
     public static Node[] getNeighbors(Node[] nodes, boolean withDoubles) {
         GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        DirectedGraph graph = gc.getVisibleDirectedGraph();
+        Graph graph = gc.getModel().getGraph();
         if (withDoubles) {
             ArrayList<Node> nodeList = new ArrayList<Node>();
             for (Node n : nodes) {
@@ -60,7 +61,7 @@ public class DiffusionMethods {
     public static Node[] getPredecessors(Node[] nodes) {
         NodeTree nodeTree = new NodeTree();
         GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        DirectedGraph graph = gc.getVisibleDirectedGraph();
+        DirectedGraph graph = (DirectedGraph)gc.getModel().getGraph();
         for (Node n : nodes) {
             for (Node neighbor : graph.getPredecessors(n).toArray()) {
                 nodeTree.add(neighbor);
@@ -72,7 +73,7 @@ public class DiffusionMethods {
     public static Node[] getSuccessors(Node[] nodes) {
         NodeTree nodeTree = new NodeTree();
         GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        DirectedGraph graph = gc.getVisibleDirectedGraph();
+        DirectedGraph graph = (DirectedGraph)gc.getModel().getGraph();
         for (Node n : nodes) {
             for (Node neighbor : graph.getSuccessors(n).toArray()) {
                 nodeTree.add(neighbor);

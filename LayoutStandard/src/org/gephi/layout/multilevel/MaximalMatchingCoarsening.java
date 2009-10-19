@@ -22,7 +22,7 @@ package org.gephi.layout.multilevel;
 
 import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.HierarchicalDirectedGraph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 
 /**
@@ -38,7 +38,7 @@ public class MaximalMatchingCoarsening implements MultiLevelLayout.CoarseningStr
 //        }
 //        System.out.println("Topnodes: " + graph.getTopNodes().toArray().length);
 //    }
-    public void coarsen(HierarchicalDirectedGraph g) {
+    public void coarsen(HierarchicalGraph g) {
         ClusteredGraph graph = g.getClusteredGraph();
         int retract = 0;
         int count = 0;
@@ -63,7 +63,7 @@ public class MaximalMatchingCoarsening implements MultiLevelLayout.CoarseningStr
     // print(graph);
     }
 
-    public void refine(HierarchicalDirectedGraph graph) {
+    public void refine(HierarchicalGraph graph) {
         double r = 10;
         int count = 0;
         int refined = 0;

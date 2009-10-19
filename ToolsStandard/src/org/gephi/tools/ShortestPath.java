@@ -84,7 +84,12 @@ public class ShortestPath implements Tool {
                     float[] colorArray = new float[]{color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f};
                     Node targetNode = n;
                     GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                    DirectedGraph graph = gc.getVisibleDirectedGraph();
+                    DirectedGraph graph=null;
+                    if(gc.getModel().getGraph() instanceof DirectedGraph) {
+                        graph = (DirectedGraph)gc.getModel().getGraph();
+                    } else {
+                        return;
+                    }
 
                     BellmanFordShortestPathAlgorithm algorithm = new BellmanFordShortestPathAlgorithm(graph, sourceNode);
                     algorithm.compute();
