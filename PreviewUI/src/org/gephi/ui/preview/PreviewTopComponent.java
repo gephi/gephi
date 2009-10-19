@@ -2,8 +2,6 @@ package org.gephi.ui.preview;
 
 import java.io.Serializable;
 import java.util.logging.Logger;
-import org.gephi.preview.api.PreviewController;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -116,8 +114,6 @@ final class PreviewTopComponent extends TopComponent {
 	 * Refresh the preview applet.
 	 */
     public void refreshPreview() {
-        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        ((ProcessingPreview) sketch).setGraph(controller.getGraph(), controller);
-        ((ProcessingPreview) sketch).redraw();
+        ((ProcessingPreview) sketch).refresh();
     }
 }
