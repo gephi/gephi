@@ -263,61 +263,6 @@ public interface Graph {
     public void setVisible(Edge edge, boolean visible);
 
     /**
-     * Add <code>graphListener</code> as a listener to this graph, if it is not already.
-     * To pass a <code>WeakReference</code>, use Netbeans <code>WeakListeners</code> utility class.
-     * @param graphListener the listener to add
-     */
-    public void addGraphListener(GraphListener graphListener);
-
-    /**
-     * Remove <code>graphListener</code> as a listener to this graph.
-     * @param graphListener the listener to remove
-     */
-    public void removeGraphListener(GraphListener graphListener);
-
-    /**
-     * Returns <code>true</code> if the graph is <b>directed</b> by default. This value is an
-     * indicator of the current state and it means that so far all edges are directed in the graph.
-     * @return <code>true</code> if the graph is only directed or <code>false</code> otherwise
-     * @see DirectedGraph
-     */
-    public boolean isDirected();
-
-    /**
-     * Returns <code>true</code> if the graph is <b>undirected</b> by default. This value is an
-     * indicator of the current state and it means that so far all edges are undirected in the graph.
-     * @return <code>true</code> if the graph is only undirected or <code>false</code> otherwise
-     * @see UndirectedGraph
-     */
-    public boolean isUndirected();
-
-    /**
-     * Returns <code>true</code> if the graph is <b>mixed</b> by default. This value is an
-     * indicator of the current state and it means that directed and undirected edges has been
-     * added to the graph. When it returns <code>true</code>, <code>isDirected()</code> and
-     * <code>isUndirected()</code> methods always returns <code>false</code>.
-     * @return <code>true</code> if the graph is mixed or <code>false</code> otherwise
-     * @see MixedGraph
-     */
-    public boolean isMixed();
-
-    /**
-     * Returns <code>true</code> if the graph is <b>hierarchical</b>. This indicates the presence
-     * of a hierarchy, in other words the height of the tree is greater than 0.
-     * @return <code>true</code> if the graph is clustered or <code>false</code> otherwise
-     * @see HierarchicalGraph
-     */
-    public boolean isHierarchical();
-
-    /**
-     * Returns <code>true</code> if the graph is <b>dynamical</b>. That means its structure is
-     * changing over time, elements have a life period.
-     * @return <code>true</code> if the graph is a dynamic graph
-     * @see DynamicGraph
-     */
-    public boolean isDynamic();
-
-    /**
      * Acquire a read lock on the graph. Calling thread will be blocked until all write locks are released.
      * Several threads can read but only once can write.
      * @see ReentrantReadWriteLock
@@ -342,5 +287,7 @@ public interface Graph {
      */
     public void writeUnlock();
 
-    public Filters getFilters();
+    public GraphModel getGraphModel();
+
+    public View getView();
 }

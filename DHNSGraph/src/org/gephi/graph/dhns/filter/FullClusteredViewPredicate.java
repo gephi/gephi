@@ -18,23 +18,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.view;
+package org.gephi.graph.dhns.filter;
 
-import org.gephi.datastructure.avl.simple.AVLItem;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodePredicate;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class View implements AVLItem {
+public class FullClusteredViewPredicate implements NodePredicate, HierarchyFilteringPredicate {
 
-    private final int id;
-
-    public View(int id) {
-        this.id = id;
-    }
-
-    public int getNumber() {
-        return id;
+    public boolean evaluate(Node element) {
+        return true;
     }
 }

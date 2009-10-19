@@ -68,7 +68,7 @@ public class DhnsTestDirectedGraph {
         edgeMap = new HashMap<String, Edge>();
 
         TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
-        GraphFactoryImpl factory = dhnsGlobal.getGraphFactory();
+        GraphFactoryImpl factory = dhnsGlobal.factory();
 
         //Nodes
         //System.out.println("-----Global-----");
@@ -131,7 +131,7 @@ public class DhnsTestDirectedGraph {
         View mainView = dhns.getViewManager().getMainView();
         ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
         TreeStructure treeStructure = dhns.getTreeStructure();
-        GraphFactoryImpl factory = dhns.getGraphFactory();
+        GraphFactoryImpl factory = dhns.factory();
 
         for (int i = 0; i < 10; i++) {
             Node node = factory.newNode();
@@ -175,7 +175,7 @@ public class DhnsTestDirectedGraph {
         Dhns dhns = new Dhns(controller);
         ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
         TreeStructure treeStructure = dhns.getTreeStructure();
-        GraphFactoryImpl factory = dhns.getGraphFactory();
+        GraphFactoryImpl factory = dhns.factory();
 
         Node first = null;
         Node middle = null;
@@ -300,7 +300,7 @@ public class DhnsTestDirectedGraph {
         Dhns dhns = new Dhns(controller);
         ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
         TreeStructure treeStructure = dhns.getTreeStructure();
-        GraphFactoryImpl factory = dhns.getGraphFactory();
+        GraphFactoryImpl factory = dhns.factory();
 
         Node node1 = factory.newNode();
         Node node2 = factory.newNode();
@@ -350,7 +350,7 @@ public class DhnsTestDirectedGraph {
 
     @Test
     public void testRemoveEdge() {
-        GraphFactoryImpl factory = dhnsGlobal.getGraphFactory();
+        GraphFactoryImpl factory = dhnsGlobal.factory();
         PreNode node3 = (PreNode) nodeMap.get("Node 1");
         PreNode node4 = (PreNode) nodeMap.get("Node 2");
         AbstractEdge edge = factory.newEdge(node3, node4);

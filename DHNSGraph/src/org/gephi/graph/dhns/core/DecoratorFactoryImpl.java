@@ -23,7 +23,6 @@ package org.gephi.graph.dhns.core;
 import org.gephi.graph.api.DecoratorFactory;
 import org.gephi.graph.api.DynamicGraph;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.dhns.graph.DynamicGraphImpl;
 
 /**
  *
@@ -36,10 +35,4 @@ public class DecoratorFactoryImpl implements DecoratorFactory {
     public DecoratorFactoryImpl(Dhns dhns) {
         this.dhns = dhns;
     }
-
-    public DynamicGraph getDynamicGraph(Graph graph) {
-        return new DynamicGraphImpl(dhns, graph);
-    }
-
-
 }

@@ -20,8 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.api;
 
-import javax.swing.tree.TreeNode;
-
 /**
  *
  * @author Mathieu Bastian

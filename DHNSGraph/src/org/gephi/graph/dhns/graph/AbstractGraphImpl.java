@@ -21,18 +21,16 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.graph;
 
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.EdgePredicate;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphListener;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodePredicate;
+import org.gephi.graph.api.View;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
-import org.gephi.graph.dhns.filter.FilterControl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
-import org.gephi.graph.dhns.view.View;
+import org.gephi.graph.dhns.views.ViewImpl;
 
 /**
  * Utilities methods for managing graphs implementation like locking of non-null checking
@@ -42,32 +40,17 @@ import org.gephi.graph.dhns.view.View;
 public abstract class AbstractGraphImpl {
 
     protected Dhns dhns;
-
-    //Propositio
+    protected ViewImpl view;
 
     //Config
     protected boolean allowMultilevel = true;
 
-    //View
-    protected View view;
-
-    //Filter
-    protected FilterControl filterControl;
-
-    public FilterControl getFilters() {
-        return filterControl;
+    public View getView() {
+        return view;
     }
 
-    public NodePredicate[] getNodePredicates() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public EdgePredicate[] getEdgePredicates() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setView(View view) {
-        this.view = view;
+    public GraphModel getGraphModel() {
+        return dhns;
     }
 
     public void setAllowMultilevel(boolean allowMultilevel) {
@@ -78,26 +61,14 @@ public abstract class AbstractGraphImpl {
         return allowMultilevel;
     }
 
-    public View getView() {
-        return view;
-    }
-
     public abstract Graph getGraph();
-
-    public void addGraphListener(GraphListener graphListener) {
-        dhns.getEventManager().addListener(graphListener);
-    }
-
-    public void removeGraphListener(GraphListener graphListener) {
-        dhns.getEventManager().removeListener(graphListener);
-    }
 
     public Dhns getSubGraph(AbstractNodeIterator nodeIterator) {
         //Dhns newDhns = dhns.getController().newDhns();
 
         /*TreeStructure tree = newDhns.getTreeStructure();
         PreNodeTree nodeIdTree = new PreNodeTree();
-        GraphFactoryImpl factory = newDhns.getGraphFactory();
+        GraphFactoryImpl factory = newDhns.factory();
         ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
 
         for (; nodeIterator.hasNext();) {

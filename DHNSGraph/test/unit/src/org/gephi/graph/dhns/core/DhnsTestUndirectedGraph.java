@@ -68,7 +68,7 @@ public class DhnsTestUndirectedGraph {
         edgeMap = new HashMap<String, Edge>();
 
         TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
-        GraphFactoryImpl factory = dhnsGlobal.getGraphFactory();
+        GraphFactoryImpl factory = dhnsGlobal.factory();
 
         //Nodes
         //System.out.println("-----Global-----");
@@ -129,7 +129,7 @@ public class DhnsTestUndirectedGraph {
         Dhns dhns = new Dhns(controller);
         ClusteredUndirectedGraphImpl graph = new ClusteredUndirectedGraphImpl(dhns, false, true);
         TreeStructure treeStructure = dhns.getTreeStructure();
-        GraphFactoryImpl factory = dhns.getGraphFactory();
+        GraphFactoryImpl factory = dhns.factory();
 
         Node node1 = factory.newNode();
         Node node2 = factory.newNode();
@@ -184,7 +184,7 @@ public class DhnsTestUndirectedGraph {
 
     @Test
     public void testRemoveEdge() {
-        GraphFactoryImpl factory = dhnsGlobal.getGraphFactory();
+        GraphFactoryImpl factory = dhnsGlobal.factory();
         PreNode node3 = (PreNode) nodeMap.get("Node 1");
         PreNode node4 = (PreNode) nodeMap.get("Node 2");
         PreNode node5 = (PreNode) nodeMap.get("Node 5");

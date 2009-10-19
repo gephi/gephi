@@ -60,7 +60,7 @@ public class DhnsTestFiltering {
         edgeMap = new HashMap<String, Edge>();
 
         TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
-        GraphFactoryImpl factory = dhnsGlobal.getGraphFactory();
+        GraphFactoryImpl factory = dhnsGlobal.factory();
 
         //Nodes
         //System.out.println("-----Global-----");

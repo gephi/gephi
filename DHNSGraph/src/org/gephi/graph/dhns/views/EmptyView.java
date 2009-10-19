@@ -18,22 +18,27 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.filter;
+package org.gephi.graph.dhns.views;
 
-import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodePredicate;
-import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.api.Predicate;
+import org.gephi.graph.dhns.core.Dhns;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class FlatClusteredViewPredicate implements NodePredicate, HierarchyFilteringPredicate {
+public class EmptyView extends ViewImpl {
 
-    public FlatClusteredViewPredicate() {
+    public EmptyView(Dhns dhns) {
+        super(dhns);
+        active = false;
     }
 
-    public boolean evaluate(Node element) {
-        return ((AbstractNode) element).isEnabled();
+    @Override
+    public void addPredicate(Predicate predicate) {
+    }
+
+    @Override
+    protected void checkUpdate() {
     }
 }

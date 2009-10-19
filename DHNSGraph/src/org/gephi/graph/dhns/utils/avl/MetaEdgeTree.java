@@ -24,7 +24,6 @@ import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.view.View;
 
 /**
  * Same behaviour as {@link EdgeTree} but with {@link MetaEdgeImpl}.
@@ -34,12 +33,10 @@ import org.gephi.graph.dhns.view.View;
 public class MetaEdgeTree extends ParamAVLTree<MetaEdgeImpl> {
 
     private AbstractNode owner;
-    private View view;
 
-    public MetaEdgeTree(AbstractNode owner, View view) {
+    public MetaEdgeTree(AbstractNode owner) {
         super();
         this.owner = owner;
-        this.view = view;
         setAccessor(new MetaEdgeImplAVLItemAccessor());
     }
 
@@ -61,9 +58,5 @@ public class MetaEdgeTree extends ParamAVLTree<MetaEdgeImpl> {
                 return item.getSource().getNumber();
             }
         }
-    }
-
-    public View getView() {
-        return view;
     }
 }

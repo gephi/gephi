@@ -27,9 +27,6 @@ import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.graph.dhns.utils.avl.EdgeOppositeTree;
 import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
-import org.gephi.graph.dhns.utils.avl.MetaEdgesAccessor;
-import org.gephi.graph.dhns.utils.avl.ViewAVLTree;
-import org.gephi.graph.dhns.view.View;
 
 /**
  * Node of the tree. Maintained in a global order tree, the node is build on a <b>pre/post/size/level</b> pane.
@@ -50,11 +47,12 @@ public class PreNode extends AbstractNode implements AVLItem {
     //Properties
     protected final int ID;
     protected NodeDataImpl nodeData;
-    protected ViewAVLTree viewTree;
+    protected boolean enabled;
     //Edges
     private EdgeOppositeTree edgesOutTree;
     private EdgeOppositeTree edgesInTree;
-    private MetaEdgesAccessor metaEdgeAccessor;
+    private MetaEdgeTree metaEdgesOutTree;
+    private MetaEdgeTree metaEdgesInTree;
 
     //Clone
     private CloneNode clones;
@@ -68,8 +66,8 @@ public class PreNode extends AbstractNode implements AVLItem {
 
         edgesOutTree = new EdgeOppositeTree(this);
         edgesInTree = new EdgeOppositeTree(this);
-        metaEdgeAccessor = new MetaEdgesAccessor();
-        viewTree = new ViewAVLTree();
+        metaEdgesOutTree = new MetaEdgeTree(this);
+        metaEdgesInTree = new MetaEdgeTree(this);
 
         this.ID = ID;
         nodeData = new NodeDataImpl(this);
@@ -80,17 +78,18 @@ public class PreNode extends AbstractNode implements AVLItem {
         return "" + pre;
     }
 
-    public MetaEdgeTree getMetaEdgesOutTree(View view) {
-        return metaEdgeAccessor.getMetaEdgeOutTree(view);
+    public MetaEdgeTree getMetaEdgesOutTree() {
+        return metaEdgesOutTree;
     }
 
-    public MetaEdgeTree getMetaEdgesInTree(View view) {
-        return metaEdgeAccessor.getMetaEdgeInTree(view);
+    public MetaEdgeTree getMetaEdgesInTree() {
+        return metaEdgesInTree;
     }
 
     @Override
     public void clearMetaEdges() {
-        metaEdgeAccessor = new MetaEdgesAccessor();
+        metaEdgesOutTree = new MetaEdgeTree(this);
+        metaEdgesInTree = new MetaEdgeTree(this);
     }
 
     public EdgeOppositeTree getEdgesOutTree() {
@@ -103,30 +102,6 @@ public class PreNode extends AbstractNode implements AVLItem {
 
     public boolean isValid() {
         return avlNode != null;
-    }
-
-    @Override
-    public void addView(View view, boolean enabled) {
-        if (viewTree.add(view, enabled)) {
-            metaEdgeAccessor.createMetaEdgeTree(this, view);
-        }
-    }
-
-    @Override
-    public void removeView(View view) {
-        if (viewTree.remove(view)) {
-            metaEdgeAccessor.removeMetaEdgeTree(view);
-        }
-    }
-
-    @Override
-    public boolean isInView(View view) {
-        return viewTree.contains(view);
-    }
-
-    @Override
-    public ViewAVLTree getViews() {
-        return viewTree;
     }
 
     public void setEdgesInTree(EdgeOppositeTree edgesInTree) {
@@ -175,13 +150,13 @@ public class PreNode extends AbstractNode implements AVLItem {
     }
 
     @Override
-    public boolean isEnabled(View view) {
-        return viewTree.isEnabled(view);
+    public boolean isEnabled() {
+        return enabled;
     }
 
     @Override
-    public void setEnabled(View view, boolean enabled) {
-        viewTree.setEnabled(view, enabled);
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     //CLone operations

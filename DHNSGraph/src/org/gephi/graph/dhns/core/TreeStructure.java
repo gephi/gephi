@@ -26,7 +26,6 @@ import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.CloneNode;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
-import org.gephi.graph.dhns.view.View;
 
 /**
  * Holds nodes tree and manage basic operations.
@@ -49,7 +48,6 @@ public class TreeStructure {
 
     private void initRoot() {
         root = new PreNode(-1, 0, 0, 0, null);
-        root.addView(dhns.getViewManager().getMainView(), false);
         tree.add(root);
     }
 
@@ -65,9 +63,9 @@ public class TreeStructure {
         return tree.get(pre);
     }
 
-    public AbstractNode getEnabledAncestorOrSelf(View view, AbstractNode node) {
+    public AbstractNode getEnabledAncestorOrSelf(AbstractNode node) {
         AbstractNode parent = node;
-        while (!parent.isEnabled(view)) {
+        while (!parent.isEnabled()) {
             parent = parent.parent;
             if (parent == null || parent.getPre() == 0) {
                 return null;
@@ -76,24 +74,24 @@ public class TreeStructure {
         return parent;
     }
 
-    public AbstractNode[] getEnabledAncestorsOrSelf(View view, AbstractNode node) {
+    public AbstractNode[] getEnabledAncestorsOrSelf(AbstractNode node) {
         List<AbstractNode> nodeList = new ArrayList<AbstractNode>();
         PreNode preNode = node.getOriginalNode();
         if (preNode.getClones() == null) {
-            AbstractNode enabled = getEnabledAncestorOrSelf(view, preNode);
+            AbstractNode enabled = getEnabledAncestorOrSelf(preNode);
             if (enabled != null) {
                 return new AbstractNode[]{enabled};
             } else {
                 return null;
             }
         } else {
-            AbstractNode enabled = getEnabledAncestorOrSelf(view, preNode);
+            AbstractNode enabled = getEnabledAncestorOrSelf(preNode);
             if (enabled != null) {
                 nodeList.add(enabled);
             }
             CloneNode cn = preNode.getClones();
             while (cn != null) {
-                enabled = getEnabledAncestorOrSelf(view, cn);
+                enabled = getEnabledAncestorOrSelf(cn);
                 if (enabled != null && !nodeList.contains(enabled)) {
                     nodeList.add(enabled.getOriginalNode());
                 }
@@ -103,9 +101,9 @@ public class TreeStructure {
         }
     }
 
-    public AbstractNode getEnabledAncestor(View view, AbstractNode node) {
+    public AbstractNode getEnabledAncestor(AbstractNode node) {
         AbstractNode parent = node.parent;
-        while (!parent.isEnabled(view)) {
+        while (!parent.isEnabled()) {
             if (parent.getPre() == 0) {
                 return null;
             }
@@ -229,10 +227,10 @@ public class TreeStructure {
         }
     }
 
-    public boolean hasEnabledDescendant(View view, AbstractNode node) {
+    public boolean hasEnabledDescendant(AbstractNode node) {
         for (int i = node.getPre() + 1; i <= node.pre + node.size; i++) {
             AbstractNode descendant = tree.get(i);
-            if (descendant.isEnabled(view)) {
+            if (descendant.isEnabled()) {
                 return true;
             }
         }
@@ -242,10 +240,9 @@ public class TreeStructure {
     public void showTreeAsTable() {
         System.out.println("pre\tsize\tlevel\tparent\tpost\tenabled\tid\tclone");
         System.out.println("-----------------------------------------------------------------");
-        View mainView = dhns.getViewManager().getMainView();
         int pre = 0;
         for (AbstractNode p : tree) {
-            System.out.println(p.pre + "\t" + p.size + "\t" + p.level + "\t" + p.parent + "\t" + p.post + "\t" + p.isEnabled(mainView) + "\t" + p.getId() + "\t" + p.isClone());
+            System.out.println(p.pre + "\t" + p.size + "\t" + p.level + "\t" + p.parent + "\t" + p.post + "\t" + p.isEnabled() + "\t" + p.getId() + "\t" + p.isClone());
             pre++;
         }
     }

@@ -18,24 +18,29 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.filter;
+package org.gephi.graph.dhns.views;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Filters;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.NodePredicate;
 import org.gephi.graph.api.Predicate;
 import org.gephi.graph.api.TopologicalPredicate;
+import org.gephi.graph.api.View;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphVersion;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.MetaEdgeBuilder;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
+import org.gephi.graph.dhns.filter.ChildrenClusteredViewPredicate;
+import org.gephi.graph.dhns.filter.FlatClusteredViewPredicate;
+import org.gephi.graph.dhns.filter.FullClusteredViewPredicate;
+import org.gephi.graph.dhns.filter.HierarchyFilteringPredicate;
 import org.gephi.graph.dhns.graph.ClusteredGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
@@ -46,47 +51,50 @@ import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
 import org.openide.util.Exceptions;
 
 /**
- *  Cette classe contient un etant du graphe, après filtrage. Un graphe non filtré na pas besoin de cache car les iterateurs directs
- * sont assez rapides pour fonctionner en boucle continue. Cette cache doit être regénéré à la demande de lecture du graphe après une
- * modification. Ces modifications peuvent être structurelles (ajou/suppression de noeuds, changement dans la hierarchie) ou bien
- * liées aux filtres eux memes. En effet lorsqu'un paramètre de filtres est modifiée, le filtrage change et donc le graphe résultat change.
- * Ceci doit être très rapide afin de permettre les changements reguliers, mais doit aussi faire profiter une reduction du nombre d'elements
- * a iterer.
- * On doit pouvoir paramétrer la mise à jour automatique ou non de cette cache.
- * Cette cache est propre à une instance de graphe, et pourra eventuellement s'echanger/se cloner.
- * Cette chache représente ce qui subsiste après filtrage. Elle est utilisée par les methodes annexes comme getNeigbors(Node). En effet
- * la methode getNeighbors se base sur le graphe complet et lance son iterateur sur les edges de Node. C'est grace au test evaluate(edge) et
- * evaluate(Node) que l'iterateurs de getNieighbors donne le bon resultat.
- * @author Mathieu
+ *
+ * @author Mathieu Bastian
  */
-public class FilterControl implements Filters {
+public class ViewImpl implements View {
 
-    private FilterResult currentResult;
+    //Settings
+    private HierarchyFiltering hierarchyFiltering = HierarchyFiltering.FLAT;
     private Dhns dhns;
-    private ClusteredGraphImpl graph;
     private final List<Predicate> predicates = new ArrayList<Predicate>();
-    private boolean filtered = false;
+    //Results
+    private AbstractNodeTree nodeTree;
+    private AbstractEdgeTree edgeTree;
+    private AbstractEdgeTree metaEdgeTree;
+    private NodeInFilterResultPredicate nodePredicate;
+    private EdgeInFilterResultPredicate edgePredicate;
+    private MetaEdgeInFilterResultPredicate metaEdgePredicate;
+    //Update
     private GraphVersion graphVersion;
     private ReentrantLock lock;
     private DispatchThread dispatchThread;
-
-    //Versionning
+    private ClusteredGraphImpl graph;
+    //Status
+    protected boolean active = false;
     private int nodeVersion = -1;
     private int edgeVersion = -1;
 
-    public FilterControl(Dhns dhns, ClusteredGraphImpl graph) {
+    public ViewImpl(Dhns dhns) {
         this.dhns = dhns;
         this.graphVersion = dhns.getGraphVersion();
-        this.graph = graph;
-        currentResult = new FilterResult(new AbstractNodeTree(), new AbstractEdgeTree(), new AbstractEdgeTree());
         dispatchThread = new DispatchThread();
         lock = new ReentrantLock();
+        this.nodeTree = new AbstractNodeTree();
+        this.edgeTree = new AbstractEdgeTree();
+        this.metaEdgeTree = new AbstractEdgeTree();
+        nodePredicate = new NodeInFilterResultPredicate();
+        edgePredicate = new EdgeInFilterResultPredicate();
+        metaEdgePredicate = new MetaEdgeInFilterResultPredicate();
     }
 
-    private void checkUpdate() {
+    protected void checkUpdate() {
         if (lock.isHeldByCurrentThread()) {
             return;
         }
+
         int nv = graphVersion.getNodeVersion();
         int ev = graphVersion.getEdgeVersion();
         if (nodeVersion != nv || edgeVersion != ev) {
@@ -96,12 +104,13 @@ public class FilterControl implements Filters {
             edgeVersion = ev;
             lock.unlock();
         }
+
     }
 
-    private boolean update() {
+    private void update() {
 
         //Initial
-        filtered = false;
+        active = false;
         AbstractEdgeTree initialEdges = new AbstractEdgeTree();
         AbstractNodeTree initialNodes = new AbstractNodeTree();
         AbstractEdgeTree initialMetaEdges = new AbstractEdgeTree();
@@ -114,16 +123,39 @@ public class FilterControl implements Filters {
         for (Edge metaEdge : graph.getMetaEdges()) {
             initialMetaEdges.add((AbstractEdge) metaEdge);
         }
-        currentResult = new FilterResult(initialNodes, initialEdges, initialMetaEdges);
-        filtered = true;
+
+        nodeTree = initialNodes;
+        edgeTree = initialEdges;
+        metaEdgeTree = initialMetaEdges;
+        active = true;
+
+        if (!predicates.isEmpty() && predicates.get(predicates.size() - 1) instanceof HierarchyFilteringPredicate) {
+            predicates.remove(predicates.size() - 1);
+        }
+        switch (hierarchyFiltering) {
+            case FLAT:
+                predicates.add(new FlatClusteredViewPredicate());
+                break;
+            case CHILDREN:
+                predicates.add(new ChildrenClusteredViewPredicate());
+                break;
+            case FULL:
+                predicates.add(new FullClusteredViewPredicate());
+                break;
+        }
+        AbstractEdgeTree beforeHierarchyFilteringEdges = null;
 
         for (Predicate p : predicates) {
-            AbstractEdgeTree edgeTree = currentResult.getEdgeTree();
-            AbstractNodeTree nodeTree = currentResult.getNodeTree();
-            AbstractEdgeTree metaEdgeTree = currentResult.getMetaEdgeTree();
+            AbstractEdgeTree pEdgeTree = edgeTree;
+            AbstractNodeTree pNodeTree = nodeTree;
+
+            if (p instanceof HierarchyFilteringPredicate) {
+                beforeHierarchyFilteringEdges = edgeTree;
+            }
+
             if (p instanceof NodePredicate) {
-                nodeTree = new AbstractNodeTree();
-                for (AbstractNodeIterator itr = currentResult.nodeIterator(); itr.hasNext();) {
+                pNodeTree = new AbstractNodeTree();
+                for (AbstractNodeIterator itr = nodeIterator(); itr.hasNext();) {
                     AbstractNode node = itr.next();
                     boolean val;
                     if (p instanceof TopologicalPredicate) {
@@ -132,20 +164,21 @@ public class FilterControl implements Filters {
                         val = p.evaluate(node);
                     }
                     if (val) {
-                        nodeTree.add(node);
+                        pNodeTree.add(node);
                     }
                 }
 
                 //Clean edges
+                pEdgeTree = new AbstractEdgeTree();
                 for (AbstractEdgeIterator itr = edgeTree.iterator(); itr.hasNext();) {
                     AbstractEdge e = itr.next();
-                    if (!nodeTree.contains(e.getSource()) || !nodeTree.contains(e.getTarget())) {
-                        itr.remove();
+                    if (pNodeTree.contains(e.getSource()) && pNodeTree.contains(e.getTarget())) {
+                        pEdgeTree.add(e);
                     }
                 }
             } else {
-                edgeTree = new AbstractEdgeTree();
-                for (AbstractEdgeIterator itr = currentResult.edgeIterator(); itr.hasNext();) {
+                pEdgeTree = new AbstractEdgeTree();
+                for (AbstractEdgeIterator itr = edgeIterator(); itr.hasNext();) {
                     AbstractEdge edge = itr.next();
                     boolean val;
                     if (p instanceof TopologicalPredicate) {
@@ -154,115 +187,125 @@ public class FilterControl implements Filters {
                         val = p.evaluate(edge);
                     }
                     if (val) {
-                        edgeTree.add(edge);
+                        pEdgeTree.add(edge);
                     }
                 }
             }
 
-            //Clean meta Edges
-            //ParamAVLIterator<AbstractEdge> innerEdgeIterator = new ParamAVLIterator<AbstractEdge>();
-            for (AbstractEdgeIterator itr = metaEdgeTree.iterator(); itr.hasNext();) {
-                AbstractEdge e = itr.next();
-                if (!nodeTree.contains(e.getSource()) || !nodeTree.contains(e.getTarget())) {
+            nodeTree = pNodeTree;
+            edgeTree = pEdgeTree;
+        }
+
+        //Apply hierarchical clustering view
+        ParamAVLIterator<AbstractEdge> innerEdgeIterator = new ParamAVLIterator<AbstractEdge>();
+        MetaEdgeBuilder metaEdgeBuilder = dhns.getSettingsManager().getMetaEdgeBuilder();       //Update weight
+        for (AbstractEdgeIterator itr = metaEdgeTree.iterator(); itr.hasNext();) {
+            AbstractEdge e = itr.next();
+            if (!nodeTree.contains(e.getSource()) || !nodeTree.contains(e.getTarget())) {
+                itr.remove();
+            } else {
+                MetaEdgeImpl metaEdge = (MetaEdgeImpl) e;
+                boolean atLeastOneInnerEdgeIsNotFiltered = false;
+                for (innerEdgeIterator.setNode(metaEdge.getEdges()); innerEdgeIterator.hasNext();) {
+                    if (beforeHierarchyFilteringEdges.contains(innerEdgeIterator.next())) {
+                        atLeastOneInnerEdgeIsNotFiltered = true;
+                        break;
+                    }
+                }
+                if (!atLeastOneInnerEdgeIsNotFiltered) {
                     itr.remove();
-                } /*else {
-            MetaEdgeImpl metaEdge = (MetaEdgeImpl)e;
-            boolean atLeastOneInnerEdgeIsNotFiltered = false;
-            for(innerEdgeIterator.setNode(metaEdge.getEdges());innerEdgeIterator.hasNext();) {
-            if(edgeTree.contains(innerEdgeIterator.next())) {
-            atLeastOneInnerEdgeIsNotFiltered = true;
-            break;
+                }
             }
-            }
-            if(!atLeastOneInnerEdgeIsNotFiltered) {
-            itr.remove();
-            }
-            }*/
-            }
-
-            currentResult = new FilterResult(nodeTree, edgeTree, metaEdgeTree);
         }
-        return true;
     }
 
-    public void addPredicate(Predicate predicate) {
-        if (!dispatchThread.isAlive()) {
-            dispatchThread.start();
-        }
-        dispatchThread.addPredicate(predicate);
-        if (graph.getClusteredGraph() != null) {
-            graph.getClusteredGraph().getFilters().addPredicate(predicate);
-        }
-        filtered = true;
-    }
-
-    public boolean isFiltered() {
-        return filtered;
+    public boolean isActive() {
+        return active;
     }
 
     public boolean evaluateNode(AbstractNode node) {
-        if (filtered) {
+        if (active) {
             checkUpdate();
-            return currentResult.evaluateNode(node);
+            return nodePredicate.evaluate(node);
         }
         return true;
     }
 
     public boolean evaluateEdge(AbstractEdge edge) {
-        if (filtered) {
+        if (active) {
             checkUpdate();
-            return currentResult.evaluateEdge(edge);
+            return edgePredicate.evaluate(edge);
         }
         return true;
     }
 
     public int getNodeCount() {
         checkUpdate();
-        return currentResult.getNodeCount();
+        return nodeTree.getCount();
     }
 
     public int getEdgeCount() {
         checkUpdate();
-        return currentResult.getEdgeCount();
+        return edgeTree.getCount();
     }
 
     public Predicate<AbstractNode> getNodePredicate() {
-        if (filtered) {
+        if (active) {
             checkUpdate();
-            return currentResult.getNodePredicate();
+            return nodePredicate;
         }
         return Tautology.instance;
     }
 
     public Predicate<AbstractEdge> getEdgePredicate() {
-        if (filtered) {
+        if (active) {
             checkUpdate();
-            return currentResult.getEdgePredicate();
+            return edgePredicate;
         }
         return Tautology.instance;
     }
 
     public Predicate<AbstractEdge> getMetaEdgePredicate() {
-        if (filtered) {
+        if (active) {
             checkUpdate();
-            return currentResult.getMetaEdgePredicate();
+            return metaEdgePredicate;
         }
         return Tautology.instance;
     }
 
     public AbstractNodeIterator nodeIterator() {
         checkUpdate();
-        return currentResult.nodeIterator();
+        return nodeTree.iterator();
     }
 
     public AbstractEdgeIterator edgeIterator() {
         checkUpdate();
-        return currentResult.edgeIterator();
+        return edgeTree.iterator();
     }
 
     public AbstractEdgeIterator metaEdgeIterator() {
         checkUpdate();
-        return currentResult.metaEdgeIterator();
+        return metaEdgeTree.iterator();
+    }
+
+    public void addPredicate(Predicate predicate) {
+        if (!dispatchThread.isAlive()) {
+            dispatchThread.start();
+        }
+
+        dispatchThread.addPredicate(predicate);
+    }
+
+    public void removePredicate(Predicate predicate) {
+        dispatchThread.removePredicate(predicate);
+    }
+
+    public void updatePredicate(Predicate oldPredicate, Predicate newPredicate) {
+        dispatchThread.updatePredicate(new Predicate[]{oldPredicate}, new Predicate[]{newPredicate});
+    }
+
+    public void updatePredicate(Predicate[] oldPredicate, Predicate[] newPredicate) {
+        dispatchThread.updatePredicate(oldPredicate, newPredicate);
     }
 
     public void predicateParametersUpdates() {
@@ -270,23 +313,13 @@ public class FilterControl implements Filters {
         dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
-    public void updatePredicate(Predicate oldPredicate, Predicate newPredicate) {
-        dispatchThread.updatePredicate(new Predicate[]{oldPredicate}, new Predicate[]{newPredicate});
-        if (graph.getClusteredGraph() != null) {
-            graph.getClusteredGraph().getFilters().updatePredicate(oldPredicate, newPredicate);
-        }
-        predicateParametersUpdates();
+    public void setHierarchyFiltering(HierarchyFiltering hierarchyFiltering) {
+        this.hierarchyFiltering = hierarchyFiltering;
     }
 
-    public void updatePredicate(Predicate[] oldPredicate, Predicate[] newPredicate) {
-        dispatchThread.updatePredicate(oldPredicate, newPredicate);
-        if (graph.getClusteredGraph() != null) {
-            graph.getClusteredGraph().getFilters().updatePredicate(oldPredicate, newPredicate);
-        }
-        predicateParametersUpdates();
-    }
-
-    public void removePredicate(Predicate predicate) {
+    public void setGraph(Graph graph) {
+        this.graph = (ClusteredGraphImpl) graph;
+        active = dhns.isHierarchical();
     }
 
     private class DispatchThread extends Thread {
@@ -294,6 +327,10 @@ public class FilterControl implements Filters {
         private final List<Predicate> predicateQueue = new ArrayList<Predicate>();
         private final Object monitor = new Object();
         private boolean waiting = false;
+
+        public DispatchThread() {
+            super("View update dispatch thread");
+        }
 
         @Override
         public void run() {
@@ -307,12 +344,12 @@ public class FilterControl implements Filters {
 
                     //Action
                     waiting = true;
-                    graph.writeLock();
+                    dhns.getWriteLock().lock();
                     synchronized (predicateQueue) {
                         predicates.clear();
                         predicates.addAll(predicateQueue);
                     }
-                    graph.writeUnlock();
+                    dhns.getWriteLock().unlock();
                     waiting = false;
                 }
             }
@@ -321,6 +358,15 @@ public class FilterControl implements Filters {
         public void addPredicate(Predicate predicate) {
             synchronized (predicateQueue) {
                 predicateQueue.add(predicate);
+            }
+            synchronized (monitor) {
+                monitor.notify();
+            }
+        }
+
+        public void removePredicate(Predicate predicate) {
+            synchronized (predicateQueue) {
+                predicateQueue.remove(predicate);
             }
             synchronized (monitor) {
                 monitor.notify();
@@ -339,6 +385,27 @@ public class FilterControl implements Filters {
             synchronized (monitor) {
                 monitor.notify();
             }
+        }
+    }
+
+    private class NodeInFilterResultPredicate implements Predicate<AbstractNode> {
+
+        public boolean evaluate(AbstractNode element) {
+            return nodeTree.contains(element);
+        }
+    }
+
+    private class EdgeInFilterResultPredicate implements Predicate<AbstractEdge> {
+
+        public boolean evaluate(AbstractEdge element) {
+            return edgeTree.contains(element);
+        }
+    }
+
+    private class MetaEdgeInFilterResultPredicate implements Predicate<AbstractEdge> {
+
+        public boolean evaluate(AbstractEdge element) {
+            return metaEdgeTree.contains(element);
         }
     }
 }

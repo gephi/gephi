@@ -20,22 +20,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
-import java.util.Iterator;
 import org.gephi.graph.api.ClusteredMixedGraph;
 
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Predicate;
+import org.gephi.graph.api.View;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
-import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.node.iterators.NeighborIterator;
-import org.gephi.graph.dhns.node.iterators.TreeIterator;
 
 /**
  * Implementation of clustered sparse graph.
@@ -44,12 +39,11 @@ import org.gephi.graph.dhns.node.iterators.TreeIterator;
  */
 public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements ClusteredMixedGraph {
 
-    protected ClusteredMixedGraphImpl clusteredCopy;
     private Predicate<Edge> undirectedPredicate;
     private Predicate<Edge> directedPredicate;
 
-    public ClusteredMixedGraphImpl(Dhns dhns, boolean visible, boolean clustered) {
-        super(dhns, visible, clustered);
+    public ClusteredMixedGraphImpl(Dhns dhns, View view) {
+        super(dhns, view);
         directedPredicate = new Predicate<Edge>() {
 
             public boolean evaluate(Edge t) {
@@ -62,14 +56,6 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
                 return !t.isDirected();
             }
         };
-
-        if (!clustered) {
-            clusteredCopy = new ClusteredMixedGraphImpl(dhns, visible, true);
-        }
-    }
-
-    public Graph getGraph() {
-        return this;
     }
 
     public boolean addEdge(Edge edge) {
@@ -87,7 +73,7 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
             return false;
         }
         if (!absEdge.hasAttributes()) {
-            absEdge.setAttributes(dhns.getGraphFactory().newEdgeAttributes());
+            absEdge.setAttributes(dhns.factory().newEdgeAttributes());
         }
         dhns.getDynamicManager().pushEdge(edge.getEdgeData());
         dhns.getStructureModifier().addEdge(edge);
@@ -112,7 +98,7 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
             return false;
         }
 
-        AbstractEdge edge = dhns.getGraphFactory().newEdge(source, target, 1.0f, directed);
+        AbstractEdge edge = dhns.factory().newEdge(source, target, 1.0f, directed);
         dhns.getDynamicManager().pushEdge(edge.getEdgeData());
         dhns.getStructureModifier().addEdge(edge);
         if (directed) {
@@ -284,10 +270,10 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
 
     @Override
     public ClusteredMixedGraphImpl copy(ClusteredGraphImpl graph) {
-        return new ClusteredMixedGraphImpl(dhns, false, false);
+        return new ClusteredMixedGraphImpl(dhns, view);
     }
 
     public ClusteredMixedGraph getClusteredGraph() {
-        return clusteredCopy;
+        return this;
     }
 }

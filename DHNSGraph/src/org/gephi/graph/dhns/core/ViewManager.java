@@ -18,22 +18,36 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.filter;
+package org.gephi.graph.dhns.core;
 
-import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodePredicate;
-import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.api.View;
+import org.gephi.graph.api.Views;
+import org.gephi.graph.dhns.views.ViewImpl;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class FlatClusteredViewPredicate implements NodePredicate, HierarchyFilteringPredicate {
+public class ViewManager implements Views {
 
-    public FlatClusteredViewPredicate() {
+    private Dhns dhns;
+    private ViewImpl visibleView;
+
+    public ViewManager(Dhns dhns) {
+        this.dhns = dhns;
+        visibleView = new ViewImpl(dhns);
     }
 
-    public boolean evaluate(Node element) {
-        return ((AbstractNode) element).isEnabled();
+    public View getVisibleView() {
+        return visibleView;
     }
+
+    public View createView(View view) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setVisibleView(View view) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

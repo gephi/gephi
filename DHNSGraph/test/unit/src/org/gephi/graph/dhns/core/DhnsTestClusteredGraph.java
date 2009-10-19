@@ -79,7 +79,7 @@ public class DhnsTestClusteredGraph {
         edgeMap = new HashMap<String, Edge>();
 
         TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
-        GraphFactoryImpl factory = dhnsGlobal.getGraphFactory();
+        GraphFactoryImpl factory = dhnsGlobal.factory();
 
         //Nodes
         for (int i = 0; i < 15; i++) {
@@ -95,7 +95,7 @@ public class DhnsTestClusteredGraph {
         graphGlobal2Directed = new ClusteredDirectedGraphImpl(dhnsGlobal2, false, false);
         graphGlobal2Undirected = new ClusteredUndirectedGraphImpl(dhnsGlobal2, false, false);
         treeStructure = dhnsGlobal2.getTreeStructure();
-        factory = dhnsGlobal2.getGraphFactory();
+        factory = dhnsGlobal2.factory();
 
         //Nodes
         for (int i = 0; i < 3; i++) {
@@ -305,7 +305,7 @@ public class DhnsTestClusteredGraph {
         ClusteredGraph graph = new ClusteredDirectedGraphImpl(dhns, false, false);
 
         TreeStructure treeStructure = dhns.getTreeStructure();
-        GraphFactoryImpl factory = dhns.getGraphFactory();
+        GraphFactoryImpl factory = dhns.factory();
 
         //Nodes
         for (int i = 0; i < 5; i++) {
@@ -663,7 +663,7 @@ public class DhnsTestClusteredGraph {
         View mainView = dhns.getViewManager().getMainView();
         TreeStructure treeStructure = dhns.getTreeStructure();
         ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, false);
-        GraphFactoryImpl factory = dhns.getGraphFactory();
+        GraphFactoryImpl factory = dhns.factory();
 
         //Add Node
         Node node1 = factory.newNode();
@@ -839,7 +839,7 @@ public class DhnsTestClusteredGraph {
         assertEquals(0, dhnsGlobal.getEventManager().getListeners().size());
 
 
-        GraphFactoryImpl factory = dhnsGlobal.getGraphFactory();
+        GraphFactoryImpl factory = dhnsGlobal.factory();
         graphGlobal.addNode(factory.newNode());
     }
 

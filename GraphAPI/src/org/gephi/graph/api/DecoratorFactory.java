@@ -26,5 +26,5 @@ package org.gephi.graph.api;
  */
 public interface DecoratorFactory {
 
-    public DynamicGraph getDynamicGraph(Graph graph);
+    
 }

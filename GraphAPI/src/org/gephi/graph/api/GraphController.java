@@ -26,35 +26,5 @@ package org.gephi.graph.api;
  */
 public interface GraphController {
 
-    public GraphFactory factory();
-
-    public DecoratorFactory decorators();
-
-    public DirectedGraph getDirectedGraph();
-
-    public DirectedGraph getVisibleDirectedGraph();
-
-    public UndirectedGraph getUndirectedGraph();
-
-    public UndirectedGraph getVisibleUndirectedGraph();
-
-    public MixedGraph getMixedGraph();
-
-    public MixedGraph getVisibleMixedGraph();
-
-    public HierarchicalDirectedGraph getHierarchicalDirectedGraph();
-
-    public HierarchicalDirectedGraph getVisibleHierarchicalDirectedGraph();
-
-    public HierarchicalUndirectedGraph getHierarchicalUndirectedGraph();
-
-    public HierarchicalUndirectedGraph getVisibleHierarchicalUndirectedGraph();
-
-    public HierarchicalMixedGraph getHierarchicalMixedGraph();
-
-    public HierarchicalMixedGraph getVisibleHierarchicalMixedGraph();
-
-    public <T extends Graph> DynamicGraph<T> getDynamicGraph(T graph);
-
-    public Graph getVisualizedGraph();
+    public GraphModel getModel();
 }

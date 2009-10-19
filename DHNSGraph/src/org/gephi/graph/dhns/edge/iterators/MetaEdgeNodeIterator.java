@@ -27,9 +27,7 @@ import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
-import org.gephi.graph.dhns.view.View;
 
 /**
  * Edge Iterator for edges linked to the given node. It gives IN, OUT or IN+OUT edges
@@ -48,21 +46,19 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
     protected EdgeNodeIteratorMode mode;
     protected MetaEdgeImpl pointer;
     protected boolean undirected;
-    protected View view;
 
     //Proposition
     protected Predicate<AbstractEdge> edgePredicate;
     protected Predicate<AbstractNode> nodePredicate;
 
-    public MetaEdgeNodeIterator(View view, AbstractNode node, EdgeNodeIteratorMode mode, boolean undirected, Predicate<AbstractEdge> edgePredicate, Predicate<AbstractNode> nodePredicate) {
+    public MetaEdgeNodeIterator(AbstractNode node, EdgeNodeIteratorMode mode, boolean undirected, Predicate<AbstractEdge> edgePredicate, Predicate<AbstractNode> nodePredicate) {
         this.node = node;
         this.mode = mode;
-        this.view = view;
         this.edgeIterator = new ParamAVLIterator<MetaEdgeImpl>();
         if (mode.equals(EdgeNodeIteratorMode.OUT) || mode.equals(EdgeNodeIteratorMode.BOTH)) {
-            this.edgeIterator.setNode(node.getMetaEdgesOutTree(view));
+            this.edgeIterator.setNode(node.getMetaEdgesOutTree());
         } else {
-            this.edgeIterator.setNode(node.getMetaEdgesInTree(view));
+            this.edgeIterator.setNode(node.getMetaEdgesInTree());
         }
         this.undirected = undirected;
         if (nodePredicate == null) {
@@ -90,7 +86,7 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
                         pointer = null;
                     }
                 } else {
-                    this.edgeIterator.setNode(node.getMetaEdgesInTree(view));
+                    this.edgeIterator.setNode(node.getMetaEdgesInTree());
                     this.mode = EdgeNodeIteratorMode.IN;
                 }
             } else {

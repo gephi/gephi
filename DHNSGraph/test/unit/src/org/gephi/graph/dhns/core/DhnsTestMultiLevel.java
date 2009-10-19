@@ -248,7 +248,7 @@ public class DhnsTestMultiLevel {
     @Test
     public void testComputeMetaEdges() {
 
-        GraphFactoryImpl factory = dhns1.getGraphFactory();
+        GraphFactoryImpl factory = dhns1.factory();
         Node nodeF = factory.newNode();
         graph1.addNode(nodeF);
         graph1.addNode(nodeMap.get("nodeE"), nodeF);

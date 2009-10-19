@@ -22,26 +22,41 @@ package org.gephi.graph.dhns.core;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.gephi.graph.api.DynamicGraph;
+import org.gephi.graph.api.DecoratorFactory;
+import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphListener;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalDirectedGraph;
+import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.graph.api.HierarchicalMixedGraph;
+import org.gephi.graph.api.HierarchicalUndirectedGraph;
+import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Predicate;
+import org.gephi.graph.api.UndirectedGraph;
+import org.gephi.graph.api.View;
+import org.gephi.graph.api.Views;
 import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
+import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
+import org.gephi.graph.dhns.graph.ClusteredMixedGraphImpl;
+import org.gephi.graph.dhns.graph.ClusteredUndirectedGraphImpl;
 import org.gephi.graph.dhns.graph.iterators.EdgeIterableImpl;
 import org.gephi.graph.dhns.graph.iterators.NodeIterableImpl;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
-import org.gephi.graph.dhns.view.ViewManager;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Main class of the DHNS (Durable Hierarchical Network Structure) graph structure..
  *
  * @author Mathieu Bastian
  */
-public class Dhns {
+public class Dhns implements GraphModel {
 
     //Core
     private DhnsGraphController controller;
@@ -49,10 +64,10 @@ public class Dhns {
     private StructureModifier structureModifier;
     private GraphVersion graphVersion;
     private EventManager eventManager;
-    private ViewManager viewManager;
     private DynamicManager dynamicManager;
     private DecoratorFactoryImpl decoratorFactory;
     private SettingsManager settingsManager;
+    private ViewManager viewManager;
 
     //Type
     private boolean directed = false;
@@ -62,12 +77,8 @@ public class Dhns {
     //Locking
     private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
-    //Temp
-    private Graph visualizedGraph;
-
     public Dhns(DhnsGraphController controller) {
         this.controller = controller;
-        viewManager = new ViewManager(this);
         treeStructure = new TreeStructure(this);
         graphVersion = new GraphVersion();
         structureModifier = new StructureModifier(this);
@@ -75,19 +86,12 @@ public class Dhns {
         dynamicManager = new DynamicManager(this);
         decoratorFactory = new DecoratorFactoryImpl(this);
         settingsManager = new SettingsManager(this);
-        
+        viewManager = new ViewManager(this);
+
         init();
     }
 
     public void init() {
-    }
-
-    public Graph getVisualizedGraph() {
-        return visualizedGraph;
-    }
-
-    public void setVisualizedGraph(Graph visualizedGraph) {
-        this.visualizedGraph = visualizedGraph;
     }
 
     public DhnsGraphController getController() {
@@ -106,16 +110,8 @@ public class Dhns {
         return graphVersion;
     }
 
-    public GraphFactoryImpl getGraphFactory() {
-        return controller.factory();
-    }
-
     public EventManager getEventManager() {
         return eventManager;
-    }
-
-    public ViewManager getViewManager() {
-        return viewManager;
     }
 
     public IDGen getIdGen() {
@@ -132,6 +128,10 @@ public class Dhns {
 
     public SettingsManager getSettingsManager() {
         return settingsManager;
+    }
+
+    public ViewManager getViewManager() {
+        return viewManager;
     }
 
     public NodeIterable newNodeIterable(AbstractNodeIterator iterator) {
@@ -185,6 +185,15 @@ public class Dhns {
         mixed = true;
     }
 
+    //API
+    public GraphFactoryImpl factory() {
+        return controller.factory();
+    }
+
+    public DecoratorFactory decorators() {
+        return getDecoratorFactory();
+    }
+
     public boolean isDirected() {
         return directed;
     }
@@ -195,5 +204,180 @@ public class Dhns {
 
     public boolean isUndirected() {
         return undirected;
+    }
+
+    public boolean isHierarchical() {
+        return getTreeStructure().treeHeight - 1 > 0;       //height>0
+    }
+
+    public boolean isDynamic() {
+        return getDynamicManager().isDynamic();
+    }
+
+    public void addGraphListener(GraphListener graphListener) {
+        eventManager.addListener(graphListener);
+    }
+
+    public void removeGraphListener(GraphListener graphListener) {
+        eventManager.removeListener(graphListener);
+    }
+
+    public Graph getGraph() {
+        if (directed) {
+            return getDirectedGraph();
+        } else if (undirected) {
+            return getUndirectedGraph();
+        } else if (mixed) {
+            return getMixedGraph();
+        } else {
+            return getDirectedGraph();
+        }
+    }
+
+    public DirectedGraph getDirectedGraph() {
+        return new ClusteredDirectedGraphImpl(this, null);
+    }
+
+    public UndirectedGraph getUndirectedGraph() {
+        return new ClusteredUndirectedGraphImpl(this, null);
+    }
+
+    public MixedGraph getMixedGraph() {
+        return new ClusteredMixedGraphImpl(this, null);
+    }
+
+    public HierarchicalGraph getHierarchicalGraph() {
+        if (directed) {
+            return getHierarchicalDirectedGraph();
+        } else if (undirected) {
+            return getHierarchicalUndirectedGraph();
+        } else if (mixed) {
+            return getHierarchicalMixedGraph();
+        } else {
+            return getHierarchicalDirectedGraph();
+        }
+    }
+
+    public HierarchicalDirectedGraph getHierarchicalDirectedGraph() {
+        return new ClusteredDirectedGraphImpl(this, null);
+    }
+
+    public HierarchicalMixedGraph getHierarchicalMixedGraph() {
+        return new ClusteredMixedGraphImpl(this, null);
+    }
+
+    public HierarchicalUndirectedGraph getHierarchicalUndirectedGraph() {
+        return new ClusteredUndirectedGraphImpl(this, null);
+    }
+
+    public DirectedGraph getDirectedGraph(View view) {
+        return new ClusteredDirectedGraphImpl(this, view);
+    }
+
+    public Graph getGraph(View view) {
+        if (directed) {
+            return getDirectedGraph(view);
+        } else if (undirected) {
+            return getUndirectedGraph(view);
+        } else if (mixed) {
+            return getMixedGraph(view);
+        } else {
+            return getDirectedGraph(view);
+        }
+    }
+
+    public HierarchicalDirectedGraph getHierarchicalDirectedGraph(View view) {
+        return new ClusteredDirectedGraphImpl(this, view);
+    }
+
+    public HierarchicalGraph getHierarchicalGraph(View view) {
+        if (directed) {
+            return getHierarchicalDirectedGraph(view);
+        } else if (undirected) {
+            return getHierarchicalUndirectedGraph(view);
+        } else if (mixed) {
+            return getHierarchicalMixedGraph(view);
+        } else {
+            return getHierarchicalDirectedGraph(view);
+        }
+    }
+
+    public HierarchicalMixedGraph getHierarchicalMixedGraph(View view) {
+        return new ClusteredMixedGraphImpl(this, view);
+    }
+
+    public HierarchicalUndirectedGraph getHierarchicalUndirectedGraph(View view) {
+        return new ClusteredUndirectedGraphImpl(this, view);
+    }
+
+    public MixedGraph getMixedGraph(View view) {
+        return new ClusteredMixedGraphImpl(this, view);
+    }
+
+    public UndirectedGraph getUndirectedGraph(View view) {
+        return new ClusteredUndirectedGraphImpl(this, view);
+    }
+
+    public Graph getGraphVisible() {
+        if (directed) {
+            return getDirectedGraph(viewManager.getVisibleView());
+        } else if (undirected) {
+            return getUndirectedGraph(viewManager.getVisibleView());
+        } else if (mixed) {
+            return getMixedGraph(viewManager.getVisibleView());
+        } else {
+            return getDirectedGraph(viewManager.getVisibleView());
+        }
+    }
+
+    public DirectedGraph getDirectedGraphVisible() {
+        return getDirectedGraph(viewManager.getVisibleView());
+    }
+
+    public UndirectedGraph getUndirectedGraphVisible() {
+        return getUndirectedGraph(viewManager.getVisibleView());
+    }
+
+    public MixedGraph getMixedGraphVisible() {
+        return getMixedGraph(viewManager.getVisibleView());
+    }
+
+    public HierarchicalGraph getHierarchicalGraphVisible() {
+        if (directed) {
+            return getHierarchicalDirectedGraph(viewManager.getVisibleView());
+        } else if (undirected) {
+            return getHierarchicalUndirectedGraph(viewManager.getVisibleView());
+        } else if (mixed) {
+            return getHierarchicalMixedGraph(viewManager.getVisibleView());
+        } else {
+            return getHierarchicalDirectedGraph(viewManager.getVisibleView());
+        }
+    }
+
+    public HierarchicalDirectedGraph getHierarchicalDirectedGraphVisible() {
+        return getHierarchicalDirectedGraph(viewManager.getVisibleView());
+    }
+
+    public HierarchicalMixedGraph getHierarchicalMixedGraphVisible() {
+        return getHierarchicalMixedGraph(viewManager.getVisibleView());
+    }
+
+    public HierarchicalUndirectedGraph getHierarchicalUndirectedGraphVisible() {
+        return getHierarchicalUndirectedGraph(viewManager.getVisibleView());
+    }
+
+    public Views views() {
+        return viewManager;
+    }
+
+    public void readXML(Element element) {
+    }
+
+    public Element writeXML(Document document) {
+        return null;
+    }
+
+    public GraphModel copy() {
+        return null;
     }
 }

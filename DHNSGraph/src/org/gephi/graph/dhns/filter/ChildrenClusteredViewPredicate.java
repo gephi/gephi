@@ -25,33 +25,29 @@ import org.gephi.graph.api.NodePredicate;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.CloneNode;
 import org.gephi.graph.dhns.node.PreNode;
-import org.gephi.graph.dhns.view.View;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class ChildrenClusteredViewPredicate implements NodePredicate {
+public class ChildrenClusteredViewPredicate implements NodePredicate, HierarchyFilteringPredicate {
 
-    private View view;
-
-    public ChildrenClusteredViewPredicate(View view) {
-        this.view = view;
+    public ChildrenClusteredViewPredicate() {
     }
 
     public boolean evaluate(Node element) {
         AbstractNode absNode = ((AbstractNode) element);
-        if (absNode.isEnabled(view)) {
+        if (absNode.isEnabled()) {
             return true;
         } else if (absNode.parent != null) {
             PreNode preNode = absNode.getOriginalNode();
-            if (absNode.parent.isEnabled(view)) {
+            if (absNode.parent.isEnabled()) {
                 return true;
             } else if (preNode.getClones() != null) {
                 //Multiple potiential enabled parents - Need to find at least one enabled
                 CloneNode cn = preNode.getClones();
                 while (cn != null) {
-                    if(cn.parent!=null && cn.parent.isEnabled(view)) {
+                    if (cn.parent != null && cn.parent.isEnabled()) {
                         return true;
                     }
                     cn = cn.getNext();
