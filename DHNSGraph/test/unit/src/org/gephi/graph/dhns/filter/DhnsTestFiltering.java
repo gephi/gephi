@@ -55,7 +55,7 @@ public class DhnsTestFiltering {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = new Dhns(controller);
-        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, false, true);
+        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, null);
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
@@ -124,14 +124,6 @@ public class DhnsTestFiltering {
 
     @Test
     public void testFiltering() {
-        FilterControl fc = graphGlobal.getFilterControl();
-        fc.addPredicate(new DegreePredicate(1, 3));
-        fc.addPredicate(new WeightPredicate(0, 5));
-        for (Node n : graphGlobal.getNodes().toArray()) {
-            System.out.println(n.getNodeData().getLabel());
-        }
-        for (Edge e : graphGlobal.getEdges().toArray()) {
-            System.out.println(e.getSource().getNodeData().getLabel() + "-" + e.getTarget().getNodeData().getLabel());
-        }
+        
     }
 }

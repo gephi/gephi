@@ -29,7 +29,6 @@ import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
-import org.gephi.graph.dhns.view.View;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -63,7 +62,7 @@ public class DhnsTestDirectedGraph {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = new Dhns(controller);
-        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, false, true);
+        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, null);
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
@@ -128,8 +127,7 @@ public class DhnsTestDirectedGraph {
         System.out.println("testAddNode");
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller);
-        View mainView = dhns.getViewManager().getMainView();
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, null);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.factory();
 
@@ -150,7 +148,7 @@ public class DhnsTestDirectedGraph {
             AbstractNode n = treeStructure.getNodeAt(i);
             assertEquals("prenode pre", i, n.getPre());
             assertEquals("prenode id", i - 1, n.getId());
-            assertEquals("prenode enabled", i > 0, n.isEnabled(mainView));
+            assertEquals("prenode enabled", i > 0, n.isEnabled());
             assertEquals("prenode avl node", i, n.avlNode.getIndex());
             if (n.avlNode.next() != null) {
                 assertEquals("prenode next", treeStructure.getNodeAt(i + 1).avlNode, n.avlNode.next());
@@ -173,7 +171,7 @@ public class DhnsTestDirectedGraph {
     public void testRemoveNode() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller);
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, null);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.factory();
 
@@ -298,7 +296,7 @@ public class DhnsTestDirectedGraph {
     public void testAddEdge() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller);
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, null);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.factory();
 

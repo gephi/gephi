@@ -30,7 +30,6 @@ import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
 import org.gephi.graph.dhns.graph.ClusteredUndirectedGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
-import org.gephi.graph.dhns.view.View;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -64,8 +63,8 @@ public class DhnsTestVisibleUndirectedGraph {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = new Dhns(controller);
-        graphGlobal = new ClusteredUndirectedGraphImpl(dhnsGlobal, true, false);
-        ClusteredDirectedGraphImpl diGraph = new ClusteredDirectedGraphImpl(dhnsGlobal, true, false);
+        graphGlobal = new ClusteredUndirectedGraphImpl(dhnsGlobal, null);
+        ClusteredDirectedGraphImpl diGraph = new ClusteredDirectedGraphImpl(dhnsGlobal, null);
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
@@ -139,8 +138,7 @@ public class DhnsTestVisibleUndirectedGraph {
         System.out.println("testAddNode");
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller);
-        View mainView = dhns.getViewManager().getMainView();
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, true, true);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, null);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.factory();
 
@@ -161,7 +159,7 @@ public class DhnsTestVisibleUndirectedGraph {
             AbstractNode n = treeStructure.getNodeAt(i);
             assertEquals("prenode pre", i, n.getPre());
             assertEquals("prenode id", i - 1, n.getId());
-            assertEquals("prenode enabled", i > 0, n.isEnabled(mainView));
+            assertEquals("prenode enabled", i > 0, n.isEnabled());
             assertTrue("node visible", n.isVisible());
             assertEquals("prenode avl node", i, n.avlNode.getIndex());
             if (n.avlNode.next() != null) {
@@ -185,7 +183,7 @@ public class DhnsTestVisibleUndirectedGraph {
     public void testRemoveNode() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller);
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, true, true);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, null);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.factory();
 
@@ -315,7 +313,7 @@ public class DhnsTestVisibleUndirectedGraph {
     public void testAddEdge() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller);
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, null);
         TreeStructure treeStructure = dhns.getTreeStructure();
         GraphFactoryImpl factory = dhns.factory();
 

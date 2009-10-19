@@ -29,7 +29,6 @@ import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.CloneNode;
 import org.gephi.graph.dhns.node.PreNode;
-import org.gephi.graph.dhns.view.View;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -60,7 +59,7 @@ public class DhnsTestMultiLevel {
         nodeMap = new HashMap<String, AbstractNode>();
         DhnsGraphController controller = new DhnsGraphController();
         dhns1 = new Dhns(controller);
-        graph1 = new ClusteredDirectedGraphImpl(dhns1, false, false);
+        graph1 = new ClusteredDirectedGraphImpl(dhns1, null);
         GraphFactoryImpl factory = controller.factory();
 
         AbstractNode nodeA = factory.newNode();
@@ -174,7 +173,7 @@ public class DhnsTestMultiLevel {
         //Test diamond
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller);
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, null);
         GraphFactoryImpl factory = controller.factory();
 
         AbstractNode nodeA = factory.newNode();
@@ -208,8 +207,7 @@ public class DhnsTestMultiLevel {
     @Test
     public void testEnabled() {
         graph1.expand(nodeMap.get("nodeB"));
-        View mainView = dhns1.getViewManager().getMainView();
-        assertTrue(dhns1.getTreeStructure().hasEnabledDescendant(mainView, nodeMap.get("nodeB")));
+        assertTrue(dhns1.getTreeStructure().hasEnabledDescendant(nodeMap.get("nodeB")));
 
     //dhns1.getTreeStructure().showTreeAsTable();
     }
@@ -240,8 +238,7 @@ public class DhnsTestMultiLevel {
     @Test
     public void testGetEnabledAncestors() {
         dhns1.getTreeStructure().showTreeAsTable();
-        View mainView = dhns1.getViewManager().getMainView();
-        AbstractNode[] enabled = dhns1.getTreeStructure().getEnabledAncestorsOrSelf(mainView, nodeMap.get("nodeD"));
+        AbstractNode[] enabled = dhns1.getTreeStructure().getEnabledAncestorsOrSelf(nodeMap.get("nodeD"));
         assertArrayEquals(new AbstractNode[]{nodeMap.get("nodeA"), nodeMap.get("nodeB")}, enabled);
     }
 
