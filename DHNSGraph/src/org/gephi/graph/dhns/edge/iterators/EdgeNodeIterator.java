@@ -81,8 +81,7 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
                     pointer = edgeIterator.next();
                     if (pointer.isSelfLoop()) {  //Ignore self loop here to avoid double iteration
                         pointer = null;
-                    }
-                    if (!nodePredicate.evaluate(pointer.getTarget())) {
+                    } else if (!nodePredicate.evaluate(pointer.getTarget())) {
                         pointer = null;
                     }
                 } else {

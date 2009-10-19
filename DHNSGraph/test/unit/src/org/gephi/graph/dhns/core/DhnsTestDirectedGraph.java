@@ -514,7 +514,8 @@ public class DhnsTestDirectedGraph {
         Node[] actual = new Node[2];
 
         int i = 0;
-        for (Node n : graphGlobal.getNeighbors(nodeMap.get("Node 5"))) {
+        Node node5 = nodeMap.get("Node 5");
+        for (Node n : graphGlobal.getNeighbors(node5)) {
             System.out.print(n.getId() + " ");
             actual[i++] = n;
         }

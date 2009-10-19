@@ -58,6 +58,7 @@ public class NeighborIterator extends AbstractNodeIterator implements Iterator<N
                 } else {
                     pointer = edge.getSource();
                 }
+                return true;
 //                if (proposition.evaluate(pointer)) {
 //                    return true;
 //                }

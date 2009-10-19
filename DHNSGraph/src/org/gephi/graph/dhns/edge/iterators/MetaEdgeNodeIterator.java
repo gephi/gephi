@@ -81,8 +81,7 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
                     pointer = edgeIterator.next();
                     if (pointer.isSelfLoop()) {  //Ignore self loop here to avoid double iteration
                         pointer = null;
-                    }
-                    if (!nodePredicate.evaluate(pointer.getTarget())) {
+                    } else if (!nodePredicate.evaluate(pointer.getTarget())) {
                         pointer = null;
                     }
                 } else {
