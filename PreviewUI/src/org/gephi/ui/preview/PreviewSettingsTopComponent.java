@@ -3,12 +3,9 @@ package org.gephi.ui.preview;
 import java.awt.BorderLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
-import org.gephi.preview.api.PreviewController;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.Node;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.Lookups;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 //import org.openide.util.Utilities;
@@ -30,13 +27,9 @@ final class PreviewSettingsTopComponent extends TopComponent {
         setToolTipText(NbBundle.getMessage(PreviewSettingsTopComponent.class, "HINT_PreviewSettingsTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
 
-        // controller instanciation
-        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        associateLookup(Lookups.singleton(controller));
-
         // property sheet
         PropertySheet ps = new PropertySheet();
-        ps.setNodes(new Node[] { new PreviewNode(controller) });
+        ps.setNodes(new Node[] { new PreviewNode() });
         propertiesPanel.add(ps, BorderLayout.CENTER);
     }
 

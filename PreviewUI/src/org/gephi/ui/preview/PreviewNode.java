@@ -5,8 +5,6 @@ import org.gephi.ui.preview.propertyeditor.GenericColorizerPropertyEditor;
 import org.gephi.ui.preview.propertyeditor.NodeColorizerPropertyEditor;
 import java.awt.Font;
 import org.gephi.preview.api.PreviewController;
-import org.gephi.preview.api.color.colorizer.EdgeChildColorizer;
-import org.gephi.preview.api.color.colorizer.EdgeColorizer;
 import org.gephi.preview.api.color.colorizer.GenericColorizer;
 import org.gephi.preview.api.color.colorizer.NodeChildColorizer;
 import org.gephi.preview.api.color.colorizer.NodeColorizer;
@@ -15,7 +13,7 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
-import org.openide.util.lookup.Lookups;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -23,15 +21,15 @@ import org.openide.util.lookup.Lookups;
  */
 public class PreviewNode extends AbstractNode {
 
-    public PreviewNode(PreviewController controller) {
-        super(Children.LEAF, Lookups.singleton(controller));
+    public PreviewNode() {
+        super(Children.LEAF);
         setDisplayName("Preview Settings");
     }
 
-    @Override
+	@Override
     protected Sheet createSheet() {
         Sheet sheet = Sheet.createDefault();
-        PreviewController obj = getLookup().lookup(PreviewController.class);
+        PreviewController obj = Lookup.getDefault().lookup(PreviewController.class);
 
         Sheet.Set nodeSet = Sheet.createPropertiesSet();
         nodeSet.setDisplayName("Node Settings");
