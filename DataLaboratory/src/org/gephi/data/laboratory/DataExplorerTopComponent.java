@@ -23,6 +23,8 @@ package org.gephi.data.laboratory;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
@@ -68,6 +70,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
         NONE, NODE, EDGE
     };
+    private static final Color invalidFilterColor = new Color(254, 254, 242);
     private static DataExplorerTopComponent instance;
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
@@ -77,6 +80,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
     private Lookup.Result<AttributeColumn> nodeColumnsResult;
     private Lookup.Result<AttributeColumn> edgeColumnsResult;
     private GraphModel graphModel;
+    private boolean visibleOnly = false;
 
     //Table
     private NodeDataTable nodeTable;
@@ -115,6 +119,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
             filterTextField.setEnabled(false);
             labelFilter.setEnabled(false);
             bannerPanel.setVisible(false);
+            visibleGraphCheckbox.setEnabled(false);
         }
         bannerPanel.setVisible(false);
     }
@@ -135,6 +140,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                 edgesButton.setEnabled(true);
                 filterTextField.setEnabled(true);
                 labelFilter.setEnabled(true);
+                visibleGraphCheckbox.setEnabled(true);
                 bannerPanel.setVisible(false);
                 graphModel = gc.getModel();
                 graphModel.addGraphListener(DataExplorerTopComponent.this);
@@ -155,6 +161,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                 filterTextField.setEnabled(false);
                 labelFilter.setEnabled(false);
                 bannerPanel.setVisible(false);
+                visibleGraphCheckbox.setEnabled(false);
             }
         });
 
@@ -170,9 +177,30 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
             public void actionPerformed(ActionEvent e) {
                 if (classDisplayed.equals(ClassDisplayed.NODE)) {
-                    nodeTable.setFilter(filterTextField.getText(), columnComboBox.getSelectedIndex());
+                    if (nodeTable.setFilter(filterTextField.getText(), columnComboBox.getSelectedIndex())) {
+                        filterTextField.setBackground(Color.WHITE);
+                    } else {
+                        filterTextField.setBackground(invalidFilterColor);
+                    }
                 } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
-                    edgeTable.setPattern(filterTextField.getText(), columnComboBox.getSelectedIndex());
+                    if (edgeTable.setPattern(filterTextField.getText(), columnComboBox.getSelectedIndex())) {
+                        filterTextField.setBackground(Color.WHITE);
+                    } else {
+                        filterTextField.setBackground(invalidFilterColor);
+                    }
+                }
+            }
+        });
+
+        visibleGraphCheckbox.setSelected(visibleOnly);
+        visibleGraphCheckbox.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                visibleOnly = visibleGraphCheckbox.isSelected();
+                if (classDisplayed.equals(ClassDisplayed.NODE)) {
+                    initNodesView();
+                } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
+                    initEdgesView();
                 }
             }
         });
@@ -193,7 +221,12 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
                     //Nodes from DHNS
                     graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-                    HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+                    HierarchicalGraph graph;
+                    if (visibleOnly) {
+                        graph = graphModel.getHierarchicalGraphVisible();
+                    } else {
+                        graph = graphModel.getHierarchicalGraph();
+                    }
                     if (graph == null) {
                         tableScrollPane.setViewportView(null);
                         return;
@@ -229,7 +262,12 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
                     //Edges from DHNS
                     graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-                    HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+                    HierarchicalGraph graph;
+                    if (visibleOnly) {
+                        graph = graphModel.getHierarchicalGraphVisible();
+                    } else {
+                        graph = graphModel.getHierarchicalGraph();
+                    }
                     if (graph == null) {
                         tableScrollPane.setViewportView(null);
                         return;
@@ -307,10 +345,10 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         nodesButton = new javax.swing.JToggleButton();
         edgesButton = new javax.swing.JToggleButton();
         separator = new javax.swing.JToolBar.Separator();
+        visibleGraphCheckbox = new javax.swing.JCheckBox();
         boxGlue = new javax.swing.JLabel();
         labelFilter = new org.jdesktop.swingx.JXLabel();
         filterTextField = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
         columnComboBox = new javax.swing.JComboBox();
         tableScrollPane = new javax.swing.JScrollPane();
         bannerPanel = new javax.swing.JPanel();
@@ -347,6 +385,11 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         controlToolbar.add(edgesButton);
         controlToolbar.add(separator);
 
+        org.openide.awt.Mnemonics.setLocalizedText(visibleGraphCheckbox, org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.visibleGraphCheckbox.text")); // NOI18N
+        visibleGraphCheckbox.setFocusable(false);
+        visibleGraphCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        controlToolbar.add(visibleGraphCheckbox);
+
         org.openide.awt.Mnemonics.setLocalizedText(boxGlue, org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.boxGlue.text")); // NOI18N
         boxGlue.setMaximumSize(new java.awt.Dimension(32767, 32767));
         controlToolbar.add(boxGlue);
@@ -358,9 +401,6 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         filterTextField.setMaximumSize(new java.awt.Dimension(1000, 30));
         filterTextField.setPreferredSize(new java.awt.Dimension(150, 20));
         controlToolbar.add(filterTextField);
-
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.jLabel1.text")); // NOI18N
-        controlToolbar.add(jLabel1);
 
         columnComboBox.setMaximumSize(new java.awt.Dimension(2000, 20));
         columnComboBox.setPreferredSize(new java.awt.Dimension(120, 20));
@@ -445,13 +485,13 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
     private javax.swing.JToggleButton edgesButton;
     private javax.swing.ButtonGroup elementGroup;
     private javax.swing.JTextField filterTextField;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel labelBanner;
     private org.jdesktop.swingx.JXLabel labelFilter;
     private javax.swing.JToggleButton nodesButton;
     private javax.swing.JButton refreshButton;
     private javax.swing.JToolBar.Separator separator;
     private javax.swing.JScrollPane tableScrollPane;
+    private javax.swing.JCheckBox visibleGraphCheckbox;
     // End of variables declaration//GEN-END:variables
 
     /**

@@ -22,6 +22,7 @@ package org.gephi.data.laboratory;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
@@ -53,7 +54,7 @@ public class NodeDataTable {
         quickFilter = new QuickFilter() {
 
             public boolean accept(Object value) {
-                if(value==null) {
+                if (value == null) {
                     return false;
                 }
                 if (value instanceof ImmutableTreeNode) {
@@ -68,9 +69,14 @@ public class NodeDataTable {
         return outlineTable;
     }
 
-    public void setFilter(String regularExpr, int columnIndex) {
-        pattern = Pattern.compile(regularExpr, Pattern.CASE_INSENSITIVE);
+    public boolean setFilter(String regularExpr, int columnIndex) {
+        try {
+            pattern = Pattern.compile(regularExpr, Pattern.CASE_INSENSITIVE);
+        } catch (PatternSyntaxException e) {
+            return false;
+        }
         outlineTable.setQuickFilter(columnIndex, quickFilter);
+        return true;
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols) {

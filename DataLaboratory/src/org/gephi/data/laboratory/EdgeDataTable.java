@@ -22,6 +22,7 @@ package org.gephi.data.laboratory;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -111,11 +112,16 @@ public class EdgeDataTable {
         return table;
     }
 
-    public void setPattern(String regularExpr, int column) {
-        if (patternFilter.getColumnIndex() != column) {
-            patternFilter.setColumnIndex(column);
+    public boolean setPattern(String regularExpr, int column) {
+        try {
+            patternFilter.setPattern(regularExpr, Pattern.CASE_INSENSITIVE);
+            if (patternFilter.getColumnIndex() != column) {
+                patternFilter.setColumnIndex(column);
+            }
+        } catch (PatternSyntaxException e) {
+            return false;
         }
-        patternFilter.setPattern(regularExpr, Pattern.CASE_INSENSITIVE);
+        return true;
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols) {
