@@ -3,7 +3,7 @@
 *** GENERATED FROM project.xml - DO NOT EDIT  ***
 ***         EDIT ../build.xml INSTEAD         ***
 -->
-<project name="org.gephi.ui.filters-impl" basedir="..">
+<project name="org.gephi.desktop.filters-impl" basedir="..">
     <property file="nbproject/private/suite-private.properties"/>
     <property file="nbproject/suite.properties"/>
     <fail unless="suite.dir">You must set 'suite.dir' to point to your containing module suite</fail>

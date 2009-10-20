@@ -261,7 +261,7 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
 
     @Override
     public int getPersistenceType() {
-        return TopComponent.PERSISTENCE_NEVER;
+        return TopComponent.PERSISTENCE_ALWAYS;
     }
 
     @Override

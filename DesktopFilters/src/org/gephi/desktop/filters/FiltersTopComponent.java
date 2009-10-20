@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ui.filters;
+package org.gephi.desktop.filters;
 
 import java.awt.BorderLayout;
 import java.io.Serializable;
@@ -100,7 +100,7 @@ final class FiltersTopComponent extends TopComponent {
 
         toolbarPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        columnsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/filters/resources/hideColumn.png"))); // NOI18N
+        columnsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/filters/hideColumn.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(columnsButton, org.openide.util.NbBundle.getMessage(FiltersTopComponent.class, "FiltersTopComponent.columnsButton.text")); // NOI18N
         columnsButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
         columnsButton.addActionListener(new java.awt.event.ActionListener() {
