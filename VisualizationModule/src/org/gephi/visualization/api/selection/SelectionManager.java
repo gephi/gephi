@@ -110,8 +110,8 @@ public class SelectionManager implements VizArchitecture {
     }
 
     public void resetSelection() {
-        //disableSelection();
         if (isCustomSelection()) {
+            vizConfig.setCustomSelection(false);
             setDirectMouseSelection();
         }
     }

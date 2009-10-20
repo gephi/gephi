@@ -80,7 +80,7 @@ public class ShortestPath implements Tool {
                     sourceNode = n;
                     shortestPathPanel.setResult("");
                     shortestPathPanel.setStatus(NbBundle.getMessage(ShortestPath.class, "ShortestPath.status2"));
-                } else {
+                } else if (n != sourceNode) {
                     color = shortestPathPanel.getColor();
                     float[] colorArray = new float[]{color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f};
                     Node targetNode = n;

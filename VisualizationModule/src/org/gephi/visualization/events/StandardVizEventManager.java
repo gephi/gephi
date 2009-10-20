@@ -106,7 +106,7 @@ public class StandardVizEventManager implements VizEventManager {
         VizEventTypeHandler mouseLeftHandler = handlers[VizEvent.Type.MOUSE_LEFT_CLICK.ordinal()];
         if (mouseLeftHandler.hasListeners()) {
             ModelImpl[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
-            if (modelArray.length == 0) {
+            if (modelArray.length == 0 || !VizController.getInstance().getVizConfig().isSelectionEnable()) {
                 float[] mousePositionViewport = graphIO.getMousePosition();
                 float[] mousePosition3d = graphIO.getMousePosition3d();
                 float[] mousePos = new float[]{mousePositionViewport[0], mousePositionViewport[1], mousePosition3d[0], mousePosition3d[1]};
