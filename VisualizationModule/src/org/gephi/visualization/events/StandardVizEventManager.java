@@ -90,7 +90,7 @@ public class StandardVizEventManager implements VizEventManager {
     public void mouseLeftClick() {
         //Node Left click
         VizEventTypeHandler nodeLeftHandler = handlers[VizEvent.Type.NODE_LEFT_CLICK.ordinal()];
-        if (nodeLeftHandler.hasListeners()) {
+        if (nodeLeftHandler.hasListeners() && VizController.getInstance().getVizConfig().isSelectionEnable()) {
             //Check if some node are selected
             ModelImpl[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
             if (modelArray.length > 0) {

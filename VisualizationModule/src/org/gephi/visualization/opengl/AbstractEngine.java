@@ -26,6 +26,7 @@ import org.gephi.visualization.api.ModelImpl;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
+import org.gephi.graph.api.Model;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.Engine;
@@ -76,6 +77,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     //States
     protected boolean rectangleSelection;
+    protected boolean customSelection;
     protected EngineLifeCycle lifeCycle = new EngineLifeCycle();
     protected boolean configChanged = false;
     protected boolean backgroundChanged = false;
@@ -162,6 +164,10 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected abstract void stopAnimating();
 
     public abstract ModelImpl[] getSelectedObjects(int modelClass);
+
+    public abstract void selectObject(Model obj);
+
+    public abstract void resetSelection();
 
     /**
      * Reset contents of octree for the given class

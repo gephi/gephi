@@ -31,6 +31,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
+import org.gephi.graph.api.Model;
+import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.objects.ModelClass;
@@ -79,7 +81,7 @@ public class CompatibilityEngine extends AbstractEngine {
     }
 
     public void updateSelection(GL gl, GLU glu) {
-        if (currentSelectionArea.isEnabled()) {
+        if (vizConfig.isSelectionEnable() && currentSelectionArea.isEnabled()) {
             VizModel vizModel = VizController.getInstance().getVizModel();
             octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
 
@@ -157,13 +159,16 @@ public class CompatibilityEngine extends AbstractEngine {
         }
         if (newConfig) {
             dataBridge.reset();
-            //Reset model classes
-            for (ModelClass objClass : getModelClasses()) {
-                if (objClass.isEnabled()) {
-                    objClass.swapModelers();
-                    resetObjectClass(objClass);
+            if (!vizConfig.isCustomSelection()) {
+                //Reset model classes
+                for (ModelClass objClass : getModelClasses()) {
+                    if (objClass.isEnabled()) {
+                        objClass.swapModelers();
+                        resetObjectClass(objClass);
+                    }
                 }
             }
+
             initSelection();
         }
         if (dataBridge.requireUpdate() || changeMode || newConfig) {
@@ -174,6 +179,7 @@ public class CompatibilityEngine extends AbstractEngine {
             modeManager.changeMode();
         }
         if (newConfig) {
+
             configChanged = false;
         }
         return res;
@@ -419,7 +425,7 @@ public class CompatibilityEngine extends AbstractEngine {
             }
         }
 
-        if (vizConfig.isSelectionEnable() && rectangleSelection) {
+        if (vizConfig.isSelectionEnable() && rectangleSelection && !customSelection) {
             Rectangle rectangle = (Rectangle) currentSelectionArea;
             //rectangle.setBlocking(false);
             //Clean opengl picking
@@ -510,7 +516,7 @@ public class CompatibilityEngine extends AbstractEngine {
             }
         }
 
-        if (currentSelectionArea.blockSelection()) {
+        if (customSelection || currentSelectionArea.blockSelection()) {
             return;
         }
 
@@ -626,6 +632,34 @@ public class CompatibilityEngine extends AbstractEngine {
         return selectedObjects[modelClasses[modelClass].getSelectionId()].toArray(new ModelImpl[0]);
     }
 
+    @Override
+    public void selectObject(Model obj) {
+        ModelImpl modl = (ModelImpl) obj;
+        if (!customSelection) {
+            vizConfig.setRectangleSelection(false);
+            customSelection = true;
+            configChanged = true;
+            //Reset
+            for (ModelClass objClass : selectableClasses) {
+                for (Iterator<ModelImpl> itr = selectedObjects[objClass.getSelectionId()].iterator(); itr.hasNext();) {
+                    ModelImpl o = itr.next();
+                    itr.remove();
+                    o.setSelected(false);
+                }
+            }
+        }
+        modl.setSelected(true);
+        if (modl.getObj() instanceof NodeData) {
+            selectedObjects[modelClasses[AbstractEngine.CLASS_NODE].getSelectionId()].add(modl);
+        }
+    }
+
+    @Override
+    public void resetSelection() {
+        customSelection = false;
+        configChanged = true;
+    }
+
     private void initDisplayLists(GL gl, GLU glu) {
         //Constants
         float blancCasse[] = {(float) 213 / 255, (float) 208 / 255, (float) 188 / 255, 1.0f};
@@ -736,11 +770,17 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void initSelection() {
-        if (vizConfig.isRectangleSelection()) {
+        if (vizConfig.isCustomSelection()) {
+            System.out.println("CustomSelection");
+            rectangleSelection = false;
+            currentSelectionArea = null;
+        } else if (vizConfig.isRectangleSelection()) {
             rectangleSelection = true;
+            customSelection = false;
             currentSelectionArea = new Rectangle();
         } else {
             rectangleSelection = false;
+            customSelection = false;
             currentSelectionArea = new Cylinder();
         }
     }

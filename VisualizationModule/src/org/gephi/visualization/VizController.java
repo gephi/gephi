@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization;
 
 import java.awt.Dimension;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.visualization.api.GraphIO;
 import org.gephi.visualization.api.VizEventManager;
@@ -163,6 +165,26 @@ public class VizController {
             VizController.getInstance().getModelClassLibrary().getNodeClass().setCurrentModeler(currentModel.getNodeModeler());
             currentModel.init();
         }
+    }
+
+    public void resetSelection() {
+        selectionManager.resetSelection();
+    }
+
+    public void selectNode(Node node) {
+        selectionManager.selectNode(node);
+    }
+
+    public void selectEdge(Edge edge) {
+        selectionManager.selectEdge(edge);
+    }
+
+    public void selectNodes(Node[] nodes) {
+        selectionManager.selectNodes(nodes);
+    }
+
+    public void selectEdges(Edge[] edges) {
+        selectionManager.selectEdges(edges);
     }
 
     public VizModel getVizModel() {

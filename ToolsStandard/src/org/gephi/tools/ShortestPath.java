@@ -36,6 +36,7 @@ import org.gephi.tools.api.ToolEventListener;
 import org.gephi.tools.api.ToolSelectionType;
 import org.gephi.ui.tools.ShortestPathPanel;
 import org.gephi.ui.tools.ToolUI;
+import org.gephi.visualization.VizController;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -84,9 +85,9 @@ public class ShortestPath implements Tool {
                     float[] colorArray = new float[]{color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f};
                     Node targetNode = n;
                     GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                    DirectedGraph graph=null;
-                    if(gc.getModel().getGraph() instanceof DirectedGraph) {
-                        graph = (DirectedGraph)gc.getModel().getGraph();
+                    DirectedGraph graph = null;
+                    if (gc.getModel().getGraph() instanceof DirectedGraph) {
+                        graph = (DirectedGraph) gc.getModel().getGraph();
                     } else {
                         return;
                     }
@@ -96,14 +97,19 @@ public class ShortestPath implements Tool {
                     double distance;
                     if ((distance = algorithm.getDistances().get(targetNode)) != Double.POSITIVE_INFINITY) {
                         targetNode.getNodeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
+                        VizController.getInstance().selectNode(targetNode);
                         Edge predecessorEdge = algorithm.getPredecessorIncoming(targetNode);
                         while (predecessorEdge != null && predecessorEdge.getSource() != sourceNode) {
                             predecessorEdge.getEdgeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
+                            VizController.getInstance().selectEdge(predecessorEdge);
                             predecessorEdge.getSource().getNodeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
+                            VizController.getInstance().selectNode(predecessorEdge.getSource());
                             predecessorEdge = algorithm.getPredecessorIncoming(predecessorEdge.getSource());
                         }
                         predecessorEdge.getEdgeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
+                        VizController.getInstance().selectEdge(predecessorEdge);
                         sourceNode.getNodeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
+                        VizController.getInstance().selectNode(sourceNode);
                         shortestPathPanel.setResult(NbBundle.getMessage(ShortestPath.class, "ShortestPath.result", distance));
                     } else {
                         //No path
@@ -122,6 +128,8 @@ public class ShortestPath implements Tool {
                     //Cancel
                     shortestPathPanel.setStatus(NbBundle.getMessage(ShortestPath.class, "ShortestPath.status1"));
                     sourceNode = null;
+                } else {
+                    VizController.getInstance().resetSelection();
                 }
             }
         };

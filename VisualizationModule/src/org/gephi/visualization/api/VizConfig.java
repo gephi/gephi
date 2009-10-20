@@ -72,6 +72,7 @@ public class VizConfig {
     protected boolean selectionEnable = true;
     protected boolean rectangleSelection = false;
     protected float[] rectangleSelectionColor = {0.16f, 0.48f, 0.81f, 0.2f};
+    protected boolean customSelection = false;
     protected boolean draggingEnable = false;
     protected boolean cameraControlEnable = true;
     protected boolean showFPS = true;
@@ -349,6 +350,10 @@ public class VizConfig {
         return mouseSelectionZoomProportionnal;
     }
 
+    public boolean isCustomSelection() {
+        return customSelection;
+    }
+
     //Setters
     public void setLightenNonSelectedFactor(float lightenNonSelectedFactor) {
         this.lightenNonSelectedFactor = lightenNonSelectedFactor;
@@ -368,6 +373,10 @@ public class VizConfig {
 
     public void setSelectionEnable(boolean selectionEnable) {
         this.selectionEnable = selectionEnable;
+    }
+
+    public void setCustomSelection(boolean customSelection) {
+        this.customSelection = customSelection;
     }
 
     public boolean isDisableLOD() {
