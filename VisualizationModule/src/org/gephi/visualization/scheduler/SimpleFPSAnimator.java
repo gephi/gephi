@@ -77,7 +77,7 @@ public class SimpleFPSAnimator extends Thread {
         return animating.get();
     }
 
-    private void setFps(int fps) {
+    public void setFps(int fps) {
         delay = (long) (1000.0f / (float) fps);
     }
 }

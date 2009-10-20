@@ -112,7 +112,6 @@ public class VizController {
         } else {
             drawable = commander.createCanvas();
         }
-        drawable.getGraphComponent().setPreferredSize(new Dimension(600, 600));
         drawable.initArchitecture();
         engine.initArchitecture();
         ((CompatibilityScheduler) scheduler).initArchitecture();

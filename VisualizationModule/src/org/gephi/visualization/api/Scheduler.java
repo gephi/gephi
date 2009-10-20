@@ -54,4 +54,6 @@ public interface Scheduler {
     public void requireUpdatePosition();
 
     public void requireMouseClick();
+
+    public void setFps(int maxFps);
 }

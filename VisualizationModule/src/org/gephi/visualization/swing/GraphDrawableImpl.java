@@ -23,6 +23,8 @@ package org.gephi.visualization.swing;
 import com.sun.opengl.util.BufferUtil;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import javax.media.opengl.GL;
@@ -61,6 +63,24 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
 
         cameraLocation = vizController.getVizConfig().getDefaultCameraPosition();
         cameraTarget = vizController.getVizConfig().getDefaultCameraTarget();
+
+        //Mouse events
+        if (vizController.getVizConfig().isReduceFpsWhenMouseOut()) {
+            final int minVal = vizController.getVizConfig().getReduceFpsWhenMouseOutValue();
+            final int maxVal = 30;
+            graphComponent.addMouseListener(new MouseAdapter() {
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    scheduler.setFps(maxVal);
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    scheduler.setFps(minVal);
+                }
+            });
+        }
     }
 
     @Override

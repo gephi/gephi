@@ -38,9 +38,7 @@ import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
-/**
- * Top component which displays something.
- */
+
 final class GraphTopComponent extends TopComponent {
 
     private static GraphTopComponent instance;
@@ -214,7 +212,7 @@ final class GraphTopComponent extends TopComponent {
 
     @Override
     public int getPersistenceType() {
-        return TopComponent.PERSISTENCE_ALWAYS;
+        return TopComponent.PERSISTENCE_NEVER;
     }
 
     @Override

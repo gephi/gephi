@@ -76,6 +76,8 @@ public class VizConfig {
     protected boolean draggingEnable = false;
     protected boolean cameraControlEnable = true;
     protected boolean showFPS = true;
+    protected boolean reduceFpsWhenMouseOut = true;
+    protected int reduceFpsWhenMouseOutValue = 1;
     protected boolean showArrows = true;
     protected boolean lightenNonSelected = true;
     protected float[] lightenNonSelectedColor = {0.95f, 0.95f, 0.95f, 1f};
@@ -352,6 +354,14 @@ public class VizConfig {
 
     public boolean isCustomSelection() {
         return customSelection;
+    }
+
+    public boolean isReduceFpsWhenMouseOut() {
+        return reduceFpsWhenMouseOut;
+    }
+
+    public int getReduceFpsWhenMouseOutValue() {
+        return reduceFpsWhenMouseOutValue;
     }
 
     //Setters

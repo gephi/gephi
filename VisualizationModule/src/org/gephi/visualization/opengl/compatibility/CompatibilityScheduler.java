@@ -65,6 +65,8 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
     //Animator
     private SimpleFPSAnimator simpleFPSAnimator;
+    private int fpsLimit = 30;
+
     //Executor
     private ScheduledExecutorService displayExecutor;
 
@@ -169,7 +171,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
     @Override
     public void start() {
-        simpleFPSAnimator = new SimpleFPSAnimator(this, graphDrawable, 30);
+        simpleFPSAnimator = new SimpleFPSAnimator(this, graphDrawable, fpsLimit);
         simpleFPSAnimator.start();
 
     }
@@ -315,5 +317,12 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     @Override
     public void requireMouseClick() {
         mouseClick.set(true);
+    }
+
+    public void setFps(int maxFps) {
+        this.fpsLimit = maxFps;
+        if (simpleFPSAnimator != null) {
+            simpleFPSAnimator.setFps(maxFps);
+        }
     }
 }
