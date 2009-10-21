@@ -41,6 +41,15 @@ public abstract class AbstractColorizerPropertyEditor extends PropertyEditorSupp
         else if (supportsParentNodeColorMode() && colorizerFactory.matchParentNodeColorMode(s)) {
             setValue(colorizerFactory.createParentNodeColorMode());
         }
+		else if (supportsEdgeB1ColorMode() && colorizerFactory.matchEdgeB1ColorMode(s)) {
+            setValue(colorizerFactory.createEdgeB1ColorMode());
+        }
+		else if (supportsEdgeB2ColorMode() && colorizerFactory.matchEdgeB2ColorMode(s)) {
+            setValue(colorizerFactory.createEdgeB2ColorMode());
+        }
+		else if (supportsEdgeBothBColorMode() && colorizerFactory.matchEdgeBothBColorMode(s)) {
+            setValue(colorizerFactory.createEdgeBothBColorMode());
+        }
     }
 
     public boolean supportsCustomColorMode() {
@@ -52,6 +61,18 @@ public abstract class AbstractColorizerPropertyEditor extends PropertyEditorSupp
     }
 
     public boolean supportsParentNodeColorMode() {
+        return false;
+    }
+
+    public boolean supportsEdgeB1ColorMode() {
+        return false;
+    }
+
+    public boolean supportsEdgeB2ColorMode() {
+        return false;
+    }
+
+    public boolean supportsEdgeBothBColorMode() {
         return false;
     }
 
