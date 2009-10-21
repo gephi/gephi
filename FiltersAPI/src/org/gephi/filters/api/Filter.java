@@ -29,4 +29,6 @@ import org.gephi.graph.api.Predicate;
 public interface Filter {
 
     public Predicate getPredicate();
+
+    public FilterBuilder getBuilder();
 }

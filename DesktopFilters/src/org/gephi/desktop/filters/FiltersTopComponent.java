@@ -23,28 +23,33 @@ package org.gephi.desktop.filters;
 import java.awt.BorderLayout;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import org.gephi.ui.components.ColumnSelectionPanel;
-import org.gephi.ui.components.ColumnSelectionPanel.ColumnSelectionModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.gephi.filters.api.Filter;
+import org.gephi.filters.api.FilterModel;
+import org.gephi.filters.api.FilterUI;
+import org.gephi.project.api.ProjectController;
 import org.gephi.ui.components.JSqueezeBoxPanel;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceListener;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
-/**
- * Top component which displays something.
- */
 final class FiltersTopComponent extends TopComponent {
 
     private static FiltersTopComponent instance;
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "FiltersTopComponent";
-    private List<ContentPanel> panels;
-    private final JSqueezeBoxPanel squeezeBoxPanel = new JSqueezeBoxPanel();
+    private List<FilterPanel> filtersPanels = new ArrayList<FilterPanel>();
+    private FilterModel filterModel;
+    private ChangeListener modelListener;
 
     private FiltersTopComponent() {
         initComponents();
@@ -52,34 +57,76 @@ final class FiltersTopComponent extends TopComponent {
         setToolTipText(NbBundle.getMessage(FiltersTopComponent.class, "HINT_FiltersTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
 
-        initContent();
+        modelListener = new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                refreshModel(filterModel);
+            }
+        };
+
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.addWorkspaceListener(new WorkspaceListener() {
+
+            public void initialize(Workspace workspace) {
+            }
+
+            public void select(Workspace workspace) {
+                filterModel = workspace.getWorkspaceData().getData(Lookup.getDefault().lookup(FiltersWorkspaceDataProvider.class).getWorkspaceDataKey());
+                filterModel.addChangeListener(modelListener);
+                refreshModel(filterModel);
+            }
+
+            public void unselect(Workspace workspace) {
+                filterModel.removeChangeListener(modelListener);
+                filterModel = null;
+            }
+
+            public void close(Workspace workspace) {
+            }
+
+            public void disable() {
+                filterModel = null;
+                refreshModel(filterModel);
+            }
+        });
+        refreshModel(filterModel);
     }
 
-    private void initContent() {
-        panels = new ArrayList<ContentPanel>();
-
-        panels.add(new ContentPanel(new JPanel(), "Filter A"));
-        panels.add(new ContentPanel(new JPanel(), "Filter B"));
-        panels.add(new ContentPanel(new JPanel(), "Filter C"));
-
-        //Somecontent
-        panels.get(0).panel.add(new JLabel("Content FilterA"));
-        panels.get(1).panel.add(new JLabel("Content FilterB"));
-        panels.get(2).panel.add(new JLabel("Content FilterC"));
-
-        squeezeBoxPanel.addPanel(panels.get(0).panel, panels.get(0).name);
-        squeezeBoxPanel.addPanel(panels.get(1).panel, panels.get(1).name);
-        squeezeBoxPanel.addPanel(panels.get(2).panel, panels.get(2).name);
-        centerPanel.add(squeezeBoxPanel, BorderLayout.CENTER);
+    public void refreshModel(FilterModel filterModel) {
+        if (filterModel == null) {
+            return;
+        }
+        refreshPanels(filterModel.getFilters());
     }
 
-    private void selectColumnsDialog() {
-        ColumnSelectionPanel.showColumnSelectionDialog(panels.toArray(new ColumnSelectionModel[0]), "Select filters");
-        for (ContentPanel contentPanel : panels) {
-            if (contentPanel.isVisible()) {
-                squeezeBoxPanel.addPanel(contentPanel.panel, contentPanel.name);
-            } else {
-                squeezeBoxPanel.removePanel(contentPanel.panel);
+    private void refreshPanels(Filter[] filters) {
+        JSqueezeBoxPanel sbp = (JSqueezeBoxPanel) squeezeBoxPanel;
+        for (Iterator<FilterPanel> itr = filtersPanels.iterator(); itr.hasNext();) {
+            FilterPanel fp = itr.next();
+            boolean found = false;
+            for (Filter f : filters) {
+                if (fp.getFilter() == f) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                itr.remove();
+                sbp.removePanel(fp);
+            }
+        }
+        for (Filter f : filters) {
+            boolean found = false;
+            for (FilterPanel fp : filtersPanels) {
+                if (fp.getFilter() == f) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                FilterPanel fp = new FilterPanel(f, f.getBuilder().getFilterUI(f));
+                filtersPanels.add(fp);
+                sbp.addPanel(fp, f.getBuilder().getName());
             }
         }
     }
@@ -92,37 +139,49 @@ final class FiltersTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        tabbedPane = new javax.swing.JTabbedPane();
+        filtersPanel = new javax.swing.JPanel();
         toolbarPanel = new javax.swing.JPanel();
-        columnsButton = new javax.swing.JButton();
-        centerPanel = new javax.swing.JPanel();
+        squeezeBoxPanel = new JSqueezeBoxPanel();
+        libraryPanel = new javax.swing.JPanel();
+        filtersLibraryExplorer = new org.gephi.desktop.filters.FiltersLibraryExplorer();
+        infoPanel = new javax.swing.JPanel();
+        contibuteLink = new org.jdesktop.swingx.JXHyperlink();
 
         setLayout(new java.awt.BorderLayout());
 
+        filtersPanel.setLayout(new java.awt.BorderLayout());
+
         toolbarPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        filtersPanel.add(toolbarPanel, java.awt.BorderLayout.PAGE_START);
+        filtersPanel.add(squeezeBoxPanel, java.awt.BorderLayout.CENTER);
 
-        columnsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/filters/hideColumn.png"))); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(columnsButton, org.openide.util.NbBundle.getMessage(FiltersTopComponent.class, "FiltersTopComponent.columnsButton.text")); // NOI18N
-        columnsButton.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        columnsButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                columnsButtonActionPerformed(evt);
-            }
-        });
-        toolbarPanel.add(columnsButton);
+        tabbedPane.addTab(org.openide.util.NbBundle.getMessage(FiltersTopComponent.class, "FiltersTopComponent.filtersPanel.TabConstraints.tabTitle"), filtersPanel); // NOI18N
 
-        add(toolbarPanel, java.awt.BorderLayout.PAGE_START);
+        libraryPanel.setLayout(new java.awt.BorderLayout());
+        libraryPanel.add(filtersLibraryExplorer, java.awt.BorderLayout.CENTER);
 
-        centerPanel.setLayout(new java.awt.BorderLayout());
-        add(centerPanel, java.awt.BorderLayout.CENTER);
+        tabbedPane.addTab(org.openide.util.NbBundle.getMessage(FiltersTopComponent.class, "FiltersTopComponent.libraryPanel.TabConstraints.tabTitle"), libraryPanel); // NOI18N
+
+        add(tabbedPane, java.awt.BorderLayout.CENTER);
+
+        infoPanel.setBackground(new java.awt.Color(178, 223, 240));
+
+        contibuteLink.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/filters/resources/info.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(contibuteLink, org.openide.util.NbBundle.getMessage(FiltersTopComponent.class, "FiltersTopComponent.contibuteLink.text")); // NOI18N
+        infoPanel.add(contibuteLink);
+
+        add(infoPanel, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void columnsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_columnsButtonActionPerformed
-        selectColumnsDialog();
-    }//GEN-LAST:event_columnsButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel centerPanel;
-    private javax.swing.JButton columnsButton;
+    private org.jdesktop.swingx.JXHyperlink contibuteLink;
+    private org.gephi.desktop.filters.FiltersLibraryExplorer filtersLibraryExplorer;
+    private javax.swing.JPanel filtersPanel;
+    private javax.swing.JPanel infoPanel;
+    private javax.swing.JPanel libraryPanel;
+    private javax.swing.JPanel squeezeBoxPanel;
+    private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JPanel toolbarPanel;
     // End of variables declaration//GEN-END:variables
 
@@ -192,49 +251,18 @@ final class FiltersTopComponent extends TopComponent {
         }
     }
 
-    private static class ContentPanel implements ColumnSelectionModel {
+    private static class FilterPanel extends JPanel {
 
-        private JPanel panel;
-        private boolean visible = true;
-        private String name;
+        private Filter filter;
 
-        public ContentPanel(JPanel panel) {
-            this.panel = panel;
+        public FilterPanel(Filter filter, FilterUI ui) {
+            super(new BorderLayout());
+            this.filter = filter;
+            add(ui.getPanel(), BorderLayout.CENTER);
         }
 
-        public ContentPanel(JPanel panel, String name) {
-            this.panel = panel;
-            this.name = name;
-            this.panel.setName(name);
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-            this.panel.setName(name);
-        }
-
-        public boolean isVisible() {
-            return visible;
-        }
-
-        public void setVisible(boolean visible) {
-            this.visible = visible;
-        }
-
-        public boolean isEnabled() {
-            return true;
-        }
-
-        public boolean isSelected() {
-            return visible;
-        }
-
-        public void setSelected(boolean selected) {
-            visible = selected;
+        public Filter getFilter() {
+            return filter;
         }
     }
 }

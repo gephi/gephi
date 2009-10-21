@@ -53,10 +53,14 @@ public class DegreeRangeBuilder implements FilterBuilder {
         return new DegreeRangeFilterUI((DegreeRangeFilter) filter);
     }
 
-    public static class DegreeRangeFilter implements Filter {
+    public class DegreeRangeFilter implements Filter {
 
         public Predicate getPredicate() {
             throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public FilterBuilder getBuilder() {
+            return DegreeRangeBuilder.this;
         }
     }
 

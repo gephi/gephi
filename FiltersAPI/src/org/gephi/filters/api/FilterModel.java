@@ -20,10 +20,21 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.filters.api;
 
+import javax.swing.event.ChangeListener;
+
 /**
  *
  * @author Mathieu Bastian
  */
 public interface FilterModel {
 
+    public Filter[] getFilters();
+
+    public void addFilter(Filter filter);
+
+    public void removeFilter(Filter filter);
+
+    public void addChangeListener(ChangeListener changeListener);
+
+    public void removeChangeListener(ChangeListener changeListener);
 }
