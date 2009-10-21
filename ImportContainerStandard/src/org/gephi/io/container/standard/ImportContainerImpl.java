@@ -23,6 +23,7 @@ package org.gephi.io.container.standard;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeManager;
 import org.gephi.data.attributes.api.AttributeValueFactory;
@@ -75,8 +76,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     public ImportContainerImpl() {
         parameters = new ImportContainerParameters();
-        nodeMap = new HashMap<String, NodeDraftImpl>();
-        edgeMap = new HashMap<String, EdgeDraftImpl>();
+        nodeMap = new LinkedHashMap<String, NodeDraftImpl>();//to maintain the order
+        edgeMap = new LinkedHashMap<String, EdgeDraftImpl>();
         edgeSourceTargetMap = new HashMap<String, EdgeDraftImpl>();
         attributeFactory = Lookup.getDefault().lookup(AttributeController.class).valueFactory();
         attributeManager = Lookup.getDefault().lookup(AttributeController.class).getTemporaryAttributeManager();

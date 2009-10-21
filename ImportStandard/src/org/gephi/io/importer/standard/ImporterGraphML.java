@@ -63,8 +63,8 @@ public class ImporterGraphML implements XMLImporter, LongTask {
     private boolean cancel = false;
 
     //Settings
-    private boolean keepComplexAndEmptyAttributeTypes = true;
-    private boolean automaticProperties = true;
+    private final boolean keepComplexAndEmptyAttributeTypes = true;
+    private final boolean automaticProperties = true;
 
     //Attributes
     protected PropertiesAssociations properties = new PropertiesAssociations();
@@ -90,32 +90,58 @@ public class ImporterGraphML implements XMLImporter, LongTask {
         this.nodePropertiesAttributes = new HashMap<String, NodeProperties>();
         this.edgePropertiesAttributes = new HashMap<String, EdgeProperties>();
 
+        importData(document);
+
+        //Clean
+        this.container = null;
+        this.progressTicket = null;
+        this.report = null;
+        this.nodePropertiesAttributes = null;
+        this.edgePropertiesAttributes = null;
+        this.cancel = false;
+    }
+
+    private void importData(Document document) throws Exception {
         Progress.start(progressTicket);        //Progress
 
         //Root
         Element root = document.getDocumentElement();
+        if (!root.getTagName().equals("graphml")) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_syntax1"), Issue.Level.SEVERE));
+            return;
+        }
 
         //XPath
         XPathFactory factory = XPathFactory.newInstance();
         XPath xpath = factory.newXPath();
-        XPathExpression exp = xpath.compile("//key[@id and @for=\"node\"]");
-        NodeList keyListE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
 
+        //Keys - NODE
+        XPathExpression exp = xpath.compile("//key[@id and @for=\"node\"]");
+        NodeList keyNodeListE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
+
+        //Keys - EDGE
+        exp = xpath.compile("//key[@id and @for=\"edge\"]");
+        NodeList keyEdgeListE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
+
+        //Nodes
         exp = xpath.compile("//node[@id]");
         NodeList nodeListE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
         if (cancel) {
             return;
         }
+        //Edges
         exp = xpath.compile("//edge[@source and @target]");
         NodeList edgeListE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
         if (cancel) {
             return;
         }
-        int taskMax = keyListE.getLength() + nodeListE.getLength() + edgeListE.getLength();
+
+        int taskMax = keyNodeListE.getLength() + keyEdgeListE.getLength() + nodeListE.getLength() + edgeListE.getLength();
         Progress.switchToDeterminate(progressTicket, taskMax);
 
         //Attributes keys
-        getAttributesKeys(keyListE);
+        getAttributesKeys(keyNodeListE);
+        getAttributesKeys(keyEdgeListE);
 
         //Nodes
         for (int i = 0; i < nodeListE.getLength() && !cancel; i++) {
@@ -137,6 +163,26 @@ public class ImporterGraphML implements XMLImporter, LongTask {
             String nodeLabel = nodeE.getAttribute("label");
             if (!nodeLabel.isEmpty()) {
                 node.setLabel(nodeLabel);
+            }
+
+            //Parent
+            if (nodeE.getParentNode().getNodeName().equals("graph")) {
+                if (nodeE.getParentNode().getParentNode().getNodeName().equals("node")) {
+                    //Nested
+                    Element parentE = (Element) nodeE.getParentNode().getParentNode();
+                    String parentId = parentE.getAttribute("id");
+                    if (parentId.isEmpty()) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_nodeid"), Issue.Level.SEVERE));
+                        continue;
+                    }
+                    NodeDraft parent = container.getNode(parentId);
+                    if (parent != null) {
+                        node.setParent(parent);
+                    }
+                }
+            } else {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_syntax2", nodeId), Issue.Level.SEVERE));
+                continue;
             }
 
             //Get Data child nodes, avoiding using descendants
@@ -163,6 +209,7 @@ public class ImporterGraphML implements XMLImporter, LongTask {
             //Create edge
             EdgeDraft edge = container.factory().newEdgeDraft();
 
+
             //Source & Target
             String sourceStr = edgeE.getAttribute("source");
             if (sourceStr.isEmpty()) {
@@ -179,14 +226,32 @@ public class ImporterGraphML implements XMLImporter, LongTask {
 
             //Id
             String idStr = edgeE.getAttribute("id");
-            if(!idStr.isEmpty()) {
+            if (!idStr.isEmpty()) {
                 edge.setId(idStr);
             }
 
             //Label?
             String labelStr = edgeE.getAttribute("label");
-            if(!labelStr.isEmpty()) {
+            if (!labelStr.isEmpty()) {
                 edge.setLabel(labelStr);
+            }
+
+            //Oriented
+            if (edgeE.hasAttribute("directed")) {
+                edge.setType(Boolean.parseBoolean(edgeE.getAttribute("directed")) ? EdgeDraft.EdgeType.DIRECTED : EdgeDraft.EdgeType.UNDIRECTED);
+            } else {
+                //Try to find default
+                if (edgeE.getParentNode().getNodeName().equals("graph")) {
+                    Element graphE = (Element) edgeE.getParentNode();
+                    if (graphE.hasAttribute("edgedefault")) {
+                        String type = graphE.getAttribute("edgeDefault");
+                        if (type.equals("directed")) {
+                            edge.setType(EdgeDraft.EdgeType.DIRECTED);
+                        } else if (type.equals("undirected")) {
+                            edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
+                        }
+                    }
+                }
             }
 
             //Get Data child nodes, avoiding using descendants
@@ -205,13 +270,6 @@ public class ImporterGraphML implements XMLImporter, LongTask {
         }
 
         Progress.finish(progressTicket);
-
-        //Clean
-        this.container = null;
-        this.progressTicket = null;
-        this.report = null;
-        this.nodePropertiesAttributes = null;
-        this.edgePropertiesAttributes = null;
     }
 
     private void getAttributesKeys(NodeList keyListE) {
@@ -249,7 +307,7 @@ public class ImporterGraphML implements XMLImporter, LongTask {
                     EdgeProperties prop = properties.getEdgeProperty(keyName);
                     if (prop != null) {
                         edgePropertiesAttributes.put(keyId, prop);
-                        report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_edgeeproperty", keyName));
+                        report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_edgeproperty", keyName));
                         continue;
                     }
                 }
