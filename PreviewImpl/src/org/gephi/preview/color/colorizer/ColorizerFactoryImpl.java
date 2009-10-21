@@ -5,6 +5,9 @@ import java.util.regex.Pattern;
 import org.gephi.preview.api.color.colorizer.Colorizer;
 import org.gephi.preview.api.color.colorizer.ColorizerFactory;
 import org.gephi.preview.color.colormode.CustomColorMode;
+import org.gephi.preview.color.colormode.EdgeB1ColorMode;
+import org.gephi.preview.color.colormode.EdgeB2ColorMode;
+import org.gephi.preview.color.colormode.EdgeBothBColorMode;
 import org.gephi.preview.color.colormode.NodeOriginalColorMode;
 import org.gephi.preview.color.colormode.ParentNodeColorMode;
 
@@ -33,6 +36,18 @@ public class ColorizerFactoryImpl implements ColorizerFactory {
 		return matchColorMode(s, ParentNodeColorMode.getIdentifier());
 	}
 
+	public boolean matchEdgeB1ColorMode(String s) {
+		return matchColorMode(s, EdgeB1ColorMode.getIdentifier());
+	}
+
+	public boolean matchEdgeB2ColorMode(String s) {
+		return matchColorMode(s, EdgeB2ColorMode.getIdentifier());
+	}
+
+	public boolean matchEdgeBothBColorMode(String s) {
+		return matchColorMode(s, EdgeBothBColorMode.getIdentifier());
+	}
+
 	public boolean isCustomColorMode(Colorizer colorizer) {
 		return matchCustomColorMode(colorizer.toString());
 	}
@@ -43,6 +58,18 @@ public class ColorizerFactoryImpl implements ColorizerFactory {
 
 	public boolean isParentNodeColorMode(Colorizer colorizer) {
 		return matchParentNodeColorMode(colorizer.toString());
+	}
+
+	public boolean isEdgeB1ColorMode(Colorizer colorizer) {
+		return matchEdgeB1ColorMode(colorizer.toString());
+	}
+
+	public boolean isEdgeB2ColorMode(Colorizer colorizer) {
+		return matchEdgeB2ColorMode(colorizer.toString());
+	}
+
+	public boolean isEdgeBothBColorMode(Colorizer colorizer) {
+		return matchEdgeBothBColorMode(colorizer.toString());
 	}
 
 	public Colorizer createCustomColorMode(int r, int g, int b) {
@@ -59,5 +86,17 @@ public class ColorizerFactoryImpl implements ColorizerFactory {
 
 	public Colorizer createParentNodeColorMode() {
 		return new ParentNodeColorMode();
+	}
+
+	public Colorizer createEdgeB1ColorMode() {
+		return new EdgeB1ColorMode();
+	}
+
+	public Colorizer createEdgeB2ColorMode() {
+		return new EdgeB2ColorMode();
+	}
+
+	public Colorizer createEdgeBothBColorMode() {
+		return new EdgeBothBColorMode();
 	}
 }
