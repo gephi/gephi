@@ -17,9 +17,13 @@ public interface Graph {
 
 //    public Iterator<BidirectionalEdge> getBidirectionalEdges();
 
-//    public Iterator<SelfLoop> getSelfLoops();
+    public Iterator<SelfLoop> getSelfLoops();
 
     public Iterator<Node> getNodes();
 
     public boolean showNodes();
+
+	public boolean showEdges();
+
+	public boolean showSelfLoops();
 }

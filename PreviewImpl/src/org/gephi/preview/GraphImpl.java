@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.Node;
+import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.SelfLoop;
+import org.gephi.preview.controller.PreviewControllerImpl;
 import org.gephi.preview.supervisor.GraphSupervisor;
+import org.gephi.preview.supervisor.SelfLoopSupervisor;
+import org.openide.util.Lookup;
 import processing.core.PVector;
 
 /**
@@ -15,6 +20,7 @@ public class GraphImpl implements Graph {
 
     private final GraphSupervisor supervisor;
     private final ArrayList<Node> m_nodes = new ArrayList<Node>();
+	private final ArrayList<SelfLoop> selfLoops = new ArrayList<SelfLoop>();
 
     private final PVector m_minPos = new PVector();
     private final PVector m_maxPos =  new PVector();
@@ -27,9 +33,28 @@ public class GraphImpl implements Graph {
         return supervisor;
     }
 
+	/**
+	 * Returns the self-loop supervisor.
+	 *
+	 * @return the controller's self-loop supervisor
+	 */
+	public SelfLoopSupervisor getSelfLoopSupervisor() {
+        PreviewControllerImpl controller = (PreviewControllerImpl) Lookup.getDefault().lookup(PreviewController.class);
+		return controller.getSelfLoopSupervisor();
+    }
+
     public final Iterator<Node> getNodes() {
         return m_nodes.iterator();
     }
+
+	/**
+	 * Returns an iterator on the graph's self-loops.
+	 *
+	 * @return an iterator on the graph's self-loops
+	 */
+	public Iterator<SelfLoop> getSelfLoops() {
+		return selfLoops.iterator();
+	}
 
     public final PVector getMinPos() {
         return m_minPos;
@@ -72,7 +97,30 @@ public class GraphImpl implements Graph {
         }
     }
 
+	/**
+	 * Adds the given self-loop to the graph.
+	 *
+	 * @param selfLoop  the self-loop to add to the graph
+	 */
+	public void addSelfLoop(SelfLoop selfLoop) {
+        selfLoops.add(selfLoop);
+    }
+
     public boolean showNodes() {
         return supervisor.getNodeSupervisor().getShowNodes();
     }
+
+	public boolean showEdges() {
+		//TODO GraphImpl.showEdges()
+		return true;
+	}
+
+	/**
+	 * Returns true if the self-loops must be displayed in the preview.
+	 *
+	 * @return true if the self-loops must be displayed in the preview
+	 */
+	public boolean showSelfLoops() {
+		return getSelfLoopSupervisor().getShowSelfLoops();
+	}
 }
