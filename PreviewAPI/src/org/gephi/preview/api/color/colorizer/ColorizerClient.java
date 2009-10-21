@@ -12,5 +12,10 @@ public interface ColorizerClient {
     
 //    Holder<Color> getColorHolder();
 
-    public void setColor(Color color);
+    /**
+	 * Sets the client's color.
+	 * 
+	 * @param color  the color to set to the client
+	 */
+	public void setColor(Color color);
 }

@@ -2,6 +2,8 @@ package org.gephi.preview.color.colormode;
 
 import org.gephi.preview.api.color.colorizer.EdgeChildColorizer;
 import org.gephi.preview.api.color.colorizer.EdgeColorizer;
+import org.gephi.preview.api.color.colorizer.EdgeColorizerClient;
+import org.gephi.preview.color.MixedColor;
 
 /**
  *
@@ -10,22 +12,25 @@ import org.gephi.preview.api.color.colorizer.EdgeColorizer;
 public class EdgeBothBColorMode
         implements EdgeColorizer, EdgeChildColorizer {
 
-//    ColorizedEdge m_client;
+	private static final String IDENTIFIER = "both";
 
-//    @Override
-//    public void setEdge(ColorizedEdge client) {
-//        m_client = client;
-//    }
-//
-//    @Override
-//    public void setEdgeChild(AbstractEdgeChild client) {
-//        setEdge(client);
-//    }
-//
-//    @Override
-//    public void colorClient() {
-//        m_client.setColor(new MixedColor(
-//                m_client.getNode1().getColorHolder(),
-//                m_client.getNode2().getColorHolder()));
-//    }
+	/**
+	 * Colors the given client.
+	 *
+	 * @param client  the client to color
+	 */
+	public void color(EdgeColorizerClient client) {
+		client.setColor(new MixedColor(
+				client.getNode1().getColorHolder(),
+                client.getNode2().getColorHolder()));
+	}
+
+	@Override
+    public String toString() {
+        return IDENTIFIER;
+    }
+
+    public static String getIdentifier() {
+        return IDENTIFIER;
+    }
 }

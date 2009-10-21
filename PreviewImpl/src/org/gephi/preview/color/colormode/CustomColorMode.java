@@ -1,6 +1,7 @@
 package org.gephi.preview.color.colormode;
 
 import org.gephi.preview.api.color.colorizer.ColorizerClient;
+import org.gephi.preview.api.color.colorizer.EdgeColorizerClient;
 import org.gephi.preview.api.color.colorizer.NodeChildColorizerClient;
 import org.gephi.preview.api.color.colorizer.NodeColorizerClient;
 import org.gephi.preview.api.color.Color;
@@ -40,6 +41,10 @@ public class CustomColorMode
     public void color(NodeChildColorizerClient client) {
         doColor(client);
     }
+
+	public void color(EdgeColorizerClient client) {
+		doColor(client);
+	}
 
     @Override
     public String toString() {

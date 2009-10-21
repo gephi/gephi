@@ -2,29 +2,33 @@ package org.gephi.preview.color.colormode;
 
 import org.gephi.preview.api.color.colorizer.EdgeChildColorizer;
 import org.gephi.preview.api.color.colorizer.EdgeColorizer;
+import org.gephi.preview.api.color.colorizer.EdgeColorizerClient;
+import org.gephi.preview.color.InheritedColor;
 
 /**
  *
  * @author jeremy
  */
 public class EdgeB1ColorMode
-        implements EdgeColorizer, EdgeChildColorizer {
+		implements EdgeColorizer, EdgeChildColorizer {
 
-//    ColorizedEdge m_client;
-//
-//    @Override
-//    public void setEdge(ColorizedEdge client) {
-//        m_client = client;
-//    }
-//
-//    @Override
-//    public void setEdgeChild(AbstractEdgeChild client) {
-//        setEdge(client);
-//    }
-//
-//    @Override
-//    public void colorClient() {
-//        m_client.setColor(new InheritedColor(
-//                m_client.getNode1().getColorHolder()));
-//    }
+	private static final String IDENTIFIER = "boundary1";
+
+	/**
+	 * Colors the given client.
+	 *
+	 * @param client  the client to color
+	 */
+	public void color(EdgeColorizerClient client) {
+		client.setColor(new InheritedColor(client.getNode1().getColorHolder()));
+	}
+
+	@Override
+    public String toString() {
+        return IDENTIFIER;
+    }
+
+    public static String getIdentifier() {
+        return IDENTIFIER;
+    }
 }
