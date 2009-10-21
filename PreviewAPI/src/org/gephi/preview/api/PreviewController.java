@@ -1,6 +1,7 @@
 package org.gephi.preview.api;
 
 import java.awt.Font;
+import org.gephi.preview.api.color.colorizer.EdgeColorizer;
 import org.gephi.preview.api.color.colorizer.GenericColorizer;
 import org.gephi.preview.api.color.colorizer.NodeChildColorizer;
 import org.gephi.preview.api.color.colorizer.NodeColorizer;
@@ -28,8 +29,6 @@ public interface PreviewController {
 //    public Boolean getCurvedBiEdges();
 //    public EdgeColorizer getUniEdgeColorizer();
 //    public EdgeColorizer getBiEdgeColorizer();
-//    public Boolean getShowSelfLoops();
-//    public EdgeColorizer getSelfLoopColorizer();
 //    public Boolean getShowUniEdgeLabels();
 //    public Integer getUniEdgeLabelMaxChar();
 //    public Font getUniEdgeLabelFont();
@@ -72,8 +71,6 @@ public interface PreviewController {
 //    public void setCurvedBiEdges(Boolean value);
 //    public void setUniEdgeColorizer(EdgeColorizer value);
 //    public void setBiEdgeColorizer(EdgeColorizer value);
-//    public void setShowSelfLoops(Boolean value);
-//    public void setSelfLoopColorizer(EdgeColorizer value);
 //    public void setShowUniEdgeLabels(Boolean value);
 //    public void setUniEdgeLabelMaxChar(Integer value);
 //    public void setUniEdgeLabelFont(Font value);
@@ -100,4 +97,32 @@ public interface PreviewController {
 //    public void setBiEdgeArrowAddedRadius(Float value);
 //    public void setBiEdgeArrowSize(Float value);
 //    public void setBiEdgeArrowColorizer(EdgeChildColorizer value);
+
+	/**
+	 * Returns true if the self-loops must be displayed in the preview.
+	 *
+	 * @return true if the self-loops must be displayed in the preview
+	 */
+	public Boolean getShowSelfLoops();
+
+	/**
+	 * Defines if the self-loops must be displayed in the preview.
+	 *
+	 * @param value  true to display the self-loops in the preview
+	 */
+	public void setShowSelfLoops(Boolean value);
+
+	/**
+	 * Returns the self-loop colorizer.
+	 *
+	 * @return the self-loop colorizer
+	 */
+    public EdgeColorizer getSelfLoopColorizer();
+
+	/**
+	 * Sets the self-loop colorizer.
+	 *
+	 * @param value  the self-loop colorizer to set
+	 */
+    public void setSelfLoopColorizer(EdgeColorizer value);
 }

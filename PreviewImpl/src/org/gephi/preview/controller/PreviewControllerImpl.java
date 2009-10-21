@@ -5,10 +5,12 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.preview.GraphImpl;
 import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.color.colorizer.EdgeColorizer;
 import org.gephi.preview.api.color.colorizer.GenericColorizer;
 import org.gephi.preview.api.color.colorizer.NodeChildColorizer;
 import org.gephi.preview.api.color.colorizer.NodeColorizer;
 import org.gephi.preview.supervisor.GraphSupervisor;
+import org.gephi.preview.supervisor.SelfLoopSupervisor;
 import org.openide.util.Lookup;
 
 /**
@@ -19,6 +21,7 @@ public class PreviewControllerImpl implements PreviewController {
 
     private GraphImpl previewGraph = null;
     protected final GraphSupervisor gs = new GraphSupervisor();
+	private final SelfLoopSupervisor selfLoopSupervisor = new SelfLoopSupervisor();
 	private final PreviewGraphFactory factory = new PreviewGraphFactory();
 
     public Graph getGraph() {
@@ -45,6 +48,15 @@ public class PreviewControllerImpl implements PreviewController {
 		}
 
 		previewGraph = factory.createPreviewGraph(sourceGraph, gs);
+	}
+
+	/**
+	 * Returns the self-loop supervisor.
+	 *
+	 * @return the controller's self-loop supervisor
+	 */
+	public SelfLoopSupervisor getSelfLoopSupervisor() {
+		return selfLoopSupervisor;
 	}
 
     public Boolean getShowNodes() {
@@ -125,5 +137,41 @@ public class PreviewControllerImpl implements PreviewController {
 
     public void setNodeLabelBorderColorizer(NodeChildColorizer value) {
         gs.getNodeLabelBorderSupervisor().setNodeLabelBorderColorizer(value);
+    }
+
+	/**
+	 * Returns true if the self-loops must be displayed in the preview.
+	 *
+	 * @return true if the self-loops must be displayed in the preview
+	 */
+	public Boolean getShowSelfLoops() {
+        return selfLoopSupervisor.getShowSelfLoops();
+    }
+
+	/**
+	 * Defines if the self-loops must be displayed in the preview.
+	 *
+	 * @param value  true to display the self-loops in the preview
+	 */
+	public void setShowSelfLoops(Boolean value) {
+        selfLoopSupervisor.setShowSelfLoops(value);
+    }
+
+	/**
+	 * Returns the self-loop colorizer.
+	 *
+	 * @return the self-loop colorizer
+	 */
+	public EdgeColorizer getSelfLoopColorizer() {
+        return selfLoopSupervisor.getSelfLoopColorizer();
+    }
+
+	/**
+	 * Sets the self-loop colorizer.
+	 *
+	 * @param value  the self-loop colorizer to set
+	 */
+    public void setSelfLoopColorizer(EdgeColorizer value) {
+        selfLoopSupervisor.setSelfLoopColorizer(value);
     }
 }
