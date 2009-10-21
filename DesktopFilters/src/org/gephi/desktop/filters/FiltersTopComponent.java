@@ -141,7 +141,7 @@ final class FiltersTopComponent extends TopComponent {
 
         tabbedPane = new javax.swing.JTabbedPane();
         filtersPanel = new javax.swing.JPanel();
-        toolbarPanel = new javax.swing.JPanel();
+        filtersToolbar = new FiltersToolbar();
         squeezeBoxPanel = new JSqueezeBoxPanel();
         libraryPanel = new javax.swing.JPanel();
         filtersLibraryExplorer = new org.gephi.desktop.filters.FiltersLibraryExplorer();
@@ -152,8 +152,8 @@ final class FiltersTopComponent extends TopComponent {
 
         filtersPanel.setLayout(new java.awt.BorderLayout());
 
-        toolbarPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-        filtersPanel.add(toolbarPanel, java.awt.BorderLayout.PAGE_START);
+        filtersToolbar.setRollover(true);
+        filtersPanel.add(filtersToolbar, java.awt.BorderLayout.NORTH);
         filtersPanel.add(squeezeBoxPanel, java.awt.BorderLayout.CENTER);
 
         tabbedPane.addTab(org.openide.util.NbBundle.getMessage(FiltersTopComponent.class, "FiltersTopComponent.filtersPanel.TabConstraints.tabTitle"), filtersPanel); // NOI18N
@@ -178,11 +178,11 @@ final class FiltersTopComponent extends TopComponent {
     private org.jdesktop.swingx.JXHyperlink contibuteLink;
     private org.gephi.desktop.filters.FiltersLibraryExplorer filtersLibraryExplorer;
     private javax.swing.JPanel filtersPanel;
+    private javax.swing.JToolBar filtersToolbar;
     private javax.swing.JPanel infoPanel;
     private javax.swing.JPanel libraryPanel;
     private javax.swing.JPanel squeezeBoxPanel;
     private javax.swing.JTabbedPane tabbedPane;
-    private javax.swing.JPanel toolbarPanel;
     // End of variables declaration//GEN-END:variables
 
     /**

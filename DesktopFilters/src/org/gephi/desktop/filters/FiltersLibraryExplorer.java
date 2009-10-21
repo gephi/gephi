@@ -20,20 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.filters;
 
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import org.gephi.filters.api.FilterBuilder;
-import org.gephi.filters.api.FilterModel;
-import org.gephi.project.api.ProjectController;
-import org.gephi.workspace.api.Workspace;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.ListView;
 import org.openide.nodes.AbstractNode;
-import org.openide.nodes.Children;
-import org.openide.nodes.Node;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 
 /**
  *
@@ -48,7 +39,7 @@ public class FiltersLibraryExplorer extends javax.swing.JPanel implements Explor
         initComponents();
 
         FilterBuilder[] filters = Lookup.getDefault().lookupAll(FilterBuilder.class).toArray(new FilterBuilder[0]);
-        manager.setRootContext(new AbstractNode(new FiltersChildren(filters)));
+        manager.setRootContext(new AbstractNode(new FiltersNodeChildren(filters)));
     }
 
     /** This method is called from within the constructor to
@@ -71,55 +62,5 @@ public class FiltersLibraryExplorer extends javax.swing.JPanel implements Explor
 
     public ExplorerManager getExplorerManager() {
         return manager;
-    }
-
-    private static class FilterNode extends AbstractNode {
-
-        private FilterBuilder filter;
-
-        public FilterNode(FilterBuilder filter) {
-            super(Children.LEAF);
-            this.filter = filter;
-        }
-
-        @Override
-        public String getDisplayName() {
-            return filter.getName();
-        }
-
-        @Override
-        public Action[] getActions(boolean context) {
-            return new Action[]{new AddFilter(filter)};
-        }
-    }
-
-    private static class FiltersChildren extends Children.Keys<FilterBuilder> {
-
-        public FiltersChildren(FilterBuilder[] filters) {
-            setKeys(filters);
-        }
-
-        @Override
-        protected Node[] createNodes(FilterBuilder filter) {
-            return new Node[]{new FilterNode(filter)};
-        }
-    }
-
-    private static class AddFilter extends AbstractAction {
-
-        private FilterBuilder filter;
-
-        public AddFilter(FilterBuilder filter) {
-            this.filter = filter;
-            putValue(Action.NAME, NbBundle.getMessage(FiltersLibraryExplorer.class, "FiltersLibraryExplorer_actions_AddFilter"));
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            Workspace workspace = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace();
-            if(workspace!=null) {
-                FilterModel filterModel = workspace.getWorkspaceData().getData(Lookup.getDefault().lookup(FiltersWorkspaceDataProvider.class).getWorkspaceDataKey());
-                filterModel.addFilter(filter.getFilter());
-            }
-        }
     }
 }
