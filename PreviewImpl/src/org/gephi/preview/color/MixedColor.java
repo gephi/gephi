@@ -1,7 +1,7 @@
 package org.gephi.preview.color;
 
+import org.gephi.preview.api.Holder;
 import org.gephi.preview.api.color.Color;
-import org.gephi.preview.util.HolderImpl;
 
 /**
  *
@@ -9,10 +9,10 @@ import org.gephi.preview.util.HolderImpl;
  */
 public class MixedColor implements Color {
 
-    private final HolderImpl<Color> m_colorHolder1;
-    private final HolderImpl<Color> m_colorHolder2;
+    private final Holder<Color> m_colorHolder1;
+    private final Holder<Color> m_colorHolder2;
 
-    public MixedColor(HolderImpl<Color> colorHolder1, HolderImpl<Color> colorHolder2) {
+    public MixedColor(Holder<Color> colorHolder1, Holder<Color> colorHolder2) {
         m_colorHolder1 = colorHolder1;
         m_colorHolder2 = colorHolder2;
     }
