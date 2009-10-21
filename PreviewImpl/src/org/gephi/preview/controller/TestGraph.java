@@ -2,6 +2,7 @@ package org.gephi.preview.controller;
 
 import org.gephi.preview.GraphImpl;
 import org.gephi.preview.NodeImpl;
+import org.gephi.preview.SelfLoopImpl;
 import org.gephi.preview.api.Graph;
 
 /**
@@ -23,6 +24,8 @@ public class TestGraph extends PreviewControllerImpl {
         graph.addNode(n2);
         graph.addNode(n3);
         graph.addNode(n4);
+
+		graph.addSelfLoop(new SelfLoopImpl(graph, 0.5f, 0, n2));
 
         return graph;
     }
