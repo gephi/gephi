@@ -140,7 +140,7 @@ public class ProcessingPreview extends PApplet {
 	/**
 	 * Create a Processing font from a classic font.
 	 *
-	 * @param font a font to transform
+	 * @param font  a font to transform
 	 * @return a Processing font
 	 */
 	private PFont createFont(Font font) {
@@ -150,9 +150,19 @@ public class ProcessingPreview extends PApplet {
 	/**
 	 * Draw a graph on the preview.
 	 *
-	 * @param graph the graph to draw
+	 * @param graph  the graph to draw
 	 */
 	private void drawGraph(Graph graph) {
+		if (graph.showEdges()) {
+			
+			if (graph.showSelfLoops()) {
+				// draw self-loops
+				for (Iterator<SelfLoop> it = graph.getSelfLoops(); it.hasNext();) {
+					drawSelfLoop(it.next());
+				}
+			}
+		}
+
 		// nodes are above edges and self-loops
 		if (graph.showNodes()) {
 			textFont(nodeLabelFont);
@@ -166,7 +176,7 @@ public class ProcessingPreview extends PApplet {
 	/**
 	 * Draw a node on the preview.
 	 *
-	 * @param node the node to draw
+	 * @param node  the node to draw
 	 */
 	private void drawNode(Node node) {
 		// draw the node itself
@@ -195,7 +205,7 @@ public class ProcessingPreview extends PApplet {
 	/**
 	 * Draw a node label on the preview.
 	 *
-	 * @param label the node label to draw
+	 * @param label  the node label to draw
 	 */
 	private void drawNodeLabel(NodeLabel label) {
 		fill(label.getColor().getRed(),
@@ -209,7 +219,7 @@ public class ProcessingPreview extends PApplet {
 	/**
 	 * Draw a node label border on the preview.
 	 *
-	 * @param border the node label border to draw
+	 * @param border  the node label border to draw
 	 */
 	private void drawNodeLabelBorder(NodeLabelBorder border) {
 		noStroke();
@@ -218,5 +228,25 @@ public class ProcessingPreview extends PApplet {
 				border.getColor().getBlue());
 		rect(border.getPosition().x, border.getPosition().y,
 				textWidth(border.getLabel().getValue()), (textAscent() + textDescent()));
+	}
+
+	/**
+	 * Draw a self-loop on the preview.
+	 *
+	 * @param selfLoop  the self-loop to draw
+	 */
+	public void drawSelfLoop(SelfLoop selfLoop) {
+		CubicBezierCurve curve = selfLoop.getCurve();
+
+		strokeWeight(selfLoop.getThickness());
+		stroke(selfLoop.getColor().getRed(),
+				selfLoop.getColor().getGreen(),
+				selfLoop.getColor().getBlue());
+		noFill();
+
+		bezier(curve.getPt1().x, curve.getPt1().y,
+				curve.getPt2().x, curve.getPt2().y,
+				curve.getPt3().x, curve.getPt3().y,
+				curve.getPt4().x, curve.getPt4().y);
 	}
 }
