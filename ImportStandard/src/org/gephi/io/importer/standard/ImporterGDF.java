@@ -75,6 +75,28 @@ public class ImporterGDF implements TextImporter, LongTask {
         this.container = container;
         this.report = report;
 
+        try {
+            importData(reader);
+        } catch (Exception e) {
+            clean();
+            throw e;
+        }
+        clean();
+    }
+
+    private void clean() {
+        //Clean
+        this.container = null;
+        this.report = null;
+        this.nodeColumns = null;
+        this.edgeColumns = null;
+        this.nodeLines.clear();
+        this.edgeLines.clear();
+        this.progressTicket = null;
+        this.cancel = false;
+    }
+
+    private void importData(BufferedReader reader) throws Exception {
         Progress.start(progressTicket);        //Progress
 
         //Verify a node line exists and puts nodes and edges lines in arrays
@@ -162,14 +184,6 @@ public class ImporterGDF implements TextImporter, LongTask {
             container.addEdge(edge);
             Progress.progress(progressTicket);      //Progress
         }
-
-        container = null;
-        report = null;
-        nodeColumns = null;
-        edgeColumns = null;
-        nodeLines.clear();
-        edgeLines.clear();
-        progressTicket = null;
     }
 
     private void walkFile(BufferedReader reader) throws Exception {

@@ -97,6 +97,27 @@ public class ImporterGEXF implements XMLImporter, LongTask {
         this.edgePropertiesAttributes = new HashMap<String, EdgeProperties>();
         this.optionsAttributes = new HashMap<String, StringList>();
 
+        try {
+            importData(document);
+        } catch (Exception e) {
+            clean();
+            throw e;
+        }
+        clean();
+    }
+
+    private void clean() {
+        //Clean
+        this.container = null;
+        this.progressTicket = null;
+        this.report = null;
+        this.nodePropertiesAttributes = null;
+        this.edgePropertiesAttributes = null;
+        this.optionsAttributes = null;
+        this.cancel = false;
+    }
+
+    private void importData(Document document) throws Exception {
         Progress.start(progressTicket);        //Progress
 
         //Root
@@ -104,11 +125,10 @@ public class ImporterGEXF implements XMLImporter, LongTask {
 
         //Version
         String version = root.getAttribute("version");
-        if(version.isEmpty() || version.equals("1.0")) {
+        if (version.isEmpty() || version.equals("1.0")) {
             ImporterGEXF10 importer = new ImporterGEXF10();
             importer.importData(document, container, report);
-        }
-        else {
+        } else {
             //XPath
             XPathFactory factory = XPathFactory.newInstance();
             XPath xpath = factory.newXPath();
@@ -135,20 +155,20 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             // Default edge type
             exp = xpath.compile("./graph[@defaultedgetype]");
             NodeList edgeTypeE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
-            if(edgeTypeE != null && edgeTypeE.getLength() > 0) {
+            if (edgeTypeE != null && edgeTypeE.getLength() > 0) {
                 String defaultEdgeType = ((Element) edgeTypeE.item(0)).getAttribute("defaultedgetype");
-                
-                if(defaultEdgeType.equals("undirected")) {
+
+                if (defaultEdgeType.equals("undirected")) {
                     container.setEdgeDefault(EdgeDefault.UNDIRECTED);
-                } else if(defaultEdgeType.equals("directed")) {
+                } else if (defaultEdgeType.equals("directed")) {
                     container.setEdgeDefault(EdgeDefault.DIRECTED);
-                } else if(defaultEdgeType.equals("double")) {
+                } else if (defaultEdgeType.equals("double")) {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgedouble"), Issue.Level.WARNING));
                 } else {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_defaultedgetype", defaultEdgeType), Issue.Level.SEVERE));
                 }
             }
-            
+
 
             //Attributes columns
             setAttributesColumns(columnListE);
@@ -257,11 +277,11 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 // Type
                 String edgeType = edgeE.getAttribute("type");
                 if (!edgeType.isEmpty()) {
-                    if(edgeType.equals("undirected")) {
+                    if (edgeType.equals("undirected")) {
                         edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
-                    } else if(edgeType.equals("directed")) {
+                    } else if (edgeType.equals("directed")) {
                         edge.setType(EdgeDraft.EdgeType.DIRECTED);
-                    } else if(edgeType.equals("double")) {
+                    } else if (edgeType.equals("double")) {
                         edge.setType(EdgeDraft.EdgeType.MUTUAL);
                     } else {
                         report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgetype", edgeType), Issue.Level.SEVERE));
@@ -306,14 +326,6 @@ public class ImporterGEXF implements XMLImporter, LongTask {
         }
 
         Progress.finish(progressTicket);
-
-        //Clean
-        this.container = null;
-        this.progressTicket = null;
-        this.report = null;
-        this.nodePropertiesAttributes = null;
-        this.edgePropertiesAttributes = null;
-        this.optionsAttributes= null;
     }
 
     private void setAttributesColumns(NodeList columnListE) {
@@ -440,9 +452,9 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                     Object value = column.getAttributeType().parse(dataValue);
 
                     //Check value
-                    if(column.getAttributeType() != AttributeType.LIST_STRING) { //otherwise this is a nonsense
+                    if (column.getAttributeType() != AttributeType.LIST_STRING) { //otherwise this is a nonsense
                         StringList options = optionsAttributes.get(dataKey);
-                        if(options != null && !options.contains(value.toString())) {
+                        if (options != null && !options.contains(value.toString())) {
                             report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_dataoptionsvalue", dataValue, nodeId, column.getTitle()), Issue.Level.SEVERE));
                             return;
                         }
@@ -471,11 +483,11 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             if (column != null) {
                 try {
                     Object value = column.getAttributeType().parse(dataValue);
-                    
+
                     //Check value
-                    if(column.getAttributeType() != AttributeType.LIST_STRING) { //otherwise this is a nonsense
+                    if (column.getAttributeType() != AttributeType.LIST_STRING) { //otherwise this is a nonsense
                         StringList options = optionsAttributes.get(dataKey);
-                        if(options != null && !options.contains(value.toString())) {
+                        if (options != null && !options.contains(value.toString())) {
                             report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_dataoptionsvalue", dataValue, edgeId, column.getTitle()), Issue.Level.SEVERE));
                             return;
                         }
@@ -542,15 +554,15 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             // Default edge type
             exp = xpath.compile("./graph/edges[@defaultedgetype]");
             NodeList edgeTypeE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
-            if(edgeTypeE != null && edgeTypeE.getLength() > 0) {
+            if (edgeTypeE != null && edgeTypeE.getLength() > 0) {
                 String defaultEdgeType = ((Element) edgeTypeE.item(0)).getAttribute("defaultedgetype");
 
-                if(!defaultEdgeType.isEmpty()) {
-                    if(defaultEdgeType.equals("simple")) {
+                if (!defaultEdgeType.isEmpty()) {
+                    if (defaultEdgeType.equals("simple")) {
                         container.setEdgeDefault(EdgeDefault.UNDIRECTED);
-                    } else if(defaultEdgeType.equals("directed")) {
+                    } else if (defaultEdgeType.equals("directed")) {
                         container.setEdgeDefault(EdgeDefault.DIRECTED);
-                    } else if(defaultEdgeType.equals("double")) {
+                    } else if (defaultEdgeType.equals("double")) {
                         report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgedouble"), Issue.Level.WARNING));
                     } else {
                         report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_defaultedgetype"), Issue.Level.SEVERE));
@@ -665,11 +677,11 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 // Type
                 String edgeType = edgeE.getAttribute("type");
                 if (!edgeType.isEmpty()) {
-                    if(edgeType.equals("sim")) {
+                    if (edgeType.equals("sim")) {
                         edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
-                    } else if(edgeType.equals("dir")) {
+                    } else if (edgeType.equals("dir")) {
                         edge.setType(EdgeDraft.EdgeType.DIRECTED);
-                    } else if(edgeType.equals("dou")) {
+                    } else if (edgeType.equals("dou")) {
                         edge.setType(EdgeDraft.EdgeType.MUTUAL);
                     } else {
                         report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgetype", edgeType), Issue.Level.SEVERE));
@@ -695,7 +707,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                         }
                     } while ((child = child.getNextSibling()) != null);
                 }
-                
+
                 //Cardinal
                 String cardinalStr = edgeE.getAttribute("cardinal");
                 if (!cardinalStr.isEmpty()) {

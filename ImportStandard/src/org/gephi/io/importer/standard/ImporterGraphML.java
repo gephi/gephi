@@ -90,8 +90,16 @@ public class ImporterGraphML implements XMLImporter, LongTask {
         this.nodePropertiesAttributes = new HashMap<String, NodeProperties>();
         this.edgePropertiesAttributes = new HashMap<String, EdgeProperties>();
 
-        importData(document);
+        try {
+            importData(document);
+        } catch (Exception e) {
+            clean();
+            throw e;
+        }
+        clean();
+    }
 
+    private void clean() {
         //Clean
         this.container = null;
         this.progressTicket = null;

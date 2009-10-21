@@ -57,6 +57,23 @@ public class ImporterGML implements TextImporter, LongTask {
         this.container = container;
         this.report = report;
 
+        try {
+            importData(reader);
+        } catch (Exception e) {
+            clean();
+            throw e;
+        }
+        clean();
+    }
+
+    private void clean() {
+        this.progressTicket = null;
+        this.container = null;
+        this.report = null;
+        this.cancel = false;
+    }
+
+    private void importData(BufferedReader reader) throws Exception {
         Progress.start(progressTicket);
 
         ArrayList list;
@@ -77,11 +94,9 @@ public class ImporterGML implements TextImporter, LongTask {
         }
 
         Progress.finish(progressTicket);
-        this.container = null;
-        this.report = null;
     }
 
-    public ArrayList parseList(StreamTokenizer tokenizer) throws IOException {
+    private ArrayList parseList(StreamTokenizer tokenizer) throws IOException {
         ArrayList list = new ArrayList();
         loop:
         while (true) {
@@ -113,7 +128,7 @@ public class ImporterGML implements TextImporter, LongTask {
         return list;
     }
 
-    public boolean parseGraph(ArrayList list) {
+    private boolean parseGraph(ArrayList list) {
         if ((list.size() & 1) != 0) {
             return false;
         }
@@ -147,7 +162,7 @@ public class ImporterGML implements TextImporter, LongTask {
         return ret;
     }
 
-    public boolean parseNode(ArrayList list) {
+    private boolean parseNode(ArrayList list) {
         NodeDraft node = container.factory().newNodeDraft();
         String id = null;
         for (int i = 0; i < list.size(); i += 2) {
@@ -169,7 +184,7 @@ public class ImporterGML implements TextImporter, LongTask {
         return ret;
     }
 
-    public boolean addNodeAttributes(NodeDraft node, String prefix, ArrayList list) {
+    private boolean addNodeAttributes(NodeDraft node, String prefix, ArrayList list) {
         boolean ret = true;
         for (int i = 0; i < list.size(); i += 2) {
             String key = (String) list.get(i);
@@ -217,7 +232,7 @@ public class ImporterGML implements TextImporter, LongTask {
         return ret;
     }
 
-    public boolean parseEdge(ArrayList list) {
+    private boolean parseEdge(ArrayList list) {
         EdgeDraft edgeDraft = container.factory().newEdgeDraft();
         for (int i = 0; i < list.size(); i += 2) {
             String key = (String) list.get(i);
@@ -241,7 +256,7 @@ public class ImporterGML implements TextImporter, LongTask {
         return ret;
     }
 
-    public boolean addEdgeAttributes(EdgeDraft edge, String prefix, ArrayList list) {
+    private boolean addEdgeAttributes(EdgeDraft edge, String prefix, ArrayList list) {
         boolean ret = true;
         for (int i = 0; i < list.size(); i += 2) {
             String key = (String) list.get(i);

@@ -55,6 +55,24 @@ public class ImporterPajek implements TextImporter, LongTask {
         this.container = container;
         this.report = report;
 
+        try {
+            importData(reader);
+        } catch (Exception e) {
+            clean();
+            throw e;
+        }
+        clean();
+    }
+
+    private void clean() {
+        this.container = null;
+        this.report = null;
+        this.verticesArray = null;
+        this.cancel = false;
+        this.progressTicket = null;
+    }
+
+    private void importData(BufferedReader reader) throws Exception {
         Progress.start(progressTicket);        //Progress
 
         try {
@@ -268,7 +286,7 @@ public class ImporterPajek implements TextImporter, LongTask {
         return nextLine;
     }
 
-    protected String skip(BufferedReader br, String str) throws Exception {
+    private String skip(BufferedReader br, String str) throws Exception {
         while (br.ready()) {
             String curLine = br.readLine();
             if (curLine == null) {
