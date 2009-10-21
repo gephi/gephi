@@ -206,6 +206,18 @@ public class Dhns implements GraphModel {
         return undirected;
     }
 
+    public void setDirected(boolean directed) {
+        this.directed = directed;
+    }
+
+    public void setUndirected(boolean undirected) {
+        this.undirected = undirected;
+    }
+
+    public void setMixed(boolean mixed) {
+        this.mixed = mixed;
+    }
+
     public boolean isHierarchical() {
         return getTreeStructure().treeHeight - 1 > 0;       //height>0
     }

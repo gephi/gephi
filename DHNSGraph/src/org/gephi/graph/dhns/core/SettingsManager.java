@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.core;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.gephi.graph.dhns.edge.AverageMetaEdgeBuilder;
 import org.gephi.graph.dhns.edge.MetaEdgeBuilder;
 import org.gephi.graph.dhns.edge.SumMetaEdgeBuilder;
@@ -120,5 +122,16 @@ public class SettingsManager {
             return metaEdgeBuilderNonDeepDivisor;
         }
         return null;
+    }
+
+    public Map<String, Object> getClientProperties() {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("allowMultilevel", getClientProperty("allowMultilevel"));
+        map.put("autoMetaEdgeCreation", getClientProperty("autoMetaEdgeCreation"));
+        map.put("metaEdgeBuilder", getClientProperty("metaEdgeBuilder"));
+        map.put("metaEdgeBuilderMinimum", getClientProperty("metaEdgeBuilderMinimum"));
+        map.put("metaEdgeBuilderLimit", getClientProperty("metaEdgeBuilderLimit"));
+        map.put("metaEdgeBuilderNonDeepDivisor", getClientProperty("metaEdgeBuilderNonDeepDivisor"));
+        return map;
     }
 }

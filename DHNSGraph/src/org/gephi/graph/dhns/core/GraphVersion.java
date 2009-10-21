@@ -66,4 +66,9 @@ public class GraphVersion {
         nodeVersion.incrementAndGet();
         edgeVersion.incrementAndGet();
     }
+
+    public void setVersion(int nodeVersion, int edgeVersion) {
+        this.nodeVersion.set(nodeVersion);
+        this.edgeVersion.set(edgeVersion);
+    }
 }
