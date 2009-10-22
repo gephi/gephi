@@ -1,10 +1,10 @@
 package org.gephi.preview.api;
 
 import java.awt.Font;
-import org.gephi.preview.api.color.colorizer.EdgeColorizer;
 import org.gephi.preview.api.color.colorizer.GenericColorizer;
 import org.gephi.preview.api.color.colorizer.NodeChildColorizer;
 import org.gephi.preview.api.color.colorizer.NodeColorizer;
+import org.gephi.preview.api.supervisor.SelfLoopSupervisor;
 
 /**
  *
@@ -13,6 +13,8 @@ import org.gephi.preview.api.color.colorizer.NodeColorizer;
 public interface PreviewController {
 
     public Graph getGraph();
+
+	public SelfLoopSupervisor getSelfLoopSupervisor();
 
     public Boolean getShowNodes();
     public Float getNodeBorderWidth();
@@ -97,32 +99,4 @@ public interface PreviewController {
 //    public void setBiEdgeArrowAddedRadius(Float value);
 //    public void setBiEdgeArrowSize(Float value);
 //    public void setBiEdgeArrowColorizer(EdgeChildColorizer value);
-
-	/**
-	 * Returns true if the self-loops must be displayed in the preview.
-	 *
-	 * @return true if the self-loops must be displayed in the preview
-	 */
-	public Boolean getShowSelfLoops();
-
-	/**
-	 * Defines if the self-loops must be displayed in the preview.
-	 *
-	 * @param value  true to display the self-loops in the preview
-	 */
-	public void setShowSelfLoops(Boolean value);
-
-	/**
-	 * Returns the self-loop colorizer.
-	 *
-	 * @return the self-loop colorizer
-	 */
-    public EdgeColorizer getSelfLoopColorizer();
-
-	/**
-	 * Sets the self-loop colorizer.
-	 *
-	 * @param value  the self-loop colorizer to set
-	 */
-    public void setSelfLoopColorizer(EdgeColorizer value);
 }

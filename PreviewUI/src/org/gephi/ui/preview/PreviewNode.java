@@ -9,6 +9,7 @@ import org.gephi.preview.api.color.colorizer.EdgeColorizer;
 import org.gephi.preview.api.color.colorizer.GenericColorizer;
 import org.gephi.preview.api.color.colorizer.NodeChildColorizer;
 import org.gephi.preview.api.color.colorizer.NodeColorizer;
+import org.gephi.preview.api.supervisor.SelfLoopSupervisor;
 import org.gephi.ui.preview.propertyeditor.EdgeColorizerPropertyEditor;
 import org.openide.ErrorManager;
 import org.openide.nodes.AbstractNode;
@@ -30,8 +31,8 @@ public class PreviewNode extends AbstractNode {
 
 	@Override
     protected Sheet createSheet() {
-        Sheet sheet = Sheet.createDefault();
-        PreviewController obj = Lookup.getDefault().lookup(PreviewController.class);
+        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+		SelfLoopSupervisor sls = controller.getSelfLoopSupervisor();
 
         Sheet.Set nodeSet = Sheet.createPropertiesSet();
         nodeSet.setDisplayName("Node Settings");
@@ -52,23 +53,23 @@ public class PreviewNode extends AbstractNode {
         try {
 
             // property initializations
-            Property showNodesProp = new PropertySupport.Reflection(obj, Boolean.class, "showNodes");
-            Property nodeBorderWidthProp = new PropertySupport.Reflection(obj, Float.class, "nodeBorderWidth");
-            PropertySupport.Reflection nodeColorProp = new PropertySupport.Reflection(obj, NodeColorizer.class, "nodeColorizer");
-            PropertySupport.Reflection nodeBorderColorProp = new PropertySupport.Reflection(obj, GenericColorizer.class, "nodeBorderColorizer");
-            Property showNodeLabelsProp = new PropertySupport.Reflection(obj, Boolean.class, "showNodeLabels");
-            Property nodeLabelFontProp = new PropertySupport.Reflection(obj, Font.class, "nodeLabelFont");
-            Property nodeLabelCharLimitProp = new PropertySupport.Reflection(obj, Integer.class, "nodeLabelMaxChar");
-            PropertySupport.Reflection nodeLabelColorProp = new PropertySupport.Reflection(obj, NodeChildColorizer.class, "nodeLabelColorizer");
-            Property borderedNodeLabelsProp = new PropertySupport.Reflection(obj, Boolean.class, "showNodeLabelBorders");
-            PropertySupport.Reflection nodeLabelBorderColorProp = new PropertySupport.Reflection(obj, NodeChildColorizer.class, "nodeLabelBorderColorizer");
+            Property showNodesProp = new PropertySupport.Reflection(controller, Boolean.class, "showNodes");
+            Property nodeBorderWidthProp = new PropertySupport.Reflection(controller, Float.class, "nodeBorderWidth");
+            PropertySupport.Reflection nodeColorProp = new PropertySupport.Reflection(controller, NodeColorizer.class, "nodeColorizer");
+            PropertySupport.Reflection nodeBorderColorProp = new PropertySupport.Reflection(controller, GenericColorizer.class, "nodeBorderColorizer");
+            Property showNodeLabelsProp = new PropertySupport.Reflection(controller, Boolean.class, "showNodeLabels");
+            Property nodeLabelFontProp = new PropertySupport.Reflection(controller, Font.class, "nodeLabelFont");
+            Property nodeLabelCharLimitProp = new PropertySupport.Reflection(controller, Integer.class, "nodeLabelMaxChar");
+            PropertySupport.Reflection nodeLabelColorProp = new PropertySupport.Reflection(controller, NodeChildColorizer.class, "nodeLabelColorizer");
+            Property borderedNodeLabelsProp = new PropertySupport.Reflection(controller, Boolean.class, "showNodeLabelBorders");
+            PropertySupport.Reflection nodeLabelBorderColorProp = new PropertySupport.Reflection(controller, NodeChildColorizer.class, "nodeLabelBorderColorizer");
 //            Property showEdgesProp = new PropertySupport.Reflection(obj, Boolean.class, "showEdges");
 //            Property curvedUniEdgesProp = new PropertySupport.Reflection(obj, Boolean.class, "curvedUniEdges");
 //            Property curvedBiEdgesProp = new PropertySupport.Reflection(obj, Boolean.class, "curvedBiEdges");
 //            PropertySupport.Reflection uniEdgeColorProp = new PropertySupport.Reflection(obj, EdgeColorizer.class, "uniEdgeColorizer");
 //            PropertySupport.Reflection biEdgeColorProp = new PropertySupport.Reflection(obj, EdgeColorizer.class, "biEdgeColorizer");
-            Property showSelfLoopsProp = new PropertySupport.Reflection(obj, Boolean.class, "showSelfLoops");
-            PropertySupport.Reflection selfLoopColorProp = new PropertySupport.Reflection(obj, EdgeColorizer.class, "selfLoopColorizer");
+            Property showSelfLoopsProp = new PropertySupport.Reflection(sls, Boolean.class, "showSelfLoops");
+            PropertySupport.Reflection selfLoopColorProp = new PropertySupport.Reflection(sls, EdgeColorizer.class, "selfLoopColorizer");
 //            Property showUniEdgeLabelsProp = new PropertySupport.Reflection(obj, Boolean.class, "showUniEdgeLabels");
 //            Property uniEdgeLabelCharLimitProp = new PropertySupport.Reflection(obj, Integer.class, "uniEdgeLabelMaxChar");
 //            Property uniEdgeLabelFontProp = new PropertySupport.Reflection(obj, Font.class, "uniEdgeLabelFont");
@@ -250,10 +251,12 @@ public class PreviewNode extends AbstractNode {
             ErrorManager.getDefault();
         }
 
+		Sheet sheet = Sheet.createDefault();
         sheet.put(nodeSet);
         sheet.put(edgeSet);
         sheet.put(uniEdgeSet);
         sheet.put(biEdgeSet);
+		
         return sheet;
     }
 }

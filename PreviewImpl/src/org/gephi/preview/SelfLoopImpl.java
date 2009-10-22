@@ -3,7 +3,7 @@ package org.gephi.preview;
 import org.gephi.preview.api.CubicBezierCurve;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.SelfLoop;
-import org.gephi.preview.controller.PreviewControllerImpl;
+import org.gephi.preview.supervisor.SelfLoopSupervisorImpl;
 import org.openide.util.Lookup;
 import processing.core.PVector;
 
@@ -33,8 +33,7 @@ public class SelfLoopImpl extends AbstractEdge implements SelfLoop {
 		genCurve();
 
 		// register the self-loop to its supervisor
-		PreviewControllerImpl controller = (PreviewControllerImpl) Lookup.getDefault().lookup(PreviewController.class);
-		controller.getSelfLoopSupervisor().addSelfLoop(this);
+		getSelfLoopSupervisor().addSelfLoop(this);
 	}
 
 	/**
@@ -90,5 +89,15 @@ public class SelfLoopImpl extends AbstractEdge implements SelfLoop {
 	 */
 	public CubicBezierCurve getCurve() {
 		return curve;
+	}
+
+	/**
+	 * Returns the self-loop supervisor.
+	 *
+	 * @return the controller's self-loop supervisor
+	 */
+	public SelfLoopSupervisorImpl getSelfLoopSupervisor() {
+		PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+		return (SelfLoopSupervisorImpl) controller.getSelfLoopSupervisor();
 	}
 }

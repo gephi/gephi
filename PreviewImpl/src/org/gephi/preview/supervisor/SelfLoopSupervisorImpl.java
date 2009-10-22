@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import org.gephi.preview.SelfLoopImpl;
 import org.gephi.preview.api.color.colorizer.EdgeColorizer;
+import org.gephi.preview.api.supervisor.SelfLoopSupervisor;
 import org.gephi.preview.color.colormode.CustomColorMode;
 
 /**
@@ -12,7 +13,7 @@ import org.gephi.preview.color.colormode.CustomColorMode;
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
-public class SelfLoopSupervisor {
+public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
 
 	private Boolean showSelfLoops = true;
     private EdgeColorizer selfLoopColorizer = new CustomColorMode(0, 0, 0);

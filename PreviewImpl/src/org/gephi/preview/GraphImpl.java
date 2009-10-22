@@ -6,9 +6,8 @@ import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.Node;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.SelfLoop;
-import org.gephi.preview.controller.PreviewControllerImpl;
 import org.gephi.preview.supervisor.GraphSupervisor;
-import org.gephi.preview.supervisor.SelfLoopSupervisor;
+import org.gephi.preview.supervisor.SelfLoopSupervisorImpl;
 import org.openide.util.Lookup;
 import processing.core.PVector;
 
@@ -38,9 +37,9 @@ public class GraphImpl implements Graph {
 	 *
 	 * @return the controller's self-loop supervisor
 	 */
-	public SelfLoopSupervisor getSelfLoopSupervisor() {
-        PreviewControllerImpl controller = (PreviewControllerImpl) Lookup.getDefault().lookup(PreviewController.class);
-		return controller.getSelfLoopSupervisor();
+	public SelfLoopSupervisorImpl getSelfLoopSupervisor() {
+        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+		return (SelfLoopSupervisorImpl) controller.getSelfLoopSupervisor();
     }
 
     public final Iterator<Node> getNodes() {
