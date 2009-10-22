@@ -1,2 +1,5 @@
 org.gephi.io.importer.standard.ImporterGDF
 org.gephi.io.importer.standard.ImporterGEXF
+org.gephi.io.importer.standard.ImporterPajek
+org.gephi.io.importer.standard.ImporterGraphML
+org.gephi.io.importer.standard.ImporterGML

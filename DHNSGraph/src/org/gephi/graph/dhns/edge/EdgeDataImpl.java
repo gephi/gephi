@@ -43,8 +43,8 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     protected float g = 0f;
     protected float b = 0f;
     protected float alpha = 1f;
-    protected float cardinal = 1f;
     protected boolean labelVisible = true;
+    protected float labelSize = -1f;
     private Model model;
     protected Attributes attributes;
     protected TextData textData;
@@ -88,15 +88,15 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     }
 
     public float x() {
-        return (getSource().x() + getTarget().x()) / 2f;
+        return (getSource().x() + 2 * getTarget().x()) / 3f;
     }
 
     public float y() {
-        return (getSource().y() + getTarget().y()) / 2f;
+        return (getSource().y() + 2 * getTarget().y()) / 3f;
     }
 
     public float z() {
-        return (getSource().z() + getTarget().z()) / 2f;
+        return (getSource().z() + 2 * getTarget().z()) / 3f;
     }
 
     public void setX(float x) {
@@ -112,11 +112,11 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     }
 
     public float getRadius() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return 0;
     }
 
     public float getSize() {
-        return cardinal;
+        return edge.getWeight();
     }
 
     public void setSize(float size) {
@@ -144,6 +144,12 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     }
 
     public void setB(float b) {
+        this.b = b;
+    }
+
+    public void setColor(float r, float g, float b) {
+        this.r = r;
+        this.g = g;
         this.b = b;
     }
 
@@ -181,6 +187,14 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
 
     public void setLabelVisible(boolean value) {
         this.labelVisible = value;
+    }
+
+    public float getLabelSize() {
+        return labelSize;
+    }
+
+    public void setLabelSize(float labelSize) {
+        this.labelSize = labelSize;
     }
 
     public DynamicData getDynamicData() {

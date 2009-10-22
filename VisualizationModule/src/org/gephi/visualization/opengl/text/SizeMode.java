@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
+import javax.swing.ImageIcon;
 import org.gephi.visualization.api.ModelImpl;
 
 /**
@@ -28,5 +29,13 @@ import org.gephi.visualization.api.ModelImpl;
  */
 public interface SizeMode {
 
-    public void setSizeFactor(TextDataImpl text, ModelImpl model);
+    public String getName();
+
+    public ImageIcon getIcon();
+
+    public void init();
+
+    public void setSizeFactor2d(float sizeFactor, TextDataImpl text, ModelImpl model);
+
+    public void setSizeFactor3d(float sizeFactor, TextDataImpl text, ModelImpl model);
 }

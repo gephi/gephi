@@ -96,6 +96,7 @@ public interface HierarchicalGraph extends Graph {
      * @return a node iterable of nodes at the top of the tree
      */
     public NodeIterable getTopNodes();
+    
 
     /**
      * Returns nodes at the given <code>level</code> in the hierarchy. Top nodes
@@ -225,11 +226,9 @@ public interface HierarchicalGraph extends Graph {
      */
     public void ungroupNodes(Node nodeGroup);
 
-    /**
-     * Get the clustered graph hierarchy as a <code>Tree</code>.
-     * @return the tree which represents the clusterd graph hierarchy
-     */
-    public Tree getHierarchyTree();
+    public EdgeIterable getHierarchyEdges();
+
+    public ImmutableTreeNode wrapToTreeNode();
 
     /**
      * Returns the <b>clustered</b> interface of the current graph. It returns the same graph, but

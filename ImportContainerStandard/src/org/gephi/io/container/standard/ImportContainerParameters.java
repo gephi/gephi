@@ -31,7 +31,7 @@ public class ImportContainerParameters {
     private boolean selfLoops = true;
     private boolean parallelEdges = true;
     private boolean autoNode = true;
-    private EdgeDefault edgeDefault = EdgeDefault.MIXED;
+    private EdgeDefault edgeDefault = EdgeDefault.DIRECTED;
 
     public boolean isAutoNode() {
         return autoNode;

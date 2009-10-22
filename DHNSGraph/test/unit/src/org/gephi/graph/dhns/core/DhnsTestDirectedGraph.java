@@ -29,7 +29,6 @@ import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
-import org.gephi.graph.dhns.view.View;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -63,12 +62,12 @@ public class DhnsTestDirectedGraph {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = new Dhns(controller);
-        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, false, true);
+        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, null);
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
         TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
-        GraphFactoryImpl factory = dhnsGlobal.getGraphFactory();
+        GraphFactoryImpl factory = dhnsGlobal.factory();
 
         //Nodes
         //System.out.println("-----Global-----");
@@ -128,10 +127,9 @@ public class DhnsTestDirectedGraph {
         System.out.println("testAddNode");
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller);
-        View mainView = dhns.getViewManager().getMainView();
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, null);
         TreeStructure treeStructure = dhns.getTreeStructure();
-        GraphFactoryImpl factory = dhns.getGraphFactory();
+        GraphFactoryImpl factory = dhns.factory();
 
         for (int i = 0; i < 10; i++) {
             Node node = factory.newNode();
@@ -150,7 +148,7 @@ public class DhnsTestDirectedGraph {
             AbstractNode n = treeStructure.getNodeAt(i);
             assertEquals("prenode pre", i, n.getPre());
             assertEquals("prenode id", i - 1, n.getId());
-            assertEquals("prenode enabled", i > 0, n.isEnabled(mainView));
+            assertEquals("prenode enabled", i > 0, n.isEnabled());
             assertEquals("prenode avl node", i, n.avlNode.getIndex());
             if (n.avlNode.next() != null) {
                 assertEquals("prenode next", treeStructure.getNodeAt(i + 1).avlNode, n.avlNode.next());
@@ -173,9 +171,9 @@ public class DhnsTestDirectedGraph {
     public void testRemoveNode() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller);
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, null);
         TreeStructure treeStructure = dhns.getTreeStructure();
-        GraphFactoryImpl factory = dhns.getGraphFactory();
+        GraphFactoryImpl factory = dhns.factory();
 
         Node first = null;
         Node middle = null;
@@ -298,9 +296,9 @@ public class DhnsTestDirectedGraph {
     public void testAddEdge() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller);
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, true);
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, null);
         TreeStructure treeStructure = dhns.getTreeStructure();
-        GraphFactoryImpl factory = dhns.getGraphFactory();
+        GraphFactoryImpl factory = dhns.factory();
 
         Node node1 = factory.newNode();
         Node node2 = factory.newNode();
@@ -350,7 +348,7 @@ public class DhnsTestDirectedGraph {
 
     @Test
     public void testRemoveEdge() {
-        GraphFactoryImpl factory = dhnsGlobal.getGraphFactory();
+        GraphFactoryImpl factory = dhnsGlobal.factory();
         PreNode node3 = (PreNode) nodeMap.get("Node 1");
         PreNode node4 = (PreNode) nodeMap.get("Node 2");
         AbstractEdge edge = factory.newEdge(node3, node4);
@@ -516,7 +514,8 @@ public class DhnsTestDirectedGraph {
         Node[] actual = new Node[2];
 
         int i = 0;
-        for (Node n : graphGlobal.getNeighbors(nodeMap.get("Node 5"))) {
+        Node node5 = nodeMap.get("Node 5");
+        for (Node n : graphGlobal.getNeighbors(node5)) {
             System.out.print(n.getId() + " ");
             actual[i++] = n;
         }

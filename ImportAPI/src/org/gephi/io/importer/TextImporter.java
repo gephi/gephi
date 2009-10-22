@@ -39,5 +39,5 @@ public interface TextImporter extends FileFormatImporter {
      * @param report the import report for logging informations and issues
      * @throws java.lang.Exception for catching eventual exceptions
      */
-    public void importData(BufferedReader reader, ContainerLoader containter, Report report) throws Exception;
+    public void importData(BufferedReader reader, ContainerLoader container, Report report) throws Exception;
 }

@@ -20,10 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
-import com.sun.opengl.util.j2d.TextRenderer;
+import javax.swing.ImageIcon;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.VizConfig;
+import org.gephi.visualization.opengl.text.TextManager.Renderer;
 
 /**
  *
@@ -31,34 +32,57 @@ import org.gephi.visualization.api.VizConfig;
  */
 public class UniqueColorMode implements ColorMode {
 
-    private VizConfig config;
+    private VizConfig vizConfig;
     private float[] color;
 
     public UniqueColorMode() {
-        config = VizController.getInstance().getVizConfig();
+        this.vizConfig = VizController.getInstance().getVizConfig();
     }
 
-    public float[] getColor() {
-        return color;
+    public void defaultNodeColor(Renderer renderer) {
+        color = VizController.getInstance().getVizModel().getTextModel().nodeColor;
+        renderer.setColor(color[0], color[1], color[2], color[3]);
     }
 
-    public void setColor(float[] color) {
-        this.color = color;
+    public void defaultEdgeColor(Renderer renderer) {
+        color = VizController.getInstance().getVizModel().getTextModel().edgeColor;
+        renderer.setColor(color[0], color[1], color[2], color[3]);
     }
 
-    public void defaultNodeColor(TextRenderer renderer) {
-        float[] defaultNodeColor = config.getDefaultNodeLabelColor();
-        renderer.setColor(defaultNodeColor[0], defaultNodeColor[1], defaultNodeColor[2], defaultNodeColor[3]);
-    }
-
-    public void defaultEdgeColor(TextRenderer renderer) {
-        float[] defaultEdgeColor = config.getDefaultEdgeLabelColor();
-        renderer.setColor(defaultEdgeColor[0], defaultEdgeColor[1], defaultEdgeColor[2], defaultEdgeColor[3]);
-    }
-
-    public void textColor(TextRenderer renderer, TextDataImpl text, ModelImpl model) {
+    public void textColor(Renderer renderer, TextDataImpl text, ModelImpl model) {
         if (text.hasCustomColor()) {
-            renderer.setColor(text.r, text.g, text.b, text.a);
+            if (vizConfig.isLightenNonSelected()) {
+                if (!model.isSelected() && !model.isHighlight()) {
+                    float lightColorFactor = 1 - vizConfig.getLightenNonSelectedFactor();
+                    renderer.setColor(text.r, text.g, text.b, lightColorFactor);
+                } else {
+                    renderer.setColor(text.r, text.g, text.b, 1);
+                }
+            } else {
+                renderer.setColor(text.r, text.g, text.b, text.a);
+            }
+        } else {
+            if (vizConfig.isLightenNonSelected()) {
+                if (!model.isSelected() && !model.isHighlight()) {
+                    float lightColorFactor = 1 - vizConfig.getLightenNonSelectedFactor();
+                    renderer.setColor(color[0], color[1], color[2], lightColorFactor);
+                } else {
+                    renderer.setColor(color[0], color[1], color[2], 1);
+                }
+            }
         }
+    }
+
+    public String getName() {
+        return "Unique";
+    }
+
+    public ImageIcon getIcon() {
+        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/UniqueColorMode.png"));
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

@@ -31,8 +31,6 @@ import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantAndSelfIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantIterator;
 import org.gephi.graph.dhns.node.iterators.PreNodeTreeListIterator;
-import org.gephi.graph.dhns.node.iterators.TreeListIterator;
-import org.gephi.graph.dhns.view.View;
 
 /**
  * Business class for external operations on the data structure. Propose blocking mechanism.
@@ -55,8 +53,8 @@ public class StructureModifier {
         edgeProcessor = new EdgeProcessor(dhns);
     }
 
-    public void expand(final View view, final Node node) {
-        expandBlock(view, node);
+    public void expand(final Node node) {
+        expandBlock(node);
 //        executor.execute(new Runnable() {
 //
 //            public void run() {
@@ -65,11 +63,11 @@ public class StructureModifier {
 //        });
     }
 
-    public void expandBlock(View view, Node node) {
+    public void expandBlock(Node node) {
         dhns.getWriteLock().lock();
         AbstractNode absNode = (AbstractNode) node;
         if (absNode.level < treeStructure.treeHeight) {
-            expand(view, absNode);
+            expand(absNode);
         //sightManager.updateSight((SightImpl) sight);
         }
         graphVersion.incNodeAndEdgeVersion();
@@ -77,8 +75,8 @@ public class StructureModifier {
         dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
-    public void retract(final View view, final Node node) {
-        retractBlock(view, node);
+    public void retract(final Node node) {
+        retractBlock(node);
 //        executor.execute(new Runnable() {
 //
 //            public void run() {
@@ -87,11 +85,11 @@ public class StructureModifier {
 //        });
     }
 
-    public void retractBlock(View view, Node node) {
+    public void retractBlock(Node node) {
         dhns.getWriteLock().lock();
         AbstractNode absNode = (AbstractNode) node;
         if (absNode.level < treeStructure.treeHeight) {
-            retract(view, ((AbstractNode) node));
+            retract(((AbstractNode) node));
         //sightManager.updateSight((SightImpl)sight);
         }
         graphVersion.incNodeAndEdgeVersion();
@@ -99,8 +97,8 @@ public class StructureModifier {
         dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
-    public void addNode(final View view, final Node node, final Node parent) {
-        addNodeBlock(view, node, parent);
+    public void addNode(final Node node, final Node parent) {
+        addNodeBlock(node, parent);
 //        executor.execute(new Runnable() {
 //
 //            public void run() {
@@ -109,7 +107,7 @@ public class StructureModifier {
 //        });
     }
 
-    public void addNodeBlock(View view, Node node, Node parent) {
+    public void addNodeBlock(Node node, Node parent) {
         dhns.getWriteLock().lock();
         AbstractNode parentNode;
         if (parent == null) {
@@ -123,8 +121,8 @@ public class StructureModifier {
             cloneDescedantAndSelft(absNode, parentNode);
         } else {
             absNode.parent = parentNode;
-            boolean enabled = (treeStructure.getEnabledAncestor(view, absNode) == null);
-            absNode.addView(view, enabled);
+            boolean enabled = (treeStructure.getEnabledAncestor(absNode) == null);
+            absNode.setEnabled(enabled);
             addNode(absNode);
         }
 
@@ -133,8 +131,8 @@ public class StructureModifier {
         dhns.getEventManager().fireEvent(EventType.NODES_UPDATED);
     }
 
-    public void deleteNode(final View view, final Node node) {
-        deleteNodeBlock(view, node);
+    public void deleteNode(final Node node) {
+        deleteNodeBlock(node);
 //        executor.execute(new Runnable() {
 //
 //            public void run() {
@@ -143,11 +141,11 @@ public class StructureModifier {
 //        });
     }
 
-    public void deleteNodeBlock(View view, Node node) {
+    public void deleteNodeBlock(Node node) {
         dhns.getWriteLock().lock();
         AbstractNode absNode = (AbstractNode) node;
         PreNode preNode = absNode.getOriginalNode();
-        deleteNode(view, preNode);
+        deleteNode(preNode);
         //dhns.getDictionary().removeNode(absNode);      //Dico
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
@@ -251,8 +249,8 @@ public class StructureModifier {
         dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
     }
 
-    public void clearMetaEdges(final View view, final Node node) {
-        clearMetaEdgesBlock(view, node);
+    public void clearMetaEdges(final Node node) {
+        clearMetaEdgesBlock(node);
 //        executor.execute(new Runnable() {
 //
 //            public void run() {
@@ -261,76 +259,74 @@ public class StructureModifier {
 //        });
     }
 
-    public void clearMetaEdgesBlock(View view, Node node) {
+    public void clearMetaEdgesBlock(Node node) {
         dhns.getWriteLock().lock();
-        clearMetaEdges(view, (AbstractNode) node);
+        clearMetaEdges((AbstractNode) node);
         graphVersion.incEdgeVersion();
         dhns.getWriteLock().unlock();
         dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
     }
 
-    public void resetViewToLeaves(View view) {
+    public void resetViewToLeaves() {
         dhns.getWriteLock().lock();
-        edgeProcessor.clearAllMetaEdges(view);
+        edgeProcessor.clearAllMetaEdges();
         for (PreNodeTreeListIterator itr = new PreNodeTreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
-            if (node.isInView(view)) {
-                node.setEnabled(view, node.size == 0);
-            }
+            node.setEnabled(node.size == 0);
+            
         }
         graphVersion.incEdgeVersion();
         dhns.getWriteLock().unlock();
         dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
     }
 
-    public void resetViewToTopNodes(View view) {
+    public void resetViewToTopNodes() {
         dhns.getWriteLock().lock();
-        edgeProcessor.clearAllMetaEdges(view);
+        edgeProcessor.clearAllMetaEdges();
         for (PreNodeTreeListIterator itr = new PreNodeTreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
-            if (node.isInView(view)) {
-                node.setEnabled(view, node.parent == treeStructure.root);
-            }
+                node.setEnabled(node.parent == treeStructure.root);
+            
         }
         graphVersion.incEdgeVersion();
         dhns.getWriteLock().unlock();
         dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
     }
 
-    public void resetViewToLevel(View view, int level) {
+    public void resetViewToLevel(int level) {
         dhns.getWriteLock().lock();
-        edgeProcessor.clearAllMetaEdges(view);
+        edgeProcessor.clearAllMetaEdges();
         for (PreNodeTreeListIterator itr = new PreNodeTreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
-            if (node.isInView(view)) {
-                node.setEnabled(view, node.level == level);
-            }
+
+                node.setEnabled(node.level == level);
+            
         }
         graphVersion.incEdgeVersion();
         dhns.getWriteLock().unlock();
         dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
     }
 
-    public void moveToGroup(View view, Node node, Node nodeGroup) {
+    public void moveToGroup(Node node, Node nodeGroup) {
         dhns.getWriteLock().lock();
         AbstractNode absNode = (AbstractNode) node;
         AbstractNode preGroup = (AbstractNode) nodeGroup;
-        moveToGroup(view, absNode, preGroup);
+        moveToGroup(absNode, preGroup);
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
         dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
-    public Node group(View view, Node[] nodes) {
+    public Node group(Node[] nodes) {
         dhns.getWriteLock().lock();
-        AbstractNode group = dhns.getGraphFactory().newNode();
-        group.addView(view, true);
+        AbstractNode group = dhns.factory().newNode();
+        group.setEnabled(true);
         AbstractNode parent = ((AbstractNode) nodes[0]).parent;
         group.parent = parent;
         addNode(group);
         for (int i = 0; i < nodes.length; i++) {
             AbstractNode nodeToGroup = (AbstractNode) nodes[i];
-            moveToGroup(view, nodeToGroup, group);
+            moveToGroup(nodeToGroup, group);
         }
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
@@ -338,7 +334,7 @@ public class StructureModifier {
         return group;
     }
 
-    public void ungroup(View view, AbstractNode nodeGroup) {
+    public void ungroup(AbstractNode nodeGroup) {
         dhns.getWriteLock().lock();
         //TODO Better implementation. Just remove nodeGroup from the treelist and lower level of children
         int count = 0;
@@ -347,15 +343,15 @@ public class StructureModifier {
             count++;
         }
 
-        if (nodeGroup.isEnabled(view)) {
-            expand(view, nodeGroup);
+        if (nodeGroup.isEnabled()) {
+            expand(nodeGroup);
         }
         for (int i = 0; i < count; i++) {
             AbstractNode node = treeStructure.getNodeAt(nodeGroup.getPre() + 1);
-            dhns.getStructureModifier().moveToGroup(view, node, nodeGroup.parent);
+            dhns.getStructureModifier().moveToGroup(node, nodeGroup.parent);
         }
 
-        deleteNode(view, nodeGroup);
+        deleteNode(nodeGroup);
 
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
@@ -363,33 +359,33 @@ public class StructureModifier {
     }
 
     //------------------------------------------
-    private void expand(View view, AbstractNode absNode) {
+    private void expand(AbstractNode absNode) {
 
         //Disable parent
-        absNode.setEnabled(view, false);
-        edgeProcessor.clearMetaEdges(view, absNode);
+        absNode.setEnabled(false);
+        edgeProcessor.clearMetaEdges(absNode);
 
         //Enable children
         for (ChildrenIterator itr = new ChildrenIterator(treeStructure, absNode, null); itr.hasNext();) {
             AbstractNode child = itr.next();
 
-            child.setEnabled(view, true);
-            edgeProcessor.computeMetaEdges(view, child, child);
+            child.setEnabled(true);
+            edgeProcessor.computeMetaEdges(child, child);
         }
     }
 
-    private void retract(View view, AbstractNode parent) {
+    private void retract(AbstractNode parent) {
 
         //Disable children
         for (ChildrenIterator itr = new ChildrenIterator(treeStructure, parent, null); itr.hasNext();) {
             AbstractNode child = itr.next();
-            child.setEnabled(view, false);
-            edgeProcessor.clearMetaEdges(view, child);
+            child.setEnabled(false);
+            edgeProcessor.clearMetaEdges(child);
         }
 
         //Enable node
-        parent.setEnabled(view, true);
-        edgeProcessor.computeMetaEdges(view, parent, parent);
+        parent.setEnabled(true);
+        edgeProcessor.computeMetaEdges(parent, parent);
     }
 
     private void addNode(AbstractNode node) {
@@ -410,12 +406,12 @@ public class StructureModifier {
         }
     }
 
-    private void deleteNode(View view, PreNode node) {
+    private void deleteNode(PreNode node) {
 
         for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node, null); itr.hasNext();) {
             AbstractNode descendant = itr.next();
-            if (descendant.isEnabled(view)) {
-                edgeProcessor.clearMetaEdges(view, descendant);
+            if (descendant.isEnabled()) {
+                edgeProcessor.clearMetaEdges(descendant);
             }
             edgeProcessor.clearEdges(descendant);
 
@@ -466,14 +462,14 @@ public class StructureModifier {
         edgeProcessor.clearEdges(node);
     }
 
-    private void clearMetaEdges(View view, AbstractNode node) {
-        edgeProcessor.clearMetaEdges(view, node);
+    private void clearMetaEdges(AbstractNode node) {
+        edgeProcessor.clearMetaEdges(node);
     }
 
-    private void moveToGroup(View view, AbstractNode node, AbstractNode nodeGroup) {
+    private void moveToGroup(AbstractNode node, AbstractNode nodeGroup) {
 
-        AbstractNode toMoveAncestor = treeStructure.getEnabledAncestor(view, node);
-        AbstractNode destinationAncestor = treeStructure.getEnabledAncestorOrSelf(view, nodeGroup);
+        AbstractNode toMoveAncestor = treeStructure.getEnabledAncestor(node);
+        AbstractNode destinationAncestor = treeStructure.getEnabledAncestorOrSelf(nodeGroup);
 
         if (toMoveAncestor != destinationAncestor) {
             if (toMoveAncestor != null) {
@@ -487,27 +483,27 @@ public class StructureModifier {
                 } else {
                     edgeProcessor.clearEdgesWithoutRemove(node);
                 }
-            } else if (node.isEnabled(view)) {
+            } else if (node.isEnabled()) {
                 //The node is enabled
                 if (destinationAncestor != null) {
                     //The destination is enabled or has enabled ancestor
                     //Node is thus disabled
-                    edgeProcessor.clearMetaEdges(view, node);
-                    node.setEnabled(view, false);
+                    edgeProcessor.clearMetaEdges(node);
+                    node.setEnabled(false);
                 //DO
                 } else {
                     //The node is kept enabled
                     //Meta edges are still valid only if their target is out of the dest cluster
-                    edgeProcessor.clearMetaEdgesOutOfRange(view, node, nodeGroup);
+                    edgeProcessor.clearMetaEdgesOutOfRange(node, nodeGroup);
                 }
             } else if (node.size > 0) {
                 if (destinationAncestor != null) {
                     //The node may have some enabled descendants and we set them disabled
                     for (DescendantIterator itr = new DescendantIterator(treeStructure, node, null); itr.hasNext();) {
                         AbstractNode descendant = itr.next();
-                        if (descendant.isEnabled(view)) {
-                            edgeProcessor.clearMetaEdges(view, descendant);
-                            descendant.setEnabled(view, false);
+                        if (descendant.isEnabled()) {
+                            edgeProcessor.clearMetaEdges(descendant);
+                            descendant.setEnabled(false);
                         }
                     }
                 //DO
@@ -515,10 +511,10 @@ public class StructureModifier {
                     //The node may have some enabled descendants and we keep them enabled
                     for (DescendantIterator itr = new DescendantIterator(treeStructure, node, null); itr.hasNext();) {
                         AbstractNode descendant = itr.next();
-                        if (descendant.isEnabled(view)) {
+                        if (descendant.isEnabled()) {
                             //Enabled descendants meta edges are still valid only if their target is out of
                             //the destination cluster
-                            edgeProcessor.clearMetaEdgesOutOfRange(view, node, nodeGroup);
+                            edgeProcessor.clearMetaEdgesOutOfRange(node, nodeGroup);
                         }
                     }
                 }
@@ -532,7 +528,7 @@ public class StructureModifier {
             destinationAncestor.getPre();
             //Compute all meta edges for the descendants of node and append them to the enabled
             //destinationAncestor
-            edgeProcessor.computeMetaEdges(view, node, destinationAncestor);
+            edgeProcessor.computeMetaEdges(node, destinationAncestor);
         }
     }
 

@@ -20,6 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
+import javax.swing.ImageIcon;
+import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.GraphDrawable;
 import org.gephi.visualization.api.ModelImpl;
 
 /**
@@ -28,14 +31,39 @@ import org.gephi.visualization.api.ModelImpl;
  */
 public class FixedSizeMode implements SizeMode {
 
-    private static float GLOBAL_FACTOR = 65f;
-    private static float FACTOR_LIMIT = 0.1f;
+    //private static float FACTOR_3D = 800f;
+    private GraphDrawable drawable;
 
-    public void setSizeFactor(TextDataImpl text, ModelImpl model) {
-        float factor = GLOBAL_FACTOR / model.getCameraDistance();
-        if (factor < FACTOR_LIMIT) {
-            factor = 0f;
+    public void init() {
+        drawable = VizController.getInstance().getDrawable();
+    }
+
+    public void setSizeFactor2d(float sizeFactor, TextDataImpl text, ModelImpl model) {
+        float factor = sizeFactor * 1.9f + 0.1f;        //Between 0.1 and 2
+        if (model.getObj().getLabelSize() != -1) {
+            factor *= model.getObj().getLabelSize();
         }
         text.setSizeFactor(factor);
+    }
+
+    public void setSizeFactor3d(float sizeFactor, TextDataImpl text, ModelImpl model) {
+        float factor = sizeFactor / drawable.getViewportWidth() * model.getCameraDistance();
+        if (model.getObj().getLabelSize() != -1) {
+            factor *= model.getObj().getLabelSize();
+        }
+        text.setSizeFactor(factor);
+    }
+
+    public String getName() {
+        return "Fixed";
+    }
+
+    public ImageIcon getIcon() {
+        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/FixedSizeMode.png"));
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

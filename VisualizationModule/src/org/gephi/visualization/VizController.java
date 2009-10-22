@@ -21,6 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization;
 
 import java.awt.Dimension;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Node;
+import org.gephi.project.api.ProjectController;
 import org.gephi.visualization.api.GraphIO;
 import org.gephi.visualization.api.VizEventManager;
 import org.gephi.visualization.config.VizCommander;
@@ -32,14 +35,19 @@ import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.opengl.compatibility.CompatibilityScheduler;
 import org.gephi.visualization.api.Scheduler;
+import org.gephi.visualization.api.selection.SelectionManager;
 import org.gephi.visualization.bridge.DHNSDataBridge;
 import org.gephi.visualization.bridge.DHNSEventBridge;
 import org.gephi.visualization.bridge.DataBridge;
 import org.gephi.visualization.bridge.EventBridge;
 import org.gephi.visualization.mode.ModeManager;
+import org.gephi.visualization.screenshot.ScreenshotMaker;
 import org.gephi.visualization.opengl.text.TextManager;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.gephi.visualization.swing.StandardGraphIO;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceListener;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -47,6 +55,7 @@ import org.gephi.visualization.swing.StandardGraphIO;
  */
 public class VizController {
 
+    //Singleton
     private static VizController instance;
 
     private VizController() {
@@ -55,6 +64,7 @@ public class VizController {
     public synchronized static VizController getInstance() {
         if (instance == null) {
             instance = new VizController();
+            instance.initInstances();
         }
         return instance;
     }
@@ -72,6 +82,11 @@ public class VizController {
     private EventBridge eventBridge;
     private ModeManager modeManager;
     private TextManager textManager;
+    private ScreenshotMaker screenshotMaker;
+    private SelectionManager selectionManager;
+
+    //Variable
+    private VizModel currentModel;
 
     public void initInstances() {
         VizCommander commander = new VizCommander();
@@ -88,13 +103,15 @@ public class VizController {
         //dataBridge = new TestDataBridge();
         modeManager = new ModeManager();
         textManager = new TextManager();
+        screenshotMaker = new ScreenshotMaker();
+        currentModel = new VizModel(true);
+        selectionManager = new SelectionManager();
 
-        if (vizConfig.useGLJPanel()) {
+        if (vizConfig.isUseGLJPanel()) {
             drawable = commander.createPanel();
         } else {
             drawable = commander.createCanvas();
         }
-        drawable.getGraphComponent().setPreferredSize(new Dimension(600, 600));
         drawable.initArchitecture();
         engine.initArchitecture();
         ((CompatibilityScheduler) scheduler).initArchitecture();
@@ -103,6 +120,74 @@ public class VizController {
         eventBridge.initArchitecture();
         modeManager.initArchitecture();
         textManager.initArchitecture();
+        screenshotMaker.initArchitecture();
+        vizEventManager.initArchitecture();
+        selectionManager.initArchitecture();
+
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.addWorkspaceListener(new WorkspaceListener() {
+
+            public void initialize(Workspace workspace) {
+            }
+
+            public void select(Workspace workspace) {
+                engine.reinit();
+            }
+
+            public void unselect(Workspace workspace) {
+            }
+
+            public void close(Workspace workspace) {
+            }
+
+            public void disable() {
+                engine.reinit();
+            }
+        });
+    }
+
+    public void refreshWorkspace() {
+        final VizWorkspaceDataProvider vizWorkspaceDataProvider = Lookup.getDefault().lookup(VizWorkspaceDataProvider.class);
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        VizModel model = null;
+        if (pc.getCurrentWorkspace() == null) {
+            model = new VizModel(true);
+        } else {
+            model = pc.getCurrentWorkspace().getWorkspaceData().getData(vizWorkspaceDataProvider.getWorkspaceDataKey());
+        }
+        if (model != currentModel) {
+            model.setListeners(currentModel.getListeners());
+            model.getTextModel().setListeners(currentModel.getTextModel().getListeners());
+            currentModel.setListeners(null);
+            currentModel.getTextModel().setListeners(null);
+            currentModel = model;
+            VizController.getInstance().getModelClassLibrary().getNodeClass().setCurrentModeler(currentModel.getNodeModeler());
+            currentModel.init();
+        }
+    }
+
+    public void resetSelection() {
+        selectionManager.resetSelection();
+    }
+
+    public void selectNode(Node node) {
+        selectionManager.selectNode(node);
+    }
+
+    public void selectEdge(Edge edge) {
+        selectionManager.selectEdge(edge);
+    }
+
+    public void selectNodes(Node[] nodes) {
+        selectionManager.selectNodes(nodes);
+    }
+
+    public void selectEdges(Edge[] edges) {
+        selectionManager.selectEdges(edges);
+    }
+
+    public VizModel getVizModel() {
+        return currentModel;
     }
 
     public GraphDrawableImpl getDrawable() {
@@ -151,5 +236,13 @@ public class VizController {
 
     public TextManager getTextManager() {
         return textManager;
+    }
+
+    public ScreenshotMaker getScreenshotMaker() {
+        return screenshotMaker;
+    }
+
+    public SelectionManager getSelectionManager() {
+        return selectionManager;
     }
 }

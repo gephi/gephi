@@ -37,6 +37,7 @@ public class CloseButton extends JButton {
     }
 
     public CloseButton() {
+        super();
         init();
     }
 
@@ -53,6 +54,10 @@ public class CloseButton extends JButton {
             setIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/xp_bigclose_enabled.png")));
             setRolloverIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/xp_bigclose_rollover.png")));
             setPressedIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/xp_bigclose_pressed.png")));
+        } else if (UIUtils.isWindowsVistaLookAndFeel()) {
+            setIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/vista_bigclose_enabled.png")));
+            setRolloverIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/vista_bigclose_rollover.png")));
+            setPressedIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/vista_bigclose_pressed.png")));
         } else if (UIUtils.isAquaLookAndFeel()) {
             setIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/mac_bigclose_enabled.png")));
             setRolloverIcon(new ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/mac_bigclose_rollover.png")));
@@ -65,5 +70,11 @@ public class CloseButton extends JButton {
         setContentAreaFilled(false);
         setFocusable(false);
         setOpaque(false);
+    }
+
+    @Override
+    public void setAction(Action a) {
+        super.setAction(a);
+        init();
     }
 }

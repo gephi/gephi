@@ -26,6 +26,8 @@ package org.gephi.graph.api;
  */
 public interface Model<ObjectType extends Renderable> {
 
+    public void setSelected(boolean selected);
+
     public boolean isSelected();
 
     public void setCacheMarker(int cacheMarker);

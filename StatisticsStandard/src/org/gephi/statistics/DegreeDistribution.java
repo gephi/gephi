@@ -84,7 +84,7 @@ public class DegreeDistribution implements Statistics, LongTask {
     public void execute(GraphController graphController) {
         isCanceled = false;
 
-        DirectedGraph digraph = graphController.getDirectedGraph();
+        DirectedGraph digraph = graphController.getModel().getDirectedGraphVisible();
 
         progress.start(digraph.getNodeCount());
         //Consider the in and out degree of every node

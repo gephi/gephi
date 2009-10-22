@@ -42,5 +42,7 @@ public interface AttributeRow extends Attributes {
 
     public Object getValue(String column);
 
+    public Object getValue(int index);
+
     public AttributeValue[] getValues();
 }

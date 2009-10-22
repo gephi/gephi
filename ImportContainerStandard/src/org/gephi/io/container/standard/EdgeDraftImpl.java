@@ -42,20 +42,20 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
     private String id;
     private String label;
 
-     //Flag
+    //Flag
     private boolean autoId;
 
     //Topology
     private NodeDraftImpl source;
     private NodeDraftImpl target;
-    private float weight;
+    private float weight = 1f;
     private EdgeType edgeType;
 
     //Viz
     private Color color;
-    private boolean labelVisible;
+    private boolean labelVisible = true;
     private boolean visible = true;
-    private float labelSize;
+    private float labelSize = -1f;
 
     //Attributes
     private List<AttributeValue> attributeValues = new ArrayList<AttributeValue>();
@@ -132,11 +132,11 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
         attributeValues.add(attValue);
     }
 
-    //GETTERS
-    public EdgeType getEdgeType() {
-        return edgeType;
+    public List<AttributeValue> getAttributeValues() {
+        return attributeValues;
     }
 
+    //GETTERS
     public float getLabelSize() {
         return labelSize;
     }
@@ -180,12 +180,12 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
     @Override
     public String toString() {
         String res = "edge";
-        if(!autoId) {
-            res+=" id="+id;
-        } else if(label!=null) {
-            res+=" label="+label;
+        if (!autoId) {
+            res += " id=" + id;
+        } else if (label != null) {
+            res += " label=" + label;
         } else {
-            res+=id;
+            res += id;
         }
         return res;
     }

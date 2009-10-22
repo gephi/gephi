@@ -41,6 +41,10 @@ public class DynamicManager {
         return dynamic;
     }
 
+    public void setDynamic(boolean dynamic) {
+        this.dynamic = dynamic;
+    }
+
     public void pushNode(NodeData nodeData) {
         DynamicData dd = nodeData.getDynamicData();
         if (dd != null && dd.getRangeFrom() != -1 || dd.getRangeTo() != -1) {

@@ -23,6 +23,7 @@ package org.gephi.visualization.opengl.compatibility.objects;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.NodeData;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
@@ -72,11 +73,11 @@ public class NodeSphereModel extends ModelImpl<NodeData> {
     }
 
     @Override
-    public void display(GL gl, GLU glu) {
+    public void display(GL gl, GLU glu, VizModel model) {
         boolean selec = selected;
         boolean neighbor = false;
         highlight = false;
-        if (config.isAutoSelectNeighbor() && mark && !selec) {
+        if (model.isAutoSelectNeighbor() && mark && !selec) {
             selec = true;
             highlight = true;
             neighbor = true;
@@ -87,9 +88,9 @@ public class NodeSphereModel extends ModelImpl<NodeData> {
         gl.glTranslatef(obj.x(), obj.y(), obj.z());
         gl.glScalef(size, size, size);
         if (!selec) {
-            if (config.isLightenNonSelected()) {
-                float[] lightColor = config.getLightenNonSelectedColor();
-                float lightColorFactor = config.getLightenNonSelectedFactor();
+            if (model.getConfig().isLightenNonSelected()) {
+                float[] lightColor = model.getConfig().getLightenNonSelectedColor();
+                float lightColorFactor = model.getConfig().getLightenNonSelectedFactor();
                 float r = obj.r();
                 float g = obj.g();
                 float b = obj.b();
@@ -112,15 +113,15 @@ public class NodeSphereModel extends ModelImpl<NodeData> {
             float r;
             float g;
             float b;
-            if (config.isUniColorSelected()) {
+            if (model.isUniColorSelected()) {
                 if (neighbor) {
-                    r = config.getUniColorSelectedNeigborColor()[0];
-                    g = config.getUniColorSelectedNeigborColor()[1];
-                    b = config.getUniColorSelectedNeigborColor()[2];
+                    r = model.getConfig().getUniColorSelectedNeigborColor()[0];
+                    g = model.getConfig().getUniColorSelectedNeigborColor()[1];
+                    b = model.getConfig().getUniColorSelectedNeigborColor()[2];
                 } else {
-                    r = config.getUniColorSelectedColor()[0];
-                    g = config.getUniColorSelectedColor()[1];
-                    b = config.getUniColorSelectedColor()[2];
+                    r = model.getConfig().getUniColorSelectedColor()[0];
+                    g = model.getConfig().getUniColorSelectedColor()[1];
+                    b = model.getConfig().getUniColorSelectedColor()[2];
                 }
             } else {
                 r = obj.r();

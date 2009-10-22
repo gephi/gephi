@@ -39,16 +39,35 @@ public class VizEvent extends EventObject {
         MOUSE_RIGHT_PRESS,
         MOUSE_LEFT_CLICK,
         MOUSE_MIDDLE_CLICK,
-        MOUSE_RIGHT_CLICK
+        MOUSE_RIGHT_CLICK,
+        NODE_LEFT_CLICK,
+        MOUSE_LEFT_PRESSING,
+        MOUSE_RELEASED,
+        NODE_LEFT_PRESSING,
     };
     private Type type;
+    private Object data;
 
     public VizEvent(Object source, Type t) {
         super(source);
         this.type = t;
     }
 
+    public VizEvent(Object source, Type t, Object data) {
+        super(source);
+        this.type = t;
+        this.data = data;
+    }
+
     public Type getType() {
         return type;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
     }
 }

@@ -26,12 +26,13 @@ import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Predicate;
+import org.gephi.graph.dhns.filter.FlatClusteredViewPredicate;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
- * {@link AbstractNode} iterator for all nodes nodes. If proposition contains the **enabled** predicate,
+ * {@link AbstractNode} iterator for all nodes nodes. If predicate contains the **enabled** predicate,
  * skipping is true and descendants of enabled nodes are skipped
  * 
  * @author Mathieu Bastian
@@ -45,17 +46,17 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
     protected DurableAVLNode currentNode;
 
     //Proposition
-    protected Proposition<AbstractNode> proposition;
+    protected Predicate predicate;
 
-    public TreeIterator(TreeStructure treeStructure, Proposition<AbstractNode> proposition) {
+    public TreeIterator(TreeStructure treeStructure, Predicate<AbstractNode> predicate) {
         this.treeList = treeStructure.getTree();
         nextIndex = 1;
         diffIndex = 2;
         treeSize = treeList.size();
-        if (proposition == null) {
-            this.proposition = new Tautology();
+        if (predicate == null) {
+            this.predicate = Tautology.instance;
         } else {
-            this.proposition = proposition;
+            this.predicate = predicate;
         }
     }
 
@@ -80,7 +81,7 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
                         return false;
                     }
                 } else {
-                    while (!proposition.evaluate(currentNode.getValue())) {
+                    while (!predicate.evaluate(currentNode.getValue())) {
                         ++nextIndex;
                         if (nextIndex >= treeSize) {
                             return false;
@@ -90,7 +91,7 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
                     return true;
                 }
 
-            /*if (!proposition.evaluate(currentNode.getValue())) {
+            /*if (!predicate.evaluate(currentNode.getValue())) {
             nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
             diffIndex = nextIndex - currentNode.getValue().pre;
             } else {
@@ -104,7 +105,8 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
     }
 
     public AbstractNode next() {
-        if (proposition.isSkipping()) {
+        //if (predicate.isSkipping()) {
+        if (predicate instanceof FlatClusteredViewPredicate) {
             nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
             diffIndex = nextIndex - currentNode.getValue().pre;
         } else {

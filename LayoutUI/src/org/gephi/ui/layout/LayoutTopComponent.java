@@ -58,6 +58,10 @@ final class LayoutTopComponent extends TopComponent
 
     private LayoutTopComponent() {
         initLayoutController();
+        propertySheet.setMaximumSize(new java.awt.Dimension(233, 32767));
+        propertySheet.setSize(new java.awt.Dimension(233, 240));
+        propertySheet.setPreferredSize(new java.awt.Dimension(233, 240));
+       
         initComponents();
         ActionMap map = this.getActionMap();
         explorerManager.setRootContext(new AbstractNode(rootNode));
@@ -174,7 +178,7 @@ final class LayoutTopComponent extends TopComponent
 
     private void initLayoutComboBox() {
         layoutSourceComboBox.setAction(chooseLayoutAction);
-        List<LayoutBuilder> layouts = layoutController.getLayouts();
+        List<LayoutBuilder> layouts = new ArrayList<LayoutBuilder>(Lookup.getDefault().lookupAll(LayoutBuilder.class));
         System.out.println("layouts: " + layouts.size());
         for (LayoutBuilder layoutBuilder : layouts) {
             layoutSourceComboBox.addItem(new LayoutBuilderWrapper(layoutBuilder));
@@ -237,13 +241,21 @@ final class LayoutTopComponent extends TopComponent
         layoutsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.layoutsPanel.border.title"))); // NOI18N
         layoutsPanel.setFocusCycleRoot(true);
 
+        layoutComboBox.setMaximumSize(new java.awt.Dimension(233, 32767));
+        layoutComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                layoutComboBoxActionPerformed(evt);
+            }
+        });
+
         propertySheetPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        propertySheetPanel.setMaximumSize(new java.awt.Dimension(233, 32767));
 
         javax.swing.GroupLayout propertySheetPanelLayout = new javax.swing.GroupLayout(propertySheetPanel);
         propertySheetPanel.setLayout(propertySheetPanelLayout);
         propertySheetPanelLayout.setHorizontalGroup(
             propertySheetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 258, Short.MAX_VALUE)
+            .addGap(0, 229, Short.MAX_VALUE)
         );
         propertySheetPanelLayout.setVerticalGroup(
             propertySheetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -277,12 +289,13 @@ final class LayoutTopComponent extends TopComponent
                         .addComponent(deleteButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(resetButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(playButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(stopButton))
-                    .addComponent(layoutComboBox, 0, 262, Short.MAX_VALUE)
-                    .addComponent(propertySheetPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layoutsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(propertySheetPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(layoutComboBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layoutsPanelLayout.setVerticalGroup(
@@ -309,7 +322,7 @@ final class LayoutTopComponent extends TopComponent
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGap(11, 11, 11)
-                        .addComponent(layoutsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(layoutsPanel, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -329,6 +342,10 @@ final class LayoutTopComponent extends TopComponent
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void layoutComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_layoutComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_layoutComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addLayoutButton;

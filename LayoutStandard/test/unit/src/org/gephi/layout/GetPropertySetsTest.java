@@ -23,7 +23,6 @@ package org.gephi.layout;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.openide.util.Lookup;
-import static org.junit.Assert.*;
 
 /**
  *

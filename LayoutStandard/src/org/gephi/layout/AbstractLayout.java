@@ -30,7 +30,7 @@ public abstract class AbstractLayout implements Layout {
     }
 
     public boolean canAlgo() {
-        return !isConverged();
+        return !isConverged() && graphController != null;
     }
 
     public void setConverged(boolean converged) {

@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.processor;
 
 import java.awt.Color;
+import java.util.List;
+import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.io.container.EdgeDraft;
 
 /**
@@ -28,6 +30,8 @@ import org.gephi.io.container.EdgeDraft;
  * @author Mathieu Bastian
  */
 public interface EdgeDraftGetter extends EdgeDraft {
+
+    public List<AttributeValue> getAttributeValues();
 
     public float getWeight();
 

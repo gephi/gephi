@@ -67,8 +67,6 @@ public class JPopupPane {
 
     private class JPopupPaneComponent extends JScrollPane {
 
-        
-
         public JPopupPaneComponent() {
             setName("jpopuppane");
             GridLayout grid = new GridLayout(0, 1);
@@ -215,6 +213,10 @@ public class JPopupPane {
         WindowManager.getDefault().getMainWindow().removeWindowStateListener(hideListener);
         WindowManager.getDefault().getMainWindow().removeComponentListener(hideListener);
         showingPopup = false;
+    }
+
+    public boolean isPopupShown() {
+        return showingPopup;
     }
 }
 

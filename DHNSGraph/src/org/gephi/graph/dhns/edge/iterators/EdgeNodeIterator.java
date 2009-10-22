@@ -23,10 +23,10 @@ package org.gephi.graph.dhns.edge.iterators;
 import java.util.Iterator;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
@@ -48,9 +48,10 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
     protected boolean undirected;
 
     //Proposition
-    protected Proposition<AbstractEdge> proposition;
+    protected Predicate<AbstractEdge> edgePredicate;
+    protected Predicate<AbstractNode> nodePredicate;
 
-    public EdgeNodeIterator(AbstractNode node, EdgeNodeIteratorMode mode, boolean undirected, Proposition<AbstractEdge> proposition) {
+    public EdgeNodeIterator(AbstractNode node, EdgeNodeIteratorMode mode, boolean undirected, Predicate<AbstractEdge> edgePredicate, Predicate<AbstractNode> nodePredicate) {
         this.node = node;
         this.mode = mode;
         this.undirected = undirected;
@@ -60,20 +61,27 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
         } else {
             this.edgeIterator.setNode(node.getEdgesInTree());
         }
-        if (proposition == null) {
-            this.proposition = new Tautology();
+        if (nodePredicate == null) {
+            this.nodePredicate = Tautology.instance;
         } else {
-            this.proposition = proposition;
+            this.nodePredicate = nodePredicate;
+        }
+        if (edgePredicate == null) {
+            this.edgePredicate = Tautology.instance;
+        } else {
+            this.edgePredicate = edgePredicate;
         }
     }
 
     public boolean hasNext() {
-        while (pointer == null || (undirected && pointer.getUndirected() != pointer) || !proposition.evaluate(pointer)) {
+        while (pointer == null || (undirected && pointer.getUndirected() != pointer) || !edgePredicate.evaluate(pointer)) {
             if (mode.equals(EdgeNodeIteratorMode.BOTH)) {
                 boolean res = edgeIterator.hasNext();
                 if (res) {
                     pointer = edgeIterator.next();
                     if (pointer.isSelfLoop()) {  //Ignore self loop here to avoid double iteration
+                        pointer = null;
+                    } else if (!nodePredicate.evaluate(pointer.getTarget())) {
                         pointer = null;
                     }
                 } else {
@@ -83,6 +91,9 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
             } else {
                 if (edgeIterator.hasNext()) {
                     pointer = edgeIterator.next();
+                    if (!nodePredicate.evaluate(mode.equals(EdgeNodeIteratorMode.IN) ? pointer.getSource() : pointer.getTarget())) {
+                        pointer = null;
+                    }
                 } else {
                     return false;
                 }

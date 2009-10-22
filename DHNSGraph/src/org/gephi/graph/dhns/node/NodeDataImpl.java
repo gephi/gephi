@@ -44,6 +44,7 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
     protected float z;
     protected String label = "";
     protected boolean labelVisible = true;
+    protected float labelSize = -1f;
     protected float r = 0f;
     protected float g = 0f;
     protected float b = 0f;
@@ -150,6 +151,12 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
         this.b = b;
     }
 
+    public void setColor(float r, float g, float b) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+    }
+
     public void setLabel(String label) {
         this.label = label;
     }
@@ -196,6 +203,14 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
 
     public boolean isLabelVisible() {
         return labelVisible;
+    }
+
+    public float getLabelSize() {
+        return labelSize;
+    }
+
+    public void setLabelSize(float labelSize) {
+        this.labelSize = labelSize;
     }
 
     public TextData getTextData() {

@@ -22,12 +22,10 @@ package org.gephi.io.desktop;
 
 import org.gephi.io.database.DatabaseType;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.xml.parsers.DocumentBuilder;
@@ -93,6 +91,7 @@ public class DesktopImportController implements ImportController {
 
     public void doImport(FileObject fileObject) {
         try {
+            fileObject = getArchivedFile(fileObject);   //Unzip and return content file
             FileFormatImporter im = getMatchingImporter(fileObject);
             if (im == null) {
                 throw new ImportException(NbBundle.getMessage(getClass(), "error_no_matching_file_importer"));
@@ -135,6 +134,7 @@ public class DesktopImportController implements ImportController {
             public void fatalError(Throwable t) {
                 NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
                 DialogDisplayer.getDefault().notify(ex);
+                t.printStackTrace();
             }
         };
 
@@ -261,52 +261,56 @@ public class DesktopImportController implements ImportController {
     }
 
     private void finishImport(Container container) {
+        if (container.verify()) {
+            Report report = container.getReport();
 
-        Report report = container.getReport();
-
-        //Report panel
-        ReportPanel reportPanel = new ReportPanel();
-        reportPanel.setData(report, container);
-        DialogDescriptor dd = new DialogDescriptor(reportPanel, "Import report");
-        if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.CANCEL_OPTION)) {
-            reportPanel.destroy();
-            return;
-        }
-        reportPanel.destroy();
-
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        Workspace workspace;
-        if (pc.getCurrentProject() == null) {
-            pc.newProject();
-            workspace = pc.getCurrentWorkspace();
-        } else {
-            if (reportPanel.getProcessorStrategy().equals(ProcessorStrategyEnum.FULL)) {
-                //New workspace
-                workspace = pc.newWorkspace(pc.getCurrentProject());
-                pc.openWorkspace(workspace);
-            } else if (pc.getCurrentWorkspace() == null) {
-                //Append mode but no workspace
-                workspace = pc.newWorkspace(pc.getCurrentProject());
-                pc.openWorkspace(workspace);
-            } else {
-                //Append mode, current workspace is fine
-                workspace = pc.getCurrentWorkspace();
+            //Report panel
+            ReportPanel reportPanel = new ReportPanel();
+            reportPanel.setData(report, container);
+            DialogDescriptor dd = new DialogDescriptor(reportPanel, "Import report");
+            if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.CANCEL_OPTION)) {
+                reportPanel.destroy();
+                return;
             }
-        }
-        if (container.getSource() != null) {
-            workspace.setSource(container.getSource());
-        }
+            reportPanel.destroy();
 
-        Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
+            ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+            Workspace workspace;
+            if (pc.getCurrentProject() == null) {
+                pc.newProject();
+                workspace = pc.getCurrentWorkspace();
+            } else {
+                if (reportPanel.getProcessorStrategy().equals(ProcessorStrategyEnum.FULL)) {
+                    //New workspace
+                    workspace = pc.newWorkspace(pc.getCurrentProject());
+                    pc.openWorkspace(workspace);
+                } else if (pc.getCurrentWorkspace() == null) {
+                    //Append mode but no workspace
+                    workspace = pc.newWorkspace(pc.getCurrentProject());
+                    pc.openWorkspace(workspace);
+                } else {
+                    //Append mode, current workspace is fine
+                    workspace = pc.getCurrentWorkspace();
+                }
+            }
+            if (container.getSource() != null) {
+                workspace.setSource(container.getSource());
+            }
+
+            Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
+        }
     }
 
     private BufferedReader getTextReader(FileObject fileObject) throws ImportException {
-        File file = FileUtil.toFile(fileObject);
+
+        //File file = FileUtil.toFile(fileObject);
         try {
-            if (file == null) {
-                throw new FileNotFoundException();
+            InputStreamReader im = new InputStreamReader(fileObject.getInputStream());
+            /*if (file == null) {
+            throw new FileNotFoundException();
             }
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+            BufferedReader reader = new BufferedReader(new FileReader(file));*/
+            BufferedReader reader = new BufferedReader(im);
             return reader;
         } catch (FileNotFoundException ex) {
             throw new ImportException(NbBundle.getMessage(getClass(), "error_file_not_found"));
@@ -314,12 +318,13 @@ public class DesktopImportController implements ImportController {
     }
 
     private Document getDocument(FileObject fileObject) throws ImportException {
-        File file = FileUtil.toFile(fileObject);
+        //File file = FileUtil.toFile(fileObject);
         try {
-            if (file == null) {
-                throw new FileNotFoundException();
+            /*if (file == null) {
+            throw new FileNotFoundException();
             }
-            InputStream stream = new FileInputStream(file);
+            InputStream stream = new FileInputStream(file);*/
+            InputStream stream = fileObject.getInputStream();
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(stream);
@@ -333,6 +338,14 @@ public class DesktopImportController implements ImportController {
         } catch (IOException ex) {
             throw new ImportException(NbBundle.getMessage(getClass(), "error_io"));
         }
+    }
+
+    private FileObject getArchivedFile(FileObject fileObject) {
+        if (FileUtil.isArchiveFile(fileObject)) {
+            //Unzip
+            fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
+        }
+        return fileObject;
     }
 
     private FileFormatImporter getMatchingImporter(FileObject fileObject) {
@@ -380,5 +393,17 @@ public class DesktopImportController implements ImportController {
     public Database[] getDatabases(DatabaseType type) {
         Database[] dbs = new Database[0];
         return Lookup.getDefault().lookupAll(type.getDatabaseClass()).toArray(dbs);
+    }
+
+    public boolean isFileSupported(FileObject fileObject) {
+        for (FileFormatImporter im : fileFormatImporters) {
+            if (im.isMatchingImporter(fileObject)) {
+                return true;
+            }
+        }
+        if (fileObject.hasExt("zip")) {
+            return true;
+        }
+        return false;
     }
 }

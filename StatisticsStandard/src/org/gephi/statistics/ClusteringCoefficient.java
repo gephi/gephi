@@ -187,7 +187,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     public void execute(GraphController graphController) {
         isCanceled = false;
 
-        DirectedGraph digraph = graphController.getDirectedGraph();
+        DirectedGraph digraph = graphController.getModel().getDirectedGraphVisible();
 
         if (bruteForce) {
             bruteForce(graphController);
@@ -301,12 +301,12 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     public void triangles(GraphController graphController) {
 
 
-        Graph graph = graphController.getDirectedGraph();
+        Graph graph = graphController.getModel().getDirectedGraphVisible();
         int progressCount = 0;
         progress.start(7 * graph.getNodeCount());
 
         if (!directed) {
-            graph = graphController.getUndirectedGraph();
+            graph = graphController.getModel().getUndirectedGraphVisible();
         }
 
 
@@ -417,9 +417,9 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         float totalCC = 0;
         Graph graph = null;
         if (!directed) {
-            graph = graphController.getUndirectedGraph();
+            graph = graphController.getModel().getUndirectedGraphVisible();
         } else {
-            graph = graphController.getDirectedGraph();
+            graph = graphController.getModel().getDirectedGraphVisible();
         }
 
         progress.start(graph.getNodeCount());

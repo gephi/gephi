@@ -31,7 +31,6 @@ public class IDGen {
 
     private AtomicInteger nodeGen = new AtomicInteger();
     private AtomicInteger edgeGen = new AtomicInteger();
-    private AtomicInteger viewGen = new AtomicInteger();
 
     public int newNodeId() {
         return nodeGen.getAndIncrement();
@@ -41,7 +40,19 @@ public class IDGen {
         return edgeGen.getAndIncrement();
     }
 
-    public int newViewId() {
-        return viewGen.getAndIncrement();
+    public void setNodeGen(int nodeGen) {
+        this.nodeGen.set(nodeGen);
+    }
+
+    public void setEdgeGen(int edgeGen) {
+        this.edgeGen.set(edgeGen);
+    }
+
+    public int getNodeGen() {
+        return nodeGen.get();
+    }
+
+    public int getEdgeGen() {
+        return edgeGen.get();
     }
 }

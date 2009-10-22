@@ -51,7 +51,7 @@ public class Octree implements VizArchitecture {
     private GraphDrawableImpl drawable;
     private AbstractEngine engine;
     private GraphLimits limits;
-    private VizConfig config;
+    private VizController vizController;
 
     //Attributes
     private int modelIDs;
@@ -85,7 +85,7 @@ public class Octree implements VizArchitecture {
         this.engine = VizController.getInstance().getEngine();
         this.drawable = VizController.getInstance().getDrawable();
         this.limits = VizController.getInstance().getLimits();
-        this.config = VizController.getInstance().getVizConfig();
+        this.vizController = VizController.getInstance();
 
         leaves = new ParamAVLTree<Octant>(new AVLItemAccessor<Octant>() {
 
@@ -151,7 +151,7 @@ public class Octree implements VizArchitecture {
             n.displayOctreeNode(gl);
         }
         int nbRecords = gl.glRenderMode(GL.GL_RENDER);
-        if (config.isCulling()) {
+        if (vizController.getVizModel().isCulling()) {
             gl.glEnable(GL.GL_CULL_FACE);
             gl.glCullFace(GL.GL_BACK);
         }
@@ -217,7 +217,7 @@ public class Octree implements VizArchitecture {
 
         //Returning to normal rendering mode
         int nbRecords = gl.glRenderMode(GL.GL_RENDER);
-        if (config.isCulling()) {
+        if (vizController.getVizModel().isCulling()) {
             gl.glEnable(GL.GL_CULL_FACE);
             gl.glCullFace(GL.GL_BACK);
         }
@@ -241,6 +241,9 @@ public class Octree implements VizArchitecture {
                 if (!obj.isCacheMatching(cacheMarker)) {
                     removeObject(classID, obj);
                     obj.resetOctant();
+                    if(vizController.getVizConfig().isCleanDeletedModels()) {
+                        obj.getObj().setModel(null);
+                    }
                 }
             }
         }
@@ -254,6 +257,7 @@ public class Octree implements VizArchitecture {
             for (cleanObjectsIterator.setNode(tree); cleanObjectsIterator.hasNext();) {
                 ModelImpl obj = cleanObjectsIterator.next();
                 obj.resetOctant();
+                obj.getObj().setModel(null);
                 obj.destroy();
             }
 
@@ -307,11 +311,11 @@ public class Octree implements VizArchitecture {
         for (Octant o : visibleLeaves) {
             o.displayOctreeNode(gl);
         }
-        if (!config.isWireFrame()) {
+        if (!vizController.getVizConfig().isWireFrame()) {
             gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
         }
 
-        if (config.isCulling()) {
+        if (vizController.getVizModel().isCulling()) {
             gl.glEnable(GL.GL_CULL_FACE);
             gl.glCullFace(GL.GL_BACK);
         }

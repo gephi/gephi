@@ -23,7 +23,7 @@ package org.gephi.visualization.component;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JPanel;
+import javax.swing.JComponent;
 
 /**
  *
@@ -38,7 +38,7 @@ public class CollapsePanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public void init(JPanel topBar, final JPanel extendedPanel, boolean extended) {
+    public void init(JComponent topBar, final JComponent extendedPanel, boolean extended) {
         add(topBar, BorderLayout.CENTER);
         add(extendedPanel, BorderLayout.SOUTH);
 

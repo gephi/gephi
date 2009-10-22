@@ -30,7 +30,11 @@ public interface Attributes {
 
     public Object getValue(String column);
 
+    public Object getValue(int index);
+
     public void setValue(String column, Object value);
+
+    public void setValue(int index, Object value);
 
     public void reset();
 }

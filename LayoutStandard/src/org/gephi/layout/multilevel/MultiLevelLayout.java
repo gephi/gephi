@@ -22,13 +22,16 @@ package org.gephi.layout.multilevel;
 
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
-import org.gephi.layout.force.yifanHu.YifanHu;
+import org.gephi.layout.api.LayoutProperty;
 import org.gephi.layout.force.yifanHu.YifanHuLayout;
+import org.gephi.layout.force.yifanHu.YifanHuProportional;
 import org.gephi.layout.random.RandomLayout;
 import org.openide.nodes.Node.PropertySet;
+import org.openide.nodes.Sheet;
 
 /**
  *
@@ -36,33 +39,42 @@ import org.openide.nodes.Node.PropertySet;
  */
 public class MultiLevelLayout extends AbstractLayout implements Layout {
 
-    private HierarchicalDirectedGraph graph;
+    private HierarchicalGraph graph;
     private int level;
     private YifanHuLayout layout;
-    private YifanHu yifanHu;
+    private YifanHuProportional yifanHu;
     private CoarseningStrategy coarseningStrategy;
     private double optimalDistance;
+    private int minSize;
+    private double minCoarseningRate;
 
     public MultiLevelLayout(LayoutBuilder layoutBuilder,
                             CoarseningStrategy coarseningStrategy) {
         super(layoutBuilder);
         this.coarseningStrategy = coarseningStrategy;
-        this.yifanHu = new YifanHu();
+        //     this.yifanHu = new YifanHu();
+        this.yifanHu = new YifanHuProportional();
     }
 
     @Override
     public void setGraphController(GraphController graphController) {
         super.setGraphController(graphController);
-        graph = graphController.getHierarchicalDirectedGraph();
+        graph = graphController.getModel().getHierarchicalGraphVisible();
     }
 
     public void initAlgo() {
         setConverged(false);
         level = 0;
-        while (graph.getClusteredGraph().getTopNodes().toArray().length > 10) {
+
+        while (true) {
+            int graphSize = graph.getClusteredGraph().getTopNodes().toArray().length;
             coarseningStrategy.coarsen(graph);
-            System.out.println("COARSEN!!");
             level++;
+            int newGraphSize = graph.getClusteredGraph().getTopNodes().toArray().length;
+            if (newGraphSize < getMinSize() || newGraphSize > graphSize * getMinCoarseningRate()) {
+                System.out.printf("Size: BEFORE = %d   AFTER = %d\n", graphSize, newGraphSize);
+                break;
+            }
         }
 
         Layout random = new RandomLayout(null, 1000);
@@ -70,10 +82,11 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
         random.initAlgo();
         random.goAlgo();
 
-        System.out.println("Level = " + level);
         layout = yifanHu.buildLayout();
         layout.setGraphController(graphController);
         layout.resetPropertiesValues();
+        layout.setAdaptiveCooling(false);
+        layout.setStepRatio(0.95f);
         layout.setOptimalDistance(100f);
         layout.initAlgo();
 
@@ -83,7 +96,6 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
         if (layout.canAlgo()) {
             layout.goAlgo();
         } else {
-            System.out.println("Level = " + level);
             layout.endAlgo();
             if (level > 0) {
                 coarseningStrategy.refine(graph);
@@ -91,9 +103,10 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
                 layout = (YifanHuLayout) yifanHu.buildLayout();
                 layout.setGraphController(graphController);
                 layout.resetPropertiesValues();
+                layout.setAdaptiveCooling(false);
+                layout.setStepRatio(0.95f);
                 layout.setOptimalDistance(100f);
                 layout.initAlgo();
-
             } else {
                 setConverged(true);
                 layout = null;
@@ -102,13 +115,28 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
     }
 
     public void endAlgo() {
+        while (level > 0) {
+            coarseningStrategy.refine(graph);
+            level--;
+        }
     }
 
     public void resetPropertiesValues() {
+        setMinSize(3);
+        setMinCoarseningRate(0.75d);
     }
 
-    public PropertySet[] getPropertySets() {
-        return new PropertySet[]{};
+    public PropertySet[] getPropertySets() throws NoSuchMethodException {
+        Sheet.Set set = Sheet.createPropertiesSet();
+        set.put(LayoutProperty.createProperty(
+            this, Integer.class, "Minimum level size",
+            "The minimum amount of nodes every level must have (bigger values mean less levels)",
+            "getMinSize", "setMinSize"));
+        set.put(LayoutProperty.createProperty(
+            this, Double.class, "Minimum coarsening rate",
+            "The minimum relative size between two levels (smaller values mean less levels)",
+            "getMinCoarseningRate", "setMinCoarseningRate"));
+        return new PropertySet[]{set};
     }
 
     /**
@@ -125,10 +153,38 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
         this.optimalDistance = optimalDistance;
     }
 
+    /**
+     * @return the minSize
+     */
+    public Integer getMinSize() {
+        return minSize;
+    }
+
+    /**
+     * @param minSize the minSize to set
+     */
+    public void setMinSize(Integer minSize) {
+        this.minSize = minSize;
+    }
+
+    /**
+     * @return the minCoarseningRate
+     */
+    public Double getMinCoarseningRate() {
+        return minCoarseningRate;
+    }
+
+    /**
+     * @param minCoarseningRate the minCoarseningRate to set
+     */
+    public void setMinCoarseningRate(Double minCoarseningRate) {
+        this.minCoarseningRate = minCoarseningRate;
+    }
+
     public interface CoarseningStrategy {
 
-        public void coarsen(HierarchicalDirectedGraph graph);
+        public void coarsen(HierarchicalGraph graph);
 
-        public void refine(HierarchicalDirectedGraph graph);
+        public void refine(HierarchicalGraph graph);
     }
 }

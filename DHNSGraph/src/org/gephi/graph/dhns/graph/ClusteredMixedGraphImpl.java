@@ -20,21 +20,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
-import java.util.Iterator;
 import org.gephi.graph.api.ClusteredMixedGraph;
 
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.api.Predicate;
+import org.gephi.graph.api.View;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
-import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.node.iterators.NeighborIterator;
-import org.gephi.graph.dhns.node.iterators.TreeIterator;
 
 /**
  * Implementation of clustered sparse graph.
@@ -43,32 +39,23 @@ import org.gephi.graph.dhns.node.iterators.TreeIterator;
  */
 public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements ClusteredMixedGraph {
 
-    protected ClusteredMixedGraphImpl clusteredCopy;
-    private Condition<Edge> undirectedCondition;
-    private Condition<Edge> directedCondition;
+    private Predicate<Edge> undirectedPredicate;
+    private Predicate<Edge> directedPredicate;
 
-    public ClusteredMixedGraphImpl(Dhns dhns, boolean visible, boolean clustered) {
-        super(dhns, visible, clustered);
-        directedCondition = new Condition<Edge>() {
+    public ClusteredMixedGraphImpl(Dhns dhns, View view) {
+        super(dhns, view);
+        directedPredicate = new Predicate<Edge>() {
 
-            public boolean isValid(Edge t) {
+            public boolean evaluate(Edge t) {
                 return t.isDirected();
             }
         };
-        undirectedCondition = new Condition<Edge>() {
+        undirectedPredicate = new Predicate<Edge>() {
 
-            public boolean isValid(Edge t) {
+            public boolean evaluate(Edge t) {
                 return !t.isDirected();
             }
         };
-
-        if (!clustered) {
-            clusteredCopy = new ClusteredMixedGraphImpl(dhns, visible, true);
-        }
-    }
-
-    public Graph getGraph() {
-        return this;
     }
 
     public boolean addEdge(Edge edge) {
@@ -86,7 +73,7 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
             return false;
         }
         if (!absEdge.hasAttributes()) {
-            absEdge.setAttributes(dhns.getGraphFactory().newEdgeAttributes());
+            absEdge.setAttributes(dhns.factory().newEdgeAttributes());
         }
         dhns.getDynamicManager().pushEdge(edge.getEdgeData());
         dhns.getStructureModifier().addEdge(edge);
@@ -111,7 +98,7 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
             return false;
         }
 
-        AbstractEdge edge = dhns.getGraphFactory().newEdge(source, target, 1.0f, directed);
+        AbstractEdge edge = dhns.factory().newEdge(source, target, 1.0f, directed);
         dhns.getDynamicManager().pushEdge(edge.getEdgeData());
         dhns.getStructureModifier().addEdge(edge);
         if (directed) {
@@ -130,12 +117,14 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
 
     public EdgeIterable getDirectedEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition), directedCondition);
+//        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition, nodeProposition), directedPredicate);
+        return null;
     }
 
     public EdgeIterable getUndirectedEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition), undirectedCondition);
+//        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition, nodeProposition), undirectedPredicate);
+        return null;
     }
 
     public boolean isDirected(Edge edge) {
@@ -152,41 +141,44 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
         AbstractNode targetNode = checkNode(node2);
         readLock();
         AbstractEdge res = null;
-        AbstractEdge edge = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
-        if (edge == null) {
-            edge = sourceNode.getEdgesInTree().getItem(targetNode.getNumber());
-        }
-        if (edgeProposition.evaluate(edge)) {
-            res = edge;
-        }
+//        AbstractEdge edge = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
+//        if (edge == null) {
+//            edge = sourceNode.getEdgesInTree().getItem(targetNode.getNumber());
+//        }
+//        if (edgeProposition.evaluate(edge)) {
+//            res = edge;
+//        }
         readUnlock();
         return res;
     }
 
     public EdgeIterable getEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition));
+//        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition, nodeProposition));
+        return null;
     }
 
     public NodeIterable getNeighbors(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
-        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition), absNode, nodeProposition));
+//        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition), absNode, nodeProposition));
+        return null;
     }
 
     public EdgeIterable getEdges(Node node) {
         AbstractNode absNode = checkNode(node);
         readLock();
-        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, edgeProposition));
+//        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, edgeProposition));
+        return null;
     }
 
     public int getEdgeCount() {
         readLock();
         int count = 0;
-        for (EdgeIterator itr = new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition); itr.hasNext();) {
-            itr.next();
-            count++;
-        }
+//        for (EdgeIterator itr = new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition, nodeProposition); itr.hasNext();) {
+//            itr.next();
+//            count++;
+//        }
         readUnlock();
         return count;
     }
@@ -200,15 +192,15 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
         AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
-            for (Iterator<AbstractEdge> itr = absNode.getEdgesInTree().iterator(); itr.hasNext();) {
-                if (edgeProposition.evaluate(itr.next())) {
-                    count++;
-                }
-            }
-        } else {
-            count = absNode.getEdgesInTree().getCount();
-        }
+//        if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
+//            for (Iterator<AbstractEdge> itr = absNode.getEdgesInTree().iterator(); itr.hasNext();) {
+//                if (edgeProposition.evaluate(itr.next())) {
+//                    count++;
+//                }
+//            }
+//        } else {
+//            count = absNode.getEdgesInTree().getCount();
+//        }
         readUnlock();
         return count;
     }
@@ -218,15 +210,15 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
         AbstractNode absNode = checkNode(node);
         readLock();
         int count = 0;
-        if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
-            for (Iterator<AbstractEdge> itr = absNode.getEdgesOutTree().iterator(); itr.hasNext();) {
-                if (edgeProposition.evaluate(itr.next())) {
-                    count++;
-                }
-            }
-        } else {
-            count = absNode.getEdgesOutTree().getCount();
-        }
+//        if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
+//            for (Iterator<AbstractEdge> itr = absNode.getEdgesOutTree().iterator(); itr.hasNext();) {
+//                if (edgeProposition.evaluate(itr.next())) {
+//                    count++;
+//                }
+//            }
+//        } else {
+//            count = absNode.getEdgesOutTree().getCount();
+//        }
         readUnlock();
         return count;
     }
@@ -278,10 +270,10 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
 
     @Override
     public ClusteredMixedGraphImpl copy(ClusteredGraphImpl graph) {
-        return new ClusteredMixedGraphImpl(dhns, false, false);
+        return new ClusteredMixedGraphImpl(dhns, view);
     }
 
     public ClusteredMixedGraph getClusteredGraph() {
-        return clusteredCopy;
+        return this;
     }
 }

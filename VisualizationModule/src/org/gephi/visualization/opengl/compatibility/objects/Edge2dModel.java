@@ -24,6 +24,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
@@ -120,14 +121,14 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
     }
 
     @Override
-    public void display(GL gl, GLU glu) {
+    public void display(GL gl, GLU glu, VizModel vizModel) {
         if (this.arrow != null) {
             this.arrow.setSelected(selected);
         }
-        if (!selected && config.isHideNonSelectedEdges()) {
+        if (!selected && vizModel.isHideNonSelectedEdges()) {
             return;
         }
-        if (selected && config.isAutoSelectNeighbor()) {
+        if (selected && vizModel.isAutoSelectNeighbor()) {
             ModelImpl m1 = (ModelImpl) obj.getSource().getModel();
             ModelImpl m2 = (ModelImpl) obj.getTarget().getModel();
             m1.mark = true;
@@ -156,30 +157,62 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
             float g;
             float b;
             float a;
-            if (config.isEdgeUniColor()) {
-                float[] uni = config.getEdgeUniColorValue();
+            if (vizModel.isEdgeHasUniColor()) {
+                float[] uni = vizModel.getEdgeUniColor();
                 r = uni[0];
                 g = uni[1];
                 b = uni[2];
                 a = uni[3];
             } else {
                 r = obj.r();
-                g = obj.g();
-                b = obj.b();
-                a = obj.alpha();
+                if (r == -1f) {
+                    NodeData source = obj.getSource();
+                    r = source.r();
+                    g = source.g();
+                    b = source.b();
+                    a = obj.alpha();
+                } else {
+                    g = obj.g();
+                    b = obj.b();
+                    a = obj.alpha();
+                }
             }
-            if (config.isLightenNonSelected()) {
-                float lightColorFactor = config.getLightenNonSelectedFactor();
+            if (vizModel.getConfig().isLightenNonSelected()) {
+                float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
                 a = a - (a - 0.01f) * lightColorFactor;
                 gl.glColor4f(r, g, b, a);
             } else {
                 gl.glColor4f(r, g, b, a);
             }
         } else {
-            float rdark = 0.498f * obj.r();
-            float gdark = 0.498f * obj.g();
-            float bdark = 0.498f * obj.b();
-            gl.glColor4f(rdark, gdark, bdark, 1f);
+            float r = 0f;
+            float g = 0f;
+            float b = 0f;
+            if (vizModel.isEdgeSelectionColor()) {
+                ModelImpl m1 = (ModelImpl) obj.getSource().getModel();
+                ModelImpl m2 = (ModelImpl) obj.getTarget().getModel();
+                if (m1.isSelected() && m2.isSelected()) {
+                    float[] both = vizModel.getEdgeBothSelectionColor();
+                    r = both[0];
+                    g = both[1];
+                    b = both[2];
+                } else if (m1.isSelected()) {
+                    float[] out = vizModel.getEdgeOutSelectionColor();
+                    r = out[0];
+                    g = out[1];
+                    b = out[2];
+                } else if (m2.isSelected()) {
+                    float[] in = vizModel.getEdgeInSelectionColor();
+                    r = in[0];
+                    g = in[1];
+                    b = in[2];
+                }
+            } else {
+                r = 0.498f * obj.r();
+                g = 0.498f * obj.g();
+                b = 0.498f * obj.b();
+            }
+            gl.glColor4f(r, g, b, 1f);
         }
 
         gl.glVertex2f(x1 + x1Thick, y1 + y1Thick);
@@ -200,6 +233,11 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
     public float getCollisionDistance(double angle) {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    @Override
+    public float getCameraDistance() {
+        return (obj.getSource().getModel().getCameraDistance() + obj.getTarget().getModel().getCameraDistance()) / 2f;
     }
 
     @Override
@@ -257,5 +295,15 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
 
     public void setArrow(ModelImpl arrow) {
         this.arrow = arrow;
+    }
+
+    @Override
+    public float getViewportX() {
+        return (obj.getSource().getModel().getViewportX() + 2 * obj.getTarget().getModel().getViewportX()) / 3f;
+    }
+
+    @Override
+    public float getViewportY() {
+        return (obj.getSource().getModel().getViewportY() + 2 * obj.getTarget().getModel().getViewportY()) / 3f;
     }
 }

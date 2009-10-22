@@ -32,8 +32,37 @@
                 </dependency>
             </module-dependencies>
             <public-packages>
+                <package>com.bric.awt</package>
+                <package>com.bric.swing</package>
+                <package>com.connectina.swing.fontchooser</package>
+                <package>net.java.dev.colorchooser</package>
                 <package>org.gephi.ui.components</package>
+                <package>org.gephi.ui.components.gradientslider</package>
+                <package>org.jvnet.flamingo.bcb</package>
+                <package>org.jvnet.flamingo.bcb.core</package>
+                <package>org.jvnet.flamingo.bcb.ui</package>
+                <package>org.jvnet.flamingo.common</package>
+                <package>org.jvnet.flamingo.common.icon</package>
+                <package>org.jvnet.flamingo.common.model</package>
+                <package>org.jvnet.flamingo.common.popup</package>
+                <package>org.jvnet.flamingo.common.ui</package>
+                <package>org.jvnet.flamingo.slider</package>
+                <package>org.jvnet.flamingo.slider.ui</package>
+                <package>org.jvnet.flamingo.svg</package>
+                <package>org.jvnet.flamingo.utils</package>
             </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/FontChooser.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/FontChooser.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/colorchooser.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/colorchooser.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/flamingo.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flamingo.jar</binary-origin>
+            </class-path-extension>
         </data>
     </configuration>
 </project>

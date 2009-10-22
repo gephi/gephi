@@ -28,5 +28,7 @@ import java.util.EventListener;
  */
 public interface VizEventListener extends EventListener {
 
-    public void vizEvent(VizEvent event);
+    public void handleEvent(VizEvent event);
+
+    public VizEvent.Type getType();
 }

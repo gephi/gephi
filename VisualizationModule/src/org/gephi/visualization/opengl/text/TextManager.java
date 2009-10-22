@@ -22,14 +22,18 @@ package org.gephi.visualization.opengl.text;
 
 import com.sun.opengl.util.j2d.TextRenderer;
 import java.awt.Font;
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
 import org.gephi.graph.api.TextData;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.GraphDrawable;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.VizConfig;
 
@@ -41,77 +45,114 @@ public class TextManager implements VizArchitecture {
 
     //Architecture
     private VizConfig vizConfig;
+    private GraphDrawable drawable;
 
+    //Configuration
+    private SizeMode[] sizeModes;
+    private ColorMode[] colorModes;
     //Processing
     private TextUtils textUtils;
-    private TextRenderer renderer;
+    private Renderer nodeRenderer;
+    private Renderer edgeRenderer;
     private TextDataBuilder builder;
 
     //Variables
     private TextModel model;
 
+    //Preferences
+    private boolean renderer3d;
+    private boolean mipmap;
+    private boolean fractionalMetrics;
+    private boolean antialised;
+
     public TextManager() {
         textUtils = new TextUtils(this);
         builder = new TextDataBuilder();
-        model = new TextModel();
+
+        //SizeMode init
+        sizeModes = new SizeMode[3];
+        sizeModes[0] = new FixedSizeMode();
+        sizeModes[1] = new ScaledSizeMode();
+        sizeModes[2] = new ProportionalSizeMode();
+
+        //ColorMode init
+        colorModes = new ColorMode[2];
+        colorModes[0] = new UniqueColorMode();
+        colorModes[1] = new ObjectColorMode();
     }
 
     public void initArchitecture() {
+        model = VizController.getInstance().getVizModel().getTextModel();
         vizConfig = VizController.getInstance().getVizConfig();
-        model.colorMode = new UniqueColorMode();
-        model.sizeMode = new ScaledSizeMode();
-        model.font = vizConfig.getDefaultLabelFont();
-        model.setSelectedOnly(vizConfig.isShowLabelOnSelectedOnly());
-        renderer = new TextRenderer(model.font, false, false, null, true);
+        drawable = VizController.getInstance().getDrawable();
+        initRenderer();
+        builder.initBuilder(this);
+
+        //Init sizemodes
+        for(SizeMode s : sizeModes) {
+            s.init();
+        }
+
+        //Model listening
+        model.addChangeListener(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                if (!nodeRenderer.getFont().equals(model.getNodeFont())) {
+                    nodeRenderer.setFont(model.getNodeFont());
+                }
+                if (!edgeRenderer.getFont().equals(model.getEdgeFont())) {
+                    edgeRenderer.setFont(model.getEdgeFont());
+                }
+                if (builder.getNodeColumns() != model.getNodeTextColumns() || builder.getEdgeColumns() != model.getEdgeTextColumns()) {
+                    builder.initBuilder(TextManager.this);
+                    VizController.getInstance().getEngine().setConfigChanged(true);
+                }
+            }
+        });
+
+        //Model change
+        VizController.getInstance().getVizModel().addPropertyChangeListener(new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals("init")) {
+                    TextManager.this.model = VizController.getInstance().getVizModel().getTextModel();
+                }
+            }
+        });
+
+        //Settings
+        antialised = vizConfig.isLabelAntialiased();
+        mipmap = vizConfig.isLabelMipMap();
+        fractionalMetrics = vizConfig.isLabelFractionalMetrics();
+        renderer3d = false;
+    }
+
+    private void initRenderer() {
+        if (renderer3d) {
+            nodeRenderer = new Renderer3D();
+            edgeRenderer = new Renderer3D();
+        } else {
+            nodeRenderer = new Renderer2D();
+            edgeRenderer = new Renderer2D();
+        }
+        nodeRenderer.initRenderer(model.getNodeFont());
+        edgeRenderer.initRenderer(model.getEdgeFont());
     }
 
     public void defaultNodeColor() {
-        model.colorMode.defaultNodeColor(renderer);
+        model.colorMode.defaultNodeColor(nodeRenderer);
     }
 
     public void defaultEdgeColor() {
-        model.colorMode.defaultEdgeColor(renderer);
+        model.colorMode.defaultEdgeColor(edgeRenderer);
     }
 
-    public void beginRendering() {
-        renderer.begin3DRendering();
+    public void initTextData(NodeData node) {
+        node.setTextData(builder.buildTextNode(node));
     }
 
-    public void endRendering() {
-        renderer.end3DRendering();
-    }
-
-    public void drawText(ModelImpl model) {
-        Renderable renderable = model.getObj();
-        TextDataImpl textData = (TextDataImpl) renderable.getTextData();
-        if (textData != null) {
-            this.model.colorMode.textColor(renderer, textData, model);
-            this.model.sizeMode.setSizeFactor(textData, model);
-
-            String txt = textData.line.text;
-            Rectangle2D r = renderer.getBounds(txt);
-            textData.line.setBounds(r);
-            int posX = (int) renderable.x() - (int) r.getWidth() / 2;
-            int posY = (int) renderable.y() - (int) r.getHeight() / 2;
-
-            renderer.draw3D(txt, posX, posY, 0, textData.sizeFactor);
-        }
-    }
-
-    public TextRenderer getRenderer() {
-        return renderer;
-    }
-
-    public void setFont(Font font) {
-        renderer = new TextRenderer(font, false, false, null, true);
-    }
-
-    public TextData newTextData(NodeData node) {
-        return builder.buildTextNode(node);
-    }
-
-    public TextData newTextData(EdgeData edge) {
-        return builder.buildTextEdge(edge);
+    public void initTextData(EdgeData edge) {
+        edge.setTextData(builder.buildTextEdge(edge));
     }
 
     public boolean isSelectedOnly() {
@@ -124,5 +165,211 @@ public class TextManager implements VizArchitecture {
 
     public void setModel(TextModel model) {
         this.model = model;
+    }
+
+    public SizeMode[] getSizeModes() {
+        return sizeModes;
+    }
+
+    public ColorMode[] getColorModes() {
+        return colorModes;
+    }
+
+    public Renderer getNodeRenderer() {
+        return nodeRenderer;
+    }
+
+    public Renderer getEdgeRenderer() {
+        return edgeRenderer;
+    }
+
+    public void setRenderer3d(boolean renderer3d) {
+        this.renderer3d = renderer3d;
+        initRenderer();
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    public static interface Renderer {
+
+        public void initRenderer(Font font);
+
+        public void reinitRenderer();
+
+        public void disposeRenderer();
+
+        public void beginRendering();
+
+        public void endRendering();
+
+        public void drawTextNode(ModelImpl model);
+
+        public void drawTextEdge(ModelImpl model);
+
+        public Font getFont();
+
+        public void setFont(Font font);
+
+        public void setColor(float r, float g, float b, float a);
+
+        public TextRenderer getJOGLRenderer();
+    }
+
+    private class Renderer3D implements Renderer {
+
+        private TextRenderer renderer;
+
+        public void initRenderer(Font font) {
+            renderer = new TextRenderer(font, antialised, fractionalMetrics, null, mipmap);
+        }
+
+        public void reinitRenderer() {
+            renderer = new TextRenderer(renderer.getFont(), antialised, fractionalMetrics, null, mipmap);
+        }
+
+        public void disposeRenderer() {
+            renderer.flush();
+            renderer.dispose();
+        }
+
+        public Font getFont() {
+            return renderer.getFont();
+        }
+
+        public void setFont(Font font) {
+            initRenderer(font);
+        }
+
+        public void beginRendering() {
+            renderer.begin3DRendering();
+        }
+
+        public void endRendering() {
+            renderer.end3DRendering();
+        }
+
+        public void drawTextNode(ModelImpl objectModel) {
+            Renderable renderable = objectModel.getObj();
+            TextDataImpl textData = (TextDataImpl) renderable.getTextData();
+            if (textData != null) {
+                model.colorMode.textColor(this, textData, objectModel);
+                model.sizeMode.setSizeFactor3d(model.nodeSizeFactor, textData, objectModel);
+
+                String txt = textData.line.text;
+                Rectangle2D r = renderer.getBounds(txt);
+                textData.line.setBounds(r);
+                float posX = renderable.x() + (float) r.getWidth() / -2 * textData.sizeFactor;
+                float posY = renderable.y() + (float) r.getHeight() / -2 * textData.sizeFactor;
+                float posZ = renderable.getRadius();
+
+                renderer.draw3D(txt, posX, posY, posZ, textData.sizeFactor);
+            }
+        }
+
+        public void drawTextEdge(ModelImpl objectModel) {
+            Renderable renderable = objectModel.getObj();
+            TextDataImpl textData = (TextDataImpl) renderable.getTextData();
+            if (textData != null) {
+                model.colorMode.textColor(this, textData, objectModel);
+                model.sizeMode.setSizeFactor2d(model.edgeSizeFactor, textData, objectModel);
+
+                String txt = textData.line.text;
+                Rectangle2D r = renderer.getBounds(txt);
+                textData.line.setBounds(r);
+                float posX = renderable.x() + (float) r.getWidth() / -2 * textData.sizeFactor;
+                float posY = renderable.y() + (float) r.getHeight() / -2 * textData.sizeFactor;
+                float posZ = renderable.getRadius();
+
+                renderer.draw3D(txt, posX, posY, posZ, textData.sizeFactor);
+            }
+        }
+
+        public void setColor(float r, float g, float b, float a) {
+            renderer.setColor(r, g, b, a);
+        }
+
+        public TextRenderer getJOGLRenderer() {
+            return renderer;
+        }
+    }
+
+    private class Renderer2D implements Renderer {
+
+        private TextRenderer renderer;
+        private static final float PIXEL_LIMIT = 3.5f;
+
+        public void initRenderer(Font font) {
+            renderer = new TextRenderer(font, antialised, fractionalMetrics, null, mipmap);
+        }
+
+        public void reinitRenderer() {
+            renderer = new TextRenderer(renderer.getFont(), antialised, fractionalMetrics, null, mipmap);
+        }
+
+        public void disposeRenderer() {
+            renderer.flush();
+            renderer.dispose();
+        }
+
+        public Font getFont() {
+            return renderer.getFont();
+        }
+
+        public void setFont(Font font) {
+            initRenderer(font);
+        }
+
+        public void beginRendering() {
+            renderer.beginRendering(drawable.getViewportWidth(), drawable.getViewportHeight());
+        }
+
+        public void endRendering() {
+            renderer.endRendering();
+        }
+
+        public void drawTextNode(ModelImpl objectModel) {
+            Renderable renderable = objectModel.getObj();
+            TextDataImpl textData = (TextDataImpl) renderable.getTextData();
+            if (textData != null) {
+                model.colorMode.textColor(this, textData, objectModel);
+                model.sizeMode.setSizeFactor2d(model.nodeSizeFactor, textData, objectModel);
+                if (textData.sizeFactor * renderer.getCharWidth('a') < PIXEL_LIMIT) {
+                    return;
+                }
+                String txt = textData.line.text;
+                Rectangle2D r = renderer.getBounds(txt);
+                textData.line.setBounds(r);
+                float posX = renderable.getModel().getViewportX() + (float) r.getWidth() / -2 * textData.sizeFactor;
+                float posY = renderable.getModel().getViewportY() + (float) r.getHeight() / -2 * textData.sizeFactor;
+
+                renderer.draw3D(txt, posX, posY, 0, textData.sizeFactor);
+            }
+        }
+
+        public void drawTextEdge(ModelImpl objectModel) {
+            Renderable renderable = objectModel.getObj();
+            TextDataImpl textData = (TextDataImpl) renderable.getTextData();
+            if (textData != null) {
+                model.colorMode.textColor(this, textData, objectModel);
+                model.sizeMode.setSizeFactor2d(model.edgeSizeFactor, textData, objectModel);
+                if (textData.sizeFactor * renderer.getCharWidth('a') < PIXEL_LIMIT) {
+                    return;
+                }
+                String txt = textData.line.text;
+                Rectangle2D r = renderer.getBounds(txt);
+                textData.line.setBounds(r);
+                float posX = renderable.getModel().getViewportX() + (float) r.getWidth() / -2 * textData.sizeFactor;
+                float posY = renderable.getModel().getViewportY() + (float) r.getHeight() / -2 * textData.sizeFactor;
+
+                renderer.draw3D(txt, posX, posY, 0, textData.sizeFactor);
+            }
+        }
+
+        public void setColor(float r, float g, float b, float a) {
+            renderer.setColor(r, g, b, a);
+        }
+
+        public TextRenderer getJOGLRenderer() {
+            return renderer;
+        }
     }
 }

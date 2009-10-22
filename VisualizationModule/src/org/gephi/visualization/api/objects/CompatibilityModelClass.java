@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
+import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.initializer.Modeler;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.initializer.CompatibilityModeler;
@@ -38,6 +39,7 @@ public class CompatibilityModelClass extends ModelClass {
     //Initializer
     private CompatibilityModeler currentModeler;
     private List<CompatibilityModeler> modelers;
+    private CompatibilityModeler newModeler;
 
     public CompatibilityModelClass(String name, boolean lod, boolean selectable, boolean clickable, boolean glSelection, boolean aloneSelection) {
         super(name, lod, selectable, clickable, glSelection, aloneSelection);
@@ -60,17 +62,26 @@ public class CompatibilityModelClass extends ModelClass {
     }
 
     public void addModeler(Modeler modeler) {
-        if (modelers.isEmpty()) //Set first one as current
-        {
-            setCurrentModeler(modeler);
-        }
-
         modelers.add((CompatibilityModeler) modeler);
     }
 
     @Override
     public void setCurrentModeler(Modeler modeler) {
-        currentModeler = (CompatibilityModeler) modeler;
+        if (currentModeler == null) {
+            currentModeler = (CompatibilityModeler) modeler;
+        }
+        if (modeler != currentModeler) {
+            newModeler = (CompatibilityModeler) modeler;
+            VizController.getInstance().getVizModel().setNodeModeler(newModeler.getClass().getSimpleName());
+        }
+    }
+
+    public void setCurrentModeler(String className) {
+        for (CompatibilityModeler mod : modelers) {
+            if (mod.getClass().getSimpleName().equals(className)) {
+                setCurrentModeler(mod);
+            }
+        }
     }
 
     @Override
@@ -81,5 +92,13 @@ public class CompatibilityModelClass extends ModelClass {
     @Override
     public List<CompatibilityModeler> getModelers() {
         return modelers;
+    }
+
+    public void swapModelers() {
+        if (newModeler != null) {
+            currentModeler = newModeler;
+            newModeler = null;
+            VizController.getInstance().getVizModel().setNodeModeler(currentModeler.getClass().getSimpleName());
+        }
     }
 }

@@ -438,7 +438,7 @@ public class Modularity implements Statistics, LongTask {
     public void execute(GraphController graphController) {
         progress.start();
         Random rand = new Random();
-        UndirectedGraph graph = graphController.getUndirectedGraph();
+        UndirectedGraph graph = graphController.getModel().getUndirectedGraphVisible();
         mStructure = new CommunityStructure(graph);
         boolean someChange = true;
         while (someChange) {

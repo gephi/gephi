@@ -29,7 +29,6 @@ import org.gephi.visualization.api.initializer.Modeler;
  */
 public abstract class ModelClass {
 
-    private static int IDS = 0;
     private final String name;
     private int classId;
     private boolean enabled;
@@ -44,7 +43,6 @@ public abstract class ModelClass {
     private boolean aloneSelection;
 
     public ModelClass(String name, boolean lod, boolean selectable, boolean clickable, boolean glSelection, boolean aloneSelection) {
-        this.classId = ModelClass.getNumber();
         this.name = name;
         this.lod = lod;
         this.selectable = selectable;
@@ -63,10 +61,18 @@ public abstract class ModelClass {
 
     public abstract void setCurrentModeler(Modeler modeler);
 
+    public abstract void setCurrentModeler(String className);
+
     public abstract List<? extends Modeler> getModelers();
+
+    public abstract void swapModelers();
 
     public int getClassId() {
         return classId;
+    }
+
+    public void setClassId(int classId) {
+        this.classId = classId;
     }
 
     public boolean isLod() {
@@ -111,10 +117,5 @@ public abstract class ModelClass {
 
     public void setSelectionId(int selectionId) {
         this.selectionId = selectionId;
-    }
-
-    //STATIC
-    private synchronized static int getNumber() {
-        return IDS++;
     }
 }

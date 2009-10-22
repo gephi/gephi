@@ -21,9 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.layout.random;
 
 import java.util.Random;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
@@ -38,7 +38,7 @@ import org.openide.nodes.Sheet;
 public class RandomLayout extends AbstractLayout implements Layout {
 
     private Random random;
-    private UndirectedGraph graph;
+    private Graph graph;
     private boolean converged;
     private double size;
 
@@ -51,7 +51,7 @@ public class RandomLayout extends AbstractLayout implements Layout {
     @Override
     public void setGraphController(GraphController graphController) {
         super.setGraphController(graphController);
-        graph = graphController.getUndirectedGraph();
+        graph = graphController.getModel().getGraphVisible();
     }
 
     public void initAlgo() {

@@ -42,12 +42,10 @@ import org.gephi.visualization.opengl.text.TextManager;
  */
 public class CompatibilityEdgeModeler implements CompatibilityModeler<EdgeData> {
 
-    private VizConfig config;
-    protected TextManager textManager;
+    private VizController controller;
 
     public CompatibilityEdgeModeler() {
-        this.config = VizController.getInstance().getVizConfig();
-        this.textManager = VizController.getInstance().getTextManager();
+        this.controller = VizController.getInstance();
     }
 
     @Override
@@ -55,7 +53,7 @@ public class CompatibilityEdgeModeler implements CompatibilityModeler<EdgeData> 
         EdgeData e = (EdgeData) n;
 
         ModelImpl<EdgeData> edge;
-        if (config.use3d()) {
+        if (controller.getVizModel().isUse3d()) {
             if (e.getEdge().isSelfLoop()) {
                 edge = new SelfLoop3dModel();
             } else {
@@ -69,12 +67,9 @@ public class CompatibilityEdgeModeler implements CompatibilityModeler<EdgeData> 
             }
         }
         edge.setObj(e);
-        edge.setConfig(config);
         e.setModel(edge);
 
-        if (n.getTextData() == null) {
-            n.setTextData(textManager.newTextData(e));
-        }
+        controller.getTextManager().initTextData(e);
 
         return edge;
     }

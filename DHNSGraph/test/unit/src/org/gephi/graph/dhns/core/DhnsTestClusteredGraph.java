@@ -39,7 +39,6 @@ import org.gephi.graph.dhns.graph.ClusteredUndirectedGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
-import org.gephi.graph.dhns.view.View;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -74,12 +73,12 @@ public class DhnsTestClusteredGraph {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = new Dhns(controller);
-        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, false, false);
+        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, null);
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
         TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
-        GraphFactoryImpl factory = dhnsGlobal.getGraphFactory();
+        GraphFactoryImpl factory = dhnsGlobal.factory();
 
         //Nodes
         for (int i = 0; i < 15; i++) {
@@ -92,10 +91,10 @@ public class DhnsTestClusteredGraph {
         //2
         controller = new DhnsGraphController();
         dhnsGlobal2 = new Dhns(controller);
-        graphGlobal2Directed = new ClusteredDirectedGraphImpl(dhnsGlobal2, false, false);
-        graphGlobal2Undirected = new ClusteredUndirectedGraphImpl(dhnsGlobal2, false, false);
+        graphGlobal2Directed = new ClusteredDirectedGraphImpl(dhnsGlobal2,null);
+        graphGlobal2Undirected = new ClusteredUndirectedGraphImpl(dhnsGlobal2, null);
         treeStructure = dhnsGlobal2.getTreeStructure();
-        factory = dhnsGlobal2.getGraphFactory();
+        factory = dhnsGlobal2.factory();
 
         //Nodes
         for (int i = 0; i < 3; i++) {
@@ -302,10 +301,10 @@ public class DhnsTestClusteredGraph {
     public void testView() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller);
-        ClusteredGraph graph = new ClusteredDirectedGraphImpl(dhns, false, false);
+        ClusteredGraph graph = new ClusteredDirectedGraphImpl(dhns, null);
 
         TreeStructure treeStructure = dhns.getTreeStructure();
-        GraphFactoryImpl factory = dhns.getGraphFactory();
+        GraphFactoryImpl factory = dhns.factory();
 
         //Nodes
         for (int i = 0; i < 5; i++) {
@@ -660,10 +659,9 @@ public class DhnsTestClusteredGraph {
     public void testMetaEdgesAfterGrouping() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller);
-        View mainView = dhns.getViewManager().getMainView();
         TreeStructure treeStructure = dhns.getTreeStructure();
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, false, false);
-        GraphFactoryImpl factory = dhns.getGraphFactory();
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, null);
+        GraphFactoryImpl factory = dhns.factory();
 
         //Add Node
         Node node1 = factory.newNode();
@@ -725,8 +723,8 @@ public class DhnsTestClusteredGraph {
         graph.moveToGroup(node1, node4);
         assertFalse(graph.getClusteredGraph().isInView(node1));
         PreNode preNode1 = (PreNode) node1;
-        assertEquals(0, preNode1.getMetaEdgesInTree(mainView).getCount());
-        assertEquals(0, preNode1.getMetaEdgesOutTree(mainView).getCount());
+        assertEquals(0, preNode1.getMetaEdgesInTree().getCount());
+        assertEquals(0, preNode1.getMetaEdgesOutTree().getCount());
         Edge[] metaEdges4 = graph.getClusteredGraph().getMetaEdges(node4).toArray();
         assertEquals(1, metaEdges4.length);
         Edge metaEdge46 = metaEdges4[0];
@@ -831,15 +829,15 @@ public class DhnsTestClusteredGraph {
                 System.out.println("graph changed " + event.getEventType());
             }
         };
-        graphGlobal.addGraphListener(gl);
+        dhnsGlobal.addGraphListener(gl);
         assertEquals(1, dhnsGlobal.getEventManager().getListeners().size());
-        graphGlobal.addGraphListener(gl);
+        dhnsGlobal.addGraphListener(gl);
         assertEquals(1, dhnsGlobal.getEventManager().getListeners().size());
-        graphGlobal.removeGraphListener(gl);
+        dhnsGlobal.removeGraphListener(gl);
         assertEquals(0, dhnsGlobal.getEventManager().getListeners().size());
 
 
-        GraphFactoryImpl factory = dhnsGlobal.getGraphFactory();
+        GraphFactoryImpl factory = dhnsGlobal.factory();
         graphGlobal.addNode(factory.newNode());
     }
 

@@ -89,20 +89,16 @@ public class JSqueezeBoxPanel extends JPanel {
     private void configureSnippetPanel(JPanel panel) {
         panel.setOpaque(true);
         panel.setBackground(CP_BACKGROUND_COLOR);
-        setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
     }
 
     public void addPanel(JPanel panel, String name) {
         if (panelMap.containsKey(panel)) {
             return;
         }
-        panel.setOpaque(true);
         panel.setName(name);
-        panel.setBackground(CP_BACKGROUND_COLOR);
-        setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+        configureSnippetPanel(panel);
         SnippetPanel snippetPanel = new SnippetPanel(panel.getName(), panel);
         panelMap.put(panel, snippetPanel);
-        configureSnippetPanel(panel);
         scrollPanel.add(snippetPanel, gbc);
         scrollPanel.revalidate();
     }
@@ -113,6 +109,14 @@ public class JSqueezeBoxPanel extends JPanel {
         }
         SnippetPanel snippetPanel = panelMap.remove(panel);
         scrollPanel.remove(snippetPanel);
+        scrollPanel.revalidate();
+    }
+
+    public void cleanPanels() {
+        for (SnippetPanel snippetPanel : panelMap.values()) {
+            scrollPanel.remove(snippetPanel);
+        }
+        panelMap.clear();
         scrollPanel.revalidate();
     }
 

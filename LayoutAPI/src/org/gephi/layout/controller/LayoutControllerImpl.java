@@ -20,14 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.controller;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.gephi.graph.api.GraphController;
 import org.gephi.layout.api.Layout;
-import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutController;
 import org.openide.util.Lookup;
 
@@ -37,14 +34,12 @@ import org.openide.util.Lookup;
  */
 public class LayoutControllerImpl extends Observable implements LayoutController {
 
-    private ArrayList<LayoutBuilder> layouts;
     private Layout layout;
     private ExecutorService executor;
     private LayoutRun layoutRun;
     private boolean running;
 
     public LayoutControllerImpl() {
-        layouts = new ArrayList<LayoutBuilder>(Lookup.getDefault().lookupAll(LayoutBuilder.class));
         executor = Executors.newSingleThreadExecutor();
         running = false;
     }
@@ -64,14 +59,10 @@ public class LayoutControllerImpl extends Observable implements LayoutController
 
     public void injectGraph() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        if (layout != null) {
+        if (layout != null && graphController.getModel()!=null) {
             layout.setGraphController(graphController);
         }
         System.out.println("LayoutController: Injecting graphController");
-    }
-
-    public List<LayoutBuilder> getLayouts() {
-        return layouts;
     }
 
     public Layout getLayout() {

@@ -20,12 +20,16 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.processor.standard;
 
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphFactory;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.io.container.ContainerUnloader;
@@ -40,11 +44,32 @@ import org.openide.util.Lookup;
  */
 public class DefaultProcessor implements Processor {
 
-    public void process(ContainerUnloader container) {
+    private AttributeColumn nodeLabelColumn;
+    private AttributeColumn edgeLabelColumn;
+    private AttributeColumn edgeWeightColumn;
 
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        HierarchicalGraph graph = graphController.getHierarchicalDirectedGraph();
-        GraphFactory factory = graphController.factory();
+    public void process(ContainerUnloader container) {
+        System.out.println("process " + container.getEdgeDefault());
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        HierarchicalGraph graph = null;
+        switch (container.getEdgeDefault()) {
+            case DIRECTED:
+                graph = graphModel.getHierarchicalDirectedGraph();
+                break;
+            case UNDIRECTED:
+                graph = graphModel.getHierarchicalUndirectedGraph();
+                break;
+            case MIXED:
+                graph = graphModel.getHierarchicalMixedGraph();
+                break;
+        }
+        GraphFactory factory = graphModel.factory();
+
+        //Attributes - Creates columns for properties
+        AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
+        nodeLabelColumn = attributeController.getTemporaryAttributeManager().getNodeClass().addAttributeColumn("label", AttributeType.STRING);
+        edgeLabelColumn = attributeController.getTemporaryAttributeManager().getEdgeClass().addAttributeColumn("label", AttributeType.STRING);
+        edgeWeightColumn = attributeController.getTemporaryAttributeManager().getEdgeClass().addAttributeColumn("weight", AttributeType.FLOAT);
 
         int nodeCount = 0;
         //Create all nodes
@@ -77,7 +102,7 @@ public class DefaultProcessor implements Processor {
             Node source = edge.getSource().getNode();
             Node target = edge.getTarget().getNode();
 
-            Edge e = factory.newEdge(source, target);
+            Edge e = factory.newEdge(source, target, edge.getWeight(), true);       //TODO set edge directed/undirected
             flushToEdge(edge, e);
             edgeCount++;
             graph.addEdge(e);
@@ -98,6 +123,10 @@ public class DefaultProcessor implements Processor {
             node.getNodeData().setLabel(nodeDraft.getLabel());
         }
         node.getNodeData().setLabelVisible(nodeDraft.isLabelVisible());
+
+        if (nodeDraft.getLabelSize() != -1f) {
+            node.getNodeData().setLabelSize(nodeDraft.getLabelSize());
+        }
 
         if (nodeDraft.getX() != 0) {
             node.getNodeData().setX(nodeDraft.getX());
@@ -137,6 +166,9 @@ public class DefaultProcessor implements Processor {
             for (AttributeValue val : nodeDraft.getAttributeValues()) {
                 row.setValue(val.getColumn(), val.getValue());
             }
+            if (nodeDraft.getLabel() != null) {
+                row.setValue(nodeLabelColumn, nodeDraft.getLabel());
+            }
         }
     }
 
@@ -151,8 +183,31 @@ public class DefaultProcessor implements Processor {
             edge.getEdgeData().setR(edgeDraft.getColor().getRed() / 255f);
             edge.getEdgeData().setG(edgeDraft.getColor().getGreen() / 255f);
             edge.getEdgeData().setB(edgeDraft.getColor().getBlue() / 255f);
+        } else {
+            edge.getEdgeData().setR(-1f);
+            edge.getEdgeData().setG(-1f);
+            edge.getEdgeData().setB(-1f);
+        }
+
+        if (edgeDraft.getLabel() != null) {
+            edge.getEdgeData().setLabel(edgeDraft.getLabel());
+        }
+        edge.getEdgeData().setLabelVisible(edgeDraft.isLabelVisible());
+
+        if (edgeDraft.getLabelSize() != -1f) {
+            edge.getEdgeData().setLabelSize(edgeDraft.getLabelSize());
+        }
+
+        //Attributes
+        if (edge.getEdgeData().getAttributes() != null) {
+            AttributeRow row = (AttributeRow) edge.getEdgeData().getAttributes();
+            for (AttributeValue val : edgeDraft.getAttributeValues()) {
+                row.setValue(val.getColumn(), val.getValue());
+            }
+            if (edgeDraft.getLabel() != null) {
+                row.setValue(edgeLabelColumn, edgeDraft.getLabel());
+            }
+            row.setValue(edgeWeightColumn, edgeDraft.getWeight());
         }
     }
 }
-
-

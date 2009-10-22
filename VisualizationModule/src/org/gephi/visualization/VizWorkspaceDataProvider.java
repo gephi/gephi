@@ -45,7 +45,7 @@ public class VizWorkspaceDataProvider implements WorkspaceDataProvider<VizModel>
     }
 
     public VizModel getDefaultData() {
-        return null;
+        return new VizModel();
     }
 
     public boolean isPersistent() {

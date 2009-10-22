@@ -33,7 +33,7 @@ import org.gephi.utils.progress.ProgressTicket;
  */
 public class DynamicGraph implements Generator {
 
-    protected int numberOfNodes = 5000;
+    protected int numberOfNodes = 2000;
     protected int numberOfEdges = 20000;
 
     public void generate(ContainerLoader container) {

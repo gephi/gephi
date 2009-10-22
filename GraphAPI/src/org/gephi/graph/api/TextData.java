@@ -29,4 +29,8 @@ public interface TextData {
     public float getWidth();
 
     public float getHeight();
+
+    public String getText();
+
+    public float getSize();
 }

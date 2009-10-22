@@ -34,6 +34,7 @@ import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.opengl.compatibility.objects.Arrow2dModel;
+import org.gephi.visualization.opengl.compatibility.objects.Arrow3dModel;
 
 /**
  *
@@ -42,20 +43,23 @@ import org.gephi.visualization.opengl.compatibility.objects.Arrow2dModel;
 public class CompatibilityArrowModeler implements CompatibilityModeler<NodeData> {
 
     private CompatibilityEngine engine;
-    private VizConfig config;
+    private VizController controller;
 
     public CompatibilityArrowModeler(AbstractEngine engine) {
         this.engine = (CompatibilityEngine) engine;
-        this.config = VizController.getInstance().getVizConfig();
+        this.controller = VizController.getInstance();
     }
 
     @Override
     public ModelImpl initModel(Renderable n) {
         EdgeData e = (EdgeData) n;
-
-        Arrow2dModel arrow = new Arrow2dModel(e);
+        Arrow2dModel arrow;
+        if (controller.getVizModel().isUse3d()) {
+            arrow = new Arrow3dModel(e);
+        } else {
+            arrow = new Arrow2dModel(e);
+        }
         arrow.setObj(e.getTarget());
-        arrow.setConfig(config);
 
         return arrow;
     }

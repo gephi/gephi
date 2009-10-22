@@ -26,7 +26,6 @@ import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
-import org.gephi.graph.dhns.view.View;
 
 /**
  * Iterates over the edges contained in a meta edge. Support either directed ot undirected request.
@@ -40,18 +39,16 @@ public class MetaEdgeContentIterator extends AbstractEdgeIterator implements Ite
     protected boolean undirected;
     protected AbstractEdge pointer;
     protected boolean undirectedSecond = false;   //Flag to know we are iterating already the mutual edge
-    protected View view;
 
     //Proposition
     protected Proposition<AbstractEdge> proposition;
 
-    public MetaEdgeContentIterator(View view, MetaEdgeImpl metaEdge, boolean undirected, Proposition<AbstractEdge> proposition) {
+    public MetaEdgeContentIterator(MetaEdgeImpl metaEdge, boolean undirected, Proposition<AbstractEdge> proposition) {
         iterator = metaEdge.getEdges().iterator();
-        this.view = view;
         this.metaEdge = metaEdge;
         this.undirected = undirected;
         if (proposition == null) {
-            this.proposition = new Tautology();
+            this.proposition = Tautology.instance;
         } else {
             this.proposition = proposition;
         }
@@ -80,7 +77,7 @@ public class MetaEdgeContentIterator extends AbstractEdgeIterator implements Ite
     }
 
     private MetaEdgeImpl getSymmetricEdge(MetaEdgeImpl edge) {
-        return edge.getTarget().getMetaEdgesOutTree(view).getItem(edge.getSource().getNumber());
+        return edge.getTarget().getMetaEdgesOutTree().getItem(edge.getSource().getNumber());
     }
 
     @Override

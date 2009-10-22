@@ -33,9 +33,19 @@ public interface GraphIO extends MouseListener, MouseWheelListener, MouseMotionL
 
     public float[] getMousePosition();
 
+    public float [] getMousePosition3d();
+
     public float[] getMouseDrag();
 
     public void startMouseListening();
 
     public void stopMouseListening();
+
+    public void trigger();
+
+    public void centerOnZero();
+
+    public void centerOnGraph();
+
+    public void centerOnCoordinate(float x, float y, float z);
 }

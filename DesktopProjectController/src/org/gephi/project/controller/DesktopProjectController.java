@@ -363,7 +363,7 @@ public class DesktopProjectController implements ProjectController {
         //Event
         fireWorkspaceEvent(EventType.CLOSE, workspace);
 
-        if (getCurrentProject().getWorkspaces().length == 0) {
+        if (getCurrentProject()==null || getCurrentProject().getWorkspaces().length == 0) {
             //Event
             fireWorkspaceEvent(EventType.DISABLE, workspace);
         }

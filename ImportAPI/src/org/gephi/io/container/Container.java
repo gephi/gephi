@@ -87,6 +87,17 @@ public interface Container {
      */
     public Report getReport();
 
+    /**
+     * This method must be called after the loading is complete and before unloading. Its aim is to verify data consistency as a whole.
+     * @return <code>true</code> if container data is consistent, <code>false</code> otherwise
+     */
+    public boolean verify();
+
+    /**
+     * Close the current loading and clean content before unloading.
+     */
+    public void closeLoader();
+
     public boolean isDynamicGraph();
 
     public boolean isHierarchicalGraph();

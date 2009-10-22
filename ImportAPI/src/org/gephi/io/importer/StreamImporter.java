@@ -28,7 +28,7 @@ import org.gephi.io.logging.Report;
  *
  * @author Mathieu Bastian
  */
-public interface StreamImporter {
+public interface StreamImporter extends Importer {
 
     /**
      * Import data from undefined <code>streams</code> and push it to <code>container</code>. Informations,

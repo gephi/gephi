@@ -24,13 +24,12 @@ import java.util.Iterator;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
-import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
-import org.gephi.graph.dhns.view.View;
 
 /**
  * Iterator for meta edges for the visible graph.
@@ -45,31 +44,35 @@ public class MetaEdgeIterator extends AbstractEdgeIterator implements Iterator<E
     protected AbstractNode currentNode;
     protected MetaEdgeImpl pointer;
     protected boolean undirected;
-    protected View view;
 
     //Proposition
-    protected Proposition<AbstractEdge> proposition;
+    protected Predicate<AbstractNode> nodePredicate;
+    protected Predicate<AbstractEdge> edgePredicate;
 
-    public MetaEdgeIterator(View view, TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected, Proposition<AbstractEdge> proposition) {
+    public MetaEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected, Predicate<AbstractEdge> edgePredicate, Predicate<AbstractNode> nodePredicate) {
         this.nodeIterator = nodeIterator;
-        this.view = view;
         edgeIterator = new ParamAVLIterator<MetaEdgeImpl>();
         this.undirected = undirected;
-        if (proposition == null) {
-            this.proposition = new Tautology();
+        if (nodePredicate == null) {
+            this.nodePredicate = Tautology.instance;
         } else {
-            this.proposition = proposition;
+            this.nodePredicate = nodePredicate;
+        }
+        if (edgePredicate == null) {
+            this.edgePredicate = Tautology.instance;
+        } else {
+            this.edgePredicate = edgePredicate;
         }
     }
 
     @Override
     public boolean hasNext() {
-        while (pointer == null || (undirected && pointer.getUndirected(view) != pointer) || !proposition.evaluate(pointer)) {
+        while (pointer == null || (undirected && pointer.getUndirected() != pointer) || !edgePredicate.evaluate(pointer)) {
             while (!edgeIterator.hasNext()) {
                 if (nodeIterator.hasNext()) {
                     currentNode = nodeIterator.next();
-                    if (!currentNode.getMetaEdgesOutTree(view).isEmpty()) {
-                        edgeIterator.setNode(currentNode.getMetaEdgesOutTree(view));
+                    if (!currentNode.getMetaEdgesOutTree().isEmpty()) {
+                        edgeIterator.setNode(currentNode.getMetaEdgesOutTree());
                     }
                 } else {
                     return false;
@@ -77,6 +80,9 @@ public class MetaEdgeIterator extends AbstractEdgeIterator implements Iterator<E
             }
 
             pointer = edgeIterator.next();
+            if (!nodePredicate.evaluate(pointer.getTarget())) {
+                pointer = null;
+            }
         }
         return true;
     }

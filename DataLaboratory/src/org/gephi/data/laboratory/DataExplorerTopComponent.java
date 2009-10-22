@@ -1,25 +1,57 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+Copyright 2008 WebAtlas
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.laboratory;
 
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.tree.TreeModel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphEvent;
+import org.gephi.graph.api.GraphListener;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
-import org.netbeans.swing.outline.DefaultOutlineModel;
-import org.netbeans.swing.outline.OutlineModel;
+import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.project.api.ProjectController;
+import org.gephi.ui.utils.BusyUtils;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceListener;
+import org.netbeans.swing.etable.ETableColumnModel;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -29,22 +61,30 @@ import org.openide.windows.WindowManager;
 //import org.openide.util.Utilities;
 
 /**
- * Top component which displays something.
+ *
+ * @author Mathieu Bastian
  */
-final class DataExplorerTopComponent extends TopComponent implements LookupListener {
+final class DataExplorerTopComponent extends TopComponent implements LookupListener, GraphListener {
 
     private enum ClassDisplayed {
 
         NONE, NODE, EDGE
     };
+    private static final Color invalidFilterColor = new Color(254, 254, 242);
     private static DataExplorerTopComponent instance;
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "DataExplorerTopComponent";
 
-    //Lookup
-    final Lookup.Result<AttributeColumn> nodeColumnsResult;
-    final Lookup.Result<AttributeColumn> edgeColumnsResult;
+    //Data
+    private Lookup.Result<AttributeColumn> nodeColumnsResult;
+    private Lookup.Result<AttributeColumn> edgeColumnsResult;
+    private GraphModel graphModel;
+    private boolean visibleOnly = false;
+
+    //Table
+    private NodeDataTable nodeTable;
+    private EdgeDataTable edgeTable;
 
     //States
     ClassDisplayed classDisplayed = ClassDisplayed.NONE;
@@ -53,13 +93,77 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
     private DataExplorerTopComponent() {
 
-        taskExecutor = new ThreadPoolExecutor(0, 1, 10L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(20));
+        taskExecutor = new ThreadPoolExecutor(0, 1, 10L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(20), new ThreadFactory() {
 
+            public Thread newThread(Runnable r) {
+                return new Thread(r, "Data Laboratory fetching");
+            }
+        });
 
         initComponents();
         setName(NbBundle.getMessage(DataExplorerTopComponent.class, "CTL_DataExplorerTopComponent"));
         setToolTipText(NbBundle.getMessage(DataExplorerTopComponent.class, "HINT_DataExplorerTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
+
+        initEvents();
+
+        //Init table
+        nodeTable = new NodeDataTable();
+        edgeTable = new EdgeDataTable();
+
+        //Init
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        if (pc.getCurrentWorkspace() == null) {
+            nodesButton.setEnabled(false);
+            edgesButton.setEnabled(false);
+            filterTextField.setEnabled(false);
+            labelFilter.setEnabled(false);
+            bannerPanel.setVisible(false);
+            visibleGraphCheckbox.setEnabled(false);
+        }
+        bannerPanel.setVisible(false);
+    }
+
+    private void initEvents() {
+        //Workspace Listener
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        final GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+        pc.addWorkspaceListener(new WorkspaceListener() {
+
+            public void initialize(Workspace workspace) {
+            }
+
+            public void select(Workspace workspace) {
+                elementGroup.clearSelection();
+                tableScrollPane.setViewportView(null);
+                nodesButton.setEnabled(true);
+                edgesButton.setEnabled(true);
+                filterTextField.setEnabled(true);
+                labelFilter.setEnabled(true);
+                visibleGraphCheckbox.setEnabled(true);
+                bannerPanel.setVisible(false);
+                graphModel = gc.getModel();
+                graphModel.addGraphListener(DataExplorerTopComponent.this);
+            }
+
+            public void unselect(Workspace workspace) {
+                graphModel.removeGraphListener(DataExplorerTopComponent.this);
+                graphModel = null;
+            }
+
+            public void close(Workspace workspace) {
+            }
+
+            public void disable() {
+                elementGroup.clearSelection();
+                nodesButton.setEnabled(false);
+                edgesButton.setEnabled(false);
+                filterTextField.setEnabled(false);
+                labelFilter.setEnabled(false);
+                bannerPanel.setVisible(false);
+                visibleGraphCheckbox.setEnabled(false);
+            }
+        });
 
         //Init lookups
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
@@ -67,7 +171,39 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         edgeColumnsResult = attributeController.getEdgeColumnsLookup().lookupResult(AttributeColumn.class);
         nodeColumnsResult.addLookupListener(this);
         edgeColumnsResult.addLookupListener(this);
-        initNodesView();
+
+        //Filter
+        filterTextField.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (classDisplayed.equals(ClassDisplayed.NODE)) {
+                    if (nodeTable.setFilter(filterTextField.getText(), columnComboBox.getSelectedIndex())) {
+                        filterTextField.setBackground(Color.WHITE);
+                    } else {
+                        filterTextField.setBackground(invalidFilterColor);
+                    }
+                } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
+                    if (edgeTable.setPattern(filterTextField.getText(), columnComboBox.getSelectedIndex())) {
+                        filterTextField.setBackground(Color.WHITE);
+                    } else {
+                        filterTextField.setBackground(invalidFilterColor);
+                    }
+                }
+            }
+        });
+
+        visibleGraphCheckbox.setSelected(visibleOnly);
+        visibleGraphCheckbox.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                visibleOnly = visibleGraphCheckbox.isSelected();
+                if (classDisplayed.equals(ClassDisplayed.NODE)) {
+                    initNodesView();
+                } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
+                    initEdgesView();
+                }
+            }
+        });
     }
 
     private void initNodesView() {
@@ -75,35 +211,36 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
             public void run() {
                 try {
+                    String busyMsg = NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.tableScrollPane.busyMessage");
+                    BusyUtils.BusyLabel busylabel = BusyUtils.createCenteredBusyLabel(tableScrollPane, busyMsg, nodeTable.getOutlineTable());
+                    busylabel.setBusy(true);
+
                     //Attributes columns
                     Collection<? extends AttributeColumn> attributeColumns = nodeColumnsResult.allInstances();
                     final AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
 
                     //Nodes from DHNS
-
-                    HierarchicalDirectedGraph graph = Lookup.getDefault().lookup(GraphController.class).getHierarchicalDirectedGraph();
+                    graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+                    HierarchicalGraph graph;
+                    if (visibleOnly) {
+                        graph = graphModel.getHierarchicalGraphVisible();
+                    } else {
+                        graph = graphModel.getHierarchicalGraph();
+                    }
                     if (graph == null) {
+                        tableScrollPane.setViewportView(null);
                         return;
                     }
-                    graph.readLock();
-                    org.gephi.graph.api.Node[] nodes = graph.getTopNodes().toArray();
 
-                    //TreeModel
-                    final TreeModel treeMdl = new NodeTreeModel(nodes, graph);
-                    graph.readUnlock();
+                    //Model
+                    nodeTable.refreshModel(graph, cols);
+                    refreshFilterColumns();
 
-                    //Outline
-                    SwingUtilities.invokeLater(new Runnable() {
-
-                        public void run() {
-                            OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new NodeRowModel(cols), true);
-                            outline1.setRootVisible(false);
-                            outline1.setRenderDataProvider(new NodeRenderer());
-                            outline1.setModel(mdl);
-                        }
-                    });
+                    busylabel.setBusy(false);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    JLabel errorLabel = new JLabel(NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.tableScrollPane.error"), SwingConstants.CENTER);
+                    tableScrollPane.setViewportView(errorLabel);
                 }
             }
         };
@@ -115,34 +252,36 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
             public void run() {
                 try {
+                    String busyMsg = NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.tableScrollPane.busyMessage");
+                    BusyUtils.BusyLabel busylabel = BusyUtils.createCenteredBusyLabel(tableScrollPane, busyMsg, edgeTable.getTable());
+                    busylabel.setBusy(true);
+
                     //Attributes columns
                     Collection<? extends AttributeColumn> attributeColumns = edgeColumnsResult.allInstances();
                     final AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
 
                     //Edges from DHNS
-                    HierarchicalDirectedGraph graph = Lookup.getDefault().lookup(GraphController.class).getHierarchicalDirectedGraph();
+                    graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+                    HierarchicalGraph graph;
+                    if (visibleOnly) {
+                        graph = graphModel.getHierarchicalGraphVisible();
+                    } else {
+                        graph = graphModel.getHierarchicalGraph();
+                    }
                     if (graph == null) {
+                        tableScrollPane.setViewportView(null);
                         return;
                     }
-                    graph.readLock();
-                    org.gephi.graph.api.Edge[] edges = graph.getEdges().toArray();
 
-                    //TreeModel
-                    final TreeModel treeMdl = new EdgeTreeModel(edges);
-                    graph.readUnlock();
+                    //Model
+                    edgeTable.refreshModel(graph, cols);
+                    refreshFilterColumns();
 
-                    //Outline
-                    SwingUtilities.invokeLater(new Runnable() {
-
-                        public void run() {
-                            OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new EdgeRowModel(cols), true);
-                            outline1.setRootVisible(false);
-                            outline1.setRenderDataProvider(new EdgeRenderer());
-                            outline1.setModel(mdl);
-                        }
-                    });
+                    busylabel.setBusy(false);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    JLabel errorLabel = new JLabel(NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.tableScrollPane.error"), SwingConstants.CENTER);
+                    tableScrollPane.setViewportView(errorLabel);
                 }
             }
         };
@@ -150,10 +289,45 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
     }
 
     public void resultChanged(LookupEvent ev) {
+        if (!bannerPanel.isVisible() && classDisplayed != ClassDisplayed.NONE) {
+            SwingUtilities.invokeLater(new Runnable() {
+
+                public void run() {
+                    bannerPanel.setVisible(true);
+                }
+            });
+        }
+    }
+
+    public void graphChanged(GraphEvent event) {
+        if (!bannerPanel.isVisible() && classDisplayed != ClassDisplayed.NONE) {
+            SwingUtilities.invokeLater(new Runnable() {
+
+                public void run() {
+                    bannerPanel.setVisible(true);
+                }
+            });
+        }
+    }
+
+    private void refreshFilterColumns() {
         if (classDisplayed.equals(ClassDisplayed.NODE)) {
-            initNodesView();
+            ETableColumnModel columnModel = (ETableColumnModel) nodeTable.getOutlineTable().getColumnModel();
+            DefaultComboBoxModel model = new DefaultComboBoxModel();
+            for (int i = 0; i < columnModel.getColumnCount(); i++) {
+                if (!columnModel.isColumnHidden(columnModel.getColumn(i))) {
+                    model.addElement(columnModel.getColumn(i).getHeaderValue());
+                }
+            }
+            columnComboBox.setModel(model);
         } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
-            initEdgesView();
+            DefaultComboBoxModel model = new DefaultComboBoxModel();
+            for (int i = 0; i < edgeTable.getTable().getColumnCount(); i++) {
+                if (edgeTable.getTable().getColumnExt(i).isVisible()) {
+                    model.addElement(edgeTable.getTable().getColumnExt(i).getTitle());
+                }
+            }
+            columnComboBox.setModel(model);
         }
     }
 
@@ -164,71 +338,160 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        controlPanel = new javax.swing.JPanel();
-        nodesButton = new javax.swing.JButton();
-        edgesButton = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        outline1 = new org.netbeans.swing.outline.Outline();
+        elementGroup = new javax.swing.ButtonGroup();
+        controlToolbar = new javax.swing.JToolBar();
+        nodesButton = new javax.swing.JToggleButton();
+        edgesButton = new javax.swing.JToggleButton();
+        separator = new javax.swing.JToolBar.Separator();
+        visibleGraphCheckbox = new javax.swing.JCheckBox();
+        boxGlue = new javax.swing.JLabel();
+        labelFilter = new org.jdesktop.swingx.JXLabel();
+        filterTextField = new javax.swing.JTextField();
+        columnComboBox = new javax.swing.JComboBox();
+        tableScrollPane = new javax.swing.JScrollPane();
+        bannerPanel = new javax.swing.JPanel();
+        labelBanner = new javax.swing.JLabel();
+        refreshButton = new javax.swing.JButton();
 
-        setLayout(new java.awt.BorderLayout());
+        setLayout(new java.awt.GridBagLayout());
 
+        controlToolbar.setFloatable(false);
+        controlToolbar.setRollover(true);
+
+        elementGroup.add(nodesButton);
         org.openide.awt.Mnemonics.setLocalizedText(nodesButton, org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.nodesButton.text")); // NOI18N
+        nodesButton.setFocusable(false);
+        nodesButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        nodesButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         nodesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nodesButtonActionPerformed(evt);
             }
         });
+        controlToolbar.add(nodesButton);
 
+        elementGroup.add(edgesButton);
         org.openide.awt.Mnemonics.setLocalizedText(edgesButton, org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.edgesButton.text")); // NOI18N
+        edgesButton.setFocusable(false);
+        edgesButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        edgesButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         edgesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 edgesButtonActionPerformed(evt);
             }
         });
+        controlToolbar.add(edgesButton);
+        controlToolbar.add(separator);
 
-        javax.swing.GroupLayout controlPanelLayout = new javax.swing.GroupLayout(controlPanel);
-        controlPanel.setLayout(controlPanelLayout);
-        controlPanelLayout.setHorizontalGroup(
-            controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(controlPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(nodesButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(edgesButton)
-                .addContainerGap(260, Short.MAX_VALUE))
-        );
-        controlPanelLayout.setVerticalGroup(
-            controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controlPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nodesButton)
-                    .addComponent(edgesButton)))
-        );
+        org.openide.awt.Mnemonics.setLocalizedText(visibleGraphCheckbox, org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.visibleGraphCheckbox.text")); // NOI18N
+        visibleGraphCheckbox.setFocusable(false);
+        visibleGraphCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        controlToolbar.add(visibleGraphCheckbox);
 
-        add(controlPanel, java.awt.BorderLayout.PAGE_START);
+        org.openide.awt.Mnemonics.setLocalizedText(boxGlue, org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.boxGlue.text")); // NOI18N
+        boxGlue.setMaximumSize(new java.awt.Dimension(32767, 32767));
+        controlToolbar.add(boxGlue);
 
-        jScrollPane1.setViewportView(outline1);
+        org.openide.awt.Mnemonics.setLocalizedText(labelFilter, org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.labelFilter.text")); // NOI18N
+        controlToolbar.add(labelFilter);
 
-        add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        filterTextField.setText(org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.filterTextField.text")); // NOI18N
+        filterTextField.setMaximumSize(new java.awt.Dimension(1000, 30));
+        filterTextField.setPreferredSize(new java.awt.Dimension(150, 20));
+        controlToolbar.add(filterTextField);
+
+        columnComboBox.setMaximumSize(new java.awt.Dimension(2000, 20));
+        columnComboBox.setPreferredSize(new java.awt.Dimension(120, 20));
+        controlToolbar.add(columnComboBox);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        add(controlToolbar, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(tableScrollPane, gridBagConstraints);
+
+        bannerPanel.setBackground(new java.awt.Color(178, 223, 240));
+        bannerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+        bannerPanel.setLayout(new java.awt.GridBagLayout());
+
+        labelBanner.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/data/laboratory/resources/info.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelBanner, org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.labelBanner.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 0);
+        bannerPanel.add(labelBanner, gridBagConstraints);
+
+        org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.refreshButton.text")); // NOI18N
+        refreshButton.setOpaque(false);
+        refreshButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(1, 0, 1, 1);
+        bannerPanel.add(refreshButton, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.weightx = 1.0;
+        add(bannerPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void nodesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nodesButtonActionPerformed
-        classDisplayed = ClassDisplayed.NODE;
-        initNodesView();
-    }//GEN-LAST:event_nodesButtonActionPerformed
+    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+        bannerPanel.setVisible(false);
+        if (classDisplayed.equals(ClassDisplayed.NODE)) {
+            initNodesView();
+        } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
+            initEdgesView();
+        }
+}//GEN-LAST:event_refreshButtonActionPerformed
 
     private void edgesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edgesButtonActionPerformed
         classDisplayed = ClassDisplayed.EDGE;
         initEdgesView();
-    }//GEN-LAST:event_edgesButtonActionPerformed
+}//GEN-LAST:event_edgesButtonActionPerformed
+
+    private void nodesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nodesButtonActionPerformed
+        classDisplayed = ClassDisplayed.NODE;
+        initNodesView();
+}//GEN-LAST:event_nodesButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel controlPanel;
-    private javax.swing.JButton edgesButton;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JButton nodesButton;
-    private org.netbeans.swing.outline.Outline outline1;
+    private javax.swing.JPanel bannerPanel;
+    private javax.swing.JLabel boxGlue;
+    private javax.swing.JComboBox columnComboBox;
+    private javax.swing.JToolBar controlToolbar;
+    private javax.swing.JToggleButton edgesButton;
+    private javax.swing.ButtonGroup elementGroup;
+    private javax.swing.JTextField filterTextField;
+    private javax.swing.JLabel labelBanner;
+    private org.jdesktop.swingx.JXLabel labelFilter;
+    private javax.swing.JToggleButton nodesButton;
+    private javax.swing.JButton refreshButton;
+    private javax.swing.JToolBar.Separator separator;
+    private javax.swing.JScrollPane tableScrollPane;
+    private javax.swing.JCheckBox visibleGraphCheckbox;
     // End of variables declaration//GEN-END:variables
 
     /**

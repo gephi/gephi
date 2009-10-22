@@ -22,10 +22,6 @@ package org.gephi.visualization.api;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -33,85 +29,111 @@ import java.util.List;
  */
 public class VizConfig {
 
-    public static enum DisplayConfig {
+    //Default config - loaded in the VizModel
+    protected boolean defaultUse3d = false;
+    protected boolean defaultLighting = false;
+    protected boolean defaultCulling = false;
+    protected boolean defaultMaterial = false;
+    protected Color defaultBackgroundColor = Color.WHITE;
+    protected float[] defaultCameraTarget = {0f, 0f, 0f};
+    protected float[] defaultCameraPosition = {0f, 0f, 5000f};
+    protected boolean defaultRotatingEnable = false;
+    protected boolean defaultShowNodeLabels = false;
+    protected boolean defaultShowEdgeLabels = false;
+    protected boolean defaultShowEdges = true;
+    protected boolean defaultLightenNonSelectedAuto = true;
+    protected boolean defaultAutoSelectNeighbor = true;
+    protected boolean defaultHideNonSelectedEdges = false;
+    protected boolean defaultUniColorSelected = false;
+    protected boolean defaultEdgeHasUniColor = false;
+    protected float[] defaultEdgeUniColor = {0.5f, 0.5f, 0.5f, 0.5f};
+    protected float[] defaultNodeLabelColor = {0f, 0f, 0f, 1f};
+    protected float[] defaultEdgeLabelColor = {0.5f, 0.5f, 0.5f, 1f};
+    protected Font defaultNodeLabelFont = new Font("Arial", Font.BOLD, 20);
+    protected Font defaultEdgeLabelFont = new Font("Arial", Font.BOLD, 20);
+    protected boolean defaultAdjustByText = false;
+    protected boolean defaultShowLabelOnSelectedOnly = false;
+    protected String defaultNodeModeler = "CompatibilityNodeDiskModeler";
+    protected boolean defaultEdgeSelectionColor = false;
+    protected float[] defaultEdgeInSelectedColor = {32 / 255f, 95 / 255f, 154 / 255f};
+    protected float[] defaultEdgeOutSelectedColor = {196 / 255f, 66 / 255f, 79 / 255f};
+    protected float[] defaultEdgeBothSelectedColor = {248 / 255f, 215 / 255f, 83 / 255f};
 
-        DISPLAY_ALL, DISPLAY_NODES_ONLY, DISPLAY_NODES_EDGES, DISPLAY_ALPHA
-    }
-    private int antialiasing = 4;
-    private boolean use3d = false;
-    private boolean lineSmooth = false;
-    private boolean lineSmoothNicest = false;
-    private boolean pointSmooth = false;
-    private boolean blending = true;
-    private boolean blendCinema = false;
-    private boolean lighting = false;
-    private boolean culling = false;
-    private boolean material = false;
-    private boolean wireFrame = false;
-    private boolean useGLJPanel = false;
-    private Color backgroundColor = Color.WHITE;
-    private float[] defaultCameraTarget = {0f, 0f, 0f};
-    private float[] defaultCameraPosition = {0f, 0f, 5000f};
+    //Preferences
+    protected int antialiasing = 4;
+    protected boolean lineSmooth = false;
+    protected boolean lineSmoothNicest = false;
+    protected boolean pointSmooth = false;
+    protected boolean blending = true;
+    protected boolean blendCinema = false;
+    protected boolean wireFrame = false;
+    protected boolean useGLJPanel = false;
     protected float[] nodeSelectedColor = {1f, 1f, 1f};
     protected boolean selectionEnable = true;
-    protected boolean rectangleSelection = true;
+    protected boolean rectangleSelection = false;
     protected float[] rectangleSelectionColor = {0.16f, 0.48f, 0.81f, 0.2f};
-    protected boolean draggingEnable = true;
+    protected boolean customSelection = false;
+    protected boolean draggingEnable = false;
     protected boolean cameraControlEnable = true;
-    protected boolean rotatingEnable = true;
     protected boolean showFPS = true;
-    protected boolean showEdges = true;
+    protected boolean reduceFpsWhenMouseOut = true;
+    protected int reduceFpsWhenMouseOutValue = 1;
     protected boolean showArrows = true;
-    protected boolean showLabels = false;
-    protected boolean showEdgeLabels = true;
-    protected boolean lightenNonSelectedAuto = true;
     protected boolean lightenNonSelected = true;
     protected float[] lightenNonSelectedColor = {0.95f, 0.95f, 0.95f, 1f};
     protected boolean lightenNonSelectedAnimation = true;
     protected float lightenNonSelectedFactor = 0.5f;
-    protected boolean autoSelectNeighbor = true;
-    protected boolean hideNonSelectedEdges = false;
-    protected boolean uniColorSelected = false;
     protected float[] uniColorSelectedColor = {0.8f, 0.2f, 0.2f};
     protected float[] uniColorSelectedNeigborColor = {0.2f, 1f, 0.3f};
-    protected float[] edgeInSelectedColor = {1f, 0f, 0f};
-    protected float[] edgeOutSelectedColor = {1f, 1f, 0f};
-    protected float[] edgeBothSelectedColor = {0f, 0f, 0f};
-    protected DisplayConfig displayConfig = DisplayConfig.DISPLAY_ALL;
-    protected boolean edgeUniColor = false;
-    protected float[] edgeUniColorValue = {0.5f, 0.5f, 0.5f, 0.5f};
     protected int octreeDepth = 5;
     protected int octreeWidth = 100000;
-    protected float[] defaultNodeLabelColor = {0f, 0f, 0f, 1f};
-    protected float[] defaultEdgeLabelColor = {0.5f, 0.5f, 0.5f, 1f};
-    protected Font defaultLabelFont = new Font("Arial", Font.BOLD, 20);
-    protected boolean showLabelOnSelectedOnly = false;
+    protected boolean cleanDeletedModels = false;
+    protected boolean labelMipMap = true;
+    protected boolean labelAntialiased = true;
+    protected boolean labelFractionalMetrics = true;
+    protected boolean useLabelRenderer3d = false;//no working   
     protected boolean showVizVar = true;
-    protected boolean visualizeTree = false;
     protected boolean contextMenu = true;
-    protected boolean adjustByText = false;
+    protected boolean toolbar = true;
+    protected boolean propertiesbar = true;
+    protected int mouseSelectionDiameter = 1;
+    protected boolean mouseSelectionZoomProportionnal = false;
+    protected boolean disableLOD = false;
 
-    //Listener
-    protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
-
-    public DisplayConfig getDisplayConfig() {
-        return displayConfig;
+    public int getAntialiasing() {
+        return antialiasing;
     }
 
-    public float[] getEdgeBothSelectedColor() {
-        return edgeBothSelectedColor;
+    public boolean isBlendCinema() {
+        return blendCinema;
     }
 
-    public float[] getEdgeInSelectedColor() {
-        return edgeInSelectedColor;
+    public boolean isBlending() {
+        return blending;
     }
 
-    public float[] getEdgeOutSelectedColor() {
-        return edgeOutSelectedColor;
+    public boolean isCameraControlEnable() {
+        return cameraControlEnable;
     }
 
-    public float[] getNodeSelectedColor() {
-        return nodeSelectedColor;
+    public boolean isCleanDeletedModels() {
+        return cleanDeletedModels;
+    }
+
+    public boolean isContextMenu() {
+        return contextMenu;
+    }
+
+    public boolean isDefaultAdjustByText() {
+        return defaultAdjustByText;
+    }
+
+    public boolean isDefaultAutoSelectNeighbor() {
+        return defaultAutoSelectNeighbor;
+    }
+
+    public Color getDefaultBackgroundColor() {
+        return defaultBackgroundColor;
     }
 
     public float[] getDefaultCameraPosition() {
@@ -122,116 +144,112 @@ public class VizConfig {
         return defaultCameraTarget;
     }
 
-    public Color getBackgroundColor() {
-        return backgroundColor;
+    public boolean isDefaultCulling() {
+        return defaultCulling;
     }
 
-    public boolean isLighting() {
-        return lighting;
+    public boolean isDefaultEdgeHasUniColor() {
+        return defaultEdgeHasUniColor;
     }
 
-    public boolean isBlending() {
-        return blending;
+    public float[] getDefaultEdgeLabelColor() {
+        return defaultEdgeLabelColor;
     }
 
-    public boolean isBlendingCinema() {
-        return blendCinema;
+    public Font getDefaultEdgeLabelFont() {
+        return defaultEdgeLabelFont;
     }
 
-    public boolean isLineSmoothNicest() {
-        return lineSmoothNicest;
+    public float[] getDefaultEdgeUniColor() {
+        return defaultEdgeUniColor;
     }
 
-    public boolean isLineSmooth() {
-        return lineSmooth;
+    public boolean isDefaultHideNonSelectedEdges() {
+        return defaultHideNonSelectedEdges;
     }
 
-    public boolean isPointSmooth() {
-        return pointSmooth;
+    public boolean isDefaultLightenNonSelectedAuto() {
+        return defaultLightenNonSelectedAuto;
     }
 
-    public int getAntialiasing() {
-        return antialiasing;
+    public boolean isDefaultLighting() {
+        return defaultLighting;
     }
 
-    public boolean isMaterial() {
-        return material;
+    public boolean isDefaultMaterial() {
+        return defaultMaterial;
     }
 
-    public boolean isCameraControlEnable() {
-        return cameraControlEnable;
+    public float[] getDefaultNodeLabelColor() {
+        return defaultNodeLabelColor;
+    }
+
+    public Font getDefaultNodeLabelFont() {
+        return defaultNodeLabelFont;
+    }
+
+    public boolean isDefaultRotatingEnable() {
+        return defaultRotatingEnable;
+    }
+
+    public boolean isDefaultShowEdgeLabels() {
+        return defaultShowEdgeLabels;
+    }
+
+    public boolean isDefaultShowLabelOnSelectedOnly() {
+        return defaultShowLabelOnSelectedOnly;
+    }
+
+    public boolean isDefaultShowNodeLabels() {
+        return defaultShowNodeLabels;
+    }
+
+    public boolean isDefaultUniColorSelected() {
+        return defaultUniColorSelected;
+    }
+
+    public boolean isDefaultUse3d() {
+        return defaultUse3d;
+    }
+
+    public boolean isDefaultShowEdges() {
+        return defaultShowEdges;
     }
 
     public boolean isDraggingEnable() {
         return draggingEnable;
     }
 
-    public boolean isRotatingEnable() {
-        return rotatingEnable;
+    public boolean isDefaultEdgeSelectionColor() {
+        return defaultEdgeSelectionColor;
     }
 
-    public boolean isSelectionEnable() {
-        return selectionEnable;
+    public float[] getDefaultEdgeBothSelectedColor() {
+        return defaultEdgeBothSelectedColor;
     }
 
-    public boolean isRectangleSelection() {
-        return rectangleSelection;
+    public float[] getDefaultEdgeInSelectedColor() {
+        return defaultEdgeInSelectedColor;
     }
 
-    public float[] getRectangleSelectionColor() {
-        return rectangleSelectionColor;
+    public float[] getDefaultEdgeOutSelectedColor() {
+        return defaultEdgeOutSelectedColor;
     }
 
-    public boolean isShowEdges() {
-        return showEdges;
+    public boolean isLabelAntialiased() {
+        return labelAntialiased;
     }
 
-    public boolean isShowArrows() {
-        return showArrows;
+    public boolean isLabelFractionalMetrics() {
+        return labelFractionalMetrics;
     }
 
-    public boolean isShowFPS() {
-        return showFPS;
-    }
-
-    public boolean isShowLabels() {
-        return showLabels;
-    }
-
-    public boolean isShowEdgeLabels() {
-        return showEdgeLabels;
-    }
-
-    public boolean isShowLabelOnSelectedOnly() {
-        return showLabelOnSelectedOnly;
-    }
-
-    public boolean isAdjustByText() {
-        return adjustByText;
-    }
-
-    public boolean isShowVizVar() {
-        return showVizVar;
-    }
-
-    public boolean isVisualizeTree() {
-        return visualizeTree;
-    }
-
-    public boolean isContextMenu() {
-        return contextMenu;
-    }
-
-    public boolean isAutoSelectNeighbor() {
-        return autoSelectNeighbor;
+    public boolean isLabelMipMap() {
+        return labelMipMap;
     }
 
     public boolean isLightenNonSelected() {
         return lightenNonSelected;
-    }
-
-    public boolean isLightenNonSelectedAuto() {
-        return lightenNonSelectedAuto;
     }
 
     public boolean isLightenNonSelectedAnimation() {
@@ -242,16 +260,20 @@ public class VizConfig {
         return lightenNonSelectedColor;
     }
 
-    public void setLightenNonSelected(boolean lightenNonSelected) {
-        this.lightenNonSelected = lightenNonSelected;
-    }
-
     public float getLightenNonSelectedFactor() {
         return lightenNonSelectedFactor;
     }
 
-    public void setLightenNonSelectedFactor(float lightenNonSelectedFactor) {
-        this.lightenNonSelectedFactor = lightenNonSelectedFactor;
+    public boolean isLineSmooth() {
+        return lineSmooth;
+    }
+
+    public boolean isLineSmoothNicest() {
+        return lineSmoothNicest;
+    }
+
+    public float[] getNodeSelectedColor() {
+        return nodeSelectedColor;
     }
 
     public int getOctreeDepth() {
@@ -262,24 +284,32 @@ public class VizConfig {
         return octreeWidth;
     }
 
-    public boolean isWireFrame() {
-        return wireFrame;
+    public boolean isPointSmooth() {
+        return pointSmooth;
     }
 
-    public boolean useGLJPanel() {
-        return useGLJPanel;
+    public boolean isRectangleSelection() {
+        return rectangleSelection;
     }
 
-    public boolean use3d() {
-        return use3d;
+    public float[] getRectangleSelectionColor() {
+        return rectangleSelectionColor;
     }
 
-    public boolean isCulling() {
-        return culling;
+    public boolean isSelectionEnable() {
+        return selectionEnable;
     }
 
-    public boolean isUniColorSelected() {
-        return uniColorSelected;
+    public boolean isShowArrows() {
+        return showArrows;
+    }
+
+    public boolean isShowFPS() {
+        return showFPS;
+    }
+
+    public boolean isShowVizVar() {
+        return showVizVar;
     }
 
     public float[] getUniColorSelectedColor() {
@@ -290,78 +320,80 @@ public class VizConfig {
         return uniColorSelectedNeigborColor;
     }
 
-    public boolean isEdgeUniColor() {
-        return edgeUniColor;
+    public boolean isUseGLJPanel() {
+        return useGLJPanel;
     }
 
-    public float[] getEdgeUniColorValue() {
-        return edgeUniColorValue;
+    public boolean isUseLabelRenderer3d() {
+        return useLabelRenderer3d;
     }
 
-    public boolean isHideNonSelectedEdges() {
-        return hideNonSelectedEdges;
+    public boolean isWireFrame() {
+        return wireFrame;
     }
 
-    public float[] getDefaultEdgeLabelColor() {
-        return defaultEdgeLabelColor;
+    public String getDefaultNodeModeler() {
+        return defaultNodeModeler;
     }
 
-    public float[] getDefaultNodeLabelColor() {
-        return defaultNodeLabelColor;
+    public boolean isToolbar() {
+        return toolbar;
     }
 
-    public Font getDefaultLabelFont() {
-        return defaultLabelFont;
+    public boolean isPropertiesbar() {
+        return propertiesbar;
     }
 
-    public void setAntialiasing(int antialiasing) {
-        this.antialiasing = antialiasing;
-        fireProperyChange("antialiasing", null, antialiasing);
+    public int getMouseSelectionDiameter() {
+        return mouseSelectionDiameter;
     }
 
-    public void setBackgroundColor(Color backgroundColor) {
-        this.backgroundColor = backgroundColor;
-        fireProperyChange("backgroundColor", null, backgroundColor);
+    public boolean isMouseSelectionZoomProportionnal() {
+        return mouseSelectionZoomProportionnal;
     }
 
-    public void setDisplayConfig(DisplayConfig displayConfig) {
-        this.displayConfig = displayConfig;
-        fireProperyChange("displayConfig", null, displayConfig);
+    public boolean isCustomSelection() {
+        return customSelection;
     }
 
-    public void setShowFPS(boolean showFPS) {
-        this.showFPS = showFPS;
-        fireProperyChange("fps", null, showFPS);
+    public boolean isReduceFpsWhenMouseOut() {
+        return reduceFpsWhenMouseOut;
     }
 
-    public void setShowEdges(boolean showEdges) {
-        this.showEdges = showEdges;
-        fireProperyChange("showEdges", null, showEdges);
+    public int getReduceFpsWhenMouseOutValue() {
+        return reduceFpsWhenMouseOutValue;
     }
 
-    public void setShowArrows(boolean showArrows) {
-        this.showArrows = showArrows;
-        fireProperyChange("showArrows", null, showArrows);
+    //Setters
+    public void setLightenNonSelectedFactor(float lightenNonSelectedFactor) {
+        this.lightenNonSelectedFactor = lightenNonSelectedFactor;
     }
 
-    public void setVisualizeTree(boolean visualizeTree) {
-        this.visualizeTree = visualizeTree;
-        fireProperyChange("visualizeTree", null, visualizeTree);
+    public void setLightenNonSelected(boolean lightenNonSelected) {
+        this.lightenNonSelected = lightenNonSelected;
     }
 
-    //EVENTS
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        listeners.add(listener);
+    public void setRectangleSelection(boolean rectangleSelection) {
+        this.rectangleSelection = rectangleSelection;
     }
 
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        listeners.remove(listener);
+    public void setDraggingEnable(boolean draggingEnable) {
+        this.draggingEnable = draggingEnable;
     }
 
-    public void fireProperyChange(String propertyName, Object oldvalue, Object newValue) {
-        PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldvalue, newValue);
-        for (PropertyChangeListener l : listeners) {
-            l.propertyChange(evt);
-        }
+    public void setSelectionEnable(boolean selectionEnable) {
+        this.selectionEnable = selectionEnable;
+    }
+
+    public void setCustomSelection(boolean customSelection) {
+        this.customSelection = customSelection;
+    }
+
+    public boolean isDisableLOD() {
+        return disableLOD;
+    }
+
+    public void setDisableLOD(boolean disableLOD) {
+        this.disableLOD = disableLOD;
     }
 }

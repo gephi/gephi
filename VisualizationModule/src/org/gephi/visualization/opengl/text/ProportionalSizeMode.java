@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
+import javax.swing.ImageIcon;
 import org.gephi.visualization.api.ModelImpl;
 
 /**
@@ -28,14 +29,37 @@ import org.gephi.visualization.api.ModelImpl;
  */
 public class ProportionalSizeMode implements SizeMode {
 
-    private static float GLOBAL_FACTOR = 65f;
-    private static float FACTOR_LIMIT = 0.1f;
+    private static float FACTOR = 200f;
 
-    public void setSizeFactor(TextDataImpl text, ModelImpl model) {
-        float factor = GLOBAL_FACTOR / model.getCameraDistance() * model.getObj().getSize();
-        if (factor < FACTOR_LIMIT) {
-            factor = 0f;
+    public void init() {
+    }
+
+    public void setSizeFactor2d(float sizeFactor, TextDataImpl text, ModelImpl model) {
+        float factor = FACTOR * model.getObj().getSize() * sizeFactor / model.getCameraDistance();
+        if(model.getObj().getLabelSize()!=-1) {
+            factor*=model.getObj().getLabelSize();
         }
         text.setSizeFactor(factor);
+    }
+
+    public void setSizeFactor3d(float sizeFactor, TextDataImpl text, ModelImpl model) {
+        float factor = sizeFactor * model.getObj().getSize() / 10f;        //Between 0.1 and 2
+        if(model.getObj().getLabelSize()!=-1) {
+            factor*=model.getObj().getLabelSize();
+        }
+        text.setSizeFactor(factor);
+    }
+
+    public String getName() {
+        return "Node size";
+    }
+
+    public ImageIcon getIcon() {
+        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/ProportionalSizeMode.png"));
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

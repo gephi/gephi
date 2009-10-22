@@ -24,13 +24,12 @@ import java.util.Iterator;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
-import org.gephi.graph.dhns.proposition.Proposition;
 import org.gephi.graph.dhns.proposition.Tautology;
-import org.gephi.graph.dhns.view.View;
 
 /**
  * Iterator for meta edges for the visible graph.
@@ -45,19 +44,17 @@ public class EdgeAndMetaEdgeIterator extends AbstractEdgeIterator implements Ite
     protected AbstractNode currentNode;
     protected AbstractEdge pointer;
     protected boolean undirected;
-    protected View view;
     protected boolean metaEdge = false;
 
     //Proposition
-    protected Proposition<AbstractEdge> proposition;
+    protected Predicate<AbstractEdge> proposition;
 
-    public EdgeAndMetaEdgeIterator(View view, TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected, Proposition<AbstractEdge> proposition) {
+    public EdgeAndMetaEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected, Predicate<AbstractEdge> proposition) {
         this.nodeIterator = nodeIterator;
-        this.view = view;
         edgeIterator = new ParamAVLIterator<MetaEdgeImpl>();
         this.undirected = undirected;
         if (proposition == null) {
-            this.proposition = new Tautology();
+            this.proposition = Tautology.instance;
         } else {
             this.proposition = proposition;
         }
@@ -65,12 +62,12 @@ public class EdgeAndMetaEdgeIterator extends AbstractEdgeIterator implements Ite
 
     @Override
     public boolean hasNext() {
-        while (pointer == null || (undirected && ((metaEdge && ((MetaEdgeImpl) pointer).getUndirected(view) != pointer) || (!metaEdge && pointer.getUndirected() != pointer))) || !proposition.evaluate(pointer)) {
+        while (pointer == null || (undirected && ((metaEdge && ((MetaEdgeImpl) pointer).getUndirected() != pointer) || (!metaEdge && pointer.getUndirected() != pointer))) || !proposition.evaluate(pointer)) {
             while (!edgeIterator.hasNext()) {
                 if (currentNode != null && !metaEdge) {
                     metaEdge = true;
-                    if (!currentNode.getMetaEdgesOutTree(view).isEmpty()) {
-                        edgeIterator.setNode(currentNode.getMetaEdgesOutTree(view));
+                    if (!currentNode.getMetaEdgesOutTree().isEmpty()) {
+                        edgeIterator.setNode(currentNode.getMetaEdgesOutTree());
                     }
                 } else if (nodeIterator.hasNext()) {
                     currentNode = nodeIterator.next();

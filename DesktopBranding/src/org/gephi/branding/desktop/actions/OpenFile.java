@@ -71,6 +71,9 @@ public class OpenFile extends SystemAction {
 
             graphFilter.addExtensions(fileType.getExtensions());
         }
+        DialogFileFilter zipFileFilter = new DialogFileFilter(NbBundle.getMessage(getClass(), "OpenFile_filechooser_zipfilter"));
+        zipFileFilter.addExtensions(new String[]{".zip"});
+        chooser.addChoosableFileFilter(zipFileFilter);
         chooser.addChoosableFileFilter(graphFilter);
 
         //Open dialog

@@ -110,9 +110,9 @@ public class PageRank implements Statistics, LongTask {
 
         Graph graph;
         if(useUndirected)
-            graph = graphController.getUndirectedGraph();
+            graph = graphController.getModel().getUndirectedGraphVisible();
         else
-            graph = graphController.getDirectedGraph();
+            graph = graphController.getModel().getDirectedGraphVisible();
 
         //DirectedGraph digraph = graphController.getDirectedGraph();
         int N = graph.getNodeCount();

@@ -66,11 +66,19 @@ public class TextDataImpl implements TextData {
     }
 
     public float getWidth() {
-        return (float)line.bounds.getWidth();
+        return (float) line.bounds.getWidth() * sizeFactor;
     }
 
     public float getHeight() {
-        return (float)line.bounds.getHeight();
+        return (float) line.bounds.getHeight() * sizeFactor;
+    }
+
+    public String getText() {
+        return line.text;
+    }
+
+    public float getSize() {
+        return sizeFactor;
     }
 
     public static class TextLine {

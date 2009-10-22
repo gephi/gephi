@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
+import javax.swing.ImageIcon;
 import org.gephi.visualization.api.ModelImpl;
 
 /**
@@ -28,7 +29,37 @@ import org.gephi.visualization.api.ModelImpl;
  */
 public class ScaledSizeMode implements SizeMode {
 
-    public void setSizeFactor(TextDataImpl text, ModelImpl model) {
-        text.setSizeFactor(1f);
+    private static float FACTOR_2D = 2000f;
+
+    public void init() {
+    }
+
+    public void setSizeFactor2d(float sizeFactor, TextDataImpl text, ModelImpl model) {
+        float factor = FACTOR_2D * sizeFactor / model.getCameraDistance();
+        if(model.getObj().getLabelSize()!=-1) {
+            factor*=model.getObj().getLabelSize();
+        }
+        text.setSizeFactor(factor);
+    }
+
+    public void setSizeFactor3d(float sizeFactor, TextDataImpl text, ModelImpl model) {
+        float factor = sizeFactor * 1.9f + 0.1f;        //Between 0.1 and 2
+        if(model.getObj().getLabelSize()!=-1) {
+            factor*=model.getObj().getLabelSize();
+        }
+        text.setSizeFactor(factor);
+    }
+
+    public String getName() {
+        return "Scaled";
+    }
+
+    public ImageIcon getIcon() {
+        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/ScaledSizeMode.png"));
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

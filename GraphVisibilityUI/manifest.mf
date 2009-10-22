@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.ui.control.visibility
+OpenIDE-Module-Layer: org/gephi/ui/control/visibility/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/gephi/ui/control/visibility/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

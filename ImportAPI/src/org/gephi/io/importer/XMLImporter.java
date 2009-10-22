@@ -39,5 +39,5 @@ public interface XMLImporter extends FileFormatImporter {
      * @param report the import report for logging informations and issues
      * @throws java.lang.Exception for catching eventual exceptions
      */
-    public void importData(Document document, ContainerLoader containter, Report report) throws Exception;
+    public void importData(Document document, ContainerLoader container, Report report) throws Exception;
 }

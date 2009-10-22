@@ -24,6 +24,12 @@ import org.gephi.graph.api.GraphController;
 import org.openide.nodes.Node.PropertySet;
 
 /**
+ * A Layout algorithm should implement the Layout interface to allow the
+ * LayoutController to run it properly.
+ *
+ * Note that a using a LayoutBuilder is the preferred way any Layout implementor
+ * should be instanciated. See the LayoutBuilder interface for a more detailed
+ * description.
  *
  * @author Mathieu Bastian
  */
@@ -35,7 +41,7 @@ public interface Layout {
     public void initAlgo();
 
     /**
-     *
+     * Injects the graphController for the graph this Layout should operate on.
      * @param graphController
      */
     public void setGraphController(GraphController graphController);
@@ -57,9 +63,21 @@ public interface Layout {
      */
     public void endAlgo();
 
+    /**
+     * The property sets of the layout.
+     * @return
+     * @throws NoSuchMethodException 
+     */
     public PropertySet[] getPropertySets() throws NoSuchMethodException;
 
+    /**
+     * Resets the properties values to the default values.
+     */
     public void resetPropertiesValues();
 
+    /**
+     * The reference to the LayoutBuilder that instanciated this Layout.
+     * @return
+     */
     public LayoutBuilder getBuilder();
 }

@@ -7,10 +7,16 @@
             <suite-component/>
             <module-dependencies/>
             <public-packages>
+                <package>gnu.trove</package>
+                <package>gnu.trove.decorator</package>
                 <package>org.gephi.datastructure.avl</package>
                 <package>org.gephi.datastructure.avl.param</package>
                 <package>org.gephi.datastructure.avl.simple</package>
             </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/trove-2.1.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/trove-2.1.0.jar</binary-origin>
+            </class-path-extension>
         </data>
     </configuration>
 </project>

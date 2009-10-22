@@ -22,12 +22,13 @@ package org.gephi.visualization.bridge;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.gephi.graph.api.ClusteredDirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Group;
-import org.gephi.graph.api.HierarchicalDirectedGraph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.NodeIterable;
@@ -44,8 +45,6 @@ import org.gephi.visualization.mode.ModeManager;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.objects.ConvexHullModel;
 import org.gephi.visualization.opengl.compatibility.objects.Edge2dModel;
-import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
 
 /**
@@ -57,7 +56,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     //Architecture
     protected AbstractEngine engine;
     protected GraphController controller;
-    protected HierarchicalDirectedGraph graph;
+    protected HierarchicalGraph graph;
     private VizConfig vizConfig;
     protected ModeManager modeManager;
 
@@ -74,35 +73,30 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         controller = Lookup.getDefault().lookup(GraphController.class);
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.modeManager = VizController.getInstance().getModeManager();
-        graph = controller.getHierarchicalDirectedGraph();
-
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.addWorkspaceListener(new VizWorkspaceListener());
     }
 
     public void updateWorld() {
         System.out.println("update world");
         cacheMarker++;
 
-        switch (modeManager.getMode()) {
-            case FULL:
-                graph = controller.getHierarchicalDirectedGraph();
-                break;
-            case VISIBLE:
-                //graph = controller.getVisibleDirectedGraph();
-                break;
-            case HIGHLIGHT:
-                //graph = controller.getDirectedGraph();
-                break;
-        }
-
-        if (graph == null) {
+        GraphModel graphModel = controller.getModel();
+        if (graphModel.isDirected()) {
+            graph = graphModel.getHierarchicalDirectedGraphVisible();
+        } else if (graphModel.isUndirected()) {
+            graph = graphModel.getHierarchicalUndirectedGraphVisible();
+        } else if (graphModel.isMixed()) {
+            graph = graphModel.getHierarchicalMixedGraphVisible();
+        } else {
+            //No visualized graph inited yet
             return;
         }
 
-        if (graph.isDynamic()) {
-            graph = (ClusteredDirectedGraph) controller.getCentralDynamicGraph().getGraph();
-        }
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+
+        /*if (graph.isDynamic()) {
+        System.out.println("dynamic graph");
+        graph = (ClusteredDirectedGraph) controller.getVisualizedGraph();
+        }*/
 
         ModelClass[] object3dClasses = engine.getModelClasses();
 
@@ -117,7 +111,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         }
 
         ModelClass edgeClass = object3dClasses[AbstractEngine.CLASS_EDGE];
-        if (edgeClass.isEnabled() && (graph.getEdgeVersion() > edgeVersion || modeManager.requireModeChange() || vizConfig.isVisualizeTree())) {
+        if (edgeClass.isEnabled() && (graph.getEdgeVersion() > edgeVersion || modeManager.requireModeChange())) {
             updateEdges();
             updateMetaEdges();
             edgeClass.setCacheMarker(cacheMarker);
@@ -144,28 +138,10 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         Modeler nodeInit = engine.getModelClasses()[AbstractEngine.CLASS_NODE].getCurrentModeler();
 
         NodeIterable nodeIterable;
-        if (vizConfig.isVisualizeTree()) {
-            nodeIterable = graph.getHierarchyTree().getNodes();
-        } else {
-            nodeIterable = graph.getClusteredGraph().getNodes();
-        }
+        nodeIterable = graph.getNodes();
+
 
         for (Node node : nodeIterable) {
-
-            //Tree position
-            if (vizConfig.isVisualizeTree()) {
-                node.getNodeData().setX(node.getPre() * 5);
-                node.getNodeData().setY(node.getPost() * 5);
-                if (graph.getClusteredGraph().isInView(node)) {
-                    node.getNodeData().setR(1f);
-                    node.getNodeData().setG(0f);
-                    node.getNodeData().setB(0f);
-                } else {
-                    node.getNodeData().setR(0.2f);
-                    node.getNodeData().setG(0.2f);
-                    node.getNodeData().setB(0.2f);
-                }
-            }
 
             Model obj = node.getNodeData().getModel();
             if (obj == null) {
@@ -192,11 +168,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         Modeler arrowInit = engine.getModelClasses()[AbstractEngine.CLASS_ARROW].getCurrentModeler();
 
         EdgeIterable edgeIterable;
-        if (vizConfig.isVisualizeTree()) {
-            edgeIterable = graph.getHierarchyTree().getEdges();
-        } else {
-            edgeIterable = graph.getClusteredGraph().getEdges();
-        }
+        edgeIterable = graph.getEdges();
+
 
         for (Edge edge : edgeIterable) {
             Model obj = edge.getEdgeData().getModel();
@@ -226,9 +199,6 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     public void updateMetaEdges() {
         Modeler edgeInit = engine.getModelClasses()[AbstractEngine.CLASS_EDGE].getCurrentModeler();
 
-        if (vizConfig.isVisualizeTree()) {
-            return;
-        }
 
         for (Edge edge : graph.getClusteredGraph().getMetaEdges()) {
 
@@ -246,9 +216,6 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     }
 
     public void updatePotatoes() {
-        if (vizConfig.isVisualizeTree()) {
-            return;
-        }
 
         ModelClass potatoClass = engine.getModelClasses()[AbstractEngine.CLASS_POTATO];
         if (potatoClass.isEnabled()) {
@@ -295,15 +262,19 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     public boolean requireUpdate() {
         if (graph == null) {
             //Try to get a graph
-            graph = controller.getHierarchicalDirectedGraph();
+            if (controller.getModel() != null) {
+                GraphModel graphModel = controller.getModel();
+                if (!graphModel.isDirected() && !graphModel.isUndirected() && !graphModel.isMixed()) {
+                    return false;
+                } else {
+                    graph = graphModel.getHierarchicalGraphVisible();
+                }
+            }
         }
         //Refresh reader if sight changed
         if (graph != null) {
-            if (vizConfig.isVisualizeTree()) {
-                return graph.getNodeVersion() > nodeVersion;
-            } else {
-                return graph.getNodeVersion() > nodeVersion || graph.getEdgeVersion() > edgeVersion;
-            }
+            return graph.getNodeVersion() > nodeVersion || graph.getEdgeVersion() > edgeVersion;
+
         }
         return false;
     }
@@ -318,26 +289,6 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             if (objClass.isEnabled()) {
                 engine.resetObjectClass(objClass);
             }
-        }
-    }
-
-    private class VizWorkspaceListener implements WorkspaceListener {
-
-        public void initialize(Workspace workspace) {
-        }
-
-        public void select(Workspace workspace) {
-            reset();
-        }
-
-        public void unselect(Workspace workspace) {
-        }
-
-        public void close(Workspace workspace) {
-        }
-
-        public void disable() {
-            reset();
         }
     }
 }

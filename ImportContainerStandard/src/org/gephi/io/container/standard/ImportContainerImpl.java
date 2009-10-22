@@ -22,6 +22,8 @@ package org.gephi.io.container.standard;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeManager;
 import org.gephi.data.attributes.api.AttributeValueFactory;
@@ -68,10 +70,14 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private boolean hierarchicalGraph = false;
     private Report report;
 
+    //Counting
+    private int directedEdgesCount = 0;
+    private int undirectedEdgesCount = 0;
+
     public ImportContainerImpl() {
         parameters = new ImportContainerParameters();
-        nodeMap = new HashMap<String, NodeDraftImpl>();
-        edgeMap = new HashMap<String, EdgeDraftImpl>();
+        nodeMap = new LinkedHashMap<String, NodeDraftImpl>();//to maintain the order
+        edgeMap = new LinkedHashMap<String, EdgeDraftImpl>();
         edgeSourceTargetMap = new HashMap<String, EdgeDraftImpl>();
         attributeFactory = Lookup.getDefault().lookup(AttributeController.class).valueFactory();
         attributeManager = Lookup.getDefault().lookup(AttributeController.class).getTemporaryAttributeManager();
@@ -82,7 +88,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         return this;
     }
 
-    public ContainerUnloader getUnloader() {
+    public synchronized ContainerUnloader getUnloader() {
         return this;
     }
 
@@ -169,22 +175,39 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             return;
         }
 
-        switch (parameters.getEdgeDefault()) {
-            case DIRECTED:
-                EdgeDraft.EdgeType type1 = edgeDraftImpl.getType();
-                if (type1.equals(EdgeDraft.EdgeType.UNDIRECTED)) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Bad_Edge_Type"), Level.WARNING));
-                }
-                break;
-            case UNDIRECTED:
-                EdgeDraft.EdgeType type2 = edgeDraftImpl.getType();
-                if (type2.equals(EdgeDraft.EdgeType.DIRECTED)) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Bad_Edge_Type"), Level.WARNING));
-                }
-                break;
-            case MIXED:
-                break;
+        if (edgeDraftImpl.getType() != null) {
+            //Counting
+            switch (edgeDraftImpl.getType()) {
+                case DIRECTED:
+                    directedEdgesCount++;
+                    break;
+                case UNDIRECTED:
+                    undirectedEdgesCount++;
+                    break;
+                case MUTUAL:
+                    directedEdgesCount += 2;
+                    break;
+            }
+
+            //Test if the given type match with parameters
+            switch (parameters.getEdgeDefault()) {
+                case DIRECTED:
+                    EdgeDraft.EdgeType type1 = edgeDraftImpl.getType();
+                    if (type1.equals(EdgeDraft.EdgeType.UNDIRECTED)) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Bad_Edge_Type"), Level.WARNING));
+                    }
+                    break;
+                case UNDIRECTED:
+                    EdgeDraft.EdgeType type2 = edgeDraftImpl.getType();
+                    if (type2.equals(EdgeDraft.EdgeType.DIRECTED)) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Bad_Edge_Type"), Level.WARNING));
+                    }
+                    break;
+                case MIXED:
+                    break;
+            }
         }
+
 
         String id = edgeDraftImpl.getId();
         String sourceTargetId = edgeDraftImpl.getSource().getId() + "-" + edgeDraftImpl.getTarget().getId();
@@ -194,13 +217,32 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 return;
             } else {
                 //Manage parallel edges
-                report.logIssue(new Issue("Parallel edges are not supported yet, edge id=" + id + " is ignored", Level.INFO));
+                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Parallel_Edge", id), Level.INFO));
                 return;
             }
         }
 
-        edgeSourceTargetMap.put(edgeDraftImpl.getSource().getId() + "-" + edgeDraftImpl.getTarget().getId(), edgeDraftImpl);
+        edgeSourceTargetMap.put(sourceTargetId, edgeDraftImpl);
         edgeMap.put(id, edgeDraftImpl);
+
+        //Mutual
+        if (edgeDraftImpl.getType() != null && edgeDraftImpl.getType().equals(EdgeDraft.EdgeType.MUTUAL)) {
+            id = edgeDraftImpl.getId() + "-mutual";
+            sourceTargetId = edgeDraftImpl.getTarget().getId() + "-" + edgeDraftImpl.getSource().getId();
+            if (edgeSourceTargetMap.containsKey(sourceTargetId)) {
+                if (!parameters.isParallelEdges()) {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_edgeExist"), Level.WARNING));
+                    return;
+                } else {
+                    //Manage parallel edges
+                    report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Parallel_Edge", id), Level.INFO));
+                    return;
+                }
+            }
+
+            edgeSourceTargetMap.put(sourceTargetId, edgeDraftImpl);
+            edgeMap.put(id, edgeDraftImpl);
+        }
     }
 
     public boolean edgeExists(String id) {
@@ -231,6 +273,13 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         return edgeSourceTargetMap.get(((NodeDraftImpl) source).getId() + "-" + ((NodeDraftImpl) target).getId());
     }
 
+    public EdgeDraftGetter getEdge(NodeDraftGetter source, NodeDraftGetter target) {
+        if (source == null || target == null) {
+            throw new NullPointerException();
+        }
+        return edgeSourceTargetMap.get(((NodeDraftImpl) source).getId() + "-" + ((NodeDraftImpl) target).getId());
+    }
+
     public Collection<? extends NodeDraftGetter> getNodes() {
         return nodeMap.values();
     }
@@ -245,6 +294,45 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     public AttributeValueFactory getFactory() {
         return attributeFactory;
+    }
+
+    public boolean verify() {
+
+        //Graph EdgeDefault
+        if (directedEdgesCount > 0 && undirectedEdgesCount == 0) {
+            parameters.setEdgeDefault(EdgeDefault.DIRECTED);
+        } else if (directedEdgesCount == 0 && undirectedEdgesCount > 0) {
+            parameters.setEdgeDefault(EdgeDefault.UNDIRECTED);
+        } else if (directedEdgesCount > 0 && undirectedEdgesCount > 0) {
+            parameters.setEdgeDefault(EdgeDefault.MIXED);
+        }
+        return true;
+    }
+
+    public void closeLoader() {
+        //Clean undirected edges
+        if (parameters.getEdgeDefault().equals(EdgeDefault.UNDIRECTED)) {
+            for (EdgeDraftImpl edge : edgeMap.values().toArray(new EdgeDraftImpl[0])) {
+                String oppositekey = edge.getTarget().getId() + "-" + edge.getSource().getId();
+                EdgeDraftImpl opposite = edgeSourceTargetMap.get(oppositekey);
+                if (opposite != null) {
+                    edgeMap.remove(opposite.getId());
+                    edgeSourceTargetMap.remove(oppositekey);
+                }
+            }
+        } else if (parameters.getEdgeDefault().equals(EdgeDefault.UNDIRECTED)) {
+            //Clean undirected edges when graph is mixed
+            for (EdgeDraftImpl edge : edgeMap.values().toArray(new EdgeDraftImpl[0])) {
+                if (edge.getType().equals(EdgeDraft.EdgeType.UNDIRECTED)) {
+                    String oppositekey = edge.getTarget().getId() + "-" + edge.getSource().getId();
+                    EdgeDraftImpl opposite = edgeSourceTargetMap.get(oppositekey);
+                    if (opposite != null) {
+                        edgeMap.remove(opposite.getId());
+                        edgeSourceTargetMap.remove(oppositekey);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -311,6 +399,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     public void setEdgeDefault(EdgeDefault edgeDefault) {
         parameters.setEdgeDefault(edgeDefault);
+        report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Set_EdgeDefault", edgeDefault.toString()), Level.INFO));
     }
 
     public boolean allowAutoNode() {

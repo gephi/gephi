@@ -106,9 +106,9 @@ public class Hits implements Statistics, LongTask {
     public void execute(GraphController graphController) {
 
         if(useUndirected)
-            graph = graphController.getUndirectedGraph();
+            graph = graphController.getModel().getUndirectedGraphVisible();
         else
-            graph = graphController.getDirectedGraph();
+            graph = graphController.getModel().getDirectedGraphVisible();
 
         //DirectedGraph digraph = graphController.getDirectedGraph();
         int N = graph.getNodeCount();

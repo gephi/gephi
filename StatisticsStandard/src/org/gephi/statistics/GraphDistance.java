@@ -96,9 +96,9 @@ public class GraphDistance implements Statistics, LongTask {
 
         Graph graph = null;
         if (directed) {
-            graph = graphController.getDirectedGraph();
+            graph = graphController.getModel().getDirectedGraphVisible();
         } else {
-            graph = graphController.getUndirectedGraph();
+            graph = graphController.getModel().getUndirectedGraphVisible();
         }
 
         N = graph.getNodeCount();

@@ -75,6 +75,28 @@ public class ImporterGDF implements TextImporter, LongTask {
         this.container = container;
         this.report = report;
 
+        try {
+            importData(reader);
+        } catch (Exception e) {
+            clean();
+            throw e;
+        }
+        clean();
+    }
+
+    private void clean() {
+        //Clean
+        this.container = null;
+        this.report = null;
+        this.nodeColumns = null;
+        this.edgeColumns = null;
+        this.nodeLines.clear();
+        this.edgeLines.clear();
+        this.progressTicket = null;
+        this.cancel = false;
+    }
+
+    private void importData(BufferedReader reader) throws Exception {
         Progress.start(progressTicket);        //Progress
 
         //Verify a node line exists and puts nodes and edges lines in arrays
@@ -96,6 +118,7 @@ public class ImporterGDF implements TextImporter, LongTask {
 
             Matcher m = pattern.matcher(nodeLine);
             int count = 0;
+            String id = "";
             while (m.find()) {
                 int start = m.start();
                 int end = m.end();
@@ -105,9 +128,12 @@ public class ImporterGDF implements TextImporter, LongTask {
                     if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
                         if (count == 0) {
                             //Id
+                            id = data;
                             node.setId(data);
                         } else if (count - 1 < nodeColumns.length) {
                             setNodeData(node, nodeColumns[count - 1], data);
+                        } else {
+                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat7", id), Issue.Level.SEVERE));
                         }
                     }
                 }
@@ -129,6 +155,7 @@ public class ImporterGDF implements TextImporter, LongTask {
 
             Matcher m = pattern.matcher(edgeLine);
             int count = 0;
+            String id = "";
             while (m.find()) {
                 int start = m.start();
                 int end = m.end();
@@ -139,11 +166,15 @@ public class ImporterGDF implements TextImporter, LongTask {
                         if (count == 0) {
                             NodeDraft nodeSource = container.getNode(data);
                             edge.setSource(nodeSource);
+                            id = data;
                         } else if (count == 1) {
                             NodeDraft nodeTarget = container.getNode(data);
                             edge.setTarget(nodeTarget);
+                            id += "," + data;
                         } else if (count - 2 < edgeColumns.length) {
                             setEdgeData(edge, edgeColumns[count - 2], data);
+                        } else {
+                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat7", id), Issue.Level.SEVERE));
                         }
                     }
                 }

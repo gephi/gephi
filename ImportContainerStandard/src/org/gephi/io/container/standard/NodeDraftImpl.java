@@ -53,10 +53,10 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     private float x;
     private float y;
     private float z;
-    private float labelSize;
-    private boolean labelVisible;
+    private float labelSize = -1f;
+    private boolean labelVisible = true;
     private boolean visible = true;
-    private boolean fixed;
+    private boolean fixed = false;
 
     //Dynamic
     private float from = -1;
@@ -214,6 +214,10 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
 
     public boolean isVisible() {
         return visible;
+    }
+
+    public float getLabelSize() {
+        return labelSize;
     }
 
     public float getDynamicFrom() {

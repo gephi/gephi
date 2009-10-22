@@ -20,15 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.api;
 
+import org.gephi.visualization.VizArchitecture;
+
 /**
  *
  * @author Mathieu Bastian
  */
-public interface VizEventManager {
-
-    public void addListener(VizEventListener listener, VizEvent.Type[] types);
-
-    public void removeListener(VizEventListener listener, VizEvent.Type[] types);
+public interface VizEventManager extends VizArchitecture {
 
     public void startDrag();
 
@@ -50,5 +48,17 @@ public interface VizEventManager {
 
     public void mouseMove();
 
-    public boolean hasSelectionListeners();
+    public void mouseLeftPressing();
+
+    public void mouseReleased();
+
+    public void addListener(VizEventListener listener);
+
+    public void addListener(VizEventListener[] listeners);
+
+    public void removeListener(VizEventListener listener);
+
+    public void removeListener(VizEventListener[] listeners);
+
+    public boolean hasListeners(VizEvent.Type type);
 }

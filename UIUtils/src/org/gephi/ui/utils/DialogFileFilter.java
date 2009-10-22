@@ -115,6 +115,31 @@ public class DialogFileFilter extends javax.swing.filechooser.FileFilter
 	public List<String> getExtensions(){
 		return extensions;
 	}
+
+    @Override
+    public boolean equals(Object obj) {
+         if (!(obj instanceof DialogFileFilter)) {
+            return false;
+        }
+        DialogFileFilter s = (DialogFileFilter) obj;
+        if (s.extensions.size() != this.extensions.size()) {
+            return false;
+        }
+        for (int i = 0; i < extensions.size(); i++) {
+            if (this.extensions.get(i) != s.extensions.get(i)) {
+                if (!this.extensions.get(i).equals(s.extensions.get(i))) {
+                    return false;
+                }
+            }
+        }
+        if(!description.equals(s.description)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    //TODO define hashCode
 }
 
 

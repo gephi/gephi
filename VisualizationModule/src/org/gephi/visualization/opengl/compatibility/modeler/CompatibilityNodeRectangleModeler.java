@@ -57,13 +57,9 @@ public class CompatibilityNodeRectangleModeler implements CompatibilityNodeModel
         NodeRectangeModel obj = new NodeRectangeModel();
         obj.setObj((NodeData) n);
         obj.setSelected(false);
-        obj.setConfig(config);
         obj.setDragDistanceFromMouse(new float[2]);
         n.setModel(obj);
-
-        if (n.getTextData() == null) {
-            n.setTextData(textManager.newTextData(nd));
-        }
+        textManager.initTextData(nd);
 
         chooseModel(obj);
         return obj;
@@ -72,6 +68,10 @@ public class CompatibilityNodeRectangleModeler implements CompatibilityNodeModel
     @Override
     public void chooseModel(ModelImpl object3d) {
         NodeRectangeModel obj = (NodeRectangeModel) object3d;
+        if (config.isDisableLOD()) {
+            obj.border = true;
+            return;
+        }
 
         float distance = engine.cameraDistance(object3d) / object3d.getObj().getRadius();
         if (distance > 600) {
@@ -104,6 +104,15 @@ public class CompatibilityNodeRectangleModeler implements CompatibilityNodeModel
     }
 
     public String getName() {
-        return "nodeModeler_Rectangle_name";
+        return "Rectangle";
+    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
+
+    public boolean is3d() {
+        return false;
     }
 }

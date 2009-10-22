@@ -24,6 +24,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.VizModel;
 import org.gephi.visualization.gleem.linalg.Vec3f;
 import org.gephi.visualization.opengl.octree.Octant;
 
@@ -42,7 +43,7 @@ public class SelfLoop3dModel extends SelfLoop2dModel {
     }
 
     @Override
-    public void display(GL gl, GLU glu) {
+    public void display(GL gl, GLU glu, VizModel vizModel) {
         gl.glEnd();
 
         //Params
@@ -128,8 +129,8 @@ public class SelfLoop3dModel extends SelfLoop2dModel {
             float g;
             float b;
             float a;
-            if (config.isEdgeUniColor()) {
-                float[] uni = config.getEdgeUniColorValue();
+            if (vizModel.isEdgeHasUniColor()) {
+                float[] uni = vizModel.getEdgeUniColor();
                 r = uni[0];
                 g = uni[1];
                 b = uni[2];
@@ -140,8 +141,8 @@ public class SelfLoop3dModel extends SelfLoop2dModel {
                 b = obj.b();
                 a = obj.alpha();
             }
-            if (config.isLightenNonSelected()) {
-                float lightColorFactor = config.getLightenNonSelectedFactor();
+            if (vizModel.getConfig().isLightenNonSelected()) {
+                float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
                 a = a - (a - 0.1f) * lightColorFactor;
                 gl.glColor4f(r, g, b, a);
             } else {

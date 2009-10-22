@@ -26,6 +26,7 @@ import org.gephi.visualization.api.ModelImpl;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
+import org.gephi.graph.api.Model;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.Engine;
@@ -69,13 +70,19 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected ModelClassLibrary modelClassLibrary;
     protected DataBridge dataBridge;
     protected EventBridge eventBridge;
+    protected VizController vizController;
     protected VizConfig vizConfig;
     protected ModeManager modeManager;
     protected TextManager textManager;
 
     //States
+    protected boolean rectangleSelection;
+    protected boolean customSelection;
     protected EngineLifeCycle lifeCycle = new EngineLifeCycle();
     protected boolean configChanged = false;
+    protected boolean backgroundChanged = false;
+    protected boolean reinit = false;
+    protected float lightenAnimationDelta = 0f;
 
     //Octree
     protected Octree octree;
@@ -86,6 +93,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         this.modelClassLibrary = VizController.getInstance().getModelClassLibrary();
         this.dataBridge = VizController.getInstance().getDataBridge();
         this.eventBridge = VizController.getInstance().getEventBridge();
+        this.vizController = VizController.getInstance();
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.modeManager = VizController.getInstance().getModeManager();
         this.textManager = VizController.getInstance().getTextManager();
@@ -93,10 +101,18 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         initSelection();
 
         //Vizconfig events
-        vizConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        vizController.getVizModel().addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
                 configChanged = true;
+                if (evt.getPropertyName().equals("backgroundColor")) {
+                    backgroundChanged = true;
+                } else if (evt.getPropertyName().equals("use3d")) {
+                    reinit = true;
+                }
+
+                getModelClasses()[AbstractEngine.CLASS_EDGE].setEnabled(vizController.getVizModel().isShowEdges());
+                getModelClasses()[AbstractEngine.CLASS_ARROW].setEnabled(vizController.getVizModel().isShowEdges() && vizConfig.isShowArrows());
             }
         });
     }
@@ -108,6 +124,8 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     public abstract void afterDisplay(GL gl, GLU glu);
 
     public abstract void initEngine(GL gl, GLU glu);
+
+    public abstract void initScreenshot(GL gl, GLU glu);
 
     public abstract void cameraHasBeenMoved(GL gl, GLU glu);
 
@@ -145,7 +163,11 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     protected abstract void stopAnimating();
 
-    public abstract ModelImpl[] getSelectedObjects(ModelClass modelClass);
+    public abstract ModelImpl[] getSelectedObjects(int modelClass);
+
+    public abstract void selectObject(Model obj);
+
+    public abstract void resetSelection();
 
     /**
      * Reset contents of octree for the given class
@@ -170,6 +192,10 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         res = graphDrawable.myGluProject(object.getObj().x() + object.getObj().getRadius(), object.getObj().y(), object.getObj().z());
         float rad = Math.abs((float) res[0] - object.getViewportX());
         object.setViewportRadius(rad);
+    }
+
+    public void reinit() {
+        reinit = true;
     }
 
     protected boolean isUnderMouse(ModelImpl obj) {
@@ -203,6 +229,17 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public SelectionArea getCurrentSelectionArea() {
         return currentSelectionArea;
+    }
+
+    public void setRectangleSelection(boolean rectangleSelection) {
+        vizConfig.setRectangleSelection(rectangleSelection);
+        configChanged = true;
+        lightenAnimationDelta = 0;
+        vizConfig.setLightenNonSelected(false);
+    }
+
+    public void setConfigChanged(boolean configChanged) {
+        this.configChanged = configChanged;
     }
 
     public void startDisplay() {

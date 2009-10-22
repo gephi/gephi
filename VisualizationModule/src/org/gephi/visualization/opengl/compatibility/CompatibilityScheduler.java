@@ -33,6 +33,7 @@ import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.Scheduler;
+import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.objects.CompatibilityModelClass;
 import org.gephi.visualization.scheduler.SimpleFPSAnimator;
 import org.gephi.visualization.swing.GraphDrawableImpl;
@@ -56,6 +57,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     //Architeture
     private GraphDrawableImpl graphDrawable;
     private CompatibilityEngine engine;
+    private VizConfig vizConfig;
 
     //Current GL
     private GL gl;
@@ -63,18 +65,21 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
     //Animator
     private SimpleFPSAnimator simpleFPSAnimator;
+    private int fpsLimit = 30;
+
     //Executor
     private ScheduledExecutorService displayExecutor;
 
     public void initArchitecture() {
         this.graphDrawable = VizController.getInstance().getDrawable();
         this.engine = (CompatibilityEngine) VizController.getInstance().getEngine();
+        this.vizConfig = VizController.getInstance().getVizConfig();
         initPools();
         init();
     }
     private ThreadPoolExecutor pool1;
     private ThreadPoolExecutor pool2;
-    private List<Runnable> modelSegments = new ArrayList<Runnable>();
+    private List<Runnable> modelSegments;
     private Semaphore pool1Semaphore = new Semaphore(0);
     private Semaphore pool2Semaphore = new Semaphore(0);
     private Runnable selectionSegment;
@@ -114,6 +119,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     }
 
     public void init() {
+        modelSegments = new ArrayList<Runnable>();
         for (final CompatibilityModelClass objClass : engine.lodClasses) {
             modelSegments.add(new Runnable() {
 
@@ -165,7 +171,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
     @Override
     public void start() {
-        simpleFPSAnimator = new SimpleFPSAnimator(this, graphDrawable, 30);
+        simpleFPSAnimator = new SimpleFPSAnimator(this, graphDrawable, fpsLimit);
         simpleFPSAnimator.start();
 
     }
@@ -311,5 +317,12 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     @Override
     public void requireMouseClick() {
         mouseClick.set(true);
+    }
+
+    public void setFps(int maxFps) {
+        this.fpsLimit = maxFps;
+        if (simpleFPSAnimator != null) {
+            simpleFPSAnimator.setFps(maxFps);
+        }
     }
 }

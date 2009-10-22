@@ -2,6 +2,7 @@ package org.gephi.preview.controller;
 
 import java.awt.Font;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.preview.GraphImpl;
 import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.PreviewController;
@@ -33,18 +34,18 @@ public class PreviewControllerImpl implements PreviewController {
     }
 
 	private void buildGraph() {
-		GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
 
 		org.gephi.graph.api.Graph sourceGraph = null;
 
-		if (gc.getDirectedGraph().isDirected()) {
-			sourceGraph = gc.getDirectedGraph();
+		if (graphModel.isDirected()) {
+			sourceGraph = graphModel.getDirectedGraph();
 		}
-		else if (gc.getDirectedGraph().isUndirected()) {
-			sourceGraph = gc.getUndirectedGraph();
+		else if (graphModel.isUndirected()) {
+			sourceGraph = graphModel.getUndirectedGraph();
 		}
-		else if (gc.getDirectedGraph().isMixed()) {
-			sourceGraph = gc.getMixedGraph();
+		else if (graphModel.isMixed()) {
+			sourceGraph = graphModel.getMixedGraph();
 		}
 
 		previewGraph = factory.createPreviewGraph(sourceGraph, gs);

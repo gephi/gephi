@@ -25,8 +25,6 @@ import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.utils.avl.EdgeOppositeTree;
 import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
-import org.gephi.graph.dhns.utils.avl.ViewAVLTree;
-import org.gephi.graph.dhns.view.View;
 
 /**
  * Virtual clone of a PreNode to represents a node in two different groups.
@@ -49,43 +47,23 @@ public class CloneNode extends AbstractNode {
     }
 
     @Override
-    public boolean isEnabled(View view) {
-        return preNode.isEnabled(view);
+    public boolean isEnabled() {
+        return preNode.isEnabled();
     }
 
     @Override
-    public void setEnabled(View view, boolean enabled) {
-        preNode.setEnabled(view, enabled);
+    public void setEnabled(boolean enabled) {
+        preNode.setEnabled(enabled);
     }
 
     @Override
-    public void addView(View view, boolean enabled) {
-        preNode.addView(view, enabled);
+    public MetaEdgeTree getMetaEdgesOutTree() {
+        return preNode.getMetaEdgesOutTree();
     }
 
     @Override
-    public void removeView(View view) {
-        preNode.removeView(view);
-    }
-
-    @Override
-    public boolean isInView(View view) {
-        return preNode.isInView(view);
-    }
-
-    @Override
-    public ViewAVLTree getViews() {
-        return preNode.getViews();
-    }
-
-    @Override
-    public MetaEdgeTree getMetaEdgesOutTree(View view) {
-        return preNode.getMetaEdgesOutTree(view);
-    }
-
-    @Override
-    public MetaEdgeTree getMetaEdgesInTree(View view) {
-        return preNode.getMetaEdgesInTree(view);
+    public MetaEdgeTree getMetaEdgesInTree() {
+        return preNode.getMetaEdgesInTree();
     }
 
     @Override
