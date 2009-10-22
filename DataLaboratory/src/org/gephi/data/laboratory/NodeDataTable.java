@@ -186,10 +186,11 @@ public class NodeDataTable {
         }
 
         public boolean isCellEditable(Object node, int column) {
-            return false;
+            return columns[column].isEditable();
         }
 
         public void setValueFor(Object node, int column, Object value) {
+            columns[column].setValueFor((ImmutableTreeNode) node, value);
         }
 
         public String getColumnName(int column) {
