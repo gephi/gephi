@@ -39,6 +39,7 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     protected Edge edge;
     protected LayoutData layoutData;
     protected String label = "";
+    protected String id = "";
     protected float r = 0f;
     protected float g = 0f;
     protected float b = 0f;
@@ -212,5 +213,13 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     public void setRange(float from, float to) {
         this.dynamicRangeFrom = from;
         this.dynamicRangeTo = to;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 }

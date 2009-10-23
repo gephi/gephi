@@ -32,6 +32,10 @@ public interface EdgeData extends Renderable {
 
     public NodeData getTarget();
 
+    public String getId();
+
+    public void setId(String id);
+
     public String getLabel();
 
     public LayoutData getLayoutData();
