@@ -77,6 +77,6 @@ public class TreeListIterator extends AbstractNodeIterator implements Iterator<A
 
     @Override
     public void remove() {
-        throw new UnsupportedOperationException();
+        treeList.remove(--nextIndex);
     }
 }

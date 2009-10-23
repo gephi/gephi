@@ -20,7 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -29,6 +31,7 @@ import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -120,6 +123,74 @@ public class DhnsTestDirectedGraph {
         nodeMap.clear();
         dhnsGlobal = null;
         graphGlobal = null;
+    }
+
+    @Test
+    public void testTreeList() {
+        DurableTreeList durableTreeList = new DurableTreeList();
+        List<AbstractNode> expected = new ArrayList<AbstractNode>();
+        for (int i = 0; i < 10; i++) {
+            PreNode node = new PreNode(i, 0, 0, 0, null);
+            expected.add(node);
+            durableTreeList.add(node);
+        }
+
+        TreeListIterator treeListIterator = new TreeListIterator(durableTreeList);
+        for (; treeListIterator.hasNext();) {
+            AbstractNode node = treeListIterator.next();
+            if (node.getId() == 4) {
+                treeListIterator.remove();
+            }
+        }
+
+        //Expected array
+        List<AbstractNode> expected1 = new ArrayList<AbstractNode>();
+        List<AbstractNode> actual = new ArrayList<AbstractNode>();
+        for (int i = 0; i < durableTreeList.size; i++) {
+            AbstractNode node = durableTreeList.get(i);
+            actual.add(node);
+        }
+        expected1.addAll(expected);
+        expected1.remove(4);
+        assertArrayEquals(expected1.toArray(), actual.toArray());
+
+        durableTreeList.remove(2);
+
+        //Expected array
+        List<AbstractNode> expected2 = new ArrayList<AbstractNode>();
+        actual = new ArrayList<AbstractNode>();
+        for (int i = 0; i < durableTreeList.size; i++) {
+            AbstractNode node = durableTreeList.get(i);
+            actual.add(node);
+        }
+        expected2.addAll(expected);
+        expected2.remove(4);
+        expected2.remove(2);
+        assertArrayEquals(expected2.toArray(), actual.toArray());
+
+        treeListIterator = new TreeListIterator(durableTreeList);
+        for (; treeListIterator.hasNext();) {
+            AbstractNode node = treeListIterator.next();
+            if (node.getId() == 5) {
+                treeListIterator.remove();
+            }
+        }
+
+        durableTreeList.remove(5);
+
+        //Expected array
+        List<AbstractNode> expected3 = new ArrayList<AbstractNode>();
+        actual = new ArrayList<AbstractNode>();
+        for (int i = 0; i < durableTreeList.size; i++) {
+            AbstractNode node = durableTreeList.get(i);
+            actual.add(node);
+        }
+        expected3.addAll(expected);
+        expected3.remove(4);
+        expected3.remove(2);
+        expected3.remove(3);
+        expected3.remove(5);
+        assertArrayEquals(expected3.toArray(), actual.toArray());
     }
 
     @Test
