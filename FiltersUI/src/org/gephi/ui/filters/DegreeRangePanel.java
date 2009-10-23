@@ -18,8 +18,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.filters;
+package org.gephi.ui.filters;
 
+import org.gephi.filters.*;
 import org.gephi.ui.components.JRangeSliderPanel;
 
 /**
@@ -30,11 +31,11 @@ public class DegreeRangePanel extends javax.swing.JPanel {
 
     public DegreeRangePanel() {
         initComponents();
-        JRangeSliderPanel r = (JRangeSliderPanel) rangeSliderPanel;
-        r.setRange(new JRangeSliderPanel.Range(r.getSlider(), 25, 100));
     }
 
-    public void setup(DegreeRangeBuilder.DegreeRangeFilter filter) {
+    public void setup(DegreeRangeFilter filter) {
+        JRangeSliderPanel r = (JRangeSliderPanel) rangeSliderPanel;
+        r.setRange(new JRangeSliderPanel.Range(r.getSlider(), filter.getMinimum(), filter.getMaximum(), filter.getLowerBound(), filter.getUpperBound()));
     }
 
     /** This method is called from within the constructor to

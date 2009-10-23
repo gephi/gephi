@@ -36,13 +36,14 @@ import javax.swing.event.ChangeListener;
 public class JRangeSliderPanel extends javax.swing.JPanel {
 
     private static final int SLIDER_MAXIMUM = 1000;
-    private String lowerBound = "";
-    private String upperBound = "";
+    private String lowerBound = "NaN";
+    private String upperBound = "NaN";
     private Range range;
 
     /** Creates new form JRangeSliderPanel */
     public JRangeSliderPanel() {
         initComponents();
+        ((JRangeSlider)rangeSlider).setUpperValue(1000);
 
         lowerBoundTextField.addMouseListener(new MouseAdapter() {
 
@@ -135,9 +136,17 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
     }
 
     public void setRange(Range range) {
-        this.range = range;
-        range.refreshSlider();
-        refreshBoundTexts();
+        if (!range.min.equals(range.max)) {
+            this.range = range;
+            range.refreshSlider();
+            refreshBoundTexts();
+        } else {
+            lowerBound = "NaN";
+            upperBound = "NaN";
+            lowerBoundTextField.setText(lowerBound);
+            upperBoundTextField.setText(upperBound);
+        }
+
     }
 
     /** This method is called from within the constructor to
@@ -214,6 +223,14 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
             this.max = max;
             this.lowerBound = min;
             this.upperBound = max;
+        }
+
+        public Range(JRangeSlider slider, Object min, Object max, Object lowerBound, Object upperBound) {
+            this.slider = slider;
+            this.min = min;
+            this.max = max;
+            this.lowerBound = lowerBound;
+            this.upperBound = upperBound;
         }
 
         private void setLowerBound(String bound) {

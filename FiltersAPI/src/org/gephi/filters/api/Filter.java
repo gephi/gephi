@@ -30,5 +30,4 @@ public interface Filter {
 
     public Predicate getPredicate();
 
-    public FilterBuilder getBuilder();
 }

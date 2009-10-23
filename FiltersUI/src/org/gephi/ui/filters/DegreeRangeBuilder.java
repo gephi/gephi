@@ -18,14 +18,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.filters;
+package org.gephi.ui.filters;
 
+import org.gephi.filters.*;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.filters.api.Filter;
 import org.gephi.filters.api.FilterBuilder;
-import org.gephi.filters.api.FilterUI;
-import org.gephi.graph.api.Predicate;
 import org.openide.util.NbBundle;
 
 /**
@@ -46,36 +45,16 @@ public class DegreeRangeBuilder implements FilterBuilder {
         return new DegreeRangeFilter();
     }
 
-    public FilterUI getFilterUI(Filter filter) {
+    public Class getFilterClass() {
+        return DegreeRangeFilter.class;
+    }
+
+    public JPanel getUI(Filter filter) {
         if (!(filter instanceof DegreeRangeFilter)) {
             throw new IllegalArgumentException("The filter must be an instance of DegreeRangeFilter");
         }
-        return new DegreeRangeFilterUI((DegreeRangeFilter) filter);
-    }
-
-    public class DegreeRangeFilter implements Filter {
-
-        public Predicate getPredicate() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        public FilterBuilder getBuilder() {
-            return DegreeRangeBuilder.this;
-        }
-    }
-
-    private static class DegreeRangeFilterUI implements FilterUI {
-
-        private DegreeRangeFilter filter;
-
-        public DegreeRangeFilterUI(DegreeRangeFilter filter) {
-            this.filter = filter;
-        }
-
-        public JPanel getPanel() {
-            DegreeRangePanel panel = new DegreeRangePanel();
-            panel.setup(filter);
-            return panel;
-        }
+        DegreeRangePanel panel = new DegreeRangePanel();
+        panel.setup((DegreeRangeFilter) filter);
+        return panel;
     }
 }

@@ -18,15 +18,39 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.filters.api;
+package org.gephi.filters;
 
-import javax.swing.JPanel;
+import org.gephi.filters.api.Filter;
+import org.gephi.graph.api.Predicate;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface FilterUI {
+public class DegreeRangeFilter implements Filter {
 
-    public JPanel getPanel();
+    private int minimum;
+    private int maximum;
+    private int lowerBound;
+    private int upperBound;
+
+    public Predicate getPredicate() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int getLowerBound() {
+        return lowerBound;
+    }
+
+    public int getMaximum() {
+        return maximum;
+    }
+
+    public int getMinimum() {
+        return minimum;
+    }
+
+    public int getUpperBound() {
+        return upperBound;
+    }
 }
