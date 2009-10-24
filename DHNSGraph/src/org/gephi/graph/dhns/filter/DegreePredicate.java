@@ -29,23 +29,28 @@ import org.gephi.graph.api.TopologicalPredicate;
  *
  * @author Mathieu Bastian
  */
-public class DegreePredicate implements TopologicalPredicate<Node>, NodePredicate {
+public class DegreePredicate implements TopologicalPredicate, NodePredicate {
 
     private int degreeRangeStart;
     private int degreeRangeEnd;
+    private Graph graph;
 
     public DegreePredicate(int start, int end) {
         this.degreeRangeStart = start;
         this.degreeRangeEnd = end;
     }
 
-    public boolean evaluate(Node element, Graph graph) {
-        int degree = graph.getDegree(element);
-        System.out.println(element.getNodeData().getLabel() + " : " + degree);
-        return degree >= degreeRangeStart && degree <= degreeRangeEnd;
+    public void setup(Graph graph) {
+        this.graph = graph;
+    }
+
+    public void unsetup() {
+        graph = null;
     }
 
     public boolean evaluate(Node element) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        int degree = graph.getDegree(element);
+        System.out.println(element.getNodeData().getLabel() + " : " + degree);
+        return degree >= degreeRangeStart && degree <= degreeRangeEnd;
     }
 }

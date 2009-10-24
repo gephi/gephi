@@ -26,11 +26,13 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.Predicate;
+import org.gephi.graph.api.TopologicalPredicate;
 import org.gephi.graph.api.View;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphStructure;
 import org.gephi.graph.dhns.core.GraphVersion;
 import org.gephi.graph.dhns.graph.ClusteredGraphImpl;
+import org.gephi.graph.dhns.subgraph.SubGraphManager;
 import org.openide.util.Exceptions;
 
 /**
@@ -45,12 +47,15 @@ public class ViewImpl implements View {
     private final List<Predicate> predicates = new ArrayList<Predicate>();
 
     //Results
+    private ClusteredGraphImpl graph;
     private GraphStructure graphStructure;
 
     //Update
     private GraphVersion graphVersion;
     private ReentrantLock lock;
     private DispatchThread dispatchThread;
+    private boolean blocking = true;
+
     //Status
     private int nodeVersion = -1;
     private int edgeVersion = -1;
@@ -85,17 +90,41 @@ public class ViewImpl implements View {
 
     private void update() {
 
-       
+        if (predicates.isEmpty()) {
+            this.graphStructure = dhns.getGraphStructure();
+        } else {
+            this.graphStructure = SubGraphManager.copyGraphStructure(dhns.getGraphStructure());
+
+            for (Predicate p : predicates) {
+                if (p instanceof TopologicalPredicate) {
+                    Graph sequenceValidationGraph = graph.copy(dhns, graphStructure, new EmptyView(dhns));
+                    ((TopologicalPredicate) p).setup(sequenceValidationGraph);
+                    SubGraphManager.filterSubGraph(graphStructure, p);
+                    ((TopologicalPredicate) p).unsetup();
+                } else {
+                    SubGraphManager.filterSubGraph(graphStructure, p);
+                }
+            }
+
+            graph.setStructure(graphStructure);
+        }
     }
 
-  
+    public void setGraph(ClusteredGraphImpl graph) {
+        this.graph = graph;
+    }
 
     public void addPredicate(Predicate predicate) {
-        if (!dispatchThread.isAlive()) {
-            dispatchThread.start();
+        if (blocking) {
+            lock.lock();
+            predicates.add(predicate);
+            lock.unlock();
+        } else {
+            if (!dispatchThread.isAlive()) {
+                dispatchThread.start();
+            }
+            dispatchThread.addPredicate(predicate);
         }
-
-        dispatchThread.addPredicate(predicate);
     }
 
     public void removePredicate(Predicate predicate) {
@@ -124,6 +153,7 @@ public class ViewImpl implements View {
         private final List<Predicate> predicateQueue = new ArrayList<Predicate>();
         private final Object monitor = new Object();
         private boolean waiting = false;
+        private boolean started = false;
 
         public DispatchThread() {
             super("View update dispatch thread");
@@ -132,6 +162,7 @@ public class ViewImpl implements View {
         @Override
         public void run() {
             synchronized (monitor) {
+                started = true;
                 while (true) {
                     try {
                         monitor.wait();
@@ -155,6 +186,13 @@ public class ViewImpl implements View {
         public void addPredicate(Predicate predicate) {
             synchronized (predicateQueue) {
                 predicateQueue.add(predicate);
+            }
+            while (!started) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
             synchronized (monitor) {
                 monitor.notify();

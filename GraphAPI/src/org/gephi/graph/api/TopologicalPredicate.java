@@ -24,7 +24,9 @@ package org.gephi.graph.api;
  *
  * @author Mathieu Bastian
  */
-public interface TopologicalPredicate<T> extends Predicate<T> {
+public interface TopologicalPredicate {
 
-    public boolean evaluate(T element, Graph graph);
+    public void setup(Graph graph);
+
+    public void unsetup();
 }

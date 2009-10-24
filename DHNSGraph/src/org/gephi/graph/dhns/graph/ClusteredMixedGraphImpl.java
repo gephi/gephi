@@ -262,7 +262,7 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
     }
 
     @Override
-    public ClusteredMixedGraphImpl copy(ClusteredGraphImpl graph) {
+    public ClusteredMixedGraphImpl copy(Dhns dhns, GraphStructure structure, View view) {
         return new ClusteredMixedGraphImpl(dhns, structure, view);
     }
 

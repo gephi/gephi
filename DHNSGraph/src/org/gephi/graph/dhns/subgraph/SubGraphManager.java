@@ -33,7 +33,6 @@ import org.gephi.graph.dhns.edge.SelfLoopImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.CloneNode;
 import org.gephi.graph.dhns.node.PreNode;
-import org.gephi.graph.dhns.node.iterators.DescendantAndSelfIterator;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 
 /**
@@ -42,19 +41,19 @@ import org.gephi.graph.dhns.node.iterators.TreeListIterator;
  */
 public class SubGraphManager {
 
-    public void filterSubGraph(SubGraph subGraph, Predicate predicate) {
+    public static void filterSubGraph(GraphStructure graphStructure, Predicate predicate) {
         if (predicate instanceof NodePredicate) {
-            filterSubGraph(subGraph, (NodePredicate) predicate);
+            filterSubGraph(graphStructure, (NodePredicate) predicate);
         } else if (predicate instanceof EdgePredicate) {
-            filterSubGraph(subGraph, (EdgePredicate) predicate);
+            filterSubGraph(graphStructure, (EdgePredicate) predicate);
         } else {
             throw new IllegalArgumentException("Predicate must be either NodePredicate or EdgePredicate");
         }
     }
 
-    public void filterSubGraph(SubGraph subGraph, NodePredicate nodePredicate) {
+    public static void filterSubGraph(GraphStructure graphStructure, NodePredicate nodePredicate) {
 
-        TreeStructure treeStructure = subGraph.getGraphStructure().getStructure();
+        TreeStructure treeStructure = graphStructure.getStructure();
         ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
@@ -80,10 +79,10 @@ public class SubGraphManager {
         }
     }
 
-    public void filterSubGraph(SubGraph subGraph, EdgePredicate edgePredicate) {
+    public static void filterSubGraph(GraphStructure graphStructure, EdgePredicate edgePredicate) {
 
         ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
-        TreeStructure treeStructure = subGraph.getGraphStructure().getStructure();
+        TreeStructure treeStructure = graphStructure.getStructure();
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             if (!node.getEdgesOutTree().isEmpty()) {
@@ -98,7 +97,7 @@ public class SubGraphManager {
         }
     }
 
-    public TreeStructure copyGraphStructure(GraphStructure graphStructure) {
+    public static GraphStructure copyGraphStructure(GraphStructure graphStructure) {
         GraphStructure graphStructureCopy = new GraphStructure();
         TreeStructure treeStructureCopy = graphStructureCopy.getStructure();
 
@@ -139,6 +138,6 @@ public class SubGraphManager {
                 }
             }
         }
-        return treeStructureCopy;
+        return graphStructureCopy;
     }
 }

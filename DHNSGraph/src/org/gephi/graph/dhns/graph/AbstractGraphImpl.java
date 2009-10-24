@@ -46,6 +46,10 @@ public abstract class AbstractGraphImpl {
         return view;
     }
 
+    public void setStructure(GraphStructure structure) {
+        this.structure = structure;
+    }
+
     public GraphModel getGraphModel() {
         return dhns;
     }

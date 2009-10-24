@@ -334,7 +334,7 @@ public class ClusteredDirectedGraphImpl extends ClusteredGraphImpl implements Cl
     }
 
     @Override
-    public ClusteredDirectedGraphImpl copy(ClusteredGraphImpl graph) {
+    public ClusteredDirectedGraphImpl copy(Dhns dhns, GraphStructure structure, View view) {
         return new ClusteredDirectedGraphImpl(dhns, structure, view);
     }
 

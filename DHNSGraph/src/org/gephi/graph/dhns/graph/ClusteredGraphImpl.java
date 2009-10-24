@@ -53,9 +53,10 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
         this.dhns = dhns;
         this.structure = structure;
         this.view = (ViewImpl) view;
+        ((ViewImpl) view).setGraph(this);
     }
 
-    public abstract ClusteredGraphImpl copy(ClusteredGraphImpl graph);
+    public abstract ClusteredGraphImpl copy(Dhns dhns, GraphStructure structure, View view);
 
     public boolean addNode(Node node, Node parent) {
         if (node == null) {

@@ -260,7 +260,7 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
     }
 
     @Override
-    public ClusteredUndirectedGraphImpl copy(ClusteredGraphImpl graph) {
+    public ClusteredUndirectedGraphImpl copy(Dhns dhns, GraphStructure structure, View view) {
         return new ClusteredUndirectedGraphImpl(dhns, structure, view);
     }
 
