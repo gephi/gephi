@@ -26,6 +26,7 @@ import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.CloneNode;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
+import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
 
 /**
  * Holds nodes tree and manage basic operations.
@@ -34,15 +35,12 @@ import org.gephi.graph.dhns.node.iterators.TreeListIterator;
  */
 public class TreeStructure {
 
-    Dhns dhns;
     DurableTreeList tree;
     AbstractNode root;
     public int treeHeight;
-    private AbstractNode cacheNode;
 
-    public TreeStructure(Dhns dhns) {
+    public TreeStructure(GraphStructure graphStructure) {
         tree = new DurableTreeList();
-        this.dhns = dhns;
         initRoot();
     }
 
@@ -114,7 +112,6 @@ public class TreeStructure {
 
     public void insertAtEnd(AbstractNode node) {
         node.pre = tree.size();
-
         tree.add(node);
     }
 
@@ -182,7 +179,7 @@ public class TreeStructure {
         int pre = node.getPre();
         tree.remove(pre);
         for (int i = 0; i < node.size; i++) {
-            tree.remove(pre);
+            AbstractNode n = tree.remove(pre);
         }
     }
 

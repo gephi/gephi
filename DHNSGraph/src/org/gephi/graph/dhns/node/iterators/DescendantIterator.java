@@ -22,82 +22,52 @@ package org.gephi.graph.dhns.node.iterators;
 
 import java.util.Iterator;
 import org.gephi.graph.dhns.core.DurableTreeList;
-import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
- * {@link AbstractNode} iterator for children of a node, enabled or not.
+ * {@link AbstractNode} iterator for descendant of a node or the whole structure.
  *
  * @author Mathieu Bastian
- * @see DescendantIterator
+ * @see ChildrenIterator
  */
 public class DescendantIterator extends AbstractNodeIterator implements Iterator<Node>, ResetableIterator {
 
     protected int treeSize;
     protected DurableTreeList treeList;
     protected int nextIndex;
-    protected int diffIndex;
-    protected DurableAVLNode currentNode;
-    protected boolean loopStart = true;
+    protected DurableTreeList.DurableAVLNode next;
 
-    //Proposition
-    protected Predicate<AbstractNode> proposition;
-
-    public DescendantIterator(TreeStructure treeStructure, Predicate<AbstractNode> proposition) {
+    public DescendantIterator(TreeStructure treeStructure) {
         this.treeList = treeStructure.getTree();
-        nextIndex = 0;
-        diffIndex = 2;
         treeSize = treeList.size();
-        if (proposition == null) {
-            this.proposition = Tautology.instance;
-        } else {
-            this.proposition = proposition;
-        }
     }
 
-    public DescendantIterator(TreeStructure treeStructure, AbstractNode node, Predicate<AbstractNode> proposition) {
-        this(treeStructure, proposition);
+    public DescendantIterator(TreeStructure treeStructure, AbstractNode node) {
+        this(treeStructure);
         setNode(node);
     }
 
     public void setNode(AbstractNode node) {
         nextIndex = node.getPre() + 1;
         treeSize = node.getPre() + node.size + 1;
-        diffIndex = 2;
     }
 
     public boolean hasNext() {
-        while (loopStart || !proposition.evaluate(currentNode.getValue())) {
-
-            if (!loopStart) {
-                nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
-                diffIndex = nextIndex - currentNode.getValue().pre;
-            }
-            loopStart = false;
-
-            if (nextIndex < treeSize) {
-                if (diffIndex > 1) {
-                    currentNode = treeList.getNode(nextIndex);
-                } else {
-                    currentNode = currentNode.next();
-                }
-            } else {
-                return false;
-            }
-        }
-        return true;
+        return (nextIndex < treeSize);
     }
 
     public AbstractNode next() {
-        nextIndex++;
-        diffIndex = 1;
-        loopStart = true;
-        return currentNode.getValue();
+        if (next == null) {
+            next = treeList.getNode(nextIndex);
+        } else {
+            next = next.next();
+        }
+        AbstractNode value = next.getValue();
+        ++nextIndex;
+        return value;
     }
 
     public void remove() {

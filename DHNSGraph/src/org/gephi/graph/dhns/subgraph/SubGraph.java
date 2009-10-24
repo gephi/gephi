@@ -18,22 +18,27 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.edge;
+package org.gephi.graph.dhns.subgraph;
 
-import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.core.GraphStructure;
 
 /**
- * Main Edge implementation. Has a source and a target.
  *
  * @author Mathieu Bastian
  */
-public class ProperEdgeImpl extends AbstractEdge {
+public class SubGraph {
 
-    public ProperEdgeImpl(int ID, AbstractNode source, AbstractNode target) {
-        super(ID, source, target);
+    private GraphStructure graphStructure;
+
+    public SubGraph(GraphStructure graphStructure) {
+        this.graphStructure = graphStructure;
     }
 
-    public ProperEdgeImpl(AbstractEdge edge, AbstractNode source, AbstractNode target) {
-        super(edge, source, target);
+    public SubGraph() {
+        this.graphStructure = new GraphStructure();
+    }
+
+    public GraphStructure getGraphStructure() {
+        return graphStructure;
     }
 }

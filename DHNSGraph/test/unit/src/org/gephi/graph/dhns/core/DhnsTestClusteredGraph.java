@@ -73,11 +73,11 @@ public class DhnsTestClusteredGraph {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = new Dhns(controller);
-        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, null);
+        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure(), null);
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
-        TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
+        TreeStructure treeStructure = dhnsGlobal.getGraphStructure().getStructure();
         GraphFactoryImpl factory = dhnsGlobal.factory();
 
         //Nodes
@@ -91,9 +91,9 @@ public class DhnsTestClusteredGraph {
         //2
         controller = new DhnsGraphController();
         dhnsGlobal2 = new Dhns(controller);
-        graphGlobal2Directed = new ClusteredDirectedGraphImpl(dhnsGlobal2,null);
-        graphGlobal2Undirected = new ClusteredUndirectedGraphImpl(dhnsGlobal2, null);
-        treeStructure = dhnsGlobal2.getTreeStructure();
+        graphGlobal2Directed = new ClusteredDirectedGraphImpl(dhnsGlobal2, dhnsGlobal2.getGraphStructure(), null);
+        graphGlobal2Undirected = new ClusteredUndirectedGraphImpl(dhnsGlobal2, dhnsGlobal2.getGraphStructure(), null);
+        treeStructure = dhnsGlobal2.getGraphStructure().getStructure();
         factory = dhnsGlobal2.factory();
 
         //Nodes
@@ -145,7 +145,7 @@ public class DhnsTestClusteredGraph {
     @Test
     public void testMoveDurableTreeList() {
 
-        TreeStructure treeStructure = new TreeStructure(new Dhns(new DhnsGraphController()));
+        TreeStructure treeStructure = new GraphStructure().getStructure();
 
         PreNode p0 = (PreNode) treeStructure.getRoot();
         PreNode p1 = new PreNode(1, 0, 0, 0, null);
@@ -200,7 +200,7 @@ public class DhnsTestClusteredGraph {
     @Test
     public void testMoveToGroup() {
 
-        TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
+        TreeStructure treeStructure = dhnsGlobal.getGraphStructure().getStructure();
 
         PreNode target = (PreNode) nodeMap.get("Node 10");
         for (int i = 1; i < 5; i++) {
@@ -236,7 +236,7 @@ public class DhnsTestClusteredGraph {
     @Test
     public void testGroup() {
 
-        TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
+        TreeStructure treeStructure = dhnsGlobal.getGraphStructure().getStructure();
         int oldSize = graphGlobal.getNodeCount();
 
         Node[] groupArray = new Node[5];
@@ -267,7 +267,7 @@ public class DhnsTestClusteredGraph {
 
     @Test
     public void testUnGroup() {
-        TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
+        TreeStructure treeStructure = dhnsGlobal.getGraphStructure().getStructure();
         int oldSize = graphGlobal.getNodeCount();
 
         Node[] groupArray = new Node[5];
@@ -301,9 +301,9 @@ public class DhnsTestClusteredGraph {
     public void testView() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller);
-        ClusteredGraph graph = new ClusteredDirectedGraphImpl(dhns, null);
+        ClusteredGraph graph = new ClusteredDirectedGraphImpl(dhns, dhns.getGraphStructure(), null);
 
-        TreeStructure treeStructure = dhns.getTreeStructure();
+        TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
         GraphFactoryImpl factory = dhns.factory();
 
         //Nodes
@@ -364,7 +364,7 @@ public class DhnsTestClusteredGraph {
 
     @Test
     public void testMetaEdgesDirected() {
-        TreeStructure treeStructure = dhnsGlobal2.getTreeStructure();
+        TreeStructure treeStructure = dhnsGlobal2.getGraphStructure().getStructure();
 
         Node metaNode0 = graphGlobal2Directed.getTopNodes().toArray()[0];
         Node metaNode1 = graphGlobal2Directed.getTopNodes().toArray()[1];
@@ -456,7 +456,7 @@ public class DhnsTestClusteredGraph {
 
     @Test
     public void testMetaEdgesUndirected() {
-        TreeStructure treeStructure = dhnsGlobal2.getTreeStructure();
+        TreeStructure treeStructure = dhnsGlobal2.getGraphStructure().getStructure();
 
         Node metaNode0 = graphGlobal2Undirected.getTopNodes().toArray()[0];
         Node metaNode1 = graphGlobal2Undirected.getTopNodes().toArray()[1];
@@ -659,8 +659,8 @@ public class DhnsTestClusteredGraph {
     public void testMetaEdgesAfterGrouping() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller);
-        TreeStructure treeStructure = dhns.getTreeStructure();
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, null);
+        TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
+        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, dhns.getGraphStructure(), null);
         GraphFactoryImpl factory = dhns.factory();
 
         //Add Node
@@ -795,9 +795,9 @@ public class DhnsTestClusteredGraph {
         graphGlobal2Directed.ungroupNodes(newGroup9);
         assertEquals(0, graphGlobal2Directed.getClusteredGraph().getMetaEdges().toArray().length);
 
-        //dhnsGlobal2.getTreeStructure().showTreeAsTable();
+        //dhnsGlobal2.getGraphStructure().getStructure().showTreeAsTable();
         try {
-            checkHierarchy(dhnsGlobal2.getTreeStructure());
+            checkHierarchy(dhnsGlobal2.getGraphStructure().getStructure());
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -805,7 +805,7 @@ public class DhnsTestClusteredGraph {
 
     @Test
     public void testEdgesAndMetaEdges() {
-        dhnsGlobal2.getTreeStructure().showTreeAsTable();
+        dhnsGlobal2.getGraphStructure().getStructure().showTreeAsTable();
         Edge[] metaedges = graphGlobal2Directed.getClusteredGraph().getMetaEdges().toArray();
         int metaEdgesCount = metaedges.length;
         assertEquals(3, metaEdgesCount);

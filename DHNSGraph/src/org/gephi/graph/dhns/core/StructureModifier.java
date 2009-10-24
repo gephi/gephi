@@ -48,7 +48,7 @@ public class StructureModifier {
     //ExecutorService executor = Executors.newSingleThreadExecutor();
     public StructureModifier(Dhns dhns) {
         this.dhns = dhns;
-        this.treeStructure = dhns.getTreeStructure();
+        this.treeStructure = dhns.getGraphStructure().getStructure();
         this.graphVersion = dhns.getGraphVersion();
         edgeProcessor = new EdgeProcessor(dhns);
     }
@@ -338,7 +338,7 @@ public class StructureModifier {
         dhns.getWriteLock().lock();
         //TODO Better implementation. Just remove nodeGroup from the treelist and lower level of children
         int count = 0;
-        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, nodeGroup, null); itr.hasNext();) {
+        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, nodeGroup); itr.hasNext();) {
             itr.next();
             count++;
         }
@@ -366,7 +366,7 @@ public class StructureModifier {
         edgeProcessor.clearMetaEdges(absNode);
 
         //Enable children
-        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, absNode, null); itr.hasNext();) {
+        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, absNode); itr.hasNext();) {
             AbstractNode child = itr.next();
 
             child.setEnabled(true);
@@ -377,7 +377,7 @@ public class StructureModifier {
     private void retract(AbstractNode parent) {
 
         //Disable children
-        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, parent, null); itr.hasNext();) {
+        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, parent); itr.hasNext();) {
             AbstractNode child = itr.next();
             child.setEnabled(false);
             edgeProcessor.clearMetaEdges(child);
@@ -408,7 +408,7 @@ public class StructureModifier {
 
     private void deleteNode(PreNode node) {
 
-        for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node, null); itr.hasNext();) {
+        for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node); itr.hasNext();) {
             AbstractNode descendant = itr.next();
             if (descendant.isEnabled()) {
                 edgeProcessor.clearMetaEdges(descendant);
@@ -476,7 +476,7 @@ public class StructureModifier {
                 //The node has an enabled ancestor
                 //We delete edges from potential meta edges
                 if (node.size > 0) {
-                    for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node, null); itr.hasNext();) {
+                    for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node); itr.hasNext();) {
                         AbstractNode descendant = itr.next();
                         edgeProcessor.clearEdgesWithoutRemove(descendant);
                     }
@@ -499,7 +499,7 @@ public class StructureModifier {
             } else if (node.size > 0) {
                 if (destinationAncestor != null) {
                     //The node may have some enabled descendants and we set them disabled
-                    for (DescendantIterator itr = new DescendantIterator(treeStructure, node, null); itr.hasNext();) {
+                    for (DescendantIterator itr = new DescendantIterator(treeStructure, node); itr.hasNext();) {
                         AbstractNode descendant = itr.next();
                         if (descendant.isEnabled()) {
                             edgeProcessor.clearMetaEdges(descendant);
@@ -509,7 +509,7 @@ public class StructureModifier {
                 //DO
                 } else {
                     //The node may have some enabled descendants and we keep them enabled
-                    for (DescendantIterator itr = new DescendantIterator(treeStructure, node, null); itr.hasNext();) {
+                    for (DescendantIterator itr = new DescendantIterator(treeStructure, node); itr.hasNext();) {
                         AbstractNode descendant = itr.next();
                         if (descendant.isEnabled()) {
                             //Enabled descendants meta edges are still valid only if their target is out of
@@ -534,7 +534,7 @@ public class StructureModifier {
 
     private void cloneDescedantAndSelft(AbstractNode node, AbstractNode parentNode) {
         if (node.size > 0) {
-            DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node, null);
+            DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node);
             for (; itr.hasNext();) {
                 AbstractNode desc = itr.next();
                 CloneNode clone = new CloneNode(desc);

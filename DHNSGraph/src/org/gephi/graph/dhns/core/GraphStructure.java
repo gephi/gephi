@@ -18,23 +18,36 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.api;
+package org.gephi.graph.dhns.core;
+
+import org.gephi.graph.dhns.utils.avl.AbstractEdgeTree;
+import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface FilteredGraph<T extends Graph> extends GraphDecorator<T> {
+public class GraphStructure {
 
-    public void addNodePredicate(NodePredicate nodePredicate);
+    private TreeStructure treeStructure;
+    private AbstractNodeTree nodeDictionnary;
+    private AbstractEdgeTree edgeDictionnary;
 
-    public void addEdgePredicate(EdgePredicate edgePredicate);
+    public GraphStructure() {
+        treeStructure = new TreeStructure(this);
+        nodeDictionnary = new AbstractNodeTree();
+        edgeDictionnary = new AbstractEdgeTree();
+    }
 
-    public void removeNodePredicate(NodePredicate nodePredicate);
+    public TreeStructure getStructure() {
+        return treeStructure;
+    }
 
-    public void removeEdgePredicate(EdgePredicate edgePredicate);
+    public AbstractNodeTree getNodeDictionnary() {
+        return nodeDictionnary;
+    }
 
-    public NodePredicate[] getNodePredicates();
-
-    public EdgePredicate[] getEdgePredicates();
+    public AbstractEdgeTree getEdgeDictionnary() {
+        return edgeDictionnary;
+    }
 }

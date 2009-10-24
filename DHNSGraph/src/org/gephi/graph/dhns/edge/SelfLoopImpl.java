@@ -32,4 +32,8 @@ public class SelfLoopImpl extends AbstractEdge {
     public SelfLoopImpl(int ID, AbstractNode node) {
         super(ID, node, node);
     }
+
+    public SelfLoopImpl(AbstractEdge edge, AbstractNode node) {
+        super(edge, node, node);
+    }
 }

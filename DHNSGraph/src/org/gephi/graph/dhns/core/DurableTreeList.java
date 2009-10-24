@@ -379,6 +379,10 @@ public class DurableTreeList extends AbstractList<AbstractNode> implements Itera
             preConsistent = tree.preConsistent;
         }
 
+        public DurableTreeList getList() {
+            return tree;
+        }
+
         public int getIndex() {
             if (preConsistent != tree.preConsistent) {
                 //The Pre is not consistent

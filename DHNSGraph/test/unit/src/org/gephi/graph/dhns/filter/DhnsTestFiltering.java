@@ -55,11 +55,11 @@ public class DhnsTestFiltering {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = new Dhns(controller);
-        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, null);
+        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure(), null);
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
-        TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
+        TreeStructure treeStructure = dhnsGlobal.getGraphStructure().getStructure();
         GraphFactoryImpl factory = dhnsGlobal.factory();
 
         //Nodes

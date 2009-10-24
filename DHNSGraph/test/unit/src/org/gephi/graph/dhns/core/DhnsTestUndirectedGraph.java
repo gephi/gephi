@@ -62,12 +62,12 @@ public class DhnsTestUndirectedGraph {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = new Dhns(controller);
-        graphGlobal = new ClusteredUndirectedGraphImpl(dhnsGlobal, null);
-        ClusteredDirectedGraphImpl diGraph = new ClusteredDirectedGraphImpl(dhnsGlobal, null);
+        graphGlobal = new ClusteredUndirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure(), null);
+        ClusteredDirectedGraphImpl diGraph = new ClusteredDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure(), null);
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
-        TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
+        TreeStructure treeStructure = dhnsGlobal.getGraphStructure().getStructure();
         GraphFactoryImpl factory = dhnsGlobal.factory();
 
         //Nodes
@@ -127,8 +127,8 @@ public class DhnsTestUndirectedGraph {
     public void testAddEdge() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller);
-        ClusteredUndirectedGraphImpl graph = new ClusteredUndirectedGraphImpl(dhns, null);
-        TreeStructure treeStructure = dhns.getTreeStructure();
+        ClusteredUndirectedGraphImpl graph = new ClusteredUndirectedGraphImpl(dhns, dhnsGlobal.getGraphStructure(), null);
+        TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
         GraphFactoryImpl factory = dhns.factory();
 
         Node node1 = factory.newNode();

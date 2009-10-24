@@ -31,7 +31,6 @@ public class EmptyView extends ViewImpl {
 
     public EmptyView(Dhns dhns) {
         super(dhns);
-        active = false;
     }
 
     @Override
@@ -39,6 +38,6 @@ public class EmptyView extends ViewImpl {
     }
 
     @Override
-    protected void checkUpdate() {
+    public void checkUpdate() {
     }
 }
