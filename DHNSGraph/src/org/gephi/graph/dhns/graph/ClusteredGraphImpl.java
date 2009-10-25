@@ -40,6 +40,7 @@ import org.gephi.graph.dhns.node.iterators.DescendantIterator;
 import org.gephi.graph.dhns.node.iterators.LevelIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
 import org.gephi.graph.dhns.utils.TreeNodeWrapper;
+import org.gephi.graph.dhns.views.EmptyView;
 import org.gephi.graph.dhns.views.ViewImpl;
 
 /**
@@ -52,6 +53,9 @@ public abstract class ClusteredGraphImpl extends AbstractGraphImpl implements Cl
     public ClusteredGraphImpl(Dhns dhns, GraphStructure structure, View view) {
         this.dhns = dhns;
         this.structure = structure;
+        if(view==null) {
+            view = new EmptyView(dhns);
+        }
         this.view = (ViewImpl) view;
         ((ViewImpl) view).setGraph(this);
     }

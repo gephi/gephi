@@ -31,6 +31,9 @@ import org.gephi.graph.api.View;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphStructure;
 import org.gephi.graph.dhns.core.GraphVersion;
+import org.gephi.graph.dhns.filter.ChildrenClusteredViewPredicate;
+import org.gephi.graph.dhns.filter.FlatClusteredViewPredicate;
+import org.gephi.graph.dhns.filter.FullClusteredViewPredicate;
 import org.gephi.graph.dhns.graph.ClusteredGraphImpl;
 import org.gephi.graph.dhns.subgraph.SubGraphManager;
 import org.openide.util.Exceptions;
@@ -90,7 +93,7 @@ public class ViewImpl implements View {
 
     private void update() {
 
-        if (predicates.isEmpty()) {
+        if (graph.getHeight() == 0 && predicates.isEmpty()) {
             this.graphStructure = dhns.getGraphStructure();
         } else {
             this.graphStructure = SubGraphManager.copyGraphStructure(dhns.getGraphStructure());
@@ -105,6 +108,20 @@ public class ViewImpl implements View {
                     SubGraphManager.filterSubGraph(graphStructure, p);
                 }
             }
+
+            Predicate hierarchyPredicate = null;
+            switch (hierarchyFiltering) {
+                case FLAT:
+                    hierarchyPredicate = new FlatClusteredViewPredicate();
+                    break;
+                case CHILDREN:
+                    hierarchyPredicate = new ChildrenClusteredViewPredicate();
+                    break;
+                case FULL:
+                    hierarchyPredicate = new FullClusteredViewPredicate();
+                    break;
+            }
+            SubGraphManager.filterSubGraph(graphStructure, hierarchyPredicate);
 
             graph.setStructure(graphStructure);
         }

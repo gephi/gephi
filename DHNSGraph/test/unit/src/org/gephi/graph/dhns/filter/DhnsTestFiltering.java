@@ -125,10 +125,12 @@ public class DhnsTestFiltering {
 
     @Test
     public void testFiltering() {
+        dhnsGlobal.getGraphStructure().getStructure().showTreeAsTable();
         graphGlobal.getView().addPredicate(new DegreePredicate(3, 5));
         Node[] actual = graphGlobal.getNodes().toArray();
         for(int i=0;i<actual.length;i++) {
             System.out.println(actual[i].getId());
         }
+        ((ViewImpl)graphGlobal.getView()).getGraphStructure().getStructure().showTreeAsTable();
     }
 }

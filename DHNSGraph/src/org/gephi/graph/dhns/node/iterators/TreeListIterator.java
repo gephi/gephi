@@ -50,6 +50,7 @@ public class TreeListIterator extends AbstractNodeIterator implements Iterator<A
      * @param fromIndex  the index to start at
      */
     public TreeListIterator(DurableTreeList treeList, int fromIndex) throws IndexOutOfBoundsException {
+
         this.treeList = treeList;
         this.nextIndex = fromIndex;
     }

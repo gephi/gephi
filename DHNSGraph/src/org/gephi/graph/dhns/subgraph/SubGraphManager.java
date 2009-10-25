@@ -59,10 +59,9 @@ public class SubGraphManager {
             AbstractNode node = itr.next();
             if (!nodePredicate.evaluate(node)) {
                 AbstractNode descendant = node;
-                treeStructure.decrementAncestorSize(node, node.size);
+                treeStructure.decrementAncestorSize(node, node.size+1);
                 for (int i = 0; i <= node.size; i++) {       //Delete descendant and self
                     itr.remove();
-                    descendant.parent = null;
                     //Clear edges
                     if (descendant.getEdgesInTree().getCount() > 0) {
                         for (edgeIterator.setNode(descendant.getEdgesInTree()); edgeIterator.hasNext();) {

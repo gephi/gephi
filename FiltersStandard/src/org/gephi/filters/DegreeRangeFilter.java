@@ -21,7 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.filters;
 
 import org.gephi.filters.api.Filter;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodePredicate;
 import org.gephi.graph.api.Predicate;
+import org.gephi.graph.api.TopologicalPredicate;
 
 /**
  *
@@ -35,7 +39,7 @@ public class DegreeRangeFilter implements Filter {
     private int upperBound;
 
     public Predicate getPredicate() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new DegreeRangePredicate();
     }
 
     public int getLowerBound() {
@@ -52,5 +56,30 @@ public class DegreeRangeFilter implements Filter {
 
     public int getUpperBound() {
         return upperBound;
+    }
+
+    private class DegreeRangePredicate implements NodePredicate, TopologicalPredicate
+    {
+        private Graph graph;
+
+        public boolean evaluate(Node element) {
+            int degree = graph.getDegree(element);
+            return degree >= lowerBound && degree <=upperBound;
+        }
+
+        public void setup(Graph graph) {
+            this.graph = graph;
+            minimum = Integer.MAX_VALUE;
+            maximum = Integer.MIN_VALUE;
+            for(Node n : graph.getNodes().toArray()) {
+                int degree = graph.getDegree(n);
+                minimum = Math.min(minimum, degree);
+                maximum = Math.max(maximum, degree);
+            }
+        }
+
+        public void unsetup() {
+            graph = null;
+        }
     }
 }

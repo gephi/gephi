@@ -76,6 +76,7 @@ public class PreNode extends AbstractNode implements AVLItem {
     public PreNode(PreNode node) {
         this.ID = node.ID;
         this.nodeData = node.nodeData;
+        this.enabled = node.enabled;
         edgesOutTree = new EdgeOppositeTree(this);
         edgesInTree = new EdgeOppositeTree(this);
         metaEdgesOutTree = new MetaEdgeTree(this);

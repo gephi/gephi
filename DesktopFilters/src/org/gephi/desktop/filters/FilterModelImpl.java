@@ -26,6 +26,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.filters.api.Filter;
 import org.gephi.filters.api.FilterModel;
+import org.gephi.graph.api.GraphController;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -45,6 +47,8 @@ public class FilterModelImpl implements FilterModel {
 
     public void addFilter(Filter filter) {
         filters.add(filter);
+        GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+        gc.getModel().getGraphVisible().getView().addPredicate(filter.getPredicate());
         fireChangeEvent();
     }
 
