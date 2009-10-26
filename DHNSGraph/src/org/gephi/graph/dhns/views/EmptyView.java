@@ -22,6 +22,7 @@ package org.gephi.graph.dhns.views;
 
 import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.core.Dhns;
+import org.gephi.graph.dhns.graph.ClusteredGraphImpl;
 
 /**
  *
@@ -31,7 +32,6 @@ public class EmptyView extends ViewImpl {
 
     public EmptyView(Dhns dhns) {
         super(dhns);
-        active = false;
     }
 
     @Override
@@ -39,6 +39,11 @@ public class EmptyView extends ViewImpl {
     }
 
     @Override
-    protected void checkUpdate() {
+    public void checkUpdate() {
+    }
+
+    @Override
+    public void setGraph(ClusteredGraphImpl graph) {
+        
     }
 }

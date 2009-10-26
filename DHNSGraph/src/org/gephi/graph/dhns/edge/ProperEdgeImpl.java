@@ -32,4 +32,8 @@ public class ProperEdgeImpl extends AbstractEdge {
     public ProperEdgeImpl(int ID, AbstractNode source, AbstractNode target) {
         super(ID, source, target);
     }
+
+    public ProperEdgeImpl(AbstractEdge edge, AbstractNode source, AbstractNode target) {
+        super(edge, source, target);
+    }
 }

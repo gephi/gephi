@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.filters.api;
 
 import javax.swing.Icon;
-
+import javax.swing.JPanel;
 
 /**
  *
@@ -35,5 +35,7 @@ public interface FilterBuilder {
 
     public Filter getFilter();
 
-    public FilterUI getFilterUI(Filter filter);
+    public JPanel getUI(Filter filter);
+
+    public Class getFilterClass();
 }

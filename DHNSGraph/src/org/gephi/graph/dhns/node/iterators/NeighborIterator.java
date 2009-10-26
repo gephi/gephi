@@ -36,17 +36,10 @@ public class NeighborIterator extends AbstractNodeIterator implements Iterator<N
     private AbstractEdgeIterator edgeIterator;
     private AbstractNode owner;
     private AbstractNode pointer;
-    //Propostion
-//    private Predicate<AbstractNode> proposition;
 
     public NeighborIterator(AbstractEdgeIterator edgeIterator, AbstractNode owner/*, Predicate<AbstractNode> proposition*/) {
         this.edgeIterator = edgeIterator;
         this.owner = owner;
-//        if (proposition == null) {
-//            this.proposition = Tautology.instance;
-//        } else {
-//            this.proposition = proposition;
-//        }
     }
 
     public boolean hasNext() {
@@ -59,9 +52,6 @@ public class NeighborIterator extends AbstractNodeIterator implements Iterator<N
                     pointer = edge.getSource();
                 }
                 return true;
-//                if (proposition.evaluate(pointer)) {
-//                    return true;
-//                }
             }
         }
         return false;

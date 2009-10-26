@@ -37,8 +37,6 @@ import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
  */
 public abstract class AbstractNode implements Node, Group, AVLItem {
 
-    //Structure properties
-    protected boolean visible = true;
     //Tree Structure
     public int pre;
     public int size;
@@ -48,11 +46,7 @@ public abstract class AbstractNode implements Node, Group, AVLItem {
     public DurableAVLNode avlNode;
 
     public boolean isVisible() {
-        return visible;
-    }
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     //Structure methods

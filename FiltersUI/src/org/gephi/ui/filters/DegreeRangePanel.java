@@ -18,7 +18,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.filters;
+package org.gephi.ui.filters;
+
+import org.gephi.filters.*;
+import org.gephi.ui.components.JRangeSliderPanel;
 
 /**
  *
@@ -26,13 +29,13 @@ package org.gephi.filters;
  */
 public class DegreeRangePanel extends javax.swing.JPanel {
 
-    /** Creates new form DegreeRangePanel */
     public DegreeRangePanel() {
         initComponents();
     }
 
-    public void setup(DegreeRangeBuilder.DegreeRangeFilter filter) {
-        
+    public void setup(DegreeRangeFilter filter) {
+        JRangeSliderPanel r = (JRangeSliderPanel) rangeSliderPanel;
+        r.setRange(new JRangeSliderPanel.Range(r.getSlider(), filter.getMinimum(), filter.getMaximum(), filter.getLowerBound(), filter.getUpperBound()));
     }
 
     /** This method is called from within the constructor to
@@ -44,20 +47,12 @@ public class DegreeRangePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 283, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 110, Short.MAX_VALUE)
-        );
+        rangeSliderPanel = new JRangeSliderPanel();
+
+        setLayout(new java.awt.BorderLayout());
+        add(rangeSliderPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel rangeSliderPanel;
     // End of variables declaration//GEN-END:variables
-
 }

@@ -36,6 +36,11 @@ public class MixedEdgeImpl extends AbstractEdge {
         this.directed = directed;
     }
 
+    public MixedEdgeImpl(AbstractEdge edge, AbstractNode source, AbstractNode target, boolean directed) {
+        super(edge, source, target);
+        this.directed = directed;
+    }
+
     @Override
     public boolean isDirected() {
         return directed;

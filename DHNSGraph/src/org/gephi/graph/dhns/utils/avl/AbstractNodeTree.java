@@ -31,8 +31,8 @@ import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
  */
 public class AbstractNodeTree {
 
-    protected AbstractNodeAVLNode root;
-    protected int count;
+    private AbstractNodeAVLNode root;
+    private int count;
 
     public boolean add(AbstractNode item) {
         AbstractNodeAVLNode p = this.root;

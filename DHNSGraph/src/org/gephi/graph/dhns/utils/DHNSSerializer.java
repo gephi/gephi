@@ -99,9 +99,9 @@ public class DHNSSerializer {
         dhnsE.appendChild(graphVersionE);
         Element settingsE = writeSettings(document, dhns.getSettingsManager());
         dhnsE.appendChild(settingsE);
-        Element treeStructureE = writeTreeStructure(document, dhns.getTreeStructure());
+        Element treeStructureE = writeTreeStructure(document, dhns.getGraphStructure().getStructure());
         dhnsE.appendChild(treeStructureE);
-        Element edgesE = writeEdges(document, dhns.getTreeStructure());
+        Element edgesE = writeEdges(document, dhns.getGraphStructure().getStructure());
         dhnsE.appendChild(edgesE);
 
         return dhnsE;
@@ -123,9 +123,9 @@ public class DHNSSerializer {
             } else if (itemE.getTagName().equals(ELEMENT_SETTINGS)) {
                 readSettings(itemE, dhns.getSettingsManager());
             } else if (itemE.getTagName().equals(ELEMENT_TREESTRUCTURE)) {
-                readTreeStructure(itemE, dhns.getTreeStructure());
+                readTreeStructure(itemE, dhns.getGraphStructure().getStructure());
             } else if (itemE.getTagName().equals(ELEMENT_EDGES)) {
-                readEdges(itemE, dhns.getTreeStructure());
+                readEdges(itemE, dhns.getGraphStructure().getStructure());
             }
         }
     }

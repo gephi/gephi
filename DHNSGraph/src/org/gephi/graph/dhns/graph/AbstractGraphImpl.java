@@ -21,15 +21,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.graph;
 
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.View;
 import org.gephi.graph.dhns.core.Dhns;
+import org.gephi.graph.dhns.core.GraphStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 import org.gephi.graph.dhns.views.ViewImpl;
 
 /**
@@ -40,84 +39,19 @@ import org.gephi.graph.dhns.views.ViewImpl;
 public abstract class AbstractGraphImpl {
 
     protected Dhns dhns;
+    protected GraphStructure structure;
     protected ViewImpl view;
-
-    //Config
-    protected boolean allowMultilevel = true;
 
     public View getView() {
         return view;
     }
 
+    public void setStructure(GraphStructure structure) {
+        this.structure = structure;
+    }
+
     public GraphModel getGraphModel() {
         return dhns;
-    }
-
-    public void setAllowMultilevel(boolean allowMultilevel) {
-        this.allowMultilevel = allowMultilevel;
-    }
-
-    public boolean isAllowMultilevel() {
-        return allowMultilevel;
-    }
-
-    public abstract Graph getGraph();
-
-    public Dhns getSubGraph(AbstractNodeIterator nodeIterator) {
-        //Dhns newDhns = dhns.getController().newDhns();
-
-        /*TreeStructure tree = newDhns.getTreeStructure();
-        PreNodeTree nodeIdTree = new PreNodeTree();
-        GraphFactoryImpl factory = newDhns.factory();
-        ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
-
-        for (; nodeIterator.hasNext();) {
-        PreNode node = nodeIterator.next();
-        PreNode duplicate = factory.duplicateNode(node);
-        nodeIdTree.add(duplicate);
-        }
-
-        for (TreeListIterator itr = new TreeListIterator(tree.getTree(), 1); itr.hasNext();) {
-        PreNode newNode = itr.next();
-
-        //New edge OUT tree
-        EdgeOppositeTree edgeOutTree = new EdgeOppositeTree(newNode);
-        if (!newNode.getEdgesOutTree().isEmpty()) {
-        for (edgeIterator.setNode(newNode.getEdgesOutTree()); edgeIterator.hasNext();) {
-        AbstractEdge edge = edgeIterator.next();
-        PreNode target = nodeIdTree.getItem(edge.getTarget().getNumber());
-        if (target != null) {
-        //The edge target is also in the subgraph
-        AbstractEdge duplicate = factory.duplicateEdge(edge, newNode, target);
-        edgeOutTree.add(duplicate);
-        }
-        }
-        }
-        newNode.setEdgesOutTree(edgeOutTree);
-
-        //New edge IN tree
-        EdgeOppositeTree edgeInTree = new EdgeOppositeTree(newNode);
-        if (!newNode.getEdgesInTree().isEmpty()) {
-        for (edgeIterator.setNode(newNode.getEdgesInTree()); edgeIterator.hasNext();) {
-        AbstractEdge edge = edgeIterator.next();
-        PreNode source = nodeIdTree.getItem(edge.getSource().getNumber());
-        if (source != null) {
-        //The edge source is also in the subgraph
-        AbstractEdge duplicate = factory.duplicateEdge(edge, source, newNode);
-        edgeInTree.add(duplicate);
-        }
-        }
-        }
-        newNode.setEdgesInTree(edgeInTree);
-
-        //Clear meta edges
-        newNode.getMetaEdgesInTree().clear();
-        newNode.getMetaEdgesOutTree().clear();
-
-        }
-         */
-        //return newDhns;
-        return null;
     }
 
     public void readLock() {
@@ -153,8 +87,14 @@ public abstract class AbstractGraphImpl {
             throw new IllegalArgumentException("node can't be null");
         }
         AbstractNode preNode = (AbstractNode) node;
-        if (!preNode.isValid()) {
-            throw new IllegalArgumentException("Node must be in the graph");
+        if (!preNode.isValid() || preNode.avlNode.getList() != structure.getStructure().getTree()) {
+            //Try to find it in this dictionnary
+            preNode = structure.getNodeDictionnary().get(preNode.getId());
+            if (preNode != null) {
+                preNode = preNode.getOriginalNode();
+            } else {
+                throw new IllegalArgumentException("Node must be in the graph");
+            }
         }
         return preNode;
     }
@@ -164,8 +104,12 @@ public abstract class AbstractGraphImpl {
             throw new IllegalArgumentException("edge can't be null");
         }
         AbstractEdge abstractEdge = (AbstractEdge) edge;
-        if (!abstractEdge.isValid()) {
-            throw new IllegalArgumentException("Nodes must be in the graph");
+        if (!abstractEdge.isValid() || abstractEdge.getSource().avlNode.getList() != structure.getStructure().getTree()) {
+            //Try to find it in the dictionnary
+            abstractEdge = structure.getEdgeDictionnary().get(abstractEdge.getId());
+            if (abstractEdge == null) {
+                throw new IllegalArgumentException("Nodes must be in the graph");
+            }
         }
         if (abstractEdge.isMetaEdge()) {
             throw new IllegalArgumentException("Edge can't be a meta edge");

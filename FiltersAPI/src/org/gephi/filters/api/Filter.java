@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.filters.api;
 
+import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.Predicate;
 
 /**
@@ -29,6 +30,4 @@ import org.gephi.graph.api.Predicate;
 public interface Filter {
 
     public Predicate getPredicate();
-
-    public FilterBuilder getBuilder();
 }

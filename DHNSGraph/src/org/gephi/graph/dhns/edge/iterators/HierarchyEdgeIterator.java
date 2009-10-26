@@ -40,17 +40,10 @@ public class HierarchyEdgeIterator extends AbstractEdgeIterator implements Itera
     private AbstractNodeIterator nodeIterator;
     private HierarchyEdgeImpl hierarchyEdge;
     private int count = 0;
-    private Predicate<AbstractNode> predicate;
 
-    public HierarchyEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, Predicate<AbstractNode> predicate) {
+    public HierarchyEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator) {
         this.treeStructure = treeStructure;
         this.nodeIterator = nodeIterator;
-
-        if (predicate == null) {
-            this.predicate = Tautology.instance;
-        } else {
-            this.predicate = predicate;
-        }
     }
 
     @Override
@@ -59,7 +52,7 @@ public class HierarchyEdgeIterator extends AbstractEdgeIterator implements Itera
             AbstractNode children = nodeIterator.next();
             AbstractNode parent = children.parent.getOriginalNode();
 
-            if (parent != treeStructure.getRoot() && predicate.evaluate(parent)) {
+            if (parent != treeStructure.getRoot()) {
                 hierarchyEdge = new HierarchyEdgeImpl(count, children);
                 return true;
             }

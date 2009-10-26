@@ -24,12 +24,10 @@ import java.util.Iterator;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
-import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
  * Iterator for meta edges for the visible graph.
@@ -46,23 +44,15 @@ public class EdgeAndMetaEdgeIterator extends AbstractEdgeIterator implements Ite
     protected boolean undirected;
     protected boolean metaEdge = false;
 
-    //Proposition
-    protected Predicate<AbstractEdge> proposition;
-
-    public EdgeAndMetaEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected, Predicate<AbstractEdge> proposition) {
+    public EdgeAndMetaEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected) {
         this.nodeIterator = nodeIterator;
         edgeIterator = new ParamAVLIterator<MetaEdgeImpl>();
         this.undirected = undirected;
-        if (proposition == null) {
-            this.proposition = Tautology.instance;
-        } else {
-            this.proposition = proposition;
-        }
     }
 
     @Override
     public boolean hasNext() {
-        while (pointer == null || (undirected && ((metaEdge && ((MetaEdgeImpl) pointer).getUndirected() != pointer) || (!metaEdge && pointer.getUndirected() != pointer))) || !proposition.evaluate(pointer)) {
+        while (pointer == null || (undirected && ((metaEdge && ((MetaEdgeImpl) pointer).getUndirected() != pointer) || (!metaEdge && pointer.getUndirected() != pointer)))) {
             while (!edgeIterator.hasNext()) {
                 if (currentNode != null && !metaEdge) {
                     metaEdge = true;

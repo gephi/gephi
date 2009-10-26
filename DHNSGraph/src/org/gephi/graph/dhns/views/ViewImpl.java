@@ -23,31 +23,19 @@ package org.gephi.graph.dhns.views;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
-import org.gephi.datastructure.avl.param.ParamAVLIterator;
-import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphEvent.EventType;
-import org.gephi.graph.api.NodePredicate;
 import org.gephi.graph.api.Predicate;
 import org.gephi.graph.api.TopologicalPredicate;
 import org.gephi.graph.api.View;
 import org.gephi.graph.dhns.core.Dhns;
+import org.gephi.graph.dhns.core.GraphStructure;
 import org.gephi.graph.dhns.core.GraphVersion;
-import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.edge.MetaEdgeBuilder;
-import org.gephi.graph.dhns.edge.MetaEdgeImpl;
-import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 import org.gephi.graph.dhns.filter.ChildrenClusteredViewPredicate;
 import org.gephi.graph.dhns.filter.FlatClusteredViewPredicate;
 import org.gephi.graph.dhns.filter.FullClusteredViewPredicate;
-import org.gephi.graph.dhns.filter.HierarchyFilteringPredicate;
 import org.gephi.graph.dhns.graph.ClusteredGraphImpl;
-import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
-import org.gephi.graph.dhns.node.iterators.TreeIterator;
-import org.gephi.graph.dhns.proposition.Tautology;
-import org.gephi.graph.dhns.utils.avl.AbstractEdgeTree;
-import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
+import org.gephi.graph.dhns.subgraph.SubGraphManager;
 import org.openide.util.Exceptions;
 
 /**
@@ -60,37 +48,34 @@ public class ViewImpl implements View {
     private HierarchyFiltering hierarchyFiltering = HierarchyFiltering.FLAT;
     private Dhns dhns;
     private final List<Predicate> predicates = new ArrayList<Predicate>();
+
     //Results
-    private AbstractNodeTree nodeTree;
-    private AbstractEdgeTree edgeTree;
-    private AbstractEdgeTree metaEdgeTree;
-    private NodeInFilterResultPredicate nodePredicate;
-    private EdgeInFilterResultPredicate edgePredicate;
-    private MetaEdgeInFilterResultPredicate metaEdgePredicate;
+    private ClusteredGraphImpl graph;
+    private GraphStructure graphStructure;
+
     //Update
     private GraphVersion graphVersion;
     private ReentrantLock lock;
     private DispatchThread dispatchThread;
-    private ClusteredGraphImpl graph;
+    private boolean blocking = true;
+
     //Status
-    protected boolean active = false;
     private int nodeVersion = -1;
     private int edgeVersion = -1;
 
     public ViewImpl(Dhns dhns) {
         this.dhns = dhns;
+        this.graphStructure = dhns.getGraphStructure();
         this.graphVersion = dhns.getGraphVersion();
         dispatchThread = new DispatchThread();
         lock = new ReentrantLock();
-        this.nodeTree = new AbstractNodeTree();
-        this.edgeTree = new AbstractEdgeTree();
-        this.metaEdgeTree = new AbstractEdgeTree();
-        nodePredicate = new NodeInFilterResultPredicate();
-        edgePredicate = new EdgeInFilterResultPredicate();
-        metaEdgePredicate = new MetaEdgeInFilterResultPredicate();
     }
 
-    protected void checkUpdate() {
+    public GraphStructure getGraphStructure() {
+        return graphStructure;
+    }
+
+    public void checkUpdate() {
         if (lock.isHeldByCurrentThread()) {
             return;
         }
@@ -104,196 +89,59 @@ public class ViewImpl implements View {
             edgeVersion = ev;
             lock.unlock();
         }
-
     }
 
     private void update() {
 
-        //Initial
-        active = false;
-        AbstractEdgeTree initialEdges = new AbstractEdgeTree();
-        AbstractNodeTree initialNodes = new AbstractNodeTree();
-        AbstractEdgeTree initialMetaEdges = new AbstractEdgeTree();
-        for (TreeIterator treeIterator = new TreeIterator(dhns.getTreeStructure(), Tautology.instance); treeIterator.hasNext();) {
-            initialNodes.add(treeIterator.next());
-        }
-        for (Edge edge : graph.getEdges()) {
-            initialEdges.add((AbstractEdge) edge);
-        }
-        for (Edge metaEdge : graph.getMetaEdges()) {
-            initialMetaEdges.add((AbstractEdge) metaEdge);
-        }
+        if (graph.getHeight() == 0 && predicates.isEmpty()) {
+            this.graphStructure = dhns.getGraphStructure();
+        } else {
+            this.graphStructure = SubGraphManager.copyGraphStructure(dhns.getGraphStructure());
 
-        nodeTree = initialNodes;
-        edgeTree = initialEdges;
-        metaEdgeTree = initialMetaEdges;
-        active = true;
-
-        if (!predicates.isEmpty() && predicates.get(predicates.size() - 1) instanceof HierarchyFilteringPredicate) {
-            predicates.remove(predicates.size() - 1);
-        }
-        switch (hierarchyFiltering) {
-            case FLAT:
-                predicates.add(new FlatClusteredViewPredicate());
-                break;
-            case CHILDREN:
-                predicates.add(new ChildrenClusteredViewPredicate());
-                break;
-            case FULL:
-                predicates.add(new FullClusteredViewPredicate());
-                break;
-        }
-        AbstractEdgeTree beforeHierarchyFilteringEdges = null;
-
-        for (Predicate p : predicates) {
-            AbstractEdgeTree pEdgeTree = edgeTree;
-            AbstractNodeTree pNodeTree = nodeTree;
-
-            if (p instanceof HierarchyFilteringPredicate) {
-                beforeHierarchyFilteringEdges = edgeTree;
-            }
-
-            if (p instanceof NodePredicate) {
-                pNodeTree = new AbstractNodeTree();
-                for (AbstractNodeIterator itr = nodeIterator(); itr.hasNext();) {
-                    AbstractNode node = itr.next();
-                    boolean val;
-                    if (p instanceof TopologicalPredicate) {
-                        val = ((TopologicalPredicate) p).evaluate(node, graph);
-                    } else {
-                        val = p.evaluate(node);
-                    }
-                    if (val) {
-                        pNodeTree.add(node);
-                    }
-                }
-
-                //Clean edges
-                pEdgeTree = new AbstractEdgeTree();
-                for (AbstractEdgeIterator itr = edgeTree.iterator(); itr.hasNext();) {
-                    AbstractEdge e = itr.next();
-                    if (pNodeTree.contains(e.getSource()) && pNodeTree.contains(e.getTarget())) {
-                        pEdgeTree.add(e);
-                    }
-                }
-            } else {
-                pEdgeTree = new AbstractEdgeTree();
-                for (AbstractEdgeIterator itr = edgeIterator(); itr.hasNext();) {
-                    AbstractEdge edge = itr.next();
-                    boolean val;
-                    if (p instanceof TopologicalPredicate) {
-                        val = ((TopologicalPredicate) p).evaluate(edge, graph);
-                    } else {
-                        val = p.evaluate(edge);
-                    }
-                    if (val) {
-                        pEdgeTree.add(edge);
-                    }
+            for (Predicate p : predicates) {
+                if (p instanceof TopologicalPredicate) {
+                    Graph sequenceValidationGraph = graph.copy(dhns, graphStructure, new EmptyView(dhns));
+                    ((TopologicalPredicate) p).setup(sequenceValidationGraph);
+                    SubGraphManager.filterSubGraph(graphStructure, p);
+                    ((TopologicalPredicate) p).unsetup();
+                } else {
+                    SubGraphManager.filterSubGraph(graphStructure, p);
                 }
             }
 
-            nodeTree = pNodeTree;
-            edgeTree = pEdgeTree;
-        }
-
-        //Apply hierarchical clustering view
-        ParamAVLIterator<AbstractEdge> innerEdgeIterator = new ParamAVLIterator<AbstractEdge>();
-        MetaEdgeBuilder metaEdgeBuilder = dhns.getSettingsManager().getMetaEdgeBuilder();       //Update weight
-        for (AbstractEdgeIterator itr = metaEdgeTree.iterator(); itr.hasNext();) {
-            AbstractEdge e = itr.next();
-            if (!nodeTree.contains(e.getSource()) || !nodeTree.contains(e.getTarget())) {
-                itr.remove();
-            } else {
-                MetaEdgeImpl metaEdge = (MetaEdgeImpl) e;
-                boolean atLeastOneInnerEdgeIsNotFiltered = false;
-                for (innerEdgeIterator.setNode(metaEdge.getEdges()); innerEdgeIterator.hasNext();) {
-                    if (beforeHierarchyFilteringEdges.contains(innerEdgeIterator.next())) {
-                        atLeastOneInnerEdgeIsNotFiltered = true;
-                        break;
-                    }
-                }
-                if (!atLeastOneInnerEdgeIsNotFiltered) {
-                    itr.remove();
-                }
+            Predicate hierarchyPredicate = null;
+            switch (hierarchyFiltering) {
+                case FLAT:
+                    hierarchyPredicate = new FlatClusteredViewPredicate();
+                    break;
+                case CHILDREN:
+                    hierarchyPredicate = new ChildrenClusteredViewPredicate();
+                    break;
+                case FULL:
+                    hierarchyPredicate = new FullClusteredViewPredicate();
+                    break;
             }
+            SubGraphManager.filterSubGraph(graphStructure, hierarchyPredicate);
+
+            graph.setStructure(graphStructure);
         }
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public boolean evaluateNode(AbstractNode node) {
-        if (active) {
-            checkUpdate();
-            return nodePredicate.evaluate(node);
-        }
-        return true;
-    }
-
-    public boolean evaluateEdge(AbstractEdge edge) {
-        if (active) {
-            checkUpdate();
-            return edgePredicate.evaluate(edge);
-        }
-        return true;
-    }
-
-    public int getNodeCount() {
-        checkUpdate();
-        return nodeTree.getCount();
-    }
-
-    public int getEdgeCount() {
-        checkUpdate();
-        return edgeTree.getCount();
-    }
-
-    public Predicate<AbstractNode> getNodePredicate() {
-        if (active) {
-            checkUpdate();
-            return nodePredicate;
-        }
-        return Tautology.instance;
-    }
-
-    public Predicate<AbstractEdge> getEdgePredicate() {
-        if (active) {
-            checkUpdate();
-            return edgePredicate;
-        }
-        return Tautology.instance;
-    }
-
-    public Predicate<AbstractEdge> getMetaEdgePredicate() {
-        if (active) {
-            checkUpdate();
-            return metaEdgePredicate;
-        }
-        return Tautology.instance;
-    }
-
-    public AbstractNodeIterator nodeIterator() {
-        checkUpdate();
-        return nodeTree.iterator();
-    }
-
-    public AbstractEdgeIterator edgeIterator() {
-        checkUpdate();
-        return edgeTree.iterator();
-    }
-
-    public AbstractEdgeIterator metaEdgeIterator() {
-        checkUpdate();
-        return metaEdgeTree.iterator();
+    public void setGraph(ClusteredGraphImpl graph) {
+        this.graph = graph;
     }
 
     public void addPredicate(Predicate predicate) {
-        if (!dispatchThread.isAlive()) {
-            dispatchThread.start();
+        if (blocking) {
+            lock.lock();
+            predicates.add(predicate);
+            lock.unlock();
+        } else {
+            if (!dispatchThread.isAlive()) {
+                dispatchThread.start();
+            }
+            dispatchThread.addPredicate(predicate);
         }
-
-        dispatchThread.addPredicate(predicate);
     }
 
     public void removePredicate(Predicate predicate) {
@@ -317,16 +165,12 @@ public class ViewImpl implements View {
         this.hierarchyFiltering = hierarchyFiltering;
     }
 
-    public void setGraph(Graph graph) {
-        this.graph = (ClusteredGraphImpl) graph;
-        active = dhns.isHierarchical();
-    }
-
     private class DispatchThread extends Thread {
 
         private final List<Predicate> predicateQueue = new ArrayList<Predicate>();
         private final Object monitor = new Object();
         private boolean waiting = false;
+        private boolean started = false;
 
         public DispatchThread() {
             super("View update dispatch thread");
@@ -335,6 +179,7 @@ public class ViewImpl implements View {
         @Override
         public void run() {
             synchronized (monitor) {
+                started = true;
                 while (true) {
                     try {
                         monitor.wait();
@@ -358,6 +203,13 @@ public class ViewImpl implements View {
         public void addPredicate(Predicate predicate) {
             synchronized (predicateQueue) {
                 predicateQueue.add(predicate);
+            }
+            while (!started) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
             synchronized (monitor) {
                 monitor.notify();
@@ -385,27 +237,6 @@ public class ViewImpl implements View {
             synchronized (monitor) {
                 monitor.notify();
             }
-        }
-    }
-
-    private class NodeInFilterResultPredicate implements Predicate<AbstractNode> {
-
-        public boolean evaluate(AbstractNode element) {
-            return nodeTree.contains(element);
-        }
-    }
-
-    private class EdgeInFilterResultPredicate implements Predicate<AbstractEdge> {
-
-        public boolean evaluate(AbstractEdge element) {
-            return edgeTree.contains(element);
-        }
-    }
-
-    private class MetaEdgeInFilterResultPredicate implements Predicate<AbstractEdge> {
-
-        public boolean evaluate(AbstractEdge element) {
-            return metaEdgeTree.contains(element);
         }
     }
 }

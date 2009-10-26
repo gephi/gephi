@@ -30,8 +30,8 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.filters.api.Filter;
+import org.gephi.filters.api.FilterBuilder;
 import org.gephi.filters.api.FilterModel;
-import org.gephi.filters.api.FilterUI;
 import org.gephi.project.api.ProjectController;
 import org.gephi.ui.components.JSqueezeBoxPanel;
 import org.gephi.workspace.api.Workspace;
@@ -124,9 +124,20 @@ final class FiltersTopComponent extends TopComponent {
                 }
             }
             if (!found) {
-                FilterPanel fp = new FilterPanel(f, f.getBuilder().getFilterUI(f));
-                filtersPanels.add(fp);
-                sbp.addPanel(fp, f.getBuilder().getName());
+                FilterBuilder[] filtersBuilder = Lookup.getDefault().lookupAll(FilterBuilder.class).toArray(new FilterBuilder[0]);
+                FilterBuilder builder = null;
+                for (FilterBuilder fb : filtersBuilder) {
+                    if (fb.getFilterClass().isAssignableFrom(f.getClass())) {
+                        builder = fb;
+                    }
+                }
+                if (builder != null) {
+                    FilterPanel fp = new FilterPanel(f, builder.getUI(f));
+                    filtersPanels.add(fp);
+                    sbp.addPanel(fp, builder.getName());
+                } else {
+                    throw new RuntimeException("FilterBuilder cannot be found for Filter class " + f.getClass());
+                }
             }
         }
     }
@@ -255,10 +266,10 @@ final class FiltersTopComponent extends TopComponent {
 
         private Filter filter;
 
-        public FilterPanel(Filter filter, FilterUI ui) {
+        public FilterPanel(Filter filter, JPanel ui) {
             super(new BorderLayout());
             this.filter = filter;
-            add(ui.getPanel(), BorderLayout.CENTER);
+            add(ui, BorderLayout.CENTER);
         }
 
         public Filter getFilter() {

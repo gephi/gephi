@@ -30,6 +30,7 @@ import org.gephi.graph.dhns.core.GraphFactoryImpl;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
+import org.gephi.graph.dhns.views.ViewImpl;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -55,11 +56,11 @@ public class DhnsTestFiltering {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = new Dhns(controller);
-        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, null);
+        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure(), new ViewImpl(dhnsGlobal));
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
-        TreeStructure treeStructure = dhnsGlobal.getTreeStructure();
+        TreeStructure treeStructure = dhnsGlobal.getGraphStructure().getStructure();
         GraphFactoryImpl factory = dhnsGlobal.factory();
 
         //Nodes
@@ -124,6 +125,12 @@ public class DhnsTestFiltering {
 
     @Test
     public void testFiltering() {
-        
+        dhnsGlobal.getGraphStructure().getStructure().showTreeAsTable();
+        graphGlobal.getView().addPredicate(new DegreePredicate(3, 5));
+        Node[] actual = graphGlobal.getNodes().toArray();
+        for(int i=0;i<actual.length;i++) {
+            System.out.println(actual[i].getId());
+        }
+        ((ViewImpl)graphGlobal.getView()).getGraphStructure().getStructure().showTreeAsTable();
     }
 }

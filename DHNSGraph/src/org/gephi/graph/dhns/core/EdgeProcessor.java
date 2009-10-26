@@ -43,7 +43,7 @@ public class EdgeProcessor {
 
     public EdgeProcessor(Dhns dhns) {
         this.dhns = dhns;
-        this.treeStructure = dhns.getTreeStructure();
+        this.treeStructure = dhns.getGraphStructure().getStructure();
         this.idGen = dhns.getIdGen();
         this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
     }
@@ -245,21 +245,21 @@ public class EdgeProcessor {
             return;
         }
 
-                AbstractNode[] sourceAncestors = treeStructure.getEnabledAncestorsOrSelf(edge.getSource());
-                AbstractNode[] targetAncestors = treeStructure.getEnabledAncestorsOrSelf(edge.getTarget());
+        AbstractNode[] sourceAncestors = treeStructure.getEnabledAncestorsOrSelf(edge.getSource());
+        AbstractNode[] targetAncestors = treeStructure.getEnabledAncestorsOrSelf(edge.getTarget());
 
-                if (sourceAncestors != null && targetAncestors != null) {
-                    for (int i = 0; i < sourceAncestors.length; i++) {
-                        for (int j = 0; j < targetAncestors.length; j++) {
-                            AbstractNode sourceParent = sourceAncestors[i];
-                            AbstractNode targetParent = targetAncestors[j];
-                            if (sourceParent != targetParent) {
-                                createMetaEdge(sourceParent, targetParent, edge);
-                            }
-                        }
+        if (sourceAncestors != null && targetAncestors != null) {
+            for (int i = 0; i < sourceAncestors.length; i++) {
+                for (int j = 0; j < targetAncestors.length; j++) {
+                    AbstractNode sourceParent = sourceAncestors[i];
+                    AbstractNode targetParent = targetAncestors[j];
+                    if (sourceParent != targetParent) {
+                        createMetaEdge(sourceParent, targetParent, edge);
                     }
-                
-            
+                }
+            }
+
+
         }
 
 //        AbstractNode sourceParent = treeStructure.getEnabledAncestorOrSelf(edge.getSource());
@@ -279,18 +279,18 @@ public class EdgeProcessor {
         }
 
 
-                MetaEdgeImpl metaEdge = getMetaEdge(edge);
-                if (metaEdge != null) {
-                    if (metaEdge.removeEdge(edge)) {
-                        dhns.getSettingsManager().getMetaEdgeBuilder().pullEdge(edge, metaEdge);
-                    }
-                    if (metaEdge.isEmpty()) {
-                        metaEdge.getSource().getMetaEdgesOutTree().remove(metaEdge);
-                        metaEdge.getTarget().getMetaEdgesInTree().remove(metaEdge);
-                    }
-                }
-            
-        
+        MetaEdgeImpl metaEdge = getMetaEdge(edge);
+        if (metaEdge != null) {
+            if (metaEdge.removeEdge(edge)) {
+                dhns.getSettingsManager().getMetaEdgeBuilder().pullEdge(edge, metaEdge);
+            }
+            if (metaEdge.isEmpty()) {
+                metaEdge.getSource().getMetaEdgesOutTree().remove(metaEdge);
+                metaEdge.getTarget().getMetaEdgesInTree().remove(metaEdge);
+            }
+        }
+
+
     }
 
     private MetaEdgeImpl getMetaEdge(AbstractNode source, AbstractNode target) {

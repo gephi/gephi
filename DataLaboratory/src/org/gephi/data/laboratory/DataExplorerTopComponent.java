@@ -39,13 +39,14 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphEvent;
 import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.project.api.ProjectController;
 import org.gephi.ui.utils.BusyUtils;
@@ -56,6 +57,7 @@ import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 //import org.openide.util.Utilities;
@@ -70,11 +72,15 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
 
         NONE, NODE, EDGE
     };
-    private static final Color invalidFilterColor = new Color(254, 254, 242);
     private static DataExplorerTopComponent instance;
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "DataExplorerTopComponent";
+
+    //Settings
+    private static final String DATA_LABORATORY_DYNAMIC_FILTERING = "DataLaboratory_Dynamic_Filtering";
+    private static final Color invalidFilterColor = new Color(254, 242, 242);
+    private final boolean dynamicFiltering;
 
     //Data
     private Lookup.Result<AttributeColumn> nodeColumnsResult;
@@ -92,6 +98,9 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
     ExecutorService taskExecutor;
 
     private DataExplorerTopComponent() {
+
+        //Settings
+        dynamicFiltering = NbPreferences.forModule(DataExplorerTopComponent.class).getBoolean(DATA_LABORATORY_DYNAMIC_FILTERING, true);
 
         taskExecutor = new ThreadPoolExecutor(0, 1, 10L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(20), new ThreadFactory() {
 
@@ -173,24 +182,28 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         edgeColumnsResult.addLookupListener(this);
 
         //Filter
-        filterTextField.addActionListener(new ActionListener() {
+        if (dynamicFiltering) {
+            filterTextField.getDocument().addDocumentListener(new DocumentListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                if (classDisplayed.equals(ClassDisplayed.NODE)) {
-                    if (nodeTable.setFilter(filterTextField.getText(), columnComboBox.getSelectedIndex())) {
-                        filterTextField.setBackground(Color.WHITE);
-                    } else {
-                        filterTextField.setBackground(invalidFilterColor);
-                    }
-                } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
-                    if (edgeTable.setPattern(filterTextField.getText(), columnComboBox.getSelectedIndex())) {
-                        filterTextField.setBackground(Color.WHITE);
-                    } else {
-                        filterTextField.setBackground(invalidFilterColor);
-                    }
+                public void insertUpdate(DocumentEvent e) {
+                    refreshFilter();
                 }
-            }
-        });
+
+                public void removeUpdate(DocumentEvent e) {
+                    refreshFilter();
+                }
+
+                public void changedUpdate(DocumentEvent e) {
+                }
+            });
+        } else {
+            filterTextField.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    refreshFilter();
+                }
+            });
+        }
 
         visibleGraphCheckbox.setSelected(visibleOnly);
         visibleGraphCheckbox.addItemListener(new ItemListener() {
@@ -204,6 +217,22 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                 }
             }
         });
+    }
+
+    private void refreshFilter() {
+        if (classDisplayed.equals(ClassDisplayed.NODE)) {
+            if (nodeTable.setFilter(filterTextField.getText(), columnComboBox.getSelectedIndex())) {
+                filterTextField.setBackground(Color.WHITE);
+            } else {
+                filterTextField.setBackground(invalidFilterColor);
+            }
+        } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
+            if (edgeTable.setPattern(filterTextField.getText(), columnComboBox.getSelectedIndex())) {
+                filterTextField.setBackground(Color.WHITE);
+            } else {
+                filterTextField.setBackground(invalidFilterColor);
+            }
+        }
     }
 
     private void initNodesView() {
@@ -398,6 +427,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         controlToolbar.add(labelFilter);
 
         filterTextField.setText(org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.filterTextField.text")); // NOI18N
+        filterTextField.setToolTipText(org.openide.util.NbBundle.getMessage(DataExplorerTopComponent.class, "DataExplorerTopComponent.filterTextField.toolTipText")); // NOI18N
         filterTextField.setMaximumSize(new java.awt.Dimension(1000, 30));
         filterTextField.setPreferredSize(new java.awt.Dimension(150, 20));
         controlToolbar.add(filterTextField);

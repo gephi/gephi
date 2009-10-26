@@ -29,8 +29,13 @@ import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Predicate;
 import org.gephi.graph.api.View;
 import org.gephi.graph.dhns.core.Dhns;
+import org.gephi.graph.dhns.core.GraphStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
+import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.node.iterators.NeighborIterator;
+import org.gephi.graph.dhns.node.iterators.TreeIterator;
 
 /**
  * Implementation of clustered sparse graph.
@@ -42,8 +47,8 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
     private Predicate<Edge> undirectedPredicate;
     private Predicate<Edge> directedPredicate;
 
-    public ClusteredMixedGraphImpl(Dhns dhns, View view) {
-        super(dhns, view);
+    public ClusteredMixedGraphImpl(Dhns dhns, GraphStructure structure, View view) {
+        super(dhns, structure, view);
         directedPredicate = new Predicate<Edge>() {
 
             public boolean evaluate(Edge t) {
@@ -117,14 +122,14 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
 
     public EdgeIterable getDirectedEdges() {
         readLock();
-//        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition, nodeProposition), directedPredicate);
-        return null;
+        view.checkUpdate();
+        return dhns.newEdgeIterable(new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false), false), directedPredicate);
     }
 
     public EdgeIterable getUndirectedEdges() {
         readLock();
-//        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition, nodeProposition), undirectedPredicate);
-        return null;
+        view.checkUpdate();
+        return dhns.newEdgeIterable(new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false), false), undirectedPredicate);
     }
 
     public boolean isDirected(Edge edge) {
@@ -137,88 +142,76 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
     }
 
     public Edge getEdge(Node node1, Node node2) {
+        readLock();
+        view.checkUpdate();
         AbstractNode sourceNode = checkNode(node1);
         AbstractNode targetNode = checkNode(node2);
-        readLock();
-        AbstractEdge res = null;
-//        AbstractEdge edge = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
-//        if (edge == null) {
-//            edge = sourceNode.getEdgesInTree().getItem(targetNode.getNumber());
-//        }
-//        if (edgeProposition.evaluate(edge)) {
-//            res = edge;
-//        }
+        AbstractEdge edge = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
+        if (edge == null) {
+            edge = sourceNode.getEdgesInTree().getItem(targetNode.getNumber());
+        }
         readUnlock();
-        return res;
+        return edge;
     }
 
     public EdgeIterable getEdges() {
         readLock();
-//        return dhns.newEdgeIterable(new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition, nodeProposition));
-        return null;
+        view.checkUpdate();
+        return dhns.newEdgeIterable(new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false), false));
     }
 
     public NodeIterable getNeighbors(Node node) {
-        AbstractNode absNode = checkNode(node);
         readLock();
-//        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, edgeProposition), absNode, nodeProposition));
-        return null;
+        view.checkUpdate();
+        AbstractNode absNode = checkNode(node);
+        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true), absNode));
     }
 
     public EdgeIterable getEdges(Node node) {
-        AbstractNode absNode = checkNode(node);
         readLock();
-//        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, edgeProposition));
-        return null;
+        view.checkUpdate();
+        AbstractNode absNode = checkNode(node);
+        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false));
     }
 
     public int getEdgeCount() {
         readLock();
+        view.checkUpdate();
         int count = 0;
-//        for (EdgeIterator itr = new EdgeIterator(dhns.getTreeStructure(), new TreeIterator(dhns.getTreeStructure(), nodeProposition), false, edgeProposition, nodeProposition); itr.hasNext();) {
-//            itr.next();
-//            count++;
-//        }
+        for (EdgeIterator itr = new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false), false); itr.hasNext();) {
+            itr.next();
+            count++;
+        }
         readUnlock();
         return count;
     }
 
     public int getDegree(Node node) {
-        return getInDegree(node) + getOutDegree(node);
+        readLock();
+        view.checkUpdate();
+        AbstractNode absNode = checkNode(node);
+        int count = absNode.getEdgesInTree().getCount() + absNode.getEdgesOutTree().getCount();
+        readUnlock();
+        return count;
     }
 
     //Directed
     public int getInDegree(Node node) {
-        AbstractNode absNode = checkNode(node);
         readLock();
-        int count = 0;
-//        if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
-//            for (Iterator<AbstractEdge> itr = absNode.getEdgesInTree().iterator(); itr.hasNext();) {
-//                if (edgeProposition.evaluate(itr.next())) {
-//                    count++;
-//                }
-//            }
-//        } else {
-//            count = absNode.getEdgesInTree().getCount();
-//        }
+        view.checkUpdate();
+        AbstractNode absNode = checkNode(node);
+        int count = absNode.getEdgesInTree().getCount();
         readUnlock();
         return count;
     }
 
     //Directed
     public int getOutDegree(Node node) {
-        AbstractNode absNode = checkNode(node);
         readLock();
+        view.checkUpdate();
+        AbstractNode absNode = checkNode(node);
         int count = 0;
-//        if (!edgeProposition.isTautology() && !absNode.getEdgesInTree().isEmpty()) {
-//            for (Iterator<AbstractEdge> itr = absNode.getEdgesOutTree().iterator(); itr.hasNext();) {
-//                if (edgeProposition.evaluate(itr.next())) {
-//                    count++;
-//                }
-//            }
-//        } else {
-//            count = absNode.getEdgesOutTree().getCount();
-//        }
+        count = absNode.getEdgesOutTree().getCount();
         readUnlock();
         return count;
     }
@@ -269,8 +262,8 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
     }
 
     @Override
-    public ClusteredMixedGraphImpl copy(ClusteredGraphImpl graph) {
-        return new ClusteredMixedGraphImpl(dhns, view);
+    public ClusteredMixedGraphImpl copy(Dhns dhns, GraphStructure structure, View view) {
+        return new ClusteredMixedGraphImpl(dhns, structure, view);
     }
 
     public ClusteredMixedGraph getClusteredGraph() {

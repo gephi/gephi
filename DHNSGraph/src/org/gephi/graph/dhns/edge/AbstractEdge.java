@@ -47,6 +47,14 @@ public abstract class AbstractEdge implements Edge, AVLItem {
         this.edgeData = new EdgeDataImpl(this);
     }
 
+    public AbstractEdge(AbstractEdge edge, AbstractNode source, AbstractNode target) {
+        this.source = source;
+        this.target = target;
+        this.ID = edge.ID;
+        this.edgeData = edge.edgeData;
+        this.weight = edge.weight;
+    }
+
     public AbstractNode getSource() {
         return source;
     }
