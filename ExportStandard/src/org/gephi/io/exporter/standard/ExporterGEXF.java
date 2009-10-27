@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Sebastien Heymann
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -37,6 +37,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
+/**
+ *
+ * @author Sebastien Heymann
+ */
 public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
 
     private boolean cancel = false;
@@ -51,7 +55,8 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
     public boolean exportData(Document document, Graph graph) throws Exception {
         Progress.start(progressTicket);
 
-        Element root = document.createElementNS("http://www.gephi.org/gexf", "gexf");
+        Element root = document.createElementNS("http://www.gephi.org/gexf/1.1draft", "gexf");
+        root.setAttribute("xmlns:viz", "http://gephi.org/gexf/1.1draft/viz");
         root.setAttribute("version", "1.1");
         document.appendChild(root);
 
