@@ -21,17 +21,17 @@ public class PreviewGraphFactory {
 			previewGraph.addNode(previewNode);
 		}
 
-		for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdges()) {
-			if (sourceEdge.isVisible()) {
-				if (sourceEdge.isSelfLoop()) {
-					// create self-loop
-					// add self-loop
-				}
-				else {
-					// add edge
-				}
-			}
-		}
+//		for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdges()) {
+//			if (sourceEdge.isVisible()) {
+//				if (sourceEdge.isSelfLoop()) {
+//					// create self-loop
+//					// add self-loop
+//				}
+//				else {
+//					// add edge
+//				}
+//			}
+//		}
 
 		return previewGraph;
 	}

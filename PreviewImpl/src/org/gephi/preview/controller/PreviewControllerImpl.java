@@ -44,20 +44,7 @@ public class PreviewControllerImpl implements PreviewController {
 
 	private void buildGraph() {
 		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-
-		org.gephi.graph.api.Graph sourceGraph = null;
-
-		if (graphModel.isDirected()) {
-			sourceGraph = graphModel.getDirectedGraph();
-		}
-		else if (graphModel.isUndirected()) {
-			sourceGraph = graphModel.getUndirectedGraph();
-		}
-		else if (graphModel.isMixed()) {
-			sourceGraph = graphModel.getMixedGraph();
-		}
-
-		previewGraph = factory.createPreviewGraph(sourceGraph, gs);
+		previewGraph = factory.createPreviewGraph(graphModel.getGraph(), gs);
 	}
 
     /**
