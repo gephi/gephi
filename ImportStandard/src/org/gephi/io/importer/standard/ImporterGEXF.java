@@ -21,7 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.importer.standard;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -79,6 +82,9 @@ public class ImporterGEXF implements XMLImporter, LongTask {
     //Attributes options
     private HashMap<String, StringList> optionsAttributes;
 
+    //Unknown parents nodes
+    private ConcurrentHashMap<String, List<String> > unknownParents; // <parentId, ChildIdList>
+
     public ImporterGEXF() {
         //Default node associations
         properties.addNodePropertyAssociation(new PropertyAssociation<NodeProperties>(NodeProperties.LABEL, "label"));
@@ -119,6 +125,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
         this.cancel = false;
         this.isDynamicMode = false;
         this.isDateTypeInteger = false;
+        this.unknownParents = null;
     }
 
     private void importData(Document document) throws Exception {
@@ -228,7 +235,11 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             setAttributesColumns(columnListE);
 
             //Nodes
+            unknownParents = new ConcurrentHashMap<String, List<String> >();
             parseNodes(nodeListE, null);
+
+            //Unknown parents
+            setUnknownParents();
 
             //Edges
             parseEdges(edgeListE, null);
@@ -262,8 +273,23 @@ public class ImporterGEXF implements XMLImporter, LongTask {
 
             //Parent
             if (!nodeE.getAttribute("pid").isEmpty() && !nodeE.getAttribute("pid").equals("0")) {
-                String parentId = nodeE.getAttribute("pid");
-                node.setParent(container.getNode(parentId));
+                String pid = nodeE.getAttribute("pid");
+
+                // parent node unknown, maybve declared after
+
+                if(!container.nodeExists(pid)) {
+                    if(unknownParents.containsKey(pid)) {
+                        unknownParents.get(pid).add(nodeId);
+                    }
+                    else {
+                        List<String> childList = new ArrayList<String>();
+                        childList.add(nodeId);
+                        unknownParents.put(pid, childList);
+                    }
+                } // parent node known
+                else {
+                    node.setParent(container.getNode(pid));
+                }
             }
             else if(parent != null) { //xml-element parent
                 node.setParent(container.getNode(parent));
@@ -590,6 +616,16 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 edgeClass.addAttributeColumn(colId, colTitle, attributeType, AttributeOrigin.DATA, defaultValue);
                 report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_edgeattribute", colTitle, attributeType.getTypeString()));
             }
+        }
+    }
+
+    private void setUnknownParents() {
+        for (String pid : unknownParents.keySet()) {
+            List<String> childList = unknownParents.get(pid);
+            for (String childId : childList) {
+                container.getNode(childId).setParent(container.getNode(pid));
+            }
+            unknownParents.remove(pid);
         }
     }
 
