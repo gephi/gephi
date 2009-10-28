@@ -9,9 +9,15 @@ import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.color.colorizer.GenericColorizer;
 import org.gephi.preview.api.color.colorizer.NodeChildColorizer;
 import org.gephi.preview.api.color.colorizer.NodeColorizer;
+import org.gephi.preview.api.supervisor.EdgeSupervisor;
+import org.gephi.preview.api.supervisor.GlobalEdgeSupervisor;
 import org.gephi.preview.api.supervisor.SelfLoopSupervisor;
+import org.gephi.preview.supervisor.BidirectionalEdgeSupervisorImpl;
+import org.gephi.preview.supervisor.EdgeSupervisorImpl;
+import org.gephi.preview.supervisor.GlobalEdgeSupervisorImpl;
 import org.gephi.preview.supervisor.GraphSupervisor;
 import org.gephi.preview.supervisor.SelfLoopSupervisorImpl;
+import org.gephi.preview.supervisor.UnidirectionalEdgeSupervisorImpl;
 import org.openide.util.Lookup;
 
 /**
@@ -22,7 +28,10 @@ public class PreviewControllerImpl implements PreviewController {
 
     private GraphImpl previewGraph = null;
     protected final GraphSupervisor gs = new GraphSupervisor();
+    private final GlobalEdgeSupervisorImpl globalEdgeSupervisor = new GlobalEdgeSupervisorImpl();
 	private final SelfLoopSupervisorImpl selfLoopSupervisor = new SelfLoopSupervisorImpl();
+    private final EdgeSupervisorImpl uniEdgeSupervisor = new UnidirectionalEdgeSupervisorImpl();
+    private final EdgeSupervisorImpl biEdgeSupervisor = new BidirectionalEdgeSupervisorImpl();
 	private final PreviewGraphFactory factory = new PreviewGraphFactory();
 
     public Graph getGraph() {
@@ -51,6 +60,15 @@ public class PreviewControllerImpl implements PreviewController {
 		previewGraph = factory.createPreviewGraph(sourceGraph, gs);
 	}
 
+    /**
+	 * Returns the global edge supervisor.
+	 *
+	 * @return the controller's global edge supervisor
+	 */
+	public GlobalEdgeSupervisor getGlobalEdgeSupervisor() {
+		return globalEdgeSupervisor;
+	}
+
 	/**
 	 * Returns the self-loop supervisor.
 	 *
@@ -58,6 +76,24 @@ public class PreviewControllerImpl implements PreviewController {
 	 */
 	public SelfLoopSupervisor getSelfLoopSupervisor() {
 		return selfLoopSupervisor;
+	}
+
+    /**
+	 * Returns the unidirectional edge supervisor.
+	 *
+	 * @return the controller's unidirectional edge supervisor
+	 */
+	public EdgeSupervisor getUniEdgeSupervisor() {
+		return uniEdgeSupervisor;
+	}
+
+    /**
+	 * Returns the bidirectional edge supervisor.
+	 *
+	 * @return the controller's bidirectional edge supervisor
+	 */
+	public EdgeSupervisor getBiEdgeSupervisor() {
+		return biEdgeSupervisor;
 	}
 
     public Boolean getShowNodes() {

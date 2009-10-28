@@ -2,10 +2,12 @@ package org.gephi.preview;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import org.gephi.preview.api.BidirectionalEdge;
 import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.Node;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.SelfLoop;
+import org.gephi.preview.api.UnidirectionalEdge;
 import org.gephi.preview.supervisor.GraphSupervisor;
 import org.gephi.preview.supervisor.SelfLoopSupervisorImpl;
 import org.openide.util.Lookup;
@@ -20,6 +22,8 @@ public class GraphImpl implements Graph {
     private final GraphSupervisor supervisor;
     private final ArrayList<Node> m_nodes = new ArrayList<Node>();
 	private final ArrayList<SelfLoop> selfLoops = new ArrayList<SelfLoop>();
+    private final ArrayList<UnidirectionalEdge> uniEdges = new ArrayList<UnidirectionalEdge>();
+    private final ArrayList<BidirectionalEdge> biEdges = new ArrayList<BidirectionalEdge>();
 
     private final PVector m_minPos = new PVector();
     private final PVector m_maxPos =  new PVector();
@@ -53,6 +57,14 @@ public class GraphImpl implements Graph {
 	 */
 	public Iterator<SelfLoop> getSelfLoops() {
 		return selfLoops.iterator();
+	}
+
+    public Iterator<UnidirectionalEdge> getUnidirectionalEdges() {
+		return uniEdges.iterator();
+	}
+
+    public Iterator<BidirectionalEdge> getBidirectionalEdges() {
+		return biEdges.iterator();
 	}
 
     public final PVector getMinPos() {
@@ -105,13 +117,31 @@ public class GraphImpl implements Graph {
         selfLoops.add(selfLoop);
     }
 
+    /**
+	 * Adds the given unidirectional edge to the graph.
+	 *
+	 * @param edge  the unidirectional edge to add to the graph
+	 */
+	public void addUnidirectionalEdge(UnidirectionalEdge edge) {
+        uniEdges.add(edge);
+    }
+
+    /**
+	 * Adds the given bidirectional edge to the graph.
+	 *
+	 * @param edge  the bidirectional edge to add to the graph
+	 */
+	public void addBidirectionalEdge(BidirectionalEdge edge) {
+        biEdges.add(edge);
+    }
+
     public boolean showNodes() {
         return supervisor.getNodeSupervisor().getShowNodes();
     }
 
 	public boolean showEdges() {
-		//TODO GraphImpl.showEdges()
-		return true;
+		PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+		return controller.getGlobalEdgeSupervisor().getShowFlag();
 	}
 
 	/**

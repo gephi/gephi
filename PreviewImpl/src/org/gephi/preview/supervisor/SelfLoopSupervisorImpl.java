@@ -9,7 +9,7 @@ import org.gephi.preview.api.supervisor.SelfLoopSupervisor;
 import org.gephi.preview.color.colormode.CustomColorMode;
 
 /**
- * Self-loop supervisor.
+ * Self-loop supervisor implementation.
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */

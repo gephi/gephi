@@ -11,7 +11,7 @@ import org.gephi.preview.supervisor.GraphSupervisor;
  */
 public class PreviewGraphFactory {
 
-	private final HashMap<org.gephi.graph.api.Node, NodeImpl> nodeMap = new HashMap();
+	private final HashMap<org.gephi.graph.api.Node, NodeImpl> nodeMap = new HashMap<org.gephi.graph.api.Node, NodeImpl>();
 
 	public GraphImpl createPreviewGraph(org.gephi.graph.api.Graph sourceGraph, GraphSupervisor supervisor) {
 		GraphImpl previewGraph = new GraphImpl(supervisor);

@@ -19,10 +19,10 @@ public class ProcessingPreview extends PApplet {
 	private PVector lastMove = new PVector();
 	private float scaling;
 	private PFont nodeLabelFont;
-	private PFont unidirectionalEdgeLabelFont;
-	private PFont unidirectionalEdgeMiniLabelFont;
-	private PFont bidirectionalEdgeLabelFont;
-	private PFont bidirectionalEdgeMiniLabelFont;
+	private PFont uniEdgeLabelFont;
+	private PFont uniEdgeMiniLabelFont;
+	private PFont biEdgeLabelFont;
+	private PFont biEdgeMiniLabelFont;
 	private PFont edgeLabelFont;
 	private PFont edgeMiniLabelFont;
 	private boolean graphSet = false;
@@ -30,7 +30,8 @@ public class ProcessingPreview extends PApplet {
 	private final static float MARGIN = 10f;
 
 	/**
-	 * Refresh the preview using the current graph from the preview controller.
+	 * Refreshes the preview using the current graph from the preview
+     * controller.
 	 */
 	public void refresh() {
 		graphSet = false;
@@ -41,6 +42,10 @@ public class ProcessingPreview extends PApplet {
 
 		// update fonts
 		nodeLabelFont = createFont(controller.getNodeLabelFont());
+        uniEdgeLabelFont = createFont(controller.getUniEdgeSupervisor().getLabelFont());
+        uniEdgeMiniLabelFont = createFont(controller.getUniEdgeSupervisor().getMiniLabelFont());
+        biEdgeLabelFont = createFont(controller.getBiEdgeSupervisor().getLabelFont());
+        biEdgeMiniLabelFont = createFont(controller.getBiEdgeSupervisor().getMiniLabelFont());
 
 		// initial graph positioning
 		{
@@ -138,7 +143,7 @@ public class ProcessingPreview extends PApplet {
 	}
 
 	/**
-	 * Create a Processing font from a classic font.
+	 * Creates a Processing font from a classic font.
 	 *
 	 * @param font  a font to transform
 	 * @return a Processing font
@@ -148,13 +153,25 @@ public class ProcessingPreview extends PApplet {
 	}
 
 	/**
-	 * Draw a graph on the preview.
+	 * Draws a graph on the preview.
 	 *
 	 * @param graph  the graph to draw
 	 */
 	private void drawGraph(Graph graph) {
 		if (graph.showEdges()) {
-			
+
+            // draw edges
+            for (Iterator<UnidirectionalEdge> it = graph.getUnidirectionalEdges(); it.hasNext(); ) {
+                edgeLabelFont = uniEdgeLabelFont;
+                edgeMiniLabelFont = uniEdgeMiniLabelFont;
+                drawEdge(it.next());
+            }
+            for (Iterator<BidirectionalEdge> it = graph.getBidirectionalEdges(); it.hasNext(); ) {
+                edgeLabelFont = biEdgeLabelFont;
+                edgeMiniLabelFont = biEdgeMiniLabelFont;
+                drawEdge(it.next());
+            }
+
 			if (graph.showSelfLoops()) {
 				// draw self-loops
 				for (Iterator<SelfLoop> it = graph.getSelfLoops(); it.hasNext();) {
@@ -174,7 +191,7 @@ public class ProcessingPreview extends PApplet {
 	}
 
 	/**
-	 * Draw a node on the preview.
+	 * Draws a node on the preview.
 	 *
 	 * @param node  the node to draw
 	 */
@@ -203,7 +220,7 @@ public class ProcessingPreview extends PApplet {
 	}
 
 	/**
-	 * Draw a node label on the preview.
+	 * Draws a node label on the preview.
 	 *
 	 * @param label  the node label to draw
 	 */
@@ -217,7 +234,7 @@ public class ProcessingPreview extends PApplet {
 	}
 
 	/**
-	 * Draw a node label border on the preview.
+	 * Draws a node label border on the preview.
 	 *
 	 * @param border  the node label border to draw
 	 */
@@ -231,7 +248,7 @@ public class ProcessingPreview extends PApplet {
 	}
 
 	/**
-	 * Draw a self-loop on the preview.
+	 * Draws a self-loop on the preview.
 	 *
 	 * @param selfLoop  the self-loop to draw
 	 */
@@ -249,4 +266,124 @@ public class ProcessingPreview extends PApplet {
 				curve.getPt3().x, curve.getPt3().y,
 				curve.getPt4().x, curve.getPt4().y);
 	}
+
+    /**
+	 * Draws an edge on the preview.
+	 *
+	 * @param edge  the edge to draw
+	 */
+    public void drawEdge(Edge edge) {
+        strokeWeight(edge.getThickness());
+        stroke(edge.getColor().getRed(),
+                edge.getColor().getGreen(),
+                edge.getColor().getBlue());
+        noFill();
+
+        if (edge.isCurved()) {
+            // draw curved edge
+            drawCurvedEdge(edge);
+        }
+        else {
+            // draw straight edge
+            drawStraightEdge(edge);
+
+            // draw its arrows
+            if (edge.showArrows()) {
+                noStroke();
+                for (Iterator<EdgeArrow> it = edge.getArrows(); it.hasNext(); )
+                    drawEdgeArrow(it.next());
+            }
+
+            // draw its label
+            if (edge.showLabel()) {
+                textFont(edgeLabelFont);
+                textAlign(CENTER, BASELINE);
+                drawEdgeLabel(edge.getLabel());
+            }
+
+            // draw its mini-labels
+            if (edge.showMiniLabels()) {
+                textFont(edgeMiniLabelFont);
+                for (Iterator<EdgeMiniLabel> it = edge.getMiniLabels(); it.hasNext(); )
+                    drawEdgeMiniLabel(it.next());
+            }
+        }
+    }
+
+    /**
+	 * Draws a straight edge on the preview.
+	 *
+	 * @param edge  the straight edge to draw
+	 */
+    public void drawStraightEdge(Edge edge) {
+        PVector boundary1 = edge.getNode1().getPosition();
+        PVector boundary2 = edge.getNode2().getPosition();
+
+        // draw straight edge
+        line(boundary1.x, boundary1.y, boundary2.x, boundary2.y);
+    }
+
+    /**
+	 * Draws a curved edge on the preview.
+	 *
+	 * @param edge  the curved edge to draw
+	 */
+    public void drawCurvedEdge(Edge edge) {
+        for (Iterator<CubicBezierCurve> it = edge.getCurves(); it.hasNext(); ) {
+            CubicBezierCurve curve = it.next();
+
+            // draw curve
+            bezier(curve.getPt1().x, curve.getPt1().y,
+                    curve.getPt2().x, curve.getPt2().y,
+                    curve.getPt3().x, curve.getPt3().y,
+                    curve.getPt4().x, curve.getPt4().y);
+        }
+    }
+
+    /**
+	 * Draws an edge arrow on the preview.
+	 *
+	 * @param edge  the edge arrow edge to draw
+	 */
+    public void drawEdgeArrow(EdgeArrow arrow) {
+        fill(arrow.getColor().getRed(),
+                arrow.getColor().getGreen(),
+                arrow.getColor().getBlue());
+        triangle(arrow.getPt1().x, arrow.getPt1().y,
+                arrow.getPt2().x, arrow.getPt2().y,
+                arrow.getPt3().x, arrow.getPt3().y);
+    }
+
+    /**
+	 * Draws an edge label on the preview.
+	 *
+	 * @param edge  the edge label edge to draw
+	 */
+    public void drawEdgeLabel(EdgeLabel label) {
+        pushMatrix();
+        fill(label.getColor().getRed(),
+                label.getColor().getGreen(),
+                label.getColor().getBlue());
+        translate(label.getPosition().x, label.getPosition().y);
+        rotate(label.getAngle());
+        text(label.getValue(), 0, 0);
+        popMatrix();
+    }
+
+    /**
+	 * Draws an edge mini-label on the preview.
+	 *
+	 * @param edge  the edge mini-label edge to draw
+	 */
+    public void drawEdgeMiniLabel(EdgeMiniLabel miniLabel) {
+        pushMatrix();
+        fill(miniLabel.getColor().getRed(),
+                miniLabel.getColor().getGreen(),
+                miniLabel.getColor().getBlue());
+        textAlign(miniLabel.getHAlign().toProcessing(), BASELINE);
+        translate(miniLabel.getPosition().x, miniLabel.getPosition().y);
+        rotate(miniLabel.getAngle());
+        text(miniLabel.getValue(), 0, 0);
+        popMatrix();
+    }
 }

@@ -43,16 +43,6 @@ public abstract class AbstractEdge implements EdgeColorizerClient {
     }
 
 	/**
-	 * Returns the edge's alpha color.
-	 *
-	 * @return the edge's alpha color
-	 */
-    @Override
-    public int getAlpha() {
-        return alpha;
-    }
-
-	/**
 	 * Returns the edge's thickness.
 	 *
 	 * @return the edge's thickness

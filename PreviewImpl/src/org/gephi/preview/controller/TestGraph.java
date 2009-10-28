@@ -1,8 +1,10 @@
 package org.gephi.preview.controller;
 
+import org.gephi.preview.BidirectionalEdgeImpl;
 import org.gephi.preview.GraphImpl;
 import org.gephi.preview.NodeImpl;
 import org.gephi.preview.SelfLoopImpl;
+import org.gephi.preview.UnidirectionalEdgeImpl;
 import org.gephi.preview.api.Graph;
 
 /**
@@ -26,6 +28,11 @@ public class TestGraph extends PreviewControllerImpl {
         graph.addNode(n4);
 
 		graph.addSelfLoop(new SelfLoopImpl(graph, 0.5f, 0, n2));
+
+        graph.addUnidirectionalEdge(new UnidirectionalEdgeImpl(graph, 0.5f, 0, n1, n2, "Edge 1"));
+        graph.addUnidirectionalEdge(new UnidirectionalEdgeImpl(graph, 0.5f, 0, n1, n3, "Edge 2"));
+        graph.addUnidirectionalEdge(new UnidirectionalEdgeImpl(graph, 0.5f, 0, n2, n3, "Edge 3"));
+        graph.addBidirectionalEdge(new BidirectionalEdgeImpl(graph, 2, 0, n3, n4, "Edge 4"));
 
         return graph;
     }

@@ -20,6 +20,6 @@ public class NodeLabelBorderImpl extends AbstractNodeChild
     }
 
     public final NodeLabelImpl getLabel() {
-        return getParentNode().getLabel();
+        return parent.getLabel();
     }
 }

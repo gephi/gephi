@@ -4,6 +4,8 @@ import java.awt.Font;
 import org.gephi.preview.api.color.colorizer.GenericColorizer;
 import org.gephi.preview.api.color.colorizer.NodeChildColorizer;
 import org.gephi.preview.api.color.colorizer.NodeColorizer;
+import org.gephi.preview.api.supervisor.EdgeSupervisor;
+import org.gephi.preview.api.supervisor.GlobalEdgeSupervisor;
 import org.gephi.preview.api.supervisor.SelfLoopSupervisor;
 
 /**
@@ -14,7 +16,33 @@ public interface PreviewController {
 
     public Graph getGraph();
 
+    /**
+	 * Returns the global edge supervisor.
+	 *
+	 * @return the controller's global edge supervisor
+	 */
+	public GlobalEdgeSupervisor getGlobalEdgeSupervisor();
+
+    /**
+	 * Returns the self-loop supervisor.
+	 *
+	 * @return the controller's self-loop supervisor
+	 */
 	public SelfLoopSupervisor getSelfLoopSupervisor();
+
+    /**
+	 * Returns the unidirectional edge supervisor.
+	 *
+	 * @return the controller's unidirectional edge supervisor
+	 */
+	public EdgeSupervisor getUniEdgeSupervisor();
+
+    /**
+	 * Returns the bidirectional edge supervisor.
+	 *
+	 * @return the controller's bidirectional edge supervisor
+	 */
+	public EdgeSupervisor getBiEdgeSupervisor();
 
     public Boolean getShowNodes();
     public Float getNodeBorderWidth();
