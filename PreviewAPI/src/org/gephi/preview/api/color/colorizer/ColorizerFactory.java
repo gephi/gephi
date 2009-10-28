@@ -10,7 +10,7 @@ public interface ColorizerFactory {
 
     public boolean matchNodeOriginalColorMode(String s);
 
-    public boolean matchParentNodeColorMode(String s);
+    public boolean matchParentColorMode(String s);
 
 	public boolean matchEdgeB1ColorMode(String s);
 
@@ -22,7 +22,7 @@ public interface ColorizerFactory {
 
 	public boolean isNodeOriginalColorMode(Colorizer colorizer);
 
-	public boolean isParentNodeColorMode(Colorizer colorizer);
+	public boolean isParentColorMode(Colorizer colorizer);
 
 	public boolean isEdgeB1ColorMode(Colorizer colorizer);
 
@@ -36,7 +36,7 @@ public interface ColorizerFactory {
 
     public Colorizer createNodeOriginalColorMode();
 
-    public Colorizer createParentNodeColorMode();
+    public Colorizer createParentColorMode();
 
 	public Colorizer createEdgeB1ColorMode();
 

@@ -1,12 +1,16 @@
 package org.gephi.preview.api.color.colorizer;
 
-import org.gephi.preview.api.color.colorizer.Colorizer;
-
 /**
+ * Interface of an edge child colorizer.
  *
- * @author jeremy
+ * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public interface EdgeChildColorizer extends Colorizer {
 
-    //void setEdgeChild(AbstractEdgeChild client);
+	/**
+	 * Colors the given client.
+	 *
+	 * @param client  the client to color
+	 */
+    public void color(EdgeChildColorizerClient client);
 }

@@ -9,7 +9,7 @@ import java.awt.Component;
 public class NodeChildColorizerPropertyEditor extends GenericColorizerPropertyEditor {
 
     @Override
-    public boolean supportsParentNodeColorMode() {
+    public boolean supportsParentColorMode() {
         return true;
     }
 
@@ -17,7 +17,7 @@ public class NodeChildColorizerPropertyEditor extends GenericColorizerPropertyEd
 	public Component getCustomEditor() {
 		ColorModePanel p;
 		p = (ColorModePanel) super.getCustomEditor();
-		p = new ParentNodeColorModePanelDecorator(this, p);
+		p = new ParentColorModePanelDecorator(this, p);
 
 		return p;
 	}

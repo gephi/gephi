@@ -9,7 +9,7 @@ import org.gephi.preview.color.colormode.EdgeB1ColorMode;
 import org.gephi.preview.color.colormode.EdgeB2ColorMode;
 import org.gephi.preview.color.colormode.EdgeBothBColorMode;
 import org.gephi.preview.color.colormode.NodeOriginalColorMode;
-import org.gephi.preview.color.colormode.ParentNodeColorMode;
+import org.gephi.preview.color.colormode.ParentColorMode;
 
 /**
  *
@@ -32,8 +32,8 @@ public class ColorizerFactoryImpl implements ColorizerFactory {
 		return matchColorMode(s, NodeOriginalColorMode.getIdentifier());
 	}
 
-	public boolean matchParentNodeColorMode(String s) {
-		return matchColorMode(s, ParentNodeColorMode.getIdentifier());
+	public boolean matchParentColorMode(String s) {
+		return matchColorMode(s, ParentColorMode.getIdentifier());
 	}
 
 	public boolean matchEdgeB1ColorMode(String s) {
@@ -56,8 +56,8 @@ public class ColorizerFactoryImpl implements ColorizerFactory {
 		return matchNodeOriginalColorMode(colorizer.toString());
 	}
 
-	public boolean isParentNodeColorMode(Colorizer colorizer) {
-		return matchParentNodeColorMode(colorizer.toString());
+	public boolean isParentColorMode(Colorizer colorizer) {
+		return matchParentColorMode(colorizer.toString());
 	}
 
 	public boolean isEdgeB1ColorMode(Colorizer colorizer) {
@@ -84,8 +84,8 @@ public class ColorizerFactoryImpl implements ColorizerFactory {
 		return new NodeOriginalColorMode();
 	}
 
-	public Colorizer createParentNodeColorMode() {
-		return new ParentNodeColorMode();
+	public Colorizer createParentColorMode() {
+		return new ParentColorMode();
 	}
 
 	public Colorizer createEdgeB1ColorMode() {

@@ -7,7 +7,9 @@ import org.gephi.preview.api.color.Color;
  *
  * @author jeremy
  */
-public interface NodeChildColorizerClient extends ColorizerClient {
+public interface EdgeChildColorizerClient extends ColorizerClient {
 
     public Holder<Color> getParentColorHolder();
+
+    public EdgeColorizerClient getParentEdge();
 }

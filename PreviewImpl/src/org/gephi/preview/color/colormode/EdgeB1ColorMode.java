@@ -1,5 +1,6 @@
 package org.gephi.preview.color.colormode;
 
+import org.gephi.preview.api.color.colorizer.EdgeChildColorizerClient;
 import org.gephi.preview.api.color.colorizer.EdgeChildColorizer;
 import org.gephi.preview.api.color.colorizer.EdgeColorizer;
 import org.gephi.preview.api.color.colorizer.EdgeColorizerClient;
@@ -21,6 +22,15 @@ public class EdgeB1ColorMode
 	 */
 	public void color(EdgeColorizerClient client) {
 		client.setColor(new InheritedColor(client.getNode1().getColorHolder()));
+	}
+
+    /**
+	 * Colors the given client.
+	 *
+	 * @param client  the client to color
+	 */
+	public void color(EdgeChildColorizerClient client) {
+		client.setColor(new InheritedColor(client.getParentEdge().getNode1().getColorHolder()));
 	}
 
 	@Override

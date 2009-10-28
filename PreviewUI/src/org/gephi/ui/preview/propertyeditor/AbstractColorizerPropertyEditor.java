@@ -38,8 +38,8 @@ public abstract class AbstractColorizerPropertyEditor extends PropertyEditorSupp
         else if (supportsNodeOriginalColorMode() && colorizerFactory.matchNodeOriginalColorMode(s)) {
             setValue(colorizerFactory.createNodeOriginalColorMode());
         }
-        else if (supportsParentNodeColorMode() && colorizerFactory.matchParentNodeColorMode(s)) {
-            setValue(colorizerFactory.createParentNodeColorMode());
+        else if (supportsParentColorMode() && colorizerFactory.matchParentColorMode(s)) {
+            setValue(colorizerFactory.createParentColorMode());
         }
 		else if (supportsEdgeB1ColorMode() && colorizerFactory.matchEdgeB1ColorMode(s)) {
             setValue(colorizerFactory.createEdgeB1ColorMode());
@@ -60,7 +60,7 @@ public abstract class AbstractColorizerPropertyEditor extends PropertyEditorSupp
         return false;
     }
 
-    public boolean supportsParentNodeColorMode() {
+    public boolean supportsParentColorMode() {
         return false;
     }
 
