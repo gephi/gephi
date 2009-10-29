@@ -276,7 +276,6 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 String pid = nodeE.getAttribute("pid");
 
                 // parent node unknown, maybve declared after
-
                 if(!container.nodeExists(pid)) {
                     if(unknownParents.containsKey(pid)) {
                         unknownParents.get(pid).add(nodeId);
@@ -673,7 +672,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
         if (!dataValue.isEmpty()) {
 
             //Data attribute value
-            AttributeColumn column = container.getAttributeManager().getNodeClass().getAttributeColumn(dataKey);
+            AttributeColumn column = container.getAttributeManager().getEdgeClass().getAttributeColumn(dataKey);
             if (column != null) {
                 try {
                     Object value = column.getAttributeType().parse(dataValue);
@@ -947,7 +946,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             if (!dataValue.isEmpty()) {
 
                 //Data attribute value
-                AttributeColumn column = container.getAttributeManager().getNodeClass().getAttributeColumn(dataKey);
+                AttributeColumn column = container.getAttributeManager().getEdgeClass().getAttributeColumn(dataKey);
                 if (column != null) {
                     try {
                         Object value = column.getAttributeType().parse(dataValue);
