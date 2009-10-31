@@ -20,37 +20,34 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
-import org.gephi.graph.api.ClusteredUndirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.HierarchicalUndirectedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.View;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphStructure;
-import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.edge.iterators.EdgeAndMetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
-import org.gephi.graph.dhns.edge.iterators.MetaEdgeContentIterator;
 import org.gephi.graph.dhns.edge.iterators.MetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.MetaEdgeNodeIterator;
 import org.gephi.graph.dhns.edge.iterators.RangeEdgeIterator;
+import org.gephi.graph.dhns.filter.Tautology;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
 
 /**
- * Implementation of clustered undirected graph.
  *
  * @author Mathieu Bastian
  */
-public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements ClusteredUndirectedGraph {
+public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl implements HierarchicalUndirectedGraph {
 
-    public ClusteredUndirectedGraphImpl(Dhns dhns, GraphStructure structure, View view) {
-        super(dhns, structure, view);
+    public HierarchicalUndirectedGraphImpl(Dhns dhns, GraphStructure structure) {
+        super(dhns, structure);
     }
 
     public boolean addEdge(Edge edge) {
@@ -106,29 +103,25 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
 
     public EdgeIterable getEdges() {
         readLock();
-        view.checkUpdate();
-        return dhns.newEdgeIterable(new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false), true));
+        return dhns.newEdgeIterable(new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false, Tautology.instance), true, Tautology.instance, Tautology.instance));
     }
 
     public EdgeIterable getEdges(Node node) {
         readLock();
-        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
-        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true));
+        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, Tautology.instance, Tautology.instance));
     }
 
     public NodeIterable getNeighbors(Node node) {
         readLock();
-        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
-        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true), absNode));
+        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, Tautology.instance, Tautology.instance), absNode, Tautology.instance));
     }
 
     public int getEdgeCount() {
         readLock();
-        view.checkUpdate();
         int count = 0;
-        for (EdgeIterator itr = new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false), true); itr.hasNext();) {
+        for (EdgeIterator itr = new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false, Tautology.instance), true, Tautology.instance, Tautology.instance); itr.hasNext();) {
             itr.next();
             count++;
         }
@@ -138,10 +131,9 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
 
     public int getDegree(Node node) {
         readLock();
-        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
         int count = 0;
-        EdgeNodeIterator itr = new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
+        EdgeNodeIterator itr = new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, Tautology.instance, Tautology.instance);
         for (; itr.hasNext();) {
             AbstractEdge edge = itr.next();
             if (edge.isSelfLoop()) {
@@ -168,7 +160,6 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
 
     public Edge getEdge(Node node1, Node node2) {
         readLock();
-        view.checkUpdate();
         AbstractNode sourceNode = checkNode(node1);
         AbstractNode targetNode = checkNode(node2);
         AbstractEdge res = null;
@@ -204,21 +195,18 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
 
     public EdgeIterable getInnerEdges(Node nodeGroup) {
         readLock();
-        view.checkUpdate();
         AbstractNode absNode = checkNode(nodeGroup);
-        return dhns.newEdgeIterable(new RangeEdgeIterator(structure.getStructure(), absNode, absNode, true, true));
+        return dhns.newEdgeIterable(new RangeEdgeIterator(structure.getStructure(), absNode, absNode, true, true, Tautology.instance, Tautology.instance));
     }
 
     public EdgeIterable getOuterEdges(Node nodeGroup) {
         readLock();
-        view.checkUpdate();
         AbstractNode absNode = checkNode(nodeGroup);
-        return dhns.newEdgeIterable(new RangeEdgeIterator(structure.getStructure(), absNode, absNode, false, true));
+        return dhns.newEdgeIterable(new RangeEdgeIterator(structure.getStructure(), absNode, absNode, false, true, Tautology.instance, Tautology.instance));
     }
 
     public int getMetaDegree(Node node) {
         readLock();
-        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
         int count = 0;
         MetaEdgeNodeIterator itr = new MetaEdgeNodeIterator(absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
@@ -235,36 +223,22 @@ public class ClusteredUndirectedGraphImpl extends ClusteredGraphImpl implements 
 
     public EdgeIterable getMetaEdges() {
         readLock();
-        view.checkUpdate();
-        return dhns.newEdgeIterable(new MetaEdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), true), true));
+        return dhns.newEdgeIterable(new MetaEdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), true, Tautology.instance), true));
     }
 
     public EdgeIterable getEdgesAndMetaEdges() {
         readLock();
-        view.checkUpdate();
-        return dhns.newEdgeIterable(new EdgeAndMetaEdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false), true));
+        return dhns.newEdgeIterable(new EdgeAndMetaEdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false, Tautology.instance), true, Tautology.instance, Tautology.instance));
     }
 
     public EdgeIterable getMetaEdges(Node node) {
         readLock();
-        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
         return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true));
     }
 
-    public EdgeIterable getMetaEdgeContent(Edge metaEdge) {
-        readLock();
-        view.checkUpdate();
-        MetaEdgeImpl metaEdgeImpl = checkMetaEdge(metaEdge);
-        return dhns.newEdgeIterable(new MetaEdgeContentIterator(metaEdgeImpl, true));
-    }
-
     @Override
-    public ClusteredUndirectedGraphImpl copy(Dhns dhns, GraphStructure structure, View view) {
-        return new ClusteredUndirectedGraphImpl(dhns, structure, view);
-    }
-
-    public ClusteredUndirectedGraph getClusteredGraph() {
-        return this;
+    public HierarchicalUndirectedGraphImpl copy(Dhns dhns, GraphStructure structure, View view) {
+        return new HierarchicalUndirectedGraphImpl(dhns, structure);
     }
 }

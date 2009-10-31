@@ -26,7 +26,6 @@ import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.CloneNode;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
-import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
 
 /**
  * Holds nodes tree and manage basic operations.
@@ -73,7 +72,6 @@ public class TreeStructure {
     }
 
     public AbstractNode[] getEnabledAncestorsOrSelf(AbstractNode node) {
-        List<AbstractNode> nodeList = new ArrayList<AbstractNode>();
         PreNode preNode = node.getOriginalNode();
         if (preNode.getClones() == null) {
             AbstractNode enabled = getEnabledAncestorOrSelf(preNode);
@@ -83,6 +81,7 @@ public class TreeStructure {
                 return null;
             }
         } else {
+            List<AbstractNode> nodeList = new ArrayList<AbstractNode>();
             AbstractNode enabled = getEnabledAncestorOrSelf(preNode);
             if (enabled != null) {
                 nodeList.add(enabled);

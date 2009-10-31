@@ -34,7 +34,7 @@ public class DynamicNodePredicate implements NodePredicate {
     private float to = 1;
 
     public DynamicNodePredicate(float from, float to) {
-        this.from  = from;
+        this.from = from;
         this.to = to;
     }
 

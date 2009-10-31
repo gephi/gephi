@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.dhns.proposition;
+package org.gephi.graph.dhns.filter;
 
 import org.gephi.graph.api.Predicate;
 
@@ -26,23 +26,11 @@ import org.gephi.graph.api.Predicate;
  *
  * @author Mathieu Bastian
  */
-public class Tautology implements Proposition {
+public class Tautology implements Predicate {
 
     public static Tautology instance = new Tautology();
 
     public boolean evaluate(Object element) {
         return true;
-    }
-
-    public boolean isTautology() {
-        return true;
-    }
-
-    public boolean isSkipping() {
-        return false;
-    }
-
-    public static boolean isTautology(Predicate predicate) {
-        return predicate==Tautology.instance;
     }
 }

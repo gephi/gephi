@@ -25,7 +25,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.MetaEdge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.DhnsGraphController;
-import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
+import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.CloneNode;
 import org.gephi.graph.dhns.node.PreNode;
@@ -43,7 +43,7 @@ import static org.junit.Assert.*;
 public class DhnsTestMultiLevel {
 
     private Dhns dhns1;
-    private ClusteredDirectedGraphImpl graph1;
+    private HierarchicalDirectedGraphImpl graph1;
     private HashMap<String, AbstractNode> nodeMap;
 
     @BeforeClass
@@ -59,7 +59,7 @@ public class DhnsTestMultiLevel {
         nodeMap = new HashMap<String, AbstractNode>();
         DhnsGraphController controller = new DhnsGraphController();
         dhns1 = new Dhns(controller);
-        graph1 = new ClusteredDirectedGraphImpl(dhns1, dhns1.getGraphStructure(), null);
+        graph1 = new HierarchicalDirectedGraphImpl(dhns1, dhns1.getGraphStructure(), null);
         GraphFactoryImpl factory = controller.factory();
 
         AbstractNode nodeA = factory.newNode();
@@ -173,7 +173,7 @@ public class DhnsTestMultiLevel {
         //Test diamond
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller);
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, dhns.getGraphStructure(), null);
+        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure(), null);
         GraphFactoryImpl factory = controller.factory();
 
         AbstractNode nodeA = factory.newNode();

@@ -22,13 +22,11 @@ package org.gephi.graph.dhns.edge.iterators;
 
 import java.util.Iterator;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.HierarchyEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
-import org.gephi.graph.dhns.proposition.Tautology;
 
 /**
  *
@@ -58,7 +56,6 @@ public class HierarchyEdgeIterator extends AbstractEdgeIterator implements Itera
             }
         }
         return false;
-
     }
 
     @Override

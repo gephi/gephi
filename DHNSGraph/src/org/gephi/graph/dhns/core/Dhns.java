@@ -24,7 +24,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.gephi.graph.api.DecoratorFactory;
 import org.gephi.graph.api.DirectedGraph;
-import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphListener;
@@ -41,15 +40,17 @@ import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.graph.api.View;
 import org.gephi.graph.api.Views;
 import org.gephi.graph.dhns.DhnsGraphController;
+import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
-import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
-import org.gephi.graph.dhns.graph.ClusteredMixedGraphImpl;
-import org.gephi.graph.dhns.graph.ClusteredUndirectedGraphImpl;
+import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImpl;
+import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImplFiltered;
+import org.gephi.graph.dhns.graph.HierarchicalMixedGraphImpl;
+import org.gephi.graph.dhns.graph.HierarchicalMixedGraphImplFiltered;
+import org.gephi.graph.dhns.graph.HierarchicalUndirectedGraphImpl;
+import org.gephi.graph.dhns.graph.HierarchicalUndirectedGraphImplFiltered;
 import org.gephi.graph.dhns.graph.iterators.EdgeIterableImpl;
 import org.gephi.graph.dhns.graph.iterators.NodeIterableImpl;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
-import org.gephi.graph.dhns.views.EmptyView;
-import org.gephi.graph.dhns.views.ViewImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -148,7 +149,7 @@ public class Dhns implements GraphModel {
         return new NodeIterableImpl(iterator, readWriteLock.readLock());
     }
 
-    public EdgeIterable newEdgeIterable(AbstractEdgeIterator iterator, Predicate<Edge> predicate) {
+    public EdgeIterable newEdgeIterable(AbstractEdgeIterator iterator, Predicate<AbstractEdge> predicate) {
         return new EdgeIterableImpl(iterator, readWriteLock.readLock(), predicate);
     }
 
@@ -249,15 +250,15 @@ public class Dhns implements GraphModel {
     }
 
     public DirectedGraph getDirectedGraph() {
-        return new ClusteredDirectedGraphImpl(this, graphStructure, new EmptyView(this));
+        return new HierarchicalDirectedGraphImpl(this, graphStructure);
     }
 
     public UndirectedGraph getUndirectedGraph() {
-        return new ClusteredUndirectedGraphImpl(this, graphStructure, new EmptyView(this));
+        return new HierarchicalUndirectedGraphImpl(this, graphStructure);
     }
 
     public MixedGraph getMixedGraph() {
-        return new ClusteredMixedGraphImpl(this, graphStructure, new EmptyView(this));
+        return new HierarchicalMixedGraphImpl(this, graphStructure);
     }
 
     public HierarchicalGraph getHierarchicalGraph() {
@@ -273,19 +274,19 @@ public class Dhns implements GraphModel {
     }
 
     public HierarchicalDirectedGraph getHierarchicalDirectedGraph() {
-        return new ClusteredDirectedGraphImpl(this, graphStructure, new EmptyView(this));
+        return new HierarchicalDirectedGraphImpl(this, graphStructure);
     }
 
     public HierarchicalMixedGraph getHierarchicalMixedGraph() {
-        return new ClusteredMixedGraphImpl(this, graphStructure, new EmptyView(this));
+        return new HierarchicalMixedGraphImpl(this, graphStructure);
     }
 
     public HierarchicalUndirectedGraph getHierarchicalUndirectedGraph() {
-        return new ClusteredUndirectedGraphImpl(this, graphStructure, new EmptyView(this));
+        return new HierarchicalUndirectedGraphImpl(this, graphStructure);
     }
 
     public DirectedGraph getDirectedGraph(View view) {
-        return new ClusteredDirectedGraphImpl(this, ((ViewImpl) view).getGraphStructure(), view);
+        return new HierarchicalDirectedGraphImplFiltered(this, this.graphStructure, view);
     }
 
     public Graph getGraph(View view) {
@@ -301,7 +302,7 @@ public class Dhns implements GraphModel {
     }
 
     public HierarchicalDirectedGraph getHierarchicalDirectedGraph(View view) {
-        return new ClusteredDirectedGraphImpl(this, ((ViewImpl) view).getGraphStructure(), view);
+        return new HierarchicalDirectedGraphImplFiltered(this, this.graphStructure, view);
     }
 
     public HierarchicalGraph getHierarchicalGraph(View view) {
@@ -317,19 +318,19 @@ public class Dhns implements GraphModel {
     }
 
     public HierarchicalMixedGraph getHierarchicalMixedGraph(View view) {
-        return new ClusteredMixedGraphImpl(this, ((ViewImpl) view).getGraphStructure(), view);
+        return new HierarchicalMixedGraphImplFiltered(this, this.graphStructure, view);
     }
 
     public HierarchicalUndirectedGraph getHierarchicalUndirectedGraph(View view) {
-        return new ClusteredUndirectedGraphImpl(this, ((ViewImpl) view).getGraphStructure(), view);
+        return new HierarchicalUndirectedGraphImplFiltered(this, this.graphStructure, view);
     }
 
     public MixedGraph getMixedGraph(View view) {
-        return new ClusteredMixedGraphImpl(this, ((ViewImpl) view).getGraphStructure(), view);
+        return new HierarchicalMixedGraphImplFiltered(this, this.graphStructure, view);
     }
 
     public UndirectedGraph getUndirectedGraph(View view) {
-        return new ClusteredUndirectedGraphImpl(this, ((ViewImpl) view).getGraphStructure(), view);
+        return new HierarchicalUndirectedGraphImplFiltered(this, this.graphStructure, view);
     }
 
     public Graph getGraphVisible() {

@@ -32,7 +32,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
+import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.utils.DHNSSerializer;
 import org.junit.After;
@@ -51,9 +51,9 @@ import static org.junit.Assert.*;
 public class DhnsTestSerializer {
 
     private Dhns dhns1;
-    private ClusteredDirectedGraphImpl graph1;
+    private HierarchicalDirectedGraphImpl graph1;
     private Dhns dhns2;
-    private ClusteredDirectedGraphImpl graph2;
+    private HierarchicalDirectedGraphImpl graph2;
     private HashMap<String, Node> nodeMap2;
 
     @BeforeClass
@@ -69,7 +69,7 @@ public class DhnsTestSerializer {
         //Graph 1 - Multilevel sample without edges
         DhnsGraphController controller1 = new DhnsGraphController();
         dhns1 = new Dhns(controller1);
-        graph1 = new ClusteredDirectedGraphImpl(dhns1, dhns1.getGraphStructure(), null);
+        graph1 = new HierarchicalDirectedGraphImpl(dhns1, dhns1.getGraphStructure(), null);
         GraphFactoryImpl factory1 = controller1.factory();
 
         AbstractNode nodeA = factory1.newNode();
@@ -88,7 +88,7 @@ public class DhnsTestSerializer {
         nodeMap2 = new HashMap<String, Node>();
         DhnsGraphController controller2 = new DhnsGraphController();
         dhns2 = new Dhns(controller2);
-        graph2 = new ClusteredDirectedGraphImpl(dhns2, dhns2.getGraphStructure(), null);
+        graph2 = new HierarchicalDirectedGraphImpl(dhns2, dhns2.getGraphStructure(), null);
         GraphFactoryImpl factory2 = controller2.factory();
 
         for (int i = 0; i < 10; i++) {

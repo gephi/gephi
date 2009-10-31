@@ -18,11 +18,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.api;
+package org.gephi.graph.dhns.graph;
+
+import org.gephi.graph.api.View;
+import org.gephi.graph.dhns.core.Dhns;
+import org.gephi.graph.dhns.core.GraphStructure;
+import org.gephi.graph.dhns.views.ViewImpl;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface ClusteredUndirectedGraph extends HierarchicalUndirectedGraph, ClusteredGraph {
+public class HierarchicalMixedGraphImplFiltered extends HierarchicalMixedGraphImpl {
+
+    public HierarchicalMixedGraphImplFiltered(Dhns dhns, GraphStructure graphStructure, View view) {
+        super(dhns, graphStructure);
+        this.view = (ViewImpl) view;
+    }
 }

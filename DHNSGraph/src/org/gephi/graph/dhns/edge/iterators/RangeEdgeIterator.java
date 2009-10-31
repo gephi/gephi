@@ -23,6 +23,7 @@ package org.gephi.graph.dhns.edge.iterators;
 import java.util.Iterator;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.node.AbstractNode;
@@ -46,15 +47,19 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
     protected int rangeLimit;
     protected AbstractNode nodeGroup;
     protected boolean undirected;
+    protected Predicate<AbstractEdge> edgePredicate;
+    protected Predicate<AbstractNode> nodePredicate;
 
-    public RangeEdgeIterator(TreeStructure treeStructure, AbstractNode nodeGroup, AbstractNode target, boolean inner, boolean undirected) {
-        nodeIterator = new DescendantAndSelfIterator(treeStructure, nodeGroup);
+    public RangeEdgeIterator(TreeStructure treeStructure, AbstractNode nodeGroup, AbstractNode target, boolean inner, boolean undirected, Predicate<AbstractNode> nodePredicate, Predicate<AbstractEdge> edgePredicate) {
+        nodeIterator = new DescendantAndSelfIterator(treeStructure, nodeGroup, nodePredicate);
         this.inner = inner;
         this.nodeGroup = nodeGroup;
         this.rangeStart = target.getPre();
         this.rangeLimit = rangeStart + target.size;
         this.undirected = undirected;
         this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
+        this.nodePredicate = nodePredicate;
+        this.edgePredicate = edgePredicate;
     }
 
     @Override
@@ -85,17 +90,25 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
 
     protected boolean testTarget(AbstractEdge edgeImpl) {
         if (!undirected || edgeImpl.getUndirected() == edgeImpl) {
-            if (IN) {
-                AbstractNode source = edgeImpl.getSource();
-                int pre = source.getPre();
-                if (!inner) {
-                    return pre < rangeStart || pre > rangeLimit;
+            if (edgePredicate.evaluate(edgeImpl)) {
+                if (IN) {
+                    AbstractNode source = edgeImpl.getSource();
+                    if (!nodePredicate.evaluate(source)) {
+                        return false;
+                    }
+                    int pre = source.getPre();
+                    if (!inner) {
+                        return pre < rangeStart || pre > rangeLimit;
+                    }
+                } else {
+                    AbstractNode target = edgeImpl.getTarget();
+                    if (!nodePredicate.evaluate(target)) {
+                        return false;
+                    }
+                    int pre = target.getPre();
+                    boolean isInner = pre >= rangeStart && pre <= rangeLimit;
+                    return (inner && isInner) || (!inner && !isInner);
                 }
-            } else {
-                AbstractNode target = edgeImpl.getTarget();
-                int pre = target.getPre();
-                boolean isInner = pre >= rangeStart && pre <= rangeLimit;
-                return (inner && isInner) || (!inner && !isInner);
             }
         }
         return false;

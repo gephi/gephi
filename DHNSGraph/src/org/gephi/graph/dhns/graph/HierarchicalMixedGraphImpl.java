@@ -20,10 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
-import org.gephi.graph.api.ClusteredMixedGraph;
-
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.HierarchicalMixedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Predicate;
@@ -33,31 +32,27 @@ import org.gephi.graph.dhns.core.GraphStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
+import org.gephi.graph.dhns.filter.Tautology;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
 
-/**
- * Implementation of clustered sparse graph.
- *
- * @author Mathieu Bastian
- */
-public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements ClusteredMixedGraph {
+public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements HierarchicalMixedGraph {
 
-    private Predicate<Edge> undirectedPredicate;
-    private Predicate<Edge> directedPredicate;
+    private Predicate<AbstractEdge> undirectedPredicate;
+    private Predicate<AbstractEdge> directedPredicate;
 
-    public ClusteredMixedGraphImpl(Dhns dhns, GraphStructure structure, View view) {
-        super(dhns, structure, view);
-        directedPredicate = new Predicate<Edge>() {
+    public HierarchicalMixedGraphImpl(Dhns dhns, GraphStructure structure) {
+        super(dhns, structure);
+        directedPredicate = new Predicate<AbstractEdge>() {
 
-            public boolean evaluate(Edge t) {
+            public boolean evaluate(AbstractEdge t) {
                 return t.isDirected();
             }
         };
-        undirectedPredicate = new Predicate<Edge>() {
+        undirectedPredicate = new Predicate<AbstractEdge>() {
 
-            public boolean evaluate(Edge t) {
+            public boolean evaluate(AbstractEdge t) {
                 return !t.isDirected();
             }
         };
@@ -122,14 +117,12 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
 
     public EdgeIterable getDirectedEdges() {
         readLock();
-        view.checkUpdate();
-        return dhns.newEdgeIterable(new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false), false), directedPredicate);
+        return dhns.newEdgeIterable(new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false, Tautology.instance), false, Tautology.instance, Tautology.instance), directedPredicate);
     }
 
     public EdgeIterable getUndirectedEdges() {
         readLock();
-        view.checkUpdate();
-        return dhns.newEdgeIterable(new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false), false), undirectedPredicate);
+        return dhns.newEdgeIterable(new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false, Tautology.instance), false, Tautology.instance, Tautology.instance), undirectedPredicate);
     }
 
     public boolean isDirected(Edge edge) {
@@ -143,42 +136,37 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
 
     public Edge getEdge(Node node1, Node node2) {
         readLock();
-        view.checkUpdate();
         AbstractNode sourceNode = checkNode(node1);
         AbstractNode targetNode = checkNode(node2);
-        AbstractEdge edge = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
-        if (edge == null) {
-            edge = sourceNode.getEdgesInTree().getItem(targetNode.getNumber());
+        AbstractEdge res = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
+        if (res == null) {
+            res = sourceNode.getEdgesInTree().getItem(targetNode.getNumber());
         }
         readUnlock();
-        return edge;
+        return res;
     }
 
     public EdgeIterable getEdges() {
         readLock();
-        view.checkUpdate();
-        return dhns.newEdgeIterable(new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false), false));
+        return dhns.newEdgeIterable(new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false, Tautology.instance), false, Tautology.instance, Tautology.instance));
     }
 
     public NodeIterable getNeighbors(Node node) {
         readLock();
-        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
-        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true), absNode));
+        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, Tautology.instance, Tautology.instance), absNode, Tautology.instance));
     }
 
     public EdgeIterable getEdges(Node node) {
         readLock();
-        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
-        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false));
+        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, Tautology.instance, Tautology.instance));
     }
 
     public int getEdgeCount() {
         readLock();
-        view.checkUpdate();
         int count = 0;
-        for (EdgeIterator itr = new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false), false); itr.hasNext();) {
+        for (EdgeIterator itr = new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false, Tautology.instance), false, Tautology.instance, Tautology.instance); itr.hasNext();) {
             itr.next();
             count++;
         }
@@ -188,7 +176,6 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
 
     public int getDegree(Node node) {
         readLock();
-        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
         int count = absNode.getEdgesInTree().getCount() + absNode.getEdgesOutTree().getCount();
         readUnlock();
@@ -198,7 +185,6 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
     //Directed
     public int getInDegree(Node node) {
         readLock();
-        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
         int count = absNode.getEdgesInTree().getCount();
         readUnlock();
@@ -208,7 +194,6 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
     //Directed
     public int getOutDegree(Node node) {
         readLock();
-        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
         int count = 0;
         count = absNode.getEdgesOutTree().getCount();
@@ -257,16 +242,9 @@ public class ClusteredMixedGraphImpl extends ClusteredGraphImpl implements Clust
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public EdgeIterable getMetaEdgeContent(Edge metaEdge) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     @Override
-    public ClusteredMixedGraphImpl copy(Dhns dhns, GraphStructure structure, View view) {
-        return new ClusteredMixedGraphImpl(dhns, structure, view);
-    }
+    public HierarchicalMixedGraphImpl copy(Dhns dhns, GraphStructure structure, View view) {
+        return new HierarchicalMixedGraphImpl(dhns, structure);
 
-    public ClusteredMixedGraph getClusteredGraph() {
-        return this;
     }
 }

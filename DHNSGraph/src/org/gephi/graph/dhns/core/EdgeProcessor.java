@@ -23,8 +23,10 @@ package org.gephi.graph.dhns.core;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
+import org.gephi.graph.dhns.filter.Tautology;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.PreNodeTreeListIterator;
+import org.gephi.graph.dhns.node.iterators.TreeIterator;
 
 /**
  * Business class for managing Edges and MetaEdges.
@@ -311,5 +313,58 @@ public class EdgeProcessor {
             return getMetaEdge(sourceParent, targetParent);
         }
         return null;
+    }
+
+    public void computeMetaEdges(GraphStructure graphStructure) {
+
+        ParamAVLIterator<AbstractEdge> edgeItr = new ParamAVLIterator<AbstractEdge>();
+        TreeIterator treeIterator = new TreeIterator(graphStructure.getStructure(), true, Tautology.instance);
+        for (; treeIterator.hasNext();) {
+            AbstractNode currentNode = treeIterator.next();
+            if (currentNode.size == 0) {
+                //Leaf
+                if (!currentNode.getEdgesOutTree().isEmpty()) {
+                    for (edgeItr.setNode(currentNode.getEdgesOutTree()); edgeItr.hasNext();) {
+                        AbstractEdge edge = edgeItr.next();
+                        if (!edge.isSelfLoop()) {
+                            AbstractNode[] enabledAncestors = treeStructure.getEnabledAncestorsOrSelf(edge.getTarget());
+                            if (enabledAncestors != null) {
+                                for (int j = 0; j < enabledAncestors.length; j++) {
+                                    AbstractNode targetNode = enabledAncestors[j];
+                                    if (targetNode != edge.getTarget()) {
+                                        createMetaEdge(edge.getSource(), targetNode, edge);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                //Cluster
+                int clusterEnd = currentNode.getPre() + currentNode.size;
+                for (int i = currentNode.pre; i <= clusterEnd; i++) {
+                    AbstractNode desc = treeStructure.getNodeAt(i);
+                    if (desc.getEdgesOutTree().getCount() > 0) {
+                        for (edgeItr.setNode(desc.getEdgesOutTree()); edgeItr.hasNext();) {
+                            AbstractEdge edge = edgeItr.next();
+                            if (!edge.isSelfLoop()) {
+                                int targetPre = edge.getTarget().getPre();
+                                if (!(targetPre <= clusterEnd && targetPre >= currentNode.pre)) {
+                                    AbstractNode[] enabledAncestors = treeStructure.getEnabledAncestorsOrSelf(edge.getTarget());
+                                    if (enabledAncestors != null) {
+                                        for (int j = 0; j < enabledAncestors.length; j++) {
+                                            AbstractNode targetNode = enabledAncestors[j];
+                                            if (!(currentNode == edge.getSource() && targetNode == edge.getTarget())) {
+                                                createMetaEdge(currentNode, targetNode, edge);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

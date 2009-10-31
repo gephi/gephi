@@ -47,6 +47,11 @@ public class CloneNode extends AbstractNode {
     }
 
     @Override
+    public AbstractNode getRootNode() {
+        return preNode.rootNode;
+    }
+
+    @Override
     public boolean isEnabled() {
         return preNode.isEnabled();
     }

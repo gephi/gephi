@@ -57,6 +57,9 @@ public class PreNode extends AbstractNode implements AVLItem {
     //Clone
     private CloneNode clones;
 
+    //RootNode
+    protected AbstractNode rootNode;
+
     public PreNode(int ID, int pre, int size, int level, AbstractNode parent) {
         this.pre = pre;
         this.size = size;
@@ -71,6 +74,7 @@ public class PreNode extends AbstractNode implements AVLItem {
 
         this.ID = ID;
         nodeData = new NodeDataImpl(this);
+        rootNode = this;
     }
 
     public PreNode(PreNode node) {
@@ -81,6 +85,12 @@ public class PreNode extends AbstractNode implements AVLItem {
         edgesInTree = new EdgeOppositeTree(this);
         metaEdgesOutTree = new MetaEdgeTree(this);
         metaEdgesInTree = new MetaEdgeTree(this);
+        rootNode = node;
+    }
+
+    @Override
+    public AbstractNode getRootNode() {
+        return rootNode;
     }
 
     @Override

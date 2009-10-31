@@ -20,9 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.force.yifanHu;
 
-import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Spatial;
@@ -56,7 +56,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     private Displacement displacement;
     private double energy0;
     private double energy;
-    private ClusteredGraph graph;
+    private HierarchicalGraph graph;
 
     public YifanHuLayout(LayoutBuilder layoutBuilder, Displacement displacement) {
         super(layoutBuilder);
@@ -157,7 +157,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         if (graphController == null) {
             return;
         }
-        graph = graphController.getModel().getHierarchicalGraphVisible().getClusteredGraph();
+        graph = graphController.getModel().getHierarchicalGraphVisible();
         energy = Float.POSITIVE_INFINITY;
         for (Node n : graph.getTopNodes()) {
             NodeData data = n.getNodeData();

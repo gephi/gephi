@@ -26,11 +26,4 @@ package org.gephi.graph.api;
  */
 public interface HierarchicalUndirectedGraph extends HierarchicalGraph, UndirectedGraph {
 
-    /**
-     * Returns the <b>clustered</b> interface of the current graph. It returns the same graph, but
-     * filtered by its current clustered view.
-     * @return the <b>clustered</b> graph interface for the current graph
-     */
-    @Override
-    public ClusteredUndirectedGraph getClusteredGraph();
 }
