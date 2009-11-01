@@ -126,7 +126,7 @@ public class RankingUIModel {
     public Transformer getSelectedEdgeTransformer() {
         if (edgeTransformer != null) {
             for (Transformer t : edgeTransformers) {
-                if (t.getClass().getSimpleName().equals(edgeTransformer)) {
+                if (edgeTransformer.isAssignableFrom(t.getClass())) {
                     return t;
                 }
             }
