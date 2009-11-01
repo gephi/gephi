@@ -297,6 +297,7 @@ public class DesktopImportController implements ImportController {
                 workspace.setSource(container.getSource());
             }
 
+            container.closeLoader();
             Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
         }
     }

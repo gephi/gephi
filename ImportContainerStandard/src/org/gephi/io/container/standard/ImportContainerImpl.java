@@ -20,9 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.container.standard;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeManager;
@@ -333,6 +335,20 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 }
             }
         }
+
+        //Sort nodes by height
+        LinkedHashMap<String, NodeDraftImpl> sortedNodeMap = new LinkedHashMap<String, NodeDraftImpl>();
+        ArrayList<NodeDraftImpl> sortedMapValues = new ArrayList<NodeDraftImpl>(nodeMap.values());
+        Collections.sort(sortedMapValues, new Comparator<NodeDraftImpl>() {
+
+            public int compare(NodeDraftImpl o1, NodeDraftImpl o2) {
+                return new Integer(o1.getHeight()).compareTo(o2.getHeight());
+            }
+        });
+        for(NodeDraftImpl n : sortedMapValues) {
+             sortedNodeMap.put(n.getId(), n);
+        }
+        nodeMap = sortedNodeMap;
     }
 
     /**

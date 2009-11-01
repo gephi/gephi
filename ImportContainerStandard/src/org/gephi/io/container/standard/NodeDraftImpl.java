@@ -67,6 +67,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
 
     //Result
     private Node node;
+    private int height;
 
     public NodeDraftImpl(ImportContainerImpl container, String id) {
         this.container = container;
@@ -140,13 +141,15 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     }
 
     public void setParent(NodeDraft draft) {
+        NodeDraftImpl draftImpl = (NodeDraftImpl) draft;
         if (this.parent == null) {
             this.parent = new NodeDraftImpl[1];
-            this.parent[0] = (NodeDraftImpl) draft;
+            this.parent[0] = draftImpl;
         } else {
             this.parent = Arrays.copyOf(this.parent, this.parent.length + 1);
-            this.parent[this.parent.length - 1] = (NodeDraftImpl) draft;
+            this.parent[this.parent.length - 1] = draftImpl;
         }
+        height = Math.max(height, draftImpl.height+1);
         container.setHierarchicalGraph(true);
     }
 
@@ -226,6 +229,10 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
 
     public float getDynamicTo() {
         return to;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     @Override
