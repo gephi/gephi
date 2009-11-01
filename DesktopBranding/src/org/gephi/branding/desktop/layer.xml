@@ -77,6 +77,9 @@
                 <attr name="position" intvalue="1100"/>
             </file>          
         </folder>
+        <folder name="Plugins">
+            <attr name="position" intvalue="1250"/>
+        </folder>
         <file name="GoTo_hidden"/>
         <folder name="View">
             <file name="Separator1.instance_hidden"/>
