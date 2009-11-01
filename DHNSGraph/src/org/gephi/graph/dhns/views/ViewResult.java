@@ -20,11 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.views;
 
+import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.EdgePredicate;
 import org.gephi.graph.api.NodePredicate;
 import org.gephi.graph.api.Predicate;
+import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.filter.FlatClusteredViewPredicate;
@@ -32,6 +35,8 @@ import org.gephi.graph.dhns.filter.Tautology;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
+import org.gephi.graph.dhns.utils.avl.AbstractEdgeTree;
+import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
 
 /**
  *
@@ -39,6 +44,7 @@ import org.gephi.graph.dhns.node.iterators.TreeIterator;
  */
 public class ViewResult {
 
+    private Dhns dhns;
     private GraphStructure graphStructure;
     private boolean undirected = false;
 
@@ -47,12 +53,14 @@ public class ViewResult {
     private ViewEdgeTree hierarchyLayerEdgeTree;
     private ViewNodeTree clusteredLayerNodeTree;
     private ViewEdgeTree clusteredLayerEdgeTree;
+    private AbstractEdgeTree metaEdgeTree;
     private Predicate hierarchyLayerNodeTreePredicate = Tautology.instance;
     private Predicate hierarchyLayerEdgeTreePredicate = Tautology.instance;
     private Predicate clusteredLayerNodeTreePredicate = Tautology.instance;
     private Predicate clusteredLayerEdgeTreePredicate = Tautology.instance;
 
-    public ViewResult(GraphStructure graphStructure, boolean undirected) {
+    public ViewResult(Dhns dhns, GraphStructure graphStructure, boolean undirected) {
+        this.dhns = dhns;
         this.graphStructure = graphStructure;
         this.undirected = undirected;
     }
@@ -83,6 +91,7 @@ public class ViewResult {
 
     public void postProcess() {
         filterClustered();
+        computeViewMetaEdges();
     }
 
     private void filterClustered() {
@@ -97,10 +106,6 @@ public class ViewResult {
         clusteredLayerEdgeTreePredicate = new ClusteredLayerEdgePredicate();
     }
 
-    /*private void setDefaultIterator() {
-    nodeIterator = new TreeIterator(graphStructure.getStructure(), false, Tautology.instance);
-    edgeIterator = new EdgeIterator(graphStructure.getStructure(), nodeIterator, undirected, Tautology.instance, Tautology.instance);
-    }*/
     private ViewNodeTree createViewNodeTree(NodePredicate predicate) {
         ViewNodeTree viewNodeTree = new ViewNodeTree();
         TreeIterator treeIterator = new TreeIterator(graphStructure.getStructure(), false, (Predicate) predicate);
@@ -118,8 +123,12 @@ public class ViewResult {
 
         for (; edgeIterator.hasNext();) {
             AbstractEdge edge = edgeIterator.next();
-            if (viewNodeTree.contains(edge.getTarget())) {
+            ViewNodeTree.ViewNodeAVLNode treeNodeSource = viewNodeTree.getNode(edge.getSource().getNumber());
+            ViewNodeTree.ViewNodeAVLNode treeNodeTarget = viewNodeTree.getNode(edge.getTarget().getNumber());
+            if (treeNodeTarget != null) {
                 viewEdgeTree.add(edge);
+                treeNodeSource.incOutDegree();
+                treeNodeTarget.incInDegree();
             }
         }
         return viewEdgeTree;
@@ -175,6 +184,95 @@ public class ViewResult {
         return viewNodeTree;
     }
 
+    private void computeViewMetaEdges() {
+        metaEdgeTree = new AbstractEdgeTree();
+        ParamAVLIterator<AbstractEdge> edgeItr = new ParamAVLIterator<AbstractEdge>();
+        TreeIterator treeIterator = new TreeIterator(graphStructure.getStructure(), true, clusteredLayerNodeTreePredicate);
+        for (; treeIterator.hasNext();) {
+            AbstractNode currentNode = treeIterator.next();
+            if (currentNode.size == 0) {
+                //Leaf
+                if (!currentNode.getEdgesOutTree().isEmpty()) {
+                    for (edgeItr.setNode(currentNode.getEdgesOutTree()); edgeItr.hasNext();) {
+                        AbstractEdge edge = edgeItr.next();
+                        if (!edge.isSelfLoop()) {
+                            AbstractNode[] enabledAncestors = graphStructure.getStructure().getEnabledAncestorsOrSelf(edge.getTarget());
+                            if (enabledAncestors != null) {
+                                for (int j = 0; j < enabledAncestors.length; j++) {
+                                    AbstractNode targetNode = enabledAncestors[j];
+                                    if (targetNode != edge.getTarget()) {
+                                        createViewMetaEdge(edge.getSource(), targetNode, edge);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                //Cluster
+                int clusterEnd = currentNode.getPre() + currentNode.size;
+                for (int i = currentNode.pre; i <= clusterEnd; i++) {
+                    AbstractNode desc = graphStructure.getStructure().getNodeAt(i);
+                    if (desc.getEdgesOutTree().getCount() > 0) {
+                        for (edgeItr.setNode(desc.getEdgesOutTree()); edgeItr.hasNext();) {
+                            AbstractEdge edge = edgeItr.next();
+                            if (!edge.isSelfLoop()) {
+                                int targetPre = edge.getTarget().getPre();
+                                if (!(targetPre <= clusterEnd && targetPre >= currentNode.pre)) {
+                                    AbstractNode[] enabledAncestors = graphStructure.getStructure().getEnabledAncestorsOrSelf(edge.getTarget());
+                                    if (enabledAncestors != null) {
+                                        for (int j = 0; j < enabledAncestors.length; j++) {
+                                            AbstractNode targetNode = enabledAncestors[j];
+                                            if (!(currentNode == edge.getSource() && targetNode == edge.getTarget())) {
+                                                createViewMetaEdge(currentNode, targetNode, edge);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void createViewMetaEdge(AbstractNode source, AbstractNode target, AbstractEdge edge) {
+        if (edge.getSource() == source && edge.getTarget() == target) {
+            return;
+        }
+        if (source == target) {
+            return;
+        }
+
+        ViewNodeTree.ViewNodeAVLNode treeNodeSource = clusteredLayerNodeTree.getNode(source.getNumber());
+        ViewNodeTree.ViewNodeAVLNode treeNodeTarget = clusteredLayerNodeTree.getNode(target.getNumber());
+        MetaEdgeImpl metaEdge;
+        if (treeNodeSource.metaEdgesOutTree != null) {
+            metaEdge = treeNodeSource.metaEdgesOutTree.getItem(target.getNumber());
+            if (metaEdge == null) {
+                if (treeNodeTarget.metaEdgesInTree == null) {
+                    treeNodeTarget.metaEdgesInTree = new MetaEdgeTree(target);
+                }
+                metaEdge = new MetaEdgeImpl(dhns.getIdGen().newEdgeId(), source, target);
+                metaEdgeTree.add(metaEdge);
+                treeNodeSource.metaEdgesOutTree.add(metaEdge);
+                treeNodeTarget.metaEdgesInTree.add(metaEdge);
+            }
+        } else {
+            treeNodeSource.metaEdgesOutTree = new MetaEdgeTree(source);
+            metaEdge = new MetaEdgeImpl(dhns.getIdGen().newEdgeId(), source, target);
+            metaEdgeTree.add(metaEdge);
+            treeNodeSource.metaEdgesOutTree.add(metaEdge);
+            if (treeNodeTarget.metaEdgesInTree == null) {
+                treeNodeTarget.metaEdgesInTree = new MetaEdgeTree(target);
+            }
+            treeNodeTarget.metaEdgesInTree.add(metaEdge);
+        }
+        metaEdge.addEdge(edge);
+        dhns.getSettingsManager().getMetaEdgeBuilder().pushEdge(edge, metaEdge);
+    }
+
     //Getters
     public AbstractNodeIterator getHierarchyLayerNodeIterator() {
         if (hierarchyLayerNodeTree != null) {
@@ -220,6 +318,41 @@ public class ViewResult {
 
     public int getClusteredEdgesCount() {
         return clusteredLayerEdgeTree.getCount();
+    }
+
+    public int getClusteredDegree(AbstractNode node) {
+        ViewNodeTree.ViewNodeAVLNode n = clusteredLayerNodeTree.getNode(node.getNumber());
+        int res = 0;
+        if (n != null) {
+            res = n.indegree + n.outdegree;
+        }
+        return res;
+    }
+
+    public int getClusteredOutDegree(AbstractNode node) {
+        ViewNodeTree.ViewNodeAVLNode n = clusteredLayerNodeTree.getNode(node.getNumber());
+        int res = 0;
+        if (n != null) {
+            res = n.outdegree;
+        }
+        return res;
+    }
+
+    public int getClusteredInDegree(AbstractNode node) {
+        ViewNodeTree.ViewNodeAVLNode n = clusteredLayerNodeTree.getNode(node.getNumber());
+        int res = 0;
+        if (n != null) {
+            res = n.indegree;
+        }
+        return res;
+    }
+
+    public ViewNodeTree.ViewNodeAVLNode getClusteredNode(AbstractNode node) {
+        return clusteredLayerNodeTree.getNode(node.getNumber());
+    }
+
+    public AbstractEdgeIterator getMetaEdgeIterator() {
+        return metaEdgeTree.iterator();
     }
 
     //Inner Predicates

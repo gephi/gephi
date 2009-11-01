@@ -32,6 +32,7 @@ import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
+import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
 import org.openide.util.Exceptions;
 
 /**
@@ -63,7 +64,7 @@ public class ViewImpl implements View {
         this.graphVersion = dhns.getGraphVersion();
         dispatchThread = new DispatchThread();
         lock = new ReentrantLock();
-        result = new ViewResult(dhns.getGraphStructure(), false);
+        result = new ViewResult(dhns, dhns.getGraphStructure(), false);
     }
 
     public void checkUpdate() {
@@ -164,6 +165,32 @@ public class ViewImpl implements View {
 
     public int getClusteredEdgesCount() {
         return result.getClusteredEdgesCount();
+    }
+
+    //Degree
+    public int getClusteredLayerDegree(AbstractNode node) {
+        return result.getClusteredDegree(node);
+    }
+
+    public int getClusteredLayerInDegree(AbstractNode node) {
+        return result.getClusteredInDegree(node);
+    }
+
+    public int getClusteredLayerOutDegree(AbstractNode node) {
+        return result.getClusteredOutDegree(node);
+    }
+
+    //MetaEdge
+    public MetaEdgeTree getInMetaEdgeTree(AbstractNode node) {
+        return result.getClusteredNode(node).metaEdgesInTree;
+    }
+
+    public MetaEdgeTree getOutMetaEdgeTree(AbstractNode node) {
+        return result.getClusteredNode(node).metaEdgesOutTree;
+    }
+
+    public AbstractEdgeIterator getMetaEdgeIterator() {
+        return result.getMetaEdgeIterator();
     }
 
     private class DispatchThread extends Thread {

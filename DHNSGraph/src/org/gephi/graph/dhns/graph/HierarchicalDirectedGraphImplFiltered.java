@@ -30,6 +30,7 @@ import org.gephi.graph.api.View;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.iterators.BiEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeAndMetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
 import org.gephi.graph.dhns.edge.iterators.MetaEdgeIterator;
@@ -39,6 +40,7 @@ import org.gephi.graph.dhns.filter.Tautology;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
+import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
 import org.gephi.graph.dhns.views.ViewImpl;
 
 /**
@@ -76,8 +78,9 @@ public class HierarchicalDirectedGraphImplFiltered extends HierarchicalDirectedG
     @Override
     public int getInDegree(Node node) {
         readLock();
+        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
-        int count = absNode.getEdgesInTree().getCount();
+        int count = view.getClusteredLayerInDegree(absNode);
         readUnlock();
         return count;
     }
@@ -85,8 +88,19 @@ public class HierarchicalDirectedGraphImplFiltered extends HierarchicalDirectedG
     @Override
     public int getOutDegree(Node node) {
         readLock();
+        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
-        int count = absNode.getEdgesOutTree().getCount();
+        int count = view.getClusteredLayerOutDegree(absNode);
+        readUnlock();
+        return count;
+    }
+
+    @Override
+    public int getDegree(Node node) {
+        readLock();
+        view.checkUpdate();
+        AbstractNode absNode = checkNode(node);
+        int count = view.getClusteredLayerInDegree(absNode);
         readUnlock();
         return count;
     }
@@ -156,15 +170,6 @@ public class HierarchicalDirectedGraphImplFiltered extends HierarchicalDirectedG
         return count;
     }
 
-    //Graph
-    public int getDegree(Node node) {
-        readLock();
-        AbstractNode absNode = checkNode(node);
-        int count = absNode.getEdgesInTree().getCount() + absNode.getEdgesOutTree().getCount();
-        readUnlock();
-        return count;
-    }
-
     @Override
     public EdgeIterable getInnerEdges(Node nodeGroup) {
         readLock();
@@ -181,70 +186,107 @@ public class HierarchicalDirectedGraphImplFiltered extends HierarchicalDirectedG
         return dhns.newEdgeIterable(new RangeEdgeIterator(structure.getStructure(), absNode, absNode, false, false, view.getHierarchyLayerNodePredicate(), view.getHierarchyLayerEdgePredicate()));
     }
 
-    //ClusteredGraph
+    @Override
     public EdgeIterable getMetaEdges() {
         readLock();
-        return dhns.newEdgeIterable(new MetaEdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), true, Tautology.instance), false));
+        view.checkUpdate();
+        return dhns.newEdgeIterable(view.getMetaEdgeIterator());
     }
 
+    @Override
     public EdgeIterable getEdgesAndMetaEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeAndMetaEdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false, Tautology.instance), false, Tautology.instance, Tautology.instance));
+        view.checkUpdate();
+        return dhns.newEdgeIterable(new BiEdgeIterator(view.getClusteredLayerEdgeIterator(), view.getMetaEdgeIterator()));
     }
 
-    //ClusteredGraph
+    @Override
     public EdgeIterable getMetaEdges(Node node) {
         readLock();
+        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
-        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false));
+        MetaEdgeTree inTree = view.getInMetaEdgeTree(absNode);
+        MetaEdgeTree outTree = view.getOutMetaEdgeTree(absNode);
+        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(outTree, inTree, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false));
     }
 
-    //DirectedClusteredGraph
+    @Override
     public EdgeIterable getMetaInEdges(Node node) {
         readLock();
+        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
-        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.IN, false));
+        MetaEdgeTree inTree = view.getInMetaEdgeTree(absNode);
+        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(null, inTree, MetaEdgeNodeIterator.EdgeNodeIteratorMode.IN, false));
     }
 
-    //DirectedClusteredGraph
+    @Override
     public EdgeIterable getMetaOutEdges(Node node) {
         readLock();
+        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
-        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.OUT, false));
+        MetaEdgeTree outTree = view.getOutMetaEdgeTree(absNode);
+        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(outTree, null, MetaEdgeNodeIterator.EdgeNodeIteratorMode.OUT, false));
     }
 
-    //DirectedClusteredGraph
+    @Override
     public int getMetaInDegree(Node node) {
         readLock();
+        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
-        int count = absNode.getMetaEdgesInTree().getCount();
+        int count = 0;
+        MetaEdgeTree inTree = view.getInMetaEdgeTree(absNode);
+        if (inTree != null) {
+            count = inTree.getCount();
+        }
         readUnlock();
         return count;
     }
 
-    //DirectedClusteredGraph
+    @Override
     public int getMetaOutDegree(Node node) {
         readLock();
+        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
-        int count = absNode.getMetaEdgesOutTree().getCount();
+        int count = 0;
+        MetaEdgeTree outTree = view.getOutMetaEdgeTree(absNode);
+        if (outTree != null) {
+            count = outTree.getCount();
+        }
         readUnlock();
         return count;
     }
 
-    //ClusteredGraph
+    @Override
     public int getMetaDegree(Node node) {
         readLock();
+        view.checkUpdate();
         AbstractNode absNode = checkNode(node);
-        int count = absNode.getMetaEdgesInTree().getCount() + absNode.getMetaEdgesOutTree().getCount();
+        int count = 0;
+        MetaEdgeTree inTree = view.getInMetaEdgeTree(absNode);
+        MetaEdgeTree outTree = view.getOutMetaEdgeTree(absNode);
+        if (outTree != null) {
+            count = outTree.getCount();
+        }
+        if (inTree != null) {
+            count += inTree.getCount();
+        }
         readUnlock();
         return count;
     }
 
-    //ClusteredDirected
+    @Override
     public MetaEdge getMetaEdge(Node source, Node target) {
-        AbstractNode AbstractNodeSource = checkNode(source);
-        AbstractNode AbstractNodeTarget = checkNode(target);
-        return AbstractNodeSource.getMetaEdgesOutTree().getItem(AbstractNodeTarget.getNumber());
+        readLock();
+        view.checkUpdate();
+        AbstractNode abstractNodeSource = checkNode(source);
+        AbstractNode abstractNodeTarget = checkNode(target);
+        MetaEdgeTree outTree = view.getOutMetaEdgeTree(abstractNodeSource);
+        MetaEdge res = null;
+        if (outTree != null) {
+            res = outTree.getItem(abstractNodeTarget.getNumber());
+        }
+        readUnlock();
+        return res;
     }
 
     @Override

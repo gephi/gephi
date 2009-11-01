@@ -24,7 +24,7 @@ import java.util.Iterator;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
-import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
+import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
 
 /**
  *
@@ -612,6 +612,24 @@ public class ViewNodeTree {
         return null;
     }
 
+    public ViewNodeAVLNode getNode(int number) {
+        ViewNodeAVLNode p = this.root;
+
+        while (p != null) {
+            int c = number - p.item.getNumber();
+
+            if (c < 0) {
+                p = p.left;
+            } else if (c > 0) {
+                p = p.right;
+            } else {
+                return p;
+            }
+        }
+
+        return null;
+    }
+
     public void clear() {
         this.root = null;
         this.count = 0;
@@ -638,6 +656,8 @@ public class ViewNodeTree {
         AbstractNode item;
         int indegree;
         int outdegree;
+        MetaEdgeTree metaEdgesOutTree;
+        MetaEdgeTree metaEdgesInTree;
 
         public ViewNodeAVLNode(AbstractNode item) {
             this.item = item;
@@ -662,6 +682,14 @@ public class ViewNodeTree {
 
         public void setOutdegree(int outdegree) {
             this.outdegree = outdegree;
+        }
+
+        public void incInDegree() {
+            this.indegree++;
+        }
+
+        public void incOutDegree() {
+            this.outdegree++;
         }
     }
 

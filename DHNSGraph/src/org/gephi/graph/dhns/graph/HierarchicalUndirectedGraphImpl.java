@@ -209,7 +209,7 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
         readLock();
         AbstractNode absNode = checkNode(node);
         int count = 0;
-        MetaEdgeNodeIterator itr = new MetaEdgeNodeIterator(absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
+        MetaEdgeNodeIterator itr = new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
         for (; itr.hasNext();) {
             AbstractEdge edge = itr.next();
             if (edge.isSelfLoop()) {
@@ -234,7 +234,7 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
     public EdgeIterable getMetaEdges(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);
-        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true));
+        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true));
     }
 
     @Override

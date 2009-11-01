@@ -249,21 +249,21 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
     public EdgeIterable getMetaEdges(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);
-        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false));
+        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false));
     }
 
     //DirectedClusteredGraph
     public EdgeIterable getMetaInEdges(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);
-        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.IN, false));
+        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(null, absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.IN, false));
     }
 
     //DirectedClusteredGraph
     public EdgeIterable getMetaOutEdges(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);
-        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode, MetaEdgeNodeIterator.EdgeNodeIteratorMode.OUT, false));
+        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), null, MetaEdgeNodeIterator.EdgeNodeIteratorMode.OUT, false));
     }
 
     //DirectedClusteredGraph
