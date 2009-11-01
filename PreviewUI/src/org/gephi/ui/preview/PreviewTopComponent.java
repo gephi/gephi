@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.gephi.ui.preview;
 
 import java.io.Serializable;
@@ -20,15 +15,15 @@ final class PreviewTopComponent extends TopComponent {
     private static PreviewTopComponent instance;
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
-
     private static final String PREFERRED_ID = "PreviewTopComponent";
 
     private PreviewTopComponent() {
         initComponents();
+
         setName(NbBundle.getMessage(PreviewTopComponent.class, "CTL_PreviewTopComponent"));
         setToolTipText(NbBundle.getMessage(PreviewTopComponent.class, "HINT_PreviewTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
-        
+
     }
 
     /** This method is called from within the constructor to
@@ -39,21 +34,16 @@ final class PreviewTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        sketch = new ProcessingPreview();
+
+        setLayout(new java.awt.BorderLayout());
+        add(sketch, java.awt.BorderLayout.CENTER);
+        ((ProcessingPreview) sketch).init();
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private java.awt.Panel sketch;
     // End of variables declaration//GEN-END:variables
+
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
      * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
@@ -118,5 +108,12 @@ final class PreviewTopComponent extends TopComponent {
         public Object readResolve() {
             return PreviewTopComponent.getDefault();
         }
+    }
+
+	/**
+	 * Refresh the preview applet.
+	 */
+    public void refreshPreview() {
+        ((ProcessingPreview) sketch).refresh();
     }
 }
