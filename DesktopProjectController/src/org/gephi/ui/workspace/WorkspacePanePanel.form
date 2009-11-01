@@ -71,6 +71,11 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="closeButton">
+      <Properties>
+        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/ui/workspace/Bundle.properties" key="WorkspacePanePanel.closeButton.toolTipText" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new CloseButton()"/>
       </AuxValues>

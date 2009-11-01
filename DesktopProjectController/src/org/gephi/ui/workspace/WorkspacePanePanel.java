@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.workspace;
 
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -41,13 +42,15 @@ public final class WorkspacePanePanel extends javax.swing.JPanel implements Mous
 
     private Workspace workspace;
 
-    /** Creates new form WorkspacePanePanel */
     public WorkspacePanePanel(Workspace workspace) {
         this.workspace = workspace;
         initComponents();
         setOpaque(true);
+        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
         //detailsLabel.setFont(detailsLabel.getFont().deriveFont((float) (detailsLabel.getFont().getSize() - 2)));
         closeButton.setAction(new DeleteAction());
+        closeButton.setCursor(Cursor.getDefaultCursor());
 
         //Workspace info
         workspaceLabel.setText(workspace.getName());
@@ -86,6 +89,8 @@ public final class WorkspacePanePanel extends javax.swing.JPanel implements Mous
         detailsLabel.setFont(new java.awt.Font("Tahoma", 0, 10));
         detailsLabel.setForeground(new java.awt.Color(153, 153, 153));
         detailsLabel.setText(org.openide.util.NbBundle.getMessage(WorkspacePanePanel.class, "WorkspacePanePanel.detailsLabel.text")); // NOI18N
+
+        closeButton.setToolTipText(org.openide.util.NbBundle.getMessage(WorkspacePanePanel.class, "WorkspacePanePanel.closeButton.toolTipText")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
