@@ -20,17 +20,20 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.algorithms.cluster.mcl;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import org.gephi.algorithms.cluster.api.Cluster;
+import org.gephi.algorithms.cluster.api.Clusterer;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeData;
+import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.progress.Progress;
+import org.gephi.utils.progress.ProgressTicket;
 
 /**
  * MarkovClustering implements the Markov clustering (MCL) algorithm for graphs,
@@ -77,14 +80,21 @@ import org.gephi.graph.api.NodeData;
  * algorithm and the associated MCL process, see there.
  */
 //Original author Gregor Heinrich
-public class MarkovClustering {
+public class MarkovClustering implements Clusterer, LongTask {
 
     private double maxResidual = 0.001;
     private double gammaExp = 2.0;
     private double loopGain = 0.;
     private double zeroMax = 0.001;
+    private Cluster[] clusters;
 
-    public void run(Graph graph) {
+    //LongTask
+    private ProgressTicket progressTicket;
+
+    public void execute(Graph graph) {
+
+        Progress.start(progressTicket);
+        Progress.setDisplayName(progressTicket, "MCL Clustering");
 
         HashMap<Integer, Node> nodeMap = new HashMap<Integer, Node>();
         HashMap<Node, Integer> intMap = new HashMap<Node, Integer>();
@@ -118,22 +128,59 @@ public class MarkovClustering {
         Map<Integer, ArrayList<Integer>> map = getClusters(matrix);
 
         int clusterNumber = 1;
+        List<Cluster> clustersList = new ArrayList<Cluster>();
         Set<ArrayList<Integer>> sortedClusters = new HashSet<ArrayList<Integer>>();
         for (ArrayList<Integer> c : map.values()) {
             if (!sortedClusters.contains(c)) {
                 sortedClusters.add(c);
-                System.out.print(clusterNumber + " : ");
-                Color colorc = new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255));
-                for (Integer in : c) {        
-                    NodeData node = nodeMap.get(in).getNodeData();
-                    node.setColor(colorc.getRed()/255f, colorc.getGreen()/255f, colorc.getBlue()/255f);
-                    System.out.print(node.getLabel() + " ");
+                Node[] nodes = new Node[c.size()];
+                int i = 0;
+                for (Integer in : c) {
+                    Node node = nodeMap.get(in);
+                    nodes[i] = node;
                 }
-                System.out.println();
+                clustersList.add(new MCLCluster(nodes, clusterNumber));
                 clusterNumber++;
             }
         }
-        System.out.flush();
+        clusters = clustersList.toArray(new Cluster[0]);
+
+        Progress.finish(progressTicket);
+    }
+
+    public Cluster[] getClusters() {
+        return clusters;
+    }
+
+    public boolean cancel() {
+        return false;
+    }
+
+    public void setProgressTicket(ProgressTicket progressTicket) {
+        this.progressTicket = progressTicket;
+    }
+
+    private static class MCLCluster implements Cluster {
+
+        private Node[] nodes;
+        private String name;
+
+        public MCLCluster(Node[] nodes, int number) {
+            this.nodes = nodes;
+            this.name = "Cluster "+number;
+        }
+
+        public Node[] getNodes() {
+            return nodes;
+        }
+
+        public int getNodesCount() {
+            return nodes.length;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 
     /**
