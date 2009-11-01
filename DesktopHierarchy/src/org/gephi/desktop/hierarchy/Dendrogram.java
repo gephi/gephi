@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.algorithms.cluster;
+package org.gephi.desktop.hierarchy;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -28,9 +28,11 @@ import org.gephi.graph.api.Node;
 
 public class Dendrogram extends JPanel {
 
-    private static final long serialVersionUID = 2892192060246909733L;
-    private static final int MARGIN = 10;
+    //Graph
     private HierarchicalGraph graph;
+
+    //Internal
+    private static final int MARGIN = 10;
     private int numObjects;
     private double maxDistance;
     private double minDistance;
@@ -40,17 +42,22 @@ public class Dendrogram extends JPanel {
     private Color color = Color.BLACK;
     private DendrogramNode root;
 
-    public Dendrogram(HierarchicalGraph graph) {
+    //Settings
+    private int maxHeight;
 
+    public Dendrogram() {
+    }
+
+    public void refresh(HierarchicalGraph graph) {
         this.graph = graph;
         numObjects = graph.getNodeCount();
+        maxHeight = Math.min(graph.getHeight() + 1, maxHeight);
         root = buildTree();
 
         //MinMaxDistance
         minDistance = Double.POSITIVE_INFINITY;
         maxDistance = Double.NEGATIVE_INFINITY;
         findMinMaxDistance(root);
-
     }
 
     private DendrogramNode buildTree() {
@@ -74,7 +81,11 @@ public class Dendrogram extends JPanel {
         for (int i = 0; i < nodeChildren.length; i++) {
             children[i] = traverseTree(nodeChildren[i]);
         }
-        return new DendrogramNode(children);
+        DendrogramNode dendrogramNode = new DendrogramNode(children);
+        if (graph.isInView(node)) {
+            dendrogramNode.setRed(true);
+        }
+        return dendrogramNode;
     }
 
     private void findMinMaxDistance(DendrogramNode node) {
@@ -96,9 +107,9 @@ public class Dendrogram extends JPanel {
         super.paintComponent(g);
 
         /*if ((minDistance == maxDistance) || (Double.isNaN(minDistance)) || (Double.isInfinite(minDistance)) ||
-                (Double.isNaN(maxDistance)) || (Double.isInfinite(maxDistance))) {
-            g.drawString("Dendrogram not available for this cluster model. Use an agglomerative clusterer.", MARGIN, MARGIN + 15);
-            return;
+        (Double.isNaN(maxDistance)) || (Double.isInfinite(maxDistance))) {
+        g.drawString("Dendrogram not available for this cluster model. Use an agglomerative clusterer.", MARGIN, MARGIN + 15);
+        return;
         }*/
 
         this.maxX = getWidth() - 2 * MARGIN;
@@ -156,8 +167,11 @@ public class Dendrogram extends JPanel {
         // painting vertical connections of merged clusters to next cluster
         drawLine(middlePos, weightToYPos(baseDistance), middlePos, weightToYPos(node.getDistance()), g);
         // painting horizontal connections of merged clusters
+        if (node.isRed()) {
+            g.setColor(Color.RED);
+        }
         drawLine(leftPos, weightToYPos(node.getDistance()), rightPos, weightToYPos(node.getDistance()), g);
-
+        g.setColor(Color.BLACK);
         return middlePos;
     }
 
@@ -192,12 +206,13 @@ public class Dendrogram extends JPanel {
 
         private DendrogramNode[] children;
         private double distance;
+        private boolean red = false;
 
         public DendrogramNode(DendrogramNode[] children) {
             this.children = children;
             distance = children.length;
-            for(DendrogramNode d : children) {
-                distance+=d.distance;
+            for (DendrogramNode d : children) {
+                distance += d.distance;
             }
         }
 
@@ -207,6 +222,14 @@ public class Dendrogram extends JPanel {
 
         public double getDistance() {
             return distance;
+        }
+
+        public boolean isRed() {
+            return red;
+        }
+
+        public void setRed(boolean red) {
+            this.red = red;
         }
     }
 }

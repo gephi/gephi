@@ -33,6 +33,8 @@ import org.gephi.graph.api.HierarchicalGraph;
 import org.jdesktop.swingx.JXHyperlink;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  *
@@ -75,6 +77,12 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
 
             @Override
             public void mouseClicked(MouseEvent e) {
+                TopComponent tc = WindowManager.getDefault().findTopComponent("HierarchyTopComponent");
+                if(tc!=null) {
+                    tc.open();
+                    HierarchyTopComponent hierarchyTopComponent = (HierarchyTopComponent)tc;
+                    hierarchyTopComponent.refresh();
+                }
             }
         });
     }

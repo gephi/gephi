@@ -1,4 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
 <filesystem>
+    <folder name="Actions">
+        <folder name="Window">
+            <file name="org-gephi-desktop-hierarchy-HierarchyAction.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.desktop.hierarchy.Bundle"/>
+                <attr name="component" methodvalue="org.gephi.desktop.hierarchy.HierarchyTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="org.gephi.desktop.hierarchy.Bundle#CTL_HierarchyAction"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="HierarchyAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-hierarchy-HierarchyAction.instance"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="HierarchyTopComponent.settings" url="HierarchyTopComponentSettings.xml"/>
+        </folder>
+        <folder name="Modes">
+            <folder name="graphmode">
+                <file name="HierarchyTopComponent.wstcref" url="HierarchyTopComponentWstcref.xml"/>
+            </folder>
+        </folder>
+    </folder>
 </filesystem>
