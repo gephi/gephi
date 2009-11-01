@@ -61,7 +61,7 @@ public class DhnsTestFiltering {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = new Dhns(controller);
-        graphGlobal = new HierarchicalDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure(), new ViewImpl(dhnsGlobal));
+        graphGlobal = new HierarchicalDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure());
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
@@ -183,7 +183,7 @@ public class DhnsTestFiltering {
 
         edgeProcessor.computeMetaEdges(graphStructure);
 
-        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, graphStructure, null);
+        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, graphStructure);
         Edge[] actual = graph.getMetaEdges().toArray();
         assertEquals(2, actual.length);
         MetaEdgeImpl metaEdge14 = (MetaEdgeImpl)actual[0];

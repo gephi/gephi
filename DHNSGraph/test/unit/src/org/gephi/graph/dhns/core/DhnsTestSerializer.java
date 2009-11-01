@@ -69,7 +69,7 @@ public class DhnsTestSerializer {
         //Graph 1 - Multilevel sample without edges
         DhnsGraphController controller1 = new DhnsGraphController();
         dhns1 = new Dhns(controller1);
-        graph1 = new HierarchicalDirectedGraphImpl(dhns1, dhns1.getGraphStructure(), null);
+        graph1 = new HierarchicalDirectedGraphImpl(dhns1, dhns1.getGraphStructure());
         GraphFactoryImpl factory1 = controller1.factory();
 
         AbstractNode nodeA = factory1.newNode();
@@ -88,7 +88,7 @@ public class DhnsTestSerializer {
         nodeMap2 = new HashMap<String, Node>();
         DhnsGraphController controller2 = new DhnsGraphController();
         dhns2 = new Dhns(controller2);
-        graph2 = new HierarchicalDirectedGraphImpl(dhns2, dhns2.getGraphStructure(), null);
+        graph2 = new HierarchicalDirectedGraphImpl(dhns2, dhns2.getGraphStructure());
         GraphFactoryImpl factory2 = controller2.factory();
 
         for (int i = 0; i < 10; i++) {
