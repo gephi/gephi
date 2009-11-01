@@ -23,6 +23,8 @@ package org.gephi.graph.dhns.filter;
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.core.Dhns;
@@ -32,7 +34,6 @@ import org.gephi.graph.dhns.core.GraphStructure;
 import org.gephi.graph.dhns.core.IDGen;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.views.ViewImpl;
@@ -141,7 +142,7 @@ public class DhnsTestFiltering {
 
     @Test
     public void testMetaEdgesProcessing() {
-        Dhns dhns = new Dhns(new DhnsGraphController());
+        /*Dhns dhns = new Dhns(new DhnsGraphController());
         GraphStructure graphStructure = dhns.getGraphStructure();
         TreeStructure treeStructure = graphStructure.getStructure();
         GraphFactoryImpl factoryImpl = new GraphFactoryImpl(new IDGen(), null);
@@ -216,7 +217,7 @@ public class DhnsTestFiltering {
         actual = graph.getMetaEdges().toArray();
         assertEquals(0, actual.length);
 
-        treeStructure.showTreeAsTable();
+        treeStructure.showTreeAsTable();*/
     }
 
     @Test
@@ -262,5 +263,63 @@ public class DhnsTestFiltering {
         n2.setEnabled(true);
 
         //SubGraphManager.filterFlatHierarchy(graphStructure);
+    }
+
+    @Test
+    public void testMetaEdges() {
+        Dhns dhns = new Dhns(new DhnsGraphController());
+        GraphStructure graphStructure = dhns.getGraphStructure();
+        HierarchicalGraph graph = dhns.getHierarchicalDirectedGraph();
+        TreeStructure treeStructure = graphStructure.getStructure();
+        GraphFactoryImpl factoryImpl = dhns.factory();
+
+        AbstractNode na = factoryImpl.newNode();
+        na.getNodeData().setLabel("na");
+        AbstractNode nb = factoryImpl.newNode();
+        nb.getNodeData().setLabel("nb");
+        AbstractNode nc = factoryImpl.newNode();
+        nc.getNodeData().setLabel("nc");
+        AbstractNode nd = factoryImpl.newNode();
+        nd.getNodeData().setLabel("nd");
+        AbstractNode ne = factoryImpl.newNode();
+        ne.getNodeData().setLabel("ne");
+        AbstractNode nf = factoryImpl.newNode();
+        nf.getNodeData().setLabel("nf");
+        AbstractNode ng = factoryImpl.newNode();
+        ng.getNodeData().setLabel("ng");
+
+        treeStructure.insertAsChild(na, treeStructure.getRoot());
+        treeStructure.insertAsChild(nb, na);
+        treeStructure.insertAsChild(ne, na);
+        treeStructure.insertAsChild(nc, nb);
+        treeStructure.insertAsChild(nd, nb);
+        treeStructure.insertAsChild(nf, ne);
+        treeStructure.insertAsChild(ng, ne);
+
+        nb.setEnabled(true);
+        ne.setEnabled(true);
+
+        AbstractEdge ebe = factoryImpl.newEdge(nb, ne);
+        AbstractEdge ecd = factoryImpl.newEdge(nc, nd);
+        AbstractEdge egb = factoryImpl.newEdge(ng, nb);
+        AbstractEdge efa = factoryImpl.newEdge(nf, na);
+
+        graph.addEdge(ebe);
+        graph.addEdge(ecd);
+        graph.addEdge(egb);
+        graph.addEdge(efa);
+
+        treeStructure.showTreeAsTable();
+        Edge[] actual = graph.getMetaEdges().toArray();
+        for (int i = 0; i < actual.length; i++) {
+            System.out.println(actual[i].getSource().getNodeData().getLabel()+"->"+actual[i].getTarget().getNodeData().getLabel());
+        }
+
+        graph = dhns.getHierarchicalDirectedGraphVisible();
+        ((ViewImpl)graph.getView()).checkUpdate();
+        actual = graph.getMetaEdges().toArray();
+        for (int i = 0; i < actual.length; i++) {
+            System.out.println(actual[i].getSource().getNodeData().getLabel()+"->"+actual[i].getTarget().getNodeData().getLabel());
+        }
     }
 }
