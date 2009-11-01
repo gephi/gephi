@@ -164,9 +164,9 @@ public class Edge3dModel extends Edge2dModel {
                 r = obj.r();
                 if (r == -1f) {
                     NodeData source = obj.getSource();
-                    r = source.r();
-                    g = source.g();
-                    b = source.b();
+                    r = 0.498f * source.r();
+                    g = 0.498f * source.g();
+                    b = 0.498f * source.b();
                 } else {
                     g = 0.498f * obj.g();
                     b = 0.498f * obj.b();

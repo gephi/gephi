@@ -154,13 +154,12 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
                 r = edge.r();
                 if (r == -1f) {
                     NodeData source = edge.getSource();
-                    r = source.r();
-                    g = source.g();
-                    b = source.b();
-                } else {
-                    NodeData source = edge.getSource();
+                    r = 0.498f * source.r();
                     g = 0.498f * source.g();
                     b = 0.498f * source.b();
+                } else {
+                    g = 0.498f * edge.g();
+                    b = 0.498f * edge.b();
                     r *= 0.498f;
                 }
             }
