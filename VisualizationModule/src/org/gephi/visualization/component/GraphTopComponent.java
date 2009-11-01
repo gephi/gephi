@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.component;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
@@ -29,6 +30,7 @@ import javax.swing.SwingUtilities;
 import org.gephi.project.api.ProjectController;
 import org.gephi.tools.api.ToolController;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.PropertiesBarAddon;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.gephi.workspace.api.Workspace;
@@ -37,7 +39,6 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-
 
 final class GraphTopComponent extends TopComponent {
 
@@ -113,10 +114,17 @@ final class GraphTopComponent extends TopComponent {
             }
 
             if (VizController.getInstance().getVizConfig().isPropertiesbar()) {
+                JPanel northBar = new JPanel(new BorderLayout());
                 propertiesBar = tc.getPropertiesBar();
                 if (propertiesBar != null) {
-                    add(propertiesBar, BorderLayout.NORTH);
+                    northBar.add(propertiesBar, BorderLayout.CENTER);
                 }
+                JPanel addons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+                for (PropertiesBarAddon addon : Lookup.getDefault().lookupAll(PropertiesBarAddon.class)) {
+                    addons.add(addon.getPanel());
+                }
+                northBar.add(addons, BorderLayout.EAST);
+                add(northBar, BorderLayout.NORTH);
             }
         }
 
