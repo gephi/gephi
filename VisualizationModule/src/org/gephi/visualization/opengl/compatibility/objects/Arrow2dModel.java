@@ -151,9 +151,18 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
                     b = in[2];
                 }
             } else {
-                r = 0.498f * obj.r();
-                g = 0.498f * obj.g();
-                b = 0.498f * obj.b();
+                r = edge.r();
+                if (r == -1f) {
+                    NodeData source = edge.getSource();
+                    r = source.r();
+                    g = source.g();
+                    b = source.b();
+                } else {
+                    NodeData source = edge.getSource();
+                    g = 0.498f * source.g();
+                    b = 0.498f * source.b();
+                    r *= 0.498f;
+                }
             }
             gl.glColor4f(r, g, b, 1f);
         }

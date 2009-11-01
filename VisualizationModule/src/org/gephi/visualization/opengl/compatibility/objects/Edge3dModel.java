@@ -161,9 +161,17 @@ public class Edge3dModel extends Edge2dModel {
                     b = in[2];
                 }
             } else {
-                r = 0.498f * obj.r();
-                g = 0.498f * obj.g();
-                b = 0.498f * obj.b();
+                r = obj.r();
+                if (r == -1f) {
+                    NodeData source = obj.getSource();
+                    r = source.r();
+                    g = source.g();
+                    b = source.b();
+                } else {
+                    g = 0.498f * obj.g();
+                    b = 0.498f * obj.b();
+                    r *= 0.498f;
+                }
             }
             gl.glColor4f(r, g, b, 1f);
         }
