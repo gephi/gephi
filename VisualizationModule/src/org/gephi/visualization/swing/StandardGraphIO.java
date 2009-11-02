@@ -179,7 +179,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
      */
     public void mouseClicked(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
-            if (vizController.getVizConfig().isSelectionEnable() && vizController.getVizConfig().isRectangleSelection()) {
+            if (vizController.getVizConfig().isSelectionEnable() && engine.isRectangleSelection()) {
                 Rectangle r = (Rectangle) engine.getCurrentSelectionArea();
                 boolean ctrl = (e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0 || (e.getModifiers() & InputEvent.CTRL_MASK) != 0;
                 r.setCtrl(ctrl);

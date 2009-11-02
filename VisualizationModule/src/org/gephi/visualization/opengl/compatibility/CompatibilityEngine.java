@@ -775,13 +775,13 @@ public class CompatibilityEngine extends AbstractEngine {
             rectangleSelection = false;
             currentSelectionArea = null;
         } else if (vizConfig.isRectangleSelection()) {
+            currentSelectionArea = new Rectangle();
             rectangleSelection = true;
             customSelection = false;
-            currentSelectionArea = new Rectangle();
         } else {
-            rectangleSelection = false;
-            customSelection = false;
             currentSelectionArea = new Cylinder();
+            rectangleSelection = false;
+            customSelection = false;       
         }
     }
 
