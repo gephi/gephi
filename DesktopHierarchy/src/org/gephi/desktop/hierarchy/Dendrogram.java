@@ -22,6 +22,7 @@ package org.gephi.desktop.hierarchy;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
@@ -43,21 +44,26 @@ public class Dendrogram extends JPanel {
     private DendrogramNode root;
 
     //Settings
-    private int maxHeight = Integer.MAX_VALUE;
+    private int maxHeight = 0;
 
     public Dendrogram() {
     }
 
     public void refresh(HierarchicalGraph graph) {
         this.graph = graph;
-        numObjects = graph.getNodeCount();
-        maxHeight = Math.min(graph.getHeight() + 1, maxHeight);
-        root = buildTree();
+        if (graph != null) {
+            numObjects = graph.getNodeCount();
+            maxHeight = Math.min(graph.getHeight() + 1, maxHeight);
+            root = buildTree();
 
-        //MinMaxDistance
-        minDistance = Double.POSITIVE_INFINITY;
-        maxDistance = Double.NEGATIVE_INFINITY;
-        findMinMaxDistance(root);
+            //MinMaxDistance
+            minDistance = Double.POSITIVE_INFINITY;
+            maxDistance = Double.NEGATIVE_INFINITY;
+            findMinMaxDistance(root);
+        } else {
+            root = null;
+        }
+
         revalidate();
         repaint();
     }
@@ -88,12 +94,18 @@ public class Dendrogram extends JPanel {
     private DendrogramNode traverseTree(Node node) {
         Node[] nodeChildren = graph.getChildren(node).toArray();
         DendrogramNode[] children = new DendrogramNode[nodeChildren.length];
+        int height = 0;
         for (int i = 0; i < nodeChildren.length; i++) {
             children[i] = traverseTree(nodeChildren[i]);
+            height = Math.max(height, children[i].getHeight());
         }
         DendrogramNode dendrogramNode = new DendrogramNode(children);
+        if (children.length == 0) {
+            dendrogramNode.setHeight(0);
+        } else {
+            dendrogramNode.setHeight(height + 1);
+        }
         if (graph.isInView(node)) {
-            System.out.println("red" + node.getNodeData().getLabel());
             dendrogramNode.setRed(true);
         }
         return dendrogramNode;
@@ -105,7 +117,9 @@ public class Dendrogram extends JPanel {
         minDistance = Math.min(minDistance, distance);
 
         for (DendrogramNode subNode : node.getChildren()) {
-            findMinMaxDistance(subNode);
+            if (subNode != null) {
+                findMinMaxDistance(subNode);
+            }
         }
     }
 
@@ -150,32 +164,36 @@ public class Dendrogram extends JPanel {
     private int paintRecursively(DendrogramNode node, double baseDistance, Graphics g) {
         int leftPos = -1;
         int rightPos = -1;
-
         // doing recursive descent
         for (DendrogramNode subNode : node.getChildren()) {
-            if (subNode.getChildren().length > 0) {
-                int currentPos = paintRecursively(subNode, node.getDistance(), g);
-                if (leftPos == -1) {
-                    leftPos = currentPos;
+            if (subNode != null) {
+                if (subNode.getChildren().length > 0) {
+                    int currentPos = paintRecursively(subNode, node.getDistance(), g);
+                    if (leftPos == -1) {
+                        leftPos = currentPos;
+                    }
+                    rightPos = currentPos;
                 }
-                rightPos = currentPos;
             }
+
         }
         g.setColor(color);
         // drawing vertical cluster lines of one elemental clusters
         for (DendrogramNode subNode : node.getChildren()) {
-            if (subNode.getChildren().length == 0) {
-                int currentPos = countToXPos(count);
-                if (subNode.isRed()) {
-                    g.setColor(Color.RED);
+            if (subNode != null) {
+                if (subNode.getChildren().length == 0) {
+                    int currentPos = countToXPos(count);
+                    if (subNode.isRed()) {
+                        g.setColor(Color.RED);
+                    }
+                    drawLine(currentPos, weightToYPos(node.getDistance()), currentPos, weightToYPos(minDistance), g);
+                    g.setColor(color);
+                    if (leftPos == -1) {
+                        leftPos = currentPos;
+                    }
+                    rightPos = currentPos;
+                    count++;
                 }
-                drawLine(currentPos, weightToYPos(node.getDistance()), currentPos, weightToYPos(minDistance), g);
-                g.setColor(color);
-                if (leftPos == -1) {
-                    leftPos = currentPos;
-                }
-                rightPos = currentPos;
-                count++;
             }
         }
 
@@ -223,13 +241,38 @@ public class Dendrogram extends JPanel {
         private DendrogramNode[] children;
         private double distance;
         private boolean red = false;
+        private int height;
 
         public DendrogramNode(DendrogramNode[] children) {
             this.children = children;
             distance = children.length;
-            for (DendrogramNode d : children) {
-                distance += d.distance;
+            for (int i = 0; i < children.length; i++) {
+                DendrogramNode child = children[i];
+                if (child.height < maxHeight) {
+                    distance -= child.distance;
+                    this.children[i] = null;
+                    numObjects--;
+                    distance--;
+                } else {
+                    distance += child.distance;
+                }
             }
+            if (distance == 0 && children.length > 0) {
+                this.children = new DendrogramNode[0];
+            }
+        }
+
+        public void removeChildren(int index) {
+            distance -= children[index].distance;
+            children[index] = null;
+        }
+
+        public void setHeight(int height) {
+            this.height = height;
+        }
+
+        public int getHeight() {
+            return height;
         }
 
         public DendrogramNode[] getChildren() {

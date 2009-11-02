@@ -53,7 +53,6 @@ final class HierarchyTopComponent extends TopComponent {
         levelLimitCombo.addItemListener(new ItemListener() {
 
             public void itemStateChanged(ItemEvent e) {
-                int height = levelLimitCombo.getModel().getSize();
                 int lvl = levelLimitCombo.getSelectedIndex();
                 if (lvl != dendrogram.getMaxHeight()) {
                     dendrogram.setMaxHeight(lvl);
@@ -66,11 +65,11 @@ final class HierarchyTopComponent extends TopComponent {
     private void refreshLevelLimit(HierarchicalGraph graph) {
         int h = graph.getHeight();
         DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
+        comboBoxModel.addElement(NbBundle.getMessage(HierarchyTopComponent.class, "HierarchyTopComponent.bar.levelmax"));
         String levelStr = NbBundle.getMessage(HierarchyTopComponent.class, "HierarchyTopComponent.bar.level");
         for (int i = 1; i <= h; i++) {
             comboBoxModel.addElement(levelStr + " " + i);
         }
-        comboBoxModel.addElement(NbBundle.getMessage(HierarchyTopComponent.class, "HierarchyTopComponent.bar.levelmax"));
         levelLimitCombo.setModel(comboBoxModel);
         levelLimitCombo.setSelectedIndex(Math.min(h, dendrogram.getMaxHeight()));
     }
@@ -132,7 +131,8 @@ final class HierarchyTopComponent extends TopComponent {
     private javax.swing.JComboBox levelLimitCombo;
     private javax.swing.JButton refreshButton;
     // End of variables declaration//GEN-END:variables
-/**
+
+    /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
      * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
      * To obtain the singleton instance, use {@link #findInstance}.

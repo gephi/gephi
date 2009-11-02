@@ -80,6 +80,7 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
                 TopComponent tc = WindowManager.getDefault().findTopComponent("HierarchyTopComponent");
                 if(tc!=null) {
                     tc.open();
+                    tc.requestActive();
                     HierarchyTopComponent hierarchyTopComponent = (HierarchyTopComponent)tc;
                     hierarchyTopComponent.refresh();
                 }
