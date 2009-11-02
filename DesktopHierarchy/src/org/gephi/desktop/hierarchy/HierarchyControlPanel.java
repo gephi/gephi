@@ -92,7 +92,7 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
     public void setup() {
         GraphModel model = Lookup.getDefault().lookup(GraphController.class).getModel();
         HierarchicalGraph graph = model.getHierarchicalGraphVisible();
-        initLevelsLinks(graph.getHeight());
+        initLevelsLinks(graph);
 
         //Init status
         GraphSettings settings = model.settings();
@@ -104,22 +104,46 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
         heightLabel.setText("" + graph.getHeight());
     }
 
-    private void initLevelsLinks(int height) {
-        levelViewPanel.setLayout(new GridLayout(height + 1, 1));
+    private void initLevelsLinks(HierarchicalGraph graph) {
+        int height = graph.getHeight();
+        levelViewPanel.setLayout(new GridLayout(height + 2, 1));
         String levelStr = NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.linkLevel");
+        String nodesStr = NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.linkLevel.nodes");
+        String leavesStr = NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.linkLevel.leaves");
+
+        //Level links
         for (int i = 0; i < height + 1; i++) {
+            int levelSize = graph.getLevelSize(i);
             JXHyperlink link = new JXHyperlink();
             link.setClickedColor(new java.awt.Color(0, 51, 255));
-            link.setText(levelStr + " " + i);
+            link.setText(levelStr + " " + i + " (" + levelSize + " " + nodesStr + ")");
             link.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
             final int lvl = i;
             link.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
+                    GraphModel model = Lookup.getDefault().lookup(GraphController.class).getModel();
+                    HierarchicalGraph graph = model.getHierarchicalGraphVisible();
+                    graph.resetViewToLevel(lvl);
                 }
             });
             levelViewPanel.add(link);
         }
+
+        //Leaves
+        JXHyperlink link = new JXHyperlink();
+        link.setClickedColor(new java.awt.Color(0, 51, 255));
+        link.setText(leavesStr);
+        link.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
+        link.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                GraphModel model = Lookup.getDefault().lookup(GraphController.class).getModel();
+                HierarchicalGraph graph = model.getHierarchicalGraphVisible();
+                graph.resetViewToLeaves();
+            }
+        });
+        levelViewPanel.add(link);
     }
 
     /** This method is called from within the constructor to
@@ -279,7 +303,7 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(labelView)
                 .addContainerGap(179, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(levelViewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
                 .addContainerGap())
@@ -301,8 +325,8 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(labelView)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(levelViewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(89, Short.MAX_VALUE))
+                .addComponent(levelViewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(101, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

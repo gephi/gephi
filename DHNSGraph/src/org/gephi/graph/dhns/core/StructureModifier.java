@@ -280,9 +280,9 @@ public class StructureModifier {
             node.setEnabled(node.size == 0);
 
         }
-        graphVersion.incEdgeVersion();
+        graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
-        dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
+        dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
     public void resetViewToTopNodes() {
@@ -293,9 +293,9 @@ public class StructureModifier {
             node.setEnabled(node.parent == treeStructure.root);
 
         }
-        graphVersion.incEdgeVersion();
+        graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
-        dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
+        dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
     public void resetViewToLevel(int level) {
@@ -303,13 +303,11 @@ public class StructureModifier {
         edgeProcessor.clearAllMetaEdges();
         for (PreNodeTreeListIterator itr = new PreNodeTreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
-
             node.setEnabled(node.level == level);
-
         }
-        graphVersion.incEdgeVersion();
+        graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
-        dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
+        dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
     public void moveToGroup(Node node, Node nodeGroup) {
