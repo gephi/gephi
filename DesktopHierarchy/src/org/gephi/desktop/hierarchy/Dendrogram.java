@@ -43,7 +43,7 @@ public class Dendrogram extends JPanel {
     private DendrogramNode root;
 
     //Settings
-    private int maxHeight;
+    private int maxHeight = Integer.MAX_VALUE;
 
     public Dendrogram() {
     }
@@ -58,6 +58,16 @@ public class Dendrogram extends JPanel {
         minDistance = Double.POSITIVE_INFINITY;
         maxDistance = Double.NEGATIVE_INFINITY;
         findMinMaxDistance(root);
+        revalidate();
+        repaint();
+    }
+
+    public int getMaxHeight() {
+        return maxHeight;
+    }
+
+    public void setMaxHeight(int maxHeight) {
+        this.maxHeight = maxHeight;
     }
 
     private DendrogramNode buildTree() {
@@ -83,6 +93,7 @@ public class Dendrogram extends JPanel {
         }
         DendrogramNode dendrogramNode = new DendrogramNode(children);
         if (graph.isInView(node)) {
+            System.out.println("red" + node.getNodeData().getLabel());
             dendrogramNode.setRed(true);
         }
         return dendrogramNode;
@@ -99,10 +110,10 @@ public class Dendrogram extends JPanel {
     }
 
     private void drawLine(int x1, int y1, int x2, int y2, Graphics g) {
-        g.setColor(color);
         g.drawLine(x1, y1, x2, y2);
     }
 
+    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
@@ -123,7 +134,9 @@ public class Dendrogram extends JPanel {
 
         count = 0;
 
-        paintRecursively(root, root.getDistance(), translated);
+        if (root != null) {
+            paintRecursively(root, root.getDistance(), translated);
+        }
     }
 
     private int weightToYPos(double weight) {
@@ -148,12 +161,16 @@ public class Dendrogram extends JPanel {
                 rightPos = currentPos;
             }
         }
-
+        g.setColor(color);
         // drawing vertical cluster lines of one elemental clusters
         for (DendrogramNode subNode : node.getChildren()) {
             if (subNode.getChildren().length == 0) {
                 int currentPos = countToXPos(count);
+                if (subNode.isRed()) {
+                    g.setColor(Color.RED);
+                }
                 drawLine(currentPos, weightToYPos(node.getDistance()), currentPos, weightToYPos(minDistance), g);
+                g.setColor(color);
                 if (leftPos == -1) {
                     leftPos = currentPos;
                 }
@@ -163,15 +180,14 @@ public class Dendrogram extends JPanel {
         }
 
         int middlePos = (rightPos + leftPos) / 2;
-
-        // painting vertical connections of merged clusters to next cluster
-        drawLine(middlePos, weightToYPos(baseDistance), middlePos, weightToYPos(node.getDistance()), g);
-        // painting horizontal connections of merged clusters
         if (node.isRed()) {
             g.setColor(Color.RED);
         }
+        // painting vertical connections of merged clusters to next cluster
+        drawLine(middlePos, weightToYPos(baseDistance), middlePos, weightToYPos(node.getDistance()), g);
+        // painting horizontal connections of merged clusters
+
         drawLine(leftPos, weightToYPos(node.getDistance()), rightPos, weightToYPos(node.getDistance()), g);
-        g.setColor(Color.BLACK);
         return middlePos;
     }
 

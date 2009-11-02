@@ -5,10 +5,16 @@
 package org.gephi.desktop.hierarchy;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.Serializable;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -31,14 +37,50 @@ final class HierarchyTopComponent extends TopComponent {
         setToolTipText(NbBundle.getMessage(HierarchyTopComponent.class, "HINT_HierarchyTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
 
+        initToolbar();
         dendrogram = new Dendrogram();
         add(dendrogram, BorderLayout.CENTER);
+    }
+
+    private void initToolbar() {
+        refreshButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                refresh();
+            }
+        });
+
+        levelLimitCombo.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                int height = levelLimitCombo.getModel().getSize();
+                int lvl = levelLimitCombo.getSelectedIndex();
+                if (lvl != dendrogram.getMaxHeight()) {
+                    dendrogram.setMaxHeight(lvl);
+                    refresh();
+                }
+            }
+        });
+    }
+
+    private void refreshLevelLimit(HierarchicalGraph graph) {
+        int h = graph.getHeight();
+        DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
+        String levelStr = NbBundle.getMessage(HierarchyTopComponent.class, "HierarchyTopComponent.bar.level");
+        for (int i = 1; i <= h; i++) {
+            comboBoxModel.addElement(levelStr + " " + i);
+        }
+        comboBoxModel.addElement(NbBundle.getMessage(HierarchyTopComponent.class, "HierarchyTopComponent.bar.levelmax"));
+        levelLimitCombo.setModel(comboBoxModel);
+        levelLimitCombo.setSelectedIndex(Math.min(h, dendrogram.getMaxHeight()));
     }
 
     public void refresh() {
         GraphModel model = Lookup.getDefault().lookup(GraphController.class).getModel();
         if (model != null) {
-            dendrogram.refresh(model.getHierarchicalGraph());
+            HierarchicalGraph graph = model.getHierarchicalGraph();
+            refreshLevelLimit(graph);
+            dendrogram.refresh(graph);
         }
     }
 
@@ -49,14 +91,48 @@ final class HierarchyTopComponent extends TopComponent {
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        jPanel1 = new javax.swing.JPanel();
+        labelLevelLimit = new javax.swing.JLabel();
+        levelLimitCombo = new javax.swing.JComboBox();
+        refreshButton = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
+
+        jPanel1.setLayout(new java.awt.GridBagLayout());
+
+        org.openide.awt.Mnemonics.setLocalizedText(labelLevelLimit, org.openide.util.NbBundle.getMessage(HierarchyTopComponent.class, "HierarchyTopComponent.labelLevelLimit.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 4, 0, 0);
+        jPanel1.add(labelLevelLimit, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 0);
+        jPanel1.add(levelLimitCombo, gridBagConstraints);
+
+        org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle.getMessage(HierarchyTopComponent.class, "HierarchyTopComponent.refreshButton.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 0, 4);
+        jPanel1.add(refreshButton, gridBagConstraints);
+
+        add(jPanel1, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel labelLevelLimit;
+    private javax.swing.JComboBox levelLimitCombo;
+    private javax.swing.JButton refreshButton;
     // End of variables declaration//GEN-END:variables
-    /**
+/**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
      * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
      * To obtain the singleton instance, use {@link #findInstance}.
