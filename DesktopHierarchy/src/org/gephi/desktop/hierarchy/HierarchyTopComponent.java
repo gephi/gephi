@@ -12,9 +12,12 @@ import java.awt.event.ItemListener;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.SwingUtilities;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.ui.utils.BusyUtils;
+import org.gephi.ui.utils.BusyUtils.BusyLabel;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -39,7 +42,6 @@ final class HierarchyTopComponent extends TopComponent {
 
         initToolbar();
         dendrogram = new Dendrogram();
-        add(dendrogram, BorderLayout.CENTER);
     }
 
     private void initToolbar() {
@@ -75,11 +77,25 @@ final class HierarchyTopComponent extends TopComponent {
     }
 
     public void refresh() {
-        GraphModel model = Lookup.getDefault().lookup(GraphController.class).getModel();
+        final GraphModel model = Lookup.getDefault().lookup(GraphController.class).getModel();
         if (model != null) {
-            HierarchicalGraph graph = model.getHierarchicalGraph();
-            refreshLevelLimit(graph);
-            dendrogram.refresh(graph);
+            Thread thread = new Thread(new Runnable() {
+
+                public void run() {
+                    BusyLabel busyLabel = BusyUtils.createCenteredBusyLabel(centerScrollPane, NbBundle.getMessage(HierarchyTopComponent.class, "HierarchyTopComponent.busyLabel.text"), dendrogram);
+                    busyLabel.setBusy(true);
+                    final HierarchicalGraph graph = model.getHierarchicalGraph();
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        public void run() {
+                            refreshLevelLimit(graph);
+                        }
+                    });
+                    dendrogram.refresh(graph);
+                    busyLabel.setBusy(false);
+                }
+            }, "Dendrogram refresh");
+            thread.start();
         }
     }
 
@@ -92,27 +108,28 @@ final class HierarchyTopComponent extends TopComponent {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        jPanel1 = new javax.swing.JPanel();
+        toolPanel = new javax.swing.JPanel();
         labelLevelLimit = new javax.swing.JLabel();
         levelLimitCombo = new javax.swing.JComboBox();
         refreshButton = new javax.swing.JButton();
+        centerScrollPane = new javax.swing.JScrollPane();
 
         setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setLayout(new java.awt.GridBagLayout());
+        toolPanel.setLayout(new java.awt.GridBagLayout());
 
         org.openide.awt.Mnemonics.setLocalizedText(labelLevelLimit, org.openide.util.NbBundle.getMessage(HierarchyTopComponent.class, "HierarchyTopComponent.labelLevelLimit.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new java.awt.Insets(2, 4, 0, 0);
-        jPanel1.add(labelLevelLimit, gridBagConstraints);
+        toolPanel.add(labelLevelLimit, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 0);
-        jPanel1.add(levelLimitCombo, gridBagConstraints);
+        toolPanel.add(levelLimitCombo, gridBagConstraints);
 
         org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle.getMessage(HierarchyTopComponent.class, "HierarchyTopComponent.refreshButton.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -121,15 +138,21 @@ final class HierarchyTopComponent extends TopComponent {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 0, 0, 4);
-        jPanel1.add(refreshButton, gridBagConstraints);
+        toolPanel.add(refreshButton, gridBagConstraints);
 
-        add(jPanel1, java.awt.BorderLayout.PAGE_START);
+        add(toolPanel, java.awt.BorderLayout.PAGE_START);
+
+        centerScrollPane.setBorder(null);
+        centerScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        centerScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        add(centerScrollPane, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane centerScrollPane;
     private javax.swing.JLabel labelLevelLimit;
     private javax.swing.JComboBox levelLimitCombo;
     private javax.swing.JButton refreshButton;
+    private javax.swing.JPanel toolPanel;
     // End of variables declaration//GEN-END:variables
 
     /**

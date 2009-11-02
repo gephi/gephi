@@ -63,9 +63,6 @@ public class Dendrogram extends JPanel {
         } else {
             root = null;
         }
-
-        revalidate();
-        repaint();
     }
 
     public int getMaxHeight() {
