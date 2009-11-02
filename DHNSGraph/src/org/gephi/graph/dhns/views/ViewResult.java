@@ -26,6 +26,7 @@ import org.gephi.graph.api.NodePredicate;
 import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphStructure;
+import org.gephi.graph.dhns.core.SettingsManager;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
@@ -91,19 +92,8 @@ public class ViewResult {
 
     public void postProcess() {
         filterClustered();
+        filterInterIntraEdges();
         computeViewMetaEdges();
-    }
-
-    private void filterClustered() {
-        FlatClusteredViewPredicate clusteredPredicate = new FlatClusteredViewPredicate();
-        if (clusteredPredicate instanceof FlatClusteredViewPredicate) {
-            clusteredLayerNodeTree = createClusteredFlatViewNodeTree(hierarchyLayerNodeTreePredicate);
-        } else {
-            clusteredLayerNodeTree = createClusteredViewNodeTree(hierarchyLayerNodeTreePredicate);
-        }
-        clusteredLayerEdgeTree = createViewEdgeTree(hierarchyLayerEdgeTreePredicate, clusteredLayerNodeTree);
-        clusteredLayerNodeTreePredicate = new ClusteredLayerNodePredicate();
-        clusteredLayerEdgeTreePredicate = new ClusteredLayerEdgePredicate();
     }
 
     private ViewNodeTree createViewNodeTree(NodePredicate predicate) {
@@ -152,6 +142,19 @@ public class ViewResult {
         }
     }
 
+    //Post Processes
+    private void filterClustered() {
+        FlatClusteredViewPredicate clusteredPredicate = new FlatClusteredViewPredicate();
+        if (clusteredPredicate instanceof FlatClusteredViewPredicate) {
+            clusteredLayerNodeTree = createClusteredFlatViewNodeTree(hierarchyLayerNodeTreePredicate);
+        } else {
+            clusteredLayerNodeTree = createClusteredViewNodeTree(hierarchyLayerNodeTreePredicate);
+        }
+        clusteredLayerEdgeTree = createViewEdgeTree(hierarchyLayerEdgeTreePredicate, clusteredLayerNodeTree);
+        clusteredLayerNodeTreePredicate = new ClusteredLayerNodePredicate();
+        clusteredLayerEdgeTreePredicate = new ClusteredLayerEdgePredicate();
+    }
+
     private ViewNodeTree createClusteredFlatViewNodeTree(Predicate predicate) {
         ViewNodeTree viewNodeTree = new ViewNodeTree();
         TreeIterator treeIterator = new TreeIterator(graphStructure.getStructure(), true, predicate);
@@ -184,8 +187,27 @@ public class ViewResult {
         return viewNodeTree;
     }
 
+    private void filterInterIntraEdges() {
+        SettingsManager settings = dhns.getSettingsManager();
+        if (!settings.isInterClusterEdges() || !settings.isIntraClusterEdges()) {
+            for (AbstractEdgeIterator itr = clusteredLayerEdgeTree.iterator(); itr.hasNext();) {
+                AbstractEdge edge = itr.next();
+                AbstractNode source = edge.getSource();
+                AbstractNode target = edge.getTarget();
+                if (!settings.isInterClusterEdges() && source.parent == target.parent) {
+                    itr.remove();
+                } else if (!settings.isIntraClusterEdges() && source.parent != target.parent) {
+                    itr.remove();
+                }
+            }
+        }
+    }
+
     private void computeViewMetaEdges() {
         metaEdgeTree = new AbstractEdgeTree();
+        if (!dhns.getSettingsManager().isAutoMetaEdgeCreation()) {
+            return;
+        }
         ParamAVLIterator<AbstractEdge> edgeItr = new ParamAVLIterator<AbstractEdge>();
         TreeIterator treeIterator = new TreeIterator(graphStructure.getStructure(), true, clusteredLayerNodeTreePredicate);
         for (; treeIterator.hasNext();) {

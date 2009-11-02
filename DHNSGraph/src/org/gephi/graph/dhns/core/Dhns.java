@@ -28,6 +28,7 @@ import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.GraphSettings;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.HierarchicalMixedGraph;
@@ -383,6 +384,10 @@ public class Dhns implements GraphModel {
 
     public Views views() {
         return viewManager;
+    }
+
+    public GraphSettings settings() {
+        return settingsManager;
     }
 
     public void readXML(Element element) {
