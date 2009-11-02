@@ -101,7 +101,7 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
         autoMetaEdgeButton.setSelected((Boolean) settings.getClientProperty(GraphSettings.AUTO_META_EDGES));
 
         //Stats
-        heightLabel.setText("" + graph.getHeight());
+        heightLabel.setText("" + (graph.getHeight() + 1));
     }
 
     private void initLevelsLinks(HierarchicalGraph graph) {
@@ -173,6 +173,7 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
         jSeparator2 = new javax.swing.JSeparator();
         labelView = new javax.swing.JLabel();
         levelViewPanel = new javax.swing.JPanel();
+        jSeparator3 = new javax.swing.JSeparator();
 
         setPreferredSize(new java.awt.Dimension(214, 300));
 
@@ -220,6 +221,7 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         jPanel1.add(labelAutoMetaEdge, gridBagConstraints);
 
@@ -307,6 +309,10 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
                 .addGap(20, 20, 20)
                 .addComponent(levelViewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jSeparator3, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -326,7 +332,9 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
                 .addComponent(labelView)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(levelViewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(101, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -337,6 +345,7 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JToolBar jToolBar2;
     private javax.swing.JToolBar jToolBar3;
     private javax.swing.JToolBar jToolBar4;
