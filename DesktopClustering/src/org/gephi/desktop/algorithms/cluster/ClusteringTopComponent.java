@@ -135,14 +135,16 @@ final class ClusteringTopComponent extends TopComponent implements ChangeListene
             algorithmComboBox.setEnabled(false);
             settingsButton.setEnabled(false);
             runButton.setEnabled(false);
-            resetButton.setEnabled(false);
+            resetLink.setEnabled(false);
+            refreshResults();
         } else {
             algorithmComboBox.setEnabled(true);
             if (model.getSelectedClusterer() == null) {
                 settingsButton.setEnabled(false);
                 runButton.setEnabled(false);
-                resetButton.setEnabled(false);
+                resetLink.setEnabled(false);
                 algorithmComboBox.setSelectedItem(NO_SELECTION);
+                refreshResults();
             } else {
                 ClustererBuilder selectedBuilder = getBuilder(model.getSelectedClusterer());
                 if (selectedBuilder != algorithmComboBox.getSelectedItem()) {
@@ -153,11 +155,11 @@ final class ClusteringTopComponent extends TopComponent implements ChangeListene
                     algorithmComboBox.setEnabled(false);
                     settingsButton.setEnabled(false);
                     runButton.setEnabled(false);
-                    resetButton.setEnabled(false);
+                    resetLink.setEnabled(false);
                 } else {
                     settingsButton.setEnabled(true);
                     runButton.setEnabled(true);
-                    resetButton.setEnabled(true);
+                    resetLink.setEnabled(true);
                     refreshResults();
                 }
             }
@@ -190,8 +192,12 @@ final class ClusteringTopComponent extends TopComponent implements ChangeListene
     }
 
     private void refreshResults() {
-        Clusterer clusterer = model.getSelectedClusterer();
         ClusterExplorer clusterExplorer = (ClusterExplorer) resultPanel;
+        if (model == null || model.getSelectedClusterer() == null) {
+            clusterExplorer.resetExplorer();
+            return;
+        }
+        Clusterer clusterer = model.getSelectedClusterer();
         clusterExplorer.initExplorer(clusterer.getClusters());
     }
 
@@ -224,66 +230,76 @@ final class ClusteringTopComponent extends TopComponent implements ChangeListene
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
+        clusteringToolbar = new javax.swing.JToolBar();
         algorithmComboBox = new javax.swing.JComboBox();
         settingsButton = new javax.swing.JButton();
         resultPanel = new ClusterExplorer();
         runButton = new javax.swing.JButton();
-        resetButton = new javax.swing.JButton();
+        resetLink = new org.jdesktop.swingx.JXHyperlink();
+
+        setLayout(new java.awt.GridBagLayout());
+
+        clusteringToolbar.setFloatable(false);
+        clusteringToolbar.setRollover(true);
 
         algorithmComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        clusteringToolbar.add(algorithmComboBox);
 
         org.openide.awt.Mnemonics.setLocalizedText(settingsButton, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.settingsButton.text")); // NOI18N
+        settingsButton.setFocusable(false);
+        settingsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        settingsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         settingsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 settingsButtonActionPerformed(evt);
             }
         });
+        clusteringToolbar.add(settingsButton);
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.weightx = 1.0;
+        add(clusteringToolbar, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(resultPanel, gridBagConstraints);
+
+        runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/algorithms/cluster/apply.gif"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(runButton, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.runButton.text")); // NOI18N
         runButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runButtonActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(2, 5, 1, 2);
+        add(runButton, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(resetButton, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.resetButton.text")); // NOI18N
-        resetButton.addActionListener(new java.awt.event.ActionListener() {
+        resetLink.setClickedColor(new java.awt.Color(0, 51, 255));
+        org.openide.awt.Mnemonics.setLocalizedText(resetLink, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.resetLink.text")); // NOI18N
+        resetLink.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resetButtonActionPerformed(evt);
+                resetLinkActionPerformed(evt);
             }
         });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(algorithmComboBox, 0, 189, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(settingsButton))
-            .addComponent(resultPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(146, 146, 146)
-                .addComponent(resetButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(runButton))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(algorithmComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(settingsButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(resultPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(runButton)
-                    .addComponent(resetButton)))
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(1, 6, 0, 0);
+        add(resetLink, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void settingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsButtonActionPerformed
@@ -294,13 +310,14 @@ final class ClusteringTopComponent extends TopComponent implements ChangeListene
         run();
     }//GEN-LAST:event_runButtonActionPerformed
 
-    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+    private void resetLinkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetLinkActionPerformed
         reset();
-    }//GEN-LAST:event_resetButtonActionPerformed
+    }//GEN-LAST:event_resetLinkActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox algorithmComboBox;
-    private javax.swing.JButton resetButton;
+    private javax.swing.JToolBar clusteringToolbar;
+    private org.jdesktop.swingx.JXHyperlink resetLink;
     private javax.swing.JPanel resultPanel;
     private javax.swing.JButton runButton;
     private javax.swing.JButton settingsButton;

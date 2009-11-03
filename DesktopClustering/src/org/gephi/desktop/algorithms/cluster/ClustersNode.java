@@ -1,4 +1,8 @@
 /*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+/*
 Copyright 2008 WebAtlas
 Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
 Website : http://www.gephi.org
@@ -28,7 +32,6 @@ import javax.swing.ImageIcon;
 import org.gephi.algorithms.cluster.api.Cluster;
 import org.gephi.algorithms.cluster.api.ClusteringController;
 import org.openide.nodes.AbstractNode;
-import org.openide.nodes.Children;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -36,25 +39,18 @@ import org.openide.util.NbBundle;
  *
  * @author Mathieu Bastian
  */
-public class ClusterNode extends AbstractNode {
+public class ClustersNode extends AbstractNode {
 
-    private Cluster cluster;
+    private Cluster[] clusters;
 
-    public ClusterNode(Cluster cluster) {
-        super(Children.LEAF);
-        this.cluster = cluster;
-        setShortDescription("<html><b>" + cluster.getName() + "</b><br>Elements: " + cluster.getNodesCount() + "</html>");
+    public ClustersNode(Cluster[] clusters) {
+        super(new ClustersChildren(clusters));
+        this.clusters = clusters;
     }
 
     @Override
     public String getHtmlDisplayName() {
-        String msg = "<html>" + cluster.getName() + " <font color='AAAAAA'><i>- ";
-        if (cluster.getNodesCount() > 1) {
-            msg += NbBundle.getMessage(ClusterNode.class, "ClusterNode.displayName.nodesCount.plural", cluster.getNodesCount());
-        } else {
-            msg += NbBundle.getMessage(ClusterNode.class, "ClusterNode.displayName.nodesCount.singular", cluster.getNodesCount());
-        }
-        msg += "</i></font></html>";
+        String msg = "<html>" + NbBundle.getMessage(ClusterNode.class, "ClustersNode.displayName") + " <font color='AAAAAA'><i> " + clusters.length + "</i></font></html>";
         return msg;
     }
 
@@ -65,54 +61,74 @@ public class ClusterNode extends AbstractNode {
 
     @Override
     public Action[] getActions(boolean popup) {
-        return new Action[]{new SelectAction(), new GroupAction(), new UngroupAction()};
+        return new Action[]{new SelectAllAction(), new GroupAllAction(), new UngroupAllAction()};
     }
 
-    private class SelectAction extends AbstractAction {
+    private class SelectAllAction extends AbstractAction {
 
-        public SelectAction() {
-            putValue(NAME, NbBundle.getMessage(ClusterNode.class, "ClusterNode.actions.Select.name"));
+        public SelectAllAction() {
+            putValue(NAME, NbBundle.getMessage(ClusterNode.class, "ClustersNode.actions.SelectAll.name"));
         }
 
         public void actionPerformed(ActionEvent e) {
             ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
-            cc.selectCluster(cluster);
+            for (Cluster cluster : clusters) {
+                cc.selectCluster(cluster);
+            }
         }
     }
 
-    private class GroupAction extends AbstractAction {
+    private class GroupAllAction extends AbstractAction {
 
-        public GroupAction() {
-            putValue(NAME, NbBundle.getMessage(ClusterNode.class, "ClusterNode.actions.Group.name"));
+        public GroupAllAction() {
+            putValue(NAME, NbBundle.getMessage(ClusterNode.class, "ClustersNode.actions.GroupAll.name"));
         }
 
         public void actionPerformed(ActionEvent e) {
             ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
-            cc.groupCluster(cluster);
+            for (Cluster cluster : clusters) {
+                if (cc.canGroup(cluster)) {
+                    cc.groupCluster(cluster);
+                }
+            }
         }
 
         @Override
         public boolean isEnabled() {
             ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
-            return cc.canGroup(cluster);
+            for (Cluster cluster : clusters) {
+                if (cc.canGroup(cluster)) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
-    private class UngroupAction extends AbstractAction {
+    private class UngroupAllAction extends AbstractAction {
 
-        public UngroupAction() {
-            putValue(NAME, NbBundle.getMessage(ClusterNode.class, "ClusterNode.actions.Ungroup.name"));
+        public UngroupAllAction() {
+            putValue(NAME, NbBundle.getMessage(ClusterNode.class, "ClustersNode.actions.UngroupAll.name"));
         }
 
         public void actionPerformed(ActionEvent e) {
             ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
-            cc.ungroupCluster(cluster);
+            for (Cluster cluster : clusters) {
+                if (cc.canUngroup(cluster)) {
+                    cc.ungroupCluster(cluster);
+                }
+            }
         }
 
         @Override
         public boolean isEnabled() {
             ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
-            return cc.canUngroup(cluster);
+            for (Cluster cluster : clusters) {
+                if (cc.canUngroup(cluster)) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

@@ -25,6 +25,7 @@ import org.gephi.algorithms.cluster.api.Cluster;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
+import org.openide.nodes.Children;
 
 /**
  *
@@ -40,11 +41,17 @@ public class ClusterExplorer extends JPanel implements ExplorerManager.Provider 
     }
 
     public void initExplorer(Cluster[] clusters) {
-        if(clusters!=null) {
-            manager.setRootContext(new AbstractNode(new ClustersChildren(clusters)));
+        if (clusters != null) {
+            manager.setRootContext(new ClustersNode(clusters));
+            ((BeanTreeView) tree).setRootVisible(true);
         } else {
-            
+            resetExplorer();
         }
+    }
+
+    public void resetExplorer() {
+        manager.setRootContext(new AbstractNode(Children.LEAF));
+        ((BeanTreeView) tree).setRootVisible(false);
     }
 
     private void initComponents() {
@@ -52,7 +59,7 @@ public class ClusterExplorer extends JPanel implements ExplorerManager.Provider 
 
         setLayout(new java.awt.BorderLayout());
 
-        ((BeanTreeView) tree).setRootVisible(false);
+        //((BeanTreeView) tree).setRootVisible(false);
         add(tree, java.awt.BorderLayout.CENTER);
     }
 

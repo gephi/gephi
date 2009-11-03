@@ -33,4 +33,8 @@ public interface Cluster {
     public int getNodesCount();
 
     public String getName();
+
+    public Node getMetaNode();
+
+    public void setMetaNode(Node node);
 }

@@ -26,6 +26,9 @@ import org.gephi.algorithms.cluster.api.ClusteringController;
 import org.gephi.algorithms.cluster.api.ClusteringModel;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.longtask.LongTaskErrorHandler;
@@ -87,5 +90,47 @@ public class ClusteringControllerImpl implements ClusteringController {
         SelectionManager selectionManager = VizController.getInstance().getSelectionManager();
         selectionManager.resetSelection();
         selectionManager.selectNodes(cluster.getNodes());
+    }
+
+    public void groupCluster(Cluster cluster) {
+        GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
+        if (gm != null) {
+            HierarchicalGraph graph = gm.getHierarchicalGraphVisible();
+            Node[] newGroup = cluster.getNodes();
+            float centroidX = 0;
+            float centroidY = 0;
+            int len = 0;
+            Node group = graph.groupNodes(newGroup);
+            cluster.setMetaNode(group);
+
+            group.getNodeData().setLabel("Group");
+            group.getNodeData().setSize(10f);
+            for (Node child : newGroup) {
+                centroidX += child.getNodeData().x();
+                centroidY += child.getNodeData().y();
+                len++;
+            }
+            centroidX /= len;
+            centroidY /= len;
+            group.getNodeData().setX(centroidX);
+            group.getNodeData().setY(centroidY);
+        }
+    }
+
+    public void ungroupCluster(Cluster cluster) {
+        GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
+        if (gm != null) {
+            HierarchicalGraph graph = gm.getHierarchicalGraphVisible();
+            graph.ungroupNodes(cluster.getMetaNode());
+            cluster.setMetaNode(null);
+        }
+    }
+
+    public boolean canGroup(Cluster cluster) {
+        return cluster.getMetaNode() == null;
+    }
+
+    public boolean canUngroup(Cluster cluster) {
+        return cluster.getMetaNode() != null;
     }
 }

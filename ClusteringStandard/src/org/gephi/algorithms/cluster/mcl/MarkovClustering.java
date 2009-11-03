@@ -165,6 +165,7 @@ public class MarkovClustering implements Clusterer, LongTask {
 
         private Node[] nodes;
         private String name;
+        private Node metaNode;
 
         public MCLCluster(Node[] nodes, int number) {
             this.nodes = nodes;
@@ -181,6 +182,14 @@ public class MarkovClustering implements Clusterer, LongTask {
 
         public String getName() {
             return name;
+        }
+
+        public Node getMetaNode() {
+           return metaNode;
+        }
+
+        public void setMetaNode(Node node) {
+            this.metaNode = node;
         }
     }
 
