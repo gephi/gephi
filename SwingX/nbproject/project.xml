@@ -32,16 +32,19 @@
                 <package>org.jdesktop.swingx.painter.effects</package>
                 <package>org.jdesktop.swingx.plaf</package>
                 <package>org.jdesktop.swingx.plaf.basic</package>
+                <package>org.jdesktop.swingx.plaf.basic.core</package>
                 <package>org.jdesktop.swingx.plaf.linux</package>
                 <package>org.jdesktop.swingx.plaf.macosx</package>
                 <package>org.jdesktop.swingx.plaf.metal</package>
                 <package>org.jdesktop.swingx.plaf.misc</package>
                 <package>org.jdesktop.swingx.plaf.motif</package>
                 <package>org.jdesktop.swingx.plaf.nimbus</package>
+                <package>org.jdesktop.swingx.plaf.synth</package>
                 <package>org.jdesktop.swingx.plaf.windows</package>
                 <package>org.jdesktop.swingx.renderer</package>
                 <package>org.jdesktop.swingx.rollover</package>
                 <package>org.jdesktop.swingx.search</package>
+                <package>org.jdesktop.swingx.sort</package>
                 <package>org.jdesktop.swingx.table</package>
                 <package>org.jdesktop.swingx.tips</package>
                 <package>org.jdesktop.swingx.tree</package>
@@ -49,12 +52,12 @@
                 <package>org.jdesktop.swingx.util</package>
             </public-packages>
             <class-path-extension>
-                <runtime-relative-path>ext/swingx-1.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/swingx-1.0.jar</binary-origin>
+                <runtime-relative-path>ext/swingx-1.6.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/swingx-1.6.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/swingx-beaninfo-1.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/swingx-beaninfo-1.0.jar</binary-origin>
+                <runtime-relative-path>ext/swingx-beaninfo-1.6.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/swingx-beaninfo-1.6.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/MultipleGradientPaint.jar</runtime-relative-path>
