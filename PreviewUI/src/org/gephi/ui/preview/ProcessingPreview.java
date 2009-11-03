@@ -78,13 +78,9 @@ public class ProcessingPreview extends PApplet {
 	@Override
 	public void setup() {
 		size(500, 500, JAVA2D);
-		//size(500, 500, OPENGL);
 		rectMode(CENTER);
-
         smooth();
-
-		// the preview is drawn once and then redrawn when necessary
-		noLoop();
+		noLoop(); // the preview is drawn once and then redrawn when necessary
 	}
 
 	@Override
