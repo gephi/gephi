@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.algorithms.cluster;
 
+import org.gephi.algorithms.cluster.api.Cluster;
 import org.gephi.algorithms.cluster.api.Clusterer;
 import org.gephi.algorithms.cluster.api.ClusteringController;
 import org.gephi.algorithms.cluster.api.ClusteringModel;
@@ -29,6 +30,8 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
+import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.selection.SelectionManager;
 import org.gephi.workspace.api.WorkspaceDataKey;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -78,5 +81,11 @@ public class ClusteringControllerImpl implements ClusteringController {
                 model.setRunning(false);
             }
         });
+    }
+
+    public void selectCluster(Cluster cluster) {
+        SelectionManager selectionManager = VizController.getInstance().getSelectionManager();
+        selectionManager.resetSelection();
+        selectionManager.selectNodes(cluster.getNodes());
     }
 }

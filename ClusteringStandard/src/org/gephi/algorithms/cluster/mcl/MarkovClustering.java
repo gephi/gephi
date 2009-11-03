@@ -138,6 +138,7 @@ public class MarkovClustering implements Clusterer, LongTask {
                 for (Integer in : c) {
                     Node node = nodeMap.get(in);
                     nodes[i] = node;
+                    i++;
                 }
                 clustersList.add(new MCLCluster(nodes, clusterNumber));
                 clusterNumber++;
@@ -167,7 +168,7 @@ public class MarkovClustering implements Clusterer, LongTask {
 
         public MCLCluster(Node[] nodes, int number) {
             this.nodes = nodes;
-            this.name = "Cluster "+number;
+            this.name = "Cluster " + number;
         }
 
         public Node[] getNodes() {

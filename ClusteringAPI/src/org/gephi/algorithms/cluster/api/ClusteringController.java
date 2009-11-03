@@ -27,4 +27,6 @@ package org.gephi.algorithms.cluster.api;
 public interface ClusteringController {
 
     public void clusterize(Clusterer clusterer);
+
+    public void selectCluster(Cluster cluster);
 }
