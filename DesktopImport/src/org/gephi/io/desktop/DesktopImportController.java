@@ -165,7 +165,10 @@ public class DesktopImportController implements ImportController {
         final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
 
             public void fatalError(Throwable t) {
-                NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
+                t = t.getCause();
+                String msg = NbBundle.getMessage(DesktopImportController.class, "DesktopImportController.import.error", new Object[]{t.getClass().getSimpleName(), t.getLocalizedMessage(), t.getStackTrace()[0].getClassName(), t.getStackTrace()[0].getLineNumber()});
+                String title = NbBundle.getMessage(DesktopImportController.class, "DesktopImportController.import.error.title");
+                NotifyDescriptor ex = new NotifyDescriptor(msg, title, NotifyDescriptor.WARNING_MESSAGE, NotifyDescriptor.WARNING_MESSAGE, null, null);
                 DialogDisplayer.getDefault().notify(ex);
                 t.printStackTrace();
             }
