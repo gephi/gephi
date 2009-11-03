@@ -17,8 +17,13 @@ final class PreviewTopComponent extends TopComponent {
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "PreviewTopComponent";
 
+    private final ProcessingPreview sketch = new ProcessingPreview();
+
     private PreviewTopComponent() {
         initComponents();
+
+        add(sketch);
+        sketch.init();
 
         setName(NbBundle.getMessage(PreviewTopComponent.class, "CTL_PreviewTopComponent"));
         setToolTipText(NbBundle.getMessage(PreviewTopComponent.class, "HINT_PreviewTopComponent"));
@@ -34,14 +39,18 @@ final class PreviewTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        sketch = new ProcessingPreview();
-
-        setLayout(new java.awt.BorderLayout());
-        add(sketch, java.awt.BorderLayout.CENTER);
-        ((ProcessingPreview) sketch).init();
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 375, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 287, Short.MAX_VALUE)
+        );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private java.awt.Panel sketch;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -114,6 +123,6 @@ final class PreviewTopComponent extends TopComponent {
 	 * Refresh the preview applet.
 	 */
     public void refreshPreview() {
-        ((ProcessingPreview) sketch).refresh();
+        sketch.refresh();
     }
 }
