@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import org.gephi.algorithms.cluster.api.Clusterer;
 import org.gephi.algorithms.cluster.api.ClustererBuilder;
 import org.gephi.algorithms.cluster.api.ClustererUI;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -37,6 +38,10 @@ public class MarkovClusteringBuilder implements ClustererBuilder {
 
     public String getName() {
         return "MCL";
+    }
+
+    public String getDescription() {
+        return NbBundle.getMessage(MarkovClusteringBuilder.class, "MarkovClustering.description");
     }
 
     public Class getClustererClass() {

@@ -185,7 +185,7 @@ public class MarkovClustering implements Clusterer, LongTask {
         }
 
         public Node getMetaNode() {
-           return metaNode;
+            return metaNode;
         }
 
         public void setMetaNode(Node node) {

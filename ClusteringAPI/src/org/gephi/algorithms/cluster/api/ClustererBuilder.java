@@ -30,6 +30,8 @@ public interface ClustererBuilder {
 
     public String getName();
 
+    public String getDescription();
+
     public Class getClustererClass();
 
     public ClustererUI getUI();

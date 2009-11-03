@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.desktop.algorithms.cluster;
 
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.Serializable;
@@ -136,6 +137,7 @@ final class ClusteringTopComponent extends TopComponent implements ChangeListene
             settingsButton.setEnabled(false);
             runButton.setEnabled(false);
             resetLink.setEnabled(false);
+            descriptionLabel.setText("");
             refreshResults();
         } else {
             algorithmComboBox.setEnabled(true);
@@ -143,6 +145,7 @@ final class ClusteringTopComponent extends TopComponent implements ChangeListene
                 settingsButton.setEnabled(false);
                 runButton.setEnabled(false);
                 resetLink.setEnabled(false);
+                descriptionLabel.setText("");
                 algorithmComboBox.setSelectedItem(NO_SELECTION);
                 refreshResults();
             } else {
@@ -150,6 +153,8 @@ final class ClusteringTopComponent extends TopComponent implements ChangeListene
                 if (selectedBuilder != algorithmComboBox.getSelectedItem()) {
                     algorithmComboBox.setSelectedItem(selectedBuilder);
                 }
+
+                descriptionLabel.setText(selectedBuilder.getDescription());
 
                 if (model.isRunning()) {
                     algorithmComboBox.setEnabled(false);
@@ -235,6 +240,7 @@ final class ClusteringTopComponent extends TopComponent implements ChangeListene
         clusteringToolbar = new javax.swing.JToolBar();
         algorithmComboBox = new javax.swing.JComboBox();
         settingsButton = new javax.swing.JButton();
+        descriptionLabel = new org.jdesktop.swingx.JXLabel();
         resultPanel = new ClusterExplorer();
         runButton = new javax.swing.JButton();
         resetLink = new org.jdesktop.swingx.JXHyperlink();
@@ -244,7 +250,6 @@ final class ClusteringTopComponent extends TopComponent implements ChangeListene
         clusteringToolbar.setFloatable(false);
         clusteringToolbar.setRollover(true);
 
-        algorithmComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         clusteringToolbar.add(algorithmComboBox);
 
         org.openide.awt.Mnemonics.setLocalizedText(settingsButton, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.settingsButton.text")); // NOI18N
@@ -265,9 +270,22 @@ final class ClusteringTopComponent extends TopComponent implements ChangeListene
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 1.0;
         add(clusteringToolbar, gridBagConstraints);
+
+        descriptionLabel.setLineWrap(true);
+        org.openide.awt.Mnemonics.setLocalizedText(descriptionLabel, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.descriptionLabel.text")); // NOI18N
+        descriptionLabel.setFont(new java.awt.Font("Tahoma", 2, 10)); // NOI18N
+        descriptionLabel.setPreferredSize(new java.awt.Dimension(50, 20));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 1;
+        gridBagConstraints.ipady = 1;
+        gridBagConstraints.insets = new java.awt.Insets(1, 2, 1, 2);
+        add(descriptionLabel, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -282,7 +300,7 @@ final class ClusteringTopComponent extends TopComponent implements ChangeListene
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(2, 5, 1, 2);
         add(runButton, gridBagConstraints);
@@ -296,7 +314,7 @@ final class ClusteringTopComponent extends TopComponent implements ChangeListene
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(1, 6, 0, 0);
         add(resetLink, gridBagConstraints);
@@ -317,6 +335,7 @@ final class ClusteringTopComponent extends TopComponent implements ChangeListene
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox algorithmComboBox;
     private javax.swing.JToolBar clusteringToolbar;
+    private org.jdesktop.swingx.JXLabel descriptionLabel;
     private org.jdesktop.swingx.JXHyperlink resetLink;
     private javax.swing.JPanel resultPanel;
     private javax.swing.JButton runButton;
