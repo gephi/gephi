@@ -24,11 +24,9 @@ package org.gephi.partition.api;
  *
  * @author Mathieu Bastian
  */
-public interface PartitionController {
+public interface Part<Element> {
 
-    public void setSelectedPartition(Partition partition);
+    public String getName();
 
-    public void setSelectedPartitioning(int partitioning);
-
-    public void setSelectedTransformerBuilder(TransformerBuilder builder);
+    public Partition<Element> getPartition();
 }

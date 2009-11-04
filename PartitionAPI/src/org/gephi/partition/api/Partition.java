@@ -28,11 +28,15 @@ import java.util.List;
  */
 public interface Partition<Element> {
 
-    public int getValuesCount();
+    public int getPartsCount();
 
-    public Object[] getValues();
+    public Part<Element>[] getParts();
 
-    public List<Element> getObjects(Object value);
+    public List<Element> getObjects(Part<Element> part);
+
+    public boolean isInPart(Element element, Part part);
+
+    public Part<Element> getPart(Element element);
 
     @Override
     public String toString();

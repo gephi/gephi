@@ -35,6 +35,14 @@ public interface PartitionModel {
 
     public EdgePartition[] getEdgePartitions();
 
+    public TransformerBuilder getNodeTransformerBuilder();
+
+    public Transformer getNodeTransformer();
+
+    public TransformerBuilder getEdgeTransformerBuilder();
+
+    public Transformer getEdgeTransformer();
+
     public Partition getSelectedPartition();
 
     public int getSelectedPartitioning();

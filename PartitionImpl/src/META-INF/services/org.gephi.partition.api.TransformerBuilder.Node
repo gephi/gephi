@@ -1,0 +1,2 @@
+org.gephi.ui.partition.transformer.NodeColorTransformerBuilder
+org.gephi.ui.partition.transformer.NodeSizeTransformerBuilder

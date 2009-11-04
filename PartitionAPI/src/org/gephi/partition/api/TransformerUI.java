@@ -20,15 +20,22 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.partition.api;
 
+import javax.swing.Icon;
+import javax.swing.JPanel;
+
 /**
  *
  * @author Mathieu Bastian
  */
-public interface PartitionController {
+public interface TransformerUI {
 
-    public void setSelectedPartition(Partition partition);
+    public Icon getIcon();
 
-    public void setSelectedPartitioning(int partitioning);
+    public String getName();
 
-    public void setSelectedTransformerBuilder(TransformerBuilder builder);
+    public JPanel getPanel();
+
+    public void setup(Partition partition, Transformer transformer);
+
+    public void unsetup();
 }

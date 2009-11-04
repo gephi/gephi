@@ -18,17 +18,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.partition.api;
+package org.gephi.partition.transformer;
+
+import org.gephi.partition.api.Transformer;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface PartitionController {
-
-    public void setSelectedPartition(Partition partition);
-
-    public void setSelectedPartitioning(int partitioning);
-
-    public void setSelectedTransformerBuilder(TransformerBuilder builder);
+public class EdgeColorTransformer implements Transformer {
 }

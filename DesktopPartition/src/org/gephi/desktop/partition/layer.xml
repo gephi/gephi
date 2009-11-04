@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="Window">
+            <file name="org-gephi-desktop-partition-PartitionAction.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.desktop.partition.Bundle"/>
+                <attr name="component" methodvalue="org.gephi.desktop.partition.PartitionTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="org.gephi.desktop.partition.Bundle#CTL_PartitionAction"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="PartitionAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-partition-PartitionAction.instance"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="PartitionTopComponent.settings" url="PartitionTopComponentSettings.xml"/>
+        </folder>
+        <folder name="Modes">
+            <folder name="statisticsmode">
+                <file name="PartitionTopComponent.wstcref" url="PartitionTopComponentWstcref.xml"/>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>
