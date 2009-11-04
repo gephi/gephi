@@ -112,6 +112,7 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
+                workspace.getWorkspaceData().setData(key, new RankingUIModel());
             }
 
             public void select(Workspace workspace) {

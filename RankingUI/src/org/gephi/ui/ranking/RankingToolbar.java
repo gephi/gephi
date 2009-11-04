@@ -70,6 +70,20 @@ public class RankingToolbar extends JToolBar {
         boolean edgeSelected = !nodeSelected;
         elementGroup.setSelected(nodeSelected ? nodeButton.getModel() : edgeButton.getModel(), true);
 
+        nodeTransformerGroup.clearSelection();
+        edgeTransformerGroup.clearSelection();
+
+        if (model.getNodeTransformer() == null) {
+            if (nodeTransformerGroup.getElements().hasMoreElements()) {
+                nodeTransformerGroup.getElements().nextElement().doClick();
+            }
+        }
+        if (model.getEdgeTransformer() == null) {
+            if (edgeTransformerGroup.getElements().hasMoreElements()) {
+                edgeTransformerGroup.getElements().nextElement().doClick();
+            }
+        }
+
         for (Enumeration<AbstractButton> btns = nodeTransformerGroup.getElements(); btns.hasMoreElements();) {
             AbstractButton btn = btns.nextElement();
             btn.setVisible(nodeSelected);
@@ -129,14 +143,6 @@ public class RankingToolbar extends JToolBar {
             btn.setFocusPainted(false);
             edgeTransformerGroup.add(btn);
             add(btn);
-        }
-
-        //Init first
-        if (!nodeTrans.isEmpty()) {
-            model.setNodeTransformer(nodeTrans.get(0).getTransformerClass());
-        }
-        if (!edgeTrans.isEmpty()) {
-            model.setEdgeTransformer(edgeTrans.get(0).getTransformerClass());
         }
     }
 
