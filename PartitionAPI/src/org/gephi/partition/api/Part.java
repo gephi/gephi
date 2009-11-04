@@ -26,7 +26,11 @@ package org.gephi.partition.api;
  */
 public interface Part<Element> {
 
-    public String getName();
+    public Element[] getObjects();
 
-    public Partition<Element> getPartition();
+    public Object getValue();
+
+    public String getDisplayName();
+
+    public boolean isInPart(Element element);
 }

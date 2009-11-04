@@ -81,7 +81,7 @@ public class PartitionToolbar extends JToolBar implements ChangeListener {
         boolean nodeSelected = model.getSelectedPartitioning() == PartitionModel.NODE_PARTITIONING;
         boolean edgeSelected = !nodeSelected;
         elementGroup.setSelected(nodeSelected ? nodeButton.getModel() : edgeButton.getModel(), true);
-        
+
         nodeTransformerGroup.clearSelection();
         edgeTransformerGroup.clearSelection();
 

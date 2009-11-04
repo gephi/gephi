@@ -48,6 +48,8 @@ public class PartitionModelImpl implements PartitionModel {
     private TransformerBuilder nodeBuilder;
     private TransformerBuilder edgeBuilder;
     private HashMap<Class, Transformer> transformersMap;
+    private NodePartition[] nodePartitions = new NodePartition[0];
+    private EdgePartition[] edgePartitions = new EdgePartition[0];
 
     public PartitionModelImpl() {
         listeners = new ArrayList<ChangeListener>();
@@ -55,11 +57,11 @@ public class PartitionModelImpl implements PartitionModel {
     }
 
     public NodePartition[] getNodePartitions() {
-        return new NodePartition[0];
+        return nodePartitions;
     }
 
     public EdgePartition[] getEdgePartitions() {
-        return new EdgePartition[0];
+        return edgePartitions;
     }
 
     public TransformerBuilder getNodeTransformerBuilder() {
@@ -67,6 +69,9 @@ public class PartitionModelImpl implements PartitionModel {
     }
 
     public Transformer getNodeTransformer() {
+        if (nodeBuilder == null) {
+            return null;
+        }
         if (transformersMap.get(nodeBuilder.getClass()) != null) {
             return transformersMap.get(nodeBuilder.getClass());
         } else {
@@ -81,6 +86,9 @@ public class PartitionModelImpl implements PartitionModel {
     }
 
     public Transformer getEdgeTransformer() {
+        if (edgeBuilder == null) {
+            return null;
+        }
         if (transformersMap.get(edgeBuilder.getClass()) != null) {
             return transformersMap.get(edgeBuilder.getClass());
         } else {
@@ -143,6 +151,16 @@ public class PartitionModelImpl implements PartitionModel {
 
     public void setEdgePartition(Partition edgePartition) {
         this.edgePartition = edgePartition;
+        fireChangeEvent();
+    }
+
+    public void setNodePartitions(NodePartition[] nodePartitions) {
+        this.nodePartitions = nodePartitions;
+        fireChangeEvent();
+    }
+
+    public void setEdgePartitions(EdgePartition[] edgePartitions) {
+        this.edgePartitions = edgePartitions;
         fireChangeEvent();
     }
 }

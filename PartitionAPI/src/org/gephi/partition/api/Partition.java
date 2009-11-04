@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.partition.api;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -32,11 +32,9 @@ public interface Partition<Element> {
 
     public Part<Element>[] getParts();
 
-    public List<Element> getObjects(Part<Element> part);
-
-    public boolean isInPart(Element element, Part part);
-
     public Part<Element> getPart(Element element);
+
+    public Map<Element, Part<Element>> getMap();
 
     @Override
     public String toString();

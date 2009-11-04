@@ -20,8 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.partition;
 
+import java.awt.BorderLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.List;
+import javax.swing.AbstractListModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
@@ -29,6 +32,9 @@ import javax.swing.event.ChangeListener;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.PartitionController;
 import org.gephi.partition.api.PartitionModel;
+import org.gephi.partition.api.Transformer;
+import org.gephi.partition.api.TransformerUI;
+import org.gephi.ui.components.JLazyComboBox;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -45,6 +51,7 @@ public class PartitionChooser extends javax.swing.JPanel implements ChangeListen
     private PartitionModel model;
 
     //Data
+    private TransformerUI centerUI;
     private JPanel centerPanel;
 
     public PartitionChooser() {
@@ -65,7 +72,7 @@ public class PartitionChooser extends javax.swing.JPanel implements ChangeListen
         java.awt.GridBagConstraints gridBagConstraints;
 
         chooserPanel = new javax.swing.JPanel();
-        partitionComboBox = new javax.swing.JComboBox();
+        partitionComboBox = new JLazyComboBox();
         controlPanel = new javax.swing.JPanel();
         applyButton = new javax.swing.JButton();
 
@@ -99,6 +106,7 @@ public class PartitionChooser extends javax.swing.JPanel implements ChangeListen
     }// </editor-fold>//GEN-END:initComponents
 
     private void initEvents() {
+        partitionComboBox.setModel(newLazyModel());
         partitionComboBox.addItemListener(new ItemListener() {
 
             public void itemStateChanged(ItemEvent e) {
@@ -131,16 +139,54 @@ public class PartitionChooser extends javax.swing.JPanel implements ChangeListen
     }
 
     private void refreshModel() {
-        if(model==null) {
+        if (model == null) {
             setEnable(false);
             return;
         }
         setEnable(true);
+
+        //partitionComboBox.setSelectedItem(NO_SELECTION);
+        Partition[] partitionArray = new Partition[0];
         if (model.getSelectedPartitioning() == PartitionModel.NODE_PARTITIONING) {
-            initChooser(model.getNodePartitions());
+            partitionArray = model.getNodePartitions();
         } else if (model.getSelectedPartitioning() == PartitionModel.EDGE_PARTITIONING) {
-            initChooser(model.getEdgePartitions());
+            partitionArray = model.getEdgePartitions();
         }
+        JLazyComboBox.LazyComboBoxModel comboBoxModel = newLazyModel();
+        if (partitionArray.length > 0) {
+            comboBoxModel.addElement(NO_SELECTION);
+            for (Partition p : partitionArray) {
+                comboBoxModel.addElement(p);
+                if (p == model.getSelectedPartition()) {
+                    comboBoxModel.setSelectedItem(p);
+                }
+            }
+            comboBoxModel.setReset(false);
+        }
+        partitionComboBox.setModel(comboBoxModel);
+
+        //TransformerUI
+        if (model.getSelectedPartitioning() == PartitionModel.NODE_PARTITIONING && model.getNodeTransformer() != null && model.getSelectedPartition() != null) {
+            Transformer t = model.getNodeTransformer();
+            TransformerUI newUI = model.getNodeTransformerBuilder().getUI();
+            updateCenterUI(newUI);
+        } else if (model.getSelectedPartitioning() == PartitionModel.EDGE_PARTITIONING && model.getEdgeTransformer() != null && model.getSelectedPartition() != null) {
+            Transformer t = model.getEdgeTransformer();
+            TransformerUI newUI = model.getEdgeTransformerBuilder().getUI();
+            updateCenterUI(newUI);
+        }
+    }
+
+    private void updateCenterUI(TransformerUI ui) {
+        if (ui != centerUI && centerUI != null) {
+            centerUI.unsetup();
+            remove(centerPanel);
+        }
+        centerUI = ui;
+        centerPanel = centerUI.getPanel();
+        add(centerPanel, BorderLayout.CENTER);
+        revalidate();
+        repaint();
     }
 
     private void initChooser(Partition[] partitionArray) {
@@ -159,14 +205,38 @@ public class PartitionChooser extends javax.swing.JPanel implements ChangeListen
     private void setEnable(boolean enable) {
         applyButton.setEnabled(enable);
         partitionComboBox.setEnabled(enable);
-        if(!enable) {
-            partitionComboBox.setModel(new DefaultComboBoxModel(new Object[] {NO_SELECTION}));
-            if(centerPanel!=null) {
+        if (!enable) {
+            //partitionComboBox.setModel(new DefaultComboBoxModel(new Object[]{NO_SELECTION}));
+            if (centerPanel != null) {
                 remove(centerPanel);
                 revalidate();
                 repaint();
+                centerPanel = null;
+                centerUI = null;
             }
         }
+    }
+
+    private JLazyComboBox.LazyComboBoxModel newLazyModel() {
+        return new JLazyComboBox.LazyComboBoxModel() {
+
+            @Override
+            protected Object[] loadItems() {
+                PartitionController pc = Lookup.getDefault().lookup(PartitionController.class);
+                pc.refreshPartitions();
+                if (model.getSelectedPartitioning() == PartitionModel.NODE_PARTITIONING) {
+                    return model.getNodePartitions();
+                } else if (model.getSelectedPartitioning() == PartitionModel.EDGE_PARTITIONING) {
+                    return model.getEdgePartitions();
+                }
+                return new Object[0];
+            }
+
+            @Override
+            protected Object getInitialSelection() {
+                return NO_SELECTION;
+            }
+        };
     }
 
     public void stateChanged(ChangeEvent e) {
@@ -179,4 +249,15 @@ public class PartitionChooser extends javax.swing.JPanel implements ChangeListen
     private javax.swing.JPanel controlPanel;
     private javax.swing.JComboBox partitionComboBox;
     // End of variables declaration//GEN-END:variables
+
+    private static class DynamicComboBoxModel extends AbstractListModel {
+
+        public int getSize() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Object getElementAt(int index) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    }
 }

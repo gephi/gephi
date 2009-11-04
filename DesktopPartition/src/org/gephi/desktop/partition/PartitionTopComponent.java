@@ -22,6 +22,7 @@ package org.gephi.desktop.partition;
 
 import java.io.Serializable;
 import java.util.logging.Logger;
+import org.gephi.partition.api.PartitionController;
 import org.gephi.partition.api.PartitionModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
@@ -48,6 +49,7 @@ final class PartitionTopComponent extends TopComponent {
 
         initEvents();
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        PartitionController partitionController = Lookup.getDefault().lookup(PartitionController.class);
         if (pc.getCurrentWorkspace() != null) {
             PartitionModel model = (PartitionModel) pc.getCurrentWorkspace().getWorkspaceData().getData("PartitionModel");
             refreshModel(model);
