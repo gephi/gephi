@@ -42,7 +42,7 @@ public class PartitionModelImpl implements PartitionModel {
     private List<ChangeListener> listeners;
 
     //Data
-    private int selectedPartitioning = -1;
+    private int selectedPartitioning = NODE_PARTITIONING;
     private Partition nodePartition;
     private Partition edgePartition;
     private TransformerBuilder nodeBuilder;

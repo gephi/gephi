@@ -61,6 +61,9 @@ public class PartitionControllerImpl implements PartitionController {
             public void disable() {
             }
         });
+        if(pc.getCurrentWorkspace()!=null) {
+            model = (PartitionModelImpl)pc.getCurrentWorkspace().getWorkspaceData().getData(key);
+        }
     }
 
     private void refreshModel() {
@@ -72,10 +75,14 @@ public class PartitionControllerImpl implements PartitionController {
     }
 
     public void setSelectedPartitioning(int partitioning) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        model.setSelectedPartitioning(partitioning);
     }
 
     public void setSelectedTransformerBuilder(TransformerBuilder builder) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if(model.getSelectedPartitioning()==PartitionModel.NODE_PARTITIONING) {
+            model.setNodeBuilder(builder);
+        } else {
+            model.setEdgeBuilder(builder);
+        }
     }
 }

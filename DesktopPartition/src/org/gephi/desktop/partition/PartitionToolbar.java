@@ -81,6 +81,9 @@ public class PartitionToolbar extends JToolBar implements ChangeListener {
         boolean nodeSelected = model.getSelectedPartitioning() == PartitionModel.NODE_PARTITIONING;
         boolean edgeSelected = !nodeSelected;
         elementGroup.setSelected(nodeSelected ? nodeButton.getModel() : edgeButton.getModel(), true);
+        
+        nodeTransformerGroup.clearSelection();
+        edgeTransformerGroup.clearSelection();
 
         for (Enumeration<AbstractButton> btns = nodeTransformerGroup.getElements(); btns.hasMoreElements();) {
             AbstractButton btn = btns.nextElement();
@@ -106,13 +109,13 @@ public class PartitionToolbar extends JToolBar implements ChangeListener {
         nodeTransformerGroup = new ButtonGroup();
         edgeTransformerGroup = new ButtonGroup();
 
-        TransformerBuilder.Node[] nodeBuilders = Lookup.getDefault().lookupAll(TransformerBuilder.Node.class).toArray(new TransformerBuilder.Node[0]);
-        TransformerBuilder.Edge[] edgeBuilders = Lookup.getDefault().lookupAll(TransformerBuilder.Edge.class).toArray(new TransformerBuilder.Edge[0]);
+        TransformerBuilder[] builders = Lookup.getDefault().lookupAll(TransformerBuilder.class).toArray(new TransformerBuilder[0]);
 
-        for (final TransformerBuilder.Node t : nodeBuilders) {
+        for (final TransformerBuilder t : builders) {
             TransformerUI transformerUI = t.getUI();
             JToggleButton btn = new JToggleButton(transformerUI.getIcon());
             btn.setToolTipText(transformerUI.getName());
+            btn.setVisible(false);
             btn.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
@@ -120,26 +123,13 @@ public class PartitionToolbar extends JToolBar implements ChangeListener {
                     pc.setSelectedTransformerBuilder(t);
                 }
             });
-            btn.setName(transformerUI.getClass().getName());
+            btn.setName(t.getClass().getName());
             btn.setFocusPainted(false);
-            nodeTransformerGroup.add(btn);
-            add(btn);
-        }
-
-        for (final TransformerBuilder.Edge t : edgeBuilders) {
-            TransformerUI transformerUI = t.getUI();
-            JToggleButton btn = new JToggleButton(transformerUI.getIcon());
-            btn.setToolTipText(transformerUI.getName());
-            btn.addActionListener(new ActionListener() {
-
-                public void actionPerformed(ActionEvent e) {
-                    PartitionController pc = Lookup.getDefault().lookup(PartitionController.class);
-                    pc.setSelectedTransformerBuilder(t);
-                }
-            });
-            btn.setName(transformerUI.getClass().getName());
-            btn.setFocusPainted(false);
-            edgeTransformerGroup.add(btn);
+            if (t instanceof TransformerBuilder.Node) {
+                nodeTransformerGroup.add(btn);
+            } else {
+                edgeTransformerGroup.add(btn);
+            }
             add(btn);
         }
 
@@ -169,12 +159,12 @@ public class PartitionToolbar extends JToolBar implements ChangeListener {
         }
 
         elementGroup.add(nodeButton);
-        nodeButton.setText(NbBundle.getMessage(PartitionToolbar.class, "RankingToolbar.nodes.label"));
+        nodeButton.setText(NbBundle.getMessage(PartitionToolbar.class, "PartitionToolbar.nodes.label"));
         nodeButton.setEnabled(false);
         add(nodeButton);
 
         elementGroup.add(edgeButton);
-        edgeButton.setText(NbBundle.getMessage(PartitionToolbar.class, "RankingToolbar.edges.label"));
+        edgeButton.setText(NbBundle.getMessage(PartitionToolbar.class, "PartitionToolbar.edges.label"));
         edgeButton.setEnabled(false);
         add(edgeButton);
         addSeparator();
@@ -185,11 +175,15 @@ public class PartitionToolbar extends JToolBar implements ChangeListener {
         nodeButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
+                PartitionController pc = Lookup.getDefault().lookup(PartitionController.class);
+                pc.setSelectedPartitioning(PartitionModel.NODE_PARTITIONING);
             }
         });
         edgeButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
+                PartitionController pc = Lookup.getDefault().lookup(PartitionController.class);
+                pc.setSelectedPartitioning(PartitionModel.EDGE_PARTITIONING);
             }
         });
     }
