@@ -73,5 +73,10 @@ public class BusyUtils {
                 }
             }
         }
+
+        public void setBusy(boolean busy, JComponent component) {
+            this.component = component;
+            setBusy(busy);
+        }
     }
 }

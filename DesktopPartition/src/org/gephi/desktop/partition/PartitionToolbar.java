@@ -23,6 +23,8 @@ package org.gephi.desktop.partition;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -44,7 +46,7 @@ import org.openide.util.NbBundle;
  *
  * @author Mathieu Bastian
  */
-public class PartitionToolbar extends JToolBar implements ChangeListener {
+public class PartitionToolbar extends JToolBar implements PropertyChangeListener {
 
     //Architecture
     private PartitionModel model;
@@ -58,14 +60,14 @@ public class PartitionToolbar extends JToolBar implements ChangeListener {
     public void setup(PartitionModel model) {
         if (model != null) {
             this.model = model;
-            model.addChangeListener(this);
+            model.addPropertyChangeListener(this);
             refreshModel();
         }
     }
 
     public void unsetup() {
         if (model != null) {
-            model.removeChangeListener(this);
+            model.removePropertyChangeListener(this);
             model = null;
         }
         refreshModel();
@@ -101,8 +103,14 @@ public class PartitionToolbar extends JToolBar implements ChangeListener {
         }
     }
 
-    public void stateChanged(ChangeEvent e) {
-        refreshModel();
+    public void propertyChange(PropertyChangeEvent evt) {
+        if(evt.getPropertyName().equals(PartitionModel.SELECTED_PARTIONING)) {
+            refreshModel();
+        } else if(evt.getPropertyName().equals(PartitionModel.NODE_TRANSFORMER)) {
+            refreshModel();
+        } else if(evt.getPropertyName().equals(PartitionModel.EDGE_TRANSFORMER)) {
+            refreshModel();
+        }
     }
 
     private void initTransformersUI() {

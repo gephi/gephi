@@ -20,20 +20,19 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.partition;
 
-import java.awt.BorderLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import javax.swing.AbstractListModel;
-import javax.swing.DefaultComboBoxModel;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.JPanel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.PartitionController;
 import org.gephi.partition.api.PartitionModel;
 import org.gephi.partition.api.Transformer;
 import org.gephi.partition.api.TransformerUI;
 import org.gephi.ui.components.JLazyComboBox;
+import org.gephi.ui.utils.BusyUtils;
+import org.gephi.ui.utils.BusyUtils.BusyLabel;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -41,22 +40,20 @@ import org.openide.util.NbBundle;
  *
  * @author Mathieu Bastian
  */
-public class PartitionChooser extends javax.swing.JPanel implements ChangeListener {
+public class PartitionChooser extends javax.swing.JPanel implements PropertyChangeListener {
 
     //Const
     private final String NO_SELECTION;
+    private final String BUSY_MSG;
 
     //Architecture
     private PartitionModel model;
-
-    //Data
-    private TransformerUI centerUI;
-    private JPanel centerPanel;
 
     public PartitionChooser() {
         initComponents();
         initEvents();
         NO_SELECTION = NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.choose.text");
+        BUSY_MSG = NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.busyMessage");
         refreshModel();
     }
 
@@ -74,6 +71,7 @@ public class PartitionChooser extends javax.swing.JPanel implements ChangeListen
         partitionComboBox = new JLazyComboBox();
         controlPanel = new javax.swing.JPanel();
         applyButton = new javax.swing.JButton();
+        centerScrollPane = new javax.swing.JScrollPane();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -102,6 +100,9 @@ public class PartitionChooser extends javax.swing.JPanel implements ChangeListen
         controlPanel.add(applyButton, gridBagConstraints);
 
         add(controlPanel, java.awt.BorderLayout.PAGE_END);
+
+        centerScrollPane.setBorder(null);
+        add(centerScrollPane, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     private void initEvents() {
@@ -115,36 +116,36 @@ public class PartitionChooser extends javax.swing.JPanel implements ChangeListen
                 if (partitionComboBox.getSelectedItem() == model.getSelectedPartition()) {
                     return;
                 }
+                if (model.isWaiting()) {
+                    return;
+                }
                 PartitionController pc = Lookup.getDefault().lookup(PartitionController.class);
                 pc.setSelectedPartition(partitionComboBox.getSelectedItem() == NO_SELECTION ? null : (Partition) partitionComboBox.getSelectedItem());
             }
         });
     }
+    private TransformerUI currentUI;
+    private JPanel currentPanel;
 
-    public void setup(PartitionModel model) {
-        if (model != null) {
-            this.model = model;
-            model.addChangeListener(this);
+    private void refreshTransformerBuilder() {
+        if (currentUI != null) {
+            currentUI.unsetup();
+            currentUI = null;
+            currentPanel = null;
         }
-        refreshModel();
+        if (model.getSelectedTransformerBuilder() == null) {
+            centerScrollPane.setViewportView(null);
+        } else {
+            Transformer t = model.getSelectedTransformer();
+            currentUI = model.getSelectedTransformerBuilder().getUI();
+            if (model.getSelectedPartition() != null) {
+                currentPanel = currentUI.getPanel();
+                currentUI.setup(model.getSelectedPartition(), t);
+            }
+        }
     }
 
-    public void unsetup() {
-        if (model != null) {
-            model.removeChangeListener(this);
-            model = null;
-        }
-        refreshModel();
-    }
-
-    private void refreshModel() {
-        if (model == null) {
-            setEnable(false);
-            return;
-        }
-        setEnable(true);
-
-        //partitionComboBox.setSelectedItem(NO_SELECTION);
+    private void refreshPartitions() {
         Partition[] partitionArray = new Partition[0];
         if (model.getSelectedPartitioning() == PartitionModel.NODE_PARTITIONING) {
             partitionArray = model.getNodePartitions();
@@ -163,66 +164,76 @@ public class PartitionChooser extends javax.swing.JPanel implements ChangeListen
             comboBoxModel.setReset(false);
         }
         partitionComboBox.setModel(comboBoxModel);
+    }
+    private BusyLabel busyLabel;
 
-        //TransformerUI
-        if (model.getSelectedPartitioning() == PartitionModel.NODE_PARTITIONING && model.getNodeTransformer() != null && model.getSelectedPartition() != null) {
-            Transformer t = model.getNodeTransformer();
-            TransformerUI newUI = model.getNodeTransformerBuilder().getUI();
-            updateCenterUI(newUI, model.getNodeTransformer());
-        } else if (model.getSelectedPartitioning() == PartitionModel.EDGE_PARTITIONING && model.getEdgeTransformer() != null && model.getSelectedPartition() != null) {
-            Transformer t = model.getEdgeTransformer();
-            TransformerUI newUI = model.getEdgeTransformerBuilder().getUI();
-            updateCenterUI(newUI, model.getEdgeTransformer());
-        } else {
-            if (centerPanel != null) {
-                remove(centerPanel);
-                centerPanel = null;
-                centerUI = null;
-                revalidate();
-                repaint();
+    private void refreshWaiting() {
+        if (model.isWaiting()) {
+            busyLabel = BusyUtils.createCenteredBusyLabel(centerScrollPane, BUSY_MSG, null);
+            busyLabel.setBusy(true);
+        } else if (currentUI != null && currentPanel != null) {
+            busyLabel.setBusy(false, currentPanel);
+        } else if (busyLabel != null) {
+            busyLabel.setBusy(false, null);
+        }
+    }
+
+    private void refreshEnable() {
+        if (model == null) {
+            setEnable(false);
+            if (currentUI != null) {
+                centerScrollPane.setViewportView(null);
+                currentUI.unsetup();
+                currentUI = null;
+                currentPanel = null;
             }
+            return;
+        }
+        setEnable(true);
+    }
+
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals(PartitionModel.NODE_TRANSFORMER) || evt.getPropertyName().equals(PartitionModel.NODE_TRANSFORMER)) {
+            refreshTransformerBuilder();
+        } else if (evt.getPropertyName().equals(PartitionModel.NODE_PARTITION) || evt.getPropertyName().equals(PartitionModel.EDGE_PARTITION)) {
+            refreshTransformerBuilder();
+            refreshPartitions();
+        } else if (evt.getPropertyName().equals(PartitionModel.WAITING)) {
+            refreshWaiting();
+        } else if (evt.getPropertyName().equals(PartitionModel.SELECTED_PARTIONING)) {
+            refreshTransformerBuilder();
+            refreshPartitions();
         }
     }
 
-    private void updateCenterUI(TransformerUI ui, Transformer transformer) {
-        if (ui != centerUI && centerUI != null) {
-            centerUI.unsetup();
-            remove(centerPanel);
+    private void refreshModel() {
+        refreshEnable();
+        if (model != null) {
+            refreshPartitions();
+            refreshTransformerBuilder();
+            refreshWaiting();
         }
-        centerUI = ui;
-        centerPanel = centerUI.getPanel();
-        centerUI.setup(model.getSelectedPartition(), transformer);
-        add(centerPanel, BorderLayout.CENTER);
-        revalidate();
-        repaint();
     }
 
-    private void initChooser(Partition[] partitionArray) {
-        DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
-        comboBoxModel.addElement(NO_SELECTION);
-        comboBoxModel.setSelectedItem(NO_SELECTION);
-        for (Partition p : partitionArray) {
-            comboBoxModel.addElement(p);
+    public void setup(PartitionModel model) {
+        if (model != null) {
+            this.model = model;
+            model.addPropertyChangeListener(this);
         }
-        if (model.getSelectedPartition() != null) {
-            comboBoxModel.setSelectedItem(model.getSelectedPartition());
+        refreshModel();
+    }
+
+    public void unsetup() {
+        if (model != null) {
+            model.removePropertyChangeListener(this);
+            model = null;
         }
-        partitionComboBox.setModel(comboBoxModel);
+        refreshModel();
     }
 
     private void setEnable(boolean enable) {
         applyButton.setEnabled(enable);
         partitionComboBox.setEnabled(enable);
-        if (!enable) {
-            //partitionComboBox.setModel(new DefaultComboBoxModel(new Object[]{NO_SELECTION}));
-            if (centerPanel != null) {
-                remove(centerPanel);
-                revalidate();
-                repaint();
-                centerPanel = null;
-                centerUI = null;
-            }
-        }
     }
 
     private JLazyComboBox.LazyComboBoxModel newLazyModel() {
@@ -247,25 +258,11 @@ public class PartitionChooser extends javax.swing.JPanel implements ChangeListen
         };
     }
 
-    public void stateChanged(ChangeEvent e) {
-        refreshModel();
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyButton;
+    private javax.swing.JScrollPane centerScrollPane;
     private javax.swing.JPanel chooserPanel;
     private javax.swing.JPanel controlPanel;
     private javax.swing.JComboBox partitionComboBox;
     // End of variables declaration//GEN-END:variables
-
-    private static class DynamicComboBoxModel extends AbstractListModel {
-
-        public int getSize() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        public Object getElementAt(int index) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-    }
 }

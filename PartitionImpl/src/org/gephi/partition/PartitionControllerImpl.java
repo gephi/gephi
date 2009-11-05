@@ -37,6 +37,7 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceDataKey;
 import org.gephi.workspace.api.WorkspaceListener;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -77,32 +78,64 @@ public class PartitionControllerImpl implements PartitionController {
         }
     }
 
-    public void setSelectedPartition(Partition partition) {
+    public void setSelectedPartition(final Partition partition) {
+        model.setWaiting(true);
         if (model.getSelectedPartitioning() == PartitionModel.NODE_PARTITIONING) {
-            if (partition != null && !PartitionFactory.isPartitionBuilt(partition)) {
-                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-                PartitionFactory.buildNodePartition((NodePartition) partition, graphModel.getGraphVisible());
-            }
-            model.setNodePartition(partition);
+            Thread t = new Thread(new Runnable() {
+
+                public void run() {
+                    if (partition != null && !PartitionFactory.isPartitionBuilt(partition)) {
+                        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+                        PartitionFactory.buildNodePartition((NodePartition) partition, graphModel.getGraphVisible());
+                    }
+                    model.setNodePartition(partition);
+                    model.setWaiting(false);
+                }
+            }, "Partition Model refresh");
+            t.start();
         } else {
-            if (partition != null && !PartitionFactory.isPartitionBuilt(partition)) {
-                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-                PartitionFactory.buildEdgePartition((EdgePartition) partition, graphModel.getGraphVisible());
-            }
-            model.setEdgePartition(partition);
+            Thread t = new Thread(new Runnable() {
+
+                public void run() {
+                    if (partition != null && !PartitionFactory.isPartitionBuilt(partition)) {
+                        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+                        PartitionFactory.buildEdgePartition((EdgePartition) partition, graphModel.getGraphVisible());
+                    }
+                    model.setEdgePartition(partition);
+                    model.setWaiting(false);
+                }
+            }, "Partition Model refresh");
+            t.start();
         }
     }
 
-    public void setSelectedPartitioning(int partitioning) {
-        model.setSelectedPartitioning(partitioning);
+    public void setSelectedPartitioning(final int partitioning) {
+        model.setWaiting(true);
+
+        Thread t = new Thread(new Runnable() {
+
+            public void run() {
+                model.setSelectedPartitioning(partitioning);
+                model.setWaiting(false);
+            }
+        }, "Partition Model refresh");
+        t.start();
     }
 
-    public void setSelectedTransformerBuilder(TransformerBuilder builder) {
-        if (model.getSelectedPartitioning() == PartitionModel.NODE_PARTITIONING) {
-            model.setNodeBuilder(builder);
-        } else {
-            model.setEdgeBuilder(builder);
-        }
+    public void setSelectedTransformerBuilder(final TransformerBuilder builder) {
+        model.setWaiting(true);
+        Thread t = new Thread(new Runnable() {
+
+            public void run() {
+                if (model.getSelectedPartitioning() == PartitionModel.NODE_PARTITIONING) {
+                    model.setNodeBuilder(builder);
+                } else {
+                    model.setEdgeBuilder(builder);
+                }
+                model.setWaiting(false);
+            }
+        }, "Partition Model refresh");
+        t.start();
     }
 
     public void refreshPartitions() {

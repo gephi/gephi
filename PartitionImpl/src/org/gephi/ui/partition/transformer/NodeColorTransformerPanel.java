@@ -22,17 +22,16 @@ package org.gephi.ui.partition.transformer;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.Transformer;
 import org.gephi.partition.transformer.NodeColorTransformer;
+import org.gephi.ui.utils.BusyUtils;
 import org.gephi.ui.utils.PaletteUtils;
 
 /**
@@ -46,6 +45,7 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
     }
 
     public void setup(Partition partition, Transformer transformer) {
+        removeAll();
         final NodeColorTransformer nodeColorTransformer = (NodeColorTransformer) transformer;
         if (nodeColorTransformer.getMap().isEmpty()) {
             List<Color> colors = PaletteUtils.getSequenceColors(partition.getPartsCount());
@@ -56,10 +56,10 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
             }
         }
 
-        JPanel gridPanel = new JPanel(new GridLayout(partition.getPartsCount(), 2, 2, 2));
+        //JPanel gridPanel = new JPanel(new GridLayout(partition.getPartsCount(), 2, 2, 2));
         for (final Part p : partition.getParts()) {
             JLabel partLabel = new JLabel(p.getDisplayName());
-            gridPanel.add(partLabel);
+            add(partLabel);
             final ColorChooser colorChooser = new ColorChooser(nodeColorTransformer.getMap().get(p.getValue()));
             colorChooser.setPreferredSize(new Dimension(16, 16));
             colorChooser.setMaximumSize(new Dimension(16, 16));
@@ -69,9 +69,8 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
                     nodeColorTransformer.getMap().put(p.getValue(), colorChooser.getColor());
                 }
             });
-            gridPanel.add(colorChooser);
+            add(colorChooser, "wrap");
         }
-        centerScrollPane.setViewportView(gridPanel);
     }
 
     /** This method is called from within the constructor to
@@ -82,23 +81,11 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
-        centerScrollPane = new javax.swing.JScrollPane();
-
-        setLayout(new java.awt.GridBagLayout());
-
-        centerScrollPane.setBorder(null);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(3, 5, 5, 0);
-        add(centerScrollPane, gridBagConstraints);
+        net.miginfocom.swing.MigLayout migLayout2 = new net.miginfocom.swing.MigLayout();
+        migLayout2.setColumnConstraints("[pref!]20[grow,fill]");
+        setLayout(migLayout2);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane centerScrollPane;
     // End of variables declaration//GEN-END:variables
 }

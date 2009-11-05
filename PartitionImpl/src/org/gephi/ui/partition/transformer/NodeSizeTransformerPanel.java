@@ -20,6 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.partition.transformer;
 
+import org.gephi.partition.api.Partition;
+import org.gephi.partition.api.Transformer;
+
 /**
  *
  * @author Mathieu Bastian
@@ -28,6 +31,10 @@ public class NodeSizeTransformerPanel extends javax.swing.JPanel {
 
     public NodeSizeTransformerPanel() {
         initComponents();
+    }
+
+    public void setup(Partition partition, Transformer transformer) {
+        
     }
 
     /** This method is called from within the constructor to

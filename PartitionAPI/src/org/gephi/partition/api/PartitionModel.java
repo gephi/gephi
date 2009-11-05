@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.partition.api;
 
-import javax.swing.event.ChangeListener;
+import java.beans.PropertyChangeListener;
 
 /**
  *
@@ -28,26 +28,36 @@ import javax.swing.event.ChangeListener;
  */
 public interface PartitionModel {
 
-    public static int NODE_PARTITIONING = 1;
-    public static int EDGE_PARTITIONING = 2;
+    public static final int NODE_PARTITIONING = 1;
+    public static final int EDGE_PARTITIONING = 2;
+    public static final String NODE_TRANSFORMER = "nodeBuilder";
+    public static final String EDGE_TRANSFORMER = "edgeBuilder";
+    public static final String SELECTED_PARTIONING = "selectedPartitioning";
+    public static final String NODE_PARTITION = "nodePartition";
+    public static final String EDGE_PARTITION = "edgePartition";
+    public static final String NODE_PARTITIONS = "nodePartitions";
+    public static final String EDGE_PARTITIONS = "edgePartitions";
+    public static final String WAITING = "waiting";
 
     public NodePartition[] getNodePartitions();
 
     public EdgePartition[] getEdgePartitions();
 
-    public TransformerBuilder getNodeTransformerBuilder();
+    public TransformerBuilder getSelectedTransformerBuilder();
 
-    public Transformer getNodeTransformer();
+    public TransformerBuilder getNodeTransformerBuilder();
 
     public TransformerBuilder getEdgeTransformerBuilder();
 
-    public Transformer getEdgeTransformer();
+    public Transformer getSelectedTransformer();
 
     public Partition getSelectedPartition();
 
     public int getSelectedPartitioning();
 
-    public void addChangeListener(ChangeListener changeListener);
+    public boolean isWaiting();
 
-    public void removeChangeListener(ChangeListener changeListener);
+    public void addPropertyChangeListener(PropertyChangeListener changeListener);
+
+    public void removePropertyChangeListener(PropertyChangeListener changeListener);
 }

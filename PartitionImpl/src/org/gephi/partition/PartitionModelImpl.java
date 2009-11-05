@@ -20,11 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.partition;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.partition.api.EdgePartition;
 import org.gephi.partition.api.NodePartition;
 import org.gephi.partition.api.Partition;
@@ -39,7 +39,7 @@ import org.gephi.partition.api.TransformerBuilder;
 public class PartitionModelImpl implements PartitionModel {
 
     //Architecture
-    private List<ChangeListener> listeners;
+    private List<PropertyChangeListener> listeners;
 
     //Data
     private int selectedPartitioning = NODE_PARTITIONING;
@@ -50,9 +50,10 @@ public class PartitionModelImpl implements PartitionModel {
     private HashMap<Class, Transformer> transformersMap;
     private NodePartition[] nodePartitions = new NodePartition[0];
     private EdgePartition[] edgePartitions = new EdgePartition[0];
+    private boolean waiting;
 
     public PartitionModelImpl() {
-        listeners = new ArrayList<ChangeListener>();
+        listeners = new ArrayList<PropertyChangeListener>();
         transformersMap = new HashMap<Class, Transformer>();
     }
 
@@ -111,56 +112,108 @@ public class PartitionModelImpl implements PartitionModel {
         return selectedPartitioning;
     }
 
-    public void addChangeListener(ChangeListener changeListener) {
+    public Transformer getSelectedTransformer() {
+        if (selectedPartitioning == PartitionModel.NODE_PARTITIONING) {
+            return getNodeTransformer();
+        } else if (selectedPartitioning == PartitionModel.EDGE_PARTITIONING) {
+            return getEdgeTransformer();
+        }
+        return null;
+    }
+
+    public TransformerBuilder getSelectedTransformerBuilder() {
+        if (selectedPartitioning == PartitionModel.NODE_PARTITIONING) {
+            return nodeBuilder;
+        } else if (selectedPartitioning == PartitionModel.EDGE_PARTITIONING) {
+            return edgeBuilder;
+        }
+        return null;
+    }
+
+    public boolean isWaiting() {
+        return waiting;
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener changeListener) {
         if (!listeners.contains(changeListener)) {
             listeners.add(changeListener);
         }
     }
 
-    public void removeChangeListener(ChangeListener changeListener) {
+    public void removePropertyChangeListener(PropertyChangeListener changeListener) {
         listeners.remove(changeListener);
     }
 
-    private void fireChangeEvent() {
-        ChangeEvent evt = new ChangeEvent(this);
-        for (ChangeListener listener : listeners) {
-            listener.stateChanged(evt);
+    private void firePropertyChangeEvent(String key, Object oldValue, Object newValue) {
+        //System.out.println("fire "+key+" = "+newValue);
+        PropertyChangeEvent evt = new PropertyChangeEvent(this, key, oldValue, newValue);
+        for (PropertyChangeListener listener : listeners) {
+            listener.propertyChange(evt);
         }
     }
 
     //Setters
     public void setNodeBuilder(TransformerBuilder nodeBuilder) {
-        this.nodeBuilder = nodeBuilder;
-        fireChangeEvent();
+        if (nodeBuilder != this.nodeBuilder) {
+            TransformerBuilder oldValue = this.nodeBuilder;
+            this.nodeBuilder = nodeBuilder;
+            firePropertyChangeEvent(NODE_TRANSFORMER, oldValue, nodeBuilder);
+        }
     }
 
     public void setEdgeBuilder(TransformerBuilder edgeBuilder) {
-        this.edgeBuilder = edgeBuilder;
-        fireChangeEvent();
+        if (edgeBuilder != this.edgeBuilder) {
+            TransformerBuilder oldValue = this.edgeBuilder;
+            this.edgeBuilder = edgeBuilder;
+            firePropertyChangeEvent(EDGE_TRANSFORMER, oldValue, edgeBuilder);
+        }
     }
 
     public void setSelectedPartitioning(int selectedPartitioning) {
-        this.selectedPartitioning = selectedPartitioning;
-        fireChangeEvent();
+        if (selectedPartitioning != this.selectedPartitioning) {
+            int oldValue = this.selectedPartitioning;
+            this.selectedPartitioning = selectedPartitioning;
+            firePropertyChangeEvent(SELECTED_PARTIONING, oldValue, selectedPartitioning);
+        }
     }
 
     public void setNodePartition(Partition nodePartition) {
-        this.nodePartition = nodePartition;
-        fireChangeEvent();
+        if (nodePartition != this.nodePartition) {
+            Partition oldValue = this.nodePartition;
+            this.nodePartition = nodePartition;
+            firePropertyChangeEvent(NODE_PARTITION, oldValue, nodePartition);
+        }
     }
 
     public void setEdgePartition(Partition edgePartition) {
-        this.edgePartition = edgePartition;
-        fireChangeEvent();
+        if (edgePartition != this.edgePartition) {
+            Partition oldValue = this.edgePartition;
+            this.edgePartition = edgePartition;
+            firePropertyChangeEvent(EDGE_PARTITION, oldValue, edgePartition);
+        }
     }
 
     public void setNodePartitions(NodePartition[] nodePartitions) {
-        this.nodePartitions = nodePartitions;
-        fireChangeEvent();
+        if (nodePartitions != this.nodePartitions) {
+            Partition[] oldValue = this.nodePartitions;
+            this.nodePartitions = nodePartitions;
+            firePropertyChangeEvent(NODE_PARTITIONS, oldValue, nodePartitions);
+        }
     }
 
     public void setEdgePartitions(EdgePartition[] edgePartitions) {
-        this.edgePartitions = edgePartitions;
-        fireChangeEvent();
+        if (edgePartitions != this.edgePartitions) {
+            Partition[] oldValue = this.edgePartitions;
+            this.edgePartitions = edgePartitions;
+            firePropertyChangeEvent(EDGE_PARTITIONS, oldValue, edgePartitions);
+        }
+    }
+
+    public void setWaiting(boolean waiting) {
+        if (waiting != this.waiting) {
+            boolean oldValue = this.waiting;
+            this.waiting = waiting;
+            firePropertyChangeEvent(WAITING, oldValue, waiting);
+        }
     }
 }
