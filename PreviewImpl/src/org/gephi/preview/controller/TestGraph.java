@@ -15,7 +15,7 @@ public class TestGraph extends PreviewControllerImpl {
 
     @Override
     public Graph getGraph() {
-        GraphImpl graph = new GraphImpl(gs);
+        GraphImpl graph = new GraphImpl();
 
         NodeImpl n1 = new NodeImpl(graph, "Node 1", 90, 360, 20, 0.13f, 0.74f, 0.37f);
         NodeImpl n2 = new NodeImpl(graph, "Node 2", 300, 100, 20, 0.37f, 0.74f, 0.13f);

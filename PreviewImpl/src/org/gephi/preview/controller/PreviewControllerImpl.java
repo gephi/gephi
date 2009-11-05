@@ -11,11 +11,12 @@ import org.gephi.preview.api.color.colorizer.NodeChildColorizer;
 import org.gephi.preview.api.color.colorizer.NodeColorizer;
 import org.gephi.preview.api.supervisor.EdgeSupervisor;
 import org.gephi.preview.api.supervisor.GlobalEdgeSupervisor;
+import org.gephi.preview.api.supervisor.NodeSupervisor;
 import org.gephi.preview.api.supervisor.SelfLoopSupervisor;
 import org.gephi.preview.supervisor.BidirectionalEdgeSupervisorImpl;
 import org.gephi.preview.supervisor.EdgeSupervisorImpl;
 import org.gephi.preview.supervisor.GlobalEdgeSupervisorImpl;
-import org.gephi.preview.supervisor.GraphSupervisor;
+import org.gephi.preview.supervisor.NodeSupervisorImpl;
 import org.gephi.preview.supervisor.SelfLoopSupervisorImpl;
 import org.gephi.preview.supervisor.UnidirectionalEdgeSupervisorImpl;
 import org.openide.util.Lookup;
@@ -27,7 +28,7 @@ import org.openide.util.Lookup;
 public class PreviewControllerImpl implements PreviewController {
 
     private GraphImpl previewGraph = null;
-    protected final GraphSupervisor gs = new GraphSupervisor();
+    private final NodeSupervisorImpl nodeSupervisor = new NodeSupervisorImpl();
     private final GlobalEdgeSupervisorImpl globalEdgeSupervisor = new GlobalEdgeSupervisorImpl();
 	private final SelfLoopSupervisorImpl selfLoopSupervisor = new SelfLoopSupervisorImpl();
     private final EdgeSupervisorImpl uniEdgeSupervisor = new UnidirectionalEdgeSupervisorImpl();
@@ -44,7 +45,16 @@ public class PreviewControllerImpl implements PreviewController {
 
 	private void buildGraph() {
 		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-		previewGraph = factory.createPreviewGraph(graphModel.getGraph(), gs);
+		previewGraph = factory.createPreviewGraph(graphModel.getGraph());
+	}
+
+    /**
+	 * Returns the node supervisor.
+	 *
+	 * @return the controller's node supervisor
+	 */
+	public NodeSupervisor getNodeSupervisor() {
+		return nodeSupervisor;
 	}
 
     /**
@@ -82,84 +92,4 @@ public class PreviewControllerImpl implements PreviewController {
 	public EdgeSupervisor getBiEdgeSupervisor() {
 		return biEdgeSupervisor;
 	}
-
-    public Boolean getShowNodes() {
-        return gs.getNodeSupervisor().getShowNodes();
-    }
-
-    public void setShowNodes(Boolean value) {
-        gs.getNodeSupervisor().setShowNodes(value);
-    }
-
-    public Float getNodeBorderWidth() {
-        return gs.getNodeSupervisor().getNodeBorderWidth();
-    }
-
-    public void setNodeBorderWidth(Float value) {
-        gs.getNodeSupervisor().setNodeBorderWidth(value);
-    }
-
-    public NodeColorizer getNodeColorizer() {
-        return gs.getNodeSupervisor().getNodeColorizer();
-    }
-
-    public void setNodeColorizer(NodeColorizer value) {
-        gs.getNodeSupervisor().setNodeColorizer(value);
-    }
-
-    public GenericColorizer getNodeBorderColorizer() {
-        return gs.getNodeSupervisor().getNodeBorderColorizer();
-    }
-
-    public void setNodeBorderColorizer(GenericColorizer value) {
-        gs.getNodeSupervisor().setNodeBorderColorizer(value);
-    }
-
-    public Boolean getShowNodeLabels() {
-        return gs.getNodeLabelSupervisor().getShowNodeLabels();
-    }
-
-    public void setShowNodeLabels(Boolean value) {
-        gs.getNodeLabelSupervisor().setShowNodeLabels(value);
-    }
-
-    public Font getNodeLabelFont() {
-        return gs.getNodeLabelSupervisor().getNodeLabelFont();
-    }
-
-    public void setNodeLabelFont(Font value) {
-        gs.getNodeLabelSupervisor().setNodeLabelFont(value);
-    }
-
-    public Integer getNodeLabelMaxChar() {
-        return gs.getNodeLabelSupervisor().getNodeLabelMaxChar();
-    }
-
-    public void setNodeLabelMaxChar(Integer value) {
-        gs.getNodeLabelSupervisor().setNodeLabelMaxChar(value);
-    }
-
-    public NodeChildColorizer getNodeLabelColorizer() {
-        return gs.getNodeLabelSupervisor().getNodeLabelColorizer();
-    }
-
-    public void setNodeLabelColorizer(NodeChildColorizer value) {
-        gs.getNodeLabelSupervisor().setNodeLabelColorizer(value);
-    }
-
-    public Boolean getShowNodeLabelBorders() {
-        return gs.getNodeLabelBorderSupervisor().getShowNodeLabelBorders();
-    }
-
-    public void setShowNodeLabelBorders(Boolean value) {
-        gs.getNodeLabelBorderSupervisor().setShowNodeLabelBorders(value);
-    }
-
-    public NodeChildColorizer getNodeLabelBorderColorizer() {
-        return gs.getNodeLabelBorderSupervisor().getNodeLabelBorderColorizer();
-    }
-
-    public void setNodeLabelBorderColorizer(NodeChildColorizer value) {
-        gs.getNodeLabelBorderSupervisor().setNodeLabelBorderColorizer(value);
-    }
 }

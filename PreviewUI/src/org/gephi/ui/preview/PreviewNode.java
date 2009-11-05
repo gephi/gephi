@@ -12,6 +12,7 @@ import org.gephi.preview.api.color.colorizer.NodeChildColorizer;
 import org.gephi.preview.api.color.colorizer.NodeColorizer;
 import org.gephi.preview.api.supervisor.EdgeSupervisor;
 import org.gephi.preview.api.supervisor.GlobalEdgeSupervisor;
+import org.gephi.preview.api.supervisor.NodeSupervisor;
 import org.gephi.preview.api.supervisor.SelfLoopSupervisor;
 import org.gephi.ui.preview.propertyeditor.EdgeChildColorizerPropertyEditor;
 import org.gephi.ui.preview.propertyeditor.EdgeColorizerPropertyEditor;
@@ -36,7 +37,8 @@ public class PreviewNode extends AbstractNode {
 	@Override
     protected Sheet createSheet() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-		GlobalEdgeSupervisor ges = controller.getGlobalEdgeSupervisor();
+		NodeSupervisor ns = controller.getNodeSupervisor();
+        GlobalEdgeSupervisor ges = controller.getGlobalEdgeSupervisor();
         SelfLoopSupervisor sls = controller.getSelfLoopSupervisor();
         EdgeSupervisor ues = controller.getUniEdgeSupervisor();
         EdgeSupervisor bes = controller.getBiEdgeSupervisor();
@@ -64,16 +66,16 @@ public class PreviewNode extends AbstractNode {
         try {
 
             // property initializations
-            Property showNodesProp = new PropertySupport.Reflection(controller, Boolean.class, "showNodes");
-            Property nodeBorderWidthProp = new PropertySupport.Reflection(controller, Float.class, "nodeBorderWidth");
-            PropertySupport.Reflection nodeColorProp = new PropertySupport.Reflection(controller, NodeColorizer.class, "nodeColorizer");
-            PropertySupport.Reflection nodeBorderColorProp = new PropertySupport.Reflection(controller, GenericColorizer.class, "nodeBorderColorizer");
-            Property showNodeLabelsProp = new PropertySupport.Reflection(controller, Boolean.class, "showNodeLabels");
-            Property nodeLabelFontProp = new PropertySupport.Reflection(controller, Font.class, "nodeLabelFont");
-            Property nodeLabelCharLimitProp = new PropertySupport.Reflection(controller, Integer.class, "nodeLabelMaxChar");
-            PropertySupport.Reflection nodeLabelColorProp = new PropertySupport.Reflection(controller, NodeChildColorizer.class, "nodeLabelColorizer");
-            Property borderedNodeLabelsProp = new PropertySupport.Reflection(controller, Boolean.class, "showNodeLabelBorders");
-            PropertySupport.Reflection nodeLabelBorderColorProp = new PropertySupport.Reflection(controller, NodeChildColorizer.class, "nodeLabelBorderColorizer");
+            Property showNodesProp = new PropertySupport.Reflection(ns, Boolean.class, "showNodes");
+            Property nodeBorderWidthProp = new PropertySupport.Reflection(ns, Float.class, "nodeBorderWidth");
+            PropertySupport.Reflection nodeColorProp = new PropertySupport.Reflection(ns, NodeColorizer.class, "nodeColorizer");
+            PropertySupport.Reflection nodeBorderColorProp = new PropertySupport.Reflection(ns, GenericColorizer.class, "nodeBorderColorizer");
+            Property showNodeLabelsProp = new PropertySupport.Reflection(ns, Boolean.class, "showNodeLabels");
+            Property nodeLabelFontProp = new PropertySupport.Reflection(ns, Font.class, "nodeLabelFont");
+            Property nodeLabelCharLimitProp = new PropertySupport.Reflection(ns, Integer.class, "nodeLabelMaxChar");
+            PropertySupport.Reflection nodeLabelColorProp = new PropertySupport.Reflection(ns, NodeChildColorizer.class, "nodeLabelColorizer");
+            Property borderedNodeLabelsProp = new PropertySupport.Reflection(ns, Boolean.class, "showNodeLabelBorders");
+            PropertySupport.Reflection nodeLabelBorderColorProp = new PropertySupport.Reflection(ns, NodeChildColorizer.class, "nodeLabelBorderColorizer");
             Property showEdgesProp = new PropertySupport.Reflection(ges, Boolean.class, "showFlag");
             Property curvedUniEdgesProp = new PropertySupport.Reflection(ues, Boolean.class, "curvedFlag");
             Property curvedBiEdgesProp = new PropertySupport.Reflection(bes, Boolean.class, "curvedFlag");

@@ -8,7 +8,6 @@ import org.gephi.preview.api.Node;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.SelfLoop;
 import org.gephi.preview.api.UnidirectionalEdge;
-import org.gephi.preview.supervisor.GraphSupervisor;
 import org.openide.util.Lookup;
 import processing.core.PVector;
 
@@ -18,7 +17,6 @@ import processing.core.PVector;
  */
 public class GraphImpl implements Graph {
 
-    private final GraphSupervisor supervisor;
     private final ArrayList<Node> m_nodes = new ArrayList<Node>();
 	private final ArrayList<SelfLoop> selfLoops = new ArrayList<SelfLoop>();
     private final ArrayList<UnidirectionalEdge> uniEdges = new ArrayList<UnidirectionalEdge>();
@@ -26,14 +24,6 @@ public class GraphImpl implements Graph {
 
     private final PVector m_minPos = new PVector();
     private final PVector m_maxPos =  new PVector();
-
-    public GraphImpl(GraphSupervisor supervisor) {
-        this.supervisor = supervisor;
-    }
-
-    public GraphSupervisor getSupervisor() {
-        return supervisor;
-    }
 
     public final Iterator<Node> getNodes() {
         return m_nodes.iterator();
@@ -124,8 +114,14 @@ public class GraphImpl implements Graph {
         biEdges.add(edge);
     }
 
+    /**
+	 * Returns true if the nodes must be displayed in the preview.
+	 *
+	 * @return true if the nodes must be displayed in the preview
+	 */
     public boolean showNodes() {
-        return supervisor.getNodeSupervisor().getShowNodes();
+        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+		return controller.getNodeSupervisor().getShowNodes();
     }
 
 	public boolean showEdges() {
