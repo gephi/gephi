@@ -14,26 +14,26 @@ public interface SelfLoopSupervisor {
 	 *
 	 * @return true if the self-loops must be displayed in the preview
 	 */
-	public boolean getShowSelfLoops();
+	public boolean getShowFlag();
 
 	/**
 	 * Defines if the self-loops must be displayed in the preview.
 	 *
 	 * @param value  true to display the self-loops in the preview
 	 */
-	public void setShowSelfLoops(Boolean value);
+	public void setShowFlag(Boolean value);
 
 	/**
 	 * Returns the self-loop colorizer.
 	 *
 	 * @return the self-loop colorizer
 	 */
-	public EdgeColorizer getSelfLoopColorizer();
+	public EdgeColorizer getColorizer();
 
 	/**
 	 * Sets the self-loop colorizer.
 	 *
 	 * @param value  the self-loop colorizer to set
 	 */
-	public void setSelfLoopColorizer(EdgeColorizer value);
+	public void setColorizer(EdgeColorizer value);
 }

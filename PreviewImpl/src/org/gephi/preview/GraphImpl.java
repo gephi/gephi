@@ -9,7 +9,6 @@ import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.SelfLoop;
 import org.gephi.preview.api.UnidirectionalEdge;
 import org.gephi.preview.supervisor.GraphSupervisor;
-import org.gephi.preview.supervisor.SelfLoopSupervisorImpl;
 import org.openide.util.Lookup;
 import processing.core.PVector;
 
@@ -34,16 +33,6 @@ public class GraphImpl implements Graph {
 
     public GraphSupervisor getSupervisor() {
         return supervisor;
-    }
-
-	/**
-	 * Returns the self-loop supervisor.
-	 *
-	 * @return the controller's self-loop supervisor
-	 */
-	public SelfLoopSupervisorImpl getSelfLoopSupervisor() {
-        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-		return (SelfLoopSupervisorImpl) controller.getSelfLoopSupervisor();
     }
 
     public final Iterator<Node> getNodes() {
@@ -150,6 +139,7 @@ public class GraphImpl implements Graph {
 	 * @return true if the self-loops must be displayed in the preview
 	 */
 	public boolean showSelfLoops() {
-		return getSelfLoopSupervisor().getShowSelfLoops();
+		PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+		return controller.getSelfLoopSupervisor().getShowFlag();
 	}
 }

@@ -15,8 +15,8 @@ import org.gephi.preview.color.colormode.CustomColorMode;
  */
 public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
 
-	private Boolean showSelfLoops = true;
-    private EdgeColorizer selfLoopColorizer = new CustomColorMode(0, 0, 0);
+	private Boolean show = true;
+    private EdgeColorizer colorizer = new CustomColorMode(0, 0, 0);
 	private final Set<SelfLoopImpl> supervisedSelfLoops = Collections.newSetFromMap(new WeakHashMap<SelfLoopImpl, Boolean>());
 
 	/**
@@ -37,8 +37,8 @@ public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
 	 *
 	 * @return true if the self-loops must be displayed in the preview
 	 */
-	public boolean getShowSelfLoops() {
-		return showSelfLoops;
+	public boolean getShowFlag() {
+		return show;
 	}
 
 	/**
@@ -46,8 +46,8 @@ public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
 	 *
 	 * @param value  true to display the self-loops in the preview
 	 */
-	public void setShowSelfLoops(Boolean value) {
-		showSelfLoops = value;
+	public void setShowFlag(Boolean value) {
+		show = value;
 	}
 
 	/**
@@ -55,8 +55,8 @@ public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
 	 *
 	 * @return the self-loop colorizer
 	 */
-	public EdgeColorizer getSelfLoopColorizer() {
-		return selfLoopColorizer;
+	public EdgeColorizer getColorizer() {
+		return colorizer;
 	}
 
 	/**
@@ -64,8 +64,8 @@ public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
 	 *
 	 * @param value  the self-loop colorizer to set
 	 */
-	public void setSelfLoopColorizer(EdgeColorizer value) {
-		selfLoopColorizer = value;
+	public void setColorizer(EdgeColorizer value) {
+		colorizer = value;
 		colorSelfLoops();
 	}
 
@@ -75,7 +75,7 @@ public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
 	 * @param selfLoop  the self-loop to color
 	 */
 	private void colorSelfLoop(SelfLoopImpl selfLoop) {
-        selfLoopColorizer.color(selfLoop);
+        colorizer.color(selfLoop);
     }
 
 	/**

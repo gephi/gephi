@@ -79,8 +79,8 @@ public class PreviewNode extends AbstractNode {
             Property curvedBiEdgesProp = new PropertySupport.Reflection(bes, Boolean.class, "curvedFlag");
             PropertySupport.Reflection uniEdgeColorProp = new PropertySupport.Reflection(ues, EdgeColorizer.class, "colorizer");
             PropertySupport.Reflection biEdgeColorProp = new PropertySupport.Reflection(bes, EdgeColorizer.class, "colorizer");
-            Property showSelfLoopsProp = new PropertySupport.Reflection(sls, Boolean.class, "showSelfLoops");
-            PropertySupport.Reflection selfLoopColorProp = new PropertySupport.Reflection(sls, EdgeColorizer.class, "selfLoopColorizer");
+            Property showSelfLoopsProp = new PropertySupport.Reflection(sls, Boolean.class, "showFlag");
+            PropertySupport.Reflection selfLoopColorProp = new PropertySupport.Reflection(sls, EdgeColorizer.class, "colorizer");
             Property showUniEdgeLabelsProp = new PropertySupport.Reflection(ues, Boolean.class, "showLabelsFlag");
             Property uniEdgeLabelCharLimitProp = new PropertySupport.Reflection(ues, Integer.class, "labelMaxChar");
             Property uniEdgeLabelFontProp = new PropertySupport.Reflection(ues, Font.class, "labelFont");
