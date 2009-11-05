@@ -44,6 +44,8 @@
                 <package>com.bric.swing</package>
                 <package>com.connectina.swing.fontchooser</package>
                 <package>net.java.dev.colorchooser</package>
+                <package>net.miginfocom.layout</package>
+                <package>net.miginfocom.swing</package>
                 <package>org.gephi.ui.components</package>
                 <package>org.gephi.ui.components.gradientslider</package>
                 <package>org.jvnet.flamingo.bcb</package>
@@ -70,6 +72,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/flamingo.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/flamingo.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/MigLayout-3.7.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/MigLayout-3.7.1.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>
