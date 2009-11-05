@@ -21,12 +21,42 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ui.utils;
 
 import java.awt.Color;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
 /**
  *
  * @author Mathieu Bastian
  */
 public class PaletteUtils {
+
+    /**
+     * Return different colors
+     * @param num
+     * @return
+     */
+    public static List<Color> getSequenceColors(int num) {
+        List<Color> colors = new LinkedList<Color>();
+
+        //On choisit H et S au random
+        Random random = new Random();
+        float B = random.nextFloat() * 2 / 5f + 0.6f;		//		0.6 <=   B   < 1
+        float S = random.nextFloat() * 2 / 5f + 0.6f;		//		0.6 <=   S   < 1
+        //System.out.println("B : "+B+"  S : "+S);
+
+        for (int i = 1; i <= num; i++) {
+            float H = i / (float) num;
+            //System.out.println(H);
+            Color c = Color.getHSBColor(H, S, B);
+            colors.add(c);
+        }
+
+        Collections.shuffle(colors);
+
+        return colors;
+    }
 
     public static Palette[] getSequencialPalettes() {
         Palette p1 = new Palette(new Color(0xEDF8FB), new Color(0xB2E2E2), new Color(0x66C2A4), new Color(0x2CA25F), new Color(0x006D2C));
@@ -59,8 +89,8 @@ public class PaletteUtils {
 
     public static Palette reversePalette(Palette palette) {
         Color[] c = new Color[palette.colors.length];
-        for(int i=0;i<palette.getColors().length;i++) {
-            c[c.length-1-i] = palette.colors[i];
+        for (int i = 0; i < palette.getColors().length; i++) {
+            c[c.length - 1 - i] = palette.colors[i];
         }
         return new Palette(c);
     }

@@ -20,6 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.partition.transformer;
 
+import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 import org.gephi.partition.api.Transformer;
 
 /**
@@ -27,4 +30,14 @@ import org.gephi.partition.api.Transformer;
  * @author Mathieu Bastian
  */
 public class NodeColorTransformer implements Transformer {
+
+    private Map<Object, Color> map;
+
+    public NodeColorTransformer() {
+        map = new HashMap<Object, Color>();
+    }
+
+    public Map<Object, Color> getMap() {
+        return map;
+    }
 }

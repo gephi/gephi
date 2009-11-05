@@ -26,7 +26,6 @@ import org.gephi.partition.api.PartitionController;
 import org.gephi.partition.api.PartitionModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.api.WorkspaceDataKey;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -101,7 +100,6 @@ final class PartitionTopComponent extends TopComponent {
 
         partitionToolbar = new PartitionToolbar();
         partitionChooser = new PartitionChooser();
-        resultPanel = new javax.swing.JPanel();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -116,36 +114,14 @@ final class PartitionTopComponent extends TopComponent {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        add(partitionChooser, gridBagConstraints);
-
-        resultPanel.setPreferredSize(new java.awt.Dimension(0, 0));
-
-        javax.swing.GroupLayout resultPanelLayout = new javax.swing.GroupLayout(resultPanel);
-        resultPanel.setLayout(resultPanelLayout);
-        resultPanelLayout.setHorizontalGroup(
-            resultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 325, Short.MAX_VALUE)
-        );
-        resultPanelLayout.setVerticalGroup(
-            resultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 245, Short.MAX_VALUE)
-        );
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 5, 1, 5);
-        add(resultPanel, gridBagConstraints);
+        add(partitionChooser, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel partitionChooser;
     private javax.swing.JToolBar partitionToolbar;
-    private javax.swing.JPanel resultPanel;
     // End of variables declaration//GEN-END:variables
 
     /**

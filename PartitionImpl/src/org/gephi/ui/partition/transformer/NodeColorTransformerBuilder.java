@@ -62,6 +62,7 @@ public class NodeColorTransformerBuilder implements TransformerBuilder.Node {
         }
 
         public void setup(Partition partition, Transformer transformer) {
+            panel.setup(partition, transformer);
         }
 
         public void unsetup() {

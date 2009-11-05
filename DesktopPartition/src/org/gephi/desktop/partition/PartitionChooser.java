@@ -23,7 +23,6 @@ package org.gephi.desktop.partition;
 import java.awt.BorderLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
@@ -169,21 +168,30 @@ public class PartitionChooser extends javax.swing.JPanel implements ChangeListen
         if (model.getSelectedPartitioning() == PartitionModel.NODE_PARTITIONING && model.getNodeTransformer() != null && model.getSelectedPartition() != null) {
             Transformer t = model.getNodeTransformer();
             TransformerUI newUI = model.getNodeTransformerBuilder().getUI();
-            updateCenterUI(newUI);
+            updateCenterUI(newUI, model.getNodeTransformer());
         } else if (model.getSelectedPartitioning() == PartitionModel.EDGE_PARTITIONING && model.getEdgeTransformer() != null && model.getSelectedPartition() != null) {
             Transformer t = model.getEdgeTransformer();
             TransformerUI newUI = model.getEdgeTransformerBuilder().getUI();
-            updateCenterUI(newUI);
+            updateCenterUI(newUI, model.getEdgeTransformer());
+        } else {
+            if (centerPanel != null) {
+                remove(centerPanel);
+                centerPanel = null;
+                centerUI = null;
+                revalidate();
+                repaint();
+            }
         }
     }
 
-    private void updateCenterUI(TransformerUI ui) {
+    private void updateCenterUI(TransformerUI ui, Transformer transformer) {
         if (ui != centerUI && centerUI != null) {
             centerUI.unsetup();
             remove(centerPanel);
         }
         centerUI = ui;
         centerPanel = centerUI.getPanel();
+        centerUI.setup(model.getSelectedPartition(), transformer);
         add(centerPanel, BorderLayout.CENTER);
         revalidate();
         repaint();

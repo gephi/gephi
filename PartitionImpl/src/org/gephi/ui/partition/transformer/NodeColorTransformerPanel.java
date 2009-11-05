@@ -20,17 +20,59 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.partition.transformer;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import net.java.dev.colorchooser.ColorChooser;
+import org.gephi.partition.api.Part;
+import org.gephi.partition.api.Partition;
+import org.gephi.partition.api.Transformer;
+import org.gephi.partition.transformer.NodeColorTransformer;
+import org.gephi.ui.utils.PaletteUtils;
+
 /**
  *
  * @author Mathieu Bastian
  */
 public class NodeColorTransformerPanel extends javax.swing.JPanel {
 
-    
     public NodeColorTransformerPanel() {
         initComponents();
     }
-    
+
+    public void setup(Partition partition, Transformer transformer) {
+        final NodeColorTransformer nodeColorTransformer = (NodeColorTransformer) transformer;
+        if (nodeColorTransformer.getMap().isEmpty()) {
+            List<Color> colors = PaletteUtils.getSequenceColors(partition.getPartsCount());
+            int i = 0;
+            for (Part p : partition.getParts()) {
+                nodeColorTransformer.getMap().put(p.getValue(), colors.get(i));
+                i++;
+            }
+        }
+
+        JPanel gridPanel = new JPanel(new GridLayout(partition.getPartsCount(), 2, 2, 2));
+        for (final Part p : partition.getParts()) {
+            JLabel partLabel = new JLabel(p.getDisplayName());
+            gridPanel.add(partLabel);
+            final ColorChooser colorChooser = new ColorChooser(nodeColorTransformer.getMap().get(p.getValue()));
+            colorChooser.setPreferredSize(new Dimension(16, 16));
+            colorChooser.setMaximumSize(new Dimension(16, 16));
+            colorChooser.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    nodeColorTransformer.getMap().put(p.getValue(), colorChooser.getColor());
+                }
+            });
+            gridPanel.add(colorChooser);
+        }
+        centerScrollPane.setViewportView(gridPanel);
+    }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -40,32 +82,23 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        jLabel1 = new javax.swing.JLabel();
+        centerScrollPane = new javax.swing.JScrollPane();
 
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(NodeColorTransformerPanel.class, "NodeColorTransformerPanel.jLabel1.text")); // NOI18N
+        setLayout(new java.awt.GridBagLayout());
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(221, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(144, Short.MAX_VALUE))
-        );
+        centerScrollPane.setBorder(null);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(3, 5, 5, 0);
+        add(centerScrollPane, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane centerScrollPane;
     // End of variables declaration//GEN-END:variables
-
 }

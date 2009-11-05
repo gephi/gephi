@@ -77,13 +77,18 @@ public class PartitionControllerImpl implements PartitionController {
         }
     }
 
-    private void refreshModel() {
-    }
-
     public void setSelectedPartition(Partition partition) {
         if (model.getSelectedPartitioning() == PartitionModel.NODE_PARTITIONING) {
+            if (partition != null && !PartitionFactory.isPartitionBuilt(partition)) {
+                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+                PartitionFactory.buildNodePartition((NodePartition) partition, graphModel.getGraphVisible());
+            }
             model.setNodePartition(partition);
         } else {
+            if (partition != null && !PartitionFactory.isPartitionBuilt(partition)) {
+                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+                PartitionFactory.buildEdgePartition((EdgePartition) partition, graphModel.getGraphVisible());
+            }
             model.setEdgePartition(partition);
         }
     }

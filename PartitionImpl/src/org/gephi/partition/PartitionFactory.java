@@ -1,6 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+Copyright 2008 WebAtlas
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.partition;
 
@@ -75,6 +91,10 @@ public class PartitionFactory {
         return new EdgePartitionImpl(column);
     }
 
+    public static boolean isPartitionBuilt(Partition partition) {
+        return partition.getParts().length > 0;
+    }
+
     public static void buildNodePartition(NodePartition partition, Graph graph) {
 
         NodePartitionImpl partitionImpl = (NodePartitionImpl) partition;
@@ -90,6 +110,7 @@ public class PartitionFactory {
         for (Entry<Object, Collection<Node>> entry : map.entrySet()) {
             PartImpl<Node> part = new PartImpl<Node>(partition, entry.getKey(), entry.getValue().toArray(new Node[0]));
             parts[i] = part;
+            i++;
         }
         partitionImpl.setParts(parts);
     }
@@ -109,6 +130,7 @@ public class PartitionFactory {
         for (Entry<Object, Collection<Edge>> entry : map.entrySet()) {
             PartImpl<Edge> part = new PartImpl<Edge>(partition, entry.getKey(), entry.getValue().toArray(new Edge[0]));
             parts[i] = part;
+            i++;
         }
         partitionImpl.setParts(parts);
     }
