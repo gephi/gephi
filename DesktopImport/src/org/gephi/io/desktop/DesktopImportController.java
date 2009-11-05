@@ -28,6 +28,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -202,18 +204,20 @@ public class DesktopImportController implements ImportController {
             DatabaseTypeUI ui = type.getUI();
             if (ui != null) {
                 ui.setup(type);
-                String title = "Database settings";
+                String title = NbBundle.getMessage(DesktopImportController.class, "DesktopImportController.database.ui.dialog.title");
                 JPanel panel = ui.getPanel();
+                final DialogDescriptor dd = new DialogDescriptor(panel, title);
                 if (panel instanceof ValidationPanel) {
-                    ValidationPanel validationPanel = (ValidationPanel) panel;
-                    if (!validationPanel.showOkCancelDialog(title)) {
-                        return;
-                    }
-                } else {
-                    DialogDescriptor dd = new DialogDescriptor(panel, title);
-                    if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.CANCEL_OPTION)) {
-                        return;
-                    }
+                    ValidationPanel vp = (ValidationPanel) panel;
+                    vp.addChangeListener(new ChangeListener() {
+
+                        public void stateChanged(ChangeEvent e) {
+                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                        }
+                    });
+                }
+                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.CANCEL_OPTION)) {
+                    return;
                 }
                 ui.unsetup();
                 database = ui.getDatabase();
@@ -270,7 +274,7 @@ public class DesktopImportController implements ImportController {
             //Report panel
             ReportPanel reportPanel = new ReportPanel();
             reportPanel.setData(report, container);
-            DialogDescriptor dd = new DialogDescriptor(reportPanel, "Import report");
+            DialogDescriptor dd = new DialogDescriptor(reportPanel, NbBundle.getMessage(DesktopImportController.class, "ReportPanel.title"));
             if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.CANCEL_OPTION)) {
                 reportPanel.destroy();
                 return;
