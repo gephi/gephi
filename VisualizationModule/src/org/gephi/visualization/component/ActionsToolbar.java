@@ -95,7 +95,7 @@ public class ActionsToolbar extends JToolBar {
                     n.getNodeData().setAlpha(1f);
                 }
                 for (Edge e : graph.getEdges().toArray()) {
-                    e.getEdgeData().setR(color.getRed() / 255f);
+                    e.getEdgeData().setR(-1f);
                     e.getEdgeData().setG(color.getGreen() / 255f);
                     e.getEdgeData().setB(color.getBlue() / 255f);
                     e.getEdgeData().setAlpha(1f);
