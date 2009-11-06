@@ -40,7 +40,7 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     protected LayoutData layoutData;
     protected String label = "";
     protected String id = "";
-    protected float r = 0f;
+    protected float r = -1f;
     protected float g = 0f;
     protected float b = 0f;
     protected float alpha = 1f;

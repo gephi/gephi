@@ -35,4 +35,12 @@ public interface PartitionController {
     public void refreshPartitions();
 
     public void transform(Partition partition, Transformer transformer);
+
+    public boolean isGroupable(Partition partition);
+
+    public boolean isUngroupable(Partition partition);
+
+    public void group(Partition partition);
+
+    public void ungroup(Partition partition);
 }

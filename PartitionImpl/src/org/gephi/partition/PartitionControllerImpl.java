@@ -27,8 +27,11 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.graph.api.Node;
 import org.gephi.partition.api.EdgePartition;
 import org.gephi.partition.api.NodePartition;
+import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.PartitionController;
 import org.gephi.partition.api.PartitionModel;
@@ -38,7 +41,6 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceDataKey;
 import org.gephi.workspace.api.WorkspaceListener;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -169,5 +171,81 @@ public class PartitionControllerImpl implements PartitionController {
 
     public void transform(Partition partition, Transformer transformer) {
         transformer.transform(partition);
+    }
+
+    public boolean isGroupable(Partition partition) {
+        if (partition instanceof NodePartition) {
+            if (partition.getPartsCount() > 0) {
+                NodePartition nodePartition = (NodePartition) partition;
+                Node n0 = nodePartition.getParts()[0].getObjects()[0];
+                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+                HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+                if (graph.getParent(n0) == null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isUngroupable(Partition partition) {
+        if (partition instanceof NodePartition) {
+            if (partition.getPartsCount() > 0) {
+                NodePartition nodePartition = (NodePartition) partition;
+                Node n0 = nodePartition.getParts()[0].getObjects()[0];
+                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+                HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+                if (graph.getParent(n0) != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void group(Partition partition) {
+        NodePartition nodePartition = (NodePartition) partition;
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+        for (Part<Node> p : nodePartition.getParts()) {
+            Node[] nodes = p.getObjects();
+            if (graph.getParent(nodes[0]) == null) {
+                float centroidX = 0;
+                float centroidY = 0;
+                float sizes = 0;
+                float r = 0;
+                float g = 0;
+                float b = 0;
+                int len = 0;
+                for (Node n : nodes) {
+                    centroidX += n.getNodeData().x();
+                    centroidY += n.getNodeData().y();
+                    sizes += n.getNodeData().getSize() / 10f;
+                    r += n.getNodeData().r();
+                    g += n.getNodeData().g();
+                    b += n.getNodeData().b();
+                    len++;
+                }
+                Node metaNode = graph.groupNodes(nodes);
+                metaNode.getNodeData().setX(centroidX / len);
+                metaNode.getNodeData().setY(centroidY / len);
+                metaNode.getNodeData().setLabel(p.getDisplayName());
+                metaNode.getNodeData().setSize(sizes);
+                metaNode.getNodeData().setColor(r / len, g / len, b / len);
+            }
+        }
+    }
+
+    public void ungroup(Partition partition) {
+        NodePartition nodePartition = (NodePartition) partition;
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+        for (Part<Node> p : nodePartition.getParts()) {
+            Node[] nodes = p.getObjects();
+            Node metaNode = graph.getParent(nodes[0]);
+            if (metaNode != null) {
+                graph.ungroupNodes(metaNode);
+            }
+        }
     }
 }

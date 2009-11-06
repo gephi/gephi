@@ -223,6 +223,7 @@ public class PartitionFactory {
 
     private static class PartImpl<Element> implements Part<Element> {
 
+        private static final String NULL = "null";
         private Partition<Element> partition;
         private Element[] objects;
         private Object value;
@@ -242,7 +243,7 @@ public class PartitionFactory {
         }
 
         public String getDisplayName() {
-            return value.toString();
+            return value != null ? value.toString() : NULL;
         }
 
         public boolean isInPart(Element element) {
