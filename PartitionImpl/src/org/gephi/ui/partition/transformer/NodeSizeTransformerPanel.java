@@ -20,21 +20,105 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.partition.transformer;
 
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JSpinner;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.Transformer;
+import org.gephi.partition.transformer.NodeSizeTransformer;
+import org.openide.util.NbBundle;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class NodeSizeTransformerPanel extends javax.swing.JPanel {
+public class NodeSizeTransformerPanel extends javax.swing.JPanel implements ChangeListener {
+
+    private static final float DEFAULT_SIZE = 4f;
+    private NodeSizeTransformer nodeSizeTransformer;
+    private Partition partition;
+    private JPopupMenu popupMenu;
 
     public NodeSizeTransformerPanel() {
         initComponents();
+        createPopup();
+        addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (nodeSizeTransformer != null) {
+                    showPopup(e);
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                showPopup(e);
+            }
+
+            private void showPopup(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
     }
 
     public void setup(Partition partition, Transformer transformer) {
-        
+        removeAll();
+        nodeSizeTransformer = (NodeSizeTransformer) transformer;
+        if (nodeSizeTransformer.getMap().isEmpty()) {
+            int i = 0;
+            for (Part p : partition.getParts()) {
+                nodeSizeTransformer.getMap().put(p.getValue(), DEFAULT_SIZE);
+                i++;
+            }
+        }
+
+        this.partition = partition;
+        for (final Part p : partition.getParts()) {
+            JLabel partLabel = new JLabel(p.getDisplayName());
+            add(partLabel);
+            Float value = nodeSizeTransformer.getMap().get(p.getValue());
+            if (value == null) {
+                value = DEFAULT_SIZE;
+            }
+            JSpinner spinner = new JSpinner(new javax.swing.SpinnerNumberModel(value, Float.valueOf(0.5f), null, Float.valueOf(0.5f)));
+            spinner.setPreferredSize(new Dimension(42, 20));
+            spinner.putClientProperty("part", p);
+            spinner.addChangeListener(this);
+            add(spinner, "wrap");
+        }
+    }
+
+    private void createPopup() {
+        popupMenu = new JPopupMenu();
+        JMenuItem randomizeItem = new JMenuItem(NbBundle.getMessage(NodeColorTransformerPanel.class, "NodeSizeTransformerBuilder.action.randomize"));
+        randomizeItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                nodeSizeTransformer.getMap().clear();
+                setup(partition, nodeSizeTransformer);
+                revalidate();
+                repaint();
+            }
+        });
+        popupMenu.add(randomizeItem);
+    }
+
+    public void stateChanged(ChangeEvent e) {
+        JSpinner spinner = (JSpinner) e.getSource();
+        Part part = (Part) spinner.getClientProperty("part");
+        nodeSizeTransformer.getMap().put(part.getValue(), (Float) spinner.getValue());
     }
 
     /** This method is called from within the constructor to
@@ -46,28 +130,10 @@ public class NodeSizeTransformerPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(NodeSizeTransformerPanel.class, "NodeSizeTransformerPanel.jLabel1.text")); // NOI18N
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(284, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(174, Short.MAX_VALUE))
-        );
+        net.miginfocom.swing.MigLayout migLayout1 = new net.miginfocom.swing.MigLayout();
+        migLayout1.setColumnConstraints("[pref!]20[pref!]");
+        setLayout(migLayout1);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

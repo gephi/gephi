@@ -33,4 +33,6 @@ public interface PartitionController {
     public void setSelectedTransformerBuilder(TransformerBuilder builder);
 
     public void refreshPartitions();
+
+    public void transform(Partition partition, Transformer transformer);
 }

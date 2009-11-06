@@ -93,6 +93,11 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
         applyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/partition/apply.gif"))); // NOI18N
         applyButton.setText(org.openide.util.NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.applyButton.text")); // NOI18N
         applyButton.setMargin(new java.awt.Insets(0, 14, 0, 14));
+        applyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                applyButtonActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
         gridBagConstraints.weightx = 1.0;
@@ -104,6 +109,11 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
         centerScrollPane.setBorder(null);
         add(centerScrollPane, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyButtonActionPerformed
+        PartitionController partitionController = Lookup.getDefault().lookup(PartitionController.class);
+        partitionController.transform(model.getSelectedPartition(), model.getSelectedTransformer());
+    }//GEN-LAST:event_applyButtonActionPerformed
 
     private void initEvents() {
         partitionComboBox.setModel(newLazyModel());

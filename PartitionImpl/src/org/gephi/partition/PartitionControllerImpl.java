@@ -32,6 +32,7 @@ import org.gephi.partition.api.NodePartition;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.PartitionController;
 import org.gephi.partition.api.PartitionModel;
+import org.gephi.partition.api.Transformer;
 import org.gephi.partition.api.TransformerBuilder;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
@@ -164,5 +165,9 @@ public class PartitionControllerImpl implements PartitionController {
             }
             model.setEdgePartitions(edgePartitions.toArray(new EdgePartition[0]));
         }
+    }
+
+    public void transform(Partition partition, Transformer transformer) {
+        transformer.transform(partition);
     }
 }

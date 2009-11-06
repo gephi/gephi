@@ -20,6 +20,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.partition.transformer;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.gephi.graph.api.Node;
+import org.gephi.partition.api.NodePartition;
+import org.gephi.partition.api.Part;
+import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.Transformer;
 
 /**
@@ -27,4 +33,28 @@ import org.gephi.partition.api.Transformer;
  * @author Mathieu Bastian
  */
 public class NodeSizeTransformer implements Transformer {
+
+    private static final float DEFAULT_SIZE = 4f;
+    private Map<Object, Float> map;
+
+    public NodeSizeTransformer() {
+        map = new HashMap<Object, Float>();
+    }
+
+    public Map<Object, Float> getMap() {
+        return map;
+    }
+
+    public void transform(Partition partition) {
+        NodePartition nodePartition = (NodePartition) partition;
+        for (Part<Node> part : nodePartition.getParts()) {
+            Float size = map.get(part.getValue());
+            if (size == null) {
+                size = DEFAULT_SIZE;
+            }
+            for (Node node : part.getObjects()) {
+                node.getNodeData().setSize(size.floatValue());
+            }
+        }
+    }
 }

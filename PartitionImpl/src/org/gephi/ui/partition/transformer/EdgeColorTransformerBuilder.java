@@ -62,6 +62,7 @@ public class EdgeColorTransformerBuilder implements TransformerBuilder.Edge {
         }
 
         public void setup(Partition partition, Transformer transformer) {
+            panel.setup(partition, transformer);
         }
 
         public void unsetup() {
