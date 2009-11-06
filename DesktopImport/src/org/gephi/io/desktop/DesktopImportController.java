@@ -25,7 +25,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
@@ -155,7 +155,7 @@ public class DesktopImportController implements ImportController {
     }
 
     private void importText(FileObject fileObject, Importer importer, final Container container) {
-        final BufferedReader reader = getTextReader(fileObject);
+        final LineNumberReader reader = getTextReader(fileObject);
         final TextImporter textImporter = (TextImporter) importer;
         final Report report = container.getReport();
         LongTask task = null;
@@ -309,29 +309,21 @@ public class DesktopImportController implements ImportController {
         }
     }
 
-    private BufferedReader getTextReader(FileObject fileObject) throws ImportException {
-
-        //File file = FileUtil.toFile(fileObject);
+    private LineNumberReader getTextReader(FileObject fileObject) throws ImportException {
         try {
-            InputStreamReader im = new InputStreamReader(fileObject.getInputStream());
-            /*if (file == null) {
-            throw new FileNotFoundException();
-            }
-            BufferedReader reader = new BufferedReader(new FileReader(file));*/
-            BufferedReader reader = new BufferedReader(im);
+            LineNumberReader reader;
+            CharsetToolkit charsetToolkit = new CharsetToolkit(FileUtil.toFile(fileObject));
+            reader = (LineNumberReader) charsetToolkit.getReader();
             return reader;
         } catch (FileNotFoundException ex) {
             throw new ImportException(NbBundle.getMessage(getClass(), "error_file_not_found"));
+        } catch (IOException ex) {
+            throw new ImportException(NbBundle.getMessage(getClass(), "error_io"));
         }
     }
 
     private Document getDocument(FileObject fileObject) throws ImportException {
-        //File file = FileUtil.toFile(fileObject);
         try {
-            /*if (file == null) {
-            throw new FileNotFoundException();
-            }
-            InputStream stream = new FileInputStream(file);*/
             InputStream stream = fileObject.getInputStream();
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();

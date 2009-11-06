@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.importer.standard;
 
 import java.io.BufferedReader;
+import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -71,7 +72,7 @@ public class ImporterGDF implements TextImporter, LongTask {
         edgeLineStart = new String[]{"edgedef>", "Edgedef>"};
     }
 
-    public void importData(BufferedReader reader, ContainerLoader container, Report report) throws Exception {
+    public void importData(LineNumberReader reader, ContainerLoader container, Report report) throws Exception {
         this.container = container;
         this.report = report;
 
@@ -96,7 +97,7 @@ public class ImporterGDF implements TextImporter, LongTask {
         this.cancel = false;
     }
 
-    private void importData(BufferedReader reader) throws Exception {
+    private void importData(LineNumberReader reader) throws Exception {
         Progress.start(progressTicket);        //Progress
 
         //Verify a node line exists and puts nodes and edges lines in arrays

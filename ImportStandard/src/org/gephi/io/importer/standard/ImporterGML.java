@@ -21,8 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.importer.standard;
 
 import java.awt.Color;
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.io.StreamTokenizer;
 import java.util.ArrayList;
 import org.gephi.data.attributes.api.AttributeClass;
@@ -53,7 +53,7 @@ public class ImporterGML implements TextImporter, LongTask {
     private ProgressTicket progressTicket;
     private boolean cancel = false;
 
-    public void importData(BufferedReader reader, ContainerLoader container, Report report) throws Exception {
+    public void importData(LineNumberReader reader, ContainerLoader container, Report report) throws Exception {
         this.container = container;
         this.report = report;
 
@@ -73,7 +73,7 @@ public class ImporterGML implements TextImporter, LongTask {
         this.cancel = false;
     }
 
-    private void importData(BufferedReader reader) throws Exception {
+    private void importData(LineNumberReader reader) throws Exception {
         Progress.start(progressTicket);
 
         ArrayList list;
