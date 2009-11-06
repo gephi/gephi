@@ -13,13 +13,33 @@ public interface Graph {
 
     public PVector getMaxPos();
 
-    public Iterator<UnidirectionalEdge> getUnidirectionalEdges();
+    /**
+	 * Returns an iterable on the graph's nodes.
+	 *
+	 * @return an iterable on the graph's nodes
+	 */
+    public Iterable<Node> getNodes();
 
-    public Iterator<BidirectionalEdge> getBidirectionalEdges();
+	/**
+	 * Returns an iterable on the graph's self-loops.
+	 *
+	 * @return an iterable on the graph's self-loops
+	 */
+	public Iterable<SelfLoop> getSelfLoops();
 
-    public Iterator<SelfLoop> getSelfLoops();
+    /**
+	 * Returns an iterable on the graph's unidirectional edges.
+	 *
+	 * @return an iterable on the graph's unidirectional edges
+	 */
+    public Iterable<UnidirectionalEdge> getUnidirectionalEdges();
 
-    public Iterator<Node> getNodes();
+    /**
+	 * Returns an iterable on the graph's bidirectional edges.
+	 *
+	 * @return an iterable on the graph's bidirectional edges
+	 */
+    public Iterable<BidirectionalEdge> getBidirectionalEdges();
 
     public boolean showNodes();
 

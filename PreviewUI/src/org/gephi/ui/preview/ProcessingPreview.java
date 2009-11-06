@@ -159,21 +159,21 @@ public class ProcessingPreview extends PApplet {
 		if (graph.showEdges()) {
 
             // draw edges
-            for (Iterator<UnidirectionalEdge> it = graph.getUnidirectionalEdges(); it.hasNext(); ) {
+            for (UnidirectionalEdge ue : graph.getUnidirectionalEdges()) {
                 edgeLabelFont = uniEdgeLabelFont;
                 edgeMiniLabelFont = uniEdgeMiniLabelFont;
-                drawEdge(it.next());
+                drawEdge(ue);
             }
-            for (Iterator<BidirectionalEdge> it = graph.getBidirectionalEdges(); it.hasNext(); ) {
+            for (BidirectionalEdge be : graph.getBidirectionalEdges()) {
                 edgeLabelFont = biEdgeLabelFont;
                 edgeMiniLabelFont = biEdgeMiniLabelFont;
-                drawEdge(it.next());
+                drawEdge(be);
             }
 
 			if (graph.showSelfLoops()) {
 				// draw self-loops
-				for (Iterator<SelfLoop> it = graph.getSelfLoops(); it.hasNext();) {
-					drawSelfLoop(it.next());
+				for (SelfLoop sl : graph.getSelfLoops()) {
+					drawSelfLoop(sl);
 				}
 			}
 		}
@@ -182,8 +182,8 @@ public class ProcessingPreview extends PApplet {
 		if (graph.showNodes()) {
 			textFont(nodeLabelFont);
 			textAlign(CENTER, CENTER);
-			for (Iterator<Node> it = graph.getNodes(); it.hasNext();) {
-				drawNode(it.next());
+			for (Node n : graph.getNodes()) {
+				drawNode(n);
 			}
 		}
 	}

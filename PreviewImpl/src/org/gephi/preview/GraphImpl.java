@@ -1,7 +1,6 @@
 package org.gephi.preview;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import org.gephi.preview.api.BidirectionalEdge;
 import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.Node;
@@ -17,7 +16,7 @@ import processing.core.PVector;
  */
 public class GraphImpl implements Graph {
 
-    private final ArrayList<Node> m_nodes = new ArrayList<Node>();
+    private final ArrayList<Node> nodes = new ArrayList<Node>();
 	private final ArrayList<SelfLoop> selfLoops = new ArrayList<SelfLoop>();
     private final ArrayList<UnidirectionalEdge> uniEdges = new ArrayList<UnidirectionalEdge>();
     private final ArrayList<BidirectionalEdge> biEdges = new ArrayList<BidirectionalEdge>();
@@ -25,25 +24,40 @@ public class GraphImpl implements Graph {
     private final PVector m_minPos = new PVector();
     private final PVector m_maxPos =  new PVector();
 
-    public final Iterator<Node> getNodes() {
-        return m_nodes.iterator();
+    /**
+	 * Returns an iterable on the graph's nodes.
+	 *
+	 * @return an iterable on the graph's nodes
+	 */
+    public Iterable<Node> getNodes() {
+        return nodes;
     }
 
 	/**
-	 * Returns an iterator on the graph's self-loops.
+	 * Returns an iterable on the graph's self-loops.
 	 *
-	 * @return an iterator on the graph's self-loops
+	 * @return an iterable on the graph's self-loops
 	 */
-	public Iterator<SelfLoop> getSelfLoops() {
-		return selfLoops.iterator();
+	public Iterable<SelfLoop> getSelfLoops() {
+		return selfLoops;
 	}
 
-    public Iterator<UnidirectionalEdge> getUnidirectionalEdges() {
-		return uniEdges.iterator();
+    /**
+	 * Returns an iterable on the graph's unidirectional edges.
+	 *
+	 * @return an iterable on the graph's unidirectional edges
+	 */
+    public Iterable<UnidirectionalEdge> getUnidirectionalEdges() {
+		return uniEdges;
 	}
 
-    public Iterator<BidirectionalEdge> getBidirectionalEdges() {
-		return biEdges.iterator();
+    /**
+	 * Returns an iterable on the graph's bidirectional edges.
+	 *
+	 * @return an iterable on the graph's bidirectional edges
+	 */
+    public Iterable<BidirectionalEdge> getBidirectionalEdges() {
+		return biEdges;
 	}
 
     public final PVector getMinPos() {
@@ -55,14 +69,14 @@ public class GraphImpl implements Graph {
     }
 
     public void addNode(NodeImpl node) {
-        m_nodes.add(node);
+        nodes.add(node);
 
         // update graph's bounding box
         {
             PVector topLeftPos = node.getTopLeftPosition();
             PVector bottomRightPos = node.getBottomRightPosition();
 
-            if (m_nodes.size() == 1) {
+            if (nodes.size() == 1) {
                 // first initialization
                 m_minPos.set(topLeftPos);
                 m_maxPos.set(bottomRightPos);

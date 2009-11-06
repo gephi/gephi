@@ -1,14 +1,10 @@
 package org.gephi.preview.controller;
 
-import java.awt.Font;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.preview.GraphImpl;
 import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.PreviewController;
-import org.gephi.preview.api.color.colorizer.GenericColorizer;
-import org.gephi.preview.api.color.colorizer.NodeChildColorizer;
-import org.gephi.preview.api.color.colorizer.NodeColorizer;
 import org.gephi.preview.api.supervisor.EdgeSupervisor;
 import org.gephi.preview.api.supervisor.GlobalEdgeSupervisor;
 import org.gephi.preview.api.supervisor.NodeSupervisor;
