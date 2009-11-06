@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.component;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
@@ -94,6 +95,7 @@ final class GraphTopComponent extends TopComponent {
     private ActionsToolbar actionsToolbar;
     private JComponent toolbar;
     private JComponent propertiesBar;
+    private AddonsBar addonsBar;
 
     private void initToolPanels() {
         ToolController tc = Lookup.getDefault().lookup(ToolController.class);
@@ -119,11 +121,11 @@ final class GraphTopComponent extends TopComponent {
                 if (propertiesBar != null) {
                     northBar.add(propertiesBar, BorderLayout.CENTER);
                 }
-                JPanel addons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+                addonsBar = new AddonsBar();
                 for (PropertiesBarAddon addon : Lookup.getDefault().lookupAll(PropertiesBarAddon.class)) {
-                    addons.add(addon.getPanel());
+                    addonsBar.add(addon.getComponent());
                 }
-                northBar.add(addons, BorderLayout.EAST);
+                northBar.add(addonsBar, BorderLayout.EAST);
                 add(northBar, BorderLayout.NORTH);
             }
         }
@@ -140,6 +142,7 @@ final class GraphTopComponent extends TopComponent {
                 propertiesBar.setEnabled(true);
                 actionsToolbar.setEnabled(true);
                 selectionToolbar.setEnabled(true);
+                addonsBar.setEnabled(true);
             }
 
             public void unselect(Workspace workspace) {
@@ -153,6 +156,7 @@ final class GraphTopComponent extends TopComponent {
                 propertiesBar.setEnabled(false);
                 actionsToolbar.setEnabled(false);
                 selectionToolbar.setEnabled(false);
+                addonsBar.setEnabled(false);
             }
         });
 
@@ -160,6 +164,7 @@ final class GraphTopComponent extends TopComponent {
         propertiesBar.setEnabled(false);
         actionsToolbar.setEnabled(false);
         selectionToolbar.setEnabled(false);
+        addonsBar.setEnabled(false);
     }
 
     /** This method is called from within the constructor to
@@ -261,6 +266,20 @@ final class GraphTopComponent extends TopComponent {
 
         public Object readResolve() {
             return GraphTopComponent.getDefault();
+        }
+    }
+
+    private static class AddonsBar extends JPanel {
+
+        public AddonsBar() {
+            super(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        }
+
+        @Override
+        public void setEnabled(boolean enabled) {
+            for (Component c : getComponents()) {
+                c.setEnabled(enabled);
+            }
         }
     }
 }

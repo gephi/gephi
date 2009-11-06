@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.api;
 
-import javax.swing.JPanel;
+import javax.swing.JComponent;
 
 /**
  *
@@ -28,5 +28,5 @@ import javax.swing.JPanel;
  */
 public interface PropertiesBarAddon {
 
-    public JPanel getPanel();
+    public JComponent getComponent();
 }

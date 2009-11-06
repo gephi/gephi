@@ -182,10 +182,10 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
         showTreeLabel.setToolTipText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.showTreeLabel.toolTipText")); // NOI18N
         showTreeLabel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        labelHeight.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        labelHeight.setFont(new java.awt.Font("Tahoma", 1, 11));
         labelHeight.setText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.labelHeight.text")); // NOI18N
 
-        heightLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        heightLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
         heightLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         heightLabel.setText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.heightLabel.text")); // NOI18N
 
@@ -210,7 +210,7 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
 
         labelAutoMetaEdge.setColumns(20);
         labelAutoMetaEdge.setEditable(false);
-        labelAutoMetaEdge.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        labelAutoMetaEdge.setFont(new java.awt.Font("Tahoma", 0, 11));
         labelAutoMetaEdge.setLineWrap(true);
         labelAutoMetaEdge.setRows(2);
         labelAutoMetaEdge.setText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.labelAutoMetaEdge.text")); // NOI18N
@@ -273,7 +273,7 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         jPanel1.add(jToolBar4, gridBagConstraints);
 
-        labelView.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        labelView.setFont(new java.awt.Font("Tahoma", 1, 11));
         labelView.setText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.labelView.text")); // NOI18N
 
         levelViewPanel.setLayout(new java.awt.GridLayout(1, 0));
