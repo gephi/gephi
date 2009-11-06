@@ -83,7 +83,13 @@ public class CompatibilityEngine extends AbstractEngine {
     public void updateSelection(GL gl, GLU glu) {
         if (vizConfig.isSelectionEnable() && currentSelectionArea.isEnabled()) {
             VizModel vizModel = VizController.getInstance().getVizModel();
-            octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
+            float[] mp = Arrays.copyOf(graphIO.getMousePosition(), 2);
+            float[] cent = currentSelectionArea.getSelectionAreaCenter();
+            if (cent != null) {
+                mp[0] += cent[0];
+                mp[1] += cent[1];
+            }
+            octree.updateSelectedOctant(gl, glu, mp, currentSelectionArea.getSelectionAreaRectancle());
 
             for (int i = 0; i < selectableClasses.length; i++) {
                 CompatibilityModelClass modelClass = selectableClasses[i];

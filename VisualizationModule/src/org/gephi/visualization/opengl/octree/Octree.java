@@ -241,7 +241,7 @@ public class Octree implements VizArchitecture {
                 if (!obj.isCacheMatching(cacheMarker)) {
                     removeObject(classID, obj);
                     obj.resetOctant();
-                    if(vizController.getVizConfig().isCleanDeletedModels()) {
+                    if (vizController.getVizConfig().isCleanDeletedModels()) {
                         obj.getObj().setModel(null);
                     }
                 }

@@ -22,6 +22,7 @@ package org.gephi.visualization.selection;
 
 import java.util.Arrays;
 import javax.media.opengl.GL;
+import javax.media.opengl.GLPbuffer;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.VizController;
@@ -84,7 +85,7 @@ public class Rectangle implements SelectionArea {
         float x = object.getViewportX();
         float y = object.getViewportY();
         float rad = object.getViewportRadius();
-        //System.out.println(rectangle[0]+"   "+rectangle[1]);
+
         boolean res = true;
         if (startPosition[0] > rectangle[0]) {
             if (x - rad > startPosition[0] || x + rad < rectangle[0]) {
