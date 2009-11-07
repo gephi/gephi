@@ -41,17 +41,18 @@ public class JColorButton extends JButton {
 
     public static String EVENT_COLOR = "color";
     private Color color;
+    private boolean includeOpacity;
     private final static int ICON_WIDTH = 16;
     private final static int ICON_HEIGHT = 16;
     private final static Color DISABLED_BORDER = new Color(200, 200, 200);
     private final static Color DISABLED_FILL = new Color(220, 220, 220);
 
     public JColorButton(Color originalColor) {
-        this(originalColor, false);
+        this(originalColor, false, false);
     }
 
-    public JColorButton(Color originalColor, boolean rightClick) {
-
+    public JColorButton(Color originalColor, boolean rightClick, boolean includeOpacity) {
+        this.includeOpacity = includeOpacity;
         this.color = originalColor;
         setIcon(new Icon() {
 
@@ -87,7 +88,7 @@ public class JColorButton extends JButton {
                 public void mouseClicked(MouseEvent e) {
 
                     if (SwingUtilities.isRightMouseButton(e)) {
-                        Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color);
+                        Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color, JColorButton.this.includeOpacity);
                         if (newColor != null) {
                             setColor(newColor);
                         }
@@ -98,7 +99,7 @@ public class JColorButton extends JButton {
             addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color);
+                    Color newColor = ColorPicker.showDialog(WindowManager.getDefault().getMainWindow(), color, JColorButton.this.includeOpacity);
                     if (newColor != null) {
                         setColor(newColor);
                     }
@@ -122,5 +123,9 @@ public class JColorButton extends JButton {
 
     public float[] getColorArray() {
         return new float[]{color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f};
+    }
+
+    public void setIncludeOpacity(boolean includeOpacity) {
+        this.includeOpacity = includeOpacity;
     }
 }

@@ -68,7 +68,6 @@ final class DefaultPanel extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         titleDesign = new org.jdesktop.swingx.JXTitledSeparator();
         titleLabel = new org.jdesktop.swingx.JXTitledSeparator();
@@ -90,6 +89,7 @@ final class DefaultPanel extends javax.swing.JPanel {
         labelBackgroundPanel = new javax.swing.JPanel();
         backgroundColor = new net.java.dev.colorchooser.ColorChooser();
         labelBackgroundColor = new javax.swing.JLabel();
+        resetButton = new javax.swing.JButton();
 
         titleDesign.setTitle(org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.titleDesign.title")); // NOI18N
 
@@ -172,6 +172,13 @@ final class DefaultPanel extends javax.swing.JPanel {
         labelBackgroundColor.setPreferredSize(new java.awt.Dimension(28, 14));
         labelBackgroundPanel.add(labelBackgroundColor);
 
+        org.openide.awt.Mnemonics.setLocalizedText(resetButton, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.resetButton.text")); // NOI18N
+        resetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -215,7 +222,8 @@ final class DefaultPanel extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(edgeFontButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(labelEdgeFont)))))
+                                .addComponent(labelEdgeFont))))
+                    .addComponent(resetButton))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -262,9 +270,23 @@ final class DefaultPanel extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(edgeFontButton)
                             .addComponent(labelEdgeFont))))
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
+                .addComponent(resetButton)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+        NbPreferences.forModule(VizConfig.class).remove(VizConfig.USE_3D);
+        NbPreferences.forModule(VizConfig.class).remove(VizConfig.HIGHLIGHT);
+        NbPreferences.forModule(VizConfig.class).remove(VizConfig.NEIGHBOUR_SELECT);
+        NbPreferences.forModule(VizConfig.class).remove(VizConfig.BACKGROUND_COLOR);
+        NbPreferences.forModule(VizConfig.class).remove(VizConfig.NODE_LABEL_COLOR);
+        NbPreferences.forModule(VizConfig.class).remove(VizConfig.EDGE_LABEL_COLOR);
+        NbPreferences.forModule(VizConfig.class).remove(VizConfig.NODE_LABEL_FONT);
+        NbPreferences.forModule(VizConfig.class).remove(VizConfig.EDGE_LABEL_FONT);
+        load();
+    }//GEN-LAST:event_resetButtonActionPerformed
 
     void load() {
         //Default design settings
@@ -319,6 +341,7 @@ final class DefaultPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelNodeLabelColor;
     private javax.swing.JButton nodeFontButton;
     private net.java.dev.colorchooser.ColorChooser nodeLabelColorButton;
+    private javax.swing.JButton resetButton;
     private org.jdesktop.swingx.JXTitledSeparator titleDesign;
     private org.jdesktop.swingx.JXTitledSeparator titleLabel;
     private javax.swing.JCheckBox use3dCheckbox;

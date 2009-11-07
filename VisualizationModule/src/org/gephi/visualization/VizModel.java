@@ -116,7 +116,7 @@ public class VizModel {
         edgeHasUniColor = config.isDefaultEdgeHasUniColor();
         edgeUniColor = config.getDefaultEdgeUniColor().getRGBComponents(null);
         adjustByText = config.isDefaultAdjustByText();
-        nodeModeler = use3d?"CompatibilityNodeSphereModeler":"CompatibilityNodeDiskModeler";
+        nodeModeler = use3d ? "CompatibilityNodeSphereModeler" : "CompatibilityNodeDiskModeler";
         edgeSelectionColor = config.isDefaultEdgeSelectionColor();
         edgeInSelectionColor = config.getDefaultEdgeInSelectedColor().getRGBComponents(null);
         edgeOutSelectionColor = config.getDefaultEdgeOutSelectedColor().getRGBComponents(null);

@@ -20,9 +20,19 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.options;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.prefs.BackingStoreException;
+import org.gephi.ui.components.JColorButton;
+import org.gephi.ui.utils.ColorUtils;
+import org.gephi.ui.utils.PrefsUtils;
+import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VizConfig;
+import org.gephi.visualization.config.GraphicalConfiguration;
+import org.gephi.visualization.opengl.Lighting;
+import org.gephi.visualization.opengl.Lighting.Light;
+import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 final class OpenGLPanel extends javax.swing.JPanel {
@@ -45,6 +55,19 @@ final class OpenGLPanel extends javax.swing.JPanel {
                 }
             }
         });
+
+        ((JColorButton) ambientAmbiantColorButton).setIncludeOpacity(true);
+        ((JColorButton) ambientDiffuseColorButton).setIncludeOpacity(true);
+        ((JColorButton) ambientSpecularColorButton).setIncludeOpacity(true);
+        ((JColorButton) light1AmbiantColorButton).setIncludeOpacity(true);
+        ((JColorButton) light1DiffuseColorButton).setIncludeOpacity(true);
+        ((JColorButton) light1SpecularColorButton).setIncludeOpacity(true);
+        ((JColorButton) light2AmbiantColorButton).setIncludeOpacity(true);
+        ((JColorButton) light2DiffuseColorButton).setIncludeOpacity(true);
+        ((JColorButton) light2SpecularColorButton).setIncludeOpacity(true);
+        ((JColorButton) light3AmbiantColorButton).setIncludeOpacity(true);
+        ((JColorButton) light3DiffuseColorButton).setIncludeOpacity(true);
+        ((JColorButton) light3SpecularColorButton).setIncludeOpacity(true);
     }
 
     /** This method is called from within the constructor to
@@ -54,13 +77,53 @@ final class OpenGLPanel extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         jXTitledSeparator1 = new org.jdesktop.swingx.JXTitledSeparator();
         labelAntialiasing = new javax.swing.JLabel();
         antialisaingCombobox = new javax.swing.JComboBox();
-        jXTitledSeparator2 = new org.jdesktop.swingx.JXTitledSeparator();
         labelShow = new javax.swing.JLabel();
         fpsCheckbox = new javax.swing.JCheckBox();
+        jXTitledSeparator3 = new org.jdesktop.swingx.JXTitledSeparator();
+        labelAmbiant = new javax.swing.JLabel();
+        ambientDiffuseColorButton = new JColorButton(Color.BLACK);
+        ambientSpecularColorButton = new JColorButton(Color.BLACK);
+        ambientAmbiantColorButton = new JColorButton(Color.BLACK);
+        labelDirectional = new javax.swing.JLabel();
+        light1AmbiantColorButton = new JColorButton(Color.BLACK);
+        light1DiffuseColorButton = new JColorButton(Color.BLACK);
+        light1SpecularColorButton = new JColorButton(Color.BLACK);
+        light1Checkbox = new javax.swing.JCheckBox();
+        light2Checkbox = new javax.swing.JCheckBox();
+        light2AmbiantColorButton = new JColorButton(Color.BLACK);
+        light2DiffuseColorButton = new JColorButton(Color.BLACK);
+        light2SpecularColorButton = new JColorButton(Color.BLACK);
+        light3Checkbox = new javax.swing.JCheckBox();
+        light3AmbiantColorButton = new JColorButton(Color.BLACK);
+        light3DiffuseColorButton = new JColorButton(Color.BLACK);
+        light3SpecularColorButton = new JColorButton(Color.BLACK);
+        light1XPosition = new javax.swing.JSpinner();
+        jLabel1 = new javax.swing.JLabel();
+        light1YPosition = new javax.swing.JSpinner();
+        jLabel2 = new javax.swing.JLabel();
+        light1ZPosition = new javax.swing.JSpinner();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        light2XPosition = new javax.swing.JSpinner();
+        jLabel5 = new javax.swing.JLabel();
+        light2YPosition = new javax.swing.JSpinner();
+        jLabel6 = new javax.swing.JLabel();
+        light2ZPosition = new javax.swing.JSpinner();
+        jLabel7 = new javax.swing.JLabel();
+        light3XPosition = new javax.swing.JSpinner();
+        jLabel8 = new javax.swing.JLabel();
+        light3YPosition = new javax.swing.JSpinner();
+        jLabel9 = new javax.swing.JLabel();
+        light3ZPosition = new javax.swing.JSpinner();
+        resetButton = new javax.swing.JButton();
+        jLabel10 = new javax.swing.JLabel();
+        openglInfoPanel = new javax.swing.JPanel();
+        openInfoText = new javax.swing.JTextArea();
 
         jXTitledSeparator1.setTitle(org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.jXTitledSeparator1.title")); // NOI18N
 
@@ -68,12 +131,109 @@ final class OpenGLPanel extends javax.swing.JPanel {
 
         antialisaingCombobox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0x", "2x", "4x", "8x", "16x" }));
 
-        jXTitledSeparator2.setTitle(org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.jXTitledSeparator2.title")); // NOI18N
-
         org.openide.awt.Mnemonics.setLocalizedText(labelShow, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.labelShow.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(fpsCheckbox, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.fpsCheckbox.text")); // NOI18N
         fpsCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
+
+        jXTitledSeparator3.setTitle(org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.jXTitledSeparator3.title")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(labelAmbiant, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.labelAmbiant.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(ambientDiffuseColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.ambientDiffuseColorButton.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(ambientSpecularColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.ambientSpecularColorButton.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(ambientAmbiantColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.ambientAmbiantColorButton.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(labelDirectional, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.labelDirectional.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(light1AmbiantColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light1AmbiantColorButton.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(light1DiffuseColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light1DiffuseColorButton.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(light1SpecularColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light1SpecularColorButton.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(light1Checkbox, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light1Checkbox.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(light2Checkbox, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light2Checkbox.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(light2AmbiantColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light2AmbiantColorButton.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(light2DiffuseColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light2DiffuseColorButton.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(light2SpecularColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light2SpecularColorButton.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(light3Checkbox, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light3Checkbox.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(light3AmbiantColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light3AmbiantColorButton.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(light3DiffuseColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light3DiffuseColorButton.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(light3SpecularColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light3SpecularColorButton.text")); // NOI18N
+
+        light1XPosition.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), null, null, Float.valueOf(0.1f)));
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.jLabel1.text")); // NOI18N
+
+        light1YPosition.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), null, null, Float.valueOf(0.1f)));
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.jLabel2.text")); // NOI18N
+
+        light1ZPosition.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), null, null, Float.valueOf(0.1f)));
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.jLabel3.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel4, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.jLabel4.text")); // NOI18N
+
+        light2XPosition.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), null, null, Float.valueOf(0.1f)));
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel5, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.jLabel5.text")); // NOI18N
+
+        light2YPosition.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), null, null, Float.valueOf(0.1f)));
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel6, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.jLabel6.text")); // NOI18N
+
+        light2ZPosition.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), null, null, Float.valueOf(0.1f)));
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel7, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.jLabel7.text")); // NOI18N
+
+        light3XPosition.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), null, null, Float.valueOf(0.1f)));
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel8, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.jLabel8.text")); // NOI18N
+
+        light3YPosition.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), null, null, Float.valueOf(0.1f)));
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel9, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.jLabel9.text")); // NOI18N
+
+        light3ZPosition.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(0.0f), null, null, Float.valueOf(0.1f)));
+
+        org.openide.awt.Mnemonics.setLocalizedText(resetButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.resetButton.text")); // NOI18N
+        resetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel10, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.jLabel10.text")); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(102, 102, 102));
+
+        openglInfoPanel.setLayout(new java.awt.GridBagLayout());
+
+        openInfoText.setColumns(5);
+        openInfoText.setEditable(false);
+        openInfoText.setFont(new java.awt.Font("Monospaced", 0, 11)); // NOI18N
+        openInfoText.setRows(3);
+        openInfoText.setText("Vendor\nModel\nVersion"); // NOI18N
+        openInfoText.setOpaque(false);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        openglInfoPanel.add(openInfoText, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -82,18 +242,102 @@ final class OpenGLPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jXTitledSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 630, Short.MAX_VALUE)
+                    .addComponent(resetButton)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addComponent(labelShow)
-                        .addGap(38, 38, 38)
-                        .addComponent(fpsCheckbox))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(labelAntialiasing)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(antialisaingCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jXTitledSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
-                    .addComponent(jXTitledSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(labelAmbiant)
+                            .addComponent(labelDirectional))
+                        .addGap(21, 21, 21)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(light2Checkbox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(light2AmbiantColorButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(light2DiffuseColorButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(light2SpecularColorButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(light2XPosition, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(light2YPosition, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(light2ZPosition, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(light3Checkbox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(light3AmbiantColorButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(light3DiffuseColorButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(light3SpecularColorButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(light3XPosition, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(light3YPosition, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(light3ZPosition, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(ambientAmbiantColorButton)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(ambientDiffuseColorButton)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(ambientSpecularColorButton))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(light1Checkbox)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(light1AmbiantColorButton)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(light1DiffuseColorButton)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(light1SpecularColorButton)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(light1XPosition, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(light1YPosition, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(light1ZPosition, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jXTitledSeparator3, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(labelShow, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(labelAntialiasing))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(20, 20, 20)
+                                        .addComponent(fpsCheckbox))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addComponent(antialisaingCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(openglInfoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -102,28 +346,179 @@ final class OpenGLPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jXTitledSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelAntialiasing)
-                    .addComponent(antialisaingCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jXTitledSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(openglInfoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labelAntialiasing)
+                            .addComponent(antialisaingCombobox))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labelShow, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                            .addComponent(fpsCheckbox))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jXTitledSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(fpsCheckbox)
-                    .addComponent(labelShow))
-                .addContainerGap(135, Short.MAX_VALUE))
+                    .addComponent(labelAmbiant)
+                    .addComponent(ambientDiffuseColorButton)
+                    .addComponent(ambientAmbiantColorButton)
+                    .addComponent(ambientSpecularColorButton))
+                .addGap(13, 13, 13)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(light1DiffuseColorButton)
+                    .addComponent(light1AmbiantColorButton)
+                    .addComponent(light1SpecularColorButton)
+                    .addComponent(labelDirectional)
+                    .addComponent(light1Checkbox)
+                    .addComponent(light1XPosition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(light1YPosition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(light1ZPosition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(light2DiffuseColorButton)
+                    .addComponent(light2AmbiantColorButton)
+                    .addComponent(light2SpecularColorButton)
+                    .addComponent(light2Checkbox)
+                    .addComponent(light2XPosition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(light2YPosition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(light2ZPosition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(light3DiffuseColorButton)
+                    .addComponent(light3AmbiantColorButton)
+                    .addComponent(light3SpecularColorButton)
+                    .addComponent(light3Checkbox)
+                    .addComponent(light3XPosition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(light3YPosition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8)
+                    .addComponent(light3ZPosition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
+                .addComponent(resetButton)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+        try {
+            NbPreferences.forModule(Lighting.class).clear();
+            NbPreferences.forModule(Lighting.class).remove(Lighting.AMBIANT_ENABLED);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.AMBIANT_AMBIANT);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.AMBIANT_SPECULAR);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.AMBIANT_DIFFUSE);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.LIGHT1_ENABLED);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.LIGHT1_AMBIANT);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.LIGHT1_SPECULAR);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.LIGHT1_DIFFUSE);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.LIGHT1_POSITION);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.LIGHT2_ENABLED);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.LIGHT2_AMBIANT);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.LIGHT2_SPECULAR);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.LIGHT2_DIFFUSE);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.LIGHT2_POSITION);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.LIGHT3_ENABLED);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.LIGHT3_AMBIANT);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.LIGHT3_SPECULAR);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.LIGHT3_DIFFUSE);
+            NbPreferences.forModule(Lighting.class).remove(Lighting.LIGHT3_POSITION);
+            NbPreferences.forModule(VizConfig.class).remove(VizConfig.ANTIALIASING);
+            NbPreferences.forModule(VizConfig.class).remove(VizConfig.SHOW_FPS);
+        } catch (BackingStoreException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        load();
+    }//GEN-LAST:event_resetButtonActionPerformed
 
     void load() {
         antiAliasing = NbPreferences.forModule(VizConfig.class).getInt(VizConfig.ANTIALIASING, VizConfig.DEFAULT_ANTIALIASING);
         antialisaingCombobox.setSelectedIndex(antiAliasing == 0 ? 0 : Math.round((float) (Math.log(antiAliasing) / Math.log(2))));
         fpsCheckbox.setSelected(NbPreferences.forModule(VizConfig.class).getBoolean(VizConfig.SHOW_FPS, VizConfig.DEFAULT_SHOW_FPS));
+
+        //Lights
+        Lighting lighting = new Lighting();
+        Light ambiant = lighting.getLights().get(0);
+        Light light1 = lighting.getLights().get(1);
+        Light light2 = lighting.getLights().get(2);
+        Light light3 = lighting.getLights().get(3);
+
+        //Ambiant
+        ((JColorButton) ambientAmbiantColorButton).setColor(ColorUtils.decode(ambiant.getAmbiant()));
+        ((JColorButton) ambientDiffuseColorButton).setColor(ColorUtils.decode(ambiant.getDiffuse()));
+        ((JColorButton) ambientSpecularColorButton).setColor(ColorUtils.decode(ambiant.getSpecular()));
+
+        //Light1
+        light1Checkbox.setSelected(light1.isEnabled());
+        ((JColorButton) light1AmbiantColorButton).setColor(ColorUtils.decode(light1.getAmbiant()));
+        ((JColorButton) light1DiffuseColorButton).setColor(ColorUtils.decode(light1.getDiffuse()));
+        ((JColorButton) light1SpecularColorButton).setColor(ColorUtils.decode(light1.getSpecular()));
+        light1XPosition.setValue(Float.valueOf(light1.getDirection()[0]));
+        light1YPosition.setValue(Float.valueOf(light1.getDirection()[1]));
+        light1ZPosition.setValue(Float.valueOf(light1.getDirection()[2]));
+
+        //Light2
+        light2Checkbox.setSelected(light2.isEnabled());
+        ((JColorButton) light2AmbiantColorButton).setColor(ColorUtils.decode(light2.getAmbiant()));
+        ((JColorButton) light2DiffuseColorButton).setColor(ColorUtils.decode(light2.getDiffuse()));
+        ((JColorButton) light2SpecularColorButton).setColor(ColorUtils.decode(light2.getSpecular()));
+        light2XPosition.setValue(Float.valueOf(light2.getDirection()[0]));
+        light2YPosition.setValue(Float.valueOf(light2.getDirection()[1]));
+        light2ZPosition.setValue(Float.valueOf(light2.getDirection()[2]));
+
+        //Light3
+        light3Checkbox.setSelected(light3.isEnabled());
+        ((JColorButton) light3AmbiantColorButton).setColor(ColorUtils.decode(light3.getAmbiant()));
+        ((JColorButton) light3DiffuseColorButton).setColor(ColorUtils.decode(light3.getDiffuse()));
+        ((JColorButton) light3SpecularColorButton).setColor(ColorUtils.decode(light3.getSpecular()));
+        light3XPosition.setValue(Float.valueOf(light3.getDirection()[0]));
+        light3YPosition.setValue(Float.valueOf(light3.getDirection()[1]));
+        light3ZPosition.setValue(Float.valueOf(light3.getDirection()[2]));
+
+        //OpenGLInfo
+        GraphicalConfiguration gc = VizController.getInstance().getDrawable().getGraphicalConfiguration();
+        openInfoText.setText(gc.getVendor() + "\n" + gc.getRenderer() + "\nOpenGL " + gc.getVersionStr());
     }
 
     void store() {
         NbPreferences.forModule(VizConfig.class).putInt(VizConfig.ANTIALIASING, antiAliasing);
         NbPreferences.forModule(VizConfig.class).putBoolean(VizConfig.SHOW_FPS, fpsCheckbox.isSelected());
+
+        //Ambiant
+        NbPreferences.forModule(Lighting.class).put(Lighting.AMBIANT_AMBIANT, PrefsUtils.floatArrayToString(((JColorButton) ambientAmbiantColorButton).getColorArray()));
+        NbPreferences.forModule(Lighting.class).put(Lighting.AMBIANT_DIFFUSE, PrefsUtils.floatArrayToString(((JColorButton) ambientDiffuseColorButton).getColorArray()));
+        NbPreferences.forModule(Lighting.class).put(Lighting.AMBIANT_SPECULAR, PrefsUtils.floatArrayToString(((JColorButton) ambientSpecularColorButton).getColorArray()));
+
+        //Light1
+        NbPreferences.forModule(Lighting.class).putBoolean(Lighting.LIGHT1_ENABLED, light1Checkbox.isSelected());
+        NbPreferences.forModule(Lighting.class).put(Lighting.LIGHT1_AMBIANT, PrefsUtils.floatArrayToString(((JColorButton) light1AmbiantColorButton).getColorArray()));
+        NbPreferences.forModule(Lighting.class).put(Lighting.LIGHT1_DIFFUSE, PrefsUtils.floatArrayToString(((JColorButton) light1DiffuseColorButton).getColorArray()));
+        NbPreferences.forModule(Lighting.class).put(Lighting.LIGHT1_SPECULAR, PrefsUtils.floatArrayToString(((JColorButton) light1SpecularColorButton).getColorArray()));
+        NbPreferences.forModule(Lighting.class).put(Lighting.LIGHT1_POSITION, PrefsUtils.floatArrayToString(new float[]{(Float) light1XPosition.getValue(), (Float) light1YPosition.getValue(), (Float) light1ZPosition.getValue(), 0f}));
+
+        //Light2
+        NbPreferences.forModule(Lighting.class).putBoolean(Lighting.LIGHT2_ENABLED, light2Checkbox.isSelected());
+        NbPreferences.forModule(Lighting.class).put(Lighting.LIGHT2_AMBIANT, PrefsUtils.floatArrayToString(((JColorButton) light2AmbiantColorButton).getColorArray()));
+        NbPreferences.forModule(Lighting.class).put(Lighting.LIGHT2_DIFFUSE, PrefsUtils.floatArrayToString(((JColorButton) light2DiffuseColorButton).getColorArray()));
+        NbPreferences.forModule(Lighting.class).put(Lighting.LIGHT2_SPECULAR, PrefsUtils.floatArrayToString(((JColorButton) light2SpecularColorButton).getColorArray()));
+        NbPreferences.forModule(Lighting.class).put(Lighting.LIGHT2_POSITION, PrefsUtils.floatArrayToString(new float[]{(Float) light2XPosition.getValue(), (Float) light2YPosition.getValue(), (Float) light2ZPosition.getValue(), 0f}));
+
+        //Light3
+        NbPreferences.forModule(Lighting.class).putBoolean(Lighting.LIGHT3_ENABLED, light3Checkbox.isSelected());
+        NbPreferences.forModule(Lighting.class).put(Lighting.LIGHT3_AMBIANT, PrefsUtils.floatArrayToString(((JColorButton) light3AmbiantColorButton).getColorArray()));
+        NbPreferences.forModule(Lighting.class).put(Lighting.LIGHT3_DIFFUSE, PrefsUtils.floatArrayToString(((JColorButton) light3DiffuseColorButton).getColorArray()));
+        NbPreferences.forModule(Lighting.class).put(Lighting.LIGHT3_SPECULAR, PrefsUtils.floatArrayToString(((JColorButton) light3SpecularColorButton).getColorArray()));
+        NbPreferences.forModule(Lighting.class).put(Lighting.LIGHT3_POSITION, PrefsUtils.floatArrayToString(new float[]{(Float) light3XPosition.getValue(), (Float) light3YPosition.getValue(), (Float) light3ZPosition.getValue(), 0f}));
+
+        VizController.getInstance().getEngine().reinit();
     }
 
     boolean valid() {
@@ -132,11 +527,50 @@ final class OpenGLPanel extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ambientAmbiantColorButton;
+    private javax.swing.JButton ambientDiffuseColorButton;
+    private javax.swing.JButton ambientSpecularColorButton;
     private javax.swing.JComboBox antialisaingCombobox;
     private javax.swing.JCheckBox fpsCheckbox;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private org.jdesktop.swingx.JXTitledSeparator jXTitledSeparator1;
-    private org.jdesktop.swingx.JXTitledSeparator jXTitledSeparator2;
+    private org.jdesktop.swingx.JXTitledSeparator jXTitledSeparator3;
+    private javax.swing.JLabel labelAmbiant;
     private javax.swing.JLabel labelAntialiasing;
+    private javax.swing.JLabel labelDirectional;
     private javax.swing.JLabel labelShow;
+    private javax.swing.JButton light1AmbiantColorButton;
+    private javax.swing.JCheckBox light1Checkbox;
+    private javax.swing.JButton light1DiffuseColorButton;
+    private javax.swing.JButton light1SpecularColorButton;
+    private javax.swing.JSpinner light1XPosition;
+    private javax.swing.JSpinner light1YPosition;
+    private javax.swing.JSpinner light1ZPosition;
+    private javax.swing.JButton light2AmbiantColorButton;
+    private javax.swing.JCheckBox light2Checkbox;
+    private javax.swing.JButton light2DiffuseColorButton;
+    private javax.swing.JButton light2SpecularColorButton;
+    private javax.swing.JSpinner light2XPosition;
+    private javax.swing.JSpinner light2YPosition;
+    private javax.swing.JSpinner light2ZPosition;
+    private javax.swing.JButton light3AmbiantColorButton;
+    private javax.swing.JCheckBox light3Checkbox;
+    private javax.swing.JButton light3DiffuseColorButton;
+    private javax.swing.JButton light3SpecularColorButton;
+    private javax.swing.JSpinner light3XPosition;
+    private javax.swing.JSpinner light3YPosition;
+    private javax.swing.JSpinner light3ZPosition;
+    private javax.swing.JTextArea openInfoText;
+    private javax.swing.JPanel openglInfoPanel;
+    private javax.swing.JButton resetButton;
     // End of variables declaration//GEN-END:variables
 }

@@ -57,4 +57,14 @@ public class ColorUtils {
         }
         return String.valueOf(buf);
     }
+
+    public static Color decode(float[] array) {
+        if (array.length == 3) {
+            return new Color(array[0], array[1], array[2]);
+        } else if (array.length == 4) {
+            return new Color(array[0], array[1], array[2], array[3]);
+        } else {
+            throw new IllegalArgumentException("Must be a 3 or 4 length array");
+        }
+    }
 }
