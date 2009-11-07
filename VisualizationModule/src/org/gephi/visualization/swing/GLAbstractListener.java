@@ -57,16 +57,17 @@ public abstract class GLAbstractListener implements GLEventListener {
         caps.setHardwareAccelerated(true);
 
         //FSAA
-        if (vizController.getVizConfig().getAntialiasing() == 2) {
+        int antialisaing = vizController.getVizConfig().getAntialiasing();
+        if (antialisaing == 2) {
             caps.setSampleBuffers(true);
             caps.setNumSamples(2);
-        } else if (vizController.getVizConfig().getAntialiasing() == 4) {
+        } else if (antialisaing == 4) {
             caps.setSampleBuffers(true);
             caps.setNumSamples(4);
-        } else if (vizController.getVizConfig().getAntialiasing() == 8) {
+        } else if (antialisaing == 8) {
             caps.setSampleBuffers(true);
             caps.setNumSamples(8);
-        } else if (vizController.getVizConfig().getAntialiasing() == 16) {
+        } else if (antialisaing == 16) {
             caps.setSampleBuffers(true);
             caps.setNumSamples(16);
         }
@@ -258,7 +259,7 @@ public abstract class GLAbstractListener implements GLEventListener {
                 System.err.println("GL_RENDERER: " + gl.glGetString(GL.GL_RENDERER));
                 System.err.println("GL_VERSION: " + gl.glGetString(GL.GL_VERSION));
             }
-            
+
             resizing = false;
         }
     }

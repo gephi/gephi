@@ -102,10 +102,10 @@ public class VizModel {
         cameraTarget = Arrays.copyOf(config.getDefaultCameraTarget(), 3);
         textModel = new TextModel();
         use3d = config.isDefaultUse3d();
-        lighting = config.isDefaultLighting();
-        culling = config.isDefaultCulling();
-        material = config.isDefaultMaterial();
-        rotatingEnable = config.isDefaultRotatingEnable();
+        lighting = use3d;
+        culling = use3d;
+        material = use3d;
+        rotatingEnable = use3d;
         backgroundColor = config.getDefaultBackgroundColor();
 
         showEdges = config.isDefaultShowEdges();
@@ -114,13 +114,13 @@ public class VizModel {
         hideNonSelectedEdges = config.isDefaultHideNonSelectedEdges();
         uniColorSelected = config.isDefaultUniColorSelected();
         edgeHasUniColor = config.isDefaultEdgeHasUniColor();
-        edgeUniColor = config.getDefaultEdgeUniColor();
+        edgeUniColor = config.getDefaultEdgeUniColor().getRGBComponents(null);
         adjustByText = config.isDefaultAdjustByText();
-        nodeModeler = config.getDefaultNodeModeler();
+        nodeModeler = use3d?"CompatibilityNodeSphereModeler":"CompatibilityNodeDiskModeler";
         edgeSelectionColor = config.isDefaultEdgeSelectionColor();
-        edgeInSelectionColor = config.getDefaultEdgeInSelectedColor();
-        edgeOutSelectionColor = config.getDefaultEdgeOutSelectedColor();
-        edgeBothSelectionColor = config.getDefaultEdgeBothSelectedColor();
+        edgeInSelectionColor = config.getDefaultEdgeInSelectedColor().getRGBComponents(null);
+        edgeOutSelectionColor = config.getDefaultEdgeOutSelectedColor().getRGBComponents(null);
+        edgeBothSelectionColor = config.getDefaultEdgeBothSelectedColor().getRGBComponents(null);
     }
 
     //GETTERS

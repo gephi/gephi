@@ -63,8 +63,8 @@ public class TextModel {
         showEdgeLabels = vizConfig.isDefaultShowEdgeLabels();
         nodeFont = vizConfig.getDefaultNodeLabelFont();
         edgeFont = vizConfig.getDefaultEdgeLabelFont();
-        nodeColor = vizConfig.getDefaultNodeLabelColor();
-        edgeColor = vizConfig.getDefaultEdgeLabelColor();
+        nodeColor = vizConfig.getDefaultNodeLabelColor().getRGBComponents(null);
+        edgeColor = vizConfig.getDefaultEdgeLabelColor().getRGBComponents(null);
         selectedOnly = vizConfig.isDefaultShowLabelOnSelectedOnly();
         colorMode = VizController.getInstance().getTextManager().getColorModes()[0];
         sizeMode = VizController.getInstance().getTextManager().getSizeModes()[0];

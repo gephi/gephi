@@ -46,12 +46,14 @@ public class Rectangle implements SelectionArea {
     private GraphDrawable drawable;
     private boolean stop = true;
     private VizConfig config;
+    private float[] color;
     private boolean blocking = true;
     private boolean ctrl = false;
 
     public Rectangle() {
         drawable = VizController.getInstance().getDrawable();
         config = VizController.getInstance().getVizConfig();
+        color = config.getRectangleSelectionColor().getRGBComponents(null);
     }
 
     public float[] getSelectionAreaRectancle() {
@@ -164,7 +166,6 @@ public class Rectangle implements SelectionArea {
             gl.glPushMatrix();
             gl.glLoadIdentity();
 
-            float[] color = config.getRectangleSelectionColor();
             gl.glColor4f(color[0], color[1], color[2], color[3]);
 
             gl.glBegin(GL.GL_QUADS);
