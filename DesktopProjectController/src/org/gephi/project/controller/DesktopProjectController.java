@@ -54,6 +54,7 @@ import org.gephi.utils.longtask.LongTaskListener;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
@@ -405,6 +406,9 @@ public class DesktopProjectController implements ProjectController {
                 frame.setTitle(title);
             }
         });
+
+        //Status line
+        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopProjectController.class, "DesktoProjectController.status.opened", project.getName()));
     }
 
     public Project getCurrentProject() {

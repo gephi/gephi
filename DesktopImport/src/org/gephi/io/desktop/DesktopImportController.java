@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.desktop;
 
 import org.gephi.io.database.DatabaseType;
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,6 +56,7 @@ import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
@@ -101,7 +101,7 @@ public class DesktopImportController implements ImportController {
 
             //Create Container
             final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
-            container.setSource("" + im.getClass());
+            container.setSource(fileObject.getNameExt());
 
             //Report
             Report report = new Report();
@@ -225,7 +225,7 @@ public class DesktopImportController implements ImportController {
 
             //Create Container
             final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
-            container.setSource("" + importer.getClass());
+            container.setSource(database.getName());
 
             //Report
             final Report report = new Report();
@@ -306,6 +306,13 @@ public class DesktopImportController implements ImportController {
 
             container.closeLoader();
             Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
+
+            //StatusLine notify
+            String source = container.getSource();
+            if (source.isEmpty()) {
+                source = NbBundle.getMessage(DesktopImportController.class, "DesktopImportController.status.importSuccess.default");
+            }
+            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopImportController.class, "DesktopImportController.status.importSuccess", source));
         }
     }
 

@@ -37,10 +37,12 @@ import org.gephi.io.project.GephiWriter;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
+import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.w3c.dom.Document;
 
@@ -119,6 +121,8 @@ public class SaveTask implements LongTask, Runnable {
                 tempFileObject.delete();
             }
             Progress.finish(progressTicket);
+            //Status line
+            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopProjectController.class, "DesktoProjectController.status.saved", dataObject.getName()));
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new GephiFormatException(GephiWriter.class, ex);
