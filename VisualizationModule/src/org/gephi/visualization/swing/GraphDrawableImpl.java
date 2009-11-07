@@ -23,6 +23,7 @@ package org.gephi.visualization.swing;
 import com.sun.opengl.util.BufferUtil;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.nio.DoubleBuffer;
@@ -126,6 +127,7 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
     @Override
     protected void reshape3DScene(GL gl) {
         setCameraPosition(gl, glu);
+        graphComponent.invalidate();    //Force canvas to be laid out with the proper size
     }
 
     @Override

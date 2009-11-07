@@ -21,11 +21,16 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.component;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.gephi.project.api.ProjectController;
@@ -80,7 +85,6 @@ final class GraphTopComponent extends TopComponent {
         });
     //remove(waitingLabel);
     //add(drawable.getGraphComponent(), BorderLayout.CENTER);
-
     }
 
     private void initCollapsePanel() {

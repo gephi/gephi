@@ -258,6 +258,7 @@ public abstract class GLAbstractListener implements GLEventListener {
                 System.err.println("GL_RENDERER: " + gl.glGetString(GL.GL_RENDERER));
                 System.err.println("GL_VERSION: " + gl.glGetString(GL.GL_VERSION));
             }
+            
             resizing = false;
         }
     }
