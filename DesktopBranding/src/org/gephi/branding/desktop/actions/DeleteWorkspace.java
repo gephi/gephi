@@ -21,35 +21,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import org.gephi.project.api.ProjectController;
-import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
-import org.openide.util.actions.SystemAction;
 
-/**
- *
- * @author Mathieu Bastian
- */
-public class DeleteWorkspace extends SystemAction {
+public final class DeleteWorkspace implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.deleteWorkspace(pc.getCurrentWorkspace());
-    }
-
-    @Override
-    protected String iconResource() {
-        return "org/gephi/branding/desktop/actions/deleteWorkspace.png";
-    }
-
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(DeleteWorkspace.class, "CTL_DeleteWorkspace");
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return null;
     }
 }

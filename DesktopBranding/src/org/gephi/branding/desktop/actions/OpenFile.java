@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import org.gephi.io.importer.FileType;
@@ -28,33 +29,16 @@ import org.gephi.io.importer.ImportController;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
-import org.openide.util.actions.SystemAction;
 
-/**
- *
- * @author Mathieu Bastian
- */
-public class OpenFile extends SystemAction {
+public final class OpenFile implements ActionListener {
 
     private static final String LAST_PATH = "OpenFile_Last_Path";
     private static final String LAST_PATH_DEFAULT = "OpenFile_Last_Path_Default";
 
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(OpenFile.class, "CTL_OpenFile");
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return null;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent ev) {
+    public void actionPerformed(ActionEvent e) {
         //Get last directory
         String lastPathDefault = NbPreferences.forModule(OpenFile.class).get(LAST_PATH_DEFAULT, null);
         String lastPath = NbPreferences.forModule(OpenFile.class).get(LAST_PATH, lastPathDefault);

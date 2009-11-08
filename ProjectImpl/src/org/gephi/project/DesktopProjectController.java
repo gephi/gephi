@@ -18,32 +18,24 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.project.controller;
+package org.gephi.project;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import org.gephi.branding.desktop.actions.CleanWorkspace;
-import org.gephi.branding.desktop.actions.CloseProject;
-import org.gephi.branding.desktop.actions.DeleteWorkspace;
-import org.gephi.branding.desktop.actions.DuplicateWorkspace;
-import org.gephi.branding.desktop.actions.NewProject;
-import org.gephi.branding.desktop.actions.NewWorkspace;
-import org.gephi.branding.desktop.actions.OpenFile;
-import org.gephi.branding.desktop.actions.OpenProject;
-import org.gephi.branding.desktop.actions.ProjectProperties;
-import org.gephi.branding.desktop.actions.SaveAsProject;
+
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Projects;
 import org.gephi.workspace.api.Workspace;
-import org.openide.util.actions.SystemAction;
-import org.gephi.branding.desktop.actions.SaveProject;
 import org.gephi.io.project.GephiDataObject;
+import org.gephi.io.project.LoadTask;
+import org.gephi.io.project.SaveTask;
 import org.gephi.project.ProjectImpl;
 import org.gephi.project.ProjectsImpl;
 import org.gephi.ui.utils.DialogFileFilter;
@@ -53,8 +45,10 @@ import org.gephi.utils.longtask.LongTaskExecutor;
 import org.gephi.utils.longtask.LongTaskListener;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.DialogDisplayer;
+import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
+import org.openide.cookies.InstanceCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
@@ -62,6 +56,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
+import org.openide.util.Utilities;
 import org.openide.windows.WindowManager;
 
 /**
@@ -102,14 +97,14 @@ public class DesktopProjectController implements ProjectController {
         listeners.addAll(Lookup.getDefault().lookupAll(WorkspaceListener.class));
 
         //Actions
-        disableAction(SaveProject.class);
-        disableAction(SaveAsProject.class);
-        disableAction(ProjectProperties.class);
-        disableAction(CloseProject.class);
-        disableAction(NewWorkspace.class);
-        disableAction(DeleteWorkspace.class);
-        disableAction(CleanWorkspace.class);
-        disableAction(DuplicateWorkspace.class);
+        disableAction("SaveProject");
+        disableAction("SaveAsProject");
+        disableAction("ProjectProperties");
+        disableAction("CloseProject");
+        disableAction("NewWorkspace");
+        disableAction("DeleteWorkspace");
+        disableAction("CleanWorkspace");
+        disableAction("DuplicateWorkspace");
     }
 
     public void startup() {
@@ -125,33 +120,33 @@ public class DesktopProjectController implements ProjectController {
     }
 
     private void lockProjectActions() {
-        disableAction(SaveProject.class);
-        disableAction(SaveAsProject.class);
-        disableAction(OpenProject.class);
-        disableAction(CloseProject.class);
-        disableAction(NewProject.class);
-        disableAction(OpenFile.class);
-        disableAction(NewWorkspace.class);
-        disableAction(DeleteWorkspace.class);
-        disableAction(CleanWorkspace.class);
-        disableAction(DuplicateWorkspace.class);
+        disableAction("SaveProject");
+        disableAction("SaveAsProject");
+        disableAction("OpenProject");
+        disableAction("CloseProject");
+        disableAction("NewProject");
+        disableAction("OpenFile");
+        disableAction("NewWorkspace");
+        disableAction("DeleteWorkspace");
+        disableAction("CleanWorkspace");
+        disableAction("DuplicateWorkspace");
     }
 
     private void unlockProjectActions() {
         if (projects.hasCurrentProject()) {
-            enableAction(SaveProject.class);
-            enableAction(SaveAsProject.class);
-            enableAction(CloseProject.class);
-            enableAction(NewWorkspace.class);
+            enableAction("SaveProject");
+            enableAction("SaveAsProject");
+            enableAction("CloseProject");
+            enableAction("NewWorkspace");
             if (projects.getCurrentProject().hasCurrentWorkspace()) {
-                enableAction(DeleteWorkspace.class);
-                enableAction(CleanWorkspace.class);
-                enableAction(DuplicateWorkspace.class);
+                enableAction("DeleteWorkspace");
+                enableAction("CleanWorkspace");
+                enableAction("DuplicateWorkspace");
             }
         }
-        enableAction(OpenProject.class);
-        enableAction(NewProject.class);
-        enableAction(OpenFile.class);
+        enableAction("OpenProject");
+        enableAction("NewProject");
+        enableAction("OpenFile");
     }
 
     public void newProject() {
@@ -269,14 +264,14 @@ public class DesktopProjectController implements ProjectController {
 
 
             //Actions
-            disableAction(SaveProject.class);
-            disableAction(SaveAsProject.class);
-            disableAction(ProjectProperties.class);
-            disableAction(CloseProject.class);
-            disableAction(NewWorkspace.class);
-            disableAction(DeleteWorkspace.class);
-            disableAction(CleanWorkspace.class);
-            disableAction(DuplicateWorkspace.class);
+            disableAction("SaveProject");
+            disableAction("SaveAsProject");
+            disableAction("ProjectProperties");
+            disableAction("CloseProject");
+            disableAction("NewWorkspace");
+            disableAction("DeleteWorkspace");
+            disableAction("CleanWorkspace");
+            disableAction("DuplicateWorkspace");
 
             //Title bar
             SwingUtilities.invokeLater(new Runnable() {
@@ -364,7 +359,7 @@ public class DesktopProjectController implements ProjectController {
         //Event
         fireWorkspaceEvent(EventType.CLOSE, workspace);
 
-        if (getCurrentProject()==null || getCurrentProject().getWorkspaces().length == 0) {
+        if (getCurrentProject() == null || getCurrentProject().getWorkspaces().length == 0) {
             //Event
             fireWorkspaceEvent(EventType.DISABLE, workspace);
         }
@@ -386,15 +381,15 @@ public class DesktopProjectController implements ProjectController {
                 openWorkspace(workspace);
             }
         }
-        enableAction(SaveAsProject.class);
-        enableAction(ProjectProperties.class);
-        enableAction(SaveProject.class);
-        enableAction(CloseProject.class);
-        enableAction(NewWorkspace.class);
+        enableAction("SaveAsProject");
+        enableAction("ProjectProperties");
+        enableAction("SaveProject");
+        enableAction("CloseProject");
+        enableAction("NewWorkspace");
         if (project.hasCurrentWorkspace()) {
-            enableAction(DeleteWorkspace.class);
-            enableAction(CleanWorkspace.class);
-            enableAction(DuplicateWorkspace.class);
+            enableAction("DeleteWorkspace");
+            enableAction("CleanWorkspace");
+            enableAction("DuplicateWorkspace");
         }
 
         //Title bar
@@ -505,18 +500,70 @@ public class DesktopProjectController implements ProjectController {
         }
     }
 
-    public void enableAction(Class clazz) {
-        SystemAction action = SystemAction.get(clazz);
-        if (action != null) {
-            action.setEnabled(true);
+    public void enableAction(String actionName) {
+        /*boolean found = false;
+        List<? extends Action> actionsFile = Utilities.actionsForPath("Actions/File/");
+        for (Action a : actionsFile) {
+        if (a.getValue(Action.NAME).equals(actionName)) {
+        a.setEnabled(true);
+        found = true;
         }
+        }
+        if (!found) {
+        List<? extends Action> actionsEdit = Utilities.actionsForPath("Actions/Edit/");
+        for (Action a : actionsEdit) {
+        if (a.getValue(Action.NAME).equals(actionName)) {
+        a.setEnabled(true);
+        found = true;
+        }
+        }
+        }
+        if (!found) {
+        throw new IllegalArgumentException(actionName + " cannot be found");
+        }*/
     }
 
-    public void disableAction(Class clazz) {
-        SystemAction action = SystemAction.get(clazz);
-
-        if (action != null) {
-            action.setEnabled(false);
+    public void disableAction(String actionName) {
+        /*boolean found = false;
+        List<? extends Action> actions = Utilities.actionsForPath("Actions/File/");
+        for (Action a : actions) {
+        if (a.getValue(Action.NAME).equals(actionName)) {
+        a.setEnabled(false);
+        found = true;
         }
+        }
+        if (!found) {
+        List<? extends Action> actionsEdit = Utilities.actionsForPath("Actions/Edit/");
+        for (Action a : actionsEdit) {
+        if (a.getValue(Action.NAME).equals(actionName)) {
+        a.setEnabled(false);
+        found = true;
+        }
+        }
+        }
+        if (!found) {
+        throw new IllegalArgumentException(actionName + " cannot be found");
+        }*/
     }
+
+    /*public Action findAction(String key) {
+    FileObject fo = FileUtil.getConfigFile(key);
+    if (fo != null && fo.isValid()) {
+    try {
+    DataObject dob = DataObject.find(fo);
+    InstanceCookie ic = dob.getLookup().lookup(InstanceCookie.class);
+    if (ic != null) {
+    Object instance = ic.instanceCreate();
+    if (instance instanceof Action) {
+    Action a = (Action) instance;
+    return a;
+    }
+    }
+    } catch (Exception e) {
+    ErrorManager.getDefault().notify(ErrorManager.WARNING, e);
+    return null;
+    }
+    }
+    return null;
+    }*/
 }

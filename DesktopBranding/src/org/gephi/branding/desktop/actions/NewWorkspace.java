@@ -18,39 +18,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import org.gephi.project.api.ProjectController;
-import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
-import org.openide.util.actions.SystemAction;
 
-/**
- *
- * @author Mathieu Bastian
- */
-public class NewWorkspace extends SystemAction {
+public final class NewWorkspace implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.newWorkspace(pc.getCurrentProject());
-    }
-
-    @Override
-    protected String iconResource() {
-        return "org/gephi/branding/desktop/actions/newWorkspace.png";
-    }
-
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(NewWorkspace.class, "CTL_NewWorkspace");
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return null;
     }
 }

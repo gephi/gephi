@@ -137,9 +137,7 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages>
-                <package>org.gephi.branding.desktop.actions</package>
-            </public-packages>
+            <public-packages/>
         </data>
     </configuration>
 </project>

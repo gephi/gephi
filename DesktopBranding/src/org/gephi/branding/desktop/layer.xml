@@ -17,6 +17,32 @@
     <attr name="Menu\Window\ProjectAction.shadow\position" intvalue="250"/>
     <attr name="Menu\Window\org-netbeans-core-windows-actions-ResetWindowsAction.shadow\position" intvalue="2750"/>
     <folder name="Actions">
+        <folder name="Edit">
+            <file name="org-gephi-branding-desktop-actions-CleanWorkspace.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
+                <attr name="delegate" newvalue="org.gephi.branding.desktop.actions.CleanWorkspace"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.actions.Bundle#CTL_CleanWorkspace"/>
+                <attr name="iconBase" stringvalue="org/gephi/branding/desktop/actions/cleanWorkspace.gif"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" stringvalue="false"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-DeleteWorkspace.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
+                <attr name="delegate" newvalue="org.gephi.branding.desktop.actions.DeleteWorkspace"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.actions.Bundle#CTL_DeleteWorkspace"/>
+                <attr name="iconBase" stringvalue="org/gephi/branding/desktop/actions/deleteWorkspace.png"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" stringvalue="false"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-NewWorkspace.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
+                <attr name="delegate" newvalue="org.gephi.branding.desktop.actions.NewWorkspace"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.actions.Bundle#CTL_NewWorkspace"/>
+                <attr name="iconBase" stringvalue="org/gephi/branding/desktop/actions/newWorkspace.png"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" stringvalue="false"/>
+            </file>
+        </folder>
         <folder name="File">
             <file name="org-gephi-branding-desktop-TopTabAction.instance">
                 <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
@@ -24,21 +50,74 @@
                 <attr name="displayName" bundlevalue="org.gephi.branding.desktop.Bundle#CTL_TopTabAction"/>
                 <attr name="noIconInMenu" stringvalue="false"/>
             </file>
+            <file name="org-gephi-branding-desktop-actions-CloseProject.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
+                <attr name="delegate" newvalue="org.gephi.branding.desktop.actions.CloseProject"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.actions.Bundle#CTL_CloseProject"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" stringvalue="false"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-NewProject.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
+                <attr name="delegate" newvalue="org.gephi.branding.desktop.actions.NewProject"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.actions.Bundle#CTL_NewProject"/>
+                <attr name="iconBase" stringvalue="org/gephi/branding/desktop/actions/newProject.png"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" stringvalue="false"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-OpenFile.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
+                <attr name="delegate" newvalue="org.gephi.branding.desktop.actions.OpenFile"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.actions.Bundle#CTL_OpenFile"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" stringvalue="false"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-OpenProject.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
+                <attr name="delegate" newvalue="org.gephi.branding.desktop.actions.OpenProject"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.actions.Bundle#CTL_OpenProject"/>
+                <attr name="iconBase" stringvalue="org/gephi/branding/desktop/actions/openProject.png"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" stringvalue="false"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-ProjectProperties.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
+                <attr name="delegate" newvalue="org.gephi.branding.desktop.actions.ProjectProperties"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.actions.Bundle#CTL_ProjectProperties"/>
+                <attr name="iconBase" stringvalue="org/gephi/branding/desktop/actions/projectProperties.gif"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" stringvalue="false"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-SaveAsProject.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
+                <attr name="delegate" newvalue="org.gephi.branding.desktop.actions.SaveAsProject"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.actions.Bundle#CTL_SaveAsProject"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" stringvalue="false"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-SaveProject.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
+                <attr name="delegate" newvalue="org.gephi.branding.desktop.actions.SaveProject"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.actions.Bundle#CTL_SaveProject"/>
+                <attr name="iconBase" stringvalue="org/gephi/branding/desktop/actions/saveProject.png"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" stringvalue="false"/>
+            </file>
         </folder>
     </folder>
     <folder name="Menu">
         <folder name="Edit">
-            <file name="org-gephi-branding-desktop-actions-NewWorkspace.instance">
-                <attr name="position" intvalue="2500"/>
-            </file>
-            <file name="org-gephi-branding-desktop-actions-DeleteWorkspace.instance">
-                <attr name="position" intvalue="2600"/>
-            </file>
-            <file name="org-gephi-branding-desktop-actions-CleanWorkspace.instance">
+            <file name="org-gephi-branding-desktop-actions-CleanWorkspace.shadow">
+                <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-CleanWorkspace.instance"/>
                 <attr name="position" intvalue="2700"/>
             </file>
-            <file name="org-gephi-branding-desktop-actions-DuplicateWorkspace.instance">
-                <attr name="position" intvalue="2800"/>
+            <file name="org-gephi-branding-desktop-actions-DeleteWorkspace.shadow">
+                <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-DeleteWorkspace.instance"/>
+                <attr name="position" intvalue="2600"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-NewWorkspace.shadow">
+                <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-NewWorkspace.instance"/>
+                <attr name="position" intvalue="2500"/>
             </file>
             <file name="Separator2_1.instance" url="Separator2_1.instance">
                 <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
@@ -46,36 +125,43 @@
             </file>
         </folder>
         <folder name="File">
+            <file name="org-gephi-branding-desktop-actions-CloseProject.shadow">
+                <attr name="originalFile" stringvalue="Actions/File/org-gephi-branding-desktop-actions-CloseProject.instance"/>
+                <attr name="position" intvalue="400"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-NewProject.shadow">
+                <attr name="originalFile" stringvalue="Actions/File/org-gephi-branding-desktop-actions-NewProject.instance"/>
+                <attr name="position" intvalue="100"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-OpenFile.shadow">
+                <attr name="originalFile" stringvalue="Actions/File/org-gephi-branding-desktop-actions-OpenFile.instance"/>
+                <attr name="position" intvalue="300"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-OpenProject.shadow">
+                <attr name="originalFile" stringvalue="Actions/File/org-gephi-branding-desktop-actions-OpenProject.instance"/>
+                <attr name="position" intvalue="200"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-ProjectProperties.shadow">
+                <attr name="originalFile" stringvalue="Actions/File/org-gephi-branding-desktop-actions-ProjectProperties.instance"/>
+                <attr name="position" intvalue="500"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-SaveAsProject.shadow">
+                <attr name="originalFile" stringvalue="Actions/File/org-gephi-branding-desktop-actions-SaveAsProject.instance"/>
+                <attr name="position" intvalue="1100"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-SaveProject.shadow">
+                <attr name="originalFile" stringvalue="Actions/File/org-gephi-branding-desktop-actions-SaveProject.instance"/>
+                <attr name="position" intvalue="750"/>
+            </file>
             <file name="org-openide-actions-PageSetupAction.instance_hidden"/>
             <file name="org-openide-actions-PrintAction.instance_hidden"/>
             <file name="org-openide-actions-SaveAction.instance_hidden"/>
             <file name="org-openide-actions-SaveAllAction.instance_hidden"/>
             <file name="org-openide-actions-SaveAsAction.shadow_hidden"/>
-            <file name="org-gephi-branding-desktop-actions-NewProject.instance">
-                <attr name="position" intvalue="100"/>
-            </file>
-            <file name="org-gephi-branding-desktop-actions-OpenProject.instance">
-                <attr name="position" intvalue="200"/>
-            </file>
-            <file name="org-gephi-branding-desktop-actions-OpenFile.instance">
-                <attr name="position" intvalue="300"/>
-            </file>
-            <file name="org-gephi-branding-desktop-actions-CloseProject.instance">
-                <attr name="position" intvalue="400"/>
-            </file>
-            <file name="org-gephi-branding-desktop-actions-ProjectProperties.instance">
-                <attr name="position" intvalue="500"/>
-            </file>
             <file name="Separator2_1.instance" url="Separator2_1.instance">
                 <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
                 <attr name="position" intvalue="550"/>
             </file>
-            <file name="org-gephi-branding-desktop-actions-SaveProject.instance">
-                <attr name="position" intvalue="750"/>
-            </file>
-            <file name="org-gephi-branding-desktop-actions-SaveAsProject.instance">
-                <attr name="position" intvalue="1100"/>
-            </file>          
         </folder>
         <folder name="Plugins">
             <attr name="position" intvalue="1250"/>
@@ -103,6 +189,23 @@
             <file name="org-netbeans-core-actions-GlobalPropertiesAction.shadow_hidden"/>
         </folder>
     </folder>
+    <folder name="Shortcuts">
+        <file name="D-N.shadow">
+            <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-NewWorkspace.instance"/>
+        </file>
+        <file name="D-O.shadow">
+            <attr name="originalFile" stringvalue="Actions/File/org-gephi-branding-desktop-actions-OpenFile.instance"/>
+        </file>
+        <file name="D-S.shadow">
+            <attr name="originalFile" stringvalue="Actions/File/org-gephi-branding-desktop-actions-SaveProject.instance"/>
+        </file>
+        <file name="DS-N.shadow">
+            <attr name="originalFile" stringvalue="Actions/File/org-gephi-branding-desktop-actions-NewProject.instance"/>
+        </file>
+        <file name="DS-O.shadow">
+            <attr name="originalFile" stringvalue="Actions/File/org-gephi-branding-desktop-actions-OpenProject.instance"/>
+        </file>
+    </folder>
     <folder name="Toolbars">
         <file name="Clipboard_hidden"/>
         <file name="UndoRedo_hidden"/>
@@ -111,10 +214,8 @@
                 <attr name="originalFile" stringvalue="Actions/File/org-gephi-branding-desktop-TopTabAction.instance"/>
                 <attr name="position" intvalue="10"/>
             </file>
-            
             <file name="org-openide-actions-SaveAllAction.instance_hidden"/>
         </folder>
-
     </folder>
     <folder name="Windows2">
         <folder name="Groups">

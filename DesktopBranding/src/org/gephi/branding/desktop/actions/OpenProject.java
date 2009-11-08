@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import org.gephi.project.api.ProjectController;
@@ -29,17 +30,11 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.util.Exceptions;
-import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
-import org.openide.util.actions.SystemAction;
 
-/**
- *
- * @author Mathieu Bastian
- */
-public final class OpenProject extends SystemAction {
+public final class OpenProject implements ActionListener {
 
     private static final String LAST_PATH = "OpenProject_Last_Path";
     private static final String LAST_PATH_DEFAULT = "OpenProject_Last_Path_Default";
@@ -79,20 +74,5 @@ public final class OpenProject extends SystemAction {
                 Exceptions.printStackTrace(ew);
             }
         }
-    }
-
-    @Override
-    protected String iconResource() {
-        return "org/gephi/branding/desktop/actions/openProject.png";
-    }
-
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(OpenProject.class, "CTL_OpenProject");
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return null;
     }
 }

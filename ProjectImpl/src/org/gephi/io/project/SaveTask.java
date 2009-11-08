@@ -18,8 +18,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.project.controller;
+package org.gephi.io.project;
 
+import org.gephi.project.DesktopProjectController;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.zip.ZipEntry;
