@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.partition.transformer;
 
-import com.sun.org.apache.bcel.internal.generic.IFEQ;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -28,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import java.util.Map.Entry;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -110,6 +110,18 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
 
             public void actionPerformed(ActionEvent e) {
                 nodeColorTransformer.getMap().clear();
+                setup(partition, nodeColorTransformer);
+                revalidate();
+                repaint();
+            }
+        });
+        JMenuItem allBlackItem = new JMenuItem(NbBundle.getMessage(NodeColorTransformerPanel.class, "NodeColorTransformerPanel.action.allBlacks"));
+        allBlackItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                for (Entry<Object, Color> entry : nodeColorTransformer.getMap().entrySet()) {
+                    entry.setValue(Color.BLACK);
+                }
                 setup(partition, nodeColorTransformer);
                 revalidate();
                 repaint();

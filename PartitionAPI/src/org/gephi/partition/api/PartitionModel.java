@@ -38,6 +38,7 @@ public interface PartitionModel {
     public static final String NODE_PARTITIONS = "nodePartitions";
     public static final String EDGE_PARTITIONS = "edgePartitions";
     public static final String WAITING = "waiting";
+    public static final String PIE = "pie";
 
     public NodePartition[] getNodePartitions();
 
@@ -56,6 +57,8 @@ public interface PartitionModel {
     public int getSelectedPartitioning();
 
     public boolean isWaiting();
+
+    public boolean isPie();
 
     public void addPropertyChangeListener(PropertyChangeListener changeListener);
 

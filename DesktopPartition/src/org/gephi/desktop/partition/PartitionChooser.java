@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.partition;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -49,6 +50,8 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
     private final String BUSY_MSG;
     private final String GROUP_LABEL;
     private final String UNGROUP_LABEL;
+    private final String SHOW_PIE;
+    private final String HIDE_PIE;
 
     //Architecture
     private PartitionModel model;
@@ -60,6 +63,8 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
         BUSY_MSG = NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.busyMessage");
         GROUP_LABEL = NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.group.label");
         UNGROUP_LABEL = NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.ungroup.label");
+        SHOW_PIE = NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.showpie.label");
+        HIDE_PIE = NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.hidepie.label");
         refreshModel();
     }
 
@@ -78,6 +83,7 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
         controlPanel = new javax.swing.JPanel();
         applyButton = new javax.swing.JButton();
         groupLink = new org.jdesktop.swingx.JXHyperlink();
+        pieLink = new org.jdesktop.swingx.JXHyperlink();
         centerScrollPane = new javax.swing.JScrollPane();
 
         setLayout(new java.awt.BorderLayout());
@@ -106,7 +112,7 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
         gridBagConstraints.weightx = 1.0;
@@ -117,12 +123,23 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
         groupLink.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/partition/cluster.png"))); // NOI18N
         groupLink.setText(org.openide.util.NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.groupLink.text")); // NOI18N
         groupLink.setToolTipText(org.openide.util.NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.groupLink.toolTipText")); // NOI18N
+        groupLink.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 1, 0);
         controlPanel.add(groupLink, gridBagConstraints);
+
+        pieLink.setClickedColor(new java.awt.Color(0, 51, 255));
+        pieLink.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/partition/pie.png"))); // NOI18N
+        pieLink.setText(org.openide.util.NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.pieLink.text")); // NOI18N
+        pieLink.setEnabled(false);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 1, 0);
+        controlPanel.add(pieLink, gridBagConstraints);
 
         add(controlPanel, java.awt.BorderLayout.PAGE_END);
 
@@ -165,6 +182,14 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
                     pc.ungroup(model.getSelectedPartition());
                     refreshGrouped();
                 }
+            }
+        });
+
+        pieLink.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                PartitionController pc = Lookup.getDefault().lookup(PartitionController.class);
+                pc.showPie(pieLink.getText().equals(SHOW_PIE) ? true : false);
             }
         });
     }
@@ -256,20 +281,53 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
             groupLink.setVisible(false);
         }
     }
+    private PartitionPie partitionPie;
+
+    private void refreshPie() {
+        if (model.getSelectedPartition() != null) {
+            pieLink.setEnabled(true);
+            if (model.isPie()) {
+                pieLink.setText(HIDE_PIE);
+                partitionPie = new PartitionPie();
+                partitionPie.setup(model.getSelectedPartition());
+                remove(centerScrollPane);
+                add(partitionPie, BorderLayout.CENTER);
+                revalidate();
+                repaint();
+                return;
+            } else {
+                pieLink.setText(SHOW_PIE);
+            }
+
+        } else {
+            pieLink.setText(SHOW_PIE);
+            pieLink.setEnabled(false);
+        }
+        if (!isAncestorOf(centerScrollPane)) {
+            remove(partitionPie);
+            add(centerScrollPane, BorderLayout.CENTER);
+            revalidate();
+            repaint();
+        }
+    }
 
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals(PartitionModel.NODE_TRANSFORMER) || evt.getPropertyName().equals(PartitionModel.NODE_TRANSFORMER)) {
+        if (evt.getPropertyName().equals(PartitionModel.NODE_TRANSFORMER) || evt.getPropertyName().equals(PartitionModel.EDGE_TRANSFORMER)) {
             refreshTransformerBuilder();
         } else if (evt.getPropertyName().equals(PartitionModel.NODE_PARTITION) || evt.getPropertyName().equals(PartitionModel.EDGE_PARTITION)) {
             refreshTransformerBuilder();
             refreshPartitions();
             refreshGrouped();
+            refreshPie();
         } else if (evt.getPropertyName().equals(PartitionModel.WAITING)) {
             refreshWaiting();
         } else if (evt.getPropertyName().equals(PartitionModel.SELECTED_PARTIONING)) {
             refreshTransformerBuilder();
             refreshPartitions();
             refreshGrouped();
+            refreshPie();
+        } else if (evt.getPropertyName().equals(PartitionModel.PIE)) {
+            refreshPie();
         }
     }
 
@@ -280,6 +338,7 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
             refreshTransformerBuilder();
             refreshWaiting();
             refreshGrouped();
+            refreshPie();
         }
     }
 
@@ -303,6 +362,7 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
         applyButton.setEnabled(enable);
         partitionComboBox.setEnabled(enable);
         groupLink.setEnabled(enable);
+        pieLink.setEnabled(enable);
     }
 
     private JLazyComboBox.LazyComboBoxModel newLazyModel() {
@@ -334,5 +394,6 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
     private javax.swing.JPanel controlPanel;
     private org.jdesktop.swingx.JXHyperlink groupLink;
     private javax.swing.JComboBox partitionComboBox;
+    private org.jdesktop.swingx.JXHyperlink pieLink;
     // End of variables declaration//GEN-END:variables
 }

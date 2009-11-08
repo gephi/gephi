@@ -248,4 +248,8 @@ public class PartitionControllerImpl implements PartitionController {
             }
         }
     }
+
+    public void showPie(boolean showPie) {
+        model.setPie(showPie);
+    }
 }

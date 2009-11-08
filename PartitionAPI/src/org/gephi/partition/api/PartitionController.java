@@ -43,4 +43,6 @@ public interface PartitionController {
     public void group(Partition partition);
 
     public void ungroup(Partition partition);
+
+    public void showPie(boolean showPie);
 }

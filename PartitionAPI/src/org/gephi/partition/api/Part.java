@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.partition.api;
 
+import java.awt.Color;
+
 /**
  *
  * @author Mathieu Bastian
@@ -33,4 +35,10 @@ public interface Part<Element> {
     public String getDisplayName();
 
     public boolean isInPart(Element element);
+
+    public void setColor(Color color);
+
+    public Color getColor();
+
+    public float getPercentage();
 }

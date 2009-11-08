@@ -53,6 +53,7 @@ public class NodeColorTransformer implements Transformer {
             if (color == null) {
                 color = DEFAULT_COLOR;
             }
+            part.setColor(color);
             float r = color.getRed() / 255f;
             float g = color.getGreen() / 255f;
             float b = color.getBlue() / 255f;
