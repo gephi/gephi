@@ -29,33 +29,45 @@ import java.awt.Color;
 public class ColorUtils {
 
     public static String encode(Color color) {
-        char[] buf = new char[7];
-        buf[0] = '#';
+        char[] buf = new char[8];
         String s = Integer.toHexString(color.getRed());
         if (s.length() == 1) {
-            buf[1] = '0';
-            buf[2] = s.charAt(0);
-        } else {
+            buf[0] = '0';
             buf[1] = s.charAt(0);
-            buf[2] = s.charAt(1);
+        } else {
+            buf[0] = s.charAt(0);
+            buf[1] = s.charAt(1);
         }
         s = Integer.toHexString(color.getGreen());
         if (s.length() == 1) {
-            buf[3] = '0';
-            buf[4] = s.charAt(0);
-        } else {
+            buf[2] = '0';
             buf[3] = s.charAt(0);
-            buf[4] = s.charAt(1);
+        } else {
+            buf[2] = s.charAt(0);
+            buf[3] = s.charAt(1);
         }
         s = Integer.toHexString(color.getBlue());
         if (s.length() == 1) {
-            buf[5] = '0';
-            buf[6] = s.charAt(0);
-        } else {
+            buf[4] = '0';
             buf[5] = s.charAt(0);
-            buf[6] = s.charAt(1);
+        } else {
+            buf[4] = s.charAt(0);
+            buf[5] = s.charAt(1);
+        }
+        s = Integer.toHexString(color.getAlpha());
+        if (s.length() == 1) {
+            buf[6] = '0';
+            buf[7] = s.charAt(0);
+        } else {
+            buf[6] = s.charAt(0);
+            buf[7] = s.charAt(1);
         }
         return String.valueOf(buf);
+    }
+
+    public static Color decode(String nm) throws NumberFormatException {
+        int i = (int) Long.parseLong(nm, 16); //Bug 4215269
+        return new Color((i >> 24) & 0xFF, (i >> 16) & 0xFF, (i >> 8) & 0xFF, i & 0xFF);
     }
 
     public static Color decode(float[] array) {

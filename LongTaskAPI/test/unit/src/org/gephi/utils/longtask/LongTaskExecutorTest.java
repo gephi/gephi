@@ -8,7 +8,6 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.openide.util.Exceptions;
 
 /**
@@ -72,5 +71,29 @@ public class LongTaskExecutorTest {
 
         public void setProgressTicket(ProgressTicket progressTicket) {
         }
+    }
+
+    @org.junit.Test
+    public void testExecute_4args() {
+    }
+
+    @org.junit.Test
+    public void testExecute_LongTask_Runnable() {
+    }
+
+    @org.junit.Test
+    public void testCancel() {
+    }
+
+    @org.junit.Test
+    public void testIsRunning() {
+    }
+
+    @org.junit.Test
+    public void testSetLongTaskListener() {
+    }
+
+    @org.junit.Test
+    public void testSetDefaultErrorHandler() {
     }
 }

@@ -208,6 +208,7 @@
     </folder>
     <folder name="Toolbars">
         <file name="Clipboard_hidden"/>
+        <file name="Memory_hidden"/>
         <file name="UndoRedo_hidden"/>
         <folder name="File">
             <file name="org-gephi-branding-desktop-TopTabAction.shadow">
@@ -215,6 +216,7 @@
                 <attr name="position" intvalue="10"/>
             </file>
             <file name="org-openide-actions-SaveAllAction.instance_hidden"/>
+            <file name="org-openide-actions-SaveAllAction.shadow_hidden"/>
         </folder>
     </folder>
     <folder name="Windows2">

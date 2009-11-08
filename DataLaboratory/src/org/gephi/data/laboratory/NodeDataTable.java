@@ -20,9 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.laboratory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
@@ -37,6 +39,7 @@ import org.netbeans.swing.outline.Outline;
 import org.netbeans.swing.outline.OutlineModel;
 import org.netbeans.swing.outline.RenderDataProvider;
 import org.netbeans.swing.outline.RowModel;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -50,7 +53,7 @@ public class NodeDataTable {
 
     public NodeDataTable() {
         outlineTable = new Outline();
-
+        
         quickFilter = new QuickFilter() {
 
             public boolean accept(Object value) {
@@ -81,10 +84,21 @@ public class NodeDataTable {
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols) {
         NodeTreeModel nodeTreeModel = new NodeTreeModel(graph.wrapToTreeNode());
-        OutlineModel mdl = DefaultOutlineModel.createOutlineModel(nodeTreeModel, new NodeRowModel(cols), true);
+        final OutlineModel mdl = DefaultOutlineModel.createOutlineModel(nodeTreeModel, new NodeRowModel(cols), true);
         outlineTable.setRootVisible(false);
         outlineTable.setRenderDataProvider(new NodeRenderer());
-        outlineTable.setModel(mdl);
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+
+                public void run() {
+                    outlineTable.setModel(mdl);
+                }
+            });
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (InvocationTargetException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     private static class NodeTreeModel implements TreeModel {

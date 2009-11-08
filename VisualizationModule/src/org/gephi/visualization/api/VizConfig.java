@@ -138,7 +138,7 @@ public class VizConfig {
     protected boolean defaultLighting = false;  //Overriden by use3d
     protected boolean defaultCulling = false;   //Overriden by use3d
     protected boolean defaultMaterial = false;  //Overriden by use3d
-    protected Color defaultBackgroundColor = Color.decode(NbPreferences.forModule(VizConfig.class).get(BACKGROUND_COLOR, ColorUtils.encode(DEFAULT_BACKGROUND_COLOR)));
+    protected Color defaultBackgroundColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(BACKGROUND_COLOR, ColorUtils.encode(DEFAULT_BACKGROUND_COLOR)));
     protected float[] defaultCameraTarget = {0f, 0f, 0f};
     protected float[] defaultCameraPosition = {0f, 0f, 5000f};
     protected boolean defaultRotatingEnable = false;    //Overriden by use3d
@@ -150,18 +150,18 @@ public class VizConfig {
     protected boolean defaultHideNonSelectedEdges = NbPreferences.forModule(VizConfig.class).getBoolean(HIDE_NONSELECTED_EDGES, DEFAULT_HIDE_NONSELECTED_EDGES);
     protected boolean defaultUniColorSelected = NbPreferences.forModule(VizConfig.class).getBoolean(SELECTEDNODE_UNIQUE_COLOR, DEFAULT_SELECTEDNODE_UNIQUE_COLOR);
     protected boolean defaultEdgeHasUniColor = NbPreferences.forModule(VizConfig.class).getBoolean(EDGE_HAS_UNIQUE_COLOR, DEFAULT_EDGE_HAS_UNIQUE_COLOR);
-    protected Color defaultEdgeUniColor = Color.decode(NbPreferences.forModule(VizConfig.class).get(EDGE_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_EDGE_UNIQUE_COLOR)));
-    protected Color defaultNodeLabelColor = Color.decode(NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_COLOR, ColorUtils.encode(DEFAULT_NODE_LABEL_COLOR)));
-    protected Color defaultEdgeLabelColor = Color.decode(NbPreferences.forModule(VizConfig.class).get(EDGE_LABEL_COLOR, ColorUtils.encode(DEFAULT_EDGE_LABEL_COLOR)));
+    protected Color defaultEdgeUniColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(EDGE_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_EDGE_UNIQUE_COLOR)));
+    protected Color defaultNodeLabelColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_COLOR, ColorUtils.encode(DEFAULT_NODE_LABEL_COLOR)));
+    protected Color defaultEdgeLabelColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(EDGE_LABEL_COLOR, ColorUtils.encode(DEFAULT_EDGE_LABEL_COLOR)));
     protected Font defaultNodeLabelFont = Font.decode(NbPreferences.forModule(VizConfig.class).get(NODE_LABEL_FONT, FontUtils.encode(DEFAULT_NODE_LABEL_FONT)));
     protected Font defaultEdgeLabelFont = Font.decode(NbPreferences.forModule(VizConfig.class).get(EDGE_LABEL_FONT, FontUtils.encode(DEFAULT_EDGE_LABEL_FONT)));
     protected boolean defaultAdjustByText = false;    //Overriden in Engine
     protected boolean defaultShowLabelOnSelectedOnly = NbPreferences.forModule(VizConfig.class).getBoolean(LABEL_SELECTION_ONLY, DEFAULT_LABEL_SELECTION_ONLY);
     protected String defaultNodeModeler = "CompatibilityNodeDiskModeler";       //Overriden by use3d
     protected boolean defaultEdgeSelectionColor = NbPreferences.forModule(VizConfig.class).getBoolean(SELECTEDEDGE_HAS_COLOR, DEFAULT_SELECTEDEDGE_HAS_COLOR);
-    protected Color defaultEdgeInSelectedColor = Color.decode(NbPreferences.forModule(VizConfig.class).get(SELECTEDEDGE_IN_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_IN_COLOR)));
-    protected Color defaultEdgeOutSelectedColor = Color.decode(NbPreferences.forModule(VizConfig.class).get(SELECTEDEDGE_OUT_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_OUT_COLOR)));
-    protected Color defaultEdgeBothSelectedColor = Color.decode(NbPreferences.forModule(VizConfig.class).get(SELECTEDEDGE_BOTH_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_BOTH_COLOR)));
+    protected Color defaultEdgeInSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(SELECTEDEDGE_IN_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_IN_COLOR)));
+    protected Color defaultEdgeOutSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(SELECTEDEDGE_OUT_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_OUT_COLOR)));
+    protected Color defaultEdgeBothSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(SELECTEDEDGE_BOTH_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_BOTH_COLOR)));
 
     //Preferences
     protected int antialiasing = NbPreferences.forModule(VizConfig.class).getInt(ANTIALIASING, DEFAULT_ANTIALIASING);
@@ -175,7 +175,7 @@ public class VizConfig {
     protected float[] nodeSelectedColor = {1f, 1f, 1f};     //Not used
     protected boolean selectionEnable = NbPreferences.forModule(VizConfig.class).getBoolean(SELECTION, DEFAULT_SELECTION);
     protected boolean rectangleSelection = NbPreferences.forModule(VizConfig.class).getBoolean(RECTANGLE_SELECTION, DEFAULT_RECTANGLE_SELECTION);
-    protected Color rectangleSelectionColor = Color.decode(NbPreferences.forModule(VizConfig.class).get(RECTANGLE_SELECTION_COLOR, ColorUtils.encode(DEFAULT_RECTANGLE_SELECTION_COLOR)));
+    protected Color rectangleSelectionColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(RECTANGLE_SELECTION_COLOR, ColorUtils.encode(DEFAULT_RECTANGLE_SELECTION_COLOR)));
     protected boolean customSelection = false;      //Overriden in Engine
     protected boolean draggingEnable = NbPreferences.forModule(VizConfig.class).getBoolean(DRAGGING, DEFAULT_DRAGGING);
     protected boolean cameraControlEnable = NbPreferences.forModule(VizConfig.class).getBoolean(CAMERA_CONTROL, DEFAULT_CAMERA_CONTROL);
@@ -184,11 +184,11 @@ public class VizConfig {
     protected int reduceFpsWhenMouseOutValue = NbPreferences.forModule(VizConfig.class).getInt(REDUCE_FPS_MOUSE_OUT_VALUE, DEFAULT_REDUCE_FPS_MOUSE_OUT_VALUE);
     protected boolean showArrows = true;        //Overriden in Engine
     protected boolean lightenNonSelected = true;        //Overriden in Engine
-    protected float[] lightenNonSelectedColor = Color.decode(NbPreferences.forModule(VizConfig.class).get(HIGHTLIGHT_COLOR, ColorUtils.encode(DEFAULT_HIGHTLIGHT_COLOR))).getRGBColorComponents(null);
+    protected float[] lightenNonSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(HIGHTLIGHT_COLOR, ColorUtils.encode(DEFAULT_HIGHTLIGHT_COLOR))).getRGBColorComponents(null);
     protected boolean lightenNonSelectedAnimation = NbPreferences.forModule(VizConfig.class).getBoolean(HIGHTLIGHT_ANIMATION, DEFAULT_HIGHTLIGHT_ANIMATION);
     protected float lightenNonSelectedFactor = 0.5f;        //Overriden in Engine
-    protected float[] uniColorSelectedColor = Color.decode(NbPreferences.forModule(VizConfig.class).get(NODE_SELECTED_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_NODE_SELECTED_UNIQUE_COLOR))).getRGBColorComponents(null);
-    protected float[] uniColorSelectedNeigborColor = Color.decode(NbPreferences.forModule(VizConfig.class).get(NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR))).getRGBColorComponents(null);
+    protected float[] uniColorSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(NODE_SELECTED_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_NODE_SELECTED_UNIQUE_COLOR))).getRGBColorComponents(null);
+    protected float[] uniColorSelectedNeigborColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR, ColorUtils.encode(DEFAULT_NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR))).getRGBColorComponents(null);
     protected int octreeDepth = NbPreferences.forModule(VizConfig.class).getInt(OCTREE_DEPTH, DEFAULT_OCTREE_DEPTH);
     protected int octreeWidth = NbPreferences.forModule(VizConfig.class).getInt(OCTREE_WIDTH, DEFAULT_OCTREE_WIDTH);
     protected boolean cleanDeletedModels = NbPreferences.forModule(VizConfig.class).getBoolean(CLEAN_DELETED_MODELS, DEFAULT_CLEAN_DELETED_MODELS);

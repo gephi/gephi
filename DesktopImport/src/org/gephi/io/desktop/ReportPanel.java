@@ -23,11 +23,13 @@ package org.gephi.io.desktop;
 import java.awt.Color;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
@@ -42,6 +44,7 @@ import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.OutlineModel;
 import org.netbeans.swing.outline.RenderDataProvider;
 import org.netbeans.swing.outline.RowModel;
+import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
@@ -54,19 +57,29 @@ public class ReportPanel extends javax.swing.JPanel {
     private final static String SHOW_ISSUES = "ReportPanel_Show_Issues";
     private final static String SHOW_REPORT = "ReportPanel_Show_Report";
     private ThreadGroup fillingThreads;
-
     //Icons
     private ImageIcon infoIcon;
     private ImageIcon warningIcon;
     private ImageIcon severeIcon;
     private ImageIcon criticalIcon;
-
     //Container
     private Container container;
 
     public ReportPanel() {
-        initComponents();
-        initIcons();
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+
+                public void run() {
+                    initComponents();
+                    initIcons();
+                }
+            });
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (InvocationTargetException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
         fillingThreads = new ThreadGroup("Report Panel Issues");
 
         graphTypeCombo.addItemListener(new ItemListener() {
@@ -118,11 +131,16 @@ public class ReportPanel extends javax.swing.JPanel {
                 public void run() {
                     busyLabel.setBusy(true);
                     final TreeModel treeMdl = new IssueTreeModel(issues);
-                    OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new IssueRowModel(), true);
+                    final OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new IssueRowModel(), true);
                     issuesOutline.setRootVisible(false);
                     issuesOutline.setRenderDataProvider(new IssueRenderer());
-                    issuesOutline.setModel(mdl);
-                    busyLabel.setBusy(false);
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        public void run() {
+                            issuesOutline.setModel(mdl);
+                            busyLabel.setBusy(false);
+                        }
+                    });
                 }
             }, "Report Panel Issues Outline");
             if (NbPreferences.forModule(ReportPanel.class).getBoolean(SHOW_ISSUES, true)) {
