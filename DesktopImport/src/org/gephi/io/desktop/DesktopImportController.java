@@ -301,7 +301,7 @@ public class DesktopImportController implements ImportController {
                 }
             }
             if (container.getSource() != null) {
-                workspace.setSource(container.getSource());
+                pc.setSource(workspace, container.getSource());
             }
 
             container.closeLoader();

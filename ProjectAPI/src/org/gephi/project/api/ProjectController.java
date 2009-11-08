@@ -72,7 +72,29 @@ public interface ProjectController {
 
     public void duplicateWorkspace(Workspace workspace);
 
+    public void setSource(Workspace workspace, String source);
+
     public void addWorkspaceListener(WorkspaceListener workspaceListener);
 
     public void removeWorkspaceListener(WorkspaceListener workspaceListener);
+
+    public boolean canNewProject();
+
+    public boolean canOpenProject();
+
+    public boolean canCloseProject();
+
+    public boolean canOpenFile();
+
+    public boolean canSave();
+
+    public boolean canSaveAs();
+
+    public boolean canNewWorkspace();
+
+    public boolean canDeleteWorkspace();
+
+    public boolean canCleanWorkspace();
+
+    public boolean canProjectProperties();
 }

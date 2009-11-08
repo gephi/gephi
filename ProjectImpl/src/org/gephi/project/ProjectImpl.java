@@ -56,7 +56,7 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
 
     //Workspaces
     private transient List<Workspace> workspaces;
-    private transient Workspace currentWorkspace;
+    private transient WorkspaceImpl currentWorkspace;
 
     //Lookup
     private transient InstanceContent instanceContent;
@@ -96,7 +96,6 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
     }
     }
     }*/
-    @Override
     public WorkspaceImpl newWorkspace() {
         if (workspaces == null) {
             workspaces = new ArrayList<Workspace>();
@@ -109,19 +108,18 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
     }
 
     public void addWorkspace(Workspace workspace) {
-        workspace.setProject(this);
+        ((WorkspaceImpl)workspace).setProject(this);
         workspaces.add(workspace);
         instanceContent.add(workspace);
     }
 
-    @Override
     public void removeWorkspace(Workspace workspace) {
         workspaces.remove(workspace);
         instanceContent.remove(workspace);
     }
 
     @Override
-    public Workspace getCurrentWorkspace() {
+    public WorkspaceImpl getCurrentWorkspace() {
         return currentWorkspace;
     }
 
@@ -130,7 +128,6 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
         return workspaces.toArray(new Workspace[0]);
     }
 
-    @Override
     public void setCurrentWorkspace(Workspace currentWorkspace) {
         this.currentWorkspace = (WorkspaceImpl) currentWorkspace;
     }
@@ -148,13 +145,11 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
         return lookup;
     }
 
-    @Override
     public void open() {
         this.status = Status.OPEN;
         fireChangeEvent();
     }
 
-    @Override
     public void close() {
         this.status = Status.CLOSED;
         fireChangeEvent();
@@ -189,7 +184,6 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
         }
     }
 
-    @Override
     public void setName(String name) {
         this.name = name;
         fireChangeEvent();
@@ -205,7 +199,6 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
         return dataObject;
     }
 
-    @Override
     public void setDataObject(DataObject dataObject) {
         this.dataObject = (GephiDataObject) dataObject;
         fireChangeEvent();
@@ -234,7 +227,7 @@ public class ProjectImpl implements Project, Lookup.Provider, Serializable {
     /**
      * Meta-Data inner class
      */
-    private class ProjectMetaDataImpl implements ProjectMetaData, Serializable {
+    public class ProjectMetaDataImpl implements ProjectMetaData, Serializable {
 
         private String author;
         private String title = "";

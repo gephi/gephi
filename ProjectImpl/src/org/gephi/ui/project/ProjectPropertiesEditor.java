@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.project;
 
+import org.gephi.project.ProjectImpl.ProjectMetaDataImpl;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectMetaData;
@@ -49,7 +50,7 @@ public class ProjectPropertiesEditor extends javax.swing.JPanel {
     }
 
     public void save(Project project) {
-        ProjectMetaData metaData = project.getMetaData();
+        ProjectMetaDataImpl metaData = (ProjectMetaDataImpl)project.getMetaData();
         metaData.setTitle(nameTextField.getText());
         if (!titleTextField.getText().isEmpty() && !titleTextField.getText().equals(project.getName())) {
             ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);

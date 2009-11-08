@@ -22,20 +22,15 @@ package org.gephi.io.project;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.gephi.io.project.GephiDataObject;
-import org.gephi.io.project.GephiFormatException;
-import org.gephi.io.project.GephiReader;
 import org.gephi.project.ProjectImpl;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 import org.w3c.dom.Document;
 
 /**
@@ -72,7 +67,7 @@ public class LoadTask implements LongTask, Runnable {
             if (project == null) {
                 project = new ProjectImpl();
             }
-            project.setDataObject(dataObject);
+            ((ProjectImpl) project).setDataObject(dataObject);
             dataObject.setProject(project);
 
             //GephiReader

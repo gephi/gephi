@@ -32,17 +32,11 @@ import org.openide.util.Lookup;
  */
 public interface Project {
 
-    public void open();
-
-    public void close();
-
     public boolean isOpen();
 
     public boolean isClosed();
 
     public boolean isInvalid();
-
-    public void setName(String name);
 
     public String getName();
 
@@ -50,17 +44,7 @@ public interface Project {
 
     public String getFileName();
 
-    public void setDataObject(DataObject dataObject);
-
     public DataObject getDataObject();
-
-    public Workspace newWorkspace();
-
-    public void addWorkspace(Workspace workspace);
-
-    public void removeWorkspace(Workspace workspace);
-
-    public void setCurrentWorkspace(Workspace workspace);
 
     public Workspace[] getWorkspaces();
 

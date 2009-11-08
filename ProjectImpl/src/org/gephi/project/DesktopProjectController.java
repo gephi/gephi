@@ -23,11 +23,11 @@ package org.gephi.project;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+
 
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
@@ -36,19 +36,16 @@ import org.gephi.workspace.api.Workspace;
 import org.gephi.io.project.GephiDataObject;
 import org.gephi.io.project.LoadTask;
 import org.gephi.io.project.SaveTask;
-import org.gephi.project.ProjectImpl;
-import org.gephi.project.ProjectsImpl;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
 import org.gephi.utils.longtask.LongTaskListener;
+import org.gephi.workspace.WorkspaceImpl;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.DialogDisplayer;
-import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
-import org.openide.cookies.InstanceCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
@@ -56,7 +53,6 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
-import org.openide.util.Utilities;
 import org.openide.windows.WindowManager;
 
 /**
@@ -69,7 +65,20 @@ public class DesktopProjectController implements ProjectController {
 
         INITIALIZE, SELECT, UNSELECT, CLOSE, DISABLE
     };
-    private final Projects projects = new ProjectsImpl();
+    //Actions
+    private boolean openProject = true;
+    private boolean newProject = true;
+    private boolean openFile = true;
+    private boolean saveProject;
+    private boolean saveAsProject;
+    private boolean projectProperties;
+    private boolean closeProject;
+    private boolean newWorkspace;
+    private boolean deleteWorkspace;
+    private boolean cleanWorkspace;
+    private boolean duplicateWorkspace;
+    //Data
+    private final ProjectsImpl projects = new ProjectsImpl();
     private final LongTaskExecutor longTaskExecutor;
     private final List<WorkspaceListener> listeners;
 
@@ -97,14 +106,14 @@ public class DesktopProjectController implements ProjectController {
         listeners.addAll(Lookup.getDefault().lookupAll(WorkspaceListener.class));
 
         //Actions
-        disableAction("SaveProject");
-        disableAction("SaveAsProject");
-        disableAction("ProjectProperties");
-        disableAction("CloseProject");
-        disableAction("NewWorkspace");
-        disableAction("DeleteWorkspace");
-        disableAction("CleanWorkspace");
-        disableAction("DuplicateWorkspace");
+        saveProject = false;
+        saveAsProject = false;
+        projectProperties = false;
+        closeProject = false;
+        newWorkspace = false;
+        deleteWorkspace = false;
+        cleanWorkspace = false;
+        duplicateWorkspace = false;
     }
 
     public void startup() {
@@ -120,33 +129,33 @@ public class DesktopProjectController implements ProjectController {
     }
 
     private void lockProjectActions() {
-        disableAction("SaveProject");
-        disableAction("SaveAsProject");
-        disableAction("OpenProject");
-        disableAction("CloseProject");
-        disableAction("NewProject");
-        disableAction("OpenFile");
-        disableAction("NewWorkspace");
-        disableAction("DeleteWorkspace");
-        disableAction("CleanWorkspace");
-        disableAction("DuplicateWorkspace");
+        saveProject = false;
+        saveAsProject = false;
+        openProject = false;
+        closeProject = false;
+        newProject = false;
+        openFile = false;
+        newWorkspace = false;
+        deleteWorkspace = false;
+        cleanWorkspace = false;
+        duplicateWorkspace = false;
     }
 
     private void unlockProjectActions() {
         if (projects.hasCurrentProject()) {
-            enableAction("SaveProject");
-            enableAction("SaveAsProject");
-            enableAction("CloseProject");
-            enableAction("NewWorkspace");
+            saveProject = true;
+            saveAsProject = true;
+            closeProject = true;
+            newWorkspace = true;
             if (projects.getCurrentProject().hasCurrentWorkspace()) {
-                enableAction("DeleteWorkspace");
-                enableAction("CleanWorkspace");
-                enableAction("DuplicateWorkspace");
+                deleteWorkspace = true;
+                cleanWorkspace = true;
+                duplicateWorkspace = true;
             }
         }
-        enableAction("OpenProject");
-        enableAction("NewProject");
-        enableAction("OpenFile");
+        openProject = true;
+        newProject = true;
+        openFile = true;
     }
 
     public void newProject() {
@@ -165,7 +174,7 @@ public class DesktopProjectController implements ProjectController {
 
     public void saveProject(DataObject dataObject) {
         GephiDataObject gephiDataObject = (GephiDataObject) dataObject;
-        Project project = getCurrentProject();
+        ProjectImpl project = getCurrentProject();
         project.setDataObject(gephiDataObject);
         gephiDataObject.setProject(project);
         SaveTask saveTask = new SaveTask(gephiDataObject);
@@ -239,7 +248,7 @@ public class DesktopProjectController implements ProjectController {
 
     public void closeCurrentProject() {
         if (projects.hasCurrentProject()) {
-            Project currentProject = projects.getCurrentProject();
+            ProjectImpl currentProject = projects.getCurrentProject();
 
             //Save ?
             String messageBundle = NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_message");
@@ -264,14 +273,14 @@ public class DesktopProjectController implements ProjectController {
 
 
             //Actions
-            disableAction("SaveProject");
-            disableAction("SaveAsProject");
-            disableAction("ProjectProperties");
-            disableAction("CloseProject");
-            disableAction("NewWorkspace");
-            disableAction("DeleteWorkspace");
-            disableAction("CleanWorkspace");
-            disableAction("DuplicateWorkspace");
+            saveProject = false;
+            saveAsProject = false;
+            projectProperties = false;
+            closeProject = false;
+            newWorkspace = false;
+            deleteWorkspace = false;
+            cleanWorkspace = false;
+            duplicateWorkspace = false;
 
             //Title bar
             SwingUtilities.invokeLater(new Runnable() {
@@ -331,7 +340,7 @@ public class DesktopProjectController implements ProjectController {
     }
 
     public Workspace newWorkspace(Project project) {
-        Workspace workspace = project.newWorkspace();
+        Workspace workspace = ((ProjectImpl) project).newWorkspace();
 
         //Event
         fireWorkspaceEvent(EventType.INITIALIZE, workspace);
@@ -354,7 +363,7 @@ public class DesktopProjectController implements ProjectController {
             closeCurrentProject();
         }
 
-        workspace.getProject().removeWorkspace(workspace);
+        ((ProjectImpl) workspace.getProject()).removeWorkspace(workspace);
 
         //Event
         fireWorkspaceEvent(EventType.CLOSE, workspace);
@@ -365,31 +374,33 @@ public class DesktopProjectController implements ProjectController {
         }
     }
 
-    public void openProject(final Project project) {
+    public void openProject(Project project) {
+        final ProjectImpl projectImpl = (ProjectImpl) project;
         if (projects.hasCurrentProject()) {
             closeCurrentProject();
         }
-        projects.addProject(project);
-        projects.setCurrentProject(project);
-        project.open();
+        projects.addProject(projectImpl);
+        projects.setCurrentProject(projectImpl);
+        projectImpl.open();
         if (!project.hasCurrentWorkspace()) {
             if (project.getWorkspaces().length == 0) {
-                Workspace workspace = project.newWorkspace();
+                Workspace workspace = projectImpl.newWorkspace();
                 openWorkspace(workspace);
             } else {
                 Workspace workspace = project.getWorkspaces()[0];
                 openWorkspace(workspace);
             }
         }
-        enableAction("SaveAsProject");
-        enableAction("ProjectProperties");
-        enableAction("SaveProject");
-        enableAction("CloseProject");
-        enableAction("NewWorkspace");
+
+        saveProject = true;
+        saveAsProject = true;
+        projectProperties = true;
+        closeProject = true;
+        newWorkspace = true;
         if (project.hasCurrentWorkspace()) {
-            enableAction("DeleteWorkspace");
-            enableAction("CleanWorkspace");
-            enableAction("DuplicateWorkspace");
+            deleteWorkspace = true;
+            cleanWorkspace = true;
+            duplicateWorkspace = true;
         }
 
         //Title bar
@@ -397,7 +408,7 @@ public class DesktopProjectController implements ProjectController {
 
             public void run() {
                 JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-                String title = frame.getTitle() + " - " + project.getName();
+                String title = frame.getTitle() + " - " + projectImpl.getName();
                 frame.setTitle(title);
             }
         });
@@ -406,11 +417,11 @@ public class DesktopProjectController implements ProjectController {
         StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopProjectController.class, "DesktoProjectController.status.opened", project.getName()));
     }
 
-    public Project getCurrentProject() {
+    public ProjectImpl getCurrentProject() {
         return projects.getCurrentProject();
     }
 
-    public Workspace getCurrentWorkspace() {
+    public WorkspaceImpl getCurrentWorkspace() {
         if (projects.hasCurrentProject()) {
             return getCurrentProject().getCurrentWorkspace();
         }
@@ -418,7 +429,7 @@ public class DesktopProjectController implements ProjectController {
     }
 
     public void closeCurrentWorkspace() {
-        Workspace workspace = getCurrentWorkspace();
+        WorkspaceImpl workspace = getCurrentWorkspace();
         if (workspace != null) {
             workspace.close();
 
@@ -430,7 +441,7 @@ public class DesktopProjectController implements ProjectController {
     public void openWorkspace(Workspace workspace) {
         closeCurrentWorkspace();
         getCurrentProject().setCurrentWorkspace(workspace);
-        workspace.open();
+        ((WorkspaceImpl) workspace).open();
 
         //Event
         fireWorkspaceEvent(EventType.SELECT, workspace);
@@ -443,7 +454,7 @@ public class DesktopProjectController implements ProjectController {
     }
 
     public void renameProject(Project project, final String name) {
-        project.setName(name);
+        ((ProjectImpl) project).setName(name);
 
         //Title bar
         SwingUtilities.invokeLater(new Runnable() {
@@ -459,7 +470,11 @@ public class DesktopProjectController implements ProjectController {
     }
 
     public void renameWorkspace(Workspace workspace, String name) {
-        workspace.setName(name);
+        ((WorkspaceImpl) workspace).setName(name);
+    }
+
+    public void setSource(Workspace workspace, String source) {
+        ((WorkspaceImpl) workspace).setSource(source);
     }
 
     public void addWorkspaceListener(WorkspaceListener workspaceListener) {
@@ -500,70 +515,43 @@ public class DesktopProjectController implements ProjectController {
         }
     }
 
-    public void enableAction(String actionName) {
-        /*boolean found = false;
-        List<? extends Action> actionsFile = Utilities.actionsForPath("Actions/File/");
-        for (Action a : actionsFile) {
-        if (a.getValue(Action.NAME).equals(actionName)) {
-        a.setEnabled(true);
-        found = true;
-        }
-        }
-        if (!found) {
-        List<? extends Action> actionsEdit = Utilities.actionsForPath("Actions/Edit/");
-        for (Action a : actionsEdit) {
-        if (a.getValue(Action.NAME).equals(actionName)) {
-        a.setEnabled(true);
-        found = true;
-        }
-        }
-        }
-        if (!found) {
-        throw new IllegalArgumentException(actionName + " cannot be found");
-        }*/
+    public boolean canCleanWorkspace() {
+        return cleanWorkspace;
     }
 
-    public void disableAction(String actionName) {
-        /*boolean found = false;
-        List<? extends Action> actions = Utilities.actionsForPath("Actions/File/");
-        for (Action a : actions) {
-        if (a.getValue(Action.NAME).equals(actionName)) {
-        a.setEnabled(false);
-        found = true;
-        }
-        }
-        if (!found) {
-        List<? extends Action> actionsEdit = Utilities.actionsForPath("Actions/Edit/");
-        for (Action a : actionsEdit) {
-        if (a.getValue(Action.NAME).equals(actionName)) {
-        a.setEnabled(false);
-        found = true;
-        }
-        }
-        }
-        if (!found) {
-        throw new IllegalArgumentException(actionName + " cannot be found");
-        }*/
+    public boolean canCloseProject() {
+        return closeProject;
     }
 
-    /*public Action findAction(String key) {
-    FileObject fo = FileUtil.getConfigFile(key);
-    if (fo != null && fo.isValid()) {
-    try {
-    DataObject dob = DataObject.find(fo);
-    InstanceCookie ic = dob.getLookup().lookup(InstanceCookie.class);
-    if (ic != null) {
-    Object instance = ic.instanceCreate();
-    if (instance instanceof Action) {
-    Action a = (Action) instance;
-    return a;
+    public boolean canDeleteWorkspace() {
+        return deleteWorkspace;
     }
+
+    public boolean canNewProject() {
+        return newProject;
     }
-    } catch (Exception e) {
-    ErrorManager.getDefault().notify(ErrorManager.WARNING, e);
-    return null;
+
+    public boolean canNewWorkspace() {
+        return newWorkspace;
     }
+
+    public boolean canOpenFile() {
+        return openFile;
     }
-    return null;
-    }*/
+
+    public boolean canOpenProject() {
+        return openProject;
+    }
+
+    public boolean canSave() {
+        return saveProject;
+    }
+
+    public boolean canSaveAs() {
+        return saveAsProject;
+    }
+
+    public boolean canProjectProperties() {
+        return projectProperties;
+    }
 }

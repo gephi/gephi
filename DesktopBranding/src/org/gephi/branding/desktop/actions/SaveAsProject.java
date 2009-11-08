@@ -21,14 +21,32 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
+import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.util.actions.SystemAction;
 
-public final class SaveAsProject implements ActionListener {
+public class SaveAsProject extends SystemAction {
 
-    public void actionPerformed(ActionEvent e) {
+    @Override
+    public String getName() {
+        return NbBundle.getMessage(SaveAsProject.class, "CTL_SaveAsProject");
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return Lookup.getDefault().lookup(ProjectController.class).canSaveAs();
+    }
+
+    @Override
+    public HelpCtx getHelpCtx() {
+        return null;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent ev) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         Project project = pc.getCurrentProject();
         pc.saveAsProject(project);

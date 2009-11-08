@@ -24,7 +24,9 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
+import org.gephi.project.ProjectImpl;
 import org.gephi.project.api.Project;
+import org.gephi.workspace.WorkspaceImpl;
 import org.gephi.workspace.api.Workspace;
 import org.openide.util.Cancellable;
 import org.w3c.dom.Element;
@@ -36,7 +38,7 @@ import org.w3c.dom.NodeList;
  */
 public class GephiReader implements Cancellable {
 
-    private Project project;
+    private ProjectImpl project;
 
     public boolean cancel() {
         return true;
@@ -51,7 +53,7 @@ public class GephiReader implements Cancellable {
         readCore(xpath, root);
 
         //Project
-        this.project = project;
+        this.project = (ProjectImpl)project;
         XPathExpression exp = xpath.compile("./project");
         Element projectE = (Element) exp.evaluate(root, XPathConstants.NODE);
         readProject(xpath, projectE);
@@ -84,7 +86,7 @@ public class GephiReader implements Cancellable {
     }
 
     public Workspace readWorkSpace(XPath xpath, Element workspaceE) throws Exception {
-        Workspace workspace = project.newWorkspace();
+        WorkspaceImpl workspace = project.newWorkspace();
 
         //Name
         workspace.setName(workspaceE.getAttribute("name"));

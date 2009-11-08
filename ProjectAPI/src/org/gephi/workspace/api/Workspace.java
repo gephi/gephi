@@ -29,12 +29,6 @@ import javax.swing.event.ChangeListener;
  */
 public interface Workspace {
 
-    public void open();
-
-    public void close();
-
-    public void invalid();
-
     public boolean isOpen();
 
     public boolean isClosed();
@@ -45,15 +39,9 @@ public interface Workspace {
 
     public String getSource();
 
-    public void setSource(String source);
-
-    public void setProject(Project project);
-
     public Project getProject();
 
     public String getName();
-
-    public void setName(String name);
 
     public void addChangeListener(ChangeListener listener);
 
