@@ -51,7 +51,10 @@ public class GephiWriter implements Cancellable {
     public GephiWriter() {
         providers = new HashMap<String, WorkspacePersistenceProvider>();
         for (WorkspacePersistenceProvider w : Lookup.getDefault().lookupAll(WorkspacePersistenceProvider.class)) {
-            providers.put(w.getIdentifier(), w);
+            String id = w.getIdentifier();
+            if (id != null && !id.isEmpty()) {
+                providers.put(w.getIdentifier(), w);
+            }
         }
     }
 
@@ -161,7 +164,7 @@ public class GephiWriter implements Cancellable {
             } catch (UnsupportedOperationException e) {
             }
             if (childE != null) {
-                workspaceE.appendChild(doc.createComment("Persistence from "+pp.getClass().getName()));
+                workspaceE.appendChild(doc.createComment("Persistence from " + pp.getClass().getName()));
                 workspaceE.appendChild(childE);
             }
         }

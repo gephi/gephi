@@ -41,11 +41,13 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service=PartitionController.class)
 public class PartitionControllerImpl implements PartitionController {
 
     private PartitionModelImpl model;
