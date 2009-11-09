@@ -59,7 +59,7 @@ import org.openide.windows.WindowManager;
  *
  * @author Mathieu Bastian
  */
-public class DesktopProjectController implements ProjectController {
+public class ProjectControllerImpl implements ProjectController {
 
     private enum EventType {
 
@@ -82,7 +82,7 @@ public class DesktopProjectController implements ProjectController {
     private final LongTaskExecutor longTaskExecutor;
     private final List<WorkspaceListener> listeners;
 
-    public DesktopProjectController() {
+    public ProjectControllerImpl() {
         //Project IO executor
         longTaskExecutor = new LongTaskExecutor(true, "Project IO");
         longTaskExecutor.setDefaultErrorHandler(new LongTaskErrorHandler() {
@@ -119,8 +119,8 @@ public class DesktopProjectController implements ProjectController {
     public void startup() {
         final String OPEN_LAST_PROJECT_ON_STARTUP = "Open_Last_Project_On_Startup";
         final String NEW_PROJECT_ON_STARTUP = "New_Project_On_Startup";
-        boolean openLastProject = NbPreferences.forModule(DesktopProjectController.class).getBoolean(OPEN_LAST_PROJECT_ON_STARTUP, false);
-        boolean newProject = NbPreferences.forModule(DesktopProjectController.class).getBoolean(NEW_PROJECT_ON_STARTUP, false);
+        boolean openLastProject = NbPreferences.forModule(ProjectControllerImpl.class).getBoolean(OPEN_LAST_PROJECT_ON_STARTUP, false);
+        boolean newProject = NbPreferences.forModule(ProjectControllerImpl.class).getBoolean(NEW_PROJECT_ON_STARTUP, false);
 
         //Default project
         if (!openLastProject && newProject) {
@@ -195,12 +195,12 @@ public class DesktopProjectController implements ProjectController {
         final String LAST_PATH = "SaveAsProject_Last_Path";
         final String LAST_PATH_DEFAULT = "SaveAsProject_Last_Path_Default";
 
-        DialogFileFilter filter = new DialogFileFilter(NbBundle.getMessage(DesktopProjectController.class, "SaveAsProject_filechooser_filter"));
+        DialogFileFilter filter = new DialogFileFilter(NbBundle.getMessage(ProjectControllerImpl.class, "SaveAsProject_filechooser_filter"));
         filter.addExtension(".gephi");
 
         //Get last directory
-        String lastPathDefault = NbPreferences.forModule(DesktopProjectController.class).get(LAST_PATH_DEFAULT, null);
-        String lastPath = NbPreferences.forModule(DesktopProjectController.class).get(LAST_PATH, lastPathDefault);
+        String lastPathDefault = NbPreferences.forModule(ProjectControllerImpl.class).get(LAST_PATH_DEFAULT, null);
+        String lastPath = NbPreferences.forModule(ProjectControllerImpl.class).get(LAST_PATH, lastPathDefault);
 
         //File chooser
         final JFileChooser chooser = new JFileChooser(lastPath);
@@ -210,7 +210,7 @@ public class DesktopProjectController implements ProjectController {
             File file = chooser.getSelectedFile();
 
             //Save last path
-            NbPreferences.forModule(DesktopProjectController.class).put(LAST_PATH, file.getAbsolutePath());
+            NbPreferences.forModule(ProjectControllerImpl.class).put(LAST_PATH, file.getAbsolutePath());
 
             //File management
             try {
@@ -220,14 +220,14 @@ public class DesktopProjectController implements ProjectController {
                 if (!file.exists()) {
                     if (!file.createNewFile()) {
                         String failMsg = NbBundle.getMessage(
-                                DesktopProjectController.class,
+                                ProjectControllerImpl.class,
                                 "SaveAsProject_SaveFailed", new Object[]{file.getPath()});
                         JOptionPane.showMessageDialog(null, failMsg);
                         return;
                     }
                 } else {
                     String overwriteMsg = NbBundle.getMessage(
-                            DesktopProjectController.class,
+                            ProjectControllerImpl.class,
                             "SaveAsProject_Overwrite", new Object[]{file.getPath()});
                     if (JOptionPane.showConfirmDialog(null, overwriteMsg) != JOptionPane.OK_OPTION) {
                         return;
@@ -251,11 +251,11 @@ public class DesktopProjectController implements ProjectController {
             ProjectImpl currentProject = projects.getCurrentProject();
 
             //Save ?
-            String messageBundle = NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_message");
-            String titleBundle = NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_title");
-            String saveBundle = NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_save");
-            String doNotSaveBundle = NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_doNotSave");
-            String cancelBundle = NbBundle.getMessage(DesktopProjectController.class, "CloseProject_confirm_cancel");
+            String messageBundle = NbBundle.getMessage(ProjectControllerImpl.class, "CloseProject_confirm_message");
+            String titleBundle = NbBundle.getMessage(ProjectControllerImpl.class, "CloseProject_confirm_title");
+            String saveBundle = NbBundle.getMessage(ProjectControllerImpl.class, "CloseProject_confirm_save");
+            String doNotSaveBundle = NbBundle.getMessage(ProjectControllerImpl.class, "CloseProject_confirm_doNotSave");
+            String cancelBundle = NbBundle.getMessage(ProjectControllerImpl.class, "CloseProject_confirm_cancel");
             NotifyDescriptor msg = new NotifyDescriptor(messageBundle, titleBundle,
                     NotifyDescriptor.YES_NO_CANCEL_OPTION,
                     NotifyDescriptor.INFORMATION_MESSAGE,
@@ -317,7 +317,7 @@ public class DesktopProjectController implements ProjectController {
 
     public void setProjects(Projects projects) {
         final String OPEN_LAST_PROJECT_ON_STARTUP = "Open_Last_Project_On_Startup";
-        boolean openLastProject = NbPreferences.forModule(DesktopProjectController.class).getBoolean(OPEN_LAST_PROJECT_ON_STARTUP, false);
+        boolean openLastProject = NbPreferences.forModule(ProjectControllerImpl.class).getBoolean(OPEN_LAST_PROJECT_ON_STARTUP, false);
 
         Project lastOpenProject = null;
         for (Project p : ((ProjectsImpl) projects).getProjects()) {
@@ -414,7 +414,7 @@ public class DesktopProjectController implements ProjectController {
         });
 
         //Status line
-        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopProjectController.class, "DesktoProjectController.status.opened", project.getName()));
+        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectControllerImpl.class, "DesktoProjectController.status.opened", project.getName()));
     }
 
     public ProjectImpl getCurrentProject() {

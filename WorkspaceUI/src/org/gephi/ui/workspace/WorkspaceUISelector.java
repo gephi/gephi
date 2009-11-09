@@ -26,11 +26,13 @@ import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.awt.StatusLineElementProvider;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service = org.openide.awt.StatusLineElementProvider.class, position = -100)
 public class WorkspaceUISelector implements StatusLineElementProvider, WorkspaceListener {
 
     private WorkspaceUISelectorPanel panel;

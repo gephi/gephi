@@ -95,11 +95,7 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages>
-                <package>org.gephi.io.project</package>
-                <package>org.gephi.project</package>
-                <package>org.gephi.workspace</package>
-            </public-packages>
+            <public-packages/>
         </data>
     </configuration>
 </project>

@@ -192,8 +192,8 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel {
         add(jToolBar1, new java.awt.GridBagConstraints());
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JToolBar.Separator jSeparator1;
+    private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JButton leftArrowButton;
     private javax.swing.JButton rightArrowButton;

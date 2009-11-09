@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.project;
 
-import org.gephi.project.DesktopProjectController;
+import org.gephi.project.ProjectControllerImpl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.zip.ZipEntry;
@@ -123,7 +123,7 @@ public class SaveTask implements LongTask, Runnable {
             }
             Progress.finish(progressTicket);
             //Status line
-            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopProjectController.class, "DesktoProjectController.status.saved", dataObject.getName()));
+            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectControllerImpl.class, "DesktoProjectController.status.saved", dataObject.getName()));
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new GephiFormatException(GephiWriter.class, ex);
