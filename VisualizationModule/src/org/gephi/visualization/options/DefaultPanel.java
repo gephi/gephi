@@ -47,6 +47,7 @@ final class DefaultPanel extends javax.swing.JPanel {
                 Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), nodeFont);
                 if (font != null) {
                     nodeFont = font;
+                    nodeFontButton.setText(nodeFont.getFontName() + ", " + nodeFont.getSize());
                 }
             }
         });
@@ -56,6 +57,7 @@ final class DefaultPanel extends javax.swing.JPanel {
                 Font font = JFontChooser.showDialog(WindowManager.getDefault().getMainWindow(), edgeFont);
                 if (font != null) {
                     edgeFont = font;
+                    edgeFontButton.setText(edgeFont.getFontName() + ", " + edgeFont.getSize());
                 }
             }
         });
@@ -293,11 +295,11 @@ final class DefaultPanel extends javax.swing.JPanel {
         use3dCheckbox.setSelected(NbPreferences.forModule(VizConfig.class).getBoolean(VizConfig.USE_3D, VizConfig.DEFAULT_USE_3D));
         highlightCheckbox.setSelected(NbPreferences.forModule(VizConfig.class).getBoolean(VizConfig.HIGHLIGHT, VizConfig.DEFAULT_HIGHLIGHT));
         autoSelectNeighborCheckbox.setSelected(NbPreferences.forModule(VizConfig.class).getBoolean(VizConfig.NEIGHBOUR_SELECT, VizConfig.DEFAULT_NEIGHBOUR_SELECT));
-        backgroundColor.setColor(Color.decode(NbPreferences.forModule(VizConfig.class).get(VizConfig.BACKGROUND_COLOR, ColorUtils.encode(VizConfig.DEFAULT_BACKGROUND_COLOR))));
+        backgroundColor.setColor(ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(VizConfig.BACKGROUND_COLOR, ColorUtils.encode(VizConfig.DEFAULT_BACKGROUND_COLOR))));
 
         //Label settings
-        nodeLabelColorButton.setColor(Color.decode(NbPreferences.forModule(VizConfig.class).get(VizConfig.NODE_LABEL_COLOR, ColorUtils.encode(VizConfig.DEFAULT_NODE_LABEL_COLOR))));
-        edgeLabelColorButton.setColor(Color.decode(NbPreferences.forModule(VizConfig.class).get(VizConfig.EDGE_LABEL_COLOR, ColorUtils.encode(VizConfig.DEFAULT_EDGE_LABEL_COLOR))));
+        nodeLabelColorButton.setColor(ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(VizConfig.NODE_LABEL_COLOR, ColorUtils.encode(VizConfig.DEFAULT_NODE_LABEL_COLOR))));
+        edgeLabelColorButton.setColor(ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(VizConfig.EDGE_LABEL_COLOR, ColorUtils.encode(VizConfig.DEFAULT_EDGE_LABEL_COLOR))));
         nodeFont = Font.decode(NbPreferences.forModule(VizConfig.class).get(VizConfig.NODE_LABEL_FONT, FontUtils.encode(VizConfig.DEFAULT_NODE_LABEL_FONT)));
         nodeFontButton.setText(nodeFont.getFontName() + ", " + nodeFont.getSize());
         edgeFont = Font.decode(NbPreferences.forModule(VizConfig.class).get(VizConfig.EDGE_LABEL_FONT, FontUtils.encode(VizConfig.DEFAULT_EDGE_LABEL_FONT)));
