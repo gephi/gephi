@@ -398,6 +398,8 @@ public class ProjectControllerImpl implements ProjectController {
                 Workspace workspace = workspaceProviderImpl.getWorkspaces()[0];
                 openWorkspace(workspace);
             }
+        } else {
+            fireWorkspaceEvent(EventType.SELECT, workspaceProviderImpl.getCurrentWorkspace());
         }
 
         saveProject = true;

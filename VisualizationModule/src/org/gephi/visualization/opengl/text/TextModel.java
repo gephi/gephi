@@ -27,6 +27,7 @@ import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.ui.utils.ColorUtils;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VizConfig;
 import org.w3c.dom.Document;
@@ -235,15 +236,10 @@ public class TextModel {
 
         //Color
         Element nodeColorE = (Element) textModelElement.getElementsByTagName("nodecolor").item(0);
-        nodeColor = new float[]{Float.parseFloat(nodeColorE.getAttribute("r")),
-                    Float.parseFloat(nodeColorE.getAttribute("g")),
-                    Float.parseFloat(nodeColorE.getAttribute("b")),
-                    Float.parseFloat(nodeColorE.getAttribute("a"))};
+        nodeColor = ColorUtils.decode(nodeColorE.getAttribute("value")).getRGBComponents(null);
+
         Element edgeColorE = (Element) textModelElement.getElementsByTagName("edgecolor").item(0);
-        edgeColor = new float[]{Float.parseFloat(edgeColorE.getAttribute("r")),
-                    Float.parseFloat(edgeColorE.getAttribute("g")),
-                    Float.parseFloat(edgeColorE.getAttribute("b")),
-                    Float.parseFloat(edgeColorE.getAttribute("a"))};
+        edgeColor = ColorUtils.decode(edgeColorE.getAttribute("value")).getRGBComponents(null);
 
         //Size factor
         Element nodeSizeFactorE = (Element) textModelElement.getElementsByTagName("nodesizefactor").item(0);
@@ -262,7 +258,7 @@ public class TextModel {
         }
 
         //SizeMode
-        Element sizeModeE = (Element) textModelElement.getElementsByTagName("colormode").item(0);
+        Element sizeModeE = (Element) textModelElement.getElementsByTagName("sizemode").item(0);
         String sizeModeClass = sizeModeE.getAttribute("class");
         if (sizeModeClass.equals("FixedSizeMode")) {
 //            sizeMode = new FixedSizeMode(this);
@@ -317,16 +313,11 @@ public class TextModel {
 
         //Colors
         Element nodeColorE = document.createElement("nodecolor");
-        nodeColorE.setAttribute("r", Float.toString(nodeColor[0]));
-        nodeColorE.setAttribute("g", Float.toString(nodeColor[1]));
-        nodeColorE.setAttribute("b", Float.toString(nodeColor[2]));
-        nodeColorE.setAttribute("a", Float.toString(nodeColor[3]));
+        nodeColorE.setAttribute("value", ColorUtils.encode(ColorUtils.decode(nodeColor)));
         textModelE.appendChild(nodeColorE);
-        Element edgeColorE = document.createElement("nodecolor");
-        edgeColorE.setAttribute("r", Float.toString(edgeColor[0]));
-        edgeColorE.setAttribute("g", Float.toString(edgeColor[1]));
-        edgeColorE.setAttribute("b", Float.toString(edgeColor[2]));
-        edgeColorE.setAttribute("a", Float.toString(edgeColor[3]));
+
+        Element edgeColorE = document.createElement("edgecolor");
+        edgeColorE.setAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeColor)));
         textModelE.appendChild(edgeColorE);
 
         //Colormode
