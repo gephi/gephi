@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.project;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -31,8 +33,11 @@ import org.gephi.project.api.Project;
 import org.gephi.workspace.WorkspaceImpl;
 import org.gephi.workspace.WorkspaceInformationImpl;
 import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspacePersistenceProvider;
 import org.openide.util.Cancellable;
+import org.openide.util.Lookup;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -42,6 +47,14 @@ import org.w3c.dom.NodeList;
 public class GephiReader implements Cancellable {
 
     private ProjectImpl project;
+    private Map<String, WorkspacePersistenceProvider> providers;
+
+    public GephiReader() {
+        providers = new HashMap<String, WorkspacePersistenceProvider>();
+        for (WorkspacePersistenceProvider w : Lookup.getDefault().lookupAll(WorkspacePersistenceProvider.class)) {
+            providers.put(w.getIdentifier(), w);
+        }
+    }
 
     public boolean cancel() {
         return true;
@@ -56,7 +69,7 @@ public class GephiReader implements Cancellable {
         readCore(xpath, root);
 
         //Project
-        this.project = (ProjectImpl)project;
+        this.project = (ProjectImpl) project;
         XPathExpression exp = xpath.compile("./project");
         Element projectE = (Element) exp.evaluate(root, XPathConstants.NODE);
         readProject(xpath, projectE);
@@ -82,7 +95,7 @@ public class GephiReader implements Cancellable {
 
         for (int i = 0; i < workSpaceList.getLength(); i++) {
             Element workspaceE = (Element) workSpaceList.item(i);
-            Workspace workspace = readWorkSpace(xpath, workspaceE);
+            Workspace workspace = readWorkspace(xpath, workspaceE);
 
             //Current workspace
             if (workspace.getLookup().lookup(WorkspaceInformationImpl.class).isOpen()) {
@@ -91,7 +104,7 @@ public class GephiReader implements Cancellable {
         }
     }
 
-    public Workspace readWorkSpace(XPath xpath, Element workspaceE) throws Exception {
+    public Workspace readWorkspace(XPath xpath, Element workspaceE) throws Exception {
         WorkspaceImpl workspace = project.getLookup().lookup(WorkspaceProviderImpl.class).newWorkspace();
         WorkspaceInformationImpl info = workspace.getLookup().lookup(WorkspaceInformationImpl.class);
 
@@ -108,6 +121,27 @@ public class GephiReader implements Cancellable {
             info.invalid();
         }
 
+        //WorkspacePersistent
+        readWorkspaceChildren(workspace, workspaceE);
+
         return workspace;
+    }
+
+    public void readWorkspaceChildren(Workspace workspace, Element workspaceE) throws Exception {
+        NodeList children = workspaceE.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node child = children.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                Element childE = (Element)child;
+                WorkspacePersistenceProvider pp = providers.get(childE.getTagName());
+                if (pp != null) {
+                    try {
+                        pp.readXML(childE, workspace);
+                    } catch (UnsupportedOperationException e) {
+                    }
+                }
+            }
+
+        }
     }
 }

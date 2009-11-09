@@ -22,16 +22,19 @@ package org.gephi.io.project;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.gephi.project.WorkspaceProviderImpl;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectInformation;
 import org.gephi.project.api.ProjectMetaData;
-import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceInformation;
+import org.gephi.workspace.api.WorkspacePersistenceProvider;
 import org.openide.util.Cancellable;
+import org.openide.util.Lookup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -43,6 +46,14 @@ public class GephiWriter implements Cancellable {
 
     private int tasks = 0;
     private Document doc;
+    private Map<String, WorkspacePersistenceProvider> providers;
+
+    public GephiWriter() {
+        providers = new HashMap<String, WorkspacePersistenceProvider>();
+        for (WorkspacePersistenceProvider w : Lookup.getDefault().lookupAll(WorkspacePersistenceProvider.class)) {
+            providers.put(w.getIdentifier(), w);
+        }
+    }
 
     private Document createDocument() throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -54,8 +65,6 @@ public class GephiWriter implements Cancellable {
 
         return document;
     }
-
-
 
     public Document writeAll(Project project) throws Exception {
         doc = createDocument();
@@ -139,7 +148,23 @@ public class GephiWriter implements Cancellable {
             workspaceE.setAttribute("status", "invalid");
         }
 
+        writeWorkspaceChildren(workspace, workspaceE);
+
         return workspaceE;
+    }
+
+    public void writeWorkspaceChildren(Workspace workspace, Element workspaceE) {
+        for (WorkspacePersistenceProvider pp : providers.values()) {
+            Element childE = null;
+            try {
+                childE = pp.writeXML(doc, workspace);
+            } catch (UnsupportedOperationException e) {
+            }
+            if (childE != null) {
+                workspaceE.appendChild(doc.createComment("Persistence from "+pp.getClass().getName()));
+                workspaceE.appendChild(childE);
+            }
+        }
     }
 
     public boolean cancel() {
