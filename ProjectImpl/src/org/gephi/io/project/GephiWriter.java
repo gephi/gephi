@@ -24,8 +24,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.gephi.project.WorkspaceProviderImpl;
 import org.gephi.project.api.Project;
+import org.gephi.project.api.ProjectInformation;
+import org.gephi.project.api.ProjectMetaData;
+import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceInformation;
 import org.openide.util.Cancellable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -88,19 +93,23 @@ public class GephiWriter implements Cancellable {
     }
 
     public Element writeProject(Project project) throws Exception {
+        ProjectInformation info = project.getLookup().lookup(ProjectInformation.class);
+        ProjectMetaData metaData = project.getLookup().lookup(ProjectMetaData.class);
+        WorkspaceProviderImpl workspaces = project.getLookup().lookup(WorkspaceProviderImpl.class);
+
         Element projectE = doc.createElement("project");
-        projectE.setAttribute("name", project.getName());
+        projectE.setAttribute("name", info.getName());
 
         //MetaData
         Element projectMetaDataE = doc.createElement("metadata");
         Element titleE = doc.createElement("title");
-        titleE.setTextContent(project.getMetaData().getTitle());
+        titleE.setTextContent(metaData.getTitle());
         Element keywordsE = doc.createElement("keywords");
-        keywordsE.setTextContent(project.getMetaData().getKeywords());
+        keywordsE.setTextContent(metaData.getKeywords());
         Element descriptionE = doc.createElement("description");
-        descriptionE.setTextContent(project.getMetaData().getDescription());
+        descriptionE.setTextContent(metaData.getDescription());
         Element authorE = doc.createElement("author");
-        authorE.setTextContent(project.getMetaData().getAuthor());
+        authorE.setTextContent(metaData.getAuthor());
         projectMetaDataE.appendChild(titleE);
         projectMetaDataE.appendChild(authorE);
         projectMetaDataE.appendChild(keywordsE);
@@ -109,7 +118,7 @@ public class GephiWriter implements Cancellable {
 
         //Workspaces
         Element workspacesE = doc.createElement("workspaces");
-        for (Workspace ws : project.getWorkspaces()) {
+        for (Workspace ws : workspaces.getWorkspaces()) {
             workspacesE.appendChild(writeWorkspace(ws));
         }
         projectE.appendChild(workspacesE);
@@ -118,11 +127,13 @@ public class GephiWriter implements Cancellable {
     }
 
     public Element writeWorkspace(Workspace workspace) throws Exception {
+        WorkspaceInformation info = workspace.getLookup().lookup(WorkspaceInformation.class);
+
         Element workspaceE = doc.createElement("workspace");
-        workspaceE.setAttribute("name", workspace.getName());
-        if (workspace.isOpen()) {
+        workspaceE.setAttribute("name", info.getName());
+        if (info.isOpen()) {
             workspaceE.setAttribute("status", "open");
-        } else if (workspace.isClosed()) {
+        } else if (info.isClosed()) {
             workspaceE.setAttribute("status", "closed");
         } else {
             workspaceE.setAttribute("status", "invalid");

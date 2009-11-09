@@ -18,13 +18,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.workspace.api;
+package org.gephi.project.api;
+
+import org.gephi.workspace.api.Workspace;
+import org.openide.util.Lookup;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface WorkspaceDataKey<T> {
+public interface WorkspaceProvider {
 
-    public int getIndex();
+    public Workspace getCurrentWorkspace();
+
+    public boolean hasCurrentWorkspace();
+
+    public Lookup getLookup();
 }

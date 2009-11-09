@@ -35,7 +35,6 @@ import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.selection.SelectionManager;
-import org.gephi.workspace.api.WorkspaceDataKey;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
@@ -68,8 +67,7 @@ public class ClusteringControllerImpl implements ClusteringController {
         final Graph graph = gc.getModel().getGraph();
 
         //Model
-        WorkspaceDataKey<ClusteringModel> key = Lookup.getDefault().lookup(ClusteringModelWorkspaceDataProvider.class).getWorkspaceDataKey();
-        final ClusteringModel model = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace().getWorkspaceData().getData(key);
+        final ClusteringModel model = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace().getLookup().lookup(ClusteringModel.class);
 
         //LongTask
         LongTask task = null;

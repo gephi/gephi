@@ -54,13 +54,11 @@ public class CompatibilityEngine extends AbstractEngine {
     private CompatibilityScheduler scheduler;
     private long markTime = 0;
     private long markTime2 = 0;
-
     //User config
     protected CompatibilityModelClass[] modelClasses;
     protected CompatibilityModelClass[] lodClasses;
     protected CompatibilityModelClass[] selectableClasses;
     protected CompatibilityModelClass[] clickableClasses;
-
     //Selection
     private ConcurrentLinkedQueue<ModelImpl>[] selectedObjects;
     private boolean anySelected = false;
@@ -562,8 +560,8 @@ public class CompatibilityEngine extends AbstractEngine {
                     if (forceUnselect) {
                         obj.setAutoSelect(false);
                     } /*else if (vizEventManager.hasSelectionListeners() && obj.isSelected()) {
-                unSelectedObjects.add(obj);
-                }*/
+                    unSelectedObjects.add(obj);
+                    }*/
                 }
             }
 

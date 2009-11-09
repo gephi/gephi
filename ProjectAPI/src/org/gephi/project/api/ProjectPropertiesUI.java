@@ -30,7 +30,7 @@ public interface ProjectPropertiesUI {
 
     public JPanel getPanel();
 
-    public void load(Project project);
+    public void setup(Project project);
 
-    public void save(Project project);
+    public void unsetup(Project project);
 }

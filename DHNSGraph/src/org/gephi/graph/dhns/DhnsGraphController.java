@@ -48,7 +48,6 @@ public class DhnsGraphController implements GraphController {
     protected GraphFactoryImpl factory;
     private AttributeRowFactory attributesFactory;
     private Executor eventBus;
-    private GraphWorkspaceDataProvider workspaceDataProvider;
 
     public DhnsGraphController() {
         iDGen = new IDGen();
@@ -64,13 +63,11 @@ public class DhnsGraphController implements GraphController {
                 return new Thread(r, "DHNS Event Bus");
             }
         });
-
-        workspaceDataProvider = Lookup.getDefault().lookup(GraphWorkspaceDataProvider.class);
     }
 
     public Dhns newDhns(Workspace workspace) {
         Dhns dhns = new Dhns(this);
-        workspace.getWorkspaceData().setData(workspaceDataProvider.getWorkspaceDataKey(), dhns);
+        workspace.add(dhns);
         return dhns;
     }
 
@@ -91,7 +88,7 @@ public class DhnsGraphController implements GraphController {
         if (currentWorkspace == null) {
             return null;
         }
-        Dhns dhns = currentWorkspace.getWorkspaceData().getData(workspaceDataProvider.getWorkspaceDataKey());
+        Dhns dhns = currentWorkspace.getLookup().lookup(Dhns.class);
         if (dhns == null) {
             dhns = newDhns(currentWorkspace);
         }

@@ -31,17 +31,20 @@ import javax.swing.SwingUtilities;
 
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.Projects;
-import org.gephi.workspace.api.Workspace;
 import org.gephi.io.project.GephiDataObject;
 import org.gephi.io.project.LoadTask;
 import org.gephi.io.project.SaveTask;
+import org.gephi.project.api.Projects;
+import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
 import org.gephi.utils.longtask.LongTaskListener;
 import org.gephi.workspace.WorkspaceImpl;
+import org.gephi.workspace.WorkspaceInformationImpl;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceInformation;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -120,10 +123,10 @@ public class ProjectControllerImpl implements ProjectController {
         final String OPEN_LAST_PROJECT_ON_STARTUP = "Open_Last_Project_On_Startup";
         final String NEW_PROJECT_ON_STARTUP = "New_Project_On_Startup";
         boolean openLastProject = NbPreferences.forModule(ProjectControllerImpl.class).getBoolean(OPEN_LAST_PROJECT_ON_STARTUP, false);
-        boolean newProject = NbPreferences.forModule(ProjectControllerImpl.class).getBoolean(NEW_PROJECT_ON_STARTUP, false);
+        boolean newProjectStartup = NbPreferences.forModule(ProjectControllerImpl.class).getBoolean(NEW_PROJECT_ON_STARTUP, false);
 
         //Default project
-        if (!openLastProject && newProject) {
+        if (!openLastProject && newProjectStartup) {
             newProject();
         }
     }
@@ -147,7 +150,7 @@ public class ProjectControllerImpl implements ProjectController {
             saveAsProject = true;
             closeProject = true;
             newWorkspace = true;
-            if (projects.getCurrentProject().hasCurrentWorkspace()) {
+            if (projects.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).hasCurrentWorkspace()) {
                 deleteWorkspace = true;
                 cleanWorkspace = true;
                 duplicateWorkspace = true;
@@ -175,7 +178,7 @@ public class ProjectControllerImpl implements ProjectController {
     public void saveProject(DataObject dataObject) {
         GephiDataObject gephiDataObject = (GephiDataObject) dataObject;
         ProjectImpl project = getCurrentProject();
-        project.setDataObject(gephiDataObject);
+        project.getLookup().lookup(ProjectInformationImpl.class).setDataObject(gephiDataObject);
         gephiDataObject.setProject(project);
         SaveTask saveTask = new SaveTask(gephiDataObject);
         lockProjectActions();
@@ -183,8 +186,8 @@ public class ProjectControllerImpl implements ProjectController {
     }
 
     public void saveProject(Project project) {
-        if (project.hasFile()) {
-            GephiDataObject gephiDataObject = (GephiDataObject) project.getDataObject();
+        if (project.getLookup().lookup(ProjectInformationImpl.class).hasFile()) {
+            GephiDataObject gephiDataObject = (GephiDataObject) project.getLookup().lookup(ProjectInformationImpl.class).getDataObject();
             saveProject(gephiDataObject);
         } else {
             saveAsProject(project);
@@ -268,7 +271,7 @@ public class ProjectControllerImpl implements ProjectController {
             }
 
             //Close
-            currentProject.close();
+            currentProject.getLookup().lookup(ProjectInformationImpl.class).close();
             projects.closeCurrentProject();
 
 
@@ -294,10 +297,10 @@ public class ProjectControllerImpl implements ProjectController {
             });
 
             //Event
-            if (currentProject.hasCurrentWorkspace()) {
-                fireWorkspaceEvent(EventType.UNSELECT, currentProject.getCurrentWorkspace());
+            if (currentProject.getLookup().lookup(WorkspaceProvider.class).hasCurrentWorkspace()) {
+                fireWorkspaceEvent(EventType.UNSELECT, currentProject.getLookup().lookup(WorkspaceProvider.class).getCurrentWorkspace());
             }
-            for (Workspace ws : currentProject.getWorkspaces()) {
+            for (Workspace ws : currentProject.getLookup().lookup(WorkspaceProviderImpl.class).getWorkspaces()) {
                 fireWorkspaceEvent(EventType.CLOSE, ws);
             }
             fireWorkspaceEvent(EventType.DISABLE, null);
@@ -321,18 +324,18 @@ public class ProjectControllerImpl implements ProjectController {
 
         Project lastOpenProject = null;
         for (Project p : ((ProjectsImpl) projects).getProjects()) {
-            if (p.hasFile()) {
+            if (p.getLookup().lookup(ProjectInformationImpl.class).hasFile()) {
                 ProjectImpl pImpl = (ProjectImpl) p;
                 pImpl.init();
                 this.projects.addProject(p);
-                pImpl.close();
+                pImpl.getLookup().lookup(ProjectInformationImpl.class).close();
                 if (p == projects.getCurrentProject()) {
                     lastOpenProject = p;
                 }
             }
         }
 
-        if (openLastProject && lastOpenProject != null && !lastOpenProject.isInvalid() && lastOpenProject.hasFile()) {
+        if (openLastProject && lastOpenProject != null && !lastOpenProject.getLookup().lookup(ProjectInformationImpl.class).isInvalid() && lastOpenProject.getLookup().lookup(ProjectInformationImpl.class).hasFile()) {
             openProject(lastOpenProject);
         } else {
             //newProject();
@@ -340,7 +343,7 @@ public class ProjectControllerImpl implements ProjectController {
     }
 
     public Workspace newWorkspace(Project project) {
-        Workspace workspace = ((ProjectImpl) project).newWorkspace();
+        Workspace workspace = project.getLookup().lookup(WorkspaceProviderImpl.class).newWorkspace();
 
         //Event
         fireWorkspaceEvent(EventType.INITIALIZE, workspace);
@@ -362,13 +365,14 @@ public class ProjectControllerImpl implements ProjectController {
         if (getCurrentWorkspace() == workspace) {
             closeCurrentProject();
         }
+        WorkspaceInformation wi = workspace.getLookup().lookup(WorkspaceInformation.class);
 
-        ((ProjectImpl) workspace.getProject()).removeWorkspace(workspace);
+        wi.getProject().getLookup().lookup(WorkspaceProviderImpl.class).removeWorkspace(workspace);
 
         //Event
         fireWorkspaceEvent(EventType.CLOSE, workspace);
 
-        if (getCurrentProject() == null || getCurrentProject().getWorkspaces().length == 0) {
+        if (getCurrentProject() == null || getCurrentProject().getLookup().lookup(WorkspaceProviderImpl.class).getWorkspaces().length == 0) {
             //Event
             fireWorkspaceEvent(EventType.DISABLE, workspace);
         }
@@ -376,18 +380,22 @@ public class ProjectControllerImpl implements ProjectController {
 
     public void openProject(Project project) {
         final ProjectImpl projectImpl = (ProjectImpl) project;
+        final ProjectInformationImpl projectInformationImpl = projectImpl.getLookup().lookup(ProjectInformationImpl.class);
+        final WorkspaceProviderImpl workspaceProviderImpl = project.getLookup().lookup(WorkspaceProviderImpl.class);
+
         if (projects.hasCurrentProject()) {
             closeCurrentProject();
         }
         projects.addProject(projectImpl);
         projects.setCurrentProject(projectImpl);
-        projectImpl.open();
-        if (!project.hasCurrentWorkspace()) {
-            if (project.getWorkspaces().length == 0) {
-                Workspace workspace = projectImpl.newWorkspace();
+        projectInformationImpl.open();
+
+        if (!workspaceProviderImpl.hasCurrentWorkspace()) {
+            if (workspaceProviderImpl.getWorkspaces().length == 0) {
+                Workspace workspace = newWorkspace(project);
                 openWorkspace(workspace);
             } else {
-                Workspace workspace = project.getWorkspaces()[0];
+                Workspace workspace = workspaceProviderImpl.getWorkspaces()[0];
                 openWorkspace(workspace);
             }
         }
@@ -397,7 +405,7 @@ public class ProjectControllerImpl implements ProjectController {
         projectProperties = true;
         closeProject = true;
         newWorkspace = true;
-        if (project.hasCurrentWorkspace()) {
+        if (workspaceProviderImpl.hasCurrentWorkspace()) {
             deleteWorkspace = true;
             cleanWorkspace = true;
             duplicateWorkspace = true;
@@ -408,13 +416,13 @@ public class ProjectControllerImpl implements ProjectController {
 
             public void run() {
                 JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-                String title = frame.getTitle() + " - " + projectImpl.getName();
+                String title = frame.getTitle() + " - " + projectInformationImpl.getName();
                 frame.setTitle(title);
             }
         });
 
         //Status line
-        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectControllerImpl.class, "DesktoProjectController.status.opened", project.getName()));
+        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectControllerImpl.class, "DesktoProjectController.status.opened", projectInformationImpl.getName()));
     }
 
     public ProjectImpl getCurrentProject() {
@@ -423,7 +431,7 @@ public class ProjectControllerImpl implements ProjectController {
 
     public WorkspaceImpl getCurrentWorkspace() {
         if (projects.hasCurrentProject()) {
-            return getCurrentProject().getCurrentWorkspace();
+            return getCurrentProject().getLookup().lookup(WorkspaceProviderImpl.class).getCurrentWorkspace();
         }
         return null;
     }
@@ -431,7 +439,7 @@ public class ProjectControllerImpl implements ProjectController {
     public void closeCurrentWorkspace() {
         WorkspaceImpl workspace = getCurrentWorkspace();
         if (workspace != null) {
-            workspace.close();
+            workspace.getLookup().lookup(WorkspaceInformationImpl.class).close();
 
             //Event
             fireWorkspaceEvent(EventType.UNSELECT, workspace);
@@ -440,8 +448,8 @@ public class ProjectControllerImpl implements ProjectController {
 
     public void openWorkspace(Workspace workspace) {
         closeCurrentWorkspace();
-        getCurrentProject().setCurrentWorkspace(workspace);
-        ((WorkspaceImpl) workspace).open();
+        getCurrentProject().getLookup().lookup(WorkspaceProviderImpl.class).setCurrentWorkspace(workspace);
+        workspace.getLookup().lookup(WorkspaceInformationImpl.class).open();
 
         //Event
         fireWorkspaceEvent(EventType.SELECT, workspace);
@@ -454,7 +462,7 @@ public class ProjectControllerImpl implements ProjectController {
     }
 
     public void renameProject(Project project, final String name) {
-        ((ProjectImpl) project).setName(name);
+        project.getLookup().lookup(ProjectInformationImpl.class);
 
         //Title bar
         SwingUtilities.invokeLater(new Runnable() {
@@ -470,11 +478,11 @@ public class ProjectControllerImpl implements ProjectController {
     }
 
     public void renameWorkspace(Workspace workspace, String name) {
-        ((WorkspaceImpl) workspace).setName(name);
+        workspace.getLookup().lookup(WorkspaceInformationImpl.class).setName(name);
     }
 
     public void setSource(Workspace workspace, String source) {
-        ((WorkspaceImpl) workspace).setSource(source);
+        workspace.getLookup().lookup(WorkspaceInformationImpl.class).setSource(source);
     }
 
     public void addWorkspaceListener(WorkspaceListener workspaceListener) {

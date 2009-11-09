@@ -20,9 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.project;
 
-import org.gephi.project.ProjectImpl.ProjectMetaDataImpl;
+import org.gephi.project.ProjectMetaDataImpl;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.ProjectInformation;
 import org.gephi.project.api.ProjectMetaData;
 import org.openide.util.Lookup;
 
@@ -38,27 +39,39 @@ public class ProjectPropertiesEditor extends javax.swing.JPanel {
     }
 
     public void load(Project project) {
-        if (project.getDataObject() != null) {
-            fileLabel.setText(project.getDataObject().getName());
+        ProjectInformation info = project.getLookup().lookup(ProjectInformation.class);
+        if (info != null) {
+            nameTextField.setText(info.getName());
+            if (info.getDataObject() != null) {
+                fileLabel.setText(info.getDataObject().getName());
+            }
         }
-        ProjectMetaData metaData = project.getMetaData();
-        nameTextField.setText(project.getName());
-        titleTextField.setText(metaData.getTitle());
-        authorTextField.setText(metaData.getAuthor());
-        keywordsTextField.setText(metaData.getKeywords());
-        descriptionTextArea.setText(metaData.getDescription());
+
+        ProjectMetaData metaData = project.getLookup().lookup(ProjectMetaData.class);
+        if (metaData != null) {
+            titleTextField.setText(metaData.getTitle());
+            authorTextField.setText(metaData.getAuthor());
+            keywordsTextField.setText(metaData.getKeywords());
+            descriptionTextArea.setText(metaData.getDescription());
+        }
     }
 
     public void save(Project project) {
-        ProjectMetaDataImpl metaData = (ProjectMetaDataImpl)project.getMetaData();
-        metaData.setTitle(nameTextField.getText());
-        if (!titleTextField.getText().isEmpty() && !titleTextField.getText().equals(project.getName())) {
-            ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-            pc.renameProject(project, titleTextField.getText());
+        ProjectInformation info = project.getLookup().lookup(ProjectInformation.class);
+        if (info != null) {
+            if (!titleTextField.getText().isEmpty() && !titleTextField.getText().equals(info.getName())) {
+                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+                pc.renameProject(project, titleTextField.getText());
+            }
         }
-        metaData.setAuthor(authorTextField.getText());
-        metaData.setKeywords(keywordsTextField.getText());
-        metaData.setDescription(descriptionTextArea.getText());
+        ProjectMetaDataImpl metaData = project.getLookup().lookup(ProjectMetaDataImpl.class);
+        if (metaData != null) {
+            metaData.setTitle(nameTextField.getText());
+
+            metaData.setAuthor(authorTextField.getText());
+            metaData.setKeywords(keywordsTextField.getText());
+            metaData.setDescription(descriptionTextArea.getText());
+        }
     }
 
     /** This method is called from within the constructor to

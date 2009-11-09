@@ -33,5 +33,4 @@ public interface ProjectMetaData {
     public String getDescription();
 
     public String getTitle();
-
 }

@@ -62,11 +62,11 @@ public class ProjectProperties extends SystemAction {
         ProjectPropertiesUI ui = Lookup.getDefault().lookup(ProjectPropertiesUI.class);
         if (ui != null) {
             JPanel panel = ui.getPanel();
-            ui.load(project);
+            ui.setup(project);
             DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(ProjectProperties.class, "ProjectProperties_dialog_title"));
             Object result = DialogDisplayer.getDefault().notify(dd);
             if (result == NotifyDescriptor.OK_OPTION) {
-                ui.save(project);
+                ui.unsetup(project);
             }
         }
     }

@@ -18,13 +18,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.workspace;
+package org.gephi.project;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.project.api.Project;
+import org.gephi.project.api.WorkspaceProvider;
+import org.gephi.workspace.WorkspaceImpl;
 import org.gephi.workspace.api.Workspace;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
@@ -34,30 +32,53 @@ import org.openide.util.lookup.InstanceContent;
  *
  * @author Mathieu Bastian
  */
-public class WorkspaceImpl implements Workspace {
+public class WorkspaceProviderImpl implements WorkspaceProvider {
 
+    private transient WorkspaceImpl currentWorkspace;
+    private transient Project project;
+    //Lookup
     private transient InstanceContent instanceContent;
-    private transient Lookup lookup;
+    private transient AbstractLookup lookup;
 
-    public WorkspaceImpl(Project project) {
+    public WorkspaceProviderImpl(Project project) {
         init(project);
     }
 
     public void init(Project project) {
+        this.project = project;
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
-
-        //Init Default Content
-        WorkspaceInformationImpl workspaceInformationImpl = new WorkspaceInformationImpl(project);
-        add(workspaceInformationImpl);
     }
 
-    public void add(Object instance) {
-        instanceContent.add(instance);
+    public WorkspaceImpl newWorkspace() {
+        WorkspaceImpl workspace = new WorkspaceImpl(project);
+        instanceContent.add(workspace);
+        return workspace;
     }
 
-    public void remove(Object instance) {
-        instanceContent.remove(instance);
+    public void addWorkspace(Workspace workspace) {
+        instanceContent.add(workspace);
+    }
+
+    public void removeWorkspace(Workspace workspace) {
+        instanceContent.remove(workspace);
+    }
+
+    @Override
+    public WorkspaceImpl getCurrentWorkspace() {
+        return currentWorkspace;
+    }
+
+    public Workspace[] getWorkspaces() {
+        return lookup.lookupAll(Workspace.class).toArray(new Workspace[0]);
+    }
+
+    public void setCurrentWorkspace(Workspace currentWorkspace) {
+        this.currentWorkspace = (WorkspaceImpl) currentWorkspace;
+    }
+
+    public boolean hasCurrentWorkspace() {
+        return currentWorkspace != null;
     }
 
     public Lookup getLookup() {

@@ -18,20 +18,34 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.workspace;
+package org.gephi.project.api;
 
-import org.openide.modules.ModuleInstall;
+import javax.swing.event.ChangeListener;
+import org.openide.loaders.DataObject;
 
 /**
- * Manages a module's lifecycle. Remember that an installer is optional and
- * often not needed at all.
+ *
+ * @author Mathieu Bastian
  */
-public class Installer extends ModuleInstall {
+public interface ProjectInformation {
 
-    @Override
-    public void restored() {
-        //Load WorkspaceData Providers statically
-        //Implementations of WorkspaceDataProvider needs to be discovered on startup only
-        WorkspaceDataControllerImpl.getInstance();
-    }
+    public boolean isOpen();
+
+    public boolean isClosed();
+
+    public boolean isInvalid();
+
+    public String getName();
+
+    public boolean hasFile();
+
+    public String getFileName();
+
+    public DataObject getDataObject();
+
+    public Project getProject();
+
+    public void addChangeListener(ChangeListener listener);
+
+    public void removeChangeListener(ChangeListener listener);
 }

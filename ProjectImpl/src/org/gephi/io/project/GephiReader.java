@@ -25,8 +25,11 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 import org.gephi.project.ProjectImpl;
+import org.gephi.project.ProjectInformationImpl;
+import org.gephi.project.WorkspaceProviderImpl;
 import org.gephi.project.api.Project;
 import org.gephi.workspace.WorkspaceImpl;
+import org.gephi.workspace.WorkspaceInformationImpl;
 import org.gephi.workspace.api.Workspace;
 import org.openide.util.Cancellable;
 import org.w3c.dom.Element;
@@ -68,7 +71,10 @@ public class GephiReader implements Cancellable {
     }
 
     public void readProject(XPath xpath, Element projectE) throws Exception {
-        project.setName(projectE.getAttribute("name"));
+        ProjectInformationImpl info = project.getLookup().lookup(ProjectInformationImpl.class);
+        WorkspaceProviderImpl workspaces = project.getLookup().lookup(WorkspaceProviderImpl.class);
+
+        info.setName(projectE.getAttribute("name"));
 
         //WorkSpaces
         XPathExpression exp = xpath.compile("./workspaces/workspace");
@@ -79,26 +85,27 @@ public class GephiReader implements Cancellable {
             Workspace workspace = readWorkSpace(xpath, workspaceE);
 
             //Current workspace
-            if (workspace.isOpen()) {
-                project.setCurrentWorkspace(workspace);
+            if (workspace.getLookup().lookup(WorkspaceInformationImpl.class).isOpen()) {
+                workspaces.setCurrentWorkspace(workspace);
             }
         }
     }
 
     public Workspace readWorkSpace(XPath xpath, Element workspaceE) throws Exception {
-        WorkspaceImpl workspace = project.newWorkspace();
+        WorkspaceImpl workspace = project.getLookup().lookup(WorkspaceProviderImpl.class).newWorkspace();
+        WorkspaceInformationImpl info = workspace.getLookup().lookup(WorkspaceInformationImpl.class);
 
         //Name
-        workspace.setName(workspaceE.getAttribute("name"));
+        info.setName(workspaceE.getAttribute("name"));
 
         //Status
         String workspaceStatus = workspaceE.getAttribute("status");
         if (workspaceStatus.equals("open")) {
-            workspace.open();
+            info.open();
         } else if (workspaceStatus.equals("closed")) {
-            workspace.close();
+            info.close();
         } else {
-            workspace.invalid();
+            info.invalid();
         }
 
         return workspace;

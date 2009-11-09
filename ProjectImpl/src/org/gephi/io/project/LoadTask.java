@@ -23,6 +23,7 @@ package org.gephi.io.project;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.gephi.project.ProjectImpl;
+import org.gephi.project.ProjectInformationImpl;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.utils.longtask.LongTask;
@@ -67,7 +68,7 @@ public class LoadTask implements LongTask, Runnable {
             if (project == null) {
                 project = new ProjectImpl();
             }
-            ((ProjectImpl) project).setDataObject(dataObject);
+            project.getLookup().lookup(ProjectInformationImpl.class).setDataObject(dataObject);
             dataObject.setProject(project);
 
             //GephiReader

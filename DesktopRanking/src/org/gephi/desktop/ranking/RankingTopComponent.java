@@ -33,7 +33,6 @@ import org.gephi.ui.ranking.RankingChooser;
 import org.gephi.ui.ranking.RankingToolbar;
 import org.gephi.ui.ranking.ResultListPanel;
 import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.api.WorkspaceDataKey;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -46,10 +45,8 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "RankingTopComponent";
-
     //UI
     private JToggleButton listButton;
-
     //Model
     private RankingUIModel model;
     private RankingModel rankingModel;
@@ -95,30 +92,29 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
             }
         });
 
-    /*barChartButton.addActionListener(new ActionListener() {
+        /*barChartButton.addActionListener(new ActionListener() {
 
-    public void actionPerformed(ActionEvent e) {
-    model.setBarChartVisible(barChartButton.isSelected());
-    refreshModel();
-    }
-    });*/
+        public void actionPerformed(ActionEvent e) {
+        model.setBarChartVisible(barChartButton.isSelected());
+        refreshModel();
+        }
+        });*/
     }
 
     private void initEvents() {
         model = new RankingUIModel();
 
-        final WorkspaceDataKey<RankingUIModel> key = Lookup.getDefault().lookup(RankingUIWorkspaceDataProvider.class).getWorkspaceDataKey();
         final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
-                workspace.getWorkspaceData().setData(key, new RankingUIModel());
+                workspace.add(new RankingUIModel());
             }
 
             public void select(Workspace workspace) {
                 //Enable
                 enabled = true;
-                RankingUIModel newModel = workspace.getWorkspaceData().getData(key);
+                RankingUIModel newModel = workspace.getLookup().lookup(RankingUIModel.class);
                 if (newModel != null) {
                     model.loadModel(newModel);
                 }
@@ -126,7 +122,11 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
             }
 
             public void unselect(Workspace workspace) {
-                workspace.getWorkspaceData().setData(key, model.saveModel());
+                RankingUIModel oldModel = workspace.getLookup().lookup(RankingUIModel.class);
+                if (oldModel != null) {
+                    workspace.remove(oldModel);
+                }
+                workspace.add(model.saveModel());
             }
 
             public void close(Workspace workspace) {
@@ -137,6 +137,13 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
                 refreshModel();
             }
         });
+
+        if (pc.getCurrentWorkspace() != null) {
+            RankingUIModel newModel = pc.getCurrentWorkspace().getLookup().lookup(RankingUIModel.class);
+            if (newModel != null) {
+                model.loadModel(newModel);
+            }
+        }
     }
 
     private void refreshModel() {
@@ -220,7 +227,6 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
         gridBagConstraints.weightx = 1.0;
         add(southToolbar, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel listResultContainerPanel;
     private javax.swing.JScrollPane listResultPanel;
@@ -255,8 +261,8 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
             return (RankingTopComponent) win;
         }
         Logger.getLogger(RankingTopComponent.class.getName()).warning(
-                "There seem to be multiple components with the '" + PREFERRED_ID +
-                "' ID. That is a potential source of errors and unexpected behavior.");
+                "There seem to be multiple components with the '" + PREFERRED_ID
+                + "' ID. That is a potential source of errors and unexpected behavior.");
         return getDefault();
     }
 

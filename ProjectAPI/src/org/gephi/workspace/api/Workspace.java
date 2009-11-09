@@ -20,30 +20,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.workspace.api;
 
-import org.gephi.project.api.*;
-import javax.swing.event.ChangeListener;
+import org.openide.util.Lookup;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Workspace {
+public interface Workspace extends Lookup.Provider {
 
-    public boolean isOpen();
+    public void add(Object instance);
 
-    public boolean isClosed();
+    public void remove(Object instance);
 
-    public boolean isInvalid();
-
-    public boolean hasSource();
-
-    public String getSource();
-
-    public Project getProject();
-
-    public String getName();
-
-    public void addChangeListener(ChangeListener listener);
-
-    public WorkspaceData getWorkspaceData();
+    public Lookup getLookup();
 }

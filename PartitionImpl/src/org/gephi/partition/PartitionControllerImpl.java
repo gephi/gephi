@@ -39,7 +39,6 @@ import org.gephi.partition.api.Transformer;
 import org.gephi.partition.api.TransformerBuilder;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.api.WorkspaceDataKey;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
 
@@ -55,14 +54,14 @@ public class PartitionControllerImpl implements PartitionController {
     public PartitionControllerImpl() {
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        final WorkspaceDataKey<PartitionModel> key = Lookup.getDefault().lookup(PartitionModelWorkspaceDataProvider.class).getWorkspaceDataKey();
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
+                workspace.add(new PartitionModelImpl());
             }
 
             public void select(Workspace workspace) {
-                model = (PartitionModelImpl) workspace.getWorkspaceData().getData(key);
+                model = workspace.getLookup().lookup(PartitionModelImpl.class);
                 refreshPartitions = true;
             }
 
@@ -77,7 +76,10 @@ public class PartitionControllerImpl implements PartitionController {
             }
         });
         if (pc.getCurrentWorkspace() != null) {
-            model = (PartitionModelImpl) pc.getCurrentWorkspace().getWorkspaceData().getData(key);
+            model = pc.getCurrentWorkspace().getLookup().lookup(PartitionModelImpl.class);
+            if (model == null) {
+                pc.getCurrentWorkspace().add(new PartitionModelImpl());
+            }
         }
     }
 

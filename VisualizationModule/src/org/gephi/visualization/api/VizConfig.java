@@ -82,7 +82,6 @@ public class VizConfig {
     public static final String MOUSE_SELECTION_DIAMETER = "VizConfig.mouseSelectionDiameter";
     public static final String MOUSE_SELECTION_ZOOM_PROPORTIONAL = "VizConfig.mouseSelectionZoomProportionnal";
     public static final String DISABLE_LOD = "VizConfig.disableLOD";
-
     //Default values
     public static final boolean DEFAULT_USE_3D = false;
     public static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
@@ -132,7 +131,6 @@ public class VizConfig {
     public static final int DEFAULT_MOUSE_SELECTION_DIAMETER = 1;
     public static final boolean DEFAULT_MOUSE_SELECTION_ZOOM_PROPORTIONAL = false;
     public static final boolean DEFAULT_DISABLE_LOD = false;
-
     //Default config - loaded in the VizModel
     protected boolean defaultUse3d = NbPreferences.forModule(VizConfig.class).getBoolean(USE_3D, DEFAULT_USE_3D);
     protected boolean defaultLighting = false;  //Overriden by use3d
@@ -162,7 +160,6 @@ public class VizConfig {
     protected Color defaultEdgeInSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(SELECTEDEDGE_IN_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_IN_COLOR)));
     protected Color defaultEdgeOutSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(SELECTEDEDGE_OUT_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_OUT_COLOR)));
     protected Color defaultEdgeBothSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(SELECTEDEDGE_BOTH_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_BOTH_COLOR)));
-
     //Preferences
     protected int antialiasing = NbPreferences.forModule(VizConfig.class).getInt(ANTIALIASING, DEFAULT_ANTIALIASING);
     protected boolean lineSmooth = false;       //Not useful, GL_LINES

@@ -29,6 +29,7 @@ import javax.swing.UIManager;
 import org.gephi.project.api.ProjectController;
 import org.gephi.ui.components.CloseButton;
 import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceInformation;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
@@ -53,8 +54,9 @@ public final class WorkspacePanePanel extends javax.swing.JPanel implements Mous
         closeButton.setCursor(Cursor.getDefaultCursor());
 
         //Workspace info
-        workspaceLabel.setText(workspace.getName());
-        detailsLabel.setText(workspace.getSource());
+        WorkspaceInformation info = workspace.getLookup().lookup(WorkspaceInformation.class);
+        workspaceLabel.setText(info.getName());
+        detailsLabel.setText(info.getSource());
 
         //Selected
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);

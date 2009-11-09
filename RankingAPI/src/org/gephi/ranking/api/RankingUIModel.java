@@ -36,7 +36,6 @@ public class RankingUIModel {
     //Const
     public static final int NODE_RANKING = 1;
     public static final int EDGE_RANKING = 2;
-
     //Model
     protected int ranking;
     protected boolean barChartVisible;
@@ -47,7 +46,6 @@ public class RankingUIModel {
     protected List<Transformer> edgeTransformers;
     protected String selectedNodeRanking;
     protected String selectedEdgeRanking;
-
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
 

@@ -18,23 +18,32 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.workspace;
+package org.gephi.workspace.api;
 
-import org.gephi.workspace.api.WorkspaceDataKey;
+import javax.swing.event.ChangeListener;
+import org.gephi.project.api.Project;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class WorkspaceDataKeyImpl<T> implements WorkspaceDataKey<T> {
+public interface WorkspaceInformation {
 
-    private int index;
+    public boolean isOpen();
 
-    public int getIndex() {
-        return index;
-    }
+    public boolean isClosed();
 
-    public void setIndex(int index) {
-        this.index = index;
-    }
+    public boolean isInvalid();
+
+    public boolean hasSource();
+
+    public String getSource();
+
+    public String getName();
+
+    public Project getProject();
+
+    public void addChangeListener(ChangeListener listener);
+
+    public void removeChangeListener(ChangeListener listener);
 }
