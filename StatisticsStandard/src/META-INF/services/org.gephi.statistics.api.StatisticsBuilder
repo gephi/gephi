@@ -1,8 +1,0 @@
-org.gephi.statistics.builder.ClusteringCoefficientBuilder
-org.gephi.statistics.builder.DegreeDistributionBuilder
-org.gephi.statistics.builder.DensityBuilder
-org.gephi.statistics.builder.GraphDistanceBuilder
-org.gephi.statistics.builder.HitsBuilder
-org.gephi.statistics.builder.InOutDegreeBuilder
-org.gephi.statistics.builder.PageRankBuilder
-org.gephi.statistics.builder.ModularityBuilder

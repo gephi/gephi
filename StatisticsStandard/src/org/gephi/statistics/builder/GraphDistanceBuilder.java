@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Patrick J. McSweeney
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -23,41 +23,25 @@ package org.gephi.statistics.builder;
 import org.gephi.statistics.GraphDistance;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.statistics.api.StatisticsBuilder;
-import org.gephi.statistics.ui.GraphDistancePanel;
-import org.gephi.statistics.ui.GraphDistancePanel.GraphDistanceUI;
-import org.gephi.statistics.ui.api.StatisticsUI;
-import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author pjmcswee
  */
+@ServiceProvider(service=StatisticsBuilder.class)
 public class GraphDistanceBuilder implements StatisticsBuilder {
 
-    GraphDistance gd = new GraphDistance();
-    GraphDistanceUI gdui = new GraphDistanceUI();
-
-    /**
-     *
-     * @return
-     */
-    public String toString() {
-        return gd.getName();
+    public String getName() {
+        return NbBundle.getMessage(GraphDistanceBuilder.class, "GraphDistance.name");
     }
 
-    /**
-     *
-     * @return
-     */
     public Statistics getStatistics() {
-        return gd;//return (Statistics) Lookup.getDefault().lookupAll(GraphDistance.class);
+        return new GraphDistance();
     }
 
-    /**
-     *
-     * @return
-     */
-    public StatisticsUI getUI() {
-        return gdui;// return (StatisticsUI) Lookup.getDefault().lookupAll(GraphDistancePanel.class);
+    public Class<? extends Statistics> getStatisticsClass() {
+        return GraphDistance.class;
     }
 }

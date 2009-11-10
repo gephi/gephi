@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Patrick J. McSweeney
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -23,38 +23,25 @@ package org.gephi.statistics.builder;
 import org.gephi.statistics.InOutDegree;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.statistics.api.StatisticsBuilder;
-import org.gephi.statistics.ui.api.StatisticsUI;
-import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author pjmcswee
  */
+@ServiceProvider(service = StatisticsBuilder.class)
 public class InOutDegreeBuilder implements StatisticsBuilder {
 
-    InOutDegree iod = new InOutDegree();
-
-    /**
-     *
-     * @return
-     */
-    public String toString() {
-        return iod.getName();
+    public String getName() {
+        return NbBundle.getMessage(InOutDegreeBuilder.class, "InOutDegree.name");
     }
 
-    /**
-     *
-     * @return
-     */
     public Statistics getStatistics() {
-        return iod;// (Statistics) Lookup.getDefault().lookupAll(InOutDegree.class);
+        return new InOutDegree();
     }
 
-    /**
-     *
-     * @return
-     */
-    public StatisticsUI getUI() {
-        return null;//return (StatisticsUI) Lookup.getDefault().lookupAll(InOutDegreePanel.class);
+    public Class<? extends Statistics> getStatisticsClass() {
+        return InOutDegree.class;
     }
 }

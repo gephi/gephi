@@ -34,13 +34,12 @@ import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.statistics.api.Statistics;
-import org.gephi.statistics.ui.HitsPanel;
-import org.gephi.statistics.ui.api.StatisticsUI;
 import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartRenderingInfo;
@@ -53,7 +52,6 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 
 /**
  *
@@ -72,13 +70,11 @@ public class Hits implements Statistics, LongTask {
     private Hashtable<Node, Integer> indicies;
     private Graph graph;
 
-
-
     /**
      *
      * @param pUndirected
      */
-    public void setUndirected(boolean pUndirected){
+    public void setUndirected(boolean pUndirected) {
         useUndirected = pUndirected;
     }
 
@@ -86,29 +82,21 @@ public class Hits implements Statistics, LongTask {
      * 
      * @return
      */
-    public boolean getUndirected(){
+    public boolean getUndirected() {
         return useUndirected;
-    }
-
-
-    /**
-     *
-     * @return
-     */
-    public String getName() {
-        return NbBundle.getMessage(Hits.class, "Hits_name");
     }
 
     /**
      * 
-     * @param graphController
+     * @param graphModel
      */
-    public void execute(GraphController graphController) {
+    public void execute(GraphModel graphModel) {
 
-        if(useUndirected)
-            graph = graphController.getModel().getUndirectedGraphVisible();
-        else
-            graph = graphController.getModel().getDirectedGraphVisible();
+        if (useUndirected) {
+            graph = graphModel.getUndirectedGraph();
+        } else {
+            graph = graphModel.getDirectedGraph();
+        }
 
         //DirectedGraph digraph = graphController.getDirectedGraph();
         int N = graph.getNodeCount();
@@ -120,7 +108,7 @@ public class Hits implements Statistics, LongTask {
         hub_list = new LinkedList<Node>();
         auth_list = new LinkedList<Node>();
 
-        progress.start();
+        Progress.start(progress);
 
         indicies = new Hashtable<Node, Integer>();
         int index = 0;
@@ -128,17 +116,15 @@ public class Hits implements Statistics, LongTask {
             indicies.put(node, new Integer(index));
             index++;
 
-            if(!useUndirected){
-                if (((DirectedGraph)graph).getOutDegree(node) > 0) {
+            if (!useUndirected) {
+                if (((DirectedGraph) graph).getOutDegree(node) > 0) {
                     hub_list.add(node);
                 }
-                if (((DirectedGraph)graph).getInDegree(node) > 0) {
+                if (((DirectedGraph) graph).getInDegree(node) > 0) {
                     auth_list.add(node);
                 }
-            }
-            else
-            {
-                if (((UndirectedGraph)graph).getDegree(node) > 0) {
+            } else {
+                if (((UndirectedGraph) graph).getDegree(node) > 0) {
                     hub_list.add(node);
                     auth_list.add(node);
                 }
@@ -164,10 +150,11 @@ public class Hits implements Statistics, LongTask {
                 int n_index = indicies.get(node);
                 temp_authority[n_index] = authority[n_index];
                 EdgeIterable edge_iter;
-                if(!useUndirected)
-                    edge_iter = ((DirectedGraph)graph).getInEdges(node);
-                else
-                    edge_iter = ((UndirectedGraph)graph).getEdges(node);
+                if (!useUndirected) {
+                    edge_iter = ((DirectedGraph) graph).getInEdges(node);
+                } else {
+                    edge_iter = ((UndirectedGraph) graph).getEdges(node);
+                }
                 for (Edge edge : edge_iter) {
                     Node target = graph.getOpposite(node, edge);
                     int target_index = indicies.get(target);
@@ -187,10 +174,11 @@ public class Hits implements Statistics, LongTask {
                 int n_index = indicies.get(node);
                 temp_hubs[n_index] = hubs[n_index];
                 EdgeIterable edge_iter;
-                if(!useUndirected)
-                    edge_iter = ((DirectedGraph)graph).getInEdges(node);
-                else
-                    edge_iter = ((UndirectedGraph)graph).getEdges(node);
+                if (!useUndirected) {
+                    edge_iter = ((DirectedGraph) graph).getInEdges(node);
+                } else {
+                    edge_iter = ((UndirectedGraph) graph).getEdges(node);
+                }
                 for (Edge edge : edge_iter) {
                     Node target = graph.getOpposite(node, edge);
                     int target_index = indicies.get(target);
@@ -212,12 +200,12 @@ public class Hits implements Statistics, LongTask {
             for (Node node : hub_list) {
                 int n_index = indicies.get(node);
                 temp_hubs[n_index] /= hub_sum;
-                 if (((temp_hubs[n_index] - hubs[n_index]) / hubs[n_index]) >= epsilon) {
+                if (((temp_hubs[n_index] - hubs[n_index]) / hubs[n_index]) >= epsilon) {
                     done = false;
                 }
             }
 
-            
+
             authority = temp_authority;
             hubs = temp_hubs;
             temp_authority = new double[N];
@@ -237,25 +225,9 @@ public class Hits implements Statistics, LongTask {
         for (Node s : graph.getNodes()) {
             int s_index = indicies.get(s);
             AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
-            row.setValue(authorityCol, (float)authority[s_index]);
+            row.setValue(authorityCol, (float) authority[s_index]);
             row.setValue(hubsCol, (float) hubs[s_index]);
         }
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isParamerizable() {
-        return true;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public StatisticsUI getUI() {
-        return new HitsPanel.HitsUI();
     }
 
     /**
@@ -265,20 +237,19 @@ public class Hits implements Statistics, LongTask {
     public String getReport() {
         double max = 0;
         XYSeries series1 = new XYSeries("Hubs");
-        for(Node node : hub_list)
-        {
+        for (Node node : hub_list) {
             int n_index = indicies.get(node);
             series1.add(n_index, hubs[n_index]);
         }
         XYSeries series2 = new XYSeries("Authority");
-        for(Node node : auth_list){
+        for (Node node : auth_list) {
             int n_index = indicies.get(node);
             series2.add(n_index, authority[n_index]);
         }
 
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(series1);
-       
+
         JFreeChart chart = ChartFactory.createXYLineChart(
                 "Hubs",
                 "Node",
@@ -302,17 +273,12 @@ public class Hits implements Statistics, LongTask {
         plot.setRenderer(renderer);
 
 
-        String imageFile = "";
+        String imageFile1 = "";
         try {
             final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            final File file1 = new File("hubs.png");
-            String fullPath = file1.getAbsolutePath();
-
-            fullPath = fullPath.replaceAll("\\\\", "\\\\\\\\");
-
-            imageFile = "<IMG SRC=\"file:\\\\\\\\" + fullPath + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
-
-            File f2 = new File(fullPath);
+            final String fileName = "temp\\hubs.png";
+            final File file1 = new File(fileName);
+            imageFile1 = "<IMG SRC=\"file:" + fileName + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
             ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
         } catch (IOException e) {
             System.out.println(e.toString());
@@ -348,21 +314,21 @@ public class Hits implements Statistics, LongTask {
         String imageFile2 = "";
         try {
             final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            final File file1 = new File("authority.png");
-            String fullPath = file1.getAbsolutePath();
+            final String fileName = "temp\\authority.png";
+            final File file1 = new File(fileName);
+            imageFile2 = "<IMG SRC=\"file:" + fileName + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
 
-            fullPath = fullPath.replaceAll("\\\\", "\\\\\\\\");
-
-            imageFile2 = "<IMG SRC=\"file:\\\\\\\\" + fullPath + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
-
-            File f2 = new File(fullPath);
             ChartUtilities.saveChartAsPNG(file1, chart2, 600, 400, info);
         } catch (IOException e) {
             System.out.println(e.toString());
         }
 
-        //mGraph.getEdgeVersion();
-        String report = "<HTML> <BODY> HITS Metric <h2>Network Revision Number:</h2> (" +  graph.getNodeVersion() + ", " +  graph.getEdgeVersion() +  ")<br> PARAMETERS: <br>  <br>" +   "<br> RESULTS <br>" + imageFile + "<br>" + imageFile2 + "</BODY> </HTML>";
+        String report = "<HTML> <BODY> <h1> HITS Metric Report </h1> <br> "
+                + "<hr> <br> <h2>Network Revision Number:</h2> ("
+                + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")<br>"
+                + "<h2> Parameters: </h2>  <br> &#917; = " + this.epsilon
+                + "<br> <h2> Results: </h2><br>"
+                + imageFile1 + "<br>" + imageFile2 + "</BODY> </HTML>";
 
         return report;
     }
@@ -384,7 +350,6 @@ public class Hits implements Statistics, LongTask {
         progress = progressTicket;
     }
 
-   
     /**
      *
      * @param eps
@@ -392,8 +357,6 @@ public class Hits implements Statistics, LongTask {
     public void setEpsilon(double eps) {
         epsilon = eps;
     }
-
-
 
     /**
      *

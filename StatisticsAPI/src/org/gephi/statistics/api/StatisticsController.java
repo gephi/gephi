@@ -21,14 +21,23 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.statistics.api;
 
 import java.util.List;
+import org.gephi.statistics.ui.api.StatisticsUI;
+import org.gephi.utils.longtask.LongTaskListener;
 
 /**
  *
+ * 
  * @author Mathieu Bastian
  */
 public interface StatisticsController {
 
+    /** */
     public List<StatisticsBuilder> getStatistics();
 
-    public void execute(StatisticsBuilder statistics);
+    /** */
+    public void execute(Statistics statistics, LongTaskListener listener);
+
+    public StatisticsBuilder getBuilder(Class<? extends Statistics> statistics);
+
+    public void setStatisticsUIVisible(StatisticsUI ui, boolean visible);
 }

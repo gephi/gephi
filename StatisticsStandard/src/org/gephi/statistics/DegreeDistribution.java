@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Patrick J. McSweeney
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -22,12 +22,10 @@ package org.gephi.statistics;
 
 import java.io.File;
 import java.io.IOException;
-import javax.swing.JPanel;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.graph.api.*;
-import org.gephi.statistics.ui.DegreeDistributionPanel;
-import org.gephi.statistics.ui.api.StatisticsUI;
 import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartRenderingInfo;
@@ -42,68 +40,144 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * This class measures how closely the degree distribution of a
+ * network follows a power-law scale.  An alpha value between 2 and 3
+ * implies a power law.
  * @author pjmcswees
  */
 public class DegreeDistribution implements Statistics, LongTask {
 
-    /** Calculate the degree distribution interms of in + out degree. */
-    private boolean combined;
-    /** Calcuate the degree distribution interms of the in and out degrees. */
-    private boolean separated;
-    private float[][] combinedDistribution;
-    private boolean isCanceled;
-    private ProgressTicket progress;
-    private double[] fit;
-    private boolean directed;
-
-    public String toString() {
-        return new String("Degree Distribution");
-    }
+    /**  The combined In/Out-degree distribution. */
+    private double[][] mCombinedDistribution;
+    /** The In-degree distribution. */
+    private double[][] mInDistribution;
+    /** The out-degree distribution. */
+    private double[][] mOutDistribution;
+    /** Remember if the metric has been canceled.  */
+    private boolean mIsCanceled;
+    /** The progress meter for this metric. */
+    private ProgressTicket mProgress;
+    /**  Indicates if this network should be directed or undirected.*/
+    private boolean mDirected;
+    /** The powerlaw value for the combined in/out-degree of this network. */
+    private double mCombinedAlpha;
+    /** The powerlaw value for the in-degree of this network. */
+    private double mInAlpha;
+    /** The powerlaw value for the out-degree of this network. */
+    private double mOutAlpha;
+    /** The powerlaw value for the combined in/out-degree of this network. */
+    private double mCombinedBeta;
+    /** The powerlaw value for the in-degree of this network. */
+    private double mInBeta;
+    /** The powerlaw value for the out-degree of this network. */
+    private double mOutBeta;
+    private String mGraphRevision;
 
     /**
-     * 
-     * @param pDirected
+     * @param pDirected Indicates the metric's interpretation of this network. 
      */
     public void setDirected(boolean pDirected) {
-        directed = pDirected;
+        this.mDirected = pDirected;
+    }
+
+    public boolean isDirected() {
+        return mDirected;
     }
 
     /**
+     * @return The combined in/out-degree power law value for this network.
+     */
+    public double getCombinedPowerLaw() {
+        return this.mCombinedAlpha;
+    }
+
+    /**
+     * @return The combined in/out-degree power law value for this network.
+     */
+    public double getInPowerLaw() {
+        return this.mInAlpha;
+    }
+
+    /**
+     * @return The combined in/out-degree power law value for this network.
+     */
+    public double getOutPowerLaw() {
+        return this.mOutAlpha;
+    }
+
+    /**
+     * Calculates the degree distribution for this network.
+     * Either a combined degree distribution or separate
+     * in-degree distribution and out-degree distribution
+     * is calculated based on the mDirected variable.
      * 
-     * @return
+     * @param graphModel
      */
-    public String getName() {
-        return NbBundle.getMessage(ClusteringCoefficient.class, "DegreeDistribution_name");
-    }
+    public void execute(GraphModel graphModel) {
 
-    /**
-     *
-     * @param synchReader
-     */
-    public void execute(GraphController graphController) {
-        isCanceled = false;
+        //Mark this as not yet canceled.
+        this.mIsCanceled = false;
 
-        DirectedGraph digraph = graphController.getModel().getDirectedGraphVisible();
+        //Get the graph from the graphController, based
+        //on the mDirected variable.
+        Graph graph;
+        if (this.mDirected) {
+            graph = graphModel.getDirectedGraph();
+        } else {
+            graph = graphModel.getUndirectedGraph();
+        }
 
-        progress.start(digraph.getNodeCount());
+        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
+
+        //Start 
+        Progress.start(mProgress, graph.getNodeCount());
+
+
         //Consider the in and out degree of every node
-        combinedDistribution = new float[2][2 * digraph.getNodeCount()];
+        if (this.mDirected) {
+            this.mInDistribution = new double[2][2 * graph.getNodeCount()];
+            this.mOutDistribution = new double[2][2 * graph.getNodeCount()];
+        } else {
+            this.mCombinedDistribution = new double[2][2 * graph.getNodeCount()];
+        }
+
 
         int nodeCount = 0;
-        for (Node node : digraph.getNodes()) {
-            int combinedDegree = digraph.getInDegree(node) + digraph.getOutDegree(node);
-            combinedDistribution[1][combinedDegree]++;
-            combinedDistribution[0][combinedDegree] = combinedDegree;
-            progress.progress(nodeCount);
+        for (Node node : graph.getNodes()) {
+            if (this.mDirected) {
+                int inDegree = ((DirectedGraph) graph).getInDegree(node);
+                int outDegree = ((DirectedGraph) graph).getOutDegree(node);
+                this.mInDistribution[1][inDegree]++;
+                this.mOutDistribution[1][outDegree]++;
+                this.mInDistribution[0][inDegree] = inDegree;
+                this.mOutDistribution[0][outDegree] = outDegree;
+            } else {
+                int combinedDegree = ((UndirectedGraph) graph).getDegree(node);
+                this.mCombinedDistribution[1][combinedDegree]++;
+                this.mCombinedDistribution[0][combinedDegree] = combinedDegree;
+            }
+            Progress.progress(mProgress, nodeCount);
             nodeCount++;
-            if (isCanceled) {
+            if (this.mIsCanceled) {
                 return;
             }
         }
 
-        fit = new double[2];
-        leastSquares(combinedDistribution[1], fit);
+        if (this.mDirected) {
+            double[] inFit = new double[2];
+            double[] outFit = new double[2];
+            leastSquares(this.mInDistribution[1], inFit);
+            leastSquares(this.mOutDistribution[1], outFit);
+            this.mInAlpha = inFit[1];
+            this.mInBeta = inFit[0];
+            this.mOutAlpha = outFit[1];
+            this.mOutBeta = outFit[0];
+        } else {
+            double[] fit = new double[2];
+            leastSquares(this.mCombinedDistribution[1], fit);
+            this.mCombinedAlpha = fit[1];
+            this.mCombinedBeta = fit[0];
+        }
     }
 
     /**
@@ -118,7 +192,7 @@ public class DegreeDistribution implements Statistics, LongTask {
      *
      *  For more see Wolfram Least Squares Fitting
      */
-    public void leastSquares(float[] dist, double[] res) {
+    public void leastSquares(double[] dist, double[] res) {
         //Vararibles to compute
         double SSxx = 0;
         double SSxy = 0;
@@ -135,7 +209,7 @@ public class DegreeDistribution implements Statistics, LongTask {
                 nonZero++;
             }
 
-            if (isCanceled) {
+            if (this.mIsCanceled) {
                 return;
             }
 
@@ -158,40 +232,177 @@ public class DegreeDistribution implements Statistics, LongTask {
     }
 
     /**
-     * 
-     * @return
+     * @return Indicates that this metric accepts parameters.
      */
     public boolean isParamerizable() {
         return true;
     }
 
     /**
-     *
-     * @return
+     * @return A String report based on the interpretation of the network.
      */
-    public JPanel getPanel() {
-        return null;
+    public String getReport() {
+        if (this.mDirected) {
+            return getDirectedReport();
+        } else {
+            return getUndirectedReport();
+        }
     }
 
     /**
      *
-     * @return
+     * @return The directed version of the report.
      */
-    public String getReport() {
-
-        double max = 0;
-        XYSeries series2 = new XYSeries("Series 2");
-        for (int i = 1; i < combinedDistribution[1].length; i++) {
-            if (combinedDistribution[1][i] > 0) {
-                series2.add((Math.log(combinedDistribution[0][i]) / Math.log(Math.E)), (Math.log(combinedDistribution[1][i]) / Math.log(Math.E)));
-                max = (float) Math.max((Math.log(combinedDistribution[0][i]) / Math.log(Math.E)), max);
+    private String getDirectedReport() {
+        double inMax = 0;
+        XYSeries inSeries2 = new XYSeries("Series 2");
+        for (int i = 1; i < this.mInDistribution[1].length; i++) {
+            if (this.mInDistribution[1][i] > 0) {
+                inSeries2.add((Math.log(this.mInDistribution[0][i]) / Math.log(Math.E)), (Math.log(this.mInDistribution[1][i]) / Math.log(Math.E)));
+                inMax = (float) Math.max((Math.log(this.mInDistribution[0][i]) / Math.log(Math.E)), inMax);
             }
         }
-        double a = fit[1];
-        double b = fit[0];
+        double inA = this.mInAlpha;
+        double inB = this.mInBeta;
 
 
-        XYSeries series1 = new XYSeries(fit[1] + " ");
+        XYSeries inSeries1 = new XYSeries(this.mInAlpha + " ");
+        inSeries1.add(0, inA);
+        inSeries1.add(inMax, inA + inB * inMax);
+
+        XYSeriesCollection inDataset = new XYSeriesCollection();
+        inDataset.addSeries(inSeries1);
+        inDataset.addSeries(inSeries2);
+
+        JFreeChart inChart = ChartFactory.createXYLineChart(
+                "In-Degree Distribution",
+                "In-Degree",
+                "Occurrence",
+                inDataset,
+                PlotOrientation.VERTICAL,
+                true,
+                false,
+                false);
+        XYPlot inPlot = (XYPlot) inChart.getPlot();
+        XYLineAndShapeRenderer inRenderer = new XYLineAndShapeRenderer();
+        inRenderer.setSeriesLinesVisible(0, true);
+        inRenderer.setSeriesShapesVisible(0, false);
+        inRenderer.setSeriesLinesVisible(1, false);
+        inRenderer.setSeriesShapesVisible(1, true);
+        inRenderer.setSeriesShape(1, new java.awt.geom.Ellipse2D.Double(0, 0, 1, 1));
+        inPlot.setBackgroundPaint(java.awt.Color.WHITE);
+        inPlot.setDomainGridlinePaint(java.awt.Color.GRAY);
+        inPlot.setRangeGridlinePaint(java.awt.Color.GRAY);
+
+        inPlot.setRenderer(inRenderer);
+
+
+        String inImageFile = "";
+        try {
+            final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+
+            String sep = File.pathSeparator;
+            final String fileName = "temp\\inDistribution.png";
+            final File file1 = new File(fileName);
+            inImageFile = "<IMG SRC=\"file:" + fileName + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
+            ChartUtilities.saveChartAsPNG(file1, inChart, 600, 400, info);
+        } catch (IOException e) {
+            System.out.println(e.toString());
+        }
+
+
+
+        double outMax = 0;
+        XYSeries outSeries2 = new XYSeries("Series 2");
+        for (int i = 1; i < this.mOutDistribution[1].length; i++) {
+            if (this.mOutDistribution[1][i] > 0) {
+                outSeries2.add((Math.log(this.mOutDistribution[0][i]) / Math.log(Math.E)), (Math.log(this.mOutDistribution[1][i]) / Math.log(Math.E)));
+                outMax = (float) Math.max((Math.log(this.mOutDistribution[0][i]) / Math.log(Math.E)), outMax);
+            }
+        }
+        double outA = this.mOutAlpha;
+        double outB = this.mOutBeta;
+
+
+        XYSeries outSeries1 = new XYSeries(this.mOutAlpha + " ");
+        outSeries1.add(0, outA);
+        outSeries1.add(outMax, outA + outB * outMax);
+
+        XYSeriesCollection outDataset = new XYSeriesCollection();
+        outDataset.addSeries(outSeries1);
+        outDataset.addSeries(outSeries2);
+
+        JFreeChart outchart = ChartFactory.createXYLineChart(
+                "Out-Degree Distribution",
+                "Out-Degree",
+                "Occurrence",
+                outDataset,
+                PlotOrientation.VERTICAL,
+                true,
+                false,
+                false);
+        XYPlot outPlot = (XYPlot) outchart.getPlot();
+        XYLineAndShapeRenderer outRenderer = new XYLineAndShapeRenderer();
+        outRenderer.setSeriesLinesVisible(0, true);
+        outRenderer.setSeriesShapesVisible(0, false);
+        outRenderer.setSeriesLinesVisible(1, false);
+        outRenderer.setSeriesShapesVisible(1, true);
+        outRenderer.setSeriesShape(1, new java.awt.geom.Ellipse2D.Double(0, 0, 1, 1));
+        outPlot.setBackgroundPaint(java.awt.Color.WHITE);
+        outPlot.setDomainGridlinePaint(java.awt.Color.GRAY);
+        outPlot.setRangeGridlinePaint(java.awt.Color.GRAY);
+
+        outPlot.setRenderer(outRenderer);
+
+
+        String outImageFile = "";
+        try {
+            final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+            String sep = File.separator;
+            final String fileName = "temp\\" + "outDistribution.png";
+            final File file1 = new File(fileName);
+            outImageFile = "<IMG SRC=\"file:" + fileName + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
+            ChartUtilities.saveChartAsPNG(file1, outchart, 600, 400, info);
+        } catch (IOException e) {
+            System.out.println(e.toString());
+        }
+
+
+
+
+        String report = new String("<HTML> <BODY> <h1>Degree Distribution Metric Report </h1> "
+                + "<hr> <br> <h2>Network Revision Number:</h2>"
+                + mGraphRevision
+                + "<br>"
+                + "<h2> Parameters: </h2>"
+                + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
+                + "<br> <h2> Results: </h2>"
+                + "In-Degree Power Law: -" + this.mInAlpha + "\n <BR>"
+                + inImageFile + "<br>Out-Degree Power Law: -" + this.mOutAlpha + "\n <BR>"
+                + outImageFile + "</BODY> </HTML>");
+
+
+        return report;
+    }
+
+    /**
+     *
+     * @return The undirected version of this report.
+     */
+    private String getUndirectedReport() {
+        double max = 0;
+        XYSeries series2 = new XYSeries("Series 2");
+        for (int i = 1; i < this.mCombinedDistribution[1].length; i++) {
+            if (this.mCombinedDistribution[1][i] > 0) {
+                series2.add((Math.log(this.mCombinedDistribution[0][i]) / Math.log(Math.E)), (Math.log(this.mCombinedDistribution[1][i]) / Math.log(Math.E)));
+                max = (float) Math.max((Math.log(this.mCombinedDistribution[0][i]) / Math.log(Math.E)), max);
+            }
+        }
+        double a = this.mCombinedAlpha;
+        double b = this.mCombinedBeta;
+
+
+        XYSeries series1 = new XYSeries(this.mCombinedAlpha + " ");
         series1.add(0, a);
         series1.add(max, a + b * max);
 
@@ -238,32 +449,31 @@ public class DegreeDistribution implements Statistics, LongTask {
             System.out.println(e.toString());
         }
 
-        String report = "<HTML> <BODY> Power: -" + fit[0] + "\n <BR>" + imageFile + "</BODY> </HTML>";
+
+        String report = new String("<HTML> <BODY> <h1>Degree Distribution Metric Report </h1> "
+                + "<hr> <br> <h2>Network Revision Number:</h2>"
+                + mGraphRevision
+                + "<br>"
+                + "<h2> Parameters: </h2>"
+                + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
+                + "<br> <h2> Results: </h2>"
+                + "In-Degree Power Law: -" + this.mInAlpha + "\n <BR>"
+                + " Power: -" + this.mCombinedAlpha + "\n <BR>" + imageFile + "</BODY> </HTML>");
         return report;
     }
 
     /**
-     * 
-     * @return
+     * @return Indicates that the metric canceled flag was set.
      */
     public boolean cancel() {
-        isCanceled = true;
+        this.mIsCanceled = true;
         return true;
     }
 
     /**
-     * 
-     * @param progressTicket
+     * @param progressTicket Sets the progress meter for the metric.
      */
-    public void setProgressTicket(ProgressTicket progressTicket) {
-        progress = progressTicket;
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public StatisticsUI getUI() {
-        return new DegreeDistributionPanel.DegreeDistributionUI();
+    public void setProgressTicket(ProgressTicket pProgressTicket) {
+        this.mProgress = pProgressTicket;
     }
 }

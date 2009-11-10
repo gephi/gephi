@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Patrick J. McSweeney
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -23,41 +23,26 @@ package org.gephi.statistics.builder;
 import org.gephi.statistics.DegreeDistribution;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.statistics.api.StatisticsBuilder;
-import org.gephi.statistics.ui.DegreeDistributionPanel;
-import org.gephi.statistics.ui.DegreeDistributionPanel.DegreeDistributionUI;
-import org.gephi.statistics.ui.api.StatisticsUI;
-import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
- * @author pjmcswee
+ *  The degree distribution builder that bundles together GUI
+ *  and theory aspects of the statistic.
+ *  @author pjmcswee
  */
+@ServiceProvider(service=StatisticsBuilder.class)
 public class DegreeDistributionBuilder implements StatisticsBuilder {
 
-    DegreeDistribution dd = new DegreeDistribution();
-    DegreeDistributionUI ddui = new DegreeDistributionUI();
-
-    /**
-     * 
-     * @return
-     */
-    public String toString() {
-        return dd.getName();
+    public String getName() {
+        return NbBundle.getMessage(DegreeDistributionBuilder.class, "DegreeDistribution.name");
     }
 
-    /**
-     *
-     * @return
-     */
     public Statistics getStatistics() {
-        return dd;//(Statistics) Lookup.getDefault().lookupAll(DegreeDistribution.class);
+        return new DegreeDistribution();
     }
 
-    /**
-     *
-     * @return
-     */
-    public StatisticsUI getUI() {
-        return ddui;//(StatisticsUI) Lookup.getDefault().lookupAll(DegreeDistributionPanel.class);
+    public Class<? extends Statistics> getStatisticsClass() {
+        return DegreeDistribution.class;
     }
 }

@@ -1,19 +1,24 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+Copyright 2008 WebAtlas
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
+Website : http://www.gephi.org
 
-/*
- * DegreeDistributionPanel.java
- *
- * Created on Jun 22, 2009, 10:16:41 PM
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics.ui;
-
-import javax.swing.JPanel;
-import org.gephi.statistics.DegreeDistribution;
-import org.gephi.statistics.api.Statistics;
-import org.gephi.statistics.ui.api.StatisticsUI;
 
 /**
  *
@@ -21,9 +26,16 @@ import org.gephi.statistics.ui.api.StatisticsUI;
  */
 public class DegreeDistributionPanel extends javax.swing.JPanel {
 
-    /** Creates new form DegreeDistributionPanel */
     public DegreeDistributionPanel() {
         initComponents();
+    }
+
+    public boolean isDirected() {
+        return directedRadioButton.isSelected();
+    }
+
+    public void setDirected(boolean directed) {
+        directedButtonGroup.setSelected(directed ? directedRadioButton.getModel() : undirectedRadioButton.getModel(), true);
     }
 
     /** This method is called from within the constructor to
@@ -35,87 +47,62 @@ public class DegreeDistributionPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
+        directedButtonGroup = new javax.swing.ButtonGroup();
         directedRadioButton = new javax.swing.JRadioButton();
         undirectedRadioButton = new javax.swing.JRadioButton();
-        jLabel1 = new javax.swing.JLabel();
+        labelTitle = new javax.swing.JLabel();
+        separator = new javax.swing.JSeparator();
+        descriptionLabel = new org.jdesktop.swingx.JXLabel();
 
-        buttonGroup1.add(directedRadioButton);
+        directedButtonGroup.add(directedRadioButton);
         directedRadioButton.setText(org.openide.util.NbBundle.getMessage(DegreeDistributionPanel.class, "DegreeDistributionPanel.directedRadioButton.text")); // NOI18N
 
-        buttonGroup1.add(undirectedRadioButton);
+        directedButtonGroup.add(undirectedRadioButton);
         undirectedRadioButton.setText(org.openide.util.NbBundle.getMessage(DegreeDistributionPanel.class, "DegreeDistributionPanel.undirectedRadioButton.text")); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(DegreeDistributionPanel.class, "DegreeDistributionPanel.jLabel1.text")); // NOI18N
+        labelTitle.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        labelTitle.setText(org.openide.util.NbBundle.getMessage(DegreeDistributionPanel.class, "DegreeDistributionPanel.labelTitle.text")); // NOI18N
+
+        descriptionLabel.setLineWrap(true);
+        descriptionLabel.setText(org.openide.util.NbBundle.getMessage(DegreeDistributionPanel.class, "DegreeDistributionPanel.descriptionLabel.text")); // NOI18N
+        descriptionLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(undirectedRadioButton)
-                            .addComponent(directedRadioButton))))
-                .addContainerGap(139, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
+                    .addComponent(undirectedRadioButton, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(directedRadioButton, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(labelTitle, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(separator, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(jLabel1)
+                .addContainerGap()
+                .addComponent(labelTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(directedRadioButton)
                 .addGap(18, 18, 18)
                 .addComponent(undirectedRadioButton)
-                .addContainerGap(174, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
+    private org.jdesktop.swingx.JXLabel descriptionLabel;
+    private javax.swing.ButtonGroup directedButtonGroup;
     protected javax.swing.JRadioButton directedRadioButton;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel labelTitle;
+    private javax.swing.JSeparator separator;
     protected javax.swing.JRadioButton undirectedRadioButton;
     // End of variables declaration//GEN-END:variables
-
-    public static class DegreeDistributionUI implements StatisticsUI {
-
-        private DegreeDistributionPanel panel;
-        private DegreeDistribution degreeDistribution;
-
-        public DegreeDistributionUI() {
-            panel = new DegreeDistributionPanel();
-        }
-
-        public JPanel getPanel() {
-            return panel;
-        }
-
-        /**
-         *
-         * @param statistics
-         */
-        public void setup(Statistics statistics) {
-            this.degreeDistribution = (DegreeDistribution) statistics;
-
-            panel.directedRadioButton.setSelected(true);
-            panel.undirectedRadioButton.setSelected(false);
-
-            degreeDistribution.setDirected(true);
-        }
-
-        /**
-         *
-         */
-        public void unsetup() {
-            //Set params
-            boolean directed = panel.directedRadioButton.isSelected();
-            degreeDistribution.setDirected(directed);
-        }
-    }
 }

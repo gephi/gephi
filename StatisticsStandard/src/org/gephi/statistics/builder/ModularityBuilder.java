@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Patrick J. McSweeney
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -23,35 +23,25 @@ package org.gephi.statistics.builder;
 import org.gephi.statistics.Modularity;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.statistics.api.StatisticsBuilder;
-import org.gephi.statistics.ui.ModularityPanel.ModularityUI;
-import org.gephi.statistics.ui.api.StatisticsUI;
-import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author pjmcswee
  */
+@ServiceProvider(service = StatisticsBuilder.class)
 public class ModularityBuilder implements StatisticsBuilder {
 
-    Modularity mod = new Modularity();
-    ModularityUI modui = new ModularityUI();
-    public String toString() {
-        return mod.getName();
+    public String getName() {
+        return NbBundle.getMessage(ModularityBuilder.class, "Modularity.name");
     }
 
-    /**
-     *
-     * @return
-     */
     public Statistics getStatistics() {
-        return mod;//(Statistics) Lookup.getDefault().lookup(Modularity.class);
+        return new Modularity();
     }
 
-    /**
-     *
-     * @return
-     */
-    public StatisticsUI getUI() {
-        return modui;//return (StatisticsUI) Lookup.getDefault().lookupAll(InOutDegreePanel.class);
+    public Class<? extends Statistics> getStatisticsClass() {
+        return Modularity.class;
     }
 }

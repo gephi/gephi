@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Patrick J. McSweeney
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -23,41 +23,25 @@ package org.gephi.statistics.builder;
 import org.gephi.statistics.PageRank;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.statistics.api.StatisticsBuilder;
-import org.gephi.statistics.ui.PageRankPanel;
-import org.gephi.statistics.ui.PageRankPanel.PageRankUI;
-import org.gephi.statistics.ui.api.StatisticsUI;
-import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author pjmcswee
  */
+@ServiceProvider(service = StatisticsBuilder.class)
 public class PageRankBuilder implements StatisticsBuilder {
 
-    PageRank pr = new PageRank();
-    PageRankUI prui = new PageRankUI();
-
-    /**
-     *
-     * @return
-     */
-    public String toString() {
-        return pr.getName();
+    public String getName() {
+        return NbBundle.getMessage(PageRankBuilder.class, "PageRank.name");
     }
 
-    /**
-     * 
-     * @return
-     */
     public Statistics getStatistics() {
-        return pr;//(Statistics) Lookup.getDefault().lookupAll(PageRank.class);
+        return new PageRank();
     }
 
-    /**
-     *
-     * @return
-     */
-    public StatisticsUI getUI() {
-        return prui;//StatisticsUI) Lookup.getDefault().lookupAll(PageRankPanel.class);
+    public Class<? extends Statistics> getStatisticsClass() {
+        return PageRank.class;
     }
 }
