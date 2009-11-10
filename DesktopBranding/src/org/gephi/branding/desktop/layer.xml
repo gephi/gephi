@@ -17,14 +17,6 @@
     <attr name="Menu\Window\ProjectAction.shadow\position" intvalue="250"/>
     <attr name="Menu\Window\org-netbeans-core-windows-actions-ResetWindowsAction.shadow\position" intvalue="2750"/>
     <folder name="Actions">
-        <folder name="File">
-            <file name="org-gephi-branding-desktop-TopTabAction.instance">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
-                <attr name="delegate" newvalue="org.gephi.branding.desktop.TopTabAction"/>
-                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.Bundle#CTL_TopTabAction"/>
-                <attr name="noIconInMenu" stringvalue="false"/>
-            </file>
-        </folder>
     </folder>
     <folder name="Menu">
         <folder name="Edit">
@@ -124,20 +116,11 @@
             <attr name="originalFile" stringvalue="Menu/File/org-gephi-branding-desktop-actions-OpenProject.instance"/>
         </file>
     </folder>
-    <folder name="Toolbars">
-        <file name="Clipboard_hidden"/>
-        <file name="Memory_hidden"/>
-        <file name="UndoRedo_hidden"/>
-        <folder name="File">
-            <file name="org-gephi-branding-desktop-TopTabAction.shadow">
-                <attr name="originalFile" stringvalue="Actions/File/org-gephi-branding-desktop-TopTabAction.instance"/>
-                <attr name="position" intvalue="10"/>
-            </file>
-            <file name="org-openide-actions-SaveAllAction.instance_hidden"/>
-            <file name="org-openide-actions-SaveAllAction.shadow_hidden"/>
-        </folder>
-    </folder>
+    <file name="Toolbars_hidden"/>
     <folder name="Windows2">
+        <folder name="Components">
+            <file name="BannerTopComponent.settings" url="BannerTopComponentSettings.xml"/>
+        </folder>
         <folder name="Groups">
             <file name="LaboratoryGroup.wsgrp" url="LaboratoryGroup.wsgrp"/>
             <folder name="LaboratoryGroup">
@@ -156,6 +139,12 @@
                 <file name="PreviewTopComponent.wstcgrp" url="PreviewTopComponent.wstcgrp"/>
                 <file name="PreviewSettingsTopComponent.wstcgrp" url="PreviewSettingsTopComponent.wstcgrp"/>
             </folder>
+        </folder>
+        <folder name="Modes">
+            <folder name="bannermode">
+                <file name="BannerTopComponent.wstcref" url="BannerTopComponentWstcref.xml"/>
+            </folder>
+             <file name="bannermode.wsmode" url="bannermodeWsmode.xml"/>
         </folder>
     </folder>
 </filesystem>
