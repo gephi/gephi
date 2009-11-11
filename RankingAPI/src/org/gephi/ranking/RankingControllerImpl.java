@@ -88,18 +88,28 @@ public class RankingControllerImpl implements RankingController {
         rankingEventBus.publishResults(rankingResult);
     }
 
-    public ColorTransformer getColorTransformer(Ranking ranking) {
-        ColorTransformer colorTransformer = TransformerFactory.getColorTransformer(ranking);
+    public ColorTransformer getObjectColorTransformer(Ranking ranking) {
+        ColorTransformer colorTransformer = TransformerFactory.getObjectColorTransformer(ranking);
         return colorTransformer;
+    }
+
+    public SizeTransformer getObjectSizeTransformer(Ranking ranking) {
+        SizeTransformer sizeTransformer = TransformerFactory.getObjectSizeTransformer(ranking);
+        return sizeTransformer;
+    }
+
+    public ColorTransformer getLabelColorTransformer(Ranking ranking) {
+        ColorTransformer colorTransformer = TransformerFactory.getLabelColorTransformer(ranking);
+        return colorTransformer;
+    }
+
+    public SizeTransformer getLabelSizeTransformer(Ranking ranking) {
+        SizeTransformer sizeTransformer = TransformerFactory.getLabelSizeTransformer(ranking);
+        return sizeTransformer;
     }
 
     public Lookup getEventBus() {
         return rankingEventBus.getLookup();
-    }
-
-    public SizeTransformer getSizeTransformer(Ranking ranking) {
-        SizeTransformer sizeTransformer = TransformerFactory.getSizeTransformer(ranking);
-        return sizeTransformer;
     }
 
     //Result

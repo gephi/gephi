@@ -18,27 +18,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.api;
+package org.gephi.ranking.api;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Node {
-
-    public int getId();
-
-    public NodeData getNodeData();
-
-    /**
-     * Returns <code>true</code> if the node is visible  if its hidden.
-     * @return  <code>true</code> if the node is visible  otherwise
-     */
-    public boolean isVisible();
-
-    /**
-     * Get the node <code>pre</code> number.
-     * @return the nodes <code>pre</code> order number
-     */
-    public int getPre();
+public interface ObjectColorTransformer<Target> extends ColorTransformer<Target> {
 }

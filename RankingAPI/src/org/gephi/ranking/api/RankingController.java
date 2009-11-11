@@ -32,9 +32,13 @@ public interface RankingController {
 
     public void transform(Transformer transformer);
 
-    public ColorTransformer getColorTransformer(Ranking ranking);
+    public ColorTransformer getObjectColorTransformer(Ranking ranking);
 
-    public SizeTransformer getSizeTransformer(Ranking nodeRanking);
+    public SizeTransformer getObjectSizeTransformer(Ranking nodeRanking);
+
+    public ColorTransformer getLabelColorTransformer(Ranking ranking);
+
+    public SizeTransformer getLabelSizeTransformer(Ranking nodeRanking);
 
     public Lookup getEventBus();
 }

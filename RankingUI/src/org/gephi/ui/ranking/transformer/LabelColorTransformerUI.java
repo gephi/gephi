@@ -20,14 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.ranking.transformer;
 
-import org.gephi.ui.ranking.TransformerUI;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import org.gephi.ranking.api.ObjectColorTransformer;
+import org.gephi.ranking.api.LabelColorTransformer;
 import org.gephi.ranking.api.Ranking;
 import org.gephi.ranking.api.RankingController;
 import org.gephi.ranking.api.Transformer;
+import org.gephi.ui.ranking.TransformerUI;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -37,14 +37,14 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = TransformerUI.class)
-public class ColorTransformerUI implements TransformerUI {
+public class LabelColorTransformerUI implements TransformerUI {
 
     public Icon getIcon() {
-        return new ImageIcon(getClass().getResource("/org/gephi/ui/ranking/transformer/color.png"));
+        return new ImageIcon(getClass().getResource("/org/gephi/ui/ranking/transformer/labelcolor.png"));
     }
 
     public String getName() {
-        return NbBundle.getMessage(ColorTransformerUI.class, "ColorTransformerUI.name");
+        return NbBundle.getMessage(ColorTransformerUI.class, "LabelColorTransformerUI.name");
     }
 
     public boolean isNodeTransformer() {
@@ -56,12 +56,12 @@ public class ColorTransformerUI implements TransformerUI {
     }
 
     public Class getTransformerClass() {
-        return ObjectColorTransformer.class;
+        return LabelColorTransformer.class;
     }
 
     public Transformer buildTransformer(Ranking ranking) {
         RankingController rc = Lookup.getDefault().lookup(RankingController.class);
-        return rc.getObjectColorTransformer(ranking);
+        return rc.getLabelColorTransformer(ranking);
     }
 
     public JPanel getPanel(Transformer transformer, Ranking ranking) {
