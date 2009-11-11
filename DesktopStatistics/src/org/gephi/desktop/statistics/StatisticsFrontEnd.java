@@ -24,17 +24,20 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.statistics.api.StatisticsBuilder;
 import org.gephi.statistics.api.StatisticsController;
 import org.gephi.statistics.api.StatisticsModel;
 import org.gephi.statistics.ui.api.StatisticsUI;
 import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.longtask.LongTaskListener;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.windows.WindowManager;
 
 public class StatisticsFrontEnd extends javax.swing.JPanel {
 
@@ -42,6 +45,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
     private final String RUN;
     private final String CANCEL;
     private Statistics currentStatistics;
+    private StatisticsModel currentModel;
 
     public StatisticsFrontEnd(StatisticsUI ui) {
         initComponents();
@@ -78,6 +82,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
     }
 
     public void refreshModel(StatisticsModel model) {
+        currentModel = model;
         if (model == null) {
             runButton.setText(RUN);
             runButton.setEnabled(false);
@@ -121,6 +126,12 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         StatisticsController controller = Lookup.getDefault().lookup(StatisticsController.class);
         StatisticsBuilder builder = controller.getBuilder(statisticsUI.getStatisticsClass());
         currentStatistics = builder.getStatistics();
+        LongTaskListener listener = new LongTaskListener() {
+
+            public void taskFinished(LongTask task) {
+                showReport();
+            }
+        };
 
         JPanel settingsPanel = statisticsUI.getSettingsPanel();
         if (settingsPanel != null) {
@@ -128,11 +139,11 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
             DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(StatisticsTopComponent.class, "StatisticsFrontEnd.settingsPanel.title", builder.getName()));
             if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                 statisticsUI.unsetup();
-                controller.execute(currentStatistics, null);
+                controller.execute(currentStatistics, listener);
             }
         } else {
             statisticsUI.setup(currentStatistics);
-            controller.execute(currentStatistics, null);
+            controller.execute(currentStatistics, listener);
         }
     }
 
@@ -144,6 +155,19 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
     }
 
     private void showReport() {
+        Statistics statistics = currentModel.getStatistics(statisticsUI);
+        if (statistics != null) {
+            final String report = statistics.getReport();
+            if(report!=null) {
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    public void run() {
+                        StatisticsReportPanel dialog = new StatisticsReportPanel(WindowManager.getDefault().getMainWindow(), report);
+                    }
+                });
+            }
+        }
+
     }
 
     /** This method is called from within the constructor to

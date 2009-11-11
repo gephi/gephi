@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.statistics.component;
+package org.gephi.desktop.statistics;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.awt.Dimension;
@@ -48,7 +48,9 @@ import org.gephi.ui.components.JHTMLEditorPane;
  * @author pjmcswee
  */
 class ReportSelection implements Transferable {
+
     private static ArrayList flavors = new ArrayList();
+
     static {
         try {
             flavors.add(new DataFlavor("text/html;class=java.lang.String"));
@@ -142,18 +144,19 @@ public class StatisticsReportPanel extends javax.swing.JDialog implements Printa
 
     private String mHTMLReport;
 
-    /** Creates new form StatisticsReportPanel */
     public StatisticsReportPanel(java.awt.Frame parent, String html) {
         super(parent, false);
         mHTMLReport = html;
         initComponents();
         displayPane.setContentType("text/html;");
         displayPane.setText(this.mHTMLReport);
-        Dimension dimension = new Dimension(500, 250);
-        setSize(dimension);
-        setLocationRelativeTo(null);
+        Dimension dimension = new Dimension(700, 600);
+        setPreferredSize(dimension);
+        displayPane.setCaretPosition(0);
+        setTitle("HTML Report");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         pack();
+        setLocationRelativeTo(parent);
         setVisible(true);
     }
 
@@ -168,35 +171,15 @@ public class StatisticsReportPanel extends javax.swing.JDialog implements Printa
 
         jScrollPane1 = new javax.swing.JScrollPane();
         displayPane = (javax.swing.JEditorPane)(new JHTMLEditorPane());
-        printButton = new javax.swing.JButton();
-        saveButton = new javax.swing.JButton();
-        copyButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
+        jToolBar1 = new javax.swing.JToolBar();
+        printButton = new javax.swing.JButton();
+        copyButton = new javax.swing.JButton();
+        saveButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jScrollPane1.setViewportView(displayPane);
-
-        printButton.setText(org.openide.util.NbBundle.getMessage(StatisticsReportPanel.class, "StatisticsReportPanel.printButton.text")); // NOI18N
-        printButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                printButtonActionPerformed(evt);
-            }
-        });
-
-        saveButton.setText(org.openide.util.NbBundle.getMessage(StatisticsReportPanel.class, "StatisticsReportPanel.saveButton.text")); // NOI18N
-        saveButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveButtonActionPerformed(evt);
-            }
-        });
-
-        copyButton.setText(org.openide.util.NbBundle.getMessage(StatisticsReportPanel.class, "StatisticsReportPanel.copyButton.text")); // NOI18N
-        copyButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                copyButtonActionPerformed(evt);
-            }
-        });
 
         closeButton.setText(org.openide.util.NbBundle.getMessage(StatisticsReportPanel.class, "StatisticsReportPanel.closeButton.text")); // NOI18N
         closeButton.addActionListener(new java.awt.event.ActionListener() {
@@ -205,32 +188,57 @@ public class StatisticsReportPanel extends javax.swing.JDialog implements Printa
             }
         });
 
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+
+        printButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/statistics/resources/print.png"))); // NOI18N
+        printButton.setText(org.openide.util.NbBundle.getMessage(StatisticsReportPanel.class, "StatisticsReportPanel.printButton.text")); // NOI18N
+        printButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                printButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(printButton);
+
+        copyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/statistics/resources/copy.gif"))); // NOI18N
+        copyButton.setText(org.openide.util.NbBundle.getMessage(StatisticsReportPanel.class, "StatisticsReportPanel.copyButton.text")); // NOI18N
+        copyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                copyButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(copyButton);
+
+        saveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/statistics/resources/save.png"))); // NOI18N
+        saveButton.setText(org.openide.util.NbBundle.getMessage(StatisticsReportPanel.class, "StatisticsReportPanel.saveButton.text")); // NOI18N
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(saveButton);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(70, 70, 70)
+                .addContainerGap()
+                .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(closeButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(copyButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(saveButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(printButton)
-                .addGap(8, 8, 8))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+                .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(printButton)
-                    .addComponent(saveButton)
-                    .addComponent(copyButton)
-                    .addComponent(closeButton)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(closeButton)
+                    .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         pack();
@@ -289,12 +297,12 @@ public class StatisticsReportPanel extends javax.swing.JDialog implements Printa
     });
     }
      * */
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
     private javax.swing.JButton copyButton;
     private javax.swing.JEditorPane displayPane;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JButton printButton;
     private javax.swing.JButton saveButton;
     // End of variables declaration//GEN-END:variables
