@@ -30,8 +30,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
@@ -70,7 +73,36 @@ public class RankingModelImpl implements RankingModel {
     public NodeRanking[] getNodeRanking() {
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
         List<Ranking> rankingList = new ArrayList<Ranking>();
-        Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
+        GraphModel model = Lookup.getDefault().lookup(GraphController.class).getModel();
+        Graph graph = model.getGraphVisible();
+
+        //Topology
+        NodeRanking degreeRanking = RankingFactory.getNodeDegreeRanking(graph);
+        if (degreeRanking.getMinimumValue() != null && degreeRanking.getMaximumValue() != null && !degreeRanking.getMinimumValue().equals(degreeRanking.getMaximumValue())) {
+            rankingList.add(degreeRanking);
+        }
+
+        if (model.isDirected()) {
+            DirectedGraph directedGraph = model.getDirectedGraphVisible();
+            NodeRanking inDegreeRanking = RankingFactory.getNodeInDegreeRanking(directedGraph);
+            if (inDegreeRanking.getMinimumValue() != null && inDegreeRanking.getMaximumValue() != null && !inDegreeRanking.getMinimumValue().equals(inDegreeRanking.getMaximumValue())) {
+                rankingList.add(inDegreeRanking);
+            }
+            NodeRanking outDegreeRanking = RankingFactory.getNodeOutDegreeRanking(directedGraph);
+            if (outDegreeRanking.getMinimumValue() != null && outDegreeRanking.getMaximumValue() != null && !outDegreeRanking.getMinimumValue().equals(outDegreeRanking.getMaximumValue())) {
+                rankingList.add(outDegreeRanking);
+            }
+        }
+
+        if (model.isHierarchical()) {
+            HierarchicalGraph hierarchicalGraph = model.getHierarchicalGraphVisible();
+            NodeRanking childrenRanking = RankingFactory.getNodeChildrenCountRanking(hierarchicalGraph);
+            if (childrenRanking.getMinimumValue() != null && childrenRanking.getMaximumValue() != null && !childrenRanking.getMinimumValue().equals(childrenRanking.getMaximumValue())) {
+                rankingList.add(childrenRanking);
+            }
+        }
+
+        //Attributes
         for (AttributeColumn column : attributeController.getTemporaryAttributeManager().getNodeClass().getAttributeColumns()) {
             if (RankingFactory.isNumberColumn(column)) {
                 NodeRanking r = RankingFactory.getNodeAttributeRanking(column, graph);

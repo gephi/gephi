@@ -24,8 +24,10 @@ import org.gephi.ranking.api.NodeRanking;
 import org.gephi.ranking.api.EdgeRanking;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 
 /**
@@ -78,12 +80,36 @@ public class RankingFactory {
         return edgeRanking;
     }
 
+    public static NodeRanking getNodeDegreeRanking(Graph graph) {
+        NodeRanking nodeRanking = new NodeDegreeRanking(graph);
+        setMinMax((AbstractRanking) nodeRanking, graph);
+        return nodeRanking;
+    }
+
+    public static NodeRanking getNodeInDegreeRanking(DirectedGraph graph) {
+        NodeRanking nodeRanking = new NodeInDegreeRanking(graph);
+        setMinMax((AbstractRanking) nodeRanking, graph);
+        return nodeRanking;
+    }
+
+    public static NodeRanking getNodeOutDegreeRanking(DirectedGraph graph) {
+        NodeRanking nodeRanking = new NodeOutDegreeRanking(graph);
+        setMinMax((AbstractRanking) nodeRanking, graph);
+        return nodeRanking;
+    }
+
+    public static NodeRanking getNodeChildrenCountRanking(HierarchicalGraph graph) {
+        NodeRanking nodeRanking = new NodeChildrenCountRanking(graph);
+        setMinMax((AbstractRanking) nodeRanking, graph);
+        return nodeRanking;
+    }
+
     public static boolean isNumberColumn(AttributeColumn column) {
         AttributeType type = column.getAttributeType();
-        if (type == AttributeType.DOUBLE ||
-                type == AttributeType.FLOAT ||
-                type == AttributeType.INT ||
-                type == AttributeType.LONG) {
+        if (type == AttributeType.DOUBLE
+                || type == AttributeType.FLOAT
+                || type == AttributeType.INT
+                || type == AttributeType.LONG) {
             return true;
         }
         return false;
@@ -190,6 +216,142 @@ public class RankingFactory {
                 ranking.setMinimumValue(minValue);
                 ranking.setMaximumValue(maxValue);
             }
+        }
+    }
+
+    private static class NodeDegreeRanking extends AbstractRanking<Node, Integer> implements NodeRanking<Integer> {
+
+        protected Graph graph;
+
+        public NodeDegreeRanking(Graph graph) {
+            this.graph = graph;
+        }
+
+        public Integer getValue(Node element) {
+            return graph.getDegree(element);
+        }
+
+        public float normalize(Integer value) {
+            return (float) ((value - minimum) / (float) (maximum - minimum));
+        }
+
+        public Integer unNormalize(float normalizedValue) {
+            return (int) (normalizedValue * (maximum - minimum)) + minimum;
+        }
+
+        public String getName() {
+            return "Degree";
+        }
+
+        @Override
+        public String toString() {
+            return getName();
+        }
+
+        public Class getType() {
+            return Integer.class;
+        }
+    }
+
+    private static class NodeInDegreeRanking extends AbstractRanking<Node, Integer> implements NodeRanking<Integer> {
+
+        private DirectedGraph graph;
+
+        public NodeInDegreeRanking(DirectedGraph graph) {
+            this.graph = graph;
+        }
+
+        public Integer getValue(Node element) {
+            return graph.getInDegree(element);
+        }
+
+        public float normalize(Integer value) {
+            return (float) ((value - minimum) / (float) (maximum - minimum));
+        }
+
+        public Integer unNormalize(float normalizedValue) {
+            return (int) (normalizedValue * (maximum - minimum)) + minimum;
+        }
+
+        public String getName() {
+            return "InDegree";
+        }
+
+        @Override
+        public String toString() {
+            return getName();
+        }
+
+        public Class getType() {
+            return Integer.class;
+        }
+    }
+
+    private static class NodeOutDegreeRanking extends AbstractRanking<Node, Integer> implements NodeRanking<Integer> {
+
+        private DirectedGraph graph;
+
+        public NodeOutDegreeRanking(DirectedGraph graph) {
+            this.graph = graph;
+        }
+
+        public Integer getValue(Node element) {
+            return graph.getOutDegree(element);
+        }
+
+        public float normalize(Integer value) {
+            return (float) ((value - minimum) / (float) (maximum - minimum));
+        }
+
+        public Integer unNormalize(float normalizedValue) {
+            return (int) (normalizedValue * (maximum - minimum)) + minimum;
+        }
+
+        public String getName() {
+            return "OutDegree";
+        }
+
+        @Override
+        public String toString() {
+            return getName();
+        }
+
+        public Class getType() {
+            return Integer.class;
+        }
+    }
+
+    private static class NodeChildrenCountRanking extends AbstractRanking<Node, Integer> implements NodeRanking<Integer> {
+
+        private HierarchicalGraph graph;
+
+        public NodeChildrenCountRanking(HierarchicalGraph graph) {
+            this.graph = graph;
+        }
+
+        public Integer getValue(Node element) {
+            return graph.getChildrenCount(element);
+        }
+
+        public float normalize(Integer value) {
+            return (float) ((value - minimum) / (float) (maximum - minimum));
+        }
+
+        public Integer unNormalize(float normalizedValue) {
+            return (int) (normalizedValue * (maximum - minimum)) + minimum;
+        }
+
+        public String getName() {
+            return "Children count";
+        }
+
+        @Override
+        public String toString() {
+            return getName();
+        }
+
+        public Class getType() {
+            return Integer.class;
         }
     }
 
