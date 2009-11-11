@@ -37,11 +37,24 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 import javax.swing.WindowConstants;
 import javax.swing.text.View;
 import org.gephi.ui.components.JHTMLEditorPane;
+import org.openide.awt.StatusDisplayer;
+import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
+import org.openide.windows.WindowManager;
 
 /**
  * 
@@ -257,10 +270,69 @@ public class StatisticsReportPanel extends javax.swing.JDialog implements Printa
             e.printStackTrace();
         }
 }//GEN-LAST:event_printButtonActionPerformed
+    private final String LAST_PATH = "StatisticsReportPanel_Save_Last_Path";
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        //??        // TODO add your handling code here:
+        final String html = this.mHTMLReport;
+
+        final String path = NbPreferences.forModule(StatisticsReportPanel.class).get(LAST_PATH, null);
+        JFileChooser fileChooser = new JFileChooser(path);
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int result = fileChooser.showOpenDialog(WindowManager.getDefault().getMainWindow());
+        if (result == JFileChooser.APPROVE_OPTION) {
+            final File destinationFolder = fileChooser.getSelectedFile();
+            NbPreferences.forModule(StatisticsReportPanel.class).put(LAST_PATH, destinationFolder.getAbsolutePath());
+            Thread saveReportThread = new Thread(new Runnable() {
+
+                public void run() {
+                    try {
+                        saveReport(html, destinationFolder);
+                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(StatisticsReportPanel.class, "StatisticsReportPanel.status.saveSuccess", destinationFolder.getName()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, "SaveReportTask");
+            saveReportThread.start();
+
+        }
     }//GEN-LAST:event_saveButtonActionPerformed
+
+    private void saveReport(String html, File destinationFolder) throws IOException {
+
+        if (!destinationFolder.exists()) {
+            destinationFolder.mkdir();
+        }
+
+        //Find images location
+        String imgRegex = "<img[^>]+src\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>";
+        Pattern pattern = Pattern.compile(imgRegex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(html);
+        StringBuffer replaceBuffer = new StringBuffer();
+        while (matcher.find()) {
+            String fileAbsolutePath = matcher.group(1);
+            if (fileAbsolutePath.startsWith("file:")) {
+                fileAbsolutePath = fileAbsolutePath.replaceFirst("file:", "");
+            }
+            File file = new File(fileAbsolutePath);
+            if (file.exists()) {
+                copy(file, destinationFolder);
+            }
+
+            //Replace temp path
+            matcher.appendReplacement(replaceBuffer, "<IMG SRC=\"" + file.getName() + "\">");
+        }
+        matcher.appendTail(replaceBuffer);
+
+        //Write HTML file
+        File htmlFile = new File(destinationFolder, "report.html");
+        FileOutputStream outputStream = new FileOutputStream(htmlFile);
+        OutputStreamWriter out = new OutputStreamWriter(outputStream, "UTF-8");
+        out.append(replaceBuffer.toString());
+        out.flush();
+        out.close();
+        outputStream.close();
+    }
 
     private void copyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyButtonActionPerformed
 
@@ -352,5 +424,29 @@ public class StatisticsReportPanel extends javax.swing.JDialog implements Printa
             e.printStackTrace();
         }
         return Printable.PAGE_EXISTS;
+    }
+
+    public void copy(File source, File dest) throws IOException {
+        FileChannel in = null, out = null;
+        try {
+            if (dest.isDirectory()) {
+                dest = new File(dest, source.getName());
+            }
+            in = new FileInputStream(source).getChannel();
+            out = new FileOutputStream(dest).getChannel();
+
+            long size = in.size();
+            MappedByteBuffer buf = in.map(FileChannel.MapMode.READ_ONLY, 0, size);
+
+            out.write(buf);
+
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+            if (out != null) {
+                out.close();
+            }
+        }
     }
 }
