@@ -76,22 +76,19 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "DataExplorerTopComponent";
-
     //Settings
     private static final String DATA_LABORATORY_DYNAMIC_FILTERING = "DataLaboratory_Dynamic_Filtering";
     private static final Color invalidFilterColor = new Color(254, 242, 242);
     private final boolean dynamicFiltering;
-
     //Data
     private Lookup.Result<AttributeColumn> nodeColumnsResult;
     private Lookup.Result<AttributeColumn> edgeColumnsResult;
     private GraphModel graphModel;
+    private DataTablesModel dataTablesModel;
     private boolean visibleOnly = false;
-
     //Table
     private NodeDataTable nodeTable;
     private EdgeDataTable edgeTable;
-
     //States
     ClassDisplayed classDisplayed = ClassDisplayed.NONE;
     //Executor
@@ -140,6 +137,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
+                workspace.add(new DataTablesModel());
             }
 
             public void select(Workspace workspace) {
@@ -153,11 +151,13 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                 bannerPanel.setVisible(false);
                 graphModel = gc.getModel();
                 graphModel.addGraphListener(DataExplorerTopComponent.this);
+                dataTablesModel = workspace.getLookup().lookup(DataTablesModel.class);
             }
 
             public void unselect(Workspace workspace) {
                 graphModel.removeGraphListener(DataExplorerTopComponent.this);
                 graphModel = null;
+                dataTablesModel = null;
             }
 
             public void close(Workspace workspace) {
@@ -173,6 +173,9 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                 visibleGraphCheckbox.setEnabled(false);
             }
         });
+        if (pc.getCurrentWorkspace() != null) {
+            dataTablesModel = pc.getCurrentWorkspace().getLookup().lookup(DataTablesModel.class);
+        }
 
         //Init lookups
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
@@ -262,7 +265,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                     }
 
                     //Model
-                    nodeTable.refreshModel(graph, cols);
+                    nodeTable.refreshModel(graph, cols, dataTablesModel);
                     refreshFilterColumns();
 
                     busylabel.setBusy(false);
@@ -303,7 +306,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                     }
 
                     //Model
-                    edgeTable.refreshModel(graph, cols);
+                    edgeTable.refreshModel(graph, cols, dataTablesModel);
                     refreshFilterColumns();
 
                     busylabel.setBusy(false);
@@ -506,7 +509,6 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         classDisplayed = ClassDisplayed.NODE;
         initNodesView();
 }//GEN-LAST:event_nodesButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bannerPanel;
     private javax.swing.JLabel boxGlue;
@@ -550,8 +552,8 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
             return (DataExplorerTopComponent) win;
         }
         Logger.getLogger(DataExplorerTopComponent.class.getName()).warning(
-                "There seem to be multiple components with the '" + PREFERRED_ID +
-                "' ID. That is a potential source of errors and unexpected behavior.");
+                "There seem to be multiple components with the '" + PREFERRED_ID
+                + "' ID. That is a potential source of errors and unexpected behavior.");
         return getDefault();
     }
 

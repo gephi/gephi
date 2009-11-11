@@ -22,10 +22,17 @@ package org.gephi.data.laboratory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
 import javax.swing.event.TreeModelListener;
+import javax.swing.table.TableColumn;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -33,6 +40,7 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
 import org.gephi.graph.api.Node;
+import org.netbeans.swing.etable.ETableColumnModel;
 import org.netbeans.swing.etable.QuickFilter;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.Outline;
@@ -50,10 +58,11 @@ public class NodeDataTable {
     private Outline outlineTable;
     private QuickFilter quickFilter;
     private Pattern pattern;
+    private DataTablesModel dataTablesModel;
 
     public NodeDataTable() {
         outlineTable = new Outline();
-        
+
         quickFilter = new QuickFilter() {
 
             public boolean accept(Object value) {
@@ -82,16 +91,18 @@ public class NodeDataTable {
         return true;
     }
 
-    public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols) {
+    public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, final DataTablesModel dataTablesModel) {
         NodeTreeModel nodeTreeModel = new NodeTreeModel(graph.wrapToTreeNode());
         final OutlineModel mdl = DefaultOutlineModel.createOutlineModel(nodeTreeModel, new NodeRowModel(cols), true);
         outlineTable.setRootVisible(false);
         outlineTable.setRenderDataProvider(new NodeRenderer());
+
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
 
                 public void run() {
                     outlineTable.setModel(mdl);
+                    NodeDataTable.this.dataTablesModel = dataTablesModel;
                 }
             });
         } catch (InterruptedException ex) {

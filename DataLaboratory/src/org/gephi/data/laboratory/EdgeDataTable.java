@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.laboratory;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.RowFilter;
 import javax.swing.event.TableModelListener;
@@ -30,6 +31,8 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.table.TableColumnExt;
+import org.jdesktop.swingx.table.TableColumnModelExt;
 
 /**
  *
@@ -122,7 +125,7 @@ public class EdgeDataTable {
         return true;
     }
 
-    public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols) {
+    public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, DataTablesModel dataTablesModel) {
         ArrayList<EdgeDataColumn> columns = new ArrayList<EdgeDataColumn>();
 
         for (PropertyEdgeDataColumn p : propertiesColumns) {
@@ -135,6 +138,30 @@ public class EdgeDataTable {
 
         EdgeDataTableModel model = new EdgeDataTableModel(graph.getEdges().toArray(), columns.toArray(new EdgeDataColumn[0]));
         table.setModel(model);
+    }
+
+    private String[] getHiddenColumns() {
+        List<String> hiddenCols = new ArrayList<String>();
+        TableColumnModelExt columnModel = (TableColumnModelExt) table.getColumnModel();
+        for (int i = 0; i < columnModel.getColumnCount(); i++) {
+            TableColumnExt col = columnModel.getColumnExt(i);
+            if (!col.isVisible()) {
+                hiddenCols.add((String) col.getHeaderValue());
+            }
+        }
+        return hiddenCols.toArray(new String[0]);
+    }
+
+    private void setHiddenColumns(String[] columns) {
+        TableColumnModelExt columnModel = (TableColumnModelExt) table.getColumnModel();
+        for (int i = 0; i < columnModel.getColumnCount(); i++) {
+            TableColumnExt col = columnModel.getColumnExt(i);
+            for (int j = 0; j < columns.length; j++) {
+                if (columns[j].equals(col.getHeaderValue())) {
+                    col.setVisible(false);
+                }
+            }
+        }
     }
 
     private class EdgeDataTableModel implements TableModel {
