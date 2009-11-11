@@ -38,6 +38,8 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.statistics.api.Statistics;
+import org.gephi.ui.utils.TempDirUtils;
+import org.gephi.ui.utils.TempDirUtils.TempDir;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -51,6 +53,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -236,91 +239,87 @@ public class Hits implements Statistics, LongTask {
      */
     public String getReport() {
         double max = 0;
-        XYSeries series1 = new XYSeries("Hubs");
-        for (Node node : hub_list) {
-            int n_index = indicies.get(node);
-            series1.add(n_index, hubs[n_index]);
-        }
-        XYSeries series2 = new XYSeries("Authority");
-        for (Node node : auth_list) {
-            int n_index = indicies.get(node);
-            series2.add(n_index, authority[n_index]);
-        }
-
-        XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(series1);
-
-        JFreeChart chart = ChartFactory.createXYLineChart(
-                "Hubs",
-                "Node",
-                "hubs",
-                dataset,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
-        XYPlot plot = (XYPlot) chart.getPlot();
-        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        renderer.setSeriesLinesVisible(0, true);
-        renderer.setSeriesShapesVisible(0, false);
-        renderer.setSeriesLinesVisible(1, false);
-        renderer.setSeriesShapesVisible(1, true);
-        renderer.setSeriesShape(1, new java.awt.geom.Ellipse2D.Double(0, 0, 1, 1));
-        plot.setBackgroundPaint(java.awt.Color.WHITE);
-        plot.setDomainGridlinePaint(java.awt.Color.GRAY);
-        plot.setRangeGridlinePaint(java.awt.Color.GRAY);
-
-        plot.setRenderer(renderer);
-
-
         String imageFile1 = "";
-        try {
-            final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            final String fileName = "temp\\hubs.png";
-            final File file1 = new File(fileName);
-            imageFile1 = "<IMG SRC=\"file:" + fileName + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
-            ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
-        } catch (IOException e) {
-            System.out.println(e.toString());
-        }
-
-
-        XYSeriesCollection dataset2 = new XYSeriesCollection();
-        dataset2.addSeries(series2);
-
-        JFreeChart chart2 = ChartFactory.createXYLineChart(
-                "Authority",
-                "Node",
-                "Authority",
-                dataset2,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
-        XYPlot plot2 = (XYPlot) chart2.getPlot();
-        XYLineAndShapeRenderer renderer2 = new XYLineAndShapeRenderer();
-        renderer2.setSeriesLinesVisible(0, true);
-        renderer2.setSeriesShapesVisible(0, false);
-        renderer2.setSeriesLinesVisible(1, false);
-        renderer2.setSeriesShapesVisible(1, true);
-        renderer2.setSeriesShape(1, new java.awt.geom.Ellipse2D.Double(0, 0, 1, 1));
-        plot2.setBackgroundPaint(java.awt.Color.WHITE);
-        plot2.setDomainGridlinePaint(java.awt.Color.GRAY);
-        plot2.setRangeGridlinePaint(java.awt.Color.GRAY);
-
-        plot2.setRenderer(renderer);
-
-
         String imageFile2 = "";
         try {
-            final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            final String fileName = "temp\\authority.png";
-            final File file1 = new File(fileName);
-            imageFile2 = "<IMG SRC=\"file:" + fileName + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
+            XYSeries series1 = new XYSeries("Hubs");
+            for (Node node : hub_list) {
+                int n_index = indicies.get(node);
+                series1.add(n_index, hubs[n_index]);
+            }
+            XYSeries series2 = new XYSeries("Authority");
+            for (Node node : auth_list) {
+                int n_index = indicies.get(node);
+                series2.add(n_index, authority[n_index]);
+            }
 
-            ChartUtilities.saveChartAsPNG(file1, chart2, 600, 400, info);
-        } catch (IOException e) {
-            System.out.println(e.toString());
+            XYSeriesCollection dataset = new XYSeriesCollection();
+            dataset.addSeries(series1);
+
+            JFreeChart chart = ChartFactory.createXYLineChart(
+                    "Hubs",
+                    "Node",
+                    "hubs",
+                    dataset,
+                    PlotOrientation.VERTICAL,
+                    true,
+                    false,
+                    false);
+            XYPlot plot = (XYPlot) chart.getPlot();
+            XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+            renderer.setSeriesLinesVisible(0, true);
+            renderer.setSeriesShapesVisible(0, false);
+            renderer.setSeriesLinesVisible(1, false);
+            renderer.setSeriesShapesVisible(1, true);
+            renderer.setSeriesShape(1, new java.awt.geom.Ellipse2D.Double(0, 0, 1, 1));
+            plot.setBackgroundPaint(java.awt.Color.WHITE);
+            plot.setDomainGridlinePaint(java.awt.Color.GRAY);
+            plot.setRangeGridlinePaint(java.awt.Color.GRAY);
+
+            plot.setRenderer(renderer);
+
+            //Create temporary directory
+            TempDir tempDir = TempDirUtils.createTempDir();
+
+            final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+            final String fileName = "hubs.png";
+            final File file1 = tempDir.createFile(fileName);
+            imageFile1 = "<IMG SRC=\"file:" + file1.getAbsolutePath() + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
+            ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
+
+            XYSeriesCollection dataset2 = new XYSeriesCollection();
+            dataset2.addSeries(series2);
+
+            JFreeChart chart2 = ChartFactory.createXYLineChart(
+                    "Authority",
+                    "Node",
+                    "Authority",
+                    dataset2,
+                    PlotOrientation.VERTICAL,
+                    true,
+                    false,
+                    false);
+            XYPlot plot2 = (XYPlot) chart2.getPlot();
+            XYLineAndShapeRenderer renderer2 = new XYLineAndShapeRenderer();
+            renderer2.setSeriesLinesVisible(0, true);
+            renderer2.setSeriesShapesVisible(0, false);
+            renderer2.setSeriesLinesVisible(1, false);
+            renderer2.setSeriesShapesVisible(1, true);
+            renderer2.setSeriesShape(1, new java.awt.geom.Ellipse2D.Double(0, 0, 1, 1));
+            plot2.setBackgroundPaint(java.awt.Color.WHITE);
+            plot2.setDomainGridlinePaint(java.awt.Color.GRAY);
+            plot2.setRangeGridlinePaint(java.awt.Color.GRAY);
+
+            plot2.setRenderer(renderer);
+
+            final ChartRenderingInfo info2 = new ChartRenderingInfo(new StandardEntityCollection());
+            final String fileName2 = "authority.png";
+            final File file2 = tempDir.createFile(fileName2);
+            imageFile2 = "<IMG SRC=\"file:" + file2.getAbsolutePath() + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
+
+            ChartUtilities.saveChartAsPNG(file2, chart2, 600, 400, info2);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
         }
 
         String report = "<HTML> <BODY> <h1> HITS Metric Report </h1> <br> "

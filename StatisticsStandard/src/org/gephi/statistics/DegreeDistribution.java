@@ -24,6 +24,8 @@ import java.io.File;
 import java.io.IOException;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.graph.api.*;
+import org.gephi.ui.utils.TempDirUtils;
+import org.gephi.ui.utils.TempDirUtils.TempDir;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -37,6 +39,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -265,106 +268,100 @@ public class DegreeDistribution implements Statistics, LongTask {
         double inA = this.mInAlpha;
         double inB = this.mInBeta;
 
-
-        XYSeries inSeries1 = new XYSeries(this.mInAlpha + " ");
-        inSeries1.add(0, inA);
-        inSeries1.add(inMax, inA + inB * inMax);
-
-        XYSeriesCollection inDataset = new XYSeriesCollection();
-        inDataset.addSeries(inSeries1);
-        inDataset.addSeries(inSeries2);
-
-        JFreeChart inChart = ChartFactory.createXYLineChart(
-                "In-Degree Distribution",
-                "In-Degree",
-                "Occurrence",
-                inDataset,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
-        XYPlot inPlot = (XYPlot) inChart.getPlot();
-        XYLineAndShapeRenderer inRenderer = new XYLineAndShapeRenderer();
-        inRenderer.setSeriesLinesVisible(0, true);
-        inRenderer.setSeriesShapesVisible(0, false);
-        inRenderer.setSeriesLinesVisible(1, false);
-        inRenderer.setSeriesShapesVisible(1, true);
-        inRenderer.setSeriesShape(1, new java.awt.geom.Ellipse2D.Double(0, 0, 1, 1));
-        inPlot.setBackgroundPaint(java.awt.Color.WHITE);
-        inPlot.setDomainGridlinePaint(java.awt.Color.GRAY);
-        inPlot.setRangeGridlinePaint(java.awt.Color.GRAY);
-
-        inPlot.setRenderer(inRenderer);
-
-
         String inImageFile = "";
-        try {
-            final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-
-            String sep = File.pathSeparator;
-            final String fileName = "temp\\inDistribution.png";
-            final File file1 = new File(fileName);
-            inImageFile = "<IMG SRC=\"file:" + fileName + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
-            ChartUtilities.saveChartAsPNG(file1, inChart, 600, 400, info);
-        } catch (IOException e) {
-            System.out.println(e.toString());
-        }
-
-
-
-        double outMax = 0;
-        XYSeries outSeries2 = new XYSeries("Series 2");
-        for (int i = 1; i < this.mOutDistribution[1].length; i++) {
-            if (this.mOutDistribution[1][i] > 0) {
-                outSeries2.add((Math.log(this.mOutDistribution[0][i]) / Math.log(Math.E)), (Math.log(this.mOutDistribution[1][i]) / Math.log(Math.E)));
-                outMax = (float) Math.max((Math.log(this.mOutDistribution[0][i]) / Math.log(Math.E)), outMax);
-            }
-        }
-        double outA = this.mOutAlpha;
-        double outB = this.mOutBeta;
-
-
-        XYSeries outSeries1 = new XYSeries(this.mOutAlpha + " ");
-        outSeries1.add(0, outA);
-        outSeries1.add(outMax, outA + outB * outMax);
-
-        XYSeriesCollection outDataset = new XYSeriesCollection();
-        outDataset.addSeries(outSeries1);
-        outDataset.addSeries(outSeries2);
-
-        JFreeChart outchart = ChartFactory.createXYLineChart(
-                "Out-Degree Distribution",
-                "Out-Degree",
-                "Occurrence",
-                outDataset,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
-        XYPlot outPlot = (XYPlot) outchart.getPlot();
-        XYLineAndShapeRenderer outRenderer = new XYLineAndShapeRenderer();
-        outRenderer.setSeriesLinesVisible(0, true);
-        outRenderer.setSeriesShapesVisible(0, false);
-        outRenderer.setSeriesLinesVisible(1, false);
-        outRenderer.setSeriesShapesVisible(1, true);
-        outRenderer.setSeriesShape(1, new java.awt.geom.Ellipse2D.Double(0, 0, 1, 1));
-        outPlot.setBackgroundPaint(java.awt.Color.WHITE);
-        outPlot.setDomainGridlinePaint(java.awt.Color.GRAY);
-        outPlot.setRangeGridlinePaint(java.awt.Color.GRAY);
-
-        outPlot.setRenderer(outRenderer);
-
-
         String outImageFile = "";
         try {
+
+            XYSeries inSeries1 = new XYSeries(this.mInAlpha + " ");
+            inSeries1.add(0, inA);
+            inSeries1.add(inMax, inA + inB * inMax);
+
+            XYSeriesCollection inDataset = new XYSeriesCollection();
+            inDataset.addSeries(inSeries1);
+            inDataset.addSeries(inSeries2);
+
+            JFreeChart inChart = ChartFactory.createXYLineChart(
+                    "In-Degree Distribution",
+                    "In-Degree",
+                    "Occurrence",
+                    inDataset,
+                    PlotOrientation.VERTICAL,
+                    true,
+                    false,
+                    false);
+            XYPlot inPlot = (XYPlot) inChart.getPlot();
+            XYLineAndShapeRenderer inRenderer = new XYLineAndShapeRenderer();
+            inRenderer.setSeriesLinesVisible(0, true);
+            inRenderer.setSeriesShapesVisible(0, false);
+            inRenderer.setSeriesLinesVisible(1, false);
+            inRenderer.setSeriesShapesVisible(1, true);
+            inRenderer.setSeriesShape(1, new java.awt.geom.Ellipse2D.Double(0, 0, 1, 1));
+            inPlot.setBackgroundPaint(java.awt.Color.WHITE);
+            inPlot.setDomainGridlinePaint(java.awt.Color.GRAY);
+            inPlot.setRangeGridlinePaint(java.awt.Color.GRAY);
+
+            inPlot.setRenderer(inRenderer);
+
             final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            String sep = File.separator;
-            final String fileName = "temp\\" + "outDistribution.png";
-            final File file1 = new File(fileName);
-            outImageFile = "<IMG SRC=\"file:" + fileName + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
-            ChartUtilities.saveChartAsPNG(file1, outchart, 600, 400, info);
+
+
+            TempDir tempDir = TempDirUtils.createTempDir();
+
+            final String fileName = "inDistribution.png";
+            final File file1 = tempDir.createFile(fileName);
+            inImageFile = "<IMG SRC=\"file:" + file1.getAbsolutePath() + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
+            ChartUtilities.saveChartAsPNG(file1, inChart, 600, 400, info);
+
+
+            double outMax = 0;
+            XYSeries outSeries2 = new XYSeries("Series 2");
+            for (int i = 1; i < this.mOutDistribution[1].length; i++) {
+                if (this.mOutDistribution[1][i] > 0) {
+                    outSeries2.add((Math.log(this.mOutDistribution[0][i]) / Math.log(Math.E)), (Math.log(this.mOutDistribution[1][i]) / Math.log(Math.E)));
+                    outMax = (float) Math.max((Math.log(this.mOutDistribution[0][i]) / Math.log(Math.E)), outMax);
+                }
+            }
+            double outA = this.mOutAlpha;
+            double outB = this.mOutBeta;
+
+
+            XYSeries outSeries1 = new XYSeries(this.mOutAlpha + " ");
+            outSeries1.add(0, outA);
+            outSeries1.add(outMax, outA + outB * outMax);
+
+            XYSeriesCollection outDataset = new XYSeriesCollection();
+            outDataset.addSeries(outSeries1);
+            outDataset.addSeries(outSeries2);
+
+            JFreeChart outchart = ChartFactory.createXYLineChart(
+                    "Out-Degree Distribution",
+                    "Out-Degree",
+                    "Occurrence",
+                    outDataset,
+                    PlotOrientation.VERTICAL,
+                    true,
+                    false,
+                    false);
+            XYPlot outPlot = (XYPlot) outchart.getPlot();
+            XYLineAndShapeRenderer outRenderer = new XYLineAndShapeRenderer();
+            outRenderer.setSeriesLinesVisible(0, true);
+            outRenderer.setSeriesShapesVisible(0, false);
+            outRenderer.setSeriesLinesVisible(1, false);
+            outRenderer.setSeriesShapesVisible(1, true);
+            outRenderer.setSeriesShape(1, new java.awt.geom.Ellipse2D.Double(0, 0, 1, 1));
+            outPlot.setBackgroundPaint(java.awt.Color.WHITE);
+            outPlot.setDomainGridlinePaint(java.awt.Color.GRAY);
+            outPlot.setRangeGridlinePaint(java.awt.Color.GRAY);
+
+            outPlot.setRenderer(outRenderer);
+
+            final ChartRenderingInfo info2 = new ChartRenderingInfo(new StandardEntityCollection());
+            final String fileName2 = "outDistribution.png";
+            final File file2 = tempDir.createFile(fileName2);
+            outImageFile = "<IMG SRC=\"file:" + file2.getAbsolutePath() + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
+            ChartUtilities.saveChartAsPNG(file2, outchart, 600, 400, info2);
         } catch (IOException e) {
-            System.out.println(e.toString());
+            Exceptions.printStackTrace(e);
         }
 
 

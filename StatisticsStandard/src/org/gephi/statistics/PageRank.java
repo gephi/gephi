@@ -37,6 +37,8 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.statistics.api.Statistics;
+import org.gephi.ui.utils.TempDirUtils;
+import org.gephi.ui.utils.TempDirUtils.TempDir;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -238,10 +240,10 @@ public class PageRank implements Statistics, LongTask {
         String imageFile = "";
         try {
             final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-
-            String fileName = "temp\\pageranks.png";
-            File file1 = new File(fileName);
-            imageFile = "<IMG SRC=\"file:" + fileName + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
+            TempDir tempDir = TempDirUtils.createTempDir();
+            String fileName = "pageranks.png";
+            File file1 = tempDir.createFile(fileName);
+            imageFile = "<IMG SRC=\"file:" + file1.getAbsolutePath() + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
             ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
         } catch (IOException e) {
             System.out.println(e.toString());

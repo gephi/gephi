@@ -34,6 +34,8 @@ import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.ui.utils.TempDirUtils;
+import org.gephi.ui.utils.TempDirUtils.TempDir;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -47,6 +49,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -251,7 +254,7 @@ public class GraphDistance implements Statistics, LongTask {
      * @param pY
      * @return
      */
-    private String createImageFile(double[] pVals, String pName, String pX, String pY) {
+    private String createImageFile(TempDir tempDir, double[] pVals, String pName, String pX, String pY) throws IOException {
         XYSeries series = new XYSeries(pName);
         for (int i = 0; i < mN; i++) {
             series.add(i, pVals[i]);
@@ -279,16 +282,14 @@ public class GraphDistance implements Statistics, LongTask {
         plot.setRenderer(renderer);
 
         String imageFile = "";
-        try {
-            ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            String fileName = "temp\\" + pY + ".png";
-            File file1 = new File(fileName);
-            imageFile = "<IMG SRC=\"file:" + fileName + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
 
-            ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
-        } catch (IOException e) {
-            System.out.println(e.toString());
-        }
+        ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+        String fileName = pY + ".png";
+        File file1 = tempDir.createFile(fileName);
+        imageFile = "<IMG SRC=\"file:" + file1.getAbsolutePath() + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
+
+        ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
+
         return imageFile;
     }
 
@@ -297,11 +298,17 @@ public class GraphDistance implements Statistics, LongTask {
      * @return
      */
     public String getReport() {
-
-        String htmlIMG1 = createImageFile(mBetweeness, "Betweeness Centrality", "Nodes", "Betweeness");
-        String htmlIMG2 = createImageFile(mCloseness, "Closness Centrality", "Nodes", "Closness");
-        String htmlIMG3 = createImageFile(mEccentricity, "Eccentricty", "Nodes", "Eccentricity");
-
+        String htmlIMG1 = "";
+        String htmlIMG2 = "";
+        String htmlIMG3 = "";
+        try {
+            TempDir tempDir = TempDirUtils.createTempDir();
+            htmlIMG1 = createImageFile(tempDir, mBetweeness, "Betweeness Centrality", "Nodes", "Betweeness");
+            htmlIMG2 = createImageFile(tempDir, mCloseness, "Closness Centrality", "Nodes", "Closness");
+            htmlIMG3 = createImageFile(tempDir, mEccentricity, "Eccentricty", "Nodes", "Eccentricity");
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
 
         String report = new String("<HTML> <BODY> <h1>Graph Distance  Report </h1> "
                 + "<hr> <br> <h2>Network Revision Number:</h2>"
