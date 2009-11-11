@@ -1,7 +1,7 @@
 package org.gephi.preview;
 
 import org.gephi.preview.api.EdgeMiniLabel;
-import org.gephi.preview.api.HAlign;
+import org.gephi.preview.api.util.HAlign;
 
 /**
  * Implementation of an edge mini-label.
@@ -29,9 +29,9 @@ public abstract class EdgeMiniLabelImpl extends AbstractEdgeLabel
     public abstract void genPosition();
 
     /**
-     * Returns the edge mini-label's horizontal align.
+     * Returns the edge mini-label's horizontal alignment.
      *
-     * @return the edge mini-label's horizontal align
+     * @return the edge mini-label's horizontal alignment
      */
     public HAlign getHAlign() {
         return hAlign;

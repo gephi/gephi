@@ -4,7 +4,7 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.preview.GraphImpl;
 import org.gephi.preview.api.Graph;
-import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.controller.PreviewController;
 import org.gephi.preview.api.supervisor.EdgeSupervisor;
 import org.gephi.preview.api.supervisor.GlobalEdgeSupervisor;
 import org.gephi.preview.api.supervisor.NodeSupervisor;
@@ -18,8 +18,9 @@ import org.gephi.preview.supervisor.UnidirectionalEdgeSupervisorImpl;
 import org.openide.util.Lookup;
 
 /**
+ * Implementation of the preview controller.
  *
- * @author jeremy
+ * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public class PreviewControllerImpl implements PreviewController {
 
@@ -31,6 +32,11 @@ public class PreviewControllerImpl implements PreviewController {
     private final EdgeSupervisorImpl biEdgeSupervisor = new BidirectionalEdgeSupervisorImpl();
 	private final PreviewGraphFactory factory = new PreviewGraphFactory();
 
+    /**
+     * Returns the current preview graph.
+     *
+     * @return the current preview graph
+     */
     public Graph getGraph() {
 		if (null == previewGraph) {
 			buildGraph();

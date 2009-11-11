@@ -1,8 +1,8 @@
 package org.gephi.preview;
 
 import org.gephi.preview.api.CubicBezierCurve;
-import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.SelfLoop;
+import org.gephi.preview.api.controller.PreviewController;
 import org.gephi.preview.supervisor.SelfLoopSupervisorImpl;
 import org.openide.util.Lookup;
 import processing.core.PVector;
@@ -22,7 +22,7 @@ public class SelfLoopImpl extends AbstractEdge implements SelfLoop {
 	 *
 	 * @param parent     the parent graph of the self-loop
 	 * @param thickness  the self-loop's thickness
-	 * @param alpha      the self-loop's alpha color
+	 * @param alpha      the self-loop's alpha color component
 	 * @param node       the self-loop's related node
 	 */
 	public SelfLoopImpl(GraphImpl parent, float thickness, int alpha, NodeImpl node) {

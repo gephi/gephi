@@ -1,11 +1,18 @@
 package org.gephi.preview.util;
 
 /**
+ * Class to shorten label values.
  *
- * @author jeremy
+ * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public abstract class LabelShortener {
 
+    /**
+     * Shortens the value of the given label client.
+     *
+     * @param client   the label to shorten
+     * @param maxChar  the length of the new label value
+     */
     public static void shortenLabel(LabelShortenerClient client, int maxChar) {
         String originalValue = client.getOriginalValue();
         String value = originalValue.length() > maxChar ?

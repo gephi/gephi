@@ -1,20 +1,31 @@
 package org.gephi.preview.util;
 
-import org.gephi.preview.api.Holder;
+import org.gephi.preview.api.util.Holder;
 
 /**
+ * Implementation of a generic component holder.
  *
- * @author jeremy
+ * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public class HolderImpl<T> implements Holder<T> {
 
-    private T m_component;
+    private T component;
 
-    public final T getComponent() {
-        return m_component;
+    /**
+     * Returns the hold component.
+     *
+     * @return the hold component
+     */
+    public T getComponent() {
+        return component;
     }
 
-    public final void setComponent(T component) {
-        m_component = component;
+    /**
+     * Defines the hold component.
+     *
+     * @param component  the component to bind
+     */
+    public void setComponent(T component) {
+        this.component = component;
     }
 }

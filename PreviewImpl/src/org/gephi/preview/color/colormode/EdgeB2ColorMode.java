@@ -7,8 +7,10 @@ import org.gephi.preview.api.color.colorizer.EdgeColorizerClient;
 import org.gephi.preview.color.InheritedColor;
 
 /**
+ * This color mode colors its clients using the color of an edge's second
+ * boundary.
  *
- * @author jeremy
+ * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public class EdgeB2ColorMode
 		implements EdgeColorizer, EdgeChildColorizer {
@@ -33,21 +35,22 @@ public class EdgeB2ColorMode
 		client.setColor(new InheritedColor(client.getParentEdge().getNode2().getColorHolder()));
 	}
 
+    /**
+     * Formats the colorizer as a string.
+     *
+     * @return the colorizer formatted as a string
+     */
 	@Override
     public String toString() {
         return IDENTIFIER;
     }
 
+    /**
+     * Returns the colorizer's identifier.
+     *
+     * @return the colorizer's identifier
+     */
     public static String getIdentifier() {
         return IDENTIFIER;
-    }
-
-    /**
-	 * Colors the given client.
-	 *
-	 * @param client  the client to color
-	 */
-    private void doColor(EdgeColorizerClient client) {
-        
     }
 }

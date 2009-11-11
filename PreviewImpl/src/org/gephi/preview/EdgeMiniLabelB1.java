@@ -1,6 +1,6 @@
 package org.gephi.preview;
 
-import org.gephi.preview.api.HAlign;
+import org.gephi.preview.api.util.HAlign;
 import processing.core.PVector;
 
 /**

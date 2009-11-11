@@ -1,21 +1,48 @@
 package org.gephi.preview.api;
 
 import org.gephi.preview.api.color.Color;
+import org.gephi.preview.api.util.HAlign;
 import processing.core.PVector;
 
 /**
+ * Interface of a preview edge mini-label.
  *
- * @author jeremy
+ * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public interface EdgeMiniLabel {
 
+    /**
+     * Returns the edge mini-label's color.
+     *
+     * @return the edge mini-label's color
+     */
     public Color getColor();
 
+    /**
+     * Returns the edge mini-label's horizontal alignment.
+     *
+     * @return the edge mini-label's horizontal alignment
+     */
     public HAlign getHAlign();
 
+    /**
+     * Returns the edge mini-label's position.
+     *
+     * @return the edge mini-label's position
+     */
     public PVector getPosition();
 
-    public float getAngle();
+    /**
+     * Returns the edge mini-label's angle.
+     *
+     * @return the edge mini-label's angl
+     */
+    public Float getAngle();
 
+    /**
+     * Returns the edge mini-label's current value.
+     *
+     * @return the edge mini-label's current value
+     */
     public String getValue();
 }

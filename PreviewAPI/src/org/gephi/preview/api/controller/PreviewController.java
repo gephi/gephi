@@ -1,16 +1,23 @@
-package org.gephi.preview.api;
+package org.gephi.preview.api.controller;
 
+import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.supervisor.EdgeSupervisor;
 import org.gephi.preview.api.supervisor.GlobalEdgeSupervisor;
 import org.gephi.preview.api.supervisor.NodeSupervisor;
 import org.gephi.preview.api.supervisor.SelfLoopSupervisor;
 
 /**
+ * Interface of the preview controller.
  *
- * @author jeremy
+ * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public interface PreviewController {
 
+    /**
+     * Returns the current preview graph.
+     * 
+     * @return the current preview graph
+     */
     public Graph getGraph();
 
     /**

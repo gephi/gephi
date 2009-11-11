@@ -3,6 +3,7 @@ package org.gephi.ui.preview;
 import java.awt.Font;
 import java.util.Iterator;
 import org.gephi.preview.api.*;
+import org.gephi.preview.api.controller.PreviewController;
 import org.openide.util.Lookup;
 import processing.core.*;
 import processing.opengl.*;
@@ -206,7 +207,7 @@ public class ProcessingPreview extends PApplet {
 				node.getDiameter(), node.getDiameter());
 
 		// node label
-		if (node.showLabels()) {
+		if (node.showLabel()) {
 			// draw a border
 			if (node.showLabelBorders()) {
 				drawNodeLabelBorder(node.getLabelBorder());
@@ -288,8 +289,8 @@ public class ProcessingPreview extends PApplet {
             // draw its arrows
             if (edge.showArrows()) {
                 noStroke();
-                for (Iterator<EdgeArrow> it = edge.getArrows(); it.hasNext(); )
-                    drawEdgeArrow(it.next());
+                for (EdgeArrow a : edge.getArrows())
+                    drawEdgeArrow(a);
             }
 
             // draw its label
@@ -302,8 +303,8 @@ public class ProcessingPreview extends PApplet {
             // draw its mini-labels
             if (edge.showMiniLabels()) {
                 textFont(edgeMiniLabelFont);
-                for (Iterator<EdgeMiniLabel> it = edge.getMiniLabels(); it.hasNext(); )
-                    drawEdgeMiniLabel(it.next());
+                for (EdgeMiniLabel ml : edge.getMiniLabels())
+                    drawEdgeMiniLabel(ml);
             }
         }
     }
@@ -327,9 +328,7 @@ public class ProcessingPreview extends PApplet {
 	 * @param edge  the curved edge to draw
 	 */
     public void drawCurvedEdge(Edge edge) {
-        for (Iterator<CubicBezierCurve> it = edge.getCurves(); it.hasNext(); ) {
-            CubicBezierCurve curve = it.next();
-
+        for (CubicBezierCurve curve : edge.getCurves()) {
             // draw curve
             bezier(curve.getPt1().x, curve.getPt1().y,
                     curve.getPt2().x, curve.getPt2().y,
