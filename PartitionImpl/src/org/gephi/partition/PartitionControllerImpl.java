@@ -80,6 +80,7 @@ public class PartitionControllerImpl implements PartitionController {
         if (pc.getCurrentWorkspace() != null) {
             model = pc.getCurrentWorkspace().getLookup().lookup(PartitionModelImpl.class);
             if (model == null) {
+                model = new PartitionModelImpl();
                 pc.getCurrentWorkspace().add(new PartitionModelImpl());
             }
         }
