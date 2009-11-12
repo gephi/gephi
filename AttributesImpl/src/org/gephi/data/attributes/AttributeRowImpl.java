@@ -93,6 +93,7 @@ public class AttributeRowImpl implements AttributeRow {
             if (column == null) {
                 throw new IllegalArgumentException("The value column doesn't exist");
             }
+            value = attributeTable.getFactory().newValue(column, value.getValue());
         }
         setValue(column.getIndex(), (AttributeValueImpl) value);
     }

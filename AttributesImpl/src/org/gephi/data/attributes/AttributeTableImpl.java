@@ -162,7 +162,7 @@ public class AttributeTableImpl implements AttributeTable, Lookup.Provider {
 
     public synchronized void mergeTable(AttributeTable table) {
         for (AttributeColumn column : table.getColumns()) {
-            AttributeColumn existingCol = getColumn(column.getId(), column.getType());
+            AttributeColumn existingCol = getColumn(column);
             if (existingCol == null) {
                 addColumn(column.getId(), column.getTitle(), column.getType(), column.getOrigin(), column.getDefaultValue());
             }
