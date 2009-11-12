@@ -1,5 +1,6 @@
 package org.gephi.ui.preview;
 
+import java.awt.BorderLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import org.openide.util.NbBundle;
@@ -22,7 +23,7 @@ final class PreviewTopComponent extends TopComponent {
     private PreviewTopComponent() {
         initComponents();
 
-        add(sketch);
+        add(sketch, BorderLayout.CENTER);
         sketch.init();
 
         setName(NbBundle.getMessage(PreviewTopComponent.class, "CTL_PreviewTopComponent"));
@@ -39,16 +40,7 @@ final class PreviewTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 375, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 287, Short.MAX_VALUE)
-        );
+        setLayout(new java.awt.BorderLayout());
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
