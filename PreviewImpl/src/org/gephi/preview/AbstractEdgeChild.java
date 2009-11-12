@@ -1,14 +1,14 @@
 package org.gephi.preview;
 
-import org.gephi.preview.api.Holder;
 import org.gephi.preview.api.color.Color;
 import org.gephi.preview.api.color.colorizer.EdgeChildColorizerClient;
 import org.gephi.preview.api.color.colorizer.EdgeColorizerClient;
 import org.gephi.preview.api.supervisor.EdgeSupervisor;
+import org.gephi.preview.api.util.Holder;
 import org.gephi.preview.util.HolderImpl;
 
 /**
- * An abstract edge child.
+ * Generic implementation of a preview edge child.
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */

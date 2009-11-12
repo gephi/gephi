@@ -2,7 +2,6 @@ package org.gephi.preview.supervisor;
 
 import java.awt.Font;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.WeakHashMap;
 import org.gephi.preview.EdgeArrowImpl;
@@ -11,9 +10,9 @@ import org.gephi.preview.EdgeLabelImpl;
 import org.gephi.preview.EdgeMiniLabelImpl;
 import org.gephi.preview.api.EdgeArrow;
 import org.gephi.preview.api.EdgeMiniLabel;
-import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.color.colorizer.EdgeChildColorizer;
 import org.gephi.preview.api.color.colorizer.EdgeColorizer;
+import org.gephi.preview.api.controller.PreviewController;
 import org.gephi.preview.api.supervisor.EdgeSupervisor;
 import org.gephi.preview.api.supervisor.GlobalEdgeSupervisor;
 import org.gephi.preview.util.LabelShortener;
@@ -447,8 +446,8 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
      * @param edge  the edge to position the mini-labels
 	 */
     private void positionEdgeMiniLabels(EdgeImpl edge) {
-        for (Iterator<EdgeMiniLabel> it = edge.getMiniLabels(); it.hasNext(); ) {
-            positionEdgeMiniLabel((EdgeMiniLabelImpl) it.next());
+        for (EdgeMiniLabel ml : edge.getMiniLabels()) {
+            positionEdgeMiniLabel((EdgeMiniLabelImpl) ml);
         }
     }
 
@@ -476,8 +475,8 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
      * @param edge  the edge to color the mini-labels
 	 */
     private void colorEdgeMiniLabels(EdgeImpl edge) {
-        for (Iterator<EdgeMiniLabel> it = edge.getMiniLabels(); it.hasNext(); ) {
-            colorEdgeMiniLabel((EdgeMiniLabelImpl) it.next());
+        for (EdgeMiniLabel ml : edge.getMiniLabels()) {
+            colorEdgeMiniLabel((EdgeMiniLabelImpl) ml);
         }
     }
 
@@ -505,8 +504,8 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
      * @param edge  the edge to shorten the mini-labels
 	 */
     private void shortenEdgeMiniLabels(EdgeImpl edge) {
-        for (Iterator<EdgeMiniLabel> it = edge.getMiniLabels(); it.hasNext(); ) {
-            shortenEdgeMiniLabel((EdgeMiniLabelImpl) it.next());
+        for (EdgeMiniLabel ml : edge.getMiniLabels()) {
+            shortenEdgeMiniLabel((EdgeMiniLabelImpl) ml);
         }
     }
 
@@ -534,8 +533,8 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
      * @param edge  the edge to position the arrows
 	 */
     private void positionEdgeArrows(EdgeImpl edge) {
-        for (Iterator<EdgeArrow> it = edge.getArrows(); it.hasNext(); ) {
-            positionEdgeArrow((EdgeArrowImpl) it.next());
+        for (EdgeArrow a : edge.getArrows()) {
+            positionEdgeArrow((EdgeArrowImpl) a);
         }
     }
 
@@ -563,8 +562,8 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
      * @param edge  the edge to color the arrows
 	 */
     private void colorEdgeArrows(EdgeImpl edge) {
-        for (Iterator<EdgeArrow> it = edge.getArrows(); it.hasNext(); ) {
-            colorEdgeArrow((EdgeArrowImpl) it.next());
+        for (EdgeArrow a : edge.getArrows()) {
+            colorEdgeArrow((EdgeArrowImpl) a);
         }
     }
 

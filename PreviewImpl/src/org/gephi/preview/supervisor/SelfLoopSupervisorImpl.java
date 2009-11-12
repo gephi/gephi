@@ -37,7 +37,7 @@ public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
 	 *
 	 * @return true if the self-loops must be displayed in the preview
 	 */
-	public boolean getShowFlag() {
+	public Boolean getShowFlag() {
 		return show;
 	}
 

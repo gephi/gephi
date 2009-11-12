@@ -1,14 +1,15 @@
 package org.gephi.preview;
 
 import org.gephi.preview.api.BidirectionalEdge;
-import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.controller.PreviewController;
 import org.gephi.preview.supervisor.EdgeSupervisorImpl;
 import org.openide.util.Lookup;
 import processing.core.PVector;
 
 /**
+ * Implementation of a bidirectional edge.
  *
- * @author jeremy
+ * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public class BidirectionalEdgeImpl extends EdgeImpl
         implements BidirectionalEdge {

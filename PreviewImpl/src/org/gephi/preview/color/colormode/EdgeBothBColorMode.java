@@ -2,14 +2,15 @@ package org.gephi.preview.color.colormode;
 
 import org.gephi.preview.api.color.colorizer.EdgeChildColorizer;
 import org.gephi.preview.api.color.colorizer.EdgeChildColorizerClient;
-import org.gephi.preview.api.color.colorizer.EdgeColorizerClient;
 import org.gephi.preview.api.color.colorizer.EdgeColorizer;
 import org.gephi.preview.api.color.colorizer.EdgeColorizerClient;
 import org.gephi.preview.color.MixedColor;
 
 /**
+ * This color mode colors its clients using a mix of the colors of an edge's
+ * boundaries.
  *
- * @author jeremy
+ * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public class EdgeBothBColorMode
         implements EdgeColorizer, EdgeChildColorizer {
@@ -38,11 +39,21 @@ public class EdgeBothBColorMode
                 client.getParentEdge().getNode2().getColorHolder()));
 	}
 
+    /**
+     * Formats the colorizer as a string.
+     *
+     * @return the colorizer formatted as a string
+     */
 	@Override
     public String toString() {
         return IDENTIFIER;
     }
 
+    /**
+     * Returns the colorizer's identifier.
+     *
+     * @return the colorizer's identifier
+     */
     public static String getIdentifier() {
         return IDENTIFIER;
     }

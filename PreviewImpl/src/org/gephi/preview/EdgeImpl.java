@@ -1,7 +1,6 @@
 package org.gephi.preview;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import org.gephi.preview.api.CubicBezierCurve;
 import org.gephi.preview.api.EdgeArrow;
 import org.gephi.preview.api.EdgeMiniLabel;
@@ -18,16 +17,12 @@ public abstract class EdgeImpl extends AbstractEdge {
 
     protected final NodeImpl node1;
     protected final NodeImpl node2;
-    
     protected final PVector direction;
     protected final float length;
-
     protected final ArrayList<EdgeArrow> arrows = new ArrayList<EdgeArrow>();
     protected final ArrayList<EdgeMiniLabel> miniLabels = new ArrayList<EdgeMiniLabel>();
     protected final ArrayList<CubicBezierCurve> curves = new ArrayList<CubicBezierCurve>();
-
     private EdgeLabelImpl label;
-
     protected static final float BEZIER_CURVE_FACTOR = 0.2f;
 
     /**
@@ -94,16 +89,31 @@ public abstract class EdgeImpl extends AbstractEdge {
                 node2.getPosition()));
     }
 
-    public final Iterator<EdgeArrow> getArrows() {
-        return arrows.iterator();
+    /**
+     * Returns an iterable on the edge's arrow list.
+     *
+     * @return an iterable on the edge's arrow list
+     */
+    public Iterable<EdgeArrow> getArrows() {
+        return arrows;
     }
 
-    public final Iterator<EdgeMiniLabel> getMiniLabels() {
-        return miniLabels.iterator();
+    /**
+     * Returns an iterable on the edge's mini-label list.
+     *
+     * @return an iterable on the edge's mini-label list
+     */
+    public Iterable<EdgeMiniLabel> getMiniLabels() {
+        return miniLabels;
     }
 
-    public final Iterator<CubicBezierCurve> getCurves() {
-        return curves.iterator();
+    /**
+     * Returns an iterable on the edge's curve list.
+     *
+     * @return an iterable on the edge's curve list
+     */
+    public Iterable<CubicBezierCurve> getCurves() {
+        return curves;
     }
 
     /**
@@ -147,7 +157,7 @@ public abstract class EdgeImpl extends AbstractEdge {
      *
      * @return the edge's length
      */
-    public float getLength() {
+    public Float getLength() {
         return length;
     }
 
@@ -156,29 +166,29 @@ public abstract class EdgeImpl extends AbstractEdge {
      *
      * @return the edge's angle
      */
-    public float getAngle() {
+    public Float getAngle() {
         PVector p1 = node1.getPosition();
         PVector p2 = node2.getPosition();
-        
+
         return (float) Math.atan2(p2.y - p1.y, p2.x - p1.x);
     }
 
     /**
-	 * Returns the edge supervisor.
+     * Returns the edge supervisor.
      *
      * This method is overridden by child classes to return the right
      * supervisor.
-	 *
-	 * @return an edge supervisor
-	 */
-	public abstract EdgeSupervisorImpl getEdgeSupervisor();
+     *
+     * @return an edge supervisor
+     */
+    public abstract EdgeSupervisorImpl getEdgeSupervisor();
 
     /**
      * Returns true if the edge is curved.
      * 
      * @return true if the edge is curved
      */
-    public boolean isCurved() {
+    public Boolean isCurved() {
         return getEdgeSupervisor().getCurvedFlag();
     }
 
@@ -187,10 +197,9 @@ public abstract class EdgeImpl extends AbstractEdge {
      *
      * @return true if the edge's label must be displayed
      */
-    public boolean showLabel() {
+    public Boolean showLabel() {
         EdgeSupervisor supervisor = getEdgeSupervisor();
-        float minlength = node1.getRadius() + node2.getRadius()
-                + 0.65f * supervisor.getLabelMaxChar() * supervisor.getLabelFont().getSize();
+        float minlength = node1.getRadius() + node2.getRadius() + 0.65f * supervisor.getLabelMaxChar() * supervisor.getLabelFont().getSize();
         return supervisor.getShowLabelsFlag() && length >= minlength;
     }
 
@@ -199,10 +208,9 @@ public abstract class EdgeImpl extends AbstractEdge {
      *
      * @return true if the edge's arrows must be displayed
      */
-    public boolean showArrows() {
+    public Boolean showArrows() {
         EdgeSupervisor supervisor = getEdgeSupervisor();
-        float minlength = node1.getRadius() + node2.getRadius()
-                + 2 * supervisor.getArrowAddedRadius() + 2 * supervisor.getArrowSize();
+        float minlength = node1.getRadius() + node2.getRadius() + 2 * supervisor.getArrowAddedRadius() + 2 * supervisor.getArrowSize();
         return supervisor.getShowArrowsFlag() && length >= minlength;
     }
 
@@ -211,10 +219,9 @@ public abstract class EdgeImpl extends AbstractEdge {
      *
      * @return true if the edge's mini-labels must be displayed
      */
-    public boolean showMiniLabels() {
+    public Boolean showMiniLabels() {
         EdgeSupervisor supervisor = getEdgeSupervisor();
-        float minlength = node1.getRadius() + node2.getRadius()
-                + 2 * 0.65f * supervisor.getMiniLabelMaxChar() * supervisor.getMiniLabelFont().getSize();
+        float minlength = node1.getRadius() + node2.getRadius() + 2 * 0.65f * supervisor.getMiniLabelMaxChar() * supervisor.getMiniLabelFont().getSize();
         return supervisor.getShowMiniLabelsFlag() && length >= minlength;
     }
 }

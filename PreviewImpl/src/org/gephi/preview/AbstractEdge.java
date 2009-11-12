@@ -1,13 +1,14 @@
 package org.gephi.preview;
 
-import org.gephi.preview.api.Holder;
 import org.gephi.preview.api.color.Color;
 import org.gephi.preview.api.color.colorizer.EdgeColorizerClient;
+import org.gephi.preview.api.util.Holder;
 import org.gephi.preview.util.HolderImpl;
 
 /**
+ * Generic implementation of a preview edge.
  *
- * @author jeremy
+ * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public abstract class AbstractEdge implements EdgeColorizerClient {
 
@@ -38,6 +39,11 @@ public abstract class AbstractEdge implements EdgeColorizerClient {
         return colorHolder.getComponent();
     }
 
+    /**
+     * Returns the edge's color holder.
+     * 
+     * @return the edge's color holder
+     */
     public Holder<Color> getColorHolder() {
         return colorHolder;
     }
@@ -47,7 +53,7 @@ public abstract class AbstractEdge implements EdgeColorizerClient {
 	 *
 	 * @return the edge's thickness
 	 */
-    public float getThickness() {
+    public Float getThickness() {
         return thickness;
     }
 
@@ -56,7 +62,6 @@ public abstract class AbstractEdge implements EdgeColorizerClient {
 	 *
 	 * @return the color to set to the edge
 	 */
-    @Override
     public void setColor(Color color) {
         colorHolder.setComponent(color);
     }

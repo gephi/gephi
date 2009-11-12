@@ -21,7 +21,7 @@ public interface SelfLoop {
 	 *
 	 * @return the self-loop's thickness
 	 */
-    public float getThickness();
+    public Float getThickness();
 
 	/**
 	 * Returns the self-loop's color.
