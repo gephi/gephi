@@ -4,7 +4,7 @@ import org.gephi.preview.util.LabelShortenerClient;
 import processing.core.PVector;
 
 /**
- * An abstract edge label.
+ * Generic implementation of an edge label.
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
@@ -31,7 +31,7 @@ public abstract class AbstractEdgeLabel extends AbstractEdgeChild
      *
      * @return the edge label's angle
      */
-    public float getAngle() {
+    public Float getAngle() {
         return parent.getAngle();
     }
 

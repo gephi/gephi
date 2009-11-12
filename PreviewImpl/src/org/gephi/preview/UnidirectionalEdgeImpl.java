@@ -1,7 +1,7 @@
 package org.gephi.preview;
 
-import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.UnidirectionalEdge;
+import org.gephi.preview.api.controller.PreviewController;
 import org.gephi.preview.supervisor.EdgeSupervisorImpl;
 import org.openide.util.Lookup;
 
@@ -18,7 +18,7 @@ public class UnidirectionalEdgeImpl extends EdgeImpl
      *
      * @param parent     the parent graph of the edge
      * @param thickness  the edge's thickness
-     * @param alpha      the edge's alpha color
+     * @param alpha      the edge's alpha color component
      * @param node1      the edge's node 1
      * @param node2      the edge's node 2
      * @param label      the edge's label

@@ -1,12 +1,23 @@
 package org.gephi.preview.util;
 
 /**
- *
- * @author jeremy
+ * Classes implementing this interface are able to have their label shortened.
+ * 
+ * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public interface LabelShortenerClient {
 
-    String getOriginalValue();
+    /**
+     * Returns the label's original value.
+     *
+     * @return the label's original value
+     */
+    public String getOriginalValue();
 
-    void setValue(String value);
+    /**
+     * Defines the label's current value.
+     * 
+     * @param value  the label's current value to set
+     */
+    public void setValue(String value);
 }

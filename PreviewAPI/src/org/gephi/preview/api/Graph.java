@@ -1,29 +1,74 @@
 package org.gephi.preview.api;
 
-import java.util.Iterator;
 import processing.core.PVector;
 
 /**
+ * Interface of a preview graph.
  *
- * @author jeremy
+ * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public interface Graph {
 
+    /**
+     * Returns the closest position in the graph to (0,0).
+     *
+     * @return the closest position in the graph to (0,0).
+     */
     public PVector getMinPos();
 
+    /**
+     * Returns the farther position in the graph to (0,0).
+     *
+     * @return the farther position in the graph to (0,0).
+     */
     public PVector getMaxPos();
 
-    public Iterator<UnidirectionalEdge> getUnidirectionalEdges();
+    /**
+	 * Returns an iterable on the graph's nodes.
+	 *
+	 * @return an iterable on the graph's nodes
+	 */
+    public Iterable<Node> getNodes();
 
-    public Iterator<BidirectionalEdge> getBidirectionalEdges();
+	/**
+	 * Returns an iterable on the graph's self-loops.
+	 *
+	 * @return an iterable on the graph's self-loops
+	 */
+	public Iterable<SelfLoop> getSelfLoops();
 
-    public Iterator<SelfLoop> getSelfLoops();
+    /**
+	 * Returns an iterable on the graph's unidirectional edges.
+	 *
+	 * @return an iterable on the graph's unidirectional edges
+	 */
+    public Iterable<UnidirectionalEdge> getUnidirectionalEdges();
 
-    public Iterator<Node> getNodes();
+    /**
+	 * Returns an iterable on the graph's bidirectional edges.
+	 *
+	 * @return an iterable on the graph's bidirectional edges
+	 */
+    public Iterable<BidirectionalEdge> getBidirectionalEdges();
 
-    public boolean showNodes();
+    /**
+     * Returns true if the nodes must be displayed in the preview.
+     *
+     * @return true if the nodes must be displayed in the preview
+     */
+    public Boolean showNodes();
 
-	public boolean showEdges();
+    /**
+     * Returns true if the edges must be displayed in the preview.
+     *
+     * @return true if the edges must be displayed in the preview
+     */
+	public Boolean showEdges();
 
-	public boolean showSelfLoops();
+    /**
+     * Returns true if the self-loops must be displayed in the preview.
+     *
+     * @return true if the self-loops must be displayed in the preview
+     */
+	public Boolean showSelfLoops();
 }

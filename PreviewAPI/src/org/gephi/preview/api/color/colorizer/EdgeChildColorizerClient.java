@@ -1,6 +1,6 @@
 package org.gephi.preview.api.color.colorizer;
 
-import org.gephi.preview.api.Holder;
+import org.gephi.preview.api.util.Holder;
 import org.gephi.preview.api.color.Color;
 
 /**

@@ -1,37 +1,59 @@
 package org.gephi.preview.color;
 
-import org.gephi.preview.api.Holder;
 import org.gephi.preview.api.color.Color;
+import org.gephi.preview.api.util.Holder;
 
 /**
+ * Implementation of an inherited color.
  *
- * @author jeremy
+ * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public class InheritedColor implements Color {
 
-    private final Holder<Color> m_colorHolder;
+    private final Holder<Color> colorHolder;
 
+    /**
+     * Constructor.
+     *
+     * @param colorHolder  the inherited color's holder
+     */
     public InheritedColor(Holder<Color> colorHolder) {
-        m_colorHolder = colorHolder;
+        this.colorHolder = colorHolder;
     }
 
-    @Override
+    /**
+     * Returns the red component.
+     *
+     * @return the red component
+     */
     public Integer getRed() {
-        return m_colorHolder.getComponent().getRed();
+        return colorHolder.getComponent().getRed();
     }
 
-    @Override
+    /**
+     * Returns the green component.
+     *
+     * @return the green component
+     */
     public Integer getGreen() {
-        return m_colorHolder.getComponent().getGreen();
+        return colorHolder.getComponent().getGreen();
     }
 
-    @Override
+    /**
+     * Returns the blue component.
+     *
+     * @return the blue component
+     */
     public Integer getBlue() {
-        return m_colorHolder.getComponent().getBlue();
+        return colorHolder.getComponent().getBlue();
     }
 
-    @Override
+    /**
+     * Formats the color as an hex string.
+     *
+     * @return  the color formatted as an hex string
+     */
     public String toHexString() {
-        return m_colorHolder.getComponent().toHexString();
+        return colorHolder.getComponent().toHexString();
     }
 }

@@ -1,16 +1,22 @@
-package org.gephi.preview.api;
+package org.gephi.preview.api.util;
 
 import processing.core.PApplet;
 
 /**
+ * Specification of an horizontal alignment.
  *
- * @author jeremy
+ * @author Jérémy Subtil <jeremy.subtil@gaphi.org>
  */
 public enum HAlign {
 
     LEFT,
     RIGHT;
 
+    /**
+     * Formats the alignment as a string for a CSS target.
+     *
+     * @return the alignment formatted as a string
+     */
     public String toCSS() {
         switch (this) {
             default:
@@ -21,6 +27,11 @@ public enum HAlign {
         }
     }
 
+    /**
+     * Formats the alignment as a string for a Processing target.
+     *
+     * @return the alignment formatted as a string
+     */
     public int toProcessing() {
         switch (this) {
             default:

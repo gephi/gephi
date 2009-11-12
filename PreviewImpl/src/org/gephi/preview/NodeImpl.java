@@ -1,9 +1,10 @@
 package org.gephi.preview;
 
 import org.gephi.preview.api.Node;
-import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.color.Color;
 import org.gephi.preview.api.color.colorizer.NodeColorizerClient;
+import org.gephi.preview.api.controller.PreviewController;
+import org.gephi.preview.api.util.Holder;
 import org.gephi.preview.color.SimpleColor;
 import org.gephi.preview.supervisor.NodeSupervisorImpl;
 import org.gephi.preview.util.HolderImpl;
@@ -11,8 +12,9 @@ import org.openide.util.Lookup;
 import processing.core.PVector;
 
 /**
+ * Implementation of a preview node.
  *
- * @author jeremy
+ * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public class NodeImpl implements Node, NodeColorizerClient {
 
@@ -26,6 +28,18 @@ public class NodeImpl implements Node, NodeColorizerClient {
     private final NodeLabelImpl label;
     private final NodeLabelBorderImpl labelBorder;
 
+    /**
+     * Constructor.
+     *
+     * @param parent  the parent graph
+     * @param label   the node label
+     * @param x       the 'x' position component
+     * @param y       the 'y' position component
+     * @param radius  the node radius
+     * @param r       the red color component
+     * @param g       the green color component
+     * @param b       the blue color component
+     */
     public NodeImpl(GraphImpl parent, String label, float x, float y, float radius, float r, float g, float b) {
         this.parent = parent;
         this.position = new PVector(x, y);
@@ -53,69 +67,146 @@ public class NodeImpl implements Node, NodeColorizerClient {
 		return (NodeSupervisorImpl) controller.getNodeSupervisor();
 	}
 
+    /**
+     * Returns the parent graph.
+     *
+     * @return the parent graph
+     */
     public GraphImpl getParentGraph() {
         return parent;
     }
 
-    public final PVector getPosition() {
+    /**
+     * Returns the node's position.
+     *
+     * @return the node's position
+     */
+    public PVector getPosition() {
         return position;
     }
 
-    public final PVector getTopLeftPosition() {
+    /**
+     * Returns the node's top left position.
+     *
+     * @return the node's top left position
+     */
+    public PVector getTopLeftPosition() {
         return topLeftPosition;
     }
 
-    public final PVector getBottomRightPosition() {
+    /**
+     * Returns the node's bottom right position.
+     *
+     * @return the node's bottom right position
+     */
+    public PVector getBottomRightPosition() {
         return bottomRightPosition;
     }
-    
-    public final NodeLabelImpl getLabel() {
+
+    /**
+     * Returns the node's label.
+     *
+     * @return the node's label
+     */
+    public NodeLabelImpl getLabel() {
         return label;
     }
 
-    public final NodeLabelBorderImpl getLabelBorder() {
+    /**
+     * Returns the node's label border.
+     *
+     * @return the node's label border
+     */
+    public NodeLabelBorderImpl getLabelBorder() {
         return labelBorder;
     }
 
-    public final float getRadius() {
+    /**
+     * Returns the node's radius.
+     *
+     * @return the node's radius
+     */
+    public Float getRadius() {
         return radius;
     }
 
-    public final Float getDiameter() {
+    /**
+     * Returns the node's diameter.
+     *
+     * @return the node's diameter
+     */
+    public Float getDiameter() {
         return radius * 2;
     }
 
-    public final Color getOriginalColor() {
+    /**
+     * Returns the node's original color.
+     *
+     * @return the node's original color
+     */
+    public Color getOriginalColor() {
         return originalColor;
     }
 
-    @Override
-    public final Color getColor() {
+    /**
+     * Returns the node's current color.
+     *
+     * @return the node's current color
+     */
+    public Color getColor() {
         return colorHolder.getComponent();
     }
 
-    @Override
-    public final HolderImpl<Color> getColorHolder() {
+    /**
+     * Returns the node's color holder.
+     *
+     * @return the node's color holder
+     */
+    public Holder<Color> getColorHolder() {
         return colorHolder;
     }
 
-    @Override
-    public final void setColor(Color color) {
+    /**
+     * Defines the node's current color.
+     *
+     * @param color  the node's current color to set
+     */
+    public void setColor(Color color) {
         colorHolder.setComponent(color);
     }
 
+    /**
+     * Returns the node's border color.
+     *
+     * @return the node's border color
+     */
     public Color getBorderColor() {
         return getNodeSupervisor().getNodeBorderColorizer().getColor();
     }
 
+    /**
+     * Returns the node's border width.
+     *
+     * @return the node's border width
+     */
     public Float getBorderWidth() {
         return getNodeSupervisor().getNodeBorderWidth();
     }
 
-    public Boolean showLabels() {
+    /**
+     * Returns whether or not the node's label must be displayed.
+     *
+     * @return true to display the node's label
+     */
+    public Boolean showLabel() {
         return getNodeSupervisor().getShowNodeLabels();
     }
 
+    /**
+     * Returns whether or not the node's label borders must be displayed.
+     *
+     * @return true to display the node's label borders
+     */
     public Boolean showLabelBorders() {
         return getNodeSupervisor().getShowNodeLabelBorders();
     }

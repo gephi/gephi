@@ -1,10 +1,16 @@
 package org.gephi.preview.api.color.colorizer;
 
 /**
+ * Interface of a node child colorizer.
  *
- * @author jeremy
+ * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public interface NodeChildColorizer extends Colorizer {
 
+    /**
+     * Colors the given client.
+     *
+     * @param client  the client to color
+     */
     public void color(NodeChildColorizerClient client);
 }
