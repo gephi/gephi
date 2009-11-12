@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.desktop.algorithms.cluster;
 
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.Serializable;
@@ -36,10 +35,8 @@ import org.gephi.algorithms.cluster.api.Clusterer;
 import org.gephi.algorithms.cluster.api.ClustererBuilder;
 import org.gephi.algorithms.cluster.api.ClustererUI;
 import org.gephi.algorithms.cluster.api.ClusteringController;
-import org.gephi.algorithms.cluster.api.ClusteringModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.api.WorkspaceDataKey;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -71,14 +68,14 @@ final class ClusteringTopComponent extends TopComponent implements ChangeListene
         setToolTipText(NbBundle.getMessage(ClusteringTopComponent.class, "HINT_ClusteringTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
 
-        final WorkspaceDataKey<ClusteringModel> key = Lookup.getDefault().lookup(ClusteringModelWorkspaceDataProvider.class).getWorkspaceDataKey();
         Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
+                workspace.add(new ClusteringModelImpl());
             }
 
             public void select(Workspace workspace) {
-                model = (ClusteringModelImpl) workspace.getWorkspaceData().getData(key);
+                model = workspace.getLookup().lookup(ClusteringModelImpl.class);
                 model.addChangeListener(ClusteringTopComponent.this);
                 refreshModel();
             }

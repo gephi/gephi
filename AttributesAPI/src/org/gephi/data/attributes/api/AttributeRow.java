@@ -30,6 +30,8 @@ public interface AttributeRow extends Attributes {
 
     public void reset();
 
+    public int countValues();
+
     public void setValues(AttributeRow attributeRow);
 
     public void setValue(AttributeValue value);

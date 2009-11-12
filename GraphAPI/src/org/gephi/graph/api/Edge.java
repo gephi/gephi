@@ -51,6 +51,12 @@ public interface Edge {
     public float getWeight();
 
     /**
+     * Set the weight of the edge.
+     * @param weight the weight of the edge
+     */
+    public void setWeight(float weight);
+
+    /**
      * Returns <code>true</code> if the egde is visible or <code>false</code> if its hidden.
      * @return  <code>true</code> if the egde is visible or <code>false</code> otherwise
      */

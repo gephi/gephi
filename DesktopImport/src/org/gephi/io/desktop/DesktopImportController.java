@@ -21,11 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.desktop;
 
 import org.gephi.io.database.DatabaseType;
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
@@ -57,6 +56,7 @@ import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
@@ -101,7 +101,7 @@ public class DesktopImportController implements ImportController {
 
             //Create Container
             final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
-            container.setSource("" + im.getClass());
+            container.setSource(fileObject.getNameExt());
 
             //Report
             Report report = new Report();
@@ -155,7 +155,7 @@ public class DesktopImportController implements ImportController {
     }
 
     private void importText(FileObject fileObject, Importer importer, final Container container) {
-        final BufferedReader reader = getTextReader(fileObject);
+        final LineNumberReader reader = getTextReader(fileObject);
         final TextImporter textImporter = (TextImporter) importer;
         final Report report = container.getReport();
         LongTask task = null;
@@ -225,7 +225,7 @@ public class DesktopImportController implements ImportController {
 
             //Create Container
             final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
-            container.setSource("" + importer.getClass());
+            container.setSource(database.getName());
 
             //Report
             final Report report = new Report();
@@ -301,37 +301,36 @@ public class DesktopImportController implements ImportController {
                 }
             }
             if (container.getSource() != null) {
-                workspace.setSource(container.getSource());
+                pc.setSource(workspace, container.getSource());
             }
 
             container.closeLoader();
             Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
+
+            //StatusLine notify
+            String source = container.getSource();
+            if (source.isEmpty()) {
+                source = NbBundle.getMessage(DesktopImportController.class, "DesktopImportController.status.importSuccess.default");
+            }
+            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopImportController.class, "DesktopImportController.status.importSuccess", source));
         }
     }
 
-    private BufferedReader getTextReader(FileObject fileObject) throws ImportException {
-
-        //File file = FileUtil.toFile(fileObject);
+    private LineNumberReader getTextReader(FileObject fileObject) throws ImportException {
         try {
-            InputStreamReader im = new InputStreamReader(fileObject.getInputStream());
-            /*if (file == null) {
-            throw new FileNotFoundException();
-            }
-            BufferedReader reader = new BufferedReader(new FileReader(file));*/
-            BufferedReader reader = new BufferedReader(im);
+            LineNumberReader reader;
+            CharsetToolkit charsetToolkit = new CharsetToolkit(FileUtil.toFile(fileObject));
+            reader = (LineNumberReader) charsetToolkit.getReader();
             return reader;
         } catch (FileNotFoundException ex) {
             throw new ImportException(NbBundle.getMessage(getClass(), "error_file_not_found"));
+        } catch (IOException ex) {
+            throw new ImportException(NbBundle.getMessage(getClass(), "error_io"));
         }
     }
 
     private Document getDocument(FileObject fileObject) throws ImportException {
-        //File file = FileUtil.toFile(fileObject);
         try {
-            /*if (file == null) {
-            throw new FileNotFoundException();
-            }
-            InputStream stream = new FileInputStream(file);*/
             InputStream stream = fileObject.getInputStream();
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();

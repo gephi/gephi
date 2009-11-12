@@ -27,7 +27,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeManager;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeValueFactory;
 import org.gephi.io.container.EdgeDefault;
 import org.gephi.io.container.EdgeDraft;
@@ -51,27 +51,20 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     //MetaData
     private String source;
-
     //Factory
     private FactoryImpl factory;
-
     //Parameters
     private ImportContainerParameters parameters;
-
     //Maps
     private HashMap<String, NodeDraftImpl> nodeMap;
     private HashMap<String, EdgeDraftImpl> edgeMap;
     private HashMap<String, EdgeDraftImpl> edgeSourceTargetMap;
-
     //Attributes
-    private AttributeValueFactory attributeFactory;
-    private AttributeManager attributeManager;
-
+    private AttributeModel attributeModel;
     //Management
     private boolean dynamicGraph = false;
     private boolean hierarchicalGraph = false;
     private Report report;
-
     //Counting
     private int directedEdgesCount = 0;
     private int undirectedEdgesCount = 0;
@@ -81,8 +74,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         nodeMap = new LinkedHashMap<String, NodeDraftImpl>();//to maintain the order
         edgeMap = new LinkedHashMap<String, EdgeDraftImpl>();
         edgeSourceTargetMap = new HashMap<String, EdgeDraftImpl>();
-        attributeFactory = Lookup.getDefault().lookup(AttributeController.class).valueFactory();
-        attributeManager = Lookup.getDefault().lookup(AttributeController.class).getTemporaryAttributeManager();
+        attributeModel = Lookup.getDefault().lookup(AttributeController.class).newModel();
         factory = new FactoryImpl();
     }
 
@@ -290,12 +282,12 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         return edgeMap.values();
     }
 
-    public AttributeManager getAttributeManager() {
-        return attributeManager;
+    public AttributeModel getAttributeModel() {
+        return attributeModel;
     }
 
     public AttributeValueFactory getFactory() {
-        return attributeFactory;
+        return attributeModel.valueFactory();
     }
 
     public boolean verify() {
@@ -345,8 +337,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 return new Integer(o1.getHeight()).compareTo(o2.getHeight());
             }
         });
-        for(NodeDraftImpl n : sortedMapValues) {
-             sortedNodeMap.put(n.getId(), n);
+        for (NodeDraftImpl n : sortedMapValues) {
+            sortedNodeMap.put(n.getId(), n);
         }
         nodeMap = sortedNodeMap;
     }

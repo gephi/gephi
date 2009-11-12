@@ -51,6 +51,7 @@ public class PartitionModelImpl implements PartitionModel {
     private NodePartition[] nodePartitions = new NodePartition[0];
     private EdgePartition[] edgePartitions = new EdgePartition[0];
     private boolean waiting;
+    private boolean pie;
 
     public PartitionModelImpl() {
         listeners = new ArrayList<PropertyChangeListener>();
@@ -134,6 +135,10 @@ public class PartitionModelImpl implements PartitionModel {
         return waiting;
     }
 
+    public boolean isPie() {
+        return pie;
+    }
+
     public void addPropertyChangeListener(PropertyChangeListener changeListener) {
         if (!listeners.contains(changeListener)) {
             listeners.add(changeListener);
@@ -214,6 +219,14 @@ public class PartitionModelImpl implements PartitionModel {
             boolean oldValue = this.waiting;
             this.waiting = waiting;
             firePropertyChangeEvent(WAITING, oldValue, waiting);
+        }
+    }
+
+    public void setPie(boolean pie) {
+        if (pie != this.pie) {
+            boolean oldValue = this.pie;
+            this.pie = pie;
+            firePropertyChangeEvent(PIE, oldValue, pie);
         }
     }
 }

@@ -54,13 +54,11 @@ public class CompatibilityEngine extends AbstractEngine {
     private CompatibilityScheduler scheduler;
     private long markTime = 0;
     private long markTime2 = 0;
-
     //User config
     protected CompatibilityModelClass[] modelClasses;
     protected CompatibilityModelClass[] lodClasses;
     protected CompatibilityModelClass[] selectableClasses;
     protected CompatibilityModelClass[] clickableClasses;
-
     //Selection
     private ConcurrentLinkedQueue<ModelImpl>[] selectedObjects;
     private boolean anySelected = false;
@@ -83,7 +81,13 @@ public class CompatibilityEngine extends AbstractEngine {
     public void updateSelection(GL gl, GLU glu) {
         if (vizConfig.isSelectionEnable() && currentSelectionArea.isEnabled()) {
             VizModel vizModel = VizController.getInstance().getVizModel();
-            octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
+            float[] mp = Arrays.copyOf(graphIO.getMousePosition(), 2);
+            float[] cent = currentSelectionArea.getSelectionAreaCenter();
+            if (cent != null) {
+                mp[0] += cent[0];
+                mp[1] += cent[1];
+            }
+            octree.updateSelectedOctant(gl, glu, mp, currentSelectionArea.getSelectionAreaRectancle());
 
             for (int i = 0; i < selectableClasses.length; i++) {
                 CompatibilityModelClass modelClass = selectableClasses[i];
@@ -556,8 +560,8 @@ public class CompatibilityEngine extends AbstractEngine {
                     if (forceUnselect) {
                         obj.setAutoSelect(false);
                     } /*else if (vizEventManager.hasSelectionListeners() && obj.isSelected()) {
-                unSelectedObjects.add(obj);
-                }*/
+                    unSelectedObjects.add(obj);
+                    }*/
                 }
             }
 

@@ -50,7 +50,7 @@ final class PartitionTopComponent extends TopComponent {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         PartitionController partitionController = Lookup.getDefault().lookup(PartitionController.class);
         if (pc.getCurrentWorkspace() != null) {
-            PartitionModel model = (PartitionModel) pc.getCurrentWorkspace().getWorkspaceData().getData("PartitionModel");
+            PartitionModel model = pc.getCurrentWorkspace().getLookup().lookup(PartitionModel.class);
             refreshModel(model);
         }
     }
@@ -63,7 +63,7 @@ final class PartitionTopComponent extends TopComponent {
             }
 
             public void select(Workspace workspace) {
-                PartitionModel model = (PartitionModel) workspace.getWorkspaceData().getData("PartitionModel");
+                PartitionModel model = workspace.getLookup().lookup(PartitionModel.class);
                 refreshModel(model);
             }
 
@@ -150,8 +150,8 @@ final class PartitionTopComponent extends TopComponent {
             return (PartitionTopComponent) win;
         }
         Logger.getLogger(PartitionTopComponent.class.getName()).warning(
-                "There seem to be multiple components with the '" + PREFERRED_ID +
-                "' ID. That is a potential source of errors and unexpected behavior.");
+                "There seem to be multiple components with the '" + PREFERRED_ID
+                + "' ID. That is a potential source of errors and unexpected behavior.");
         return getDefault();
     }
 

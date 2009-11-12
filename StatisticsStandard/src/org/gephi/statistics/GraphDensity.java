@@ -20,11 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics;
 
-import org.gephi.graph.api.DirectedGraph;
-import org.gephi.graph.api.GraphController;
+import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.statistics.api.Statistics;
-import org.gephi.statistics.ui.api.StatisticsUI;
-import org.openide.util.NbBundle;
 
 /**
  *
@@ -33,41 +32,60 @@ import org.openide.util.NbBundle;
 public class GraphDensity implements Statistics {
 
     /** The density of the graph.*/
-    private float density;
+    private double mDensity;
+    /** */
+    private boolean mDirected;
+    /** */
+    private String mGraphRevision;
 
     /**
-     * 
-     * @param graphController
+     *
+     * @param pDirected
      */
-    public void execute(GraphController graphController) {
-        DirectedGraph graph = graphController.getModel().getDirectedGraphVisible();
-        int edgesCount = graph.getEdgeCount();
-        int nodesCount = graph.getNodeCount();
-        density = (float) edgesCount / (nodesCount * nodesCount - nodesCount);
+    public void setDirected(boolean pDirected) {
+        mDirected = pDirected;
     }
 
     /**
      * 
      * @return
      */
-    public String toString() {
-        return new String("Graph Density");
+    public boolean getDirected() {
+        return mDirected;
     }
 
     /**
      *
-     * @return
      */
-    public String getName() {
-        return NbBundle.getMessage(GraphDensity.class, "GraphDensity_name");
+    public double getDensity() {
+        return mDensity;
     }
 
     /**
-     *
-     * @return
+     * 
+     * @param graphModel
      */
-    public boolean isParamerizable() {
-        return false;
+    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+
+        Graph graph;
+
+        if (mDirected) {
+            graph = graphModel.getDirectedGraph();
+        } else {
+            graph = graphModel.getUndirectedGraph();
+        }
+
+        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
+
+        double edgesCount = graph.getEdgeCount();
+        double nodesCount = graph.getNodeCount();
+        double multiplier = 1;
+
+        if (!mDirected) {
+            multiplier = 2;
+        }
+        mDensity = (multiplier * edgesCount) / (nodesCount * nodesCount - nodesCount);
+
     }
 
     /**
@@ -75,10 +93,14 @@ public class GraphDensity implements Statistics {
      * @return
      */
     public String getReport() {
-        return new String("Density: " + density);
-    }
-
-    public StatisticsUI getUI() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String report = new String("<HTML> <BODY> <h1>Graph Density  Report </h1> "
+                + "<hr> <br> <h2>Network Revision Number:</h2>"
+                + mGraphRevision
+                + "<br>"
+                + "<h2> Parameters: </h2>"
+                + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
+                + "<br> <h2> Results: </h2>"
+                + "Density: " + mDensity);
+        return report;
     }
 }

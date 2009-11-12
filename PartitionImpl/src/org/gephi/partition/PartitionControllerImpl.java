@@ -22,28 +22,32 @@ package org.gephi.partition;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.graph.api.Node;
 import org.gephi.partition.api.EdgePartition;
 import org.gephi.partition.api.NodePartition;
+import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.PartitionController;
 import org.gephi.partition.api.PartitionModel;
+import org.gephi.partition.api.Transformer;
 import org.gephi.partition.api.TransformerBuilder;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.api.WorkspaceDataKey;
 import org.gephi.workspace.api.WorkspaceListener;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service = PartitionController.class)
 public class PartitionControllerImpl implements PartitionController {
 
     private PartitionModelImpl model;
@@ -52,14 +56,14 @@ public class PartitionControllerImpl implements PartitionController {
     public PartitionControllerImpl() {
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        final WorkspaceDataKey<PartitionModel> key = Lookup.getDefault().lookup(PartitionModelWorkspaceDataProvider.class).getWorkspaceDataKey();
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
+                workspace.add(new PartitionModelImpl());
             }
 
             public void select(Workspace workspace) {
-                model = (PartitionModelImpl) workspace.getWorkspaceData().getData(key);
+                model = workspace.getLookup().lookup(PartitionModelImpl.class);
                 refreshPartitions = true;
             }
 
@@ -74,7 +78,11 @@ public class PartitionControllerImpl implements PartitionController {
             }
         });
         if (pc.getCurrentWorkspace() != null) {
-            model = (PartitionModelImpl) pc.getCurrentWorkspace().getWorkspaceData().getData(key);
+            model = pc.getCurrentWorkspace().getLookup().lookup(PartitionModelImpl.class);
+            if (model == null) {
+                model = new PartitionModelImpl();
+                pc.getCurrentWorkspace().add(new PartitionModelImpl());
+            }
         }
     }
 
@@ -146,8 +154,8 @@ public class PartitionControllerImpl implements PartitionController {
 
             //Nodes
             List<NodePartition> nodePartitions = new ArrayList<NodePartition>();
-            AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
-            for (AttributeColumn column : nodeClass.getAttributeColumns()) {
+            AttributeTable nodeClass = ac.getModel().getNodeTable();
+            for (AttributeColumn column : nodeClass.getColumns()) {
                 if (PartitionFactory.isNodePartitionColumn(column, graphModel.getGraphVisible())) {
                     nodePartitions.add(PartitionFactory.createNodePartition(column));
                 }
@@ -156,13 +164,97 @@ public class PartitionControllerImpl implements PartitionController {
 
             //Edges
             List<EdgePartition> edgePartitions = new ArrayList<EdgePartition>();
-            AttributeClass edgeClass = ac.getTemporaryAttributeManager().getEdgeClass();
-            for (AttributeColumn column : edgeClass.getAttributeColumns()) {
+            AttributeTable edgeClass = ac.getModel().getEdgeTable();
+            for (AttributeColumn column : edgeClass.getColumns()) {
                 if (PartitionFactory.isEdgePartitionColumn(column, graphModel.getGraphVisible())) {
                     edgePartitions.add(PartitionFactory.createEdgePartition(column));
                 }
             }
             model.setEdgePartitions(edgePartitions.toArray(new EdgePartition[0]));
         }
+    }
+
+    public void transform(Partition partition, Transformer transformer) {
+        transformer.transform(partition);
+    }
+
+    public boolean isGroupable(Partition partition) {
+        if (partition instanceof NodePartition) {
+            if (partition.getPartsCount() > 0) {
+                NodePartition nodePartition = (NodePartition) partition;
+                Node n0 = nodePartition.getParts()[0].getObjects()[0];
+                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+                HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+                if (graph.getParent(n0) == null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isUngroupable(Partition partition) {
+        if (partition instanceof NodePartition) {
+            if (partition.getPartsCount() > 0) {
+                NodePartition nodePartition = (NodePartition) partition;
+                Node n0 = nodePartition.getParts()[0].getObjects()[0];
+                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+                HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+                if (graph.getParent(n0) != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void group(Partition partition) {
+        NodePartition nodePartition = (NodePartition) partition;
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+        for (Part<Node> p : nodePartition.getParts()) {
+            Node[] nodes = p.getObjects();
+            if (graph.getParent(nodes[0]) == null) {
+                float centroidX = 0;
+                float centroidY = 0;
+                float sizes = 0;
+                float r = 0;
+                float g = 0;
+                float b = 0;
+                int len = 0;
+                for (Node n : nodes) {
+                    centroidX += n.getNodeData().x();
+                    centroidY += n.getNodeData().y();
+                    sizes += n.getNodeData().getSize() / 10f;
+                    r += n.getNodeData().r();
+                    g += n.getNodeData().g();
+                    b += n.getNodeData().b();
+                    len++;
+                }
+                Node metaNode = graph.groupNodes(nodes);
+                metaNode.getNodeData().setX(centroidX / len);
+                metaNode.getNodeData().setY(centroidY / len);
+                metaNode.getNodeData().setLabel(p.getDisplayName());
+                metaNode.getNodeData().setSize(sizes);
+                metaNode.getNodeData().setColor(r / len, g / len, b / len);
+            }
+        }
+    }
+
+    public void ungroup(Partition partition) {
+        NodePartition nodePartition = (NodePartition) partition;
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+        for (Part<Node> p : nodePartition.getParts()) {
+            Node[] nodes = p.getObjects();
+            Node metaNode = graph.getParent(nodes[0]);
+            if (metaNode != null) {
+                graph.ungroupNodes(metaNode);
+            }
+        }
+    }
+
+    public void showPie(boolean showPie) {
+        model.setPie(showPie);
     }
 }

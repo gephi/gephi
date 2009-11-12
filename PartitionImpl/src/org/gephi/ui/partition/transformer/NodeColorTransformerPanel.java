@@ -24,15 +24,20 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
+import java.util.Map.Entry;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.Transformer;
 import org.gephi.partition.transformer.NodeColorTransformer;
-import org.gephi.ui.utils.BusyUtils;
 import org.gephi.ui.utils.PaletteUtils;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -40,13 +45,38 @@ import org.gephi.ui.utils.PaletteUtils;
  */
 public class NodeColorTransformerPanel extends javax.swing.JPanel {
 
+    private NodeColorTransformer nodeColorTransformer;
+    private Partition partition;
+    private JPopupMenu popupMenu;
+
     public NodeColorTransformerPanel() {
         initComponents();
+        createPopup();
+        addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (nodeColorTransformer != null) {
+                    showPopup(e);
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                showPopup(e);
+            }
+
+            private void showPopup(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
     }
 
     public void setup(Partition partition, Transformer transformer) {
         removeAll();
-        final NodeColorTransformer nodeColorTransformer = (NodeColorTransformer) transformer;
+        nodeColorTransformer = (NodeColorTransformer) transformer;
         if (nodeColorTransformer.getMap().isEmpty()) {
             List<Color> colors = PaletteUtils.getSequenceColors(partition.getPartsCount());
             int i = 0;
@@ -56,7 +86,7 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
             }
         }
 
-        //JPanel gridPanel = new JPanel(new GridLayout(partition.getPartsCount(), 2, 2, 2));
+        this.partition = partition;
         for (final Part p : partition.getParts()) {
             JLabel partLabel = new JLabel(p.getDisplayName());
             add(partLabel);
@@ -71,6 +101,33 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
             });
             add(colorChooser, "wrap");
         }
+    }
+
+    private void createPopup() {
+        popupMenu = new JPopupMenu();
+        JMenuItem randomizeItem = new JMenuItem(NbBundle.getMessage(NodeColorTransformerPanel.class, "NodeColorTransformerPanel.action.randomize"));
+        randomizeItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                nodeColorTransformer.getMap().clear();
+                setup(partition, nodeColorTransformer);
+                revalidate();
+                repaint();
+            }
+        });
+        JMenuItem allBlackItem = new JMenuItem(NbBundle.getMessage(NodeColorTransformerPanel.class, "NodeColorTransformerPanel.action.allBlacks"));
+        allBlackItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                for (Entry<Object, Color> entry : nodeColorTransformer.getMap().entrySet()) {
+                    entry.setValue(Color.BLACK);
+                }
+                setup(partition, nodeColorTransformer);
+                revalidate();
+                repaint();
+            }
+        });
+        popupMenu.add(randomizeItem);
     }
 
     /** This method is called from within the constructor to

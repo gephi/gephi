@@ -25,36 +25,52 @@ import java.util.Comparator;
 import java.util.Hashtable;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.graph.api.Node;
-import java.util.LinkedList;
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.NodeIterable;
-import org.gephi.statistics.ui.ClusteringCoefficientPanel;
-import org.gephi.statistics.ui.api.StatisticsUI;
 import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 
 /**
  *
  * @author pjmcswee
  */
-class Renumbering implements Comparator<ArrayWrapper> {
+class Renumbering implements Comparator<EdgeWrapper> {
 
-    public int compare(ArrayWrapper o1, ArrayWrapper o2) {
-        if (o1.getID() < o2.getID()) {
+    public int compare(EdgeWrapper o1, EdgeWrapper o2) {
+        if (o1.mWrapper.getID() < o2.mWrapper.getID()) {
             return -1;
-        } else {
+        } else if (o1.mWrapper.getID() > o2.mWrapper.getID()) {
             return 1;
+        } else {
+            return 0;
         }
+    }
+}
+
+/**
+ * 
+ * @author pjmcswee
+ */
+class EdgeWrapper {
+
+    public int mCount;
+    public ArrayWrapper mWrapper;
+
+    public EdgeWrapper(int pCount, ArrayWrapper pWrapper) {
+        mCount = pCount;
+        mWrapper = pWrapper;
     }
 }
 
@@ -64,8 +80,9 @@ class Renumbering implements Comparator<ArrayWrapper> {
  */
 class ArrayWrapper implements Comparable {
 
-    private ArrayWrapper[] mArray;
+    private EdgeWrapper[] mArray;
     private int mID;
+    public Node node;
 
     /** Empty Constructor/ */
     ArrayWrapper() {
@@ -83,11 +100,11 @@ class ArrayWrapper implements Comparable {
      *
      * @return The adjacency array
      */
-    public ArrayWrapper[] getArray() {
+    public EdgeWrapper[] getArray() {
         return mArray;
     }
 
-    public void setArray(ArrayWrapper[] pArray) {
+    public void setArray(EdgeWrapper[] pArray) {
         mArray = pArray;
     }
 
@@ -95,7 +112,7 @@ class ArrayWrapper implements Comparable {
      *
      * @param pArray
      */
-    ArrayWrapper(int pID, ArrayWrapper[] pArray) {
+    ArrayWrapper(int pID, EdgeWrapper[] pArray) {
         mArray = pArray;
         mID = pID;
     }
@@ -113,8 +130,14 @@ class ArrayWrapper implements Comparable {
         if (pIndex >= mArray.length) {
             return -1;
         }
+        return mArray[pIndex].mWrapper.mID;
+    }
 
-        return mArray[pIndex].mID;
+    public int getCount(int pIndex) {
+        if (pIndex >= mArray.length) {
+            return -1;
+        }
+        return mArray[pIndex].mCount;
     }
 
     /**
@@ -156,44 +179,36 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     private boolean directed;
     /** Indicates statistics should stop processing/*/
     private boolean isCanceled;
-    /** Keeps track of progress made. */
+    /** Keeps track of Progress made. */
     private ProgressTicket progress;
     private int[] mTriangles;
     private ArrayWrapper[] mNetwork;
     private int mK;
     private int N;
+    /** */
+    private String mGraphRevision;
 
     /**
-     * 
+     *
      * @return
      */
-    public String toString() {
-
-        return new String("Clustering Coefficient");
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public String getName() {
-        return NbBundle.getMessage(ClusteringCoefficient.class, "ClusteringCoefficent_name");
+    public double getAverageClusteringCoefficient() {
+        return this.avgClusteringCoeff;
     }
 
     /**
      *
      * @param synchReader
      */
-    public void execute(GraphController graphController) {
+    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         isCanceled = false;
-
-        DirectedGraph digraph = graphController.getModel().getDirectedGraphVisible();
-
+        Graph graph = graphModel.getUndirectedGraph();
+        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
         if (bruteForce) {
-            bruteForce(graphController);
+            bruteForce(graphModel, attributeModel);
             return;
         } else {
-            triangles(graphController);
+            triangles(graphModel, attributeModel);
             return;
         }
     }
@@ -204,7 +219,6 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      * @return
      */
     public int closest_in_array(int v) {
-        //int right = g->degrees[v]-1;
         int right = mNetwork[v].length() - 1;
 
         /* optimization for extreme cases */
@@ -224,7 +238,6 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         int left = 0, mid;
         while (right > left) {
             mid = (left + right) / 2;
-
             if (v < mNetwork[v].get(mid)) {
                 right = mid - 1;
             } else if (v > mNetwork[v].get(mid)) {
@@ -234,10 +247,12 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             }
         }
 
+
         if (v > mNetwork[v].get(right)) {
             return (right);
         } else {
-            return (right - 1);
+
+            return right - 1;
         }
     }
 
@@ -246,25 +261,20 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      * @param v - The specific node to count the triangles on.
      */
     public void newVertex(int v) {
-        boolean[] A = new boolean[N];
-
+        int[] A = new int[N];
 
         for (int i = mNetwork[v].length() - 1; (i >= 0) && (mNetwork[v].get(i) > v); i--) {
             int neighbor = mNetwork[v].get(i);
-            A[neighbor] = true;
+            A[neighbor] = mNetwork[v].getCount(i);
         }
-
-
         for (int i = mNetwork[v].length() - 1; i >= 0; i--) {
-
             int neighbor = mNetwork[v].get(i);
-
             for (int j = closest_in_array(neighbor); j >= 0; j--) {
                 int next = mNetwork[neighbor].get(j);
-                if (A[next]) {
-                    mTriangles[next]++;
-                    mTriangles[v]++;
-                    mTriangles[neighbor]++;
+                if (A[next] > 0) {
+                    mTriangles[next] += mNetwork[v].getCount(i);
+                    mTriangles[v] += mNetwork[v].getCount(i);
+                    mTriangles[neighbor] += A[next];
                 }
             }
         }
@@ -275,9 +285,8 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      * @param u
      * @param v
      */
-    public void tr_link_nohigh(int u, int v) {
+    public void tr_link_nohigh(int u, int v, int count) {
         int iu = 0, iv = 0, w;
-
         while ((iu < mNetwork[u].length()) && (iv < mNetwork[v].length())) {
             if (mNetwork[u].get(iu) < mNetwork[v].get(iv)) {
                 iu++;
@@ -286,7 +295,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             } else { /* neighbor in common */
                 w = mNetwork[u].get(iu);
                 if (w >= mK) {
-                    mTriangles[w]++;
+                    mTriangles[w] += count;
                 }
                 iu++;
                 iv++;
@@ -296,17 +305,17 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
     /**
      * 
-     * @param graphController
+     * @param graphModel
      */
-    public void triangles(GraphController graphController) {
-
-
-        Graph graph = graphController.getModel().getDirectedGraphVisible();
-        int progressCount = 0;
-        progress.start(7 * graph.getNodeCount());
+    public void triangles(GraphModel graphModel, AttributeModel attributeModel) {
+        Graph graph = graphModel.getDirectedGraph();
+        int ProgressCount = 0;
+        Progress.start(progress, 7 * graph.getNodeCount());
 
         if (!directed) {
-            graph = graphController.getModel().getUndirectedGraphVisible();
+            graph = graphModel.getUndirectedGraph();
+        } else {
+            graph = graphModel.getDirectedGraph();
         }
 
 
@@ -323,37 +332,57 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             indicies.put(s, index);
             mNetwork[index] = new ArrayWrapper();
             index++;
-            progress.progress(++progressCount);
+            Progress.progress(progress, ++ProgressCount);
         }
 
         index = 0;
         for (Node node : graph.getNodes()) {
-            LinkedList<ArrayWrapper> neighbors = new LinkedList<ArrayWrapper>();
-            int j = 0;
+            Hashtable<Node, EdgeWrapper> neighborTable = new Hashtable<Node, EdgeWrapper>();
 
-            for (Node neighbor : graph.getNeighbors(node)) {
-                neighbors.add(mNetwork[indicies.get(neighbor)]);
-                System.out.println(node.getId() + ": " + neighbor.getId());
-                j++;
+            if (!directed) {
+                for (Node neighbor : graph.getNeighbors(node)) {
+                    neighborTable.put(neighbor, new EdgeWrapper(1, mNetwork[indicies.get(neighbor)]));
+                }
+            } else {
+                for (Edge in : ((DirectedGraph) graph).getInEdges(node)) {
+                    Node neighbor = in.getSource();
+                    neighborTable.put(neighbor, new EdgeWrapper(1, mNetwork[indicies.get(neighbor)]));
+                }
+
+                for (Edge out : ((DirectedGraph) graph).getOutEdges(node)) {
+                    Node neighbor = out.getTarget();
+                    EdgeWrapper ew = neighborTable.get(neighbor);
+                    if (ew == null) {
+                        neighborTable.put(neighbor, new EdgeWrapper(1, mNetwork[indicies.get(neighbor)]));
+                    } else {
+                        ew.mCount++;
+                    }
+                }
+
             }
 
-            ArrayWrapper[] edges = neighbors.toArray(new ArrayWrapper[1]);
-
+            EdgeWrapper[] edges = new EdgeWrapper[neighborTable.size()];
+            int i = 0;
+            for (EdgeWrapper e : neighborTable.values()) {
+                edges[i] = e;
+                i++;
+            }
+            mNetwork[index].node = node;
             mNetwork[index].setArray(edges);
             index++;
-            progress.progress(++progressCount);
+            Progress.progress(progress, ++ProgressCount);
         }
 
         Arrays.sort(mNetwork);
         for (int j = 0; j < N; j++) {
             mNetwork[j].setID(j);
-            progress.progress(++progressCount);
+            Progress.progress(progress, ++ProgressCount);
 
         }
 
         for (int j = 0; j < N; j++) {
             Arrays.sort(mNetwork[j].getArray(), new Renumbering());
-            progress.progress(++progressCount);
+            Progress.progress(progress, ++ProgressCount);
         }
 
 
@@ -364,7 +393,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         // ClusteringThread.init(network);
         for (int v = 0; v < mK && v < N; v++) {
             newVertex(v);
-            progress.progress(++progressCount);
+            Progress.progress(progress, ++ProgressCount);
 
         }
 
@@ -373,56 +402,54 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             for (int i = closest_in_array(v); i >= 0; i--) {
                 int u = mNetwork[v].get(i);
                 if (u >= mK) {
-                    tr_link_nohigh(u, v);
+                    tr_link_nohigh(u, v, mNetwork[v].getCount(i));
                 }
             }
-            progress.progress(++progressCount);
+            Progress.progress(progress, ++ProgressCount);
         }
 
         avgClusteringCoeff = 0;
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
-        AttributeColumn clusteringCol = nodeClass.addAttributeColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        AttributeTable nodeTable = attributeModel.getNodeTable();
+        AttributeColumn clusteringCol = nodeTable.addColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
 
 
         for (Node s : graph.getNodes()) {
             int v = indicies.get(s);
             if (mNetwork[v].length() > 1) {
-                double cc = mTriangles[v] /
-                        (mNetwork[v].length() * (mNetwork[v].length() - 1) * .5f);
+                double cc = mTriangles[v];
+                cc /= (mNetwork[v].length() * (mNetwork[v].length() - 1));
+                if (!directed) {
+                    cc *= 2.0f;
+                }
                 AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
                 row.setValue(clusteringCol, cc);
-
                 avgClusteringCoeff += cc;
             }
-            progress.progress(++progressCount);
-
+            Progress.progress(progress, ++ProgressCount);
         }
-
         avgClusteringCoeff /= N;
-
     }
 
     /**
      * 
-     * @param graphController
+     * @param graphModel
      */
-    public void bruteForce(GraphController graphController) {
+    public void bruteForce(GraphModel graphModel, AttributeModel attributeModel) {
         //The atrributes computed by the statistics
         AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
-        AttributeColumn clusteringCol = nodeClass.addAttributeColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        AttributeTable nodeTable = attributeModel.getNodeTable();
+        AttributeColumn clusteringCol = nodeTable.addColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
 
 
         float totalCC = 0;
         Graph graph = null;
         if (!directed) {
-            graph = graphController.getModel().getUndirectedGraphVisible();
+            graph = graphModel.getUndirectedGraph();
         } else {
-            graph = graphController.getModel().getDirectedGraphVisible();
+            graph = graphModel.getDirectedGraph();
         }
 
-        progress.start(graph.getNodeCount());
+        Progress.start(progress, graph.getNodeCount());
         int node_count = 0;
         for (Node node : graph.getNodes()) {
             float nodeCC = 0;
@@ -452,6 +479,8 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             }
             nodeCC /= 2.0;
 
+
+
             if (neighborhood > 1) {
                 float cc = nodeCC / (.5f * neighborhood * (neighborhood - 1));
                 if (directed) {
@@ -469,7 +498,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             }
 
             node_count++;
-            progress.progress(node_count);
+            Progress.progress(progress, node_count);
 
         }
         avgClusteringCoeff = totalCC / graph.getNodeCount();
@@ -489,7 +518,14 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      * @return
      */
     public String getReport() {
-        return new String("Average Clustering Coefficient: " + avgClusteringCoeff);
+
+        return new String("<HTML> <BODY> <h1> Clustering Coefficient Metric Report </h1> "
+                + "<hr> <br> <h2>Network Revision Number:</h2>"
+                + mGraphRevision
+                + "<br>" + "<h2> Parameters: </h2>"
+                + "Network Interpretation:  " + (this.directed ? "directed" : "undirected") + "<br>"
+                + "Algorithm applied: " + (this.bruteForce ? "Brute Force" : "Fast Triangles") + "<br> <h2> Results: </h2>"
+                + "Average Clustering Coefficient: " + avgClusteringCoeff + "</BODY> </HTML>");
     }
 
     /**
@@ -498,6 +534,14 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      */
     public void setDirected(boolean pDirected) {
         directed = pDirected;
+    }
+
+    public boolean isDirected() {
+        return directed;
+    }
+
+    public boolean isBruteForce() {
+        return bruteForce;
     }
 
     /**
@@ -519,15 +563,9 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
     /**
      *
-     * @param progressTicket
+     * @param ProgressTicket
      */
-    public void setProgressTicket(ProgressTicket progressTicket) {
-        progress = progressTicket;
-    }
-
-    public StatisticsUI getUI() {
-        return new ClusteringCoefficientPanel.ClusteringCoefficientUI();
+    public void setProgressTicket(ProgressTicket ProgressTicket) {
+        progress = ProgressTicket;
     }
 }
-       
-    

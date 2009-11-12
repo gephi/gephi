@@ -1,20 +1,24 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+Copyright 2008 WebAtlas
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
+Website : http://www.gephi.org
 
-/*
- * ModularityPanel.java
- *
- * Created on Jul 7, 2009, 3:24:07 AM
- */
+This file is part of Gephi.
 
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.gephi.statistics.ui;
-
-import javax.swing.JPanel;
-import org.gephi.statistics.Modularity;
-import org.gephi.statistics.api.Statistics;
-import org.gephi.statistics.ui.api.StatisticsUI;
 
 /**
  *
@@ -22,9 +26,16 @@ import org.gephi.statistics.ui.api.StatisticsUI;
  */
 public class ModularityPanel extends javax.swing.JPanel {
 
-    /** Creates new form ModularityPanel */
     public ModularityPanel() {
         initComponents();
+    }
+
+    public boolean isRandomize() {
+        return randomizeCheckbox.isSelected();
+    }
+
+    public void setRandomize(boolean randomize) {
+        randomizeCheckbox.setSelected(randomize);
     }
 
     /** This method is called from within the constructor to
@@ -36,89 +47,52 @@ public class ModularityPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        randomButton = new javax.swing.JRadioButton();
+        labelTitle = new javax.swing.JLabel();
+        separator = new javax.swing.JSeparator();
+        randomizeCheckbox = new javax.swing.JCheckBox();
+        desriptionLabel = new org.jdesktop.swingx.JXLabel();
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.jLabel1.text")); // NOI18N
+        labelTitle.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        labelTitle.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.labelTitle.text")); // NOI18N
 
-        randomButton.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.randomButton.text")); // NOI18N
+        randomizeCheckbox.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.randomizeCheckbox.text")); // NOI18N
+        randomizeCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+
+        desriptionLabel.setLineWrap(true);
+        desriptionLabel.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.desriptionLabel.text")); // NOI18N
+        desriptionLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(157, 157, 157)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(randomButton)))
-                .addContainerGap(147, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(desriptionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                    .addComponent(labelTitle, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(randomizeCheckbox, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(separator, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(labelTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(randomButton)
-                .addContainerGap(226, Short.MAX_VALUE))
+                .addComponent(randomizeCheckbox)
+                .addGap(18, 18, 18)
+                .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    protected javax.swing.JRadioButton randomButton;
+    private org.jdesktop.swingx.JXLabel desriptionLabel;
+    private javax.swing.JLabel labelTitle;
+    private javax.swing.JCheckBox randomizeCheckbox;
+    private javax.swing.JSeparator separator;
     // End of variables declaration//GEN-END:variables
- /**
-     *
-     */
-    public static class ModularityUI implements StatisticsUI {
-
-        private ModularityPanel panel;
-        private Modularity mod;
-
-        /**
-         * 
-         */
-        public ModularityUI() {
-            panel = new ModularityPanel();
-        }
-
-        /**
-         *
-         */
-        public void unsetup() {
-            //Set params
-            try {
-                boolean doRandom = panel.randomButton.isSelected();
-                mod.setRandom(doRandom);
-            } catch (Exception e) {
-            }
-        }
-
-       
-        /**
-         *
-         * @param statistics
-         */
-        public void setup(Statistics statistics) {
-            this.mod = (Modularity) statistics;
-           
-            panel.randomButton.setSelected(mod.getRandom());
-        }
-
-        /**
-         * 
-         * @return
-         */
-        public JPanel getPanel() {
-            return panel;
-        }
-    }
-
 }

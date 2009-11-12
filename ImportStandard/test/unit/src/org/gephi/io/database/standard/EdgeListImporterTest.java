@@ -16,7 +16,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.netbeans.junit.NbTestCase;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
@@ -24,14 +23,14 @@ import org.openide.util.Lookup;
  *
  * @author Mathieu
  */
-public class EdgeListImporterTest extends NbTestCase {
+public class EdgeListImporterTest {
 
     private EdgeListDatabase database;
     private ContainerLoader containerLoader;
     private ContainerUnloader containerUnloader;
 
     public EdgeListImporterTest() {
-        super("EdgeListImporterTest");
+
     }
 
     @BeforeClass
@@ -75,7 +74,7 @@ public class EdgeListImporterTest extends NbTestCase {
             System.out.println("-Database connection terminated");
         } catch (SQLException ex) {
             Exceptions.printStackTrace(ex);
-            fail(ex.getMessage());
+            //fail(ex.getMessage());
         }
     }
 
@@ -106,14 +105,14 @@ public class EdgeListImporterTest extends NbTestCase {
 
         //Look at attributes
         System.out.println("--Node Attributes cols");
-        for(AttributeColumn col : containerLoader.getAttributeManager().getNodeClass().getAttributeColumns()) {
-            System.out.println(col.getIndex()+":"+col.getId()+ "("+col.getAttributeType()+")");
+        for(AttributeColumn col : containerLoader.getAttributeModel().getNodeTable().getColumns()) {
+            System.out.println(col.getIndex()+":"+col.getId()+ "("+col.getType()+")");
         }
 
         //Look at attributes
         System.out.println("--Edge Attributes cols");
-        for(AttributeColumn col : containerLoader.getAttributeManager().getEdgeClass().getAttributeColumns()) {
-            System.out.println(col.getIndex()+":"+col.getId()+ "("+col.getAttributeType()+")");
+        for(AttributeColumn col : containerLoader.getAttributeModel().getEdgeTable().getColumns()) {
+            System.out.println(col.getIndex()+":"+col.getId()+ "("+col.getType()+")");
         }
     }
 }

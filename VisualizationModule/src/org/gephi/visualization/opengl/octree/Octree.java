@@ -51,26 +51,21 @@ public class Octree implements VizArchitecture {
     private GraphDrawableImpl drawable;
     private AbstractEngine engine;
     private GraphLimits limits;
-    private VizController vizController;
-
+    protected VizController vizController;
     //Attributes
     private int modelIDs;
     private int maxDepth;
     private int classesCount;
     private int size;
     private int cacheMarker;
-
     //Octant
-    private Octant root;
+    protected Octant root;
     private ParamAVLTree<Octant> leaves;
-
     //Iterator
     private ConcurrentLinkedQueue<OctreeIterator> iteratorQueue;
-
     //States
     protected List<Octant> visibleLeaves;
     protected List<Octant> selectedLeaves;
-
     //Utils
     protected ParamAVLIterator<ModelImpl> updatePositionIterator = new ParamAVLIterator<ModelImpl>();
     protected ParamAVLIterator<ModelImpl> cleanObjectsIterator = new ParamAVLIterator<ModelImpl>();
@@ -176,7 +171,7 @@ public class Octree implements VizArchitecture {
             Vec3f pos = new Vec3f(closestOctant.getPosX(), closestOctant.getPosY(), closestOctant.getPosZ());
             limits.setClosestPoint(pos);
         }
-    //System.out.println(minDepth);
+        //System.out.println(minDepth);
     }
 
     public void updateSelectedOctant(GL gl, GLU glu, float[] mousePosition, float[] pickRectangle) {
@@ -241,7 +236,7 @@ public class Octree implements VizArchitecture {
                 if (!obj.isCacheMatching(cacheMarker)) {
                     removeObject(classID, obj);
                     obj.resetOctant();
-                    if(vizController.getVizConfig().isCleanDeletedModels()) {
+                    if (vizController.getVizConfig().isCleanDeletedModels()) {
                         obj.getObj().setModel(null);
                     }
                 }
@@ -275,7 +270,7 @@ public class Octree implements VizArchitecture {
                         o.removeObject(classID, obj);
                         obj.resetOctant();
                         addObject(classID, obj);
-                    //TODO break the loop somehow
+                        //TODO break the loop somehow
                     }
                 }
 

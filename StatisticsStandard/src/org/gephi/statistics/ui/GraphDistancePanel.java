@@ -1,19 +1,24 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+Copyright 2008 WebAtlas
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
+Website : http://www.gephi.org
 
-/*
- * GraphDistancePanel.java
- *
- * Created on Jun 22, 2009, 8:59:14 PM
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics.ui;
-
-import javax.swing.JPanel;
-import org.gephi.statistics.GraphDistance;
-import org.gephi.statistics.api.Statistics;
-import org.gephi.statistics.ui.api.StatisticsUI;
 
 /**
  *
@@ -21,9 +26,16 @@ import org.gephi.statistics.ui.api.StatisticsUI;
  */
 public class GraphDistancePanel extends javax.swing.JPanel {
 
-    /** Creates new form GraphDistancePanel */
     public GraphDistancePanel() {
         initComponents();
+    }
+
+    public boolean isDirected() {
+        return directedRadioButton.isSelected();
+    }
+
+    public void setDirected(boolean directed) {
+        directedButtonGroup.setSelected(directed ? directedRadioButton.getModel() : undirectedRadioButton.getModel(), true);
     }
 
     /** This method is called from within the constructor to
@@ -35,13 +47,14 @@ public class GraphDistancePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        buttonGroup2 = new javax.swing.ButtonGroup();
+        directedButtonGroup = new javax.swing.ButtonGroup();
         directedRadioButton = new javax.swing.JRadioButton();
         undirectedRadioButton = new javax.swing.JRadioButton();
-        jLabel1 = new javax.swing.JLabel();
+        labelTitle = new javax.swing.JLabel();
+        separator = new javax.swing.JSeparator();
+        descriptionLabel = new org.jdesktop.swingx.JXLabel();
 
-        buttonGroup1.add(directedRadioButton);
+        directedButtonGroup.add(directedRadioButton);
         directedRadioButton.setText(org.openide.util.NbBundle.getMessage(GraphDistancePanel.class, "GraphDistancePanel.directedRadioButton.text")); // NOI18N
         directedRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -49,34 +62,44 @@ public class GraphDistancePanel extends javax.swing.JPanel {
             }
         });
 
-        buttonGroup1.add(undirectedRadioButton);
+        directedButtonGroup.add(undirectedRadioButton);
         undirectedRadioButton.setText(org.openide.util.NbBundle.getMessage(GraphDistancePanel.class, "GraphDistancePanel.undirectedRadioButton.text")); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(GraphDistancePanel.class, "GraphDistancePanel.jLabel1.text")); // NOI18N
+        labelTitle.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        labelTitle.setText(org.openide.util.NbBundle.getMessage(GraphDistancePanel.class, "GraphDistancePanel.labelTitle.text")); // NOI18N
+
+        descriptionLabel.setLineWrap(true);
+        descriptionLabel.setText(org.openide.util.NbBundle.getMessage(GraphDistancePanel.class, "GraphDistancePanel.descriptionLabel.text")); // NOI18N
+        descriptionLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(directedRadioButton)
-                    .addComponent(jLabel1)
-                    .addComponent(undirectedRadioButton))
-                .addContainerGap(201, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
+                    .addComponent(directedRadioButton, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(undirectedRadioButton, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(separator, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
+                    .addComponent(labelTitle, javax.swing.GroupLayout.Alignment.LEADING))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addGap(32, 32, 32)
+                .addComponent(labelTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(directedRadioButton)
                 .addGap(18, 18, 18)
                 .addComponent(undirectedRadioButton)
-                .addContainerGap(171, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -84,45 +107,11 @@ public class GraphDistancePanel extends javax.swing.JPanel {
         // TODO add your handling code here:
 }//GEN-LAST:event_directedRadioButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.ButtonGroup buttonGroup2;
+    private org.jdesktop.swingx.JXLabel descriptionLabel;
+    private javax.swing.ButtonGroup directedButtonGroup;
     protected javax.swing.JRadioButton directedRadioButton;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel labelTitle;
+    private javax.swing.JSeparator separator;
     protected javax.swing.JRadioButton undirectedRadioButton;
     // End of variables declaration//GEN-END:variables
-
-    public static class GraphDistanceUI implements StatisticsUI {
-
-        private GraphDistancePanel panel;
-        private GraphDistance graphDistance;
-
-        public GraphDistanceUI() {
-            panel = new GraphDistancePanel();
-        }
-
-        public JPanel getPanel() {
-            return panel;
-        }
-
-        /**
-         *
-         * @param statistics
-         */
-        public void setup(Statistics statistics) {
-            this.graphDistance = (GraphDistance) statistics;
-
-            panel.directedRadioButton.setSelected(true);
-            panel.undirectedRadioButton.setSelected(false);
-            graphDistance.setDirected(true);
-        }
-
-        /**
-         *
-         */
-        public void unsetup() {
-            //Set params
-            boolean directed = panel.directedRadioButton.isSelected();
-            graphDistance.setDirected(directed);
-        }
-    }
 }

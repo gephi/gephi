@@ -27,6 +27,10 @@ import org.gephi.ranking.api.Ranking;
 import java.awt.Color;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.gephi.ranking.api.LabelColorTransformer;
+import org.gephi.ranking.api.LabelSizeTransformer;
+import org.gephi.ranking.api.ObjectColorTransformer;
+import org.gephi.ranking.api.ObjectSizeTransformer;
 
 /**
  *
@@ -34,7 +38,7 @@ import org.gephi.graph.api.Node;
  */
 public class TransformerFactory {
 
-    public static ColorTransformer getColorTransformer(Ranking ranking) {
+    public static ColorTransformer getObjectColorTransformer(Ranking ranking) {
         AbstractColorTransformer colorTransformer = null;
         if (ranking instanceof NodeRanking) {
             colorTransformer = new NodeColorTransformer();
@@ -46,14 +50,41 @@ public class TransformerFactory {
         return colorTransformer;
     }
 
-    public static SizeTransformer getSizeTransformer(Ranking ranking) {
-        AbstractSizeTransformer sizeTransformer = new NodeSizeTransformer();
-
+    public static SizeTransformer getObjectSizeTransformer(Ranking ranking) {
+        AbstractSizeTransformer sizeTransformer = null;
+        if (ranking instanceof NodeRanking) {
+            sizeTransformer = new NodeSizeTransformer();
+        } else {
+            sizeTransformer = new EdgeWeightTransformer();
+        }
         sizeTransformer.setRanking(ranking);
         return sizeTransformer;
     }
 
-    private static class NodeColorTransformer extends AbstractColorTransformer<Node> {
+    public static ColorTransformer getLabelColorTransformer(Ranking ranking) {
+        AbstractColorTransformer colorTransformer = null;
+        if (ranking instanceof NodeRanking) {
+            colorTransformer = new NodeLabelColorTransformer();
+        } else {
+            colorTransformer = new EdgeLabelColorTransformer();
+
+        }
+        colorTransformer.setRanking(ranking);
+        return colorTransformer;
+    }
+
+    public static SizeTransformer getLabelSizeTransformer(Ranking ranking) {
+        AbstractSizeTransformer sizeTransformer = new NodeSizeTransformer();
+        if (ranking instanceof NodeRanking) {
+            sizeTransformer = new NodeLabelSizeTransformer();
+        } else {
+            sizeTransformer = new EdgeLabelSizeTransformer();
+        }
+        sizeTransformer.setRanking(ranking);
+        return sizeTransformer;
+    }
+
+    private static class NodeColorTransformer extends AbstractColorTransformer<Node> implements ObjectColorTransformer<Node> {
 
         public Object transform(Node target, float normalizedValue) {
             Color color = getColor(normalizedValue);
@@ -62,7 +93,7 @@ public class TransformerFactory {
         }
     }
 
-    private static class EdgeColorTransformer extends AbstractColorTransformer<Edge> {
+    private static class EdgeColorTransformer extends AbstractColorTransformer<Edge> implements ObjectColorTransformer<Edge> {
 
         public Object transform(Edge target, float normalizedValue) {
             Color color = getColor(normalizedValue);
@@ -71,11 +102,56 @@ public class TransformerFactory {
         }
     }
 
-    private static class NodeSizeTransformer extends AbstractSizeTransformer<Node> {
+    private static class NodeSizeTransformer extends AbstractSizeTransformer<Node> implements ObjectSizeTransformer<Node> {
 
         public Object transform(Node target, float normalizedValue) {
             float size = getSize(normalizedValue);
             target.getNodeData().setSize(size);
+            return Float.valueOf(size);
+        }
+    }
+
+    private static class EdgeWeightTransformer extends AbstractSizeTransformer<Edge> implements ObjectSizeTransformer<Edge> {
+
+        public Object transform(Edge target, float normalizedValue) {
+            float size = getSize(normalizedValue);
+            target.setWeight(size);
+            return Float.valueOf(size);
+        }
+    }
+
+    private static class NodeLabelColorTransformer extends AbstractColorTransformer<Node> implements LabelColorTransformer<Node> {
+
+        public Object transform(Node target, float normalizedValue) {
+            Color color = getColor(normalizedValue);
+            target.getNodeData().getTextData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1f);
+            return color;
+        }
+    }
+
+    private static class EdgeLabelColorTransformer extends AbstractColorTransformer<Edge> implements LabelColorTransformer<Edge> {
+
+        public Object transform(Edge target, float normalizedValue) {
+            Color color = getColor(normalizedValue);
+            target.getEdgeData().getTextData().setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1f);
+            return color;
+        }
+    }
+
+    private static class NodeLabelSizeTransformer extends AbstractSizeTransformer<Node> implements LabelSizeTransformer<Node> {
+
+        public Object transform(Node target, float normalizedValue) {
+            float size = getSize(normalizedValue);
+            target.getNodeData().getTextData().setSize(size);
+            return Float.valueOf(size);
+        }
+    }
+
+    private static class EdgeLabelSizeTransformer extends AbstractSizeTransformer<Edge> implements LabelSizeTransformer<Edge> {
+
+        public Object transform(Edge target, float normalizedValue) {
+            float size = getSize(normalizedValue);
+            target.getEdgeData().getTextData().setSize(size);
             return Float.valueOf(size);
         }
     }

@@ -33,4 +33,16 @@ public interface TextData {
     public String getText();
 
     public float getSize();
+
+    public float getR();
+
+    public float getG();
+
+    public float getB();
+
+    public float getAlpha();
+
+    public void setColor(float r, float g, float b, float alpha);
+
+    public void setSize(float size);
 }

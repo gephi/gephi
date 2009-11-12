@@ -78,8 +78,8 @@ public class SizeTransformerPanel extends javax.swing.JPanel {
 
     private void setRangeValues() {
         JRangeSlider slider = (JRangeSlider) rangeSlider;
-        float low = slider.getValue()/100f;
-        float high = slider.getUpperValue()/100f;
+        float low = slider.getValue() / 100f;
+        float high = slider.getUpperValue() / 100f;
         sizeTransformer.setLowerBound(low);
         sizeTransformer.setUpperBound(high);
 
@@ -89,8 +89,8 @@ public class SizeTransformerPanel extends javax.swing.JPanel {
 
     private void refreshRangeValues() {
         JRangeSlider slider = (JRangeSlider) rangeSlider;
-        slider.setValue((int)(sizeTransformer.getLowerBound()*100f));
-        slider.setUpperValue((int)(sizeTransformer.getUpperBound()*100f));
+        slider.setValue((int) (sizeTransformer.getLowerBound() * 100f));
+        slider.setUpperValue((int) (sizeTransformer.getUpperBound() * 100f));
 
         lowerBoundLabel.setText(ranking.unNormalize(sizeTransformer.getLowerBound()).toString());
         upperBoundLabel.setText(ranking.unNormalize(sizeTransformer.getUpperBound()).toString());

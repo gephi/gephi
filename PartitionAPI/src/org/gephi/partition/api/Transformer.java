@@ -26,5 +26,5 @@ package org.gephi.partition.api;
  */
 public interface Transformer {
 
-    
+    public void transform(Partition partition);
 }

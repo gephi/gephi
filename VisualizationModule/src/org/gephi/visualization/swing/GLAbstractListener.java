@@ -35,6 +35,7 @@ public abstract class GLAbstractListener implements GLEventListener {
     protected DoubleBuffer modelMatrix = BufferUtil.newDoubleBuffer(16);
     protected IntBuffer viewport = BufferUtil.newIntBuffer(4);
     protected GraphicalConfiguration graphicalConfiguration;
+    protected Lighting lighting = new Lighting();
     protected ScreenshotMaker screenshotMaker;
 
     protected void initDrawable(GLAutoDrawable drawable) {
@@ -57,16 +58,17 @@ public abstract class GLAbstractListener implements GLEventListener {
         caps.setHardwareAccelerated(true);
 
         //FSAA
-        if (vizController.getVizConfig().getAntialiasing() == 2) {
+        int antialisaing = vizController.getVizConfig().getAntialiasing();
+        if (antialisaing == 2) {
             caps.setSampleBuffers(true);
             caps.setNumSamples(2);
-        } else if (vizController.getVizConfig().getAntialiasing() == 4) {
+        } else if (antialisaing == 4) {
             caps.setSampleBuffers(true);
             caps.setNumSamples(4);
-        } else if (vizController.getVizConfig().getAntialiasing() == 8) {
+        } else if (antialisaing == 8) {
             caps.setSampleBuffers(true);
             caps.setNumSamples(8);
-        } else if (vizController.getVizConfig().getAntialiasing() == 16) {
+        } else if (antialisaing == 16) {
             caps.setSampleBuffers(true);
             caps.setNumSamples(16);
         }
@@ -156,17 +158,8 @@ public abstract class GLAbstractListener implements GLEventListener {
     }
 
     protected void setLighting(GL gl) {
-
-        //Lights
-
-        Lighting.setSource(0, Lighting.TYPE_AMBIANT, gl);//
-        Lighting.setSource(2, Lighting.TYPE_BAS_ROUGE, gl);//
-        Lighting.setSource(3, Lighting.TYPE_GAUCHE_JAUNE, gl);//
-        Lighting.setSource(4, Lighting.TYPE_HAUT_BLEU, gl);//
-        Lighting.setSource(5, Lighting.TYPE_LATERAL_BLANC, gl);
-        Lighting.setSource(6, Lighting.TYPE_LATERAL_MULTI, gl);
-        Lighting.setSource(7, Lighting.TYPE_SPOT_BLAFARD, gl);
-        Lighting.switchAll(gl, true, false, true, true, true, false, false, false);
+        lighting = new Lighting();
+        lighting.glInit(gl);
     }
 
     @Override
@@ -258,6 +251,7 @@ public abstract class GLAbstractListener implements GLEventListener {
                 System.err.println("GL_RENDERER: " + gl.glGetString(GL.GL_RENDERER));
                 System.err.println("GL_VERSION: " + gl.glGetString(GL.GL_VERSION));
             }
+
             resizing = false;
         }
     }
@@ -276,5 +270,13 @@ public abstract class GLAbstractListener implements GLEventListener {
 
     public GLAutoDrawable getGLAutoDrawable() {
         return drawable;
+    }
+
+    public Lighting getLighting() {
+        return lighting;
+    }
+
+    public GraphicalConfiguration getGraphicalConfiguration() {
+        return graphicalConfiguration;
     }
 }

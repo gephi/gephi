@@ -25,7 +25,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
@@ -61,11 +61,9 @@ public class ImporterGraphML implements XMLImporter, LongTask {
     private Report report;
     private ProgressTicket progressTicket;
     private boolean cancel = false;
-
     //Settings
     private final boolean keepComplexAndEmptyAttributeTypes = true;
     private final boolean automaticProperties = true;
-
     //Attributes
     protected PropertiesAssociations properties = new PropertiesAssociations();
     private HashMap<String, NodeProperties> nodePropertiesAttributes;
@@ -360,12 +358,12 @@ public class ImporterGraphML implements XMLImporter, LongTask {
 
             //Add as attribute
             if (keyFor.equals("node")) {
-                AttributeClass nodeClass = container.getAttributeManager().getNodeClass();
-                nodeClass.addAttributeColumn(keyId, keyName, attributeType, AttributeOrigin.DATA, defaultValue);
+                AttributeTable nodeClass = container.getAttributeModel().getNodeTable();
+                nodeClass.addColumn(keyId, keyName, attributeType, AttributeOrigin.DATA, defaultValue);
                 report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_nodeattribute", keyName, attributeType.getTypeString()));
             } else if (keyFor.equals("edge")) {
-                AttributeClass edgeClass = container.getAttributeManager().getEdgeClass();
-                edgeClass.addAttributeColumn(keyId, keyName, attributeType, AttributeOrigin.DATA, defaultValue);
+                AttributeTable edgeClass = container.getAttributeModel().getEdgeTable();
+                edgeClass.addColumn(keyId, keyName, attributeType, AttributeOrigin.DATA, defaultValue);
                 report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_edgeattribute", keyName, attributeType.getTypeString()));
             }
         }
@@ -406,10 +404,10 @@ public class ImporterGraphML implements XMLImporter, LongTask {
             }
 
             //Data attribute value
-            AttributeColumn column = container.getAttributeManager().getNodeClass().getAttributeColumn(dataKey);
+            AttributeColumn column = container.getAttributeModel().getNodeTable().getColumn(dataKey);
             if (column != null) {
                 try {
-                    Object value = column.getAttributeType().parse(dataValue);
+                    Object value = column.getType().parse(dataValue);
                     nodeDraft.addAttributeValue(column, value);
                 } catch (Exception e) {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datavalue2", dataKey, nodeId, column.getTitle()), Issue.Level.SEVERE));
@@ -447,10 +445,10 @@ public class ImporterGraphML implements XMLImporter, LongTask {
             }
 
             //Data attribute value
-            AttributeColumn column = container.getAttributeManager().getEdgeClass().getAttributeColumn(dataKey);
+            AttributeColumn column = container.getAttributeModel().getEdgeTable().getColumn(dataKey);
             if (column != null) {
                 try {
-                    Object value = column.getAttributeType().parse(dataValue);
+                    Object value = column.getType().parse(dataValue);
                     edgeDraft.addAttributeValue(column, value);
                 } catch (Exception e) {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datavalue2", dataKey, edgeId, column.getTitle()), Issue.Level.SEVERE));

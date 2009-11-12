@@ -1,20 +1,24 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+Copyright 2008 WebAtlas
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
+Website : http://www.gephi.org
 
-/*
- * PageRankPanel.java
- *
- * Created on Jun 23, 2009, 2:39:41 AM
- */
+This file is part of Gephi.
 
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.gephi.statistics.ui;
-
-import javax.swing.JPanel;
-import org.gephi.statistics.PageRank;
-import org.gephi.statistics.api.Statistics;
-import org.gephi.statistics.ui.api.StatisticsUI;
 
 /**
  *
@@ -22,9 +26,40 @@ import org.gephi.statistics.ui.api.StatisticsUI;
  */
 public class PageRankPanel extends javax.swing.JPanel {
 
-    /** Creates new form PageRankPanel */
     public PageRankPanel() {
         initComponents();
+    }
+
+    public boolean isDirected() {
+        return directedRadioButton.isSelected();
+    }
+
+    public double getEpsilon() {
+        try {
+            return Double.parseDouble(epsilonTextField.getText());
+        } catch (Exception e) {
+        }
+        return 0.001;
+    }
+
+    public double getProbability() {
+        try {
+            return Double.parseDouble(probTextField.getText());
+        } catch (Exception e) {
+        }
+        return 0.85;
+    }
+
+    public void setDirected(boolean directed) {
+        directedButtonGroup.setSelected(directed ? directedRadioButton.getModel() : undirectedRadioButton.getModel(), true);
+    }
+
+    public void setEpsilon(double epsilon) {
+        epsilonTextField.setText(Double.toString(epsilon));
+    }
+
+    public void setProbability(double probability) {
+        probTextField.setText(Double.toString(probability));
     }
 
     /** This method is called from within the constructor to
@@ -36,21 +71,23 @@ public class PageRankPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        directedButtonGroup = new javax.swing.ButtonGroup();
+        labelTitle = new javax.swing.JLabel();
+        labelP = new javax.swing.JLabel();
+        labelE = new javax.swing.JLabel();
         probTextField = new javax.swing.JTextField();
         epsilonTextField = new javax.swing.JTextField();
-        undirectedButton = new javax.swing.JRadioButton();
-        directedButton = new javax.swing.JRadioButton();
+        undirectedRadioButton = new javax.swing.JRadioButton();
+        directedRadioButton = new javax.swing.JRadioButton();
+        separator = new javax.swing.JSeparator();
+        descriptionLabel = new org.jdesktop.swingx.JXLabel();
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18));
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.jLabel1.text")); // NOI18N
+        labelTitle.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        labelTitle.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.labelTitle.text")); // NOI18N
 
-        jLabel2.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.jLabel2.text")); // NOI18N
+        labelP.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.labelP.text")); // NOI18N
 
-        jLabel3.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.jLabel3.text")); // NOI18N
+        labelE.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.labelE.text")); // NOI18N
 
         probTextField.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.probTextField.text")); // NOI18N
         probTextField.setMinimumSize(new java.awt.Dimension(59, 25));
@@ -60,118 +97,70 @@ public class PageRankPanel extends javax.swing.JPanel {
         epsilonTextField.setMinimumSize(new java.awt.Dimension(59, 25));
         epsilonTextField.setPreferredSize(new java.awt.Dimension(59, 25));
 
-        buttonGroup1.add(undirectedButton);
-        undirectedButton.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.undirectedButton.text")); // NOI18N
+        directedButtonGroup.add(undirectedRadioButton);
+        undirectedRadioButton.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.undirectedRadioButton.text")); // NOI18N
 
-        buttonGroup1.add(directedButton);
-        directedButton.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.directedButton.text")); // NOI18N
+        directedButtonGroup.add(directedRadioButton);
+        directedRadioButton.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.directedRadioButton.text")); // NOI18N
+
+        descriptionLabel.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.descriptionLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(82, 82, 82)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(61, 61, 61)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(27, 27, 27))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(18, 18, 18)))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                    .addComponent(separator, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                    .addComponent(labelTitle, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(probTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(149, 149, 149)
+                            .addComponent(undirectedRadioButton)
+                            .addComponent(directedRadioButton))
+                        .addGap(33, 33, 33)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(directedButton)
-                            .addComponent(undirectedButton))))
-                .addContainerGap(159, Short.MAX_VALUE))
+                            .addComponent(labelP)
+                            .addComponent(labelE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(probTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
-                .addComponent(undirectedButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(directedButton)
-                .addGap(56, 56, 56)
+                .addContainerGap()
+                .addComponent(labelTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(probTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(26, 26, 26)
+                    .addComponent(directedRadioButton)
+                    .addComponent(labelP)
+                    .addComponent(probTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(69, 69, 69))
+                    .addComponent(undirectedRadioButton)
+                    .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelE))
+                .addGap(18, 18, 18)
+                .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
-    protected javax.swing.JRadioButton directedButton;
+    private org.jdesktop.swingx.JXLabel descriptionLabel;
+    private javax.swing.ButtonGroup directedButtonGroup;
+    protected javax.swing.JRadioButton directedRadioButton;
     protected javax.swing.JTextField epsilonTextField;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel labelE;
+    private javax.swing.JLabel labelP;
+    private javax.swing.JLabel labelTitle;
     protected javax.swing.JTextField probTextField;
-    protected javax.swing.JRadioButton undirectedButton;
+    private javax.swing.JSeparator separator;
+    protected javax.swing.JRadioButton undirectedRadioButton;
     // End of variables declaration//GEN-END:variables
-
-    public static class PageRankUI implements StatisticsUI {
-
-        private PageRankPanel panel;
-        private PageRank pageRank;
-
-        public PageRankUI() {
-            panel = new PageRankPanel();
-        }
-
-
-     
-
-        /**
-         *
-         */
-        public void unsetup() {
-            //Set params
-            try
-            {
-                double epsilon = Double.parseDouble(panel.epsilonTextField.getText());
-                double probability = Double.parseDouble(panel.probTextField.getText());
-                pageRank.setEpsilon(epsilon);
-                pageRank.setProbability(probability);
-                pageRank.setUndirected(panel.undirectedButton.isSelected());
-            }catch(Exception e){}
-        }
-
-        /**
-         * 
-         * @return
-         */
-        public JPanel getPanel() {
-            return panel;
-        }
-
-        /**
-         *
-         * @param statistics
-         */
-        public void setup(Statistics statistics) {
-            this.pageRank = (PageRank) statistics;
-            panel.epsilonTextField.setText(""+ pageRank.getEpsilon());
-            panel.probTextField.setText("" + pageRank.getProbability());
-            panel.undirectedButton.setSelected(pageRank.getUndirected());
-            panel.directedButton.setSelected(!pageRank.getUndirected());
-        }
-    }
 }

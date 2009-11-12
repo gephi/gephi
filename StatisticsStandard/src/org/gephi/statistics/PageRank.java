@@ -23,9 +23,10 @@ package org.gephi.statistics;
 import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
@@ -33,13 +34,14 @@ import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.statistics.api.Statistics;
-import org.gephi.statistics.ui.PageRankPanel;
-import org.gephi.statistics.ui.api.StatisticsUI;
+import org.gephi.ui.utils.TempDirUtils;
+import org.gephi.ui.utils.TempDirUtils.TempDir;
 import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartRenderingInfo;
@@ -52,7 +54,6 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 
 /**
  *
@@ -60,71 +61,64 @@ import org.openide.util.NbBundle;
  */
 public class PageRank implements Statistics, LongTask {
 
-    private ProgressTicket progress;
-    private boolean isCanceled;
-    private double epsilon = 0.001;
-    private double probability = 0.5;
-    private double[] pageranks;
-    private boolean useUndirected;
-
-
+    /** */
+    private ProgressTicket mProgress;
+    /** */
+    private boolean mIsCanceled;
+    /** */
+    private double mEpsilon = 0.001;
+    /** */
+    private double mProbability = 0.85;
+    /** */
+    private double[] mPageranks;
+    /** */
+    private boolean mDirected;
+    /** */
+    private String mGraphRevision;
 
     /**
      *
      * @param pUndirected
      */
-    public void setUndirected(boolean pUndirected){
-        useUndirected = pUndirected;
+    public void setUndirected(boolean pUndirected) {
+        mDirected = pUndirected;
     }
 
     /**
      * 
      * @return
      */
-    public boolean getUndirected(){
-        return useUndirected;
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public String toString() {
-        return "Page Rank";
+    public boolean getUndirected() {
+        return mDirected;
     }
 
     /**
      *
-     * @return
+     * @param graphModel
      */
-    public String getName() {
-        return NbBundle.getMessage(PageRank.class, "PageRank_name");
-    }
-
-    /**
-     *
-     * @param graphController
-     */
-    public void execute(GraphController graphController) {
-        isCanceled = false;
+    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+        mIsCanceled = false;
 
         Graph graph;
-        if(useUndirected)
-            graph = graphController.getModel().getUndirectedGraphVisible();
-        else
-            graph = graphController.getModel().getDirectedGraphVisible();
+        if (mDirected) {
+            graph = graphModel.getUndirectedGraph();
+        } else {
+            graph = graphModel.getDirectedGraph();
+        }
 
+
+        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
         //DirectedGraph digraph = graphController.getDirectedGraph();
         int N = graph.getNodeCount();
-        pageranks = new double[N];
+        mPageranks = new double[N];
         double[] temp = new double[N];
         Hashtable<Node, Integer> indicies = new Hashtable<Node, Integer>();
         int index = 0;
 
-        progress.start();
+        Progress.start(mProgress);
         for (Node s : graph.getNodes()) {
             indicies.put(s, index);
-            pageranks[index] = 1.0f / N;
+            mPageranks[index] = 1.0f / N;
             index++;
         }
 
@@ -133,17 +127,18 @@ public class PageRank implements Statistics, LongTask {
             for (Node s : graph.getNodes()) {
                 int s_index = indicies.get(s);
                 boolean out;
-                if(useUndirected)
+                if (mDirected) {
                     out = graph.getDegree(s) > 0;
-                else
-                    out = ((DirectedGraph)graph).getOutDegree(s) > 0;
+                } else {
+                    out = ((DirectedGraph) graph).getOutDegree(s) > 0;
+                }
 
                 if (out) {
-                    r += (1.0 - probability) * (pageranks[s_index] / N);
+                    r += (1.0 - mProbability) * (mPageranks[s_index] / N);
                 } else {
-                    r += (pageranks[s_index] / N);
+                    r += (mPageranks[s_index] / N);
                 }
-                if (isCanceled) {
+                if (mIsCanceled) {
                     return;
                 }
             }
@@ -152,61 +147,54 @@ public class PageRank implements Statistics, LongTask {
             for (Node s : graph.getNodes()) {
                 int s_index = indicies.get(s);
                 temp[s_index] = r;
-                 
+
                 EdgeIterable eIter;
-                if(useUndirected)
-                    eIter = ((UndirectedGraph)graph).getEdges(s);
-                else
-                    eIter = ((DirectedGraph)graph).getInEdges(s);
+                if (mDirected) {
+                    eIter = ((UndirectedGraph) graph).getEdges(s);
+                } else {
+                    eIter = ((DirectedGraph) graph).getInEdges(s);
+                }
 
                 for (Edge edge : eIter) {
                     Node neighbor = graph.getOpposite(s, edge);
                     int neigh_index = indicies.get(neighbor);
                     int normalize;
-                    if(useUndirected)
-                        normalize = ((UndirectedGraph)graph).getDegree(neighbor);
-                    else
-                        normalize = ((DirectedGraph)graph).getOutDegree(neighbor);
+                    if (mDirected) {
+                        normalize = ((UndirectedGraph) graph).getDegree(neighbor);
+                    } else {
+                        normalize = ((DirectedGraph) graph).getOutDegree(neighbor);
+                    }
 
-                    temp[s_index] += probability * (pageranks[neigh_index] / normalize);
+                    temp[s_index] += mProbability * (mPageranks[neigh_index] / normalize);
                 }
 
-                if ((temp[s_index] - pageranks[s_index]) / pageranks[s_index] >= epsilon) {
+                if ((temp[s_index] - mPageranks[s_index]) / mPageranks[s_index] >= mEpsilon) {
                     done = false;
                 }
 
-                if (isCanceled) {
+                if (mIsCanceled) {
                     return;
                 }
 
             }
-            pageranks = temp;
+            mPageranks = temp;
             temp = new double[N];
-            if ((done) || (isCanceled)) {
+            if ((done) || (mIsCanceled)) {
                 break;
             }
 
         }
 
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
-        AttributeColumn pangeRanksCol = nodeClass.addAttributeColumn("pageranks", "Page Ranks", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        AttributeTable nodeClass = attributeModel.getNodeTable();
+        AttributeColumn pangeRanksCol = nodeClass.addColumn("pageranks", "Page Ranks", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
 
         for (Node s : graph.getNodes()) {
             int s_index = indicies.get(s);
             AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
-            row.setValue(pangeRanksCol, pageranks[s_index]);
+            row.setValue(pangeRanksCol, mPageranks[s_index]);
         }
 
 
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isParamerizable() {
-        return true;
     }
 
     /**
@@ -217,8 +205,8 @@ public class PageRank implements Statistics, LongTask {
 
         double max = 0;
         XYSeries series = new XYSeries("Series 2");
-        for (int i = 0; i < pageranks.length; i++) {
-            series.add(i, pageranks[i]);
+        for (int i = 0; i < mPageranks.length; i++) {
+            series.add(i, mPageranks[i]);
 
         }
 
@@ -252,20 +240,24 @@ public class PageRank implements Statistics, LongTask {
         String imageFile = "";
         try {
             final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            final File file1 = new File("pageranks.png");
-            String fullPath = file1.getAbsolutePath();
-
-            fullPath = fullPath.replaceAll("\\\\", "\\\\\\\\");
-
-            imageFile = "<IMG SRC=\"file:\\\\\\\\" + fullPath + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
-
-            File f2 = new File(fullPath);
+            TempDir tempDir = TempDirUtils.createTempDir();
+            String fileName = "pageranks.png";
+            File file1 = tempDir.createFile(fileName);
+            imageFile = "<IMG SRC=\"file:" + file1.getAbsolutePath() + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
             ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
         } catch (IOException e) {
             System.out.println(e.toString());
         }
+        String report = new String("<HTML> <BODY> <h1>PageRank Report </h1> "
+                + "<hr> <br> <h2>Network Revision Number:</h2>"
+                + mGraphRevision
+                + "<h2> Parameters: </h2>"
+                + "Epsilon = " + this.mEpsilon + "<br>"
+                + "Probability = " + this.mProbability
+                + "<br> <h2> Results: </h2>"
+                + imageFile
+                + "</BODY></HTML>");
 
-        String report = "<HTML> <BODY> " + imageFile + "</BODY> </HTML>";
         return report;
 
     }
@@ -275,7 +267,7 @@ public class PageRank implements Statistics, LongTask {
      * @return
      */
     public boolean cancel() {
-        isCanceled = true;
+        mIsCanceled = true;
         return true;
     }
 
@@ -284,7 +276,7 @@ public class PageRank implements Statistics, LongTask {
      * @param progressTicket
      */
     public void setProgressTicket(ProgressTicket progressTicket) {
-        progress = progressTicket;
+        mProgress = progressTicket;
     }
 
     /**
@@ -292,7 +284,7 @@ public class PageRank implements Statistics, LongTask {
      * @param prob
      */
     public void setProbability(double prob) {
-        probability = prob;
+        mProbability = prob;
     }
 
     /**
@@ -300,7 +292,7 @@ public class PageRank implements Statistics, LongTask {
      * @param eps
      */
     public void setEpsilon(double eps) {
-        epsilon = eps;
+        mEpsilon = eps;
     }
 
     /**
@@ -308,7 +300,7 @@ public class PageRank implements Statistics, LongTask {
      * @return
      */
     public double getProbability() {
-        return probability;
+        return mProbability;
     }
 
     /**
@@ -316,14 +308,6 @@ public class PageRank implements Statistics, LongTask {
      * @return
      */
     public double getEpsilon() {
-        return epsilon;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public StatisticsUI getUI() {
-        return new PageRankPanel.PageRankUI();
+        return mEpsilon;
     }
 }

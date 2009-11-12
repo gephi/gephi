@@ -33,4 +33,16 @@ public interface PartitionController {
     public void setSelectedTransformerBuilder(TransformerBuilder builder);
 
     public void refreshPartitions();
+
+    public void transform(Partition partition, Transformer transformer);
+
+    public boolean isGroupable(Partition partition);
+
+    public boolean isUngroupable(Partition partition);
+
+    public void group(Partition partition);
+
+    public void ungroup(Partition partition);
+
+    public void showPie(boolean showPie);
 }

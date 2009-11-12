@@ -23,6 +23,10 @@ package org.gephi.partition.transformer;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
+import org.gephi.graph.api.Node;
+import org.gephi.partition.api.NodePartition;
+import org.gephi.partition.api.Part;
+import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.Transformer;
 
 /**
@@ -31,6 +35,7 @@ import org.gephi.partition.api.Transformer;
  */
 public class NodeColorTransformer implements Transformer {
 
+    private static final Color DEFAULT_COLOR = Color.BLACK;
     private Map<Object, Color> map;
 
     public NodeColorTransformer() {
@@ -39,5 +44,23 @@ public class NodeColorTransformer implements Transformer {
 
     public Map<Object, Color> getMap() {
         return map;
+    }
+
+    public void transform(Partition partition) {
+        NodePartition nodePartition = (NodePartition) partition;
+        for (Part<Node> part : nodePartition.getParts()) {
+            Color color = map.get(part.getValue());
+            if (color == null) {
+                color = DEFAULT_COLOR;
+            }
+            part.setColor(color);
+            float r = color.getRed() / 255f;
+            float g = color.getGreen() / 255f;
+            float b = color.getBlue() / 255f;
+
+            for (Node node : part.getObjects()) {
+                node.getNodeData().setColor(r, g, b);
+            }
+        }
     }
 }

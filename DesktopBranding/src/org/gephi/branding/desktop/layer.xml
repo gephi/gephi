@@ -17,28 +17,20 @@
     <attr name="Menu\Window\ProjectAction.shadow\position" intvalue="250"/>
     <attr name="Menu\Window\org-netbeans-core-windows-actions-ResetWindowsAction.shadow\position" intvalue="2750"/>
     <folder name="Actions">
-        <folder name="File">
-            <file name="org-gephi-branding-desktop-TopTabAction.instance">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
-                <attr name="delegate" newvalue="org.gephi.branding.desktop.TopTabAction"/>
-                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.Bundle#CTL_TopTabAction"/>
-                <attr name="noIconInMenu" stringvalue="false"/>
-            </file>
-        </folder>
     </folder>
     <folder name="Menu">
         <folder name="Edit">
-            <file name="org-gephi-branding-desktop-actions-NewWorkspace.instance">
-                <attr name="position" intvalue="2500"/>
-            </file>
-            <file name="org-gephi-branding-desktop-actions-DeleteWorkspace.instance">
-                <attr name="position" intvalue="2600"/>
-            </file>
             <file name="org-gephi-branding-desktop-actions-CleanWorkspace.instance">
+                <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-CleanWorkspace.instance"/>
                 <attr name="position" intvalue="2700"/>
             </file>
-            <file name="org-gephi-branding-desktop-actions-DuplicateWorkspace.instance">
-                <attr name="position" intvalue="2800"/>
+            <file name="org-gephi-branding-desktop-actions-DeleteWorkspace.instance">
+                <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-DeleteWorkspace.instance"/>
+                <attr name="position" intvalue="2600"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-NewWorkspace.instance">
+                <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-NewWorkspace.instance"/>
+                <attr name="position" intvalue="2500"/>
             </file>
             <file name="Separator2_1.instance" url="Separator2_1.instance">
                 <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
@@ -46,36 +38,40 @@
             </file>
         </folder>
         <folder name="File">
-            <file name="org-openide-actions-PageSetupAction.instance_hidden"/>
-            <file name="org-openide-actions-PrintAction.instance_hidden"/>
-            <file name="org-openide-actions-SaveAction.instance_hidden"/>
-            <file name="org-openide-actions-SaveAllAction.instance_hidden"/>
-            <file name="org-openide-actions-SaveAsAction.shadow_hidden"/>
+            <file name="org-gephi-branding-desktop-actions-CloseProject.instance">
+                <attr name="position" intvalue="400"/>
+            </file>
             <file name="org-gephi-branding-desktop-actions-NewProject.instance">
                 <attr name="position" intvalue="100"/>
-            </file>
-            <file name="org-gephi-branding-desktop-actions-OpenProject.instance">
-                <attr name="position" intvalue="200"/>
             </file>
             <file name="org-gephi-branding-desktop-actions-OpenFile.instance">
                 <attr name="position" intvalue="300"/>
             </file>
-            <file name="org-gephi-branding-desktop-actions-CloseProject.instance">
-                <attr name="position" intvalue="400"/>
+            <file name="org-gephi-branding-desktop-actions-OpenProject.instance">
+                <attr name="position" intvalue="200"/>
             </file>
             <file name="org-gephi-branding-desktop-actions-ProjectProperties.instance">
                 <attr name="position" intvalue="500"/>
             </file>
-            <file name="Separator2_1.instance" url="Separator2_1.instance">
-                <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
-                <attr name="position" intvalue="550"/>
+            <file name="org-gephi-branding-desktop-actions-SaveAsProject.instance">
+                <attr name="position" intvalue="1100"/>
             </file>
             <file name="org-gephi-branding-desktop-actions-SaveProject.instance">
                 <attr name="position" intvalue="750"/>
             </file>
-            <file name="org-gephi-branding-desktop-actions-SaveAsProject.instance">
-                <attr name="position" intvalue="1100"/>
-            </file>          
+            <file name="org-netbeans-modules-print-action-PageSetupAction.shadow_hidden"/>
+            <file name="org-netbeans-modules-print-action-PrintAction.shadow_hidden"/>
+            <file name="org-openide-actions-PageSetupAction.instance_hidden"/>
+            <file name="org-openide-actions-PrintAction.instance_hidden"/>
+            <file name="org-openide-actions-SaveAction.instance_hidden"/>
+            <file name="org-openide-actions-SaveAction.shadow_hidden"/>
+            <file name="org-openide-actions-SaveAllAction.instance_hidden"/>
+            <file name="org-openide-actions-SaveAllAction.shadow_hidden"/>
+            <file name="org-openide-actions-SaveAsAction.shadow_hidden"/>
+            <file name="Separator2_1.instance" url="Separator2_1.instance">
+                <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                <attr name="position" intvalue="550"/>
+            </file>
         </folder>
         <folder name="Plugins">
             <attr name="position" intvalue="1250"/>
@@ -103,20 +99,28 @@
             <file name="org-netbeans-core-actions-GlobalPropertiesAction.shadow_hidden"/>
         </folder>
     </folder>
-    <folder name="Toolbars">
-        <file name="Clipboard_hidden"/>
-        <file name="UndoRedo_hidden"/>
-        <folder name="File">
-            <file name="org-gephi-branding-desktop-TopTabAction.shadow">
-                <attr name="originalFile" stringvalue="Actions/File/org-gephi-branding-desktop-TopTabAction.instance"/>
-                <attr name="position" intvalue="10"/>
-            </file>
-            
-            <file name="org-openide-actions-SaveAllAction.instance_hidden"/>
-        </folder>
-
+    <folder name="Shortcuts">
+        <file name="D-N.shadow">
+            <attr name="originalFile" stringvalue="Menu/Edit/org-gephi-branding-desktop-actions-NewWorkspace.instance"/>
+        </file>
+        <file name="D-O.shadow">
+            <attr name="originalFile" stringvalue="Menu/File/org-gephi-branding-desktop-actions-OpenFile.instance"/>
+        </file>
+        <file name="D-S.shadow">
+            <attr name="originalFile" stringvalue="Menu/File/org-gephi-branding-desktop-actions-SaveProject.instance"/>
+        </file>
+        <file name="DS-N.shadow">
+            <attr name="originalFile" stringvalue="Menu/File/org-gephi-branding-desktop-actions-NewProject.instance"/>
+        </file>
+        <file name="DS-O.shadow">
+            <attr name="originalFile" stringvalue="Menu/File/org-gephi-branding-desktop-actions-OpenProject.instance"/>
+        </file>
     </folder>
+    <file name="Toolbars_hidden"/>
     <folder name="Windows2">
+        <folder name="Components">
+            <file name="BannerTopComponent.settings" url="BannerTopComponentSettings.xml"/>
+        </folder>
         <folder name="Groups">
             <file name="LaboratoryGroup.wsgrp" url="LaboratoryGroup.wsgrp"/>
             <folder name="LaboratoryGroup">
@@ -135,6 +139,12 @@
                 <file name="PreviewTopComponent.wstcgrp" url="PreviewTopComponent.wstcgrp"/>
                 <file name="PreviewSettingsTopComponent.wstcgrp" url="PreviewSettingsTopComponent.wstcgrp"/>
             </folder>
+        </folder>
+        <folder name="Modes">
+            <folder name="bannermode">
+                <file name="BannerTopComponent.wstcref" url="BannerTopComponentWstcref.xml"/>
+            </folder>
+             <file name="bannermode.wsmode" url="bannermodeWsmode.xml"/>
         </folder>
     </folder>
 </filesystem>

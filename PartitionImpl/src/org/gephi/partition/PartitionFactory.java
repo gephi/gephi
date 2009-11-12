@@ -21,9 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.partition;
 
 import com.google.common.collect.ArrayListMultimap;
+import java.awt.Color;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -36,6 +38,7 @@ import org.gephi.partition.api.EdgePartition;
 import org.gephi.partition.api.NodePartition;
 import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
+import org.gephi.ui.utils.PaletteUtils;
 
 /**
  *
@@ -44,9 +47,9 @@ import org.gephi.partition.api.Partition;
 public class PartitionFactory {
 
     public static boolean isNodePartitionColumn(AttributeColumn column, Graph graph) {
-        if (column.getAttributeType().equals(AttributeType.STRING) ||
-                column.getAttributeType().equals(AttributeType.BOOLEAN) ||
-                column.getAttributeType().equals(AttributeType.INT)) {
+        if (column.getType().equals(AttributeType.STRING) ||
+                column.getType().equals(AttributeType.BOOLEAN) ||
+                column.getType().equals(AttributeType.INT)) {
             Set values = new HashSet();
             int nonNullvalues = 0;
             for (Node n : graph.getNodes()) {
@@ -64,9 +67,9 @@ public class PartitionFactory {
     }
 
     public static boolean isEdgePartitionColumn(AttributeColumn column, Graph graph) {
-        if (column.getAttributeType().equals(AttributeType.STRING) ||
-                column.getAttributeType().equals(AttributeType.BOOLEAN) ||
-                column.getAttributeType().equals(AttributeType.INT)) {
+        if (column.getType().equals(AttributeType.STRING) ||
+                column.getType().equals(AttributeType.BOOLEAN) ||
+                column.getType().equals(AttributeType.INT)) {
             Set values = new HashSet();
             int nonNullvalues = 0;
             for (Edge n : graph.getEdges()) {
@@ -165,10 +168,14 @@ public class PartitionFactory {
 
         public void setParts(PartImpl<Node>[] parts) {
             this.parts = parts;
+            List<Color> colors = PaletteUtils.getSequenceColors(parts.length);
+            int i = 0;
             for (PartImpl<Node> p : parts) {
                 for (Node n : p.objects) {
                     nodeMap.put(n, p);
                 }
+                p.setColor(colors.get(i));
+                i++;
             }
         }
 
@@ -208,10 +215,14 @@ public class PartitionFactory {
 
         public void setParts(PartImpl<Edge>[] parts) {
             this.parts = parts;
+            List<Color> colors = PaletteUtils.getSequenceColors(parts.length);
+            int i = 0;
             for (PartImpl<Edge> p : parts) {
                 for (Edge n : p.objects) {
                     edgeMap.put(n, p);
                 }
+                p.setColor(colors.get(i));
+                i++;
             }
         }
 
@@ -223,9 +234,11 @@ public class PartitionFactory {
 
     private static class PartImpl<Element> implements Part<Element> {
 
+        private static final String NULL = "null";
         private Partition<Element> partition;
         private Element[] objects;
         private Object value;
+        private Color color;
 
         public PartImpl(Partition<Element> partition, Object value, Element[] objects) {
             this.partition = partition;
@@ -242,11 +255,23 @@ public class PartitionFactory {
         }
 
         public String getDisplayName() {
-            return value.toString();
+            return value != null ? value.toString() : NULL;
         }
 
         public boolean isInPart(Element element) {
             return partition.getPart(element) == this;
+        }
+
+        public void setColor(Color color) {
+            this.color = color;
+        }
+
+        public Color getColor() {
+            return color;
+        }
+
+        public float getPercentage() {
+            return objects.length / (float) partition.getMap().size() * 100;
         }
     }
 }

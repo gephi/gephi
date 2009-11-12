@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Patrick J. McSweeney
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -23,38 +23,25 @@ package org.gephi.statistics.builder;
 import org.gephi.statistics.GraphDensity;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.statistics.api.StatisticsBuilder;
-import org.gephi.statistics.ui.api.StatisticsUI;
-import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * The statistics builder the graph denstiy statistics
  * @author pjmcswee
  */
+@ServiceProvider(service=StatisticsBuilder.class)
 public class DensityBuilder implements StatisticsBuilder {
 
-    GraphDensity gd = new GraphDensity();
-
-    /**
-     *
-     * @return
-     */
-    public String toString() {
-        return gd.getName();
+    public String getName() {
+        return NbBundle.getMessage(DensityBuilder.class, "GraphDensity.name");
     }
 
-    /**
-     *
-     * @return
-     */
     public Statistics getStatistics() {
-        return gd;//(Statistics) Lookup.getDefault().lookupAll(GraphDensity.class);
+        return new GraphDensity();
     }
 
-    /**
-     *
-     * @return
-     */
-    public StatisticsUI getUI() {
-        return null;//(StatisticsUI) Lookup.getDefault().lookupAll(GraphDensityPanel.class);
+    public Class<? extends Statistics> getStatisticsClass() {
+        return GraphDensity.class;
     }
 }

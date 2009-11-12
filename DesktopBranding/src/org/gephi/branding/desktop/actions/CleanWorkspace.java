@@ -44,6 +44,11 @@ public class CleanWorkspace extends SystemAction {
     }
 
     @Override
+    public boolean isEnabled() {
+        return Lookup.getDefault().lookup(ProjectController.class).canCleanWorkspace();
+    }
+
+    @Override
     public String getName() {
         return NbBundle.getMessage(CleanWorkspace.class, "CTL_CleanWorkspace");
     }

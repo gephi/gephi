@@ -24,20 +24,21 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Random;
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 
 /**
  *
@@ -45,18 +46,19 @@ import org.openide.util.NbBundle;
  */
 public class Modularity implements Statistics, LongTask {
 
-    private ProgressTicket progress;
-    private boolean isCanceled;
+    private ProgressTicket mProgress;
+    private boolean mIsCanceled;
     private CommunityStructure mStructure;
-    private double modularity;
-    private boolean randomize = false;
+    private double mModularity;
+    private boolean mRandomize = false;
+    private String mGraphRevision;
 
     /**
      *
      * @param pRandom
      */
     public void setRandom(boolean pRandom) {
-        randomize = pRandom;
+        mRandomize = pRandom;
     }
 
     /**
@@ -64,7 +66,7 @@ public class Modularity implements Statistics, LongTask {
      * @return
      */
     public boolean getRandom() {
-        return randomize;
+        return mRandomize;
     }
 
     /**
@@ -72,7 +74,7 @@ public class Modularity implements Statistics, LongTask {
      * @return
      */
     public boolean cancel() {
-        isCanceled = true;
+        mIsCanceled = true;
         return true;
     }
 
@@ -81,7 +83,7 @@ public class Modularity implements Statistics, LongTask {
      * @param progressTicket
      */
     public void setProgressTicket(ProgressTicket progressTicket) {
-        progress = progressTicket;
+        mProgress = progressTicket;
     }
 
     /**
@@ -149,7 +151,6 @@ public class Modularity implements Statistics, LongTask {
                 hidden.mNodes.add(index);
                 invMap.put(index, hidden);
                 mCommunities.add(nodeCommunities[index]);
-
                 index++;
             }
 
@@ -358,6 +359,7 @@ public class Modularity implements Statistics, LongTask {
         CommunityStructure mStructure;
         LinkedList<Integer> mNodes;
         Hashtable<Community, Integer> connections;
+        Integer min;
 
         /**
          * 
@@ -375,7 +377,8 @@ public class Modularity implements Statistics, LongTask {
             mStructure = pCom.mStructure;
             connections = new Hashtable<Community, Integer>();
             mNodes = new LinkedList<Integer>();
-        //mHidden = pCom.mHidden;
+            min = Integer.MAX_VALUE;
+            //mHidden = pCom.mHidden;
         }
 
         /**
@@ -395,6 +398,7 @@ public class Modularity implements Statistics, LongTask {
         public void seed(int node) {
             mNodes.add(node);
             weightSum += mStructure.weights[node];
+            min = node;
         }
 
         /**
@@ -403,9 +407,12 @@ public class Modularity implements Statistics, LongTask {
          * @return
          */
         public boolean add(int node) {
-            boolean result = mNodes.add(new Integer(node));
+            mNodes.addLast(new Integer(node));
             weightSum += mStructure.weights[node];
-            return result;
+            if (!mRandomize) {
+                min = Math.min(node, min);
+            }
+            return true;
         }
 
         /**
@@ -419,26 +426,32 @@ public class Modularity implements Statistics, LongTask {
             if (mNodes.size() == 0) {
                 mStructure.mCommunities.remove(this);
             }
+            if (!mRandomize) {
+                if (node == min.intValue()) {
+                    min = Integer.MAX_VALUE;
+                    for (Integer other : mNodes) {
+                        min = Math.min(other, min);
+                    }
+                }
+            }
             return result;
+        }
+
+        public int getMin() {
+            return min;
         }
     }
 
     /**
-     * 
-     * @return
-     */
-    public String getName() {
-        return NbBundle.getMessage(PageRank.class, "Modularity_name");
-    }
-
-    /**
      *
-     * @param graphController
+     * @param graphModel
      */
-    public void execute(GraphController graphController) {
-        progress.start();
+    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+        Progress.start(mProgress);
         Random rand = new Random();
-        UndirectedGraph graph = graphController.getModel().getUndirectedGraphVisible();
+        UndirectedGraph graph = graphModel.getUndirectedGraph();
+        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
+
         mStructure = new CommunityStructure(graph);
         boolean someChange = true;
         while (someChange) {
@@ -449,7 +462,7 @@ public class Modularity implements Statistics, LongTask {
             while (localChange) {
                 localChange = false;
                 int start = 0;
-                if (randomize) {
+                if (mRandomize) {
                     start = Math.abs(rand.nextInt()) % mStructure.N;
                 }
                 int step = 0;
@@ -458,6 +471,7 @@ public class Modularity implements Statistics, LongTask {
                     double best = 0;
                     double current = q(i, mStructure.nodeCommunities[i]);
                     Community bestCommunity = null;
+                    int smallest = Integer.MAX_VALUE;
                     Enumeration<Community> iter = mStructure.nodeConnections[i].keys();
                     while (iter.hasMoreElements()) {
                         Community com = iter.nextElement();
@@ -465,6 +479,11 @@ public class Modularity implements Statistics, LongTask {
                         if (qValue > best) {
                             best = qValue;
                             bestCommunity = com;
+                            smallest = com.getMin();
+                        } else if ((qValue == best) && (com.getMin() < smallest)) {
+                            best = qValue;
+                            bestCommunity = com;
+                            smallest = com.getMin();
                         }
                     }
                     if ((mStructure.nodeCommunities[i] != bestCommunity) && (bestCommunity != null)) {
@@ -497,7 +516,7 @@ public class Modularity implements Statistics, LongTask {
             degreeCount[comStructure[index]] += graph.getDegree(node);
         }
 
-        modularity = finalQ(comStructure, degreeCount, graph);
+        mModularity = finalQ(comStructure, degreeCount, graph, attributeModel);
     }
 
     /**
@@ -507,11 +526,9 @@ public class Modularity implements Statistics, LongTask {
      * @param pGraph
      * @return
      */
-    public double finalQ(int[] pStruct, double[] pDegrees, UndirectedGraph pGraph) {
-
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
-        AttributeColumn modCol = nodeClass.addAttributeColumn("modularity_class", "Modularity Class", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
+    public double finalQ(int[] pStruct, double[] pDegrees, UndirectedGraph pGraph, AttributeModel attributeModel) {
+        AttributeTable nodeTable = attributeModel.getNodeTable();
+        AttributeColumn modCol = nodeTable.addColumn("modularity_class", "Modularity Class", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
 
         double res = 0;
         double[] internal = new double[pDegrees.length];
@@ -537,12 +554,28 @@ public class Modularity implements Statistics, LongTask {
     }
 
     /**
+     * 
+     * @return
+     */
+    public double getModularity() {
+        return mModularity;
+    }
+
+    /**
      *
      * @return
      */
     public String getReport() {
-        String report = "<html> <body> " + modularity + "<br>";
-        report += " </body></html>";
+
+        String report = new String("<HTML> <BODY> <h1>Modularity Report </h1> "
+                + "<hr> <br> <h2>Network Revision Number:</h2>"
+                + mGraphRevision
+                + "<h2> Parameters: </h2>"
+                + "Randomize:  " + (this.mRandomize ? "On" : "Off") + "<br>"
+                + "<br> <h2> Results: </h2>"
+                + "Modularity: " + mModularity
+                + "</BODY></HTML>");
+
         return report;
     }
 

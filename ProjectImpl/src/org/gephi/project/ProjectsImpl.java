@@ -37,7 +37,7 @@ public class ProjectsImpl implements Projects, Lookup.Provider, Serializable {
 
     //Project
     private List<Project> projects = new ArrayList<Project>();
-    private Project currentProject;
+    private ProjectImpl currentProject;
     //Lookup
     private transient InstanceContent ic;
     private transient AbstractLookup lookup;
@@ -47,7 +47,6 @@ public class ProjectsImpl implements Projects, Lookup.Provider, Serializable {
         lookup = new AbstractLookup(ic);
     }
 
-    @Override
     public void addProject(Project project) {
         if (!projects.contains(project)) {
             projects.add(project);
@@ -55,7 +54,6 @@ public class ProjectsImpl implements Projects, Lookup.Provider, Serializable {
         }
     }
 
-    @Override
     public void removeProject(Project project) {
         projects.remove(project);
         ic.remove(project);
@@ -77,7 +75,7 @@ public class ProjectsImpl implements Projects, Lookup.Provider, Serializable {
         ic.set(projects, null);
     }
 
-    public Project getCurrentProject() {
+    public ProjectImpl getCurrentProject() {
         return currentProject;
     }
 
@@ -85,7 +83,7 @@ public class ProjectsImpl implements Projects, Lookup.Provider, Serializable {
         return currentProject != null;
     }
 
-    public void setCurrentProject(Project currentProject) {
+    public void setCurrentProject(ProjectImpl currentProject) {
         this.currentProject = currentProject;
     }
 

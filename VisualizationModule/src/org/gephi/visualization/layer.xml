@@ -18,6 +18,35 @@
             </file>
         </folder>
     </folder>
+    <folder name="OptionsDialog">
+        <folder name="VisualizationOptionsCategory">
+            <file name="org-gephi-visualization-options-DefaultAdvancedOption.instance">
+                <attr name="controller" newvalue="org.gephi.visualization.options.DefaultOptionsPanelController"/>
+                <attr name="displayName" bundlevalue="org.gephi.visualization.options.Bundle#AdvancedOption_DisplayName_Default"/>
+                <attr name="instanceCreate" methodvalue="org.netbeans.spi.options.AdvancedOption.createSubCategory"/>
+                <attr name="keywords" bundlevalue="org.gephi.visualization.options.Bundle#AdvancedOption_Keywords_Default"/>
+                <attr name="keywordsCategory" stringvalue="VisualizationOptionsCategory/null"/>
+                <attr name="toolTip" bundlevalue="org.gephi.visualization.options.Bundle#AdvancedOption_Tooltip_Default"/>
+            </file>
+            <file name="org-gephi-visualization-options-OpenGLAdvancedOption.instance">
+                <attr name="controller" newvalue="org.gephi.visualization.options.OpenGLOptionsPanelController"/>
+                <attr name="displayName" bundlevalue="org.gephi.visualization.options.Bundle#AdvancedOption_DisplayName_OpenGL"/>
+                <attr name="instanceCreate" methodvalue="org.netbeans.spi.options.AdvancedOption.createSubCategory"/>
+                <attr name="keywords" bundlevalue="org.gephi.visualization.options.Bundle#AdvancedOption_Keywords_OpenGL"/>
+                <attr name="keywordsCategory" stringvalue="VisualizationOptionsCategory/null"/>
+                <attr name="toolTip" bundlevalue="org.gephi.visualization.options.Bundle#AdvancedOption_Tooltip_OpenGL"/>
+            </file>
+        </folder>
+        <file name="VisualizationOptionsCategory.instance">
+            <attr name="advancedOptionsFolder" stringvalue="OptionsDialog/VisualizationOptionsCategory"/>
+            <attr name="categoryName" bundlevalue="org.gephi.visualization.options.Bundle#OptionsCategory_Name_Visualization"/>
+            <attr name="iconBase" stringvalue="org/gephi/visualization/options/optionDialog_viz_name.png"/>
+            <attr name="instanceCreate" methodvalue="org.netbeans.spi.options.OptionsCategory.createCategory"/>
+            <attr name="keywords" bundlevalue="org.gephi.visualization.options.Bundle#OptionsCategory_Keywords_Visualization"/>
+            <attr name="keywordsCategory" stringvalue="Visualization"/>
+            <attr name="title" bundlevalue="org.gephi.visualization.options.Bundle#OptionsCategory_Title_Visualization"/>
+        </file>
+    </folder>
     <folder name="Windows2">
         <folder name="Components">
             <file name="GraphTopComponent.settings" url="GraphTopComponentSettings.xml"/>

@@ -20,10 +20,16 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.hierarchy;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import org.gephi.visualization.api.PropertiesBarAddon;
@@ -34,23 +40,41 @@ import org.gephi.visualization.api.PropertiesBarAddon;
  */
 public class HierarchyPropertyBarAddon implements PropertiesBarAddon {
 
-    public JPanel getPanel() {
-        return new HierarchyAddonPanel();
+    public JComponent getComponent() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0)) {
+
+            @Override
+            public void setEnabled(boolean enabled) {
+                for (Component c : getComponents()) {
+                    c.setEnabled(enabled);
+                }
+                setOpaque(enabled);
+            }
+        };
+        panel.add(new HierarchyAddonButton());
+        panel.setBackground(Color.WHITE);
+        return panel;
     }
 
-    private static class HierarchyAddonPanel extends JPanel {
+    private static class HierarchyAddonButton extends JButton {
 
-        public HierarchyAddonPanel() {
-            JButton btn = new JButton("Hierarchy");
-            btn.setMargin(new Insets(0, 14, 0, 14));
-            btn.addActionListener(new ActionListener() {
+        public HierarchyAddonButton() {
+            super("Hierarchy");
+            setOpaque(false);
+            setMargin(new Insets(0, 10, 0, 10));
+            setFocusPainted(false);
+            setPreferredSize(new Dimension(95, 28));
+            setContentAreaFilled(false);
+            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/hierarchy/resources/bulb.png"))); // NOI18N
+            setBorder(null);
+            addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
                     JPopupMenu menu = createPopup();
-                    menu.show(HierarchyAddonPanel.this, HierarchyAddonPanel.this.getWidth() - menu.getPreferredSize().width, HierarchyAddonPanel.this.getHeight());
+                    menu.show(HierarchyAddonButton.this, HierarchyAddonButton.this.getWidth() - menu.getPreferredSize().width, HierarchyAddonButton.this.getHeight());
                 }
             });
-            add(btn);
         }
 
         private JPopupMenu createPopup() {

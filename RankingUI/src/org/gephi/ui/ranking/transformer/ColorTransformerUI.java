@@ -24,17 +24,19 @@ import org.gephi.ui.ranking.TransformerUI;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import org.gephi.ranking.api.ColorTransformer;
+import org.gephi.ranking.api.ObjectColorTransformer;
 import org.gephi.ranking.api.Ranking;
 import org.gephi.ranking.api.RankingController;
 import org.gephi.ranking.api.Transformer;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service = TransformerUI.class)
 public class ColorTransformerUI implements TransformerUI {
 
     public Icon getIcon() {
@@ -54,12 +56,12 @@ public class ColorTransformerUI implements TransformerUI {
     }
 
     public Class getTransformerClass() {
-        return ColorTransformer.class;
+        return ObjectColorTransformer.class;
     }
 
     public Transformer buildTransformer(Ranking ranking) {
         RankingController rc = Lookup.getDefault().lookup(RankingController.class);
-        return rc.getColorTransformer(ranking);
+        return rc.getObjectColorTransformer(ranking);
     }
 
     public JPanel getPanel(Transformer transformer, Ranking ranking) {

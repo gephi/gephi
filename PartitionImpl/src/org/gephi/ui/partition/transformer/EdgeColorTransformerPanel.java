@@ -20,14 +20,101 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.partition.transformer;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import net.java.dev.colorchooser.ColorChooser;
+import org.gephi.partition.api.Part;
+import org.gephi.partition.api.Partition;
+import org.gephi.partition.api.Transformer;
+import org.gephi.partition.transformer.EdgeColorTransformer;
+import org.gephi.ui.utils.PaletteUtils;
+import org.openide.util.NbBundle;
+
 /**
  *
  * @author Mathieu Bastian
  */
 public class EdgeColorTransformerPanel extends javax.swing.JPanel {
 
+    private EdgeColorTransformer edgeColorTransformer;
+    private Partition partition;
+    private JPopupMenu popupMenu;
+
     public EdgeColorTransformerPanel() {
         initComponents();
+        createPopup();
+        addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (edgeColorTransformer != null) {
+                    showPopup(e);
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                showPopup(e);
+            }
+
+            private void showPopup(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
+    }
+
+    public void setup(Partition partition, Transformer transformer) {
+        removeAll();
+        edgeColorTransformer = (EdgeColorTransformer) transformer;
+        if (edgeColorTransformer.getMap().isEmpty()) {
+            List<Color> colors = PaletteUtils.getSequenceColors(partition.getPartsCount());
+            int i = 0;
+            for (Part p : partition.getParts()) {
+                edgeColorTransformer.getMap().put(p.getValue(), colors.get(i));
+                i++;
+            }
+        }
+
+        this.partition = partition;
+        for (final Part p : partition.getParts()) {
+            JLabel partLabel = new JLabel(p.getDisplayName());
+            add(partLabel);
+            final ColorChooser colorChooser = new ColorChooser(edgeColorTransformer.getMap().get(p.getValue()));
+            colorChooser.setPreferredSize(new Dimension(16, 16));
+            colorChooser.setMaximumSize(new Dimension(16, 16));
+            colorChooser.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    edgeColorTransformer.getMap().put(p.getValue(), colorChooser.getColor());
+                }
+            });
+            add(colorChooser, "wrap");
+        }
+    }
+
+    private void createPopup() {
+        popupMenu = new JPopupMenu();
+        JMenuItem randomizeItem = new JMenuItem(NbBundle.getMessage(EdgeColorTransformerPanel.class, "EdgeColorTransformerPanel.action.randomize"));
+        randomizeItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                edgeColorTransformer.getMap().clear();
+                setup(partition, edgeColorTransformer);
+                revalidate();
+                repaint();
+            }
+        });
+        popupMenu.add(randomizeItem);
     }
 
     /** This method is called from within the constructor to
@@ -39,28 +126,17 @@ public class EdgeColorTransformerPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(EdgeColorTransformerPanel.class, "EdgeColorTransformerPanel.jLabel1.text")); // NOI18N
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(241, Short.MAX_VALUE))
+            .addGap(0, 301, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(152, Short.MAX_VALUE))
+            .addGap(0, 177, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

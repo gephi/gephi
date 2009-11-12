@@ -35,14 +35,15 @@ import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.util.actions.SystemAction;
 
-/**
- *
- * @author Mathieu Bastian
- */
 public final class OpenProject extends SystemAction {
 
     private static final String LAST_PATH = "OpenProject_Last_Path";
     private static final String LAST_PATH_DEFAULT = "OpenProject_Last_Path_Default";
+
+    @Override
+    public boolean isEnabled() {
+        return Lookup.getDefault().lookup(ProjectController.class).canOpenProject();
+    }
 
     public void actionPerformed(ActionEvent e) {
 

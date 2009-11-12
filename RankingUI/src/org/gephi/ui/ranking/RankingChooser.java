@@ -54,7 +54,6 @@ public class RankingChooser extends javax.swing.JPanel {
     private JPanel centerPanel;
     private Ranking selectedRanking;
     private TransformerUI[] transformerUIs;
-
     //Spline
     private SplineEditor splineEditor;
     private org.jdesktop.animation.timing.interpolation.Interpolator interpolator;
@@ -96,9 +95,9 @@ public class RankingChooser extends javax.swing.JPanel {
         modelUI.addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals("ranking") ||
-                        evt.getPropertyName().equals("nodeTransformer") ||
-                        evt.getPropertyName().equals("edgeTransformer")) {
+                if (evt.getPropertyName().equals("ranking")
+                        || evt.getPropertyName().equals("nodeTransformer")
+                        || evt.getPropertyName().equals("edgeTransformer")) {
                     refreshModel();
                 }
             }
@@ -113,7 +112,7 @@ public class RankingChooser extends javax.swing.JPanel {
                 Transformer transformer = getSelectedTransformer();
                 if (transformer != null) {
                     RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
-                    if(interpolator!=null) {
+                    if (interpolator != null) {
                         transformer.setInterpolator(new org.gephi.ranking.api.Interpolator() {
 
                             public float interpolate(float x) {

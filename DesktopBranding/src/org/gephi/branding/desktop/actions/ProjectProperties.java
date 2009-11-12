@@ -33,10 +33,6 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.SystemAction;
 
-/**
- *
- * @author Mathieu Bastian
- */
 public class ProjectProperties extends SystemAction {
 
     @Override
@@ -48,6 +44,11 @@ public class ProjectProperties extends SystemAction {
     public HelpCtx getHelpCtx() {
         return null;
     }
+    @Override
+    public boolean isEnabled() {
+        return Lookup.getDefault().lookup(ProjectController.class).canProjectProperties();
+    }
+
 
     @Override
     protected String iconResource() {
@@ -61,11 +62,11 @@ public class ProjectProperties extends SystemAction {
         ProjectPropertiesUI ui = Lookup.getDefault().lookup(ProjectPropertiesUI.class);
         if (ui != null) {
             JPanel panel = ui.getPanel();
-            ui.load(project);
+            ui.setup(project);
             DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(ProjectProperties.class, "ProjectProperties_dialog_title"));
             Object result = DialogDisplayer.getDefault().notify(dd);
             if (result == NotifyDescriptor.OK_OPTION) {
-                ui.save(project);
+                ui.unsetup(project);
             }
         }
     }

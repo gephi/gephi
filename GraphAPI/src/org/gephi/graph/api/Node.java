@@ -38,13 +38,7 @@ public interface Node {
 
     /**
      * Get the node <code>pre</code> number.
-     * @return the nodes <code>pre</code> number
+     * @return the nodes <code>pre</code> order number
      */
     public int getPre();
-
-    /**
-     * Get the node <code>pre</code> number.
-     * @return the nodes <code>pre</code> number
-     */
-    public int getPost();
 }

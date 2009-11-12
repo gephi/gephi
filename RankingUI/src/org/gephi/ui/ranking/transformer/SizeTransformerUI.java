@@ -24,17 +24,19 @@ import org.gephi.ui.ranking.TransformerUI;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import org.gephi.ranking.api.ObjectSizeTransformer;
 import org.gephi.ranking.api.Ranking;
 import org.gephi.ranking.api.RankingController;
-import org.gephi.ranking.api.SizeTransformer;
 import org.gephi.ranking.api.Transformer;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service = TransformerUI.class)
 public class SizeTransformerUI implements TransformerUI {
 
     public Icon getIcon() {
@@ -50,7 +52,7 @@ public class SizeTransformerUI implements TransformerUI {
     }
 
     public boolean isEdgeTransformer() {
-        return false;
+        return true;
     }
 
     public JPanel getPanel(Transformer transformer, Ranking ranking) {
@@ -58,11 +60,11 @@ public class SizeTransformerUI implements TransformerUI {
     }
 
     public Class getTransformerClass() {
-        return SizeTransformer.class;
+        return ObjectSizeTransformer.class;
     }
 
     public Transformer buildTransformer(Ranking ranking) {
         RankingController rc = Lookup.getDefault().lookup(RankingController.class);
-        return rc.getSizeTransformer(ranking);
+        return rc.getObjectSizeTransformer(ranking);
     }
 }

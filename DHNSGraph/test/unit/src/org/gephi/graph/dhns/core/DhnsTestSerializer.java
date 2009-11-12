@@ -68,9 +68,9 @@ public class DhnsTestSerializer {
     public void setUp() {
         //Graph 1 - Multilevel sample without edges
         DhnsGraphController controller1 = new DhnsGraphController();
-        dhns1 = new Dhns(controller1);
+        dhns1 = new Dhns(controller1, null);
         graph1 = new HierarchicalDirectedGraphImpl(dhns1, dhns1.getGraphStructure());
-        GraphFactoryImpl factory1 = controller1.factory();
+        GraphFactoryImpl factory1 = dhns1.factory();
 
         AbstractNode nodeA = factory1.newNode();
         AbstractNode nodeB = factory1.newNode();
@@ -87,9 +87,9 @@ public class DhnsTestSerializer {
         //Graph2 - Directed sample with edges
         nodeMap2 = new HashMap<String, Node>();
         DhnsGraphController controller2 = new DhnsGraphController();
-        dhns2 = new Dhns(controller2);
+        dhns2 = new Dhns(controller2, null);
         graph2 = new HierarchicalDirectedGraphImpl(dhns2, dhns2.getGraphStructure());
-        GraphFactoryImpl factory2 = controller2.factory();
+        GraphFactoryImpl factory2 = dhns2.factory();
 
         for (int i = 0; i < 10; i++) {
             Node node = factory2.newNode();
@@ -149,7 +149,7 @@ public class DhnsTestSerializer {
         DHNSSerializer dHNSSerializer = new DHNSSerializer();
         Element e1 = dHNSSerializer.writeDhns(dHNSSerializer.createDocument(), dhns2);
         String s1 = printXML(e1);
-        Dhns d2 = new Dhns(new DhnsGraphController());
+        Dhns d2 = new Dhns(new DhnsGraphController(), null);
         dHNSSerializer.readDhns(e1, d2);
         Element e2 = dHNSSerializer.writeDhns(dHNSSerializer.createDocument(), d2);
         String s2 = printXML(e2);

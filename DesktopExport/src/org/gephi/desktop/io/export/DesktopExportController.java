@@ -45,14 +45,13 @@ import org.gephi.io.exporter.FileType;
 import org.gephi.io.exporter.GraphFileExporter;
 import org.gephi.io.exporter.TextExporter;
 import org.gephi.io.exporter.XMLExporter;
-import org.gephi.project.api.ProjectController;
 import org.gephi.ui.exporter.ExporterUI;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
-import org.gephi.workspace.api.Workspace;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
@@ -99,7 +98,7 @@ public class DesktopExportController implements ExportController {
             } else if (exporter instanceof XMLExporter) {
                 exportXML(exporter, fileObject, graph);
             }
-
+            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopExportController.class, "DesktopExportController.status.exportSuccess", fileObject.getNameExt()));
         } catch (Exception ex) {
             NotifyDescriptor.Message e = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
             DialogDisplayer.getDefault().notifyLater(e);

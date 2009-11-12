@@ -37,11 +37,11 @@ public class ProjectPropertiesUIImpl implements ProjectPropertiesUI {
         return panel;
     }
 
-    public void load(Project project) {
+    public void setup(Project project) {
         panel.load(project);
     }
 
-    public void save(Project project) {
+    public void unsetup(Project project) {
         panel.save(project);
         panel = null;
     }

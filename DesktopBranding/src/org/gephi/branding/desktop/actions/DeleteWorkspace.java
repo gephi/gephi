@@ -27,15 +27,16 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.SystemAction;
 
-/**
- *
- * @author Mathieu Bastian
- */
 public class DeleteWorkspace extends SystemAction {
 
     public void actionPerformed(ActionEvent e) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.deleteWorkspace(pc.getCurrentWorkspace());
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return Lookup.getDefault().lookup(ProjectController.class).canDeleteWorkspace();
     }
 
     @Override

@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module: org.gephi.project.controller
-OpenIDE-Module-Layer: org/gephi/project/controller/layer.xml
-OpenIDE-Module-Localizing-Bundle: org/gephi/project/controller/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
-

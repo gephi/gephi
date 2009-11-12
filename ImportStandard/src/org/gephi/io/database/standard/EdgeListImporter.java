@@ -26,7 +26,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.properties.EdgeProperties;
@@ -112,7 +112,7 @@ public class EdgeListImporter implements DatabaseImporter {
 
         ResultSet rs = s.getResultSet();
         findNodeAttributesColumns(rs);
-        AttributeClass nodeClass = container.getAttributeManager().getNodeClass();
+        AttributeTable nodeClass = container.getAttributeModel().getNodeTable();
         ResultSetMetaData metaData = rs.getMetaData();
         int columnsCount = metaData.getColumnCount();
         int count = 0;
@@ -125,7 +125,7 @@ public class EdgeListImporter implements DatabaseImporter {
                     injectNodeProperty(p, rs, i + 1, node);
                 } else {
                     //Inject node attributes
-                    AttributeColumn col = nodeClass.getAttributeColumn(columnName);
+                    AttributeColumn col = nodeClass.getColumn(columnName);
                     injectNodeAttribute(rs, i + 1, col, node);
                 }
             }
@@ -154,7 +154,7 @@ public class EdgeListImporter implements DatabaseImporter {
         }
         ResultSet rs = s.getResultSet();
         findEdgeAttributesColumns(rs);
-        AttributeClass edgeClass = container.getAttributeManager().getEdgeClass();
+        AttributeTable edgeClass = container.getAttributeModel().getEdgeTable();
         ResultSetMetaData metaData = rs.getMetaData();
         int columnsCount = metaData.getColumnCount();
         int count = 0;
@@ -167,7 +167,7 @@ public class EdgeListImporter implements DatabaseImporter {
                     injectEdgeProperty(p, rs, i + 1, edge);
                 } else {
                     //Inject edge attributes
-                    AttributeColumn col = edgeClass.getAttributeColumn(columnName);
+                    AttributeColumn col = edgeClass.getColumn(columnName);
                     injectEdgeAttribute(rs, i + 1, col, edge);
                 }
             }
@@ -270,7 +270,7 @@ public class EdgeListImporter implements DatabaseImporter {
     }
 
     private void injectNodeAttribute(ResultSet rs, int columnIndex, AttributeColumn column, NodeDraft draft) {
-        switch (column.getAttributeType()) {
+        switch (column.getType()) {
             case BOOLEAN:
                 try {
                     boolean val = rs.getBoolean(columnIndex);
@@ -327,7 +327,7 @@ public class EdgeListImporter implements DatabaseImporter {
     }
 
     private void injectEdgeAttribute(ResultSet rs, int columnIndex, AttributeColumn column, EdgeDraft draft) {
-        switch (column.getAttributeType()) {
+        switch (column.getType()) {
             case BOOLEAN:
                 try {
                     boolean val = rs.getBoolean(columnIndex);
@@ -386,7 +386,7 @@ public class EdgeListImporter implements DatabaseImporter {
     private void findNodeAttributesColumns(ResultSet rs) throws SQLException {
         ResultSetMetaData metaData = rs.getMetaData();
         int columnsCount = metaData.getColumnCount();
-        AttributeClass nodeClass = container.getAttributeManager().getNodeClass();
+        AttributeTable nodeClass = container.getAttributeModel().getNodeTable();
         for (int i = 0; i < columnsCount; i++) {
             String columnName = metaData.getColumnLabel(i + 1);
             NodeProperties p = database.getPropertiesAssociations().getNodeProperty(columnName);
@@ -424,7 +424,7 @@ public class EdgeListImporter implements DatabaseImporter {
                         break;
                 }
                 report.log("Node attribute found: " + columnName + "(" + type + ")");
-                nodeClass.addAttributeColumn(columnName, type);
+                nodeClass.addColumn(columnName, type);
             }
         }
     }
@@ -432,7 +432,7 @@ public class EdgeListImporter implements DatabaseImporter {
     private void findEdgeAttributesColumns(ResultSet rs) throws SQLException {
         ResultSetMetaData metaData = rs.getMetaData();
         int columnsCount = metaData.getColumnCount();
-        AttributeClass edgeClass = container.getAttributeManager().getEdgeClass();
+        AttributeTable edgeClass = container.getAttributeModel().getEdgeTable();
         for (int i = 0; i < columnsCount; i++) {
             String columnName = metaData.getColumnLabel(i + 1);
             EdgeProperties p = database.getPropertiesAssociations().getEdgeProperty(columnName);
@@ -470,7 +470,7 @@ public class EdgeListImporter implements DatabaseImporter {
                 }
 
                 report.log("Edge attribute found: " + columnName + "(" + type + ")");
-                edgeClass.addAttributeColumn(columnName, type);
+                edgeClass.addColumn(columnName, type);
             }
         }
     }

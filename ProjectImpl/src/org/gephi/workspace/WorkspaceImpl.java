@@ -26,7 +26,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.project.api.Project;
 import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.api.WorkspaceData;
+import org.openide.util.Lookup;
+import org.openide.util.lookup.AbstractLookup;
+import org.openide.util.lookup.InstanceContent;
 
 /**
  *
@@ -34,110 +36,31 @@ import org.gephi.workspace.api.WorkspaceData;
  */
 public class WorkspaceImpl implements Workspace {
 
-    public enum Status {
+    private transient InstanceContent instanceContent;
+    private transient Lookup lookup;
 
-        OPEN, CLOSED, INVALID
-    };
-    private static int count = 0;
-    private Project project;
-    private String name;
-    private Status status = Status.CLOSED;
-    private String source;
-
-    //Data
-    private transient WorkspaceDataImpl workspaceDataImpl = new WorkspaceDataImpl();
-
-    //Lookup
-    private transient List<ChangeListener> listeners = new ArrayList<ChangeListener>();
-
-    public WorkspaceImpl() {
-        this("Workspace " + (count++));
+    public WorkspaceImpl(Project project) {
+        init(project);
     }
 
-    public WorkspaceImpl(String name) {
-        this.name = name;
+    public void init(Project project) {
+        instanceContent = new InstanceContent();
+        lookup = new AbstractLookup(instanceContent);
+
+        //Init Default Content
+        WorkspaceInformationImpl workspaceInformationImpl = new WorkspaceInformationImpl(project);
+        add(workspaceInformationImpl);
     }
 
-    public WorkspaceData getWorkspaceData() {
-        return workspaceDataImpl;
+    public void add(Object instance) {
+        instanceContent.add(instance);
     }
 
-    @Override
-    public String toString() {
-        return name;
+    public void remove(Object instance) {
+        instanceContent.remove(instance);
     }
 
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-        fireChangeEvent();
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public boolean hasSource() {
-        return source != null;
-    }
-
-    public void open() {
-        this.status = Status.OPEN;
-        fireChangeEvent();
-    }
-
-    public void close() {
-        this.status = Status.CLOSED;
-        fireChangeEvent();
-    }
-
-    public void invalid() {
-        this.status = Status.INVALID;
-    }
-
-    public boolean isOpen() {
-        return status == Status.OPEN;
-    }
-
-    public boolean isClosed() {
-        return status == Status.CLOSED;
-    }
-
-    public boolean isInvalid() {
-        return status == Status.INVALID;
-    }
-
-    public void addChangeListener(ChangeListener listener) {
-        listeners.add(listener);
-    }
-
-    public void removeChangeListener(ChangeListener listener) {
-        listeners.remove(listener);
-    }
-
-    public void fireChangeEvent() {
-        ChangeEvent event = new ChangeEvent(this);
-        for (ChangeListener listener : listeners) {
-            listener.stateChanged(event);
-        }
+    public Lookup getLookup() {
+        return lookup;
     }
 }

@@ -29,11 +29,13 @@ import org.gephi.partition.api.TransformerBuilder;
 import org.gephi.partition.api.TransformerUI;
 import org.gephi.partition.transformer.EdgeColorTransformer;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service=TransformerBuilder.class)
 public class EdgeColorTransformerBuilder implements TransformerBuilder.Edge {
 
     public Transformer getTransformer() {
@@ -62,6 +64,7 @@ public class EdgeColorTransformerBuilder implements TransformerBuilder.Edge {
         }
 
         public void setup(Partition partition, Transformer transformer) {
+            panel.setup(partition, transformer);
         }
 
         public void unsetup() {
