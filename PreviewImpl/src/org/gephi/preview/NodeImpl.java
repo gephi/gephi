@@ -1,13 +1,13 @@
 package org.gephi.preview;
 
 import org.gephi.preview.api.Node;
+import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.color.Color;
 import org.gephi.preview.api.color.colorizer.NodeColorizerClient;
 import org.gephi.preview.color.SimpleColor;
-import org.gephi.preview.supervisor.NodeLabelBorderSupervisor;
-import org.gephi.preview.supervisor.NodeLabelSupervisor;
-import org.gephi.preview.supervisor.NodeSupervisor;
+import org.gephi.preview.supervisor.NodeSupervisorImpl;
 import org.gephi.preview.util.HolderImpl;
+import org.openide.util.Lookup;
 import processing.core.PVector;
 
 /**
@@ -16,7 +16,6 @@ import processing.core.PVector;
  */
 public class NodeImpl implements Node, NodeColorizerClient {
 
-    private final NodeSupervisor supervisor;
     private final GraphImpl parent;
     private final PVector position;
     private final Float radius;
@@ -29,7 +28,6 @@ public class NodeImpl implements Node, NodeColorizerClient {
 
     public NodeImpl(GraphImpl parent, String label, float x, float y, float radius, float r, float g, float b) {
         this.parent = parent;
-        this.supervisor = parent.getSupervisor().getNodeSupervisor();
         this.position = new PVector(x, y);
         this.radius = radius;
         this.originalColor = new SimpleColor(r, g, b, 0);
@@ -42,23 +40,21 @@ public class NodeImpl implements Node, NodeColorizerClient {
         bottomRightPosition = position.get();
         bottomRightPosition.add(radius, radius, 0);
 
-        supervisor.addNode(this);
+        getNodeSupervisor().addNode(this);
     }
+
+    /**
+	 * Returns the node supervisor.
+	 *
+	 * @return the controller's node supervisor
+	 */
+	public NodeSupervisorImpl getNodeSupervisor() {
+		PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+		return (NodeSupervisorImpl) controller.getNodeSupervisor();
+	}
 
     public GraphImpl getParentGraph() {
         return parent;
-    }
-
-    public NodeSupervisor getSupervisor() {
-        return supervisor;
-    }
-    
-    public NodeLabelSupervisor getLabelSupervisor() {
-        return supervisor.getNodeLabelSupervisor();
-    }
-    
-    public NodeLabelBorderSupervisor getLabelBorderSupervisor() {
-        return supervisor.getNodeLabelBorderSupervisor();
     }
 
     public final PVector getPosition() {
@@ -109,18 +105,18 @@ public class NodeImpl implements Node, NodeColorizerClient {
     }
 
     public Color getBorderColor() {
-        return supervisor.getNodeBorderColorizer().getColor();
+        return getNodeSupervisor().getNodeBorderColorizer().getColor();
     }
 
     public Float getBorderWidth() {
-        return supervisor.getNodeBorderWidth();
+        return getNodeSupervisor().getNodeBorderWidth();
     }
 
     public Boolean showLabels() {
-        return supervisor.getNodeLabelSupervisor().getShowNodeLabels();
+        return getNodeSupervisor().getShowNodeLabels();
     }
 
     public Boolean showLabelBorders() {
-        return supervisor.getNodeLabelBorderSupervisor().getShowNodeLabelBorders();
+        return getNodeSupervisor().getShowNodeLabelBorders();
     }
 }

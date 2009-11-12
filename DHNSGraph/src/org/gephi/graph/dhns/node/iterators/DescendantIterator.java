@@ -25,6 +25,8 @@ import org.gephi.graph.dhns.core.DurableTreeList;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Predicate;
+import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.graph.dhns.node.AbstractNode;
 
 /**
@@ -38,36 +40,59 @@ public class DescendantIterator extends AbstractNodeIterator implements Iterator
     protected int treeSize;
     protected DurableTreeList treeList;
     protected int nextIndex;
-    protected DurableTreeList.DurableAVLNode next;
+    protected int diffIndex;
+    protected DurableAVLNode currentNode;
+    protected boolean loopStart = true;
 
-    public DescendantIterator(TreeStructure treeStructure) {
+    //Proposition
+    protected Predicate<AbstractNode> predicate;
+
+    public DescendantIterator(TreeStructure treeStructure, Predicate<AbstractNode> predicate) {
         this.treeList = treeStructure.getTree();
+        nextIndex = 0;
+        diffIndex = 2;
         treeSize = treeList.size();
+        this.predicate = predicate;
     }
 
-    public DescendantIterator(TreeStructure treeStructure, AbstractNode node) {
-        this(treeStructure);
+    public DescendantIterator(TreeStructure treeStructure, AbstractNode node, Predicate<AbstractNode> proposition) {
+        this(treeStructure, proposition);
         setNode(node);
     }
 
     public void setNode(AbstractNode node) {
         nextIndex = node.getPre() + 1;
         treeSize = node.getPre() + node.size + 1;
+        diffIndex = 2;
     }
 
     public boolean hasNext() {
-        return (nextIndex < treeSize);
+        while (loopStart || !predicate.evaluate(currentNode.getValue())) {
+
+            if (!loopStart) {
+                nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
+                diffIndex = nextIndex - currentNode.getValue().pre;
+            }
+            loopStart = false;
+
+            if (nextIndex < treeSize) {
+                if (diffIndex > 1) {
+                    currentNode = treeList.getNode(nextIndex);
+                } else {
+                    currentNode = currentNode.next();
+                }
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 
     public AbstractNode next() {
-        if (next == null) {
-            next = treeList.getNode(nextIndex);
-        } else {
-            next = next.next();
-        }
-        AbstractNode value = next.getValue();
-        ++nextIndex;
-        return value;
+        nextIndex++;
+        diffIndex = 1;
+        loopStart = true;
+        return currentNode.getValue();
     }
 
     public void remove() {

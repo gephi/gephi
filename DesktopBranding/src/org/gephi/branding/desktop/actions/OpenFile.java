@@ -25,6 +25,7 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import org.gephi.io.importer.FileType;
 import org.gephi.io.importer.ImportController;
+import org.gephi.project.api.ProjectController;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -34,10 +35,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.util.actions.SystemAction;
 
-/**
- *
- * @author Mathieu Bastian
- */
 public class OpenFile extends SystemAction {
 
     private static final String LAST_PATH = "OpenFile_Last_Path";
@@ -51,6 +48,11 @@ public class OpenFile extends SystemAction {
     @Override
     public HelpCtx getHelpCtx() {
         return null;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return Lookup.getDefault().lookup(ProjectController.class).canOpenFile();
     }
 
     @Override

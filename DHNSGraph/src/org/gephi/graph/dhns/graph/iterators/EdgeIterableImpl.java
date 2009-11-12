@@ -26,6 +26,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.EdgeIterator;
 import org.gephi.graph.api.Predicate;
+import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 
 /**
@@ -44,11 +45,11 @@ public class EdgeIterableImpl implements EdgeIterable {
         this.iterator = new EdgeIteratorImpl(iterator, lock);
     }
 
-    public EdgeIterableImpl(AbstractEdgeIterator iterator, Lock lock, Predicate<Edge> predicate) {
+    public EdgeIterableImpl(AbstractEdgeIterator iterator, Lock lock, Predicate<AbstractEdge> predicate) {
         this.iterator = new FilteredEdgeIteratorImpl(iterator, lock, predicate);
     }
 
-    public EdgeIterableImpl(EdgeIterableImpl iterable, Predicate<Edge> predicate) {
+    public EdgeIterableImpl(EdgeIterableImpl iterable, Predicate<AbstractEdge> predicate) {
         this(iterable.getIterator().getIterator(), iterable.getIterator().getLock(), predicate);
     }
 

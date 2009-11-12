@@ -1,19 +1,24 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+Copyright 2008 WebAtlas
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
+Website : http://www.gephi.org
 
-/*
- * HitsPanel.java
- *
- * Created on Jun 23, 2009, 11:58:10 AM
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics.ui;
-
-import javax.swing.JPanel;
-import org.gephi.statistics.Hits;
-import org.gephi.statistics.api.Statistics;
-import org.gephi.statistics.ui.api.StatisticsUI;
 
 /**
  *
@@ -21,9 +26,28 @@ import org.gephi.statistics.ui.api.StatisticsUI;
  */
 public class HitsPanel extends javax.swing.JPanel {
 
-    /** Creates new form HitsPanel */
     public HitsPanel() {
         initComponents();
+    }
+
+    public boolean isDirected() {
+        return directedRadioButton.isSelected();
+    }
+
+    public double getEpsilon() {
+        try {
+            return Double.parseDouble(epsilonTextField.getText());
+        } catch (Exception e) {
+        }
+        return 0.0001;
+    }
+
+    public void setDirected(boolean directed) {
+        directedButtonGroup.setSelected(directed ? directedRadioButton.getModel() : undirectedRadioButton.getModel(), true);
+    }
+
+    public void setEpsilon(double epsilon) {
+        epsilonTextField.setText(Double.toString(epsilon));
     }
 
     /** This method is called from within the constructor to
@@ -35,115 +59,83 @@ public class HitsPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        directedButtonGroup = new javax.swing.ButtonGroup();
+        labelTtitle = new javax.swing.JLabel();
+        labelEpsilon = new javax.swing.JLabel();
         epsilonTextField = new javax.swing.JTextField();
-        undirectedButton = new javax.swing.JRadioButton();
-        directedButton = new javax.swing.JRadioButton();
+        undirectedRadioButton = new javax.swing.JRadioButton();
+        directedRadioButton = new javax.swing.JRadioButton();
+        separator = new javax.swing.JSeparator();
+        descriptionLabel = new org.jdesktop.swingx.JXLabel();
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18));
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.jLabel1.text")); // NOI18N
+        labelTtitle.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        labelTtitle.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.labelTtitle.text")); // NOI18N
 
-        jLabel3.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.jLabel3.text")); // NOI18N
+        labelEpsilon.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.labelEpsilon.text")); // NOI18N
 
         epsilonTextField.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.epsilonTextField.text")); // NOI18N
         epsilonTextField.setMinimumSize(new java.awt.Dimension(59, 25));
         epsilonTextField.setPreferredSize(new java.awt.Dimension(59, 25));
 
-        buttonGroup1.add(undirectedButton);
-        undirectedButton.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.undirectedButton.text")); // NOI18N
+        directedButtonGroup.add(undirectedRadioButton);
+        undirectedRadioButton.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.undirectedRadioButton.text")); // NOI18N
 
-        buttonGroup1.add(directedButton);
-        directedButton.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.directedButton.text")); // NOI18N
+        directedButtonGroup.add(directedRadioButton);
+        directedRadioButton.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.directedRadioButton.text")); // NOI18N
+
+        descriptionLabel.setLineWrap(true);
+        descriptionLabel.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.descriptionLabel.text")); // NOI18N
+        descriptionLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(90, 90, 90)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(33, 33, 33)
-                        .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel1)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(directedButton)
-                            .addComponent(undirectedButton))))
-                .addContainerGap(147, Short.MAX_VALUE))
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
+                    .addComponent(labelTtitle, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(undirectedRadioButton)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(directedRadioButton)
+                                .addGap(59, 59, 59)
+                                .addComponent(labelEpsilon)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(106, 106, 106))
+                    .addComponent(separator, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(undirectedButton)
-                .addGap(5, 5, 5)
-                .addComponent(directedButton)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3)
+                .addContainerGap()
+                .addComponent(labelTtitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(13, 13, 13)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(directedRadioButton)
+                    .addComponent(labelEpsilon)
                     .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(144, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(undirectedRadioButton)
+                .addGap(18, 18, 18)
+                .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
-    protected javax.swing.JRadioButton directedButton;
+    private org.jdesktop.swingx.JXLabel descriptionLabel;
+    private javax.swing.ButtonGroup directedButtonGroup;
+    protected javax.swing.JRadioButton directedRadioButton;
     protected javax.swing.JTextField epsilonTextField;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
-    protected javax.swing.JRadioButton undirectedButton;
+    private javax.swing.JLabel labelEpsilon;
+    private javax.swing.JLabel labelTtitle;
+    private javax.swing.JSeparator separator;
+    protected javax.swing.JRadioButton undirectedRadioButton;
     // End of variables declaration//GEN-END:variables
-
-    /**
-     *
-     */
-    public static class HitsUI implements StatisticsUI {
-
-        private HitsPanel panel;
-        private Hits hits;
-
-        public HitsUI() {
-            panel = new HitsPanel();
-        }
-
-        /**
-         *
-         */
-        public void unsetup() {
-            //Set params
-            try {
-                double epsilon = Double.parseDouble(panel.epsilonTextField.getText());
-                hits.setEpsilon(epsilon);
-                hits.setUndirected(panel.undirectedButton.isSelected());
-
-            } catch (Exception e) {
-            }
-        }
-
-        /**
-         *
-         * @return
-         */
-        public JPanel getPanel() {
-            return panel;
-        }
-
-        /**
-         *
-         * @param statistics
-         */
-        public void setup(Statistics statistics) {
-            this.hits = (Hits) statistics;
-            panel.epsilonTextField.setText("" + hits.getEpsilon());
-            panel.undirectedButton.setSelected(hits.getUndirected());
-            panel.directedButton.setSelected(!hits.getUndirected());
-        }
-    }
 }

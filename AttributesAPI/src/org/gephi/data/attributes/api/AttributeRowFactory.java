@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.data.attributes.api;
 
 /**
@@ -31,5 +30,5 @@ public interface AttributeRowFactory {
 
     public AttributeRow newEdgeRow();
 
-    public AttributeRow newRowForClass(String className);
+    public AttributeRow newRowForTable(String tableName);
 }

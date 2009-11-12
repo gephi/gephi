@@ -20,95 +20,79 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics;
 
-import javax.swing.JPanel;
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.DirectedGraph;
-import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.statistics.api.Statistics;
-import org.gephi.statistics.ui.api.StatisticsUI;
 import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 
-/**
- *
- * @author Mathieu
- */
 public class InOutDegree implements Statistics, LongTask {
 
     /** The Average Node In-Degree. */
-    private float avgInDegree;
+    private double mAvgInDegree;
     /** The Average Node Out-Degree. */
-    private float avgOutDegree;
+    private double mAvgOutDegree;
     /** Remembers if the Cancel function has been called. */
-    private boolean isCanceled;
+    private boolean mIsCanceled;
     /** Keep track of the work done. */
-    private ProgressTicket progress;
+    private ProgressTicket mProgress;
+    /**     */
+    private double mAvgDegree;
+    /**  */
+    private String mGraphRevision;
 
     /**
      *
      * @return
      */
-    public String toString() {
-        return new String("In/Out Degree");
+    public double getAverageDegree() {
+        return mAvgDegree;
     }
 
     /**
      *
-     * @param graphController
-     * @param progressMonitor
+     * @param graphModel
      */
-    public void execute(GraphController graphController) {
-        isCanceled = false;
+    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+        mIsCanceled = false;
 
         //Attributes cols
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
-        AttributeColumn inCol = nodeClass.addAttributeColumn("indegree", "In Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
-        AttributeColumn outCol = nodeClass.addAttributeColumn("outdegree", "Out Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
+        AttributeTable nodeTable = attributeModel.getNodeTable();
+        AttributeColumn inCol = nodeTable.addColumn("indegree", "In Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
+        AttributeColumn outCol = nodeTable.addColumn("outdegree", "Out Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
 
-        DirectedGraph graph = graphController.getModel().getDirectedGraphVisible();
+        DirectedGraph graph = graphModel.getDirectedGraph();
         int i = 0;
 
-        progress.start(graph.getNodeCount());
+        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
+
+        Progress.start(mProgress, graph.getNodeCount());
 
         for (Node n : graph.getNodes()) {
             AttributeRow row = (AttributeRow) n.getNodeData().getAttributes();
             row.setValue(inCol, graph.getInDegree(n));
             row.setValue(outCol, graph.getOutDegree(n));
-            avgInDegree += graph.getInDegree(n);
-            avgOutDegree += graph.getOutDegree(n);
-            if (isCanceled) {
+            mAvgInDegree += graph.getInDegree(n);
+            mAvgOutDegree += graph.getOutDegree(n);
+            if (mIsCanceled) {
                 break;
             }
             i++;
-            progress.progress(i);
+            mProgress.progress(i);
         }
-        avgInDegree /= graph.getNodeCount();
-        avgOutDegree /= graph.getNodeCount();
-    }
 
-    /**
-     *
-     * @return
-     */
-    public String getName() {
-        return NbBundle.getMessage(GraphDensity.class, "GraphDensity_name");
-    }
-
-    /**
-     *
-     * @return
-     */
-    public boolean isParamerizable() {
-        return false;
+        mAvgDegree += mAvgInDegree + mAvgOutDegree;
+        mAvgInDegree /= graph.getNodeCount();
+        mAvgOutDegree /= graph.getNodeCount();
+        mAvgDegree /= graph.getNodeCount();
     }
 
     /**
@@ -116,7 +100,21 @@ public class InOutDegree implements Statistics, LongTask {
      * @return
      */
     public String getReport() {
-        return new String("Average In Degree: " + avgInDegree + "\n Average out Degree: " + avgOutDegree);
+
+
+        String report = new String("<HTML> <BODY> <h1>In-Out Degree Report </h1> "
+                + "<hr> <br> <h2>Network Revision Number:</h2>"
+                + mGraphRevision
+                + "<br>"
+                //+"<h2> Parameters: </h2>" +
+                //"Network Interpretation:  "  +(this. ? "directed": "undirected") +"<br>"
+                + "<br> <h2> Results: </h2>"
+                + "Average In Degree: " + mAvgInDegree
+                + "<br >Average out Degree: " + mAvgOutDegree
+                + "</BODY></HTML>");
+
+        return report;
+        //return new String("Average In Degree: " + mAvgInDegree + "<br> Average out Degree: " + mAvgOutDegree);
     }
 
     /**
@@ -124,7 +122,7 @@ public class InOutDegree implements Statistics, LongTask {
      * @return
      */
     public boolean cancel() {
-        isCanceled = true;
+        mIsCanceled = true;
         return true;
     }
 
@@ -133,10 +131,6 @@ public class InOutDegree implements Statistics, LongTask {
      * @param progressTicket
      */
     public void setProgressTicket(ProgressTicket progressTicket) {
-        progress = progressTicket;
-    }
-
-    public StatisticsUI getUI() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        mProgress = progressTicket;
     }
 }

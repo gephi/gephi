@@ -28,7 +28,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
+import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
@@ -46,7 +46,7 @@ import static org.junit.Assert.*;
 public class DhnsTestDirectedGraph {
 
     private Dhns dhnsGlobal;
-    private ClusteredDirectedGraphImpl graphGlobal;
+    private HierarchicalDirectedGraphImpl graphGlobal;
     private Map<String, Node> nodeMap;
     private Map<String, Edge> edgeMap;
 
@@ -64,8 +64,8 @@ public class DhnsTestDirectedGraph {
     @Before
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
-        dhnsGlobal = new Dhns(controller);
-        graphGlobal = new ClusteredDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure(), null);
+        dhnsGlobal = new Dhns(controller, null);
+        graphGlobal = new HierarchicalDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure());
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
@@ -79,7 +79,7 @@ public class DhnsTestDirectedGraph {
             node.getNodeData().setLabel("Node " + i);
             graphGlobal.addNode(node);
             nodeMap.put(node.getNodeData().getLabel(), node);
-        //System.out.println("Node " + i + " added. Id = " + node.getId());
+            //System.out.println("Node " + i + " added. Id = " + node.getId());
         }
         //System.out.println("---End Global---");
 
@@ -197,8 +197,8 @@ public class DhnsTestDirectedGraph {
     public void testAddNode() {
         System.out.println("testAddNode");
         DhnsGraphController controller = new DhnsGraphController();
-        Dhns dhns = new Dhns(controller);
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, dhns.getGraphStructure(), null);
+        Dhns dhns = new Dhns(controller, null);
+        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure());
         TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
         GraphFactoryImpl factory = dhns.factory();
 
@@ -241,8 +241,8 @@ public class DhnsTestDirectedGraph {
     @Test
     public void testRemoveNode() {
         DhnsGraphController controller = new DhnsGraphController();
-        Dhns dhns = new Dhns(controller);
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, dhns.getGraphStructure(), null);
+        Dhns dhns = new Dhns(controller, null);
+        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure());
         TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
         GraphFactoryImpl factory = dhns.factory();
 
@@ -366,8 +366,8 @@ public class DhnsTestDirectedGraph {
     @Test
     public void testAddEdge() {
         DhnsGraphController controller = new DhnsGraphController();
-        Dhns dhns = new Dhns(controller);
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns,dhns.getGraphStructure(), null);
+        Dhns dhns = new Dhns(controller, null);
+        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure());
         TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
         GraphFactoryImpl factory = dhns.factory();
 
@@ -647,7 +647,7 @@ public class DhnsTestDirectedGraph {
         assertFalse(graphGlobal.contains(edge2));
         assertFalse(graphGlobal.contains(edge1));
         assertFalse(graphGlobal.isAdjacent(node4, node5));
-    //assertFalse(graphGlobal.isAdjacent(edge1, edge2));        //Fail because no test verifying edge belongs to the structure
+        //assertFalse(graphGlobal.isAdjacent(edge1, edge2));        //Fail because no test verifying edge belongs to the structure
     }
 
     @Test

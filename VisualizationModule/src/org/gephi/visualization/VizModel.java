@@ -26,6 +26,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.gephi.ui.utils.ColorUtils;
 import org.gephi.visualization.api.GraphDrawable;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.text.TextModel;
@@ -102,10 +103,10 @@ public class VizModel {
         cameraTarget = Arrays.copyOf(config.getDefaultCameraTarget(), 3);
         textModel = new TextModel();
         use3d = config.isDefaultUse3d();
-        lighting = config.isDefaultLighting();
-        culling = config.isDefaultCulling();
-        material = config.isDefaultMaterial();
-        rotatingEnable = config.isDefaultRotatingEnable();
+        lighting = use3d;
+        culling = use3d;
+        material = use3d;
+        rotatingEnable = use3d;
         backgroundColor = config.getDefaultBackgroundColor();
 
         showEdges = config.isDefaultShowEdges();
@@ -114,13 +115,13 @@ public class VizModel {
         hideNonSelectedEdges = config.isDefaultHideNonSelectedEdges();
         uniColorSelected = config.isDefaultUniColorSelected();
         edgeHasUniColor = config.isDefaultEdgeHasUniColor();
-        edgeUniColor = config.getDefaultEdgeUniColor();
+        edgeUniColor = config.getDefaultEdgeUniColor().getRGBComponents(null);
         adjustByText = config.isDefaultAdjustByText();
-        nodeModeler = config.getDefaultNodeModeler();
+        nodeModeler = use3d ? "CompatibilityNodeSphereModeler" : "CompatibilityNodeDiskModeler";
         edgeSelectionColor = config.isDefaultEdgeSelectionColor();
-        edgeInSelectionColor = config.getDefaultEdgeInSelectedColor();
-        edgeOutSelectionColor = config.getDefaultEdgeOutSelectedColor();
-        edgeBothSelectionColor = config.getDefaultEdgeBothSelectedColor();
+        edgeInSelectionColor = config.getDefaultEdgeInSelectedColor().getRGBComponents(null);
+        edgeOutSelectionColor = config.getDefaultEdgeOutSelectedColor().getRGBComponents(null);
+        edgeBothSelectionColor = config.getDefaultEdgeBothSelectedColor().getRGBComponents(null);
     }
 
     //GETTERS
@@ -372,30 +373,19 @@ public class VizModel {
 
         //Colors
         Element backgroundColorE = (Element) vizModelElement.getElementsByTagName("backgroundcolor").item(0);
-        backgroundColor = new Color(Integer.parseInt(backgroundColorE.getAttribute("r")),
-                Integer.parseInt(backgroundColorE.getAttribute("g")),
-                Integer.parseInt(backgroundColorE.getAttribute("b")));
+        backgroundColor = ColorUtils.decode(backgroundColorE.getAttribute("value"));
 
         Element edgeUniColorE = (Element) vizModelElement.getElementsByTagName("edgeunicolor").item(0);
-        edgeUniColor = new float[]{Float.parseFloat(edgeUniColorE.getAttribute("r")),
-                    Float.parseFloat(edgeUniColorE.getAttribute("g")),
-                    Float.parseFloat(edgeUniColorE.getAttribute("b")),
-                    Float.parseFloat(edgeUniColorE.getAttribute("a"))};
+        edgeUniColor = ColorUtils.decode(edgeUniColorE.getAttribute("value")).getRGBComponents(null);
 
         Element edgeInSelectionColorE = (Element) vizModelElement.getElementsByTagName("edgeInSelectionColor").item(0);
-        edgeInSelectionColor = new float[]{Float.parseFloat(edgeInSelectionColorE.getAttribute("r")),
-                    Float.parseFloat(edgeInSelectionColorE.getAttribute("g")),
-                    Float.parseFloat(edgeInSelectionColorE.getAttribute("b"))};
+        edgeInSelectionColor = ColorUtils.decode(edgeInSelectionColorE.getAttribute("value")).getRGBComponents(null);
 
         Element edgeOutSelectionColorE = (Element) vizModelElement.getElementsByTagName("edgeOutSelectionColor").item(0);
-        edgeOutSelectionColor = new float[]{Float.parseFloat(edgeOutSelectionColorE.getAttribute("r")),
-                    Float.parseFloat(edgeOutSelectionColorE.getAttribute("g")),
-                    Float.parseFloat(edgeOutSelectionColorE.getAttribute("b"))};
+        edgeOutSelectionColor = ColorUtils.decode(edgeOutSelectionColorE.getAttribute("value")).getRGBComponents(null);
 
         Element edgeBothSelectionColorE = (Element) vizModelElement.getElementsByTagName("edgeBothSelectionColor").item(0);
-        edgeBothSelectionColor = new float[]{Float.parseFloat(edgeBothSelectionColorE.getAttribute("r")),
-                    Float.parseFloat(edgeBothSelectionColorE.getAttribute("g")),
-                    Float.parseFloat(edgeBothSelectionColorE.getAttribute("b"))};
+        edgeBothSelectionColor = ColorUtils.decode(edgeBothSelectionColorE.getAttribute("value")).getRGBComponents(null);
 
         //Misc
         Element nodeModelerE = (Element) vizModelElement.getElementsByTagName("nodemodeler").item(0);
@@ -476,39 +466,28 @@ public class VizModel {
         vizModelE.appendChild(adjustByTextE);
 
         Element edgeSelectionColorE = document.createElement("edgeSelectionColor");
-        adjustByTextE.setAttribute("value", String.valueOf(edgeSelectionColorE));
+        edgeSelectionColorE.setAttribute("value", String.valueOf(edgeSelectionColor));
         vizModelE.appendChild(edgeSelectionColorE);
 
         //Colors
         Element backgroundColorE = document.createElement("backgroundcolor");
-        backgroundColorE.setAttribute("r", Integer.toString(backgroundColor.getRed()));
-        backgroundColorE.setAttribute("g", Integer.toString(backgroundColor.getGreen()));
-        backgroundColorE.setAttribute("b", Integer.toString(backgroundColor.getBlue()));
+        backgroundColorE.setAttribute("value", ColorUtils.encode(backgroundColor));
         vizModelE.appendChild(backgroundColorE);
 
         Element edgeUniColorE = document.createElement("edgeunicolor");
-        edgeUniColorE.setAttribute("r", Float.toString(edgeUniColor[0]));
-        edgeUniColorE.setAttribute("g", Float.toString(edgeUniColor[1]));
-        edgeUniColorE.setAttribute("b", Float.toString(edgeUniColor[2]));
-        edgeUniColorE.setAttribute("a", Float.toString(edgeUniColor[3]));
+        edgeUniColorE.setAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeUniColor)));
         vizModelE.appendChild(edgeUniColorE);
 
         Element edgeInSelectionColorE = document.createElement("edgeInSelectionColor");
-        edgeInSelectionColorE.setAttribute("r", Float.toString(edgeInSelectionColor[0]));
-        edgeInSelectionColorE.setAttribute("g", Float.toString(edgeInSelectionColor[1]));
-        edgeInSelectionColorE.setAttribute("b", Float.toString(edgeInSelectionColor[2]));
+        edgeInSelectionColorE.setAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeInSelectionColor)));
         vizModelE.appendChild(edgeInSelectionColorE);
 
         Element edgeOutSelectionColorE = document.createElement("edgeOutSelectionColor");
-        edgeOutSelectionColorE.setAttribute("r", Float.toString(edgeOutSelectionColor[0]));
-        edgeOutSelectionColorE.setAttribute("g", Float.toString(edgeOutSelectionColor[1]));
-        edgeOutSelectionColorE.setAttribute("b", Float.toString(edgeOutSelectionColor[2]));
+        edgeOutSelectionColorE.setAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeOutSelectionColor)));
         vizModelE.appendChild(edgeOutSelectionColorE);
 
-        Element edgeBothSelectionColorE = document.createElement("edgeBothSelectionColorE");
-        edgeBothSelectionColorE.setAttribute("r", Float.toString(edgeBothSelectionColor[0]));
-        edgeBothSelectionColorE.setAttribute("g", Float.toString(edgeBothSelectionColor[1]));
-        edgeBothSelectionColorE.setAttribute("b", Float.toString(edgeBothSelectionColor[2]));
+        Element edgeBothSelectionColorE = document.createElement("edgeBothSelectionColor");
+        edgeBothSelectionColorE.setAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeBothSelectionColor)));
         vizModelE.appendChild(edgeBothSelectionColorE);
 
         //Misc

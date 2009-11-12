@@ -32,10 +32,11 @@ public class TextDataImpl implements TextData {
 
     TextLine line = new TextLine();
     TextLine[] wrappedLines;
-    float r;
+    float r = -1;
     float g;
     float b;
     float a;
+    float size = 1f;
     float sizeFactor = 1f;
 
     public TextLine getLine() {
@@ -54,8 +55,12 @@ public class TextDataImpl implements TextData {
         return r > 0;
     }
 
+    public void setSize(float size) {
+        this.size = size;
+    }
+
     public void setSizeFactor(float sizeFactor) {
-        this.sizeFactor = sizeFactor;
+        this.sizeFactor = sizeFactor * size;
     }
 
     public void setColor(float r, float g, float b, float alpha) {
@@ -78,7 +83,23 @@ public class TextDataImpl implements TextData {
     }
 
     public float getSize() {
-        return sizeFactor;
+        return size;
+    }
+
+    public float getR() {
+        return r;
+    }
+
+    public float getG() {
+        return g;
+    }
+
+    public float getB() {
+        return b;
+    }
+
+    public float getAlpha() {
+        return a;
     }
 
     public static class TextLine {

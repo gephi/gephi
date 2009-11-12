@@ -24,6 +24,7 @@ import java.util.Iterator;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
@@ -43,11 +44,15 @@ public class EdgeAndMetaEdgeIterator extends AbstractEdgeIterator implements Ite
     protected AbstractEdge pointer;
     protected boolean undirected;
     protected boolean metaEdge = false;
+    protected Predicate<AbstractNode> nodePredicate;
+    protected Predicate<AbstractEdge> edgePredicate;
 
-    public EdgeAndMetaEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected) {
+    public EdgeAndMetaEdgeIterator(TreeStructure treeStructure, AbstractNodeIterator nodeIterator, boolean undirected, Predicate<AbstractNode> nodePredicate, Predicate<AbstractEdge> edgePredicate) {
         this.nodeIterator = nodeIterator;
         edgeIterator = new ParamAVLIterator<MetaEdgeImpl>();
         this.undirected = undirected;
+        this.nodePredicate = nodePredicate;
+        this.edgePredicate = edgePredicate;
     }
 
     @Override
@@ -71,6 +76,11 @@ public class EdgeAndMetaEdgeIterator extends AbstractEdgeIterator implements Ite
             }
 
             pointer = edgeIterator.next();
+            if (!metaEdge) {
+                if (!nodePredicate.evaluate(pointer.getTarget())) {
+                    pointer = null;
+                }
+            }
         }
         return true;
     }

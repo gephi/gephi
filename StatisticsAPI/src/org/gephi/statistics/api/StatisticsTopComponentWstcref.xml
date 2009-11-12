@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!DOCTYPE tc-ref PUBLIC "-//NetBeans//DTD Top Component in Mode Properties 2.0//EN" "http://www.netbeans.org/dtds/tc-ref2_0.dtd">
-<tc-ref version="2.2">
-    <module name="org.gephi.statistics.api" spec="1.0"/>
-    <tc-id id="StatisticsTopComponent" />
-    <state opened="true" />
-</tc-ref>

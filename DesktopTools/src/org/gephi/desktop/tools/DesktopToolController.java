@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
@@ -145,7 +146,12 @@ public class DesktopToolController implements ToolController {
         final Toolbar toolbar = new Toolbar();
         for (final ToolUI toolUI : toolsUI) {
             final Tool tool = toolMap.get(toolUI);
-            JToggleButton btn = new JToggleButton(toolUI.getIcon());
+            JToggleButton btn;
+            if (toolUI.getIcon() != null) {
+                btn = new JToggleButton(toolUI.getIcon());
+            } else {
+                btn = new JToggleButton(new ImageIcon(getClass().getResource("/org/gephi/desktop/tools/tool.png")));
+            }
             btn.setToolTipText(toolUI.getName() + " - " + toolUI.getDescription());
             btn.addActionListener(new ActionListener() {
 

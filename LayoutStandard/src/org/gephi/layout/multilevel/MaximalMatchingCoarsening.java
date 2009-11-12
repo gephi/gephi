@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.multilevel;
 
-import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
@@ -39,7 +38,7 @@ public class MaximalMatchingCoarsening implements MultiLevelLayout.CoarseningStr
 //        System.out.println("Topnodes: " + graph.getTopNodes().toArray().length);
 //    }
     public void coarsen(HierarchicalGraph g) {
-        ClusteredGraph graph = g.getClusteredGraph();
+        HierarchicalGraph graph = g;
         int retract = 0;
         int count = 0;
         //print(graph);

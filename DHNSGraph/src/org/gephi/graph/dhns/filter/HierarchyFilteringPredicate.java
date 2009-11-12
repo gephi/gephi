@@ -25,5 +25,4 @@ package org.gephi.graph.dhns.filter;
  * @author Mathieu Bastian
  */
 public interface HierarchyFilteringPredicate {
-
 }

@@ -137,9 +137,17 @@ public class Arrow3dModel extends Arrow2dModel {
                     b = in[2];
                 }
             } else {
-                r = 0.498f * obj.r();
-                g = 0.498f * obj.g();
-                b = 0.498f * obj.b();
+                r = edge.r();
+                if (r == -1f) {
+                    NodeData source = edge.getSource();
+                    r = 0.498f * source.r();
+                    g = 0.498f * source.g();
+                    b = 0.498f * source.b();
+                } else {
+                    g = 0.498f * edge.g();
+                    b = 0.498f * edge.b();
+                    r *= 0.498f;
+                }
             }
             gl.glColor4f(r, g, b, 1f);
         }

@@ -23,6 +23,7 @@ package org.gephi.graph.dhns.graph.iterators;
 import java.util.concurrent.locks.Lock;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Predicate;
+import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 
 /**
@@ -31,10 +32,10 @@ import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
  */
 public class FilteredEdgeIteratorImpl extends EdgeIteratorImpl {
 
-    protected Predicate<Edge> predicate;
-    protected Edge pointer;
+    protected Predicate<AbstractEdge> predicate;
+    protected AbstractEdge pointer;
 
-    public FilteredEdgeIteratorImpl(AbstractEdgeIterator iterator, Lock lock, Predicate<Edge> predicate) {
+    public FilteredEdgeIteratorImpl(AbstractEdgeIterator iterator, Lock lock, Predicate<AbstractEdge> predicate) {
         super(iterator, lock);
         this.predicate = predicate;
     }

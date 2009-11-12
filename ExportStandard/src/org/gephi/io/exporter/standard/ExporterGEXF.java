@@ -201,9 +201,9 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
 
     private Element createNodeColors(Document document, Node n) throws Exception {
         Element colorE = document.createElement("viz:color");
-        colorE.setAttribute("r", ""+(n.getNodeData().r() * 255f));
-        colorE.setAttribute("g", ""+(n.getNodeData().g() * 255f));
-        colorE.setAttribute("b", ""+(n.getNodeData().b() * 255f));
+        colorE.setAttribute("r", ""+(Math.round(n.getNodeData().r() * 255f)));
+        colorE.setAttribute("g", ""+(Math.round(n.getNodeData().g() * 255f)));
+        colorE.setAttribute("b", ""+(Math.round(n.getNodeData().b() * 255f)));
 
         return colorE;
     }

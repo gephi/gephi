@@ -24,6 +24,7 @@ import com.sun.opengl.util.GLUT;
 import java.awt.Component;
 
 import java.awt.Cursor;
+import java.awt.Dimension;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLCanvas;
 import javax.media.opengl.glu.GLU;
@@ -43,6 +44,7 @@ public class GraphCanvas extends GraphDrawableImpl {
         super();
         glCanvas = new GLCanvas(getCaps());
         super.initDrawable(glCanvas);
+        glCanvas.setMinimumSize(new Dimension(0, 0));   //Fix Canvas resize Issue
 
         //Basic init
         graphComponent = (Component) glCanvas;

@@ -29,7 +29,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
@@ -276,7 +276,6 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 String pid = nodeE.getAttribute("pid");
 
                 // parent node unknown, maybve declared after
-
                 if(!container.nodeExists(pid)) {
                     if(unknownParents.containsKey(pid)) {
                         unknownParents.get(pid).add(nodeId);
@@ -607,13 +606,13 @@ public class ImporterGEXF implements XMLImporter, LongTask {
 
             //Add as attribute
             if (colClass.equals("node")) {
-                AttributeClass nodeClass = container.getAttributeManager().getNodeClass();
-                nodeClass.addAttributeColumn(colId, colTitle, attributeType, AttributeOrigin.DATA, defaultValue);
+                AttributeTable nodeClass = container.getAttributeModel().getNodeTable();
+                nodeClass.addColumn(colId, colTitle, attributeType, AttributeOrigin.DATA, defaultValue);
                 report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_nodeattribute", colTitle, attributeType.getTypeString()));
             }
             else if (colClass.equals("edge")) {
-                AttributeClass edgeClass = container.getAttributeManager().getEdgeClass();
-                edgeClass.addAttributeColumn(colId, colTitle, attributeType, AttributeOrigin.DATA, defaultValue);
+                AttributeTable edgeClass = container.getAttributeModel().getEdgeTable();
+                edgeClass.addColumn(colId, colTitle, attributeType, AttributeOrigin.DATA, defaultValue);
                 report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_edgeattribute", colTitle, attributeType.getTypeString()));
             }
         }
@@ -640,13 +639,13 @@ public class ImporterGEXF implements XMLImporter, LongTask {
         if (!dataValue.isEmpty()) {
 
             //Data attribute value
-            AttributeColumn column = container.getAttributeManager().getNodeClass().getAttributeColumn(dataKey);
+            AttributeColumn column = container.getAttributeModel().getNodeTable().getColumn(dataKey);
             if (column != null) {
                 try {
-                    Object value = column.getAttributeType().parse(dataValue);
+                    Object value = column.getType().parse(dataValue);
 
                     //Check value
-                    if (column.getAttributeType() != AttributeType.LIST_STRING) { //otherwise this is a nonsense
+                    if (column.getType() != AttributeType.LIST_STRING) { //otherwise this is a nonsense
                         StringList options = optionsAttributes.get(dataKey);
                         if (options != null && !options.contains(value.toString())) {
                             report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_dataoptionsvalue", dataValue, nodeId, column.getTitle()), Issue.Level.SEVERE));
@@ -673,13 +672,13 @@ public class ImporterGEXF implements XMLImporter, LongTask {
         if (!dataValue.isEmpty()) {
 
             //Data attribute value
-            AttributeColumn column = container.getAttributeManager().getNodeClass().getAttributeColumn(dataKey);
+            AttributeColumn column = container.getAttributeModel().getEdgeTable().getColumn(dataKey);
             if (column != null) {
                 try {
-                    Object value = column.getAttributeType().parse(dataValue);
+                    Object value = column.getType().parse(dataValue);
 
                     //Check value
-                    if (column.getAttributeType() != AttributeType.LIST_STRING) { //otherwise this is a nonsense
+                    if (column.getType() != AttributeType.LIST_STRING) { //otherwise this is a nonsense
                         StringList options = optionsAttributes.get(dataKey);
                         if (options != null && !options.contains(value.toString())) {
                             report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_dataoptionsvalue", dataValue, edgeId, column.getTitle()), Issue.Level.SEVERE));
@@ -924,10 +923,10 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             if (!dataValue.isEmpty()) {
 
                 //Data attribute value
-                AttributeColumn column = container.getAttributeManager().getNodeClass().getAttributeColumn(dataKey);
+                AttributeColumn column = container.getAttributeModel().getNodeTable().getColumn(dataKey);
                 if (column != null) {
                     try {
-                        Object value = column.getAttributeType().parse(dataValue);
+                        Object value = column.getType().parse(dataValue);
                         nodeDraft.addAttributeValue(column, value);
                     } catch (Exception e) {
                         report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", dataKey, nodeId, column.getTitle()), Issue.Level.SEVERE));
@@ -947,10 +946,10 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             if (!dataValue.isEmpty()) {
 
                 //Data attribute value
-                AttributeColumn column = container.getAttributeManager().getNodeClass().getAttributeColumn(dataKey);
+                AttributeColumn column = container.getAttributeModel().getEdgeTable().getColumn(dataKey);
                 if (column != null) {
                     try {
-                        Object value = column.getAttributeType().parse(dataValue);
+                        Object value = column.getType().parse(dataValue);
                         edgeDraft.addAttributeValue(column, value);
                     } catch (Exception e) {
                         report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", dataKey, edgeId, column.getTitle()), Issue.Level.SEVERE));

@@ -1,43 +1,228 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+Copyright 2008 WebAtlas
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Website : http://www.gephi.org
 
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.gephi.desktop.algorithms.cluster;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.Component;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.Serializable;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
-import org.gephi.algorithms.cluster.Dendrogram;
-import org.gephi.algorithms.cluster.mcl.MarkovClustering;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.HierarchicalGraph;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.gephi.algorithms.cluster.api.Clusterer;
+import org.gephi.algorithms.cluster.api.ClustererBuilder;
+import org.gephi.algorithms.cluster.api.ClustererUI;
+import org.gephi.algorithms.cluster.api.ClusteringController;
+import org.gephi.project.api.ProjectController;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceListener;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 //import org.openide.util.Utilities;
 
-/**
- * Top component which displays something.
- */
-final class ClusteringTopComponent extends TopComponent {
+final class ClusteringTopComponent extends TopComponent implements ChangeListener {
 
     private static ClusteringTopComponent instance;
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
-
     private static final String PREFERRED_ID = "ClusteringTopComponent";
 
+    //Const
+    private final String NO_SELECTION;
+
+    //Architecture
+    private ClusteringModelImpl model;
+    private ClustererBuilder[] builders;
+
     private ClusteringTopComponent() {
+        NO_SELECTION = NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.chooser.text");
         initComponents();
         setName(NbBundle.getMessage(ClusteringTopComponent.class, "CTL_ClusteringTopComponent"));
         setToolTipText(NbBundle.getMessage(ClusteringTopComponent.class, "HINT_ClusteringTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
-        
+
+        Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
+
+            public void initialize(Workspace workspace) {
+                workspace.add(new ClusteringModelImpl());
+            }
+
+            public void select(Workspace workspace) {
+                model = workspace.getLookup().lookup(ClusteringModelImpl.class);
+                model.addChangeListener(ClusteringTopComponent.this);
+                refreshModel();
+            }
+
+            public void unselect(Workspace workspace) {
+                model.removeChangeListener(ClusteringTopComponent.this);
+                model = null;
+            }
+
+            public void close(Workspace workspace) {
+            }
+
+            public void disable() {
+                refreshModel();
+            }
+        });
+
+        initChooser();
+        refreshModel();
+    }
+
+    private void initChooser() {
+        builders = Lookup.getDefault().lookupAll(ClustererBuilder.class).toArray(new ClustererBuilder[0]);
+        DefaultComboBoxModel comboboxModel = new DefaultComboBoxModel();
+        comboboxModel.addElement(NO_SELECTION);
+        for (ClustererBuilder b : builders) {
+            comboboxModel.addElement(b);
+        }
+        algorithmComboBox.setModel(comboboxModel);
+        algorithmComboBox.setRenderer(new AlgorithmListCellRenderer());
+        algorithmComboBox.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                if (algorithmComboBox.getSelectedItem() == NO_SELECTION) {
+                    if (model.getSelectedClusterer() != null) {
+                        model.setSelectedClusterer(null);
+                    }
+                } else {
+                    ClustererBuilder selectedBuilder = (ClustererBuilder) algorithmComboBox.getSelectedItem();
+                    Clusterer savedData = getSavedClusterer(selectedBuilder);
+                    if (savedData != null) {
+                        model.setSelectedClusterer(savedData);
+                    } else {
+                        Clusterer newClusterer = selectedBuilder.getClusterer();
+                        model.addClusterer(newClusterer);
+                        model.setSelectedClusterer(newClusterer);
+                    }
+                }
+            }
+        });
+    }
+
+    private void refreshModel() {
+        if (model == null) {
+            algorithmComboBox.setEnabled(false);
+            settingsButton.setEnabled(false);
+            runButton.setEnabled(false);
+            resetLink.setEnabled(false);
+            descriptionLabel.setText("");
+            refreshResults();
+        } else {
+            algorithmComboBox.setEnabled(true);
+            if (model.getSelectedClusterer() == null) {
+                settingsButton.setEnabled(false);
+                runButton.setEnabled(false);
+                resetLink.setEnabled(false);
+                descriptionLabel.setText("");
+                algorithmComboBox.setSelectedItem(NO_SELECTION);
+                refreshResults();
+            } else {
+                ClustererBuilder selectedBuilder = getBuilder(model.getSelectedClusterer());
+                if (selectedBuilder != algorithmComboBox.getSelectedItem()) {
+                    algorithmComboBox.setSelectedItem(selectedBuilder);
+                }
+
+                descriptionLabel.setText(selectedBuilder.getDescription());
+
+                if (model.isRunning()) {
+                    algorithmComboBox.setEnabled(false);
+                    settingsButton.setEnabled(false);
+                    runButton.setEnabled(false);
+                    resetLink.setEnabled(false);
+                } else {
+                    settingsButton.setEnabled(true);
+                    runButton.setEnabled(true);
+                    resetLink.setEnabled(true);
+                    refreshResults();
+                }
+            }
+        }
+    }
+
+    private void run() {
+        Clusterer clusterer = model.getSelectedClusterer();
+        ClusteringController controller = Lookup.getDefault().lookup(ClusteringController.class);
+        controller.clusterize(clusterer);
+    }
+
+    private void settings() {
+        ClustererBuilder builder = (ClustererBuilder) algorithmComboBox.getSelectedItem();
+        ClustererUI clustererUI = builder.getUI();
+        JPanel panel = clustererUI.getPanel();
+        clustererUI.setup(model.getSelectedClusterer());
+        DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.settings.title", builder.getName()));
+        if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+            clustererUI.unsetup();
+        }
+    }
+
+    private void reset() {
+        model.removeClusterer(model.getSelectedClusterer());
+        ClustererBuilder selectedBuilder = (ClustererBuilder) algorithmComboBox.getSelectedItem();
+        Clusterer newClusterer = selectedBuilder.getClusterer();
+        model.addClusterer(newClusterer);
+        model.setSelectedClusterer(newClusterer);
+    }
+
+    private void refreshResults() {
+        ClusterExplorer clusterExplorer = (ClusterExplorer) resultPanel;
+        if (model == null || model.getSelectedClusterer() == null) {
+            clusterExplorer.resetExplorer();
+            return;
+        }
+        Clusterer clusterer = model.getSelectedClusterer();
+        clusterExplorer.initExplorer(clusterer.getClusters());
+    }
+
+    public void stateChanged(ChangeEvent e) {
+        refreshModel();
+    }
+
+    private Clusterer getSavedClusterer(ClustererBuilder builder) {
+        for (Clusterer c : model.getClusterers()) {
+            if (c.getClass().equals(builder.getClustererClass())) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    public ClustererBuilder getBuilder(Clusterer clusterer) {
+        for (ClustererBuilder b : builders) {
+            if (b.getClustererClass().equals(clusterer.getClass())) {
+                return b;
+            }
+        }
+        return null;
     }
 
     /** This method is called from within the constructor to
@@ -47,135 +232,113 @@ final class ClusteringTopComponent extends TopComponent {
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        mclButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        zeromax = new javax.swing.JTextField();
-        gamma = new javax.swing.JTextField();
-        loop = new javax.swing.JTextField();
-        maxresidual = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        clusteringToolbar = new javax.swing.JToolBar();
+        algorithmComboBox = new javax.swing.JComboBox();
+        settingsButton = new javax.swing.JButton();
+        descriptionLabel = new org.jdesktop.swingx.JXLabel();
+        resultPanel = new ClusterExplorer();
+        runButton = new javax.swing.JButton();
+        resetLink = new org.jdesktop.swingx.JXHyperlink();
 
-        org.openide.awt.Mnemonics.setLocalizedText(mclButton, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.mclButton.text")); // NOI18N
-        mclButton.addActionListener(new java.awt.event.ActionListener() {
+        setLayout(new java.awt.GridBagLayout());
+
+        clusteringToolbar.setFloatable(false);
+        clusteringToolbar.setRollover(true);
+
+        clusteringToolbar.add(algorithmComboBox);
+
+        org.openide.awt.Mnemonics.setLocalizedText(settingsButton, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.settingsButton.text")); // NOI18N
+        settingsButton.setFocusable(false);
+        settingsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        settingsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        settingsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mclButtonActionPerformed(evt);
+                settingsButtonActionPerformed(evt);
             }
         });
+        clusteringToolbar.add(settingsButton);
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.jLabel1.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.weightx = 1.0;
+        add(clusteringToolbar, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.jLabel2.text")); // NOI18N
+        descriptionLabel.setLineWrap(true);
+        org.openide.awt.Mnemonics.setLocalizedText(descriptionLabel, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.descriptionLabel.text")); // NOI18N
+        descriptionLabel.setFont(new java.awt.Font("Tahoma", 2, 10)); // NOI18N
+        descriptionLabel.setPreferredSize(new java.awt.Dimension(50, 20));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 1;
+        gridBagConstraints.ipady = 1;
+        gridBagConstraints.insets = new java.awt.Insets(1, 2, 1, 2);
+        add(descriptionLabel, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(resultPanel, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.jLabel3.text")); // NOI18N
-
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel4, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.jLabel4.text")); // NOI18N
-
-        zeromax.setText(org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.zeromax.text")); // NOI18N
-
-        gamma.setText(org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.gamma.text")); // NOI18N
-
-        loop.setText(org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.loop.text")); // NOI18N
-
-        maxresidual.setText(org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.maxresidual.text")); // NOI18N
-
-        org.openide.awt.Mnemonics.setLocalizedText(jButton1, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.jButton1.text")); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/algorithms/cluster/apply.gif"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(runButton, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.runButton.text")); // NOI18N
+        runButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                runButtonActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(2, 5, 1, 2);
+        add(runButton, gridBagConstraints);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(mclButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
-                        .addComponent(jButton1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(loop)
-                            .addComponent(gamma)
-                            .addComponent(zeromax)
-                            .addComponent(maxresidual, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(mclButton)
-                    .addComponent(jButton1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(zeromax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(gamma, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(loop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(maxresidual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(115, Short.MAX_VALUE))
-        );
+        resetLink.setClickedColor(new java.awt.Color(0, 51, 255));
+        org.openide.awt.Mnemonics.setLocalizedText(resetLink, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.resetLink.text")); // NOI18N
+        resetLink.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetLinkActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(1, 6, 0, 0);
+        add(resetLink, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void mclButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mclButtonActionPerformed
-        MarkovClustering markovClustering = new MarkovClustering();
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        Graph graph = graphController.getModel().getGraphVisible();
-        markovClustering.setGammaExp(Double.parseDouble(gamma.getText()));
-        markovClustering.setLoopGain(Double.parseDouble(loop.getText()));
-        markovClustering.setMaxResidual(Double.parseDouble(maxresidual.getText()));
-        markovClustering.setZeroMax(Double.parseDouble(zeromax.getText()));
-        markovClustering.run(graph);
-    }//GEN-LAST:event_mclButtonActionPerformed
+    private void settingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsButtonActionPerformed
+        settings();
+    }//GEN-LAST:event_settingsButtonActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JFrame frame = new JFrame("Dendrogram");
-        frame.setSize(new Dimension(400,400));
-        frame.getContentPane().setLayout(new BorderLayout());
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        HierarchicalGraph graph = graphController.getModel().getHierarchicalGraph();
-        Dendrogram dendrogram = new Dendrogram(graph);
-        frame.getContentPane().add(dendrogram, BorderLayout.CENTER);
-        frame.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runButtonActionPerformed
+        run();
+    }//GEN-LAST:event_runButtonActionPerformed
 
+    private void resetLinkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetLinkActionPerformed
+        reset();
+    }//GEN-LAST:event_resetLinkActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField gamma;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JTextField loop;
-    private javax.swing.JTextField maxresidual;
-    private javax.swing.JButton mclButton;
-    private javax.swing.JTextField zeromax;
+    private javax.swing.JComboBox algorithmComboBox;
+    private javax.swing.JToolBar clusteringToolbar;
+    private org.jdesktop.swingx.JXLabel descriptionLabel;
+    private org.jdesktop.swingx.JXHyperlink resetLink;
+    private javax.swing.JPanel resultPanel;
+    private javax.swing.JButton runButton;
+    private javax.swing.JButton settingsButton;
     // End of variables declaration//GEN-END:variables
+
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
      * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
@@ -239,6 +402,21 @@ final class ClusteringTopComponent extends TopComponent {
 
         public Object readResolve() {
             return ClusteringTopComponent.getDefault();
+        }
+    }
+
+    private static class AlgorithmListCellRenderer extends DefaultListCellRenderer {
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            if (value instanceof ClustererBuilder) {
+                ClustererBuilder builder = (ClustererBuilder) value;
+                setText(builder.getName());
+            } else {
+                setText((String) value);
+            }
+            return this;
         }
     }
 }

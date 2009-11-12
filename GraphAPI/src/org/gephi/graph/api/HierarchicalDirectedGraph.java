@@ -27,10 +27,40 @@ package org.gephi.graph.api;
 public interface HierarchicalDirectedGraph extends HierarchicalGraph, DirectedGraph {
 
     /**
-     * Returns the <b>clustered</b> interface of the current graph. It returns the same graph, but
-     * filtered by its current clustered view.
-     * @return the <b>clustered</b> graph interface for the current graph
+     * Returns incoming meta edges incident to <code>node</code>.
+     * @param node the node whose incoming meta edges are to be returned
+     * @return an edge iterable of <code>node</code>'s incoming meta edges
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
+     * the graph
      */
-    @Override
-    public ClusteredDirectedGraph getClusteredGraph();
+    public EdgeIterable getMetaInEdges(Node node);
+
+    /**
+     * Returns outgoing meta edges incident to <code>node</code>.
+     * @param node the node whose outgoing meta edges are to be returned
+     * @return an edge iterable of <code>node</code>'s outgoing meta edges
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
+     * the graph
+     */
+    public EdgeIterable getMetaOutEdges(Node node);
+
+    /**
+     * Returns the number of <code>node</code>'s incoming meta edges.
+     * @param node the node whose meta in-degree is queried
+     * @return the number of meta edges incoming to <code>node</code>
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
+     * the graph.
+     */
+    public int getMetaInDegree(Node node);
+
+    /**
+     * Returns the number of <code>node</code>'s outgoing meta edges.
+     * @param node the node whose meta out-degree is queried
+     * @return the number of meta edges outgoing from <code>node</code>
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
+     * the graph.
+     */
+    public int getMetaOutDegree(Node node);
+
+    public MetaEdge getMetaEdge(Node source, Node target);
 }

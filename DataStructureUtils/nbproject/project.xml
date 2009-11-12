@@ -7,6 +7,10 @@
             <suite-component/>
             <module-dependencies/>
             <public-packages>
+                <package>com.google.common.annotations</package>
+                <package>com.google.common.base</package>
+                <package>com.google.common.base.internal</package>
+                <package>com.google.common.collect</package>
                 <package>gnu.trove</package>
                 <package>gnu.trove.decorator</package>
                 <package>org.gephi.datastructure.avl</package>
@@ -16,6 +20,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/trove-2.1.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/trove-2.1.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/google-collect-1.0-rc3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/google-collect-1.0-rc3.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>

@@ -41,7 +41,7 @@ public class ProcessingPreview extends PApplet {
 		graph = controller.getGraph();
 
 		// update fonts
-		nodeLabelFont = createFont(controller.getNodeLabelFont());
+		nodeLabelFont = createFont(controller.getNodeSupervisor().getNodeLabelFont());
         uniEdgeLabelFont = createFont(controller.getUniEdgeSupervisor().getLabelFont());
         uniEdgeMiniLabelFont = createFont(controller.getUniEdgeSupervisor().getMiniLabelFont());
         biEdgeLabelFont = createFont(controller.getBiEdgeSupervisor().getLabelFont());
@@ -78,11 +78,9 @@ public class ProcessingPreview extends PApplet {
 	@Override
 	public void setup() {
 		size(500, 500, JAVA2D);
-		//size(500, 500, OPENGL);
 		rectMode(CENTER);
-
-		// the preview is drawn once and then redrawn when necessary
-		noLoop();
+        smooth();
+		noLoop(); // the preview is drawn once and then redrawn when necessary
 	}
 
 	@Override

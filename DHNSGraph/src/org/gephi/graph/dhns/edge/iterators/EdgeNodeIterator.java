@@ -23,6 +23,7 @@ package org.gephi.graph.dhns.edge.iterators;
 import java.util.Iterator;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
@@ -44,8 +45,10 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
     protected EdgeNodeIteratorMode mode;
     protected AbstractEdge pointer;
     protected boolean undirected;
+    protected Predicate<AbstractNode> nodePredicate;
+    protected Predicate<AbstractEdge> edgePredicate;
 
-    public EdgeNodeIterator(AbstractNode node, EdgeNodeIteratorMode mode, boolean undirected) {
+    public EdgeNodeIterator(AbstractNode node, EdgeNodeIteratorMode mode, boolean undirected, Predicate<AbstractNode> nodePredicate, Predicate<AbstractEdge> edgePredicate) {
         this.node = node;
         this.mode = mode;
         this.undirected = undirected;
@@ -55,6 +58,8 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
         } else {
             this.edgeIterator.setNode(node.getEdgesInTree());
         }
+        this.nodePredicate = nodePredicate;
+        this.edgePredicate = edgePredicate;
     }
 
     public boolean hasNext() {
@@ -73,6 +78,9 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
             } else {
                 if (edgeIterator.hasNext()) {
                     pointer = edgeIterator.next();
+                    if (!nodePredicate.evaluate(mode.equals(EdgeNodeIteratorMode.IN) ? pointer.getSource() : pointer.getTarget())) {
+                        pointer = null;
+                    }
                 } else {
                     return false;
                 }

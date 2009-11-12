@@ -23,43 +23,71 @@ package org.gephi.data.attributes;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.data.attributes.api.AttributeValueFactory;
-import org.gephi.data.attributes.api.AttributeManager;
-import org.gephi.data.attributes.manager.IndexedAttributeManager;
+import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.model.IndexedAttributeModel;
+import org.gephi.data.attributes.model.TemporaryAttributeModel;
+import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.WorkspaceProvider;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service = AttributeController.class)
 public class AttributeContollerImpl implements AttributeController {
 
-    private IndexedAttributeManager currentManager;
-    private AttributeFactoryImpl factory;
+    private ProjectController projectController;
 
     public AttributeContollerImpl() {
-        currentManager = new IndexedAttributeManager();
-        factory = new AttributeFactoryImpl(currentManager);
-        currentManager.setFactory(factory);
+        projectController = Lookup.getDefault().lookup(ProjectController.class);
+        projectController.addWorkspaceListener(new WorkspaceListener() {
+
+            public void initialize(Workspace workspace) {
+                workspace.add(new IndexedAttributeModel());
+            }
+
+            public void select(Workspace workspace) {
+            }
+
+            public void unselect(Workspace workspace) {
+            }
+
+            public void close(Workspace workspace) {
+            }
+
+            public void disable() {
+            }
+        });
+        if (projectController.getCurrentProject() != null) {
+            for (Workspace workspace : projectController.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getLookup().lookupAll(Workspace.class)) {
+                AttributeModel m = workspace.getLookup().lookup(AttributeModel.class);
+                if (m == null) {
+                    workspace.add(new IndexedAttributeModel());
+                }
+            }
+        }
     }
 
-    public Lookup getNodeColumnsLookup() {
-        return currentManager.getClassLookup("node");
+    public AttributeModel getModel() {
+        Workspace workspace = projectController.getCurrentWorkspace();
+        if (workspace != null) {
+            AttributeModel model = workspace.getLookup().lookup(AttributeModel.class);
+            if (model != null) {
+                return model;
+            }
+            model = new IndexedAttributeModel();
+            workspace.add(model);
+            return model;
+        }
+        return null;
     }
 
-    public Lookup getEdgeColumnsLookup() {
-        return currentManager.getClassLookup("edge");
-    }
-
-    public AttributeManager getTemporaryAttributeManager() {
-        return currentManager;
-    }
-
-    public AttributeValueFactory valueFactory() {
-        return factory;
-    }
-
-    public AttributeRowFactory rowFactory() {
-        factory.setManager(currentManager);
-        return factory;
+    public AttributeModel newModel() {
+        TemporaryAttributeModel model = new TemporaryAttributeModel();
+        return model;
     }
 }

@@ -50,6 +50,7 @@ public class ParamAVLIterator<Item> implements Iterator<Item>, ResetableIterator
 
     public void setNode(ParamAVLTree tree) {
         this.next = tree.root;
+        this.tree = tree;
         goToDownLeft();
     }
 

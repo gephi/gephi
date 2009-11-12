@@ -68,7 +68,6 @@ public class VizController {
         }
         return instance;
     }
-
     //Architecture
     private GraphDrawableImpl drawable;
     private AbstractEngine engine;
@@ -84,7 +83,6 @@ public class VizController {
     private TextManager textManager;
     private ScreenshotMaker screenshotMaker;
     private SelectionManager selectionManager;
-
     //Variable
     private VizModel currentModel;
 
@@ -128,6 +126,7 @@ public class VizController {
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
+                workspace.add(new VizModel());
             }
 
             public void select(Workspace workspace) {
@@ -147,13 +146,12 @@ public class VizController {
     }
 
     public void refreshWorkspace() {
-        final VizWorkspaceDataProvider vizWorkspaceDataProvider = Lookup.getDefault().lookup(VizWorkspaceDataProvider.class);
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         VizModel model = null;
         if (pc.getCurrentWorkspace() == null) {
             model = new VizModel(true);
         } else {
-            model = pc.getCurrentWorkspace().getWorkspaceData().getData(vizWorkspaceDataProvider.getWorkspaceDataKey());
+            model = pc.getCurrentWorkspace().getLookup().lookup(VizModel.class);
         }
         if (model != currentModel) {
             model.setListeners(currentModel.getListeners());

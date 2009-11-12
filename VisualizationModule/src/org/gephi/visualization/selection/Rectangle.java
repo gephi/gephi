@@ -22,6 +22,7 @@ package org.gephi.visualization.selection;
 
 import java.util.Arrays;
 import javax.media.opengl.GL;
+import javax.media.opengl.GLPbuffer;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.VizController;
@@ -45,12 +46,14 @@ public class Rectangle implements SelectionArea {
     private GraphDrawable drawable;
     private boolean stop = true;
     private VizConfig config;
+    private float[] color;
     private boolean blocking = true;
     private boolean ctrl = false;
 
     public Rectangle() {
         drawable = VizController.getInstance().getDrawable();
         config = VizController.getInstance().getVizConfig();
+        color = config.getRectangleSelectionColor().getRGBComponents(null);
     }
 
     public float[] getSelectionAreaRectancle() {
@@ -84,7 +87,7 @@ public class Rectangle implements SelectionArea {
         float x = object.getViewportX();
         float y = object.getViewportY();
         float rad = object.getViewportRadius();
-        //System.out.println(rectangle[0]+"   "+rectangle[1]);
+
         boolean res = true;
         if (startPosition[0] > rectangle[0]) {
             if (x - rad > startPosition[0] || x + rad < rectangle[0]) {
@@ -163,7 +166,6 @@ public class Rectangle implements SelectionArea {
             gl.glPushMatrix();
             gl.glLoadIdentity();
 
-            float[] color = config.getRectangleSelectionColor();
             gl.glColor4f(color[0], color[1], color[2], color[3]);
 
             gl.glBegin(GL.GL_QUADS);

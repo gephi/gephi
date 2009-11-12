@@ -23,19 +23,16 @@ package org.gephi.graph.dhns.views;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.Predicate;
-import org.gephi.graph.api.TopologicalPredicate;
 import org.gephi.graph.api.View;
 import org.gephi.graph.dhns.core.Dhns;
-import org.gephi.graph.dhns.core.GraphStructure;
 import org.gephi.graph.dhns.core.GraphVersion;
-import org.gephi.graph.dhns.filter.ChildrenClusteredViewPredicate;
-import org.gephi.graph.dhns.filter.FlatClusteredViewPredicate;
-import org.gephi.graph.dhns.filter.FullClusteredViewPredicate;
-import org.gephi.graph.dhns.graph.ClusteredGraphImpl;
-import org.gephi.graph.dhns.subgraph.SubGraphManager;
+import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
+import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
+import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
 import org.openide.util.Exceptions;
 
 /**
@@ -49,10 +46,6 @@ public class ViewImpl implements View {
     private Dhns dhns;
     private final List<Predicate> predicates = new ArrayList<Predicate>();
 
-    //Results
-    private ClusteredGraphImpl graph;
-    private GraphStructure graphStructure;
-
     //Update
     private GraphVersion graphVersion;
     private ReentrantLock lock;
@@ -63,16 +56,15 @@ public class ViewImpl implements View {
     private int nodeVersion = -1;
     private int edgeVersion = -1;
 
+    //Result
+    private ViewResult result;
+
     public ViewImpl(Dhns dhns) {
         this.dhns = dhns;
-        this.graphStructure = dhns.getGraphStructure();
         this.graphVersion = dhns.getGraphVersion();
         dispatchThread = new DispatchThread();
         lock = new ReentrantLock();
-    }
-
-    public GraphStructure getGraphStructure() {
-        return graphStructure;
+        result = new ViewResult(dhns, dhns.getGraphStructure(), false);
     }
 
     public void checkUpdate() {
@@ -92,43 +84,10 @@ public class ViewImpl implements View {
     }
 
     private void update() {
-
-        if (graph.getHeight() == 0 && predicates.isEmpty()) {
-            this.graphStructure = dhns.getGraphStructure();
-        } else {
-            this.graphStructure = SubGraphManager.copyGraphStructure(dhns.getGraphStructure());
-
-            for (Predicate p : predicates) {
-                if (p instanceof TopologicalPredicate) {
-                    Graph sequenceValidationGraph = graph.copy(dhns, graphStructure, new EmptyView(dhns));
-                    ((TopologicalPredicate) p).setup(sequenceValidationGraph);
-                    SubGraphManager.filterSubGraph(graphStructure, p);
-                    ((TopologicalPredicate) p).unsetup();
-                } else {
-                    SubGraphManager.filterSubGraph(graphStructure, p);
-                }
-            }
-
-            Predicate hierarchyPredicate = null;
-            switch (hierarchyFiltering) {
-                case FLAT:
-                    hierarchyPredicate = new FlatClusteredViewPredicate();
-                    break;
-                case CHILDREN:
-                    hierarchyPredicate = new ChildrenClusteredViewPredicate();
-                    break;
-                case FULL:
-                    hierarchyPredicate = new FullClusteredViewPredicate();
-                    break;
-            }
-            SubGraphManager.filterSubGraph(graphStructure, hierarchyPredicate);
-
-            graph.setStructure(graphStructure);
+        for (Predicate p : predicates) {
+            result.filter(p);
         }
-    }
-
-    public void setGraph(ClusteredGraphImpl graph) {
-        this.graph = graph;
+        result.postProcess();
     }
 
     public void addPredicate(Predicate predicate) {
@@ -163,6 +122,75 @@ public class ViewImpl implements View {
 
     public void setHierarchyFiltering(HierarchyFiltering hierarchyFiltering) {
         this.hierarchyFiltering = hierarchyFiltering;
+    }
+
+    //Iterators
+    public AbstractNodeIterator getHierarchyLayerNodeIterator() {
+        return result.getHierarchyLayerNodeIterator();
+    }
+
+    public AbstractNodeIterator getClusteredLayerNodeIterator() {
+        return result.getClusteredLayerNodeIterator();
+    }
+
+    public AbstractEdgeIterator getHierarchyLayerEdgeIterator() {
+        return result.getHierarchyLayerEdgeIterator();
+    }
+
+    public AbstractEdgeIterator getClusteredLayerEdgeIterator() {
+        return result.getClusteredLayerEdgeIterator();
+    }
+
+    //Predicates
+    public Predicate<AbstractNode> getHierarchyLayerNodePredicate() {
+        return result.getHierarchyLayerNodePredicate();
+    }
+
+    public Predicate<AbstractEdge> getHierarchyLayerEdgePredicate() {
+        return result.getHierarchyLayerEdgePredicate();
+    }
+
+    public Predicate<AbstractNode> getClusteredLayerNodePredicate() {
+        return result.getClusteredLayerNodePredicate();
+    }
+
+    public Predicate<AbstractEdge> getClusteredLayerEdgePredicate() {
+        return result.getClusteredLayeEdgePredicate();
+    }
+
+    //Count
+    public int getClusteredNodesCount() {
+        return result.getClusteredNodesCount();
+    }
+
+    public int getClusteredEdgesCount() {
+        return result.getClusteredEdgesCount();
+    }
+
+    //Degree
+    public int getClusteredLayerDegree(AbstractNode node) {
+        return result.getClusteredDegree(node);
+    }
+
+    public int getClusteredLayerInDegree(AbstractNode node) {
+        return result.getClusteredInDegree(node);
+    }
+
+    public int getClusteredLayerOutDegree(AbstractNode node) {
+        return result.getClusteredOutDegree(node);
+    }
+
+    //MetaEdge
+    public MetaEdgeTree getInMetaEdgeTree(AbstractNode node) {
+        return result.getClusteredNode(node).metaEdgesInTree;
+    }
+
+    public MetaEdgeTree getOutMetaEdgeTree(AbstractNode node) {
+        return result.getClusteredNode(node).metaEdgesOutTree;
+    }
+
+    public AbstractEdgeIterator getMetaEdgeIterator() {
+        return result.getMetaEdgeIterator();
     }
 
     private class DispatchThread extends Thread {

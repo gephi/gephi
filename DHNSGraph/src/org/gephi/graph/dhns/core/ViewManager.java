@@ -49,5 +49,4 @@ public class ViewManager implements Views {
     public void setVisibleView(View view) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
 }

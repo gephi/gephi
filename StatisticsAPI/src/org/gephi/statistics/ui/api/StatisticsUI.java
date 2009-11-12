@@ -22,6 +22,7 @@ package org.gephi.statistics.ui.api;
 
 import javax.swing.JPanel;
 import org.gephi.statistics.api.Statistics;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -29,21 +30,30 @@ import org.gephi.statistics.api.Statistics;
  */
 public interface StatisticsUI {
 
-    /**
-     * 
-     * @return
-     */
-    public JPanel getPanel();
+    public static final String CATEGORY_NETWORK_OVERVIEW = NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.networkOverview");
+    public static final String CATEGORY_NODE_OVERVIEW = NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.nodeOverview");
+    public static final String CATEGORY_EDGE_OVERVIEW = NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.edgeOverview");
 
-    /**
-     *
-     * @param statistics
-     */
+    public JPanel getSettingsPanel();
+
     public void setup(Statistics statistics);
 
-    /**
-     *
-     */
     public void unsetup();
+
+    public Class<? extends Statistics> getStatisticsClass();
+
+    public String getValue();
+
+    /**
+     * @return the display name.
+     */
+    public String getDisplayName();
+
+    /**
+     * @return The category of this metric.
+     */
+    public String getCategory();
+
+    public int getPosition();
 }
 

@@ -46,7 +46,6 @@ public class TextManager implements VizArchitecture {
     //Architecture
     private VizConfig vizConfig;
     private GraphDrawable drawable;
-
     //Configuration
     private SizeMode[] sizeModes;
     private ColorMode[] colorModes;
@@ -55,10 +54,8 @@ public class TextManager implements VizArchitecture {
     private Renderer nodeRenderer;
     private Renderer edgeRenderer;
     private TextDataBuilder builder;
-
     //Variables
     private TextModel model;
-
     //Preferences
     private boolean renderer3d;
     private boolean mipmap;
@@ -89,7 +86,7 @@ public class TextManager implements VizArchitecture {
         builder.initBuilder(this);
 
         //Init sizemodes
-        for(SizeMode s : sizeModes) {
+        for (SizeMode s : sizeModes) {
             s.init();
         }
 

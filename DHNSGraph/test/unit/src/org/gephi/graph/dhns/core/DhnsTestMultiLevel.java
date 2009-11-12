@@ -25,7 +25,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.MetaEdge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.DhnsGraphController;
-import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
+import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.CloneNode;
 import org.gephi.graph.dhns.node.PreNode;
@@ -43,7 +43,7 @@ import static org.junit.Assert.*;
 public class DhnsTestMultiLevel {
 
     private Dhns dhns1;
-    private ClusteredDirectedGraphImpl graph1;
+    private HierarchicalDirectedGraphImpl graph1;
     private HashMap<String, AbstractNode> nodeMap;
 
     @BeforeClass
@@ -58,9 +58,9 @@ public class DhnsTestMultiLevel {
     public void setUp() {
         nodeMap = new HashMap<String, AbstractNode>();
         DhnsGraphController controller = new DhnsGraphController();
-        dhns1 = new Dhns(controller);
-        graph1 = new ClusteredDirectedGraphImpl(dhns1, dhns1.getGraphStructure(), null);
-        GraphFactoryImpl factory = controller.factory();
+        dhns1 = new Dhns(controller, null);
+        graph1 = new HierarchicalDirectedGraphImpl(dhns1, dhns1.getGraphStructure());
+        GraphFactoryImpl factory = dhns1.factory();
 
         AbstractNode nodeA = factory.newNode();
         AbstractNode nodeB = factory.newNode();
@@ -103,7 +103,7 @@ public class DhnsTestMultiLevel {
         CloneNode cloneNodeD = new CloneNode(preNodeD);
         treeStructure.insertAsChild(cloneNodeD, preNodeB);
 
-    //treeStructure.showTreeAsTable();
+        //treeStructure.showTreeAsTable();
     }
 
     @Test
@@ -147,7 +147,7 @@ public class DhnsTestMultiLevel {
         assertEquals(3, nodeMap.get("nodeD").getOriginalNode().countClones());
         assertEquals(2, nodeMap.get("nodeA").getOriginalNode().countClones());
 
-    // dhns1.getGraphStructure().getStructure().showTreeAsTable();
+        // dhns1.getGraphStructure().getStructure().showTreeAsTable();
     }
 
     @Test
@@ -172,9 +172,9 @@ public class DhnsTestMultiLevel {
 
         //Test diamond
         DhnsGraphController controller = new DhnsGraphController();
-        Dhns dhns = new Dhns(controller);
-        ClusteredDirectedGraphImpl graph = new ClusteredDirectedGraphImpl(dhns, dhns.getGraphStructure(), null);
-        GraphFactoryImpl factory = controller.factory();
+        Dhns dhns = new Dhns(controller, null);
+        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure());
+        GraphFactoryImpl factory = dhns.factory();
 
         AbstractNode nodeA = factory.newNode();
         AbstractNode nodeB = factory.newNode();
@@ -201,7 +201,7 @@ public class DhnsTestMultiLevel {
         assertTrue(graph1.contains(nodeMap.get("nodeB")));
         assertTrue(graph1.contains(nodeMap.get("nodeE")));
 
-    //dhns.getGraphStructure().getStructure().showTreeAsTable();
+        //dhns.getGraphStructure().getStructure().showTreeAsTable();
     }
 
     @Test
@@ -209,7 +209,7 @@ public class DhnsTestMultiLevel {
         graph1.expand(nodeMap.get("nodeB"));
         assertTrue(dhns1.getGraphStructure().getStructure().hasEnabledDescendant(nodeMap.get("nodeB")));
 
-    //dhns1.getGraphStructure().getStructure().showTreeAsTable();
+        //dhns1.getGraphStructure().getStructure().showTreeAsTable();
     }
 
     @Test

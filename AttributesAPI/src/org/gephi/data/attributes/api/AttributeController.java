@@ -20,21 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes.api;
 
-import org.openide.util.Lookup;
-
 /**
  *
  * @author Mathieu Bastian
  */
 public interface AttributeController {
 
-    public AttributeManager getTemporaryAttributeManager();
+    public AttributeModel getModel();
 
-    public AttributeValueFactory valueFactory();
-
-    public AttributeRowFactory rowFactory();
-
-    public Lookup getNodeColumnsLookup();
-
-    public Lookup getEdgeColumnsLookup();
+    public AttributeModel newModel();
 }

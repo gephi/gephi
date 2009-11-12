@@ -28,17 +28,9 @@ import org.openide.util.Lookup;
  */
 public interface Projects {
 
-    public void addProject(Project project);
-
-    public void removeProject(Project project);
-
     public boolean hasCurrentProject();
 
     public Project getCurrentProject();
-
-    public void setCurrentProject(Project project);
-
-    public void closeCurrentProject();
 
     public Lookup getLookup();
 

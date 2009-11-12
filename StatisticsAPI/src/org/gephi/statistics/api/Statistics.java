@@ -20,7 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics.api;
 
-import org.gephi.graph.api.GraphController;
+import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.graph.api.GraphModel;
+
 /**
  *
  * @author Mathieu Bastian, Patrick J. McSweeney
@@ -28,18 +30,11 @@ import org.gephi.graph.api.GraphController;
 public interface Statistics {
 
     /**
-     *
-     * @return The name of the Staistics
-     */
-    public String getName();
-
-    /**
      * Executes the Staistics
-     * @param graphController
-     * @param progressMonitor
+     * @param graphModel The graph topology
+     * @param attributeModel The elements attributes, and where to write table results
      */
-    public void execute(GraphController graphController);
-
+    public void execute(GraphModel graphModel, AttributeModel attributeModel);
 
     /**
      *

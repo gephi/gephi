@@ -33,12 +33,4 @@ public interface ProjectMetaData {
     public String getDescription();
 
     public String getTitle();
-
-    public void setKeywords(String keywords);
-
-    public void setAuthor(String author);
-
-    public void setDescription(String description);
-
-    public void setTitle(String title);
 }

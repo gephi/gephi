@@ -18,29 +18,26 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.statistics;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
-import javax.swing.JPanel;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.graph.api.*;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Stack;
-import javax.swing.ButtonGroup;
-import javax.swing.JRadioButton;
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.statistics.ui.GraphDistancePanel;
-import org.gephi.statistics.ui.api.StatisticsUI;
+import org.gephi.ui.utils.TempDirUtils;
+import org.gephi.ui.utils.TempDirUtils.TempDir;
 import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartRenderingInfo;
@@ -52,8 +49,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -61,54 +57,72 @@ import org.openide.util.NbBundle;
  */
 public class GraphDistance implements Statistics, LongTask {
 
-    private double[] betweeness;
-    private int[][] dist;
-    private double[] closeness;
-    private double[] eccentricity;
-    private int diameter;
-    private double avgDist;
-    private int N;
-    private boolean directed;
-    private ProgressTicket progress;
-    private boolean isCanceled;
-    private GraphDistancePanel panel;
+    /** */
+    private double[] mBetweeness;
+    /** */
+    private int[][] mDist;
+    /** */
+    private double[] mCloseness;
+    /** */
+    private double[] mEccentricity;
+    /** */
+    private int mDiameter;
+    /** */
+    private double mAvgDist;
+    /** */
+    private int mN;
+    /** */
+    private boolean mDirected;
+    /** */
+    private ProgressTicket mProgress;
+    /** */
+    private boolean mIsCanceled;
+    private String mGraphRevision;
 
     /**
      * 
      * @return
      */
-    public String getName() {
-        return NbBundle.getMessage(GraphDistance.class, "GraphDistance_name");
-
+    public double getPathLength() {
+        return mAvgDist;
     }
 
     /**
      * 
-     * @param synchReader
+     * @return
      */
-    public void brandes(GraphController graphController) {
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
-        AttributeColumn eccentricityCol = nodeClass.addAttributeColumn("eccentricity", "Eccentricity", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
-        AttributeColumn closenessCol = nodeClass.addAttributeColumn("closnesscentrality", "Closeness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
-        AttributeColumn betweenessCol = nodeClass.addAttributeColumn("betweenesscentrality", "Betweeness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+    public double getDiameter() {
+        return mDiameter;
+    }
+
+    /**
+     * 
+     * @param graphModel
+     */
+    public void brandes(GraphModel graphModel, AttributeModel attributeModel) {
+        AttributeTable nodeTable = attributeModel.getNodeTable();
+        AttributeColumn eccentricityCol = nodeTable.addColumn("eccentricity", "Eccentricity", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        AttributeColumn closenessCol = nodeTable.addColumn("closnesscentrality", "Closeness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        AttributeColumn betweenessCol = nodeTable.addColumn("betweenesscentrality", "Betweeness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
 
 
         Graph graph = null;
-        if (directed) {
-            graph = graphController.getModel().getDirectedGraphVisible();
+        if (mDirected) {
+            graph = graphModel.getDirectedGraph();
         } else {
-            graph = graphController.getModel().getUndirectedGraphVisible();
+            graph = graphModel.getUndirectedGraph();
         }
 
-        N = graph.getNodeCount();
+        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
 
-        betweeness = new double[N];
-        dist = new int[N][N];
-        eccentricity = new double[N];
-        closeness = new double[N];
-        diameter = 0;
-        avgDist = 0;
+        mN = graph.getNodeCount();
+
+        mBetweeness = new double[mN];
+        mDist = new int[mN][mN];
+        mEccentricity = new double[mN];
+        mCloseness = new double[mN];
+        mDiameter = 0;
+        mAvgDist = 0;
 
         Hashtable<Node, Integer> indicies = new Hashtable<Node, Integer>();
         int index = 0;
@@ -117,15 +131,15 @@ public class GraphDistance implements Statistics, LongTask {
             index++;
         }
 
-        progress.start(graph.getNodeCount());
+        Progress.start(mProgress, graph.getNodeCount());
         int count = 0;
         for (Node s : graph.getNodes()) {
             Stack<Node> S = new Stack<Node>();
 
-            LinkedList<Node>[] P = new LinkedList[N];
-            double[] theta = new double[N];
-            double[] d = new double[N];
-            for (int j = 0; j < N; j++) {
+            LinkedList<Node>[] P = new LinkedList[mN];
+            double[] theta = new double[mN];
+            double[] d = new double[mN];
+            for (int j = 0; j < mN; j++) {
                 P[j] = new LinkedList<Node>();
                 theta[j] = 0;
                 d[j] = -1;
@@ -144,7 +158,7 @@ public class GraphDistance implements Statistics, LongTask {
                 int v_index = indicies.get(v);
 
                 EdgeIterable edgeIter = null;
-                if (directed) {
+                if (mDirected) {
                     edgeIter = ((DirectedGraph) graph).getOutEdges(v);
                 } else {
                     edgeIter = graph.getEdges(v);
@@ -164,18 +178,18 @@ public class GraphDistance implements Statistics, LongTask {
                     }
                 }
             }
-            for (int i = 0; i < N; i++) {
+            for (int i = 0; i < mN; i++) {
                 if (d[i] > 0) {
-                    avgDist += d[i];
-                    dist[s_index][i] = (int) d[i];
-                    eccentricity[s_index] = (int) Math.max(eccentricity[s_index], d[i]);
-                    closeness[s_index] += d[i];
-                    diameter = Math.max(diameter, dist[s_index][i]);
+                    mAvgDist += d[i];
+                    mDist[s_index][i] = (int) d[i];
+                    mEccentricity[s_index] = (int) Math.max(mEccentricity[s_index], d[i]);
+                    mCloseness[s_index] += d[i];
+                    mDiameter = Math.max(mDiameter, mDist[s_index][i]);
                 }
             }
-            closeness[s_index] /= N;
+            mCloseness[s_index] /= mN;
 
-            double[] delta = new double[N];
+            double[] delta = new double[mN];
             while (!S.empty()) {
                 Node w = S.pop();
                 int w_index = indicies.get(w);
@@ -186,61 +200,36 @@ public class GraphDistance implements Statistics, LongTask {
                     delta[u_index] += (theta[u_index] / theta[w_index]) * (1 + delta[w_index]);
                 }
                 if (w != s) {
-                    betweeness[w_index] += delta[w_index];
+                    mBetweeness[w_index] += delta[w_index];
                 }
             }
             count++;
-            if (isCanceled) {
+            if (mIsCanceled) {
                 return;
             }
-            progress.progress(count);
+            Progress.progress(mProgress, count);
         }
 
 
 
-        avgDist /= N * (N - 1.0f);
+        mAvgDist /= mN * (mN - 1.0f);
 
         for (Node s : graph.getNodes()) {
             AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
             int s_index = indicies.get(s);
-            row.setValue(eccentricityCol, eccentricity[s_index]);
-            row.setValue(closenessCol, closeness[s_index]);
-            row.setValue(betweenessCol, betweeness[s_index]);
+            row.setValue(eccentricityCol, mEccentricity[s_index]);
+            row.setValue(closenessCol, mCloseness[s_index]);
+            row.setValue(betweenessCol, mBetweeness[s_index]);
         }
     }
 
     /**
      *
-     * @param graphController
-     * @param progressMonitor
+     * @param graphModel
      */
-    public void execute(GraphController graphController) {
-        isCanceled = false;
-        brandes(graphController);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String toString() {
-        return new String("Graph Distance");
-    }
-
-    /**
-     *
-     *  @return
-     */
-    public boolean isParamerizable() {
-        return true;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public StatisticsUI getUI() {
-        return new GraphDistancePanel.GraphDistanceUI();
+    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+        mIsCanceled = false;
+        brandes(graphModel, attributeModel);
     }
 
     /**
@@ -248,7 +237,11 @@ public class GraphDistance implements Statistics, LongTask {
      * @param pDirected
      */
     public void setDirected(boolean pDirected) {
-        this.directed = pDirected;
+        this.mDirected = pDirected;
+    }
+
+    public boolean isDirected() {
+        return mDirected;
     }
 
     /**
@@ -259,9 +252,9 @@ public class GraphDistance implements Statistics, LongTask {
      * @param pY
      * @return
      */
-    private String createImageFile(double[] pVals, String pName, String pX, String pY) {
+    private String createImageFile(TempDir tempDir, double[] pVals, String pName, String pX, String pY) throws IOException {
         XYSeries series = new XYSeries(pName);
-        for (int i = 0; i < N; i++) {
+        for (int i = 0; i < mN; i++) {
             series.add(i, pVals[i]);
         }
         XYSeriesCollection dataSet = new XYSeriesCollection();
@@ -287,20 +280,13 @@ public class GraphDistance implements Statistics, LongTask {
         plot.setRenderer(renderer);
 
         String imageFile = "";
-        try {
-            final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            final File file1 = new File(pY + ".png");
-            String fullPath = file1.getAbsolutePath();
 
-            fullPath = fullPath.replaceAll("\\\\", "\\\\\\\\");
+        ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+        String fileName = pY + ".png";
+        File file1 = tempDir.createFile(fileName);
+        imageFile = "<IMG SRC=\"file:" + file1.getAbsolutePath() + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
 
-            imageFile = "<IMG SRC=\"file:\\\\\\\\" + fullPath + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
-
-            File f2 = new File(fullPath);
-            ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
-        } catch (IOException e) {
-            System.out.println(e.toString());
-        }
+        ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
 
         return imageFile;
     }
@@ -310,15 +296,33 @@ public class GraphDistance implements Statistics, LongTask {
      * @return
      */
     public String getReport() {
+        String htmlIMG1 = "";
+        String htmlIMG2 = "";
+        String htmlIMG3 = "";
+        try {
+            TempDir tempDir = TempDirUtils.createTempDir();
+            htmlIMG1 = createImageFile(tempDir, mBetweeness, "Betweeness Centrality", "Nodes", "Betweeness");
+            htmlIMG2 = createImageFile(tempDir, mCloseness, "Closness Centrality", "Nodes", "Closness");
+            htmlIMG3 = createImageFile(tempDir, mEccentricity, "Eccentricty", "Nodes", "Eccentricity");
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
 
-        String htmlIMG1 = createImageFile(betweeness, "Betweeness Centrality", "Nodes", "Betweeness");
-        String htmlIMG2 = createImageFile(closeness, "Closness Centrality", "Nodes", "Closness");
-        String htmlIMG3 = createImageFile(eccentricity, "Eccentricty", "Nodes", "Eccentricity");
-        return new String("<HTML><head><META NAME=\"keywords\" CONTENT=\"TEXT_HTML\"> </head> <body> <b>Average Degree:</b> " + avgDist + "<br> <b>Diameter : </b>" + diameter +
-                "<br>" + htmlIMG1 + "<br>" +
-                "<br>" + htmlIMG2 + "<br>" +
-                "<br>" + htmlIMG3 + "<br>" +
-                "</body></HTML>");
+        String report = new String("<HTML> <BODY> <h1>Graph Distance  Report </h1> "
+                + "<hr> <br> <h2>Network Revision Number:</h2>"
+                + mGraphRevision
+                + "<br>"
+                + "<h2> Parameters: </h2>"
+                + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
+                + "<br> <h2> Results: </h2>"
+                + "Diameter: " + this.mDiameter + "<br>"
+                + "Average Path length: " + this.mAvgDist + "<br>"
+                + htmlIMG1 + "<br>"
+                + htmlIMG2 + "<br>"
+                + htmlIMG3
+                + "</BODY></HTML>");
+
+        return report;
     }
 
     /**
@@ -326,7 +330,7 @@ public class GraphDistance implements Statistics, LongTask {
      * @return
      */
     public boolean cancel() {
-        isCanceled = true;
+        mIsCanceled = true;
         return true;
     }
 
@@ -335,6 +339,6 @@ public class GraphDistance implements Statistics, LongTask {
      * @param progressTicket
      */
     public void setProgressTicket(ProgressTicket progressTicket) {
-        progress = progressTicket;
+        mProgress = progressTicket;
     }
 }

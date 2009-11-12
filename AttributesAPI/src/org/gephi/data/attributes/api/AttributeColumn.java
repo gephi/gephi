@@ -30,13 +30,13 @@ package org.gephi.data.attributes.api;
  */
 public interface AttributeColumn {
 
-    public AttributeType getAttributeType();
+    public AttributeType getType();
 
     public String getTitle();
 
     public int getIndex();
 
-    public AttributeOrigin getAttributeOrigin();
+    public AttributeOrigin getOrigin();
 
     public String getId();
 

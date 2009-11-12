@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Patrick J. McSweeney
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -23,40 +23,25 @@ package org.gephi.statistics.builder;
 import org.gephi.statistics.ClusteringCoefficient;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.statistics.api.StatisticsBuilder;
-import org.gephi.statistics.ui.ClusteringCoefficientPanel.ClusteringCoefficientUI;
-import org.gephi.statistics.ui.api.StatisticsUI;
-import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author pjmcswee
  */
+@ServiceProvider(service=StatisticsBuilder.class)
 public class ClusteringCoefficientBuilder implements StatisticsBuilder {
 
-    ClusteringCoefficient cc = new ClusteringCoefficient();
-    ClusteringCoefficientUI ccui = new ClusteringCoefficientUI();
-
-    /**
-     * 
-     * @return
-     */
-    public String toString() {
-        return cc.getName();
+    public String getName() {
+        return NbBundle.getMessage(ClusteringCoefficientBuilder.class, "ClusteringCoefficent.name");
     }
 
-    /**
-     *
-     * @return
-     */
     public Statistics getStatistics() {
-        return cc;//Statistics) Lookup.getDefault().lookupAll(ClusteringCoefficient.class);
+        return new ClusteringCoefficient();
     }
 
-    /**
-     *
-     * @return
-     */
-    public StatisticsUI getUI() {
-        return ccui; //return (StatisticsUI) Lookup.getDefault().lookupAll(ClusteringCoefficientPanel.class);
+    public Class<? extends Statistics> getStatisticsClass() {
+        return ClusteringCoefficient.class;
     }
 }

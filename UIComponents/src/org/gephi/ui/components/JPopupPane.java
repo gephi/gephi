@@ -38,7 +38,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -83,7 +82,7 @@ public class JPopupPane {
         public Dimension getPreferredSize() {
             int count = view.getComponentCount();
             int height = count > 0 ? view.getComponent(0).getPreferredSize().height : 0;
-            int offset = count > 3 ? height * 3 + 5 : (count * height) + 5;
+            int offset = count > 6 ? height * 6 + 5 : (count * height) + 5;
             // 22 is the width of the additional scrollbar
             return new Dimension(count > 3 ? ITEM_WIDTH + 22
                     : ITEM_WIDTH + 2, offset);

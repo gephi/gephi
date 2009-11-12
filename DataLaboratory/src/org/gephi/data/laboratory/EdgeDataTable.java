@@ -21,17 +21,18 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.laboratory;
 
 import java.util.ArrayList;
-import java.util.regex.Pattern;
+import java.util.List;
 import java.util.regex.PatternSyntaxException;
+import javax.swing.RowFilter;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.decorator.FilterPipeline;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.decorator.PatternFilter;
+import org.jdesktop.swingx.table.TableColumnExt;
+import org.jdesktop.swingx.table.TableColumnModelExt;
 
 /**
  *
@@ -41,7 +42,7 @@ public class EdgeDataTable {
 
     private JXTable table;
     private PropertyEdgeDataColumn[] propertiesColumns;
-    private PatternFilter patternFilter;
+    private RowFilter rowFilter;
 
     public EdgeDataTable() {
         table = new JXTable();
@@ -49,8 +50,7 @@ public class EdgeDataTable {
         table.setColumnControlVisible(true);
         table.setSortable(true);
         table.setColumnControlVisible(true);
-        patternFilter = new PatternFilter();
-        table.setFilters(new FilterPipeline(patternFilter));
+        table.setRowFilter(rowFilter);
 
 
         propertiesColumns = new PropertyEdgeDataColumn[3];
@@ -114,17 +114,18 @@ public class EdgeDataTable {
 
     public boolean setPattern(String regularExpr, int column) {
         try {
-            patternFilter.setPattern(regularExpr, Pattern.CASE_INSENSITIVE);
-            if (patternFilter.getColumnIndex() != column) {
-                patternFilter.setColumnIndex(column);
+            if (regularExpr.startsWith("(?i)")) {   //CASE_INSENSITIVE
+                regularExpr = "(?i)" + regularExpr;
             }
+            rowFilter = RowFilter.regexFilter(regularExpr, column);
+            table.setRowFilter(rowFilter);
         } catch (PatternSyntaxException e) {
             return false;
         }
         return true;
     }
 
-    public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols) {
+    public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, DataTablesModel dataTablesModel) {
         ArrayList<EdgeDataColumn> columns = new ArrayList<EdgeDataColumn>();
 
         for (PropertyEdgeDataColumn p : propertiesColumns) {
@@ -137,6 +138,30 @@ public class EdgeDataTable {
 
         EdgeDataTableModel model = new EdgeDataTableModel(graph.getEdges().toArray(), columns.toArray(new EdgeDataColumn[0]));
         table.setModel(model);
+    }
+
+    private String[] getHiddenColumns() {
+        List<String> hiddenCols = new ArrayList<String>();
+        TableColumnModelExt columnModel = (TableColumnModelExt) table.getColumnModel();
+        for (int i = 0; i < columnModel.getColumnCount(); i++) {
+            TableColumnExt col = columnModel.getColumnExt(i);
+            if (!col.isVisible()) {
+                hiddenCols.add((String) col.getHeaderValue());
+            }
+        }
+        return hiddenCols.toArray(new String[0]);
+    }
+
+    private void setHiddenColumns(String[] columns) {
+        TableColumnModelExt columnModel = (TableColumnModelExt) table.getColumnModel();
+        for (int i = 0; i < columnModel.getColumnCount(); i++) {
+            TableColumnExt col = columnModel.getColumnExt(i);
+            for (int j = 0; j < columns.length; j++) {
+                if (columns[j].equals(col.getHeaderValue())) {
+                    col.setVisible(false);
+                }
+            }
+        }
     }
 
     private class EdgeDataTableModel implements TableModel {
@@ -206,7 +231,7 @@ public class EdgeDataTable {
         }
 
         public Class getColumnClass() {
-            return column.getAttributeType().getType();
+            return column.getType().getType();
         }
 
         public String getColumnName() {

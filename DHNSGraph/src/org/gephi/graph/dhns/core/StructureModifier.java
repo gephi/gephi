@@ -24,6 +24,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.filter.Tautology;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.CloneNode;
 import org.gephi.graph.dhns.node.PreNode;
@@ -51,6 +52,10 @@ public class StructureModifier {
         this.treeStructure = dhns.getGraphStructure().getStructure();
         this.graphVersion = dhns.getGraphVersion();
         edgeProcessor = new EdgeProcessor(dhns);
+    }
+
+    public EdgeProcessor getEdgeProcessor() {
+        return edgeProcessor;
     }
 
     public void expand(final Node node) {
@@ -273,11 +278,11 @@ public class StructureModifier {
         for (PreNodeTreeListIterator itr = new PreNodeTreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             node.setEnabled(node.size == 0);
-            
+
         }
-        graphVersion.incEdgeVersion();
+        graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
-        dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
+        dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
     public void resetViewToTopNodes() {
@@ -285,12 +290,12 @@ public class StructureModifier {
         edgeProcessor.clearAllMetaEdges();
         for (PreNodeTreeListIterator itr = new PreNodeTreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
-                node.setEnabled(node.parent == treeStructure.root);
-            
+            node.setEnabled(node.parent == treeStructure.root);
+
         }
-        graphVersion.incEdgeVersion();
+        graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
-        dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
+        dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
     public void resetViewToLevel(int level) {
@@ -298,13 +303,11 @@ public class StructureModifier {
         edgeProcessor.clearAllMetaEdges();
         for (PreNodeTreeListIterator itr = new PreNodeTreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
-
-                node.setEnabled(node.level == level);
-            
+            node.setEnabled(node.level == level);
         }
-        graphVersion.incEdgeVersion();
+        graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
-        dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
+        dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
     public void moveToGroup(Node node, Node nodeGroup) {
@@ -321,11 +324,11 @@ public class StructureModifier {
         dhns.getWriteLock().lock();
         AbstractNode group = dhns.factory().newNode();
         group.setEnabled(true);
-        AbstractNode parent = ((AbstractNode) nodes[0]).parent;
+        AbstractNode parent = ((AbstractNode) nodes[0]).getRootNode().parent;
         group.parent = parent;
         addNode(group);
         for (int i = 0; i < nodes.length; i++) {
-            AbstractNode nodeToGroup = (AbstractNode) nodes[i];
+            AbstractNode nodeToGroup = ((AbstractNode) nodes[i]).getRootNode();
             moveToGroup(nodeToGroup, group);
         }
         graphVersion.incNodeAndEdgeVersion();
@@ -336,9 +339,10 @@ public class StructureModifier {
 
     public void ungroup(AbstractNode nodeGroup) {
         dhns.getWriteLock().lock();
+        nodeGroup = nodeGroup.getRootNode();
         //TODO Better implementation. Just remove nodeGroup from the treelist and lower level of children
         int count = 0;
-        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, nodeGroup); itr.hasNext();) {
+        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, nodeGroup, Tautology.instance); itr.hasNext();) {
             itr.next();
             count++;
         }
@@ -361,12 +365,14 @@ public class StructureModifier {
     //------------------------------------------
     private void expand(AbstractNode absNode) {
 
+        absNode = absNode.getRootNode();
+
         //Disable parent
         absNode.setEnabled(false);
         edgeProcessor.clearMetaEdges(absNode);
 
         //Enable children
-        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, absNode); itr.hasNext();) {
+        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, absNode, Tautology.instance); itr.hasNext();) {
             AbstractNode child = itr.next();
 
             child.setEnabled(true);
@@ -376,8 +382,10 @@ public class StructureModifier {
 
     private void retract(AbstractNode parent) {
 
+        parent = parent.getRootNode();
+
         //Disable children
-        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, parent); itr.hasNext();) {
+        for (ChildrenIterator itr = new ChildrenIterator(treeStructure, parent, Tautology.instance); itr.hasNext();) {
             AbstractNode child = itr.next();
             child.setEnabled(false);
             edgeProcessor.clearMetaEdges(child);
@@ -390,6 +398,7 @@ public class StructureModifier {
 
     private void addNode(AbstractNode node) {
         treeStructure.insertAsChild(node, node.parent);
+        dhns.getGraphStructure().getNodeDictionnary().add(node.getOriginalNode());
     }
 
     private void addEdge(AbstractEdge edge) {
@@ -408,7 +417,7 @@ public class StructureModifier {
 
     private void deleteNode(PreNode node) {
 
-        for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node); itr.hasNext();) {
+        for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node, Tautology.instance); itr.hasNext();) {
             AbstractNode descendant = itr.next();
             if (descendant.isEnabled()) {
                 edgeProcessor.clearMetaEdges(descendant);
@@ -426,6 +435,7 @@ public class StructureModifier {
                 }
             } else {
                 treeStructure.deleteDescendantAndSelf(descendant.getOriginalNode());
+                dhns.getGraphStructure().getNodeDictionnary().remove(descendant.getOriginalNode());
                 CloneNode cn = descendant.getOriginalNode().getClones();
                 while (cn != null) {
                     if (cn != descendant) {
@@ -476,7 +486,7 @@ public class StructureModifier {
                 //The node has an enabled ancestor
                 //We delete edges from potential meta edges
                 if (node.size > 0) {
-                    for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node); itr.hasNext();) {
+                    for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node, Tautology.instance); itr.hasNext();) {
                         AbstractNode descendant = itr.next();
                         edgeProcessor.clearEdgesWithoutRemove(descendant);
                     }
@@ -499,7 +509,7 @@ public class StructureModifier {
             } else if (node.size > 0) {
                 if (destinationAncestor != null) {
                     //The node may have some enabled descendants and we set them disabled
-                    for (DescendantIterator itr = new DescendantIterator(treeStructure, node); itr.hasNext();) {
+                    for (DescendantIterator itr = new DescendantIterator(treeStructure, node, Tautology.instance); itr.hasNext();) {
                         AbstractNode descendant = itr.next();
                         if (descendant.isEnabled()) {
                             edgeProcessor.clearMetaEdges(descendant);
@@ -509,7 +519,7 @@ public class StructureModifier {
                 //DO
                 } else {
                     //The node may have some enabled descendants and we keep them enabled
-                    for (DescendantIterator itr = new DescendantIterator(treeStructure, node); itr.hasNext();) {
+                    for (DescendantIterator itr = new DescendantIterator(treeStructure, node, Tautology.instance); itr.hasNext();) {
                         AbstractNode descendant = itr.next();
                         if (descendant.isEnabled()) {
                             //Enabled descendants meta edges are still valid only if their target is out of
@@ -534,7 +544,7 @@ public class StructureModifier {
 
     private void cloneDescedantAndSelft(AbstractNode node, AbstractNode parentNode) {
         if (node.size > 0) {
-            DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node);
+            DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node, Tautology.instance);
             for (; itr.hasNext();) {
                 AbstractNode desc = itr.next();
                 CloneNode clone = new CloneNode(desc);

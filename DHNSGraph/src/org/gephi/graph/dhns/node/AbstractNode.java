@@ -45,6 +45,8 @@ public abstract class AbstractNode implements Node, Group, AVLItem {
     public int post;
     public DurableAVLNode avlNode;
 
+    public abstract AbstractNode getRootNode();
+
     public boolean isVisible() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

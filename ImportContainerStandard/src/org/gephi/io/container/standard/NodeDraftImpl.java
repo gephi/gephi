@@ -38,15 +38,12 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
 
     //Architecture
     private ImportContainerImpl container;
-
     //Flag
     private boolean autoId;
-
     //Basic
     private String id;
     private String label;
     private NodeDraftImpl[] parent;
-
     //Viz attributes
     private Color color;
     private float size;
@@ -57,16 +54,14 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     private boolean labelVisible = true;
     private boolean visible = true;
     private boolean fixed = false;
-
     //Dynamic
     private float from = -1;
     private float to = -1;
-
     //Attributes
     private List<AttributeValue> attributeValues = new ArrayList<AttributeValue>();
-
     //Result
     private Node node;
+    private int height;
 
     public NodeDraftImpl(ImportContainerImpl container, String id) {
         this.container = container;
@@ -140,13 +135,15 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     }
 
     public void setParent(NodeDraft draft) {
+        NodeDraftImpl draftImpl = (NodeDraftImpl) draft;
         if (this.parent == null) {
             this.parent = new NodeDraftImpl[1];
-            this.parent[0] = (NodeDraftImpl) draft;
+            this.parent[0] = draftImpl;
         } else {
             this.parent = Arrays.copyOf(this.parent, this.parent.length + 1);
-            this.parent[this.parent.length - 1] = (NodeDraftImpl) draft;
+            this.parent[this.parent.length - 1] = draftImpl;
         }
+        height = Math.max(height, draftImpl.height + 1);
         container.setHierarchicalGraph(true);
     }
 
@@ -226,6 +223,10 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
 
     public float getDynamicTo() {
         return to;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     @Override

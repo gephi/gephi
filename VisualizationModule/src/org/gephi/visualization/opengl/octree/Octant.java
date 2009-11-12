@@ -28,6 +28,7 @@ import javax.media.opengl.GL;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.datastructure.avl.simple.AVLItem;
+import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ModelImpl;
 
 /**
@@ -38,23 +39,19 @@ public class Octant implements AVLItem {
 
     //Static
     private static int OctantIDs = 0;
-
     //Octree
     private Octree octree;
-
     //Coordinates
     private float size;
     private float posX;
     private float posY;
     private float posZ;
     private int depth;
-
     //Attributes
     private final int octantID;
     private int objectsCount = 0;
     private Octant[] children;
     private AtomicBoolean updateFlag = new AtomicBoolean();
-
     //Models
     private List<ParamAVLTree<ModelImpl>> modelClasses;
 
@@ -102,6 +99,29 @@ public class Octant implements AVLItem {
                 objectsCount++;
             }
         } else {
+            if (classID == 0 && this == octree.root) {
+                //Clamp Hack to avoid nodes to be outside octree
+                float quantum = size / 2;
+                float x = obj.getObj().x();
+                float y = obj.getObj().y();
+                float z = obj.getObj().z();
+                if (x > posX + quantum) {
+                    obj.getObj().setX(posX + quantum);
+                } else if (x < posX - quantum) {
+                    obj.getObj().setX(posX - quantum);
+                }
+                if (y > posY + quantum) {
+                    obj.getObj().setY(posY + quantum);
+                } else if (y < posY - quantum) {
+                    obj.getObj().setY(posY - quantum);
+                }
+                if (z > posZ + quantum) {
+                    obj.getObj().setZ(posZ + quantum);
+                } else if (z < posZ - quantum) {
+                    obj.getObj().setZ(posZ - quantum);
+                }
+            }
+
             for (int index : obj.octreePosition(posX, posY, posZ, size)) {
                 children[index].addObject(classID, obj);
             }
@@ -186,14 +206,14 @@ public class Octant implements AVLItem {
         gl.glVertex3f(posX + quantum, posY - quantum, posZ - quantum);
         gl.glVertex3f(posX + quantum, posY - quantum, posZ + quantum);
         gl.glEnd();
-    /*}
-    else if(children!=null)
-    {
-    for(Octant o : children)
-    {
-    o.displayOctreeNode(gl);
-    }
-    }*/
+        /*}
+        else if(children!=null)
+        {
+        for(Octant o : children)
+        {
+        o.displayOctreeNode(gl);
+        }
+        }*/
     }
 
     public int getNumber() {
@@ -222,6 +242,9 @@ public class Octant implements AVLItem {
 
     public void requireUpdatePosition() {
         updateFlag.set(true);
+        if (!updateFlag.getAndSet(true)) {
+            octree.vizController.getScheduler().requireUpdatePosition();
+        }
     }
 
     public void resetUpdatePositionFlag() {

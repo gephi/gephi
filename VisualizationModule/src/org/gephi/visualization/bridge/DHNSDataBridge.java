@@ -200,7 +200,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         Modeler edgeInit = engine.getModelClasses()[AbstractEngine.CLASS_EDGE].getCurrentModeler();
 
 
-        for (Edge edge : graph.getClusteredGraph().getMetaEdges()) {
+        for (Edge edge : graph.getMetaEdges()) {
 
             Model obj = edge.getEdgeData().getModel();
             if (obj == null) {
@@ -222,7 +222,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             Modeler potInit = engine.getModelClasses()[AbstractEngine.CLASS_POTATO].getCurrentModeler();
 
             List<ModelImpl> hulls = new ArrayList<ModelImpl>();
-            Node[] nodes = graph.getClusteredGraph().getNodes().toArray();
+            Node[] nodes = graph.getNodes().toArray();
             for (Node n : nodes) {
                 Node parent = graph.getParent(n);
                 if (parent != null) {

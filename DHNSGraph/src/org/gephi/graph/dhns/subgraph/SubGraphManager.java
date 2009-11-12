@@ -20,28 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.subgraph;
 
-import org.gephi.datastructure.avl.param.ParamAVLIterator;
-import org.gephi.graph.api.EdgePredicate;
-import org.gephi.graph.api.NodePredicate;
-import org.gephi.graph.api.Predicate;
-import org.gephi.graph.dhns.core.GraphStructure;
-import org.gephi.graph.dhns.core.TreeStructure;
-import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.edge.MixedEdgeImpl;
-import org.gephi.graph.dhns.edge.ProperEdgeImpl;
-import org.gephi.graph.dhns.edge.SelfLoopImpl;
-import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.node.CloneNode;
-import org.gephi.graph.dhns.node.PreNode;
-import org.gephi.graph.dhns.node.iterators.TreeListIterator;
-
 /**
  *
  * @author Mathieu Bastian
  */
 public class SubGraphManager {
 
-    public static void filterSubGraph(GraphStructure graphStructure, Predicate predicate) {
+    /*public static void filterSubGraph(GraphStructure graphStructure, Predicate predicate) {
         if (predicate instanceof NodePredicate) {
             filterSubGraph(graphStructure, (NodePredicate) predicate);
         } else if (predicate instanceof EdgePredicate) {
@@ -59,7 +44,7 @@ public class SubGraphManager {
             AbstractNode node = itr.next();
             if (!nodePredicate.evaluate(node)) {
                 AbstractNode descendant = node;
-                treeStructure.decrementAncestorSize(node, node.size+1);
+                treeStructure.decrementAncestorSize(node, node.size + 1);
                 for (int i = 0; i <= node.size; i++) {       //Delete descendant and self
                     itr.remove();
                     //Clear edges
@@ -139,4 +124,80 @@ public class SubGraphManager {
         }
         return graphStructureCopy;
     }
+
+    public static GraphStructure copyFlatClusteredView(GraphStructure graphStructure) {
+        TreeStructure treeStructure = graphStructure.getStructure();
+        GraphStructure graphStructureCopy = new GraphStructure();
+        TreeStructure treeStructureCopy = graphStructureCopy.getStructure();
+        ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
+        for (TreeIterator treeIterator = new TreeIterator(treeStructure, true); treeIterator.hasNext();) {
+            AbstractNode node = treeIterator.next();
+            AbstractNode nodeCopy = new PreNode((PreNode) node);
+            treeStructureCopy.insertAtEnd(nodeCopy);
+            graphStructureCopy.getNodeDictionnary().add(nodeCopy);
+            if (!node.getEdgesOutTree().isEmpty()) {
+                for (edgeIterator.setNode(node.getEdgesOutTree()); edgeIterator.hasNext();) {
+                    AbstractEdge edge = edgeIterator.next();
+                    AbstractEdge edgeCopy;
+                    if (edge.getTarget().isEnabled()) {
+                        AbstractNode targetCopy = treeStructureCopy.getNodeAt(edge.getTarget().getPre());
+                        if (edge.isSelfLoop()) {
+                            edgeCopy = new SelfLoopImpl(edge, nodeCopy);
+                        } else if (edge.isMixed()) {
+                            edgeCopy = new MixedEdgeImpl(edge, nodeCopy, targetCopy, edge.isDirected());
+                        } else {
+                            edgeCopy = new ProperEdgeImpl(edge, nodeCopy, targetCopy);
+                        }
+                        nodeCopy.getEdgesOutTree().add(edgeCopy);
+                        targetCopy.getEdgesInTree().add(edgeCopy);
+                        graphStructureCopy.getEdgeDictionnary().add(edgeCopy);
+                    }
+                }
+            }
+            if (!node.getMetaEdgesOutTree().isEmpty()) {
+                for (edgeIterator.setNode(node.getMetaEdgesOutTree()); edgeIterator.hasNext();) {
+                    AbstractEdge edge = edgeIterator.next();
+                    AbstractEdge edgeCopy;
+                    AbstractNode targetCopy = treeStructureCopy.getNodeAt(edge.getTarget().getPre());
+                    if (edge.isSelfLoop()) {
+                        edgeCopy = new SelfLoopImpl(edge, nodeCopy);
+                    } else if (edge.isMixed()) {
+                        edgeCopy = new MixedEdgeImpl(edge, nodeCopy, targetCopy, edge.isDirected());
+                    } else {
+                        edgeCopy = new ProperEdgeImpl(edge, nodeCopy, targetCopy);
+                    }
+                    nodeCopy.getEdgesOutTree().add(edgeCopy);
+                    targetCopy.getEdgesInTree().add(edgeCopy);
+                    graphStructureCopy.getEdgeDictionnary().add(edgeCopy);
+
+                }
+            }
+        }
+        return graphStructureCopy;
+    }
+
+    public static void filterFlatHierarchy(GraphStructure graphStructure) {
+        TreeStructure treeStructure = graphStructure.getStructure();
+        AbstractNode root = treeStructure.getRoot();
+        int enabledCount = 0;
+        ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
+        for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
+            AbstractNode node = itr.next();
+            if (!node.isEnabled()) {
+                itr.remove();
+            } else {
+                node.parent = root;
+                enabledCount++;
+                   if (!node.getEdgesOutTree().isEmpty()) {
+    for (edgeIterator.setNode(node.getEdgesOutTree()); edgeIterator.hasNext();) {
+    AbstractEdge edge = edgeIterator.next();
+    if (!edge.getTarget().isEnabled()) {
+    edgeIterator.remove();
+    }
+    }
+    }
+            }
+        }
+        root.size = enabledCount;
+    }*/
 }

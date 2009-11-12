@@ -20,8 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout;
 
-import org.gephi.graph.api.ClusteredGraph;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 
 /**
@@ -30,7 +30,7 @@ import org.gephi.graph.api.Node;
  */
 public class GraphUtils {
 
-    public static Node getTopmostParent(ClusteredGraph graph, Node n) {
+    public static Node getTopmostParent(HierarchicalGraph graph, Node n) {
         Node parent = graph.getParent(n);
         while (parent != null) {
             n = parent;
@@ -39,7 +39,7 @@ public class GraphUtils {
         return n;
     }
 
-    public static float getAverageEdgeLength(ClusteredGraph graph) {
+    public static float getAverageEdgeLength(HierarchicalGraph graph) {
         float edgeLength = 0;
         int count = 1;
         for (Edge e : graph.getEdgesAndMetaEdges()) {

@@ -26,8 +26,8 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.graph.ClusteredDirectedGraphImpl;
-import org.gephi.graph.dhns.graph.ClusteredUndirectedGraphImpl;
+import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImpl;
+import org.gephi.graph.dhns.graph.HierarchicalUndirectedGraphImpl;
 import org.gephi.graph.dhns.node.PreNode;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -43,7 +43,7 @@ import static org.junit.Assert.*;
 public class DhnsTestUndirectedGraph {
 
     private Dhns dhnsGlobal;
-    private ClusteredUndirectedGraphImpl graphGlobal;
+    private HierarchicalUndirectedGraphImpl graphGlobal;
     private Map<String, Node> nodeMap;
     private Map<String, Edge> edgeMap;
 
@@ -61,9 +61,9 @@ public class DhnsTestUndirectedGraph {
     @Before
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
-        dhnsGlobal = new Dhns(controller);
-        graphGlobal = new ClusteredUndirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure(), null);
-        ClusteredDirectedGraphImpl diGraph = new ClusteredDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure(), null);
+        dhnsGlobal = new Dhns(controller, null);
+        graphGlobal = new HierarchicalUndirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure());
+        HierarchicalDirectedGraphImpl diGraph = new HierarchicalDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure());
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
@@ -77,7 +77,7 @@ public class DhnsTestUndirectedGraph {
             node.getNodeData().setLabel("Node " + i);
             graphGlobal.addNode(node);
             nodeMap.put(node.getNodeData().getLabel(), node);
-        //System.out.println("Node " + i + " added. Id = " + node.getId());
+            //System.out.println("Node " + i + " added. Id = " + node.getId());
         }
         //System.out.println("---End Global---");
 
@@ -126,8 +126,8 @@ public class DhnsTestUndirectedGraph {
     @Test
     public void testAddEdge() {
         DhnsGraphController controller = new DhnsGraphController();
-        Dhns dhns = new Dhns(controller);
-        ClusteredUndirectedGraphImpl graph = new ClusteredUndirectedGraphImpl(dhns, dhnsGlobal.getGraphStructure(), null);
+        Dhns dhns = new Dhns(controller, null);
+        HierarchicalUndirectedGraphImpl graph = new HierarchicalUndirectedGraphImpl(dhns, dhnsGlobal.getGraphStructure());
         TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
         GraphFactoryImpl factory = dhns.factory();
 

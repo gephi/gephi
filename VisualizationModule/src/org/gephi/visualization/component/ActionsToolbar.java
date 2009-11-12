@@ -80,7 +80,7 @@ public class ActionsToolbar extends JToolBar {
         add(centerOnZeroButton);
 
         //Reset colors
-        final JColorButton resetColorButton = new JColorButton(color, true);
+        final JColorButton resetColorButton = new JColorButton(color, true, false);
         resetColorButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetColors"));
         resetColorButton.addActionListener(new ActionListener() {
 
@@ -95,7 +95,7 @@ public class ActionsToolbar extends JToolBar {
                     n.getNodeData().setAlpha(1f);
                 }
                 for (Edge e : graph.getEdges().toArray()) {
-                    e.getEdgeData().setR(color.getRed() / 255f);
+                    e.getEdgeData().setR(-1f);
                     e.getEdgeData().setG(color.getGreen() / 255f);
                     e.getEdgeData().setB(color.getBlue() / 255f);
                     e.getEdgeData().setAlpha(1f);

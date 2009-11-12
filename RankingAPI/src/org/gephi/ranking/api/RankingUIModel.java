@@ -36,7 +36,6 @@ public class RankingUIModel {
     //Const
     public static final int NODE_RANKING = 1;
     public static final int EDGE_RANKING = 2;
-
     //Model
     protected int ranking;
     protected boolean barChartVisible;
@@ -47,7 +46,6 @@ public class RankingUIModel {
     protected List<Transformer> edgeTransformers;
     protected String selectedNodeRanking;
     protected String selectedEdgeRanking;
-
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
 
@@ -126,7 +124,7 @@ public class RankingUIModel {
     public Transformer getSelectedEdgeTransformer() {
         if (edgeTransformer != null) {
             for (Transformer t : edgeTransformers) {
-                if (t.getClass().getSimpleName().equals(edgeTransformer)) {
+                if (edgeTransformer.isAssignableFrom(t.getClass())) {
                     return t;
                 }
             }
@@ -179,15 +177,22 @@ public class RankingUIModel {
     public void loadModel(RankingUIModel model) {
         this.nodeTransformers.clear();
         this.edgeTransformers.clear();
-        this.barChartVisible = model.barChartVisible;
-        this.edgeTransformer = model.edgeTransformer;
-        this.listVisible = model.listVisible;
-        this.nodeTransformer = model.nodeTransformer;
-        this.ranking = model.ranking;
-        this.selectedNodeRanking = model.selectedNodeRanking;
-        this.selectedEdgeRanking = model.selectedEdgeRanking;
+//        this.barChartVisible = model.barChartVisible;
+//        this.edgeTransformer = model.edgeTransformer;
+//        this.listVisible = model.listVisible;
+//        this.nodeTransformer = model.nodeTransformer;
+//        this.ranking = model.ranking;
+//        this.selectedNodeRanking = model.selectedNodeRanking;
+//        this.selectedEdgeRanking = model.selectedEdgeRanking;
         this.nodeTransformers.addAll(model.nodeTransformers);
         this.edgeTransformers.addAll(model.edgeTransformers);
+        setBarChartVisible(model.barChartVisible);
+        setListVisible(model.listVisible);
+        setNodeTransformer(model.nodeTransformer);
+        setEdgeTransformer(model.edgeTransformer);
+        setRanking(model.ranking);
+        setSelectedEdgeRanking(model.selectedEdgeRanking);
+        setSelectedNodeRanking(model.selectedNodeRanking);
     }
 
     public void setListVisible(boolean listVisible) {

@@ -33,6 +33,8 @@ public interface GraphModel {
 
     public DecoratorFactory decorators();
 
+    public GraphSettings settings();
+
     public Views views();
 
     public Graph getGraph();

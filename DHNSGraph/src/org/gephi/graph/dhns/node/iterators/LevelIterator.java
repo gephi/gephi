@@ -22,6 +22,7 @@ package org.gephi.graph.dhns.node.iterators;
 
 import java.util.Iterator;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.core.DurableTreeList;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.graph.dhns.core.TreeStructure;
@@ -41,33 +42,47 @@ public class LevelIterator extends AbstractNodeIterator implements Iterator<Node
     protected DurableAVLNode currentNode;
     protected int level;
 
-    public LevelIterator(TreeStructure treeStructure, int level) {
+    //Proposition
+    protected Predicate<AbstractNode> predicate;
+
+    public LevelIterator(TreeStructure treeStructure, int level, Predicate<AbstractNode> predicate) {
         this.treeList = treeStructure.getTree();
         this.nextIndex = 1;
         this.diffIndex = 2;
         this.treeSize = treeList.size();
         this.level = level;
+        this.predicate = predicate;
     }
 
     @Override
     public boolean hasNext() {
-        if (nextIndex < treeSize) {
-            if (diffIndex > 1) {
-                currentNode = treeList.getNode(nextIndex);
-            } else {
-                currentNode = currentNode.next();
-            }
-
-            while (currentNode.getValue().level != level) {
-                ++nextIndex;
-                if (nextIndex >= treeSize) {
-                    return false;
+        while (true) {
+            if (nextIndex < treeSize) {
+                if (diffIndex > 1) {
+                    currentNode = treeList.getNode(nextIndex);
+                } else {
+                    currentNode = currentNode.next();
                 }
-                currentNode = currentNode.next();
+
+                while (currentNode.getValue().level != level) {
+                    ++nextIndex;
+                    if (nextIndex >= treeSize) {
+                        return false;
+                    }
+                    currentNode = currentNode.next();
+                }
+
+                if (!predicate.evaluate(currentNode.getValue())) {
+                    nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
+                    diffIndex = nextIndex - currentNode.getValue().pre;
+                } else {
+                    return true;
+                }
+
+            } else {
+                return false;
             }
-            return true;
         }
-        return false;
     }
 
     @Override

@@ -34,7 +34,7 @@ public class DynamicEdgePredicate implements EdgePredicate {
     private float to = 1;
 
     public DynamicEdgePredicate(float from, float to) {
-        this.from  = from;
+        this.from = from;
         this.to = to;
     }
 

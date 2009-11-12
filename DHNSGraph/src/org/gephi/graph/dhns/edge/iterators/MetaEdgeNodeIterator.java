@@ -26,6 +26,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
 
 /**
  * Edge Iterator for edges linked to the given node. It gives IN, OUT or IN+OUT edges
@@ -39,20 +40,22 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
 
         OUT, IN, BOTH
     };
-    protected AbstractNode node;
     protected ParamAVLIterator<MetaEdgeImpl> edgeIterator;
     protected EdgeNodeIteratorMode mode;
     protected MetaEdgeImpl pointer;
     protected boolean undirected;
+    protected MetaEdgeTree outTree;
+    protected MetaEdgeTree inTree;
 
-    public MetaEdgeNodeIterator(AbstractNode node, EdgeNodeIteratorMode mode, boolean undirected) {
-        this.node = node;
+    public MetaEdgeNodeIterator(MetaEdgeTree outTree, MetaEdgeTree inTree, EdgeNodeIteratorMode mode, boolean undirected) {
+        this.outTree = outTree;
+        this.inTree = inTree;
         this.mode = mode;
         this.edgeIterator = new ParamAVLIterator<MetaEdgeImpl>();
         if (mode.equals(EdgeNodeIteratorMode.OUT) || mode.equals(EdgeNodeIteratorMode.BOTH)) {
-            this.edgeIterator.setNode(node.getMetaEdgesOutTree());
+            this.edgeIterator.setNode(outTree);
         } else {
-            this.edgeIterator.setNode(node.getMetaEdgesInTree());
+            this.edgeIterator.setNode(inTree);
         }
         this.undirected = undirected;
     }
@@ -67,7 +70,7 @@ public class MetaEdgeNodeIterator extends AbstractEdgeIterator implements Iterat
                         pointer = null;
                     }
                 } else {
-                    this.edgeIterator.setNode(node.getMetaEdgesInTree());
+                    this.edgeIterator.setNode(inTree);
                     this.mode = EdgeNodeIteratorMode.IN;
                 }
             } else {

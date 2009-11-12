@@ -22,6 +22,7 @@ package org.gephi.graph.dhns.node.iterators;
 
 import java.util.Iterator;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
@@ -36,10 +37,13 @@ public class NeighborIterator extends AbstractNodeIterator implements Iterator<N
     private AbstractEdgeIterator edgeIterator;
     private AbstractNode owner;
     private AbstractNode pointer;
+    //Propostion
+    private Predicate<AbstractNode> predicate;
 
-    public NeighborIterator(AbstractEdgeIterator edgeIterator, AbstractNode owner/*, Predicate<AbstractNode> proposition*/) {
+    public NeighborIterator(AbstractEdgeIterator edgeIterator, AbstractNode owner, Predicate<AbstractNode> predicate) {
         this.edgeIterator = edgeIterator;
         this.owner = owner;
+        this.predicate = predicate;
     }
 
     public boolean hasNext() {
@@ -51,7 +55,9 @@ public class NeighborIterator extends AbstractNodeIterator implements Iterator<N
                 } else {
                     pointer = edge.getSource();
                 }
-                return true;
+                if (predicate.evaluate(pointer)) {
+                    return true;
+                }
             }
         }
         return false;

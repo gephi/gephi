@@ -31,41 +31,36 @@ import org.gephi.graph.dhns.utils.avl.EdgeTree;
  */
 public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
 
-    private EdgeTree edges;
+    private int count = 0;
     private int directedCount = 0;
 
     public MetaEdgeImpl(int ID, AbstractNode source, AbstractNode target) {
         super(ID, source, target);
-        this.edges = new EdgeTree();
         this.weight = 0f;
     }
 
     public boolean addEdge(AbstractEdge edge) {
-        if (edges.add(edge)) {
-            if (edge.isDirected()) {
-                directedCount++;
-            }
-            return true;
+        if (edge.isDirected()) {
+            directedCount++;
         }
-        return false;
+        count++;
+        return true;
     }
 
     public boolean removeEdge(AbstractEdge edge) {
-        if (edges.remove(edge)) {
-            if (edge.isDirected()) {
-                directedCount--;
-            }
-            return true;
+        if (edge.isDirected()) {
+            directedCount--;
         }
-        return false;
-    }
-
-    public EdgeTree getEdges() {
-        return edges;
+        count--;
+        return true;
     }
 
     public boolean isEmpty() {
-        return edges.getCount() == 0;
+        return count == 0;
+    }
+
+    public int getCount() {
+        return count;
     }
 
     @Override

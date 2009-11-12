@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.importer;
 
-import java.io.BufferedReader;
+import java.io.LineNumberReader;
 import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.logging.Report;
 
@@ -39,5 +39,5 @@ public interface TextImporter extends FileFormatImporter {
      * @param report the import report for logging informations and issues
      * @throws java.lang.Exception for catching eventual exceptions
      */
-    public void importData(BufferedReader reader, ContainerLoader container, Report report) throws Exception;
+    public void importData(LineNumberReader reader, ContainerLoader container, Report report) throws Exception;
 }

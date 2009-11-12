@@ -67,10 +67,10 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
         level = 0;
 
         while (true) {
-            int graphSize = graph.getClusteredGraph().getTopNodes().toArray().length;
+            int graphSize = graph.getTopNodes().toArray().length;
             coarseningStrategy.coarsen(graph);
             level++;
-            int newGraphSize = graph.getClusteredGraph().getTopNodes().toArray().length;
+            int newGraphSize = graph.getTopNodes().toArray().length;
             if (newGraphSize < getMinSize() || newGraphSize > graphSize * getMinCoarseningRate()) {
                 System.out.printf("Size: BEFORE = %d   AFTER = %d\n", graphSize, newGraphSize);
                 break;

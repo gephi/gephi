@@ -20,6 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.generate;
 
+import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.io.container.Container;
 import org.gephi.io.container.ContainerFactory;
 import org.gephi.io.generator.Generator;
@@ -31,6 +34,7 @@ import org.gephi.ui.generator.GeneratorUI;
 import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
 import org.gephi.workspace.api.Workspace;
+import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -58,7 +62,17 @@ public class DesktopGeneratorController implements GeneratorController {
         GeneratorUI ui = generator.getUI();
         if (ui != null) {
             ui.setup(generator);
-            DialogDescriptor dd = new DialogDescriptor(ui.getPanel(), title);
+            JPanel panel = ui.getPanel();
+            final DialogDescriptor dd = new DialogDescriptor(panel, title);
+            if (panel instanceof ValidationPanel) {
+                ValidationPanel vp = (ValidationPanel) panel;
+                vp.addChangeListener(new ChangeListener() {
+
+                    public void stateChanged(ChangeEvent e) {
+                        dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                    }
+                });
+            }
             Object result = DialogDisplayer.getDefault().notify(dd);
             if (result != NotifyDescriptor.OK_OPTION) {
                 return;
@@ -107,7 +121,7 @@ public class DesktopGeneratorController implements GeneratorController {
             }
         }
         if (container.getSource() != null) {
-            workspace.setSource(container.getSource());
+            pc.setSource(workspace, container.getSource());
         }
 
         Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());

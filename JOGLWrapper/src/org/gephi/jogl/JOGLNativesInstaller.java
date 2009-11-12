@@ -221,6 +221,7 @@ public class JOGLNativesInstaller extends ModuleInstall {
         new NativeLibInfo("win", "x86_64", "windows-amd64", "", ".dll"),
         new NativeLibInfo("mac", "ppc", "macosx-ppc", "lib", ".jnilib"),
         new NativeLibInfo("mac", "i386", "macosx-universal", "lib", ".jnilib"),
+        new NativeLibInfo("mac", "x86_64", "macosx-universal", "lib", ".jnilib"),
         new NativeLibInfo("linux", "i386", "linux-i586", "lib", ".so"),
         new NativeLibInfo("linux", "x86", "linux-i586", "lib", ".so"),
         new NativeLibInfo("linux", "amd64", "linux-amd64", "lib", ".so"),

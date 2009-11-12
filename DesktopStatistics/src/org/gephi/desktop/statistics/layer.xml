@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="Window">
+            <file name="org-gephi-desktop-statistics-StatisticsAction.instance">
+                <attr name="component" methodvalue="org.gephi.desktop.statistics.StatisticsTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="org.gephi.desktop.statistics.Bundle#CTL_StatisticsAction"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="StatisticsAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-statistics-StatisticsAction.instance"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="StatisticsTopComponent.settings" url="StatisticsTopComponentSettings.xml"/>
+        </folder>
+        <folder name="Modes">
+            <folder name="statisticsmode">
+                <file name="StatisticsTopComponent.wstcref" url="StatisticsTopComponentWstcref.xml"/>
+            </folder>
+            <file name="statisticsmode.wsmode" url="statisticsmodeWsmode.xml"/>
+        </folder>
+    </folder>
+</filesystem>

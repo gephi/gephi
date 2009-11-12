@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.container;
 
-import org.gephi.data.attributes.api.AttributeManager;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.io.importer.Importer;
 
 /**
@@ -53,7 +53,7 @@ public interface ContainerLoader {
 
     public void setEdgeDefault(EdgeDefault edgeDefault);
 
-    public AttributeManager getAttributeManager();
+    public AttributeModel getAttributeModel();
 
     public DraftFactory factory();
 

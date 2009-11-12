@@ -231,6 +231,10 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         return currentSelectionArea;
     }
 
+    public boolean isRectangleSelection() {
+        return rectangleSelection;
+    }
+
     public void setRectangleSelection(boolean rectangleSelection) {
         vizConfig.setRectangleSelection(rectangleSelection);
         configChanged = true;

@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Patrick J. McSweeney
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -23,41 +23,25 @@ package org.gephi.statistics.builder;
 import org.gephi.statistics.Hits;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.statistics.api.StatisticsBuilder;
-import org.gephi.statistics.ui.HitsPanel;
-import org.gephi.statistics.ui.HitsPanel.HitsUI;
-import org.gephi.statistics.ui.api.StatisticsUI;
-import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author pjmcswee
  */
+@ServiceProvider(service = StatisticsBuilder.class)
 public class HitsBuilder implements StatisticsBuilder {
 
-    Hits hts = new Hits();
-    HitsUI htsui = new HitsUI();
-
-    /**
-     * 
-     * @return
-     */
-    public String toString() {
-        return hts.getName();
+    public String getName() {
+        return NbBundle.getMessage(HitsBuilder.class, "Hits.name");
     }
 
-    /**
-     *
-     * @return
-     */
     public Statistics getStatistics() {
-        return hts;//return (Statistics) Lookup.getDefault().lookupAll(Hits.class);
+        return new Hits();
     }
 
-    /**
-     *
-     * @return
-     */
-    public StatisticsUI getUI() {
-        return htsui;//return (StatisticsUI) Lookup.getDefault().lookupAll(HitsPanel.class);
+    public Class<? extends Statistics> getStatisticsClass() {
+        return Hits.class;
     }
 }

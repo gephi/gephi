@@ -22,6 +22,8 @@ package org.gephi.graph.dhns.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.gephi.graph.api.GraphEvent.EventType;
+import org.gephi.graph.api.GraphSettings;
 import org.gephi.graph.dhns.edge.AverageMetaEdgeBuilder;
 import org.gephi.graph.dhns.edge.MetaEdgeBuilder;
 import org.gephi.graph.dhns.edge.SumMetaEdgeBuilder;
@@ -30,13 +32,15 @@ import org.gephi.graph.dhns.edge.SumMetaEdgeBuilder;
  *
  * @author Mathieu Bastian
  */
-public class SettingsManager {
+public class SettingsManager implements GraphSettings {
 
     private Dhns dhns;
 
     //Settings
     private Boolean allowMultilevel;
     private Boolean autoMetaEdgeCreation;
+    private Boolean interClusterEdges;
+    private Boolean intraClusterEdges;
     private MetaEdgeBuilder metaEdgeBuilder;
     private Float metaEdgeBuilderMinimum;
     private Float metaEdgeBuilderLimit;
@@ -50,6 +54,8 @@ public class SettingsManager {
     private void defaultSettings() {
         allowMultilevel = Boolean.TRUE;
         autoMetaEdgeCreation = Boolean.TRUE;
+        interClusterEdges = Boolean.TRUE;
+        intraClusterEdges = Boolean.TRUE;
         metaEdgeBuilderMinimum = Float.valueOf(0.1f);
         metaEdgeBuilderLimit = Float.valueOf(10f);
         metaEdgeBuilderNonDeepDivisor = Float.valueOf(10f);
@@ -64,6 +70,14 @@ public class SettingsManager {
         return autoMetaEdgeCreation;
     }
 
+    public boolean isInterClusterEdges() {
+        return interClusterEdges;
+    }
+
+    public boolean isIntraClusterEdges() {
+        return intraClusterEdges;
+    }
+
     public MetaEdgeBuilder getMetaEdgeBuilder() {
         return metaEdgeBuilder;
     }
@@ -73,12 +87,17 @@ public class SettingsManager {
             allowMultilevel = (Boolean) value;
         } else if (key.equals("autoMetaEdgeCreation")) {
             autoMetaEdgeCreation = (Boolean) value;
+            fireUpdate();
         } else if (key.equals("metaEdgeBuilder")) {
+            if (value instanceof MetaEdgeBuilder) {
+                metaEdgeBuilder = (MetaEdgeBuilder) value;
+            }
             if (value.equals("average")) {
                 metaEdgeBuilder = new AverageMetaEdgeBuilder(metaEdgeBuilderMinimum, metaEdgeBuilderLimit, metaEdgeBuilderNonDeepDivisor);
             } else if (value.equals("sum")) {
                 metaEdgeBuilder = new SumMetaEdgeBuilder(metaEdgeBuilderMinimum, metaEdgeBuilderLimit, metaEdgeBuilderNonDeepDivisor);
             }
+            fireUpdate();
         } else if (key.equals("metaEdgeBuilderMinimum")) {
             metaEdgeBuilderMinimum = (Float) value;
             if (metaEdgeBuilder instanceof SumMetaEdgeBuilder) {
@@ -86,6 +105,7 @@ public class SettingsManager {
             } else if (metaEdgeBuilder instanceof AverageMetaEdgeBuilder) {
                 metaEdgeBuilder = new AverageMetaEdgeBuilder(metaEdgeBuilderMinimum, metaEdgeBuilderLimit, metaEdgeBuilderNonDeepDivisor);
             }
+            fireUpdate();
         } else if (key.equals("metaEdgeBuilderLimit")) {
             metaEdgeBuilderLimit = (Float) value;
             if (metaEdgeBuilder instanceof SumMetaEdgeBuilder) {
@@ -93,6 +113,7 @@ public class SettingsManager {
             } else if (metaEdgeBuilder instanceof AverageMetaEdgeBuilder) {
                 metaEdgeBuilder = new AverageMetaEdgeBuilder(metaEdgeBuilderMinimum, metaEdgeBuilderLimit, metaEdgeBuilderNonDeepDivisor);
             }
+            fireUpdate();
         } else if (key.equals("metaEdgeBuilderNonDeepDivisor")) {
             metaEdgeBuilderNonDeepDivisor = (Float) value;
             if (metaEdgeBuilder instanceof SumMetaEdgeBuilder) {
@@ -100,6 +121,13 @@ public class SettingsManager {
             } else if (metaEdgeBuilder instanceof AverageMetaEdgeBuilder) {
                 metaEdgeBuilder = new AverageMetaEdgeBuilder(metaEdgeBuilderMinimum, metaEdgeBuilderLimit, metaEdgeBuilderNonDeepDivisor);
             }
+            fireUpdate();
+        } else if (key.equals("interClusterEdges")) {
+            interClusterEdges = (Boolean) value;
+            fireUpdate();
+        } else if (key.equals("intraClusterEdges")) {
+            intraClusterEdges = (Boolean) value;
+            fireUpdate();
         }
     }
 
@@ -113,6 +141,8 @@ public class SettingsManager {
                 return "sum";
             } else if (metaEdgeBuilder instanceof AverageMetaEdgeBuilder) {
                 return "average";
+            } else {
+                return metaEdgeBuilder.getClass().getName();
             }
         } else if (key.equals("metaEdgeBuilderMinimum")) {
             return metaEdgeBuilderMinimum;
@@ -120,8 +150,17 @@ public class SettingsManager {
             return metaEdgeBuilderLimit;
         } else if (key.equals("metaEdgeBuilderNonDeepDivisor")) {
             return metaEdgeBuilderNonDeepDivisor;
+        } else if (key.equals("interClusterEdges")) {
+            return interClusterEdges;
+        } else if (key.equals("intraClusterEdges")) {
+            return intraClusterEdges;
         }
         return null;
+    }
+
+    private void fireUpdate() {
+        dhns.getGraphVersion().incEdgeVersion();
+        dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
     }
 
     public Map<String, Object> getClientProperties() {

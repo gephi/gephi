@@ -5,7 +5,6 @@ import org.gephi.preview.GraphImpl;
 import org.gephi.preview.NodeImpl;
 import org.gephi.preview.SelfLoopImpl;
 import org.gephi.preview.UnidirectionalEdgeImpl;
-import org.gephi.preview.supervisor.GraphSupervisor;
 
 /**
  *
@@ -15,8 +14,8 @@ public class PreviewGraphFactory {
 
 	private final HashMap<Integer, NodeImpl> nodeMap = new HashMap<Integer, NodeImpl>();
 
-	public GraphImpl createPreviewGraph(org.gephi.graph.api.Graph sourceGraph, GraphSupervisor supervisor) {
-		GraphImpl previewGraph = new GraphImpl(supervisor);
+	public GraphImpl createPreviewGraph(org.gephi.graph.api.Graph sourceGraph) {
+		GraphImpl previewGraph = new GraphImpl();
 
 		for (org.gephi.graph.api.Node sourceNode : sourceGraph.getNodes()) {
 			NodeImpl previewNode = createPreviewNode(previewGraph, sourceNode);

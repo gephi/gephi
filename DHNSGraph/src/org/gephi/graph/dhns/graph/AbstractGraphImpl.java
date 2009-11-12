@@ -93,7 +93,10 @@ public abstract class AbstractGraphImpl {
             if (preNode != null) {
                 preNode = preNode.getOriginalNode();
             } else {
-                throw new IllegalArgumentException("Node must be in the graph");
+                preNode = ((AbstractNode) node).getRootNode();
+                if (preNode == null) {
+                    throw new IllegalArgumentException("Node must be in the graph");
+                }
             }
         }
         return preNode;

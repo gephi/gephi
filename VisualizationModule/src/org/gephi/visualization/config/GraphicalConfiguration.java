@@ -38,6 +38,9 @@ public class GraphicalConfiguration {
     private static boolean messageDelivered = false;
     private boolean vboSupport = false;
     private boolean pBufferSupport = false;
+    private String vendor = "";
+    private String renderer = "";
+    private String versionStr = "";
 
     public void checkGeneralCompatibility(GL gl) {
         if (messageDelivered) {
@@ -46,9 +49,9 @@ public class GraphicalConfiguration {
 
         try {
             //Vendor
-            String vendor = gl.glGetString(GL.GL_VENDOR);
-            String renderer = gl.glGetString(GL.GL_RENDERER);
-            String versionStr = gl.glGetString(GL.GL_VERSION);
+            vendor = gl.glGetString(GL.GL_VENDOR);
+            renderer = gl.glGetString(GL.GL_RENDERER);
+            versionStr = gl.glGetString(GL.GL_VERSION);
             String currentConfig = String.format(NbBundle.getMessage(GraphicalConfiguration.class, "graphicalConfiguration_currentConfig"), vendor, renderer, versionStr);
 
             // Check version.
@@ -79,6 +82,18 @@ public class GraphicalConfiguration {
                 }
             });
         }
+    }
+
+    public String getVendor() {
+        return vendor;
+    }
+
+    public String getRenderer() {
+        return renderer;
+    }
+
+    public String getVersionStr() {
+        return versionStr;
     }
 
     public boolean isPBufferSupported() {

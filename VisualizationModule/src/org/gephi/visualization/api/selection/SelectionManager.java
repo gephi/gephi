@@ -114,6 +114,7 @@ public class SelectionManager implements VizArchitecture {
             vizConfig.setCustomSelection(false);
             setDirectMouseSelection();
         }
+        engine.resetSelection();
     }
 
     public void selectNode(Node node) {

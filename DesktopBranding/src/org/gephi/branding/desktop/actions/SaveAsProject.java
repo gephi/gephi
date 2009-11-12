@@ -28,15 +28,16 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.SystemAction;
 
-/**
- *
- * @author Mathieu Bastian
- */
 public class SaveAsProject extends SystemAction {
 
     @Override
     public String getName() {
         return NbBundle.getMessage(SaveAsProject.class, "CTL_SaveAsProject");
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return Lookup.getDefault().lookup(ProjectController.class).canSaveAs();
     }
 
     @Override

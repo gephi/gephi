@@ -21,11 +21,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.importer.standard;
 
 import java.io.BufferedReader;
+import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.io.container.ContainerLoader;
@@ -53,15 +54,12 @@ public class ImporterGDF implements TextImporter, LongTask {
     private Report report;
     private ProgressTicket progressTicket;
     private boolean cancel = false;
-
     //Extract
     private List<String> nodeLines = new ArrayList<String>();
     private List<String> edgeLines = new ArrayList<String>();
-
     //Matcher
     private String[] nodeLineStart;
     private String[] edgeLineStart;
-
     //Columns
     private GDFColumn[] nodeColumns;
     private GDFColumn[] edgeColumns;
@@ -71,7 +69,7 @@ public class ImporterGDF implements TextImporter, LongTask {
         edgeLineStart = new String[]{"edgedef>", "Edgedef>"};
     }
 
-    public void importData(BufferedReader reader, ContainerLoader container, Report report) throws Exception {
+    public void importData(LineNumberReader reader, ContainerLoader container, Report report) throws Exception {
         this.container = container;
         this.report = report;
 
@@ -96,7 +94,7 @@ public class ImporterGDF implements TextImporter, LongTask {
         this.cancel = false;
     }
 
-    private void importData(BufferedReader reader) throws Exception {
+    private void importData(LineNumberReader reader) throws Exception {
         Progress.start(progressTicket);        //Progress
 
         //Verify a node line exists and puts nodes and edges lines in arrays
@@ -302,8 +300,8 @@ public class ImporterGDF implements TextImporter, LongTask {
                 nodeColumns[i - 1] = new GDFColumn(GDFColumn.NodeGuessColumn.LABELVISIBLE);
                 report.log("Node property found: labelvisible");
             } else {
-                AttributeClass nodeClass = container.getAttributeManager().getNodeClass();
-                AttributeColumn newColumn = nodeClass.addAttributeColumn(columnName, type);
+                AttributeTable nodeClass = container.getAttributeModel().getNodeTable();
+                AttributeColumn newColumn = nodeClass.addColumn(columnName, type);
                 nodeColumns[i - 1] = new GDFColumn(newColumn);
                 report.log("Node attribute " + columnName + " (" + type.getTypeString() + ")");
             }
@@ -385,8 +383,8 @@ public class ImporterGDF implements TextImporter, LongTask {
                 edgeColumns[i - 2] = new GDFColumn(GDFColumn.EdgeGuessColumn.LABELVISIBLE);
                 report.log("Edge property found: labelvisible");
             } else {
-                AttributeClass edgeClass = container.getAttributeManager().getEdgeClass();
-                AttributeColumn newColumn = edgeClass.addAttributeColumn(columnName, type);
+                AttributeTable edgeClass = container.getAttributeModel().getEdgeTable();
+                AttributeColumn newColumn = edgeClass.addColumn(columnName, type);
                 edgeColumns[i - 2] = new GDFColumn(newColumn);
                 report.log("Edge attribute " + columnName + " (" + type.getTypeString() + ")");
             }
@@ -453,7 +451,7 @@ public class ImporterGDF implements TextImporter, LongTask {
             try {
                 node.addAttributeValue(column.getAttributeColumn(), data);
             } catch (Exception e) {
-                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat4", column.getAttributeColumn().getAttributeType(), column.getAttributeColumn().getTitle(), node);
+                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat4", column.getAttributeColumn().getType(), column.getAttributeColumn().getTitle(), node);
                 report.logIssue(new Issue(message, Issue.Level.WARNING, e));
             }
         }
@@ -497,7 +495,7 @@ public class ImporterGDF implements TextImporter, LongTask {
             try {
                 edge.addAttributeValue(column.getAttributeColumn(), data);
             } catch (Exception e) {
-                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat4", column.getAttributeColumn().getAttributeType(), column.getAttributeColumn().getTitle(), edge);
+                String message = NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat4", column.getAttributeColumn().getType(), column.getAttributeColumn().getTitle(), edge);
                 report.logIssue(new Issue(message, Issue.Level.WARNING, e));
             }
         }

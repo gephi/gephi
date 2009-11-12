@@ -94,7 +94,10 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
 
             public void propertyChange(PropertyChangeEvent evt) {
                 TextModel model = VizController.getInstance().getVizModel().getTextModel();
-                model.setNodeColor(((JColorButton) nodeColorButton).getColor());
+                if (!model.getNodeColor().equals(((JColorButton) nodeColorButton).getColor())) {
+                    model.setNodeColor(((JColorButton) nodeColorButton).getColor());
+                }
+
             }
         });
         nodeSizeSlider.addChangeListener(new ChangeListener() {
@@ -131,7 +134,9 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
 
             public void propertyChange(PropertyChangeEvent evt) {
                 TextModel model = VizController.getInstance().getVizModel().getTextModel();
-                model.setEdgeColor(((JColorButton) edgeColorButton).getColor());
+                if (!model.getEdgeColor().equals(((JColorButton) edgeColorButton).getColor())) {
+                    model.setEdgeColor(((JColorButton) edgeColorButton).getColor());
+                }
             }
         });
         edgeSizeSlider.addChangeListener(new ChangeListener() {

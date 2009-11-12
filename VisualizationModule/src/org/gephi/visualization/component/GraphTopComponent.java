@@ -21,14 +21,22 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.component;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.gephi.project.api.ProjectController;
 import org.gephi.tools.api.ToolController;
 import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.PropertiesBarAddon;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.gephi.workspace.api.Workspace;
@@ -37,7 +45,6 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-
 
 final class GraphTopComponent extends TopComponent {
 
@@ -78,7 +85,6 @@ final class GraphTopComponent extends TopComponent {
         });
     //remove(waitingLabel);
     //add(drawable.getGraphComponent(), BorderLayout.CENTER);
-
     }
 
     private void initCollapsePanel() {
@@ -93,6 +99,7 @@ final class GraphTopComponent extends TopComponent {
     private ActionsToolbar actionsToolbar;
     private JComponent toolbar;
     private JComponent propertiesBar;
+    private AddonsBar addonsBar;
 
     private void initToolPanels() {
         ToolController tc = Lookup.getDefault().lookup(ToolController.class);
@@ -113,10 +120,17 @@ final class GraphTopComponent extends TopComponent {
             }
 
             if (VizController.getInstance().getVizConfig().isPropertiesbar()) {
+                JPanel northBar = new JPanel(new BorderLayout());
                 propertiesBar = tc.getPropertiesBar();
                 if (propertiesBar != null) {
-                    add(propertiesBar, BorderLayout.NORTH);
+                    northBar.add(propertiesBar, BorderLayout.CENTER);
                 }
+                addonsBar = new AddonsBar();
+                for (PropertiesBarAddon addon : Lookup.getDefault().lookupAll(PropertiesBarAddon.class)) {
+                    addonsBar.add(addon.getComponent());
+                }
+                northBar.add(addonsBar, BorderLayout.EAST);
+                add(northBar, BorderLayout.NORTH);
             }
         }
 
@@ -132,6 +146,7 @@ final class GraphTopComponent extends TopComponent {
                 propertiesBar.setEnabled(true);
                 actionsToolbar.setEnabled(true);
                 selectionToolbar.setEnabled(true);
+                addonsBar.setEnabled(true);
             }
 
             public void unselect(Workspace workspace) {
@@ -145,6 +160,7 @@ final class GraphTopComponent extends TopComponent {
                 propertiesBar.setEnabled(false);
                 actionsToolbar.setEnabled(false);
                 selectionToolbar.setEnabled(false);
+                addonsBar.setEnabled(false);
             }
         });
 
@@ -152,6 +168,7 @@ final class GraphTopComponent extends TopComponent {
         propertiesBar.setEnabled(false);
         actionsToolbar.setEnabled(false);
         selectionToolbar.setEnabled(false);
+        addonsBar.setEnabled(false);
     }
 
     /** This method is called from within the constructor to
@@ -253,6 +270,20 @@ final class GraphTopComponent extends TopComponent {
 
         public Object readResolve() {
             return GraphTopComponent.getDefault();
+        }
+    }
+
+    private static class AddonsBar extends JPanel {
+
+        public AddonsBar() {
+            super(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        }
+
+        @Override
+        public void setEnabled(boolean enabled) {
+            for (Component c : getComponents()) {
+                c.setEnabled(enabled);
+            }
         }
     }
 }

@@ -54,13 +54,11 @@ public class CompatibilityEngine extends AbstractEngine {
     private CompatibilityScheduler scheduler;
     private long markTime = 0;
     private long markTime2 = 0;
-
     //User config
     protected CompatibilityModelClass[] modelClasses;
     protected CompatibilityModelClass[] lodClasses;
     protected CompatibilityModelClass[] selectableClasses;
     protected CompatibilityModelClass[] clickableClasses;
-
     //Selection
     private ConcurrentLinkedQueue<ModelImpl>[] selectedObjects;
     private boolean anySelected = false;
@@ -83,7 +81,13 @@ public class CompatibilityEngine extends AbstractEngine {
     public void updateSelection(GL gl, GLU glu) {
         if (vizConfig.isSelectionEnable() && currentSelectionArea.isEnabled()) {
             VizModel vizModel = VizController.getInstance().getVizModel();
-            octree.updateSelectedOctant(gl, glu, graphIO.getMousePosition(), currentSelectionArea.getSelectionAreaRectancle());
+            float[] mp = Arrays.copyOf(graphIO.getMousePosition(), 2);
+            float[] cent = currentSelectionArea.getSelectionAreaCenter();
+            if (cent != null) {
+                mp[0] += cent[0];
+                mp[1] += cent[1];
+            }
+            octree.updateSelectedOctant(gl, glu, mp, currentSelectionArea.getSelectionAreaRectancle());
 
             for (int i = 0; i < selectableClasses.length; i++) {
                 CompatibilityModelClass modelClass = selectableClasses[i];
@@ -170,6 +174,7 @@ public class CompatibilityEngine extends AbstractEngine {
             }
 
             initSelection();
+
         }
         if (dataBridge.requireUpdate() || changeMode || newConfig) {
             dataBridge.updateWorld();
@@ -222,6 +227,7 @@ public class CompatibilityEngine extends AbstractEngine {
             graphDrawable.initConfig(gl);
             graphDrawable.setCameraLocation(vizController.getVizModel().getCameraPosition());
             graphDrawable.setCameraTarget(vizController.getVizModel().getCameraTarget());
+            vizConfig.setCustomSelection(false);
             reinit = false;
         }
     }
@@ -554,8 +560,8 @@ public class CompatibilityEngine extends AbstractEngine {
                     if (forceUnselect) {
                         obj.setAutoSelect(false);
                     } /*else if (vizEventManager.hasSelectionListeners() && obj.isSelected()) {
-                unSelectedObjects.add(obj);
-                }*/
+                    unSelectedObjects.add(obj);
+                    }*/
                 }
             }
 
@@ -647,10 +653,40 @@ public class CompatibilityEngine extends AbstractEngine {
                     o.setSelected(false);
                 }
             }
+            anySelected = true;
+            //Force highlight
+            if (vizController.getVizModel().isLightenNonSelectedAuto()) {
+
+                if (vizConfig.isLightenNonSelectedAnimation()) {
+                    //Start animation
+                    lightenAnimationDelta = 0.07f;
+                    vizConfig.setLightenNonSelected(true);
+                } else {
+                    vizConfig.setLightenNonSelected(true);
+                }
+            }
         }
         modl.setSelected(true);
         if (modl.getObj() instanceof NodeData) {
             selectedObjects[modelClasses[AbstractEngine.CLASS_NODE].getSelectionId()].add(modl);
+        }
+
+        forceSelectRefresh(modelClasses[AbstractEngine.CLASS_EDGE].getClassId());
+    }
+
+    public void forceSelectRefresh(int selectedClass) {
+        for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(selectedClass); itr.hasNext();) {
+            ModelImpl obj = itr.next();
+            if (isUnderMouse(obj)) {
+                if (!obj.isSelected()) {
+                    //New selected
+                    obj.setSelected(true);
+                    /*if (vizEventManager.hasSelectionListeners()) {
+                    newSelectedObjects.add(obj);
+                    }*/
+                    selectedObjects[selectedClass].add(obj);
+                }
+            }
         }
     }
 
@@ -658,6 +694,10 @@ public class CompatibilityEngine extends AbstractEngine {
     public void resetSelection() {
         customSelection = false;
         configChanged = true;
+        anySelected = false;
+        for (ModelClass objClass : selectableClasses) {
+            selectedObjects[objClass.getSelectionId()].clear();
+        }
     }
 
     private void initDisplayLists(GL gl, GLU glu) {
@@ -775,13 +815,13 @@ public class CompatibilityEngine extends AbstractEngine {
             rectangleSelection = false;
             currentSelectionArea = null;
         } else if (vizConfig.isRectangleSelection()) {
+            currentSelectionArea = new Rectangle();
             rectangleSelection = true;
             customSelection = false;
-            currentSelectionArea = new Rectangle();
         } else {
+            currentSelectionArea = new Cylinder();
             rectangleSelection = false;
             customSelection = false;
-            currentSelectionArea = new Cylinder();
         }
     }
 
