@@ -31,37 +31,37 @@ import org.gephi.data.attributes.api.AttributeValue;
  */
 public class AttributeFactoryImpl implements AttributeValueFactory, AttributeRowFactory {
 
-    private AbstractAttributeManager manager;
+    private AbstractAttributeModel model;
 
-    public AttributeFactoryImpl(AbstractAttributeManager manager) {
-        this.manager = manager;
+    public AttributeFactoryImpl(AbstractAttributeModel model) {
+        this.model = model;
     }
 
     public AttributeValue newValue(AttributeColumn column, Object value) {
-        if (value.getClass() != column.getAttributeType().getType() && value.getClass() == String.class) {
-            value = column.getAttributeType().parse((String) value);
+        if (value.getClass() != column.getType().getType() && value.getClass() == String.class) {
+            value = column.getType().parse((String) value);
         }
-        Object managedValue = manager.getManagedValue(value, column.getAttributeType());
+        Object managedValue = model.getManagedValue(value, column.getType());
         return new AttributeValueImpl((AttributeColumnImpl) column, managedValue);
     }
 
     public AttributeRowImpl newNodeRow() {
-        return new AttributeRowImpl(manager.getNodeClass());
+        return new AttributeRowImpl(model.getNodeTable());
     }
 
     public AttributeRowImpl newEdgeRow() {
-        return new AttributeRowImpl(manager.getEdgeClass());
+        return new AttributeRowImpl(model.getEdgeTable());
     }
 
-    public AttributeRowImpl newRowForClass(String className) {
-        AbstractAttributeClass attClass = manager.getClass(className);
-        if (attClass != null) {
-            return new AttributeRowImpl(attClass);
+    public AttributeRowImpl newRowForTable(String tableName) {
+        AttributeTableImpl attTable = model.getTable(tableName);
+        if (attTable != null) {
+            return new AttributeRowImpl(attTable);
         }
         return null;
     }
 
-    public void setManager(AbstractAttributeManager manager) {
-        this.manager = manager;
+    public void setModel(AbstractAttributeModel model) {
+        this.model = model;
     }
 }

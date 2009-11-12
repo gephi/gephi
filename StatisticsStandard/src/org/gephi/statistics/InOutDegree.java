@@ -20,9 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics;
 
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
@@ -33,7 +33,6 @@ import org.gephi.statistics.api.Statistics;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.util.Lookup;
 
 public class InOutDegree implements Statistics, LongTask {
 
@@ -62,14 +61,13 @@ public class InOutDegree implements Statistics, LongTask {
      *
      * @param graphModel
      */
-    public void execute(GraphModel graphModel) {
+    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         mIsCanceled = false;
 
         //Attributes cols
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
-        AttributeColumn inCol = nodeClass.addAttributeColumn("indegree", "In Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
-        AttributeColumn outCol = nodeClass.addAttributeColumn("outdegree", "Out Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
+        AttributeTable nodeTable = attributeModel.getNodeTable();
+        AttributeColumn inCol = nodeTable.addColumn("indegree", "In Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
+        AttributeColumn outCol = nodeTable.addColumn("outdegree", "Out Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
 
         DirectedGraph graph = graphModel.getDirectedGraph();
         int i = 0;

@@ -25,9 +25,10 @@ import java.util.Comparator;
 import java.util.Hashtable;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.graph.api.Node;
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
@@ -199,15 +200,15 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      *
      * @param synchReader
      */
-    public void execute(GraphModel graphModel) {
+    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         isCanceled = false;
         Graph graph = graphModel.getUndirectedGraph();
         this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
         if (bruteForce) {
-            bruteForce(graphModel);
+            bruteForce(graphModel, attributeModel);
             return;
         } else {
-            triangles(graphModel);
+            triangles(graphModel, attributeModel);
             return;
         }
     }
@@ -306,7 +307,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      * 
      * @param graphModel
      */
-    public void triangles(GraphModel graphModel) {
+    public void triangles(GraphModel graphModel, AttributeModel attributeModel) {
         Graph graph = graphModel.getDirectedGraph();
         int ProgressCount = 0;
         Progress.start(progress, 7 * graph.getNodeCount());
@@ -408,9 +409,8 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         }
 
         avgClusteringCoeff = 0;
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
-        AttributeColumn clusteringCol = nodeClass.addAttributeColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        AttributeTable nodeTable = attributeModel.getNodeTable();
+        AttributeColumn clusteringCol = nodeTable.addColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
 
 
         for (Node s : graph.getNodes()) {
@@ -434,11 +434,11 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      * 
      * @param graphModel
      */
-    public void bruteForce(GraphModel graphModel) {
+    public void bruteForce(GraphModel graphModel, AttributeModel attributeModel) {
         //The atrributes computed by the statistics
         AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
-        AttributeColumn clusteringCol = nodeClass.addAttributeColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        AttributeTable nodeTable = attributeModel.getNodeTable();
+        AttributeColumn clusteringCol = nodeTable.addColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
 
 
         float totalCC = 0;

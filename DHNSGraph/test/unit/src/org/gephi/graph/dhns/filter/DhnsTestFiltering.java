@@ -61,7 +61,7 @@ public class DhnsTestFiltering {
     @Before
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
-        dhnsGlobal = new Dhns(controller);
+        dhnsGlobal = new Dhns(controller, null);
         graphGlobal = new HierarchicalDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure());
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
@@ -76,7 +76,7 @@ public class DhnsTestFiltering {
             node.getNodeData().setLabel("Node " + i);
             graphGlobal.addNode(node);
             nodeMap.put(node.getNodeData().getLabel(), node);
-        //System.out.println("Node " + i + " added. Id = " + node.getId());
+            //System.out.println("Node " + i + " added. Id = " + node.getId());
         }
         //System.out.println("---End Global---");
 
@@ -137,7 +137,7 @@ public class DhnsTestFiltering {
         for (int i = 0; i < actual.length; i++) {
             System.out.println(actual[i].getId());
         }
-    //((ViewImpl) graphGlobal.getView()).getGraphStructure().getStructure().showTreeAsTable();
+        //((ViewImpl) graphGlobal.getView()).getGraphStructure().getStructure().showTreeAsTable();
     }
 
     @Test
@@ -222,7 +222,7 @@ public class DhnsTestFiltering {
 
     @Test
     public void testFilterFlatHierarchy() {
-        Dhns dhns = new Dhns(new DhnsGraphController());
+        Dhns dhns = new Dhns(new DhnsGraphController(), null);
         GraphStructure graphStructure = dhns.getGraphStructure();
         TreeStructure treeStructure = graphStructure.getStructure();
         GraphFactoryImpl factoryImpl = new GraphFactoryImpl(new IDGen(), null);
@@ -267,7 +267,7 @@ public class DhnsTestFiltering {
 
     @Test
     public void testMetaEdges() {
-        Dhns dhns = new Dhns(new DhnsGraphController());
+        Dhns dhns = new Dhns(new DhnsGraphController(), null);
         GraphStructure graphStructure = dhns.getGraphStructure();
         HierarchicalGraph graph = dhns.getHierarchicalDirectedGraph();
         TreeStructure treeStructure = graphStructure.getStructure();
@@ -312,14 +312,14 @@ public class DhnsTestFiltering {
         treeStructure.showTreeAsTable();
         Edge[] actual = graph.getMetaEdges().toArray();
         for (int i = 0; i < actual.length; i++) {
-            System.out.println(actual[i].getSource().getNodeData().getLabel()+"->"+actual[i].getTarget().getNodeData().getLabel());
+            System.out.println(actual[i].getSource().getNodeData().getLabel() + "->" + actual[i].getTarget().getNodeData().getLabel());
         }
 
         graph = dhns.getHierarchicalDirectedGraphVisible();
-        ((ViewImpl)graph.getView()).checkUpdate();
+        ((ViewImpl) graph.getView()).checkUpdate();
         actual = graph.getMetaEdges().toArray();
         for (int i = 0; i < actual.length; i++) {
-            System.out.println(actual[i].getSource().getNodeData().getLabel()+"->"+actual[i].getTarget().getNodeData().getLabel());
+            System.out.println(actual[i].getSource().getNodeData().getLabel() + "->" + actual[i].getTarget().getNodeData().getLabel());
         }
     }
 }

@@ -25,12 +25,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.dhns.core.Dhns;
-import org.gephi.graph.dhns.core.GraphFactoryImpl;
 import org.gephi.graph.dhns.core.IDGen;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
@@ -45,18 +42,10 @@ public class DhnsGraphController implements GraphController {
 
     //Common architecture
     protected IDGen iDGen;
-    protected GraphFactoryImpl factory;
-    private AttributeRowFactory attributesFactory;
     private Executor eventBus;
 
     public DhnsGraphController() {
         iDGen = new IDGen();
-
-        if (Lookup.getDefault().lookup(AttributeController.class) != null) {
-            attributesFactory = Lookup.getDefault().lookup(AttributeController.class).rowFactory();
-        }
-
-        factory = new GraphFactoryImpl(iDGen, attributesFactory);
         eventBus = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
 
             public Thread newThread(Runnable r) {
@@ -66,17 +55,13 @@ public class DhnsGraphController implements GraphController {
     }
 
     public Dhns newDhns(Workspace workspace) {
-        Dhns dhns = new Dhns(this);
+        Dhns dhns = new Dhns(this, workspace);
         workspace.add(dhns);
         return dhns;
     }
 
     public Executor getEventBus() {
         return eventBus;
-    }
-
-    public GraphFactoryImpl factory() {
-        return factory;
     }
 
     public IDGen getIDGen() {

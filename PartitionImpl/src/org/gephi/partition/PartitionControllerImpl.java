@@ -22,7 +22,7 @@ package org.gephi.partition;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.graph.api.GraphController;
@@ -47,7 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service=PartitionController.class)
+@ServiceProvider(service = PartitionController.class)
 public class PartitionControllerImpl implements PartitionController {
 
     private PartitionModelImpl model;
@@ -153,8 +153,8 @@ public class PartitionControllerImpl implements PartitionController {
 
             //Nodes
             List<NodePartition> nodePartitions = new ArrayList<NodePartition>();
-            AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
-            for (AttributeColumn column : nodeClass.getAttributeColumns()) {
+            AttributeTable nodeClass = ac.getModel().getNodeTable();
+            for (AttributeColumn column : nodeClass.getColumns()) {
                 if (PartitionFactory.isNodePartitionColumn(column, graphModel.getGraphVisible())) {
                     nodePartitions.add(PartitionFactory.createNodePartition(column));
                 }
@@ -163,8 +163,8 @@ public class PartitionControllerImpl implements PartitionController {
 
             //Edges
             List<EdgePartition> edgePartitions = new ArrayList<EdgePartition>();
-            AttributeClass edgeClass = ac.getTemporaryAttributeManager().getEdgeClass();
-            for (AttributeColumn column : edgeClass.getAttributeColumns()) {
+            AttributeTable edgeClass = ac.getModel().getEdgeTable();
+            for (AttributeColumn column : edgeClass.getColumns()) {
                 if (PartitionFactory.isEdgePartitionColumn(column, graphModel.getGraphVisible())) {
                     edgePartitions.add(PartitionFactory.createEdgePartition(column));
                 }

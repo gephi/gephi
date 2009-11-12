@@ -103,7 +103,7 @@ public class RankingModelImpl implements RankingModel {
         }
 
         //Attributes
-        for (AttributeColumn column : attributeController.getTemporaryAttributeManager().getNodeClass().getAttributeColumns()) {
+        for (AttributeColumn column : attributeController.getModel().getNodeTable().getColumns()) {
             if (RankingFactory.isNumberColumn(column)) {
                 NodeRanking r = RankingFactory.getNodeAttributeRanking(column, graph);
                 if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {
@@ -118,7 +118,7 @@ public class RankingModelImpl implements RankingModel {
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
         List<Ranking> rankingList = new ArrayList<Ranking>();
-        for (AttributeColumn column : attributeController.getTemporaryAttributeManager().getEdgeClass().getAttributeColumns()) {
+        for (AttributeColumn column : attributeController.getModel().getEdgeTable().getColumns()) {
             if (RankingFactory.isNumberColumn(column)) {
                 EdgeRanking r = RankingFactory.getEdgeAttributeRanking(column, graph);
                 if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {

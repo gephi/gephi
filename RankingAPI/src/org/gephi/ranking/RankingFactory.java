@@ -38,7 +38,7 @@ public class RankingFactory {
 
     public static NodeRanking getNodeAttributeRanking(AttributeColumn column, Graph graph) {
         NodeRanking nodeRanking = null;
-        switch (column.getAttributeType()) {
+        switch (column.getType()) {
             case DOUBLE:
                 nodeRanking = new NodeAttributeDoubleRanking(column);
                 break;
@@ -60,7 +60,7 @@ public class RankingFactory {
 
     public static EdgeRanking getEdgeAttributeRanking(AttributeColumn column, Graph graph) {
         EdgeRanking edgeRanking = null;
-        switch (column.getAttributeType()) {
+        switch (column.getType()) {
             case DOUBLE:
                 edgeRanking = new EdgeAttributeDoubleRanking(column);
                 break;
@@ -105,7 +105,7 @@ public class RankingFactory {
     }
 
     public static boolean isNumberColumn(AttributeColumn column) {
-        AttributeType type = column.getAttributeType();
+        AttributeType type = column.getType();
         if (type == AttributeType.DOUBLE
                 || type == AttributeType.FLOAT
                 || type == AttributeType.INT
@@ -373,7 +373,7 @@ public class RankingFactory {
         }
 
         public Class getType() {
-            return column.getAttributeType().getType();
+            return column.getType().getType();
         }
     }
 

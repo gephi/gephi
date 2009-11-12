@@ -22,6 +22,7 @@ package org.gephi.statistics;
 
 import java.io.File;
 import java.io.IOException;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.statistics.api.Statistics;
 import org.gephi.graph.api.*;
 import org.gephi.ui.utils.TempDirUtils;
@@ -40,7 +41,6 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Exceptions;
-import org.openide.util.NbBundle;
 
 /**
  * This class measures how closely the degree distribution of a
@@ -116,7 +116,7 @@ public class DegreeDistribution implements Statistics, LongTask {
      * 
      * @param graphModel
      */
-    public void execute(GraphModel graphModel) {
+    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
 
         //Mark this as not yet canceled.
         this.mIsCanceled = false;

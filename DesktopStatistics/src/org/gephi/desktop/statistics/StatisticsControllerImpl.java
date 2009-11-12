@@ -23,6 +23,8 @@ package org.gephi.desktop.statistics;
 import java.util.ArrayList;
 import org.gephi.statistics.api.*;
 import java.util.List;
+import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.ProjectController;
@@ -83,6 +85,7 @@ public class StatisticsControllerImpl implements StatisticsController {
     public void execute(final Statistics pStatistics, LongTaskListener listener) {
         final GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         final GraphModel graphModel = graphController.getModel();
+        final AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
         StatisticsBuilder builder = getBuilder(pStatistics.getClass());
         final StatisticsUI[] uis = getUI(pStatistics);
         for (StatisticsUI s : uis) {
@@ -99,7 +102,7 @@ public class StatisticsControllerImpl implements StatisticsController {
             executor.execute((LongTask) pStatistics, new Runnable() {
 
                 public void run() {
-                    pStatistics.execute(graphModel);
+                    pStatistics.execute(graphModel, attributeModel);
                     for (StatisticsUI s : uis) {
                         model.setRunning(s, false);
                     }
@@ -107,7 +110,7 @@ public class StatisticsControllerImpl implements StatisticsController {
                 }
             }, builder.getName(), null);
         } else {
-            pStatistics.execute(graphModel);
+            pStatistics.execute(graphModel, attributeModel);
             if (listener != null) {
                 listener.taskFinished(null);
             }

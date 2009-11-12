@@ -12,7 +12,7 @@ import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
-import org.gephi.data.attributes.manager.TemporaryAttributeManager;
+import org.gephi.data.attributes.model.TemporaryAttributeModel;
 import org.gephi.data.attributes.type.StringList;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -27,8 +27,8 @@ import static org.junit.Assert.*;
  */
 public class AttributeClassTest {
 
-    private AbstractAttributeManager manager;
-    private AbstractAttributeClass nodeClass;
+    private AbstractAttributeModel manager;
+    private AttributeTableImpl nodeClass;
     private AttributeFactoryImpl factory;
     //Test map
     private Map<String, AttributeColumnImpl> columnMap;
@@ -47,18 +47,18 @@ public class AttributeClassTest {
 
     @Before
     public void setUp() {
-        manager = new TemporaryAttributeManager();
-        nodeClass = manager.getNodeClass();
+        manager = new TemporaryAttributeModel();
+        nodeClass = manager.getNodeTable();
         factory = new AttributeFactoryImpl(manager);
         columnMap = new HashMap<String, AttributeColumnImpl>();
         rows = new ArrayList<AttributeRowImpl>();
 
-        AttributeColumnImpl co1 = nodeClass.addAttributeColumn("col1", "Column 1", AttributeType.STRING, AttributeOrigin.DATA, "nil");
-        AttributeColumnImpl co2 = nodeClass.addAttributeColumn("col2", "Column 2", AttributeType.INT, AttributeOrigin.PROPERTY, 0);
-        AttributeColumnImpl co3 = nodeClass.addAttributeColumn("col3", "Column 3", AttributeType.LIST_STRING, AttributeOrigin.DATA, new StringList("nothing", ","));
-        AttributeColumnImpl co4 = nodeClass.addAttributeColumn("col4", "Column 4", AttributeType.STRING, AttributeOrigin.COMPUTED, "zero");
-        AttributeColumnImpl co5 = nodeClass.addAttributeColumn("col5", "Column 5", AttributeType.BOOLEAN, AttributeOrigin.DATA, true);
-        AttributeColumnImpl co6 = nodeClass.addAttributeColumn("col6", "Column 6", AttributeType.STRING, AttributeOrigin.DATA, "default");
+        AttributeColumnImpl co1 = nodeClass.addColumn("col1", "Column 1", AttributeType.STRING, AttributeOrigin.DATA, "nil");
+        AttributeColumnImpl co2 = nodeClass.addColumn("col2", "Column 2", AttributeType.INT, AttributeOrigin.PROPERTY, 0);
+        AttributeColumnImpl co3 = nodeClass.addColumn("col3", "Column 3", AttributeType.LIST_STRING, AttributeOrigin.DATA, new StringList("nothing", ","));
+        AttributeColumnImpl co4 = nodeClass.addColumn("col4", "Column 4", AttributeType.STRING, AttributeOrigin.COMPUTED, "zero");
+        AttributeColumnImpl co5 = nodeClass.addColumn("col5", "Column 5", AttributeType.BOOLEAN, AttributeOrigin.DATA, true);
+        AttributeColumnImpl co6 = nodeClass.addColumn("col6", "Column 6", AttributeType.STRING, AttributeOrigin.DATA, "default");
 
         columnMap.put("col1", co1);
         columnMap.put("col2", co2);
@@ -87,11 +87,11 @@ public class AttributeClassTest {
 
     @Test
     public void testGetColumn() {
-        assertSame(columnMap.get("col1"), nodeClass.getAttributeColumn("col1"));
-        assertSame(columnMap.get("col1"), nodeClass.getAttributeColumn("Column 1"));
-        assertSame(columnMap.get("col1"), nodeClass.getAttributeColumn(0));
-        assertTrue(nodeClass.hasAttributeColumn("col1"));
-        assertTrue(nodeClass.hasAttributeColumn("Column 1"));
+        assertSame(columnMap.get("col1"), nodeClass.getColumn("col1"));
+        assertSame(columnMap.get("col1"), nodeClass.getColumn("Column 1"));
+        assertSame(columnMap.get("col1"), nodeClass.getColumn(0));
+        assertTrue(nodeClass.hasColumn("col1"));
+        assertTrue(nodeClass.hasColumn("Column 1"));
     }
 
     @Test
@@ -111,11 +111,11 @@ public class AttributeClassTest {
 
     @Test
     public void testAddColumn() {
-        AttributeColumnImpl co7 = nodeClass.addAttributeColumn("col7", "Column 7", AttributeType.STRING, AttributeOrigin.DATA, "def");
+        AttributeColumnImpl co7 = nodeClass.addColumn("col7", "Column 7", AttributeType.STRING, AttributeOrigin.DATA, "def");
         columnMap.put("col7", co7);
 
         //Test GetColumn
-        assertSame(co7, nodeClass.getAttributeColumn("col7"));
+        assertSame(co7, nodeClass.getColumn("col7"));
 
         //Test value
         AttributeRow row = rows.get(0);
@@ -128,10 +128,10 @@ public class AttributeClassTest {
 
     @Test
     public void testDeleteColumn() {
-        nodeClass.removeAttributeColumn(columnMap.get("col4"));
+        nodeClass.removeColumn(columnMap.get("col4"));
 
         //Test GetColumn
-        assertNull(nodeClass.getAttributeColumn("col4"));
+        assertNull(nodeClass.getColumn("col4"));
 
         //Test value
         AttributeRow row = rows.get(0);

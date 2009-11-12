@@ -23,9 +23,10 @@ package org.gephi.statistics;
 import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
@@ -95,7 +96,7 @@ public class PageRank implements Statistics, LongTask {
      *
      * @param graphModel
      */
-    public void execute(GraphModel graphModel) {
+    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         mIsCanceled = false;
 
         Graph graph;
@@ -184,9 +185,8 @@ public class PageRank implements Statistics, LongTask {
 
         }
 
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
-        AttributeColumn pangeRanksCol = nodeClass.addAttributeColumn("pageranks", "Page Ranks", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        AttributeTable nodeClass = attributeModel.getNodeTable();
+        AttributeColumn pangeRanksCol = nodeClass.addColumn("pageranks", "Page Ranks", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
 
         for (Node s : graph.getNodes()) {
             int s_index = indicies.get(s);

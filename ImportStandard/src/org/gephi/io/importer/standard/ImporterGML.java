@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.StreamTokenizer;
 import java.util.ArrayList;
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.io.container.ContainerLoader;
@@ -41,7 +41,6 @@ import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
-
 
 //Inspired from infovis.graph.io;
 //Original author Jean-Daniel Fekete
@@ -220,11 +219,11 @@ public class ImporterGML implements TextImporter, LongTask {
                     node.setColor(new Color(colorHex));
                 }
             } else {
-                AttributeClass nodeClass = container.getAttributeManager().getNodeClass();
+                AttributeTable nodeClass = container.getAttributeModel().getNodeTable();
                 AttributeColumn column = null;
-                if ((column = nodeClass.getAttributeColumn(key)) == null) {
-                    column = nodeClass.addAttributeColumn(key, AttributeType.STRING);
-                    report.log("Node attribute " + column.getTitle() + " (" + column.getAttributeType() + ")");
+                if ((column = nodeClass.getColumn(key)) == null) {
+                    column = nodeClass.addColumn(key, AttributeType.STRING);
+                    report.log("Node attribute " + column.getTitle() + " (" + column.getType() + ")");
                 }
                 node.addAttributeValue(column, value.toString());
             }
@@ -278,11 +277,11 @@ public class ImporterGML implements TextImporter, LongTask {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGML.class, "importerGML_error_directedparse", edge.toString()), Issue.Level.WARNING));
                 }
             } else {
-                AttributeClass edgeClass = container.getAttributeManager().getEdgeClass();
+                AttributeTable edgeClass = container.getAttributeModel().getEdgeTable();
                 AttributeColumn column = null;
-                if ((column = edgeClass.getAttributeColumn(key)) == null) {
-                    column = edgeClass.addAttributeColumn(key, AttributeType.STRING);
-                    report.log("Edge attribute " + column.getTitle() + " (" + column.getAttributeType() + ")");
+                if ((column = edgeClass.getColumn(key)) == null) {
+                    column = edgeClass.addColumn(key, AttributeType.STRING);
+                    report.log("Edge attribute " + column.getTitle() + " (" + column.getType() + ")");
                 }
                 edge.addAttributeValue(column, value.toString());
             }

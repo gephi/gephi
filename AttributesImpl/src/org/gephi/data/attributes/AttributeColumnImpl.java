@@ -46,7 +46,7 @@ public class AttributeColumnImpl implements AttributeColumn {
         this.defaultValue = new AttributeValueImpl(this, defaultValue);
     }
 
-    public AttributeType getAttributeType() {
+    public AttributeType getType() {
         return type;
     }
 
@@ -58,7 +58,7 @@ public class AttributeColumnImpl implements AttributeColumn {
         return index;
     }
 
-    public AttributeOrigin getAttributeOrigin() {
+    public AttributeOrigin getOrigin() {
         return origin;
     }
 

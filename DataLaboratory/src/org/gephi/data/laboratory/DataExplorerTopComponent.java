@@ -134,6 +134,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         //Workspace Listener
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         final GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+        final AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
@@ -152,10 +153,18 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                 graphModel = gc.getModel();
                 graphModel.addGraphListener(DataExplorerTopComponent.this);
                 dataTablesModel = workspace.getLookup().lookup(DataTablesModel.class);
+                nodeColumnsResult = ac.getModel().getNodeTable().getLookup().lookupResult(AttributeColumn.class);
+                edgeColumnsResult = ac.getModel().getEdgeTable().getLookup().lookupResult(AttributeColumn.class);
+                nodeColumnsResult.addLookupListener(DataExplorerTopComponent.this);
+                edgeColumnsResult.addLookupListener(DataExplorerTopComponent.this);
             }
 
             public void unselect(Workspace workspace) {
                 graphModel.removeGraphListener(DataExplorerTopComponent.this);
+                nodeColumnsResult.removeLookupListener(DataExplorerTopComponent.this);
+                edgeColumnsResult.removeLookupListener(DataExplorerTopComponent.this);
+                nodeColumnsResult = null;
+                edgeColumnsResult = null;
                 graphModel = null;
                 dataTablesModel = null;
             }
@@ -175,14 +184,13 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         });
         if (pc.getCurrentWorkspace() != null) {
             dataTablesModel = pc.getCurrentWorkspace().getLookup().lookup(DataTablesModel.class);
+            nodeColumnsResult = ac.getModel().getNodeTable().getLookup().lookupResult(AttributeColumn.class);
+            edgeColumnsResult = ac.getModel().getEdgeTable().getLookup().lookupResult(AttributeColumn.class);
+            nodeColumnsResult.addLookupListener(DataExplorerTopComponent.this);
+            edgeColumnsResult.addLookupListener(DataExplorerTopComponent.this);
+            graphModel = gc.getModel();
+            graphModel.addGraphListener(DataExplorerTopComponent.this);
         }
-
-        //Init lookups
-        AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
-        nodeColumnsResult = attributeController.getNodeColumnsLookup().lookupResult(AttributeColumn.class);
-        edgeColumnsResult = attributeController.getEdgeColumnsLookup().lookupResult(AttributeColumn.class);
-        nodeColumnsResult.addLookupListener(this);
-        edgeColumnsResult.addLookupListener(this);
 
         //Filter
         if (dynamicFiltering) {
@@ -252,7 +260,6 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                     final AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
 
                     //Nodes from DHNS
-                    graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
                     HierarchicalGraph graph;
                     if (visibleOnly) {
                         graph = graphModel.getHierarchicalGraphVisible();
@@ -293,7 +300,6 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
                     final AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
 
                     //Edges from DHNS
-                    graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
                     HierarchicalGraph graph;
                     if (visibleOnly) {
                         graph = graphModel.getHierarchicalGraphVisible();

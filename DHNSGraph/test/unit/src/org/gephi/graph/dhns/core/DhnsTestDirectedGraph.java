@@ -64,7 +64,7 @@ public class DhnsTestDirectedGraph {
     @Before
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
-        dhnsGlobal = new Dhns(controller);
+        dhnsGlobal = new Dhns(controller, null);
         graphGlobal = new HierarchicalDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure());
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
@@ -79,7 +79,7 @@ public class DhnsTestDirectedGraph {
             node.getNodeData().setLabel("Node " + i);
             graphGlobal.addNode(node);
             nodeMap.put(node.getNodeData().getLabel(), node);
-        //System.out.println("Node " + i + " added. Id = " + node.getId());
+            //System.out.println("Node " + i + " added. Id = " + node.getId());
         }
         //System.out.println("---End Global---");
 
@@ -197,7 +197,7 @@ public class DhnsTestDirectedGraph {
     public void testAddNode() {
         System.out.println("testAddNode");
         DhnsGraphController controller = new DhnsGraphController();
-        Dhns dhns = new Dhns(controller);
+        Dhns dhns = new Dhns(controller, null);
         HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure());
         TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
         GraphFactoryImpl factory = dhns.factory();
@@ -241,7 +241,7 @@ public class DhnsTestDirectedGraph {
     @Test
     public void testRemoveNode() {
         DhnsGraphController controller = new DhnsGraphController();
-        Dhns dhns = new Dhns(controller);
+        Dhns dhns = new Dhns(controller, null);
         HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure());
         TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
         GraphFactoryImpl factory = dhns.factory();
@@ -366,7 +366,7 @@ public class DhnsTestDirectedGraph {
     @Test
     public void testAddEdge() {
         DhnsGraphController controller = new DhnsGraphController();
-        Dhns dhns = new Dhns(controller);
+        Dhns dhns = new Dhns(controller, null);
         HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure());
         TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
         GraphFactoryImpl factory = dhns.factory();
@@ -647,7 +647,7 @@ public class DhnsTestDirectedGraph {
         assertFalse(graphGlobal.contains(edge2));
         assertFalse(graphGlobal.contains(edge1));
         assertFalse(graphGlobal.isAdjacent(node4, node5));
-    //assertFalse(graphGlobal.isAdjacent(edge1, edge2));        //Fail because no test verifying edge belongs to the structure
+        //assertFalse(graphGlobal.isAdjacent(edge1, edge2));        //Fail because no test verifying edge belongs to the structure
     }
 
     @Test

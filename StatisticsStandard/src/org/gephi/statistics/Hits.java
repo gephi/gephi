@@ -24,9 +24,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.LinkedList;
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
@@ -93,7 +94,7 @@ public class Hits implements Statistics, LongTask {
      * 
      * @param graphModel
      */
-    public void execute(GraphModel graphModel) {
+    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
 
         if (useUndirected) {
             graph = graphModel.getUndirectedGraph();
@@ -219,11 +220,10 @@ public class Hits implements Statistics, LongTask {
             }
         }
 
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
+        AttributeTable nodeTable = attributeModel.getNodeTable();
 
-        AttributeColumn authorityCol = nodeClass.addAttributeColumn("authority", "Authortiy", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
-        AttributeColumn hubsCol = nodeClass.addAttributeColumn("hub", "Hub", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
+        AttributeColumn authorityCol = nodeTable.addColumn("authority", "Authortiy", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
+        AttributeColumn hubsCol = nodeTable.addColumn("hub", "Hub", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
 
         for (Node s : graph.getNodes()) {
             int s_index = indicies.get(s);

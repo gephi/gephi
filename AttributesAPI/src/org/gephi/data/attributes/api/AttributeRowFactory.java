@@ -31,5 +31,5 @@ public interface AttributeRowFactory {
 
     public AttributeRow newEdgeRow();
 
-    public AttributeRow newRowForClass(String className);
+    public AttributeRow newRowForTable(String tableName);
 }

@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics.api;
 
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.GraphModel;
 
 /**
@@ -30,9 +31,10 @@ public interface Statistics {
 
     /**
      * Executes the Staistics
-     * @param graphModel
+     * @param graphModel The graph topology
+     * @param attributeModel The elements attributes, and where to write table results
      */
-    public void execute(GraphModel graphModel);
+    public void execute(GraphModel graphModel, AttributeModel attributeModel);
 
     /**
      *

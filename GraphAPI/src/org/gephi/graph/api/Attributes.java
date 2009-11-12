@@ -28,6 +28,8 @@ package org.gephi.graph.api;
  */
 public interface Attributes {
 
+    public int countValues();
+
     public Object getValue(String column);
 
     public Object getValue(int index);

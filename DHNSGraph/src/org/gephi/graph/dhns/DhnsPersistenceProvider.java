@@ -44,7 +44,7 @@ public class DhnsPersistenceProvider implements WorkspacePersistenceProvider {
 
     public void readXML(Element element, Workspace workspace) {
         DhnsGraphController graphController = Lookup.getDefault().lookup(DhnsGraphController.class);
-        Dhns dhns = new Dhns(graphController);
+        Dhns dhns = new Dhns(graphController, workspace);
         DHNSSerializer serializer = new DHNSSerializer();
         serializer.readDhns(element, dhns);
     }

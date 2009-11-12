@@ -24,9 +24,10 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Random;
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
@@ -445,7 +446,7 @@ public class Modularity implements Statistics, LongTask {
      *
      * @param graphModel
      */
-    public void execute(GraphModel graphModel) {
+    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         Progress.start(mProgress);
         Random rand = new Random();
         UndirectedGraph graph = graphModel.getUndirectedGraph();
@@ -515,7 +516,7 @@ public class Modularity implements Statistics, LongTask {
             degreeCount[comStructure[index]] += graph.getDegree(node);
         }
 
-        mModularity = finalQ(comStructure, degreeCount, graph);
+        mModularity = finalQ(comStructure, degreeCount, graph, attributeModel);
     }
 
     /**
@@ -525,11 +526,9 @@ public class Modularity implements Statistics, LongTask {
      * @param pGraph
      * @return
      */
-    public double finalQ(int[] pStruct, double[] pDegrees, UndirectedGraph pGraph) {
-
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
-        AttributeColumn modCol = nodeClass.addAttributeColumn("modularity_class", "Modularity Class", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
+    public double finalQ(int[] pStruct, double[] pDegrees, UndirectedGraph pGraph, AttributeModel attributeModel) {
+        AttributeTable nodeTable = attributeModel.getNodeTable();
+        AttributeColumn modCol = nodeTable.addColumn("modularity_class", "Modularity Class", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
 
         double res = 0;
         double[] internal = new double[pDegrees.length];

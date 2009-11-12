@@ -45,7 +45,6 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
     //Settings
     private ButtonModel selectedModel;
     private boolean showProperties = false;
-
     //Model
     private TextModel textModel;
     private AttributesCheckBox[] nodeCheckBoxs;
@@ -95,8 +94,8 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
         List<AttributeColumn> selectedColumns = new ArrayList<AttributeColumn>();
         AttributesCheckBox[] target;
         if (elementButtonGroup.getSelection() == nodesToggleButton.getModel()) {
-            for (AttributeColumn c : attributeController.getTemporaryAttributeManager().getNodeClass().getAttributeColumns()) {
-                if (showProperties || c.getAttributeOrigin().equals(AttributeOrigin.DATA)) {
+            for (AttributeColumn c : attributeController.getModel().getNodeTable().getColumns()) {
+                if (showProperties || c.getOrigin().equals(AttributeOrigin.DATA)) {
                     availableColumns.add(c);
                 }
             }
@@ -107,8 +106,8 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
             nodeCheckBoxs = new AttributesCheckBox[availableColumns.size()];
             target = nodeCheckBoxs;
         } else {
-            for (AttributeColumn c : attributeController.getTemporaryAttributeManager().getEdgeClass().getAttributeColumns()) {
-                if (showProperties || c.getAttributeOrigin().equals(AttributeOrigin.DATA)) {
+            for (AttributeColumn c : attributeController.getModel().getEdgeTable().getColumns()) {
+                if (showProperties || c.getOrigin().equals(AttributeOrigin.DATA)) {
                     availableColumns.add(c);
                 }
             }

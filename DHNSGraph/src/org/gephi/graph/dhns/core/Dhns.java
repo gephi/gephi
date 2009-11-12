@@ -22,6 +22,8 @@ package org.gephi.graph.dhns.core;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.graph.api.DecoratorFactory;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.EdgeIterable;
@@ -52,6 +54,7 @@ import org.gephi.graph.dhns.graph.HierarchicalUndirectedGraphImplFiltered;
 import org.gephi.graph.dhns.graph.iterators.EdgeIterableImpl;
 import org.gephi.graph.dhns.graph.iterators.NodeIterableImpl;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
+import org.gephi.workspace.api.Workspace;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -72,16 +75,15 @@ public class Dhns implements GraphModel {
     private DecoratorFactoryImpl decoratorFactory;
     private SettingsManager settingsManager;
     private ViewManager viewManager;
-
+    private GraphFactoryImpl factory;
     //Type
     private boolean directed = false;
     private boolean undirected = false;
     private boolean mixed = false;
-
     //Locking
     private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
-    public Dhns(DhnsGraphController controller) {
+    public Dhns(DhnsGraphController controller, Workspace workspace) {
         this.controller = controller;
         graphStructure = new GraphStructure();
         graphVersion = new GraphVersion();
@@ -91,6 +93,16 @@ public class Dhns implements GraphModel {
         decoratorFactory = new DecoratorFactoryImpl(this);
         settingsManager = new SettingsManager(this);
         viewManager = new ViewManager(this);
+
+        //AttributeFactory
+        AttributeRowFactory attributeRowFactory = null;
+        if (workspace != null) {
+            AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
+            if (attributeModel != null) {
+                attributeRowFactory = attributeModel.rowFactory();
+            }
+        }
+        factory = new GraphFactoryImpl(controller.getIDGen(), attributeRowFactory);
 
         init();
     }
@@ -191,7 +203,7 @@ public class Dhns implements GraphModel {
 
     //API
     public GraphFactoryImpl factory() {
-        return controller.factory();
+        return factory;
     }
 
     public DecoratorFactory decorators() {

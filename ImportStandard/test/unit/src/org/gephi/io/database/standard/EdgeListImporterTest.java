@@ -105,14 +105,14 @@ public class EdgeListImporterTest {
 
         //Look at attributes
         System.out.println("--Node Attributes cols");
-        for(AttributeColumn col : containerLoader.getAttributeManager().getNodeClass().getAttributeColumns()) {
-            System.out.println(col.getIndex()+":"+col.getId()+ "("+col.getAttributeType()+")");
+        for(AttributeColumn col : containerLoader.getAttributeModel().getNodeTable().getColumns()) {
+            System.out.println(col.getIndex()+":"+col.getId()+ "("+col.getType()+")");
         }
 
         //Look at attributes
         System.out.println("--Edge Attributes cols");
-        for(AttributeColumn col : containerLoader.getAttributeManager().getEdgeClass().getAttributeColumns()) {
-            System.out.println(col.getIndex()+":"+col.getId()+ "("+col.getAttributeType()+")");
+        for(AttributeColumn col : containerLoader.getAttributeModel().getEdgeTable().getColumns()) {
+            System.out.println(col.getIndex()+":"+col.getId()+ "("+col.getType()+")");
         }
     }
 }

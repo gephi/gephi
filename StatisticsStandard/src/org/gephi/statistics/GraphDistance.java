@@ -28,9 +28,9 @@ import org.gephi.graph.api.*;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Stack;
-import org.gephi.data.attributes.api.AttributeClass;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
@@ -50,7 +50,6 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Exceptions;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -100,12 +99,11 @@ public class GraphDistance implements Statistics, LongTask {
      * 
      * @param graphModel
      */
-    public void brandes(GraphModel graphModel) {
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        AttributeClass nodeClass = ac.getTemporaryAttributeManager().getNodeClass();
-        AttributeColumn eccentricityCol = nodeClass.addAttributeColumn("eccentricity", "Eccentricity", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
-        AttributeColumn closenessCol = nodeClass.addAttributeColumn("closnesscentrality", "Closeness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
-        AttributeColumn betweenessCol = nodeClass.addAttributeColumn("betweenesscentrality", "Betweeness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+    public void brandes(GraphModel graphModel, AttributeModel attributeModel) {
+        AttributeTable nodeTable = attributeModel.getNodeTable();
+        AttributeColumn eccentricityCol = nodeTable.addColumn("eccentricity", "Eccentricity", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        AttributeColumn closenessCol = nodeTable.addColumn("closnesscentrality", "Closeness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        AttributeColumn betweenessCol = nodeTable.addColumn("betweenesscentrality", "Betweeness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
 
 
         Graph graph = null;
@@ -229,9 +227,9 @@ public class GraphDistance implements Statistics, LongTask {
      *
      * @param graphModel
      */
-    public void execute(GraphModel graphModel) {
+    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         mIsCanceled = false;
-        brandes(graphModel);
+        brandes(graphModel, attributeModel);
     }
 
     /**

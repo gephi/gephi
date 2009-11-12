@@ -18,22 +18,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.data.attributes.manager;
+package org.gephi.data.attributes.model;
 
-import org.gephi.data.attributes.AbstractAttributeManager;
+import org.gephi.data.attributes.AbstractAttributeModel;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.type.StringList;
-
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class IndexedAttributeManager extends AbstractAttributeManager {
+public class IndexedAttributeModel extends AbstractAttributeModel {
 
     protected DataIndex dataIndex;
 
-    public IndexedAttributeManager() {
+    public IndexedAttributeModel() {
         dataIndex = new DataIndex();
     }
 

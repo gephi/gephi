@@ -18,22 +18,25 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.data.attributes;
-
-import org.openide.util.NbBundle;
+package org.gephi.data.attributes.api;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class NodeAttributeClass extends AbstractAttributeClass {
+public interface AttributeModel {
 
-    public NodeAttributeClass(AbstractAttributeManager manager) {
-        super(manager, "node");
-    }
+    public AttributeTable getNodeTable();
 
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(NodeAttributeClass.class, "NodeAttributeClass_name");
-    }
+    public AttributeTable getEdgeTable();
+
+    public AttributeTable getTable(String name);
+
+    public AttributeTable[] getTables();
+
+    public AttributeValueFactory valueFactory();
+
+    public AttributeRowFactory rowFactory();
+    
+    public void mergeModel(AttributeModel model);
 }

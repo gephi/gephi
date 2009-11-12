@@ -245,7 +245,7 @@ public class NodeDataTable {
         }
 
         public Class getColumnClass() {
-            return column.getAttributeType().getType();
+            return column.getType().getType();
         }
 
         public String getColumnName() {

@@ -38,15 +38,12 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
 
     //Architecture
     private ImportContainerImpl container;
-
     //Flag
     private boolean autoId;
-
     //Basic
     private String id;
     private String label;
     private NodeDraftImpl[] parent;
-
     //Viz attributes
     private Color color;
     private float size;
@@ -57,14 +54,11 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     private boolean labelVisible = true;
     private boolean visible = true;
     private boolean fixed = false;
-
     //Dynamic
     private float from = -1;
     private float to = -1;
-
     //Attributes
     private List<AttributeValue> attributeValues = new ArrayList<AttributeValue>();
-
     //Result
     private Node node;
     private int height;
@@ -149,7 +143,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
             this.parent = Arrays.copyOf(this.parent, this.parent.length + 1);
             this.parent[this.parent.length - 1] = draftImpl;
         }
-        height = Math.max(height, draftImpl.height+1);
+        height = Math.max(height, draftImpl.height + 1);
         container.setHierarchicalGraph(true);
     }
 
