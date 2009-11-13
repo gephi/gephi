@@ -90,7 +90,6 @@
             </module-dependencies>
             <public-packages>
                 <package>org.gephi.statistics.api</package>
-                <package>org.gephi.statistics.component</package>
                 <package>org.gephi.statistics.ui.api</package>
             </public-packages>
         </data>
