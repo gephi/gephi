@@ -166,9 +166,9 @@ public class DefaultProcessor implements Processor {
     }
 
     private void flushToNodeAfter(NodeDraftGetter nodeDraft, Node node, Graph graph) {
-        if (!nodeDraft.isVisible()) {
-            graph.setVisible(node, false);
-        }
+//        if (!nodeDraft.isVisible()) {
+//            graph.setVisible(node, false);
+//        }
     }
 
     private void flushToEdge(EdgeDraftGetter edgeDraft, Edge edge) {

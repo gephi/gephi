@@ -57,12 +57,6 @@ public interface Edge {
     public void setWeight(float weight);
 
     /**
-     * Returns <code>true</code> if the egde is visible or <code>false</code> if its hidden.
-     * @return  <code>true</code> if the egde is visible or <code>false</code> otherwise
-     */
-    public boolean isVisible();
-
-    /**
      * Returns <code>true</code> if the edge is directed or <code>false</code> if it's undirected.
      * Default is directed. Note that value is immutable.<p>
      * Special cases:

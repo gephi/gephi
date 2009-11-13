@@ -126,7 +126,7 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
     }
 
     public boolean isDirected(Edge edge) {
-        AbstractEdge absEdge = checkEdge(edge);
+        AbstractEdge absEdge = checkEdgeOrMetaEdge(edge);
         return absEdge.isDirected();
     }
 

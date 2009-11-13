@@ -37,7 +37,6 @@ public abstract class AbstractEdge implements Edge, AVLItem {
     protected final AbstractNode source;
     protected final AbstractNode target;
     protected float weight = 1f;
-    protected boolean visible = true;
     protected EdgeDataImpl edgeData;
 
     public AbstractEdge(int ID, AbstractNode source, AbstractNode target) {
@@ -77,14 +76,6 @@ public abstract class AbstractEdge implements Edge, AVLItem {
 
     public EdgeData getEdgeData() {
         return edgeData;
-    }
-
-    public boolean isVisible() {
-        return source.isVisible() && target.isVisible() && visible;
-    }
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
     }
 
     public AbstractEdge getUndirected() {

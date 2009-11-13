@@ -156,9 +156,9 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             //Modeaction
             if (modeManager.getMode().equals(ModeManager.AVAILABLE_MODES.HIGHLIGHT)) {
                 ModelImpl impl = (ModelImpl) obj;
-                if (!node.isVisible()) {
-                    ColorLayer.layerColor(impl, 0.8f, 0.8f, 0.8f);
-                }
+//                if (!node.isVisible()) {
+//                    ColorLayer.layerColor(impl, 0.8f, 0.8f, 0.8f);
+//                }
             }
         }
     }

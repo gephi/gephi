@@ -134,6 +134,17 @@ public abstract class AbstractGraphImpl {
         return (MetaEdgeImpl) absEdge;
     }
 
+    protected AbstractEdge checkEdgeOrMetaEdge(Edge edge) {
+        if (edge == null) {
+            throw new IllegalArgumentException("edge can't be null");
+        }
+        AbstractEdge absEdge = (AbstractEdge) edge;
+        if (!absEdge.isValid()) {
+            throw new IllegalArgumentException("Nodes must be in the graph");
+        }
+        return absEdge;
+    }
+
     protected boolean checkEdgeExist(AbstractNode source, AbstractNode target) {
         return source.getEdgesOutTree().hasNeighbour(target);
     }

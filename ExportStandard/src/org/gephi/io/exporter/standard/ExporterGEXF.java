@@ -33,14 +33,15 @@ import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 
 /**
  *
  * @author Sebastien Heymann
  */
+@ServiceProvider(service=GraphFileExporter.class)
 public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
 
     private boolean cancel = false;

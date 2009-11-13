@@ -22,7 +22,9 @@ package org.gephi.io.exporter.standard;
 
 import java.io.BufferedWriter;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.io.exporter.GraphFileExporter;
@@ -32,11 +34,13 @@ import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service=GraphFileExporter.class)
 public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
     private boolean cancel = false;
@@ -60,7 +64,39 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
     private NodeColumnsGDF[] defaultNodeColumnsGDFs;
     private EdgeColumnsGDF[] defaultEdgeColumnsGDFs;
 
+    //Buffer
+    private BufferedWriter writer;
+
     public boolean exportData(BufferedWriter writer, Graph graph) throws Exception {
+        this.writer = writer;
+
+        try {
+            exportData(graph);
+        } catch (Exception e) {
+            clean();
+            throw e;
+        }
+        boolean c = cancel;
+        clean();
+        return c;
+    }
+
+    private void clean() {
+        //Clean
+        writer = null;
+        defaultNodeColumnsGDFs = null;
+        defaultEdgeColumnsGDFs = null;
+        minSize = 0f;
+        maxSize = 0f;
+        minX = 0f;
+        maxX = 0f;
+        minY = 0f;
+        maxY = 0f;
+        cancel = false;
+        progressTicket = null;
+    }
+
+    private void exportData(Graph graph) throws Exception {
 
         Progress.start(progressTicket);
 
@@ -146,8 +182,17 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
         stringBuilder.setLength(stringBuilder.length() - 1);
         stringBuilder.append("\n");
 
+        //MetaEdges
+        EdgeIterable edgeIterable;
+        if(graph.getGraphModel().isHierarchical()) {
+            HierarchicalGraph hierarchicalGraph = (HierarchicalGraph)graph;
+            edgeIterable = hierarchicalGraph.getEdgesAndMetaEdges();
+        } else {
+            edgeIterable = graph.getEdges();
+        }
+
         //Edge lines
-        for (Edge edge : graph.getEdges()) {
+        for (Edge edge : edgeIterable) {
 
             //Source & Target
             stringBuilder.append(edge.getSource().getNodeData().getId());
@@ -177,18 +222,6 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
         writer.append(stringBuilder);
 
         Progress.finish(progressTicket);
-
-        //Reset
-        defaultNodeColumnsGDFs = null;
-        defaultEdgeColumnsGDFs = null;
-        minSize = 0f;
-        maxSize = 0f;
-        minX = 0f;
-        maxX = 0f;
-        minY = 0f;
-        maxY = 0f;
-
-        return !cancel;
     }
 
     private void defaultNodeColumns(Graph graph) {
@@ -217,7 +250,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                builder.append(node.isVisible());
+                builder.append(true);
             }
         };
 
@@ -277,7 +310,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                float x = node.getNodeData().getSize();
+                float x = node.getNodeData().x();
                 if (normalize) {
                     x = (x - minX) / (maxX - minX);
                 }
@@ -294,7 +327,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                float y = node.getNodeData().getSize();
+                float y = node.getNodeData().y();
                 if (normalize) {
                     y = (y - minY) / (maxY - minY);
                 }
@@ -430,7 +463,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Edge edge) {
-                builder.append(edge.isVisible());
+                builder.append(true);
             }
         };
 

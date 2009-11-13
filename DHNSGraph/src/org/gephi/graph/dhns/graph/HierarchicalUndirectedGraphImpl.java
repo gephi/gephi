@@ -154,7 +154,7 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
 
     //Graph
     public boolean isDirected(Edge edge) {
-        checkEdge(edge);
+        checkEdgeOrMetaEdge(edge);
         return false;
     }
 
@@ -178,19 +178,6 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
         }
         readUnlock();
         return res;
-    }
-
-    @Override
-    public void setVisible(Edge edge, boolean visible) {
-        AbstractEdge absEdge = checkEdge(edge);
-        writeLock();
-        absEdge.setVisible(visible);
-        AbstractEdge mutualEdge = getSymmetricEdge(absEdge);
-        if (mutualEdge != null) {
-            mutualEdge.setVisible(visible);
-        }
-        writeUnlock();
-
     }
 
     public EdgeIterable getInnerEdges(Node nodeGroup) {

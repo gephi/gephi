@@ -422,18 +422,4 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     public void resetViewToTopNodes() {
         dhns.getStructureModifier().resetViewToTopNodes();
     }
-
-    public void setVisible(Node node, boolean visible) {
-        AbstractNode absNode = checkNode(node);
-        writeLock();
-        //absNode.setVisible(visible);
-        writeUnlock();
-    }
-
-    public void setVisible(Edge edge, boolean visible) {
-        AbstractEdge absEdge = checkEdge(edge);
-        writeLock();
-        //absEdge.setVisible(visible);
-        writeUnlock();
-    }
 }

@@ -220,6 +220,9 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     }
 
     public String getId() {
+        if(id.isEmpty()) {
+            return Integer.toString(edge.getId());
+        }
         return id;
     }
 }

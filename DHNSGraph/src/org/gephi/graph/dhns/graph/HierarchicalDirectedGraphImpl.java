@@ -216,7 +216,7 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
 
     //Graph
     public boolean isDirected(Edge edge) {
-        checkEdge(edge);
+        checkEdgeOrMetaEdge(edge);
         return true;
     }
 

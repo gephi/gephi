@@ -247,22 +247,6 @@ public interface Graph {
     public void clearEdges();
 
     /**
-     * Set <code>visible</code> flag to <code>node</code>.
-     * @param node the node to show or hide
-     * @param visible visible or hidden
-     * @throws IllegalMonitorStateException if the current thread is holding a read lock
-     */
-    public void setVisible(Node node, boolean visible);
-
-    /**
-     * Set <code>visible</code> flag to <code>edge</code>.
-     * @param edge the edge to show or hide
-     * @param visible visible or hidden
-     * @throws IllegalMonitorStateException if the current thread is holding a read lock
-     */
-    public void setVisible(Edge edge, boolean visible);
-
-    /**
      * Acquire a read lock on the graph. Calling thread will be blocked until all write locks are released.
      * Several threads can read but only once can write.
      * @see ReentrantReadWriteLock
