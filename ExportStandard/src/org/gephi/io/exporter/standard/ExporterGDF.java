@@ -48,6 +48,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
     //Settings
     private boolean normalize = false;
+    private boolean simpleQuotes = false;
     private boolean exportColors = true;
     private boolean exportPosition = true;
     private boolean exportAttributes = true;
@@ -344,13 +345,13 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                builder.append("'");
+                builder.append("\"");
                 builder.append((int) (node.getNodeData().r() * 255f));
                 builder.append(",");
                 builder.append((int) (node.getNodeData().g() * 255f));
                 builder.append(",");
                 builder.append((int) (node.getNodeData().b() * 255f));
-                builder.append("'");
+                builder.append("\"");
             }
         };
 
@@ -444,13 +445,14 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Edge edge) {
-                builder.append("'");
+                String quote = (simpleQuotes) ? "'" : "\"";
+                builder.append(quote);
                 builder.append((int) (edge.getEdgeData().r() * 255f));
                 builder.append(",");
                 builder.append((int) (edge.getEdgeData().g() * 255f));
                 builder.append(",");
                 builder.append((int) (edge.getEdgeData().b() * 255f));
-                builder.append("'");
+                builder.append(quote);
             }
         };
 
@@ -542,6 +544,10 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
         this.normalize = normalize;
     }
 
+    public void setSimpleQuotes(boolean simpleQuotes) {
+        this.simpleQuotes = simpleQuotes;
+    }
+
     public boolean isExportAttributes() {
         return exportAttributes;
     }
@@ -556,6 +562,10 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
     public boolean isNormalize() {
         return normalize;
+    }
+
+    public boolean isSimpleQuotes() {
+        return simpleQuotes;
     }
 
     private enum DataTypeGDF {

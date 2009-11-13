@@ -38,6 +38,7 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
         positionExportCheckbox.setSelected(exporterGDF.isExportPosition());
         attributesExportCheckbox.setSelected(exporterGDF.isExportAttributes());
         normalizeCheckbox.setSelected(exporterGDF.isNormalize());
+        quotesCheckbox.setSelected(exporterGDF.isSimpleQuotes());
     }
 
     public void unsetup(ExporterGDF exporterGDF) {
@@ -45,6 +46,7 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
         exporterGDF.setExportColors(colorsExportCheckbox.isSelected());
         exporterGDF.setExportPosition(positionExportCheckbox.isSelected());
         exporterGDF.setNormalize(normalizeCheckbox.isSelected());
+        exporterGDF.setSimpleQuotes(quotesCheckbox.isSelected());
     }
 
     /** This method is called from within the constructor to
@@ -60,6 +62,8 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
         positionExportCheckbox = new javax.swing.JCheckBox();
         colorsExportCheckbox = new javax.swing.JCheckBox();
         attributesExportCheckbox = new javax.swing.JCheckBox();
+        quotesCheckbox = new javax.swing.JCheckBox();
+        labelQuotes = new javax.swing.JLabel();
         normalizeCheckbox = new javax.swing.JCheckBox();
         labelNormalize = new javax.swing.JLabel();
 
@@ -70,6 +74,17 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
         colorsExportCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.colorsExportCheckbox.text")); // NOI18N
 
         attributesExportCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.attributesExportCheckbox.text")); // NOI18N
+
+        quotesCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.quotesCheckbox.text")); // NOI18N
+        quotesCheckbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                quotesCheckboxActionPerformed(evt);
+            }
+        });
+
+        labelQuotes.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelQuotes.setForeground(new java.awt.Color(102, 102, 102));
+        labelQuotes.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.labelQuotes.text")); // NOI18N
 
         normalizeCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGDFPanel.class, "UIExporterGDFPanel.normalizeCheckbox.text")); // NOI18N
 
@@ -85,17 +100,21 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(normalizeCheckbox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(labelNormalize))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(labelExport)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(positionExportCheckbox)
                             .addComponent(colorsExportCheckbox)
-                            .addComponent(attributesExportCheckbox))))
-                .addContainerGap(48, Short.MAX_VALUE))
+                            .addComponent(attributesExportCheckbox)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(normalizeCheckbox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(labelNormalize))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(quotesCheckbox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(labelQuotes)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -108,19 +127,30 @@ public class UIExporterGDFPanel extends javax.swing.JPanel {
                 .addComponent(colorsExportCheckbox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(attributesExportCheckbox)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(normalizeCheckbox)
                     .addComponent(labelNormalize))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(quotesCheckbox)
+                    .addComponent(labelQuotes))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void quotesCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quotesCheckboxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_quotesCheckboxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox attributesExportCheckbox;
     private javax.swing.JCheckBox colorsExportCheckbox;
     private javax.swing.JLabel labelExport;
     private javax.swing.JLabel labelNormalize;
+    private javax.swing.JLabel labelQuotes;
     private javax.swing.JCheckBox normalizeCheckbox;
     private javax.swing.JCheckBox positionExportCheckbox;
+    private javax.swing.JCheckBox quotesCheckbox;
     // End of variables declaration//GEN-END:variables
 }
