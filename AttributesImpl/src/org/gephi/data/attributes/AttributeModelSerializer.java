@@ -28,6 +28,7 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.openide.util.Exceptions;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -63,11 +64,13 @@ public class AttributeModelSerializer {
     public Element writeModel(Document document, AbstractAttributeModel model) {
         Element modelE = document.createElement(ELEMENT_MODEL);
 
-        for (AttributeTableImpl table : model.getTables()) {
-            Element tableE = writeTable(document, table);
-            tableE.setAttribute("nodetable", String.valueOf(table == model.getNodeTable()));
-            tableE.setAttribute("edgetable", String.valueOf(table == model.getEdgeTable()));
-            modelE.appendChild(tableE);
+        if (model != null) {
+            for (AttributeTableImpl table : model.getTables()) {
+                Element tableE = writeTable(document, table);
+                tableE.setAttribute("nodetable", String.valueOf(table == model.getNodeTable()));
+                tableE.setAttribute("edgetable", String.valueOf(table == model.getEdgeTable()));
+                modelE.appendChild(tableE);
+            }
         }
 
         return modelE;
@@ -76,19 +79,21 @@ public class AttributeModelSerializer {
     public void readModel(Element modelE, AbstractAttributeModel model) {
         NodeList modelListE = modelE.getChildNodes();
         for (int i = 0; i < modelListE.getLength(); i++) {
-            Element itemE = (Element) modelListE.item(i);
-            if (itemE.getTagName().equals(ELEMENT_TABLE)) {
-                AttributeTableImpl table;
-                if (Boolean.parseBoolean(itemE.getAttribute("nodetable"))) {
-                    table = model.getNodeTable();
-                } else if (Boolean.parseBoolean(itemE.getAttribute("edgetable"))) {
-                    table = model.getEdgeTable();
-                } else {
-                    table = new AttributeTableImpl(model, "");
-                }
-                readTable(itemE, table);
-                if (table != model.getNodeTable() && table != model.getEdgeTable()) {
-                    model.addTable(table);
+            if (modelListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                Element itemE = (Element) modelListE.item(i);
+                if (itemE.getTagName().equals(ELEMENT_TABLE)) {
+                    AttributeTableImpl table;
+                    if (Boolean.parseBoolean(itemE.getAttribute("nodetable"))) {
+                        table = model.getNodeTable();
+                    } else if (Boolean.parseBoolean(itemE.getAttribute("edgetable"))) {
+                        table = model.getEdgeTable();
+                    } else {
+                        table = new AttributeTableImpl(model, "");
+                    }
+                    readTable(itemE, table);
+                    if (table != model.getNodeTable() && table != model.getEdgeTable()) {
+                        model.addTable(table);
+                    }
                 }
             }
         }
@@ -112,9 +117,11 @@ public class AttributeModelSerializer {
 
         NodeList tableListE = tableE.getChildNodes();
         for (int i = 0; i < tableListE.getLength(); i++) {
-            Element itemE = (Element) tableListE.item(i);
-            if (itemE.getTagName().equals(ELEMENT_COLUMN)) {
-                readColumn(itemE, table);
+            if (tableListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                Element itemE = (Element) tableListE.item(i);
+                if (itemE.getTagName().equals(ELEMENT_COLUMN)) {
+                    readColumn(itemE, table);
+                }
             }
         }
 
@@ -164,20 +171,22 @@ public class AttributeModelSerializer {
 
         NodeList columnListE = columnE.getChildNodes();
         for (int i = 0; i < columnListE.getLength(); i++) {
-            Element itemE = (Element) columnListE.item(i);
-            if (itemE.getTagName().equals(ELEMENT_COLUMN_INDEX)) {
-                index = Integer.parseInt(itemE.getTextContent());
-            } else if (itemE.getTagName().equals(ELEMENT_COLUMN_ID)) {
-                id = itemE.getTextContent();
-            } else if (itemE.getTagName().equals(ELEMENT_COLUMN_TITLE)) {
-                title = itemE.getTextContent();
-            } else if (itemE.getTagName().equals(ELEMENT_COLUMN_TYPE)) {
-                type = AttributeType.valueOf(itemE.getTextContent());
-            } else if (itemE.getTagName().equals(ELEMENT_COLUMN_ORIGIN)) {
-                origin = AttributeOrigin.valueOf(itemE.getTextContent());
-            } else if (itemE.getTagName().equals(ELEMENT_COLUMN_DEFAULT)) {
-                if (!itemE.getTextContent().isEmpty()) {
-                    defaultValue = type.parse(itemE.getTextContent());
+            if (columnListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                Element itemE = (Element) columnListE.item(i);
+                if (itemE.getTagName().equals(ELEMENT_COLUMN_INDEX)) {
+                    index = Integer.parseInt(itemE.getTextContent());
+                } else if (itemE.getTagName().equals(ELEMENT_COLUMN_ID)) {
+                    id = itemE.getTextContent();
+                } else if (itemE.getTagName().equals(ELEMENT_COLUMN_TITLE)) {
+                    title = itemE.getTextContent();
+                } else if (itemE.getTagName().equals(ELEMENT_COLUMN_TYPE)) {
+                    type = AttributeType.valueOf(itemE.getTextContent());
+                } else if (itemE.getTagName().equals(ELEMENT_COLUMN_ORIGIN)) {
+                    origin = AttributeOrigin.valueOf(itemE.getTextContent());
+                } else if (itemE.getTagName().equals(ELEMENT_COLUMN_DEFAULT)) {
+                    if (!itemE.getTextContent().isEmpty()) {
+                        defaultValue = type.parse(itemE.getTextContent());
+                    }
                 }
             }
         }

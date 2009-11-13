@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.project;
 
+import java.io.IOException;
 import org.gephi.project.ProjectControllerImpl;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,6 +44,7 @@ import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.w3c.dom.Document;
@@ -65,12 +67,14 @@ public class SaveTask implements LongTask, Runnable {
 
     public void run() {
         System.out.println("Save " + dataObject.getName());
+        ZipOutputStream zipOut=null;
+        boolean useTempFile = false;
+        File writeFile=null;
         try {
             Progress.start(progressTicket);
             FileObject fileObject = dataObject.getPrimaryFile();
             File outputFile = FileUtil.toFile(fileObject);
-            File writeFile = outputFile;
-            boolean useTempFile = false;
+            writeFile = outputFile;
             if (writeFile.exists()) {
                 useTempFile = true;
                 String tempFileName = writeFile.getName() + "_temp";
@@ -80,7 +84,7 @@ public class SaveTask implements LongTask, Runnable {
             //Stream
             int zipLevel = NbPreferences.forModule(SaveTask.class).getInt(ZIP_LEVEL_PREFERENCE, 0);
             FileOutputStream outputStream = new FileOutputStream(writeFile);
-            ZipOutputStream zipOut = new ZipOutputStream(outputStream);
+            zipOut = new ZipOutputStream(outputStream);
             zipOut.setLevel(zipLevel);
 
             zipOut.putNextEntry(new ZipEntry("Project"));
@@ -126,6 +130,15 @@ public class SaveTask implements LongTask, Runnable {
             StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectControllerImpl.class, "DesktoProjectController.status.saved", dataObject.getName()));
         } catch (Exception ex) {
             ex.printStackTrace();
+            if(zipOut!=null) {
+                try {
+                    zipOut.close();
+                } catch (IOException ex1) {
+                }
+            }
+            if(useTempFile && writeFile!=null) {
+                writeFile.delete();
+            }
             throw new GephiFormatException(GephiWriter.class, ex);
         }
     }

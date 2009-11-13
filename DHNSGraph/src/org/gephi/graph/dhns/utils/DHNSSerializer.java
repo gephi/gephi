@@ -45,6 +45,7 @@ import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.openide.util.Exceptions;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -110,23 +111,26 @@ public class DHNSSerializer {
     public void readDhns(Element dhnsE, Dhns dhns) {
         NodeList dhnsListE = dhnsE.getChildNodes();
         for (int i = 0; i < dhnsListE.getLength(); i++) {
-            Element itemE = (Element) dhnsListE.item(i);
-            if (itemE.getTagName().equals(ELEMENT_DHNS_STATUS)) {
-                dhns.setDirected(Boolean.parseBoolean(itemE.getAttribute("directed")));
-                dhns.setUndirected(Boolean.parseBoolean(itemE.getAttribute("undirected")));
-                dhns.setMixed(Boolean.parseBoolean(itemE.getAttribute("mixed")));
-                dhns.getDynamicManager().setDynamic(Boolean.parseBoolean(itemE.getAttribute("dynamic")));
-            } else if (itemE.getTagName().equals(ELEMENT_IDGEN)) {
-                readIDGen(itemE, dhns.getIdGen());
-            } else if (itemE.getTagName().equals(ELEMENT_GRAPHVERSION)) {
-                readGraphVersion(itemE, dhns.getGraphVersion());
-            } else if (itemE.getTagName().equals(ELEMENT_SETTINGS)) {
-                readSettings(itemE, dhns.getSettingsManager());
-            } else if (itemE.getTagName().equals(ELEMENT_TREESTRUCTURE)) {
-                readTreeStructure(itemE, dhns.getGraphStructure().getStructure());
-            } else if (itemE.getTagName().equals(ELEMENT_EDGES)) {
-                readEdges(itemE, dhns.getGraphStructure().getStructure());
+            if (dhnsListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                Element itemE = (Element) dhnsListE.item(i);
+                if (itemE.getTagName().equals(ELEMENT_DHNS_STATUS)) {
+                    dhns.setDirected(Boolean.parseBoolean(itemE.getAttribute("directed")));
+                    dhns.setUndirected(Boolean.parseBoolean(itemE.getAttribute("undirected")));
+                    dhns.setMixed(Boolean.parseBoolean(itemE.getAttribute("mixed")));
+                    dhns.getDynamicManager().setDynamic(Boolean.parseBoolean(itemE.getAttribute("dynamic")));
+                } else if (itemE.getTagName().equals(ELEMENT_IDGEN)) {
+                    readIDGen(itemE, dhns.getIdGen());
+                } else if (itemE.getTagName().equals(ELEMENT_GRAPHVERSION)) {
+                    readGraphVersion(itemE, dhns.getGraphVersion());
+                } else if (itemE.getTagName().equals(ELEMENT_SETTINGS)) {
+                    readSettings(itemE, dhns.getSettingsManager());
+                } else if (itemE.getTagName().equals(ELEMENT_TREESTRUCTURE)) {
+                    readTreeStructure(itemE, dhns.getGraphStructure().getStructure());
+                } else if (itemE.getTagName().equals(ELEMENT_EDGES)) {
+                    readEdges(itemE, dhns.getGraphStructure().getStructure());
+                }
             }
+
         }
     }
 
@@ -161,21 +165,23 @@ public class DHNSSerializer {
     public void readEdges(Element edgesE, TreeStructure treeStucture) {
         NodeList edgesListE = edgesE.getChildNodes();
         for (int i = 0; i < edgesListE.getLength(); i++) {
-            Element edgeE = (Element) edgesListE.item(i);
-            Integer id = Integer.parseInt(edgeE.getAttribute("id"));
-            AbstractNode source = treeStucture.getNodeAt(Integer.parseInt(edgeE.getAttribute("source")));
-            AbstractNode target = treeStucture.getNodeAt(Integer.parseInt(edgeE.getAttribute("target")));
-            AbstractEdge edge;
-            if (edgeE.getTagName().equals(ELEMENT_EDGES_PROPER)) {
-                edge = new ProperEdgeImpl(id, source, target);
-            } else if (edgeE.getTagName().equals(ELEMENT_EDGES_MIXED)) {
-                edge = new MixedEdgeImpl(id, source, target, Boolean.parseBoolean(edgeE.getAttribute("directed")));
-            } else {
-                edge = new SelfLoopImpl(id, source);
+            if (edgesListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                Element edgeE = (Element) edgesListE.item(i);
+                Integer id = Integer.parseInt(edgeE.getAttribute("id"));
+                AbstractNode source = treeStucture.getNodeAt(Integer.parseInt(edgeE.getAttribute("source")));
+                AbstractNode target = treeStucture.getNodeAt(Integer.parseInt(edgeE.getAttribute("target")));
+                AbstractEdge edge;
+                if (edgeE.getTagName().equals(ELEMENT_EDGES_PROPER)) {
+                    edge = new ProperEdgeImpl(id, source, target);
+                } else if (edgeE.getTagName().equals(ELEMENT_EDGES_MIXED)) {
+                    edge = new MixedEdgeImpl(id, source, target, Boolean.parseBoolean(edgeE.getAttribute("directed")));
+                } else {
+                    edge = new SelfLoopImpl(id, source);
+                }
+                edge.setWeight(Float.parseFloat(edgeE.getAttribute("weight")));
+                source.getEdgesOutTree().add(edge);
+                target.getEdgesInTree().add(edge);
             }
-            edge.setWeight(Float.parseFloat(edgeE.getAttribute("weight")));
-            source.getEdgesOutTree().add(edge);
-            target.getEdgesInTree().add(edge);
         }
     }
 
@@ -203,23 +209,33 @@ public class DHNSSerializer {
     }
 
     public void readTreeStructure(Element treeStructureE, TreeStructure treeStructure) {
-        NodeList nodesE = treeStructureE.getFirstChild().getChildNodes();
-        for (int i = 0; i < nodesE.getLength(); i++) {
-            Element nodeE = (Element) nodesE.item(i);
-            Boolean enabled = Boolean.parseBoolean(nodeE.getAttribute("enabled"));
-            AbstractNode parentNode = treeStructure.getNodeAt(Integer.parseInt(nodeE.getAttribute("parent")));
-            if (nodeE.getTagName().equals(ELEMENT_TREESTRUCTURE_CLONENODE)) {
-                AbstractNode preNode = treeStructure.getNodeAt(Integer.parseInt(nodeE.getAttribute("prenode")));
-                CloneNode cloneNode = new CloneNode(preNode);
-                cloneNode.parent = parentNode;
-                treeStructure.insertAsChild(cloneNode, parentNode);
-            } else {
-                PreNode preNode = new PreNode(Integer.parseInt(nodeE.getAttribute("id")), 0, 0, 0, parentNode);
-                preNode.setEnabled(enabled);
-                treeStructure.insertAsChild(preNode, parentNode);
+        NodeList nodesE =treeStructureE.getChildNodes();
+        for(int i=0;i<nodesE.getLength();i++) {
+            if (nodesE.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                if(((Element)nodesE.item(i)).getTagName().equals(ELEMENT_TREESTRUCTURE_TREE)) {
+                    nodesE = ((Element)nodesE.item(i)).getChildNodes();
+                    break;
+                }
             }
         }
-    }
+        for (int i = 0; i < nodesE.getLength(); i++) {
+            if (nodesE.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                Element nodeE = (Element) nodesE.item(i);
+                Boolean enabled = Boolean.parseBoolean(nodeE.getAttribute("enabled"));
+                AbstractNode parentNode = treeStructure.getNodeAt(Integer.parseInt(nodeE.getAttribute("parent")));
+                if (nodeE.getTagName().equals(ELEMENT_TREESTRUCTURE_CLONENODE)) {
+                    AbstractNode preNode = treeStructure.getNodeAt(Integer.parseInt(nodeE.getAttribute("prenode")));
+                    CloneNode cloneNode = new CloneNode(preNode);
+                    cloneNode.parent = parentNode;
+                    treeStructure.insertAsChild(cloneNode, parentNode);
+                } else {
+                    PreNode preNode = new PreNode(Integer.parseInt(nodeE.getAttribute("id")), 0, 0, 0, parentNode);
+                    preNode.setEnabled(enabled);
+                    treeStructure.insertAsChild(preNode, parentNode);
+                }
+            }
+        }
+     }
 
     public Element writeGraphVersion(Document document, GraphVersion graphVersion) {
         Element graphVersionE = document.createElement(ELEMENT_GRAPHVERSION);
@@ -252,12 +268,14 @@ public class DHNSSerializer {
     public void readSettings(Element settingsE, SettingsManager settingsManager) {
         NodeList propertiesE = settingsE.getChildNodes();
         for (int i = 0; i < propertiesE.getLength(); i++) {
-            Element propertyE = (Element) propertiesE.item(i);
-            String key = propertyE.getAttribute("key");
-            String valueXML = propertyE.getAttribute("value");
-            XMLDecoder xmlDecoder = new XMLDecoder(new ByteArrayInputStream(valueXML.getBytes()));
-            Object value = xmlDecoder.readObject();
-            settingsManager.putClientProperty(key, value);
+            if (propertiesE.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                Element propertyE = (Element) propertiesE.item(i);
+                String key = propertyE.getAttribute("key");
+                String valueXML = propertyE.getAttribute("value");
+                XMLDecoder xmlDecoder = new XMLDecoder(new ByteArrayInputStream(valueXML.getBytes()));
+                Object value = xmlDecoder.readObject();
+                settingsManager.putClientProperty(key, value);
+            }
         }
     }
 

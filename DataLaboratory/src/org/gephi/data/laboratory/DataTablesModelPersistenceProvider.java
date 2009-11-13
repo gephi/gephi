@@ -35,7 +35,10 @@ public class DataTablesModelPersistenceProvider implements WorkspacePersistenceP
 
     public Element writeXML(Document document, Workspace workspace) {
         DataTablesModel model = workspace.getLookup().lookup(DataTablesModel.class);
-        return model.writeXML(document);
+        if (model != null) {
+            return model.writeXML(document);
+        }
+        return null;
     }
 
     public void readXML(Element element, Workspace workspace) {

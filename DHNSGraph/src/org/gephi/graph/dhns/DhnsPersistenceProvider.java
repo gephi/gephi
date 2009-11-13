@@ -47,9 +47,10 @@ public class DhnsPersistenceProvider implements WorkspacePersistenceProvider {
         Dhns dhns = new Dhns(graphController, workspace);
         DHNSSerializer serializer = new DHNSSerializer();
         serializer.readDhns(element, dhns);
+        workspace.add(dhns);
     }
 
     public String getIdentifier() {
-        return "dhns";
+        return "Dhns";
     }
 }

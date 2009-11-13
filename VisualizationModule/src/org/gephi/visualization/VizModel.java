@@ -324,12 +324,12 @@ public class VizModel {
         //Camera
         Element cameraPostionE = (Element) vizModelElement.getElementsByTagName("cameraposition").item(0);
         cameraPosition[0] = Float.parseFloat(cameraPostionE.getAttribute("x"));
-        cameraPosition[0] = Float.parseFloat(cameraPostionE.getAttribute("y"));
-        cameraPosition[0] = Float.parseFloat(cameraPostionE.getAttribute("z"));
+        cameraPosition[1] = Float.parseFloat(cameraPostionE.getAttribute("y"));
+        cameraPosition[2] = Float.parseFloat(cameraPostionE.getAttribute("z"));
         Element cameraTargetE = (Element) vizModelElement.getElementsByTagName("cameratarget").item(0);
         cameraTarget[0] = Float.parseFloat(cameraTargetE.getAttribute("x"));
-        cameraTarget[0] = Float.parseFloat(cameraTargetE.getAttribute("y"));
-        cameraTarget[0] = Float.parseFloat(cameraTargetE.getAttribute("z"));
+        cameraTarget[1] = Float.parseFloat(cameraTargetE.getAttribute("y"));
+        cameraTarget[2] = Float.parseFloat(cameraTargetE.getAttribute("z"));
 
         //Boolean values
         Element use3dE = (Element) vizModelElement.getElementsByTagName("use3d").item(0);
