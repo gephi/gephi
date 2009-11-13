@@ -29,6 +29,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeData;
+import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphVersion;
 import org.gephi.graph.dhns.core.IDGen;
@@ -209,11 +212,11 @@ public class DHNSSerializer {
     }
 
     public void readTreeStructure(Element treeStructureE, TreeStructure treeStructure) {
-        NodeList nodesE =treeStructureE.getChildNodes();
-        for(int i=0;i<nodesE.getLength();i++) {
+        NodeList nodesE = treeStructureE.getChildNodes();
+        for (int i = 0; i < nodesE.getLength(); i++) {
             if (nodesE.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                if(((Element)nodesE.item(i)).getTagName().equals(ELEMENT_TREESTRUCTURE_TREE)) {
-                    nodesE = ((Element)nodesE.item(i)).getChildNodes();
+                if (((Element) nodesE.item(i)).getTagName().equals(ELEMENT_TREESTRUCTURE_TREE)) {
+                    nodesE = ((Element) nodesE.item(i)).getChildNodes();
                     break;
                 }
             }
@@ -235,7 +238,7 @@ public class DHNSSerializer {
                 }
             }
         }
-     }
+    }
 
     public Element writeGraphVersion(Document document, GraphVersion graphVersion) {
         Element graphVersionE = document.createElement(ELEMENT_GRAPHVERSION);

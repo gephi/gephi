@@ -21,10 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns;
 
 import org.gephi.graph.dhns.core.Dhns;
-import org.gephi.graph.dhns.utils.DHNSSerializer;
+import org.gephi.graph.dhns.utils.DataSerializer;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspacePersistenceProvider;
-import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,24 +32,22 @@ import org.w3c.dom.Element;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = WorkspacePersistenceProvider.class, position=10000)
-public class DhnsPersistenceProvider implements WorkspacePersistenceProvider {
+@ServiceProvider(service = WorkspacePersistenceProvider.class, position = 12000)
+public class DataPersistenceProvider implements WorkspacePersistenceProvider {
 
     public Element writeXML(Document document, Workspace workspace) {
         Dhns dhns = workspace.getLookup().lookup(Dhns.class);
-        DHNSSerializer serializer = new DHNSSerializer();
-        return serializer.writeDhns(document, dhns);
+        DataSerializer serializer = new DataSerializer();
+        return serializer.writeData(document, dhns);
     }
 
     public void readXML(Element element, Workspace workspace) {
-        DhnsGraphController graphController = Lookup.getDefault().lookup(DhnsGraphController.class);
-        Dhns dhns = new Dhns(graphController, workspace);
-        DHNSSerializer serializer = new DHNSSerializer();
-        serializer.readDhns(element, dhns);
-        workspace.add(dhns);
+        Dhns dhns = workspace.getLookup().lookup(Dhns.class);
+        DataSerializer serializer = new DataSerializer();
+        serializer.readData(element, dhns);
     }
 
     public String getIdentifier() {
-        return "Dhns";
+        return "Data";
     }
 }

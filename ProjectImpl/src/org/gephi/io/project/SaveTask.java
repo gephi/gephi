@@ -67,9 +67,9 @@ public class SaveTask implements LongTask, Runnable {
 
     public void run() {
         System.out.println("Save " + dataObject.getName());
-        ZipOutputStream zipOut=null;
+        ZipOutputStream zipOut = null;
         boolean useTempFile = false;
-        File writeFile=null;
+        File writeFile = null;
         try {
             Progress.start(progressTicket);
             FileObject fileObject = dataObject.getPrimaryFile();
@@ -130,13 +130,13 @@ public class SaveTask implements LongTask, Runnable {
             StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectControllerImpl.class, "DesktoProjectController.status.saved", dataObject.getName()));
         } catch (Exception ex) {
             ex.printStackTrace();
-            if(zipOut!=null) {
+            if (zipOut != null) {
                 try {
                     zipOut.close();
                 } catch (IOException ex1) {
                 }
             }
-            if(useTempFile && writeFile!=null) {
+            if (useTempFile && writeFile != null) {
                 writeFile.delete();
             }
             throw new GephiFormatException(GephiWriter.class, ex);

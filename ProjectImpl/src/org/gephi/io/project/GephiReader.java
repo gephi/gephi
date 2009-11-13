@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.project;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -50,9 +51,15 @@ public class GephiReader implements Cancellable {
     private Map<String, WorkspacePersistenceProvider> providers;
 
     public GephiReader() {
-        providers = new HashMap<String, WorkspacePersistenceProvider>();
+        providers = new LinkedHashMap<String, WorkspacePersistenceProvider>();
         for (WorkspacePersistenceProvider w : Lookup.getDefault().lookupAll(WorkspacePersistenceProvider.class)) {
-            providers.put(w.getIdentifier(), w);
+            try {
+                String id = w.getIdentifier();
+                if (id != null && !id.isEmpty()) {
+                    providers.put(w.getIdentifier(), w);
+                }
+            } catch (Exception e) {
+            }
         }
     }
 
@@ -132,7 +139,7 @@ public class GephiReader implements Cancellable {
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
             if (child.getNodeType() == Node.ELEMENT_NODE) {
-                Element childE = (Element)child;
+                Element childE = (Element) child;
                 WorkspacePersistenceProvider pp = providers.get(childE.getTagName());
                 if (pp != null) {
                     try {

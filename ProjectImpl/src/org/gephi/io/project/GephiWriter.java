@@ -23,6 +23,7 @@ package org.gephi.io.project;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -49,11 +50,14 @@ public class GephiWriter implements Cancellable {
     private Map<String, WorkspacePersistenceProvider> providers;
 
     public GephiWriter() {
-        providers = new HashMap<String, WorkspacePersistenceProvider>();
+        providers = new LinkedHashMap<String, WorkspacePersistenceProvider>();
         for (WorkspacePersistenceProvider w : Lookup.getDefault().lookupAll(WorkspacePersistenceProvider.class)) {
-            String id = w.getIdentifier();
-            if (id != null && !id.isEmpty()) {
-                providers.put(w.getIdentifier(), w);
+            try {
+                String id = w.getIdentifier();
+                if (id != null && !id.isEmpty()) {
+                    providers.put(w.getIdentifier(), w);
+                }
+            } catch (Exception e) {
             }
         }
     }
