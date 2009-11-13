@@ -74,11 +74,24 @@ public final class StringList {
 
     public boolean contains(String value) {
         for (int i = 0; i < list.length; i++) {
-            if(value.equals(list[i])) {
+            if (value.equals(list[i])) {
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < list.length; i++) {
+            builder.append(list[i]);
+            builder.append(',');
+        }
+        if (list.length > 0) {
+            builder.deleteCharAt(builder.length() - 1);
+        }
+        return builder.toString();
     }
 
     @Override

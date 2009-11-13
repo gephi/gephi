@@ -94,6 +94,10 @@ public abstract class AbstractAttributeModel implements AttributeModel {
         return factory;
     }
 
+    public void addTable(AttributeTableImpl table) {
+        tableMap.put(table.getName(), table);
+    }
+
     public void mergeModel(AttributeModel model) {
         if (model.getNodeTable() != null) {
             nodeTable.mergeTable(model.getNodeTable());
