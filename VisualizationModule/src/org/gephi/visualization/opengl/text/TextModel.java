@@ -252,9 +252,9 @@ public class TextModel {
         Element colorModeE = (Element) textModelElement.getElementsByTagName("colormode").item(0);
         String colorModeClass = colorModeE.getAttribute("class");
         if (colorModeClass.equals("UniqueColorMode")) {
-            colorMode = new UniqueColorMode();
+            colorMode = VizController.getInstance().getTextManager().getColorModes()[0];
         } else if (colorModeClass.equals("ObjectColorMode")) {
-            colorMode = new ObjectColorMode();
+            colorMode = VizController.getInstance().getTextManager().getColorModes()[1];
         }
 
         //SizeMode
@@ -277,10 +277,10 @@ public class TextModel {
         Element textModelE = document.createElement("textmodel");
 
         //Show
-        Element showNodeE =  document.createElement("shownodelabels");
+        Element showNodeE = document.createElement("shownodelabels");
         showNodeE.setAttribute("enable", String.valueOf(showNodeLabels));
         textModelE.appendChild(showNodeE);
-        Element showEdgeE =  document.createElement("showedgelabels");
+        Element showEdgeE = document.createElement("showedgelabels");
         showEdgeE.setAttribute("enable", String.valueOf(showEdgeLabels));
         textModelE.appendChild(showEdgeE);
 
