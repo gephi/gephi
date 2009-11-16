@@ -167,13 +167,14 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
                 r = obj.r();
                 if (r == -1f) {
                     NodeData source = obj.getSource();
-                    r = source.r();
-                    g = source.g();
-                    b = source.b();
+                    r = 0.498f * source.r();
+                    g = 0.498f * source.g();
+                    b = 0.498f * source.b();
                     a = obj.alpha();
                 } else {
-                    g = obj.g();
-                    b = obj.b();
+                    g = 0.498f *obj.g();
+                    b = 0.498f *obj.b();
+                    r *= 0.498f;
                     a = obj.alpha();
                 }
             }
@@ -211,13 +212,12 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
                 r = obj.r();
                 if (r == -1f) {
                     NodeData source = obj.getSource();
-                    r = 0.498f * source.r();
-                    g = 0.498f * source.g();
-                    b = 0.498f * source.b();
+                    r = source.r();
+                    g = source.g();
+                    b = source.b();
                 } else {
-                    g = 0.498f * obj.g();
-                    b = 0.498f * obj.b();
-                    r *= 0.498f;
+                    g = obj.g();
+                    b = obj.b();
                 }
             }
             gl.glColor4f(r, g, b, 1f);
