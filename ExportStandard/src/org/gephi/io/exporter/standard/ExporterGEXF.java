@@ -25,6 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.io.exporter.GraphFileExporter;
@@ -131,7 +133,8 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
         }
         graphE.setAttribute("idtype", "string");
 
-        Element nodesE = createNodes(document, graph);
+        int nodeCount = graph.getNodeCount();
+        Element nodesE = createNodes(document, graph, nodeCount, null);
         graphE.appendChild(nodesE);
 
         Element edgesE = createEdges(document, graph);
@@ -140,24 +143,43 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
         return graphE;
     }
 
-    private Element createNodes(Document document, Graph graph) throws Exception {
+    private Element createNodes(Document document, Graph graph, int count, Node nodeParent) throws Exception {
         Element nodesE = document.createElement("nodes");
-        nodesE.setAttribute("count", ""+graph.getNodeCount());
+        nodesE.setAttribute("count", ""+count);
 
-        for( Node n : graph.getNodes().toArray() ) {
-            Element nodeE = createNode(document, n);
-            nodesE.appendChild(nodeE);
+        GraphModel graphModel = graph.getGraphModel();
+        if(nodeParent != null) {
+            // we are inside the tree
+            HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
+            for( Node n : hgraph.getChildren(nodeParent)) {
+                Element childE = createNode(document, graph, n);
+                nodesE.appendChild(childE);
+            }
+        }
+        else if(graphModel.isHierarchical()) {
+            // we are on the top of the tree
+            HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
+            for( Node n : hgraph.getTopNodes()) {
+                Element nodeE = createNode(document, hgraph, n);
+                nodesE.appendChild(nodeE);
+            }
+        }
+        else {
+            // there is no tree
+            for( Node n : graph.getNodes() ) {
+                Element nodeE = createNode(document, graph, n);
+                nodesE.appendChild(nodeE);
+            }
         }
 
         return nodesE;
     }
 
-    private Element createNode(Document document, Node n) throws Exception {
+    private Element createNode(Document document, Graph graph, Node n) throws Exception {
         Element nodeE = document.createElement("node");
         nodeE.setAttribute("id", ""+n.getNodeData().getId());
         nodeE.setAttribute("label", ""+n.getNodeData().getLabel());
         
-
         if(exportSize) {
             Element sizeE = createNodeSize(document, n);
             nodeE.appendChild(sizeE);
@@ -169,6 +191,16 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
         if(exportPosition) {
             Element positionE = createNodePosition(document, n);
             nodeE.appendChild(positionE);
+        }
+
+        GraphModel graphModel = graph.getGraphModel();
+        if(graphModel.isHierarchical()) {
+            HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
+            int childCount = hgraph.getChildrenCount(n);
+            if(childCount != 0) {
+                Element nodesE = createNodes(document, graph, childCount, n);
+                nodeE.appendChild(nodesE);
+            }
         }
         Progress.progress(progressTicket);
 

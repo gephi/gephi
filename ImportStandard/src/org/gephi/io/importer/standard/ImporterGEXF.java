@@ -211,11 +211,11 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 return;
             }
 
-            //Date type
+            //Id type
             exp = xpath.compile("./graph[@idtype]");
             NodeList idtypeE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
             if (idtypeE != null && idtypeE.getLength() > 0) {
-                String idtype = ((Element) modeE.item(0)).getAttribute("idtype");
+                String idtype = ((Element) idtypeE.item(0)).getAttribute("idtype");
                 if (idtype.equals("integer")) {
                     isIdTypeInteger = true;
                 }
