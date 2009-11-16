@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.partition;
+package org.gephi.desktop.statistics;
 
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspacePersistenceProvider;
@@ -31,17 +31,17 @@ import org.w3c.dom.Element;
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = WorkspacePersistenceProvider.class)
-public class PartitionModelPersistenceProvider implements WorkspacePersistenceProvider {
+public class StatisticsPersistenceProvider implements WorkspacePersistenceProvider {
 
     public Element writeXML(Document document, Workspace workspace) {
-        return document.createElement("partitionmodel");
+        return document.createElement("statistics");
     }
 
     public void readXML(Element element, Workspace workspace) {
-        workspace.add(new PartitionModelImpl());
+        workspace.add(new StatisticsModelImpl());
     }
 
     public String getIdentifier() {
-        return "partitionmodel";
+        return "statistics";
     }
 }
