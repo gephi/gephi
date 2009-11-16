@@ -24,8 +24,9 @@ import org.openide.nodes.Sheet;
 import org.openide.util.Lookup;
 
 /**
+ * This class provides some sets of properties for the preview UI.
  *
- * @author jeremy
+ * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public class PreviewNode extends AbstractNode {
 
@@ -34,10 +35,10 @@ public class PreviewNode extends AbstractNode {
         setDisplayName("Preview Settings");
     }
 
-	@Override
+    @Override
     protected Sheet createSheet() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-		NodeSupervisor ns = controller.getNodeSupervisor();
+        NodeSupervisor ns = controller.getNodeSupervisor();
         GlobalEdgeSupervisor ges = controller.getGlobalEdgeSupervisor();
         SelfLoopSupervisor sls = controller.getSelfLoopSupervisor();
         EdgeSupervisor ues = controller.getUniEdgeSupervisor();
@@ -109,7 +110,7 @@ public class PreviewNode extends AbstractNode {
             Property biEdgeArrowAddedRadProp = new PropertySupport.Reflection(bes, Float.class, "arrowAddedRadius");
             Property biEdgeArrowSizeProp = new PropertySupport.Reflection(bes, Float.class, "arrowSize");
             PropertySupport.Reflection biEdgeArrowColorProp = new PropertySupport.Reflection(bes, EdgeChildColorizer.class, "arrowColorizer");
-            
+
             // set custom property editors
             nodeColorProp.setPropertyEditorClass(NodeColorizerPropertyEditor.class);
             nodeBorderColorProp.setPropertyEditorClass(GenericColorizerPropertyEditor.class);
@@ -169,7 +170,7 @@ public class PreviewNode extends AbstractNode {
             biEdgeArrowAddedRadProp.setName("biEdgeArrowAddedRadius");
             biEdgeArrowSizeProp.setName("biEdgeArrowSize");
             biEdgeArrowColorProp.setDisplayName("biEdgeArrowColor");
-             
+
             // set properties' display names
             showNodesProp.setDisplayName("Show Nodes");
             nodeBorderWidthProp.setDisplayName("Node Border Width");
@@ -264,13 +265,13 @@ public class PreviewNode extends AbstractNode {
             ErrorManager.getDefault();
         }
 
-		Sheet sheet = Sheet.createDefault();
+        Sheet sheet = Sheet.createDefault();
         sheet.put(nodeSet);
         sheet.put(edgeSet);
         sheet.put(selfLoopSet);
         sheet.put(uniEdgeSet);
         sheet.put(biEdgeSet);
-		
+
         return sheet;
     }
 }

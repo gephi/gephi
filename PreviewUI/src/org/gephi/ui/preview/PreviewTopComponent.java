@@ -17,7 +17,6 @@ final class PreviewTopComponent extends TopComponent {
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "PreviewTopComponent";
-
     private final ProcessingPreview sketch = new ProcessingPreview();
 
     private PreviewTopComponent() {
@@ -71,8 +70,8 @@ final class PreviewTopComponent extends TopComponent {
             return (PreviewTopComponent) win;
         }
         Logger.getLogger(PreviewTopComponent.class.getName()).warning(
-                "There seem to be multiple components with the '" + PREFERRED_ID +
-                "' ID. That is a potential source of errors and unexpected behavior.");
+                "There seem to be multiple components with the '" + PREFERRED_ID
+                + "' ID. That is a potential source of errors and unexpected behavior.");
         return getDefault();
     }
 
@@ -111,9 +110,9 @@ final class PreviewTopComponent extends TopComponent {
         }
     }
 
-	/**
-	 * Refresh the preview applet.
-	 */
+    /**
+     * Refresh the preview applet.
+     */
     public void refreshPreview() {
         sketch.refresh();
     }
