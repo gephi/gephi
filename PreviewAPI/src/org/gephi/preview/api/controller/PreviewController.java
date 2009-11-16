@@ -21,37 +21,42 @@ public interface PreviewController {
     public Graph getGraph();
 
     /**
-	 * Returns the node supervisor.
-	 *
-	 * @return the controller's node supervisor
-	 */
-	public NodeSupervisor getNodeSupervisor();
+     * Retreives the workspace graph and builds a preview graph from it.
+     */
+    public void buildGraph();
 
     /**
-	 * Returns the global edge supervisor.
-	 *
-	 * @return the controller's global edge supervisor
-	 */
-	public GlobalEdgeSupervisor getGlobalEdgeSupervisor();
+     * Returns the node supervisor.
+     *
+     * @return the controller's node supervisor
+     */
+    public NodeSupervisor getNodeSupervisor();
 
     /**
-	 * Returns the self-loop supervisor.
-	 *
-	 * @return the controller's self-loop supervisor
-	 */
-	public SelfLoopSupervisor getSelfLoopSupervisor();
+     * Returns the global edge supervisor.
+     *
+     * @return the controller's global edge supervisor
+     */
+    public GlobalEdgeSupervisor getGlobalEdgeSupervisor();
 
     /**
-	 * Returns the unidirectional edge supervisor.
-	 *
-	 * @return the controller's unidirectional edge supervisor
-	 */
-	public EdgeSupervisor getUniEdgeSupervisor();
+     * Returns the self-loop supervisor.
+     *
+     * @return the controller's self-loop supervisor
+     */
+    public SelfLoopSupervisor getSelfLoopSupervisor();
 
     /**
-	 * Returns the bidirectional edge supervisor.
-	 *
-	 * @return the controller's bidirectional edge supervisor
-	 */
-	public EdgeSupervisor getBiEdgeSupervisor();
+     * Returns the unidirectional edge supervisor.
+     *
+     * @return the controller's unidirectional edge supervisor
+     */
+    public EdgeSupervisor getUniEdgeSupervisor();
+
+    /**
+     * Returns the bidirectional edge supervisor.
+     *
+     * @return the controller's bidirectional edge supervisor
+     */
+    public EdgeSupervisor getBiEdgeSupervisor();
 }

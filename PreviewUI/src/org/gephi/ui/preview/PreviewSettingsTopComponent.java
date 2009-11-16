@@ -3,8 +3,10 @@ package org.gephi.ui.preview;
 import java.awt.BorderLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
+import org.gephi.preview.api.controller.PreviewController;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.Node;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -18,7 +20,6 @@ final class PreviewSettingsTopComponent extends TopComponent {
     private static PreviewSettingsTopComponent instance;
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
-
     private static final String PREFERRED_ID = "PreviewSettingsTopComponent";
 
     private PreviewSettingsTopComponent() {
@@ -29,7 +30,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
 
         // property sheet
         PropertySheet ps = new PropertySheet();
-        ps.setNodes(new Node[] { new PreviewNode() });
+        ps.setNodes(new Node[]{new PreviewNode()});
         propertiesPanel.add(ps, BorderLayout.CENTER);
     }
 
@@ -74,9 +75,10 @@ final class PreviewSettingsTopComponent extends TopComponent {
     }// </editor-fold>//GEN-END:initComponents
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+        controller.buildGraph();
         PreviewTopComponent.findInstance().refreshPreview();
 }//GEN-LAST:event_refreshButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel propertiesPanel;
     private javax.swing.JButton refreshButton;
@@ -108,8 +110,8 @@ final class PreviewSettingsTopComponent extends TopComponent {
             return (PreviewSettingsTopComponent) win;
         }
         Logger.getLogger(PreviewSettingsTopComponent.class.getName()).warning(
-                "There seem to be multiple components with the '" + PREFERRED_ID +
-                "' ID. That is a potential source of errors and unexpected behavior.");
+                "There seem to be multiple components with the '" + PREFERRED_ID
+                + "' ID. That is a potential source of errors and unexpected behavior.");
         return getDefault();
     }
 
