@@ -72,6 +72,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
     //Settings
     private boolean keepComplexAndEmptyAttributeTypes = true;
     private boolean isDynamicMode = false;
+    private boolean isIdTypeInteger = false;
     private boolean isDateTypeInteger = false;
 
     //Attributes
@@ -160,6 +161,8 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             if (cancel) {
                 return;
             }
+
+            // Progress steps
             int taskMax = nodeListE.getLength() + edgeListE.getLength();
             Progress.switchToDeterminate(progressTicket, taskMax);
 
@@ -206,6 +209,16 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             }
             if (cancel) {
                 return;
+            }
+
+            //Date type
+            exp = xpath.compile("./graph[@idtype]");
+            NodeList idtypeE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
+            if (idtypeE != null && idtypeE.getLength() > 0) {
+                String idtype = ((Element) modeE.item(0)).getAttribute("idtype");
+                if (idtype.equals("integer")) {
+                    isIdTypeInteger = true;
+                }
             }
 
             //Default edge type
@@ -401,8 +414,8 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             //Id
             String edgeId = edgeE.getAttribute("id");
             if (edgeId.isEmpty()) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeid"), Issue.Level.SEVERE));
-                continue;
+                edgeId = getUniqueID();
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeid"), Issue.Level.WARNING));
             }
 
             String edgeSource = edgeE.getAttribute("source");
@@ -507,7 +520,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             //Class
             String colClass = ((Element) columnE.getParentNode()).getAttribute("class");
             if (colClass.isEmpty() || !(colClass.equals("node") || colClass.equals("edge"))) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributeclass", colTitle), Issue.Level.WARNING));
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributeclass", colTitle), Issue.Level.SEVERE));
                 continue;
             }
 
@@ -552,7 +565,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 if (keepComplexAndEmptyAttributeTypes) {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributetype1", colTitle), Issue.Level.WARNING));
                 } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributetype2", colTitle), Issue.Level.WARNING));
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributetype2", colTitle), Issue.Level.SEVERE));
                     continue;
                 }
             }
@@ -711,6 +724,10 @@ public class ImporterGEXF implements XMLImporter, LongTask {
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
     }
+    
+    private String getUniqueID() {
+        return Long.toString(System.nanoTime());
+    }
 
     public final class ImporterGEXF10 {
 
@@ -741,6 +758,8 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             if (cancel) {
                 return;
             }
+
+            // Progress steps
             int taskMax = nodeListE.getLength() + edgeListE.getLength();
             Progress.switchToDeterminate(progressTicket, taskMax);
 
@@ -840,6 +859,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
 
                 //Append node
                 container.addNode(node);
+                Progress.progress(progressTicket);
             }
 
 
@@ -852,8 +872,8 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 //Id
                 String edgeId = edgeE.getAttribute("id");
                 if (edgeId.isEmpty()) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeid"), Issue.Level.SEVERE));
-                    continue;
+                    edgeId = getUniqueID();
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeid"), Issue.Level.WARNING));
                 }
 
                 String edgeSource = edgeE.getAttribute("source");
@@ -909,6 +929,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 }
 
                 container.addEdge(edge);
+                Progress.progress(progressTicket);
             }
         }
 
