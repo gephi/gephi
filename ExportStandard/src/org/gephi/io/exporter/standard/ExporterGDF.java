@@ -312,7 +312,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
             @Override
             public void writeData(StringBuilder builder, Node node) {
                 float x = node.getNodeData().x();
-                if (normalize) {
+                if (normalize && x != 0.0) {
                     x = (x - minX) / (maxX - minX);
                 }
                 builder.append(x);
@@ -329,7 +329,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
             @Override
             public void writeData(StringBuilder builder, Node node) {
                 float y = node.getNodeData().y();
-                if (normalize) {
+                if (normalize && y != 0.0) {
                     y = (y - minY) / (maxY - minY);
                 }
                 builder.append(y);
