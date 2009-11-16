@@ -73,7 +73,7 @@ public class StructureModifier {
         AbstractNode absNode = (AbstractNode) node;
         if (absNode.level < treeStructure.treeHeight) {
             expand(absNode);
-        //sightManager.updateSight((SightImpl) sight);
+            //sightManager.updateSight((SightImpl) sight);
         }
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
@@ -95,7 +95,7 @@ public class StructureModifier {
         AbstractNode absNode = (AbstractNode) node;
         if (absNode.level < treeStructure.treeHeight) {
             retract(((AbstractNode) node));
-        //sightManager.updateSight((SightImpl)sight);
+            //sightManager.updateSight((SightImpl)sight);
         }
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
@@ -409,6 +409,8 @@ public class StructureModifier {
         sourceNode.getEdgesOutTree().add(edge);
         targetNode.getEdgesInTree().add(edge);
 
+        dhns.getGraphStructure().getEdgeDictionnary().add(edge);
+
         //Add Meta Edge
         if (!edge.isSelfLoop()) {
             edgeProcessor.createMetaEdge(edge);
@@ -455,6 +457,8 @@ public class StructureModifier {
         boolean res = edge.getSource().getEdgesOutTree().remove(edge);
         res = res && edge.getTarget().getEdgesInTree().remove(edge);
 
+        dhns.getGraphStructure().getEdgeDictionnary().remove(edge);
+
         //Remove edge from possible metaEdge
         edgeProcessor.removeEdgeFromMetaEdge(edge);
         return res;
@@ -466,6 +470,7 @@ public class StructureModifier {
 
     private void clearAllNodes() {
         treeStructure.clear();
+        dhns.getGraphStructure().getNodeDictionnary().clear();
     }
 
     private void clearEdges(AbstractNode node) {
@@ -500,7 +505,7 @@ public class StructureModifier {
                     //Node is thus disabled
                     edgeProcessor.clearMetaEdges(node);
                     node.setEnabled(false);
-                //DO
+                    //DO
                 } else {
                     //The node is kept enabled
                     //Meta edges are still valid only if their target is out of the dest cluster
@@ -516,7 +521,7 @@ public class StructureModifier {
                             descendant.setEnabled(false);
                         }
                     }
-                //DO
+                    //DO
                 } else {
                     //The node may have some enabled descendants and we keep them enabled
                     for (DescendantIterator itr = new DescendantIterator(treeStructure, node, Tautology.instance); itr.hasNext();) {

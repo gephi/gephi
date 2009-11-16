@@ -90,6 +90,22 @@ public interface Graph {
     public boolean contains(Edge edge);
 
     /**
+     * Returns the node with identifier equal to <code>id</code>. If not found,
+     * returns <code>null</code>.
+     * @param id a positive number
+     * @return the node with given <code>id</code>, or <code>null</code> if not found
+     */
+    public Node getNode(int id);
+
+    /**
+     * Returns the edge with identifier equal to <code>id</code>. If not found,
+     * returns <code>null</code>.
+     * @param id a positive number
+     * @return the edge with given <code>id</code>, or <code>null</code> if not found
+     */
+    public Edge getEdge(int id);
+
+    /**
      * Returns nodes contained in the graph.
      * @return a node iterable of nodes contained in the graph.
      */

@@ -103,6 +103,20 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
         return res;
     }
 
+    public Node getNode(int id) {
+        readLock();
+        Node node = dhns.getGraphStructure().getNodeDictionnary().get(id);
+        readUnlock();
+        return node;
+    }
+
+    public Edge getEdge(int id) {
+        readLock();
+        Edge edge = dhns.getGraphStructure().getEdgeDictionnary().get(id);
+        readUnlock();
+        return edge;
+    }
+
     public NodeIterable getNodes() {
         readLock();
         return dhns.newNodeIterable(new TreeIterator(structure.getStructure(), true, Tautology.instance));
@@ -161,10 +175,10 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
         }
         checkEdge(edge1);
         checkEdge(edge2);
-        return edge1.getSource() == edge2.getSource() ||
-                edge1.getSource() == edge2.getTarget() ||
-                edge1.getTarget() == edge2.getSource() ||
-                edge1.getTarget() == edge2.getTarget();
+        return edge1.getSource() == edge2.getSource()
+                || edge1.getSource() == edge2.getTarget()
+                || edge1.getTarget() == edge2.getSource()
+                || edge1.getTarget() == edge2.getTarget();
     }
 
     public Node getOpposite(Node node, Edge edge) {

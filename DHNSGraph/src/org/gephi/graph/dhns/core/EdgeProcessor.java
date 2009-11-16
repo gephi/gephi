@@ -55,6 +55,7 @@ public class EdgeProcessor {
                 AbstractEdge edge = edgeIterator.next();
                 removeEdgeFromMetaEdge(edge);
                 edge.getSource().getEdgesOutTree().remove(edge);
+                dhns.getGraphStructure().getEdgeDictionnary().remove(edge);
             }
             node.getEdgesInTree().clear();
         }
@@ -65,6 +66,7 @@ public class EdgeProcessor {
                 AbstractEdge edge = edgeIterator.next();
                 removeEdgeFromMetaEdge(edge);
                 edge.getTarget().getEdgesInTree().remove(edge);
+                dhns.getGraphStructure().getEdgeDictionnary().remove(edge);
             }
             node.getEdgesOutTree().clear();
         }
@@ -145,6 +147,7 @@ public class EdgeProcessor {
             node.getEdgesOutTree().clear();
             node.clearMetaEdges();
         }
+        dhns.getGraphStructure().getEdgeDictionnary().clear();
     }
 
     public void clearAllMetaEdges() {
