@@ -46,6 +46,7 @@ import org.gephi.io.importer.TextImporter;
 import org.gephi.io.importer.XMLImporter;
 import org.gephi.io.logging.Report;
 import org.gephi.io.processor.Processor;
+import org.gephi.io.processor.Scaler;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.ui.database.DatabaseTypeUI;
@@ -61,6 +62,7 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -68,6 +70,7 @@ import org.xml.sax.SAXException;
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service=ImportController.class)
 public class DesktopImportController implements ImportController {
 
     private LongTaskExecutor executor;
@@ -305,6 +308,12 @@ public class DesktopImportController implements ImportController {
             }
 
             container.closeLoader();
+            if(container.isAutoScale()) {
+                Scaler scaler = Lookup.getDefault().lookup(Scaler.class);
+                if(scaler!=null) {
+                    scaler.doScale(container);
+                }
+            }
             Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
 
             //StatusLine notify

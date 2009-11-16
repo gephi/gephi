@@ -52,20 +52,26 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="hierarchicalLabel" min="-2" max="-2" attributes="0"/>
-                          <Component id="dynamicLabel" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="nodeCountLabel" pref="349" max="32767" attributes="1"/>
+                                  <Component id="nodeCountLabel" pref="350" max="32767" attributes="1"/>
                                   <Component id="graphTypeCombo" min="-2" pref="107" max="-2" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
+                              <Component id="autoscaleCheckbox" min="-2" pref="92" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="hierarchicalLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="dynamicLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="edgeCountLabel" pref="349" max="32767" attributes="1"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="appendGraphRadio" min="-2" max="-2" attributes="0"/>
                                   <Component id="fullGraphRadio" min="-2" max="-2" attributes="0"/>
+                                  <Component id="appendGraphRadio" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <Component id="edgeCountLabel" pref="442" max="32767" attributes="1"/>
                       </Group>
                   </Group>
               </Group>
@@ -84,33 +90,41 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="tabbedPane" min="-2" pref="162" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="labelGraphType" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="fullGraphRadio" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="graphTypeCombo" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="labelGraphType" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="graphTypeCombo" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="autoscaleCheckbox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="labelNodeCount" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="nodeCountLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="labelEdgeCount" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="edgeCountLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="labelDynamic" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="dynamicLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="labelHierarchical" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="hierarchicalLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="appendGraphRadio" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Component id="fullGraphRadio" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
+                  </Group>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="labelNodeCount" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="appendGraphRadio" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="nodeCountLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="labelEdgeCount" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="edgeCountLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="labelDynamic" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="dynamicLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="labelHierarchical" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="hierarchicalLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace pref="23" max="32767" attributes="0"/>
+              <EmptySpace pref="19" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -283,6 +297,16 @@
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/io/desktop/Bundle.properties" key="ReportPanel.hierarchicalLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="autoscaleCheckbox">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/io/desktop/Bundle.properties" key="ReportPanel.autoscaleCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/io/desktop/Bundle.properties" key="ReportPanel.autoscaleCheckbox.toolTipText" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>

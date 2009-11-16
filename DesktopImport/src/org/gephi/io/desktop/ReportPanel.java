@@ -99,6 +99,15 @@ public class ReportPanel extends javax.swing.JPanel {
                 }
             }
         });
+
+        autoscaleCheckbox.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                if(autoscaleCheckbox.isSelected()!=container.isAutoScale()) {
+                    container.setAutoScale(autoscaleCheckbox.isSelected());
+                }
+            }
+        });
     }
 
     public void initIcons() {
@@ -167,6 +176,9 @@ public class ReportPanel extends javax.swing.JPanel {
         //Source
         sourceLabel.setText(container.getSource());
 
+        //Autoscale
+        autoscaleCheckbox.setSelected(container.isAutoScale());
+
         ContainerUnloader unloader = container.getUnloader();
 
         //Node & Edge count
@@ -233,6 +245,7 @@ public class ReportPanel extends javax.swing.JPanel {
         labelHierarchical = new javax.swing.JLabel();
         dynamicLabel = new javax.swing.JLabel();
         hierarchicalLabel = new javax.swing.JLabel();
+        autoscaleCheckbox = new javax.swing.JCheckBox();
 
         labelSrc.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelSrc.text")); // NOI18N
 
@@ -277,6 +290,9 @@ public class ReportPanel extends javax.swing.JPanel {
 
         hierarchicalLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.hierarchicalLabel.text")); // NOI18N
 
+        autoscaleCheckbox.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.autoscaleCheckbox.text")); // NOI18N
+        autoscaleCheckbox.setToolTipText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.autoscaleCheckbox.toolTipText")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -304,17 +320,21 @@ public class ReportPanel extends javax.swing.JPanel {
                             .addComponent(labelHierarchical))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(hierarchicalLabel)
-                            .addComponent(dynamicLabel)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(nodeCountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
+                                    .addComponent(nodeCountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
                                     .addComponent(graphTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(autoscaleCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(hierarchicalLabel)
+                                    .addComponent(dynamicLabel)
+                                    .addComponent(edgeCountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(appendGraphRadio)
-                                    .addComponent(fullGraphRadio)))
-                            .addComponent(edgeCountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE))))
+                                    .addComponent(fullGraphRadio)
+                                    .addComponent(appendGraphRadio))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -327,32 +347,38 @@ public class ReportPanel extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelGraphType)
-                    .addComponent(fullGraphRadio)
-                    .addComponent(graphTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelNodeCount)
-                    .addComponent(appendGraphRadio)
-                    .addComponent(nodeCountLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelEdgeCount)
-                    .addComponent(edgeCountLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelDynamic)
-                    .addComponent(dynamicLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelHierarchical)
-                    .addComponent(hierarchicalLabel))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labelGraphType)
+                            .addComponent(graphTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(autoscaleCheckbox))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labelNodeCount)
+                            .addComponent(nodeCountLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labelEdgeCount)
+                            .addComponent(edgeCountLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labelDynamic)
+                            .addComponent(dynamicLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labelHierarchical)
+                            .addComponent(hierarchicalLabel)
+                            .addComponent(appendGraphRadio)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(fullGraphRadio)
+                        .addGap(23, 23, 23)))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JRadioButton appendGraphRadio;
+    private javax.swing.JCheckBox autoscaleCheckbox;
     private javax.swing.JLabel dynamicLabel;
     private javax.swing.JLabel edgeCountLabel;
     private javax.swing.JRadioButton fullGraphRadio;

@@ -35,7 +35,7 @@ import org.gephi.visualization.opengl.octree.Octant;
  */
 public class Edge2dModel extends ModelImpl<EdgeData> {
 
-    protected static float CARDINAL_DIV = 1f;  //Set the size of edges according to cardinal
+    protected static float WEIGHT_DIV = 1f;  //Set the size of edges according to cardinal
 
     //An edge is set in both source node and target node octant. Hence edges are not drawn when none of
     //these octants are visible.
@@ -138,8 +138,8 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
         float x2 = obj.getTarget().x();
         float y1 = obj.getSource().y();
         float y2 = obj.getTarget().y();
-        float t1 = obj.getEdge().getWeight() / CARDINAL_DIV;
-        float t2 = obj.getEdge().getWeight() / CARDINAL_DIV;
+        float t1 = obj.getEdge().getWeight() / WEIGHT_DIV;
+        float t2 = obj.getEdge().getWeight() / WEIGHT_DIV;
 
         float sideVectorX = y1 - y2;
         float sideVectorY = x2 - x1;

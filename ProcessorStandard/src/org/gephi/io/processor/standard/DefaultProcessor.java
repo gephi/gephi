@@ -36,11 +36,13 @@ import org.gephi.io.processor.EdgeDraftGetter;
 import org.gephi.io.processor.NodeDraftGetter;
 import org.gephi.io.processor.Processor;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author  Mathieu Bastian
  */
+@ServiceProvider(service=Processor.class)
 public class DefaultProcessor implements Processor {
 
     public void process(ContainerUnloader container) {
