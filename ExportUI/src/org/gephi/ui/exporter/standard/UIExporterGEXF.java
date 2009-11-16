@@ -32,13 +32,19 @@ import org.gephi.ui.exporter.ExporterUI;
 public class UIExporterGEXF implements ExporterUI {
 
     private UIExporterGEXFPanel panel;
+    private ExporterGEXF exporterGEXF;
 
     public void setup(Exporter exporter) {
-        ExporterGEXF exporterGEXF = (ExporterGEXF) exporter;
+        exporterGEXF = (ExporterGEXF) exporter;
+        panel.setup(exporterGEXF);
     }
 
     public void unsetup(boolean update) {
+        if(update) {
+            panel.unsetup(exporterGEXF);
+        }
         panel = null;
+        exporterGEXF = null;
     }
 
     public JPanel getPanel() {

@@ -26,6 +26,7 @@ import java.util.Date;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 import org.gephi.io.exporter.GraphFileExporter;
 import org.gephi.io.exporter.FileType;
 import org.gephi.io.exporter.XMLExporter;
@@ -48,16 +49,36 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
     private ProgressTicket progressTicket;
 
     //Settings
+    private boolean normalize = false;
     private boolean exportColors = true;
     private boolean exportPosition = true;
     private boolean exportSize = true;
     private boolean exportAttributes = true;
 
+    //Settings Helper
+    private float minSize;
+    private float maxSize;
+    private float minX;
+    private float maxX;
+    private float minY;
+    private float maxY;
+    private float minZ;
+    private float maxZ;
+
     public boolean exportData(Document document, Graph graph) throws Exception {
         Progress.start(progressTicket);
 
-        Element root = document.createElementNS("http://www.gephi.org/gexf/1.1draft", "gexf");
-        root.setAttribute("xmlns:viz", "http://gephi.org/gexf/1.1draft/viz");
+        //Options
+        if (normalize) {
+            calculateMinMax(graph);
+        }
+
+        //Calculate progress units count
+        int max = graph.getNodeCount() + graph.getEdgeCount();
+        Progress.switchToDeterminate(progressTicket, max);
+        
+        Element root = document.createElementNS("http://www.gexf.net/1.1draft", "gexf");
+        root.setAttribute("xmlns:viz", "http:///www.gexf.net/1.1draft/viz");
         root.setAttribute("version", "1.1");
         document.appendChild(root);
 
@@ -149,7 +170,7 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
             Element positionE = createNodePosition(document, n);
             nodeE.appendChild(positionE);
         }
-        
+        Progress.progress(progressTicket);
 
         return nodeE;
     }
@@ -189,13 +210,18 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
         if( weight != 1.0) {
             edgeE.setAttribute("weight", ""+weight);
         }
+        Progress.progress(progressTicket);
 
         return edgeE;
     }
 
     private Element createNodeSize(Document document, Node n) throws Exception {
         Element sizeE = document.createElement("viz:size");
-        sizeE.setAttribute("value", ""+n.getNodeData().getSize());
+        float size = n.getNodeData().getSize();
+        if (normalize) {
+            size = (size - minSize) / (maxSize - minSize);
+        }
+        sizeE.setAttribute("value", ""+size);
 
         return sizeE;
     }
@@ -211,13 +237,49 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
 
     private Element createNodePosition(Document document, Node n) throws Exception {
         Element positionE = document.createElement("viz:position");
-        positionE.setAttribute("x", ""+n.getNodeData().x());
-        positionE.setAttribute("y", ""+n.getNodeData().y());
-        positionE.setAttribute("z", ""+n.getNodeData().z());
+        float x = n.getNodeData().x();
+        if (normalize && x != 0.0) {
+            x = (x - minX) / (maxX - minX);
+        }
+        positionE.setAttribute("x", ""+x);
+
+        float y = n.getNodeData().y();
+        if (normalize && y != 0.0) {
+            y = (y - minY) / (maxY - minY);
+        }
+        positionE.setAttribute("y", ""+y);
+
+        float z = n.getNodeData().z();
+        if (normalize && z != 0.0) {
+            z = (z - minZ) / (maxZ - minZ);
+        }
+        positionE.setAttribute("z", ""+z);
 
         return positionE;
     }
 
+    private void calculateMinMax(Graph graph) {
+        minX = Float.POSITIVE_INFINITY;
+        maxX = Float.NEGATIVE_INFINITY;
+        minY = Float.POSITIVE_INFINITY;
+        maxY = Float.NEGATIVE_INFINITY;
+        minZ = Float.POSITIVE_INFINITY;
+        maxZ = Float.NEGATIVE_INFINITY;
+        minSize = Float.POSITIVE_INFINITY;
+        maxSize = Float.NEGATIVE_INFINITY;
+
+        for (Node node : graph.getNodes()) {
+            NodeData nodeData = node.getNodeData();
+            minX = Math.min(minX, nodeData.x());
+            maxX = Math.max(maxX, nodeData.x());
+            minY = Math.min(minY, nodeData.y());
+            maxY = Math.max(maxY, nodeData.y());
+            minZ = Math.min(minZ, nodeData.z());
+            maxZ = Math.max(maxZ, nodeData.z());
+            minSize = Math.min(minSize, nodeData.getSize());
+            maxSize = Math.max(maxSize, nodeData.getSize());
+        }
+    }
 
     public boolean cancel() {
         cancel = true;
@@ -235,6 +297,45 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".gexf", NbBundle.getMessage(getClass(), "fileType_GEXF_Name"));
         return new FileType[]{ft};
+    }
+    public void setExportAttributes(boolean exportAttributes) {
+        this.exportAttributes = exportAttributes;
+    }
+
+    public void setExportColors(boolean exportColors) {
+        this.exportColors = exportColors;
+    }
+
+    public void setExportPosition(boolean exportPosition) {
+        this.exportPosition = exportPosition;
+    }
+
+    public void setExportSize(boolean exportSize) {
+        this.exportSize = exportSize;
+    }
+
+    public void setNormalize(boolean normalize) {
+        this.normalize = normalize;
+    }
+
+    public boolean isExportAttributes() {
+        return exportAttributes;
+    }
+
+    public boolean isExportColors() {
+        return exportColors;
+    }
+
+    public boolean isExportPosition() {
+        return exportPosition;
+    }
+
+    public boolean isExportSize() {
+        return exportSize;
+    }
+
+    public boolean isNormalize() {
+        return normalize;
     }
 
     

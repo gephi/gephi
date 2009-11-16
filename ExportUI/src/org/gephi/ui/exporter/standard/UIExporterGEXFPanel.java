@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.ui.exporter.standard;
 
+import org.gephi.io.exporter.standard.ExporterGEXF;
+
 /**
  *
  * @author Mathieu
@@ -32,6 +34,22 @@ public class UIExporterGEXFPanel extends javax.swing.JPanel {
         initComponents();
     }
 
+    public void setup(ExporterGEXF exporterGEXF) {
+        colorsExportCheckbox.setSelected(exporterGEXF.isExportColors());
+        positionExportCheckbox.setSelected(exporterGEXF.isExportPosition());
+        sizeExportCheckbox.setSelected(exporterGEXF.isExportSize());
+        attributesExportCheckbox.setSelected(exporterGEXF.isExportAttributes());
+        normalizeCheckbox.setSelected(exporterGEXF.isNormalize());
+    }
+
+    public void unsetup(ExporterGEXF exporterGEXF) {
+        exporterGEXF.setExportAttributes(attributesExportCheckbox.isSelected());
+        exporterGEXF.setExportColors(colorsExportCheckbox.isSelected());
+        exporterGEXF.setExportSize(sizeExportCheckbox.isSelected());
+        exporterGEXF.setExportPosition(positionExportCheckbox.isSelected());
+        exporterGEXF.setNormalize(normalizeCheckbox.isSelected());
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -41,10 +59,29 @@ public class UIExporterGEXFPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        labelExport = new javax.swing.JLabel();
+        positionExportCheckbox = new javax.swing.JCheckBox();
+        colorsExportCheckbox = new javax.swing.JCheckBox();
+        attributesExportCheckbox = new javax.swing.JCheckBox();
+        sizeExportCheckbox = new javax.swing.JCheckBox();
+        labelNormalize = new javax.swing.JLabel();
+        normalizeCheckbox = new javax.swing.JCheckBox();
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.jLabel1.text")); // NOI18N
+        labelExport.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.labelExport.text")); // NOI18N
+
+        positionExportCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.positionExportCheckbox.text")); // NOI18N
+
+        colorsExportCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.colorsExportCheckbox.text")); // NOI18N
+
+        attributesExportCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.attributesExportCheckbox.text")); // NOI18N
+
+        sizeExportCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.sizeExportCheckbox.text")); // NOI18N
+
+        labelNormalize.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelNormalize.setForeground(new java.awt.Color(102, 102, 102));
+        labelNormalize.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.labelNormalize.text")); // NOI18N
+
+        normalizeCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.normalizeCheckbox.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -52,21 +89,51 @@ public class UIExporterGEXFPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(477, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(labelExport)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(attributesExportCheckbox)
+                            .addComponent(sizeExportCheckbox)
+                            .addComponent(colorsExportCheckbox)
+                            .addComponent(positionExportCheckbox)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(normalizeCheckbox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(labelNormalize)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(346, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelExport)
+                    .addComponent(positionExportCheckbox))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(colorsExportCheckbox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(sizeExportCheckbox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(attributesExportCheckbox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(normalizeCheckbox)
+                    .addComponent(labelNormalize))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JCheckBox attributesExportCheckbox;
+    private javax.swing.JCheckBox colorsExportCheckbox;
+    private javax.swing.JLabel labelExport;
+    private javax.swing.JLabel labelNormalize;
+    private javax.swing.JCheckBox normalizeCheckbox;
+    private javax.swing.JCheckBox positionExportCheckbox;
+    private javax.swing.JCheckBox sizeExportCheckbox;
     // End of variables declaration//GEN-END:variables
 
 }
