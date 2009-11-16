@@ -148,7 +148,7 @@ public class PreNode extends AbstractNode implements AVLItem {
     }
 
     @Override
-    public NodeData getNodeData() {
+    public NodeDataImpl getNodeData() {
         return nodeData;
     }
 

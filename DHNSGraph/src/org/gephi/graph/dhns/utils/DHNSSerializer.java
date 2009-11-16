@@ -29,10 +29,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.EdgeData;
-import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.core.Dhns;
+import org.gephi.graph.dhns.core.GraphFactoryImpl;
 import org.gephi.graph.dhns.core.GraphStructure;
 import org.gephi.graph.dhns.core.GraphVersion;
 import org.gephi.graph.dhns.core.IDGen;
@@ -129,9 +127,9 @@ public class DHNSSerializer {
                 } else if (itemE.getTagName().equals(ELEMENT_SETTINGS)) {
                     readSettings(itemE, dhns.getSettingsManager());
                 } else if (itemE.getTagName().equals(ELEMENT_TREESTRUCTURE)) {
-                    readTreeStructure(itemE, dhns.getGraphStructure());
+                    readTreeStructure(itemE, dhns.getGraphStructure(), dhns.factory());
                 } else if (itemE.getTagName().equals(ELEMENT_EDGES)) {
-                    readEdges(itemE, dhns.getGraphStructure());
+                    readEdges(itemE, dhns.getGraphStructure(), dhns.factory());
                 }
             }
 
@@ -166,7 +164,7 @@ public class DHNSSerializer {
         return edgesE;
     }
 
-    public void readEdges(Element edgesE, GraphStructure graphStructure) {
+    public void readEdges(Element edgesE, GraphStructure graphStructure, GraphFactoryImpl factory) {
         NodeList edgesListE = edgesE.getChildNodes();
         TreeStructure treeStructure = graphStructure.getStructure();
         for (int i = 0; i < edgesListE.getLength(); i++) {
@@ -184,6 +182,7 @@ public class DHNSSerializer {
                     edge = new SelfLoopImpl(id, source);
                 }
                 edge.setWeight(Float.parseFloat(edgeE.getAttribute("weight")));
+                edge.getEdgeData().setAttributes(factory.newEdgeAttributes());
                 source.getEdgesOutTree().add(edge);
                 target.getEdgesInTree().add(edge);
                 graphStructure.getEdgeDictionnary().add(edge);
@@ -214,7 +213,7 @@ public class DHNSSerializer {
         return treeStructureE;
     }
 
-    public void readTreeStructure(Element treeStructureE, GraphStructure graphStructure) {
+    public void readTreeStructure(Element treeStructureE, GraphStructure graphStructure, GraphFactoryImpl factory) {
         NodeList nodesE = treeStructureE.getChildNodes();
         TreeStructure treeStructure = graphStructure.getStructure();
         for (int i = 0; i < nodesE.getLength(); i++) {
@@ -238,6 +237,7 @@ public class DHNSSerializer {
                 } else {
                     PreNode preNode = new PreNode(Integer.parseInt(nodeE.getAttribute("id")), 0, 0, 0, parentNode);
                     preNode.setEnabled(enabled);
+                    preNode.getNodeData().setAttributes(factory.newNodeAttributes());
                     treeStructure.insertAsChild(preNode, parentNode);
                     graphStructure.getNodeDictionnary().add(preNode);
                 }
