@@ -73,8 +73,7 @@ public class PreviewGraphFactory {
 
             if (isBidirectional(sourceGraph, sourceEdge)) {
                 createPreviewBidirectionalEdge(previewGraph, sourceEdge);
-            }
-            else {
+            } else {
                 createPreviewUnidirectionalEdge(previewGraph, sourceEdge);
             }
         }
@@ -111,12 +110,10 @@ public class PreviewGraphFactory {
             if (sourceEdge.isDirected()) {
                 if (isBidirectional(sourceGraph, sourceEdge)) {
                     createPreviewBidirectionalEdge(previewGraph, sourceEdge);
-                }
-                else {
+                } else {
                     createPreviewUnidirectionalEdge(previewGraph, sourceEdge);
                 }
-            }
-            else {
+            } else {
                 createPreviewUnidirectionalEdge(previewGraph, sourceEdge);
             }
         }
@@ -141,7 +138,7 @@ public class PreviewGraphFactory {
                 previewGraph,
                 sourceNodeData.getLabel(),
                 sourceNodeData.x(),
-                sourceNodeData.y(),
+                -sourceNodeData.y(), // different referential from the workspace one
                 sourceNodeData.getRadius(),
                 sourceNodeData.r(),
                 sourceNodeData.g(),
