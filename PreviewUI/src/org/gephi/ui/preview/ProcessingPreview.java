@@ -34,42 +34,19 @@ public class ProcessingPreview extends PApplet {
      * controller.
      */
     public void refresh() {
-        graphSet = false;
-
-        // fetch the current graph
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        graph = controller.getGraph();
 
-        // update fonts
+        // updates graph if needed
+        if (hasGraphChanged()) {
+            updateGraph();
+        }
+
+        // updates fonts
         nodeLabelFont = createFont(controller.getNodeSupervisor().getNodeLabelFont());
         uniEdgeLabelFont = createFont(controller.getUniEdgeSupervisor().getLabelFont());
         uniEdgeMiniLabelFont = createFont(controller.getUniEdgeSupervisor().getMiniLabelFont());
         biEdgeLabelFont = createFont(controller.getBiEdgeSupervisor().getLabelFont());
         biEdgeMiniLabelFont = createFont(controller.getBiEdgeSupervisor().getMiniLabelFont());
-
-        // initial graph positioning
-        {
-            PVector topLeft = graph.getMinPos().get();
-            topLeft.sub(MARGIN, MARGIN, 0);
-            PVector bottomRight = graph.getMaxPos().get();
-            bottomRight.add(MARGIN, MARGIN, 0);
-
-            // initializes zoom
-            PVector box = PVector.sub(bottomRight, topLeft);
-            float ratioWidth = width / box.x;
-            float ratioHeight = height / box.y;
-            scaling = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
-
-            // initializes move
-            PVector center = new PVector(width / 2f, height / 2f);
-            PVector semiBox = PVector.div(box, 2);
-            PVector scaledCenter = PVector.add(topLeft, semiBox);
-            trans.set(center);
-            trans.sub(scaledCenter);
-            lastMove.set(trans);
-        }
-
-        graphSet = true;
 
         // redraw the applet
         redraw();
@@ -148,6 +125,52 @@ public class ProcessingPreview extends PApplet {
      */
     private PFont createFont(Font font) {
         return createFont(font.getName(), font.getSize());
+    }
+    
+    /**
+     * Returns whether or not the preview graph has changed.
+     * 
+     * @return true if the preview graph has changed
+     */
+    private boolean hasGraphChanged() {
+        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+        return controller.getGraph() != graph;
+    }
+
+    /**
+     * Updates the preview graph from the controller's one.
+     */
+    private void updateGraph() {
+        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+
+        graphSet = false;
+
+        // fetches the current graph
+        graph = controller.getGraph();
+
+        // initial graph positioning
+        {
+            PVector topLeft = graph.getMinPos().get();
+            topLeft.sub(MARGIN, MARGIN, 0);
+            PVector bottomRight = graph.getMaxPos().get();
+            bottomRight.add(MARGIN, MARGIN, 0);
+
+            // initializes zoom
+            PVector box = PVector.sub(bottomRight, topLeft);
+            float ratioWidth = width / box.x;
+            float ratioHeight = height / box.y;
+            scaling = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
+
+            // initializes move
+            PVector center = new PVector(width / 2f, height / 2f);
+            PVector semiBox = PVector.div(box, 2);
+            PVector scaledCenter = PVector.add(topLeft, semiBox);
+            trans.set(center);
+            trans.sub(scaledCenter);
+            lastMove.set(trans);
+        }
+
+        graphSet = true;
     }
 
     /**
