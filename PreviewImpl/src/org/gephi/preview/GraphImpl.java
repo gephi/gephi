@@ -61,6 +61,15 @@ public class GraphImpl implements Graph {
     }
 
     /**
+     * Returns the number or nodes in the graph.
+     *
+     * @return the number or nodes in the graph
+     */
+    public float countNodes() {
+        return nodes.size();
+    }
+
+    /**
      * Returns the closest position in the graph to (0,0).
      *
      * @return the closest position in the graph to (0,0).
