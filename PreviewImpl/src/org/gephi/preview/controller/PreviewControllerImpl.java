@@ -43,9 +43,14 @@ public class PreviewControllerImpl implements PreviewController {
 
     /**
      * Retreives the workspace graph and builds a preview graph from it.
+     *
+     * For each build, the supervisors' lists of supervised elements are
+     * cleared because the previous preview graph is forgotten.
      */
     public void buildGraph() {
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+
+        clearSupervisors();
 
         if (graphModel.isUndirected()) {
             previewGraph = factory.createPreviewGraph(graphModel.getUndirectedGraph());
@@ -101,5 +106,16 @@ public class PreviewControllerImpl implements PreviewController {
      */
     public EdgeSupervisor getBiEdgeSupervisor() {
         return biEdgeSupervisor;
+    }
+
+    /**
+     * Clears the supervisors' lists of supervised elements.
+     */
+    private void clearSupervisors() {
+        nodeSupervisor.clearSupervised();
+        globalEdgeSupervisor.clearSupervised();
+        selfLoopSupervisor.clearSupervised();
+        uniEdgeSupervisor.clearSupervised();
+        biEdgeSupervisor.clearSupervised();
     }
 }
