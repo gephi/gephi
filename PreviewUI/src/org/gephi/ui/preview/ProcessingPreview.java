@@ -1,6 +1,9 @@
 package org.gephi.ui.preview;
 
 import java.awt.Font;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import org.gephi.preview.api.*;
 import org.gephi.preview.api.controller.PreviewController;
 import org.openide.util.Lookup;
@@ -25,8 +28,13 @@ public class ProcessingPreview extends PApplet {
     private PFont biEdgeMiniLabelFont;
     private PFont edgeLabelFont;
     private PFont edgeMiniLabelFont;
-    private boolean graphSet = false;
+    private boolean drawLock = true;
     private Graph graph = null;
+    private float visibilityRatio = 0.2f;
+    private final Set<Node> visibleNodes = new HashSet<Node>();
+    private final Set<SelfLoop> visibleSelfLoops = new HashSet<SelfLoop>();
+    private final Set<UnidirectionalEdge> visibleUnidirectionalEdges = new HashSet<UnidirectionalEdge>();
+    private final Set<BidirectionalEdge> visibleBidirectionalEdges = new HashSet<BidirectionalEdge>();
     private final static float MARGIN = 10f;
 
     /**
@@ -35,6 +43,8 @@ public class ProcessingPreview extends PApplet {
      */
     public void refresh() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+
+        drawLock = true;
 
         // updates graph if needed
         if (hasGraphChanged()) {
@@ -47,6 +57,8 @@ public class ProcessingPreview extends PApplet {
         uniEdgeMiniLabelFont = createFont(controller.getUniEdgeSupervisor().getMiniLabelFont());
         biEdgeLabelFont = createFont(controller.getBiEdgeSupervisor().getLabelFont());
         biEdgeMiniLabelFont = createFont(controller.getBiEdgeSupervisor().getMiniLabelFont());
+
+        drawLock = false;
 
         // redraw the applet
         redraw();
@@ -76,7 +88,7 @@ public class ProcessingPreview extends PApplet {
         translate(trans.x, trans.y);
 
         // draw graph
-        if (graphSet) {
+        if (!drawLock) {
             drawGraph(graph);
         }
     }
@@ -143,8 +155,6 @@ public class ProcessingPreview extends PApplet {
     private void updateGraph() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
 
-        graphSet = false;
-
         // fetches the current graph
         graph = controller.getGraph();
 
@@ -170,7 +180,75 @@ public class ProcessingPreview extends PApplet {
             lastMove.set(trans);
         }
 
-        graphSet = true;
+        // visible graph parts must be updated
+        updateVisibleGraphParts();
+    }
+
+    /**
+     * Updates lists of visible graph parts.
+     */
+    private void updateVisibleGraphParts() {
+        updateVisibleNodes();
+        updateVisibleSelfLoops();
+        updateVisibleUnidirectionalEdges();
+        updateVisibleBidirectionalEdges();
+    }
+
+    /**
+     * Updates the list of visible nodes.
+     */
+    private void updateVisibleNodes() {
+        int visibleNodesCount = (int) (graph.countNodes() * visibilityRatio);
+        Iterator<Node> nodeIt = graph.getNodes().iterator();
+
+        visibleNodes.clear();
+
+        for (int i = 0; i < visibleNodesCount; i++) {
+            if (!nodeIt.hasNext()) {
+                break;
+            }
+
+            visibleNodes.add(nodeIt.next());
+        }
+    }
+
+    /**
+     * Updates the list of visible self-loops.
+     */
+    private void updateVisibleSelfLoops() {
+        visibleSelfLoops.clear();
+
+        for (SelfLoop sl : graph.getSelfLoops()) {
+            if (visibleNodes.contains(sl.getNode())) {
+                visibleSelfLoops.add(sl);
+            }
+        }
+    }
+
+    /**
+     * Updates the list of visible unidirectional edges.
+     */
+    private void updateVisibleUnidirectionalEdges() {
+        visibleUnidirectionalEdges.clear();
+
+        for (UnidirectionalEdge ue : graph.getUnidirectionalEdges()) {
+            if (visibleNodes.contains(ue.getNode1()) && visibleNodes.contains(ue.getNode2())) {
+                visibleUnidirectionalEdges.add(ue);
+            }
+        }
+    }
+
+    /**
+     * Updates the list of visible bidirectional edges.
+     */
+    private void updateVisibleBidirectionalEdges() {
+        visibleBidirectionalEdges.clear();
+
+        for (BidirectionalEdge be : graph.getBidirectionalEdges()) {
+            if (visibleNodes.contains(be.getNode1()) && visibleNodes.contains(be.getNode2())) {
+                visibleBidirectionalEdges.add(be);
+            }
+        }
     }
 
     /**
@@ -182,12 +260,12 @@ public class ProcessingPreview extends PApplet {
         if (graph.showEdges()) {
 
             // draw edges
-            for (UnidirectionalEdge ue : graph.getUnidirectionalEdges()) {
+            for (UnidirectionalEdge ue : visibleUnidirectionalEdges) {
                 edgeLabelFont = uniEdgeLabelFont;
                 edgeMiniLabelFont = uniEdgeMiniLabelFont;
                 drawEdge(ue);
             }
-            for (BidirectionalEdge be : graph.getBidirectionalEdges()) {
+            for (BidirectionalEdge be : visibleBidirectionalEdges) {
                 edgeLabelFont = biEdgeLabelFont;
                 edgeMiniLabelFont = biEdgeMiniLabelFont;
                 drawEdge(be);
@@ -195,7 +273,7 @@ public class ProcessingPreview extends PApplet {
 
             if (graph.showSelfLoops()) {
                 // draw self-loops
-                for (SelfLoop sl : graph.getSelfLoops()) {
+                for (SelfLoop sl : visibleSelfLoops) {
                     drawSelfLoop(sl);
                 }
             }
@@ -205,7 +283,7 @@ public class ProcessingPreview extends PApplet {
         if (graph.showNodes()) {
             textFont(nodeLabelFont);
             textAlign(CENTER, CENTER);
-            for (Node n : graph.getNodes()) {
+            for (Node n : visibleNodes) {
                 drawNode(n);
             }
         }
