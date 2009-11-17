@@ -1,9 +1,8 @@
 package org.gephi.preview.supervisor;
 
 import java.awt.Font;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.WeakHashMap;
 import org.gephi.preview.NodeImpl;
 import org.gephi.preview.NodeLabelBorderImpl;
 import org.gephi.preview.NodeLabelImpl;
@@ -32,15 +31,15 @@ public class NodeSupervisorImpl implements NodeSupervisor {
     private NodeChildColorizer nodeLabelColorizer = new CustomColorMode(0, 0, 0);
     private Boolean showNodeLabelBorders = true;
     private NodeChildColorizer nodeLabelBorderColorizer = new CustomColorMode(255, 255, 255);
-    private final Set<NodeImpl> supervisedNodes = Collections.newSetFromMap(new WeakHashMap<NodeImpl, Boolean>());
+    private final Set<NodeImpl> supervisedNodes = new HashSet<NodeImpl>();
 
     /**
-	 * Adds the given node to the list of the supervised nodes.
-	 *
-	 * It updates the node with the supervisor's values.
-	 *
-	 * @param node  the node to supervise
-	 */
+     * Adds the given node to the list of the supervised nodes.
+     *
+     * It updates the node with the supervisor's values.
+     *
+     * @param node  the node to supervise
+     */
     public void addNode(NodeImpl node) {
         supervisedNodes.add(node);
 
@@ -51,19 +50,26 @@ public class NodeSupervisorImpl implements NodeSupervisor {
     }
 
     /**
-	 * Returns true if the nodes must be displayed in the preview.
-	 *
-	 * @return true if the nodes must be displayed in the preview
-	 */
+     * Clears the list of supervised nodes.
+     */
+    public void clearSupervised() {
+        supervisedNodes.clear();
+    }
+
+    /**
+     * Returns true if the nodes must be displayed in the preview.
+     *
+     * @return true if the nodes must be displayed in the preview
+     */
     public Boolean getShowNodes() {
         return showNodes;
     }
 
     /**
-	 * Defines if the nodes must be displayed in the preview.
-	 *
-	 * @param value  true to display the nodes in the preview
-	 */
+     * Defines if the nodes must be displayed in the preview.
+     *
+     * @param value  true to display the nodes in the preview
+     */
     public void setShowNodes(Boolean value) {
         showNodes = value;
     }
@@ -78,10 +84,10 @@ public class NodeSupervisorImpl implements NodeSupervisor {
     }
 
     /**
-	 * Defines the node border width.
-	 *
-	 * @param value  the node border width to set
-	 */
+     * Defines the node border width.
+     *
+     * @param value  the node border width to set
+     */
     public void setNodeBorderWidth(Float value) {
         nodeBorderWidth = value;
     }
@@ -96,10 +102,10 @@ public class NodeSupervisorImpl implements NodeSupervisor {
     }
 
     /**
-	 * Defines the node colorizer.
-	 *
-	 * @param value  the node colorizer to set
-	 */
+     * Defines the node colorizer.
+     *
+     * @param value  the node colorizer to set
+     */
     public void setNodeColorizer(NodeColorizer value) {
         nodeColorizer = value;
         colorNodes();
@@ -115,28 +121,28 @@ public class NodeSupervisorImpl implements NodeSupervisor {
     }
 
     /**
-	 * Defines the node border colorizer.
-	 *
-	 * @param value  the node border colorizer to set
-	 */
+     * Defines the node border colorizer.
+     *
+     * @param value  the node border colorizer to set
+     */
     public void setNodeBorderColorizer(GenericColorizer value) {
         nodeBorderColorizer = value;
     }
 
     /**
-	 * Returns true if the node labels must be displayed in the preview.
-	 *
-	 * @return true if the node labels must be displayed in the preview
-	 */
+     * Returns true if the node labels must be displayed in the preview.
+     *
+     * @return true if the node labels must be displayed in the preview
+     */
     public Boolean getShowNodeLabels() {
         return showNodeLabels;
     }
 
     /**
-	 * Defines if the node labels must be displayed in the preview.
-	 *
-	 * @param value  true to display the node labels in the preview
-	 */
+     * Defines if the node labels must be displayed in the preview.
+     *
+     * @param value  true to display the node labels in the preview
+     */
     public void setShowNodeLabels(Boolean value) {
         showNodeLabels = value;
     }
@@ -151,10 +157,10 @@ public class NodeSupervisorImpl implements NodeSupervisor {
     }
 
     /**
-	 * Defines the node label font.
-	 *
-	 * @param value  the node label font to set
-	 */
+     * Defines the node label font.
+     *
+     * @param value  the node label font to set
+     */
     public void setNodeLabelFont(Font value) {
         nodeLabelfont = value;
     }
@@ -169,10 +175,10 @@ public class NodeSupervisorImpl implements NodeSupervisor {
     }
 
     /**
-	 * Defines the node label character limit.
-	 *
-	 * @param value  the node label character limit to set
-	 */
+     * Defines the node label character limit.
+     *
+     * @param value  the node label character limit to set
+     */
     public void setNodeLabelMaxChar(Integer value) {
         nodeLabelMaxChar = value;
         shortenNodeLabels();
@@ -188,29 +194,29 @@ public class NodeSupervisorImpl implements NodeSupervisor {
     }
 
     /**
-	 * Defines the node label colorizer.
-	 *
-	 * @param value  the node label colorizer to set
-	 */
+     * Defines the node label colorizer.
+     *
+     * @param value  the node label colorizer to set
+     */
     public void setNodeLabelColorizer(NodeChildColorizer value) {
         nodeLabelColorizer = value;
         colorNodeLabels();
     }
 
     /**
-	 * Returns true if the node label borders must be displayed in the preview.
-	 *
-	 * @return true if the node label borders must be displayed in the preview
-	 */
+     * Returns true if the node label borders must be displayed in the preview.
+     *
+     * @return true if the node label borders must be displayed in the preview
+     */
     public Boolean getShowNodeLabelBorders() {
         return showNodeLabelBorders;
     }
 
     /**
-	 * Defines if the node label borders must be displayed in the preview.
-	 *
-	 * @param value  true to display the node label borders in the preview
-	 */
+     * Defines if the node label borders must be displayed in the preview.
+     *
+     * @param value  true to display the node label borders in the preview
+     */
     public void setShowNodeLabelBorders(Boolean value) {
         showNodeLabelBorders = value;
     }
@@ -225,10 +231,10 @@ public class NodeSupervisorImpl implements NodeSupervisor {
     }
 
     /**
-	 * Defines the node label border colorizer.
-	 *
-	 * @param value  the node label border colorizer to set
-	 */
+     * Defines the node label border colorizer.
+     *
+     * @param value  the node label border colorizer to set
+     */
     public void setNodeLabelBorderColorizer(NodeChildColorizer value) {
         nodeLabelBorderColorizer = value;
         colorNodeLabelBorders();

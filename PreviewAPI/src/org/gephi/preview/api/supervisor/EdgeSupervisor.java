@@ -9,14 +9,14 @@ import org.gephi.preview.api.color.colorizer.EdgeColorizer;
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
-public interface EdgeSupervisor {
+public interface EdgeSupervisor extends Supervisor {
 
     /**
-	 * Returns true if the edges must be displayed in the preview.
-	 *
-	 * @return true if the edges must be displayed in the preview
-	 */
-	public Boolean getShowFlag();
+     * Returns true if the edges must be displayed in the preview.
+     *
+     * @return true if the edges must be displayed in the preview
+     */
+    public Boolean getShowFlag();
 
     /**
      * Returns true if the edges are curved.
@@ -26,10 +26,10 @@ public interface EdgeSupervisor {
     public Boolean getCurvedFlag();
 
     /**
-	 * Defines if the edges are curved.
-	 *
-	 * @param value  true for curved edges
-	 */
+     * Defines if the edges are curved.
+     *
+     * @param value  true for curved edges
+     */
     public void setCurvedFlag(Boolean value);
 
     /**
@@ -40,10 +40,10 @@ public interface EdgeSupervisor {
     public EdgeColorizer getColorizer();
 
     /**
-	 * Defines the edge colorizer.
-	 *
-	 * @param value  the edge colorizer to set
-	 */
+     * Defines the edge colorizer.
+     *
+     * @param value  the edge colorizer to set
+     */
     public void setColorizer(EdgeColorizer value);
 
     /**
@@ -54,10 +54,10 @@ public interface EdgeSupervisor {
     public Boolean getShowLabelsFlag();
 
     /**
-	 * Defines if the edge labels must be displayed in the preview.
-	 *
-	 * @param value  true to display the edge labels in the preview
-	 */
+     * Defines if the edge labels must be displayed in the preview.
+     *
+     * @param value  true to display the edge labels in the preview
+     */
     public void setShowLabelsFlag(Boolean value);
 
     /**
@@ -68,10 +68,10 @@ public interface EdgeSupervisor {
     public Font getLabelFont();
 
     /**
-	 * Defines the edge label font.
-	 *
-	 * @param value  the edge label font to set
-	 */
+     * Defines the edge label font.
+     *
+     * @param value  the edge label font to set
+     */
     public void setLabelFont(Font value);
 
     /**
@@ -82,10 +82,10 @@ public interface EdgeSupervisor {
     public Integer getLabelMaxChar();
 
     /**
-	 * Defines the edge label character limit.
-	 *
-	 * @param value  the edge label character limit to set
-	 */
+     * Defines the edge label character limit.
+     *
+     * @param value  the edge label character limit to set
+     */
     public void setLabelMaxChar(Integer value);
 
     /**
@@ -96,10 +96,10 @@ public interface EdgeSupervisor {
     public EdgeChildColorizer getLabelColorizer();
 
     /**
-	 * Defines the edge label colorizer.
-	 *
-	 * @param value  the edge label colorizer to set
-	 */
+     * Defines the edge label colorizer.
+     *
+     * @param value  the edge label colorizer to set
+     */
     public void setLabelColorizer(EdgeChildColorizer value);
 
     /**
@@ -110,10 +110,10 @@ public interface EdgeSupervisor {
     public Boolean getShowMiniLabelsFlag();
 
     /**
-	 * Defines if the edge mini-labels must be displayed in the preview.
-	 *
-	 * @param value  true to display the edge mini-labels in the preview
-	 */
+     * Defines if the edge mini-labels must be displayed in the preview.
+     *
+     * @param value  true to display the edge mini-labels in the preview
+     */
     public void setShowMiniLabelsFlag(Boolean value);
 
     /**
@@ -124,10 +124,10 @@ public interface EdgeSupervisor {
     public Font getMiniLabelFont();
 
     /**
-	 * Defines the edge mini-label font.
-	 *
-	 * @param value  the edge mini-label font to set
-	 */
+     * Defines the edge mini-label font.
+     *
+     * @param value  the edge mini-label font to set
+     */
     public void setMiniLabelFont(Font value);
 
     /**
@@ -138,10 +138,10 @@ public interface EdgeSupervisor {
     public Integer getMiniLabelMaxChar();
 
     /**
-	 * Defines the edge mini-label character limit.
-	 *
-	 * @param value  the edge mini-label character limit
-	 */
+     * Defines the edge mini-label character limit.
+     *
+     * @param value  the edge mini-label character limit
+     */
     public void setMiniLabelMaxChar(Integer value);
 
     /**
@@ -152,10 +152,10 @@ public interface EdgeSupervisor {
     public Float getMiniLabelAddedRadius();
 
     /**
-	 * Defines the edge mini-label added radius.
-	 *
-	 * @param value  the edge mini-label added radius to set
-	 */
+     * Defines the edge mini-label added radius.
+     *
+     * @param value  the edge mini-label added radius to set
+     */
     public void setMiniLabelAddedRadius(Float value);
 
     /**
@@ -166,10 +166,10 @@ public interface EdgeSupervisor {
     public EdgeChildColorizer getMiniLabelColorizer();
 
     /**
-	 * Defines the edge mini-label colorizer.
-	 *
-	 * @param value  the edge mini-label colorizer to set
-	 */
+     * Defines the edge mini-label colorizer.
+     *
+     * @param value  the edge mini-label colorizer to set
+     */
     public void setMiniLabelColorizer(EdgeChildColorizer value);
 
     /**
@@ -180,10 +180,10 @@ public interface EdgeSupervisor {
     public Boolean getShowArrowsFlag();
 
     /**
-	 * Defines if the edge arrows must be displayed in the preview.
-	 *
-	 * @param value  true to display the edge arrows in the preview
-	 */
+     * Defines if the edge arrows must be displayed in the preview.
+     *
+     * @param value  true to display the edge arrows in the preview
+     */
     public void setShowArrowsFlag(Boolean value);
 
     /**
@@ -194,10 +194,10 @@ public interface EdgeSupervisor {
     public Float getArrowAddedRadius();
 
     /**
-	 * Defines the edge arrow added radius.
-	 *
-	 * @param value  the edge arrow added radius to set
-	 */
+     * Defines the edge arrow added radius.
+     *
+     * @param value  the edge arrow added radius to set
+     */
     public void setArrowAddedRadius(Float value);
 
     /**
@@ -208,10 +208,10 @@ public interface EdgeSupervisor {
     public Float getArrowSize();
 
     /**
-	 * Defines the edge arrow size.
-	 *
-	 * @param value  the edge arrow size to set
-	 */
+     * Defines the edge arrow size.
+     *
+     * @param value  the edge arrow size to set
+     */
     public void setArrowSize(Float value);
 
     /**
@@ -222,9 +222,9 @@ public interface EdgeSupervisor {
     public EdgeChildColorizer getArrowColorizer();
 
     /**
-	 * Defines the edge arrow colorizer.
-	 *
-	 * @param value  the edge arrow colorizer to set
-	 */
+     * Defines the edge arrow colorizer.
+     *
+     * @param value  the edge arrow colorizer to set
+     */
     public void setArrowColorizer(EdgeChildColorizer value);
 }

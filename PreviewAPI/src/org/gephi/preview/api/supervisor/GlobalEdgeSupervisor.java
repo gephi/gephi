@@ -5,19 +5,19 @@ package org.gephi.preview.api.supervisor;
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
-public interface GlobalEdgeSupervisor {
+public interface GlobalEdgeSupervisor extends Supervisor {
 
     /**
-	 * Returns true if the edges must be displayed in the preview.
-	 *
-	 * @return true if the edges must be displayed in the preview
-	 */
-	public Boolean getShowFlag();
+     * Returns true if the edges must be displayed in the preview.
+     *
+     * @return true if the edges must be displayed in the preview
+     */
+    public Boolean getShowFlag();
 
-	/**
-	 * Defines if the edges must be displayed in the preview.
-	 *
-	 * @param value  true to display the edges in the preview
-	 */
-	public void setShowFlag(Boolean value);
+    /**
+     * Defines if the edges must be displayed in the preview.
+     *
+     * @param value  true to display the edges in the preview
+     */
+    public void setShowFlag(Boolean value);
 }
