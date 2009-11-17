@@ -414,7 +414,6 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             //Id
             String edgeId = edgeE.getAttribute("id");
             if (edgeId.isEmpty()) {
-                edgeId = getUniqueID();
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeid"), Issue.Level.WARNING));
             }
 
@@ -725,10 +724,6 @@ public class ImporterGEXF implements XMLImporter, LongTask {
         this.progressTicket = progressTicket;
     }
     
-    private String getUniqueID() {
-        return Long.toString(System.nanoTime());
-    }
-
     public final class ImporterGEXF10 {
 
         /**
@@ -872,7 +867,6 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 //Id
                 String edgeId = edgeE.getAttribute("id");
                 if (edgeId.isEmpty()) {
-                    edgeId = getUniqueID();
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeid"), Issue.Level.WARNING));
                 }
 
