@@ -30,7 +30,8 @@ public class ProcessingPreview extends PApplet {
     private PFont edgeMiniLabelFont;
     private boolean drawLock = true;
     private Graph graph = null;
-    private float visibilityRatio = 0.2f;
+    private float visibilityRatio;
+    private boolean visibilityRatioChangedFlag = false;
     private final Set<Node> visibleNodes = new HashSet<Node>();
     private final Set<SelfLoop> visibleSelfLoops = new HashSet<SelfLoop>();
     private final Set<UnidirectionalEdge> visibleUnidirectionalEdges = new HashSet<UnidirectionalEdge>();
@@ -51,6 +52,11 @@ public class ProcessingPreview extends PApplet {
             updateGraph();
         }
 
+        // updates visible graph parts if needed
+        if (visibilityRatioChangedFlag) {
+            updateVisibleGraphParts();
+        }
+
         // updates fonts
         nodeLabelFont = createFont(controller.getNodeSupervisor().getNodeLabelFont());
         uniEdgeLabelFont = createFont(controller.getUniEdgeSupervisor().getLabelFont());
@@ -62,6 +68,19 @@ public class ProcessingPreview extends PApplet {
 
         // redraw the applet
         redraw();
+    }
+
+    /**
+     * Defines the graph visibility ratio.
+     *
+     * @param ratio  the graph visibility ratio
+     */
+    public void setVisibilityRatio(float ratio) {
+        if (ratio != visibilityRatio) {
+            visibilityRatioChangedFlag = true;
+        }
+
+        visibilityRatio = ratio;
     }
 
     @Override
@@ -192,6 +211,8 @@ public class ProcessingPreview extends PApplet {
         updateVisibleSelfLoops();
         updateVisibleUnidirectionalEdges();
         updateVisibleBidirectionalEdges();
+
+        visibilityRatioChangedFlag = false;
     }
 
     /**

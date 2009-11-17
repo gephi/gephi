@@ -116,4 +116,13 @@ final class PreviewTopComponent extends TopComponent {
     public void refreshPreview() {
         sketch.refresh();
     }
+
+    /**
+     * Defines the graph visibility ratio.
+     *
+     * @param ratio  the graph visibility ratio
+     */
+    public void setVisibilityRatio(float ratio) {
+        sketch.setVisibilityRatio(ratio);
+    }
 }

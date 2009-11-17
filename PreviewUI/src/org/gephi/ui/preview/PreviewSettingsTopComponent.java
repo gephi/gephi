@@ -44,6 +44,8 @@ final class PreviewSettingsTopComponent extends TopComponent {
 
         refreshButton = new javax.swing.JButton();
         propertiesPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        visibilityRatioSpinner = new javax.swing.JSpinner();
 
         org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.refreshButton.text")); // NOI18N
         refreshButton.addActionListener(new java.awt.event.ActionListener() {
@@ -54,34 +56,60 @@ final class PreviewSettingsTopComponent extends TopComponent {
 
         propertiesPanel.setLayout(new java.awt.BorderLayout());
 
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.jLabel1.text")); // NOI18N
+
+        visibilityRatioSpinner.setValue(new Integer(100));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(propertiesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+            .addComponent(propertiesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(visibilityRatioSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(refreshButton)
-                .addContainerGap(220, Short.MAX_VALUE))
+                .addContainerGap(233, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(propertiesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(visibilityRatioSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(refreshButton)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+        PreviewTopComponent previewTopComponent = PreviewTopComponent.findInstance();
+
+        // TODO refactor with MVC pattern
+        float visibilityRatioValue = (Integer) visibilityRatioSpinner.getValue();
+        if (visibilityRatioValue  < 0)
+            visibilityRatioValue = 0;
+        else if (visibilityRatioValue > 100)
+            visibilityRatioValue = 100;
+
         controller.buildGraph();
-        PreviewTopComponent.findInstance().refreshPreview();
+        previewTopComponent.setVisibilityRatio(visibilityRatioValue / 100f);
+        previewTopComponent.refreshPreview();
 }//GEN-LAST:event_refreshButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel propertiesPanel;
     private javax.swing.JButton refreshButton;
+    private javax.swing.JSpinner visibilityRatioSpinner;
     // End of variables declaration//GEN-END:variables
 
     /**
