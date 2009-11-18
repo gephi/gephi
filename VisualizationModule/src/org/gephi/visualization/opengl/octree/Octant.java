@@ -241,7 +241,6 @@ public class Octant implements AVLItem {
     }
 
     public void requireUpdatePosition() {
-        updateFlag.set(true);
         if (!updateFlag.getAndSet(true)) {
             octree.vizController.getScheduler().requireUpdatePosition();
         }

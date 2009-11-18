@@ -261,19 +261,25 @@ public class Octree implements VizArchitecture {
         }
     }
 
-    public void updateObjectsPosition(int classID) {
-        for (Octant o : leaves) {
-            if (o.isRequiringUpdatePosition()) {
-                for (updatePositionIterator.setNode(o.getTree(classID)); updatePositionIterator.hasNext();) {
-                    ModelImpl obj = updatePositionIterator.next();
-                    if (!obj.isInOctreeLeaf(o)) {
-                        o.removeObject(classID, obj);
-                        obj.resetOctant();
-                        addObject(classID, obj);
-                        //TODO break the loop somehow
+    public void updateObjectsPosition(int[] classIDs) {
+        Octant[] leavesCopy = leaves.toArray(new Octant[0]);
+        for (int i = 0; i < classIDs.length; i++) {
+            int classID = classIDs[i];
+            if (classID == -1) {
+                continue;
+            }
+            for (Octant o : leavesCopy) {
+                if (o.isRequiringUpdatePosition()) {
+                    for (updatePositionIterator.setNode(o.getTree(classID)); updatePositionIterator.hasNext();) {
+                        ModelImpl obj = updatePositionIterator.next();
+                        if (!obj.isInOctreeLeaf(o)) {
+                            o.removeObject(classID, obj);
+                            obj.resetOctant();
+                            addObject(classID, obj);
+                            //TODO break the loop somehow
+                        }
                     }
                 }
-
             }
         }
     }
