@@ -74,7 +74,7 @@ public abstract class AbstractEdge implements Edge, AVLItem {
         return ID;
     }
 
-    public EdgeData getEdgeData() {
+    public EdgeDataImpl getEdgeData() {
         return edgeData;
     }
 

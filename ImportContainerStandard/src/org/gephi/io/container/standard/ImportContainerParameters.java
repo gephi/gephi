@@ -31,6 +31,7 @@ public class ImportContainerParameters {
     private boolean selfLoops = true;
     private boolean parallelEdges = true;
     private boolean autoNode = true;
+    private boolean autoScale = true;
     private EdgeDefault edgeDefault = EdgeDefault.DIRECTED;
 
     public boolean isAutoNode() {
@@ -63,5 +64,13 @@ public class ImportContainerParameters {
 
     public void setEdgeDefault(EdgeDefault edgeDefault) {
         this.edgeDefault = edgeDefault;
+    }
+
+    public boolean isAutoScale() {
+        return autoScale;
+    }
+
+    public void setAutoScale(boolean autoScale) {
+        this.autoScale = autoScale;
     }
 }

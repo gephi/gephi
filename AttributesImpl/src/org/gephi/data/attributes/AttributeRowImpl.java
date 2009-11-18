@@ -176,4 +176,16 @@ public class AttributeRowImpl implements AttributeRow {
     private boolean checkIndexRange(int index) {
         return index < values.length;
     }
+
+    public int getRowVersion() {
+        return rowVersion;
+    }
+
+    public void setRowVersion(int rowVersion) {
+        this.rowVersion = rowVersion;
+    }
+
+    public void setValues(AttributeValueImpl[] values) {
+        this.values = values;
+    }
 }

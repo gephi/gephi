@@ -126,7 +126,7 @@ public class DhnsTestSerializer {
         Element e1 = dHNSSerializer.writeTreeStructure(dHNSSerializer.createDocument(), dhns1.getGraphStructure().getStructure());
         String s1 = printXML(e1);
         graph1.clear();
-        dHNSSerializer.readTreeStructure(e1, dhns1.getGraphStructure().getStructure());
+        dHNSSerializer.readTreeStructure(e1, dhns1.getGraphStructure(), dhns1.factory());
         Element e2 = dHNSSerializer.writeTreeStructure(dHNSSerializer.createDocument(), dhns1.getGraphStructure().getStructure());
         String s2 = printXML(e2);
         assertEquals(s1, s2);
@@ -138,7 +138,7 @@ public class DhnsTestSerializer {
         Element e1 = dHNSSerializer.writeEdges(dHNSSerializer.createDocument(), dhns2.getGraphStructure().getStructure());
         String s1 = printXML(e1);
         graph2.clearEdges();
-        dHNSSerializer.readEdges(e1, dhns2.getGraphStructure().getStructure());
+        dHNSSerializer.readEdges(e1, dhns2.getGraphStructure(), dhns2.factory());
         Element e2 = dHNSSerializer.writeEdges(dHNSSerializer.createDocument(), dhns2.getGraphStructure().getStructure());
         String s2 = printXML(e2);
         assertEquals(s1, s2);

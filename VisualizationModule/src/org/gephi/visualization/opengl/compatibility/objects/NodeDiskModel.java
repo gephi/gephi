@@ -61,9 +61,9 @@ public class NodeDiskModel extends ModelImpl<NodeData> {
 
     @Override
     public boolean isInOctreeLeaf(Octant leaf) {
-        if (Math.abs(obj.x() - leaf.getPosX()) > (leaf.getSize() / 2 - obj.getRadius()) ||
-                Math.abs(obj.y() - leaf.getPosY()) > (leaf.getSize() / 2 - obj.getRadius()) ||
-                Math.abs(obj.z() - leaf.getPosZ()) > (leaf.getSize() / 2 - obj.getRadius())) {
+        if (Math.abs(obj.x() - leaf.getPosX()) > (leaf.getSize() / 2 - obj.getRadius())
+                || Math.abs(obj.y() - leaf.getPosY()) > (leaf.getSize() / 2 - obj.getRadius())
+                || Math.abs(obj.z() - leaf.getPosZ()) > (leaf.getSize() / 2 - obj.getRadius())) {
             return false;
         }
         return true;
@@ -92,26 +92,26 @@ public class NodeDiskModel extends ModelImpl<NodeData> {
                 float r = obj.r();
                 float g = obj.g();
                 float b = obj.b();
-                float rlight = Math.min(1, 0.5f * r + 0.5f);
-                float glight = Math.min(1, 0.5f * g + 0.5f);
-                float blight = Math.min(1, 0.5f * b + 0.5f);
-                gl.glColor3f(rlight + (lightColor[0] - rlight) * lightColorFactor, glight + (lightColor[1] - glight) * lightColorFactor, blight + (lightColor[2] - blight) * lightColorFactor);
+                gl.glColor3f(r + (lightColor[0] - r) * lightColorFactor, g + (lightColor[1] - g) * lightColorFactor, b + (lightColor[2] - b) * lightColorFactor);
                 gl.glCallList(modelType);
                 if (modelBorderType != 0) {
-                    gl.glColor3f(r + (lightColor[0] - r) * lightColorFactor, g + (lightColor[1] - g) * lightColorFactor, b + (lightColor[2] - b) * lightColorFactor);
+                    float rborder = 0.498f * r;
+                    float gborder = 0.498f * g;
+                    float bborder = 0.498f * b;
+                    gl.glColor3f(rborder + (lightColor[0] - rborder) * lightColorFactor, gborder + (lightColor[1] - gborder) * lightColorFactor, bborder + (lightColor[2] - bborder) * lightColorFactor);
                     gl.glCallList(modelBorderType);
                 }
             } else {
                 float r = obj.r();
                 float g = obj.g();
                 float b = obj.b();
-                float rlight = Math.min(1, 0.5f * r + 0.5f);
-                float glight = Math.min(1, 0.5f * g + 0.5f);
-                float blight = Math.min(1, 0.5f * b + 0.5f);
-                gl.glColor3f(rlight, glight, blight);
+                gl.glColor3f(r, g, b);
                 gl.glCallList(modelType);
                 if (modelBorderType != 0) {
-                    gl.glColor3f(r, g, b);
+                    float rborder = 0.498f * r;
+                    float gborder = 0.498f * g;
+                    float bborder = 0.498f * b;
+                    gl.glColor3f(rborder, gborder, bborder);
                     gl.glCallList(modelBorderType);
                 }
             }
@@ -119,6 +119,9 @@ public class NodeDiskModel extends ModelImpl<NodeData> {
             float r;
             float g;
             float b;
+            float rborder;
+            float gborder;
+            float bborder;
             if (vizModel.isUniColorSelected()) {
                 if (neighbor) {
                     r = vizModel.getConfig().getUniColorSelectedNeigborColor()[0];
@@ -129,19 +132,21 @@ public class NodeDiskModel extends ModelImpl<NodeData> {
                     g = vizModel.getConfig().getUniColorSelectedColor()[1];
                     b = vizModel.getConfig().getUniColorSelectedColor()[2];
                 }
+                rborder = 0.498f * r;
+                gborder = 0.498f * g;
+                bborder = 0.498f * b;
             } else {
-                r = obj.r();
-                g = obj.g();
-                b = obj.b();
+                rborder = obj.r();
+                gborder = obj.g();
+                bborder = obj.b();
+                r = Math.min(1, 0.5f * rborder + 0.5f);
+                g = Math.min(1, 0.5f * gborder + 0.5f);
+                b = Math.min(1, 0.5f * bborder + 0.5f);
             }
-
             gl.glColor3f(r, g, b);
             gl.glCallList(modelType);
             if (modelBorderType != 0) {
-                float rdark = 0.498f * r;
-                float gdark = 0.498f * g;
-                float bdark = 0.498f * b;
-                gl.glColor3f(rdark, gdark, bdark);
+                gl.glColor3f(rborder, gborder, bborder);
                 gl.glCallList(modelBorderType);
             }
         }

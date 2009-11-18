@@ -425,4 +425,12 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     public EdgeDefault getEdgeDefault() {
         return parameters.getEdgeDefault();
     }
+
+    public boolean isAutoScale() {
+        return parameters.isAutoScale();
+    }
+
+    public void setAutoScale(boolean autoscale) {
+        parameters.setAutoScale(autoscale);
+    }
 }

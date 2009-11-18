@@ -61,8 +61,8 @@ public class Edge3dModel extends Edge2dModel {
         float y2 = obj.getTarget().y();
         float z1 = obj.getSource().z();
         float z2 = obj.getTarget().z();
-        float t1 = obj.getEdge().getWeight() / CARDINAL_DIV;
-        float t2 = obj.getEdge().getWeight() / CARDINAL_DIV;
+        float t1 = obj.getEdge().getWeight() / WEIGHT_DIV;
+        float t2 = obj.getEdge().getWeight() / WEIGHT_DIV;
 
         //CameraVector, from camera location to any point on the line
         float cameraVectorX = x1 - cameraLocation[0];

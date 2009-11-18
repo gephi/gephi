@@ -18,11 +18,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.data.attributes;
+package org.gephi.data.attributes.serialization;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.gephi.data.attributes.AbstractAttributeModel;
+import org.gephi.data.attributes.AttributeColumnImpl;
+import org.gephi.data.attributes.AttributeTableImpl;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
 import org.openide.util.Exceptions;

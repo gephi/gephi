@@ -423,7 +423,7 @@ public class VizBarController {
 
                 public void stateChanged(ChangeEvent e) {
                     TextModel model = VizController.getInstance().getVizModel().getTextModel();
-                    if(((int)(model.getNodeSizeFactor() * 100f))!=fontSizeSlider.getValue()) {
+                    if (((int) (model.getNodeSizeFactor() * 100f)) != fontSizeSlider.getValue()) {
                         fontSizeSlider.setValue((int) (model.getNodeSizeFactor() * 100f));
                     }
                 }

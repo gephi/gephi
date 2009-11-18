@@ -29,10 +29,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.EdgeData;
-import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.core.Dhns;
+import org.gephi.graph.dhns.core.GraphFactoryImpl;
+import org.gephi.graph.dhns.core.GraphStructure;
 import org.gephi.graph.dhns.core.GraphVersion;
 import org.gephi.graph.dhns.core.IDGen;
 import org.gephi.graph.dhns.core.SettingsManager;
@@ -128,9 +127,9 @@ public class DHNSSerializer {
                 } else if (itemE.getTagName().equals(ELEMENT_SETTINGS)) {
                     readSettings(itemE, dhns.getSettingsManager());
                 } else if (itemE.getTagName().equals(ELEMENT_TREESTRUCTURE)) {
-                    readTreeStructure(itemE, dhns.getGraphStructure().getStructure());
+                    readTreeStructure(itemE, dhns.getGraphStructure(), dhns.factory());
                 } else if (itemE.getTagName().equals(ELEMENT_EDGES)) {
-                    readEdges(itemE, dhns.getGraphStructure().getStructure());
+                    readEdges(itemE, dhns.getGraphStructure(), dhns.factory());
                 }
             }
 
@@ -165,14 +164,15 @@ public class DHNSSerializer {
         return edgesE;
     }
 
-    public void readEdges(Element edgesE, TreeStructure treeStucture) {
+    public void readEdges(Element edgesE, GraphStructure graphStructure, GraphFactoryImpl factory) {
         NodeList edgesListE = edgesE.getChildNodes();
+        TreeStructure treeStructure = graphStructure.getStructure();
         for (int i = 0; i < edgesListE.getLength(); i++) {
             if (edgesListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element edgeE = (Element) edgesListE.item(i);
                 Integer id = Integer.parseInt(edgeE.getAttribute("id"));
-                AbstractNode source = treeStucture.getNodeAt(Integer.parseInt(edgeE.getAttribute("source")));
-                AbstractNode target = treeStucture.getNodeAt(Integer.parseInt(edgeE.getAttribute("target")));
+                AbstractNode source = treeStructure.getNodeAt(Integer.parseInt(edgeE.getAttribute("source")));
+                AbstractNode target = treeStructure.getNodeAt(Integer.parseInt(edgeE.getAttribute("target")));
                 AbstractEdge edge;
                 if (edgeE.getTagName().equals(ELEMENT_EDGES_PROPER)) {
                     edge = new ProperEdgeImpl(id, source, target);
@@ -182,8 +182,10 @@ public class DHNSSerializer {
                     edge = new SelfLoopImpl(id, source);
                 }
                 edge.setWeight(Float.parseFloat(edgeE.getAttribute("weight")));
+                edge.getEdgeData().setAttributes(factory.newEdgeAttributes());
                 source.getEdgesOutTree().add(edge);
                 target.getEdgesInTree().add(edge);
+                graphStructure.getEdgeDictionnary().add(edge);
             }
         }
     }
@@ -211,8 +213,9 @@ public class DHNSSerializer {
         return treeStructureE;
     }
 
-    public void readTreeStructure(Element treeStructureE, TreeStructure treeStructure) {
+    public void readTreeStructure(Element treeStructureE, GraphStructure graphStructure, GraphFactoryImpl factory) {
         NodeList nodesE = treeStructureE.getChildNodes();
+        TreeStructure treeStructure = graphStructure.getStructure();
         for (int i = 0; i < nodesE.getLength(); i++) {
             if (nodesE.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 if (((Element) nodesE.item(i)).getTagName().equals(ELEMENT_TREESTRUCTURE_TREE)) {
@@ -234,7 +237,9 @@ public class DHNSSerializer {
                 } else {
                     PreNode preNode = new PreNode(Integer.parseInt(nodeE.getAttribute("id")), 0, 0, 0, parentNode);
                     preNode.setEnabled(enabled);
+                    preNode.getNodeData().setAttributes(factory.newNodeAttributes());
                     treeStructure.insertAsChild(preNode, parentNode);
+                    graphStructure.getNodeDictionnary().add(preNode);
                 }
             }
         }

@@ -18,10 +18,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.data.attributes;
+package org.gephi.desktop.statistics;
 
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.model.IndexedAttributeModel;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspacePersistenceProvider;
 import org.openide.util.lookup.ServiceProvider;
@@ -32,26 +30,18 @@ import org.w3c.dom.Element;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = WorkspacePersistenceProvider.class, position = 10)
-public class AttributeModelPersistenceProvider implements WorkspacePersistenceProvider {
+@ServiceProvider(service = WorkspacePersistenceProvider.class)
+public class StatisticsPersistenceProvider implements WorkspacePersistenceProvider {
 
     public Element writeXML(Document document, Workspace workspace) {
-        AttributeModel model = workspace.getLookup().lookup(AttributeModel.class);
-        AttributeModelSerializer serializer = new AttributeModelSerializer();
-        if (model instanceof AbstractAttributeModel) {
-            return serializer.writeModel(document, (AbstractAttributeModel) model);
-        }
-        return null;
+        return document.createElement("statistics");
     }
 
     public void readXML(Element element, Workspace workspace) {
-        IndexedAttributeModel model = new IndexedAttributeModel();
-        AttributeModelSerializer serializer = new AttributeModelSerializer();
-        serializer.readModel(element, model);
-        workspace.add(model);
+        workspace.add(new StatisticsModelImpl());
     }
 
     public String getIdentifier() {
-        return "attributemodel";
+        return "statistics";
     }
 }

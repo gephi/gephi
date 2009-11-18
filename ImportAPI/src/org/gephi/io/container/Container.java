@@ -66,6 +66,10 @@ public interface Container {
      */
     public ContainerUnloader getUnloader();
 
+    public void setAutoScale(boolean autoscale);
+
+    public boolean isAutoScale();
+
     public void setAllowSelfLoop(boolean value);
 
     public void setAllowAutoNode(boolean value);
