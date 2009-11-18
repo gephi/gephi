@@ -24,6 +24,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
@@ -49,6 +50,7 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
 
     private boolean cancel = false;
     private ProgressTicket progressTicket;
+    private GraphModel graphModel;
 
     //Settings
     private boolean normalize = false;
@@ -70,13 +72,21 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
     public boolean exportData(Document document, Graph graph) throws Exception {
         Progress.start(progressTicket);
 
+        graphModel = graph.getGraphModel();
+
         //Options
         if (normalize) {
             calculateMinMax(graph);
         }
 
         //Calculate progress units count
-        int max = graph.getNodeCount() + graph.getEdgeCount();
+        int max;
+        if(graphModel.isHierarchical()) {
+            HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
+            max = hgraph.getNodeCount() + hgraph.getEdgeCount();
+        } else {
+            max = graph.getNodeCount() + graph.getEdgeCount();
+        }
         Progress.switchToDeterminate(progressTicket, max);
         
         Element root = document.createElementNS("http://www.gexf.net/1.1draft", "gexf");
@@ -118,14 +128,14 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
     private Element createGraph(Document document, Graph graph) throws Exception {
         Element graphE = document.createElement("graph");
 
-        if(graph.getGraphModel().isDynamic()) {
+        if(graphModel.isDynamic()) {
             graphE.setAttribute("type", "dynamic");
         }
         else {
             graphE.setAttribute("type", "static");
         }
 
-        if(graph.getGraphModel().isDirected()) {
+        if(graphModel.isDirected()) {
             graphE.setAttribute("defaultedgetype", "directed");
         }
         else {
@@ -147,7 +157,6 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
         Element nodesE = document.createElement("nodes");
         nodesE.setAttribute("count", ""+count);
 
-        GraphModel graphModel = graph.getGraphModel();
         if(nodeParent != null) {
             // we are inside the tree
             HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
@@ -193,7 +202,6 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
             nodeE.appendChild(positionE);
         }
 
-        GraphModel graphModel = graph.getGraphModel();
         if(graphModel.isHierarchical()) {
             HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
             int childCount = hgraph.getChildrenCount(n);
@@ -211,25 +219,33 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
         Element edgesE = document.createElement("edges");
         edgesE.setAttribute("count", ""+graph.getEdgeCount());
 
-        for( Edge e : graph.getEdges().toArray() ) {
-            Element edgeE = createEdge(document, graph, e);
+        EdgeIterable it;
+        if(graphModel.isHierarchical()) {
+            HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
+            it = hgraph.getEdgesAndMetaEdges();
+        }
+        else {
+            it = graph.getEdges();
+        }
+        for( Edge e : it.toArray() ) {
+            Element edgeE = createEdge(document, e);
             edgesE.appendChild(edgeE);
         }
 
         return edgesE;
     }
 
-    private Element createEdge(Document document, Graph graph, Edge e) throws Exception {
+    private Element createEdge(Document document, Edge e) throws Exception {
         Element edgeE = document.createElement("edge");
 
         edgeE.setAttribute("id", ""+e.getEdgeData().getId());
         edgeE.setAttribute("source", ""+e.getSource().getNodeData().getId());
         edgeE.setAttribute("target", ""+e.getTarget().getNodeData().getId());
 
-        if( e.isDirected() && !graph.getGraphModel().isDirected() ) {
+        if( e.isDirected() && !graphModel.isDirected() ) {
             edgeE.setAttribute("type", "directed");
         }
-        else if( !e.isDirected() && graph.getGraphModel().isDirected() ) {
+        else if( !e.isDirected() && graphModel.isDirected() ) {
             edgeE.setAttribute("type", "undirected");
         }
 
