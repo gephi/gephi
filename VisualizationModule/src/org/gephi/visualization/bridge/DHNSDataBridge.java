@@ -250,10 +250,6 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             for (ModelImpl im : hulls) {
                 ConvexHull hull = (ConvexHull) im.getObj();
                 hull.recompute();
-                for (Node n : hull.getGroupNodes()) {
-                    ModelImpl model = (ModelImpl) n.getNodeData().getModel();
-                    model.addUpdatePositionChainItem(im);
-                }
                 engine.addObject(AbstractEngine.CLASS_POTATO, im);
             }
         }

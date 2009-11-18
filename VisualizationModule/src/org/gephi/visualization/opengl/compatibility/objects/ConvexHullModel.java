@@ -161,10 +161,6 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
 
     @Override
     public void destroy() {
-        for (Node node : obj.getGroupNodes()) {
-            ModelImpl model = (ModelImpl) node.getNodeData().getModel();
-            model.removePositionChainItem(this);
-        }
     }
 
     @Override

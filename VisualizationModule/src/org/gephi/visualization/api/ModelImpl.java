@@ -58,7 +58,6 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
     public long markTime = 0;
     public long selectionMark = 0;
     public boolean mark = false;
-    private ParamAVLTree<ModelImpl> updatePositionChain;
 
     public abstract int[] octreePosition(float centerX, float centerY, float centerZ, float size);
 
@@ -193,35 +192,6 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
     public void updatePositionFlag() {
         if (octants != null && octants[0] != null) {
             octants[0].requireUpdatePosition();
-            if (updatePositionChain != null) {
-                for (ModelImpl m : updatePositionChain) {
-                    m.updatePositionFlag();
-                }
-            }
         }
-    }
-
-    public void addUpdatePositionChainItem(ModelImpl item) {
-        if (updatePositionChain == null) {
-            updatePositionChain = new ParamAVLTree<ModelImpl>(new AVLItemAccessor<ModelImpl>() {
-
-                public int getNumber(ModelImpl item) {
-                    return item.getNumber();
-                }
-            });
-            updatePositionChain.add(item);
-        } else {
-            updatePositionChain.add(item);
-        }
-    }
-
-    public void removePositionChainItem(ModelImpl item) {
-        if (updatePositionChain != null) {
-            updatePositionChain.remove(item);
-        }
-    }
-
-    public void clearUpdatePositionChain() {
-        updatePositionChain = null;
     }
 }
