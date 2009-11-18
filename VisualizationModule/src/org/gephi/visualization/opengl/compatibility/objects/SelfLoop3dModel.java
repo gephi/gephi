@@ -25,6 +25,7 @@ import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
+import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vec3f;
 import org.gephi.visualization.opengl.octree.Octant;
 
@@ -137,22 +138,62 @@ public class SelfLoop3dModel extends SelfLoop2dModel {
                 a = uni[3];
             } else {
                 r = obj.r();
-                g = obj.g();
-                b = obj.b();
-                a = obj.alpha();
+                if (r == -1f) {
+                    NodeData source = obj.getSource();
+                    r = 0.498f * source.r();
+                    g = 0.498f * source.g();
+                    b = 0.498f * source.b();
+                    a = obj.alpha();
+                } else {
+                    g = 0.498f * obj.g();
+                    b = 0.498f * obj.b();
+                    r *= 0.498f;
+                    a = obj.alpha();
+                }
             }
             if (vizModel.getConfig().isLightenNonSelected()) {
                 float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
-                a = a - (a - 0.1f) * lightColorFactor;
+                a = a - (a - 0.01f) * lightColorFactor;
                 gl.glColor4f(r, g, b, a);
             } else {
                 gl.glColor4f(r, g, b, a);
             }
         } else {
-            float rdark = 0.498f * obj.r();
-            float gdark = 0.498f * obj.g();
-            float bdark = 0.498f * obj.b();
-            gl.glColor4f(rdark, gdark, bdark, 1f);
+            float r = 0f;
+            float g = 0f;
+            float b = 0f;
+            if (vizModel.isEdgeSelectionColor()) {
+                ModelImpl m1 = (ModelImpl) obj.getSource().getModel();
+                ModelImpl m2 = (ModelImpl) obj.getTarget().getModel();
+                if (m1.isSelected() && m2.isSelected()) {
+                    float[] both = vizModel.getEdgeBothSelectionColor();
+                    r = both[0];
+                    g = both[1];
+                    b = both[2];
+                } else if (m1.isSelected()) {
+                    float[] out = vizModel.getEdgeOutSelectionColor();
+                    r = out[0];
+                    g = out[1];
+                    b = out[2];
+                } else if (m2.isSelected()) {
+                    float[] in = vizModel.getEdgeInSelectionColor();
+                    r = in[0];
+                    g = in[1];
+                    b = in[2];
+                }
+            } else {
+                r = obj.r();
+                if (r == -1f) {
+                    NodeData source = obj.getSource();
+                    r = source.r();
+                    g = source.g();
+                    b = source.b();
+                } else {
+                    g = obj.g();
+                    b = obj.b();
+                }
+            }
+            gl.glColor4f(r, g, b, 1f);
         }
 
         //Display
