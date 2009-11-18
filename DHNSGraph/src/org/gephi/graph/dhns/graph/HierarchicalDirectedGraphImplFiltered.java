@@ -77,31 +77,25 @@ public class HierarchicalDirectedGraphImplFiltered extends HierarchicalDirectedG
 
     @Override
     public int getInDegree(Node node) {
-        readLock();
         view.checkUpdate();
         AbstractNode absNode = checkNode(node);
         int count = view.getClusteredLayerInDegree(absNode);
-        readUnlock();
         return count;
     }
 
     @Override
     public int getOutDegree(Node node) {
-        readLock();
         view.checkUpdate();
         AbstractNode absNode = checkNode(node);
         int count = view.getClusteredLayerOutDegree(absNode);
-        readUnlock();
         return count;
     }
 
     @Override
     public int getDegree(Node node) {
-        readLock();
         view.checkUpdate();
         AbstractNode absNode = checkNode(node);
         int count = view.getClusteredLayerInDegree(absNode);
-        readUnlock();
         return count;
     }
 
@@ -163,10 +157,8 @@ public class HierarchicalDirectedGraphImplFiltered extends HierarchicalDirectedG
 
     @Override
     public int getEdgeCount() {
-        readLock();
         view.checkUpdate();
         int count = view.getClusteredEdgesCount();
-        readUnlock();
         return count;
     }
 
@@ -230,7 +222,6 @@ public class HierarchicalDirectedGraphImplFiltered extends HierarchicalDirectedG
 
     @Override
     public int getMetaInDegree(Node node) {
-        readLock();
         view.checkUpdate();
         AbstractNode absNode = checkNode(node);
         int count = 0;
@@ -238,13 +229,11 @@ public class HierarchicalDirectedGraphImplFiltered extends HierarchicalDirectedG
         if (inTree != null) {
             count = inTree.getCount();
         }
-        readUnlock();
         return count;
     }
 
     @Override
     public int getMetaOutDegree(Node node) {
-        readLock();
         view.checkUpdate();
         AbstractNode absNode = checkNode(node);
         int count = 0;
@@ -252,13 +241,11 @@ public class HierarchicalDirectedGraphImplFiltered extends HierarchicalDirectedG
         if (outTree != null) {
             count = outTree.getCount();
         }
-        readUnlock();
         return count;
     }
 
     @Override
     public int getMetaDegree(Node node) {
-        readLock();
         view.checkUpdate();
         AbstractNode absNode = checkNode(node);
         int count = 0;
@@ -270,7 +257,6 @@ public class HierarchicalDirectedGraphImplFiltered extends HierarchicalDirectedG
         if (inTree != null) {
             count += inTree.getCount();
         }
-        readUnlock();
         return count;
     }
 

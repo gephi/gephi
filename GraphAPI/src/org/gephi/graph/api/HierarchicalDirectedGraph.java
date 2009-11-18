@@ -46,6 +46,8 @@ public interface HierarchicalDirectedGraph extends HierarchicalGraph, DirectedGr
 
     /**
      * Returns the number of <code>node</code>'s incoming meta edges.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node the node whose meta in-degree is queried
      * @return the number of meta edges incoming to <code>node</code>
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
@@ -55,6 +57,8 @@ public interface HierarchicalDirectedGraph extends HierarchicalGraph, DirectedGr
 
     /**
      * Returns the number of <code>node</code>'s outgoing meta edges.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node the node whose meta out-degree is queried
      * @return the number of meta edges outgoing from <code>node</code>
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in

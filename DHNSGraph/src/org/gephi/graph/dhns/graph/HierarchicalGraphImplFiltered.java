@@ -50,14 +50,12 @@ public abstract class HierarchicalGraphImplFiltered extends HierarchicalGraphImp
         if (node == null) {
             throw new NullPointerException();
         }
-        readLock();
         view.checkUpdate();
         AbstractNode absNode = (AbstractNode) node;
         boolean res = false;
         if (absNode.isValid()) {
             res = view.getClusteredLayerNodePredicate().evaluate(absNode);
         }
-        readUnlock();
         return res;
     }
 
@@ -72,7 +70,6 @@ public abstract class HierarchicalGraphImplFiltered extends HierarchicalGraphImp
 
     @Override
     public int getChildrenCount(Node node) {
-        readLock();
         view.checkUpdate();
         AbstractNode absNode = checkNode(node);
         int count = 0;
@@ -83,7 +80,6 @@ public abstract class HierarchicalGraphImplFiltered extends HierarchicalGraphImp
             count++;
         }
 
-        readUnlock();
         return count;
     }
 
@@ -134,11 +130,9 @@ public abstract class HierarchicalGraphImplFiltered extends HierarchicalGraphImp
     @Override
     public int getLevelSize(int level) {
         level += 1;     //Because we ignore the virtual root
-        readLock();
         view.checkUpdate();
         int height = structure.getStructure().treeHeight;
         if (level > height) {
-            readUnlock();
             throw new IllegalArgumentException("Level must be between 0 and the height of the tree, currently height=" + (height - 1));
         }
         int res = 0;
@@ -147,61 +141,52 @@ public abstract class HierarchicalGraphImplFiltered extends HierarchicalGraphImp
             res++;
         }
 
-        readUnlock();
         return res;
     }
 
     @Override
     public Node getParent(Node node) {
-        readLock();
         view.checkUpdate();
         AbstractNode absNode = checkNode(node);
         Node parent = null;
         if (absNode.parent != structure.getStructure().getRoot()) {
             parent = absNode.parent;
         }
-        readUnlock();
         return parent;
     }
 
     @Override
     public NodeIterable getTopNodes() {
-        readLock();
         view.checkUpdate();
         return dhns.newNodeIterable(new ChildrenIterator(structure.getStructure(), view.getHierarchyLayerNodePredicate()));
     }
 
     @Override
     public boolean isAncestor(Node node, Node ancestor) {
-        readLock();
         view.checkUpdate();
         return super.isAncestor(node, ancestor);
     }
 
     @Override
     public boolean isDescendant(Node node, Node descendant) {
-        readLock();
         view.checkUpdate();
         return super.isDescendant(node, descendant);
     }
 
     @Override
     public boolean isFollowing(Node node, Node following) {
-        readLock();
         view.checkUpdate();
         return super.isFollowing(node, following);
     }
 
     @Override
     public boolean isPreceding(Node node, Node preceding) {
-        readLock();
         view.checkUpdate();
         return super.isPreceding(node, preceding);
     }
 
     @Override
     public boolean isParent(Node node, Node parent) {
-        readLock();
         view.checkUpdate();
         return super.isParent(node, parent);
     }

@@ -92,28 +92,22 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
         if (node == null) {
             throw new NullPointerException();
         }
-        readLock();
 
         AbstractNode absNode = (AbstractNode) node;
         boolean res = false;
         if (absNode.isValid()) {
             res = structure.getStructure().getTree().contains(absNode);
         }
-        readUnlock();
         return res;
     }
 
     public Node getNode(int id) {
-        readLock();
         Node node = dhns.getGraphStructure().getNodeDictionnary().get(id);
-        readUnlock();
         return node;
     }
 
     public Edge getEdge(int id) {
-        readLock();
         Edge edge = dhns.getGraphStructure().getEdgeDictionnary().get(id);
-        readUnlock();
         return edge;
     }
 
@@ -128,9 +122,7 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     }
 
     public int getNodeCount() {
-        readLock();
         int count = structure.getStructure().getTreeSize() - 1;// -1 Exclude virtual root
-        readUnlock();
         return count;
     }
 
@@ -148,7 +140,6 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
 
     public int getLevelSize(int level) {
         level += 1;     //Because we ignore the virtual root
-        readLock();
         int height = structure.getStructure().treeHeight;
         if (level > height) {
             readUnlock();
@@ -159,8 +150,6 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
             itr.next();
             res++;
         }
-
-        readUnlock();
         return res;
     }
 
@@ -229,7 +218,6 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     }
 
     public int getChildrenCount(Node node) {
-        readLock();
         AbstractNode absNode = checkNode(node);
         int count = 0;
         ChildrenIterator itr = new ChildrenIterator(structure.getStructure(), absNode, Tautology.instance);
@@ -237,19 +225,15 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
             itr.next();
             count++;
         }
-
-        readUnlock();
         return count;
     }
 
     public Node getParent(Node node) {
-        readLock();
         AbstractNode absNode = checkNode(node);
         Node parent = null;
         if (absNode.parent != structure.getStructure().getRoot()) {
             parent = absNode.parent;
         }
-        readUnlock();
         return parent;
     }
 
@@ -271,7 +255,6 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     }
 
     public boolean isDescendant(Node node, Node descendant) {
-        readLock();
         AbstractNode abstractNode = checkNode(node);
         AbstractNode preDesc = checkNode(descendant);
         boolean res = false;
@@ -287,7 +270,6 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
         } else {
             res = preDesc.getPre() > abstractNode.getPre() && preDesc.getPost() < abstractNode.getPost();
         }
-        readUnlock();
         return res;
     }
 
@@ -296,21 +278,17 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     }
 
     public boolean isFollowing(Node node, Node following) {
-        readLock();
         AbstractNode absNode = checkNode(node);
         AbstractNode preFoll = checkNode(following);
         boolean res = preFoll.getPre() > absNode.getPre() && preFoll.getPost() > absNode.getPost();
-        readUnlock();
         return res;
     }
 
     public boolean isPreceding(Node node, Node preceding) {
-        readLock();
         return isFollowing(preceding, node);
     }
 
     public boolean isParent(Node node, Node parent) {
-        readLock();
         AbstractNode absNode = checkNode(node);
         checkNode(parent);
         PreNode preNode = absNode.getOriginalNode();
@@ -321,22 +299,17 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
                 res = res | cn.parent == parent;
             }
         }
-        readUnlock();
         return res;
     }
 
     public int getHeight() {
-        readLock();
         int res = structure.getStructure().treeHeight - 1;
-        readUnlock();
         return res;
     }
 
     public int getLevel(Node node) {
-        readLock();
         AbstractNode absNode = checkNode(node);
         int res = absNode.level - 1;
-        readUnlock();
         return res;
     }
 
@@ -410,10 +383,8 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     }
 
     public boolean isInView(Node node) {
-        readLock();
         AbstractNode absNode = checkNode(node);
         boolean res = absNode.isEnabled();
-        readUnlock();
         return res;
     }
 

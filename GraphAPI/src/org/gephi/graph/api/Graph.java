@@ -75,6 +75,8 @@ public interface Graph {
 
     /**
      * Returns true if the graph contains <code>node</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node the node whose presence is required
      * @return true if the graph contains <code>node</code>
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code>
@@ -83,6 +85,8 @@ public interface Graph {
 
     /**
      * Returns true if the graph contains <code>edge</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param edge the edge whose presence is required
      * @return true if the graph contains <code>edge</code>
      * @throws IllegalArgumentException if <code>edge</code> is <code>null</code>
@@ -92,6 +96,8 @@ public interface Graph {
     /**
      * Returns the node with identifier equal to <code>id</code>. If not found,
      * returns <code>null</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param id a positive number
      * @return the node with given <code>id</code>, or <code>null</code> if not found
      */
@@ -100,6 +106,8 @@ public interface Graph {
     /**
      * Returns the edge with identifier equal to <code>id</code>. If not found,
      * returns <code>null</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param id a positive number
      * @return the edge with given <code>id</code>, or <code>null</code> if not found
      */
@@ -149,6 +157,8 @@ public interface Graph {
      * <ul><li>For <b>clustered</b> graph, returns the number of nodes in the whole tree, not only
      * the current view.</li>
      * </ul>
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @return the number of nodes in the graph
      */
     public int getNodeCount();
@@ -160,6 +170,8 @@ public interface Graph {
      * <ul><li>For <b>directed</b> graph, count self-loops twice.</li>
      * <li>For <b>clustered</b> graph, count edges incident to any node in the tree regardless to the current
      * view.</li></ul>
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @return the number of edges in the graph.
      */
     public int getEdgeCount();
@@ -195,6 +207,8 @@ public interface Graph {
     /**
      * Returns the degree of <code>node</code>. Self-loops are counted twice for <b>directed</b> graphs.
      * @param node the node whose degree is to be returned
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @return the degree of <code>node</code>
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in the graph
      */
@@ -223,6 +237,8 @@ public interface Graph {
     /**
      * Returns <code>true</code> if <code>node1</code> is adjacent to <code>node2</code>. Is adjacent
      * when an edge exists between <code>node1</code> and <code>node2</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node1 the first node to be queried
      * @param node2 the seconde node to be queried
      * @return <code>true</code> if <code>node1</code> is adjacent to <code>node2</code>
@@ -234,6 +250,8 @@ public interface Graph {
     /**
      * Returns <code>true</code> if <code>edge1</code> is adjacent to <code>edge2</code>. Is adjacent
      * when an node is incident to both edges.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param edge1 the first node to be queried
      * @param edge2 the seconde node to be queried
      * @return <code>true</code> if <code>edge1</code> is adjacent to <code>edge2</code>

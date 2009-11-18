@@ -44,6 +44,8 @@ public interface MixedGraph extends Graph {
     /**
      * Find and returns a <b>directed</b> or <b>undirected</b> edge that connects <code>node1</code> and
      * <code>node2</code>. Returns <code>null</code> if no such edge is found.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node1 the first incident node of the queried edge
      * @param node2 thge second incident node of the queried edge
      * @return an edge that connects <code>node1</code> and <code>node2</code>

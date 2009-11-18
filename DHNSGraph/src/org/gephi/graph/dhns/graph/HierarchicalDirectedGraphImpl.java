@@ -120,19 +120,15 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
 
     //Directed
     public int getInDegree(Node node) {
-        readLock();
         AbstractNode absNode = checkNode(node);
         int count = absNode.getEdgesInTree().getCount();
-        readUnlock();
         return count;
     }
 
     //Directed
     public int getOutDegree(Node node) {
-        readLock();
         AbstractNode absNode = checkNode(node);
         int count = absNode.getEdgesOutTree().getCount();
-        readUnlock();
         return count;
     }
 
@@ -177,32 +173,26 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
 
     //Directed
     public Edge getEdge(Node source, Node target) {
-        readLock();
         AbstractNode sourceNode = checkNode(source);
         AbstractNode targetNode = checkNode(target);
         AbstractEdge res = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
-        readUnlock();
         return res;
     }
 
     //Graph
     public int getEdgeCount() {
-        readLock();
         int count = 0;
         for (EdgeIterator itr = new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false, Tautology.instance), false, Tautology.instance, Tautology.instance); itr.hasNext();) {
             itr.next();
             count++;
         }
-        readUnlock();
         return count;
     }
 
     //Graph
     public int getDegree(Node node) {
-        readLock();
         AbstractNode absNode = checkNode(node);
         int count = absNode.getEdgesInTree().getCount() + absNode.getEdgesOutTree().getCount();
-        readUnlock();
         return count;
     }
 
@@ -268,28 +258,22 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
 
     //DirectedClusteredGraph
     public int getMetaInDegree(Node node) {
-        readLock();
         AbstractNode absNode = checkNode(node);
         int count = absNode.getMetaEdgesInTree().getCount();
-        readUnlock();
         return count;
     }
 
     //DirectedClusteredGraph
     public int getMetaOutDegree(Node node) {
-        readLock();
         AbstractNode absNode = checkNode(node);
         int count = absNode.getMetaEdgesOutTree().getCount();
-        readUnlock();
         return count;
     }
 
     //ClusteredGraph
     public int getMetaDegree(Node node) {
-        readLock();
         AbstractNode absNode = checkNode(node);
         int count = absNode.getMetaEdgesInTree().getCount() + absNode.getMetaEdgesOutTree().getCount();
-        readUnlock();
         return count;
     }
 

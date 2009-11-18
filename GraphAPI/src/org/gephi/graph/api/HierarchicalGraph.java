@@ -41,6 +41,8 @@ public interface HierarchicalGraph extends Graph {
 
     /**
      * Returns the number of children of <code>node</code>. Returns <code>zero</code> if <code>node</code> is a leaf.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node the node to be queried
      * @return  the number of <code>node</code>'s children
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in the graph
@@ -49,6 +51,8 @@ public interface HierarchicalGraph extends Graph {
 
     /**
      * Returns the parent of <code>node</code> or <code>null</code> if <code>node</code>'s parent is (virtual) root.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node the node whose parent is to be returned
      * @return <code>node</code>'s parent
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in the graph
@@ -111,6 +115,8 @@ public interface HierarchicalGraph extends Graph {
     /**
      * The number of nodes located at the given <code>level</code> int the hierarchy. Similar as
      * <code>getNodes(level).toArray().length</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param level the level whose nodes are to be returned
      * @return the number of nodes at <code>level</code>
      * @throws IllegalArgumentException if <code>level</code> is not between 0 and the height of the tree
@@ -120,6 +126,8 @@ public interface HierarchicalGraph extends Graph {
     /**
      * Returns <code>true</code> if <code>descendant</code> is a descendant of <code>node</code>. True if <code>node</code> is an ancestor
      * of <code>descendant</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node the node to be queried
      * @param descendant the descendant node to be queried
      * @return <code>true</code> if <code>descendant</code> is a descendant of <code>node</code>
@@ -130,6 +138,8 @@ public interface HierarchicalGraph extends Graph {
     /**
      * Returns <code>true</code> if <code>ancestor</code> is an ancestor of <code>node</code>. True if <code>node</code> is a descendant of
      * <code>ancestor</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node the node to be queried
      * @param ancestor the ancestor to be queried
      * @return <code>true</code> if <code>ancestor</code> is an ancestor of <code>node</code>
@@ -140,6 +150,8 @@ public interface HierarchicalGraph extends Graph {
     /**
      * Returns <code>true</code> if <code>following</code> is after <code>node</code>. The definition is similar to <code>XML</code> following
      * axis. Is true when <code>following</code> has a greater <b>pre</b> and <b>post</b> order than <code>node</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node the node to be queried
      * @param following the following to be queried
      * @return <code>true</code> if <code>following</code> is following <code>node</code>
@@ -150,6 +162,8 @@ public interface HierarchicalGraph extends Graph {
     /**
      * Returns <code>true</code> if <code>preceding</code> is before <code>node</code>. The definition is similar to <code>XML</code> preceding
      * axis. Is true when <code>preceding</code> has a lower <b>pre</b> and <b>post</b> order than <code>node</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node the node to be queried
      * @param preceding the preceding to be queried
      * @return <code>true</code> if <code>preceding</code> is preceding <code>node</code>
@@ -159,6 +173,8 @@ public interface HierarchicalGraph extends Graph {
 
     /**
      * Returns <code>true</code> if <code>parent</code> is the parent of <code>node</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node the node to be queried
      * @param parent the parent to be queried
      * @return <code>true</code> if <code>parent</code> is the parent of <code>node</code>
@@ -168,13 +184,17 @@ public interface HierarchicalGraph extends Graph {
 
     /**
      * Returns the height of the tree. The height is <code>zero</code> when all nodes have the same level.
-     * @return Returns the height of the tree
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
+     * @return the height of the tree
      */
     public int getHeight();
 
     /**
      * Returns the level of <code>node</code> in the hierarchy. Roots have the level <code>zero</code> and it inscreases when going down
      * in the tree.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node the node to be queried
      * @return the level value of <code>node</code>
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in the graph
@@ -259,6 +279,8 @@ public interface HierarchicalGraph extends Graph {
 
     /**
      * Returns true if <code>node</code> is currently in the graph view.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node the node to be queried
      * @return <code>true</code> if <code>node</code> is in the view, <code>false</code> otherwise
      * @throws IllegalArgumentException if <code>nodeGroup</code> is <code>null</code> or not legal in
@@ -323,6 +345,8 @@ public interface HierarchicalGraph extends Graph {
 
     /**
      * Returns the number of <code>node</code>'s incident meta edges.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node the node whose meta degree is queried
      * @return the number of meta edges connected to <code>node</code>
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in

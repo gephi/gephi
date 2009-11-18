@@ -42,6 +42,8 @@ public interface DirectedGraph extends Graph {
     /**
      * Find and returns an edge that connects <code>source</code> and <code>target</code>. Returns
      * <code>null</code> if no such edge is found.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param source the source node of the queried edge
      * @param target the target node of the queried edge
      * @return a directed edge that connects <code>source</code> and <code>target</code>
@@ -93,6 +95,8 @@ public interface DirectedGraph extends Graph {
 
     /**
      * Returns <code>true</code> if <code>successor</code> is a successor of <code>node</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node the node which has <code>successor</code> as a successor
      * @param successor the node which has <code>node</code> as a predecessor
      * @return <code>true</code> if <code>successor</code> is a successor of <code>node</code>
@@ -103,6 +107,8 @@ public interface DirectedGraph extends Graph {
 
     /**
      * Returns <code>true</code> if <code>predecessor</code> is a predecessor of <code>node</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node the node which has <code>predecessor</code> as a predecessor
      * @param predecessor the node which has <code>node</code> as a successor
      * @return <code>true</code> if <code>predecessor</code> is a predecessor of <code>node</code>
@@ -113,6 +119,8 @@ public interface DirectedGraph extends Graph {
 
     /**
      * Returns the number of incoming edges incident to <code>node</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node the node whose indegree is to be returned
      * @return the number of incoming edges incident to <code>node</code>
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
@@ -122,6 +130,8 @@ public interface DirectedGraph extends Graph {
 
     /**
      * Returns the number of outgoing edges incident to <code>node</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
      * @param node the node whose outdegree is to be returned
      * @return the number of outgoing edges incident to <code>node</code>
      * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
