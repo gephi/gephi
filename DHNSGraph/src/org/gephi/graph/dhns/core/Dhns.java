@@ -178,6 +178,10 @@ public class Dhns implements GraphModel {
         return readWriteLock.writeLock();
     }
 
+    public ReentrantReadWriteLock getReadWriteLock() {
+        return readWriteLock;
+    }
+
     //Type
     public void touchDirected() {
         if (undirected || mixed) {
