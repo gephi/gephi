@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.compatibility.objects;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.EdgeData;
@@ -77,6 +79,9 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
 
         //Get collision distance between nodeTo and arrow point
         double angle = Math.atan2(y2 - y1, x2 - x1);
+        if (nodeTo.getModel() == null) {
+            Logger.getLogger(Arrow2dModel.class.getName()).log(Level.INFO, "null" + this + " edge=" + edge.getModel());
+        }
         float collisionDistance = ((ModelImpl) nodeTo.getModel()).getCollisionDistance(angle);
 
         //Point of the arrow
@@ -208,19 +213,29 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
 
     @Override
     public Octant[] getOctants() {
+        if (obj.getModel() == null) {
+            return this.octants;
+        }
         Octant[] oc = ((ModelImpl) obj.getModel()).getOctants();
-        if (oc[0] == null) //The edge has been destroyed
+        if (oc[0] == null) //The node has been destroyed
         {
             oc = this.octants;
         }
         return oc;
     }
 
-    @Override
+    /*@Override
     public boolean isCacheMatching(int cacheMarker) {
-        if (edge.getModel() != null) {
-            return ((ModelImpl) edge.getModel()).isCacheMatching(cacheMarker);
-        }
-        return false;
+    if (edge.getModel() != null) {
+    return ((ModelImpl) edge.getModel()).isCacheMatching(cacheMarker);
+    }
+    return false;
+    }*/
+    public EdgeData getEdge() {
+        return edge;
+    }
+
+    @Override
+    public void cleanModel() {
     }
 }

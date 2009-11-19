@@ -39,11 +39,9 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
 
     private int ID = -1;
     private int cacheMarker;
-
     //Architecture
     protected Octant[] octants;
     protected ObjectType obj;
-
     //Graphical data
     protected float viewportX;
     protected float viewportY;
@@ -51,7 +49,6 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
     protected float viewportRadius;
     protected float[] dragDistance;
     protected ColorLayer colorLayer;
-
     //Flags
     protected boolean selected;
     protected boolean highlight;
@@ -193,5 +190,9 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
         if (octants != null && octants[0] != null) {
             octants[0].requireUpdatePosition();
         }
+    }
+
+    public void cleanModel() {
+        obj.setModel(null);
     }
 }

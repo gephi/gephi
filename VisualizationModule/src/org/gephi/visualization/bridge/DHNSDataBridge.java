@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Group;
@@ -35,7 +34,6 @@ import org.gephi.graph.api.NodeIterable;
 import org.gephi.project.api.ProjectController;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.ColorLayer;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.initializer.Modeler;
@@ -59,11 +57,9 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     protected HierarchicalGraph graph;
     private VizConfig vizConfig;
     protected ModeManager modeManager;
-
     //Version
     protected int nodeVersion = -1;
     protected int edgeVersion = -1;
-
     //Attributes
     private int cacheMarker = 0;
 
@@ -170,13 +166,12 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         EdgeIterable edgeIterable;
         edgeIterable = graph.getEdges();
 
-
         for (Edge edge : edgeIterable) {
+            assert edge.getSource().getNodeData().getModel() != null && edge.getTarget().getNodeData().getModel() != null;
             Model obj = edge.getEdgeData().getModel();
             if (obj == null) {
                 //Model is null, ADD
                 obj = edgeInit.initModel(edge.getEdgeData());
-
                 engine.addObject(AbstractEngine.CLASS_EDGE, (ModelImpl) obj);
                 if (vizConfig.isShowArrows() && !edge.isSelfLoop()) {
                     ModelImpl arrowObj = arrowInit.initModel(edge.getEdgeData());
@@ -189,6 +184,11 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                 if (vizConfig.isShowArrows() && !edge.isSelfLoop()) {
                     ModelImpl arrowObj = ((Edge2dModel) obj).getArrow();
                     engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
+                    arrowObj.setCacheMarker(cacheMarker);
+                }
+            } else {
+                if (vizConfig.isShowArrows() && !edge.isSelfLoop()) {
+                    ModelImpl arrowObj = ((Edge2dModel) obj).getArrow();
                     arrowObj.setCacheMarker(cacheMarker);
                 }
             }

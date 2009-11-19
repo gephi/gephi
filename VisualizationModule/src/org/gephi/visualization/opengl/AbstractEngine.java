@@ -288,7 +288,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
             if (!inited) {
                 inited = true;
                 if (requestAnimation) {
-                    graphDrawable.display();
+                    //graphDrawable.display();
                     startAnimating();
                     requestAnimation = false;
                 }

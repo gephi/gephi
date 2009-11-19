@@ -35,6 +35,7 @@ public class SimpleFPSAnimator extends Thread {
     private long delay;
     private AtomicBoolean animating;
     private final Object lock = new Object();
+    private boolean displayCall= false;
 
     public SimpleFPSAnimator(Scheduler scheduler, GraphDrawableImpl drawble, int fps) {
         super("SimpleFPSAnimator");
@@ -54,7 +55,9 @@ public class SimpleFPSAnimator extends Thread {
                 long startTime = System.currentTimeMillis();
                 scheduler.updateWorld();
                 scheduler.updatePosition();
+                displayCall=true;
                 drawable.display();
+                displayCall=false;
                 long timeout;
                 while ((timeout = delay - System.currentTimeMillis() + startTime) > 0) {
                     //Wait only if the time spent in display is inferior than delay
@@ -79,5 +82,9 @@ public class SimpleFPSAnimator extends Thread {
 
     public void setFps(int fps) {
         delay = (long) (1000.0f / (float) fps);
+    }
+
+    public boolean isDisplayCall() {
+        return displayCall;
     }
 }

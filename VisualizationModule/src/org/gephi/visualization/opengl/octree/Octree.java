@@ -37,7 +37,6 @@ import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.api.ModelImpl;
-import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.gleem.linalg.Vec3f;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 
@@ -237,7 +236,7 @@ public class Octree implements VizArchitecture {
                     removeObject(classID, obj);
                     obj.resetOctant();
                     if (vizController.getVizConfig().isCleanDeletedModels()) {
-                        obj.getObj().setModel(null);
+                        obj.cleanModel();
                     }
                 }
             }
@@ -252,7 +251,7 @@ public class Octree implements VizArchitecture {
             for (cleanObjectsIterator.setNode(tree); cleanObjectsIterator.hasNext();) {
                 ModelImpl obj = cleanObjectsIterator.next();
                 obj.resetOctant();
-                obj.getObj().setModel(null);
+                obj.cleanModel();
                 obj.destroy();
             }
 
@@ -261,23 +260,16 @@ public class Octree implements VizArchitecture {
         }
     }
 
-    public void updateObjectsPosition(int[] classIDs) {
-        Octant[] leavesCopy = leaves.toArray(new Octant[0]);
-        for (int i = 0; i < classIDs.length; i++) {
-            int classID = classIDs[i];
-            if (classID == -1) {
-                continue;
-            }
-            for (Octant o : leavesCopy) {
-                if (o.isRequiringUpdatePosition()) {
-                    for (updatePositionIterator.setNode(o.getTree(classID)); updatePositionIterator.hasNext();) {
-                        ModelImpl obj = updatePositionIterator.next();
-                        if (!obj.isInOctreeLeaf(o)) {
-                            o.removeObject(classID, obj);
-                            obj.resetOctant();
-                            addObject(classID, obj);
-                            //TODO break the loop somehow
-                        }
+    public void updateObjectsPosition(int classID) {
+        for (Octant o : leaves) {
+            if (o.isRequiringUpdatePosition()) {
+                for (updatePositionIterator.setNode(o.getTree(classID)); updatePositionIterator.hasNext();) {
+                    ModelImpl obj = updatePositionIterator.next();
+                    if (!obj.isInOctreeLeaf(o)) {
+                        o.removeObject(classID, obj);
+                        obj.resetOctant();
+                        addObject(classID, obj);
+                        //TODO break the loop somehow
                     }
                 }
             }

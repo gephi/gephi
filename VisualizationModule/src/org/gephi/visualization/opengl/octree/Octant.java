@@ -28,7 +28,6 @@ import javax.media.opengl.GL;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.datastructure.avl.simple.AVLItem;
-import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ModelImpl;
 
 /**

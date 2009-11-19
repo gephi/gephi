@@ -626,17 +626,11 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void updateObjectsPosition() {
-        int[] classIds = new int[modelClasses.length];
-        int i=0;
         for (ModelClass objClass : modelClasses) {
             if (objClass.isEnabled()) {
-                classIds[i] = objClass.getClassId();
-            } else {
-                classIds[i] = -1;
+                octree.updateObjectsPosition(objClass.getClassId());
             }
-            i++;
         }
-        octree.updateObjectsPosition(classIds);
     }
 
     @Override

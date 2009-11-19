@@ -53,22 +53,16 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     AtomicBoolean drag = new AtomicBoolean();
     AtomicBoolean stopDrag = new AtomicBoolean();
     AtomicBoolean mouseClick = new AtomicBoolean();
-
     //Architeture
     private GraphDrawableImpl graphDrawable;
     private CompatibilityEngine engine;
     private VizConfig vizConfig;
-
     //Current GL
     private GL gl;
     private GLU glu;
-
     //Animator
     private SimpleFPSAnimator simpleFPSAnimator;
     private int fpsLimit = 30;
-
-    //Executor
-    private ScheduledExecutorService displayExecutor;
 
     public void initArchitecture() {
         this.graphDrawable = VizController.getInstance().getDrawable();
@@ -199,73 +193,75 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
 
     @Override
     public void display(GL gl, GLU glu) {
-        this.gl = gl;
-        this.glu = glu;
+        if (simpleFPSAnimator.isDisplayCall()) {
+            this.gl = gl;
+            this.glu = glu;
 
-        //Boolean vals
-        boolean execMouseClick = mouseClick.getAndSet(false);
-        boolean execMouseMove = mouseMoved.getAndSet(false);
-        boolean execDrag = drag.get() || startDrag.get() || stopDrag.get();
+            //Boolean vals
+            boolean execMouseClick = mouseClick.getAndSet(false);
+            boolean execMouseMove = mouseMoved.getAndSet(false);
+            boolean execDrag = drag.get() || startDrag.get() || stopDrag.get();
 
-        //Calculate permits
-        int pool1Permit = 0;
-        int pool2Permit = 0;
-        if (execMouseMove) {
-            pool2Permit++;
-        } else if (execDrag) {
-            pool2Permit++;
-        }
-        if (execMouseClick) {
-            pool2Permit++;
-        }
-
-        if (cameraMoved.getAndSet(false)) {
-            graphDrawable.setCameraPosition(gl, glu);
-
-            pool1Permit = modelSegments.size();
-            engine.getOctree().updateVisibleOctant(gl);
-            //Objects iterators in octree are ready
-
-            //Task MODEL
-            for (int i = 0; i < modelSegments.size(); i++) {
-                Runnable r = modelSegments.get(i);
-                pool1.execute(r);
+            //Calculate permits
+            int pool1Permit = 0;
+            int pool2Permit = 0;
+            if (execMouseMove) {
+                pool2Permit++;
+            } else if (execDrag) {
+                pool2Permit++;
             }
-        }
-
-        //Task SELECTED
-        if (execMouseMove) {
-            engine.updateSelection(gl, glu);
-            pool2.execute(selectionSegment);
-        } else if (execDrag) {
-            pool2.execute(dragSegment);
-        }
-
-
-        //Task AFTERSELECTION
-        if (execMouseClick) {
-            pool2.execute(mouseClickSegment);
-        }
-
-        try {
-            if (pool1Permit > 0) {
-                pool1Semaphore.acquire(pool1Permit);
+            if (execMouseClick) {
+                pool2Permit++;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        //Display
-        engine.beforeDisplay(gl, glu);
-        engine.display(gl, glu);
-        engine.afterDisplay(gl, glu);
+            if (cameraMoved.getAndSet(false)) {
+                graphDrawable.setCameraPosition(gl, glu);
 
-        try {
-            if (pool2Permit > 0) {
-                pool2Semaphore.acquire(pool2Permit);
+                pool1Permit = modelSegments.size();
+                engine.getOctree().updateVisibleOctant(gl);
+                //Objects iterators in octree are ready
+
+                //Task MODEL
+                for (int i = 0; i < modelSegments.size(); i++) {
+                    Runnable r = modelSegments.get(i);
+                    pool1.execute(r);
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            //Task SELECTED
+            if (execMouseMove) {
+                engine.updateSelection(gl, glu);
+                pool2.execute(selectionSegment);
+            } else if (execDrag) {
+                pool2.execute(dragSegment);
+            }
+
+
+            //Task AFTERSELECTION
+            if (execMouseClick) {
+                pool2.execute(mouseClickSegment);
+            }
+
+            try {
+                if (pool1Permit > 0) {
+                    pool1Semaphore.acquire(pool1Permit);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            //Display
+            engine.beforeDisplay(gl, glu);
+            engine.display(gl, glu);
+            engine.afterDisplay(gl, glu);
+
+            try {
+                if (pool2Permit > 0) {
+                    pool2Semaphore.acquire(pool2Permit);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
