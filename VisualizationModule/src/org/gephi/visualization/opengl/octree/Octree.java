@@ -104,7 +104,7 @@ public class Octree implements VizArchitecture {
         Octant[] octants = obj.getOctants();
         boolean manualAdd = true;
         for (int i = 0; i < octants.length; i++) {
-            Octant o = obj.getOctants()[i];
+            Octant o = octants[i];
             if (o != null) {
                 o.addObject(classID, obj);
                 manualAdd = false;

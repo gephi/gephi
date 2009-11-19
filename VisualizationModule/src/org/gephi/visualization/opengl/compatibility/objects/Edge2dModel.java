@@ -103,20 +103,24 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
     public boolean isInOctreeLeaf(Octant leaf) {
         NodeData nodeFrom = obj.getSource();
         NodeData nodeTo = obj.getTarget();
-
+        boolean res = true;
         if (octants[0] == leaf) {
             if (octants[0] != ((ModelImpl) nodeFrom.getModel()).getOctants()[0]) //0 = nodeFrom
             {
-                return false;
-            }
-        } else {
-            if (octants[1] != ((ModelImpl) nodeTo.getModel()).getOctants()[0]) //1 = nodeTo
-            {
-                return false;
+                res = false;
             }
         }
+        if (octants[1] == leaf) {
+            if (octants[1] != ((ModelImpl) nodeTo.getModel()).getOctants()[0]) //1 = nodeTo
+            {
+                res = false;
+            }
+        }
+        if (octants[0] != leaf && octants[1] != leaf) {
+            res = false;
+        }
 
-        return true;
+        return res;
     }
 
     @Override
@@ -272,7 +276,8 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
     public void setOctant(Octant octant) {
         if (((ModelImpl) obj.getSource().getModel()).getOctants()[0] == octant) {
             octants[0] = octant;
-        } else {
+        }
+        if (((ModelImpl) obj.getTarget().getModel()).getOctants()[0] == octant) {
             octants[1] = octant;
         }
     }

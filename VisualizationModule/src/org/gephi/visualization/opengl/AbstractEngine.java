@@ -61,7 +61,6 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     public static final int CLASS_EDGE = 1;
     public static final int CLASS_ARROW = 2;
     public static final int CLASS_POTATO = 3;
-
     //Architecture
     protected GraphDrawableImpl graphDrawable;
     protected GraphIO graphIO;
@@ -74,7 +73,6 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected VizConfig vizConfig;
     protected ModeManager modeManager;
     protected TextManager textManager;
-
     //States
     protected boolean rectangleSelection;
     protected boolean customSelection;
@@ -83,7 +81,6 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     protected boolean backgroundChanged = false;
     protected boolean reinit = false;
     protected float lightenAnimationDelta = 0f;
-
     //Octree
     protected Octree octree;
 
@@ -176,9 +173,9 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public float cameraDistance(ModelImpl object) {
         float[] cameraLocation = graphDrawable.getCameraLocation();
-        double distance = Math.sqrt(Math.pow((double) object.getObj().x() - cameraLocation[0], 2d) +
-                Math.pow((double) object.getObj().y() - cameraLocation[1], 2d) +
-                Math.pow((double) object.getObj().z() - cameraLocation[2], 2d));
+        double distance = Math.sqrt(Math.pow((double) object.getObj().x() - cameraLocation[0], 2d)
+                + Math.pow((double) object.getObj().y() - cameraLocation[1], 2d)
+                + Math.pow((double) object.getObj().z() - cameraLocation[2], 2d));
         object.setCameraDistance((float) distance);
 
         return (float) distance - object.getObj().getRadius();

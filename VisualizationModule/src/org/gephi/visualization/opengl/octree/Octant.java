@@ -227,6 +227,14 @@ public class Octant implements AVLItem {
         gl.glTranslatef(posX - quantum, posY + quantum - height, posZ + quantum);
         gl.glScalef(0.1f, 0.1f, 0.1f);
         gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+        glut.glutStrokeString(GLUT.STROKE_MONO_ROMAN, "ID: " + octantID);
+        gl.glPopMatrix();
+
+        height += 15;
+        gl.glPushMatrix();
+        gl.glTranslatef(posX - quantum, posY + quantum - height, posZ + quantum);
+        gl.glScalef(0.1f, 0.1f, 0.1f);
+        gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
         glut.glutStrokeString(GLUT.STROKE_MONO_ROMAN, "objectsCount: " + objectsCount);
         gl.glPopMatrix();
 
