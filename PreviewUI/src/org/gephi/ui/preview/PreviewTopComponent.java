@@ -1,8 +1,15 @@
 package org.gephi.ui.preview;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.io.Serializable;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
+import org.gephi.preview.api.controller.PreviewController;
+import org.gephi.project.api.ProjectController;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceListener;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -21,14 +28,40 @@ final class PreviewTopComponent extends TopComponent {
 
     private PreviewTopComponent() {
         initComponents();
-
-        add(sketch, BorderLayout.CENTER);
-        sketch.init();
-
         setName(NbBundle.getMessage(PreviewTopComponent.class, "CTL_PreviewTopComponent"));
         setToolTipText(NbBundle.getMessage(PreviewTopComponent.class, "HINT_PreviewTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
 
+        bannerPanel.setVisible(false);
+
+        // inits the preview applet
+        previewPanel.add(sketch, BorderLayout.CENTER);
+        sketch.init();
+
+        initEvents();
+    }
+
+    private void initEvents() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.addWorkspaceListener(new WorkspaceListener() {
+
+            public void initialize(Workspace workspace) {
+            }
+
+            public void select(Workspace workspace) {
+                bannerPanel.setVisible(true);
+            }
+
+            public void unselect(Workspace workspace) {
+            }
+
+            public void close(Workspace workspace) {
+            }
+
+            public void disable() {
+                bannerPanel.setVisible(false);
+            }
+        });
     }
 
     /** This method is called from within the constructor to
@@ -38,10 +71,79 @@ final class PreviewTopComponent extends TopComponent {
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        setLayout(new java.awt.BorderLayout());
+        bannerPanel = new javax.swing.JPanel();
+        bannerLabel = new javax.swing.JLabel();
+        refreshButton = new javax.swing.JButton();
+        previewPanel = new javax.swing.JPanel();
+
+        setLayout(new java.awt.GridBagLayout());
+
+        bannerPanel.setBackground(new java.awt.Color(178, 223, 240));
+        bannerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+        bannerPanel.setLayout(new java.awt.GridBagLayout());
+
+        bannerLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/preview/resources/info.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(bannerLabel, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.bannerLabel.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 5);
+        bannerPanel.add(bannerLabel, gridBagConstraints);
+
+        org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.refreshButton.text")); // NOI18N
+        refreshButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(1, 0, 1, 1);
+        bannerPanel.add(refreshButton, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        add(bannerPanel, gridBagConstraints);
+
+        previewPanel.setBackground(new java.awt.Color(255, 255, 255));
+        previewPanel.setLayout(new java.awt.BorderLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(previewPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+        // TODO refactor with MVC pattern
+
+        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+        PreviewSettingsTopComponent settingsComponent = PreviewSettingsTopComponent.findInstance();
+
+        controller.buildGraph();
+        setVisibilityRatio(settingsComponent.getVisibilityRatio());
+        refreshPreview();
+
+        bannerPanel.setVisible(false);
+    }//GEN-LAST:event_refreshButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel bannerLabel;
+    private javax.swing.JPanel bannerPanel;
+    private javax.swing.JPanel previewPanel;
+    private javax.swing.JButton refreshButton;
     // End of variables declaration//GEN-END:variables
 
     /**
