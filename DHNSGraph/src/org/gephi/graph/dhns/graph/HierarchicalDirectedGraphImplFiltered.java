@@ -22,6 +22,7 @@ package org.gephi.graph.dhns.graph;
 
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.MetaEdge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
@@ -31,27 +32,24 @@ import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.BiEdgeIterator;
-import org.gephi.graph.dhns.edge.iterators.EdgeAndMetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
-import org.gephi.graph.dhns.edge.iterators.MetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.MetaEdgeNodeIterator;
 import org.gephi.graph.dhns.edge.iterators.RangeEdgeIterator;
-import org.gephi.graph.dhns.filter.Tautology;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
-import org.gephi.graph.dhns.node.iterators.TreeIterator;
 import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
-import org.gephi.graph.dhns.views.ViewImpl;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class HierarchicalDirectedGraphImplFiltered extends HierarchicalDirectedGraphImpl {
+public class HierarchicalDirectedGraphImplFiltered extends HierarchicalGraphImplFiltered implements HierarchicalDirectedGraph {
+
+    private HierarchicalDirectedGraphImpl delegate;
 
     public HierarchicalDirectedGraphImplFiltered(Dhns dhns, GraphStructure graphStructure, View view) {
-        super(dhns, graphStructure);
-        this.view = (ViewImpl) view;
+        super(dhns, graphStructure, view);
+        this.delegate = new HierarchicalDirectedGraphImpl(dhns, structure);
     }
 
     @Override
@@ -142,7 +140,6 @@ public class HierarchicalDirectedGraphImplFiltered extends HierarchicalDirectedG
 
     @Override
     public Edge getEdge(Node source, Node target) {
-        readLock();
         view.checkUpdate();
         AbstractNode sourceNode = checkNode(source);
         AbstractNode targetNode = checkNode(target);
@@ -151,7 +148,6 @@ public class HierarchicalDirectedGraphImplFiltered extends HierarchicalDirectedG
         if (!edgePredicate.evaluate(res)) {
             res = null;
         }
-        readUnlock();
         return res;
     }
 
@@ -276,7 +272,42 @@ public class HierarchicalDirectedGraphImplFiltered extends HierarchicalDirectedG
     }
 
     @Override
-    public HierarchicalDirectedGraphImpl copy(Dhns dhns, GraphStructure structure, View view) {
-        return new HierarchicalDirectedGraphImpl(dhns, structure);
+    public HierarchicalDirectedGraphImplFiltered copy(Dhns dhns, GraphStructure structure, View view) {
+        return new HierarchicalDirectedGraphImplFiltered(dhns, structure, view);
+    }
+
+    public boolean addEdge(Edge edge) {
+        return delegate.addEdge(edge);
+    }
+
+    public boolean addEdge(Node source, Node target) {
+        return delegate.addEdge(source, target);
+    }
+
+    public boolean removeEdge(Edge edge) {
+        return delegate.removeEdge(edge);
+    }
+
+    public boolean contains(Edge edge) {
+        return getEdge(edge.getSource(), edge.getTarget()) != null;
+    }
+
+    public boolean isDirected(Edge edge) {
+        return delegate.isDirected(edge);
+    }
+
+    public boolean isAdjacent(Node node1, Node node2) {
+        if (node1 == node2) {
+            throw new IllegalArgumentException("Nodes can't be the same");
+        }
+        return isSuccessor(node1, node2) || isPredecessor(node1, node2);
+    }
+
+    public boolean isSuccessor(Node node, Node successor) {
+        return getEdge(node, successor) != null;
+    }
+
+    public boolean isPredecessor(Node node, Node predecessor) {
+        return getEdge(predecessor, node) != null;
     }
 }

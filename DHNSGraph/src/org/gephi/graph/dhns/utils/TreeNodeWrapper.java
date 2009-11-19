@@ -55,8 +55,13 @@ public class TreeNodeWrapper {
             TreeNodeImpl n = new TreeNodeImpl(node);
             if (node.parent != null) {
                 TreeNodeImpl parent = (TreeNodeImpl) nodeTree.get(node.parent.getNumber());
-                n.parent = parent;
-                parent.children.add(n);
+                if (parent != null) {
+                    n.parent = parent;
+                    parent.children.add(n);
+                } else {
+                    n.parent = root;
+                    root.children.add(n);
+                }
             }
             nodeTree.add(n);
         }

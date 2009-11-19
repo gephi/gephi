@@ -35,6 +35,7 @@ import org.gephi.graph.dhns.core.IDGen;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImpl;
+import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImplFiltered;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.views.ViewImpl;
 import org.junit.AfterClass;
@@ -46,7 +47,7 @@ import static org.junit.Assert.*;
 public class DhnsTestFiltering {
 
     private Dhns dhnsGlobal;
-    private HierarchicalDirectedGraphImpl graphGlobal;
+    private HierarchicalDirectedGraphImplFiltered graphGlobal;
     private Map<String, Node> nodeMap;
     private Map<String, Edge> edgeMap;
 
@@ -62,7 +63,7 @@ public class DhnsTestFiltering {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = new Dhns(controller, null);
-        graphGlobal = new HierarchicalDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure());
+        graphGlobal = new HierarchicalDirectedGraphImplFiltered(dhnsGlobal, dhnsGlobal.getGraphStructure(), dhnsGlobal.getViewManager().getVisibleView());
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
@@ -131,13 +132,29 @@ public class DhnsTestFiltering {
 
     @Test
     public void testFiltering() {
-        //dhnsGlobal.getGraphStructure().getStructure().showTreeAsTable();
+        /*dhnsGlobal.getGraphStructure().getStructure().showTreeAsTable();
         graphGlobal.getView().addPredicate(new DegreePredicate(3, 5));
+        Node[] actual = graphGlobal.getNodes().toArray();
+        for (int i = 0; i < actual.length; i++) {
+        System.out.println(actual[i].getId());
+        }*/
+        //((ViewImpl) graphGlobal.getView()).getGraphStructure().getStructure().showTreeAsTable();
+    }
+
+    @Test
+    public void testGrouping() {
+        //graphGlobal.getView().addPredicate(new DegreePredicate(3, 5));
+        graphGlobal.groupNodes(new Node[]{nodeMap.get("Node 1"), nodeMap.get("Node 2")});
+        dhnsGlobal.getGraphStructure().getStructure().showTreeAsTable();
         Node[] actual = graphGlobal.getNodes().toArray();
         for (int i = 0; i < actual.length; i++) {
             System.out.println(actual[i].getId());
         }
-        //((ViewImpl) graphGlobal.getView()).getGraphStructure().getStructure().showTreeAsTable();
+        System.out.println("edges");
+        Edge[] actual2 = graphGlobal.getEdges().toArray();
+        for (int i = 0; i < actual2.length; i++) {
+            System.out.println(actual2[i].getSource().getNodeData().getLabel() + "->" + actual2[i].getTarget().getNodeData().getLabel());
+        }
     }
 
     @Test
@@ -309,7 +326,7 @@ public class DhnsTestFiltering {
         graph.addEdge(egb);
         graph.addEdge(efa);
 
-        treeStructure.showTreeAsTable();
+        //treeStructure.showTreeAsTable();
         Edge[] actual = graph.getMetaEdges().toArray();
         for (int i = 0; i < actual.length; i++) {
             System.out.println(actual[i].getSource().getNodeData().getLabel() + "->" + actual[i].getTarget().getNodeData().getLabel());

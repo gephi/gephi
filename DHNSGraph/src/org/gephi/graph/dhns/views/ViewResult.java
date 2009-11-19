@@ -48,7 +48,6 @@ public class ViewResult {
     private Dhns dhns;
     private GraphStructure graphStructure;
     private boolean undirected = false;
-
     //Result
     private ViewNodeTree hierarchyLayerNodeTree;
     private ViewEdgeTree hierarchyLayerEdgeTree;
@@ -69,9 +68,9 @@ public class ViewResult {
     public void filter(Predicate predicate) {
         if (hierarchyLayerNodeTree == null) {
             //Create the ViewNodeTree
-            NodePredicate nodePredicate = (NodePredicate) Tautology.instance;
+            Predicate<AbstractNode> nodePredicate = Tautology.instance;
             if (predicate instanceof NodePredicate) {
-                nodePredicate = (NodePredicate) predicate;
+                nodePredicate = predicate;
             }
             hierarchyLayerNodeTree = createViewNodeTree(nodePredicate);
             Predicate<AbstractEdge> edgePredicate = Tautology.instance;
@@ -96,9 +95,9 @@ public class ViewResult {
         computeViewMetaEdges();
     }
 
-    private ViewNodeTree createViewNodeTree(NodePredicate predicate) {
+    private ViewNodeTree createViewNodeTree(Predicate<AbstractNode> predicate) {
         ViewNodeTree viewNodeTree = new ViewNodeTree();
-        TreeIterator treeIterator = new TreeIterator(graphStructure.getStructure(), false, (Predicate) predicate);
+        TreeIterator treeIterator = new TreeIterator(graphStructure.getStructure(), false, predicate);
 
         for (; treeIterator.hasNext();) {
             AbstractNode node = treeIterator.next();
