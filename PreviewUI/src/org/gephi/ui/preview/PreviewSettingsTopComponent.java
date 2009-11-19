@@ -13,7 +13,7 @@ import org.openide.windows.WindowManager;
 //import org.openide.util.Utilities;
 
 /**
- * Top component which displays something.
+ * Top component displaying the preview settings.
  */
 final class PreviewSettingsTopComponent extends TopComponent {
 
@@ -32,6 +32,25 @@ final class PreviewSettingsTopComponent extends TopComponent {
         PropertySheet ps = new PropertySheet();
         ps.setNodes(new Node[]{new PreviewNode()});
         propertiesPanel.add(ps, BorderLayout.CENTER);
+    }
+
+    /**
+     * Returns the graph visibility ratio set in the visibilityRatioSpinner
+     * component.
+     *
+     * @return the graph visibility ratio
+     */
+    public float getVisibilityRatio() {
+        float value = (Integer) visibilityRatioSpinner.getValue();
+
+        if (value < 0) {
+            value = 0;
+        }
+        else if (value > 100) {
+            value = 100;
+        }
+
+        return value / 100;
     }
 
     /** This method is called from within the constructor to
@@ -91,18 +110,13 @@ final class PreviewSettingsTopComponent extends TopComponent {
     }// </editor-fold>//GEN-END:initComponents
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+        // TODO refactor with MVC pattern
+
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
         PreviewTopComponent previewTopComponent = PreviewTopComponent.findInstance();
 
-        // TODO refactor with MVC pattern
-        float visibilityRatioValue = (Integer) visibilityRatioSpinner.getValue();
-        if (visibilityRatioValue  < 0)
-            visibilityRatioValue = 0;
-        else if (visibilityRatioValue > 100)
-            visibilityRatioValue = 100;
-
         controller.buildGraph();
-        previewTopComponent.setVisibilityRatio(visibilityRatioValue / 100f);
+        previewTopComponent.setVisibilityRatio(getVisibilityRatio());
         previewTopComponent.refreshPreview();
 }//GEN-LAST:event_refreshButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
