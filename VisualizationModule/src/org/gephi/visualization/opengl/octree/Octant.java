@@ -20,11 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.octree;
 
+import com.sun.opengl.util.GLUT;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.media.opengl.GL;
+import javax.media.opengl.glu.GLU;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.datastructure.avl.simple.AVLItem;
@@ -177,7 +179,7 @@ public class Octant implements AVLItem {
         return modelClasses.get(classID);
     }
 
-    public void displayOctreeNode(GL gl) {
+    public void displayOctant(GL gl) {
         /*if(children==null && depth==octree.getMaxDepth() && objectsCount>0)
         {*/
 
@@ -213,6 +215,31 @@ public class Octant implements AVLItem {
         o.displayOctreeNode(gl);
         }
         }*/
+    }
+
+    public void displayOctantInfo(GL gl, GLU glu) {
+        GLUT glut = new GLUT();
+
+        float quantum = size / 2;
+        float height = 15;
+
+        gl.glPushMatrix();
+        gl.glTranslatef(posX - quantum, posY + quantum - height, posZ + quantum);
+        gl.glScalef(0.1f, 0.1f, 0.1f);
+        gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+        glut.glutStrokeString(GLUT.STROKE_MONO_ROMAN, "objectsCount: " + objectsCount);
+        gl.glPopMatrix();
+
+        int i = 0;
+        for (ParamAVLTree<ModelImpl> p : modelClasses) {
+            height += 15;
+            gl.glPushMatrix();
+            gl.glTranslatef(posX - quantum, posY + quantum - height, posZ + quantum);
+            gl.glScalef(0.1f, 0.1f, 0.1f);
+            gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+            glut.glutStrokeString(GLUT.STROKE_MONO_ROMAN, "class" + (i++) + ": " + p.getCount());
+            gl.glPopMatrix();
+        }
     }
 
     public int getNumber() {

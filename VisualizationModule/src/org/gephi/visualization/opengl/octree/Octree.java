@@ -142,7 +142,7 @@ public class Octree implements VizArchitecture {
         for (Octant n : leaves) {
             n.resetUpdatePositionFlag();        //Profit from the loop to do this, because this method is always after updating position
             gl.glLoadName(n.getNumber());
-            n.displayOctreeNode(gl);
+            n.displayOctant(gl);
         }
         int nbRecords = gl.glRenderMode(GL.GL_RENDER);
         if (vizController.getVizModel().isCulling()) {
@@ -199,7 +199,7 @@ public class Octree implements VizArchitecture {
         for (int i = 0; i < visibleLeaves.size(); i++) {
             Octant node = visibleLeaves.get(i);
             gl.glLoadName(hitName);
-            node.displayOctreeNode(gl);
+            node.displayOctant(gl);
             hitName++;
         }
 
@@ -297,12 +297,13 @@ public class Octree implements VizArchitecture {
         return res;
     }
 
-    public void displayOctree(GL gl) {
+    public void displayOctree(GL gl, GLU glu) {
         gl.glDisable(GL.GL_CULL_FACE);
-        gl.glColor3f(1, 0.5f, 0.5f);
         gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
         for (Octant o : visibleLeaves) {
-            o.displayOctreeNode(gl);
+            gl.glColor3f(1, 0.5f, 0.5f);
+            o.displayOctant(gl);
+            o.displayOctantInfo(gl, glu);
         }
         if (!vizController.getVizConfig().isWireFrame()) {
             gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
