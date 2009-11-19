@@ -20,18 +20,21 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
+import org.gephi.graph.api.ImmutableTreeNode;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Predicate;
 import org.gephi.graph.api.View;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphStructure;
+import org.gephi.graph.dhns.filter.Tautology;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantIterator;
 import org.gephi.graph.dhns.node.iterators.LevelIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
+import org.gephi.graph.dhns.utils.TreeNodeWrapper;
 import org.gephi.graph.dhns.views.ViewImpl;
 
 /**
@@ -189,5 +192,15 @@ public abstract class HierarchicalGraphImplFiltered extends HierarchicalGraphImp
     public boolean isParent(Node node, Node parent) {
         view.checkUpdate();
         return super.isParent(node, parent);
+    }
+
+    @Override
+    public ImmutableTreeNode wrapToTreeNode() {
+        TreeNodeWrapper wrapper = new TreeNodeWrapper(structure.getStructure());
+        ImmutableTreeNode treeNode;
+        readLock();
+        treeNode = wrapper.wrap(view.getClusteredLayerNodeIterator());
+        readUnlock();
+        return treeNode;
     }
 }
