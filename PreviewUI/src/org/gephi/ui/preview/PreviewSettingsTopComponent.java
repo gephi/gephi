@@ -4,6 +4,9 @@ import java.awt.BorderLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import org.gephi.preview.api.controller.PreviewController;
+import org.gephi.project.api.ProjectController;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
@@ -32,6 +35,35 @@ final class PreviewSettingsTopComponent extends TopComponent {
         PropertySheet ps = new PropertySheet();
         ps.setNodes(new Node[]{new PreviewNode()});
         propertiesPanel.add(ps, BorderLayout.CENTER);
+
+        initEvents();
+    }
+
+    /**
+     * Inits the component's events.
+     */
+    private void initEvents() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        
+        pc.addWorkspaceListener(new WorkspaceListener() {
+
+            public void initialize(Workspace workspace) {
+            }
+
+            public void select(Workspace workspace) {
+                refreshButton.setEnabled(true);
+            }
+
+            public void unselect(Workspace workspace) {
+            }
+
+            public void close(Workspace workspace) {
+            }
+
+            public void disable() {
+                refreshButton.setEnabled(false);
+            }
+        });
     }
 
     /**
@@ -63,10 +95,11 @@ final class PreviewSettingsTopComponent extends TopComponent {
 
         refreshButton = new javax.swing.JButton();
         propertiesPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        visibilityRatioLabel = new javax.swing.JLabel();
         visibilityRatioSpinner = new javax.swing.JSpinner();
 
         org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.refreshButton.text")); // NOI18N
+        refreshButton.setEnabled(false);
         refreshButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 refreshButtonActionPerformed(evt);
@@ -75,7 +108,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
 
         propertiesPanel.setLayout(new java.awt.BorderLayout());
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.jLabel1.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(visibilityRatioLabel, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.visibilityRatioLabel.text")); // NOI18N
 
         visibilityRatioSpinner.setValue(new Integer(100));
 
@@ -86,7 +119,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
             .addComponent(propertiesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(visibilityRatioLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(visibilityRatioSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -101,7 +134,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
                 .addComponent(propertiesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                    .addComponent(visibilityRatioLabel)
                     .addComponent(visibilityRatioSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(refreshButton)
@@ -120,9 +153,9 @@ final class PreviewSettingsTopComponent extends TopComponent {
         previewTopComponent.refreshPreview();
 }//GEN-LAST:event_refreshButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel propertiesPanel;
     private javax.swing.JButton refreshButton;
+    private javax.swing.JLabel visibilityRatioLabel;
     private javax.swing.JSpinner visibilityRatioSpinner;
     // End of variables declaration//GEN-END:variables
 
