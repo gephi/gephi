@@ -70,7 +70,7 @@ import org.xml.sax.SAXException;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service=ImportController.class)
+@ServiceProvider(service = ImportController.class)
 public class DesktopImportController implements ImportController {
 
     private LongTaskExecutor executor;
@@ -137,7 +137,10 @@ public class DesktopImportController implements ImportController {
         final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
 
             public void fatalError(Throwable t) {
-                NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
+                t = t.getCause();
+                String msg = NbBundle.getMessage(DesktopImportController.class, "DesktopImportController.import.error", new Object[]{t.getClass().getSimpleName(), t.getLocalizedMessage(), t.getStackTrace()[0].getClassName(), t.getStackTrace()[0].getLineNumber()});
+                String title = NbBundle.getMessage(DesktopImportController.class, "DesktopImportController.import.error.title");
+                NotifyDescriptor ex = new NotifyDescriptor(msg, title, NotifyDescriptor.WARNING_MESSAGE, NotifyDescriptor.WARNING_MESSAGE, null, null);
                 DialogDisplayer.getDefault().notify(ex);
                 t.printStackTrace();
             }
@@ -243,8 +246,12 @@ public class DesktopImportController implements ImportController {
             final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
 
                 public void fatalError(Throwable t) {
-                    NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
+                    t = t.getCause();
+                    String msg = NbBundle.getMessage(DesktopImportController.class, "DesktopImportController.import.error", new Object[]{t.getClass().getSimpleName(), t.getLocalizedMessage(), t.getStackTrace()[0].getClassName(), t.getStackTrace()[0].getLineNumber()});
+                    String title = NbBundle.getMessage(DesktopImportController.class, "DesktopImportController.import.error.title");
+                    NotifyDescriptor ex = new NotifyDescriptor(msg, title, NotifyDescriptor.WARNING_MESSAGE, NotifyDescriptor.WARNING_MESSAGE, null, null);
                     DialogDisplayer.getDefault().notify(ex);
+                    t.printStackTrace();
                 }
             };
 
@@ -308,9 +315,9 @@ public class DesktopImportController implements ImportController {
             }
 
             container.closeLoader();
-            if(container.isAutoScale()) {
+            if (container.isAutoScale()) {
                 Scaler scaler = Lookup.getDefault().lookup(Scaler.class);
-                if(scaler!=null) {
+                if (scaler != null) {
                     scaler.doScale(container);
                 }
             }
