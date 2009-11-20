@@ -60,6 +60,16 @@ public interface NodeDraft {
 
     public void setLabelSize(float size);
 
+    public void setLabelColor(Color color);
+
+    public void setLabelColor(String r, String g, String b);
+
+    public void setLabelColor(float r, float g, float b);
+
+    public void setLabelColor(int r, int g, int b);
+
+    public void setLabelColor(String color);
+
     public void setVisible(boolean visible);
 
     public void addAttributeValue(AttributeColumn column, Object value);

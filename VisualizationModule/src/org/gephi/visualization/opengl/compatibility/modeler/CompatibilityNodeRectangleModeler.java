@@ -33,7 +33,6 @@ import org.gephi.visualization.api.initializer.CompatibilityNodeModeler;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.opengl.compatibility.objects.NodeRectangeModel;
-import org.gephi.visualization.opengl.text.TextManager;
 
 /**
  *
@@ -43,23 +42,19 @@ public class CompatibilityNodeRectangleModeler implements CompatibilityNodeModel
 
     private CompatibilityEngine engine;
     protected VizConfig config;
-    protected TextManager textManager;
 
     public CompatibilityNodeRectangleModeler(AbstractEngine engine) {
         this.engine = (CompatibilityEngine) engine;
         this.config = VizController.getInstance().getVizConfig();
-        this.textManager = VizController.getInstance().getTextManager();
     }
 
     @Override
     public ModelImpl initModel(Renderable n) {
-        NodeData nd = (NodeData) n;
         NodeRectangeModel obj = new NodeRectangeModel();
         obj.setObj((NodeData) n);
         obj.setSelected(false);
         obj.setDragDistanceFromMouse(new float[2]);
         n.setModel(obj);
-        textManager.initTextData(nd);
 
         chooseModel(obj);
         return obj;

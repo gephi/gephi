@@ -29,12 +29,10 @@ import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ModelImpl;
-import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.opengl.compatibility.objects.Edge2dModel;
 import org.gephi.visualization.opengl.compatibility.objects.Edge3dModel;
 import org.gephi.visualization.opengl.compatibility.objects.SelfLoop2dModel;
 import org.gephi.visualization.opengl.compatibility.objects.SelfLoop3dModel;
-import org.gephi.visualization.opengl.text.TextManager;
 
 /**
  *
@@ -68,8 +66,6 @@ public class CompatibilityEdgeModeler implements CompatibilityModeler<EdgeData> 
         }
         edge.setObj(e);
         e.setModel(edge);
-
-        controller.getTextManager().initTextData(e);
 
         return edge;
     }

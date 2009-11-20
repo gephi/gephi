@@ -264,7 +264,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                builder.append(node.getNodeData().isLabelVisible());
+                builder.append(node.getNodeData().getTextData().isVisible());
             }
         };
 
@@ -478,7 +478,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Edge edge) {
-                builder.append(edge.getEdgeData().isLabelVisible());
+                builder.append(edge.getEdgeData().getTextData().isVisible());
             }
         };
 

@@ -37,26 +37,23 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
 
     //Architecture
     private ImportContainerImpl container;
-
     //Basic
     private String id;
     private String label;
-
     //Flag
     private boolean autoId;
-
     //Topology
     private NodeDraftImpl source;
     private NodeDraftImpl target;
     private float weight = 1f;
     private EdgeType edgeType;
-
     //Viz
     private Color color;
-    private boolean labelVisible = true;
     private boolean visible = true;
+    //Text
+    private Color labelColor;
     private float labelSize = -1f;
-
+    private boolean labelVisible = true;
     //Attributes
     private List<AttributeValue> attributeValues = new ArrayList<AttributeValue>();
 
@@ -94,16 +91,39 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
         setColor(Color.getColor(color));
     }
 
-    public void setLabelVisible(boolean labelVisible) {
-        this.labelVisible = labelVisible;
-    }
-
     public void setLabel(String label) {
         this.label = label;
     }
 
     public void setLabelSize(float size) {
         this.labelSize = size;
+    }
+
+    public void setLabelVisible(boolean labelVisible) {
+        this.labelVisible = labelVisible;
+    }
+
+    public void setLabelColor(Color color) {
+        this.labelColor = color;
+    }
+
+    public void setLabelColor(String r, String g, String b) {
+        setColor(Integer.parseInt(r), Integer.parseInt(g), Integer.parseInt(b));
+    }
+
+    public void setLabelColor(float r, float g, float b) {
+        r = Math.max(Math.min(r, 1f), 0f);
+        g = Math.max(Math.min(g, 1f), 0f);
+        b = Math.max(Math.min(b, 1f), 0f);
+        setColor(new Color(r, g, b));
+    }
+
+    public void setLabelColor(int r, int g, int b) {
+        setColor(r / 255f, g / 255f, b / 255f);
+    }
+
+    public void setLabelColor(String color) {
+        setColor(Color.getColor(color));
     }
 
     public void setVisible(boolean visible) {
@@ -137,10 +157,6 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
     }
 
     //GETTERS
-    public float getLabelSize() {
-        return labelSize;
-    }
-
     public NodeDraftImpl getSource() {
         return source;
     }
@@ -161,16 +177,24 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
         return label;
     }
 
+    public float getLabelSize() {
+        return labelSize;
+    }
+
+    public boolean isLabelVisible() {
+        return labelVisible;
+    }
+
+    public Color getLabelColor() {
+        return labelColor;
+    }
+
     public float getWeight() {
         return weight;
     }
 
     public EdgeType getType() {
         return edgeType;
-    }
-
-    public boolean isLabelVisible() {
-        return labelVisible;
     }
 
     public boolean isVisible() {

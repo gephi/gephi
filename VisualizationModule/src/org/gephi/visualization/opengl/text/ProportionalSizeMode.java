@@ -36,17 +36,13 @@ public class ProportionalSizeMode implements SizeMode {
 
     public void setSizeFactor2d(float sizeFactor, TextDataImpl text, ModelImpl model) {
         float factor = FACTOR * model.getObj().getSize() * sizeFactor / model.getCameraDistance();
-        if(model.getObj().getLabelSize()!=-1) {
-            factor*=model.getObj().getLabelSize();
-        }
+        factor *= text.getSize();
         text.setSizeFactor(factor);
     }
 
     public void setSizeFactor3d(float sizeFactor, TextDataImpl text, ModelImpl model) {
         float factor = sizeFactor * model.getObj().getSize() / 10f;        //Between 0.1 and 2
-        if(model.getObj().getLabelSize()!=-1) {
-            factor*=model.getObj().getLabelSize();
-        }
+        factor *= text.getSize();
         text.setSizeFactor(factor);
     }
 

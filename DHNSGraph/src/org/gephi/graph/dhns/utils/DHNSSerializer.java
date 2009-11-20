@@ -183,6 +183,7 @@ public class DHNSSerializer {
                 }
                 edge.setWeight(Float.parseFloat(edgeE.getAttribute("weight")));
                 edge.getEdgeData().setAttributes(factory.newEdgeAttributes());
+                edge.getEdgeData().setTextData(factory.newTextData());
                 source.getEdgesOutTree().add(edge);
                 target.getEdgesInTree().add(edge);
                 graphStructure.getEdgeDictionnary().add(edge);
@@ -238,6 +239,7 @@ public class DHNSSerializer {
                     PreNode preNode = new PreNode(Integer.parseInt(nodeE.getAttribute("id")), 0, 0, 0, parentNode);
                     preNode.setEnabled(enabled);
                     preNode.getNodeData().setAttributes(factory.newNodeAttributes());
+                    preNode.getNodeData().setTextData(factory.newTextData());
                     treeStructure.insertAsChild(preNode, parentNode);
                     graphStructure.getNodeDictionnary().add(preNode);
                 }

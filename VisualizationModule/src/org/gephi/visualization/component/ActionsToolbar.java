@@ -130,7 +130,7 @@ public class ActionsToolbar extends JToolBar {
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
                 Graph graph = gc.getModel().getGraph();
                 for (Node n : graph.getNodes().toArray()) {
-                    n.getNodeData().setLabelSize(-1f);
+                    n.getNodeData().getTextData().setSize(1f);
                 }
             }
         });

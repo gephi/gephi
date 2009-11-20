@@ -25,12 +25,15 @@ import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.TextData;
+import org.gephi.graph.api.TextDataFactory;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.edge.SelfLoopImpl;
 import org.gephi.graph.dhns.edge.MixedEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.PreNode;
+import org.openide.util.Lookup;
 
 /**
  * Implementation of a basic node and edge factory. If possible set {@link Attributes} to objets.
@@ -43,10 +46,12 @@ public class GraphFactoryImpl implements GraphFactory {
 
     private IDGen idGen;
     private AttributeRowFactory attributesFactory;
+    private TextDataFactory textDataFactory;
 
     public GraphFactoryImpl(IDGen idGen, AttributeRowFactory attributesFactory) {
         this.idGen = idGen;
         this.attributesFactory = attributesFactory;
+        this.textDataFactory = Lookup.getDefault().lookup(TextDataFactory.class);
     }
 
     public AttributeRow newNodeAttributes() {
@@ -63,9 +68,17 @@ public class GraphFactoryImpl implements GraphFactory {
         return attributesFactory.newEdgeRow();
     }
 
+    public TextData newTextData() {
+        if(textDataFactory==null) {
+            return null;
+        }
+        return textDataFactory.newTextData();
+    }
+
     public AbstractNode newNode() {
         PreNode node = new PreNode(idGen.newNodeId(), 0, 0, 0, null);
         node.setAttributes(newNodeAttributes());
+        node.getNodeData().setTextData(newTextData());
         return node;
     }
 
@@ -82,6 +95,7 @@ public class GraphFactoryImpl implements GraphFactory {
             edge = new ProperEdgeImpl(idGen.newEdgeId(), nodeSource, nodeTarget);
         }
         edge.setAttributes(newEdgeAttributes());
+        edge.getEdgeData().setTextData(newTextData());
         return edge;
     }
 
@@ -101,6 +115,7 @@ public class GraphFactoryImpl implements GraphFactory {
             edge.setWeight(weight);
         }
         edge.setAttributes(newEdgeAttributes());
+        edge.getEdgeData().setTextData(newTextData());
         return edge;
     }
 

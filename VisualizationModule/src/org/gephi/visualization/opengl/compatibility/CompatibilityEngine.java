@@ -316,7 +316,7 @@ public class CompatibilityEngine extends AbstractEngine {
                     for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
                         ModelImpl obj = itr.next();
                         if (obj.markTime != markTime) {
-                            if ((obj.isSelected() || obj.isHighlight()) && obj.getObj().isLabelVisible()) {
+                            if ((obj.isSelected() || obj.isHighlight()) && obj.getObj().getTextData().isVisible()) {
                                 textManager.getNodeRenderer().drawTextNode(obj);
                             }
                             obj.markTime = markTime;
@@ -326,7 +326,7 @@ public class CompatibilityEngine extends AbstractEngine {
                     for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
                         ModelImpl obj = itr.next();
                         if (obj.markTime != markTime) {
-                            if (obj.getObj().isLabelVisible()) {
+                            if (obj.getObj().getTextData().isVisible()) {
                                 textManager.getNodeRenderer().drawTextNode(obj);
                             }
                             obj.markTime = markTime;
@@ -342,7 +342,7 @@ public class CompatibilityEngine extends AbstractEngine {
                     for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
                         ModelImpl obj = itr.next();
                         if (obj.markTime != markTime) {
-                            if ((obj.isSelected() || obj.isHighlight()) && obj.getObj().isLabelVisible()) {
+                            if ((obj.isSelected() || obj.isHighlight()) && obj.getObj().getTextData().isVisible()) {
                                 textManager.getEdgeRenderer().drawTextEdge(obj);
                             }
                             obj.markTime = markTime;
@@ -352,7 +352,7 @@ public class CompatibilityEngine extends AbstractEngine {
                     for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
                         ModelImpl obj = itr.next();
                         if (obj.markTime != markTime) {
-                            if (obj.getObj().isLabelVisible()) {
+                            if (obj.getObj().getTextData().isVisible()) {
                                 textManager.getEdgeRenderer().drawTextEdge(obj);
                             }
                             obj.markTime = markTime;

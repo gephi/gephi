@@ -38,6 +38,7 @@ public class TextDataImpl implements TextData {
     float a;
     float size = 1f;
     float sizeFactor = 1f;
+    boolean visible;
 
     public TextLine getLine() {
         return line;
@@ -100,6 +101,14 @@ public class TextDataImpl implements TextData {
 
     public float getAlpha() {
         return a;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public static class TextLine {

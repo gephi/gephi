@@ -45,6 +45,7 @@ public class TextDataPersistenceProvider implements WorkspacePersistenceProvider
     private static final String ELEMENT_EDGEDATA_TEXTDATA = "textdataedge";
     private static final String ELEMENT_TEXTDATA_COLOR = "color";
     private static final String ELEMENT_TEXTDATA_SIZE = "size";
+    private static final String ELEMENT_TEXTDATA_VISIBLE = "visible";
 
     public Element writeXML(Document document, Workspace workspace) {
         Element textDataE = document.createElement(ELEMENT_TEXTDATA);
@@ -67,6 +68,11 @@ public class TextDataPersistenceProvider implements WorkspacePersistenceProvider
                 Element sizeE = document.createElement(ELEMENT_TEXTDATA_SIZE);
                 sizeE.setAttribute("value", String.valueOf(nodeTextData.getSize()));
                 nodeE.appendChild(sizeE);
+
+                Element visibleE = document.createElement(ELEMENT_TEXTDATA_VISIBLE);
+                visibleE.setAttribute("value", String.valueOf(nodeTextData.isVisible()));
+                nodeE.appendChild(visibleE);
+
                 textDataE.appendChild(nodeE);
             }
         }
@@ -88,6 +94,11 @@ public class TextDataPersistenceProvider implements WorkspacePersistenceProvider
                     Element sizeE = document.createElement(ELEMENT_TEXTDATA_SIZE);
                     sizeE.setAttribute("value", String.valueOf(edgeTextData.getSize()));
                     edgeE.appendChild(sizeE);
+
+                    Element visibleE = document.createElement(ELEMENT_TEXTDATA_VISIBLE);
+                    visibleE.setAttribute("value", String.valueOf(edgeTextData.isVisible()));
+                    edgeE.appendChild(visibleE);
+
                     textDataE.appendChild(edgeE);
                 }
             }
@@ -106,19 +117,16 @@ public class TextDataPersistenceProvider implements WorkspacePersistenceProvider
                 if (itemE.getTagName().equals(ELEMENT_NODEDATA_TEXTDATA)) {
                     int id = Integer.parseInt(itemE.getAttribute("for"));
                     Node node = hierarchicalGraph.getNode(id);
-                    TextDataImpl textDataImpl = new TextDataImpl();
+                    TextDataImpl textDataImpl = (TextDataImpl) node.getNodeData().getTextData();
                     readTextData(itemE, textDataImpl);
-                    node.getNodeData().setTextData(textDataImpl);
                 } else if (itemE.getTagName().equals(ELEMENT_EDGEDATA_TEXTDATA)) {
                     int id = Integer.parseInt(itemE.getAttribute("for"));
                     Edge edge = hierarchicalGraph.getEdge(id);
-                    TextDataImpl textDataImpl = new TextDataImpl();
+                    TextDataImpl textDataImpl = (TextDataImpl) edge.getEdgeData().getTextData();
                     readTextData(itemE, textDataImpl);
-                    edge.getEdgeData().setTextData(textDataImpl);
                 }
             }
         }
-
     }
 
     private void readTextData(Element textDataE, TextData textData) {
@@ -134,6 +142,8 @@ public class TextDataPersistenceProvider implements WorkspacePersistenceProvider
                     textData.setColor(r, g, b, a);
                 } else if (itemE.getTagName().equals(ELEMENT_TEXTDATA_SIZE)) {
                     textData.setSize(Float.parseFloat(itemE.getAttribute("value")));
+                } else if (itemE.getTagName().equals(ELEMENT_TEXTDATA_VISIBLE)) {
+                    textData.setVisible(Boolean.parseBoolean(itemE.getAttribute("value")));
                 }
             }
         }

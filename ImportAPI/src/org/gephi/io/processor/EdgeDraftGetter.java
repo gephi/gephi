@@ -37,15 +37,17 @@ public interface EdgeDraftGetter extends EdgeDraft {
 
     public Color getColor();
 
-    public boolean isLabelVisible();
-
     public String getLabel();
 
     public boolean isVisible();
 
     public EdgeType getType();
 
+    public boolean isLabelVisible();
+
     public float getLabelSize();
+
+    public Color getLabelColor();
 
     public String getId();
 

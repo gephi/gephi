@@ -33,7 +33,6 @@ import org.gephi.visualization.api.initializer.CompatibilityNodeModeler;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.opengl.compatibility.objects.NodeDiskModel;
-import org.gephi.visualization.opengl.text.TextManager;
 
 /**
  *
@@ -50,26 +49,22 @@ public class CompatibilityNodeDiskModeler implements CompatibilityNodeModeler {
     public int BORDER64;
     private CompatibilityEngine engine;
     protected VizConfig config;
-    protected TextManager textManager;
 
     public CompatibilityNodeDiskModeler(AbstractEngine engine) {
         this.engine = (CompatibilityEngine) engine;
         this.config = VizController.getInstance().getVizConfig();
-        this.textManager = VizController.getInstance().getTextManager();
     }
 
     @Override
     public ModelImpl initModel(Renderable n) {
-        NodeData nd = (NodeData) n;
         NodeDiskModel obj = new NodeDiskModel();
-        obj.setObj(nd);
+        obj.setObj((NodeData) n);
         obj.setSelected(false);
         obj.setDragDistanceFromMouse(new float[2]);
         obj.modelType = SHAPE_DISK64;
         obj.modelBorderType = BORDER64;
         n.setModel(obj);
 
-        textManager.initTextData(nd);
         chooseModel(obj);
         return obj;
     }

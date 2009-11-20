@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.processor.standard;
 
+import java.awt.Color;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeRow;
@@ -42,7 +43,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author  Mathieu Bastian
  */
-@ServiceProvider(service=Processor.class)
+@ServiceProvider(service = Processor.class)
 public class DefaultProcessor implements Processor {
 
     public void process(ContainerUnloader container) {
@@ -120,10 +121,16 @@ public class DefaultProcessor implements Processor {
         if (nodeDraft.getLabel() != null) {
             node.getNodeData().setLabel(nodeDraft.getLabel());
         }
-        node.getNodeData().setLabelVisible(nodeDraft.isLabelVisible());
+
+        node.getNodeData().getTextData().setVisible(nodeDraft.isLabelVisible());
+
+        if (nodeDraft.getLabelColor() != null) {
+            Color labelColor = nodeDraft.getLabelColor();
+            node.getNodeData().getTextData().setColor(labelColor.getRed() / 255f, labelColor.getGreen() / 255f, labelColor.getBlue() / 255f, labelColor.getAlpha() / 255f);
+        }
 
         if (nodeDraft.getLabelSize() != -1f) {
-            node.getNodeData().setLabelSize(nodeDraft.getLabelSize());
+            node.getNodeData().getTextData().setSize(nodeDraft.getLabelSize());
         }
 
         if (nodeDraft.getX() != 0 && !Float.isNaN(nodeDraft.getX())) {
@@ -187,10 +194,15 @@ public class DefaultProcessor implements Processor {
         if (edgeDraft.getLabel() != null) {
             edge.getEdgeData().setLabel(edgeDraft.getLabel());
         }
-        edge.getEdgeData().setLabelVisible(edgeDraft.isLabelVisible());
+        edge.getEdgeData().getTextData().setVisible(edgeDraft.isLabelVisible());
 
         if (edgeDraft.getLabelSize() != -1f) {
-            edge.getEdgeData().setLabelSize(edgeDraft.getLabelSize());
+            edge.getEdgeData().getTextData().setSize(edgeDraft.getLabelSize());
+        }
+
+        if (edgeDraft.getLabelColor() != null) {
+            Color labelColor = edgeDraft.getLabelColor();
+            edge.getEdgeData().getTextData().setColor(labelColor.getRed() / 255f, labelColor.getGreen() / 255f, labelColor.getBlue() / 255f, labelColor.getAlpha() / 255f);
         }
 
         //Attributes

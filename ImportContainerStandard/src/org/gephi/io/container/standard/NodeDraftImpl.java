@@ -43,17 +43,19 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     //Basic
     private String id;
     private String label;
-    private NodeDraftImpl[] parent;
+    private NodeDraftImpl[] parents;
     //Viz attributes
     private Color color;
     private float size;
     private float x;
     private float y;
     private float z;
-    private float labelSize = -1f;
-    private boolean labelVisible = true;
     private boolean visible = true;
     private boolean fixed = false;
+    //Text
+    private float labelSize = -1f;
+    private boolean labelVisible = true;
+    private Color labelColor;
     //Dynamic
     private float from = -1;
     private float to = -1;
@@ -98,14 +100,6 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         this.autoId = false;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public void setLabelSize(float size) {
-        this.labelSize = size;
-    }
-
     public void setSize(float size) {
         this.size = size;
     }
@@ -126,29 +120,56 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         this.fixed = fixed;
     }
 
-    public void setLabelVisible(boolean labelVisible) {
-        this.labelVisible = labelVisible;
-    }
-
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
 
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setLabelSize(float size) {
+        this.labelSize = size;
+    }
+
+    public void setLabelVisible(boolean labelVisible) {
+        this.labelVisible = labelVisible;
+    }
+
+    public void setLabelColor(Color color) {
+        this.labelColor = color;
+    }
+
+    public void setLabelColor(String r, String g, String b) {
+        setColor(Integer.parseInt(r), Integer.parseInt(g), Integer.parseInt(b));
+    }
+
+    public void setLabelColor(float r, float g, float b) {
+        r = Math.max(Math.min(r, 1f), 0f);
+        g = Math.max(Math.min(g, 1f), 0f);
+        b = Math.max(Math.min(b, 1f), 0f);
+        setColor(new Color(r, g, b));
+    }
+
+    public void setLabelColor(int r, int g, int b) {
+        setColor(r / 255f, g / 255f, b / 255f);
+    }
+
+    public void setLabelColor(String color) {
+        setColor(Color.getColor(color));
+    }
+
     public void setParent(NodeDraft draft) {
         NodeDraftImpl draftImpl = (NodeDraftImpl) draft;
-        if (this.parent == null) {
-            this.parent = new NodeDraftImpl[1];
-            this.parent[0] = draftImpl;
+        if (this.parents == null) {
+            this.parents = new NodeDraftImpl[1];
+            this.parents[0] = draftImpl;
         } else {
-            this.parent = Arrays.copyOf(this.parent, this.parent.length + 1);
-            this.parent[this.parent.length - 1] = draftImpl;
+            this.parents = Arrays.copyOf(this.parents, this.parents.length + 1);
+            this.parents[this.parents.length - 1] = draftImpl;
         }
         height = Math.max(height, draftImpl.height + 1);
         container.setHierarchicalGraph(true);
-    }
-
-    public NodeDraftGetter[] getParents() {
-        return parent;
     }
 
     public void addChild(NodeDraft child) {
@@ -181,9 +202,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         return id;
     }
 
-    public String getLabel() {
-        return label;
-    }
+    
 
     public float getSize() {
         return size;
@@ -205,16 +224,24 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         return fixed;
     }
 
-    public boolean isLabelVisible() {
-        return labelVisible;
-    }
-
     public boolean isVisible() {
         return visible;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
     public float getLabelSize() {
         return labelSize;
+    }
+
+    public boolean isLabelVisible() {
+        return labelVisible;
+    }
+
+    public Color getLabelColor() {
+        return labelColor;
     }
 
     public float getDynamicFrom() {
@@ -227,6 +254,10 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
 
     public int getHeight() {
         return height;
+    }
+
+    public NodeDraftGetter[] getParents() {
+        return parents;
     }
 
     @Override

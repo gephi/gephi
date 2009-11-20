@@ -51,11 +51,13 @@ public interface NodeDraftGetter extends NodeDraft {
 
     public boolean isFixed();
 
-    public boolean isLabelVisible();
-
     public boolean isVisible();
 
+    public boolean isLabelVisible();
+
     public float getLabelSize();
+
+    public Color getLabelColor();
 
     public void setNode(Node node);
 

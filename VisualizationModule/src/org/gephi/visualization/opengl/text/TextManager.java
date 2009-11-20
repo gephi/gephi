@@ -27,15 +27,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.gephi.graph.api.EdgeData;
-import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
-import org.gephi.graph.api.TextData;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.GraphDrawable;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.VizConfig;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -53,7 +51,7 @@ public class TextManager implements VizArchitecture {
     private TextUtils textUtils;
     private Renderer nodeRenderer;
     private Renderer edgeRenderer;
-    private TextDataBuilder builder;
+    private TextDataBuilderImpl builder;
     //Variables
     private TextModel model;
     //Preferences
@@ -64,7 +62,7 @@ public class TextManager implements VizArchitecture {
 
     public TextManager() {
         textUtils = new TextUtils(this);
-        builder = new TextDataBuilder();
+        builder = Lookup.getDefault().lookup(TextDataBuilderImpl.class);
 
         //SizeMode init
         sizeModes = new SizeMode[3];
@@ -83,7 +81,6 @@ public class TextManager implements VizArchitecture {
         vizConfig = VizController.getInstance().getVizConfig();
         drawable = VizController.getInstance().getDrawable();
         initRenderer();
-        builder.initBuilder(this);
 
         //Init sizemodes
         for (SizeMode s : sizeModes) {
@@ -100,10 +97,10 @@ public class TextManager implements VizArchitecture {
                 if (!edgeRenderer.getFont().equals(model.getEdgeFont())) {
                     edgeRenderer.setFont(model.getEdgeFont());
                 }
-                if (builder.getNodeColumns() != model.getNodeTextColumns() || builder.getEdgeColumns() != model.getEdgeTextColumns()) {
+                /*if (builder.getNodeColumns() != model.getNodeTextColumns() || builder.getEdgeColumns() != model.getEdgeTextColumns()) {
                     builder.initBuilder(TextManager.this);
                     VizController.getInstance().getEngine().setConfigChanged(true);
-                }
+                }*/
             }
         });
 
@@ -142,14 +139,6 @@ public class TextManager implements VizArchitecture {
 
     public void defaultEdgeColor() {
         model.colorMode.defaultEdgeColor(edgeRenderer);
-    }
-
-    public void initTextData(NodeData node) {
-        node.setTextData(builder.buildTextNode(node));
-    }
-
-    public void initTextData(EdgeData edge) {
-        edge.setTextData(builder.buildTextEdge(edge));
     }
 
     public boolean isSelectedOnly() {

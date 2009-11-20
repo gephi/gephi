@@ -18,35 +18,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.gephi.graph.api;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface TextData {
+public interface TextDataFactory {
 
-    public float getWidth();
-
-    public float getHeight();
-
-    public String getText();
-
-    public float getSize();
-
-    public float getR();
-
-    public float getG();
-
-    public float getB();
-
-    public float getAlpha();
-
-    public boolean isVisible();
-
-    public void setColor(float r, float g, float b, float alpha);
-
-    public void setSize(float size);
-
-    public void setVisible(boolean visible);
+    public TextData newTextData();
 }
