@@ -27,6 +27,7 @@ import javax.swing.RowFilter;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.jdesktop.swingx.JXTable;
@@ -52,36 +53,9 @@ public class EdgeDataTable {
         table.setColumnControlVisible(true);
         table.setRowFilter(rowFilter);
 
+        propertiesColumns = new PropertyEdgeDataColumn[2];
 
-        propertiesColumns = new PropertyEdgeDataColumn[3];
-
-        propertiesColumns[0] = new PropertyEdgeDataColumn("Label") {
-
-            @Override
-            public Class getColumnClass() {
-                return String.class;
-            }
-
-            @Override
-            public Object getValueFor(Edge edge) {
-                if (edge.getEdgeData().getLabel().isEmpty()) {
-                    return String.valueOf(edge.getId());
-                }
-                return edge.getEdgeData().getLabel();
-            }
-
-            @Override
-            public void setValueFor(Edge edge, Object value) {
-                edge.getEdgeData().setLabel((String) value);
-            }
-
-            @Override
-            public boolean isEditable() {
-                return true;
-            }
-        };
-
-        propertiesColumns[1] = new PropertyEdgeDataColumn("Source") {
+        propertiesColumns[0] = new PropertyEdgeDataColumn("Source") {
 
             @Override
             public Class getColumnClass() {
@@ -94,7 +68,7 @@ public class EdgeDataTable {
             }
         };
 
-        propertiesColumns[2] = new PropertyEdgeDataColumn("Target") {
+        propertiesColumns[1] = new PropertyEdgeDataColumn("Target") {
 
             @Override
             public Class getColumnClass() {
@@ -247,7 +221,7 @@ public class EdgeDataTable {
         }
 
         public boolean isEditable() {
-            return true;
+            return column.getOrigin().equals(AttributeOrigin.DATA);
         }
     }
 

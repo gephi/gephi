@@ -37,6 +37,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
 import org.gephi.graph.api.Node;
@@ -164,33 +165,10 @@ public class NodeDataTable {
     private static class NodeRowModel implements RowModel {
 
         private NodeDataColumn[] columns;
-        private PropertyNodeDataColumn[] propertiesColumns;
 
         public NodeRowModel(AttributeColumn[] attributeColumns) {
 
-            //Properties
-            propertiesColumns = new PropertyNodeDataColumn[1];
-
-            propertiesColumns[0] = new PropertyNodeDataColumn("ID") {
-
-                @Override
-                public Class getColumnClass() {
-                    return Integer.class;
-                }
-
-                @Override
-                public Object getValueFor(ImmutableTreeNode node) {
-                    Node graphNode = node.getNode();
-                    return graphNode.getId();
-                }
-            };
-
             ArrayList<NodeDataColumn> cols = new ArrayList<NodeDataColumn>();
-
-            for (PropertyNodeDataColumn p : propertiesColumns) {
-                cols.add(p);
-            }
-
             for (AttributeColumn c : attributeColumns) {
                 cols.add(new AttributeNodeDataColumn(c));
             }
@@ -266,31 +244,7 @@ public class NodeDataTable {
         }
 
         public boolean isEditable() {
-            return true;
-        }
-    }
-
-    private static abstract class PropertyNodeDataColumn implements NodeDataColumn {
-
-        private String name;
-
-        public PropertyNodeDataColumn(String name) {
-            this.name = name;
-        }
-
-        public abstract Class getColumnClass();
-
-        public String getColumnName() {
-            return name;
-        }
-
-        public abstract Object getValueFor(ImmutableTreeNode node);
-
-        public void setValueFor(ImmutableTreeNode node, Object value) {
-        }
-
-        public boolean isEditable() {
-            return false;
+            return column.getOrigin().equals(AttributeOrigin.DATA);
         }
     }
 
