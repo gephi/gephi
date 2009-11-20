@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import java.util.Map.Entry;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -115,6 +116,19 @@ public class EdgeColorTransformerPanel extends javax.swing.JPanel {
             }
         });
         popupMenu.add(randomizeItem);
+        JMenuItem allBlackItem = new JMenuItem(NbBundle.getMessage(NodeColorTransformerPanel.class, "EdgeColorTransformerPanel.action.allBlacks"));
+        allBlackItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                for (Entry<Object, Color> entry : edgeColorTransformer.getMap().entrySet()) {
+                    entry.setValue(Color.BLACK);
+                }
+                setup(partition, edgeColorTransformer);
+                revalidate();
+                repaint();
+            }
+        });
+        popupMenu.add(allBlackItem);
     }
 
     /** This method is called from within the constructor to

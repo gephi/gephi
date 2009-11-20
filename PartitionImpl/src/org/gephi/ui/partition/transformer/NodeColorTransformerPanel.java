@@ -115,6 +115,7 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
                 repaint();
             }
         });
+        popupMenu.add(randomizeItem);
         JMenuItem allBlackItem = new JMenuItem(NbBundle.getMessage(NodeColorTransformerPanel.class, "NodeColorTransformerPanel.action.allBlacks"));
         allBlackItem.addActionListener(new ActionListener() {
 
@@ -127,7 +128,7 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
                 repaint();
             }
         });
-        popupMenu.add(randomizeItem);
+        popupMenu.add(allBlackItem);
     }
 
     /** This method is called from within the constructor to
