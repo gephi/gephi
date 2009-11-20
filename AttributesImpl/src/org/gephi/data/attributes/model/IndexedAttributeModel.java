@@ -34,6 +34,7 @@ public class IndexedAttributeModel extends AbstractAttributeModel {
 
     public IndexedAttributeModel() {
         dataIndex = new DataIndex();
+        createPropertiesColumn();
     }
 
     @Override

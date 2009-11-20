@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.edge;
 
+import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.DynamicData;
 import org.gephi.graph.api.Edge;
@@ -38,14 +39,10 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
 
     protected Edge edge;
     protected LayoutData layoutData;
-    protected String label = "";
-    protected String id = "";
     protected float r = -1f;
     protected float g = 0f;
     protected float b = 0f;
     protected float alpha = 1f;
-    protected boolean labelVisible = true;
-    protected float labelSize = -1f;
     private Model model;
     protected Attributes attributes;
     protected TextData textData;
@@ -69,7 +66,7 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     }
 
     public String getLabel() {
-        return label;
+        return (String) attributes.getValue(PropertiesColumn.EDGE_LABEL.getIndex());
     }
 
     public LayoutData getLayoutData() {
@@ -178,24 +175,8 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
         this.textData = textData;
     }
 
-    public boolean isLabelVisible() {
-        return labelVisible;
-    }
-
     public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public void setLabelVisible(boolean value) {
-        this.labelVisible = value;
-    }
-
-    public float getLabelSize() {
-        return labelSize;
-    }
-
-    public void setLabelSize(float labelSize) {
-        this.labelSize = labelSize;
+        attributes.setValue(PropertiesColumn.EDGE_LABEL.getIndex(), label);
     }
 
     public DynamicData getDynamicData() {
@@ -216,11 +197,12 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     }
 
     public void setId(String id) {
-        this.id = id;
+        attributes.setValue(PropertiesColumn.EDGE_ID.getIndex(), id);
     }
 
     public String getId() {
-        if(id.isEmpty()) {
+        String id = (String) attributes.getValue(PropertiesColumn.EDGE_ID.getIndex());
+        if (id.isEmpty()) {
             return Integer.toString(edge.getId());
         }
         return id;

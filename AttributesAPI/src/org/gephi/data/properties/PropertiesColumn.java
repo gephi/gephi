@@ -18,23 +18,26 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.data.attributes.api;
+package org.gephi.data.properties;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface AttributeColumn {
+public enum PropertiesColumn {
 
-    public AttributeType getType();
+    NODE_ID(0),
+    NODE_LABEL(1),
+    EDGE_ID(0),
+    EDGE_LABEL(1);
+    private final int index;
 
-    public String getTitle();
+    PropertiesColumn(int index) {
+        this.index = index;
+    }
 
-    public int getIndex();
-
-    public AttributeOrigin getOrigin();
-
-    public String getId();
-
-    public Object getDefaultValue();
+    public int getIndex() {
+        return index;
+    }
 }
+

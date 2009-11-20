@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.node;
 
+import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.DynamicData;
 import org.gephi.graph.api.LayoutData;
@@ -38,13 +39,9 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
 
     protected Node node;
     protected LayoutData layoutData;
-    protected String id = "";
     protected float x;
     protected float y;
     protected float z;
-    protected String label = "";
-    protected boolean labelVisible = true;
-    protected float labelSize = -1f;
     protected float r = 0f;
     protected float g = 0f;
     protected float b = 0f;
@@ -158,7 +155,7 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
     }
 
     public void setLabel(String label) {
-        this.label = label;
+        attributes.setValue(PropertiesColumn.NODE_LABEL.getIndex(), label);
     }
 
     public float alpha() {
@@ -178,10 +175,11 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
     }
 
     public String getLabel() {
-        return label;
+        return (String) attributes.getValue(PropertiesColumn.NODE_LABEL.getIndex());
     }
 
     public String getId() {
+        String id = (String) attributes.getValue(PropertiesColumn.NODE_ID.getIndex());
         if (id.isEmpty()) {
             return Integer.toString(node.getId());
         }
@@ -189,7 +187,7 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
     }
 
     public void setId(String id) {
-        this.id = id;
+        attributes.setValue(PropertiesColumn.NODE_ID.getIndex(), id);
     }
 
     public boolean isFixed() {
@@ -200,21 +198,6 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
         this.fixed = fixed;
     }
 
-    public void setLabelVisible(boolean value) {
-        this.labelVisible = value;
-    }
-
-    public boolean isLabelVisible() {
-        return labelVisible;
-    }
-
-    public float getLabelSize() {
-        return labelSize;
-    }
-
-    public void setLabelSize(float labelSize) {
-        this.labelSize = labelSize;
-    }
 
     public TextData getTextData() {
         return textData;

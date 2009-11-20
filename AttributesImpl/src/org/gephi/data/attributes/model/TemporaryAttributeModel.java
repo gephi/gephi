@@ -34,7 +34,7 @@ import org.gephi.data.attributes.api.AttributeType;
 public class TemporaryAttributeModel extends AbstractAttributeModel {
 
     public TemporaryAttributeModel() {
-
+        createPropertiesColumn();
     }
 
     @Override

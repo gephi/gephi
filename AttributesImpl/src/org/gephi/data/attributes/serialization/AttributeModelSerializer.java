@@ -193,6 +193,8 @@ public class AttributeModelSerializer {
                 }
             }
         }
-        table.addColumn(id, title, type, origin, defaultValue);
+        if (!table.hasColumn(title)) {
+            table.addColumn(id, title, type, origin, defaultValue);
+        }
     }
 }

@@ -23,6 +23,7 @@ package org.gephi.data.attributes;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
@@ -51,6 +52,13 @@ public abstract class AbstractAttributeModel implements AttributeModel {
         tableMap.put(nodeTable.name, nodeTable);
         tableMap.put(edgeTable.name, edgeTable);
         factory = new AttributeFactoryImpl(this);
+    }
+
+    protected void createPropertiesColumn() {
+        nodeTable.addColumn("id", "Id", AttributeType.STRING, AttributeOrigin.PROPERTY, "");
+        nodeTable.addColumn("label", "Label", AttributeType.STRING, AttributeOrigin.PROPERTY, "");
+        edgeTable.addColumn("id", "Id", AttributeType.STRING, AttributeOrigin.PROPERTY, "");
+        edgeTable.addColumn("label", "Label", AttributeType.STRING, AttributeOrigin.PROPERTY, "");
     }
 
     public abstract Object getManagedValue(Object obj, AttributeType attributeType);
