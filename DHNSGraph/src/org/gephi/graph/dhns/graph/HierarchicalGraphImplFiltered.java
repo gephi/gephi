@@ -160,6 +160,7 @@ public abstract class HierarchicalGraphImplFiltered extends HierarchicalGraphImp
 
     @Override
     public NodeIterable getTopNodes() {
+        readLock();
         view.checkUpdate();
         return dhns.newNodeIterable(new ChildrenIterator(structure.getStructure(), view.getHierarchyLayerNodePredicate()));
     }
