@@ -19,7 +19,10 @@
     <target name="replaceWindowsLauncherIcon" if="isWindows" description="Replace the icon for the Windows launcher exe">
         <echo message="Replacing icon of Windows launcher executable."/>
         <exec executable="ReplaceVistaIcon.exe" resolveexecutable="true">
-            <arg line="build/launcher/bin/${app.name}.exe ${app.name}.ico"/>
+            <arg line="build/launcher/bin/${app.name}.exe ${app.name}.ico 0"/>
+        </exec>
+        <exec executable="ReplaceVistaIcon.exe" resolveexecutable="true">
+            <arg line="build/launcher/bin/${app.name}.exe gephifile.ico 1"/>
         </exec>
     </target>
 
