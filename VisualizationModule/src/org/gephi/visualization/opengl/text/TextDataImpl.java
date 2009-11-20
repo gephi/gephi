@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
+import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import org.gephi.graph.api.TextData;
@@ -69,6 +70,14 @@ public class TextDataImpl implements TextData {
         this.g = g;
         this.b = b;
         this.a = alpha;
+    }
+
+    public void setColor(Color color) {
+        if (color == null) {
+            r = -1;
+        } else {
+            setColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
+        }
     }
 
     public float getWidth() {

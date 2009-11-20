@@ -27,7 +27,6 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
-import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -87,7 +86,7 @@ public class ActionsToolbar extends JToolBar {
             public void actionPerformed(ActionEvent evt) {
                 color = resetColorButton.getColor();
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                Graph graph = gc.getModel().getGraph();
+                Graph graph = gc.getModel().getGraphVisible();
                 for (Node n : graph.getNodes().toArray()) {
                     n.getNodeData().setR(color.getRed() / 255f);
                     n.getNodeData().setG(color.getGreen() / 255f);
@@ -112,13 +111,32 @@ public class ActionsToolbar extends JToolBar {
 
             public void actionPerformed(ActionEvent e) {
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                Graph graph = gc.getModel().getGraph();
+                Graph graph = gc.getModel().getGraphVisible();
                 for (Node n : graph.getNodes().toArray()) {
                     n.getNodeData().setSize(size);
                 }
             }
         });
         add(resetSizeButton);
+
+        //Reset label colors
+        final JButton resetLabelColorButton = new JButton();
+        resetLabelColorButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/resetLabelColor.png")));
+        resetLabelColorButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetLabelColors"));
+        resetLabelColorButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent evt) {
+                GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+                Graph graph = gc.getModel().getGraphVisible();
+                for (Node n : graph.getNodes().toArray()) {
+                    n.getNodeData().getTextData().setColor(null);
+                }
+                for (Edge e : graph.getEdges().toArray()) {
+                    e.getEdgeData().getTextData().setColor(null);
+                }
+            }
+        });
+        add(resetLabelColorButton);
 
         //Reset label size
         JButton resetLabelSizeButton = new JButton();
@@ -128,7 +146,7 @@ public class ActionsToolbar extends JToolBar {
 
             public void actionPerformed(ActionEvent e) {
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                Graph graph = gc.getModel().getGraph();
+                Graph graph = gc.getModel().getGraphVisible();
                 for (Node n : graph.getNodes().toArray()) {
                     n.getNodeData().getTextData().setSize(1f);
                 }

@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.api;
 
+import java.awt.Color;
+
 /**
  *
  * @author Mathieu Bastian
@@ -45,6 +47,8 @@ public interface TextData {
     public boolean isVisible();
 
     public void setColor(float r, float g, float b, float alpha);
+
+    public void setColor(Color color);
 
     public void setSize(float size);
 
