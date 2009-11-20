@@ -27,11 +27,16 @@ import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.ui.utils.ColorUtils;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VizConfig;
+import org.openide.util.Lookup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -270,6 +275,43 @@ public class TextModel {
 //            sizeMode = new ScaledSizeMode(this);
             sizeMode = VizController.getInstance().getTextManager().getSizeModes()[1];
         }
+
+        //NodeColumns
+        AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
+        if (attributeController != null && attributeController.getModel() != null) {
+            AttributeModel attributeModel = attributeController.getModel();
+            List<AttributeColumn> nodeCols = new ArrayList<AttributeColumn>();
+            List<AttributeColumn> edgeCols = new ArrayList<AttributeColumn>();
+
+            Element nodeColumnsE = (Element) textModelElement.getElementsByTagName("nodecolumns").item(0);
+            NodeList nodeColumnList = nodeColumnsE.getElementsByTagName("column");
+            for (int i = 0; i < nodeColumnList.getLength(); i++) {
+                if (nodeColumnList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                    Element nodeColumnE = (Element) nodeColumnList.item(i);
+                    String id = nodeColumnE.getAttribute("id");
+                    AttributeColumn col = attributeModel.getNodeTable().getColumn(id);
+                    if (col != null) {
+                        nodeCols.add(col);
+                    }
+                }
+            }
+
+            Element edgeColumnsE = (Element) textModelElement.getElementsByTagName("edgecolumns").item(0);
+            NodeList edgeColumnList = edgeColumnsE.getElementsByTagName("column");
+            for (int i = 0; i < edgeColumnList.getLength(); i++) {
+                if (edgeColumnList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                    Element edgeColumnE = (Element) edgeColumnList.item(i);
+                    String id = edgeColumnE.getAttribute("id");
+                    AttributeColumn col = attributeModel.getEdgeTable().getColumn(id);
+                    if (col != null) {
+                        edgeCols.add(col);
+                    }
+                }
+            }
+
+            nodeTextColumns = nodeCols.toArray(new AttributeColumn[0]);
+            edgeTextColumns = edgeCols.toArray(new AttributeColumn[0]);
+        }
     }
 
     public Element writeXML(Document document) {
@@ -339,6 +381,24 @@ public class TextModel {
             sizeModeE.setAttribute("class", "ScaledSizeMode");
         }
         textModelE.appendChild(sizeModeE);
+
+        //NodeColumns
+        Element nodeColumnsE = document.createElement("nodecolumns");
+        for (AttributeColumn c : nodeTextColumns) {
+            Element nodeColumnE = document.createElement("column");
+            nodeColumnE.setAttribute("id", c.getId());
+            nodeColumnsE.appendChild(nodeColumnE);
+        }
+        textModelE.appendChild(nodeColumnsE);
+
+        //EdgeColumns
+        Element edgeColumnsE = document.createElement("edgecolumns");
+        for (AttributeColumn c : edgeTextColumns) {
+            Element edgeColumnE = document.createElement("column");
+            edgeColumnE.setAttribute("id", c.getId());
+            edgeColumnsE.appendChild(edgeColumnE);
+        }
+        textModelE.appendChild(edgeColumnsE);
 
         return textModelE;
     }

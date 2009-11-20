@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.component;
 
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -30,6 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.swing.ButtonModel;
 import javax.swing.JCheckBox;
+import net.miginfocom.swing.MigLayout;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeOrigin;
@@ -44,7 +44,7 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
 
     //Settings
     private ButtonModel selectedModel;
-    private boolean showProperties = false;
+    private boolean showProperties = true;
     //Model
     private TextModel textModel;
     private AttributesCheckBox[] nodeCheckBoxs;
@@ -73,6 +73,7 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
                 }
             }
         });
+        showPropertiesCheckbox.setSelected(showProperties);
         showPropertiesCheckbox.addItemListener(new ItemListener() {
 
             public void itemStateChanged(ItemEvent e) {
@@ -119,12 +120,12 @@ public class LabelAttributesPanel extends javax.swing.JPanel {
             target = edgeCheckBoxs;
         }
         contentPanel.removeAll();
-        contentPanel.setLayout(new GridLayout(availableColumns.size(), 1));
+        contentPanel.setLayout(new MigLayout("", "[pref!]"));
         for (int i = 0; i < availableColumns.size(); i++) {
             AttributeColumn column = availableColumns.get(i);
             AttributesCheckBox c = new AttributesCheckBox(column, selectedColumns.contains(column));
             target[i] = c;
-            contentPanel.add(c.getCheckBox());
+            contentPanel.add(c.getCheckBox(), "wrap");
         }
         contentPanel.revalidate();
         contentPanel.repaint();

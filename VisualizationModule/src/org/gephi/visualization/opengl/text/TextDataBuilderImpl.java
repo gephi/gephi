@@ -20,6 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.text;
 
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.graph.api.EdgeData;
+import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.TextData;
 import org.gephi.graph.api.TextDataFactory;
 import org.openide.util.lookup.ServiceProvider;
@@ -28,38 +31,38 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service=TextDataFactory.class)
+@ServiceProvider(service = TextDataFactory.class)
 public class TextDataBuilderImpl implements TextDataFactory {
 
     public TextData newTextData() {
         return new TextDataImpl();
     }
 
-    /* public TextData buildTextNode(NodeData n) {
-    TextDataImpl t = new TextDataImpl();
-    if (nodeColumns != null) {
-    String str = "";
-    for (AttributeColumn c : nodeColumns) {
-    str += n.getAttributes().getValue(c.getIndex());
-    }
-    t.setLine(str);
-    } else {
-    t.setLine(n.getLabel());
-    }
-    return t;
+    public void buildNodeText(NodeData nodeData, TextDataImpl textDataImpl, TextModel model) {
+        if (model.getNodeTextColumns() != null) {
+            String str = "";
+            int i = 0;
+            for (AttributeColumn c : model.getNodeTextColumns()) {
+                if (i++ > 0) {
+                    str += " - ";
+                }
+                str += nodeData.getAttributes().getValue(c.getIndex());
+            }
+            textDataImpl.setLine(str);
+        }
     }
 
-    public TextData buildTextEdge(EdgeData e) {
-    TextDataImpl t = new TextDataImpl();
-    if (edgeColumns != null) {
-    String str = "";
-    for (AttributeColumn c : edgeColumns) {
-    str += e.getAttributes().getValue(c.getIndex());
+    public void buildEdgeText(EdgeData edgeData, TextDataImpl textDataImpl, TextModel model) {
+        if (model.getEdgeTextColumns() != null) {
+            String str = "";
+            int i = 0;
+            for (AttributeColumn c : model.getEdgeTextColumns()) {
+                if (i++ > 0) {
+                    str += " - ";
+                }
+                str += edgeData.getAttributes().getValue(c.getIndex());
+            }
+            textDataImpl.setLine(str);
+        }
     }
-    t.setLine(str);
-    } else {
-    t.setLine(e.getLabel());
-    }
-    return t;
-    }*/
 }

@@ -40,7 +40,6 @@ import org.w3c.dom.Element;
 public class VizModel {
 
     protected VizConfig config;
-
     //Variable
     protected float[] cameraPosition;
     protected float[] cameraTarget;
@@ -64,7 +63,6 @@ public class VizModel {
     protected float[] edgeBothSelectionColor;
     protected boolean adjustByText;
     protected String nodeModeler;
-
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
     private boolean defaultModel = false;
