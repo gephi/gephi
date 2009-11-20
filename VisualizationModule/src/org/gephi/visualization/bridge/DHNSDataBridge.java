@@ -199,9 +199,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     public void updateMetaEdges() {
         Modeler edgeInit = engine.getModelClasses()[AbstractEngine.CLASS_EDGE].getCurrentModeler();
 
-
         for (Edge edge : graph.getMetaEdges()) {
-
+            assert edge.getSource().getNodeData().getModel() != null && edge.getTarget().getNodeData().getModel() != null;
             Model obj = edge.getEdgeData().getModel();
             if (obj == null) {
                 //Model is null, ADD

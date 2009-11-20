@@ -182,7 +182,7 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
     }
 
     public String getId() {
-        if(id.isEmpty()) {
+        if (id.isEmpty()) {
             return Integer.toString(node.getId());
         }
         return id;

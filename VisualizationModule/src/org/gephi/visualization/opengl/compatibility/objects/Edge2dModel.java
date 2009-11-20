@@ -46,6 +46,7 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
 
     @Override
     public int[] octreePosition(float centerX, float centerY, float centerZ, float size) {
+        //Not used, because getOctants() already returns right octant to add the edge
         NodeData nodeFrom = obj.getSource();
         NodeData nodeTo = obj.getTarget();
 
@@ -284,16 +285,23 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
 
     @Override
     public void resetOctant() {
-        /*if(octants[0]==octant)
-        {
         octants[0] = null;
+        octants[1] = null;
+    }
+
+    @Override
+    public Octant[] getOctants() {
+        if (this.octants[0] == null && this.octants[1] == null) {
+            Octant sourceOctant = ((ModelImpl) obj.getSource().getModel()).getOctants()[0];
+            Octant targetOctant = ((ModelImpl) obj.getTarget().getModel()).getOctants()[0];
+            if (sourceOctant == targetOctant) {
+                return new Octant[]{sourceOctant};
+            } else {
+                return new Octant[]{sourceOctant, targetOctant};
+            }
+        } else {
+            return this.octants;
         }
-        if(octants[1]==octant)
-        {
-        octants[1] = null;
-        }*/
-        octants[0] = null;
-        octants[1] = null;
     }
 
     @Override
