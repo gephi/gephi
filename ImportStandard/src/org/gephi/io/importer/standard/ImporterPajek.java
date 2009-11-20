@@ -26,6 +26,7 @@ import java.util.StringTokenizer;
 import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.container.EdgeDraft;
 import org.gephi.io.container.NodeDraft;
+import org.gephi.io.importer.FileFormatImporter;
 import org.gephi.io.importer.FileType;
 import org.gephi.io.importer.ImportException;
 import org.gephi.io.importer.TextImporter;
@@ -36,11 +37,13 @@ import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service = FileFormatImporter.class)
 public class ImporterPajek implements TextImporter, LongTask {
 
     //Architecture
@@ -48,7 +51,6 @@ public class ImporterPajek implements TextImporter, LongTask {
     private Report report;
     private ProgressTicket progressTicket;
     private boolean cancel = false;
-
     //Node data
     private LineNumberReader reader;
     private NodeDraft[] verticesArray;
@@ -92,6 +94,9 @@ public class ImporterPajek implements TextImporter, LongTask {
             StringTokenizer stringTokenizer = new StringTokenizer(curLine);
             stringTokenizer.nextToken(); // skip past "*vertices";
             int num_vertices = Integer.parseInt(stringTokenizer.nextToken());
+
+            Progress.switchToDeterminate(progressTicket, num_vertices);        //Progress
+
             verticesArray = new NodeDraft[num_vertices];
             for (int i = 0; i < num_vertices; i++) {
                 NodeDraft node = container.factory().newNodeDraft();
@@ -122,6 +127,8 @@ public class ImporterPajek implements TextImporter, LongTask {
                     reader.close();
                     throw iae;
                 }
+
+                Progress.progress(progressTicket);
             }
 
             //Append nodes

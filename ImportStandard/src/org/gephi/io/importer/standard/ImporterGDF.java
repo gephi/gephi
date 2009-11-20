@@ -32,6 +32,7 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.container.EdgeDraft;
 import org.gephi.io.container.NodeDraft;
+import org.gephi.io.importer.FileFormatImporter;
 import org.gephi.io.importer.FileType;
 import org.gephi.io.importer.TextImporter;
 import org.gephi.io.logging.Issue;
@@ -41,12 +42,14 @@ import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  * @author Sebastien Heymann
  */
+@ServiceProvider(service = FileFormatImporter.class)
 public class ImporterGDF implements TextImporter, LongTask {
 
     //Architecture

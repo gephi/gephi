@@ -34,15 +34,15 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.type.StringList;
-import org.gephi.data.properties.EdgeProperties;
-import org.gephi.data.properties.NodeProperties;
 import org.gephi.io.container.EdgeDraft;
 import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.container.EdgeDefault;
 import org.gephi.io.container.NodeDraft;
+import org.gephi.io.importer.FileFormatImporter;
 import org.gephi.io.importer.FileType;
 import org.gephi.io.importer.PropertiesAssociations;
-import org.gephi.io.importer.PropertyAssociation;
+import org.gephi.io.importer.PropertiesAssociations.EdgeProperties;
+import org.gephi.io.importer.PropertiesAssociations.NodeProperties;
 import org.gephi.io.importer.XMLImporter;
 import org.gephi.io.logging.Issue;
 import org.gephi.io.logging.Report;
@@ -51,6 +51,7 @@ import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -61,6 +62,7 @@ import org.w3c.dom.NodeList;
  * @author Mathieu Bastian
  * @author Sebastien Heymann
  */
+@ServiceProvider(service = FileFormatImporter.class)
 public class ImporterGEXF implements XMLImporter, LongTask {
 
     //Architecture
@@ -88,15 +90,15 @@ public class ImporterGEXF implements XMLImporter, LongTask {
 
     public ImporterGEXF() {
         //Default node associations
-        properties.addNodePropertyAssociation(new PropertyAssociation<NodeProperties>(NodeProperties.LABEL, "label"));
-        properties.addNodePropertyAssociation(new PropertyAssociation<NodeProperties>(NodeProperties.X, "x"));
-        properties.addNodePropertyAssociation(new PropertyAssociation<NodeProperties>(NodeProperties.Y, "y"));
-        properties.addNodePropertyAssociation(new PropertyAssociation<NodeProperties>(NodeProperties.Y, "z"));
-        properties.addNodePropertyAssociation(new PropertyAssociation<NodeProperties>(NodeProperties.SIZE, "size"));
+        properties.addNodePropertyAssociation(NodeProperties.LABEL, "label");
+        properties.addNodePropertyAssociation(NodeProperties.X, "x");
+        properties.addNodePropertyAssociation(NodeProperties.Y, "y");
+        properties.addNodePropertyAssociation(NodeProperties.Y, "z");
+        properties.addNodePropertyAssociation(NodeProperties.SIZE, "size");
 
         //Default edge associations
-        properties.addEdgePropertyAssociation(new PropertyAssociation<EdgeProperties>(EdgeProperties.LABEL, "label"));
-        properties.addEdgePropertyAssociation(new PropertyAssociation<EdgeProperties>(EdgeProperties.WEIGHT, "weight"));
+        properties.addEdgePropertyAssociation(EdgeProperties.LABEL, "label");
+        properties.addEdgePropertyAssociation(EdgeProperties.WEIGHT, "weight");
     }
 
     public void importData(Document document, ContainerLoader container, Report report) throws Exception {

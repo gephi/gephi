@@ -26,11 +26,13 @@ import org.gephi.io.database.DatabaseType;
 import org.gephi.io.database.EdgeListDatabase;
 import org.gephi.ui.database.DatabaseTypeUI;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service = DatabaseType.class)
 public class EdgeList implements DatabaseType {
 
     public String getName() {

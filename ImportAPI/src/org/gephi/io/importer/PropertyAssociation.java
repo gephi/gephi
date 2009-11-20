@@ -30,7 +30,7 @@ public final class PropertyAssociation<Property> {
     private final String title;
     private volatile int hashCode = 0;      //Cache hashcode
 
-    public PropertyAssociation(Property property, String title) {
+    PropertyAssociation(Property property, String title) {
         this.property = property;
         this.title = title;
     }

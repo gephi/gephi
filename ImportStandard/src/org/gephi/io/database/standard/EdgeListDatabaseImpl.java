@@ -20,11 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.database.standard;
 
-import org.gephi.data.properties.EdgeProperties;
-import org.gephi.data.properties.NodeProperties;
 import org.gephi.io.database.AbstractDatabase;
 import org.gephi.io.database.EdgeListDatabase;
-import org.gephi.io.importer.PropertyAssociation;
+import org.gephi.io.importer.PropertiesAssociations.EdgeProperties;
+import org.gephi.io.importer.PropertiesAssociations.NodeProperties;
 
 /**
  *
@@ -40,18 +39,18 @@ public class EdgeListDatabaseImpl extends AbstractDatabase implements EdgeListDa
     public EdgeListDatabaseImpl() {
 
         //Default node associations
-        properties.addNodePropertyAssociation(new PropertyAssociation<NodeProperties>(NodeProperties.ID, "id"));
-        properties.addNodePropertyAssociation(new PropertyAssociation<NodeProperties>(NodeProperties.LABEL, "label"));
-        properties.addNodePropertyAssociation(new PropertyAssociation<NodeProperties>(NodeProperties.X, "x"));
-        properties.addNodePropertyAssociation(new PropertyAssociation<NodeProperties>(NodeProperties.Y, "y"));
-        properties.addNodePropertyAssociation(new PropertyAssociation<NodeProperties>(NodeProperties.SIZE, "size"));
+        properties.addNodePropertyAssociation(NodeProperties.ID, "id");
+        properties.addNodePropertyAssociation(NodeProperties.LABEL, "label");
+        properties.addNodePropertyAssociation(NodeProperties.X, "x");
+        properties.addNodePropertyAssociation(NodeProperties.Y, "y");
+        properties.addNodePropertyAssociation(NodeProperties.SIZE, "size");
 
         //Default edge associations
-        properties.addEdgePropertyAssociation(new PropertyAssociation<EdgeProperties>(EdgeProperties.ID, "id"));
-        properties.addEdgePropertyAssociation(new PropertyAssociation<EdgeProperties>(EdgeProperties.SOURCE, "source"));
-        properties.addEdgePropertyAssociation(new PropertyAssociation<EdgeProperties>(EdgeProperties.TARGET, "target"));
-        properties.addEdgePropertyAssociation(new PropertyAssociation<EdgeProperties>(EdgeProperties.LABEL, "label"));
-        properties.addEdgePropertyAssociation(new PropertyAssociation<EdgeProperties>(EdgeProperties.WEIGHT, "weight"));
+        properties.addEdgePropertyAssociation(EdgeProperties.ID, "id");
+        properties.addEdgePropertyAssociation(EdgeProperties.SOURCE, "source");
+        properties.addEdgePropertyAssociation(EdgeProperties.TARGET, "target");
+        properties.addEdgePropertyAssociation(EdgeProperties.LABEL, "label");
+        properties.addEdgePropertyAssociation(EdgeProperties.WEIGHT, "weight");
     }
 
     public String getEdgeAttributesQuery() {

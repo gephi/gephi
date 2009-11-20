@@ -23,8 +23,6 @@ package org.gephi.io.importer;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import org.gephi.data.properties.EdgeProperties;
-import org.gephi.data.properties.NodeProperties;
 
 /**
  *
@@ -32,11 +30,21 @@ import org.gephi.data.properties.NodeProperties;
  */
 public final class PropertiesAssociations {
 
+    public enum NodeProperties {
+
+        X, Y, Z, R, G, B, SIZE, ID, LABEL, FIXED;
+    }
+
+    public enum EdgeProperties {
+
+        R, G, B, WEIGHT, ID, LABEL, ALPHA, SOURCE, TARGET;
+    }
     //PropertiesAssociations association
     private List<PropertyAssociation<NodeProperties>> nodePropertyAssociations = new LinkedList<PropertyAssociation<NodeProperties>>();
     private List<PropertyAssociation<EdgeProperties>> edgePropertyAssociations = new LinkedList<PropertyAssociation<EdgeProperties>>();
 
-    public void addEdgePropertyAssociation(PropertyAssociation<EdgeProperties> association) {
+    public void addEdgePropertyAssociation(EdgeProperties property, String title) {
+        PropertyAssociation<EdgeProperties> association = new PropertyAssociation<EdgeProperties>(property, title);
         if (edgePropertyAssociations.contains(association)) {
             return;
         }
@@ -52,7 +60,8 @@ public final class PropertiesAssociations {
         edgePropertyAssociations.add(association);
     }
 
-    public void addNodePropertyAssociation(PropertyAssociation<NodeProperties> association) {
+    public void addNodePropertyAssociation(NodeProperties property, String title) {
+        PropertyAssociation<NodeProperties> association = new PropertyAssociation<NodeProperties>(property, title);
         if (nodePropertyAssociations.contains(association)) {
             return;
         }
@@ -68,19 +77,11 @@ public final class PropertiesAssociations {
         nodePropertyAssociations.add(association);
     }
 
-    public void removeEdgePropertyAssociation(PropertyAssociation<EdgeProperties> association) {
-        edgePropertyAssociations.remove(association);
-    }
-
-    public void removeNodePropertyAssociation(PropertyAssociation<NodeProperties> association) {
-        nodePropertyAssociations.remove(association);
-    }
-
-    public PropertyAssociation<EdgeProperties>[] getEdgePropertiesAssociation() {
+    PropertyAssociation<EdgeProperties>[] getEdgePropertiesAssociation() {
         return edgePropertyAssociations.toArray(new PropertyAssociation[0]);
     }
 
-    public PropertyAssociation<NodeProperties>[] getNodePropertiesAssociation() {
+    PropertyAssociation<NodeProperties>[] getNodePropertiesAssociation() {
         return nodePropertyAssociations.toArray(new PropertyAssociation[0]);
     }
 
@@ -122,15 +123,15 @@ public final class PropertiesAssociations {
 
     public String getInfos() {
         String res = "***Node Properties Associations***\n";
-        for(PropertyAssociation<NodeProperties> p : nodePropertyAssociations) {
-            res+="Property "+p.getProperty().toString()+" = "+p.getTitle()+" Column\n";
+        for (PropertyAssociation<NodeProperties> p : nodePropertyAssociations) {
+            res += "Property " + p.getProperty().toString() + " = " + p.getTitle() + " Column\n";
         }
-        res+="*********************************\n";
+        res += "*********************************\n";
         res = "***Edge Properties Associations***\n";
-        for(PropertyAssociation<EdgeProperties> p : edgePropertyAssociations) {
-            res+="Property "+p.getProperty().toString()+" = "+p.getTitle()+" Column\n";
+        for (PropertyAssociation<EdgeProperties> p : edgePropertyAssociations) {
+            res += "Property " + p.getProperty().toString() + " = " + p.getTitle() + " Column\n";
         }
-        res+="*********************************\n";
+        res += "*********************************\n";
         return res;
     }
 }

@@ -29,8 +29,6 @@ import java.sql.Types;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.data.properties.EdgeProperties;
-import org.gephi.data.properties.NodeProperties;
 import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.container.EdgeDraft;
 import org.gephi.io.container.NodeDraft;
@@ -40,13 +38,17 @@ import org.gephi.io.database.EdgeListDatabase;
 import org.gephi.io.database.drivers.SQLUtils;
 import org.gephi.io.importer.DatabaseImporter;
 import org.gephi.io.importer.PropertiesAssociations;
+import org.gephi.io.importer.PropertiesAssociations.EdgeProperties;
+import org.gephi.io.importer.PropertiesAssociations.NodeProperties;
 import org.gephi.io.logging.Issue;
 import org.gephi.io.logging.Report;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service=DatabaseImporter.class)
 public class EdgeListImporter implements DatabaseImporter {
 
     private Report report;
