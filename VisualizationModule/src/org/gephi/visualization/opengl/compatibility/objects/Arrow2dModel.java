@@ -20,8 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.opengl.compatibility.objects;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.EdgeData;
@@ -79,9 +77,6 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
 
         //Get collision distance between nodeTo and arrow point
         double angle = Math.atan2(y2 - y1, x2 - x1);
-        if (nodeTo.getModel() == null) {
-            Logger.getLogger(Arrow2dModel.class.getName()).log(Level.INFO, "null" + this + " edge=" + edge.getModel());
-        }
         float collisionDistance = ((ModelImpl) nodeTo.getModel()).getCollisionDistance(angle);
 
         //Point of the arrow
@@ -115,19 +110,20 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
                 r = edge.r();
                 if (r == -1f) {
                     NodeData source = edge.getSource();
-                    r = source.r();
-                    g = source.g();
-                    b = source.b();
+                    r = 0.498f * source.r();
+                    g = 0.498f * source.g();
+                    b = 0.498f * source.b();
                     a = edge.alpha();
                 } else {
-                    g = edge.g();
-                    b = edge.b();
+                    g = 0.498f * edge.g();
+                    b = 0.498f * edge.b();
+                    r *= 0.498f;
                     a = edge.alpha();
                 }
             }
             if (vizModel.getConfig().isLightenNonSelected()) {
                 float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
-                a = a - (a - 0.1f) * lightColorFactor;
+                a = a - (a - 0.01f) * lightColorFactor;
                 gl.glColor4f(r, g, b, a);
             } else {
                 gl.glColor4f(r, g, b, a);
@@ -137,8 +133,8 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
             float g = 0f;
             float b = 0f;
             if (vizModel.isEdgeSelectionColor()) {
-                ModelImpl m1 = (ModelImpl) nodeFrom.getModel();
-                ModelImpl m2 = (ModelImpl) nodeTo.getModel();
+                ModelImpl m1 = (ModelImpl) edge.getSource().getModel();
+                ModelImpl m2 = (ModelImpl) edge.getTarget().getModel();
                 if (m1.isSelected() && m2.isSelected()) {
                     float[] both = vizModel.getEdgeBothSelectionColor();
                     r = both[0];
@@ -159,13 +155,12 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
                 r = edge.r();
                 if (r == -1f) {
                     NodeData source = edge.getSource();
-                    r = 0.498f * source.r();
-                    g = 0.498f * source.g();
-                    b = 0.498f * source.b();
+                    r = source.r();
+                    g = source.g();
+                    b = source.b();
                 } else {
-                    g = 0.498f * edge.g();
-                    b = 0.498f * edge.b();
-                    r *= 0.498f;
+                    g = edge.g();
+                    b = edge.b();
                 }
             }
             gl.glColor4f(r, g, b, 1f);

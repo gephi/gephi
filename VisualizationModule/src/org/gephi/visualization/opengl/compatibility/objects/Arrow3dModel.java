@@ -96,19 +96,20 @@ public class Arrow3dModel extends Arrow2dModel {
                 r = edge.r();
                 if (r == -1f) {
                     NodeData source = edge.getSource();
-                    r = source.r();
-                    g = source.g();
-                    b = source.b();
+                    r = 0.498f * source.r();
+                    g = 0.498f * source.g();
+                    b = 0.498f * source.b();
                     a = edge.alpha();
                 } else {
-                    g = edge.g();
-                    b = edge.b();
+                    g = 0.498f * edge.g();
+                    b = 0.498f * edge.b();
+                    r *= 0.498f;
                     a = edge.alpha();
                 }
             }
             if (vizModel.getConfig().isLightenNonSelected()) {
                 float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
-                a = a - (a - 0.1f) * lightColorFactor;
+                a = a - (a - 0.01f) * lightColorFactor;
                 gl.glColor4f(r, g, b, a);
             } else {
                 gl.glColor4f(r, g, b, a);
@@ -118,8 +119,8 @@ public class Arrow3dModel extends Arrow2dModel {
             float g = 0f;
             float b = 0f;
             if (vizModel.isEdgeSelectionColor()) {
-                ModelImpl m1 = (ModelImpl) nodeFrom.getModel();
-                ModelImpl m2 = (ModelImpl) nodeTo.getModel();
+                ModelImpl m1 = (ModelImpl) edge.getSource().getModel();
+                ModelImpl m2 = (ModelImpl) edge.getTarget().getModel();
                 if (m1.isSelected() && m2.isSelected()) {
                     float[] both = vizModel.getEdgeBothSelectionColor();
                     r = both[0];
@@ -140,13 +141,12 @@ public class Arrow3dModel extends Arrow2dModel {
                 r = edge.r();
                 if (r == -1f) {
                     NodeData source = edge.getSource();
-                    r = 0.498f * source.r();
-                    g = 0.498f * source.g();
-                    b = 0.498f * source.b();
+                    r = source.r();
+                    g = source.g();
+                    b = source.b();
                 } else {
-                    g = 0.498f * edge.g();
-                    b = 0.498f * edge.b();
-                    r *= 0.498f;
+                    g = edge.g();
+                    b = edge.b();
                 }
             }
             gl.glColor4f(r, g, b, 1f);
