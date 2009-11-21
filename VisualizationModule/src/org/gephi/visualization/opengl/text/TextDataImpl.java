@@ -36,10 +36,10 @@ public class TextDataImpl implements TextData {
     float r = -1;
     float g;
     float b;
-    float a;
+    float a = 1f;
     float size = 1f;
     float sizeFactor = 1f;
-    boolean visible;
+    boolean visible = true;
 
     public TextLine getLine() {
         return line;

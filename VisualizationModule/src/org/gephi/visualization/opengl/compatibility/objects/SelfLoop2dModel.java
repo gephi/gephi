@@ -248,11 +248,10 @@ public class SelfLoop2dModel extends ModelImpl<EdgeData> {
 
     @Override
     public Octant[] getOctants() {
-        Octant[] oc = ((ModelImpl) obj.getSource().getModel()).getOctants();
-        if (oc[0] == null) //The node has been destroyed
-        {
-            oc = this.octants;
+        if(this.octants[0]==null) {
+            Octant[] oc = ((ModelImpl) obj.getSource().getModel()).getOctants();
+            return oc;
         }
-        return oc;
+        return this.octants;
     }
 }

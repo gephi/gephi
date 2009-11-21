@@ -365,7 +365,7 @@ public class CompatibilityEngine extends AbstractEngine {
         }
 
 
-        octree.displayOctree(gl, glu);
+        //octree.displayOctree(gl, glu);
     }
 
     @Override
