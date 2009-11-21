@@ -113,7 +113,9 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
 
         //Level links
         for (int i = 0; i < height + 1; i++) {
+            graph.readLock();
             int levelSize = graph.getLevelSize(i);
+            graph.readUnlock();
             JXHyperlink link = new JXHyperlink();
             link.setClickedColor(new java.awt.Color(0, 51, 255));
             link.setText(levelStr + " " + i + " (" + levelSize + " " + nodesStr + ")");
