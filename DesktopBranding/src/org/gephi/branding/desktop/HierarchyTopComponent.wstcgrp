@@ -1,0 +1,9 @@
+<!DOCTYPE tc-group PUBLIC
+  "-//NetBeans//DTD Top Component in Group Properties 2.0//EN"
+  "http://www.netbeans.org/dtds/tc-group2_0.dtd">
+
+<tc-group version="2.0">
+    <module name="org.gephi.desktop.hierarchy" spec="1.0"/>
+    <tc-id id="HierarchyTopComponent" />
+    <open-close-behavior open="true" close="true" />
+</tc-group>

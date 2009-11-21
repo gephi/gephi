@@ -7,5 +7,5 @@ and open the template in the editor.
 <tc-ref version="2.0" >
     <module name="org.gephi.desktop.partition" spec="1.0"/>
     <tc-id id="PartitionTopComponent"/>
-    <state opened="false"/>
+    <state opened="true"/>
 </tc-ref>

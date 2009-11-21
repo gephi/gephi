@@ -133,6 +133,8 @@
                 <file name="StatisticsTopComponent.wstcgrp" url="StatisticsTopComponent.wstcgrp"/>
                 <file name="FiltersTopComponent.wstcgrp" url="FiltersTopComponent.wstcgrp"/>
                 <file name="RankingTopComponent.wstcgrp" url="RankingTopComponent.wstcgrp"/>
+                <file name="PartitionTopComponent.wstcgrp" url="PartitionTopComponent.wstcgrp"/>
+                <file name="HierarchyTopComponent.wstcgrp" url="HierarchyTopComponent.wstcgrp"/>
             </folder>
             <file name="PreviewGroup.wsgrp" url="PreviewGroup.wsgrp"/>
             <folder name="PreviewGroup">
