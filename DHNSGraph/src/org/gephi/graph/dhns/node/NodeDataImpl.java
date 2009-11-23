@@ -57,6 +57,8 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
 
     public NodeDataImpl(Node node) {
         this.node = node;
+        this.x = (float) ((0.01 + Math.random()) * 1000) - 500;
+        this.y = (float) ((0.01 + Math.random()) * 1000) - 500;
     }
 
     public Node getNode() {
