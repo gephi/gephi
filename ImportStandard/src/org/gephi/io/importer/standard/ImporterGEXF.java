@@ -267,6 +267,11 @@ public class ImporterGEXF implements XMLImporter, LongTask {
         for (int i = 0; i < nodeListE.getLength(); i++) {
             Element nodeE = (Element) nodeListE.item(i);
 
+            if (!nodeE.getNodeName().equals("node")) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_notnode", nodeE.getNodeName()), Issue.Level.WARNING));
+                return;
+            }
+
             //highest nodes are used to calculate the progress
             if(parent == null) {
                 Progress.progress(progressTicket);
@@ -290,7 +295,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             if (!nodeE.getAttribute("pid").isEmpty() && !nodeE.getAttribute("pid").equals("0")) {
                 String pid = nodeE.getAttribute("pid");
 
-                // parent node unknown, maybve declared after
+                // parent node unknown, maybe declared after
                 if(!container.nodeExists(pid)) {
                     if(unknownParents.containsKey(pid)) {
                         unknownParents.get(pid).add(nodeId);
@@ -340,24 +345,42 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             //Node color
             Element nodeColor = (Element) nodeE.getElementsByTagName("viz:color").item(0);
             if (nodeColor != null) {
-                int r = Integer.parseInt(nodeColor.getAttribute("r"));
-                int g = Integer.parseInt(nodeColor.getAttribute("g"));
-                int b = Integer.parseInt(nodeColor.getAttribute("b"));
+                String rStr = nodeColor.getAttribute("r");
+                String gStr = nodeColor.getAttribute("g");
+                String bStr = nodeColor.getAttribute("b");
+
+                int r = (rStr.isEmpty()) ? 0 : Integer.parseInt(rStr);
+                int g = (gStr.isEmpty()) ? 0 : Integer.parseInt(gStr);
+                int b = (bStr.isEmpty()) ? 0 : Integer.parseInt(bStr);
+
                 node.setColor(new Color(r, g, b));
             }
 
             //Node position
             Element nodePosition = (Element) nodeE.getElementsByTagName("viz:position").item(0);
             if (nodePosition != null) {
-                node.setX(Float.parseFloat(nodePosition.getAttribute("x")));
-                node.setY(Float.parseFloat(nodePosition.getAttribute("y")));
-                node.setZ(Float.parseFloat(nodePosition.getAttribute("z")));
+                float x = Float.parseFloat(nodePosition.getAttribute("x"));
+                float y = Float.parseFloat(nodePosition.getAttribute("y"));
+                float z = Float.parseFloat(nodePosition.getAttribute("z"));
+
+                if(Float.NaN != x) {
+                    node.setX(x);
+                }
+                if(Float.NaN != y) {
+                    node.setY(y);
+                }
+                if(Float.NaN != z) {
+                    node.setZ(z);
+                }
             }
 
             //Node size
             Element nodeSize = (Element) nodeE.getElementsByTagName("viz:size").item(0);
             if (nodeSize != null) {
-                node.setSize(Float.parseFloat(nodeSize.getAttribute("value")));
+                float size = Float.parseFloat(nodeSize.getAttribute("value"));
+                if(Float.NaN != size) {
+                    node.setSize(size);
+                }
             }
 
             if(isDynamicMode) {
@@ -381,20 +404,32 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             //Append node
             container.addNode(node);
 
-            //Hierarchy children
-            XPathFactory factory = XPathFactory.newInstance();
-            XPath xpath = factory.newXPath();
-
-            XPathExpression exp = xpath.compile("./nodes/node[@id and normalize-space(@label)]");
-            NodeList nodeChildenListE = (NodeList) exp.evaluate(nodeE, XPathConstants.NODESET);
-            if (nodeChildenListE != null && nodeChildenListE.getLength() > 0) {
-                parseNodes(nodeChildenListE, nodeId);
+            //Hierarchy nodes
+            Node childNode = nodeE.getFirstChild();
+            if (childNode != null) {
+                do {
+                    if (childNode.getNodeName().equals("nodes")) {
+                        Node childE = childNode.getFirstChild();
+                        NodeList childrenListE = childE.getChildNodes();
+                        if (childrenListE != null && childrenListE.getLength() > 0) {
+                            parseNodes(childrenListE, nodeId);
+                        }
+                    }
+                } while ((childNode = childNode.getNextSibling()) != null);
             }
 
-            exp = xpath.compile("./edges/edge[@source and @target]");
-            NodeList edgeChildrenListE = (NodeList) exp.evaluate(nodeE, XPathConstants.NODESET);
-            if (edgeChildrenListE != null && edgeChildrenListE.getLength() > 0) {
-                parseEdges(edgeChildrenListE, nodeId);
+            //Hierarchy edges
+            Node childEdge = nodeE.getFirstChild();
+            if (childEdge != null) {
+                do {
+                    if (childEdge.getNodeName().equals("edges")) {
+                        Node childE = childEdge.getFirstChild();
+                        NodeList childrenListE = childE.getChildNodes();
+                        if (childrenListE != null && childrenListE.getLength() > 0) {
+                            parseEdges(childrenListE, nodeId);
+                        }
+                    }
+                } while ((childEdge = childEdge.getNextSibling()) != null);
             }
         }
     }
