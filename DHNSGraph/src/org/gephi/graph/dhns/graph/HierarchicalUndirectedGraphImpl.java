@@ -29,6 +29,7 @@ import org.gephi.graph.api.View;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.MixedEdgeImpl;
 import org.gephi.graph.dhns.edge.iterators.EdgeAndMetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
@@ -52,7 +53,7 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
 
     public boolean addEdge(Edge edge) {
         AbstractEdge absEdge = checkEdge(edge);
-        if (edge.isDirected() && !absEdge.isSelfLoop()) {
+        if (absEdge instanceof MixedEdgeImpl && edge.isDirected() && !absEdge.isSelfLoop()) {
             throw new IllegalArgumentException("Can't add a directed egde");
         }
         if (checkEdgeExist(absEdge.getSource(), absEdge.getTarget()) || checkEdgeExist(absEdge.getTarget(), absEdge.getSource())) {

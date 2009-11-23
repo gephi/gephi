@@ -57,6 +57,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     protected HierarchicalGraph graph;
     private VizConfig vizConfig;
     protected ModeManager modeManager;
+    protected boolean undirected = false;
     //Version
     protected int nodeVersion = -1;
     protected int edgeVersion = -1;
@@ -77,10 +78,13 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
         GraphModel graphModel = controller.getModel();
         if (graphModel.isDirected()) {
+            undirected = false;
             graph = graphModel.getHierarchicalDirectedGraphVisible();
         } else if (graphModel.isUndirected()) {
+            undirected = true;
             graph = graphModel.getHierarchicalUndirectedGraphVisible();
         } else if (graphModel.isMixed()) {
+            undirected = false;
             graph = graphModel.getHierarchicalMixedGraphVisible();
         } else {
             //No visualized graph inited yet
@@ -111,7 +115,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             updateEdges();
             updateMetaEdges();
             edgeClass.setCacheMarker(cacheMarker);
-            if (vizConfig.isShowArrows()) {
+            if (!undirected && vizConfig.isShowArrows()) {
                 object3dClasses[AbstractEngine.CLASS_ARROW].setCacheMarker(cacheMarker);
             }
         }
@@ -173,7 +177,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                 //Model is null, ADD
                 obj = edgeInit.initModel(edge.getEdgeData());
                 engine.addObject(AbstractEngine.CLASS_EDGE, (ModelImpl) obj);
-                if (vizConfig.isShowArrows() && !edge.isSelfLoop()) {
+                if (!undirected && vizConfig.isShowArrows() && !edge.isSelfLoop()) {
                     ModelImpl arrowObj = arrowInit.initModel(edge.getEdgeData());
                     engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);
@@ -181,13 +185,13 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                 }
             } else if (!obj.isValid()) {
                 engine.addObject(AbstractEngine.CLASS_EDGE, (ModelImpl) obj);
-                if (vizConfig.isShowArrows() && !edge.isSelfLoop()) {
+                if (!undirected && vizConfig.isShowArrows() && !edge.isSelfLoop()) {
                     ModelImpl arrowObj = ((Edge2dModel) obj).getArrow();
                     engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);
                 }
             } else {
-                if (vizConfig.isShowArrows() && !edge.isSelfLoop()) {
+                if (!undirected && vizConfig.isShowArrows() && !edge.isSelfLoop()) {
                     ModelImpl arrowObj = ((Edge2dModel) obj).getArrow();
                     arrowObj.setCacheMarker(cacheMarker);
                 }

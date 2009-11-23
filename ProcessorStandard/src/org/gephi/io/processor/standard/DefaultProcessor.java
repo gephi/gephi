@@ -33,6 +33,7 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.io.container.ContainerUnloader;
+import org.gephi.io.container.EdgeDraft.EdgeType;
 import org.gephi.io.processor.EdgeDraftGetter;
 import org.gephi.io.processor.NodeDraftGetter;
 import org.gephi.io.processor.Processor;
@@ -100,8 +101,19 @@ public class DefaultProcessor implements Processor {
         for (EdgeDraftGetter edge : container.getEdges()) {
             Node source = edge.getSource().getNode();
             Node target = edge.getTarget().getNode();
+            Edge e = null;
+            switch (container.getEdgeDefault()) {
+                case DIRECTED:
+                    e = factory.newEdge(source, target, edge.getWeight(), true);
+                    break;
+                case UNDIRECTED:
+                    e = factory.newEdge(source, target, edge.getWeight(), false);
+                    break;
+                case MIXED:
+                    e = factory.newEdge(source, target, edge.getWeight(), edge.getType().equals(EdgeType.UNDIRECTED) ? false : true);
+                    break;
+            }
 
-            Edge e = factory.newEdge(source, target, edge.getWeight(), true);       //TODO set edge directed/undirected
             flushToEdge(edge, e);
             edgeCount++;
             graph.addEdge(e);
