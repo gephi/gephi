@@ -22,6 +22,7 @@ package org.gephi.data.attributes;
 
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
 
 /**
@@ -75,6 +76,13 @@ public class AttributeRowImpl implements AttributeRow {
         AttributeColumn attributeColumn = attributeTable.getColumn(column);
         if (attributeColumn != null) {
             setValue(attributeColumn, value);
+        } else {
+            //add column
+            AttributeType type = AttributeType.parse(value);
+            if (type != null) {
+                attributeColumn = attributeTable.addColumn(column, type);
+                setValue(attributeColumn, value);
+            }
         }
     }
 

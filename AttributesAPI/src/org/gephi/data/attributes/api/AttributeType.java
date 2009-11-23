@@ -72,4 +72,24 @@ public enum AttributeType {
         }
         return str;
     }
+
+    public static AttributeType parse(Object obj) {
+        Class c = obj.getClass();
+        if (c.equals(String.class)) {
+            return AttributeType.STRING;
+        } else if (c.equals(Float.class)) {
+            return AttributeType.FLOAT;
+        } else if (c.equals(Double.class)) {
+            return AttributeType.DOUBLE;
+        } else if (c.equals(Integer.class)) {
+            return AttributeType.INT;
+        } else if (c.equals(Long.class)) {
+            return AttributeType.LONG;
+        } else if (c.equals(Boolean.class)) {
+            return AttributeType.BOOLEAN;
+        } else if (c.equals(StringList.class)) {
+            return AttributeType.LIST_STRING;
+        }
+        return null;
+    }
 }
