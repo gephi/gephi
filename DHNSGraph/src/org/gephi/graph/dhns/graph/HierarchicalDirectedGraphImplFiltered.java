@@ -145,10 +145,10 @@ public class HierarchicalDirectedGraphImplFiltered extends HierarchicalGraphImpl
         AbstractNode targetNode = checkNode(target);
         Predicate<AbstractEdge> edgePredicate = view.getClusteredLayerEdgePredicate();
         AbstractEdge res = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
-        if (!edgePredicate.evaluate(res)) {
-            res = null;
+        if(res!=null && edgePredicate.evaluate(res)) {
+            return res;
         }
-        return res;
+        return null;
     }
 
     @Override
