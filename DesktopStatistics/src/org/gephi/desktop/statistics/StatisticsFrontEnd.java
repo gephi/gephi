@@ -112,7 +112,9 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
     private void refreshResult(StatisticsModel model) {
         //Find a computed stats
         Statistics statistics = model.getStatistics(statisticsUI);
+
         if (statistics != null) {
+            statisticsUI.setup(statistics);     //TODO doing this here may not be appropriate, move it to controller?
             resultLabel.setText(statisticsUI.getValue());
             reportButton.setEnabled(true);
         } else {
@@ -158,7 +160,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         Statistics statistics = currentModel.getStatistics(statisticsUI);
         if (statistics != null) {
             final String report = statistics.getReport();
-            if(report!=null) {
+            if (report != null) {
                 SwingUtilities.invokeLater(new Runnable() {
 
                     public void run() {

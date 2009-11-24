@@ -65,7 +65,12 @@ public final class StatisticsTopComponent extends TopComponent implements Change
             }
 
             public void select(Workspace workspace) {
-                refreshModel(workspace.getLookup().lookup(StatisticsModelImpl.class));
+                StatisticsModelImpl m = workspace.getLookup().lookup(StatisticsModelImpl.class);
+                if (m == null) {
+                    m = new StatisticsModelImpl();
+                    workspace.add(m);
+                }
+                refreshModel(m);
             }
 
             public void unselect(Workspace workspace) {

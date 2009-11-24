@@ -55,7 +55,6 @@ public class StatisticsControllerImpl implements StatisticsController {
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
-                workspace.add(new StatisticsModelImpl());
             }
 
             public void select(Workspace workspace) {
