@@ -359,34 +359,42 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             //Node position
             Element nodePosition = (Element) nodeE.getElementsByTagName("viz:position").item(0);
             if (nodePosition != null) {
-                float x = Float.parseFloat(nodePosition.getAttribute("x"));
-                float y = Float.parseFloat(nodePosition.getAttribute("y"));
-                float z = Float.parseFloat(nodePosition.getAttribute("z"));
-
-                if(!Float.isNaN(x)) {
-                    node.setX(x);
-                } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId), Issue.Level.WARNING));
+                try {
+                    String xStr = nodePosition.getAttribute("x");
+                    if(!xStr.isEmpty()) {
+                        float x = Float.parseFloat(xStr);
+                        node.setX(x);
+                    }
+                } catch(NumberFormatException e) {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId, "X"), Issue.Level.WARNING));
                 }
-                if(!Float.isNaN(y)) {
-                    node.setY(y);
-                } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId), Issue.Level.WARNING));
+                try {
+                    String yStr = nodePosition.getAttribute("y");
+                    if(!yStr.isEmpty()) {
+                        float y = Float.parseFloat(yStr);
+                        node.setY(y);
+                    }
+                } catch(NumberFormatException e) {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId, "Y"), Issue.Level.WARNING));
                 }
-                if(!Float.isNaN(z)) {
-                    node.setZ(z);
-                } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId), Issue.Level.WARNING));
+                try {
+                    String zStr = nodePosition.getAttribute("z");
+                    if(!zStr.isEmpty()) {
+                        float z = Float.parseFloat(zStr);
+                        node.setZ(z);
+                    }
+                } catch(NumberFormatException e) {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId, "Z"), Issue.Level.WARNING));
                 }
             }
 
             //Node size
             Element nodeSize = (Element) nodeE.getElementsByTagName("viz:size").item(0);
             if (nodeSize != null) {
-                float size = Float.parseFloat(nodeSize.getAttribute("value"));
-                if(!Float.isNaN(size)) {
+                try {
+                    float size = Float.parseFloat(nodeSize.getAttribute("value"));
                     node.setSize(size);
-                } else {
+                } catch(NumberFormatException e) {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodesize", nodeId), Issue.Level.WARNING));
                 }
             }
@@ -490,16 +498,18 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                     edge.setType(EdgeDraft.EdgeType.MUTUAL);
                 }
                 else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgetype", edgeType), Issue.Level.SEVERE));
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgetype", edgeType, edgeId), Issue.Level.SEVERE));
                 }
             }
 
             //Weight
             String weightStr = edgeE.getAttribute("weight");
             if (!weightStr.isEmpty()) {
-                float weight = Float.parseFloat(weightStr);
-                if(!Float.isNaN(weight)) {
+                try {
+                    float weight = Float.parseFloat(weightStr);
                     edge.setWeight(weight);
+                } catch(NumberFormatException e) {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeweight", edgeId), Issue.Level.WARNING));
                 }
             }
             // TODO dynamic weight: reserved title "weight" in attributes
@@ -897,34 +907,42 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 //Node position
                 Element nodePosition = (Element) nodeE.getElementsByTagName("viz:position").item(0);
                 if (nodePosition != null) {
-                    float x = Float.parseFloat(nodePosition.getAttribute("x"));
-                    float y = Float.parseFloat(nodePosition.getAttribute("y"));
-                    float z = Float.parseFloat(nodePosition.getAttribute("z"));
-
-                    if(!Float.isNaN(x)) {
-                        node.setX(x);
-                    } else {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId), Issue.Level.WARNING));
+                    try {
+                        String xStr = nodePosition.getAttribute("x");
+                        if(!xStr.isEmpty()) {
+                            float x = Float.parseFloat(xStr);
+                            node.setX(x);
+                        }
+                    } catch(NumberFormatException e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId, "X"), Issue.Level.WARNING));
                     }
-                    if(!Float.isNaN(y)) {
-                        node.setY(y);
-                    } else {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId), Issue.Level.WARNING));
+                    try {
+                        String yStr = nodePosition.getAttribute("y");
+                        if(!yStr.isEmpty()) {
+                            float y = Float.parseFloat(yStr);
+                            node.setY(y);
+                        }
+                    } catch(NumberFormatException e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId, "Y"), Issue.Level.WARNING));
                     }
-                    if(!Float.isNaN(z)) {
-                        node.setZ(z);
-                    } else {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId), Issue.Level.WARNING));
+                    try {
+                        String zStr = nodePosition.getAttribute("z");
+                        if(!zStr.isEmpty()) {
+                            float z = Float.parseFloat(zStr);
+                            node.setZ(z);
+                        }
+                    } catch(NumberFormatException e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId, "Z"), Issue.Level.WARNING));
                     }
                 }
 
                 //Node size
                 Element nodeSize = (Element) nodeE.getElementsByTagName("viz:size").item(0);
                 if (nodeSize != null) {
-                    float size = Float.parseFloat(nodeSize.getAttribute("value"));
-                    if(!Float.isNaN(size)) {
+                    try {
+                        float size = Float.parseFloat(nodeSize.getAttribute("value"));
                         node.setSize(size);
-                    } else {
+                    } catch(NumberFormatException e) {
                         report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodesize", nodeId), Issue.Level.WARNING));
                     }
                 }
