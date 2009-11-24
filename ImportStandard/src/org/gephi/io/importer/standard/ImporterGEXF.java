@@ -363,14 +363,20 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 float y = Float.parseFloat(nodePosition.getAttribute("y"));
                 float z = Float.parseFloat(nodePosition.getAttribute("z"));
 
-                if(Float.NaN != x) {
+                if(!Float.isNaN(x)) {
                     node.setX(x);
+                } else {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId), Issue.Level.WARNING));
                 }
-                if(Float.NaN != y) {
+                if(!Float.isNaN(y)) {
                     node.setY(y);
+                } else {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId), Issue.Level.WARNING));
                 }
-                if(Float.NaN != z) {
+                if(!Float.isNaN(z)) {
                     node.setZ(z);
+                } else {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId), Issue.Level.WARNING));
                 }
             }
 
@@ -378,8 +384,10 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             Element nodeSize = (Element) nodeE.getElementsByTagName("viz:size").item(0);
             if (nodeSize != null) {
                 float size = Float.parseFloat(nodeSize.getAttribute("value"));
-                if(Float.NaN != size) {
+                if(!Float.isNaN(size)) {
                     node.setSize(size);
+                } else {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodesize", nodeId), Issue.Level.WARNING));
                 }
             }
 
@@ -388,7 +396,9 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 if (!nodeE.getAttribute("datefrom").isEmpty()) {
                     String dateFrom = nodeE.getAttribute("datefrom");
                     float f = Float.valueOf(dateFrom).floatValue();
-                    node.setDynamicFrom(f);
+                    if(!Float.isNaN(f)) {
+                        node.setDynamicFrom(f);
+                    }
                     // FIXME probleme de conversions de dates
                 }
 
@@ -396,7 +406,9 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 if (!nodeE.getAttribute("dateto").isEmpty()) {
                     String dateTo = nodeE.getAttribute("dateto");
                     float f = Float.valueOf(dateTo).floatValue();
-                    node.setDynamicTo(f);
+                    if(!Float.isNaN(f)) {
+                        node.setDynamicTo(f);
+                    }
                     // FIXME probleme de conversions de dates
                 }
             }
@@ -486,7 +498,9 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             String weightStr = edgeE.getAttribute("weight");
             if (!weightStr.isEmpty()) {
                 float weight = Float.parseFloat(weightStr);
-                edge.setWeight(weight);
+                if(!Float.isNaN(weight)) {
+                    edge.setWeight(weight);
+                }
             }
             // TODO dynamic weight: reserved title "weight" in attributes
 
@@ -869,24 +883,50 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 //Node color
                 Element nodeColor = (Element) nodeE.getElementsByTagName("viz:color").item(0);
                 if (nodeColor != null) {
-                    int r = Integer.parseInt(nodeColor.getAttribute("r"));
-                    int g = Integer.parseInt(nodeColor.getAttribute("g"));
-                    int b = Integer.parseInt(nodeColor.getAttribute("b"));
+                    String rStr = nodeColor.getAttribute("r");
+                    String gStr = nodeColor.getAttribute("g");
+                    String bStr = nodeColor.getAttribute("b");
+
+                    int r = (rStr.isEmpty()) ? 0 : Integer.parseInt(rStr);
+                    int g = (gStr.isEmpty()) ? 0 : Integer.parseInt(gStr);
+                    int b = (bStr.isEmpty()) ? 0 : Integer.parseInt(bStr);
+
                     node.setColor(new Color(r, g, b));
                 }
 
                 //Node position
                 Element nodePosition = (Element) nodeE.getElementsByTagName("viz:position").item(0);
                 if (nodePosition != null) {
-                    node.setX(Float.parseFloat(nodePosition.getAttribute("x")));
-                    node.setY(Float.parseFloat(nodePosition.getAttribute("y")));
-                    node.setZ(Float.parseFloat(nodePosition.getAttribute("z")));
+                    float x = Float.parseFloat(nodePosition.getAttribute("x"));
+                    float y = Float.parseFloat(nodePosition.getAttribute("y"));
+                    float z = Float.parseFloat(nodePosition.getAttribute("z"));
+
+                    if(!Float.isNaN(x)) {
+                        node.setX(x);
+                    } else {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId), Issue.Level.WARNING));
+                    }
+                    if(!Float.isNaN(y)) {
+                        node.setY(y);
+                    } else {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId), Issue.Level.WARNING));
+                    }
+                    if(!Float.isNaN(z)) {
+                        node.setZ(z);
+                    } else {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId), Issue.Level.WARNING));
+                    }
                 }
 
                 //Node size
                 Element nodeSize = (Element) nodeE.getElementsByTagName("viz:size").item(0);
                 if (nodeSize != null) {
-                    node.setSize(Float.parseFloat(nodeSize.getAttribute("value")));
+                    float size = Float.parseFloat(nodeSize.getAttribute("value"));
+                    if(!Float.isNaN(size)) {
+                        node.setSize(size);
+                    } else {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodesize", nodeId), Issue.Level.WARNING));
+                    }
                 }
 
                 //Append node
@@ -956,7 +996,9 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 String cardinalStr = edgeE.getAttribute("cardinal");
                 if (!cardinalStr.isEmpty()) {
                     float cardinal = Float.parseFloat(cardinalStr);
-                    edge.setWeight(cardinal);
+                    if(!Float.isNaN(cardinal)) {
+                        edge.setWeight(cardinal);
+                    }
                 }
 
                 container.addEdge(edge);
