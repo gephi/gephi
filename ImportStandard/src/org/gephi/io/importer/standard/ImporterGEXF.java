@@ -1013,9 +1013,11 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 //Cardinal
                 String cardinalStr = edgeE.getAttribute("cardinal");
                 if (!cardinalStr.isEmpty()) {
-                    float cardinal = Float.parseFloat(cardinalStr);
-                    if(!Float.isNaN(cardinal)) {
-                        edge.setWeight(cardinal);
+                    try {
+                        float weight = Float.parseFloat(cardinalStr);
+                        edge.setWeight(weight);
+                    } catch(NumberFormatException e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeweight", edgeId), Issue.Level.WARNING));
                     }
                 }
 
