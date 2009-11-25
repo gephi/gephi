@@ -71,6 +71,9 @@ public class DefaultScaler implements Scaler {
             zMin = Math.min(node.getZ(), zMin);
             zMax = Math.max(node.getZ(), zMax);
         }
+        if (sizeMin == 0 && sizeMax == 0) {
+            return;
+        }
         if (sizeMin == sizeMax) {
             sizeRatio = sizeMinimum / sizeMin;
         } else {
@@ -129,6 +132,7 @@ public class DefaultScaler implements Scaler {
         //Scale edge weight
         for (EdgeDraftGetter edge : container.getUnloader().getEdges()) {
             float weight = (edge.getWeight() - weightMin) * weightRatio + weightMinimum;
+            assert !Float.isNaN(weight);
             edge.setWeight(weight);
         }
     }
