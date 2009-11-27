@@ -3,6 +3,7 @@ org.gephi.layout.multilevel.Test
 org.gephi.layout.force.yifanHu.YifanHu
 org.gephi.layout.force.yifanHu.YifanHuProportional
 org.gephi.layout.forceAtlas.ForceAtlas
+org.gephi.layout.labelAdjust.LabelAdjustBuilder
 org.gephi.layout.scale.Expand
 org.gephi.layout.scale.Contract
 org.gephi.layout.random.Random
