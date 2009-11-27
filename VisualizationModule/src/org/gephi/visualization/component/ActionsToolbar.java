@@ -138,6 +138,25 @@ public class ActionsToolbar extends JToolBar {
         });
         add(resetLabelColorButton);
 
+        //Reset label colors
+        final JButton resetLabelVisibleButton = new JButton();
+        resetLabelVisibleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/resetLabelColor.png")));
+        resetLabelVisibleButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetLabelVisible"));
+        resetLabelVisibleButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent evt) {
+                GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+                Graph graph = gc.getModel().getGraphVisible();
+                for (Node n : graph.getNodes().toArray()) {
+                    n.getNodeData().getTextData().setVisible(true);
+                }
+                for (Edge e : graph.getEdges().toArray()) {
+                    e.getEdgeData().getTextData().setVisible(true);
+                }
+            }
+        });
+        add(resetLabelVisibleButton);
+
         //Reset label size
         JButton resetLabelSizeButton = new JButton();
         resetLabelSizeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/resetLabelSize.png")));
