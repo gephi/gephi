@@ -17,7 +17,7 @@ import org.openide.windows.WindowManager;
 /**
  * Top component displaying the preview settings.
  */
-public final class PreviewSettingsTopComponent extends TopComponent {
+final class PreviewSettingsTopComponent extends TopComponent {
 
     private static PreviewSettingsTopComponent instance;
     /** path to the icon used by the component and its open action */

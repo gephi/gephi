@@ -18,7 +18,7 @@ import org.openide.windows.WindowManager;
 /**
  * Top component which displays something.
  */
-public final class PreviewTopComponent extends TopComponent {
+final class PreviewTopComponent extends TopComponent {
 
     private static PreviewTopComponent instance;
     /** path to the icon used by the component and its open action */
