@@ -104,11 +104,11 @@ public class PartitionToolbar extends JToolBar implements PropertyChangeListener
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
-        if(evt.getPropertyName().equals(PartitionModel.SELECTED_PARTIONING)) {
+        if (evt.getPropertyName().equals(PartitionModel.SELECTED_PARTIONING)) {
             refreshModel();
-        } else if(evt.getPropertyName().equals(PartitionModel.NODE_TRANSFORMER)) {
+        } else if (evt.getPropertyName().equals(PartitionModel.NODE_TRANSFORMER)) {
             refreshModel();
-        } else if(evt.getPropertyName().equals(PartitionModel.EDGE_TRANSFORMER)) {
+        } else if (evt.getPropertyName().equals(PartitionModel.EDGE_TRANSFORMER)) {
             refreshModel();
         }
     }
@@ -141,13 +141,13 @@ public class PartitionToolbar extends JToolBar implements PropertyChangeListener
             add(btn);
         }
 
-    //Init first
+        //Init first
         /*if (!nodeTrans.isEmpty()) {
-    model.setNodeTransformer(nodeTrans.get(0).getTransformerClass());
-    }
-    if (!edgeTrans.isEmpty()) {
-    model.setEdgeTransformer(edgeTrans.get(0).getTransformerClass());
-    }*/
+        model.setNodeTransformer(nodeTrans.get(0).getTransformerClass());
+        }
+        if (!edgeTrans.isEmpty()) {
+        model.setEdgeTransformer(edgeTrans.get(0).getTransformerClass());
+        }*/
     }
 
     private void initComponents() {

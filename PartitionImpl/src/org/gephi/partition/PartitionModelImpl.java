@@ -40,7 +40,6 @@ public class PartitionModelImpl implements PartitionModel {
 
     //Architecture
     private List<PropertyChangeListener> listeners;
-
     //Data
     private int selectedPartitioning = NODE_PARTITIONING;
     private Partition nodePartition;

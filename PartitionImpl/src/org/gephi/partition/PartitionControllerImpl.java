@@ -97,6 +97,17 @@ public class PartitionControllerImpl implements PartitionController {
                         PartitionFactory.buildNodePartition((NodePartition) partition, graphModel.getGraphVisible());
                     }
                     model.setNodePartition(partition);
+                    if (model.getNodeTransformerBuilder() == null) {
+                        //Select the first transformer
+                        TransformerBuilder[] builders = Lookup.getDefault().lookupAll(TransformerBuilder.class).toArray(new TransformerBuilder[0]);
+                        for (int i = 0; i < builders.length; i++) {
+                            TransformerBuilder t = builders[i];
+                            if (t instanceof TransformerBuilder.Node) {
+                                model.setNodeBuilder(t);
+                                break;
+                            }
+                        }
+                    }
                     model.setWaiting(false);
                 }
             }, "Partition Model refresh");
@@ -110,6 +121,17 @@ public class PartitionControllerImpl implements PartitionController {
                         PartitionFactory.buildEdgePartition((EdgePartition) partition, graphModel.getGraphVisible());
                     }
                     model.setEdgePartition(partition);
+                    if (model.getEdgeTransformerBuilder() == null) {
+                        //Select the first transformer
+                        TransformerBuilder[] builders = Lookup.getDefault().lookupAll(TransformerBuilder.class).toArray(new TransformerBuilder[0]);
+                        for (int i = 0; i < builders.length; i++) {
+                            TransformerBuilder t = builders[i];
+                            if (t instanceof TransformerBuilder.Edge) {
+                                model.setEdgeBuilder(t);
+                                break;
+                            }
+                        }
+                    }
                     model.setWaiting(false);
                 }
             }, "Partition Model refresh");

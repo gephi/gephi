@@ -52,7 +52,6 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
     private final String UNGROUP_LABEL;
     private final String SHOW_PIE;
     private final String HIDE_PIE;
-
     //Architecture
     private PartitionModel model;
 
@@ -386,7 +385,6 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
             }
         };
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyButton;
     private javax.swing.JScrollPane centerScrollPane;
