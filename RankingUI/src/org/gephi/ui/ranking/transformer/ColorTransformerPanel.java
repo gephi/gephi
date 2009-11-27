@@ -22,14 +22,23 @@ package org.gephi.ui.ranking.transformer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.ranking.api.ColorTransformer;
 import org.gephi.ranking.api.Ranking;
 import org.gephi.ranking.api.Transformer;
 import org.gephi.ui.components.JRangeSlider;
+import org.gephi.ui.components.PaletteIcon;
 import org.gephi.ui.components.gradientslider.GradientSlider;
+import org.gephi.ui.utils.PaletteUtils;
+import org.gephi.ui.utils.PaletteUtils.Palette;
+import org.openide.util.NbBundle;
 
 /**
  * @author Mathieu Bastian
@@ -38,6 +47,7 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
 
     private static final int SLIDER_MAXIMUM = 100;
     private ColorTransformer colorTransformer;
+    private GradientSlider gradientSlider;
     private Ranking ranking;
 
     public ColorTransformerPanel(Transformer transformer, Ranking ranking) {
@@ -47,7 +57,7 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
         this.ranking = ranking;
 
         //Gradient
-        final GradientSlider gradientSlider = new GradientSlider(GradientSlider.HORIZONTAL, colorTransformer.getColorPositions(), colorTransformer.getColors());
+        gradientSlider = new GradientSlider(GradientSlider.HORIZONTAL, colorTransformer.getColorPositions(), colorTransformer.getColors());
         gradientSlider.putClientProperty("GradientSlider.includeOpacity", "false");
         gradientSlider.addChangeListener(new ChangeListener() {
 
@@ -76,6 +86,9 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
             }
         });
         refreshRangeValues();
+
+        //Context
+        setComponentPopupMenu(getPalettePopupMenu());
     }
 
     private void setRangeValues() {
@@ -96,6 +109,35 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
 
         lowerBoundLabel.setText(ranking.unNormalize(colorTransformer.getLowerBound()).toString());
         upperBoundLabel.setText(ranking.unNormalize(colorTransformer.getUpperBound()).toString());
+    }
+
+    private JPopupMenu getPalettePopupMenu() {
+        JPopupMenu popupMenu = new JPopupMenu();
+        JMenu defaultMenu = new JMenu(NbBundle.getMessage(ColorTransformerPanel.class, "PalettePopup.default"));
+        for (Palette p : PaletteUtils.getSequencialPalettes()) {
+            final Palette p3 = PaletteUtils.get3ClassPalette(p);
+            JMenuItem item = new JMenuItem(new PaletteIcon(p3.getColors()));
+            item.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    gradientSlider.setValues(p3.getPositions(), p3.getColors());
+                }
+            });
+            defaultMenu.add(item);
+        }
+        for (Palette p : PaletteUtils.getDivergingPalettes()) {
+            final Palette p3 = PaletteUtils.get3ClassPalette(p);
+            JMenuItem item = new JMenuItem(new PaletteIcon(p3.getColors()));
+            item.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    gradientSlider.setValues(p3.getPositions(), p3.getColors());
+                }
+            });
+            defaultMenu.add(item);
+        }
+        popupMenu.add(defaultMenu);
+        return popupMenu;
     }
 
     /** This method is called from within the constructor to
