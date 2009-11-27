@@ -2,8 +2,6 @@ package org.gephi.ui.preview;
 
 import java.awt.Font;
 import org.gephi.preview.api.*;
-import org.gephi.preview.api.controller.PreviewController;
-import org.gephi.ui.preview.controller.PreviewUIController;
 import org.openide.util.Lookup;
 import processing.core.*;
 import processing.opengl.*;

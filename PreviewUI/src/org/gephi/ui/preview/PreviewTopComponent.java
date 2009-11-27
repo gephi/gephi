@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import org.gephi.preview.api.Graph;
 import org.gephi.project.api.ProjectController;
-import org.gephi.ui.preview.controller.PreviewUIController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;

@@ -1,6 +1,6 @@
 package org.gephi.preview;
 
-import org.gephi.preview.util.LabelShortenerClient;
+import org.gephi.preview.updaters.LabelShortenerClient;
 import processing.core.PVector;
 
 /**

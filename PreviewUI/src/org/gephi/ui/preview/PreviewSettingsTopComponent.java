@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import org.gephi.project.api.ProjectController;
-import org.gephi.ui.preview.controller.PreviewUIController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.explorer.propertysheet.PropertySheet;

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import org.gephi.preview.api.BidirectionalEdge;
 import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.Node;
+import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.SelfLoop;
 import org.gephi.preview.api.UnidirectionalEdge;
-import org.gephi.preview.api.controller.PreviewController;
 import org.openide.util.Lookup;
 import processing.core.PVector;
 

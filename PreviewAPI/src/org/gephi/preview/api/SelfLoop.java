@@ -1,7 +1,5 @@
 package org.gephi.preview.api;
 
-import org.gephi.preview.api.color.Color;
-
 /**
  * Interface of a preview self-loop.
  *
@@ -9,31 +7,31 @@ import org.gephi.preview.api.color.Color;
  */
 public interface SelfLoop {
 
-	/**
-	 * Returns the self-loop's related node.
-	 *
-	 * @return the self-loop's related node
-	 */
+    /**
+     * Returns the self-loop's related node.
+     *
+     * @return the self-loop's related node
+     */
     public Node getNode();
 
-	/**
-	 * Returns the self-loop's thickness.
-	 *
-	 * @return the self-loop's thickness
-	 */
+    /**
+     * Returns the self-loop's thickness.
+     *
+     * @return the self-loop's thickness
+     */
     public Float getThickness();
 
-	/**
-	 * Returns the self-loop's color.
-	 *
-	 * @return the self-loop's color
-	 */
+    /**
+     * Returns the self-loop's color.
+     *
+     * @return the self-loop's color
+     */
     public Color getColor();
 
-	/**
-	 * Returns the self-loop's curve.
-	 *
-	 * @return the self-loop's curve
-	 */
+    /**
+     * Returns the self-loop's curve.
+     *
+     * @return the self-loop's curve
+     */
     public CubicBezierCurve getCurve();
 }
