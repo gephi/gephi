@@ -72,8 +72,7 @@ public class RankingToolbar extends JToolBar {
 
         nodeTransformerGroup.clearSelection();
         edgeTransformerGroup.clearSelection();
-
-        model.setSelectedNodeRanking(TOOL_TIP_TEXT_KEY);
+        
         if (model.getNodeTransformer() == null) {
             TransformerUI[] allTrans = Lookup.getDefault().lookupAll(TransformerUI.class).toArray(new TransformerUI[0]);
             for(int i=0;i<allTrans.length;i++) {
