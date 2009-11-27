@@ -5,8 +5,9 @@ import java.awt.Color;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
-import org.gephi.preview.api.controller.PreviewController;
+import org.gephi.preview.api.Graph;
 import org.gephi.project.api.ProjectController;
+import org.gephi.ui.preview.controller.PreviewUIController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
@@ -18,7 +19,7 @@ import org.openide.windows.WindowManager;
 /**
  * Top component which displays something.
  */
-final class PreviewTopComponent extends TopComponent {
+public final class PreviewTopComponent extends TopComponent {
 
     private static PreviewTopComponent instance;
     /** path to the icon used by the component and its open action */
@@ -62,6 +63,13 @@ final class PreviewTopComponent extends TopComponent {
                 bannerPanel.setVisible(false);
             }
         });
+    }
+
+    /**
+     * Hides the banner panel.
+     */
+    public void hideBannerPanel() {
+        bannerPanel.setVisible(false);
     }
 
     /** This method is called from within the constructor to
@@ -127,16 +135,7 @@ final class PreviewTopComponent extends TopComponent {
     }// </editor-fold>//GEN-END:initComponents
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
-        // TODO refactor with MVC pattern
-
-        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        PreviewSettingsTopComponent settingsComponent = PreviewSettingsTopComponent.findInstance();
-
-        controller.buildGraph();
-        setVisibilityRatio(settingsComponent.getVisibilityRatio());
-        refreshPreview();
-
-        bannerPanel.setVisible(false);
+        PreviewUIController.findInstance().refreshPreview();
     }//GEN-LAST:event_refreshButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -220,11 +219,11 @@ final class PreviewTopComponent extends TopComponent {
     }
 
     /**
-     * Defines the graph visibility ratio.
+     * Defines the preview graph to draw in the applet.
      *
-     * @param ratio  the graph visibility ratio
+     * @param graph  the preview graph to draw in the applet
      */
-    public void setVisibilityRatio(float ratio) {
-        sketch.setVisibilityRatio(ratio);
+    public void setGraph(Graph graph) {
+        sketch.setGraph(graph);
     }
 }
