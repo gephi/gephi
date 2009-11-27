@@ -23,7 +23,9 @@ package org.gephi.visualization.opengl.compatibility.objects;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.NodeData;
+import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
+import org.gephi.visualization.api.GraphDrawable;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
@@ -82,8 +84,8 @@ public class NodeRectangeModel extends ModelImpl<NodeData> {
         }
         mark = false;
         if (vizModel.isAdjustByText()) {
-            width = obj.getTextData().getWidth() * 1.2f;
-            height = obj.getTextData().getHeight() * 1.2f;
+            width = obj.getTextData().getWidth();
+            height = obj.getTextData().getHeight();
         } else {
             float size = obj.getSize();
             width = size;
@@ -183,7 +185,8 @@ public class NodeRectangeModel extends ModelImpl<NodeData> {
 
     @Override
     public boolean selectionTest(Vecf distanceFromMouse, float selectionSize) {
-        if (distanceFromMouse.get(2) - selectionSize < getViewportRadius()) {
+        GraphDrawable drawable = VizController.getInstance().getDrawable();
+        if (distanceFromMouse.get(0) < width / 2 * Math.abs(drawable.getDraggingMarkerX()) && distanceFromMouse.get(1) < height / 2 * Math.abs(drawable.getDraggingMarkerY())) {
             return true;
         }
         return false;

@@ -349,9 +349,10 @@ public class TextManager implements VizArchitecture {
                 }
                 String txt = textData.line.text;
                 Rectangle2D r = renderer.getBounds(txt);
-                textData.line.setBounds(r);
                 float posX = renderable.getModel().getViewportX() + (float) r.getWidth() / -2 * textData.sizeFactor;
                 float posY = renderable.getModel().getViewportY() + (float) r.getHeight() / -2 * textData.sizeFactor;
+                r.setRect(0, 0, r.getWidth() / Math.abs(drawable.getDraggingMarkerX()), r.getHeight() / Math.abs(drawable.getDraggingMarkerY()));
+                textData.line.setBounds(r);
 
                 renderer.draw3D(txt, posX, posY, 0, textData.sizeFactor);
             }
@@ -371,9 +372,10 @@ public class TextManager implements VizArchitecture {
                 }
                 String txt = textData.line.text;
                 Rectangle2D r = renderer.getBounds(txt);
-                textData.line.setBounds(r);
                 float posX = renderable.getModel().getViewportX() + (float) r.getWidth() / -2 * textData.sizeFactor;
                 float posY = renderable.getModel().getViewportY() + (float) r.getHeight() / -2 * textData.sizeFactor;
+                r.setRect(0, 0, r.getWidth() / drawable.getDraggingMarkerX(), r.getHeight() / drawable.getDraggingMarkerY());
+                textData.line.setBounds(r);
 
                 renderer.draw3D(txt, posX, posY, 0, textData.sizeFactor);
             }

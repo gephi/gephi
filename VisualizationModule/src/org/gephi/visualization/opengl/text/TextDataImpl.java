@@ -81,11 +81,19 @@ public class TextDataImpl implements TextData {
     }
 
     public float getWidth() {
-        return (float) line.bounds.getWidth() * sizeFactor;
+        Rectangle2D rec = line.bounds;
+        if (rec != null) {
+            return (float) rec.getWidth() * sizeFactor;
+        }
+        return 0f;
     }
 
     public float getHeight() {
-        return (float) line.bounds.getHeight() * sizeFactor;
+        Rectangle2D rec = line.bounds;
+        if (rec != null) {
+            return (float) rec.getHeight() * sizeFactor;
+        }
+        return 0f;
     }
 
     public String getText() {
