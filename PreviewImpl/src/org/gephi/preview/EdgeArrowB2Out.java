@@ -1,6 +1,6 @@
 package org.gephi.preview;
 
-import org.gephi.preview.api.supervisor.EdgeSupervisor;
+import org.gephi.preview.api.supervisors.EdgeSupervisor;
 import processing.core.PVector;
 
 /**

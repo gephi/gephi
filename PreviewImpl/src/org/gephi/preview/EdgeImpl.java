@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import org.gephi.preview.api.CubicBezierCurve;
 import org.gephi.preview.api.EdgeArrow;
 import org.gephi.preview.api.EdgeMiniLabel;
-import org.gephi.preview.api.supervisor.EdgeSupervisor;
-import org.gephi.preview.supervisor.EdgeSupervisorImpl;
+import org.gephi.preview.api.supervisors.EdgeSupervisor;
+import org.gephi.preview.supervisors.EdgeSupervisorImpl;
 import processing.core.PVector;
 
 /**

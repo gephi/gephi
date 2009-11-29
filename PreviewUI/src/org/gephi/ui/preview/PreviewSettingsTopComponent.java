@@ -3,7 +3,6 @@ package org.gephi.ui.preview;
 import java.awt.BorderLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
-import org.gephi.preview.api.controller.PreviewController;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
@@ -144,14 +143,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
     }// </editor-fold>//GEN-END:initComponents
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
-        // TODO refactor with MVC pattern
-
-        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        PreviewTopComponent previewTopComponent = PreviewTopComponent.findInstance();
-
-        controller.buildGraph();
-        previewTopComponent.setVisibilityRatio(getVisibilityRatio());
-        previewTopComponent.refreshPreview();
+        PreviewUIController.findInstance().refreshPreview();
 }//GEN-LAST:event_refreshButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel propertiesPanel;

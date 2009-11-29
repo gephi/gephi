@@ -1,8 +1,8 @@
 package org.gephi.preview;
 
 import org.gephi.preview.api.BidirectionalEdge;
-import org.gephi.preview.api.controller.PreviewController;
-import org.gephi.preview.supervisor.EdgeSupervisorImpl;
+import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.supervisors.EdgeSupervisorImpl;
 import org.openide.util.Lookup;
 import processing.core.PVector;
 

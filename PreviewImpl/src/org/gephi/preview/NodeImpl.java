@@ -1,12 +1,12 @@
 package org.gephi.preview;
 
+import org.gephi.preview.api.Color;
 import org.gephi.preview.api.Node;
-import org.gephi.preview.api.color.Color;
-import org.gephi.preview.api.color.colorizer.NodeColorizerClient;
-import org.gephi.preview.api.controller.PreviewController;
+import org.gephi.preview.api.NodeColorizerClient;
+import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.util.Holder;
-import org.gephi.preview.color.SimpleColor;
-import org.gephi.preview.supervisor.NodeSupervisorImpl;
+import org.gephi.preview.util.color.SimpleColor;
+import org.gephi.preview.supervisors.NodeSupervisorImpl;
 import org.gephi.preview.util.HolderImpl;
 import org.openide.util.Lookup;
 import processing.core.PVector;

@@ -1,7 +1,7 @@
 package org.gephi.preview;
 
-import org.gephi.preview.api.color.Color;
-import org.gephi.preview.api.color.colorizer.EdgeColorizerClient;
+import org.gephi.preview.api.Color;
+import org.gephi.preview.api.EdgeColorizerClient;
 import org.gephi.preview.api.util.Holder;
 import org.gephi.preview.util.HolderImpl;
 

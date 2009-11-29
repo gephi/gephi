@@ -1,7 +1,7 @@
 package org.gephi.preview;
 
-import org.gephi.preview.api.color.Color;
-import org.gephi.preview.api.color.colorizer.NodeChildColorizerClient;
+import org.gephi.preview.api.Color;
+import org.gephi.preview.api.NodeChildColorizerClient;
 import org.gephi.preview.api.util.Holder;
 import org.gephi.preview.util.HolderImpl;
 import processing.core.PVector;

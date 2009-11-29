@@ -1,9 +1,9 @@
 package org.gephi.preview;
 
-import org.gephi.preview.api.color.Color;
-import org.gephi.preview.api.color.colorizer.EdgeChildColorizerClient;
-import org.gephi.preview.api.color.colorizer.EdgeColorizerClient;
-import org.gephi.preview.api.supervisor.EdgeSupervisor;
+import org.gephi.preview.api.Color;
+import org.gephi.preview.api.EdgeChildColorizerClient;
+import org.gephi.preview.api.EdgeColorizerClient;
+import org.gephi.preview.api.supervisors.EdgeSupervisor;
 import org.gephi.preview.api.util.Holder;
 import org.gephi.preview.util.HolderImpl;
 

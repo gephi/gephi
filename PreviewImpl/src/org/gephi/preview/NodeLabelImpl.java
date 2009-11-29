@@ -1,7 +1,7 @@
 package org.gephi.preview;
 
 import org.gephi.preview.api.NodeLabel;
-import org.gephi.preview.util.LabelShortenerClient;
+import org.gephi.preview.updaters.LabelShortenerClient;
 
 /**
  * Implementation  of a preview node label.
