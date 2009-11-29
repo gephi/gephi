@@ -23,6 +23,7 @@ package org.gephi.io.exporter.standard;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
@@ -30,6 +31,7 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
+import org.gephi.io.exporter.Container;
 import org.gephi.io.exporter.GraphFileExporter;
 import org.gephi.io.exporter.FileType;
 import org.gephi.io.exporter.XMLExporter;
@@ -69,7 +71,38 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
     private float minZ;
     private float maxZ;
 
-    public boolean exportData(Document document, Graph graph) throws Exception {
+    public boolean exportData(Document document, Container container) throws Exception {
+        try {
+            GraphModel graphModel = container.getWorkspace().getLookup().lookup(GraphModel.class);
+            AttributeModel attributeModel = container.getWorkspace().getLookup().lookup(AttributeModel.class);
+            HierarchicalGraph graph = null;
+            if (container.isExportVisible()) {
+                graph = graphModel.getHierarchicalGraphVisible();
+            } else {
+                graph = graphModel.getHierarchicalGraph();
+            }
+            exportData(document, graph, attributeModel);
+        } catch (Exception e) {
+            clean();
+            throw e;
+        }
+        boolean c = cancel;
+        clean();
+        return c;
+    }
+
+    private void clean() {
+        cancel = false;
+        progressTicket = null;
+        minSize = 0f;
+        maxSize = 0f;
+        minX = 0f;
+        maxX = 0f;
+        minY = 0f;
+        maxY = 0f;
+    }
+
+    public boolean exportData(Document document, HierarchicalGraph graph, AttributeModel model) throws Exception {
         Progress.start(progressTicket);
 
         graphModel = graph.getGraphModel();

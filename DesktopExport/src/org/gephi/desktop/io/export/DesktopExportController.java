@@ -38,6 +38,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.io.exporter.Container;
 import org.gephi.io.exporter.ExportController;
 import org.gephi.io.exporter.Exporter;
 import org.gephi.io.exporter.FileExporter;
@@ -45,10 +46,12 @@ import org.gephi.io.exporter.FileType;
 import org.gephi.io.exporter.GraphFileExporter;
 import org.gephi.io.exporter.TextExporter;
 import org.gephi.io.exporter.XMLExporter;
+import org.gephi.project.api.ProjectController;
 import org.gephi.ui.exporter.ExporterUI;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
+import org.gephi.workspace.api.Workspace;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
@@ -82,21 +85,14 @@ public class DesktopExportController implements ExportController {
 
     public void doExport(Exporter exporter, FileObject fileObject, boolean visibleGraphOnly) {
         try {
-            GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-            if(gc.getModel()==null) {
-                return;
-            }
-            Graph graph=null;
-            if(visibleGraphOnly) {
-                graph = gc.getModel().getGraphVisible();
-            } else {
-                graph = gc.getModel().getGraph();
-            }
+            ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+            Workspace workspace = projectController.getCurrentWorkspace();
+            Container container = new ContainerImpl(workspace, visibleGraphOnly);
 
             if (exporter instanceof TextExporter) {
-                exportText(exporter, fileObject, graph);
+                exportText(exporter, fileObject, container);
             } else if (exporter instanceof XMLExporter) {
-                exportXML(exporter, fileObject, graph);
+                exportXML(exporter, fileObject, container);
             }
             StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopExportController.class, "DesktopExportController.status.exportSuccess", fileObject.getNameExt()));
         } catch (Exception ex) {
@@ -114,7 +110,7 @@ public class DesktopExportController implements ExportController {
         doExport(exporter, fileObject, true);
     }
 
-    private void exportText(Exporter exporter, FileObject fileObject, final Graph graph) {
+    private void exportText(Exporter exporter, FileObject fileObject, final Container container) {
         final TextExporter textExporter = (TextExporter) exporter;
 
         try {
@@ -141,7 +137,7 @@ public class DesktopExportController implements ExportController {
 
                 public void run() {
                     try {
-                        textExporter.exportData(bufferedWriter, graph);
+                        textExporter.exportData(bufferedWriter, container);
                         bufferedWriter.flush();
                         bufferedWriter.close();
                     } catch (Exception ex) {
@@ -155,7 +151,7 @@ public class DesktopExportController implements ExportController {
         }
     }
 
-    private void exportXML(Exporter exporter, FileObject fileObject, final Graph graph) {
+    private void exportXML(Exporter exporter, FileObject fileObject, final Container container) {
         final XMLExporter xmlExporter = (XMLExporter) exporter;
 
         try {
@@ -186,7 +182,7 @@ public class DesktopExportController implements ExportController {
 
                 public void run() {
                     try {
-                        if (xmlExporter.exportData(document, graph)) {
+                        if (xmlExporter.exportData(document, container)) {
                             //Write XML Document
                             Source source = new DOMSource(document);
                             Result result = new StreamResult(outputFile);
@@ -241,5 +237,24 @@ public class DesktopExportController implements ExportController {
             }
         }
         return null;
+    }
+
+    private static class ContainerImpl implements Container {
+
+        private Workspace workspace;
+        private boolean exportVisible;
+
+        public ContainerImpl(Workspace workspace, boolean exportVisible) {
+            this.workspace = workspace;
+            this.exportVisible = exportVisible;
+        }
+
+        public Workspace getWorkspace() {
+            return workspace;
+        }
+
+        public boolean isExportVisible() {
+            return exportVisible;
+        }
     }
 }

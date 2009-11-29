@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter;
 
-import org.gephi.graph.api.Graph;
 import org.w3c.dom.Document;
 
 /**
@@ -29,5 +28,5 @@ import org.w3c.dom.Document;
  */
 public interface XMLExporter extends FileExporter {
 
-    public boolean exportData(Document document, Graph graph) throws Exception;
+    public boolean exportData(Document document, Container container) throws Exception;
 }
