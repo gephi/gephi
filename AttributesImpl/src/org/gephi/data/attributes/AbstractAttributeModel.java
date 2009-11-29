@@ -55,10 +55,10 @@ public abstract class AbstractAttributeModel implements AttributeModel {
     }
 
     protected void createPropertiesColumn() {
-        nodeTable.addColumn("id", "Id", AttributeType.STRING, AttributeOrigin.PROPERTY, "");
-        nodeTable.addColumn("label", "Label", AttributeType.STRING, AttributeOrigin.PROPERTY, "");
-        edgeTable.addColumn("id", "Id", AttributeType.STRING, AttributeOrigin.PROPERTY, "");
-        edgeTable.addColumn("label", "Label", AttributeType.STRING, AttributeOrigin.PROPERTY, "");
+        nodeTable.addColumn("id", "Id", AttributeType.STRING, AttributeOrigin.PROPERTY, null);
+        nodeTable.addColumn("label", "Label", AttributeType.STRING, AttributeOrigin.PROPERTY, null);
+        edgeTable.addColumn("id", "Id", AttributeType.STRING, AttributeOrigin.PROPERTY, null);
+        edgeTable.addColumn("label", "Label", AttributeType.STRING, AttributeOrigin.PROPERTY, null);
     }
 
     public abstract Object getManagedValue(Object obj, AttributeType attributeType);
