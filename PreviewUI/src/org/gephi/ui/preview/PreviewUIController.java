@@ -95,13 +95,11 @@ public class PreviewUIController {
      * Refreshes the preview applet.
      */
     public void refreshPreview() {
-        PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
         PreviewTopComponent previewTopComponent = PreviewTopComponent.findInstance();
         PreviewSettingsTopComponent previewSettingsTopComponent = PreviewSettingsTopComponent.findInstance();
 
         previewTopComponent.hideBannerPanel();
 
-        previewController.buildGraph();
         setVisibilityRatio(previewSettingsTopComponent.getVisibilityRatio());
 
         // updates graph if needed

@@ -14,6 +14,9 @@ import org.gephi.preview.supervisors.GlobalEdgeSupervisorImpl;
 import org.gephi.preview.supervisors.NodeSupervisorImpl;
 import org.gephi.preview.supervisors.SelfLoopSupervisorImpl;
 import org.gephi.preview.supervisors.UnidirectionalEdgeSupervisorImpl;
+import org.gephi.project.api.ProjectController;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
 
 /**
@@ -24,6 +27,7 @@ import org.openide.util.Lookup;
 public class PreviewControllerImpl implements PreviewController {
 
     private GraphImpl previewGraph = null;
+    private boolean updateFlag = false;
     private final NodeSupervisorImpl nodeSupervisor = new NodeSupervisorImpl();
     private final GlobalEdgeSupervisorImpl globalEdgeSupervisor = new GlobalEdgeSupervisorImpl();
     private final SelfLoopSupervisorImpl selfLoopSupervisor = new SelfLoopSupervisorImpl();
@@ -32,11 +36,43 @@ public class PreviewControllerImpl implements PreviewController {
     private final PreviewGraphFactory factory = new PreviewGraphFactory();
 
     /**
+     * Constructor.
+     */
+    public PreviewControllerImpl() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.addWorkspaceListener(new WorkspaceListener() {
+
+            public void initialize(Workspace workspace) {
+            }
+
+            public void select(Workspace workspace) {
+                updateFlag = true;
+            }
+
+            public void unselect(Workspace workspace) {
+            }
+
+            public void close(Workspace workspace) {
+            }
+
+            public void disable() {
+                previewGraph = null;
+            }
+        });
+    }
+
+    /**
      * Returns the current preview graph.
+     *
+     * The preview graph is built if needed.
      *
      * @return the current preview graph
      */
     public Graph getGraph() {
+        if (updateFlag) {
+            buildGraph();
+        }
+
         return previewGraph;
     }
 
@@ -58,6 +94,8 @@ public class PreviewControllerImpl implements PreviewController {
         } else if (graphModel.isMixed()) {
             previewGraph = factory.createPreviewGraph(graphModel.getMixedGraph());
         }
+
+        updateFlag = false;
     }
 
     /**
