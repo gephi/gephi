@@ -20,19 +20,20 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.laboratory;
 
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.TableColumnModelEvent;
-import javax.swing.event.TableColumnModelListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.event.TreeModelListener;
-import javax.swing.table.TableColumn;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -41,14 +42,16 @@ import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
 import org.gephi.graph.api.Node;
-import org.netbeans.swing.etable.ETableColumnModel;
+import org.gephi.visualization.VizController;
 import org.netbeans.swing.etable.QuickFilter;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.Outline;
 import org.netbeans.swing.outline.OutlineModel;
 import org.netbeans.swing.outline.RenderDataProvider;
 import org.netbeans.swing.outline.RowModel;
+import org.openide.awt.MouseUtils;
 import org.openide.util.Exceptions;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -56,6 +59,7 @@ import org.openide.util.Exceptions;
  */
 public class NodeDataTable {
 
+    private final boolean popupAllowed = true;
     private Outline outlineTable;
     private QuickFilter quickFilter;
     private Pattern pattern;
@@ -76,6 +80,8 @@ public class NodeDataTable {
                 return pattern.matcher(value.toString()).find();
             }
         };
+
+        outlineTable.addMouseListener(new PopupAdapter());
     }
 
     public Outline getOutlineTable() {
@@ -279,6 +285,79 @@ public class NodeDataTable {
         @Override
         public boolean isHtmlDisplayName(Object o) {
             return false;
+        }
+    }
+
+    private class PopupAdapter extends MouseUtils.PopupMouseAdapter {
+
+        PopupAdapter() {
+        }
+
+        protected void showPopup(MouseEvent e) {
+            int selRow = outlineTable.rowAtPoint(e.getPoint());
+
+            if (selRow != -1) {
+                if (!outlineTable.getSelectionModel().isSelectedIndex(selRow)) {
+                    outlineTable.getSelectionModel().clearSelection();
+                    outlineTable.getSelectionModel().setSelectionInterval(selRow, selRow);
+                }
+            } else {
+                outlineTable.getSelectionModel().clearSelection();
+            }
+            //Point p = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), OutlineView.this);
+            Point p = e.getPoint();
+            if (popupAllowed) {
+                JPopupMenu pop = createPopup(p);
+                showPopup(p.x, p.y, pop);
+
+                e.consume();
+            }
+        }
+
+        private void showPopup(int xpos, int ypos, final JPopupMenu popup) {
+            if ((popup != null) && (popup.getSubElements().length > 0)) {
+                final PopupMenuListener p = new PopupMenuListener() {
+
+                    public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                    }
+
+                    public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                        popup.removePopupMenuListener(this);
+                        outlineTable.requestFocus();
+                    }
+
+                    public void popupMenuCanceled(PopupMenuEvent e) {
+                    }
+                };
+                popup.addPopupMenuListener(p);
+                popup.show(outlineTable, xpos, ypos);
+            }
+        }
+
+        private JPopupMenu createPopup(Point p) {
+            int row = outlineTable.rowAtPoint(p);
+            final Node node = getNodeFromRow(row);
+            JPopupMenu contextMenu = new JPopupMenu();
+            JMenuItem selectMenu = new JMenuItem();
+            selectMenu.setText(NbBundle.getMessage(NodeDataTable.class, "NodeDataTable.popup.select"));
+            selectMenu.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    VizController.getInstance().getSelectionManager().centerOnNode(node);
+                }
+            });
+            contextMenu.add(selectMenu);
+            return contextMenu;
+        }
+
+        private Node getNodeFromRow(int rowIndex) {
+            int row = outlineTable.convertRowIndexToModel(rowIndex);
+            TreePath tp = outlineTable.getLayoutCache().getPathForRow(row);
+            if (tp == null) {
+                return null;
+            }
+            ImmutableTreeNode immutableTreeNode = (ImmutableTreeNode) tp.getLastPathComponent();
+            return immutableTreeNode.getNode();
         }
     }
 }

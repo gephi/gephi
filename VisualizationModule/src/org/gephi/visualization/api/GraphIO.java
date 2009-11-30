@@ -33,7 +33,7 @@ public interface GraphIO extends MouseListener, MouseWheelListener, MouseMotionL
 
     public float[] getMousePosition();
 
-    public float [] getMousePosition3d();
+    public float[] getMousePosition3d();
 
     public float[] getMouseDrag();
 

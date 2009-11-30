@@ -55,7 +55,6 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     protected float[] middleButtonMoving = {-1f, 0f, 0f};
     protected float[] mousePosition = new float[2];
     protected float[] mouseDrag = new float[2];
-
     //Flags
     protected boolean draggingEnable = true;
     protected boolean dragging = false;
@@ -148,9 +147,9 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
     public void mouseEntered(MouseEvent e) {
         dragging = false;
-    /*if (!engine.getScheduler().isAnimating()) {
-    engine.getScheduler().start();
-    }*/
+        /*if (!engine.getScheduler().isAnimating()) {
+        engine.getScheduler().start();
+        }*/
     }
 
     public void mouseExited(MouseEvent e) {
@@ -321,37 +320,37 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         //Refresh
         engine.getScheduler().requireUpdateVisible();
 
-    /* float[] graphLimits = engine.getGraphLimits();
-    float graphWidth = Math.abs(graphLimits[1]-graphLimits[0]);
-    float graphHeight = Math.abs(graphLimits[3]-graphLimits[2]);
+        /* float[] graphLimits = engine.getGraphLimits();
+        float graphWidth = Math.abs(graphLimits[1]-graphLimits[0]);
+        float graphHeight = Math.abs(graphLimits[3]-graphLimits[2]);
 
-    //On reduit l'hypothenuse et on calcule les depl z et y correpsondant
-    double hypotenuse = Math.sqrt(Math.pow(graphDrawable.cameraTarget[1] - graphDrawable.cameraLocation[1],2d) +
-    Math.pow(graphDrawable.cameraTarget[2] - graphDrawable.cameraLocation[2],2d));
-    float move = e.getUnitsToScroll()*((float)hypotenuse*0.05f);
+        //On reduit l'hypothenuse et on calcule les depl z et y correpsondant
+        double hypotenuse = Math.sqrt(Math.pow(graphDrawable.cameraTarget[1] - graphDrawable.cameraLocation[1],2d) +
+        Math.pow(graphDrawable.cameraTarget[2] - graphDrawable.cameraLocation[2],2d));
+        float move = e.getUnitsToScroll()*((float)hypotenuse*0.05f);
 
-    float widthRatio = graphWidth/(float)hypotenuse;
-    float heightRatio = graphHeight/(float)hypotenuse;
-    float distanceRatio = Math.max(widthRatio, heightRatio);
+        float widthRatio = graphWidth/(float)hypotenuse;
+        float heightRatio = graphHeight/(float)hypotenuse;
+        float distanceRatio = Math.max(widthRatio, heightRatio);
 
-    if(e.getUnitsToScroll() > 0 && distanceRatio < 0.03f)
-    return;
+        if(e.getUnitsToScroll() > 0 && distanceRatio < 0.03f)
+        return;
 
-    if(hypotenuse + move > 2 ) {
-    hypotenuse = hypotenuse + move;
+        if(hypotenuse + move > 2 ) {
+        hypotenuse = hypotenuse + move;
 
-    double disY = hypotenuse*Math.sin(graphDrawable.rotationX);
-    double disZ = hypotenuse*Math.cos(graphDrawable.rotationX);
-    float moveY = e.getUnitsToScroll()*(float)(disY*1/(8+distanceRatio));
-    float moveZ = e.getUnitsToScroll()*(float)(disZ*1/(8+distanceRatio));
-    //float moveY = e.getUnitsToScroll()*(float)(disY*0.05f);
-    //float moveZ = e.getUnitsToScroll()*(float)(disZ*0.05f);
+        double disY = hypotenuse*Math.sin(graphDrawable.rotationX);
+        double disZ = hypotenuse*Math.cos(graphDrawable.rotationX);
+        float moveY = e.getUnitsToScroll()*(float)(disY*1/(8+distanceRatio));
+        float moveZ = e.getUnitsToScroll()*(float)(disZ*1/(8+distanceRatio));
+        //float moveY = e.getUnitsToScroll()*(float)(disY*0.05f);
+        //float moveZ = e.getUnitsToScroll()*(float)(disZ*0.05f);
 
-    graphDrawable.cameraLocation[1] += moveY;
-    graphDrawable.cameraLocation[2] += moveZ;
-    graphDrawable.rotationX = (float)Math.atan(((graphDrawable.cameraLocation[1]-graphDrawable.cameraTarget[1])/(graphDrawable.cameraLocation[2]-graphDrawable.cameraTarget[2])));
-    engine.getScheduler().requireUpdateVisible();
-    }*/
+        graphDrawable.cameraLocation[1] += moveY;
+        graphDrawable.cameraLocation[2] += moveZ;
+        graphDrawable.rotationX = (float)Math.atan(((graphDrawable.cameraLocation[1]-graphDrawable.cameraTarget[1])/(graphDrawable.cameraLocation[2]-graphDrawable.cameraTarget[2])));
+        engine.getScheduler().requireUpdateVisible();
+        }*/
     }
 
     public float[] getMousePosition3d() {
@@ -431,6 +430,6 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
         graphDrawable.cameraLocation[0] = x;
         graphDrawable.cameraLocation[1] = y;
-        graphDrawable.cameraLocation[1] = z + 100;
+        graphDrawable.cameraLocation[2] = z + 100;
     }
 }

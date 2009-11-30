@@ -25,6 +25,7 @@ import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
@@ -40,11 +41,9 @@ public class SelectionManager implements VizArchitecture {
     private VizConfig vizConfig;
     private AbstractEngine engine;
     private List<ChangeListener> listeners;
-
     //Settings
     private int mouseSelectionDiameter;
     private boolean mouseSelectionZoomProportionnal;
-
     //States
     private boolean blocked = false;
 
@@ -154,6 +153,14 @@ public class SelectionManager implements VizArchitecture {
             if (e.getEdgeData().getModel() != null) {
                 engine.selectObject(e.getEdgeData().getModel());
             }
+        }
+    }
+
+    public void centerOnNode(Node node) {
+        Model model = node.getNodeData().getModel();
+        if (model != null) {
+            VizController.getInstance().getGraphIO().centerOnCoordinate(model.getObj().x(), model.getObj().y(), model.getObj().z() + model.getObj().getSize() * 8);
+            engine.getScheduler().requireUpdateVisible();
         }
     }
 
