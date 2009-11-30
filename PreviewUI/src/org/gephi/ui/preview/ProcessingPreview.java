@@ -160,17 +160,15 @@ public class ProcessingPreview extends PApplet {
      * @param graph  the graph to draw
      */
     private void drawGraph(Graph graph) {
-        PreviewUIController controller = PreviewUIController.findInstance();
-
         if (graph.showEdges()) {
 
             // draw edges
-            for (UnidirectionalEdge ue : controller.getVisibleUnidirectionalEdges()) {
+            for (UnidirectionalEdge ue : graph.getUnidirectionalEdges()) {
                 edgeLabelFont = uniEdgeLabelFont;
                 edgeMiniLabelFont = uniEdgeMiniLabelFont;
                 drawEdge(ue);
             }
-            for (BidirectionalEdge be : controller.getVisibleBidirectionalEdges()) {
+            for (BidirectionalEdge be : graph.getBidirectionalEdges()) {
                 edgeLabelFont = biEdgeLabelFont;
                 edgeMiniLabelFont = biEdgeMiniLabelFont;
                 drawEdge(be);
@@ -178,7 +176,7 @@ public class ProcessingPreview extends PApplet {
 
             if (graph.showSelfLoops()) {
                 // draw self-loops
-                for (SelfLoop sl : controller.getVisibleSelfLoops()) {
+                for (SelfLoop sl : graph.getSelfLoops()) {
                     drawSelfLoop(sl);
                 }
             }
@@ -188,7 +186,7 @@ public class ProcessingPreview extends PApplet {
         if (graph.showNodes()) {
             textFont(nodeLabelFont);
             textAlign(CENTER, CENTER);
-            for (Node n : controller.getVisibleNodes()) {
+            for (Node n : graph.getNodes()) {
                 drawNode(n);
             }
         }
