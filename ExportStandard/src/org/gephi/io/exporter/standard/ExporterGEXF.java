@@ -20,10 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.standard;
 
+import java.io.BufferedWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
@@ -42,6 +45,7 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 /**
  *
@@ -53,6 +57,7 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
     private boolean cancel = false;
     private ProgressTicket progressTicket;
     private GraphModel graphModel;
+    private AttributeModel attributeModel;
 
     //Settings
     private boolean normalize = false;
@@ -73,8 +78,8 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
 
     public boolean exportData(Document document, Container container) throws Exception {
         try {
-            GraphModel graphModel = container.getWorkspace().getLookup().lookup(GraphModel.class);
-            AttributeModel attributeModel = container.getWorkspace().getLookup().lookup(AttributeModel.class);
+            graphModel = container.getWorkspace().getLookup().lookup(GraphModel.class);
+            attributeModel = container.getWorkspace().getLookup().lookup(AttributeModel.class);
             HierarchicalGraph graph = null;
             if (container.isExportVisible()) {
                 graph = graphModel.getHierarchicalGraphVisible();
@@ -104,8 +109,6 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
 
     public boolean exportData(Document document, HierarchicalGraph graph, AttributeModel model) throws Exception {
         Progress.start(progressTicket);
-
-        graphModel = graph.getGraphModel();
 
         //Options
         if (normalize) {
@@ -143,11 +146,13 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
 
         metaE.setAttribute("lastmodifieddate", getDateTime());
 
-        /*Element creatorE = document.createElement("creator");
+        Element creatorE = document.createElement("creator");
         Text creatorTextE = document.createTextNode("Gephi 0.7");
         creatorE.appendChild(creatorTextE);
 
-        Element keywordsE = document.createElement("keywords");
+        //TODO get description from Project properties
+
+        /*Element keywordsE = document.createElement("keywords");
         Text keywordsTextE = document.createTextNode("");
         creatorE.appendChild(keywordsE);
 
@@ -176,14 +181,95 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
         }
         graphE.setAttribute("idtype", "string");
 
+        //Attributes
+        if (attributeModel != null) {
+            //Node attributes
+            boolean hasNodeColumns = false;
+            Element nodeAttributesE = document.createElement("attributes");
+            nodeAttributesE.setAttribute("class", "node");
+            nodeAttributesE.setAttribute("mode", "static");
+            for (AttributeColumn column : attributeModel.getNodeTable().getColumns()) {
+                if(!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+                    //Data or computed
+                    Element attributeE = createAttribute(document, column);
+                    nodeAttributesE.appendChild(attributeE);
+                    //TODO attribute options
+                    hasNodeColumns = true;
+                }
+            }
+            if(hasNodeColumns) {
+                graphE.appendChild(nodeAttributesE);
+            }
+            //Edge attributes
+            boolean hasEdgeColumns = false;
+            Element edgeAttributesE = document.createElement("attributes");
+            edgeAttributesE.setAttribute("class", "edge");
+            edgeAttributesE.setAttribute("mode", "static");
+            for (AttributeColumn column : attributeModel.getEdgeTable().getColumns()) {
+                if(!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+                    //Data or computed
+                    Element attributeE = createAttribute(document, column);
+                    edgeAttributesE.appendChild(attributeE);
+                    //TODO attribute options
+                    hasEdgeColumns = true;
+                }
+            }
+            if(hasEdgeColumns) {
+                graphE.appendChild(edgeAttributesE);
+            }
+        }
+
+        //Nodes
         int nodeCount = graph.getNodeCount();
         Element nodesE = createNodes(document, graph, nodeCount, null);
         graphE.appendChild(nodesE);
 
+        //Edges
         Element edgesE = createEdges(document, graph);
         graphE.appendChild(edgesE);
 
         return graphE;
+    }
+
+    private Element createAttribute(Document document, AttributeColumn column) throws Exception {
+        Element attributeE = document.createElement("attribute");
+        attributeE.setAttribute("id", column.getId());
+        attributeE.setAttribute("title", column.getTitle());
+        attributeE.setAttribute("type", column.getType().getTypeString());
+        if(column.getDefaultValue() != null) {
+            Element defaultE = document.createElement("default");
+            Text defaultTextE = document.createTextNode(column.getDefaultValue().toString());
+            defaultE.appendChild(defaultTextE);
+        }
+        return attributeE;
+    }
+
+    private Element createNodeAttvalue(Document document, AttributeColumn column, Node n) throws Exception {
+        int index = column.getIndex();
+        if(n.getNodeData().getAttributes().getValue(index) != null) {
+            String value = n.getNodeData().getAttributes().getValue(index).toString();
+            String id = column.getId();
+
+            Element attvalueE = document.createElement("attvalue");
+            attvalueE.setAttribute("for", id);
+            attvalueE.setAttribute("value", value);
+            return attvalueE;
+        }
+        return null;
+    }
+
+    private Element createEdgeAttvalue(Document document, AttributeColumn column, Edge e) throws Exception {
+        int index = column.getIndex();
+        if(e.getEdgeData().getAttributes().getValue(index) != null) {
+            String value = e.getEdgeData().getAttributes().getValue(index).toString();
+            String id = column.getId();
+
+            Element attvalueE = document.createElement("attvalue");
+            attvalueE.setAttribute("for", id);
+            attvalueE.setAttribute("value", value);
+            return attvalueE;
+        }
+        return null;
     }
 
     private Element createNodes(Document document, Graph graph, int count, Node nodeParent) throws Exception {
@@ -219,9 +305,29 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
 
     private Element createNode(Document document, Graph graph, Node n) throws Exception {
         Element nodeE = document.createElement("node");
-        nodeE.setAttribute("id", ""+n.getNodeData().getId());
-        nodeE.setAttribute("label", ""+n.getNodeData().getLabel());
-        
+        nodeE.setAttribute("id", n.getNodeData().getId());
+        nodeE.setAttribute("label", n.getNodeData().getLabel());
+
+        //Attribute values
+        if (attributeModel != null) {
+            boolean hasColumns = false;
+            Element attvaluesE = document.createElement("attvalues");
+            for (AttributeColumn column : attributeModel.getNodeTable().getColumns()) {
+                if(!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+                    //Data or computed
+                    Element attvalueE = createNodeAttvalue(document, column, n);
+                    if(attvalueE != null) {
+                        attvaluesE.appendChild(attvalueE);
+                        hasColumns = true;
+                    }
+                }
+            }
+            if(hasColumns) {
+                nodeE.appendChild(attvaluesE);
+            }
+        }
+
+        //Viz
         if(exportSize) {
             Element sizeE = createNodeSize(document, n);
             nodeE.appendChild(sizeE);
@@ -235,6 +341,7 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
             nodeE.appendChild(positionE);
         }
 
+        //Hierarchy
         if(graphModel.isHierarchical()) {
             HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
             int childCount = hgraph.getChildrenCount(n);
@@ -271,9 +378,9 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
     private Element createEdge(Document document, Edge e) throws Exception {
         Element edgeE = document.createElement("edge");
 
-        edgeE.setAttribute("id", ""+e.getEdgeData().getId());
-        edgeE.setAttribute("source", ""+e.getSource().getNodeData().getId());
-        edgeE.setAttribute("target", ""+e.getTarget().getNodeData().getId());
+        //edgeE.setAttribute("id", e.getEdgeData().getId());
+        edgeE.setAttribute("source", e.getSource().getNodeData().getId());
+        edgeE.setAttribute("target", e.getTarget().getNodeData().getId());
 
         if( e.isDirected() && !graphModel.isDirected() ) {
             edgeE.setAttribute("type", "directed");
@@ -283,13 +390,32 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
         }
 
         String label = e.getEdgeData().getLabel();
-        if( !label.isEmpty() ) {
+        if( label != null && !label.isEmpty() ) {
             edgeE.setAttribute("label", label);
         }
 
         float weight = e.getWeight();
         if( weight != 1.0) {
             edgeE.setAttribute("weight", ""+weight);
+        }
+
+        //Attribute values
+        if (attributeModel != null) {
+            boolean hasColumns = false;
+            Element attvaluesE = document.createElement("attvalues");
+            for (AttributeColumn column : attributeModel.getEdgeTable().getColumns()) {
+                if(!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+                    //Data or computed
+                    Element attvalueE = createEdgeAttvalue(document, column, e);
+                    if(attvalueE != null) {
+                        attvaluesE.appendChild(attvalueE);
+                        hasColumns = true;
+                    }
+                }
+            }
+            if(hasColumns) {
+                edgeE.appendChild(attvaluesE);
+            }
         }
         Progress.progress(progressTicket);
 
