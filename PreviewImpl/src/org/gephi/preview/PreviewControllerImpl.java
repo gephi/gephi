@@ -27,6 +27,7 @@ import org.openide.util.Lookup;
 public class PreviewControllerImpl implements PreviewController {
 
     private GraphImpl previewGraph = null;
+    private PartialGraphImpl partialPreviewGraph = null;
     private boolean updateFlag = false;
     private final NodeSupervisorImpl nodeSupervisor = new NodeSupervisorImpl();
     private final GlobalEdgeSupervisorImpl globalEdgeSupervisor = new GlobalEdgeSupervisorImpl();
@@ -62,18 +63,26 @@ public class PreviewControllerImpl implements PreviewController {
     }
 
     /**
-     * Returns the current preview graph.
-     *
-     * The preview graph is built if needed.
-     *
-     * @return the current preview graph
+     * @see PreviewController#getGraph()
      */
     public Graph getGraph() {
+        // the preview graph is built if needed
         if (updateFlag) {
             buildGraph();
         }
 
         return previewGraph;
+    }
+
+    /**
+     * @see PreviewController#getPartialGraph(float)
+     */
+    public Graph getPartialGraph(float visibilityRatio) {
+        if (updateFlag || null == partialPreviewGraph || partialPreviewGraph.getVisibilityRatio() != visibilityRatio) {
+            partialPreviewGraph = new PartialGraphImpl(getGraph(), visibilityRatio);
+        }
+
+        return partialPreviewGraph;
     }
 
     /**

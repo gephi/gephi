@@ -20,6 +20,14 @@ public interface PreviewController {
     public Graph getGraph();
 
     /**
+     * Returns a subgraph of the current preview graph.
+     *
+     * @param visibilityRatio  The ratio of the preview graph to display
+     * @return a subgraph of the current preview graph
+     */
+    public Graph getPartialGraph(float visibilityRatio);
+
+    /**
      * Retreives the workspace graph and builds a preview graph from it.
      */
     public void buildGraph();

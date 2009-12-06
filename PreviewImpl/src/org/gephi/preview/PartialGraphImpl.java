@@ -1,4 +1,4 @@
-package org.gephi.ui.preview;
+package org.gephi.preview;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,7 +17,7 @@ import processing.core.PVector;
  */
 public class PartialGraphImpl implements Graph {
 
-    private float visibilityRatio;
+    private final float visibilityRatio;
     private final Set<Node> visibleNodes = new HashSet<Node>();
     private final Set<SelfLoop> visibleSelfLoops = new HashSet<SelfLoop>();
     private final Set<UnidirectionalEdge> visibleUnidirectionalEdges = new HashSet<UnidirectionalEdge>();
@@ -32,23 +32,8 @@ public class PartialGraphImpl implements Graph {
      */
     public PartialGraphImpl(Graph originalGraph, float visibilityRatio) {
         this.originalGraph = originalGraph;
-
         this.visibilityRatio = visibilityRatio;
         updateVisibleGraphParts();
-    }
-
-    /**
-     * Defines the graph visibility ratio.
-     *
-     * If it is updated, the list of visible parts is updated.
-     *
-     * @param ratio  the graph visibility ratio
-     */
-    public void setVisibilityRatio(float ratio) {
-        if (ratio != visibilityRatio) {
-            visibilityRatio = ratio;
-            updateVisibleGraphParts();
-        }
     }
 
     /**
