@@ -2,6 +2,7 @@ package org.gephi.preview;
 
 import java.util.ArrayList;
 import org.gephi.preview.api.CubicBezierCurve;
+import org.gephi.preview.api.Edge;
 import org.gephi.preview.api.EdgeArrow;
 import org.gephi.preview.api.EdgeMiniLabel;
 import org.gephi.preview.api.supervisors.EdgeSupervisor;
@@ -13,7 +14,7 @@ import processing.core.PVector;
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
-public abstract class EdgeImpl extends AbstractEdge {
+public abstract class EdgeImpl extends AbstractEdge implements Edge {
 
     protected final NodeImpl node1;
     protected final NodeImpl node2;
@@ -22,7 +23,7 @@ public abstract class EdgeImpl extends AbstractEdge {
     protected final ArrayList<EdgeArrow> arrows = new ArrayList<EdgeArrow>();
     protected final ArrayList<EdgeMiniLabel> miniLabels = new ArrayList<EdgeMiniLabel>();
     protected final ArrayList<CubicBezierCurve> curves = new ArrayList<CubicBezierCurve>();
-    private EdgeLabelImpl label;
+    private EdgeLabelImpl label = null;
     protected static final float BEZIER_CURVE_FACTOR = 0.2f;
 
     /**
@@ -54,7 +55,9 @@ public abstract class EdgeImpl extends AbstractEdge {
         arrows.add(new EdgeArrowB2In(this));
 
         // generate label
-        this.label = new EdgeLabelImpl(this, label);
+        if (null != label) {
+            this.label = new EdgeLabelImpl(this, label);
+        }
 
         // generate mini-labels
         miniLabels.add(new EdgeMiniLabelB1(this));
@@ -87,6 +90,13 @@ public abstract class EdgeImpl extends AbstractEdge {
                 cp1,
                 cp2,
                 node2.getPosition()));
+    }
+
+    /**
+     * @see Edge#hasLabel()
+     */
+    public boolean hasLabel() {
+        return null != label;
     }
 
     /**

@@ -398,7 +398,9 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
      * @param edge  the edge to color the label
      */
     private void colorEdgeLabel(EdgeImpl edge) {
-        colorEdgeLabel(edge.getLabel());
+        if (edge.hasLabel()) {
+            colorEdgeLabel(edge.getLabel());
+        }
     }
 
     /**
@@ -425,7 +427,9 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
      * @param edge  the edge to shorten the label
      */
     private void shortenEdgeLabel(EdgeImpl edge) {
-        shortenEdgeLabel(edge.getLabel());
+        if (edge.hasLabel()) {
+            shortenEdgeLabel(edge.getLabel());
+        }
     }
 
     /**

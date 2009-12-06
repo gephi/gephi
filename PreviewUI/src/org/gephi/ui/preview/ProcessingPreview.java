@@ -297,7 +297,7 @@ public class ProcessingPreview extends PApplet {
             }
 
             // draw its label
-            if (edge.showLabel()) {
+            if (edge.showLabel() && edge.hasLabel()) {
                 textFont(edgeLabelFont);
                 textAlign(CENTER, BASELINE);
                 drawEdgeLabel(edge.getLabel());

@@ -8,6 +8,13 @@ package org.gephi.preview.api;
 public interface Edge {
 
     /**
+     * Returns whether or not the edge has a label.
+     *
+     * @return true if the edge has a label
+     */
+    public boolean hasLabel();
+
+    /**
      * Returns the edge's thickness.
      *
      * @return the edge's thickness
