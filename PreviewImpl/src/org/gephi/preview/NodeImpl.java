@@ -58,14 +58,14 @@ public class NodeImpl implements Node, NodeColorizerClient {
     }
 
     /**
-	 * Returns the node supervisor.
-	 *
-	 * @return the controller's node supervisor
-	 */
-	public NodeSupervisorImpl getNodeSupervisor() {
-		PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-		return (NodeSupervisorImpl) controller.getNodeSupervisor();
-	}
+     * Returns the node supervisor.
+     *
+     * @return the controller's node supervisor
+     */
+    public NodeSupervisorImpl getNodeSupervisor() {
+        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+        return (NodeSupervisorImpl) controller.getNodeSupervisor();
+    }
 
     /**
      * Returns the parent graph.
@@ -86,18 +86,14 @@ public class NodeImpl implements Node, NodeColorizerClient {
     }
 
     /**
-     * Returns the node's top left position.
-     *
-     * @return the node's top left position
+     * @see Node#getTopLeftPosition()
      */
     public PVector getTopLeftPosition() {
         return topLeftPosition;
     }
 
     /**
-     * Returns the node's bottom right position.
-     *
-     * @return the node's bottom right position
+     * @see Node#getBottomRightPosition()
      */
     public PVector getBottomRightPosition() {
         return bottomRightPosition;
