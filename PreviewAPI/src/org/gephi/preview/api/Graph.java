@@ -1,27 +1,11 @@
 package org.gephi.preview.api;
 
-import processing.core.PVector;
-
 /**
  * Interface of a preview graph.
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public interface Graph {
-
-    /**
-     * Returns the closest position in the graph to (0,0).
-     *
-     * @return the closest position in the graph to (0,0).
-     */
-    public PVector getMinPos();
-
-    /**
-     * Returns the farther position in the graph to (0,0).
-     *
-     * @return the farther position in the graph to (0,0).
-     */
-    public PVector getMaxPos();
 
     /**
      * Returns an iterable on the graph's nodes.

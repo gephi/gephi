@@ -1,6 +1,6 @@
 package org.gephi.ui.preview;
 
-import org.gephi.preview.api.Graph;
+import org.gephi.preview.api.GraphSheet;
 import org.gephi.preview.api.PreviewController;
 import org.openide.util.Lookup;
 
@@ -12,7 +12,7 @@ import org.openide.util.Lookup;
 public class PreviewUIController {
 
     private static PreviewUIController instance;
-    private Graph graph = null;
+    private GraphSheet graphSheet = null;
 
     /**
      * Private constructor.
@@ -41,18 +41,18 @@ public class PreviewUIController {
         PreviewSettingsTopComponent previewSettingsTopComponent = PreviewSettingsTopComponent.findInstance();
         boolean newGraphFlag = false;
         float visibilityRatio = previewSettingsTopComponent.getVisibilityRatio();
-        Graph controllerGraph = previewController.getPartialGraph(visibilityRatio);
+        GraphSheet controllerGraphSheet = previewController.getPartialGraphSheet(visibilityRatio);
 
         // UI update
         previewTopComponent.hideBannerPanel();
 
-        if (null == graph || controllerGraph != graph) {
-            graph = controllerGraph;
+        if (null == graphSheet || controllerGraphSheet != graphSheet) {
+            graphSheet = controllerGraphSheet;
             newGraphFlag = true;
         }
 
         if (newGraphFlag) {
-            previewTopComponent.setGraph(graph);
+            previewTopComponent.setGraph(graphSheet);
         }
 
         previewTopComponent.refreshPreview();

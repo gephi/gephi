@@ -11,6 +11,20 @@ import processing.core.PVector;
 public interface Node {
 
     /**
+     * Returns the node's top left position.
+     *
+     * @return the node's top left position
+     */
+    public PVector getTopLeftPosition();
+
+    /**
+     * Returns the node's bottom right position.
+     *
+     * @return the node's bottom right position
+     */
+    public PVector getBottomRightPosition();
+
+    /**
      * Returns the node's current color.
      *
      * @return the node's current color

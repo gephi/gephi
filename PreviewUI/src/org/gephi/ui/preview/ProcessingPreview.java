@@ -24,7 +24,7 @@ public class ProcessingPreview extends PApplet {
     private PFont biEdgeMiniLabelFont;
     private PFont edgeLabelFont;
     private PFont edgeMiniLabelFont;
-    private Graph graph = null;
+    private GraphSheet graphSheet = null;
     private final static float MARGIN = 10f;
 
     /**
@@ -69,8 +69,8 @@ public class ProcessingPreview extends PApplet {
         translate(trans.x, trans.y);
 
         // draw graph
-        if (null != graph) {
-            drawGraph(graph);
+        if (null != graphSheet) {
+            drawGraph(graphSheet.getGraph());
         }
     }
 
@@ -115,8 +115,8 @@ public class ProcessingPreview extends PApplet {
      *
      * @param graph  the preview graph to draw
      */
-    public void setGraph(Graph graph) {
-        this.graph = graph;
+    public void setGraphSheet(GraphSheet graphSheet) {
+        this.graphSheet = graphSheet;
         initAppletLayout();
     }
 
@@ -124,9 +124,9 @@ public class ProcessingPreview extends PApplet {
      * Initializes the preview applet layout according to the graph's dimension.
      */
     private void initAppletLayout() {
-        PVector topLeft = graph.getMinPos().get();
+        PVector topLeft = graphSheet.getTopLeftPosition().get();
         topLeft.sub(MARGIN, MARGIN, 0);
-        PVector bottomRight = graph.getMaxPos().get();
+        PVector bottomRight = graphSheet.getBottomRightPosition().get();
         bottomRight.add(MARGIN, MARGIN, 0);
 
         // initializes zoom

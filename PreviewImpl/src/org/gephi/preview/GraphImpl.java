@@ -21,8 +21,6 @@ public class GraphImpl implements Graph {
     private final ArrayList<SelfLoop> selfLoops = new ArrayList<SelfLoop>();
     private final ArrayList<UnidirectionalEdge> uniEdges = new ArrayList<UnidirectionalEdge>();
     private final ArrayList<BidirectionalEdge> biEdges = new ArrayList<BidirectionalEdge>();
-    private final PVector minPos = new PVector();
-    private final PVector maxPos = new PVector();
 
     /**
      * Returns an iterable on the graph's nodes.
@@ -70,55 +68,12 @@ public class GraphImpl implements Graph {
     }
 
     /**
-     * Returns the closest position in the graph to (0,0).
-     *
-     * @return the closest position in the graph to (0,0).
-     */
-    public final PVector getMinPos() {
-        return minPos;
-    }
-
-    /**
-     * Returns the farther position in the graph to (0,0).
-     *
-     * @return the farther position in the graph to (0,0).
-     */
-    public final PVector getMaxPos() {
-        return maxPos;
-    }
-
-    /**
      * Adds the given node to the graph.
      *
      * @param node  the node to add to the graph
      */
     public void addNode(NodeImpl node) {
         nodes.add(node);
-
-        // update graph's bounding box
-        {
-            PVector topLeftPos = node.getTopLeftPosition();
-            PVector bottomRightPos = node.getBottomRightPosition();
-
-            if (nodes.size() == 1) {
-                // first initialization
-                minPos.set(topLeftPos);
-                maxPos.set(bottomRightPos);
-            } else {
-                if (topLeftPos.x < minPos.x) {
-                    minPos.x = topLeftPos.x;
-                }
-                if (topLeftPos.y < minPos.y) {
-                    minPos.y = topLeftPos.y;
-                }
-                if (bottomRightPos.x > maxPos.x) {
-                    maxPos.x = bottomRightPos.x;
-                }
-                if (bottomRightPos.y > maxPos.y) {
-                    maxPos.y = bottomRightPos.y;
-                }
-            }
-        }
     }
 
     /**

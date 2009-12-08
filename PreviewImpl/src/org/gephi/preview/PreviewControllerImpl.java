@@ -3,6 +3,7 @@ package org.gephi.preview;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.preview.api.Graph;
+import org.gephi.preview.api.GraphSheet;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.supervisors.EdgeSupervisor;
 import org.gephi.preview.api.supervisors.GlobalEdgeSupervisor;
@@ -28,6 +29,8 @@ public class PreviewControllerImpl implements PreviewController {
 
     private GraphImpl previewGraph = null;
     private PartialGraphImpl partialPreviewGraph = null;
+    private GraphSheetImpl graphSheet = null;
+    private GraphSheetImpl partialGraphSheet = null;
     private boolean updateFlag = false;
     private final NodeSupervisorImpl nodeSupervisor = new NodeSupervisorImpl();
     private final GlobalEdgeSupervisorImpl globalEdgeSupervisor = new GlobalEdgeSupervisorImpl();
@@ -57,13 +60,15 @@ public class PreviewControllerImpl implements PreviewController {
             }
 
             public void disable() {
-                previewGraph = null;
+                graphSheet = null;
             }
         });
     }
 
     /**
-     * @see PreviewController#getGraph()
+     * Returns the current preview graph.
+     *
+     * @return the current preview graph
      */
     public Graph getGraph() {
         // the preview graph is built if needed
@@ -75,7 +80,10 @@ public class PreviewControllerImpl implements PreviewController {
     }
 
     /**
-     * @see PreviewController#getPartialGraph(float)
+     * Returns a subgraph of the current preview graph.
+     *
+     * @param visibilityRatio  the ratio of the preview graph to display
+     * @return                 a subgraph of the current preview graph
      */
     public Graph getPartialGraph(float visibilityRatio) {
         if (updateFlag || null == partialPreviewGraph || partialPreviewGraph.getVisibilityRatio() != visibilityRatio) {
@@ -86,10 +94,35 @@ public class PreviewControllerImpl implements PreviewController {
     }
 
     /**
+     * @see PreviewController#getGraphSheet()
+     */
+    public GraphSheet getGraphSheet() {
+        if (updateFlag || null == graphSheet || graphSheet.getGraph() != previewGraph) {
+            graphSheet = new GraphSheetImpl(getGraph());
+        }
+
+        return graphSheet;
+    }
+
+    /**
+     * @see PreviewController#getPartialGraphSheet(float)
+     */
+    public GraphSheet getPartialGraphSheet(float visibilityRatio) {
+        if (updateFlag || null == partialGraphSheet
+                || ((PartialGraphImpl) partialGraphSheet.getGraph()).getVisibilityRatio() != visibilityRatio) {
+            partialGraphSheet = new GraphSheetImpl(getPartialGraph(visibilityRatio));
+        }
+
+        return partialGraphSheet;
+    }
+
+    /**
      * Retreives the workspace graph and builds a preview graph from it.
      *
      * For each build, the supervisors' lists of supervised elements are
      * cleared because the previous preview graph is forgotten.
+     *
+     * @see PreviewController#buildGraph()
      */
     public void buildGraph() {
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();

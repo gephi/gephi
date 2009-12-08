@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
-import org.gephi.preview.api.Graph;
+import org.gephi.preview.api.GraphSheet;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
@@ -222,7 +222,7 @@ final class PreviewTopComponent extends TopComponent {
      *
      * @param graph  the preview graph to draw in the applet
      */
-    public void setGraph(Graph graph) {
-        sketch.setGraph(graph);
+    public void setGraph(GraphSheet graphSheet) {
+        sketch.setGraphSheet(graphSheet);
     }
 }

@@ -13,19 +13,19 @@ import org.gephi.preview.api.supervisors.SelfLoopSupervisor;
 public interface PreviewController {
 
     /**
-     * Returns the current preview graph.
+     * Returns the current preview graph sheet.
      * 
-     * @return the current preview graph
+     * @return the current preview graph sheet
      */
-    public Graph getGraph();
+    public GraphSheet getGraphSheet();
 
     /**
-     * Returns a subgraph of the current preview graph.
+     * Returns a portion of the current preview graph sheet.
      *
-     * @param visibilityRatio  The ratio of the preview graph to display
-     * @return a subgraph of the current preview graph
+     * @param visibilityRatio  the ratio of the preview graph to display
+     * @return                 a portion of the current preview graph sheet
      */
-    public Graph getPartialGraph(float visibilityRatio);
+    public GraphSheet getPartialGraphSheet(float visibilityRatio);
 
     /**
      * Retreives the workspace graph and builds a preview graph from it.

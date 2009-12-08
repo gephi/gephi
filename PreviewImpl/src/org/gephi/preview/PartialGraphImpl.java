@@ -8,7 +8,6 @@ import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.Node;
 import org.gephi.preview.api.SelfLoop;
 import org.gephi.preview.api.UnidirectionalEdge;
-import processing.core.PVector;
 
 /**
  * Implementation of a partial preview graph.
@@ -52,20 +51,6 @@ public class PartialGraphImpl implements Graph {
      */
     public Graph getOriginalGraph() {
         return originalGraph;
-    }
-
-    /**
-     * @see Graph#getMinPos()
-     */
-    public PVector getMinPos() {
-        return originalGraph.getMinPos();
-    }
-
-    /**
-     * @see Graph#getMaxPos()
-     */
-    public PVector getMaxPos() {
-        return originalGraph.getMaxPos();
     }
 
     /**
