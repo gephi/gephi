@@ -80,7 +80,7 @@ public class LabelAdjust extends AbstractLayout implements Layout {
                     double label_occupied_height = 0.5 * ((n1.getNodeData().getTextData().getHeight()) + n2.getNodeData().getTextData().getHeight());
                     boolean collision = (xDist < label_occupied_width && yDist < label_occupied_height);
                     if (collision) {
-                        ForceVectorUtils.fcBiRepulsor_y(n1.getNodeData(), n2.getNodeData(), (0.8 + 0.4 * Math.random()) * repulsionStrength, label_occupied_width);
+                        ForceVectorUtils.fcBiRepulsor_y(n1.getNodeData(), n2.getNodeData(), (0.8 + 0.4 * Math.random()) * repulsionStrength, 0.005*label_occupied_width);
                         somethingMoved = true;
                     }
                 }
