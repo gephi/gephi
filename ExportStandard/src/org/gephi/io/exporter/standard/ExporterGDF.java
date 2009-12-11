@@ -93,7 +93,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
         }
         boolean c = cancel;
         clean();
-        return c;
+        return !c;
     }
 
     private void clean() {

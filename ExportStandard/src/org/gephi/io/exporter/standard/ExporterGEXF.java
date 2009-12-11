@@ -93,7 +93,7 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
         }
         boolean c = cancel;
         clean();
-        return c;
+        return !c;
     }
 
     private void clean() {
