@@ -267,7 +267,10 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     }
 
     public void mouseWheelMoved(MouseWheelEvent e) {
-
+        if(e.getUnitsToScroll()==0) {
+            return;
+        }
+        
         //Attributes
         float way = -e.getUnitsToScroll() / Math.abs(e.getUnitsToScroll());
         Vec3f cameraVector = graphDrawable.getCameraVector().copy();
