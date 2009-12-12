@@ -1,6 +1,6 @@
 **/build
-**/nbproject/private/platform-private.properties
+**/nbproject/private
 **/nbproject/platform.properties
 nbproject/project.properties
 **/dist
-nbproject/private/profiler/**
+nbproject/private/platform-private.properties
