@@ -99,6 +99,18 @@
             <file name="org-netbeans-core-actions-GlobalPropertiesAction.shadow_hidden"/>
         </folder>
     </folder>
+    <folder name="Services">
+        <folder name="AutoupdateType">
+            <file name="org_gephi_branding_desktop_update_center.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.Bundle#Services/AutoupdateType/org_gephi_branding_desktop_update_center.instance"/>
+                <attr name="enabled" boolvalue="true"/>
+                <attr name="instanceCreate" methodvalue="org.netbeans.modules.autoupdate.updateprovider.AutoupdateCatalogFactory.createUpdateProvider"/>
+                <attr name="instanceOf" stringvalue="org.netbeans.spi.autoupdate.UpdateProvider"/>
+                <attr name="url_key" stringvalue="org_gephi_branding_desktop_update_center"/>
+            </file>
+        </folder>
+    </folder>
     <folder name="Shortcuts">
         <file name="D-N.shadow">
             <attr name="originalFile" stringvalue="Menu/Edit/org-gephi-branding-desktop-actions-NewWorkspace.instance"/>
