@@ -39,16 +39,51 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class RankingModelImpl implements RankingModel {
+public class RankingModelImpl implements RankingModel, LookupListener {
 
     private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
+    private Lookup.Result<AttributeColumn> nodeColumnsResult;
+    private Lookup.Result<AttributeColumn> edgeColumnsResult;
 
     public RankingModelImpl() {
+        final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        final AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
+        pc.addWorkspaceListener(new WorkspaceListener() {
+
+            public void initialize(Workspace workspace) {
+            }
+
+            public void select(Workspace workspace) {
+                nodeColumnsResult = ac.getModel().getNodeTable().getLookup().lookupResult(AttributeColumn.class);
+                edgeColumnsResult = ac.getModel().getEdgeTable().getLookup().lookupResult(AttributeColumn.class);
+                nodeColumnsResult.addLookupListener(RankingModelImpl.this);
+                edgeColumnsResult.addLookupListener(RankingModelImpl.this);
+            }
+
+            public void unselect(Workspace workspace) {
+                nodeColumnsResult.removeLookupListener(RankingModelImpl.this);
+                edgeColumnsResult.removeLookupListener(RankingModelImpl.this);
+                nodeColumnsResult = null;
+                edgeColumnsResult = null;
+            }
+
+            public void close(Workspace workspace) {
+            }
+
+            public void disable() {
+            }
+        });
+    }
+
+    public void resultChanged(LookupEvent le) {
+        fireChangeEvent();
     }
 
     public NodeRanking[] getNodeRanking() {

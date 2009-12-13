@@ -141,7 +141,6 @@ public class RankingChooser extends javax.swing.JPanel {
     }
 
     private synchronized void refreshModel() {
-        System.out.println("refreshmodel");
         refreshSelectedRankings();
         Ranking[] rankings = new Ranking[0];
         if (modelUI.getRanking() == RankingUIModel.NODE_RANKING) {
