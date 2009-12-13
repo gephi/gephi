@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.gephi.ranking
 OpenIDE-Module-Layer: org/gephi/ranking/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/ranking/Bundle.properties

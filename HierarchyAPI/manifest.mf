@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.gephi.hierarchy.api
 OpenIDE-Module-Layer: org/gephi/hierarchy/api/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/hierarchy/api/Bundle.properties

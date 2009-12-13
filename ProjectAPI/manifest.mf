@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.gephi.project.api
 OpenIDE-Module-Layer: org/gephi/project/api/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/project/api/Bundle.properties

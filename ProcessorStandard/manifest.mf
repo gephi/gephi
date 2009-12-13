@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.gephi.io.processor.standard
 OpenIDE-Module-Layer: org/gephi/io/processor/standard/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/io/processor/standard/Bundle.properties
