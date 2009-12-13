@@ -370,7 +370,7 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void afterDisplay(GL gl, GLU glu) {
-        if (vizConfig.isSelectionEnable()) {
+        if (vizConfig.isSelectionEnable() && currentSelectionArea != null) {
             gl.glMatrixMode(GL.GL_PROJECTION);
             gl.glPushMatrix();
             gl.glLoadIdentity();
