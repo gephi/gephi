@@ -182,7 +182,7 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
 
     public String getId() {
         String id = (String) attributes.getValue(PropertiesColumn.NODE_ID.getIndex());
-        if (id.isEmpty()) {
+        if (id != null && id.isEmpty()) {
             return Integer.toString(node.getId());
         }
         return id;
