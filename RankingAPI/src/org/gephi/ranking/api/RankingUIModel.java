@@ -97,6 +97,9 @@ public class RankingUIModel {
         if (this.selectedEdgeRanking != null && this.selectedEdgeRanking.equals(selectedEdgeRanking)) {
             return;
         }
+        if (this.selectedEdgeRanking == null && selectedEdgeRanking == null) {
+            return;
+        }
         String oldValue = this.selectedEdgeRanking;
         this.selectedEdgeRanking = selectedEdgeRanking;
         firePropertyChangeEvent("selectedEdgeRanking", oldValue, selectedEdgeRanking);
@@ -104,6 +107,9 @@ public class RankingUIModel {
 
     public void setSelectedNodeRanking(String selectedNodeRanking) {
         if (this.selectedNodeRanking != null && this.selectedNodeRanking.equals(selectedNodeRanking)) {
+            return;
+        }
+        if (this.selectedNodeRanking == null && selectedNodeRanking == null) {
             return;
         }
         String oldValue = this.selectedNodeRanking;

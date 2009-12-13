@@ -76,13 +76,14 @@ public class RankingChooser extends javax.swing.JPanel {
 
             public void itemStateChanged(ItemEvent e) {
                 if (!rankingComboBox.getSelectedItem().equals(getSelectedRanking())) {
+                    resetTransformers();
                     if (!rankingComboBox.getSelectedItem().equals(NO_SELECTION)) {
                         setSelectedRanking((String) rankingComboBox.getSelectedItem());
                     } else {
                         setSelectedRanking(null);
                     }
-                    resetTransformers();
-                    refreshModel();
+
+                    //refreshModel();
                 }
             }
         });
@@ -97,7 +98,9 @@ public class RankingChooser extends javax.swing.JPanel {
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("ranking")
                         || evt.getPropertyName().equals("nodeTransformer")
-                        || evt.getPropertyName().equals("edgeTransformer")) {
+                        || evt.getPropertyName().equals("edgeTransformer")
+                        || evt.getPropertyName().equals("selectedNodeRanking")
+                        || evt.getPropertyName().equals("selectedEdgeRanking")) {
                     refreshModel();
                 }
             }
@@ -138,6 +141,7 @@ public class RankingChooser extends javax.swing.JPanel {
     }
 
     private synchronized void refreshModel() {
+        System.out.println("refreshmodel");
         refreshSelectedRankings();
         Ranking[] rankings = new Ranking[0];
         if (modelUI.getRanking() == RankingUIModel.NODE_RANKING) {

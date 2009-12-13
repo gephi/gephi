@@ -49,25 +49,6 @@ public class RankingModelImpl implements RankingModel {
     private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
 
     public RankingModelImpl() {
-        final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.addWorkspaceListener(new WorkspaceListener() {
-
-            public void initialize(Workspace workspace) {
-            }
-
-            public void select(Workspace workspace) {
-                fireChangeEvent();
-            }
-
-            public void unselect(Workspace workspace) {
-            }
-
-            public void close(Workspace workspace) {
-            }
-
-            public void disable() {
-            }
-        });
     }
 
     public NodeRanking[] getNodeRanking() {
