@@ -36,8 +36,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
 import org.gephi.io.exporter.Container;
 import org.gephi.io.exporter.ExportController;
 import org.gephi.io.exporter.Exporter;
@@ -192,9 +190,9 @@ public class DesktopExportController implements ExportController {
                             transformer.transform(source, result);
                         }
                     } catch (TransformerConfigurationException ex) {
-                        throw new RuntimeException(NbBundle.getMessage(getClass(), "error_transformer"));
+                        throw new RuntimeException(NbBundle.getMessage(getClass(), "error_transformer"), ex);
                     } catch (TransformerException ex) {
-                        throw new RuntimeException(NbBundle.getMessage(getClass(), "error_transformer"));
+                        throw new RuntimeException(NbBundle.getMessage(getClass(), "error_transformer"), ex);
                     } catch (Exception ex) {
                         throw new RuntimeException(ex);
                     }
