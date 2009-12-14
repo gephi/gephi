@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.tools;
 
 import java.awt.Color;
+import java.text.DecimalFormat;
 import java.util.Map.Entry;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -49,7 +50,6 @@ public class HeatMap implements Tool {
 
     private ToolEventListener[] listeners;
     private HeatMapPanel heatMapPanel;
-
     //Settings
     private Color[] gradientColors;
     private float[] gradientPositions;  //All between 0 and 1
@@ -57,7 +57,7 @@ public class HeatMap implements Tool {
 
     public HeatMap() {
         //Default settings
-        gradientColors = new Color[]{new Color(254, 232, 200), new Color(253, 187, 132), new Color(227, 74, 51)};
+        gradientColors = new Color[]{new Color(227, 74, 51), new Color(253, 187, 132), new Color(254, 232, 200)};
         gradientPositions = new float[]{0f, 0.5f, 1f};
     }
 
@@ -88,9 +88,9 @@ public class HeatMap implements Tool {
                         dontPaintUnreachable = heatMapPanel.isDontPaintUnreachable();
                     }
                     GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                    DirectedGraph graph=null;
-                    if(gc.getModel().getGraph() instanceof DirectedGraph) {
-                        graph = (DirectedGraph)gc.getModel().getGraph();
+                    DirectedGraph graph = null;
+                    if (gc.getModel().getGraph() instanceof DirectedGraph) {
+                        graph = (DirectedGraph) gc.getModel().getGraph();
                     } else {
                         return;
                     }
@@ -121,10 +121,10 @@ public class HeatMap implements Tool {
                     }
                     Color c = colors[0];
                     n.getNodeData().setColor(c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f);
+                    heatMapPanel.setStatus(NbBundle.getMessage(HeatMap.class, "HeatMap.status.maxdistance") + new DecimalFormat("#.##").format(algorithm.getMaxDistance()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
         };
         return listeners;
@@ -139,7 +139,7 @@ public class HeatMap implements Tool {
             }
 
             public String getName() {
-                return NbBundle.getMessage(ShortestPath.class, "HeatMap.name");
+                return NbBundle.getMessage(HeatMap.class, "HeatMap.name");
             }
 
             public Icon getIcon() {
