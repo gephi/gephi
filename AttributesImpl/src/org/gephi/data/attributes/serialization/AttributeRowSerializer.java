@@ -55,8 +55,9 @@ public class AttributeRowSerializer {
                 AttributeRowImpl row = (AttributeRowImpl) node.getNodeData().getAttributes();
                 Element rowE = document.createElement(ELEMENT_NODE_ROW);
                 rowE.setAttribute("for", String.valueOf(node.getId()));
-                writeRow(document, rowE, row);
-                rowsE.appendChild(rowE);
+                if (writeRow(document, rowE, row)) {
+                    rowsE.appendChild(rowE);
+                }
             }
         }
 
@@ -66,8 +67,9 @@ public class AttributeRowSerializer {
                     AttributeRowImpl row = (AttributeRowImpl) edge.getEdgeData().getAttributes();
                     Element rowE = document.createElement(ELEMENT_EDGE_ROW);
                     rowE.setAttribute("for", String.valueOf(edge.getId()));
-                    writeRow(document, rowE, row);
-                    rowsE.appendChild(rowE);
+                    if (writeRow(document, rowE, row)) {
+                        rowsE.appendChild(rowE);
+                    }
                 }
             }
         }
@@ -101,21 +103,25 @@ public class AttributeRowSerializer {
         }
     }
 
-    public void writeRow(Document document, Element rowE, AttributeRowImpl row) {
+    public boolean writeRow(Document document, Element rowE, AttributeRowImpl row) {
         rowE.setAttribute("version", String.valueOf(row.getRowVersion()));
+        int writtenRows = 0;
         for (AttributeValue value : row.getValues()) {
             int index = value.getColumn().getIndex();
             Object obj = value.getValue();
-            Element valueE = document.createElement(ELEMENT_VALUE);
-            valueE.setAttribute("index", String.valueOf(index));
-            valueE.setTextContent(obj.toString());
-            rowE.appendChild(valueE);
+            if (obj != null) {
+                writtenRows++;
+                Element valueE = document.createElement(ELEMENT_VALUE);
+                valueE.setAttribute("index", String.valueOf(index));
+                valueE.setTextContent(obj.toString());
+                rowE.appendChild(valueE);
+            }
         }
+        return writtenRows > 0;
     }
 
     public void readRow(Element rowE, AbstractAttributeModel model, AttributeTableImpl table, AttributeRowImpl row) {
         NodeList rowList = rowE.getChildNodes();
-        AttributeValueImpl[] values = new AttributeValueImpl[table.countColumns()];
         for (int i = 0; i < rowList.getLength(); i++) {
             if (rowList.item(i).getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
                 Element itemE = (Element) rowList.item(i);
@@ -124,12 +130,10 @@ public class AttributeRowSerializer {
                     AttributeType type = col.getType();
                     Object value = type.parse(itemE.getTextContent());
                     value = model.getManagedValue(value, type);
-                    AttributeValueImpl attvalue = new AttributeValueImpl(col, value);
-                    values[col.getIndex()] = attvalue;
+                    row.setValue(col, value);
                 }
             }
         }
-        row.setValues(values);
         row.setRowVersion(Integer.parseInt(rowE.getAttribute("version")));
     }
 }
