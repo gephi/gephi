@@ -182,7 +182,7 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
 
     public String getId() {
         String id = (String) attributes.getValue(PropertiesColumn.NODE_ID.getIndex());
-        if (id != null && id.isEmpty()) {
+        if (id == null || id.isEmpty()) {
             return Integer.toString(node.getId());
         }
         return id;
@@ -199,7 +199,6 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
     public void setFixed(boolean fixed) {
         this.fixed = fixed;
     }
-
 
     public TextData getTextData() {
         return textData;

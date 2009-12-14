@@ -202,7 +202,7 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
 
     public String getId() {
         String id = (String) attributes.getValue(PropertiesColumn.EDGE_ID.getIndex());
-        if (id != null && id.isEmpty()) {
+        if (id == null || id.isEmpty()) {
             return Integer.toString(edge.getId());
         }
         return id;
