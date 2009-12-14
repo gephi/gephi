@@ -26,11 +26,14 @@ import java.awt.Color;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.tools.api.NodePressingEventListener;
 import org.gephi.tools.api.Tool;
 import org.gephi.tools.api.ToolEventListener;
 import org.gephi.ui.tools.ToolUI;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -42,14 +45,12 @@ public class Brush implements Tool {
     //Architecture
     private ToolEventListener[] listeners;
     private BrushPanel brushPanel;
-
     //Settings
     private float[] color = {1f, 0f, 0f};
     private float intensity = 0.1f;
     private DiffusionMethods.DiffusionMethod diffusionMethod = DiffusionMethods.DiffusionMethod.NEIGHBORS;
 
     public void select() {
-
     }
 
     public void unselect() {
@@ -58,6 +59,18 @@ public class Brush implements Tool {
     }
 
     private void brush(Node[] nodes) {
+
+        for (Node node : nodes) {
+            float r = node.getNodeData().r();
+            float g = node.getNodeData().g();
+            float b = node.getNodeData().b();
+            r = intensity * color[0] + (1 - intensity) * r;
+            g = intensity * color[1] + (1 - intensity) * g;
+            b = intensity * color[2] + (1 - intensity) * b;
+            node.getNodeData().setR(r);
+            node.getNodeData().setG(g);
+            node.getNodeData().setB(b);
+        }
 
         for (Node node : getDiffusedNodes(nodes)) {
             float r = node.getNodeData().r();
@@ -73,11 +86,26 @@ public class Brush implements Tool {
     }
 
     private Node[] getDiffusedNodes(Node[] input) {
+        GraphModel model = Lookup.getDefault().lookup(GraphController.class).getModel();
         switch (diffusionMethod) {
             case NEIGHBORS:
-                return DiffusionMethods.getNeighbors(input, true);
+                return DiffusionMethods.getNeighbors(model.getGraphVisible(), input);
+            case NEIGHBORS_OF_NEIGHBORS:
+                return DiffusionMethods.getNeighborsOfNeighbors(model.getGraphVisible(), input);
+            case PREDECESSORS:
+                if (model.isDirected()) {
+                    return DiffusionMethods.getPredecessors(model.getDirectedGraphVisible(), input);
+                } else {
+                    return DiffusionMethods.getNeighbors(model.getGraphVisible(), input);
+                }
+            case SUCCESSORS:
+                if (model.isDirected()) {
+                    return DiffusionMethods.getSuccessors(model.getDirectedGraphVisible(), input);
+                } else {
+                    return DiffusionMethods.getNeighbors(model.getGraphVisible(), input);
+                }
         }
-        return input;
+        return new Node[0];
     }
 
     public ToolEventListener[] getListeners() {

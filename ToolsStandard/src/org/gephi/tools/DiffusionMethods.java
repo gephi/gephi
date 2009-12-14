@@ -21,13 +21,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.tools;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import org.gephi.datastructure.avl.param.AVLItemAccessor;
 import org.gephi.datastructure.avl.param.ParamAVLTree;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -36,54 +35,82 @@ import org.openide.util.NbBundle;
  */
 public class DiffusionMethods {
 
-    public static Node[] getNeighbors(Node[] nodes, boolean withDoubles) {
-        GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        Graph graph = gc.getModel().getGraph();
-        if (withDoubles) {
-            ArrayList<Node> nodeList = new ArrayList<Node>();
-            for (Node n : nodes) {
-                for (Node neighbor : graph.getNeighbors(n).toArray()) {
-                    nodeList.add(neighbor);
-                }
+    public static Node[] getNeighbors(Graph graph, Node[] nodes) {
+        graph.readLock();
+        NodeTree nodeTree = new NodeTree();
+        for (Node n : nodes) {
+            for (Node neighbor : graph.getNeighbors(n).toArray()) {
+                nodeTree.add(neighbor);
             }
-            return nodeList.toArray(new Node[0]);
-        } else {
-            NodeTree nodeTree = new NodeTree();
-            for (Node n : nodes) {
-                for (Node neighbor : graph.getNeighbors(n).toArray()) {
-                    nodeTree.add(neighbor);
-                }
-            }
-            return nodeTree.toArray(new Node[0]);
         }
+        graph.readUnlock();
+        //remove original nodes
+        for (Node n : nodes) {
+            nodeTree.remove(n);
+        }
+        return nodeTree.toArray(new Node[0]);
     }
 
-    public static Node[] getPredecessors(Node[] nodes) {
+    public static Node[] getNeighborsOfNeighbors(Graph graph, Node[] nodes) {
+        graph.readLock();
         NodeTree nodeTree = new NodeTree();
-        GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        DirectedGraph graph = (DirectedGraph)gc.getModel().getGraph();
+        for (Node n : nodes) {
+            for (Node neighbor : graph.getNeighbors(n).toArray()) {
+                nodeTree.add(neighbor);
+            }
+        }
+        //remove original nodes
+        for (Node n : nodes) {
+            nodeTree.remove(n);
+        }
+        for (Node n : nodeTree.toArray(new Node[0])) {
+            for (Node neighbor : graph.getNeighbors(n).toArray()) {
+                nodeTree.add(neighbor);
+            }
+        }
+        graph.readUnlock();
+        //remove original nodes
+        for (Node n : nodes) {
+            nodeTree.remove(n);
+        }
+        return nodeTree.toArray(new Node[0]);
+    }
+
+    public static Node[] getPredecessors(DirectedGraph graph, Node[] nodes) {
+        graph.readLock();
+        NodeTree nodeTree = new NodeTree();
         for (Node n : nodes) {
             for (Node neighbor : graph.getPredecessors(n).toArray()) {
                 nodeTree.add(neighbor);
             }
         }
+        graph.readUnlock();
+        //remove original nodes
+        for (Node n : nodes) {
+            nodeTree.remove(n);
+        }
         return nodeTree.toArray(new Node[0]);
     }
 
-    public static Node[] getSuccessors(Node[] nodes) {
+    public static Node[] getSuccessors(DirectedGraph graph, Node[] nodes) {
+        graph.readLock();
         NodeTree nodeTree = new NodeTree();
-        GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        DirectedGraph graph = (DirectedGraph)gc.getModel().getGraph();
         for (Node n : nodes) {
             for (Node neighbor : graph.getSuccessors(n).toArray()) {
                 nodeTree.add(neighbor);
             }
+        }
+        graph.readUnlock();
+        //remove original nodes
+        for (Node n : nodes) {
+            nodeTree.remove(n);
         }
         return nodeTree.toArray(new Node[0]);
     }
 
     public static enum DiffusionMethod {
 
+        NONE("DiffusionMethod.None"),
         NEIGHBORS("DiffusionMethod.Neighbors"),
         NEIGHBORS_OF_NEIGHBORS("DiffusionMethod.NeighborsOfNeighbors"),
         PREDECESSORS("DiffusionMethod.Predecessors"),

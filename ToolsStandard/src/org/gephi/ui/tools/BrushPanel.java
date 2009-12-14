@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.ui.tools;
 
 import org.gephi.tools.*;
@@ -41,19 +40,19 @@ public class BrushPanel extends javax.swing.JPanel {
     }
 
     public void setIntensity(float intensity) {
-        intensitySpinner.setValue((int)(intensity*100));
+        intensitySpinner.setValue((int) (intensity * 100));
     }
 
     public float getIntensity() {
-        return ((Integer)intensitySpinner.getModel().getValue()).floatValue()/100f;
+        return ((Integer) intensitySpinner.getModel().getValue()).floatValue() / 100f;
     }
 
     public void setColor(Color color) {
-        ((JColorButton)colorButton).setColor(color);
+        ((JColorButton) colorButton).setColor(color);
     }
 
     public Color getColor() {
-        return ((JColorButton)colorButton).getColor();
+        return ((JColorButton) colorButton).getColor();
     }
 
     public void setDiffusionMethod(DiffusionMethods.DiffusionMethod diffusionMethod) {
@@ -61,7 +60,7 @@ public class BrushPanel extends javax.swing.JPanel {
     }
 
     public DiffusionMethods.DiffusionMethod getDiffusionMethod() {
-        return (DiffusionMethods.DiffusionMethod)diffusionCombobox.getSelectedItem();
+        return (DiffusionMethods.DiffusionMethod) diffusionCombobox.getSelectedItem();
     }
 
     /** This method is called from within the constructor to
@@ -137,8 +136,6 @@ public class BrushPanel extends javax.swing.JPanel {
                 .addComponent(labelDiffusion, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton colorButton;
     private javax.swing.JComboBox diffusionCombobox;
@@ -148,5 +145,4 @@ public class BrushPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelDiffusion;
     private javax.swing.JLabel labelIntensity;
     // End of variables declaration//GEN-END:variables
-
 }
