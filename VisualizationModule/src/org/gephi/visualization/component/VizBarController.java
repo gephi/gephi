@@ -175,13 +175,13 @@ public class VizBarController {
         }
 
         public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[1];
+            JComponent[] components = new JComponent[2];
 
             //Show labels buttons
             VizModel vizModel = VizController.getInstance().getVizModel();
             final JToggleButton showLabelsButton = new JToggleButton();
             showLabelsButton.setSelected(vizModel.getTextModel().isShowNodeLabels());
-            showLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.showLabels"));
+            showLabelsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Nodes.showLabels"));
             showLabelsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/showLabels.png")));
             showLabelsButton.addActionListener(new ActionListener() {
 
@@ -200,6 +200,31 @@ public class VizBarController {
                 }
             });
             components[0] = showLabelsButton;
+
+            //Show hulls
+            final JToggleButton showHullsButton = new JToggleButton();
+            showHullsButton.setSelected(vizModel.isShowHulls());
+            showHullsButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Nodes.showHulls"));
+            showHullsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/showHulls.png")));
+            showHullsButton.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    VizModel vizModel = VizController.getInstance().getVizModel();
+                    vizModel.setShowHulls(showHullsButton.isSelected());
+                }
+            });
+            vizModel.addPropertyChangeListener(new PropertyChangeListener() {
+
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (evt.getPropertyName().equals("showHulls")) {
+                        VizModel vizModel = VizController.getInstance().getVizModel();
+                        if (showHullsButton.isSelected() != vizModel.isShowHulls()) {
+                            showHullsButton.setSelected(vizModel.isShowHulls());
+                        }
+                    }
+                }
+            });
+            components[1] = showHullsButton;
 
             return components;
         }

@@ -769,7 +769,7 @@ public class CompatibilityEngine extends AbstractEngine {
         modelClasses[CLASS_NODE].setEnabled(true);
         modelClasses[CLASS_EDGE].setEnabled(vizController.getVizModel().isShowEdges());
         modelClasses[CLASS_ARROW].setEnabled(vizConfig.isShowArrows());
-        modelClasses[CLASS_POTATO].setEnabled(true);
+        modelClasses[CLASS_POTATO].setEnabled(vizController.getVizModel().isShowHulls());
 
         //LOD
         ArrayList<ModelClass> classList = new ArrayList<ModelClass>();

@@ -23,10 +23,12 @@
                       <Component id="labelShape" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="shapeCombo" min="-2" pref="114" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="102" max="-2" attributes="0"/>
+                      <Component id="showHullsCheckbox" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="adjustTextCheckbox" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="195" max="32767" attributes="0"/>
+              <EmptySpace pref="156" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -37,6 +39,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="labelShape" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="shapeCombo" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="showHullsCheckbox" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="adjustTextCheckbox" min="-2" max="-2" attributes="0"/>
@@ -69,6 +72,13 @@
             <StringItem index="2" value="Item 3"/>
             <StringItem index="3" value="Item 4"/>
           </StringArray>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="showHullsCheckbox">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/visualization/component/Bundle.properties" key="NodeSettingsPanel.showHullsCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>

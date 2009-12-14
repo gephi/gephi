@@ -110,6 +110,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
                 getModelClasses()[AbstractEngine.CLASS_EDGE].setEnabled(vizController.getVizModel().isShowEdges());
                 getModelClasses()[AbstractEngine.CLASS_ARROW].setEnabled(vizController.getVizModel().isShowEdges() && vizConfig.isShowArrows());
+                getModelClasses()[AbstractEngine.CLASS_POTATO].setEnabled(vizController.getVizModel().isShowHulls());
             }
         });
     }

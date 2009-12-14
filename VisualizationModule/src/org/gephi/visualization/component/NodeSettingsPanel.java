@@ -93,6 +93,16 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
                 }
             }
         });
+
+        showHullsCheckbox.setSelected(vizModel.isShowHulls());
+        showHullsCheckbox.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                VizModel vizModel = VizController.getInstance().getVizModel();
+                vizModel.setShowHulls(showHullsCheckbox.isSelected());
+            }
+        });
+
         vizModel.addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
@@ -101,6 +111,8 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
                 } else if (evt.getPropertyName().equals("init")) {
                     refreshSharedConfig();
                 } else if (evt.getPropertyName().equals("adjustByText")) {
+                    refreshSharedConfig();
+                } else if (evt.getPropertyName().equals("showHulls")) {
                     refreshSharedConfig();
                 }
             }
@@ -121,12 +133,16 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
         if (adjustTextCheckbox.isSelected() != vizModel.isAdjustByText()) {
             adjustTextCheckbox.setSelected(vizModel.isAdjustByText());
         }
+        if (showHullsCheckbox.isSelected() != vizModel.isShowHulls()) {
+            showHullsCheckbox.setSelected(vizModel.isShowHulls());
+        }
     }
 
     public void setEnable(boolean enable) {
         labelShape.setEnabled(enable);
         adjustTextCheckbox.setEnabled(enable);
         shapeCombo.setEnabled(enable);
+        showHullsCheckbox.setEnabled(enable);
     }
 
     /** This method is called from within the constructor to
@@ -141,12 +157,15 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
         labelShape = new javax.swing.JLabel();
         adjustTextCheckbox = new javax.swing.JCheckBox();
         shapeCombo = new javax.swing.JComboBox();
+        showHullsCheckbox = new javax.swing.JCheckBox();
 
         labelShape.setText(org.openide.util.NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.labelShape.text")); // NOI18N
 
         adjustTextCheckbox.setText(org.openide.util.NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.adjustTextCheckbox.text")); // NOI18N
 
         shapeCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        showHullsCheckbox.setText(org.openide.util.NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.showHullsCheckbox.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -158,9 +177,11 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(labelShape)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(shapeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(shapeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(102, 102, 102)
+                        .addComponent(showHullsCheckbox))
                     .addComponent(adjustTextCheckbox))
-                .addContainerGap(195, Short.MAX_VALUE))
+                .addContainerGap(156, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -168,7 +189,8 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelShape)
-                    .addComponent(shapeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(shapeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(showHullsCheckbox))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(adjustTextCheckbox)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -178,5 +200,6 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox adjustTextCheckbox;
     private javax.swing.JLabel labelShape;
     private javax.swing.JComboBox shapeCombo;
+    private javax.swing.JCheckBox showHullsCheckbox;
     // End of variables declaration//GEN-END:variables
 }
