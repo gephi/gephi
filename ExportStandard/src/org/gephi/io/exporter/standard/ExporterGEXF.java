@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.standard;
 
-import java.io.BufferedWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -106,7 +105,19 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
         minY = 0f;
         maxY = 0f;
     }
-
+/*
+    public Schema getSchema() {
+        try {
+            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            return sf.newSchema(new URL("http://www.gexf.net/1.1draft/gexf.xsd"));
+        } catch (MalformedURLException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (SAXException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return null;
+    }
+*/
     public boolean exportData(Document document, HierarchicalGraph graph, AttributeModel model) throws Exception {
         Progress.start(progressTicket);
 
@@ -127,6 +138,7 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
         
         Element root = document.createElementNS("http://www.gexf.net/1.1draft", "gexf");
         root.setAttribute("xmlns:viz", "http:///www.gexf.net/1.1draft/viz");
+        //root.setAttribute("xsi:schemaLocation", "http://www.gexf.net/1.1draft http://www.gexf.net/1.1draft/gexf.xsd");
         root.setAttribute("version", "1.1");
         document.appendChild(root);
 
@@ -159,6 +171,8 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
         Element descriptionE = document.createElement("description");
         Text descriptionTextE = document.createTextNode("");
         creatorE.appendChild(descriptionE);*/
+
+        metaE.appendChild(creatorE);
 
         return metaE;
     }
@@ -235,7 +249,7 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
         Element attributeE = document.createElement("attribute");
         attributeE.setAttribute("id", column.getId());
         attributeE.setAttribute("title", column.getTitle());
-        attributeE.setAttribute("type", column.getType().getTypeString());
+        attributeE.setAttribute("type", column.getType().getTypeString().toLowerCase());
         if(column.getDefaultValue() != null) {
             Element defaultE = document.createElement("default");
             Text defaultTextE = document.createTextNode(column.getDefaultValue().toString());
