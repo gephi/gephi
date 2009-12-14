@@ -137,7 +137,36 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
             defaultMenu.add(item);
         }
         popupMenu.add(defaultMenu);
+
+        //Invert
+        JMenuItem invertItem = new JMenuItem(NbBundle.getMessage(ColorTransformerPanel.class, "PalettePopup.invert"));
+        invertItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                gradientSlider.setValues(invert(gradientSlider.getThumbPositions()), invert(gradientSlider.getColors()));
+            }
+        });
+        popupMenu.add(invertItem);
         return popupMenu;
+    }
+
+    private Color[] invert(Color[] source) {
+        int len = source.length;
+        Color[] res = new Color[len];
+        for (int i = 0; i < len; i++) {
+            res[i] = source[len - 1 - i];
+        }
+        return res;
+    }
+
+    private float[] invert(float[] source) {
+        int len = source.length;
+        float[] res = new float[len];
+        for (int i = 0; i < len; i++) {
+            res[i] = 1 - source[len - 1 - i];
+        }
+
+        return res;
     }
 
     /** This method is called from within the constructor to
