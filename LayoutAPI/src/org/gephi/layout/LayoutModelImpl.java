@@ -128,7 +128,10 @@ public class LayoutModelImpl implements LayoutModel {
     public void saveProperties(Layout layout) {
         for (LayoutProperty p : layout.getProperties()) {
             try {
-                savedProperties.put(new LayoutPropertyKey(p.getProperty().getName(), layout.getClass().getName()), p.getProperty().getValue());
+                Object value = p.getProperty().getValue();
+                if (value != null) {
+                    savedProperties.put(new LayoutPropertyKey(p.getProperty().getName(), layout.getClass().getName()), value);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

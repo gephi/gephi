@@ -37,6 +37,7 @@ import org.openide.util.Exceptions;
 public class LayoutNode extends AbstractNode {
 
     private Layout layout;
+    private PropertySet[] propertySets;
 
     public LayoutNode(Layout layout) {
         super(Children.LEAF);
@@ -46,23 +47,25 @@ public class LayoutNode extends AbstractNode {
 
     @Override
     public PropertySet[] getPropertySets() {
-        try {
-            Map<String, Sheet.Set> sheetMap = new HashMap<String, Sheet.Set>();
-            for (LayoutProperty layoutProperty : layout.getProperties()) {
-                Sheet.Set set = sheetMap.get(layoutProperty.getCategory());
-                if (set == null) {
-                    set = Sheet.createPropertiesSet();
-                    set.setDisplayName(layoutProperty.getCategory());
-                    sheetMap.put(layoutProperty.getCategory(), set);
+        if (propertySets == null) {
+            try {
+                Map<String, Sheet.Set> sheetMap = new HashMap<String, Sheet.Set>();
+                for (LayoutProperty layoutProperty : layout.getProperties()) {
+                    Sheet.Set set = sheetMap.get(layoutProperty.getCategory());
+                    if (set == null) {
+                        set = Sheet.createPropertiesSet();
+                        set.setDisplayName(layoutProperty.getCategory());
+                        sheetMap.put(layoutProperty.getCategory(), set);
+                    }
+                    set.put(layoutProperty.getProperty());
                 }
-                set.put(layoutProperty.getProperty());
+                propertySets = sheetMap.values().toArray(new PropertySet[0]);
+            } catch (Exception ex) {
+                Exceptions.printStackTrace(ex);
+                return null;
             }
-
-            return sheetMap.values().toArray(new PropertySet[0]);
-        } catch (Exception ex) {
-            Exceptions.printStackTrace(ex);
-            return null;
         }
+        return propertySets;
     }
 
     public Layout getLayout() {

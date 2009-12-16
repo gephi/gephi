@@ -94,7 +94,6 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
                 }
             }
         });
-
     }
 
     public void refreshModel(LayoutModel layoutModel) {
@@ -156,7 +155,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         if (model == null || model.getSelectedLayout() == null) {
             propertySheet.setNodes(new Node[0]);
         } else {
-            propertySheet.setNodes(new Node[]{new LayoutNode(model.getSelectedLayout())});
+            LayoutNode layoutNode = new LayoutNode(model.getSelectedLayout());
+            propertySheet.setNodes(new Node[]{layoutNode});
         }
     }
 

@@ -34,7 +34,6 @@ import org.gephi.layout.ForceVectorNodeLayoutData;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutProperty;
-import org.openide.nodes.Node.PropertySet;
 import org.openide.util.NbBundle;
 
 /**
