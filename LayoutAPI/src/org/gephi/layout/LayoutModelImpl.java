@@ -44,16 +44,12 @@ public class LayoutModelImpl implements LayoutModel {
     private List<PropertyChangeListener> listeners;
     //Data
     private Layout selectedLayout;
+    private LayoutBuilder selectedBuilder;
     //Util
-    private Map<Class, LayoutBuilder> layoutMap;
     private LongTaskExecutor executor;
 
     public LayoutModelImpl() {
         listeners = new ArrayList<PropertyChangeListener>();
-        layoutMap = new HashMap<Class, LayoutBuilder>();
-        for (LayoutBuilder b : Lookup.getDefault().lookupAll(LayoutBuilder.class)) {
-            layoutMap.put(b.buildLayout().getClass(), b);
-        }
 
         executor = new LongTaskExecutor(true, "layout", 5);
         executor.setLongTaskListener(new LongTaskListener() {
@@ -69,11 +65,12 @@ public class LayoutModelImpl implements LayoutModel {
     }
 
     public LayoutBuilder getSelectedBuilder() {
-        return layoutMap.get(selectedLayout.getClass());
+        return selectedBuilder;
     }
 
     public Layout getLayout(LayoutBuilder layoutBuilder) {
         Layout layout = layoutBuilder.buildLayout();
+        selectedBuilder = layoutBuilder;
         layout.resetPropertiesValues();
         //Push saved properties
         return layout;

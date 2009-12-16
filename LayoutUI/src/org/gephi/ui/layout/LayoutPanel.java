@@ -22,6 +22,8 @@ package org.gephi.ui.layout;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.api.LayoutModel;
+import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -67,6 +70,29 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
                 }
             }
         });
+
+        infoLabel.addMouseListener(new MouseAdapter() {
+
+            RichTooltip richTooltip;
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                if (infoLabel.isEnabled() && model != null && model.getSelectedLayout() != null) {
+                    richTooltip = buildTooltip(model.getSelectedBuilder());
+                    richTooltip.showTooltip(infoLabel);
+                }
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                if (richTooltip != null) {
+                    richTooltip.hideTooltip();
+                    richTooltip = null;
+                }
+            }
+        });
+
     }
 
     public void refreshModel(LayoutModel layoutModel) {
@@ -264,37 +290,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         }
     }
 
-    private static class LayoutChildren extends Children.Keys<Layout> {
-
-        private ArrayList<Layout> layouts;
-
-        public LayoutChildren() {
-            layouts = new ArrayList<Layout>();
-        }
-
-        @Override
-        protected void addNotify() {
-            setKeys(layouts);
-        }
-
-        @Override
-        protected void removeNotify() {
-            setKeys(Collections.EMPTY_SET);
-        }
-
-        public void addLayout(Layout layout) {
-            layouts.add(layout);
-            setKeys(layouts);
-        }
-
-        public void removeLayout(Layout layout) {
-            layouts.remove(layout);
-            setKeys(layouts);
-        }
-
-        @Override
-        protected Node[] createNodes(Layout layout) {
-            return new Node[]{new LayoutNode(layout)};
-        }
+    private RichTooltip buildTooltip(LayoutBuilder builder) {
+        RichTooltip richTooltip = new RichTooltip(builder.getName(), builder.getDescription());
+        return richTooltip;
     }
 }
