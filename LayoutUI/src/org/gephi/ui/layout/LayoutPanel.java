@@ -35,6 +35,7 @@ import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.api.LayoutModel;
 import org.gephi.layout.api.LayoutUI;
+import org.gephi.ui.components.JPopupButton;
 import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.Node;
@@ -94,6 +95,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
                 }
             }
         });
+
+        ((JPopupButton)loadPresetButton).addItem("test", null);
     }
 
     public void refreshModel(LayoutModel layoutModel) {
@@ -120,8 +123,10 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
         if (model == null || !model.isRunning()) {
             runButton.setText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.runButton.text"));
+            runButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/layout/resources/run.gif", false));
         } else if (model.isRunning()) {
             runButton.setText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.stopButton.text"));
+            runButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/layout/resources/stop.png", false));
         }
 
         boolean enabled = model != null && model.getSelectedLayout() != null;
@@ -129,6 +134,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         resetButton.setEnabled(enabled);
         infoLabel.setEnabled(enabled);
         propertySheet.setEnabled(enabled);
+        loadPresetButton.setEnabled(enabled);
+        savePresetButton.setEnabled(enabled);
     }
 
     private void refreshChooser() {
@@ -166,6 +173,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         runButton.setEnabled(enabled);
         propertySheet.setEnabled(enabled);
         resetButton.setEnabled(enabled);
+        loadPresetButton.setEnabled(enabled);
+        savePresetButton.setEnabled(enabled);
     }
 
     private void setSelectedLayout(LayoutBuilder builder) {
@@ -195,25 +204,69 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         layoutCombobox = new javax.swing.JComboBox();
         infoLabel = new javax.swing.JLabel();
         runButton = new javax.swing.JButton();
         propertiesScrollPane = new javax.swing.JScrollPane();
+        layoutToolbar = new javax.swing.JToolBar();
         resetButton = new javax.swing.JButton();
+        savePresetButton = new javax.swing.JButton();
+        loadPresetButton = new JPopupButton();
+
+        setLayout(new java.awt.GridBagLayout());
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(layoutCombobox, gridBagConstraints);
 
         infoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         infoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/layout/resources/layoutInfo.png"))); // NOI18N
         infoLabel.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.infoLabel.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(2, 7, 0, 0);
+        add(infoLabel, gridBagConstraints);
 
+        runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/layout/resources/run.gif"))); // NOI18N
         runButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.runButton.text")); // NOI18N
+        runButton.setIconTextGap(5);
+        runButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
         runButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runButtonActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        add(runButton, gridBagConstraints);
 
         propertiesScrollPane.setBorder(null);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(propertiesScrollPane, gridBagConstraints);
+
+        layoutToolbar.setFloatable(false);
+        layoutToolbar.setRollover(true);
 
         resetButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.resetButton.text")); // NOI18N
         resetButton.addActionListener(new java.awt.event.ActionListener() {
@@ -221,39 +274,27 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
                 resetButtonActionPerformed(evt);
             }
         });
+        layoutToolbar.add(resetButton);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(propertiesScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(infoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
-                        .addComponent(resetButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(runButton))
-                    .addComponent(layoutCombobox, javax.swing.GroupLayout.Alignment.TRAILING, 0, 246, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(layoutCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(11, 11, 11)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(infoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(runButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(resetButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(12, 12, 12)
-                .addComponent(propertiesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        savePresetButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.savePresetButton.text")); // NOI18N
+        savePresetButton.setFocusable(false);
+        savePresetButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        savePresetButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        layoutToolbar.add(savePresetButton);
+
+        loadPresetButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.loadPresetButton.text")); // NOI18N
+        loadPresetButton.setFocusable(false);
+        loadPresetButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        loadPresetButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        layoutToolbar.add(loadPresetButton);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        add(layoutToolbar, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
@@ -270,9 +311,12 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel infoLabel;
     private javax.swing.JComboBox layoutCombobox;
+    private javax.swing.JToolBar layoutToolbar;
+    private javax.swing.JButton loadPresetButton;
     private javax.swing.JScrollPane propertiesScrollPane;
     private javax.swing.JButton resetButton;
     private javax.swing.JButton runButton;
+    private javax.swing.JButton savePresetButton;
     // End of variables declaration//GEN-END:variables
 
     private static class LayoutBuilderWrapper {
