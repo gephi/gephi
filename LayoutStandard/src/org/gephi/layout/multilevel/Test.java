@@ -3,6 +3,8 @@
  */
 package org.gephi.layout.multilevel;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.graph.api.GraphController;
@@ -12,15 +14,14 @@ import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutProperty;
 import org.gephi.layout.api.LayoutUI;
-import org.openide.nodes.Node.PropertySet;
-import org.openide.nodes.Sheet;
+import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Helder Suzuki <heldersuzuki@gmail.com>
  */
-@ServiceProvider(service=LayoutBuilder.class)
+@ServiceProvider(service = LayoutBuilder.class)
 public class Test implements LayoutBuilder {
 
     private TestLayoutUI ui = new TestLayoutUI();
@@ -79,11 +80,14 @@ public class Test implements LayoutBuilder {
         public void endAlgo() {
         }
 
-        public PropertySet[] getPropertySets() throws NoSuchMethodException {
-            Sheet.Set set = Sheet.createPropertiesSet();
-            set.put(LayoutProperty.createProperty(
-                    this, Boolean.class, "Refine", "Refine", "isRefine", "setRefine"));
-            return new PropertySet[]{set};
+        public LayoutProperty[] getProperties() {
+            List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
+            try {
+                properties.add(LayoutProperty.createProperty(this, Boolean.class, "Refine", null, "Refine", "isRefine", "setRefine"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return properties.toArray(new LayoutProperty[0]);
         }
 
         public void resetPropertiesValues() {

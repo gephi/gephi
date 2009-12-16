@@ -20,8 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.force.yifanHu;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
@@ -36,8 +37,6 @@ import org.gephi.layout.force.quadtree.BarnesHut;
 import org.gephi.layout.force.Displacement;
 import org.gephi.layout.force.ForceVector;
 import org.gephi.layout.force.quadtree.QuadTree;
-import org.openide.nodes.Node.PropertySet;
-import org.openide.nodes.Sheet;
 
 /**
  * Hu's basic algorithm
@@ -116,41 +115,45 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         setAdaptiveCooling(true);
     }
 
-    public PropertySet[] getPropertySets() throws NoSuchMethodException {
-        Sheet.Set set = Sheet.createPropertiesSet();
-        set.setDisplayName("Yifan Hu's properties");
-        set.put(LayoutProperty.createProperty(
-            this, Float.class, "Optimal Distance",
-            "The natural length of the springs.", "getOptimalDistance",
-            "setOptimalDistance"));
-        set.put(LayoutProperty.createProperty(
-            this, Float.class, "Relative Strength",
-            "The relative electrical force strength (compared to the springs)",
-            "getRelativeStrength", "setRelativeStrength"));
-        set.put(LayoutProperty.createProperty(
-            this, Float.class, "Step size",
-            "The step size used in the integration phase",
-            "getStep", "setStep"));
-        set.put(LayoutProperty.createProperty(
-            this, Float.class, "Step ratio",
-            "The ratio used to update the step size across iterations.",
-            "getStepRatio", "setStepRatio"));
-        set.put(LayoutProperty.createProperty(
-            this, Boolean.class, "Adaptive Cooling",
-            "Controls the use of adaptive cooling",
-            "isAdaptiveCooling", "setAdaptiveCooling"));
+    public LayoutProperty[] getProperties() {
+        List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
+        final String YIFANHU_CATEGORY = "Yifan Hu's properties";
+        final String BARNESHUT_CATEGORY = "Barnes-Hut's properties";
 
-        Sheet.Set barnesSet = Sheet.createPropertiesSet();
-        barnesSet.setDisplayName("Barnes-Hut's properties");
-        barnesSet.put(LayoutProperty.createProperty(
-            this, Integer.class, "Quadtree Max Level",
-            "The max level to be used in the quadtree representation (smaller is less accurate, but faster)",
-            "getQuadTreeMaxLevel", "setQuadTreeMaxLevel"));
-        barnesSet.put(LayoutProperty.createProperty(
-            this, Float.class, "Theta",
-            "The theta parameter for Barnes-Hut opening criteria (smaller is more accurate, but more expensive)",
-            "getBarnesHutTheta", "setBarnesHutTheta"));
-        return new PropertySet[]{set, barnesSet};
+        try {
+            properties.add(LayoutProperty.createProperty(
+                    this, Float.class, "Optimal Distance", YIFANHU_CATEGORY,
+                    "The natural length of the springs.", "getOptimalDistance",
+                    "setOptimalDistance"));
+            properties.add(LayoutProperty.createProperty(
+                    this, Float.class, "Relative Strength", YIFANHU_CATEGORY,
+                    "The relative electrical force strength (compared to the springs)",
+                    "getRelativeStrength", "setRelativeStrength"));
+            properties.add(LayoutProperty.createProperty(
+                    this, Float.class, "Step size", YIFANHU_CATEGORY,
+                    "The step size used in the integration phase",
+                    "getStep", "setStep"));
+            properties.add(LayoutProperty.createProperty(
+                    this, Float.class, "Step ratio", YIFANHU_CATEGORY,
+                    "The ratio used to update the step size across iterations.",
+                    "getStepRatio", "setStepRatio"));
+            properties.add(LayoutProperty.createProperty(
+                    this, Boolean.class, "Adaptive Cooling", YIFANHU_CATEGORY,
+                    "Controls the use of adaptive cooling",
+                    "isAdaptiveCooling", "setAdaptiveCooling"));
+            properties.add(LayoutProperty.createProperty(
+                    this, Integer.class, "Quadtree Max Level", BARNESHUT_CATEGORY,
+                    "The max level to be used in the quadtree representation (smaller is less accurate, but faster)",
+                    "getQuadTreeMaxLevel", "setQuadTreeMaxLevel"));
+            properties.add(LayoutProperty.createProperty(
+                    this, Float.class, "Theta", BARNESHUT_CATEGORY,
+                    "The theta parameter for Barnes-Hut opening criteria (smaller is more accurate, but more expensive)",
+                    "getBarnesHutTheta", "setBarnesHutTheta"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return properties.toArray(new LayoutProperty[0]);
     }
 
     public void initAlgo() {
@@ -330,9 +333,9 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
         @Override
         public ForceVector calculateForce(Spatial node1, Spatial node2,
-                                          float distance) {
+                float distance) {
             ForceVector f = new ForceVector(node2.x() - node1.x(),
-                                            node2.y() - node1.y());
+                    node2.y() - node1.y());
             f.multiply(distance / optimalDistance);
             return f;
         }
@@ -362,9 +365,9 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
         @Override
         public ForceVector calculateForce(Spatial node1, Spatial node2,
-                                          float distance) {
+                float distance) {
             ForceVector f = new ForceVector(node2.x() - node1.x(),
-                                            node2.y() - node1.y());
+                    node2.y() - node1.y());
             float scale = -relativeStrength * optimalDistance * optimalDistance / (distance * distance);
             if (Float.isNaN(scale) || Float.isInfinite(scale)) {
                 scale = -1;

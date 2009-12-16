@@ -20,51 +20,38 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.api;
 
-import java.lang.reflect.Field;
-import java.util.MissingResourceException;
 import org.openide.nodes.Node.Property;
 import org.openide.nodes.PropertySupport;
-import org.openide.util.NbBundle;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class LayoutProperty {
+public final class LayoutProperty {
 
-    protected String name;
-    protected String description = "";
-    protected Field field;
+    protected Property property;
+    protected String category;
 
-//    public static LayoutProperty createProperty(Class layoutClass, String fieldName) {
-//        LayoutProperty lp = new LayoutProperty();
-//
-//        try {
-//            //Field
-//            lp.field = layoutClass.getField(fieldName);
-//
-//            //Name
-//            lp.name = fieldName;
-//            lp.name = NbBundle.getMessage(layoutClass, layoutClass.getName() + "_" + fieldName + "_name");
-//            lp.description = NbBundle.getMessage(layoutClass, layoutClass.getName() + "_" + fieldName + "_desc");
-//        } catch (NoSuchFieldException ex) {
-//            return null;
-//        } catch (SecurityException ex) {
-//            return null;
-//        } catch (MissingResourceException ex) {
-//        }
-//        return lp;
-//    }
+    LayoutProperty(Property property, String category) {
+        this.property = property;
+        this.category = category;
+    }
 
-    public static Property createProperty(
-        Object obj, Class valueType, String propertyName, String propertyDesc,
-        String getMethod, String setMethod) throws NoSuchMethodException {
+    public Property getProperty() {
+        return property;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public static LayoutProperty createProperty(Object obj, Class valueType, String propertyName, String propertyCategory, String propertyDescription, String getMethod, String setMethod) throws NoSuchMethodException {
         Property property = new PropertySupport.Reflection(
-            obj, valueType, getMethod, setMethod);
+                obj, valueType, getMethod, setMethod);
 
         property.setName(propertyName);
-        property.setShortDescription(propertyDesc);
+        property.setShortDescription(propertyDescription);
 
-        return property;
+        return new LayoutProperty(property, propertyCategory);
     }
 }

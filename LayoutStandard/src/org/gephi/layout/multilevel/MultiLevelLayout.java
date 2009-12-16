@@ -20,8 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.multilevel;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.api.Layout;
@@ -30,8 +31,6 @@ import org.gephi.layout.api.LayoutProperty;
 import org.gephi.layout.force.yifanHu.YifanHuLayout;
 import org.gephi.layout.force.yifanHu.YifanHuProportional;
 import org.gephi.layout.random.RandomLayout;
-import org.openide.nodes.Node.PropertySet;
-import org.openide.nodes.Sheet;
 
 /**
  *
@@ -49,7 +48,7 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
     private double minCoarseningRate;
 
     public MultiLevelLayout(LayoutBuilder layoutBuilder,
-                            CoarseningStrategy coarseningStrategy) {
+            CoarseningStrategy coarseningStrategy) {
         super(layoutBuilder);
         this.coarseningStrategy = coarseningStrategy;
         //     this.yifanHu = new YifanHu();
@@ -126,17 +125,22 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
         setMinCoarseningRate(0.75d);
     }
 
-    public PropertySet[] getPropertySets() throws NoSuchMethodException {
-        Sheet.Set set = Sheet.createPropertiesSet();
-        set.put(LayoutProperty.createProperty(
-            this, Integer.class, "Minimum level size",
-            "The minimum amount of nodes every level must have (bigger values mean less levels)",
-            "getMinSize", "setMinSize"));
-        set.put(LayoutProperty.createProperty(
-            this, Double.class, "Minimum coarsening rate",
-            "The minimum relative size between two levels (smaller values mean less levels)",
-            "getMinCoarseningRate", "setMinCoarseningRate"));
-        return new PropertySet[]{set};
+    public LayoutProperty[] getProperties() {
+        List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
+        final String MULTILEVEL_CATEGORY = "Multi-level";
+        try {
+            properties.add(LayoutProperty.createProperty(
+                    this, Integer.class, "Minimum level size", MULTILEVEL_CATEGORY,
+                    "The minimum amount of nodes every level must have (bigger values mean less levels)",
+                    "getMinSize", "setMinSize"));
+            properties.add(LayoutProperty.createProperty(
+                    this, Double.class, "Minimum coarsening rate", MULTILEVEL_CATEGORY,
+                    "The minimum relative size between two levels (smaller values mean less levels)",
+                    "getMinCoarseningRate", "setMinCoarseningRate"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return properties.toArray(new LayoutProperty[0]);
     }
 
     /**

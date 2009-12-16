@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.labelAdjust;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
@@ -30,7 +32,6 @@ import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutProperty;
 import org.openide.nodes.Node.PropertySet;
-import org.openide.nodes.Sheet;
 
 /**
  *
@@ -80,7 +81,7 @@ public class LabelAdjust extends AbstractLayout implements Layout {
                     double label_occupied_height = 0.5 * ((n1.getNodeData().getTextData().getHeight()) + n2.getNodeData().getTextData().getHeight());
                     boolean collision = (xDist < label_occupied_width && yDist < label_occupied_height);
                     if (collision) {
-                        ForceVectorUtils.fcBiRepulsor_y(n1.getNodeData(), n2.getNodeData(), (0.8 + 0.4 * Math.random()) * repulsionStrength, 0.005*label_occupied_width);
+                        ForceVectorUtils.fcBiRepulsor_y(n1.getNodeData(), n2.getNodeData(), (0.8 + 0.4 * Math.random()) * repulsionStrength, 0.005 * label_occupied_width);
                         somethingMoved = true;
                     }
                 }
@@ -105,14 +106,19 @@ public class LabelAdjust extends AbstractLayout implements Layout {
     public void endAlgo() {
     }
 
-    public PropertySet[] getPropertySets() throws NoSuchMethodException {
-        Sheet.Set set = Sheet.createPropertiesSet();
-        set.put(LayoutProperty.createProperty(
-                this, Double.class, "repulsionStrength", "repulsionStrength",
-                "getRepulsionStrength", "setRepulsionStrength"));
-        set.put(LayoutProperty.createProperty(
-                this, Double.class, "speed", "speed", "getSpeed", "setSpeed"));
-        return new PropertySet[]{set};
+    public LayoutProperty[] getProperties() {
+        List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
+        final String LABELADJUST_CATEGORY = "LabelAdjust";
+        try {
+            properties.add(LayoutProperty.createProperty(
+                    this, Double.class, "repulsionStrength", LABELADJUST_CATEGORY, "repulsionStrength",
+                    "getRepulsionStrength", "setRepulsionStrength"));
+            properties.add(LayoutProperty.createProperty(
+                    this, Double.class, "speed", LABELADJUST_CATEGORY, "speed", "getSpeed", "setSpeed"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return properties.toArray(new LayoutProperty[0]);
     }
 
     public void resetPropertiesValues() {

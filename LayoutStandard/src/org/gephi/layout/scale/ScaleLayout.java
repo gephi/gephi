@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.scale;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
@@ -27,8 +29,6 @@ import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutProperty;
-import org.openide.nodes.Node.PropertySet;
-import org.openide.nodes.Sheet;
 
 /**
  * Sample layout that scales the graph.
@@ -76,12 +76,16 @@ public class ScaleLayout extends AbstractLayout implements Layout {
     public void endAlgo() {
     }
 
-    public PropertySet[] getPropertySets() throws NoSuchMethodException {
-        Sheet.Set set = Sheet.createPropertiesSet();
-        set.put(LayoutProperty.createProperty(
-            this, Double.class, "Scale factor",
-            "Scale factor", "getScale", "setScale"));
-        return new PropertySet[]{set};
+    public LayoutProperty[] getProperties() {
+        List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
+        try {
+            properties.add(LayoutProperty.createProperty(
+                    this, Double.class, "Scale factor", null,
+                    "Scale factor", "getScale", "setScale"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return properties.toArray(new LayoutProperty[0]);
     }
 
     public void resetPropertiesValues() {

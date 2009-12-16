@@ -38,7 +38,7 @@ public class GetPropertySetsTest {
         for (LayoutBuilder layoutBuilder : Lookup.getDefault().lookupAll(LayoutBuilder.class)) {
             Layout layout = layoutBuilder.buildLayout();
             System.out.println("Layout: " + layoutBuilder.getName());
-            layout.getPropertySets();
+            layout.getProperties();
         }
     }
 }

@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.rotate;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
@@ -27,8 +29,6 @@ import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutProperty;
-import org.openide.nodes.Node.PropertySet;
-import org.openide.nodes.Sheet;
 
 /**
  * Sample layout that simply rotates the graph.
@@ -76,12 +76,16 @@ public class RotateLayout extends AbstractLayout implements Layout {
     public void resetPropertiesValues() {
     }
 
-    public PropertySet[] getPropertySets() throws NoSuchMethodException {
-        Sheet.Set set = Sheet.createPropertiesSet();
-        set.put(LayoutProperty.createProperty(
-            this, Double.class, "Angle",
+    public LayoutProperty[] getProperties() {
+        List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
+        try {
+            properties.add(LayoutProperty.createProperty(
+            this, Double.class, "Angle", null,
             "Clockwise rotation angle in degrees", "getAngle", "setAngle"));
-        return new PropertySet[]{set};
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return properties.toArray(new LayoutProperty[0]);
     }
 
     /**

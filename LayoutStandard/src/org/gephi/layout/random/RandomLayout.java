@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.random;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -28,8 +30,6 @@ import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutProperty;
-import org.openide.nodes.Node.PropertySet;
-import org.openide.nodes.Sheet;
 
 /**
  *
@@ -73,13 +73,17 @@ public class RandomLayout extends AbstractLayout implements Layout {
     public void endAlgo() {
     }
 
-    public PropertySet[] getPropertySets() throws NoSuchMethodException {
-        Sheet.Set set = Sheet.createPropertiesSet();
-        set.put(LayoutProperty.createProperty(
-            this, Double.class, "Space size",
-            "The size of the space to randomly distribute the nodes.",
-            "getSize", "setSize"));
-        return new PropertySet[]{set};
+    public LayoutProperty[] getProperties() {
+        List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
+        try {
+            properties.add(LayoutProperty.createProperty(
+                    this, Double.class, "Space size", null,
+                    "The size of the space to randomly distribute the nodes.",
+                    "getSize", "setSize"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return properties.toArray(new LayoutProperty[0]);
     }
 
     public void resetPropertiesValues() {

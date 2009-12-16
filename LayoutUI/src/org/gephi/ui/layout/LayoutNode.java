@@ -20,10 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.layout;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.gephi.layout.api.Layout;
+import org.gephi.layout.api.LayoutProperty;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node.PropertySet;
+import org.openide.nodes.Sheet;
 import org.openide.util.Exceptions;
 
 /**
@@ -43,8 +47,19 @@ public class LayoutNode extends AbstractNode {
     @Override
     public PropertySet[] getPropertySets() {
         try {
-            return layout.getPropertySets();
-        } catch (NoSuchMethodException ex) {
+            Map<String, Sheet.Set> sheetMap = new HashMap<String, Sheet.Set>();
+            for (LayoutProperty layoutProperty : layout.getProperties()) {
+                Sheet.Set set = sheetMap.get(layoutProperty.getCategory());
+                if (set == null) {
+                    set = Sheet.createPropertiesSet();
+                    set.setDisplayName(layoutProperty.getCategory());
+                    sheetMap.put(layoutProperty.getCategory(), set);
+                }
+                set.put(layoutProperty.getProperty());
+            }
+
+            return sheetMap.values().toArray(new PropertySet[0]);
+        } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
             return null;
         }
