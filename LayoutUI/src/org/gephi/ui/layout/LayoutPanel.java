@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ui.layout;
 
 import java.awt.Color;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ItemEvent;
@@ -35,6 +34,7 @@ import javax.swing.DefaultComboBoxModel;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.api.LayoutModel;
+import org.gephi.layout.api.LayoutUI;
 import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.Node;
@@ -293,9 +293,23 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
     }
 
     private RichTooltip buildTooltip(LayoutBuilder builder) {
-        RichTooltip richTooltip = new RichTooltip(builder.getName(), builder.getDescription());
-        LayoutDescriptionImage layoutDescriptionImage = new LayoutDescriptionImage();
-        richTooltip.setMainImage(layoutDescriptionImage.getImage());
+        String description = "";
+        LayoutUI layoutUI = null;
+        try {
+            layoutUI = builder.getUI();
+            description = layoutUI.getDescription();
+            if (layoutUI.getQualityRank() < 0 || layoutUI.getSpeedRank() < 0) {
+                layoutUI = null;
+            }
+        } catch (Exception e) {
+            layoutUI = null;
+        }
+
+        RichTooltip richTooltip = new RichTooltip(builder.getName(), description);
+        if (layoutUI != null) {
+            LayoutDescriptionImage layoutDescriptionImage = new LayoutDescriptionImage(layoutUI);
+            richTooltip.setMainImage(layoutDescriptionImage.getImage());
+        }
         return richTooltip;
     }
 
@@ -314,8 +328,10 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         private String qualityStr;
         private String speedStr;
         private int textMaxSize;
+        private LayoutUI layoutUI;
 
-        public LayoutDescriptionImage() {
+        public LayoutDescriptionImage(LayoutUI layoutUI) {
+            this.layoutUI = layoutUI;
             greenIcon = ImageUtilities.loadImage("org/gephi/ui/layout/resources/yellow.png");
             grayIcon = ImageUtilities.loadImage("org/gephi/ui/layout/resources/grey.png");
             qualityStr = NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.tooltip.quality");
@@ -326,9 +342,9 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
             g.setColor(Color.BLACK);
             g.drawString(qualityStr, 0, STAR_HEIGHT + Y_BEGIN - 2);
-            paintStarPanel(g, textMaxSize + TEXT_GAP, Y_BEGIN, 5, 3);
+            paintStarPanel(g, textMaxSize + TEXT_GAP, Y_BEGIN, STAR_MAX, layoutUI.getQualityRank());
             g.drawString(speedStr, 0, STAR_HEIGHT * 2 + LINE_GAP + Y_BEGIN - 2);
-            paintStarPanel(g, textMaxSize + TEXT_GAP, STAR_HEIGHT + LINE_GAP + Y_BEGIN, 5, 1);
+            paintStarPanel(g, textMaxSize + TEXT_GAP, STAR_HEIGHT + LINE_GAP + Y_BEGIN, STAR_MAX, layoutUI.getSpeedRank());
         }
 
         public Image getImage() {

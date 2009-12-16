@@ -21,28 +21,54 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.layout.scale;
 
 import javax.swing.Icon;
+import javax.swing.JPanel;
+import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
+import org.gephi.layout.api.LayoutUI;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Helder Suzuki <heldersuzuki@gephi.org>>
  */
+@ServiceProvider(service=LayoutBuilder.class)
 public class Expand implements LayoutBuilder {
 
+    private ExpandLayoutUI ui = new ExpandLayoutUI();
+
     public String getName() {
-        return NbBundle.getMessage(Expand.class, "expand_name");
-    }
-
-    public String getDescription() {
-        return NbBundle.getMessage(Expand.class, "expand_description");
-    }
-
-    public Icon getIcon() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return NbBundle.getMessage(Expand.class, "expand.name");
     }
 
     public ScaleLayout buildLayout() {
         return new ScaleLayout(this, 1.2);
+    }
+
+    public LayoutUI getUI() {
+        return ui;
+    }
+
+    private static class ExpandLayoutUI implements LayoutUI {
+
+        public String getDescription() {
+            return NbBundle.getMessage(Expand.class, "expand.description");
+        }
+
+        public Icon getIcon() {
+            return null;
+        }
+
+        public JPanel getSimplePanel(Layout layout) {
+            return null;
+        }
+
+        public int getQualityRank() {
+            return -1;
+        }
+
+        public int getSpeedRank() {
+            return -1;
+        }
     }
 }

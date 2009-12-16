@@ -21,29 +21,54 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.layout.random;
 
 import javax.swing.Icon;
+import javax.swing.JPanel;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
+import org.gephi.layout.api.LayoutUI;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
+@ServiceProvider(service=LayoutBuilder.class)
 public class Random implements LayoutBuilder {
 
+    private RandomLayoutUI ui = new RandomLayoutUI();
+
     public String getName() {
-        return NbBundle.getMessage(Random.class, "Random_name");
-    }
-
-    public String getDescription() {
-        return NbBundle.getMessage(Random.class, "Random_description");
-    }
-
-    public Icon getIcon() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return NbBundle.getMessage(Random.class, "Random.name");
     }
 
     public Layout buildLayout() {
         return new RandomLayout(this, 50);
+    }
+
+    public LayoutUI getUI() {
+        return ui;
+    }
+
+    private static class RandomLayoutUI implements LayoutUI {
+
+        public String getDescription() {
+            return NbBundle.getMessage(Random.class, "Random.description");
+        }
+
+        public Icon getIcon() {
+            return null;
+        }
+
+        public JPanel getSimplePanel(Layout layout) {
+            return null;
+        }
+
+        public int getQualityRank() {
+            return -1;
+        }
+
+        public int getSpeedRank() {
+            return -1;
+        }
     }
 }

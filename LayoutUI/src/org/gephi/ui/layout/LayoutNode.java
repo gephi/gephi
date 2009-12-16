@@ -38,7 +38,6 @@ public class LayoutNode extends AbstractNode {
         super(Children.LEAF);
         this.layout = layout;
         setName(layout.getBuilder().getName());
-        setShortDescription(layout.getBuilder().getDescription());
     }
 
     @Override

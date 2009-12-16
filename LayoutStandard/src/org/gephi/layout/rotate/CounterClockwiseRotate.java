@@ -21,29 +21,54 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.layout.rotate;
 
 import javax.swing.Icon;
+import javax.swing.JPanel;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
+import org.gephi.layout.api.LayoutUI;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
+@ServiceProvider(service=LayoutBuilder.class)
 public class CounterClockwiseRotate implements LayoutBuilder {
+
+    private CounterClockwiseRotateLayoutUI ui = new CounterClockwiseRotateLayoutUI();
 
     public Layout buildLayout() {
         return new RotateLayout(this, 90);
     }
 
     public String getName() {
-        return NbBundle.getMessage(CounterClockwiseRotate.class, "counterclockwise_name");
+        return NbBundle.getMessage(CounterClockwiseRotate.class, "counterclockwise.name");
     }
 
-    public String getDescription() {
-        return NbBundle.getMessage(CounterClockwiseRotate.class, "counterclockwise_description");
+    public LayoutUI getUI() {
+        return ui;
     }
 
-    public Icon getIcon() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    private static class CounterClockwiseRotateLayoutUI implements LayoutUI {
+
+        public String getDescription() {
+            return NbBundle.getMessage(CounterClockwiseRotate.class, "counterclockwise.description");
+        }
+
+        public Icon getIcon() {
+            return null;
+        }
+
+        public JPanel getSimplePanel(Layout layout) {
+            return null;
+        }
+
+        public int getQualityRank() {
+            return -1;
+        }
+
+        public int getSpeedRank() {
+            return -1;
+        }
     }
 }

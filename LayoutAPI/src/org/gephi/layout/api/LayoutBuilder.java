@@ -20,8 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.api;
 
-import javax.swing.Icon;
-
 /**
  * A LayoutBuilder provides a specific Layout instance. The Builder pattern is
  * more suitable for the Layout instantiation to allow simpler reusability of
@@ -49,17 +47,7 @@ public interface LayoutBuilder {
      */
     public String getName();
 
-    /**
-     * The description of the of the Layout's provided by this Builder.
-     * @return
-     */
-    public String getDescription();
-
-    /**
-     * The icon that represents the Layout's provided by this Builder.
-     * @return
-     */
-    public Icon getIcon();
+    public LayoutUI getUI();
 
     /**
      * Builds an instance of the Layout.

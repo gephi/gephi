@@ -4,31 +4,29 @@
 package org.gephi.layout.multilevel;
 
 import javax.swing.Icon;
+import javax.swing.JPanel;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutProperty;
+import org.gephi.layout.api.LayoutUI;
 import org.openide.nodes.Node.PropertySet;
 import org.openide.nodes.Sheet;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Helder Suzuki <heldersuzuki@gmail.com>
  */
+@ServiceProvider(service=LayoutBuilder.class)
 public class Test implements LayoutBuilder {
+
+    private TestLayoutUI ui = new TestLayoutUI();
 
     public String getName() {
         return "TEST";
-    }
-
-    public String getDescription() {
-        return "TEST";
-    }
-
-    public Icon getIcon() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public Layout buildLayout() {
@@ -49,7 +47,7 @@ public class Test implements LayoutBuilder {
         @Override
         public void setGraphController(GraphController graphController) {
             super.setGraphController(graphController);
-            graph = (HierarchicalGraph)graphController.getModel().getGraphVisible();
+            graph = (HierarchicalGraph) graphController.getModel().getGraphVisible();
         }
 
         public void initAlgo() {
@@ -84,7 +82,7 @@ public class Test implements LayoutBuilder {
         public PropertySet[] getPropertySets() throws NoSuchMethodException {
             Sheet.Set set = Sheet.createPropertiesSet();
             set.put(LayoutProperty.createProperty(
-                this, Boolean.class, "Refine", "Refine", "isRefine", "setRefine"));
+                    this, Boolean.class, "Refine", "Refine", "isRefine", "setRefine"));
             return new PropertySet[]{set};
         }
 
@@ -103,6 +101,33 @@ public class Test implements LayoutBuilder {
          */
         public void setRefine(Boolean refine) {
             this.refine = refine;
+        }
+    }
+
+    public LayoutUI getUI() {
+        return ui;
+    }
+
+    private static class TestLayoutUI implements LayoutUI {
+
+        public String getDescription() {
+            return "TEST";
+        }
+
+        public Icon getIcon() {
+            return null;
+        }
+
+        public JPanel getSimplePanel(Layout layout) {
+            return null;
+        }
+
+        public int getQualityRank() {
+            return 0;
+        }
+
+        public int getSpeedRank() {
+            return 0;
         }
     }
 }

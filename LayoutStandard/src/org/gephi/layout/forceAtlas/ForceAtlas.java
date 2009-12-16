@@ -21,28 +21,54 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.layout.forceAtlas;
 
 import javax.swing.Icon;
+import javax.swing.JPanel;
+import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
+import org.gephi.layout.api.LayoutUI;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
+@ServiceProvider(service=LayoutBuilder.class)
 public class ForceAtlas implements LayoutBuilder {
+
+    private ForceAtlasLayoutUI ui = new ForceAtlasLayoutUI();
 
     public String getName() {
         return NbBundle.getMessage(ForceAtlasLayout.class, "name");
     }
 
-    public String getDescription() {
-        return NbBundle.getMessage(ForceAtlasLayout.class, "description");
-    }
-
-    public Icon getIcon() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public ForceAtlasLayout buildLayout() {
         return new ForceAtlasLayout(this);
+    }
+
+    public LayoutUI getUI() {
+        return ui;
+    }
+
+    private static class ForceAtlasLayoutUI implements LayoutUI {
+
+        public String getDescription() {
+            return NbBundle.getMessage(ForceAtlas.class, "description");
+        }
+
+        public Icon getIcon() {
+            return null;
+        }
+
+        public JPanel getSimplePanel(Layout layout) {
+            return null;
+        }
+
+        public int getQualityRank() {
+            return 5;
+        }
+
+        public int getSpeedRank() {
+            return 3;
+        }
     }
 }

@@ -21,15 +21,22 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.layout.force.yifanHu;
 
 import javax.swing.Icon;
+import javax.swing.JPanel;
+import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
+import org.gephi.layout.api.LayoutUI;
 import org.gephi.layout.force.StepDisplacement;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
+@ServiceProvider(service=LayoutBuilder.class)
 public class YifanHu implements LayoutBuilder {
+
+    private YifanHuLayoutUI ui = new YifanHuLayoutUI();
 
     public YifanHuLayout buildLayout() {
         YifanHuLayout layout = new YifanHuLayout(this, new StepDisplacement(1f));
@@ -37,14 +44,33 @@ public class YifanHu implements LayoutBuilder {
     }
 
     public String getName() {
-        return NbBundle.getMessage(YifanHu.class, "YifanHu_name");
+        return NbBundle.getMessage(YifanHu.class, "YifanHu.name");
     }
 
-    public String getDescription() {
-        return NbBundle.getMessage(YifanHu.class, "YifanHu_description");
+    public LayoutUI getUI() {
+        return ui;
     }
 
-    public Icon getIcon() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    private static class YifanHuLayoutUI implements LayoutUI {
+
+        public String getDescription() {
+            return NbBundle.getMessage(YifanHu.class, "YifanHu.description");
+        }
+
+        public Icon getIcon() {
+            return null;
+        }
+
+        public JPanel getSimplePanel(Layout layout) {
+            return null;
+        }
+
+        public int getQualityRank() {
+            return 3;
+        }
+
+        public int getSpeedRank() {
+            return 3;
+        }
     }
 }

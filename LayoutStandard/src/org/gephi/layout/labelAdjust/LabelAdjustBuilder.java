@@ -21,28 +21,54 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.layout.labelAdjust;
 
 import javax.swing.Icon;
+import javax.swing.JPanel;
+import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
+import org.gephi.layout.api.LayoutUI;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service = LayoutBuilder.class)
 public class LabelAdjustBuilder implements LayoutBuilder {
+
+    private LabelAdjustLayoutUI ui = new LabelAdjustLayoutUI();
 
     public String getName() {
         return NbBundle.getMessage(LabelAdjustBuilder.class, "name");
     }
 
-    public String getDescription() {
-        return NbBundle.getMessage(LabelAdjustBuilder.class, "description");
-    }
-
-    public Icon getIcon() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public LabelAdjust buildLayout() {
         return new LabelAdjust(this);
+    }
+
+    public LayoutUI getUI() {
+        return ui;
+    }
+
+    private static class LabelAdjustLayoutUI implements LayoutUI {
+
+        public String getDescription() {
+            return NbBundle.getMessage(LabelAdjustBuilder.class, "description");
+        }
+
+        public Icon getIcon() {
+            return null;
+        }
+
+        public JPanel getSimplePanel(Layout layout) {
+            return null;
+        }
+
+        public int getQualityRank() {
+            return -1;
+        }
+
+        public int getSpeedRank() {
+            return -1;
+        }
     }
 }
