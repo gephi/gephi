@@ -234,11 +234,11 @@ public final class LongTaskExecutor {
         }
 
         public boolean cancel() {
-            if (inBackground) {
+            /*if (inBackground) {
                 if (future != null && future.cancel(false)) {
                     return true;
                 }
-            }
+            }*/
             if (task != null) {
                 return task.cancel();
             }
