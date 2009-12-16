@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutModel;
@@ -33,6 +34,11 @@ import org.gephi.layout.api.LayoutProperty;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.longtask.LongTaskExecutor;
 import org.gephi.utils.longtask.LongTaskListener;
+import org.openide.util.Exceptions;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -195,5 +201,64 @@ public class LayoutModelImpl implements LayoutModel {
             }
             return hashCode;
         }
+    }
+
+    public Element writeXML(Document document) {
+        Element layoutModelE = document.createElement("layoutmodel");
+
+        if (selectedLayout != null) {
+            saveProperties(selectedLayout);
+        }
+
+        //Properties
+        Element propertiesE = document.createElement("properties");
+        for (Entry<LayoutPropertyKey, Object> entry : savedProperties.entrySet()) {
+            Element propertyE = document.createElement("property");
+            propertyE.setAttribute("layout", entry.getKey().layoutClassName);
+            propertyE.setAttribute("property", entry.getKey().name);
+            propertyE.setAttribute("class", entry.getValue().getClass().getName());
+            propertyE.setTextContent(entry.getValue().toString());
+            propertiesE.appendChild(propertyE);
+        }
+
+        layoutModelE.appendChild(propertiesE);
+
+        return layoutModelE;
+    }
+
+    public void readXML(Element layoutModelElement) {
+        NodeList propertyList = layoutModelElement.getElementsByTagName("property");
+        for (int i = 0; i < propertyList.getLength(); i++) {
+            Node n = propertyList.item(i);
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                Element propertyE = (Element) n;
+
+                LayoutPropertyKey key = new LayoutPropertyKey(propertyE.getAttribute("property"), propertyE.getAttribute("layout"));
+                Object value = parse(propertyE.getAttribute("class"), propertyE.getTextContent());
+                savedProperties.put(key, value);
+            }
+        }
+    }
+
+    private Object parse(String classStr, String str) {
+        try {
+            Class c = Class.forName(classStr);
+            if (c.equals(Boolean.class)) {
+                return new Boolean(str);
+            } else if (c.equals(Integer.class)) {
+                return new Integer(str);
+            } else if (c.equals(Float.class)) {
+                return new Float(str);
+            } else if (c.equals(Double.class)) {
+                return new Double(str);
+            } else if (c.equals(Long.class)) {
+                return new Long(str);
+            } else if (c.equals(String.class)) {
+                return str;
+            }
+        } catch (ClassNotFoundException ex) {
+            return null;
+        }
+        return null;
     }
 }
