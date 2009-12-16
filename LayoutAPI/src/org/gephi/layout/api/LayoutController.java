@@ -34,17 +34,13 @@ import java.util.Observer;
  */
 public interface LayoutController {
 
+    public LayoutModel getModel();
+
     /**
      * Sets the Layout this Controller will run.
      * @param layout
      */
     public void setLayout(Layout layout);
-
-    /**
-     * The current layout.
-     * @return
-     */
-    public Layout getLayout();
 
     /**
      * Executes the current Layout.
@@ -68,16 +64,4 @@ public interface LayoutController {
      * @return
      */
     public boolean canStop();
-
-    /**
-     * Adds observers to this Controller.
-     * @param observer
-     */
-    public void addObserver(Observer observer);
-
-    /**
-     * Delete an observer from this Controller.
-     * @param observer
-     */
-    public void deleteObserver(Observer observer);
 }

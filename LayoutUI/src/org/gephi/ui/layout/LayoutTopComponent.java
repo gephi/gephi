@@ -1,192 +1,91 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+Copyright 2008 WebAtlas
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.layout;
 
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.awt.BorderLayout;
 import java.util.logging.Logger;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import org.gephi.layout.api.Layout;
-import org.gephi.layout.api.LayoutBuilder;
-import org.gephi.layout.api.LayoutController;
-import org.openide.explorer.ExplorerManager;
-import org.openide.explorer.propertysheet.PropertySheet;
-import org.openide.explorer.view.ChoiceView;
-import org.openide.nodes.AbstractNode;
-import org.openide.nodes.Children;
-import org.openide.nodes.Node;
-import org.openide.nodes.Node.PropertySet;
-import org.openide.util.Exceptions;
-import org.openide.util.Lookup;
+import org.gephi.layout.api.LayoutModel;
+import org.gephi.project.api.ProjectController;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
+//import org.openide.util.ImageUtilities;
+import org.netbeans.api.settings.ConvertAsProperties;
+import org.openide.util.Lookup;
 
-/**
- * Top component which displays something.
- */
-final class LayoutTopComponent extends TopComponent
-    implements Observer, ExplorerManager.Provider,
-               PropertyChangeListener {
+@ConvertAsProperties(dtd = "-//org.gephi.ui.layout//Layout//EN",
+autostore = false)
+public final class LayoutTopComponent extends TopComponent {
 
     private static LayoutTopComponent instance;
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "LayoutTopComponent";
-    private LayoutController layoutController;
-    private final Action requestPlayAction = new RequestPlayAction();
-    private final Action requestStopAction = new RequestStopAction();
-    private final Action chooseLayoutAction = new ChooseLayoutAction();
-    private final Action addLayoutAction = new AddLayoutAction();
-    private final Action deleteLayoutAction = new DeleteLayoutAction();
-    private final Action resetLayoutAction = new ResetLayoutAction();
-    private final RootNode rootNode = new RootNode();
-    private final ExplorerManager explorerManager = new ExplorerManager();
-    private final PropertySheet propertySheet = new PropertySheet();
+    private LayoutPanel layoutPanel;
+    private LayoutModel model;
 
-    private LayoutTopComponent() {
-        initLayoutController();
-        propertySheet.setMaximumSize(new java.awt.Dimension(233, 32767));
-        propertySheet.setSize(new java.awt.Dimension(233, 240));
-        propertySheet.setPreferredSize(new java.awt.Dimension(233, 240));
-       
+    public LayoutTopComponent() {
         initComponents();
-        ActionMap map = this.getActionMap();
-        explorerManager.setRootContext(new AbstractNode(rootNode));
-        explorerManager.addPropertyChangeListener(this);
-
-        // following line tells the top component which lookup should be associated with it
-//        associateLookup(ExplorerUtils.createLookup(explorerManager, map));
         setName(NbBundle.getMessage(LayoutTopComponent.class, "CTL_LayoutTopComponent"));
         setToolTipText(NbBundle.getMessage(LayoutTopComponent.class, "HINT_LayoutTopComponent"));
-//        setIcon(Utilities.loadImage(ICON_PATH, true));
-        putClientProperty("netbeans.winsys.tc.keep_preferred_size_when_slided_in", Boolean.TRUE);
-    }
+//        setIcon(ImageUtilities.loadImage(ICON_PATH, true));
+        putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
-    private void initLayoutController() {
-        layoutController = Lookup.getDefault().lookup(LayoutController.class);
-        layoutController.addObserver(this);
-    }
+        layoutPanel = new LayoutPanel();
+        add(layoutPanel, BorderLayout.CENTER);
 
-    public void propertyChange(PropertyChangeEvent evt) {
-        if ("selectedNodes".equals(evt.getPropertyName())) {
-            propertySheet.setNodes(explorerManager.getSelectedNodes());
-            layoutController.setLayout(getSelectedLayout());
-        } else {
-            System.out.println("evt: " + evt.getPropertyName());
-        }
-    }
+        Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
 
-    public Layout getSelectedLayout() {
-        Node[] selectedNodes = explorerManager.getSelectedNodes();
-
-        if (selectedNodes.length > 0) {
-            LayoutNode node = (LayoutNode) selectedNodes[0];
-            return node.getLayout();
-        } else {
-            return null;
-        }
-
-    }
-
-    public void update(Observable o, Object arg) {
-        playButton.setEnabled(layoutController.canExecute());
-        stopButton.setEnabled(layoutController.canStop());
-    }
-
-    public class LayoutNode extends AbstractNode {
-
-        private String valor,  valor2;
-        private Layout layout;
-
-        public void setValor(String valor) {
-            this.valor = valor;
-        }
-
-        public String getValor() {
-            return valor;
-        }
-
-        public LayoutNode(Layout layout) {
-            super(Children.LEAF);
-            this.layout = layout;
-            setName(layout.getBuilder().getName());
-            setShortDescription(layout.getBuilder().getDescription());
-            setValor(layout.getBuilder().getName());
-        }
-
-        @Override
-        public PropertySet[] getPropertySets() {
-            try {
-                return layout.getPropertySets();
-            } catch (NoSuchMethodException ex) {
-                Exceptions.printStackTrace(ex);
-                return null;
+            public void initialize(Workspace workspace) {
             }
-        }
 
-        public Layout getLayout() {
-            return layout;
+            public void select(Workspace workspace) {
+                model = workspace.getLookup().lookup(LayoutModel.class);
+                refreshModel();
+            }
+
+            public void unselect(Workspace workspace) {
+                model.removePropertyChangeListener(layoutPanel);
+            }
+
+            public void close(Workspace workspace) {
+            }
+
+            public void disable() {
+                model = null;
+                refreshModel();
+            }
+        });
+
+        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+        if(projectController.getCurrentWorkspace()!=null) {
+            model = projectController.getCurrentWorkspace().getLookup().lookup(LayoutModel.class);
         }
+        refreshModel();
     }
 
-    class RootNode extends Children.Keys<Layout> {
-
-        private ArrayList<Layout> layouts;
-
-        public RootNode() {
-            layouts = new ArrayList<Layout>();
-        }
-
-        @Override
-        protected void addNotify() {
-            setKeys(layouts);
-        }
-
-        @Override
-        protected void removeNotify() {
-            setKeys(Collections.EMPTY_SET);
-        }
-
-        public void addLayout(Layout layout) {
-            layouts.add(layout);
-            setKeys(layouts);
-        }
-
-        public void removeLayout(Layout layout) {
-            layouts.remove(layout);
-            setKeys(layouts);
-        }
-
-        @Override
-        protected Node[] createNodes(Layout layout) {
-            return new Node[]{new LayoutNode(layout)};
-        }
-    }
-
-    private void initLayoutComboBox() {
-        layoutSourceComboBox.setAction(chooseLayoutAction);
-        List<LayoutBuilder> layouts = new ArrayList<LayoutBuilder>(Lookup.getDefault().lookupAll(LayoutBuilder.class));
-        System.out.println("layouts: " + layouts.size());
-        for (LayoutBuilder layoutBuilder : layouts) {
-            layoutSourceComboBox.addItem(new LayoutBuilderWrapper(layoutBuilder));
-            System.out.println(layoutBuilder.getClass().getName());
-            System.out.println(layoutBuilder.getName());
-            System.out.println(layoutBuilder.getDescription() + "\n");
-        }
-        chooseLayoutAction.actionPerformed(null);
+    private void refreshModel() {
+        layoutPanel.refreshModel(model);
     }
 
     /** This method is called from within the constructor to
@@ -197,170 +96,11 @@ final class LayoutTopComponent extends TopComponent
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        topLabel = new javax.swing.JLabel();
-        layoutSourcePanel = new javax.swing.JPanel();
-        layoutSourceComboBox = new javax.swing.JComboBox();
-        addLayoutButton = new javax.swing.JButton(addLayoutAction);
-        layoutsPanel = new javax.swing.JPanel();
-        layoutComboBox = new ChoiceView();
-        propertySheetPanel = new javax.swing.JPanel();
-        playButton = new javax.swing.JButton(requestPlayAction);
-        stopButton = new javax.swing.JButton(requestStopAction);
-        deleteButton = new javax.swing.JButton(deleteLayoutAction);
-        resetButton = new javax.swing.JButton(resetLayoutAction);
-
-        org.openide.awt.Mnemonics.setLocalizedText(topLabel, org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.topLabel.text")); // NOI18N
-
-        layoutSourcePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.layoutSourcePanel.border.title"))); // NOI18N
-
-        layoutSourceComboBox.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        initLayoutComboBox();
-
-        org.openide.awt.Mnemonics.setLocalizedText(addLayoutButton, org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.addLayoutButton.text")); // NOI18N
-
-        javax.swing.GroupLayout layoutSourcePanelLayout = new javax.swing.GroupLayout(layoutSourcePanel);
-        layoutSourcePanel.setLayout(layoutSourcePanelLayout);
-        layoutSourcePanelLayout.setHorizontalGroup(
-            layoutSourcePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layoutSourcePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(layoutSourceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(addLayoutButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        layoutSourcePanelLayout.setVerticalGroup(
-            layoutSourcePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layoutSourcePanelLayout.createSequentialGroup()
-                .addGroup(layoutSourcePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(addLayoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
-                    .addComponent(layoutSourceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        layoutsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.layoutsPanel.border.title"))); // NOI18N
-        layoutsPanel.setFocusCycleRoot(true);
-
-        layoutComboBox.setMaximumSize(new java.awt.Dimension(233, 32767));
-        layoutComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                layoutComboBoxActionPerformed(evt);
-            }
-        });
-
-        propertySheetPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        propertySheetPanel.setMaximumSize(new java.awt.Dimension(233, 32767));
-
-        javax.swing.GroupLayout propertySheetPanelLayout = new javax.swing.GroupLayout(propertySheetPanel);
-        propertySheetPanel.setLayout(propertySheetPanelLayout);
-        propertySheetPanelLayout.setHorizontalGroup(
-            propertySheetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 229, Short.MAX_VALUE)
-        );
-        propertySheetPanelLayout.setVerticalGroup(
-            propertySheetPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 264, Short.MAX_VALUE)
-        );
-
-        propertySheetPanel.setLayout(new FlowLayout());
-        propertySheetPanel.add(propertySheet);
-
-        org.openide.awt.Mnemonics.setLocalizedText(playButton, org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.playButton.text")); // NOI18N
-        playButton.setToolTipText(org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.playButton.toolTipText")); // NOI18N
-
-        org.openide.awt.Mnemonics.setLocalizedText(stopButton, org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.stopButton.text")); // NOI18N
-        stopButton.setToolTipText(org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.stopButton.toolTipText")); // NOI18N
-        stopButton.setActionCommand(org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.stopButton.actionCommand")); // NOI18N
-        stopButton.setEnabled(false);
-
-        org.openide.awt.Mnemonics.setLocalizedText(deleteButton, org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.deleteButton.text")); // NOI18N
-
-        org.openide.awt.Mnemonics.setLocalizedText(resetButton, org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.resetButton.text")); // NOI18N
-        resetButton.setToolTipText(org.openide.util.NbBundle.getMessage(LayoutTopComponent.class, "LayoutTopComponent.resetButton.toolTipText")); // NOI18N
-
-        javax.swing.GroupLayout layoutsPanelLayout = new javax.swing.GroupLayout(layoutsPanel);
-        layoutsPanel.setLayout(layoutsPanelLayout);
-        layoutsPanelLayout.setHorizontalGroup(
-            layoutsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layoutsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layoutsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layoutsPanelLayout.createSequentialGroup()
-                        .addComponent(deleteButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(resetButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(playButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(stopButton))
-                    .addGroup(layoutsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(propertySheetPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(layoutComboBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        layoutsPanelLayout.setVerticalGroup(
-            layoutsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layoutsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(layoutComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(propertySheetPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layoutsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(stopButton)
-                    .addComponent(playButton)
-                    .addComponent(deleteButton)
-                    .addComponent(resetButton))
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addComponent(layoutsPanel, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(topLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(layoutSourcePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(topLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(layoutSourcePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(layoutsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        setLayout(new java.awt.BorderLayout());
     }// </editor-fold>//GEN-END:initComponents
 
-    private void layoutComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_layoutComboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_layoutComboBoxActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addLayoutButton;
-    private javax.swing.JButton deleteButton;
-    private javax.swing.JComboBox layoutComboBox;
-    private javax.swing.JComboBox layoutSourceComboBox;
-    private javax.swing.JPanel layoutSourcePanel;
-    private javax.swing.JPanel layoutsPanel;
-    private javax.swing.JButton playButton;
-    private javax.swing.JPanel propertySheetPanel;
-    private javax.swing.JButton resetButton;
-    private javax.swing.JButton stopButton;
-    private javax.swing.JLabel topLabel;
     // End of variables declaration//GEN-END:variables
-
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
      * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
@@ -380,15 +120,15 @@ final class LayoutTopComponent extends TopComponent
         TopComponent win = WindowManager.getDefault().findTopComponent(PREFERRED_ID);
         if (win == null) {
             Logger.getLogger(LayoutTopComponent.class.getName()).warning(
-                "Cannot find " + PREFERRED_ID + " component. It will not be located properly in the window system.");
+                    "Cannot find " + PREFERRED_ID + " component. It will not be located properly in the window system.");
             return getDefault();
         }
         if (win instanceof LayoutTopComponent) {
             return (LayoutTopComponent) win;
         }
         Logger.getLogger(LayoutTopComponent.class.getName()).warning(
-            "There seem to be multiple components with the '" + PREFERRED_ID +
-            "' ID. That is a potential source of errors and unexpected behavior.");
+                "There seem to be multiple components with the '" + PREFERRED_ID
+                + "' ID. That is a potential source of errors and unexpected behavior.");
         return getDefault();
     }
 
@@ -397,109 +137,38 @@ final class LayoutTopComponent extends TopComponent
         return TopComponent.PERSISTENCE_ALWAYS;
     }
 
-    /** replaces this in object stream */
     @Override
-    public Object writeReplace() {
-        return new ResolvableHelper();
+    public void componentOpened() {
+        // TODO add custom code on component opening
+    }
+
+    @Override
+    public void componentClosed() {
+        // TODO add custom code on component closing
+    }
+
+    void writeProperties(java.util.Properties p) {
+        // better to version settings since initial version as advocated at
+        // http://wiki.apidesign.org/wiki/PropertyFiles
+        p.setProperty("version", "1.0");
+        // TODO store your settings
+    }
+
+    Object readProperties(java.util.Properties p) {
+        if (instance == null) {
+            instance = this;
+        }
+        instance.readPropertiesImpl(p);
+        return instance;
+    }
+
+    private void readPropertiesImpl(java.util.Properties p) {
+        String version = p.getProperty("version");
+        // TODO read your settings according to their version
     }
 
     @Override
     protected String preferredID() {
         return PREFERRED_ID;
-    }
-
-    public ExplorerManager getExplorerManager() {
-        return explorerManager;
-    }
-
-    final static class ResolvableHelper implements Serializable {
-
-        private static final long serialVersionUID = 1L;
-
-        public Object readResolve() {
-            return LayoutTopComponent.getDefault();
-        }
-    }
-
-    class ResetLayoutAction extends AbstractAction {
-
-        public void actionPerformed(ActionEvent e) {
-            Layout layout = getSelectedLayout();
-            if (layout != null) {
-                layout.resetPropertiesValues();
-            }
-        }
-    }
-
-    class DeleteLayoutAction extends AbstractAction {
-
-        public void actionPerformed(ActionEvent e) {
-            Layout layout = getSelectedLayout();
-            if (layout != null) {
-                rootNode.removeLayout(layout);
-                layoutController.setLayout(null);
-            }
-        }
-    }
-
-    class AddLayoutAction extends AbstractAction {
-
-        public void actionPerformed(ActionEvent e) {
-            LayoutBuilderWrapper selected = (LayoutBuilderWrapper) layoutSourceComboBox.getSelectedItem();
-            Layout layout = selected.getLayoutBuilder().buildLayout();
-            System.out.println(layout.getClass().getName());
-            rootNode.addLayout(layout);
-//            propertySheet.setNodes(explorerManager.getSelectedNodes());
-//            if (explorerManager.getSelectedNodes().length > 0) {
-//                Node node = explorerManager.getSelectedNodes()[0];
-//                PropertySet prop = node.getPropertySets()[0];
-//                System.out.println("Properties: ");
-//                for (Property p : prop.getPropertySets()) {
-//                    System.out.println(p.getDisplayName());
-//                }
-//            }
-        }
-    }
-
-    class RequestPlayAction extends AbstractAction {
-
-        public void actionPerformed(ActionEvent e) {
-            layoutController.executeLayout();
-        }
-    }
-
-    class RequestStopAction extends AbstractAction {
-
-        public void actionPerformed(ActionEvent e) {
-            layoutController.stopLayout();
-        }
-    }
-
-    class ChooseLayoutAction extends AbstractAction {
-
-        public void actionPerformed(ActionEvent e) {
-            LayoutBuilderWrapper selected = (LayoutBuilderWrapper) layoutSourceComboBox.getSelectedItem();
-            Layout layout = selected.getLayoutBuilder().buildLayout();
-            System.out.println(layout.getClass().getName());
-            layoutController.setLayout(layout);
-        }
-    }
-}
-
-class LayoutBuilderWrapper {
-
-    private LayoutBuilder layoutBuilder;
-
-    public LayoutBuilderWrapper(LayoutBuilder layoutBuilder) {
-        this.layoutBuilder = layoutBuilder;
-    }
-
-    public LayoutBuilder getLayoutBuilder() {
-        return layoutBuilder;
-    }
-
-    @Override
-    public String toString() {
-        return layoutBuilder.getName();
     }
 }
