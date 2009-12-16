@@ -175,6 +175,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
     private void reset() {
         if (model.getSelectedLayout() != null) {
             model.getSelectedLayout().resetPropertiesValues();
+            refreshProperties();
         }
     }
 
