@@ -48,18 +48,7 @@
                 <package>net.miginfocom.swing</package>
                 <package>org.gephi.ui.components</package>
                 <package>org.gephi.ui.components.gradientslider</package>
-                <package>org.jvnet.flamingo.bcb</package>
-                <package>org.jvnet.flamingo.bcb.core</package>
-                <package>org.jvnet.flamingo.bcb.ui</package>
-                <package>org.jvnet.flamingo.common</package>
-                <package>org.jvnet.flamingo.common.icon</package>
-                <package>org.jvnet.flamingo.common.model</package>
-                <package>org.jvnet.flamingo.common.popup</package>
-                <package>org.jvnet.flamingo.common.ui</package>
-                <package>org.jvnet.flamingo.slider</package>
-                <package>org.jvnet.flamingo.slider.ui</package>
-                <package>org.jvnet.flamingo.svg</package>
-                <package>org.jvnet.flamingo.utils</package>
+                <package>org.gephi.ui.components.richtooltip</package>
             </public-packages>
             <class-path-extension>
                 <runtime-relative-path>ext/FontChooser.jar</runtime-relative-path>
