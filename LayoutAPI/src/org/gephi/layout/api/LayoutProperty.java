@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.api;
 
+import java.beans.PropertyEditor;
 import org.openide.nodes.Node.Property;
 import org.openide.nodes.PropertySupport;
 
@@ -51,6 +52,17 @@ public final class LayoutProperty {
 
         property.setName(propertyName);
         property.setShortDescription(propertyDescription);
+
+        return new LayoutProperty(property, propertyCategory);
+    }
+
+    public static LayoutProperty createProperty(Object obj, Class valueType, String propertyName, String propertyCategory, String propertyDescription, String getMethod, String setMethod, Class<? extends PropertyEditor> editorClass) throws NoSuchMethodException {
+        PropertySupport.Reflection property = new PropertySupport.Reflection(
+                obj, valueType, getMethod, setMethod);
+
+        property.setName(propertyName);
+        property.setShortDescription(propertyDescription);
+        property.setPropertyEditorClass(editorClass);
 
         return new LayoutProperty(property, propertyCategory);
     }

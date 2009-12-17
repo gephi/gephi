@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JPanel;
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.layout.AbstractLayout;
@@ -14,7 +15,7 @@ import org.gephi.layout.api.Layout;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutProperty;
 import org.gephi.layout.api.LayoutUI;
-import org.openide.util.Exceptions;
+import org.gephi.ui.propertyeditor.NodeColumnStringEditor;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -79,11 +80,13 @@ public class Test implements LayoutBuilder {
 
         public void endAlgo() {
         }
+        private AttributeColumn columnTest;
 
         public LayoutProperty[] getProperties() {
             List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
             try {
                 properties.add(LayoutProperty.createProperty(this, Boolean.class, "Refine", null, "Refine", "isRefine", "setRefine"));
+                properties.add(LayoutProperty.createProperty(this, AttributeColumn.class, "Column", null, "Refine", "getColumnTest", "setColumnTest", NodeColumnStringEditor.class));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -105,6 +108,14 @@ public class Test implements LayoutBuilder {
          */
         public void setRefine(Boolean refine) {
             this.refine = refine;
+        }
+
+        public AttributeColumn getColumnTest() {
+            return columnTest;
+        }
+
+        public void setColumnTest(AttributeColumn columnTest) {
+            this.columnTest = columnTest;
         }
     }
 
