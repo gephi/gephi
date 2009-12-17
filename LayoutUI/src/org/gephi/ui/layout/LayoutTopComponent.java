@@ -78,7 +78,7 @@ public final class LayoutTopComponent extends TopComponent {
         });
 
         ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-        if(projectController.getCurrentWorkspace()!=null) {
+        if (projectController.getCurrentWorkspace() != null) {
             model = projectController.getCurrentWorkspace().getLookup().lookup(LayoutModel.class);
         }
         refreshModel();

@@ -23,6 +23,8 @@ package org.gephi.ui.layout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
@@ -30,13 +32,19 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.api.LayoutModel;
 import org.gephi.layout.api.LayoutUI;
-import org.gephi.ui.components.JPopupButton;
 import org.gephi.ui.components.richtooltip.RichTooltip;
+import org.gephi.ui.layout.LayoutPresetPersistence.Preset;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.Node;
 import org.openide.util.ImageUtilities;
@@ -47,15 +55,14 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
     private final String NO_SELECTION;
     private LayoutModel model;
-    private PropertySheet propertySheet;
     private LayoutController controller;
+    private LayoutPresetPersistence layoutPresetPersistence;
 
     public LayoutPanel() {
         NO_SELECTION = NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.choose.text");
         controller = Lookup.getDefault().lookup(LayoutController.class);
         initComponents();
-        propertySheet = new PropertySheet();
-        propertiesScrollPane.setViewportView(propertySheet);
+        layoutPresetPersistence = new LayoutPresetPersistence();
         initEvents();
     }
 
@@ -96,7 +103,45 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
             }
         });
 
-        ((JPopupButton)loadPresetButton).addItem("test", null);
+        savePresetButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                NotifyDescriptor.InputLine question = new NotifyDescriptor.InputLine(
+                        NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.savePreset.input"),
+                        NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.savePreset.input.title"));
+                if (DialogDisplayer.getDefault().notify(question) == NotifyDescriptor.OK_OPTION) {
+                    String input = question.getInputText();
+                    if (input != null && !input.isEmpty()) {
+                        layoutPresetPersistence.savePreset(input, model.getSelectedLayout());
+                    }
+                }
+            }
+        });
+
+        loadPresetButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                JPopupMenu menu = new JPopupMenu();
+                List<Preset> presets = layoutPresetPersistence.getPresets(model.getSelectedLayout());
+                if (presets != null && !presets.isEmpty()) {
+                    for (final Preset p : presets) {
+                        JMenuItem item = new JMenuItem(p.toString());
+                        item.addActionListener(new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                layoutPresetPersistence.loadPreset(p, model.getSelectedLayout());
+                                refreshProperties();
+                            }
+                        });
+                        menu.add(item);
+                    }
+                } else {
+                    menu.add("<html><i>" + NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.loadPresetButton.nopreset") + "</i></html>");
+                }
+
+                menu.show(loadPresetButton, 0, -menu.getHeight() - loadPresetButton.getHeight() - 4);
+            }
+        });
     }
 
     public void refreshModel(LayoutModel layoutModel) {
@@ -160,10 +205,10 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
     private void refreshProperties() {
         if (model == null || model.getSelectedLayout() == null) {
-            propertySheet.setNodes(new Node[0]);
+            ((PropertySheet) propertySheet).setNodes(new Node[0]);
         } else {
             LayoutNode layoutNode = new LayoutNode(model.getSelectedLayout());
-            propertySheet.setNodes(new Node[]{layoutNode});
+            ((PropertySheet) propertySheet).setNodes(new Node[]{layoutNode});
         }
     }
 
@@ -209,11 +254,11 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         layoutCombobox = new javax.swing.JComboBox();
         infoLabel = new javax.swing.JLabel();
         runButton = new javax.swing.JButton();
-        propertiesScrollPane = new javax.swing.JScrollPane();
         layoutToolbar = new javax.swing.JToolBar();
         resetButton = new javax.swing.JButton();
         savePresetButton = new javax.swing.JButton();
-        loadPresetButton = new JPopupButton();
+        loadPresetButton = new javax.swing.JButton();
+        propertySheet = new PropertySheet();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -222,7 +267,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipady = 6;
+        gridBagConstraints.ipady = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -254,17 +299,6 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(runButton, gridBagConstraints);
 
-        propertiesScrollPane.setBorder(null);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(propertiesScrollPane, gridBagConstraints);
-
         layoutToolbar.setFloatable(false);
         layoutToolbar.setRollover(true);
 
@@ -295,6 +329,15 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         add(layoutToolbar, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(propertySheet, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
@@ -313,7 +356,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
     private javax.swing.JComboBox layoutCombobox;
     private javax.swing.JToolBar layoutToolbar;
     private javax.swing.JButton loadPresetButton;
-    private javax.swing.JScrollPane propertiesScrollPane;
+    private javax.swing.JPanel propertySheet;
     private javax.swing.JButton resetButton;
     private javax.swing.JButton runButton;
     private javax.swing.JButton savePresetButton;
