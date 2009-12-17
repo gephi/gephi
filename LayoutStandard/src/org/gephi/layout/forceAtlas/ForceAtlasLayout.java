@@ -122,6 +122,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                     Node nf = e.getSource();
                     Node nt = e.getTarget();
                     double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
+                    bonus *= e.getWeight();
                     ForceVectorUtils.fcBiAttractor_noCollide(nf.getNodeData(), nt.getNodeData(), bonus * getAttractionStrength() / (1 + graph.getDegree(nf)));
                 }
             } else {
@@ -129,6 +130,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                     Node nf = e.getSource();
                     Node nt = e.getTarget();
                     double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
+                    bonus *= e.getWeight();
                     ForceVectorUtils.fcBiAttractor_noCollide(nf.getNodeData(), nt.getNodeData(), bonus * getAttractionStrength());
                 }
             }
@@ -138,6 +140,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                     Node nf = e.getSource();
                     Node nt = e.getTarget();
                     double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
+                    bonus *= e.getWeight();
                     ForceVectorUtils.fcBiAttractor(nf.getNodeData(), nt.getNodeData(), bonus * getAttractionStrength() / (1 + graph.getDegree(nf)));
                 }
             } else {
@@ -145,6 +148,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                     Node nf = e.getSource();
                     Node nt = e.getTarget();
                     double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
+                    bonus *= e.getWeight();
                     ForceVectorUtils.fcBiAttractor(nf.getNodeData(), nt.getNodeData(), bonus * getAttractionStrength());
                 }
             }
