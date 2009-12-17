@@ -34,9 +34,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 import org.gephi.layout.api.LayoutBuilder;
 import org.gephi.layout.api.LayoutController;
 import org.gephi.layout.api.LayoutModel;
@@ -103,22 +103,9 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
             }
         });
 
-        savePresetButton.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                NotifyDescriptor.InputLine question = new NotifyDescriptor.InputLine(
-                        NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.savePreset.input"),
-                        NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.savePreset.input.title"));
-                if (DialogDisplayer.getDefault().notify(question) == NotifyDescriptor.OK_OPTION) {
-                    String input = question.getInputText();
-                    if (input != null && !input.isEmpty()) {
-                        layoutPresetPersistence.savePreset(input, model.getSelectedLayout());
-                    }
-                }
-            }
-        });
 
-        loadPresetButton.addActionListener(new ActionListener() {
+        presetsButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 JPopupMenu menu = new JPopupMenu();
@@ -136,10 +123,27 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
                         menu.add(item);
                     }
                 } else {
-                    menu.add("<html><i>" + NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.loadPresetButton.nopreset") + "</i></html>");
+                    menu.add("<html><i>" + NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.nopreset") + "</i></html>");
                 }
 
-                menu.show(loadPresetButton, 0, -menu.getHeight() - loadPresetButton.getHeight() - 4);
+                JMenuItem saveItem = new JMenuItem(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.savePreset"));
+                saveItem.addActionListener(new ActionListener() {
+
+                    public void actionPerformed(ActionEvent e) {
+                        NotifyDescriptor.InputLine question = new NotifyDescriptor.InputLine(
+                                NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.savePreset.input"),
+                                NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.savePreset.input.name"));
+                        if (DialogDisplayer.getDefault().notify(question) == NotifyDescriptor.OK_OPTION) {
+                            String input = question.getInputText();
+                            if (input != null && !input.isEmpty()) {
+                                layoutPresetPersistence.savePreset(input, model.getSelectedLayout());
+                            }
+                        }
+                    }
+                });
+                menu.add(new JSeparator());
+                menu.add(saveItem);
+                menu.show(layoutToolbar, 0, -menu.getPreferredSize().height);
             }
         });
     }
@@ -179,8 +183,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         resetButton.setEnabled(enabled);
         infoLabel.setEnabled(enabled);
         propertySheet.setEnabled(enabled);
-        loadPresetButton.setEnabled(enabled);
-        savePresetButton.setEnabled(enabled);
+        presetsButton.setEnabled(enabled);
     }
 
     private void refreshChooser() {
@@ -218,8 +221,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         runButton.setEnabled(enabled);
         propertySheet.setEnabled(enabled);
         resetButton.setEnabled(enabled);
-        loadPresetButton.setEnabled(enabled);
-        savePresetButton.setEnabled(enabled);
+        presetsButton.setEnabled(enabled);
     }
 
     private void setSelectedLayout(LayoutBuilder builder) {
@@ -255,9 +257,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         infoLabel = new javax.swing.JLabel();
         runButton = new javax.swing.JButton();
         layoutToolbar = new javax.swing.JToolBar();
+        presetsButton = new javax.swing.JButton();
         resetButton = new javax.swing.JButton();
-        savePresetButton = new javax.swing.JButton();
-        loadPresetButton = new javax.swing.JButton();
         propertySheet = new PropertySheet();
 
         setLayout(new java.awt.GridBagLayout());
@@ -302,6 +303,12 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         layoutToolbar.setFloatable(false);
         layoutToolbar.setRollover(true);
 
+        presetsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/layout/resources/preset.png"))); // NOI18N
+        presetsButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.text")); // NOI18N
+        presetsButton.setFocusable(false);
+        presetsButton.setIconTextGap(0);
+        layoutToolbar.add(presetsButton);
+
         resetButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.resetButton.text")); // NOI18N
         resetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -309,18 +316,6 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
             }
         });
         layoutToolbar.add(resetButton);
-
-        savePresetButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.savePresetButton.text")); // NOI18N
-        savePresetButton.setFocusable(false);
-        savePresetButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        savePresetButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        layoutToolbar.add(savePresetButton);
-
-        loadPresetButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.loadPresetButton.text")); // NOI18N
-        loadPresetButton.setFocusable(false);
-        loadPresetButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        loadPresetButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        layoutToolbar.add(loadPresetButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -355,11 +350,10 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
     private javax.swing.JLabel infoLabel;
     private javax.swing.JComboBox layoutCombobox;
     private javax.swing.JToolBar layoutToolbar;
-    private javax.swing.JButton loadPresetButton;
+    private javax.swing.JButton presetsButton;
     private javax.swing.JPanel propertySheet;
     private javax.swing.JButton resetButton;
     private javax.swing.JButton runButton;
-    private javax.swing.JButton savePresetButton;
     // End of variables declaration//GEN-END:variables
 
     private static class LayoutBuilderWrapper {
