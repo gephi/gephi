@@ -45,6 +45,7 @@ import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.gephi.ui.layout.LayoutPresetPersistence.Preset;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.awt.StatusDisplayer;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.Node;
 import org.openide.util.ImageUtilities;
@@ -118,6 +119,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
                             public void actionPerformed(ActionEvent e) {
                                 layoutPresetPersistence.loadPreset(p, model.getSelectedLayout());
                                 refreshProperties();
+                                StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.status.loadPreset", model.getSelectedBuilder().getName(), p.toString()));
                             }
                         });
                         menu.add(item);
@@ -137,6 +139,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
                             String input = question.getInputText();
                             if (input != null && !input.isEmpty()) {
                                 layoutPresetPersistence.savePreset(input, model.getSelectedLayout());
+                                StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.status.savePreset", model.getSelectedBuilder().getName(), input));
                             }
                         }
                     }
