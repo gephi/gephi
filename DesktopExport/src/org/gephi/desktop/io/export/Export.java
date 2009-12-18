@@ -25,6 +25,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.gephi.desktop.io.export.api.ExporterClassUI;
+import org.gephi.project.api.ProjectController;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -53,7 +54,14 @@ public class Export extends CallableSystemAction {
 
     @Override
     public JMenuItem getMenuPresenter() {
-        JMenu menu = new JMenu(NbBundle.getMessage(Export.class, "CTL_Export"));
+        JMenu menu = new JMenu(NbBundle.getMessage(Export.class, "CTL_Export")) {
+
+            @Override
+            public boolean isEnabled() {
+                return Export.this.isEnabled();
+            }
+        };
+
 
         for (final ExporterClassUI ui : Lookup.getDefault().lookupAll(ExporterClassUI.class)) {
             String menuName = ui.getName();
@@ -67,6 +75,11 @@ public class Export extends CallableSystemAction {
             menuItem.setEnabled(ui.isEnable());
         }
         return menu;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace() != null;
     }
 }
 
