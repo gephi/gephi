@@ -34,10 +34,10 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
-import org.gephi.io.exporter.Container;
-import org.gephi.io.exporter.GraphFileExporter;
+import org.gephi.io.exporter.FileExporter;
 import org.gephi.io.exporter.FileType;
-import org.gephi.io.exporter.TextExporter;
+import org.gephi.io.exporter.GraphFileExporterSettings;
+import org.gephi.io.exporter.TextGraphFileExporter;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -48,8 +48,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = GraphFileExporter.class)
-public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
+@ServiceProvider(service = FileExporter.class)
+public class ExporterGDF implements TextGraphFileExporter, LongTask {
 
     private boolean cancel = false;
     private ProgressTicket progressTicket;
@@ -74,14 +74,14 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
     //Buffer
     private BufferedWriter writer;
 
-    public boolean exportData(BufferedWriter writer, Container container) throws Exception {
+    public boolean exportData(BufferedWriter writer, GraphFileExporterSettings settings) throws Exception {
         this.writer = writer;
 
         try {
-            GraphModel graphModel = container.getWorkspace().getLookup().lookup(GraphModel.class);
-            AttributeModel attributeModel = container.getWorkspace().getLookup().lookup(AttributeModel.class);
+            GraphModel graphModel = settings.getWorkspace().getLookup().lookup(GraphModel.class);
+            AttributeModel attributeModel = settings.getWorkspace().getLookup().lookup(AttributeModel.class);
             Graph graph = null;
-            if (container.isExportVisible()) {
+            if (settings.isExportVisible()) {
                 graph = graphModel.getGraphVisible();
             } else {
                 graph = graphModel.getGraph();
@@ -191,7 +191,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
             //Attributes columns
             for (AttributeColumn c : nodeColumns) {
                 Object val = node.getNodeData().getAttributes().getValue(c.getIndex());
-               if (val != null) {
+                if (val != null) {
                     if (c.getType().equals(AttributeType.STRING) || c.getType().equals(AttributeType.LIST_STRING)) {
                         String quote = (simpleQuotes) ? "'" : "\"";
                         stringBuilder.append(quote);
@@ -697,7 +697,7 @@ public class ExporterGDF implements GraphFileExporter, TextExporter, LongTask {
     }
 
     private DataTypeGDF getDataTypeGDF(AttributeType type) {
-        switch(type) {
+        switch (type) {
             case BOOLEAN:
                 return DataTypeGDF.BOOLEAN;
             case DOUBLE:

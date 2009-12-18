@@ -33,10 +33,10 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
-import org.gephi.io.exporter.Container;
-import org.gephi.io.exporter.GraphFileExporter;
+import org.gephi.io.exporter.FileExporter;
 import org.gephi.io.exporter.FileType;
-import org.gephi.io.exporter.XMLExporter;
+import org.gephi.io.exporter.GraphFileExporterSettings;
+import org.gephi.io.exporter.XMLGraphFileExporter;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -50,8 +50,8 @@ import org.w3c.dom.Text;
  *
  * @author Sebastien Heymann
  */
-@ServiceProvider(service=GraphFileExporter.class)
-public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
+@ServiceProvider(service=FileExporter.class)
+public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
 
     private boolean cancel = false;
     private ProgressTicket progressTicket;
@@ -75,12 +75,12 @@ public class ExporterGEXF implements GraphFileExporter, XMLExporter, LongTask {
     private float minZ;
     private float maxZ;
 
-    public boolean exportData(Document document, Container container) throws Exception {
+    public boolean exportData(Document document, GraphFileExporterSettings settings) throws Exception {
         try {
-            graphModel = container.getWorkspace().getLookup().lookup(GraphModel.class);
-            attributeModel = container.getWorkspace().getLookup().lookup(AttributeModel.class);
+            graphModel = settings.getWorkspace().getLookup().lookup(GraphModel.class);
+            attributeModel = settings.getWorkspace().getLookup().lookup(AttributeModel.class);
             HierarchicalGraph graph = null;
-            if (container.isExportVisible()) {
+            if (settings.isExportVisible()) {
                 graph = graphModel.getHierarchicalGraphVisible();
             } else {
                 graph = graphModel.getHierarchicalGraph();
