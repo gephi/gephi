@@ -11,7 +11,7 @@ import org.gephi.workspace.api.Workspace;
  *
  * @author Mathieu Bastian
  */
-public interface VectorialFileExport extends FileExporter {
+public interface VectorialFileExporter extends FileExporter {
 
     public boolean exportData(File file, Workspace workspace);
 }

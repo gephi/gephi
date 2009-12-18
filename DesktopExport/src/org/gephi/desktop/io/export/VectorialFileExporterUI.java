@@ -40,9 +40,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.gephi.desktop.io.export.api.ExporterClassUI;
 import org.gephi.io.exporter.ExportController;
-import org.gephi.io.exporter.FileType;
 import org.gephi.io.exporter.FileExporter;
-import org.gephi.io.exporter.GraphFileExporter;
+import org.gephi.io.exporter.FileType;
+import org.gephi.io.exporter.VectorialFileExporter;
 import org.gephi.ui.exporter.ExporterUI;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.openide.DialogDescriptor;
@@ -58,23 +58,22 @@ import org.openide.util.NbPreferences;
  *
  * @author Mathieu Bastian
  */
-public class GraphFileExporterUI implements ExporterClassUI {
+public class VectorialFileExporterUI implements ExporterClassUI {
 
-    private GraphFileExporter selectedExporter;
+    private VectorialFileExporter selectedExporter;
     private File selectedFile;
-    private boolean visibleOnlyGraph = false;
 
     public String getName() {
-        return NbBundle.getMessage(VectorialFileExporterUI.class, "GraphFileExporterUI_title");
+        return NbBundle.getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_title");
     }
 
     public boolean isEnable() {
-        return true;
+        return !Lookup.getDefault().lookupAll(VectorialFileExporter.class).isEmpty();
     }
 
     public void action() {
-        final String LAST_PATH = "GraphFileExporterUI_Last_Path";
-        final String LAST_PATH_DEFAULT = "GraphFileExporterUI_Last_Path_Default";
+        final String LAST_PATH = "VectorialFileExporterUI_Last_Path";
+        final String LAST_PATH_DEFAULT = "VectorialFileExporterUI_Last_Path_Default";
 
         final ExportController exportController = Lookup.getDefault().lookup(ExportController.class);
         if (exportController == null) {
@@ -82,13 +81,13 @@ public class GraphFileExporterUI implements ExporterClassUI {
         }
 
         //Get last directory
-        String lastPathDefault = NbPreferences.forModule(GraphFileExporterUI.class).get(LAST_PATH_DEFAULT, null);
-        String lastPath = NbPreferences.forModule(GraphFileExporterUI.class).get(LAST_PATH, lastPathDefault);
+        String lastPathDefault = NbPreferences.forModule(VectorialFileExporterUI.class).get(LAST_PATH_DEFAULT, null);
+        String lastPath = NbPreferences.forModule(VectorialFileExporterUI.class).get(LAST_PATH, lastPathDefault);
 
         //Options panel
         FlowLayout layout = new FlowLayout(FlowLayout.RIGHT);
         JPanel optionsPanel = new JPanel(layout);
-        final JButton optionsButton = new JButton(NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_optionsButton_name"));
+        final JButton optionsButton = new JButton(NbBundle.getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_optionsButton_name"));
         optionsPanel.add(optionsButton);
         optionsButton.addActionListener(new ActionListener() {
 
@@ -97,7 +96,7 @@ public class GraphFileExporterUI implements ExporterClassUI {
                 if (exporterUI != null) {
                     JPanel panel = exporterUI.getPanel();
                     exporterUI.setup(selectedExporter);
-                    DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_optionsDialog_title", selectedExporter.getName()));
+                    DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_optionsDialog_title", selectedExporter.getName()));
                     Object result = DialogDisplayer.getDefault().notify(dd);
                     exporterUI.unsetup(result == NotifyDescriptor.OK_OPTION);
                 }
@@ -107,9 +106,6 @@ public class GraphFileExporterUI implements ExporterClassUI {
         //Graph Settings Panel
         final JPanel southPanel = new JPanel(new BorderLayout());
         southPanel.add(optionsPanel, BorderLayout.NORTH);
-        GraphFileExporterUIPanel graphSettings = new GraphFileExporterUIPanel();
-        graphSettings.setVisibleOnlyGraph(visibleOnlyGraph);
-        southPanel.add(graphSettings, BorderLayout.CENTER);
 
         //Optionable file chooser
         final JFileChooser chooser = new JFileChooser(lastPath) {
@@ -134,7 +130,7 @@ public class GraphFileExporterUI implements ExporterClassUI {
                 }
             }
         };
-        chooser.setDialogTitle(NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_filechooser_title"));
+        chooser.setDialogTitle(NbBundle.getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_filechooser_title"));
         chooser.addPropertyChangeListener(JFileChooser.FILE_FILTER_CHANGED_PROPERTY, new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
@@ -168,8 +164,8 @@ public class GraphFileExporterUI implements ExporterClassUI {
         });
 
         //File filters
-        for (FileExporter graphFileExporter : exportController.getGraphFileExporters()) {
-            for (FileType fileType : graphFileExporter.getFileTypes()) {
+        for (FileExporter vectorialFileExporter : exportController.getVectorialFileExporters()) {
+            for (FileType fileType : vectorialFileExporter.getFileTypes()) {
                 DialogFileFilter dialogFileFilter = new DialogFileFilter(fileType.getName());
                 dialogFileFilter.addExtensions(fileType.getExtensions());
                 chooser.addChoosableFileFilter(dialogFileFilter);
@@ -188,13 +184,10 @@ public class GraphFileExporterUI implements ExporterClassUI {
             FileObject fileObject = FileUtil.toFileObject(file);
 
             //Save last path
-            NbPreferences.forModule(GraphFileExporterUI.class).put(LAST_PATH, file.getAbsolutePath());
-
-            //Save variable
-            visibleOnlyGraph = graphSettings.isVisibleOnlyGraph();
+            NbPreferences.forModule(VectorialFileExporterUI.class).put(LAST_PATH, file.getAbsolutePath());
 
             //Do
-            exportController.doExport(selectedExporter, fileObject, visibleOnlyGraph);
+            exportController.doExport(selectedExporter, fileObject);
         }
     }
 
@@ -205,18 +198,17 @@ public class GraphFileExporterUI implements ExporterClassUI {
         try {
             if (!file.getPath().endsWith(defaultExtention)) {
                 file = new File(file.getPath() + defaultExtention);
-                selectedFile = file;
                 chooser.setSelectedFile(file);
             }
             if (!file.exists()) {
                 if (!file.createNewFile()) {
-                    String failMsg = NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_SaveFailed", new Object[]{file.getPath()});
+                    String failMsg = NbBundle.getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_SaveFailed", new Object[]{file.getPath()});
                     JOptionPane.showMessageDialog(null, failMsg);
                     return false;
                 }
             } else {
-                String overwriteMsg = NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_overwriteDialog_message", new Object[]{file.getPath()});
-                if (JOptionPane.showConfirmDialog(null, overwriteMsg, NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_overwriteDialog_title"), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+                String overwriteMsg = NbBundle.getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_overwriteDialog_message", new Object[]{file.getPath()});
+                if (JOptionPane.showConfirmDialog(null, overwriteMsg, NbBundle.getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_overwriteDialog_title"), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
                     return false;
                 }
             }
@@ -225,22 +217,22 @@ public class GraphFileExporterUI implements ExporterClassUI {
             DialogDisplayer.getDefault().notifyLater(msg);
             return false;
         }
-
         return true;
     }
 
-    private GraphFileExporter getExporter(DialogFileFilter fileFilter) {
+    private VectorialFileExporter getExporter(DialogFileFilter fileFilter) {
         final ExportController exportController = Lookup.getDefault().lookup(ExportController.class);
         //Find fileFilter
-        for (GraphFileExporter graphFileExporter : exportController.getGraphFileExporters()) {
-            for (FileType fileType : graphFileExporter.getFileTypes()) {
+        for (VectorialFileExporter vectorialFileExporter : exportController.getVectorialFileExporters()) {
+            for (FileType fileType : vectorialFileExporter.getFileTypes()) {
                 DialogFileFilter tempFilter = new DialogFileFilter(fileType.getName());
                 tempFilter.addExtensions(fileType.getExtensions());
                 if (tempFilter.equals(fileFilter)) {
-                    return graphFileExporter;
+                    return vectorialFileExporter;
                 }
             }
         }
         return null;
     }
 }
+

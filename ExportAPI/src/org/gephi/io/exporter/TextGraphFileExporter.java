@@ -26,7 +26,7 @@ import java.io.BufferedWriter;
  *
  * @author Mathieu Bastian
  */
-public interface TextGraphFileExporter extends FileExporter {
+public interface TextGraphFileExporter extends GraphFileExporter {
 
-    public boolean exportData(BufferedWriter writer, Container container) throws Exception;
+    public boolean exportData(BufferedWriter writer, GraphFileExporterSettings settings) throws Exception;
 }

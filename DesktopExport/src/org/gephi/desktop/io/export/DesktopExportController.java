@@ -36,14 +36,16 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.gephi.io.exporter.Container;
 import org.gephi.io.exporter.ExportController;
 import org.gephi.io.exporter.Exporter;
 import org.gephi.io.exporter.FileExporter;
 import org.gephi.io.exporter.FileType;
+import org.gephi.io.exporter.FileExporter;
 import org.gephi.io.exporter.GraphFileExporter;
-import org.gephi.io.exporter.TextExporter;
-import org.gephi.io.exporter.XMLExporter;
+import org.gephi.io.exporter.GraphFileExporterSettings;
+import org.gephi.io.exporter.TextGraphFileExporter;
+import org.gephi.io.exporter.VectorialFileExporter;
+import org.gephi.io.exporter.XMLGraphFileExporter;
 import org.gephi.project.api.ProjectController;
 import org.gephi.ui.exporter.ExporterUI;
 import org.gephi.utils.longtask.LongTask;
@@ -57,6 +59,7 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
 /**
@@ -67,12 +70,15 @@ public class DesktopExportController implements ExportController {
 
     private LongTaskExecutor executor;
     private GraphFileExporter[] graphFileExporters;
+    private VectorialFileExporter[] vectorialExporters;
 
     public DesktopExportController() {
 
-        //Get FileFormatExporters
+        //Get exportes
         graphFileExporters = new GraphFileExporter[0];
         graphFileExporters = Lookup.getDefault().lookupAll(GraphFileExporter.class).toArray(graphFileExporters);
+        vectorialExporters = new VectorialFileExporter[0];
+        vectorialExporters = Lookup.getDefault().lookupAll(VectorialFileExporter.class).toArray(vectorialExporters);
 
         executor = new LongTaskExecutor(true, "Exporter", 10);
     }
@@ -81,18 +87,21 @@ public class DesktopExportController implements ExportController {
         return graphFileExporters;
     }
 
-    public void doExport(Exporter exporter, FileObject fileObject, boolean visibleGraphOnly) {
+    public VectorialFileExporter[] getVectorialFileExporters() {
+        return vectorialExporters;
+    }
+
+    public void doExport(GraphFileExporter exporter, FileObject fileObject, boolean visibleGraphOnly) {
         try {
             ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
             Workspace workspace = projectController.getCurrentWorkspace();
-            Container container = new ContainerImpl(workspace, visibleGraphOnly);
+            GraphFileExporterSettings settings = new GraphFileExporterSettings(workspace, visibleGraphOnly);
 
-            if (exporter instanceof TextExporter) {
-                exportText(exporter, fileObject, container);
-            } else if (exporter instanceof XMLExporter) {
-                exportXML(exporter, fileObject, container);
+            if (exporter instanceof TextGraphFileExporter) {
+                exportText(exporter, fileObject, settings);
+            } else if (exporter instanceof XMLGraphFileExporter) {
+                exportXML(exporter, fileObject, settings);
             }
-            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopExportController.class, "DesktopExportController.status.exportSuccess", fileObject.getNameExt()));
         } catch (Exception ex) {
             NotifyDescriptor.Message e = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
             DialogDisplayer.getDefault().notifyLater(e);
@@ -100,16 +109,26 @@ public class DesktopExportController implements ExportController {
         }
     }
 
+    public void doExport(VectorialFileExporter exporter, FileObject fileObject) {
+
+    }
+
     public void doExport(FileObject fileObject) {
         FileExporter exporter = getMatchingExporter(fileObject);
         if (exporter == null) {
             throw new RuntimeException(NbBundle.getMessage(getClass(), "error_no_matching_file_importer"));
         }
-        doExport(exporter, fileObject, true);
+        if (exporter instanceof GraphFileExporter) {
+            doExport((GraphFileExporter) exporter, fileObject, true);
+        } else if (exporter instanceof VectorialFileExporter) {
+            doExport((VectorialFileExporter) exporter, fileObject);
+        } else {
+
+        }
     }
 
-    private void exportText(Exporter exporter, FileObject fileObject, final Container container) {
-        final TextExporter textExporter = (TextExporter) exporter;
+    private void exportText(Exporter exporter, final FileObject fileObject, final GraphFileExporterSettings settings) {
+        final TextGraphFileExporter textExporter = (TextGraphFileExporter) exporter;
 
         try {
             //Create Writer
@@ -135,7 +154,9 @@ public class DesktopExportController implements ExportController {
 
                 public void run() {
                     try {
-                        textExporter.exportData(bufferedWriter, container);
+                        if (textExporter.exportData(bufferedWriter, settings)) {
+                            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopExportController.class, "DesktopExportController.status.exportSuccess", fileObject.getNameExt()));
+                        }
                         bufferedWriter.flush();
                         bufferedWriter.close();
                     } catch (Exception ex) {
@@ -149,8 +170,8 @@ public class DesktopExportController implements ExportController {
         }
     }
 
-    private void exportXML(Exporter exporter, FileObject fileObject, final Container container) {
-        final XMLExporter xmlExporter = (XMLExporter) exporter;
+    private void exportXML(Exporter exporter, final FileObject fileObject, final GraphFileExporterSettings settings) {
+        final XMLGraphFileExporter xmlExporter = (XMLGraphFileExporter) exporter;
 
         try {
             //Create document
@@ -180,7 +201,7 @@ public class DesktopExportController implements ExportController {
 
                 public void run() {
                     try {
-                        if (xmlExporter.exportData(document, container)) {
+                        if (xmlExporter.exportData(document, settings)) {
                             //Write XML Document
                             Source source = new DOMSource(document);
                             Result result = new StreamResult(outputFile);
@@ -188,6 +209,7 @@ public class DesktopExportController implements ExportController {
                             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
                             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
                             transformer.transform(source, result);
+                            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopExportController.class, "DesktopExportController.status.exportSuccess", fileObject.getNameExt()));
                         }
                     } catch (TransformerConfigurationException ex) {
                         throw new RuntimeException(NbBundle.getMessage(getClass(), "error_transformer"), ex);
@@ -202,6 +224,36 @@ public class DesktopExportController implements ExportController {
         } catch (ParserConfigurationException ex) {
             throw new RuntimeException(NbBundle.getMessage(getClass(), "error_missing_document_instance_factory"));
         }
+    }
+
+    private void exportVectorial(final VectorialFileExporter exporter, final FileObject fileObject, final Workspace workspace) {
+        final File outputFile = FileUtil.toFile(fileObject);
+        LongTask task = null;
+        if (exporter instanceof LongTask) {
+            task = (LongTask) exporter;
+        }
+        final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
+
+            public void fatalError(Throwable t) {
+                NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
+                DialogDisplayer.getDefault().notify(ex);
+                t.printStackTrace();
+            }
+        };
+
+        //Export, execute task
+        executor.execute(task, new Runnable() {
+
+            public void run() {
+                try {
+                    if (exporter.exportData(outputFile, workspace)) {
+                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopExportController.class, "DesktopExportController.status.exportSuccess", fileObject.getNameExt()));
+                    }
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        }, "Export to " + fileObject.getNameExt(), errorHandler);
     }
 
     public boolean hasUI(Exporter exporter) {
@@ -225,7 +277,7 @@ public class DesktopExportController implements ExportController {
     }
 
     private FileExporter getMatchingExporter(FileObject fileObject) {
-        for (GraphFileExporter im : graphFileExporters) {
+        for (FileExporter im : graphFileExporters) {
             for (FileType ft : im.getFileTypes()) {
                 for (String ex : ft.getExtensions()) {
                     if (fileObject.hasExt(ex)) {
@@ -235,24 +287,5 @@ public class DesktopExportController implements ExportController {
             }
         }
         return null;
-    }
-
-    private static class ContainerImpl implements Container {
-
-        private Workspace workspace;
-        private boolean exportVisible;
-
-        public ContainerImpl(Workspace workspace, boolean exportVisible) {
-            this.workspace = workspace;
-            this.exportVisible = exportVisible;
-        }
-
-        public Workspace getWorkspace() {
-            return workspace;
-        }
-
-        public boolean isExportVisible() {
-            return exportVisible;
-        }
     }
 }
