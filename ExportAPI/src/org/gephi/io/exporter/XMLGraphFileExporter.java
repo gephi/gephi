@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  *
  * @author Mathieu Bastian
  */
-public interface XMLExporter extends FileExporter {
+public interface XMLGraphFileExporter extends FileExporter {
 
-    public boolean exportData(Document document, Container container) throws Exception;
+    public boolean exportData(Document document, GraphFileExporterSettings settings) throws Exception;
 }

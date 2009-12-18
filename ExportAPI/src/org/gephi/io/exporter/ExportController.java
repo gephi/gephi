@@ -30,11 +30,13 @@ import org.openide.filesystems.FileObject;
  */
 public interface ExportController {
 
-    public void doExport(Exporter exporter, FileObject fileObject, boolean visibleOnly);
+    public void doExport(FileExporter exporter, FileObject fileObject, boolean visibleOnly);
+
+    public void doExport(FileExporter exporter, FileObject fileObject);
 
     public void doExport(FileObject fileObject);
 
-    public GraphFileExporter[] getGraphFileExporters();
+    public FileExporter[] getGraphFileExporters();
 
     public boolean hasUI(Exporter exporter);
 

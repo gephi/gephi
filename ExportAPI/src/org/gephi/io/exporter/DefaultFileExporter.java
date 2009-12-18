@@ -20,13 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter;
 
-import java.io.BufferedWriter;
+import java.io.File;
+import org.gephi.workspace.api.Workspace;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface TextExporter extends FileExporter {
+public interface DefaultFileExporter extends FileExporter {
 
-    public boolean exportData(BufferedWriter writer, Container container) throws Exception;
+    public boolean exportData(File file, Workspace workspace);
 }
