@@ -93,7 +93,7 @@ public class HierarchicalDirectedGraphImplFiltered extends HierarchicalGraphImpl
     public int getDegree(Node node) {
         view.checkUpdate();
         AbstractNode absNode = checkNode(node);
-        int count = view.getClusteredLayerInDegree(absNode);
+        int count = view.getClusteredLayerDegree(absNode);
         return count;
     }
 
