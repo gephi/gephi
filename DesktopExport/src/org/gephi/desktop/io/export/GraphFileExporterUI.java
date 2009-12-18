@@ -65,11 +65,11 @@ public class GraphFileExporterUI implements ExporterClassUI {
     private boolean visibleOnlyGraph = false;
 
     public String getName() {
-        return NbBundle.getMessage(VectorialFileExporterUI.class, "GraphFileExporterUI_title");
+        return NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_title");
     }
 
     public boolean isEnable() {
-        return true;
+        return !Lookup.getDefault().lookupAll(GraphFileExporter.class).isEmpty();
     }
 
     public void action() {

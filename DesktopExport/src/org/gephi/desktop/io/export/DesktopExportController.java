@@ -38,7 +38,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.gephi.io.exporter.ExportController;
 import org.gephi.io.exporter.Exporter;
-import org.gephi.io.exporter.FileExporter;
 import org.gephi.io.exporter.FileType;
 import org.gephi.io.exporter.FileExporter;
 import org.gephi.io.exporter.GraphFileExporter;
@@ -59,7 +58,6 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
 /**
@@ -110,7 +108,16 @@ public class DesktopExportController implements ExportController {
     }
 
     public void doExport(VectorialFileExporter exporter, FileObject fileObject) {
+        try {
+            ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+            Workspace workspace = projectController.getCurrentWorkspace();
 
+            exportVectorial(exporter, fileObject, workspace);
+        } catch (Exception ex) {
+            NotifyDescriptor.Message e = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
+            DialogDisplayer.getDefault().notifyLater(e);
+            ex.printStackTrace();
+        }
     }
 
     public void doExport(FileObject fileObject) {
@@ -123,7 +130,6 @@ public class DesktopExportController implements ExportController {
         } else if (exporter instanceof VectorialFileExporter) {
             doExport((VectorialFileExporter) exporter, fileObject);
         } else {
-
         }
     }
 
