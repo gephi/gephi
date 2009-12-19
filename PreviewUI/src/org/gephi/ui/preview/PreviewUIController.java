@@ -2,6 +2,9 @@ package org.gephi.ui.preview;
 
 import org.gephi.preview.api.GraphSheet;
 import org.gephi.preview.api.PreviewController;
+import org.gephi.project.api.ProjectController;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
 
 /**
@@ -18,6 +21,26 @@ public class PreviewUIController {
      * Private constructor.
      */
     private PreviewUIController() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.addWorkspaceListener(new WorkspaceListener() {
+
+            public void initialize(Workspace workspace) {
+            }
+
+            public void select(Workspace workspace) {
+                showRefreshNotification();
+            }
+
+            public void unselect(Workspace workspace) {
+            }
+
+            public void close(Workspace workspace) {
+            }
+
+            public void disable() {
+                disableRefresh();
+            }
+        });
     }
 
     /**
@@ -43,8 +66,8 @@ public class PreviewUIController {
         float visibilityRatio = previewSettingsTopComponent.getVisibilityRatio();
         GraphSheet controllerGraphSheet = previewController.getPartialGraphSheet(visibilityRatio);
 
-        // UI update
-        previewTopComponent.hideBannerPanel();
+        hideRefreshNotification();
+        
 
         if (null == graphSheet || controllerGraphSheet != graphSheet) {
             graphSheet = controllerGraphSheet;
@@ -56,5 +79,47 @@ public class PreviewUIController {
         }
 
         previewTopComponent.refreshPreview();
+    }
+
+    /**
+     * Enables the preview refresh action.
+     */
+    private void enableRefresh() {
+        PreviewSettingsTopComponent previewSettingsTopComponent = PreviewSettingsTopComponent.findInstance();
+
+        previewSettingsTopComponent.enableRefreshButton();
+    }
+
+    /**
+     * Disables the preview refresh action.
+     *
+     * The preview refresh notification is also hidden.
+     */
+    private void disableRefresh() {
+        PreviewSettingsTopComponent previewSettingsTopComponent = PreviewSettingsTopComponent.findInstance();
+
+        hideRefreshNotification();
+        previewSettingsTopComponent.disableRefreshButton();
+    }
+
+    /**
+     * Shows a notification to invite the user to refresh the preview.
+     *
+     * The refresh action is enabled.
+     */
+    private void showRefreshNotification() {
+        PreviewTopComponent previewTopComponent = PreviewTopComponent.findInstance();
+
+        enableRefresh();
+        previewTopComponent.showBannerPanel();
+    }
+
+    /**
+     * Hides the preview refresh notification.
+     */
+    private void hideRefreshNotification() {
+        PreviewTopComponent previewTopComponent = PreviewTopComponent.findInstance();
+        
+        previewTopComponent.hideBannerPanel();
     }
 }

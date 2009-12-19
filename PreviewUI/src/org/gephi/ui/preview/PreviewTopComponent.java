@@ -6,17 +6,13 @@ import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import org.gephi.preview.api.GraphSheet;
-import org.gephi.project.api.ProjectController;
-import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.api.WorkspaceListener;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 //import org.openide.util.Utilities;
 
 /**
- * Top component which displays something.
+ * Top component which displays the preview applet.
  */
 final class PreviewTopComponent extends TopComponent {
 
@@ -38,34 +34,23 @@ final class PreviewTopComponent extends TopComponent {
         previewPanel.add(sketch, BorderLayout.CENTER);
         sketch.init();
 
-        initEvents();
+        // forces the controller instanciation
+        PreviewUIController.findInstance();
     }
 
-    private void initEvents() {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.addWorkspaceListener(new WorkspaceListener() {
-
-            public void initialize(Workspace workspace) {
-            }
-
-            public void select(Workspace workspace) {
-                bannerPanel.setVisible(true);
-            }
-
-            public void unselect(Workspace workspace) {
-            }
-
-            public void close(Workspace workspace) {
-            }
-
-            public void disable() {
-                bannerPanel.setVisible(false);
-            }
-        });
+    /**
+     * Shows the banner panel.
+     *
+     * @see PreviewUIController#showRefreshNotification()
+     */
+    public void showBannerPanel() {
+        bannerPanel.setVisible(true);
     }
 
     /**
      * Hides the banner panel.
+     *
+     * @see PreviewUIController#hideRefreshNotification()
      */
     public void hideBannerPanel() {
         bannerPanel.setVisible(false);
