@@ -18,10 +18,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.layout.api;
+package org.gephi.layout.spi;
 
 import org.gephi.graph.api.GraphController;
-import org.openide.nodes.Node.PropertySet;
 
 /**
  * A Layout algorithm should implement the Layout interface to allow the

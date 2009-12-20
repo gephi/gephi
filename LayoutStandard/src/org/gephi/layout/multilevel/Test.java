@@ -11,10 +11,10 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.layout.AbstractLayout;
-import org.gephi.layout.api.Layout;
-import org.gephi.layout.api.LayoutBuilder;
-import org.gephi.layout.api.LayoutProperty;
-import org.gephi.layout.api.LayoutUI;
+import org.gephi.layout.spi.Layout;
+import org.gephi.layout.spi.LayoutBuilder;
+import org.gephi.layout.spi.LayoutProperty;
+import org.gephi.layout.spi.LayoutUI;
 import org.gephi.ui.propertyeditor.NodeColumnStringEditor;
 import org.openide.util.lookup.ServiceProvider;
 

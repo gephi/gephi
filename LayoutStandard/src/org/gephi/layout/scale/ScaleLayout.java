@@ -26,9 +26,9 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.AbstractLayout;
-import org.gephi.layout.api.Layout;
-import org.gephi.layout.api.LayoutBuilder;
-import org.gephi.layout.api.LayoutProperty;
+import org.gephi.layout.spi.Layout;
+import org.gephi.layout.spi.LayoutBuilder;
+import org.gephi.layout.spi.LayoutProperty;
 
 /**
  * Sample layout that scales the graph.

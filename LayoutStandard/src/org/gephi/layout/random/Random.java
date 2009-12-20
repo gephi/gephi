@@ -22,9 +22,9 @@ package org.gephi.layout.random;
 
 import javax.swing.Icon;
 import javax.swing.JPanel;
-import org.gephi.layout.api.Layout;
-import org.gephi.layout.api.LayoutBuilder;
-import org.gephi.layout.api.LayoutUI;
+import org.gephi.layout.spi.Layout;
+import org.gephi.layout.spi.LayoutBuilder;
+import org.gephi.layout.spi.LayoutUI;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 

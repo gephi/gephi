@@ -49,6 +49,7 @@
             </module-dependencies>
             <public-packages>
                 <package>org.gephi.layout.api</package>
+                <package>org.gephi.layout.spi</package>
             </public-packages>
         </data>
     </configuration>

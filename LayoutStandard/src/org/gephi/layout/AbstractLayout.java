@@ -4,8 +4,8 @@
 package org.gephi.layout;
 
 import org.gephi.graph.api.GraphController;
-import org.gephi.layout.api.Layout;
-import org.gephi.layout.api.LayoutBuilder;
+import org.gephi.layout.spi.Layout;
+import org.gephi.layout.spi.LayoutBuilder;
 
 /**
  * Base class for layout algorithms.

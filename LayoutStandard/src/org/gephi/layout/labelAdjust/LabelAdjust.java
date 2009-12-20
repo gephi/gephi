@@ -28,14 +28,13 @@ import org.gephi.graph.api.Node;
 import org.gephi.layout.AbstractLayout;
 import org.gephi.layout.ForceVectorNodeLayoutData;
 import org.gephi.layout.ForceVectorUtils;
-import org.gephi.layout.api.Layout;
-import org.gephi.layout.api.LayoutBuilder;
-import org.gephi.layout.api.LayoutProperty;
-import org.openide.nodes.Node.PropertySet;
+import org.gephi.layout.spi.Layout;
+import org.gephi.layout.spi.LayoutBuilder;
+import org.gephi.layout.spi.LayoutProperty;
 
 /**
  *
- * @author Mathieu Bastian
+ * @author Mathieu Jacomy
  */
 public class LabelAdjust extends AbstractLayout implements Layout {
 

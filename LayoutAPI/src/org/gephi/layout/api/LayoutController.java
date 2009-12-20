@@ -20,25 +20,25 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.api;
 
-import java.util.Observer;
+import org.gephi.layout.spi.Layout;
+import org.gephi.workspace.api.Workspace;
 
 /**
- * A LayoutController is the one responsible for controlling the run states of
- * a Layout and provide the states information to its user (i.e. the UI).
- * 
- * The Observer pattern is used to inform the user of the LayoutController of
- * a change in the execution state of the Layout (e.g. the current Layout may
- * now be executed or stopped).
+ * A LayoutController is the one responsible for controlling the states of
+ * the {@link LayoutModel}
  * 
  * @author Mathieu Bastian
  */
 public interface LayoutController {
 
+    /**
+     * Returns the model of the currently selected {@link Workspace}.
+     */
     public LayoutModel getModel();
 
     /**
-     * Sets the Layout this Controller will run.
-     * @param layout
+     * Sets the Layout to execute.
+     * @param layout the layous that is to be selected
      */
     public void setLayout(Layout layout);
 
@@ -49,7 +49,7 @@ public interface LayoutController {
 
     /**
      * Determine if the current Layout can be executed.
-     * @return
+     * @return <code>true</code> if the layout is executable.
      */
     public boolean canExecute();
 
@@ -61,7 +61,7 @@ public interface LayoutController {
     /**
      * Determine if the current Layout execution can be stopped.
      * If the current Layout is not running, it generally cannot be stopped.
-     * @return
+     * @return <code>true</code> if the layout can be stopped.
      */
     public boolean canStop();
 }

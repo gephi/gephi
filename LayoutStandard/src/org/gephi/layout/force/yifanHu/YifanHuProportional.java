@@ -22,10 +22,10 @@ package org.gephi.layout.force.yifanHu;
 
 import javax.swing.Icon;
 import javax.swing.JPanel;
-import org.gephi.layout.api.Layout;
-import org.gephi.layout.api.LayoutBuilder;
-import org.gephi.layout.api.LayoutUI;
 import org.gephi.layout.force.ProportionalDisplacement;
+import org.gephi.layout.spi.Layout;
+import org.gephi.layout.spi.LayoutBuilder;
+import org.gephi.layout.spi.LayoutUI;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -33,7 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
-@ServiceProvider(service=LayoutBuilder.class)
+@ServiceProvider(service = LayoutBuilder.class)
 public class YifanHuProportional implements LayoutBuilder {
 
     private YifanHuProportionalLayoutUI ui = new YifanHuProportionalLayoutUI();
