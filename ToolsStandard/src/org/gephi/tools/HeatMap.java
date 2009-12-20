@@ -40,11 +40,13 @@ import org.gephi.tools.spi.ToolUI;
 import org.gephi.ui.utils.GradientUtils.LinearGradient;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service=Tool.class)
 public class HeatMap implements Tool {
     //Architecture
 

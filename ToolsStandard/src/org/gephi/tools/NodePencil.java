@@ -35,11 +35,13 @@ import org.gephi.ui.tools.NodePencilPanel;
 import org.gephi.tools.spi.ToolUI;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service=Tool.class)
 public class NodePencil implements Tool {
 
     //Architecture
