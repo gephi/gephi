@@ -22,8 +22,8 @@ package org.gephi.ui.layout;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.gephi.layout.api.Layout;
-import org.gephi.layout.api.LayoutProperty;
+import org.gephi.layout.spi.Layout;
+import org.gephi.layout.spi.LayoutProperty;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node.PropertySet;
