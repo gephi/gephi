@@ -18,12 +18,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.tools.api;
+package org.gephi.tools.spi;
 
 /**
+ * Listeners used by {@link Tool} classes for receiving events from the visualization
+ * window like mouse click, mouse drag, node click etc.
+ * <p>
+ * A tool can declare multiple listeners and hence build more complex user interactions
+ * scenario.
  *
  * @author Mathieu Bastian
  */
 public interface ToolEventListener {
-
 }

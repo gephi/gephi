@@ -19,13 +19,25 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.gephi.tools.api;
+package org.gephi.tools.spi;
 
 /**
+ * Tool mouse click listener. Listen to mouse click on visualization window.
+ * <p>
+ * A tool which declares this listener is notified when user click on the
+ * visualizaion window.
  *
  * @author Mathieu Bastian
+ * @see Tool
  */
 public interface MouseClickEventListener extends ToolEventListener {
 
+    /**
+     * Notify a mouse click on the visualization window.
+     * @param positionViewport Position in the 2D coordinate system, (0,0) is located
+     * top-left.
+     * @param position3d Position in the 3D coordinate system, (0,0) is located at the
+     * center.
+     */
     public void mouseClick(int[] positionViewport, float[] position3d);
 }

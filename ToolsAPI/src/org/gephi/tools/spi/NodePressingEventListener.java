@@ -19,16 +19,30 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.gephi.tools.api;
+package org.gephi.tools.spi;
 
 import org.gephi.graph.api.Node;
 
 /**
+ * Tool mouse pressing listener. Listen to continuous mouse pressing on the
+ * visualization window and trigger selected nodes.
+ * <p>
+ * A tool which declares this listener is notified at a certain rate, up to
+ * multiple times per second, the selected nodes.
  *
  * @author Mathieu Bastian
+ * @see Tool
  */
-public interface NodeClickEventListener extends ToolEventListener {
+public interface NodePressingEventListener extends ToolEventListener {
 
-    public void clickNodes(Node[] nodes);
+    /**
+     * Notify <code>nodes</code> are currently pressed.
+     * @param nodes the pressed nodes array
+     */
+    public void pressingNodes(Node[] nodes);
 
+    /**
+     * Notify mouse has been released.
+     */
+    public void released();
 }

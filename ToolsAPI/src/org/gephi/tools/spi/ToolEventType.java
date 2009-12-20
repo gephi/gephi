@@ -19,23 +19,13 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.gephi.tools.api;
-
-import org.gephi.ui.tools.ToolUI;
+package org.gephi.tools.spi;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Tool {
-
-    public void select();
-
-    public void unselect();
-
-    public ToolEventListener[] getListeners();
-
-    public ToolUI getUI();
-
-    public ToolSelectionType getSelectionType();
+public enum ToolEventType {
+    NODE_PRESSED,
+    NODE_CLICKED
 }

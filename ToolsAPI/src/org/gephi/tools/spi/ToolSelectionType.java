@@ -18,17 +18,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package org.gephi.tools.api;
+package org.gephi.tools.spi;
 
 /**
+ * Enum setting for {@link Tool} implementations.
+ * <ul><li>
+ * <b>NO_SELECTION:</b> Selection is disabled when the tool is used.</li>
+ * <li><b>SELECTION:</b> Selection is enabled when the tool is used.</li>
+ * </ul>
  *
  * @author Mathieu Bastian
  */
 public enum ToolSelectionType {
+
     NO_SELECTION, SELECTION;
 }

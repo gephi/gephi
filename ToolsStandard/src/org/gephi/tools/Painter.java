@@ -25,12 +25,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.gephi.graph.api.Node;
-import org.gephi.tools.api.NodeClickEventListener;
-import org.gephi.tools.api.Tool;
-import org.gephi.tools.api.ToolEventListener;
-import org.gephi.tools.api.ToolEventType;
-import org.gephi.tools.api.ToolSelectionType;
-import org.gephi.ui.tools.ToolUI;
+import org.gephi.tools.spi.NodeClickEventListener;
+import org.gephi.tools.spi.Tool;
+import org.gephi.tools.spi.ToolEventListener;
+import org.gephi.tools.spi.ToolEventType;
+import org.gephi.tools.spi.ToolSelectionType;
+import org.gephi.tools.spi.ToolUI;
 import org.openide.util.NbBundle;
 
 /**

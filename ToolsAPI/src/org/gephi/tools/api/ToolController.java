@@ -21,12 +21,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.tools.api;
 
 import javax.swing.JComponent;
+import org.gephi.tools.spi.Tool;
 
 /**
  *
  * @author Mathieu Bastian
  */
 public interface ToolController {
+
+    public void select(Tool tool);
 
     public JComponent getToolbar();
 

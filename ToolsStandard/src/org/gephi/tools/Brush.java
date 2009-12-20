@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.tools;
 
-import org.gephi.tools.api.ToolSelectionType;
+import org.gephi.tools.spi.ToolSelectionType;
 import org.gephi.ui.tools.BrushPanel;
 import java.awt.Color;
 import javax.swing.Icon;
@@ -29,10 +29,10 @@ import javax.swing.JPanel;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
-import org.gephi.tools.api.NodePressingEventListener;
-import org.gephi.tools.api.Tool;
-import org.gephi.tools.api.ToolEventListener;
-import org.gephi.ui.tools.ToolUI;
+import org.gephi.tools.spi.NodePressingEventListener;
+import org.gephi.tools.spi.Tool;
+import org.gephi.tools.spi.ToolEventListener;
+import org.gephi.tools.spi.ToolUI;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 

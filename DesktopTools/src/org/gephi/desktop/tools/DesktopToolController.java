@@ -33,31 +33,32 @@ import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.graph.api.Node;
-import org.gephi.tools.api.MouseClickEventListener;
-import org.gephi.tools.api.NodeClickEventListener;
-import org.gephi.tools.api.NodePressingEventListener;
-import org.gephi.tools.api.Tool;
+import org.gephi.tools.spi.MouseClickEventListener;
+import org.gephi.tools.spi.NodeClickEventListener;
+import org.gephi.tools.spi.NodePressingEventListener;
+import org.gephi.tools.spi.Tool;
 import org.gephi.tools.api.ToolController;
-import org.gephi.tools.api.ToolEventListener;
-import org.gephi.tools.api.ToolSelectionType;
-import org.gephi.ui.tools.ToolUI;
+import org.gephi.tools.spi.ToolEventListener;
+import org.gephi.tools.spi.ToolSelectionType;
+import org.gephi.tools.spi.ToolUI;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.VizEvent;
 import org.gephi.visualization.api.VizEvent.Type;
 import org.gephi.visualization.api.VizEventListener;
 import org.gephi.visualization.api.selection.SelectionManager;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service = ToolController.class)
 public class DesktopToolController implements ToolController {
 
     //Architecture
     private Tool[] tools;
     private PropertiesBar propertiesBar;
-
     //Current tool
     private Tool currentTool;
     private ToolEventHandler[] currentHandlers;
@@ -68,8 +69,10 @@ public class DesktopToolController implements ToolController {
     }
 
     public void select(Tool tool) {
-
         unselect();
+        if (tool == null) {
+            return;
+        }
 
         //Connect events
         ArrayList<ToolEventHandler> handlers = new ArrayList<ToolEventHandler>();
