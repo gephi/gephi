@@ -70,6 +70,15 @@ public class LayoutControllerImpl implements LayoutController {
                 model = null;
             }
         });
+
+        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+        if (projectController.getCurrentWorkspace() != null) {
+            model = projectController.getCurrentWorkspace().getLookup().lookup(LayoutModelImpl.class);
+            if (model == null) {
+                model = new LayoutModelImpl();
+            }
+            projectController.getCurrentWorkspace().add(model);
+        }
     }
 
     public LayoutModel getModel() {
