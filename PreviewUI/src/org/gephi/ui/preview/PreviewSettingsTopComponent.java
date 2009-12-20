@@ -3,12 +3,8 @@ package org.gephi.ui.preview;
 import java.awt.BorderLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
-import org.gephi.project.api.ProjectController;
-import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.Node;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -35,34 +31,8 @@ final class PreviewSettingsTopComponent extends TopComponent {
         ps.setNodes(new Node[]{new PreviewNode()});
         propertiesPanel.add(ps, BorderLayout.CENTER);
 
-        initEvents();
-    }
-
-    /**
-     * Inits the component's events.
-     */
-    private void initEvents() {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        
-        pc.addWorkspaceListener(new WorkspaceListener() {
-
-            public void initialize(Workspace workspace) {
-            }
-
-            public void select(Workspace workspace) {
-                refreshButton.setEnabled(true);
-            }
-
-            public void unselect(Workspace workspace) {
-            }
-
-            public void close(Workspace workspace) {
-            }
-
-            public void disable() {
-                refreshButton.setEnabled(false);
-            }
-        });
+        // forces the controller instanciation
+        PreviewUIController.findInstance();
     }
 
     /**
@@ -82,6 +52,24 @@ final class PreviewSettingsTopComponent extends TopComponent {
         }
 
         return value / 100;
+    }
+
+    /**
+     * Enables the refresh button.
+     *
+     * @see PreviewUIController#enableRefresh()
+     */
+    public void enableRefreshButton() {
+        refreshButton.setEnabled(true);
+    }
+
+    /**
+     * Disables the refresh button.
+     *
+     * @see PreviewUIController#disableRefresh()
+     */
+    public void disableRefreshButton() {
+        refreshButton.setEnabled(false);
     }
 
     /** This method is called from within the constructor to
