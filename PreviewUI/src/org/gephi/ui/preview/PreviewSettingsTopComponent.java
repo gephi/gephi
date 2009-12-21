@@ -3,8 +3,10 @@ package org.gephi.ui.preview;
 import java.awt.BorderLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
+import org.gephi.project.api.ProjectController;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.Node;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -30,6 +32,12 @@ final class PreviewSettingsTopComponent extends TopComponent {
         PropertySheet ps = new PropertySheet();
         ps.setNodes(new Node[]{new PreviewNode()});
         propertiesPanel.add(ps, BorderLayout.CENTER);
+
+        // checks the state of the workspace
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        if (pc.getCurrentWorkspace() != null) {
+            refreshButton.setEnabled(true);
+        }
 
         // forces the controller instanciation
         PreviewUIController.findInstance();

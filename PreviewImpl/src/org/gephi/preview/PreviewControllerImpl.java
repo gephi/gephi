@@ -44,6 +44,12 @@ public class PreviewControllerImpl implements PreviewController {
      */
     public PreviewControllerImpl() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+
+        // checks the current workspace state before listening to the events
+        if (pc.getCurrentWorkspace() != null) {
+            updateFlag = true;
+        }
+
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
