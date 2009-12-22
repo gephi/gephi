@@ -1,6 +1,8 @@
 package org.gephi.preview;
 
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphEvent;
+import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.GraphSheet;
@@ -25,8 +27,9 @@ import org.openide.util.Lookup;
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
-public class PreviewControllerImpl implements PreviewController {
+public class PreviewControllerImpl implements PreviewController, GraphListener {
 
+    private GraphModel graphModel = null;
     private GraphImpl previewGraph = null;
     private PartialGraphImpl partialPreviewGraph = null;
     private GraphSheetImpl graphSheet = null;
@@ -44,10 +47,13 @@ public class PreviewControllerImpl implements PreviewController {
      */
     public PreviewControllerImpl() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        final GraphController gc = Lookup.getDefault().lookup(GraphController.class);
 
-        // checks the current workspace state before listening to the events
+        // checks the current workspace state before listening to the related events
         if (pc.getCurrentWorkspace() != null) {
             updateFlag = true;
+            graphModel = gc.getModel();
+            graphModel.addGraphListener(this);
         }
 
         pc.addWorkspaceListener(new WorkspaceListener() {
@@ -57,9 +63,13 @@ public class PreviewControllerImpl implements PreviewController {
 
             public void select(Workspace workspace) {
                 updateFlag = true;
+                graphModel = gc.getModel();
+                graphModel.addGraphListener(PreviewControllerImpl.this);
             }
 
             public void unselect(Workspace workspace) {
+                graphModel.removeGraphListener(PreviewControllerImpl.this);
+                graphModel = null;
             }
 
             public void close(Workspace workspace) {
@@ -69,6 +79,17 @@ public class PreviewControllerImpl implements PreviewController {
                 graphSheet = null;
             }
         });
+    }
+
+    /**
+     * Sets the update flag when the structure of the workspace graph has
+     * changed.
+     *
+     * @param event
+     * @see GraphListener#graphChanged(org.gephi.graph.api.GraphEvent)
+     */
+    public void graphChanged(GraphEvent event) {
+        updateFlag = true;
     }
 
     /**
