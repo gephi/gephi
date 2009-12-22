@@ -58,6 +58,13 @@ public class NodeImpl implements Node, NodeColorizerClient {
     }
 
     /**
+     * @see Node#hasLabel()
+     */
+    public boolean hasLabel() {
+        return null != label;
+    }
+
+    /**
      * Returns the node supervisor.
      *
      * @return the controller's node supervisor

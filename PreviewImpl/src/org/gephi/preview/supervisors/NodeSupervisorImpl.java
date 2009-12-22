@@ -272,7 +272,9 @@ public class NodeSupervisorImpl implements NodeSupervisor {
      */
     private void shortenNodeLabels() {
         for (NodeImpl n : supervisedNodes) {
-            shortenNodeLabel(n.getLabel());
+            if (n.hasLabel()) {
+                shortenNodeLabel(n.getLabel());
+            }
         }
     }
 
@@ -290,7 +292,9 @@ public class NodeSupervisorImpl implements NodeSupervisor {
      */
     private void colorNodeLabels() {
         for (NodeImpl n : supervisedNodes) {
-            colorNodeLabel(n.getLabel());
+            if (n.hasLabel()) {
+                colorNodeLabel(n.getLabel());
+            }
         }
     }
 

@@ -11,6 +11,13 @@ import processing.core.PVector;
 public interface Node {
 
     /**
+     * Returns whether or not the node has a label.
+     *
+     * @return true if the node has a label
+     */
+    public boolean hasLabel();
+
+    /**
      * Returns the node's top left position.
      *
      * @return the node's top left position
