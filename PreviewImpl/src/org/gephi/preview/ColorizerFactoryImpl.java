@@ -10,12 +10,14 @@ import org.gephi.preview.updaters.EdgeB2ColorMode;
 import org.gephi.preview.updaters.EdgeBothBColorMode;
 import org.gephi.preview.updaters.NodeOriginalColorMode;
 import org.gephi.preview.updaters.ParentColorMode;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Implementation of the colorizer factory.
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
+@ServiceProvider(service = ColorizerFactory.class)
 public class ColorizerFactoryImpl implements ColorizerFactory {
 
     /**

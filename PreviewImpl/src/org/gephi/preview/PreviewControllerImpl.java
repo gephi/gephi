@@ -21,12 +21,14 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Implementation of the preview controller.
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
+@ServiceProvider(service = PreviewController.class)
 public class PreviewControllerImpl implements PreviewController, GraphListener {
 
     private GraphModel graphModel = null;
