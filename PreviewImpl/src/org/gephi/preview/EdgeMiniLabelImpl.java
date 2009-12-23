@@ -1,5 +1,6 @@
 package org.gephi.preview;
 
+import java.awt.Font;
 import org.gephi.preview.api.EdgeMiniLabel;
 import org.gephi.preview.api.util.HAlign;
 
@@ -29,11 +30,16 @@ public abstract class EdgeMiniLabelImpl extends AbstractEdgeLabel
     public abstract void genPosition();
 
     /**
-     * Returns the edge mini-label's horizontal alignment.
-     *
-     * @return the edge mini-label's horizontal alignment
+     * @see EdgeMiniLabel#getHAlign()
      */
     public HAlign getHAlign() {
         return hAlign;
+    }
+
+    /**
+     * @see EdgeMiniLabel#getFont()
+     */
+    public Font getFont() {
+        return parent.getMiniLabelFont();
     }
 }

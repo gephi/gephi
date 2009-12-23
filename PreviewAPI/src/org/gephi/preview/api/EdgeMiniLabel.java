@@ -1,5 +1,6 @@
 package org.gephi.preview.api;
 
+import java.awt.Font;
 import org.gephi.preview.api.util.HAlign;
 import processing.core.PVector;
 
@@ -44,4 +45,11 @@ public interface EdgeMiniLabel {
      * @return the edge mini-label's current value
      */
     public String getValue();
+
+    /**
+     * Returns the edge mini-label font.
+     *
+     * @return the edge mini-label font
+     */
+    public Font getFont();
 }

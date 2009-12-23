@@ -1,5 +1,6 @@
 package org.gephi.preview;
 
+import java.awt.Font;
 import org.gephi.preview.api.EdgeLabel;
 import processing.core.PVector;
 
@@ -36,5 +37,12 @@ public class EdgeLabelImpl extends AbstractEdgeLabel implements EdgeLabel {
 
         // set label position above the parent edge
         putPositionAboveEdge();
+    }
+
+    /**
+     * @see EdgeLabel#getFont()
+     */
+    public Font getFont() {
+        return parent.getLabelFont();
     }
 }

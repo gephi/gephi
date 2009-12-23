@@ -1,5 +1,6 @@
 package org.gephi.preview.api;
 
+import java.awt.Font;
 import processing.core.PVector;
 
 /**
@@ -36,4 +37,11 @@ public interface EdgeLabel {
      * @return the edge label's value
      */
     public String getValue();
+
+    /**
+     * Returns the edge label's font.
+     *
+     * @return the edge label's font
+     */
+    public Font getFont();
 }

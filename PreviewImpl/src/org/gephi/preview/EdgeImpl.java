@@ -1,5 +1,6 @@
 package org.gephi.preview;
 
+import java.awt.Font;
 import java.util.ArrayList;
 import org.gephi.preview.api.CubicBezierCurve;
 import org.gephi.preview.api.Edge;
@@ -151,6 +152,24 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
      */
     public EdgeLabelImpl getLabel() {
         return label;
+    }
+
+    /**
+     * Returns the edge label font.
+     *
+     * @return the edge label font
+     */
+    public Font getLabelFont() {
+        return getEdgeSupervisor().getLabelFont();
+    }
+
+    /**
+     * Returns the edge mini-label font.
+     *
+     * @return the edge mini-label font
+     */
+    public Font getMiniLabelFont() {
+        return getEdgeSupervisor().getMiniLabelFont();
     }
 
     /**
