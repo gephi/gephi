@@ -1,5 +1,6 @@
 package org.gephi.preview;
 
+import java.awt.Font;
 import org.gephi.preview.api.NodeLabel;
 import org.gephi.preview.updaters.LabelShortenerClient;
 
@@ -26,29 +27,30 @@ public class NodeLabelImpl extends AbstractNodeChild
     }
 
     /**
-     * Returns the node label's original value.
-     *
-     * @return the node label's original value
+     * @see LabelShortenerClient#getOriginalValue()
      */
     public String getOriginalValue() {
         return originalValue;
     }
 
     /**
-     * Returns the node label's current value.
-     *
-     * @return the node label's current value
+     * @see NodeLabel#getValue()
      */
     public String getValue() {
         return value;
     }
 
     /**
-     * Defines the node label's current value.
-     *
-     * @param value  the node label's current value to set
+     * @see LabelShortenerClient#getOriginalValue()
      */
     public void setValue(String value) {
         this.value = value;
+    }
+
+    /**
+     * @see NodeLabel#getFont()
+     */
+    public Font getFont() {
+        return parent.getLabelFont();
     }
 }

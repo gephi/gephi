@@ -1,5 +1,6 @@
 package org.gephi.preview;
 
+import java.awt.Font;
 import org.gephi.preview.api.Color;
 import org.gephi.preview.api.Node;
 import org.gephi.preview.api.NodeColorizerClient;
@@ -84,9 +85,7 @@ public class NodeImpl implements Node, NodeColorizerClient {
     }
 
     /**
-     * Returns the node's position.
-     *
-     * @return the node's position
+     * @see Node#getPosition()
      */
     public PVector getPosition() {
         return position;
@@ -107,108 +106,93 @@ public class NodeImpl implements Node, NodeColorizerClient {
     }
 
     /**
-     * Returns the node's label.
-     *
-     * @return the node's label
+     * @see Node#getLabel()
      */
     public NodeLabelImpl getLabel() {
         return label;
     }
 
     /**
-     * Returns the node's label border.
+     * Returns the label font.
      *
-     * @return the node's label border
+     * @return the label font
+     */
+    public Font getLabelFont() {
+        return getNodeSupervisor().getNodeLabelFont();
+    }
+
+    /**
+     * @see Node#getLabelBorder()
      */
     public NodeLabelBorderImpl getLabelBorder() {
         return labelBorder;
     }
 
     /**
-     * Returns the node's radius.
-     *
-     * @return the node's radius
+     * @see Node#getRadius()
      */
     public Float getRadius() {
         return radius;
     }
 
     /**
-     * Returns the node's diameter.
-     *
-     * @return the node's diameter
+     * @see Node#getDiameter()
      */
     public Float getDiameter() {
         return radius * 2;
     }
 
     /**
-     * Returns the node's original color.
-     *
-     * @return the node's original color
+     * @see NodeColorizerClient#getOriginalColor()
      */
     public Color getOriginalColor() {
         return originalColor;
     }
 
     /**
-     * Returns the node's current color.
-     *
-     * @return the node's current color
+     * @see Node#getColor()
      */
     public Color getColor() {
         return colorHolder.getComponent();
     }
 
     /**
-     * Returns the node's color holder.
-     *
-     * @return the node's color holder
+     * @see Node#getColorHolder()
      */
     public Holder<Color> getColorHolder() {
         return colorHolder;
     }
 
     /**
-     * Defines the node's current color.
-     *
-     * @param color  the node's current color to set
+     * @see NodeColorizerClient#setColor(org.gephi.preview.api.Color)
      */
     public void setColor(Color color) {
         colorHolder.setComponent(color);
     }
 
     /**
-     * Returns the node's border color.
-     *
-     * @return the node's border color
+     * @see Node#getBorderColor()
      */
     public Color getBorderColor() {
         return getNodeSupervisor().getNodeBorderColorizer().getColor();
     }
 
     /**
-     * Returns the node's border width.
-     *
-     * @return the node's border width
+     * @see Node#getBorderWidth()
      */
     public Float getBorderWidth() {
         return getNodeSupervisor().getNodeBorderWidth();
     }
 
     /**
-     * Returns whether or not the node's label must be displayed.
-     *
-     * @return true to display the node's label
+     * @see Node#showLabel()
      */
     public Boolean showLabel() {
         return getNodeSupervisor().getShowNodeLabels();
     }
 
     /**
-     * Returns whether or not the node's label borders must be displayed.
-     *
-     * @return true to display the node's label borders
+     * @see Node#showLabelBorders()
      */
     public Boolean showLabelBorders() {
         return getNodeSupervisor().getShowNodeLabelBorders();

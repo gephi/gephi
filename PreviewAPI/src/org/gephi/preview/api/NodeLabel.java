@@ -1,5 +1,6 @@
 package org.gephi.preview.api;
 
+import java.awt.Font;
 import processing.core.PVector;
 
 /**
@@ -30,4 +31,9 @@ public interface NodeLabel {
      */
     public PVector getPosition();
 
+    /**
+     * Returns the node label's font.
+     * @return the node label's font
+     */
+    public Font getFont();
 }
