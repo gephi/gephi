@@ -46,6 +46,13 @@ public interface Node {
     public PVector getPosition();
 
     /**
+     * Returns the node's radius.
+     *
+     * @return the node's radius
+     */
+    public Float getRadius();
+
+    /**
      * Returns the node's diameter.
      *
      * @return the node's diameter
