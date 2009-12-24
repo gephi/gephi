@@ -238,7 +238,7 @@ public class ProcessingPreview extends PApplet
         ellipse(node.getPosition().x, node.getPosition().y,
                 node.getDiameter(), node.getDiameter());
 
-        if (node.showLabel()) {
+        if (node.showLabel() && node.hasLabel()) {
             // draws a label border
             if (node.showLabelBorders()) {
                 renderNodeLabelBorder(node.getLabelBorder());
