@@ -14,7 +14,6 @@ public abstract class AbstractEdge implements EdgeColorizerClient {
 
     private final GraphImpl parent;
     private final Float thickness;
-    private final Integer alpha; // TODO keep Edge.alpha?
     protected final HolderImpl<Color> colorHolder = new HolderImpl<Color>();
 
 	/**
@@ -22,12 +21,10 @@ public abstract class AbstractEdge implements EdgeColorizerClient {
 	 *
 	 * @param parent     the parent graph of the edge
 	 * @param thickness  the edge's thickness
-	 * @param alpha      the edge's alpha color
 	 */
-    public AbstractEdge(GraphImpl parent, float thickness, int alpha) {
+    public AbstractEdge(GraphImpl parent, float thickness) {
         this.parent = parent;
         this.thickness = thickness;
-        this.alpha = alpha;
     }
 
 	/**

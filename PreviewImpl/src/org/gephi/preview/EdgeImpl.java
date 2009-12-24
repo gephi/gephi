@@ -32,13 +32,12 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
      *
      * @param parent     the parent graph of the edge
      * @param thickness  the edge's thickness
-     * @param alpha      the edge's alpha color
      * @param node1      the edge's node 1
      * @param node2      the edge's node 2
      * @param label      the edge's label
      */
-    protected EdgeImpl(GraphImpl parent, float thickness, int alpha, NodeImpl node1, NodeImpl node2, String label) {
-        super(parent, thickness, alpha);
+    protected EdgeImpl(GraphImpl parent, float thickness, NodeImpl node1, NodeImpl node2, String label) {
+        super(parent, thickness);
         this.node1 = node1;
         this.node2 = node2;
 

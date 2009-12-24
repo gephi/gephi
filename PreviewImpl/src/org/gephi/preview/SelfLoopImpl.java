@@ -22,11 +22,10 @@ public class SelfLoopImpl extends AbstractEdge implements SelfLoop {
      *
      * @param parent     the parent graph of the self-loop
      * @param thickness  the self-loop's thickness
-     * @param alpha      the self-loop's alpha color component
      * @param node       the self-loop's related node
      */
-    public SelfLoopImpl(GraphImpl parent, float thickness, int alpha, NodeImpl node) {
-        super(parent, thickness, alpha);
+    public SelfLoopImpl(GraphImpl parent, float thickness, NodeImpl node) {
+        super(parent, thickness);
         this.node = node;
 
         // generate the self-loop's curve
