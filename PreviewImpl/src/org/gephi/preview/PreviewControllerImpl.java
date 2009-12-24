@@ -154,8 +154,6 @@ public class PreviewControllerImpl implements PreviewController, GraphListener {
      * @see PreviewController#buildGraph()
      */
     public void buildGraph() {
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-
         clearSupervisors();
 
         if (graphModel.isUndirected()) {
