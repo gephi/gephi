@@ -8,7 +8,6 @@ import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.SelfLoop;
 import org.gephi.preview.api.UnidirectionalEdge;
 import org.openide.util.Lookup;
-import processing.core.PVector;
 
 /**
  * Implementation of a preview graph.
@@ -23,48 +22,59 @@ public class GraphImpl implements Graph {
     private final ArrayList<BidirectionalEdge> biEdges = new ArrayList<BidirectionalEdge>();
 
     /**
-     * Returns an iterable on the graph's nodes.
-     *
-     * @return an iterable on the graph's nodes
+     * @see Graph#getNodes()
      */
     public Iterable<Node> getNodes() {
         return nodes;
     }
 
     /**
-     * Returns an iterable on the graph's self-loops.
-     *
-     * @return an iterable on the graph's self-loops
+     * @see Graph#getSelfLoops()
      */
     public Iterable<SelfLoop> getSelfLoops() {
         return selfLoops;
     }
 
     /**
-     * Returns an iterable on the graph's unidirectional edges.
-     *
-     * @return an iterable on the graph's unidirectional edges
+     * @see Graph#getUnidirectionalEdges()
      */
     public Iterable<UnidirectionalEdge> getUnidirectionalEdges() {
         return uniEdges;
     }
 
     /**
-     * Returns an iterable on the graph's bidirectional edges.
-     *
-     * @return an iterable on the graph's bidirectional edges
+     * @see Graph#getBidirectionalEdges()
      */
     public Iterable<BidirectionalEdge> getBidirectionalEdges() {
         return biEdges;
     }
 
     /**
-     * Returns the number or nodes in the graph.
-     *
-     * @return the number or nodes in the graph
+     * @see Graph#countNodes()
      */
     public float countNodes() {
         return nodes.size();
+    }
+
+    /**
+     * @see Graph#countUnidirectionalEdges()
+     */
+    public float countUnidirectionalEdges() {
+        return uniEdges.size();
+    }
+
+    /**
+     * @see Graph#countBidirectionalEdges()
+     */
+    public float countBidirectionalEdges() {
+        return biEdges.size();
+    }
+
+    /**
+     * @see Graph#countSelfLoops()
+     */
+    public float countSelfLoops() {
+        return selfLoops.size();
     }
 
     /**
@@ -104,9 +114,7 @@ public class GraphImpl implements Graph {
     }
 
     /**
-     * Returns true if the nodes must be displayed in the preview.
-     *
-     * @return true if the nodes must be displayed in the preview
+     * @see Graph#showNodes()
      */
     public Boolean showNodes() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
@@ -114,9 +122,7 @@ public class GraphImpl implements Graph {
     }
 
     /**
-     * Returns true if the edges must be displayed in the preview.
-     *
-     * @return true if the edges must be displayed in the preview
+     * @see Graph#showEdges()
      */
     public Boolean showEdges() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
@@ -124,9 +130,7 @@ public class GraphImpl implements Graph {
     }
 
     /**
-     * Returns true if the self-loops must be displayed in the preview.
-     *
-     * @return true if the self-loops must be displayed in the preview
+     * @see Graph#showSelfLoops()
      */
     public Boolean showSelfLoops() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);

@@ -104,6 +104,36 @@ public class PartialGraphImpl implements Graph {
     }
 
     /**
+     * Returns the number of visible unidirectional edges in the graph.
+     *
+     * @return the number of visible unidirectional edges in the graph
+     * @see Graph#countUnidirectionalEdges()
+     */
+    public float countUnidirectionalEdges() {
+        return visibleUnidirectionalEdges.size();
+    }
+
+    /**
+     * Returns the number of visible bidirectional edges in the graph.
+     *
+     * @return the number of visible bidirectional edges in the graph
+     * @see Graph#countBidirectionalEdges()
+     */
+    public float countBidirectionalEdges() {
+        return visibleBidirectionalEdges.size();
+    }
+
+    /**
+     * Returns the number of visible self-loops in the graph.
+     *
+     * @return the number of visible self-loops in the graph
+     * @see Graph#countSelfLoops()
+     */
+    public float countSelfLoops() {
+        return visibleSelfLoops.size();
+    }
+
+    /**
      * @see Graph#showNodes()
      */
     public Boolean showNodes() {

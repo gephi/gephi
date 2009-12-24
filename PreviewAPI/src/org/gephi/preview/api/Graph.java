@@ -36,11 +36,32 @@ public interface Graph {
     public Iterable<BidirectionalEdge> getBidirectionalEdges();
 
     /**
-     * Returns the number or nodes in the graph.
+     * Returns the number of nodes in the graph.
      *
-     * @return the number or nodes in the graph
+     * @return the number of nodes in the graph
      */
     public float countNodes();
+
+    /**
+     * Returns the number of unidirectional edges in the graph.
+     *
+     * @return the number of unidirectional edges in the graph
+     */
+    public float countUnidirectionalEdges();
+
+    /**
+     * Returns the number of bidirectional edges in the graph.
+     *
+     * @return the number of bidirectional edges in the graph
+     */
+    public float countBidirectionalEdges();
+
+    /**
+     * Returns the number of self-loops in the graph.
+     *
+     * @return the number of self-loops in the graph
+     */
+    public float countSelfLoops();
 
     /**
      * Returns true if the nodes must be displayed in the preview.
