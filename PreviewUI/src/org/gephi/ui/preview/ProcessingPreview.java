@@ -11,7 +11,8 @@ import processing.opengl.*;
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
-public class ProcessingPreview extends PApplet {
+public class ProcessingPreview extends PApplet
+        implements GraphRenderer {
 
     private PVector ref = new PVector();
     private PVector trans = new PVector();
@@ -70,7 +71,7 @@ public class ProcessingPreview extends PApplet {
 
         // draw graph
         if (null != graphSheet) {
-            drawGraph(graphSheet.getGraph());
+            renderGraph(graphSheet.getGraph());
         }
     }
 
@@ -155,50 +156,78 @@ public class ProcessingPreview extends PApplet {
     }
 
     /**
-     * Draws a graph on the preview.
-     *
-     * @param graph  the graph to draw
+     * @see GraphRenderer#renderGraph(org.gephi.preview.api.Graph)
      */
-    private void drawGraph(Graph graph) {
+    public void renderGraph(Graph graph) {
         if (graph.showEdges()) {
-
-            // draw edges
-            for (UnidirectionalEdge ue : graph.getUnidirectionalEdges()) {
-                edgeLabelFont = uniEdgeLabelFont;
-                edgeMiniLabelFont = uniEdgeMiniLabelFont;
-                drawEdge(ue);
-            }
-            for (BidirectionalEdge be : graph.getBidirectionalEdges()) {
-                edgeLabelFont = biEdgeLabelFont;
-                edgeMiniLabelFont = biEdgeMiniLabelFont;
-                drawEdge(be);
-            }
-
-            if (graph.showSelfLoops()) {
-                // draw self-loops
-                for (SelfLoop sl : graph.getSelfLoops()) {
-                    drawSelfLoop(sl);
-                }
-            }
+            renderGraphEdges(graph);
         }
 
         // nodes are above edges and self-loops
         if (graph.showNodes()) {
-            textFont(nodeLabelFont);
-            textAlign(CENTER, CENTER);
-            for (Node n : graph.getNodes()) {
-                drawNode(n);
-            }
+            renderGraphNodes(graph);
         }
     }
 
     /**
-     * Draws a node on the preview.
-     *
-     * @param node  the node to draw
+     * @see GraphRenderer#renderGraphEdges(org.gephi.preview.api.Graph)
      */
-    private void drawNode(Node node) {
-        // draw the node itself
+    public void renderGraphEdges(Graph graph) {
+        renderGraphUnidirectionalEdges(graph);
+        renderGraphBidirectionalEdges(graph);
+
+        if (graph.showSelfLoops()) {
+            renderGraphSelfLoops(graph);
+        }
+    }
+
+    /**
+     * @see GraphRenderer#renderGraphUnidirectionalEdges(org.gephi.preview.api.Graph)
+     */
+    public void renderGraphUnidirectionalEdges(Graph graph) {
+        for (UnidirectionalEdge ue : graph.getUnidirectionalEdges()) {
+            edgeLabelFont = uniEdgeLabelFont;
+            edgeMiniLabelFont = uniEdgeMiniLabelFont;
+            renderEdge(ue);
+        }
+    }
+
+    /**
+     * @see GraphRenderer#renderGraphBidirectionalEdges(org.gephi.preview.api.Graph)
+     */
+    public void renderGraphBidirectionalEdges(Graph graph) {
+        for (BidirectionalEdge be : graph.getBidirectionalEdges()) {
+            edgeLabelFont = biEdgeLabelFont;
+            edgeMiniLabelFont = biEdgeMiniLabelFont;
+            renderEdge(be);
+        }
+    }
+
+    /**
+     * @see GraphRenderer#renderGraphSelfLoops(org.gephi.preview.api.Graph)
+     */
+    public void renderGraphSelfLoops(Graph graph) {
+        for (SelfLoop sl : graph.getSelfLoops()) {
+            renderSelfLoop(sl);
+        }
+    }
+
+    /**
+     * @see GraphRenderer#renderGraphNodes(org.gephi.preview.api.Graph)
+     */
+    public void renderGraphNodes(Graph graph) {
+        textFont(nodeLabelFont);
+        textAlign(CENTER, CENTER);
+        for (Node n : graph.getNodes()) {
+            renderNode(n);
+        }
+    }
+
+    /**
+     * @see GraphRenderer#renderNode(org.gephi.preview.api.Node)
+     */
+    public void renderNode(Node node) {
+        // draws the node itself
         stroke(node.getBorderColor().getRed(),
                 node.getBorderColor().getGreen(),
                 node.getBorderColor().getBlue());
@@ -209,24 +238,21 @@ public class ProcessingPreview extends PApplet {
         ellipse(node.getPosition().x, node.getPosition().y,
                 node.getDiameter(), node.getDiameter());
 
-        // node label
         if (node.showLabel()) {
-            // draw a border
+            // draws a label border
             if (node.showLabelBorders()) {
-                drawNodeLabelBorder(node.getLabelBorder());
+                renderNodeLabelBorder(node.getLabelBorder());
             }
 
-            // print the node's label
-            drawNodeLabel(node.getLabel());
+            // draws the node's label
+            renderNodeLabel(node.getLabel());
         }
     }
 
     /**
-     * Draws a node label on the preview.
-     *
-     * @param label  the node label to draw
+     * @see GraphRenderer#renderNodeLabel(org.gephi.preview.api.NodeLabel)
      */
-    private void drawNodeLabel(NodeLabel label) {
+    public void renderNodeLabel(NodeLabel label) {
         fill(label.getColor().getRed(),
                 label.getColor().getGreen(),
                 label.getColor().getBlue());
@@ -236,11 +262,9 @@ public class ProcessingPreview extends PApplet {
     }
 
     /**
-     * Draws a node label border on the preview.
-     *
-     * @param border  the node label border to draw
+     * @see GraphRenderer#renderNodeLabelBorder(org.gephi.preview.api.NodeLabelBorder)
      */
-    private void drawNodeLabelBorder(NodeLabelBorder border) {
+    public void renderNodeLabelBorder(NodeLabelBorder border) {
         noStroke();
         fill(border.getColor().getRed(),
                 border.getColor().getGreen(),
@@ -250,11 +274,9 @@ public class ProcessingPreview extends PApplet {
     }
 
     /**
-     * Draws a self-loop on the preview.
-     *
-     * @param selfLoop  the self-loop to draw
+     * @see GraphRenderer#renderSelfLoop(org.gephi.preview.api.SelfLoop)
      */
-    public void drawSelfLoop(SelfLoop selfLoop) {
+    public void renderSelfLoop(SelfLoop selfLoop) {
         CubicBezierCurve curve = selfLoop.getCurve();
 
         strokeWeight(selfLoop.getThickness());
@@ -270,11 +292,9 @@ public class ProcessingPreview extends PApplet {
     }
 
     /**
-     * Draws an edge on the preview.
-     *
-     * @param edge  the edge to draw
+     * @see GraphRenderer#renderEdge(org.gephi.preview.api.Edge)
      */
-    public void drawEdge(Edge edge) {
+    public void renderEdge(Edge edge) {
         strokeWeight(edge.getThickness());
         stroke(edge.getColor().getRed(),
                 edge.getColor().getGreen(),
@@ -282,58 +302,59 @@ public class ProcessingPreview extends PApplet {
         noFill();
 
         if (edge.isCurved()) {
-            // draw curved edge
-            drawCurvedEdge(edge);
+            renderCurvedEdge(edge);
         } else {
-            // draw straight edge
-            drawStraightEdge(edge);
-
-            // draw its arrows
-            if (edge.showArrows()) {
-                noStroke();
-                for (EdgeArrow a : edge.getArrows()) {
-                    drawEdgeArrow(a);
-                }
-            }
-
-            // draw its label
-            if (edge.showLabel() && edge.hasLabel()) {
-                textFont(edgeLabelFont);
-                textAlign(CENTER, BASELINE);
-                drawEdgeLabel(edge.getLabel());
-            }
-
-            // draw its mini-labels
-            if (edge.showMiniLabels()) {
-                textFont(edgeMiniLabelFont);
-                for (EdgeMiniLabel ml : edge.getMiniLabels()) {
-                    drawEdgeMiniLabel(ml);
-                }
-            }
+            renderStraightEdge(edge);
         }
     }
 
     /**
-     * Draws a straight edge on the preview.
-     *
-     * @param edge  the straight edge to draw
+     * @see GraphRenderer#renderEdgeArrows(org.gephi.preview.api.Edge)
      */
-    public void drawStraightEdge(Edge edge) {
-        PVector boundary1 = edge.getNode1().getPosition();
-        PVector boundary2 = edge.getNode2().getPosition();
-
-        // draw straight edge
-        line(boundary1.x, boundary1.y, boundary2.x, boundary2.y);
+    public void renderEdgeArrows(Edge edge) {
+        noStroke();
+        for (EdgeArrow a : edge.getArrows()) {
+            renderEdgeArrow(a);
+        }
     }
 
     /**
-     * Draws a curved edge on the preview.
-     *
-     * @param edge  the curved edge to draw
+     * @see GraphRenderer#renderEdgeMiniLabels(org.gephi.preview.api.Edge)
      */
-    public void drawCurvedEdge(Edge edge) {
+    public void renderEdgeMiniLabels(Edge edge) {
+        textFont(edgeMiniLabelFont);
+        for (EdgeMiniLabel ml : edge.getMiniLabels()) {
+            renderEdgeMiniLabel(ml);
+        }
+    }
+
+    /**
+     * @see GraphRenderer#renderStraightEdge(org.gephi.preview.api.Edge)
+     */
+    public void renderStraightEdge(Edge edge) {
+        PVector boundary1 = edge.getNode1().getPosition();
+        PVector boundary2 = edge.getNode2().getPosition();
+
+        line(boundary1.x, boundary1.y, boundary2.x, boundary2.y);
+
+        if (edge.showArrows()) {
+            renderEdgeArrows(edge);
+        }
+
+        if (edge.showMiniLabels()) {
+            renderEdgeMiniLabels(edge);
+        }
+
+        if (edge.showLabel() && edge.hasLabel()) {
+            renderEdgeLabel(edge.getLabel());
+        }
+    }
+
+    /**
+     * @see GraphRenderer#renderCurvedEdge(org.gephi.preview.api.Edge)
+     */
+    public void renderCurvedEdge(Edge edge) {
         for (CubicBezierCurve curve : edge.getCurves()) {
-            // draw curve
             bezier(curve.getPt1().x, curve.getPt1().y,
                     curve.getPt2().x, curve.getPt2().y,
                     curve.getPt3().x, curve.getPt3().y,
@@ -342,11 +363,9 @@ public class ProcessingPreview extends PApplet {
     }
 
     /**
-     * Draws an edge arrow on the preview.
-     *
-     * @param edge  the edge arrow edge to draw
+     * @see GraphRenderer#renderEdgeArrow(org.gephi.preview.api.EdgeArrow)
      */
-    public void drawEdgeArrow(EdgeArrow arrow) {
+    public void renderEdgeArrow(EdgeArrow arrow) {
         fill(arrow.getColor().getRed(),
                 arrow.getColor().getGreen(),
                 arrow.getColor().getBlue());
@@ -356,11 +375,12 @@ public class ProcessingPreview extends PApplet {
     }
 
     /**
-     * Draws an edge label on the preview.
-     *
-     * @param edge  the edge label edge to draw
+     * @see GraphRenderer#renderEdgeLabel(org.gephi.preview.api.EdgeLabel)
      */
-    public void drawEdgeLabel(EdgeLabel label) {
+    public void renderEdgeLabel(EdgeLabel label) {
+        textFont(edgeLabelFont);
+        textAlign(CENTER, BASELINE);
+
         pushMatrix();
         fill(label.getColor().getRed(),
                 label.getColor().getGreen(),
@@ -372,11 +392,9 @@ public class ProcessingPreview extends PApplet {
     }
 
     /**
-     * Draws an edge mini-label on the preview.
-     *
-     * @param edge  the edge mini-label edge to draw
+     * @see GraphRenderer#renderEdgeMiniLabel(org.gephi.preview.api.EdgeMiniLabel)
      */
-    public void drawEdgeMiniLabel(EdgeMiniLabel miniLabel) {
+    public void renderEdgeMiniLabel(EdgeMiniLabel miniLabel) {
         pushMatrix();
         fill(miniLabel.getColor().getRed(),
                 miniLabel.getColor().getGreen(),
