@@ -34,7 +34,7 @@ public class PreviewGraphFactory {
                 continue;
             }
 
-            createPreviewUnidirectionalEdge(previewGraph, sourceEdge);
+            createPreviewUndirectedEdge(previewGraph, sourceEdge);
         }
 
         // clears the node map
@@ -109,7 +109,7 @@ public class PreviewGraphFactory {
                     createPreviewUnidirectionalEdge(previewGraph, sourceEdge);
                 }
             } else {
-                createPreviewUnidirectionalEdge(previewGraph, sourceEdge);
+                createPreviewUndirectedEdge(previewGraph, sourceEdge);
             }
         }
 
@@ -207,6 +207,28 @@ public class PreviewGraphFactory {
                 sourceEdgeData.getLabel());
 
         previewGraph.addBidirectionalEdge(previewEdge);
+
+        return previewEdge;
+    }
+
+    /**
+     * Creates a preview undirected edge from the given source edge.
+     *
+     * @param previewGraph  the parent preview graph
+     * @param sourceEdge    the source edge
+     * @return              the generated preview undirected edge
+     */
+    private UndirectedEdgeImpl createPreviewUndirectedEdge(GraphImpl previewGraph, org.gephi.graph.api.Edge sourceEdge) {
+        org.gephi.graph.api.EdgeData sourceEdgeData = sourceEdge.getEdgeData();
+
+        UndirectedEdgeImpl previewEdge = new UndirectedEdgeImpl(
+                previewGraph,
+                sourceEdgeData.getSize(),
+                nodeMap.get(sourceEdge.getSource().getId()),
+                nodeMap.get(sourceEdge.getTarget().getId()),
+                sourceEdgeData.getLabel());
+
+        previewGraph.addUndirectedEdge(previewEdge);
 
         return previewEdge;
     }

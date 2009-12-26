@@ -36,6 +36,13 @@ public interface Graph {
     public Iterable<BidirectionalEdge> getBidirectionalEdges();
 
     /**
+     * Returns an iterable on the graph's undirected edges.
+     *
+     * @return an iterable on the graph's undirected edges
+     */
+    public Iterable<UndirectedEdge> getUndirectedEdges();
+
+    /**
      * Returns the number of nodes in the graph.
      *
      * @return the number of nodes in the graph
@@ -62,6 +69,13 @@ public interface Graph {
      * @return the number of bidirectional edges in the graph
      */
     public int countBidirectionalEdges();
+
+    /**
+     * Returns the number of undirected edges in the graph.
+     *
+     * @return the number of undirected edges in the graph
+     */
+    public int countUndirectedEdges();
 
     /**
      * Returns true if the nodes must be displayed in the preview.

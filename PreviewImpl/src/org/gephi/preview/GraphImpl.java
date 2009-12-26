@@ -6,6 +6,7 @@ import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.Node;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.SelfLoop;
+import org.gephi.preview.api.UndirectedEdge;
 import org.gephi.preview.api.UnidirectionalEdge;
 import org.openide.util.Lookup;
 
@@ -20,6 +21,7 @@ public class GraphImpl implements Graph {
     private final ArrayList<SelfLoop> selfLoops = new ArrayList<SelfLoop>();
     private final ArrayList<UnidirectionalEdge> uniEdges = new ArrayList<UnidirectionalEdge>();
     private final ArrayList<BidirectionalEdge> biEdges = new ArrayList<BidirectionalEdge>();
+    private final ArrayList<UndirectedEdge> undirectedEdges = new ArrayList<UndirectedEdge>();
 
     public Iterable<Node> getNodes() {
         return nodes;
@@ -37,6 +39,10 @@ public class GraphImpl implements Graph {
         return biEdges;
     }
 
+    public Iterable<UndirectedEdge> getUndirectedEdges() {
+        return undirectedEdges;
+    }
+
     public int countNodes() {
         return nodes.size();
     }
@@ -51,6 +57,10 @@ public class GraphImpl implements Graph {
 
     public int countBidirectionalEdges() {
         return biEdges.size();
+    }
+
+    public int countUndirectedEdges() {
+        return undirectedEdges.size();
     }
 
     /**
@@ -87,6 +97,15 @@ public class GraphImpl implements Graph {
      */
     public void addBidirectionalEdge(BidirectionalEdge edge) {
         biEdges.add(edge);
+    }
+
+    /**
+     * Adds the given undirected edge to the graph.
+     *
+     * @param edge  the undirected edge to add to the graph
+     */
+    public void addUndirectedEdge(UndirectedEdge edge) {
+        undirectedEdges.add(edge);
     }
 
     public Boolean showNodes() {

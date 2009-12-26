@@ -41,6 +41,7 @@ public class PreviewNode extends AbstractNode {
         NodeSupervisor ns = controller.getNodeSupervisor();
         GlobalEdgeSupervisor ges = controller.getGlobalEdgeSupervisor();
         SelfLoopSupervisor sls = controller.getSelfLoopSupervisor();
+        EdgeSupervisor unes = controller.getUndirectedEdgeSupervisor();
         EdgeSupervisor ues = controller.getUniEdgeSupervisor();
         EdgeSupervisor bes = controller.getBiEdgeSupervisor();
 
@@ -55,6 +56,10 @@ public class PreviewNode extends AbstractNode {
         Sheet.Set selfLoopSet = Sheet.createPropertiesSet();
         selfLoopSet.setDisplayName("Self-Loop Global Settings");
         selfLoopSet.setName("selfLoops");
+
+        Sheet.Set undirectedEdgeSet = Sheet.createPropertiesSet();
+        undirectedEdgeSet.setDisplayName("Undirected Edge Settings");
+        undirectedEdgeSet.setName("undirectedEdges");
 
         Sheet.Set uniEdgeSet = Sheet.createPropertiesSet();
         uniEdgeSet.setDisplayName("Unidirectional Edge Settings");
@@ -83,7 +88,17 @@ public class PreviewNode extends AbstractNode {
 
             selfLoopSet.put(new Property[]{
                         createProperty(sls, Boolean.class, "showFlag", "showSelfLoops", "Show Self-Loops"),
-                        createProperty(sls, EdgeColorizer.class, "colorizer", "selfLoopColor", "Self-Loop Color", EdgeColorizerPropertyEditor.class),});
+                        createProperty(sls, EdgeColorizer.class, "colorizer", "selfLoopColor", "Self-Loop Color", EdgeColorizerPropertyEditor.class)
+                    });
+
+            undirectedEdgeSet.put(new Property[]{
+                        createProperty(unes, Boolean.class, "curvedFlag", "curvedUniEdges", "Curved Bi. Edges"),
+                        createProperty(unes, EdgeColorizer.class, "colorizer", "uniEdgeColor", "Bi. Edge Color", EdgeColorizerPropertyEditor.class),
+                        createProperty(unes, Boolean.class, "showLabelsFlag", "showUniEdgeLabels", "Show Bi. Edge Labels"),
+                        createProperty(unes, Integer.class, "labelMaxChar", "uniEdgeLabelMaxChar", "Bi. Edge Label Char Limit"),
+                        createProperty(unes, Font.class, "labelFont", "uniEdgeLabelFont", "Bi. Edge Label Font"),
+                        createProperty(unes, EdgeChildColorizer.class, "labelColorizer", "uniEdgeLabelColor", "Bi. Edge Label Color", EdgeChildColorizerPropertyEditor.class)
+                    });
 
             uniEdgeSet.put(new Property[]{
                         createProperty(ues, Boolean.class, "curvedFlag", "curvedUniEdges", "Curved Uni. Edges"),
@@ -129,6 +144,7 @@ public class PreviewNode extends AbstractNode {
         sheet.put(nodeSet);
         sheet.put(edgeSet);
         sheet.put(selfLoopSet);
+        sheet.put(undirectedEdgeSet);
         sheet.put(uniEdgeSet);
         sheet.put(biEdgeSet);
 

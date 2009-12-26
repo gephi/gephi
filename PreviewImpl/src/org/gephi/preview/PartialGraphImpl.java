@@ -7,6 +7,7 @@ import org.gephi.preview.api.BidirectionalEdge;
 import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.Node;
 import org.gephi.preview.api.SelfLoop;
+import org.gephi.preview.api.UndirectedEdge;
 import org.gephi.preview.api.UnidirectionalEdge;
 
 /**
@@ -21,6 +22,7 @@ public class PartialGraphImpl implements Graph {
     private final Set<SelfLoop> visibleSelfLoops = new HashSet<SelfLoop>();
     private final Set<UnidirectionalEdge> visibleUnidirectionalEdges = new HashSet<UnidirectionalEdge>();
     private final Set<BidirectionalEdge> visibleBidirectionalEdges = new HashSet<BidirectionalEdge>();
+    private final Set<UndirectedEdge> visibleUndirectedEdges = new HashSet<UndirectedEdge>();
     private final Graph originalGraph;
 
     /**
@@ -94,6 +96,16 @@ public class PartialGraphImpl implements Graph {
     }
 
     /**
+     * Returns an iterable on the graph's visible undirected edges.
+     *
+     * @return an iterable on the graph's visible undirected edges
+     * @see Graph#getUndirectedEdges()
+     */
+    public Iterable<UndirectedEdge> getUndirectedEdges() {
+        return visibleUndirectedEdges;
+    }
+
+    /**
      * Returns the number of visible nodes in the graph.
      *
      * @return the number of visible nodes in the graph
@@ -133,6 +145,16 @@ public class PartialGraphImpl implements Graph {
         return visibleBidirectionalEdges.size();
     }
 
+    /**
+     * Returns the number of visible undirected edges in the graph.
+     *
+     * @return the number of visible undirected edges in the graph
+     * @see Graph#countUndirectedEdges()
+     */
+    public int countUndirectedEdges() {
+        return visibleUndirectedEdges.size();
+    }
+
     public Boolean showNodes() {
         return originalGraph.showNodes();
     }
@@ -153,6 +175,7 @@ public class PartialGraphImpl implements Graph {
         updateVisibleSelfLoops();
         updateVisibleUnidirectionalEdges();
         updateVisibleBidirectionalEdges();
+        updateVisibleUndirectedEdges();
     }
 
     /**
@@ -208,6 +231,19 @@ public class PartialGraphImpl implements Graph {
         for (BidirectionalEdge be : originalGraph.getBidirectionalEdges()) {
             if (visibleNodes.contains(be.getNode1()) && visibleNodes.contains(be.getNode2())) {
                 visibleBidirectionalEdges.add(be);
+            }
+        }
+    }
+
+    /**
+     * Updates the list of visible undirected edges.
+     */
+    private void updateVisibleUndirectedEdges() {
+        visibleUndirectedEdges.clear();
+
+        for (UndirectedEdge e : originalGraph.getUndirectedEdges()) {
+            if (visibleNodes.contains(e.getNode1()) && visibleNodes.contains(e.getNode2())) {
+                visibleUndirectedEdges.add(e);
             }
         }
     }

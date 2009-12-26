@@ -11,11 +11,13 @@ import org.gephi.preview.api.supervisors.DirectedEdgeSupervisor;
 import org.gephi.preview.api.supervisors.GlobalEdgeSupervisor;
 import org.gephi.preview.api.supervisors.NodeSupervisor;
 import org.gephi.preview.api.supervisors.SelfLoopSupervisor;
+import org.gephi.preview.api.supervisors.UndirectedEdgeSupervisor;
 import org.gephi.preview.supervisors.BidirectionalEdgeSupervisorImpl;
 import org.gephi.preview.supervisors.DirectedEdgeSupervisorImpl;
 import org.gephi.preview.supervisors.GlobalEdgeSupervisorImpl;
 import org.gephi.preview.supervisors.NodeSupervisorImpl;
 import org.gephi.preview.supervisors.SelfLoopSupervisorImpl;
+import org.gephi.preview.supervisors.UndirectedEdgeSupervisorImpl;
 import org.gephi.preview.supervisors.UnidirectionalEdgeSupervisorImpl;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
@@ -42,6 +44,7 @@ public class PreviewControllerImpl implements PreviewController, GraphListener {
     private final SelfLoopSupervisorImpl selfLoopSupervisor = new SelfLoopSupervisorImpl();
     private final DirectedEdgeSupervisorImpl uniEdgeSupervisor = new UnidirectionalEdgeSupervisorImpl();
     private final DirectedEdgeSupervisorImpl biEdgeSupervisor = new BidirectionalEdgeSupervisorImpl();
+    private final UndirectedEdgeSupervisorImpl undirectedEdgeSupervisor = new UndirectedEdgeSupervisorImpl();
     private final PreviewGraphFactory factory = new PreviewGraphFactory();
 
     /**
@@ -179,6 +182,10 @@ public class PreviewControllerImpl implements PreviewController, GraphListener {
 
     public DirectedEdgeSupervisor getBiEdgeSupervisor() {
         return biEdgeSupervisor;
+    }
+
+    public UndirectedEdgeSupervisor getUndirectedEdgeSupervisor() {
+        return undirectedEdgeSupervisor;
     }
 
     /**
