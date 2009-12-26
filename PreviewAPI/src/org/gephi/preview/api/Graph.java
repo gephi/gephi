@@ -40,28 +40,28 @@ public interface Graph {
      *
      * @return the number of nodes in the graph
      */
-    public float countNodes();
-
-    /**
-     * Returns the number of unidirectional edges in the graph.
-     *
-     * @return the number of unidirectional edges in the graph
-     */
-    public float countUnidirectionalEdges();
-
-    /**
-     * Returns the number of bidirectional edges in the graph.
-     *
-     * @return the number of bidirectional edges in the graph
-     */
-    public float countBidirectionalEdges();
+    public int countNodes();
 
     /**
      * Returns the number of self-loops in the graph.
      *
      * @return the number of self-loops in the graph
      */
-    public float countSelfLoops();
+    public int countSelfLoops();
+
+    /**
+     * Returns the number of unidirectional edges in the graph.
+     *
+     * @return the number of unidirectional edges in the graph
+     */
+    public int countUnidirectionalEdges();
+
+    /**
+     * Returns the number of bidirectional edges in the graph.
+     *
+     * @return the number of bidirectional edges in the graph
+     */
+    public int countBidirectionalEdges();
 
     /**
      * Returns true if the nodes must be displayed in the preview.

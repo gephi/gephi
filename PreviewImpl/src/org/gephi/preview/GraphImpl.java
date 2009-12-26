@@ -21,60 +21,36 @@ public class GraphImpl implements Graph {
     private final ArrayList<UnidirectionalEdge> uniEdges = new ArrayList<UnidirectionalEdge>();
     private final ArrayList<BidirectionalEdge> biEdges = new ArrayList<BidirectionalEdge>();
 
-    /**
-     * @see Graph#getNodes()
-     */
     public Iterable<Node> getNodes() {
         return nodes;
     }
 
-    /**
-     * @see Graph#getSelfLoops()
-     */
     public Iterable<SelfLoop> getSelfLoops() {
         return selfLoops;
     }
 
-    /**
-     * @see Graph#getUnidirectionalEdges()
-     */
     public Iterable<UnidirectionalEdge> getUnidirectionalEdges() {
         return uniEdges;
     }
 
-    /**
-     * @see Graph#getBidirectionalEdges()
-     */
     public Iterable<BidirectionalEdge> getBidirectionalEdges() {
         return biEdges;
     }
 
-    /**
-     * @see Graph#countNodes()
-     */
-    public float countNodes() {
+    public int countNodes() {
         return nodes.size();
     }
 
-    /**
-     * @see Graph#countUnidirectionalEdges()
-     */
-    public float countUnidirectionalEdges() {
+    public int countSelfLoops() {
+        return selfLoops.size();
+    }
+
+    public int countUnidirectionalEdges() {
         return uniEdges.size();
     }
 
-    /**
-     * @see Graph#countBidirectionalEdges()
-     */
-    public float countBidirectionalEdges() {
+    public int countBidirectionalEdges() {
         return biEdges.size();
-    }
-
-    /**
-     * @see Graph#countSelfLoops()
-     */
-    public float countSelfLoops() {
-        return selfLoops.size();
     }
 
     /**
@@ -113,25 +89,16 @@ public class GraphImpl implements Graph {
         biEdges.add(edge);
     }
 
-    /**
-     * @see Graph#showNodes()
-     */
     public Boolean showNodes() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
         return controller.getNodeSupervisor().getShowNodes();
     }
 
-    /**
-     * @see Graph#showEdges()
-     */
     public Boolean showEdges() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
         return controller.getGlobalEdgeSupervisor().getShowFlag();
     }
 
-    /**
-     * @see Graph#showSelfLoops()
-     */
     public Boolean showSelfLoops() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
         return controller.getSelfLoopSupervisor().getShowFlag();
