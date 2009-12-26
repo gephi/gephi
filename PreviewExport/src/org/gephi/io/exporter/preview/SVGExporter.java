@@ -37,6 +37,7 @@ import org.gephi.preview.api.NodeLabel;
 import org.gephi.preview.api.NodeLabelBorder;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.SelfLoop;
+import org.gephi.preview.api.UndirectedEdge;
 import org.gephi.preview.api.UnidirectionalEdge;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -145,12 +146,19 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
 
         renderGraphUnidirectionalEdges(graph);
         renderGraphBidirectionalEdges(graph);
+        renderGraphUndirectedEdges(graph);
 
         if (graph.showSelfLoops()) {
             renderGraphSelfLoops(graph);
         }
 
         popParentElement();
+    }
+
+    public void renderGraphSelfLoops(Graph graph) {
+        for (SelfLoop sl : graph.getSelfLoops()) {
+            renderSelfLoop(sl);
+        }
     }
 
     public void renderGraphUnidirectionalEdges(Graph graph) {
@@ -181,9 +189,9 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         }
     }
 
-    public void renderGraphSelfLoops(Graph graph) {
-        for (SelfLoop sl : graph.getSelfLoops()) {
-            renderSelfLoop(sl);
+    public void renderGraphUndirectedEdges(Graph graph) {
+        for (UndirectedEdge e : graph.getUndirectedEdges()) {
+            renderEdge(e);
         }
     }
 

@@ -22,6 +22,13 @@ public interface GraphRenderer {
     public void renderGraphEdges(Graph graph);
 
     /**
+     * Renders the self-loops of the given preview graph.
+     *
+     * @param graph  the graph to render the self-loops
+     */
+    public void renderGraphSelfLoops(Graph graph);
+
+    /**
      * Renders the unidirectional edges of the given preview graph.
      *
      * @param graph  the graph to render the unidirectional edges
@@ -36,11 +43,11 @@ public interface GraphRenderer {
     public void renderGraphBidirectionalEdges(Graph graph);
 
     /**
-     * Renders the self-loops of the given preview graph.
+     * Renders the undirected edges of the given preview graph.
      *
-     * @param graph  the graph to render the self-loops
+     * @param graph  the graph to render the undirected edges
      */
-    public void renderGraphSelfLoops(Graph graph);
+    public void renderGraphUndirectedEdges(Graph graph);
 
     /**
      * Renders the nodes of the given preview graph.

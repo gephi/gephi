@@ -168,9 +168,16 @@ public class ProcessingPreview extends PApplet
     public void renderGraphEdges(Graph graph) {
         renderGraphUnidirectionalEdges(graph);
         renderGraphBidirectionalEdges(graph);
+        renderGraphUndirectedEdges(graph);
 
         if (graph.showSelfLoops()) {
             renderGraphSelfLoops(graph);
+        }
+    }
+
+    public void renderGraphSelfLoops(Graph graph) {
+        for (SelfLoop sl : graph.getSelfLoops()) {
+            renderSelfLoop(sl);
         }
     }
 
@@ -208,9 +215,9 @@ public class ProcessingPreview extends PApplet
         }
     }
 
-    public void renderGraphSelfLoops(Graph graph) {
-        for (SelfLoop sl : graph.getSelfLoops()) {
-            renderSelfLoop(sl);
+    public void renderGraphUndirectedEdges(Graph graph) {
+        for (UndirectedEdge e : graph.getUndirectedEdges()) {
+            renderEdge(e);
         }
     }
 
