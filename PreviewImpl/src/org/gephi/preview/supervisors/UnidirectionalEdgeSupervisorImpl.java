@@ -9,7 +9,7 @@ import org.gephi.preview.updaters.ParentColorMode;
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
-public class UnidirectionalEdgeSupervisorImpl extends EdgeSupervisorImpl {
+public class UnidirectionalEdgeSupervisorImpl extends DirectedEdgeSupervisorImpl {
 
     /**
      * Constructor.

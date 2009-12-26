@@ -1,16 +1,11 @@
 package org.gephi.preview.supervisors;
 
 import java.awt.Font;
-import java.util.HashSet;
 import java.util.Set;
-import org.gephi.preview.EdgeArrowImpl;
 import org.gephi.preview.EdgeImpl;
 import org.gephi.preview.EdgeLabelImpl;
-import org.gephi.preview.EdgeMiniLabelImpl;
-import org.gephi.preview.api.EdgeArrow;
 import org.gephi.preview.api.EdgeChildColorizer;
 import org.gephi.preview.api.EdgeColorizer;
-import org.gephi.preview.api.EdgeMiniLabel;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.supervisors.EdgeSupervisor;
 import org.gephi.preview.api.supervisors.GlobalEdgeSupervisor;
@@ -30,16 +25,6 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
     protected Integer labelMaxChar;
     protected Font labelFont;
     protected EdgeChildColorizer labelColorizer;
-    protected Boolean showMiniLabelsFlag;
-    protected Integer miniLabelMaxChar;
-    protected Font miniLabelFont;
-    protected Float miniLabelAddedRadius;
-    protected EdgeChildColorizer miniLabelColorizer;
-    protected Boolean showArrowsFlag;
-    protected Float arrowAddedRadius;
-    protected Float arrowSize;
-    protected EdgeChildColorizer arrowColorizer;
-    protected Set<EdgeImpl> supervisedEdges = new HashSet<EdgeImpl>();
 
     /**
      * Adds the given edge to the list of the supervised edges.
@@ -49,22 +34,17 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
      * @param edge  the edge to supervise
      */
     public void addEdge(EdgeImpl edge) {
-        supervisedEdges.add(edge);
+        getSupervisedEdges().add(edge);
         colorEdge(edge);
         colorEdgeLabel(edge);
         shortenEdgeLabel(edge);
-        positionEdgeMiniLabels(edge);
-        colorEdgeMiniLabels(edge);
-        shortenEdgeMiniLabels(edge);
-        positionEdgeArrows(edge);
-        colorEdgeArrows(edge);
     }
 
     /**
      * Clears the list of supervised edges.
      */
     public void clearSupervised() {
-        supervisedEdges.clear();
+        getSupervisedEdges().clear();
     }
 
     /**
@@ -198,172 +178,11 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
     }
 
     /**
-     * Returns true if the edge mini-labels must be displayed in the preview.
+     * Returns the set of the supervised edges.
      *
-     * @return true if the edge mini-labels must be displayed in the preview.
+     * @return the set of the supervised edges
      */
-    public Boolean getShowMiniLabelsFlag() {
-        return showMiniLabelsFlag;
-    }
-
-    /**
-     * Defines if the edge mini-labels must be displayed in the preview.
-     *
-     * @param value  true to display the edge mini-labels in the preview
-     */
-    public void setShowMiniLabelsFlag(Boolean value) {
-        showMiniLabelsFlag = value;
-    }
-
-    /**
-     * Returns the edge mini-label font.
-     *
-     * @return the edge mini-label font
-     */
-    public Font getMiniLabelFont() {
-        return miniLabelFont;
-    }
-
-    /**
-     * Defines the edge mini-label font.
-     *
-     * @param value  the edge mini-label font to set
-     */
-    public void setMiniLabelFont(Font value) {
-        miniLabelFont = value;
-    }
-
-    /**
-     * Returns the edge mini-label character limit.
-     *
-     * @return the edge mini-label character limit
-     */
-    public Integer getMiniLabelMaxChar() {
-        return miniLabelMaxChar;
-    }
-
-    /**
-     * Defines the edge mini-label character limit.
-     *
-     * @param value  the edge mini-label character limit
-     */
-    public void setMiniLabelMaxChar(Integer value) {
-        miniLabelMaxChar = value;
-        shortenEdgeMiniLabels();
-    }
-
-    /**
-     * Returns the edge mini-label added radius.
-     *
-     * @return the edge mini-label added radius
-     */
-    public Float getMiniLabelAddedRadius() {
-        return miniLabelAddedRadius;
-    }
-
-    /**
-     * Defines the edge mini-label added radius.
-     *
-     * @param value  the edge mini-label added radius to set
-     */
-    public void setMiniLabelAddedRadius(Float value) {
-        miniLabelAddedRadius = value;
-        positionEdgeMiniLabels();
-    }
-
-    /**
-     * Returns the edge mini-label colorizer.
-     *
-     * @return the edge mini-label colorizer
-     */
-    public EdgeChildColorizer getMiniLabelColorizer() {
-        return miniLabelColorizer;
-    }
-
-    /**
-     * Defines the edge mini-label colorizer.
-     *
-     * @param value  the edge mini-label colorizer to set
-     */
-    public void setMiniLabelColorizer(EdgeChildColorizer value) {
-        miniLabelColorizer = value;
-        colorEdgeMiniLabels();
-    }
-
-    /**
-     * Returns true if the edge arrows must be displayed in the preview.
-     *
-     * @return true if the edge arrows must be displayed in the preview
-     */
-    public Boolean getShowArrowsFlag() {
-        return showArrowsFlag;
-    }
-
-    /**
-     * Defines if the edge arrows must be displayed in the preview.
-     *
-     * @param value  true to display the edge arrows in the preview
-     */
-    public void setShowArrowsFlag(Boolean value) {
-        showArrowsFlag = value;
-    }
-
-    /**
-     * Returns the edge arrow added radius.
-     *
-     * @return the edge arrow added radius
-     */
-    public Float getArrowAddedRadius() {
-        return arrowAddedRadius;
-    }
-
-    /**
-     * Defines the edge arrow added radius.
-     *
-     * @param value  the edge arrow added radius to set
-     */
-    public void setArrowAddedRadius(Float value) {
-        arrowAddedRadius = value;
-        positionEdgeArrows();
-    }
-
-    /**
-     * Returns the edge arrow size.
-     *
-     * @return the edge arrow size
-     */
-    public Float getArrowSize() {
-        return arrowSize;
-    }
-
-    /**
-     * Defines the edge arrow size.
-     *
-     * @param value  the edge arrow size to set
-     */
-    public void setArrowSize(Float value) {
-        arrowSize = value;
-        positionEdgeArrows();
-    }
-
-    /**
-     * Returns the edge arrow colorizer.
-     *
-     * @return the edge arrow colorizer
-     */
-    public EdgeChildColorizer getArrowColorizer() {
-        return arrowColorizer;
-    }
-
-    /**
-     * Defines the edge arrow colorizer.
-     *
-     * @param value  the edge arrow colorizer to set
-     */
-    public void setArrowColorizer(EdgeChildColorizer value) {
-        arrowColorizer = value;
-        colorEdgeArrows();
-    }
+    protected abstract Set<EdgeImpl> getSupervisedEdges();
 
     /**
      * Colors the given edge.
@@ -378,7 +197,7 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
      * Colors the supervised edges.
      */
     private void colorEdges() {
-        for (EdgeImpl e : supervisedEdges) {
+        for (EdgeImpl e : getSupervisedEdges()) {
             colorEdge(e);
         }
     }
@@ -407,7 +226,7 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
      * Colors the labels of the supervised edges.
      */
     private void colorEdgeLabels() {
-        for (EdgeImpl e : supervisedEdges) {
+        for (EdgeImpl e : getSupervisedEdges()) {
             colorEdgeLabel(e);
         }
     }
@@ -436,153 +255,8 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
      * Shortens the labels of the supervised edges.
      */
     private void shortenEdgeLabels() {
-        for (EdgeImpl e : supervisedEdges) {
+        for (EdgeImpl e : getSupervisedEdges()) {
             shortenEdgeLabel(e);
-        }
-    }
-
-    /**
-     * Generates the position of the given edge mini-label.
-     *
-     * @param edgeMiniLabel  the edge mini-label to position
-     */
-    private void positionEdgeMiniLabel(EdgeMiniLabelImpl edgeMiniLabel) {
-        edgeMiniLabel.genPosition();
-    }
-
-    /**
-     * Generates the position of the given edge's mini-labels.
-     *
-     * @param edge  the edge to position the mini-labels
-     */
-    private void positionEdgeMiniLabels(EdgeImpl edge) {
-        for (EdgeMiniLabel ml : edge.getMiniLabels()) {
-            positionEdgeMiniLabel((EdgeMiniLabelImpl) ml);
-        }
-    }
-
-    /**
-     * Generates the position of the supervised edges's mini-labels.
-     */
-    private void positionEdgeMiniLabels() {
-        for (EdgeImpl e : supervisedEdges) {
-            positionEdgeMiniLabels(e);
-        }
-    }
-
-    /**
-     * Colors the given edge mini-label.
-     *
-     * @param edgeMiniLabel  the edge mini-label to color
-     */
-    private void colorEdgeMiniLabel(EdgeMiniLabelImpl edgeMiniLabel) {
-        miniLabelColorizer.color(edgeMiniLabel);
-    }
-
-    /**
-     * Colors the mini-labels of the given edge.
-     *
-     * @param edge  the edge to color the mini-labels
-     */
-    private void colorEdgeMiniLabels(EdgeImpl edge) {
-        for (EdgeMiniLabel ml : edge.getMiniLabels()) {
-            colorEdgeMiniLabel((EdgeMiniLabelImpl) ml);
-        }
-    }
-
-    /**
-     * Colors the mini-labels of the supervised edges.
-     */
-    private void colorEdgeMiniLabels() {
-        for (EdgeImpl e : supervisedEdges) {
-            colorEdgeMiniLabels(e);
-        }
-    }
-
-    /**
-     * Shortens the given edge mini-label.
-     *
-     * @param edgeMiniLabel  the edge mini-label to color
-     */
-    private void shortenEdgeMiniLabel(EdgeMiniLabelImpl edgeMiniLabel) {
-        LabelShortener.shortenLabel(edgeMiniLabel, miniLabelMaxChar);
-    }
-
-    /**
-     * Shortens the mini-labels of the given edge.
-     *
-     * @param edge  the edge to shorten the mini-labels
-     */
-    private void shortenEdgeMiniLabels(EdgeImpl edge) {
-        for (EdgeMiniLabel ml : edge.getMiniLabels()) {
-            shortenEdgeMiniLabel((EdgeMiniLabelImpl) ml);
-        }
-    }
-
-    /**
-     * Shortens the mini-labels of the supervised edges.
-     */
-    private void shortenEdgeMiniLabels() {
-        for (EdgeImpl e : supervisedEdges) {
-            shortenEdgeMiniLabels(e);
-        }
-    }
-
-    /**
-     * Generates the position of the given edge arrow.
-     *
-     * @param edgeArrow  the edge arrow to position
-     */
-    private void positionEdgeArrow(EdgeArrowImpl edgeArrow) {
-        edgeArrow.genPosition();
-    }
-
-    /**
-     * Generates the position of the given edge's arrows.
-     *
-     * @param edge  the edge to position the arrows
-     */
-    private void positionEdgeArrows(EdgeImpl edge) {
-        for (EdgeArrow a : edge.getArrows()) {
-            positionEdgeArrow((EdgeArrowImpl) a);
-        }
-    }
-
-    /**
-     * Generates the position of the supervised edges's arrows.
-     */
-    private void positionEdgeArrows() {
-        for (EdgeImpl e : supervisedEdges) {
-            positionEdgeArrows(e);
-        }
-    }
-
-    /**
-     * Colors the given edge arrow.
-     *
-     * @param edgeArrow  the edge arrow to color
-     */
-    private void colorEdgeArrow(EdgeArrowImpl edgeArrow) {
-        arrowColorizer.color(edgeArrow);
-    }
-
-    /**
-     * Colors the arrows of the given edge.
-     *
-     * @param edge  the edge to color the arrows
-     */
-    private void colorEdgeArrows(EdgeImpl edge) {
-        for (EdgeArrow a : edge.getArrows()) {
-            colorEdgeArrow((EdgeArrowImpl) a);
-        }
-    }
-
-    /**
-     * Colors the arrows of the supervised edges.
-     */
-    private void colorEdgeArrows() {
-        for (EdgeImpl e : supervisedEdges) {
-            colorEdgeArrows(e);
         }
     }
 }

@@ -5,6 +5,6 @@ package org.gephi.preview.api;
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
-public interface UnidirectionalEdge extends Edge {
+public interface UnidirectionalEdge extends DirectedEdge {
 
 }

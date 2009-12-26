@@ -1,8 +1,12 @@
 package org.gephi.preview;
 
 import java.awt.Font;
+import org.gephi.preview.api.Color;
+import org.gephi.preview.api.EdgeColorizerClient;
 import org.gephi.preview.api.EdgeMiniLabel;
+import org.gephi.preview.api.supervisors.DirectedEdgeSupervisor;
 import org.gephi.preview.api.util.HAlign;
+import org.gephi.preview.api.util.Holder;
 
 /**
  * Implementation of an edge mini-label.
@@ -12,6 +16,7 @@ import org.gephi.preview.api.util.HAlign;
 public abstract class EdgeMiniLabelImpl extends AbstractEdgeLabel
         implements EdgeMiniLabel {
 
+    protected final DirectedEdgeImpl parent;
     protected HAlign hAlign;
 
     /**
@@ -20,8 +25,18 @@ public abstract class EdgeMiniLabelImpl extends AbstractEdgeLabel
      * @param parent  the parent edge of the edge label
      * @param value   the value of the edge label
      */
-    public EdgeMiniLabelImpl(EdgeImpl parent, String value) {
-        super(parent, value);
+    public EdgeMiniLabelImpl(DirectedEdgeImpl parent, String value) {
+        super(value);
+        this.parent = parent;
+    }
+
+    /**
+     * Returns the directed edge supervisor.
+     *
+     * @return the directed edge supervisor
+     */
+    public DirectedEdgeSupervisor getDirectedEdgeSupervisor() {
+        return ((DirectedEdgeImpl) parent).getDirectedEdgeSupervisor();
     }
 
     /**
@@ -29,17 +44,23 @@ public abstract class EdgeMiniLabelImpl extends AbstractEdgeLabel
      */
     public abstract void genPosition();
 
-    /**
-     * @see EdgeMiniLabel#getHAlign()
-     */
     public HAlign getHAlign() {
         return hAlign;
     }
 
-    /**
-     * @see EdgeMiniLabel#getFont()
-     */
     public Font getFont() {
         return parent.getMiniLabelFont();
+    }
+
+    public Float getAngle() {
+        return parent.getAngle();
+    }
+
+    public EdgeColorizerClient getParentEdge() {
+        return parent;
+    }
+
+    public Holder<Color> getParentColorHolder() {
+        return parent.getColorHolder();
     }
 }

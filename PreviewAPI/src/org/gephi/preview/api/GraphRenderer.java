@@ -103,14 +103,14 @@ public interface GraphRenderer {
      *
      * @param edge  the edge to render the arrows
      */
-    public void renderEdgeArrows(Edge edge);
+    public void renderEdgeArrows(DirectedEdge edge);
 
     /**
      * Renders the mini-labels of the given preview edge.
      *
      * @param edge  the edge to render the mini-labels
      */
-    public void renderEdgeMiniLabels(Edge edge);
+    public void renderEdgeMiniLabels(DirectedEdge edge);
 
     /**
      * Renders the given preview edge arrow.

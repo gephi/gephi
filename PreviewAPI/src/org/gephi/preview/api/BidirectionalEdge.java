@@ -5,6 +5,6 @@ package org.gephi.preview.api;
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
-public interface BidirectionalEdge extends Edge {
+public interface BidirectionalEdge extends DirectedEdge {
 
 }

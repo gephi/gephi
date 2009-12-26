@@ -7,12 +7,12 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.GraphSheet;
 import org.gephi.preview.api.PreviewController;
-import org.gephi.preview.api.supervisors.EdgeSupervisor;
+import org.gephi.preview.api.supervisors.DirectedEdgeSupervisor;
 import org.gephi.preview.api.supervisors.GlobalEdgeSupervisor;
 import org.gephi.preview.api.supervisors.NodeSupervisor;
 import org.gephi.preview.api.supervisors.SelfLoopSupervisor;
 import org.gephi.preview.supervisors.BidirectionalEdgeSupervisorImpl;
-import org.gephi.preview.supervisors.EdgeSupervisorImpl;
+import org.gephi.preview.supervisors.DirectedEdgeSupervisorImpl;
 import org.gephi.preview.supervisors.GlobalEdgeSupervisorImpl;
 import org.gephi.preview.supervisors.NodeSupervisorImpl;
 import org.gephi.preview.supervisors.SelfLoopSupervisorImpl;
@@ -40,8 +40,8 @@ public class PreviewControllerImpl implements PreviewController, GraphListener {
     private final NodeSupervisorImpl nodeSupervisor = new NodeSupervisorImpl();
     private final GlobalEdgeSupervisorImpl globalEdgeSupervisor = new GlobalEdgeSupervisorImpl();
     private final SelfLoopSupervisorImpl selfLoopSupervisor = new SelfLoopSupervisorImpl();
-    private final EdgeSupervisorImpl uniEdgeSupervisor = new UnidirectionalEdgeSupervisorImpl();
-    private final EdgeSupervisorImpl biEdgeSupervisor = new BidirectionalEdgeSupervisorImpl();
+    private final DirectedEdgeSupervisorImpl uniEdgeSupervisor = new UnidirectionalEdgeSupervisorImpl();
+    private final DirectedEdgeSupervisorImpl biEdgeSupervisor = new BidirectionalEdgeSupervisorImpl();
     private final PreviewGraphFactory factory = new PreviewGraphFactory();
 
     /**
@@ -122,9 +122,6 @@ public class PreviewControllerImpl implements PreviewController, GraphListener {
         return partialPreviewGraph;
     }
 
-    /**
-     * @see PreviewController#getGraphSheet()
-     */
     public GraphSheet getGraphSheet() {
         if (updateFlag || null == graphSheet || graphSheet.getGraph() != previewGraph) {
             graphSheet = new GraphSheetImpl(getGraph());
@@ -133,9 +130,6 @@ public class PreviewControllerImpl implements PreviewController, GraphListener {
         return graphSheet;
     }
 
-    /**
-     * @see PreviewController#getPartialGraphSheet(float)
-     */
     public GraphSheet getPartialGraphSheet(float visibilityRatio) {
         if (updateFlag || null == partialGraphSheet
                 || ((PartialGraphImpl) partialGraphSheet.getGraph()).getVisibilityRatio() != visibilityRatio) {
@@ -167,48 +161,23 @@ public class PreviewControllerImpl implements PreviewController, GraphListener {
         updateFlag = false;
     }
 
-    /**
-     * Returns the node supervisor.
-     *
-     * @return the controller's node supervisor
-     */
     public NodeSupervisor getNodeSupervisor() {
         return nodeSupervisor;
     }
 
-    /**
-     * Returns the global edge supervisor.
-     *
-     * @return the controller's global edge supervisor
-     */
     public GlobalEdgeSupervisor getGlobalEdgeSupervisor() {
         return globalEdgeSupervisor;
     }
 
-    /**
-     * Returns the self-loop supervisor.
-     *
-     * @return the controller's self-loop supervisor
-     */
     public SelfLoopSupervisor getSelfLoopSupervisor() {
         return selfLoopSupervisor;
     }
 
-    /**
-     * Returns the unidirectional edge supervisor.
-     *
-     * @return the controller's unidirectional edge supervisor
-     */
-    public EdgeSupervisor getUniEdgeSupervisor() {
+    public DirectedEdgeSupervisor getUniEdgeSupervisor() {
         return uniEdgeSupervisor;
     }
 
-    /**
-     * Returns the bidirectional edge supervisor.
-     *
-     * @return the controller's bidirectional edge supervisor
-     */
-    public EdgeSupervisor getBiEdgeSupervisor() {
+    public DirectedEdgeSupervisor getBiEdgeSupervisor() {
         return biEdgeSupervisor;
     }
 

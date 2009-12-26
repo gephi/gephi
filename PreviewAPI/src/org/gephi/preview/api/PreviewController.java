@@ -1,6 +1,6 @@
 package org.gephi.preview.api;
 
-import org.gephi.preview.api.supervisors.EdgeSupervisor;
+import org.gephi.preview.api.supervisors.DirectedEdgeSupervisor;
 import org.gephi.preview.api.supervisors.GlobalEdgeSupervisor;
 import org.gephi.preview.api.supervisors.NodeSupervisor;
 import org.gephi.preview.api.supervisors.SelfLoopSupervisor;
@@ -58,12 +58,12 @@ public interface PreviewController {
      *
      * @return the controller's unidirectional edge supervisor
      */
-    public EdgeSupervisor getUniEdgeSupervisor();
+    public DirectedEdgeSupervisor getUniEdgeSupervisor();
 
     /**
      * Returns the bidirectional edge supervisor.
      *
      * @return the controller's bidirectional edge supervisor
      */
-    public EdgeSupervisor getBiEdgeSupervisor();
+    public DirectedEdgeSupervisor getBiEdgeSupervisor();
 }

@@ -15,7 +15,7 @@ class EdgeMiniLabelB1 extends EdgeMiniLabelImpl {
      *
      * @param parent  the parent edge of the edge label
      */
-    public EdgeMiniLabelB1(EdgeImpl parent) {
+    public EdgeMiniLabelB1(DirectedEdgeImpl parent) {
         super(parent, parent.getNode2().getLabel().getOriginalValue());
         hAlign = HAlign.LEFT;
     }
@@ -32,10 +32,10 @@ class EdgeMiniLabelB1 extends EdgeMiniLabelImpl {
         // add the added radius
         PVector move = PVector.mult(
                 parent.getDirection(),
-                getEdgeSupervisor().getMiniLabelAddedRadius() + n1.getRadius());
+                getDirectedEdgeSupervisor().getMiniLabelAddedRadius() + n1.getRadius());
         position.add(move);
 
         // set label position above the parent edge
-        putPositionAboveEdge();
+        putPositionAboveEdge(parent.getDirection(), parent.getThickness());
     }
 }

@@ -2,7 +2,7 @@ package org.gephi.preview;
 
 import org.gephi.preview.api.BidirectionalEdge;
 import org.gephi.preview.api.PreviewController;
-import org.gephi.preview.supervisors.EdgeSupervisorImpl;
+import org.gephi.preview.supervisors.DirectedEdgeSupervisorImpl;
 import org.openide.util.Lookup;
 import processing.core.PVector;
 
@@ -11,7 +11,7 @@ import processing.core.PVector;
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
-public class BidirectionalEdgeImpl extends EdgeImpl
+public class BidirectionalEdgeImpl extends DirectedEdgeImpl
         implements BidirectionalEdge {
 
    /**
@@ -30,17 +30,13 @@ public class BidirectionalEdgeImpl extends EdgeImpl
         arrows.add(new EdgeArrowB2Out(this));
         arrows.add(new EdgeArrowB1In(this));
 
-        getEdgeSupervisor().addEdge(this);
+        getDirectedEdgeSupervisor().addEdge(this);
     }
 
-    /**
-     * Returns the bidirectional edge supervisor.
-     *
-     * @return the controller's bidirectional edge supervisor
-     */
-    public EdgeSupervisorImpl getEdgeSupervisor() {
+    @Override
+    public DirectedEdgeSupervisorImpl getDirectedEdgeSupervisor() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        return (EdgeSupervisorImpl) controller.getBiEdgeSupervisor();
+        return (DirectedEdgeSupervisorImpl) controller.getBiEdgeSupervisor();
     }
 
     /**

@@ -2,7 +2,7 @@ package org.gephi.preview;
 
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.UnidirectionalEdge;
-import org.gephi.preview.supervisors.EdgeSupervisorImpl;
+import org.gephi.preview.supervisors.DirectedEdgeSupervisorImpl;
 import org.openide.util.Lookup;
 
 /**
@@ -10,7 +10,7 @@ import org.openide.util.Lookup;
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
-public class UnidirectionalEdgeImpl extends EdgeImpl
+public class UnidirectionalEdgeImpl extends DirectedEdgeImpl
         implements UnidirectionalEdge {
 
     /**
@@ -25,16 +25,12 @@ public class UnidirectionalEdgeImpl extends EdgeImpl
     public UnidirectionalEdgeImpl(GraphImpl parent, float thickness, NodeImpl node1, NodeImpl node2, String label) {
         super(parent, thickness, node1, node2, label);
 
-        getEdgeSupervisor().addEdge(this);
+        getDirectedEdgeSupervisor().addEdge(this);
     }
 
-    /**
-     * Returns the unidirectional edge supervisor.
-     *
-     * @return the controller's unidirectional edge supervisor
-     */
-    public EdgeSupervisorImpl getEdgeSupervisor() {
+    @Override
+    public DirectedEdgeSupervisorImpl getDirectedEdgeSupervisor() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        return (EdgeSupervisorImpl) controller.getUniEdgeSupervisor();
+        return (DirectedEdgeSupervisorImpl) controller.getUniEdgeSupervisor();
     }
 }

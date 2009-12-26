@@ -50,20 +50,6 @@ public interface Edge {
     public Node getNode2();
 
     /**
-     * Returns an iterable on the arrow list of the edge.
-     *
-     * @return an iterable on the arrow list of the edge
-     */
-    public Iterable<EdgeArrow> getArrows();
-
-    /**
-     * Returns an iterable on the mini-label list of the edge.
-     *
-     * @return an iterable on the mini-label list of the edge
-     */
-    public Iterable<EdgeMiniLabel> getMiniLabels();
-
-    /**
      * Returns an iterable on the curve list of the edge.
      *
      * @return an iterable on the curve list of the edge
@@ -78,23 +64,9 @@ public interface Edge {
     public Boolean isCurved();
 
     /**
-     * Returns whether or not the edge's arrows should be displayed.
-     *
-     * @return true if the edge's arrows should be displayed
-     */
-    public Boolean showArrows();
-
-    /**
      * Returns whether or not the edge's label should be displayed.
      *
      * @return true if the edge's label should be displayed
      */
     public Boolean showLabel();
-
-    /**
-     * Returns whether or not the edge's mini-labels should be displayed.
-     * 
-     * @return true if the edge's mini-labels should be displayed
-     */
-    public Boolean showMiniLabels();
 }

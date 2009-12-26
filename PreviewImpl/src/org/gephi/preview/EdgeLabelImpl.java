@@ -1,7 +1,10 @@
 package org.gephi.preview;
 
 import java.awt.Font;
+import org.gephi.preview.api.Color;
+import org.gephi.preview.api.EdgeColorizerClient;
 import org.gephi.preview.api.EdgeLabel;
+import org.gephi.preview.api.util.Holder;
 import processing.core.PVector;
 
 /**
@@ -11,6 +14,8 @@ import processing.core.PVector;
  */
 public class EdgeLabelImpl extends AbstractEdgeLabel implements EdgeLabel {
 
+    protected final EdgeImpl parent;
+
     /**
      * Constructor.
      *
@@ -18,7 +23,8 @@ public class EdgeLabelImpl extends AbstractEdgeLabel implements EdgeLabel {
      * @param value   the value of the edge label
      */
     public EdgeLabelImpl(EdgeImpl parent, String value) {
-        super(parent, value);
+        super(value);
+        this.parent = parent;
         genPosition();
     }
 
@@ -36,13 +42,22 @@ public class EdgeLabelImpl extends AbstractEdgeLabel implements EdgeLabel {
         position.add(semiLength);
 
         // set label position above the parent edge
-        putPositionAboveEdge();
+        putPositionAboveEdge(parent.getDirection(), parent.getThickness());
     }
 
-    /**
-     * @see EdgeLabel#getFont()
-     */
     public Font getFont() {
         return parent.getLabelFont();
+    }
+
+    public Float getAngle() {
+        return parent.getAngle();
+    }
+
+    public EdgeColorizerClient getParentEdge() {
+        return parent;
+    }
+
+    public Holder<Color> getParentColorHolder() {
+        return parent.getColorHolder();
     }
 }

@@ -99,8 +99,18 @@ public class PartialGraphImpl implements Graph {
      * @return the number of visible nodes in the graph
      * @see Graph#countNodes()
      */
-    public float countNodes() {
+    public int countNodes() {
         return visibleNodes.size();
+    }
+
+    /**
+     * Returns the number of visible self-loops in the graph.
+     *
+     * @return the number of visible self-loops in the graph
+     * @see Graph#countSelfLoops()
+     */
+    public int countSelfLoops() {
+        return visibleSelfLoops.size();
     }
 
     /**
@@ -109,7 +119,7 @@ public class PartialGraphImpl implements Graph {
      * @return the number of visible unidirectional edges in the graph
      * @see Graph#countUnidirectionalEdges()
      */
-    public float countUnidirectionalEdges() {
+    public int countUnidirectionalEdges() {
         return visibleUnidirectionalEdges.size();
     }
 
@@ -119,37 +129,18 @@ public class PartialGraphImpl implements Graph {
      * @return the number of visible bidirectional edges in the graph
      * @see Graph#countBidirectionalEdges()
      */
-    public float countBidirectionalEdges() {
+    public int countBidirectionalEdges() {
         return visibleBidirectionalEdges.size();
     }
 
-    /**
-     * Returns the number of visible self-loops in the graph.
-     *
-     * @return the number of visible self-loops in the graph
-     * @see Graph#countSelfLoops()
-     */
-    public float countSelfLoops() {
-        return visibleSelfLoops.size();
-    }
-
-    /**
-     * @see Graph#showNodes()
-     */
     public Boolean showNodes() {
         return originalGraph.showNodes();
     }
 
-    /**
-     * @see Graph#showEdges()
-     */
     public Boolean showEdges() {
         return originalGraph.showEdges();
     }
 
-    /**
-     * @see Graph#showSelfLoops()
-     */
     public Boolean showSelfLoops() {
         return originalGraph.showSelfLoops();
     }

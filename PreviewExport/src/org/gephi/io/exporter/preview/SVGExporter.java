@@ -24,6 +24,7 @@ import org.gephi.io.exporter.preview.util.LengthUnit;
 import org.gephi.io.exporter.preview.util.SupportSize;
 import org.gephi.preview.api.BidirectionalEdge;
 import org.gephi.preview.api.CubicBezierCurve;
+import org.gephi.preview.api.DirectedEdge;
 import org.gephi.preview.api.Edge;
 import org.gephi.preview.api.EdgeArrow;
 import org.gephi.preview.api.EdgeLabel;
@@ -152,36 +153,40 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         popParentElement();
     }
 
-    /**
-     * @see GraphRenderer#renderGraphUnidirectionalEdges(org.gephi.preview.api.Graph)
-     */
     public void renderGraphUnidirectionalEdges(Graph graph) {
-        for (UnidirectionalEdge e : graph.getUnidirectionalEdges()) {
-            renderEdge(e);
+        for (UnidirectionalEdge edge : graph.getUnidirectionalEdges()) {
+            renderEdge(edge);
+
+            if (edge.showArrows()) {
+                renderEdgeArrows(edge);
+            }
+
+            if (edge.showMiniLabels()) {
+                renderEdgeMiniLabels(edge);
+            }
         }
     }
 
-    /**
-     * @see GraphRenderer#renderGraphBidirectionalEdges(org.gephi.preview.api.Graph)
-     */
     public void renderGraphBidirectionalEdges(Graph graph) {
-        for (BidirectionalEdge e : graph.getBidirectionalEdges()) {
-            renderEdge(e);
+        for (BidirectionalEdge edge : graph.getBidirectionalEdges()) {
+            renderEdge(edge);
+
+            if (edge.showArrows()) {
+                renderEdgeArrows(edge);
+            }
+
+            if (edge.showMiniLabels()) {
+                renderEdgeMiniLabels(edge);
+            }
         }
     }
 
-    /**
-     * @see GraphRenderer#renderGraphSelfLoops(org.gephi.preview.api.Graph)
-     */
     public void renderGraphSelfLoops(Graph graph) {
         for (SelfLoop sl : graph.getSelfLoops()) {
             renderSelfLoop(sl);
         }
     }
 
-    /**
-     * @see GraphRenderer#renderGraphNodes(org.gephi.preview.api.Graph)
-     */
     public void renderGraphNodes(Graph graph) {
         Element nodeGroupElem = createElement("g");
         nodeGroupElem.setAttribute("id", "nodes");
@@ -195,9 +200,6 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         popParentElement();
     }
 
-    /**
-     * @see GraphRenderer#renderNode(org.gephi.preview.api.Node)
-     */
     public void renderNode(Node node) {
         Element groupElem = createElement("g");
         appendToParentElement(groupElem);
@@ -225,9 +227,6 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Progress.progress(progress);
     }
 
-    /**
-     * @see GraphRenderer#renderNodeLabel(org.gephi.preview.api.NodeLabel)
-     */
     public void renderNodeLabel(NodeLabel label) {
         Text labelText = createTextNode(label.getValue());
 
@@ -245,9 +244,6 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         lastLabel = labelElem;
     }
 
-    /**
-     * @see GraphRenderer#renderNodeLabelBorder(org.gephi.preview.api.NodeLabelBorder)
-     */
     public void renderNodeLabelBorder(NodeLabelBorder border) {
         // retrieve label's bounding box
         SVGRect rect = ((SVGLocatable) lastLabel).getBBox();
@@ -261,9 +257,6 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         insertBeforeElement(borderElem, lastLabel);
     }
 
-    /**
-     * @see GraphRenderer#renderSelfLoop(org.gephi.preview.api.SelfLoop)
-     */
     public void renderSelfLoop(SelfLoop selfLoop) {
         CubicBezierCurve curve = selfLoop.getCurve();
 
@@ -285,9 +278,6 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         popParentElement();
     }
 
-    /**
-     * @see GraphRenderer#renderEdge(org.gephi.preview.api.Edge)
-     */
     public void renderEdge(Edge edge) {
         Element groupElem = createElement("g");
         appendToParentElement(groupElem);
@@ -304,9 +294,6 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Progress.progress(progress);
     }
 
-    /**
-     * @see GraphRenderer#renderEdge(org.gephi.preview.api.Edge)
-     */
     public void renderStraightEdge(Edge edge) {
         PVector boundary1 = edge.getNode1().getPosition();
         PVector boundary2 = edge.getNode2().getPosition();
@@ -320,22 +307,11 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         edgeElem.setAttribute("stroke-width", Float.toString(edge.getThickness()));
         appendToParentElement(edgeElem);
 
-        if (edge.showArrows()) {
-            renderEdgeArrows(edge);
-        }
-
-        if (edge.showMiniLabels()) {
-            renderEdgeMiniLabels(edge);
-        }
-
         if (edge.showLabel() && edge.hasLabel()) {
             renderEdgeLabel(edge.getLabel());
         }
     }
 
-    /**
-     * @see GraphRenderer#renderCurvedEdge(org.gephi.preview.api.Edge)
-     */
     public void renderCurvedEdge(Edge edge) {
         for (CubicBezierCurve curve : edge.getCurves()) {
             Element curveElem = createElement("path");
@@ -351,27 +327,18 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         }
     }
 
-    /**
-     * @see GraphRenderer#renderEdgeArrows(org.gephi.preview.api.Edge)
-     */
-    public void renderEdgeArrows(Edge edge) {
+    public void renderEdgeArrows(DirectedEdge edge) {
         for (EdgeArrow a : edge.getArrows()) {
             renderEdgeArrow(a);
         }
     }
 
-    /**
-     * @see GraphRenderer#renderEdgeMiniLabels(org.gephi.preview.api.Edge)
-     */
-    public void renderEdgeMiniLabels(Edge edge) {
+    public void renderEdgeMiniLabels(DirectedEdge edge) {
         for (EdgeMiniLabel ml : edge.getMiniLabels()) {
             renderEdgeMiniLabel(ml);
         }
     }
 
-    /**
-     * @see GraphRenderer#renderEdgeArrows(org.gephi.preview.api.Edge) 
-     */
     public void renderEdgeArrow(EdgeArrow arrow) {
         Element arrowElem = createElement("polyline");
         arrowElem.setAttribute("points",
@@ -383,9 +350,6 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         appendToParentElement(arrowElem);
     }
 
-    /**
-     * @see GraphRenderer#renderEdgeLabel(org.gephi.preview.api.EdgeLabel)
-     */
     public void renderEdgeLabel(EdgeLabel label) {
         Text text = createTextNode(label.getValue());
 
@@ -403,9 +367,6 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         appendToParentElement(labelElem);
     }
 
-    /**
-     * @see GraphRenderer#renderEdgeMiniLabel(org.gephi.preview.api.EdgeMiniLabel)
-     */
     public void renderEdgeMiniLabel(EdgeMiniLabel miniLabel) {
         Text text = createTextNode(miniLabel.getValue());
 

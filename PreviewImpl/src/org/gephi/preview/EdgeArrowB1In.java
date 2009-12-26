@@ -1,6 +1,6 @@
 package org.gephi.preview;
 
-import org.gephi.preview.api.supervisors.EdgeSupervisor;
+import org.gephi.preview.api.supervisors.DirectedEdgeSupervisor;
 import processing.core.PVector;
 
 /**
@@ -15,7 +15,7 @@ class EdgeArrowB1In extends EdgeArrowImpl {
      *
      * @param parent  the parent edge of the edge arrow
      */
-    public EdgeArrowB1In(EdgeImpl parent) {
+    public EdgeArrowB1In(DirectedEdgeImpl parent) {
         super(parent);
         direction = new PVector(-parent.getDirection().x, -parent.getDirection().y);
         refNode = parent.getNode1();
@@ -25,7 +25,7 @@ class EdgeArrowB1In extends EdgeArrowImpl {
      * Generates the edge arrow's added radius.
      */
     protected void genAddedRadius() {
-        EdgeSupervisor supervisor = getEdgeSupervisor();
+        DirectedEdgeSupervisor supervisor = getDirectedEdgeSupervisor();
         addedRadius = -(supervisor.getArrowAddedRadius() + supervisor.getArrowSize() + refNode.getRadius());
     }
 }
