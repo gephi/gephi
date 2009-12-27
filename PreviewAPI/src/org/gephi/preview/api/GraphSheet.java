@@ -27,4 +27,25 @@ public interface GraphSheet {
      * @return the bottom right position of the graph sheet
      */
     public Point getBottomRightPosition();
+
+    /**
+     * Returns the sheet's width.
+     *
+     * @return the sheet's width
+     */
+    public Float getWidth();
+
+    /**
+     * Returns the sheet's height.
+     *
+     * @return the sheet's height
+     */
+    public Float getHeight();
+
+    /**
+     * Defines the sheet's margin.
+     *
+     * @param value  the value of the sheet's margin
+     */
+    public void setMargin(float value);
 }

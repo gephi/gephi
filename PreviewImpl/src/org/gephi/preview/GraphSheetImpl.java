@@ -15,7 +15,10 @@ import org.gephi.preview.util.Vector;
 public class GraphSheetImpl implements GraphSheet {
 
     private final Graph graph;
-    private final PointImpl topLeft, bottomRight;
+    private final PointImpl originalTopLeft, originalBottomRight;
+    private PointImpl topLeft, bottomRight;
+    private Float width, height;
+    private float margin = 0f;
 
     /**
      * Constructor.
@@ -30,8 +33,8 @@ public class GraphSheetImpl implements GraphSheet {
         Iterator<Node> it = graph.getNodes().iterator();
 
         if (!it.hasNext()) {
-            topLeft = new PointImpl(0f, 0f);
-            bottomRight = new PointImpl(0f, 0f);
+            originalTopLeft = new PointImpl(0f, 0f);
+            originalBottomRight = new PointImpl(0f, 0f);
             return;
         }
 
@@ -57,8 +60,10 @@ public class GraphSheetImpl implements GraphSheet {
             }
         }
 
-        topLeft = new PointImpl(topLeftVector);
-        bottomRight = new PointImpl(bottomRightVector);
+        originalTopLeft = new PointImpl(topLeftVector);
+        originalBottomRight = new PointImpl(bottomRightVector);
+
+        updateDimensions();
     }
 
     public Graph getGraph() {
@@ -71,5 +76,38 @@ public class GraphSheetImpl implements GraphSheet {
 
     public Point getBottomRightPosition() {
         return bottomRight;
+    }
+
+    public Float getWidth() {
+        return width;
+    }
+
+    public Float getHeight() {
+        return height;
+    }
+
+    public void setMargin(float value) {
+        if (value != margin) {
+            margin = value;
+            updateDimensions();
+        }
+    }
+
+    /**
+     * Updates the graph sheet's dimensions according to the set margin.
+     */
+    private void updateDimensions() {
+        Vector topLeftVector = new Vector(originalTopLeft);
+        topLeftVector.sub(margin, margin, 0);
+        topLeft =  new PointImpl(topLeftVector);
+
+        Vector bottomRightVector = new Vector(originalBottomRight);
+        bottomRightVector.add(margin, margin, 0);
+        bottomRight =  new PointImpl(bottomRightVector);
+
+        Vector box = new Vector(bottomRightVector);
+        box.sub(topLeftVector);
+        width = box.x;
+        height = box.y;
     }
 }

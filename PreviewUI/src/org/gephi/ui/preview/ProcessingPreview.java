@@ -124,21 +124,20 @@ public class ProcessingPreview extends PApplet
      * Initializes the preview applet layout according to the graph's dimension.
      */
     private void initAppletLayout() {
-        PVector topLeft = new PVector(graphSheet.getTopLeftPosition().getX(), graphSheet.getTopLeftPosition().getY());
-        PVector bottomRight = new PVector(graphSheet.getBottomRightPosition().getX(), graphSheet.getBottomRightPosition().getY());
-        topLeft.sub(MARGIN, MARGIN, 0);
-        bottomRight.add(MARGIN, MARGIN, 0);
+        graphSheet.setMargin(MARGIN);
 
         // initializes zoom
-        PVector box = PVector.sub(bottomRight, topLeft);
+        PVector box = new PVector(graphSheet.getWidth(), graphSheet.getHeight());
         float ratioWidth = width / box.x;
         float ratioHeight = height / box.y;
         scaling = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
 
         // initializes move
-        PVector center = new PVector(width / 2f, height / 2f);
         PVector semiBox = PVector.div(box, 2);
-        PVector scaledCenter = PVector.add(topLeft, semiBox);
+        Point topLeftPosition = graphSheet.getTopLeftPosition();
+        PVector topLeftVector = new PVector(topLeftPosition.getX(), topLeftPosition.getY());
+        PVector center = new PVector(width / 2f, height / 2f);
+        PVector scaledCenter = PVector.add(topLeftVector, semiBox);
         trans.set(center);
         trans.sub(scaledCenter);
         lastMove.set(trans);

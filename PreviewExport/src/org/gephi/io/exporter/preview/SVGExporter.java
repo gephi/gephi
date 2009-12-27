@@ -53,7 +53,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 import org.w3c.dom.svg.SVGLocatable;
 import org.w3c.dom.svg.SVGRect;
-import processing.core.PVector;
 
 /**
  * Class exporting the preview graph as an SVG image.
@@ -63,6 +62,7 @@ import processing.core.PVector;
 @ServiceProvider(service = VectorialFileExporter.class)
 public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTask {
 
+    private final static float MARGIN = 25f;
     private final ArrayDeque<Element> parentStack = new ArrayDeque<Element>();
     private final String namespaceURI = SVGDOMImplementation.SVG_NAMESPACE_URI;
     private Document doc;
@@ -459,10 +459,8 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         GVTBuilder builder = new GVTBuilder();
         builder.build(ctx, doc);
 
-        // graph positioning
-        PVector topLeft = new PVector(graphSheet.getTopLeftPosition().getX(), graphSheet.getTopLeftPosition().getY());
-        PVector bottomRight = new PVector(graphSheet.getBottomRightPosition().getX(), graphSheet.getBottomRightPosition().getY());
-        PVector box = PVector.sub(bottomRight, topLeft);
+        // image margin
+        graphSheet.setMargin(MARGIN);
 
         // root element
         Element svgRoot = doc.getDocumentElement();
@@ -470,8 +468,8 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         svgRoot.setAttributeNS(null, "height", supportSize.getHeight());
         svgRoot.setAttributeNS(null, "version", "1.1");
         svgRoot.setAttributeNS(null, "viewBox", String.format("%d %d %d %d",
-                topLeft.x, topLeft.y,
-                box.x, box.y));
+                graphSheet.getTopLeftPosition().getX(), graphSheet.getTopLeftPosition().getY(),
+                graphSheet.getWidth(), graphSheet.getHeight()));
         pushParentElement(svgRoot);
 
         // draws the graph exporting it into the DOM
