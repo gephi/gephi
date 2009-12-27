@@ -124,9 +124,9 @@ public class ProcessingPreview extends PApplet
      * Initializes the preview applet layout according to the graph's dimension.
      */
     private void initAppletLayout() {
-        PVector topLeft = graphSheet.getTopLeftPosition().get();
+        PVector topLeft = new PVector(graphSheet.getTopLeftPosition().getX(), graphSheet.getTopLeftPosition().getY());
+        PVector bottomRight = new PVector(graphSheet.getBottomRightPosition().getX(), graphSheet.getBottomRightPosition().getY());
         topLeft.sub(MARGIN, MARGIN, 0);
-        PVector bottomRight = graphSheet.getBottomRightPosition().get();
         bottomRight.add(MARGIN, MARGIN, 0);
 
         // initializes zoom
@@ -238,7 +238,7 @@ public class ProcessingPreview extends PApplet
         fill(node.getColor().getRed(),
                 node.getColor().getGreen(),
                 node.getColor().getBlue());
-        ellipse(node.getPosition().x, node.getPosition().y,
+        ellipse(node.getPosition().getX(), node.getPosition().getY(),
                 node.getDiameter(), node.getDiameter());
 
         if (node.showLabel() && node.hasLabel()) {
@@ -257,8 +257,8 @@ public class ProcessingPreview extends PApplet
                 label.getColor().getGreen(),
                 label.getColor().getBlue());
         text(label.getValue(),
-                label.getPosition().x,
-                label.getPosition().y - (textAscent() + textDescent()) * 0.1f);
+                label.getPosition().getX(),
+                label.getPosition().getY() - (textAscent() + textDescent()) * 0.1f);
     }
 
     public void renderNodeLabelBorder(NodeLabelBorder border) {
@@ -266,7 +266,7 @@ public class ProcessingPreview extends PApplet
         fill(border.getColor().getRed(),
                 border.getColor().getGreen(),
                 border.getColor().getBlue());
-        rect(border.getPosition().x, border.getPosition().y,
+        rect(border.getPosition().getX(), border.getPosition().getY(),
                 textWidth(border.getLabel().getValue()), (textAscent() + textDescent()));
     }
 
@@ -279,10 +279,10 @@ public class ProcessingPreview extends PApplet
                 selfLoop.getColor().getBlue());
         noFill();
 
-        bezier(curve.getPt1().x, curve.getPt1().y,
-                curve.getPt2().x, curve.getPt2().y,
-                curve.getPt3().x, curve.getPt3().y,
-                curve.getPt4().x, curve.getPt4().y);
+        bezier(curve.getPt1().getX(), curve.getPt1().getY(),
+                curve.getPt2().getX(), curve.getPt2().getY(),
+                curve.getPt3().getX(), curve.getPt3().getY(),
+                curve.getPt4().getX(), curve.getPt4().getY());
     }
 
     public void renderEdge(Edge edge) {
@@ -314,10 +314,10 @@ public class ProcessingPreview extends PApplet
     }
 
     public void renderStraightEdge(Edge edge) {
-        PVector boundary1 = edge.getNode1().getPosition();
-        PVector boundary2 = edge.getNode2().getPosition();
+        Point boundary1 = edge.getNode1().getPosition();
+        Point boundary2 = edge.getNode2().getPosition();
 
-        line(boundary1.x, boundary1.y, boundary2.x, boundary2.y);
+        line(boundary1.getX(), boundary1.getY(), boundary2.getX(), boundary2.getY());
 
         if (edge.showLabel() && edge.hasLabel()) {
             renderEdgeLabel(edge.getLabel());
@@ -326,10 +326,10 @@ public class ProcessingPreview extends PApplet
 
     public void renderCurvedEdge(Edge edge) {
         for (CubicBezierCurve curve : edge.getCurves()) {
-            bezier(curve.getPt1().x, curve.getPt1().y,
-                    curve.getPt2().x, curve.getPt2().y,
-                    curve.getPt3().x, curve.getPt3().y,
-                    curve.getPt4().x, curve.getPt4().y);
+            bezier(curve.getPt1().getX(), curve.getPt1().getY(),
+                    curve.getPt2().getX(), curve.getPt2().getY(),
+                    curve.getPt3().getX(), curve.getPt3().getY(),
+                    curve.getPt4().getX(), curve.getPt4().getY());
         }
     }
 
@@ -337,9 +337,9 @@ public class ProcessingPreview extends PApplet
         fill(arrow.getColor().getRed(),
                 arrow.getColor().getGreen(),
                 arrow.getColor().getBlue());
-        triangle(arrow.getPt1().x, arrow.getPt1().y,
-                arrow.getPt2().x, arrow.getPt2().y,
-                arrow.getPt3().x, arrow.getPt3().y);
+        triangle(arrow.getPt1().getX(), arrow.getPt1().getY(),
+                arrow.getPt2().getX(), arrow.getPt2().getY(),
+                arrow.getPt3().getX(), arrow.getPt3().getY());
     }
 
     public void renderEdgeLabel(EdgeLabel label) {
@@ -350,7 +350,7 @@ public class ProcessingPreview extends PApplet
         fill(label.getColor().getRed(),
                 label.getColor().getGreen(),
                 label.getColor().getBlue());
-        translate(label.getPosition().x, label.getPosition().y);
+        translate(label.getPosition().getX(), label.getPosition().getY());
         rotate(label.getAngle());
         text(label.getValue(), 0, 0);
         popMatrix();
@@ -362,7 +362,7 @@ public class ProcessingPreview extends PApplet
                 miniLabel.getColor().getGreen(),
                 miniLabel.getColor().getBlue());
         textAlign(miniLabel.getHAlign().toProcessing(), BASELINE);
-        translate(miniLabel.getPosition().x, miniLabel.getPosition().y);
+        translate(miniLabel.getPosition().getX(), miniLabel.getPosition().getY());
         rotate(miniLabel.getAngle());
         text(miniLabel.getValue(), 0, 0);
         popMatrix();

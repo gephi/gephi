@@ -4,7 +4,8 @@ import java.util.Iterator;
 import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.GraphSheet;
 import org.gephi.preview.api.Node;
-import processing.core.PVector;
+import org.gephi.preview.api.Point;
+import org.gephi.preview.util.Vector;
 
 /**
  * Implementation of a preview graph sheet.
@@ -14,71 +15,61 @@ import processing.core.PVector;
 public class GraphSheetImpl implements GraphSheet {
 
     private final Graph graph;
-    private final PVector topLeft = new PVector();
-    private final PVector bottomRight = new PVector();
+    private final PointImpl topLeft, bottomRight;
 
     /**
      * Constructor.
+     *
+     * The bounding box of the stored graph is computed.
      *
      * @param graph  the preview graph
      */
     public GraphSheetImpl(Graph graph) {
         this.graph = graph;
-        updateBoundingBox();
-    }
 
-    /**
-     * @see GraphSheet#getGraph()
-     */
-    public Graph getGraph() {
-        return graph;
-    }
-
-    /**
-     * @see GraphSheet#getTopLeftPosition()
-     */
-    public PVector getTopLeftPosition() {
-        return topLeft;
-    }
-
-    /**
-     * @see GraphSheet#getBottomRightPosition()
-     */
-    public PVector getBottomRightPosition() {
-        return bottomRight;
-    }
-
-    /**
-     * Updates the bounding box of preview graph to set the dimensions of the
-     * graph sheet.
-     */
-    private void updateBoundingBox() {
         Iterator<Node> it = graph.getNodes().iterator();
 
         if (!it.hasNext()) {
+            topLeft = new PointImpl(0f, 0f);
+            bottomRight = new PointImpl(0f, 0f);
             return;
         }
 
         Node node = it.next();
-        topLeft.set(node.getTopLeftPosition());
-        bottomRight.set(node.getBottomRightPosition());
+        Vector topLeftVector = new Vector(node.getTopLeftPosition());
+        Vector bottomRightVector = new Vector(node.getBottomRightPosition());
 
         while (it.hasNext())
         {
             node = it.next();
 
-            if (node.getTopLeftPosition().x < topLeft.x) {
-                topLeft.x = node.getTopLeftPosition().x;
+            if (node.getTopLeftPosition().getX() < topLeftVector.x) {
+                topLeftVector.x = node.getTopLeftPosition().getX();
             }
-            if (node.getTopLeftPosition().y < topLeft.y) {
-                topLeft.y = node.getTopLeftPosition().y;
+            if (node.getTopLeftPosition().getY() < topLeftVector.y) {
+                topLeftVector.y = node.getTopLeftPosition().getY();
             }
-            if (node.getBottomRightPosition().x > bottomRight.x) {
-                bottomRight.x = node.getBottomRightPosition().x;
+            if (node.getBottomRightPosition().getX() > bottomRightVector.x) {
+                bottomRightVector.x = node.getBottomRightPosition().getX();
             }
-            if (node.getBottomRightPosition().y > bottomRight.y) {
-                bottomRight.y = node.getBottomRightPosition().y;
+            if (node.getBottomRightPosition().getY() > bottomRightVector.y) {
+                bottomRightVector.y = node.getBottomRightPosition().getY();
             }
         }
+
+        topLeft = new PointImpl(topLeftVector);
+        bottomRight = new PointImpl(bottomRightVector);
+    }
+
+    public Graph getGraph() {
+        return graph;
+    }
+
+    public Point getTopLeftPosition() {
+        return topLeft;
+    }
+
+    public Point getBottomRightPosition() {
+        return bottomRight;
     }
 }

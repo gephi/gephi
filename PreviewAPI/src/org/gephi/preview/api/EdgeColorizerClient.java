@@ -1,7 +1,5 @@
 package org.gephi.preview.api;
 
-import org.gephi.preview.api.Node;
-
 /**
  *
  * @author jeremy

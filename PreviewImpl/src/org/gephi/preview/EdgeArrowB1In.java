@@ -1,7 +1,7 @@
 package org.gephi.preview;
 
 import org.gephi.preview.api.supervisors.DirectedEdgeSupervisor;
-import processing.core.PVector;
+import org.gephi.preview.util.Vector;
 
 /**
  * An edge arrow incoming to the parent edge's first boundary.
@@ -17,7 +17,7 @@ class EdgeArrowB1In extends EdgeArrowImpl {
      */
     public EdgeArrowB1In(DirectedEdgeImpl parent) {
         super(parent);
-        direction = new PVector(-parent.getDirection().x, -parent.getDirection().y);
+        direction = new Vector(-parent.getDirection().x, -parent.getDirection().y);
         refNode = parent.getNode1();
     }
 

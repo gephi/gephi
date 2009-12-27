@@ -1,7 +1,7 @@
 package org.gephi.preview;
 
 import org.gephi.preview.api.supervisors.DirectedEdgeSupervisor;
-import processing.core.PVector;
+import org.gephi.preview.util.Vector;
 
 /**
  * An edge arrow outgoing from the parent edge's second boundary.
@@ -18,7 +18,7 @@ class EdgeArrowB2Out extends EdgeArrowImpl {
     public EdgeArrowB2Out(DirectedEdgeImpl parent) {
         super(parent);
         refNode = parent.getNode2();
-        direction = new PVector(-parent.getDirection().x, -parent.getDirection().y);
+        direction = new Vector(-parent.getDirection().x, -parent.getDirection().y);
     }
 
     /**

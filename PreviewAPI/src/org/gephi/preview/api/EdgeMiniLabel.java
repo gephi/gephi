@@ -2,7 +2,6 @@ package org.gephi.preview.api;
 
 import java.awt.Font;
 import org.gephi.preview.api.util.HAlign;
-import processing.core.PVector;
 
 /**
  * Interface of a preview edge mini-label.
@@ -30,7 +29,7 @@ public interface EdgeMiniLabel {
      *
      * @return the edge mini-label's position
      */
-    public PVector getPosition();
+    public Point getPosition();
 
     /**
      * Returns the edge mini-label's angle.

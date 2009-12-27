@@ -1,7 +1,5 @@
 package org.gephi.preview.api;
 
-import processing.core.PVector;
-
 /**
  * Implementation of a node label border.
  *
@@ -21,7 +19,7 @@ public interface NodeLabelBorder {
      *
      * @return the node label border's position
      */
-    public PVector getPosition();
+    public Point getPosition();
 
     /**
      * Returns the node label border's related label.

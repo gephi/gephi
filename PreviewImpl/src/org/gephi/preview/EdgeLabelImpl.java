@@ -5,7 +5,7 @@ import org.gephi.preview.api.Color;
 import org.gephi.preview.api.EdgeColorizerClient;
 import org.gephi.preview.api.EdgeLabel;
 import org.gephi.preview.api.util.Holder;
-import processing.core.PVector;
+import org.gephi.preview.util.Vector;
 
 /**
  * Implementation of an edge label.
@@ -33,13 +33,14 @@ public class EdgeLabelImpl extends AbstractEdgeLabel implements EdgeLabel {
      */
     public void genPosition() {
         // relative position from the first boundary
-        position = parent.getNode1().getPosition().get();
+        Vector positionVector = new Vector(parent.getNode1().getPosition());
         
         // move it to the middle of the edge
-        PVector semiLength = PVector.mult(
-                parent.getDirection(),
-                parent.getLength() / 2);
-        position.add(semiLength);
+        Vector semiLength = new Vector(parent.getDirection());
+        semiLength.mult(parent.getLength() / 2);
+        positionVector.add(semiLength);
+
+        position = new PointImpl(positionVector);
 
         // set label position above the parent edge
         putPositionAboveEdge(parent.getDirection(), parent.getThickness());

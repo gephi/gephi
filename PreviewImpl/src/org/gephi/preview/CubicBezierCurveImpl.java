@@ -1,7 +1,7 @@
 package org.gephi.preview;
 
 import org.gephi.preview.api.CubicBezierCurve;
-import processing.core.PVector;
+import org.gephi.preview.api.Point;
 
 /**
  * Implementation of a cubic Bézier curve.
@@ -10,10 +10,10 @@ import processing.core.PVector;
  */
 public class CubicBezierCurveImpl implements CubicBezierCurve {
 
-    private final PVector pt1;
-    private final PVector pt2;
-    private final PVector pt3;
-    private final PVector pt4;
+    private final Point pt1;
+    private final Point pt2;
+    private final Point pt3;
+    private final Point pt4;
 
     /**
      * Constructor.
@@ -23,7 +23,7 @@ public class CubicBezierCurveImpl implements CubicBezierCurve {
      * @param pt3  the last checkpoint of the curve
      * @param pt4  the last boundary of the curve
      */
-    public CubicBezierCurveImpl(PVector pt1, PVector pt2, PVector pt3, PVector pt4) {
+    public CubicBezierCurveImpl(Point pt1, Point pt2, Point pt3, Point pt4) {
         this.pt1 = pt1;
         this.pt2 = pt2;
         this.pt3 = pt3;
@@ -35,7 +35,7 @@ public class CubicBezierCurveImpl implements CubicBezierCurve {
      *
      * @return the first boundary of the curve
      */
-    public PVector getPt1() {
+    public Point getPt1() {
         return pt1;
     }
 
@@ -44,7 +44,7 @@ public class CubicBezierCurveImpl implements CubicBezierCurve {
      *
      * @return the first checkpoint of the curve
      */
-    public PVector getPt2() {
+    public Point getPt2() {
         return pt2;
     }
 
@@ -53,7 +53,7 @@ public class CubicBezierCurveImpl implements CubicBezierCurve {
      *
      * @return the last checkpoint of the curve
      */
-    public PVector getPt3() {
+    public Point getPt3() {
         return pt3;
     }
 
@@ -62,7 +62,7 @@ public class CubicBezierCurveImpl implements CubicBezierCurve {
      *
      * @return the last boundary of the curve
      */
-    public PVector getPt4() {
+    public Point getPt4() {
         return pt4;
     }
 }

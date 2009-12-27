@@ -4,8 +4,8 @@ import org.gephi.preview.api.CubicBezierCurve;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.SelfLoop;
 import org.gephi.preview.supervisors.SelfLoopSupervisorImpl;
+import org.gephi.preview.util.Vector;
 import org.openide.util.Lookup;
-import processing.core.PVector;
 
 /**
  * Implementation of a preview self-loop.
@@ -39,16 +39,16 @@ public class SelfLoopImpl extends AbstractEdge implements SelfLoop {
      * Generates the self-loop's curve.
      */
     private void genCurve() {
-        PVector checkpoint1 = node.getPosition().get();
-        checkpoint1.add(node.getDiameter(), -node.getDiameter(), 0);
+        Vector v1 = new Vector(node.getPosition());
+        v1.add(node.getDiameter(), -node.getDiameter(), 0);
 
-        PVector checkpoint2 = node.getPosition().get();
-        checkpoint2.add(node.getDiameter(), node.getDiameter(), 0);
+        Vector v2 = new Vector(node.getPosition());
+        v2.add(node.getDiameter(), node.getDiameter(), 0);
 
         curve = new CubicBezierCurveImpl(
                 node.getPosition(),
-                checkpoint1,
-                checkpoint2,
+                new PointImpl(v1),
+                new PointImpl(v2),
                 node.getPosition());
     }
 

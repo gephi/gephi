@@ -1,7 +1,5 @@
 package org.gephi.preview.api;
 
-import processing.core.PVector;
-
 /**
  * Interface of a cubic Bézier curve.
  *
@@ -14,26 +12,26 @@ public interface CubicBezierCurve {
      *
      * @return the first boundary of the curve
      */
-    public PVector getPt1();
+    public Point getPt1();
 
     /**
      * Returns the first checkpoint of the curve.
      *
      * @return the first checkpoint of the curve
      */
-    public PVector getPt2();
+    public Point getPt2();
 
     /**
      * Returns the last checkpoint of the curve.
      *
      * @return the last checkpoint of the curve
      */
-    public PVector getPt3();
+    public Point getPt3();
 
     /**
      * Returns the last boundary of the curve.
      *
      * @return the last boundary of the curve
      */
-    public PVector getPt4();
+    public Point getPt4();
 }

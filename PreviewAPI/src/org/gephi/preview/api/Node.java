@@ -1,7 +1,6 @@
 package org.gephi.preview.api;
 
 import org.gephi.preview.api.util.Holder;
-import processing.core.PVector;
 
 /**
  * Interface of a preview node.
@@ -22,14 +21,14 @@ public interface Node {
      *
      * @return the node's top left position
      */
-    public PVector getTopLeftPosition();
+    public Point getTopLeftPosition();
 
     /**
      * Returns the node's bottom right position.
      *
      * @return the node's bottom right position
      */
-    public PVector getBottomRightPosition();
+    public Point getBottomRightPosition();
 
     /**
      * Returns the node's current color.
@@ -43,7 +42,7 @@ public interface Node {
      *
      * @return the node's position
      */
-    public PVector getPosition();
+    public Point getPosition();
 
     /**
      * Returns the node's radius.

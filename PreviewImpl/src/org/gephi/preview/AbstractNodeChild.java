@@ -2,9 +2,9 @@ package org.gephi.preview;
 
 import org.gephi.preview.api.Color;
 import org.gephi.preview.api.NodeChildColorizerClient;
+import org.gephi.preview.api.Point;
 import org.gephi.preview.api.util.Holder;
 import org.gephi.preview.util.HolderImpl;
-import processing.core.PVector;
 
 /**
  * Generic implementation of a preview node child.
@@ -39,7 +39,7 @@ public class AbstractNodeChild implements NodeChildColorizerClient {
      *
      * @return the node child's position
      */
-    public PVector getPosition() {
+    public Point getPosition() {
         return parent.getPosition();
     }
 

@@ -35,6 +35,7 @@ import org.gephi.preview.api.GraphSheet;
 import org.gephi.preview.api.Node;
 import org.gephi.preview.api.NodeLabel;
 import org.gephi.preview.api.NodeLabelBorder;
+import org.gephi.preview.api.Point;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.SelfLoop;
 import org.gephi.preview.api.UndirectedEdge;
@@ -214,8 +215,8 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         pushParentElement(groupElem);
 
         Element nodeElem = createElement("circle");
-        nodeElem.setAttribute("cx", Float.toString(node.getPosition().x));
-        nodeElem.setAttribute("cy", Float.toString(node.getPosition().y));
+        nodeElem.setAttribute("cx", node.getPosition().getX().toString());
+        nodeElem.setAttribute("cy", node.getPosition().getY().toString());
         nodeElem.setAttribute("r", node.getRadius().toString());
         nodeElem.setAttribute("fill", node.getColor().toHexString());
         nodeElem.setAttribute("stroke", node.getBorderColor().toHexString());
@@ -239,8 +240,8 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Text labelText = createTextNode(label.getValue());
 
         Element labelElem = createElement("text");
-        labelElem.setAttribute("x", Float.toString(label.getPosition().x));
-        labelElem.setAttribute("y", Float.toString(label.getPosition().y));
+        labelElem.setAttribute("x", label.getPosition().getX().toString());
+        labelElem.setAttribute("y", label.getPosition().getY().toString());
         labelElem.setAttribute("style", "text-anchor: middle");
         labelElem.setAttribute("fill", label.getColor().toHexString());
         labelElem.setAttribute("font-family", label.getFont().getFamily());
@@ -273,11 +274,11 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         pushParentElement(groupElem);
 
         Element selfLoopElem = createElement("path");
-        selfLoopElem.setAttribute("d",
-                "M " + curve.getPt1().x + "," + curve.getPt1().y
-                + " C " + curve.getPt2().x + "," + curve.getPt2().y
-                + " " + curve.getPt3().x + "," + curve.getPt3().y
-                + " " + curve.getPt4().x + "," + curve.getPt4().y);
+        selfLoopElem.setAttribute("d", String.format("M %f,%f C %f,%f %f,%f %f,%f",
+                curve.getPt1().getX(), curve.getPt1().getY(),
+                curve.getPt2().getX(), curve.getPt2().getY(),
+                curve.getPt3().getX(), curve.getPt3().getY(),
+                curve.getPt4().getX(), curve.getPt4().getY()));
         selfLoopElem.setAttribute("stroke", selfLoop.getColor().toHexString());
         selfLoopElem.setAttribute("stroke-width", Float.toString(selfLoop.getThickness()));
         selfLoopElem.setAttribute("fill", "none");
@@ -303,14 +304,14 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     public void renderStraightEdge(Edge edge) {
-        PVector boundary1 = edge.getNode1().getPosition();
-        PVector boundary2 = edge.getNode2().getPosition();
+        Point boundary1 = edge.getNode1().getPosition();
+        Point boundary2 = edge.getNode2().getPosition();
 
         // attach straight edge
         Element edgeElem = createElement("path");
-        edgeElem.setAttribute("d",
-                "M " + boundary1.x + "," + boundary1.y
-                + " L " + boundary2.x + "," + boundary2.y);
+        edgeElem.setAttribute("d", String.format("M %f,%f L %f,%f",
+                boundary1.getX(), boundary1.getY(),
+                boundary2.getX(), boundary2.getY()));
         edgeElem.setAttribute("stroke", edge.getColor().toHexString());
         edgeElem.setAttribute("stroke-width", Float.toString(edge.getThickness()));
         appendToParentElement(edgeElem);
@@ -323,11 +324,11 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
     public void renderCurvedEdge(Edge edge) {
         for (CubicBezierCurve curve : edge.getCurves()) {
             Element curveElem = createElement("path");
-            curveElem.setAttribute("d",
-                    "M " + curve.getPt1().x + "," + curve.getPt1().y
-                    + " C " + curve.getPt2().x + "," + curve.getPt2().y
-                    + " " + curve.getPt3().x + "," + curve.getPt3().y
-                    + " " + curve.getPt4().x + "," + curve.getPt4().y);
+            curveElem.setAttribute("d", String.format("M %f,%f C %f,%f %f,%f %f,%f",
+                    curve.getPt1().getX(), curve.getPt1().getY(),
+                    curve.getPt2().getX(), curve.getPt2().getY(),
+                    curve.getPt3().getX(), curve.getPt3().getY(),
+                    curve.getPt4().getX(), curve.getPt4().getY()));
             curveElem.setAttribute("stroke", edge.getColor().toHexString());
             curveElem.setAttribute("stroke-width", Float.toString(edge.getThickness()));
             curveElem.setAttribute("fill", "none");
@@ -349,10 +350,10 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
 
     public void renderEdgeArrow(EdgeArrow arrow) {
         Element arrowElem = createElement("polyline");
-        arrowElem.setAttribute("points",
-                arrow.getPt1().x + "," + arrow.getPt1().y
-                + " " + arrow.getPt2().x + "," + arrow.getPt2().y
-                + " " + arrow.getPt3().x + "," + arrow.getPt3().y);
+        arrowElem.setAttribute("points", String.format("%f,%f %f,%f %f,%f",
+                arrow.getPt1().getX(), arrow.getPt1().getY(),
+                arrow.getPt2().getX(), arrow.getPt2().getY(),
+                arrow.getPt3().getX(), arrow.getPt3().getY()));
         arrowElem.setAttribute("fill", arrow.getColor().toHexString());
         arrowElem.setAttribute("stroke", "none");
         appendToParentElement(arrowElem);
@@ -368,9 +369,9 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         labelElem.setAttribute("fill", label.getColor().toHexString());
         labelElem.setAttribute("font-family", label.getFont().getFamily());
         labelElem.setAttribute("font-size", Integer.toString(label.getFont().getSize()));
-        labelElem.setAttribute("transform",
-                "translate(" + label.getPosition().x + "," + label.getPosition().y + ")"
-                + " rotate(" + Math.toDegrees(label.getAngle()) + ")");
+        labelElem.setAttribute("transform", String.format("translate(%f,%f) rotate(%f)",
+                label.getPosition().getX(), label.getPosition().getY(),
+                Math.toDegrees(label.getAngle())));
         labelElem.appendChild(text);
         appendToParentElement(labelElem);
     }
@@ -385,9 +386,9 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         miniLabelElem.setAttribute("fill", miniLabel.getColor().toHexString());
         miniLabelElem.setAttribute("font-family", miniLabel.getFont().getFamily());
         miniLabelElem.setAttribute("font-size", Integer.toString(miniLabel.getFont().getSize()));
-        miniLabelElem.setAttribute("transform",
-                "translate(" + miniLabel.getPosition().x + "," + miniLabel.getPosition().y + ")"
-                + " rotate(" + Math.toDegrees(miniLabel.getAngle()) + ")");
+        miniLabelElem.setAttribute("transform", String.format("translate(%f,%f) rotate(%f)",
+                miniLabel.getPosition().getX(), miniLabel.getPosition().getY(),
+                Math.toDegrees(miniLabel.getAngle())));
         miniLabelElem.appendChild(text);
         appendToParentElement(miniLabelElem);
     }
@@ -459,8 +460,8 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         builder.build(ctx, doc);
 
         // graph positioning
-        PVector topLeft = graphSheet.getTopLeftPosition().get();
-        PVector bottomRight = graphSheet.getBottomRightPosition().get();
+        PVector topLeft = new PVector(graphSheet.getTopLeftPosition().getX(), graphSheet.getTopLeftPosition().getY());
+        PVector bottomRight = new PVector(graphSheet.getBottomRightPosition().getX(), graphSheet.getBottomRightPosition().getY());
         PVector box = PVector.sub(bottomRight, topLeft);
 
         // root element
@@ -468,11 +469,9 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         svgRoot.setAttributeNS(null, "width", supportSize.getWidth());
         svgRoot.setAttributeNS(null, "height", supportSize.getHeight());
         svgRoot.setAttributeNS(null, "version", "1.1");
-        svgRoot.setAttributeNS(null, "viewBox",
-                Integer.toString((int) topLeft.x) + " "
-                + Integer.toString((int) topLeft.y) + " "
-                + Integer.toString((int) box.x) + " "
-                + Integer.toString((int) box.y));
+        svgRoot.setAttributeNS(null, "viewBox", String.format("%d %d %d %d",
+                topLeft.x, topLeft.y,
+                box.x, box.y));
         pushParentElement(svgRoot);
 
         // draws the graph exporting it into the DOM

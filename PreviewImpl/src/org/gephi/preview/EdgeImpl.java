@@ -4,9 +4,10 @@ import java.awt.Font;
 import java.util.ArrayList;
 import org.gephi.preview.api.CubicBezierCurve;
 import org.gephi.preview.api.Edge;
+import org.gephi.preview.api.Point;
 import org.gephi.preview.api.supervisors.EdgeSupervisor;
 import org.gephi.preview.supervisors.EdgeSupervisorImpl;
-import processing.core.PVector;
+import org.gephi.preview.util.Vector;
 
 /**
  * Implementation of a preview edge.
@@ -17,7 +18,7 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
 
     protected final NodeImpl node1;
     protected final NodeImpl node2;
-    protected final PVector direction;
+    protected final Vector direction;
     protected final float length;
     protected final ArrayList<CubicBezierCurve> curves = new ArrayList<CubicBezierCurve>();
     private EdgeLabelImpl label = null;
@@ -38,9 +39,9 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
         this.node2 = node2;
 
         // edge direction vector + edge length
-        PVector v = PVector.sub(this.node2.getPosition(), this.node1.getPosition());
-        length = v.mag();
-        direction = v.get();
+        direction = new Vector(this.node2.getPosition());
+        direction.sub(new Vector(this.node1.getPosition()));
+        length = direction.mag();
         direction.normalize();
 
         // curved edge (cubic Bézier curve)
@@ -57,26 +58,27 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
      */
     protected void genCurves() {
         float factor = BEZIER_CURVE_FACTOR * length;
-        PVector v, n;
 
         // normal vector to the edge
-        n = new PVector(direction.y, -direction.x);
+        Vector n = new Vector(direction.y, -direction.x);
         n.mult(factor);
 
         // first control point
-        v = PVector.mult(direction, factor);
-        v.add(node1.getPosition());
-        PVector cp1 = PVector.add(v, n);
+        Vector v1 = new Vector(direction);
+        v1.mult(factor);
+        v1.add(new Vector(node1.getPosition()));
+        v1.add(n);
 
         // second control point
-        v = PVector.mult(direction, -factor);
-        v.add(node2.getPosition());
-        PVector cp2 = PVector.add(v, n);
+        Vector v2 = new Vector(direction);
+        v2.mult(-factor);
+        v2.add(new Vector(node2.getPosition()));
+        v2.add(n);
 
         curves.add(new CubicBezierCurveImpl(
                 node1.getPosition(),
-                cp1,
-                cp2,
+                new PointImpl(v1),
+                new PointImpl(v2),
                 node2.getPosition()));
     }
 
@@ -114,7 +116,7 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
      *
      * @return the edge's direction
      */
-    public PVector getDirection() {
+    public Vector getDirection() {
         return direction;
     }
 
@@ -133,10 +135,10 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
      * @return the edge's angle
      */
     public Float getAngle() {
-        PVector p1 = node1.getPosition();
-        PVector p2 = node2.getPosition();
+        Point p1 = node1.getPosition();
+        Point p2 = node2.getPosition();
 
-        return (float) Math.atan2(p2.y - p1.y, p2.x - p1.x);
+        return (float) Math.atan2(p2.getY() - p1.getY(), p2.getX() - p1.getX());
     }
 
     public Boolean isCurved() {

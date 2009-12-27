@@ -2,9 +2,10 @@ package org.gephi.preview;
 
 import org.gephi.preview.api.Color;
 import org.gephi.preview.api.EdgeChildColorizerClient;
+import org.gephi.preview.api.Point;
 import org.gephi.preview.updaters.LabelShortenerClient;
 import org.gephi.preview.util.HolderImpl;
-import processing.core.PVector;
+import org.gephi.preview.util.Vector;
 
 /**
  * Generic implementation of an edge label.
@@ -16,7 +17,7 @@ public abstract class AbstractEdgeLabel implements LabelShortenerClient, EdgeChi
     protected final String originalValue;
     private final HolderImpl<Color> colorHolder = new HolderImpl<Color>();
     protected String value;
-    protected PVector position;
+    protected PointImpl position;
 
     /**
      * Constructor.
@@ -32,7 +33,7 @@ public abstract class AbstractEdgeLabel implements LabelShortenerClient, EdgeChi
      *
      * @return the edge label's position
      */
-    public PVector getPosition() {
+    public Point getPosition() {
         return position;
     }
 
@@ -74,12 +75,15 @@ public abstract class AbstractEdgeLabel implements LabelShortenerClient, EdgeChi
     /**
      * Sets the edge label's position above its parent edge's one.
      */
-    protected void putPositionAboveEdge(PVector edgeDirection, float edgeThickness) {
+    protected void putPositionAboveEdge(Vector edgeDirection, float edgeThickness) {
         // normal vector for vertical align
-        PVector n = new PVector(edgeDirection.y, -edgeDirection.x);
+        Vector n = new Vector(edgeDirection.y, -edgeDirection.x);
 
         // the mini-label mustn't be on the edge but over/under it
         n.mult(edgeThickness / 2);
-        position.add(n);
+        Vector positionVector = new Vector(position);
+        positionVector.add(n);
+
+        position = new PointImpl(positionVector);
     }
 }

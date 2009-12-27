@@ -1,7 +1,5 @@
 package org.gephi.preview.api;
 
-import processing.core.PVector;
-
 /**
  * Interface of a preview graph sheet.
  *
@@ -21,12 +19,12 @@ public interface GraphSheet {
      *
      * @return the top left position of the graph sheet
      */
-    public PVector getTopLeftPosition();
+    public Point getTopLeftPosition();
 
     /**
      * Returns the bottom right position of the graph sheet.
      *
      * @return the bottom right position of the graph sheet
      */
-    public PVector getBottomRightPosition();
+    public Point getBottomRightPosition();
 }

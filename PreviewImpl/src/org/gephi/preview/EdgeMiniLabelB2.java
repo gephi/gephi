@@ -1,7 +1,7 @@
 package org.gephi.preview;
 
 import org.gephi.preview.api.util.HAlign;
-import processing.core.PVector;
+import org.gephi.preview.util.Vector;
 
 /**
  * An edge mini-label related to the parent edge's second boundary.
@@ -27,13 +27,14 @@ class EdgeMiniLabelB2 extends EdgeMiniLabelImpl {
         NodeImpl n2 = parent.getNode2();
 
         // relative position from the second boundary
-        position = n2.getPosition().get();
+        Vector positionVector = new Vector(n2.getPosition());
 
         // add the added radius
-        PVector move = PVector.mult(
-                parent.getDirection(),
-                -(getDirectedEdgeSupervisor().getMiniLabelAddedRadius() + n2.getRadius()));
-        position.add(move);
+        Vector move = new Vector(parent.getDirection());
+        move.mult(-(getDirectedEdgeSupervisor().getMiniLabelAddedRadius() + n2.getRadius()));
+        positionVector.add(move);
+
+        position = new PointImpl(positionVector);
 
         // set label position above the parent edge
         putPositionAboveEdge(parent.getDirection(), parent.getThickness());

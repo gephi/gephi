@@ -3,8 +3,8 @@ package org.gephi.preview;
 import org.gephi.preview.api.BidirectionalEdge;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.supervisors.DirectedEdgeSupervisorImpl;
+import org.gephi.preview.util.Vector;
 import org.openide.util.Lookup;
-import processing.core.PVector;
 
 /**
  * Implementation of a bidirectional edge.
@@ -48,26 +48,27 @@ public class BidirectionalEdgeImpl extends DirectedEdgeImpl
         super.genCurves();
 
         float factor = BEZIER_CURVE_FACTOR * length;
-        PVector v, n;
 
         // normal vector to the edge
-        n = new PVector(direction.y, -direction.x);
+        Vector n = new Vector(direction.y, -direction.x);
         n.mult(factor);
 
         // first control point
-        v = PVector.mult(direction, factor);
-        v.add(node1.getPosition());
-        PVector cp1 = PVector.sub(v, n);
+        Vector v1 = new Vector(direction);
+        v1.mult(factor);
+        v1.add(new Vector(node1.getPosition()));
+        v1.sub(n);
 
         // second control point
-        v = PVector.mult(direction, -factor);
-        v.add(node2.getPosition());
-        PVector cp2 = PVector.sub(v, n);
+        Vector v2 = new Vector(direction);
+        v2.mult(-factor);
+        v2.add(new Vector(node2.getPosition()));
+        v2.sub(n);
 
         curves.add(new CubicBezierCurveImpl(
                 node1.getPosition(),
-                cp1,
-                cp2,
+                new PointImpl(v1),
+                new PointImpl(v2),
                 node2.getPosition()));
     }
 }

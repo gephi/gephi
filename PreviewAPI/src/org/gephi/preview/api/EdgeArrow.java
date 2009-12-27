@@ -1,7 +1,5 @@
 package org.gephi.preview.api;
 
-import processing.core.PVector;
-
 /**
  * Interface of an edge arrow.
  *
@@ -21,19 +19,19 @@ public interface EdgeArrow {
      *
      * @return the edge arrow's first point
      */
-    public PVector getPt1();
+    public Point getPt1();
 
     /**
      * Returns the edge arrow's second point.
      *
      * @return the edge arrow's second point
      */
-    public PVector getPt2();
+    public Point getPt2();
 
     /**
      * Returns the edge arrow's third point.
      *
      * @return the edge arrow's third point
      */
-    public PVector getPt3();
+    public Point getPt3();
 }

@@ -4,13 +4,14 @@ import java.awt.Font;
 import org.gephi.preview.api.Color;
 import org.gephi.preview.api.Node;
 import org.gephi.preview.api.NodeColorizerClient;
+import org.gephi.preview.api.Point;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.util.Holder;
 import org.gephi.preview.util.color.SimpleColor;
 import org.gephi.preview.supervisors.NodeSupervisorImpl;
 import org.gephi.preview.util.HolderImpl;
+import org.gephi.preview.util.Vector;
 import org.openide.util.Lookup;
-import processing.core.PVector;
 
 /**
  * Implementation of a preview node.
@@ -20,12 +21,11 @@ import processing.core.PVector;
 public class NodeImpl implements Node, NodeColorizerClient {
 
     private final GraphImpl parent;
-    private final PVector position;
+    private final Point position;
     private final Float radius;
     private final Color originalColor;
     private final HolderImpl<Color> colorHolder = new HolderImpl<Color>();
-    private final PVector topLeftPosition;
-    private final PVector bottomRightPosition;
+    private final PointImpl topLeftPosition, bottomRightPosition;
     private final NodeLabelImpl label;
     private final NodeLabelBorderImpl labelBorder;
 
@@ -43,24 +43,23 @@ public class NodeImpl implements Node, NodeColorizerClient {
      */
     public NodeImpl(GraphImpl parent, String label, float x, float y, float radius, float r, float g, float b) {
         this.parent = parent;
-        this.position = new PVector(x, y);
+        this.position = new PointImpl(x, y);
         this.radius = radius;
         this.originalColor = new SimpleColor(r, g, b, 0);
         this.label = new NodeLabelImpl(this, label);
         this.labelBorder = new NodeLabelBorderImpl(this);
 
-        topLeftPosition = position.get();
-        topLeftPosition.sub(radius, radius, 0);
+        Vector topLeftVector = new Vector(position);
+        topLeftVector.sub(radius, radius, 0);
+        topLeftPosition = new PointImpl(topLeftVector);
 
-        bottomRightPosition = position.get();
-        bottomRightPosition.add(radius, radius, 0);
+        Vector bottomRightVector = new Vector(position);
+        bottomRightVector.add(radius, radius, 0);
+        bottomRightPosition = new PointImpl(bottomRightVector);
 
         getNodeSupervisor().addNode(this);
     }
 
-    /**
-     * @see Node#hasLabel()
-     */
     public boolean hasLabel() {
         return null != label;
     }
@@ -84,30 +83,18 @@ public class NodeImpl implements Node, NodeColorizerClient {
         return parent;
     }
 
-    /**
-     * @see Node#getPosition()
-     */
-    public PVector getPosition() {
+    public Point getPosition() {
         return position;
     }
 
-    /**
-     * @see Node#getTopLeftPosition()
-     */
-    public PVector getTopLeftPosition() {
+    public Point getTopLeftPosition() {
         return topLeftPosition;
     }
 
-    /**
-     * @see Node#getBottomRightPosition()
-     */
-    public PVector getBottomRightPosition() {
+    public Point getBottomRightPosition() {
         return bottomRightPosition;
     }
 
-    /**
-     * @see Node#getLabel()
-     */
     public NodeLabelImpl getLabel() {
         return label;
     }
@@ -121,79 +108,46 @@ public class NodeImpl implements Node, NodeColorizerClient {
         return getNodeSupervisor().getNodeLabelFont();
     }
 
-    /**
-     * @see Node#getLabelBorder()
-     */
     public NodeLabelBorderImpl getLabelBorder() {
         return labelBorder;
     }
 
-    /**
-     * @see Node#getRadius()
-     */
     public Float getRadius() {
         return radius;
     }
 
-    /**
-     * @see Node#getDiameter()
-     */
     public Float getDiameter() {
         return radius * 2;
     }
 
-    /**
-     * @see NodeColorizerClient#getOriginalColor()
-     */
     public Color getOriginalColor() {
         return originalColor;
     }
 
-    /**
-     * @see Node#getColor()
-     */
     public Color getColor() {
         return colorHolder.getComponent();
     }
 
-    /**
-     * @see Node#getColorHolder()
-     */
     public Holder<Color> getColorHolder() {
         return colorHolder;
     }
 
-    /**
-     * @see NodeColorizerClient#setColor(org.gephi.preview.api.Color)
-     */
     public void setColor(Color color) {
         colorHolder.setComponent(color);
     }
 
-    /**
-     * @see Node#getBorderColor()
-     */
     public Color getBorderColor() {
         return getNodeSupervisor().getNodeBorderColorizer().getColor();
     }
 
-    /**
-     * @see Node#getBorderWidth()
-     */
     public Float getBorderWidth() {
         return getNodeSupervisor().getNodeBorderWidth();
     }
 
-    /**
-     * @see Node#showLabel()
-     */
     public Boolean showLabel() {
         return getNodeSupervisor().getShowNodeLabels();
     }
 
-    /**
-     * @see Node#showLabelBorders()
-     */
     public Boolean showLabelBorders() {
         return getNodeSupervisor().getShowNodeLabelBorders();
     }

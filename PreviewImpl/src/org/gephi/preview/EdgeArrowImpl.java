@@ -4,10 +4,11 @@ import org.gephi.preview.api.Color;
 import org.gephi.preview.api.EdgeArrow;
 import org.gephi.preview.api.EdgeChildColorizerClient;
 import org.gephi.preview.api.EdgeColorizerClient;
+import org.gephi.preview.api.Point;
 import org.gephi.preview.api.supervisors.DirectedEdgeSupervisor;
 import org.gephi.preview.api.util.Holder;
 import org.gephi.preview.util.HolderImpl;
-import processing.core.PVector;
+import org.gephi.preview.util.Vector;
 
 /**
  * Implementation of an edge arrow.
@@ -18,11 +19,9 @@ public abstract class EdgeArrowImpl implements EdgeArrow, EdgeChildColorizerClie
 
     protected final DirectedEdgeImpl parent;
     private final HolderImpl<Color> colorHolder = new HolderImpl<Color>();
-    protected PVector pt1;
-    protected PVector pt2;
-    protected PVector pt3;
+    protected PointImpl pt1, pt2, pt3;
     protected NodeImpl refNode;
-    protected PVector direction;
+    protected Vector direction;
     protected float addedRadius;
     protected static final float BASE_RATIO = 0.5f;
 
@@ -54,15 +53,15 @@ public abstract class EdgeArrowImpl implements EdgeArrow, EdgeChildColorizerClie
         genPt3();           // last point (not on the edge)
     }
 
-    public final PVector getPt1() {
+    public final Point getPt1() {
         return pt1;
     }
 
-    public final PVector getPt2() {
+    public final Point getPt2() {
         return pt2;
     }
 
-    public final PVector getPt3() {
+    public final Point getPt3() {
         return pt3;
     }
 
@@ -91,26 +90,32 @@ public abstract class EdgeArrowImpl implements EdgeArrow, EdgeChildColorizerClie
      * Generates the edge arrow's first point.
      */
     protected void genPt1() {
-        pt1 = PVector.mult(direction, addedRadius);
-        pt1.add(refNode.getPosition());
+        Vector v = new Vector(direction);
+        v.mult(addedRadius);
+        v.add(new Vector(refNode.getPosition()));
+
+        pt1 = new PointImpl(v);
     }
 
     /**
      * Generates the edge arrow's second point.
      */
     protected void genPt2() {
-        float arrowSize = getDirectedEdgeSupervisor().getArrowSize();
-        pt2 = PVector.mult(direction, arrowSize);
-        pt2.add(pt1);
+        Vector v = new Vector(direction);
+        v.mult(getDirectedEdgeSupervisor().getArrowSize());
+        v.add(new Vector(pt1));
+
+        pt2 = new PointImpl(v);
     }
 
     /**
      * Generates the edge arrow's third point.
      */
     protected void genPt3() {
-        float arrowSize = getDirectedEdgeSupervisor().getArrowSize();
-        pt3 = new PVector(-direction.y, direction.x);
-        pt3.mult(BASE_RATIO * arrowSize); // base size
-        pt3.add(pt1);
+        Vector v = new Vector(-direction.y, direction.x);
+        v.mult(BASE_RATIO * getDirectedEdgeSupervisor().getArrowSize());
+        v.add(new Vector(pt1));
+
+        pt3 = new PointImpl(v);
     }
 }
