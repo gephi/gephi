@@ -20,4 +20,13 @@ public abstract class LabelShortener {
 
         client.setValue(value);
     }
+
+    /**
+     * Reverts the original value of the given label.
+     *
+     * @param client  the label to revert the original value
+     */
+    public static void revertLabel(LabelShortenerClient client) {
+        client.revertOriginalValue();
+    }
 }

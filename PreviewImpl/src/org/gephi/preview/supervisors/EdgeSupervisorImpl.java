@@ -22,6 +22,7 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
     protected Boolean curvedFlag;
     protected EdgeColorizer colorizer;
     protected Boolean showLabelsFlag;
+    protected Boolean shortenLabelsFlag;
     protected Integer labelMaxChar;
     protected Font labelFont;
     protected EdgeChildColorizer labelColorizer;
@@ -37,7 +38,7 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
         getSupervisedEdges().add(edge);
         colorEdge(edge);
         colorEdgeLabel(edge);
-        shortenEdgeLabel(edge);
+        updateEdgeLabelValue(edge);
     }
 
     /**
@@ -155,7 +156,26 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
      */
     public void setLabelMaxChar(Integer value) {
         labelMaxChar = value;
-        shortenEdgeLabels();
+        updateEdgeLabelValues();
+    }
+
+    /**
+     * Returns whether the edge labels must be shortened.
+     *
+     * @return true to shorten the edge labels
+     */
+    public Boolean getShortenLabelsFlag() {
+        return shortenLabelsFlag;
+    }
+
+    /**
+     * Defines if the edge labels must be shortened.
+     *
+     * @param value  true to shorten the edge labels
+     */
+    public void setShortenLabelsFlag(Boolean value) {
+        shortenLabelsFlag = value;
+        updateEdgeLabelValues();
     }
 
     /**
@@ -232,6 +252,30 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
     }
 
     /**
+     * Updates the edge label by shortening its value or by reverting its
+     * original one.
+     */
+    private void updateEdgeLabelValue(EdgeImpl edge) {
+        if (shortenLabelsFlag) {
+            shortenEdgeLabel(edge);
+        } else {
+            revertEdgeLabel(edge);
+        }
+    }
+
+    /**
+     * Updates the edge labels by shortening their values or by reverting their
+     * original ones.
+     */
+    private void updateEdgeLabelValues() {
+        if (shortenLabelsFlag) {
+            shortenEdgeLabels();
+        } else {
+            revertEdgeLabels();
+        }
+    }
+
+    /**
      * Shortens the given edge label.
      *
      * @param edgeLabel  the edge label to shorten
@@ -257,6 +301,35 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
     private void shortenEdgeLabels() {
         for (EdgeImpl e : getSupervisedEdges()) {
             shortenEdgeLabel(e);
+        }
+    }
+
+    /**
+     * Reverts the original value of the the given edge label.
+     *
+     * @param edge  the edge label to revert the original value
+     */
+    private void revertEdgeLabel(EdgeLabelImpl edgeLabel) {
+        LabelShortener.revertLabel(edgeLabel);
+    }
+
+    /**
+     * Reverts the label of the given edge.
+     *
+     * @param edge  the edge to revert the label
+     */
+    private void revertEdgeLabel(EdgeImpl edge) {
+        if (edge.hasLabel()) {
+            revertEdgeLabel(edge.getLabel());
+        }
+    }
+
+    /**
+     * Reverts the labels of the supervised edges.
+     */
+    private void revertEdgeLabels() {
+        for (EdgeImpl e : getSupervisedEdges()) {
+            revertEdgeLabel(e);
         }
     }
 }
