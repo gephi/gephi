@@ -1,6 +1,6 @@
 package org.gephi.preview;
 
-import org.gephi.preview.api.util.HAlign;
+import org.gephi.preview.util.HAlignImpl;
 import org.gephi.preview.util.Vector;
 
 /**
@@ -17,7 +17,7 @@ class EdgeMiniLabelB2 extends EdgeMiniLabelImpl {
      */
     public EdgeMiniLabelB2(DirectedEdgeImpl parent) {
         super(parent, parent.getNode1().getLabel().getOriginalValue());
-        hAlign = HAlign.RIGHT;
+        hAlign = HAlignImpl.RIGHT;
     }
 
     /**
