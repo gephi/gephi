@@ -92,12 +92,12 @@ public class PreviewNode extends AbstractNode {
                     });
 
             undirectedEdgeSet.put(new Property[]{
-                        createProperty(unes, Boolean.class, "curvedFlag", "curvedUniEdges", "Curved Bi. Edges"),
-                        createProperty(unes, EdgeColorizer.class, "colorizer", "uniEdgeColor", "Bi. Edge Color", EdgeColorizerPropertyEditor.class),
-                        createProperty(unes, Boolean.class, "showLabelsFlag", "showUniEdgeLabels", "Show Bi. Edge Labels"),
-                        createProperty(unes, Integer.class, "labelMaxChar", "uniEdgeLabelMaxChar", "Bi. Edge Label Char Limit"),
-                        createProperty(unes, Font.class, "labelFont", "uniEdgeLabelFont", "Bi. Edge Label Font"),
-                        createProperty(unes, EdgeChildColorizer.class, "labelColorizer", "uniEdgeLabelColor", "Bi. Edge Label Color", EdgeChildColorizerPropertyEditor.class)
+                        createProperty(unes, Boolean.class, "curvedFlag", "curvedUndirectedEdges", "Curved Undirected Edges"),
+                        createProperty(unes, EdgeColorizer.class, "colorizer", "undirectedEdgeColor", "Undirected Edge Color", EdgeColorizerPropertyEditor.class),
+                        createProperty(unes, Boolean.class, "showLabelsFlag", "showUndirectedEdgeLabels", "Show Undirected Edge Labels"),
+                        createProperty(unes, Integer.class, "labelMaxChar", "undirectedEdgeLabelMaxChar", "Undirected Edge Label Char Limit"),
+                        createProperty(unes, Font.class, "labelFont", "undirectedEdgeLabelFont", "Undirected Edge Label Font"),
+                        createProperty(unes, EdgeChildColorizer.class, "labelColorizer", "undirectedEdgeLabelColor", "Undirected Edge Label Color", EdgeChildColorizerPropertyEditor.class)
                     });
 
             uniEdgeSet.put(new Property[]{
@@ -119,21 +119,21 @@ public class PreviewNode extends AbstractNode {
                     });
 
             biEdgeSet.put(new Property[]{
-                        createProperty(bes, Boolean.class, "curvedFlag", "curvedUniEdges", "Curved Bi. Edges"),
-                        createProperty(bes, EdgeColorizer.class, "colorizer", "uniEdgeColor", "Bi. Edge Color", EdgeColorizerPropertyEditor.class),
-                        createProperty(bes, Boolean.class, "showLabelsFlag", "showUniEdgeLabels", "Show Bi. Edge Labels"),
-                        createProperty(bes, Integer.class, "labelMaxChar", "uniEdgeLabelMaxChar", "Bi. Edge Label Char Limit"),
-                        createProperty(bes, Font.class, "labelFont", "uniEdgeLabelFont", "Bi. Edge Label Font"),
-                        createProperty(bes, EdgeChildColorizer.class, "labelColorizer", "uniEdgeLabelColor", "Bi. Edge Label Color", EdgeChildColorizerPropertyEditor.class),
-                        createProperty(bes, Boolean.class, "showMiniLabelsFlag", "showUniEdgeMiniLabels", "Show Bi. Edge Mini-Labels"),
-                        createProperty(bes, Float.class, "miniLabelAddedRadius", "uniEdgeMiniLabelAddedRadius", "Bi. Edge Mini-Label Added Radius"),
-                        createProperty(bes, Integer.class, "miniLabelMaxChar", "uniEdgeMiniLabelMaxChar", "Bi. Edge Mini-Label Char Limit"),
-                        createProperty(bes, Font.class, "miniLabelFont", "uniEdgeMiniLabelFont", "Bi. Edge Mini-Label Font"),
-                        createProperty(bes, EdgeChildColorizer.class, "miniLabelColorizer", "uniEdgeMiniLabelColor", "Bi. Edge Mini-Label Color", EdgeChildColorizerPropertyEditor.class),
-                        createProperty(bes, Boolean.class, "showArrowsFlag", "showUniEdgeArrows", "Show Bi. Edge Arrows"),
-                        createProperty(bes, Float.class, "arrowAddedRadius", "uniEdgeArrowAddedRadius", "Bi. Edge Arrow Added Radius"),
-                        createProperty(bes, Float.class, "arrowSize", "uniEdgeArrowSize", "Bi. Edge Arrow Size"),
-                        createProperty(bes, EdgeChildColorizer.class, "arrowColorizer", "uniEdgeArrowColor", "Bi. Edge Arrow Color", EdgeChildColorizerPropertyEditor.class)
+                        createProperty(bes, Boolean.class, "curvedFlag", "curvedBiEdges", "Curved Bi. Edges"),
+                        createProperty(bes, EdgeColorizer.class, "colorizer", "biEdgeColor", "Bi. Edge Color", EdgeColorizerPropertyEditor.class),
+                        createProperty(bes, Boolean.class, "showLabelsFlag", "showBiEdgeLabels", "Show Bi. Edge Labels"),
+                        createProperty(bes, Integer.class, "labelMaxChar", "biEdgeLabelMaxChar", "Bi. Edge Label Char Limit"),
+                        createProperty(bes, Font.class, "labelFont", "biEdgeLabelFont", "Bi. Edge Label Font"),
+                        createProperty(bes, EdgeChildColorizer.class, "labelColorizer", "biEdgeLabelColor", "Bi. Edge Label Color", EdgeChildColorizerPropertyEditor.class),
+                        createProperty(bes, Boolean.class, "showMiniLabelsFlag", "showBiEdgeMiniLabels", "Show Bi. Edge Mini-Labels"),
+                        createProperty(bes, Float.class, "miniLabelAddedRadius", "biEdgeMiniLabelAddedRadius", "Bi. Edge Mini-Label Added Radius"),
+                        createProperty(bes, Integer.class, "miniLabelMaxChar", "biEdgeMiniLabelMaxChar", "Bi. Edge Mini-Label Char Limit"),
+                        createProperty(bes, Font.class, "miniLabelFont", "biEdgeMiniLabelFont", "Bi. Edge Mini-Label Font"),
+                        createProperty(bes, EdgeChildColorizer.class, "miniLabelColorizer", "biEdgeMiniLabelColor", "Bi. Edge Mini-Label Color", EdgeChildColorizerPropertyEditor.class),
+                        createProperty(bes, Boolean.class, "showArrowsFlag", "showBiEdgeArrows", "Show Bi. Edge Arrows"),
+                        createProperty(bes, Float.class, "arrowAddedRadius", "biEdgeArrowAddedRadius", "Bi. Edge Arrow Added Radius"),
+                        createProperty(bes, Float.class, "arrowSize", "BiEdgeArrowSize", "Bi. Edge Arrow Size"),
+                        createProperty(bes, EdgeChildColorizer.class, "arrowColorizer", "biEdgeArrowColor", "Bi. Edge Arrow Color", EdgeChildColorizerPropertyEditor.class)
                     });
 
         } catch (NoSuchMethodException ex) {
