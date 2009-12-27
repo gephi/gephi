@@ -104,6 +104,7 @@ final class PreviewTopComponent extends TopComponent {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 24;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         add(bannerPanel, gridBagConstraints);
 
@@ -111,8 +112,11 @@ final class PreviewTopComponent extends TopComponent {
         previewPanel.setLayout(new java.awt.BorderLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 535;
+        gridBagConstraints.ipady = 304;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         add(previewPanel, gridBagConstraints);
