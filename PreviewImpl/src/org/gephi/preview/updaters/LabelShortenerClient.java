@@ -20,4 +20,9 @@ public interface LabelShortenerClient {
      * @param value  the label's current value to set
      */
     public void setValue(String value);
+
+    /**
+     * Reverts the label's original value.
+     */
+    public void revertOriginalValue();
 }

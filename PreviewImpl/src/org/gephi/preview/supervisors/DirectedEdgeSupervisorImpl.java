@@ -21,6 +21,7 @@ public abstract class DirectedEdgeSupervisorImpl extends EdgeSupervisorImpl
         implements DirectedEdgeSupervisor {
 
     protected Boolean showMiniLabelsFlag;
+    protected Boolean shortenMiniLabelsFlag;
     protected Integer miniLabelMaxChar;
     protected Font miniLabelFont;
     protected Float miniLabelAddedRadius;
@@ -38,7 +39,7 @@ public abstract class DirectedEdgeSupervisorImpl extends EdgeSupervisorImpl
         super.addEdge(edge);
         positionEdgeMiniLabels(edge);
         colorEdgeMiniLabels(edge);
-        shortenEdgeMiniLabels(edge);
+        updateEdgeMiniLabelValues(edge);
         positionEdgeArrows(edge);
         colorEdgeArrows(edge);
     }
@@ -65,7 +66,16 @@ public abstract class DirectedEdgeSupervisorImpl extends EdgeSupervisorImpl
 
     public void setMiniLabelMaxChar(Integer value) {
         miniLabelMaxChar = value;
-        shortenEdgeMiniLabels();
+        updateEdgeMiniLabelValues();
+    }
+
+    public Boolean getShortenMiniLabelsFlag() {
+        return shortenMiniLabelsFlag;
+    }
+
+    public void setShortenMiniLabelsFlag(Boolean value) {
+        shortenMiniLabelsFlag = value;
+        updateEdgeMiniLabelValues();
     }
 
     public Float getMiniLabelAddedRadius() {
@@ -185,9 +195,33 @@ public abstract class DirectedEdgeSupervisorImpl extends EdgeSupervisorImpl
     }
 
     /**
+     * Updates the edge mini-labels by shortening their value or by reverting
+     * their original one.
+     */
+    private void updateEdgeMiniLabelValues(DirectedEdgeImpl edge) {
+        if (shortenMiniLabelsFlag) {
+            shortenEdgeMiniLabels(edge);
+        } else {
+            revertEdgeMiniLabels(edge);
+        }
+    }
+
+    /**
+     * Updates the edge mini-labels by shortening their value or by reverting
+     * their original ones.
+     */
+    private void updateEdgeMiniLabelValues() {
+        if (shortenMiniLabelsFlag) {
+            shortenEdgeMiniLabels();
+        } else {
+            revertEdgeMiniLabels();
+        }
+    }
+
+    /**
      * Shortens the given edge mini-label.
      *
-     * @param edgeMiniLabel  the edge mini-label to color
+     * @param edgeMiniLabel  the edge mini-label to shorten
      */
     private void shortenEdgeMiniLabel(EdgeMiniLabelImpl edgeMiniLabel) {
         LabelShortener.shortenLabel(edgeMiniLabel, miniLabelMaxChar);
@@ -210,6 +244,35 @@ public abstract class DirectedEdgeSupervisorImpl extends EdgeSupervisorImpl
     private void shortenEdgeMiniLabels() {
         for (DirectedEdgeImpl e : supervisedEdges) {
             shortenEdgeMiniLabels(e);
+        }
+    }
+
+    /**
+     * Reverts the original value of the given edge mini-label.
+     *
+     * @param edgeMiniLabel  the edge mini-label to revert the original value
+     */
+    private void revertEdgeMiniLabel(EdgeMiniLabelImpl edgeMiniLabel) {
+        LabelShortener.revertLabel(edgeMiniLabel);
+    }
+
+    /**
+     * Reverts the mini-labels of the given edge.
+     *
+     * @param edge  the edge to revert the mini-labels
+     */
+    private void revertEdgeMiniLabels(DirectedEdgeImpl edge) {
+        for (EdgeMiniLabel ml : edge.getMiniLabels()) {
+            revertEdgeMiniLabel((EdgeMiniLabelImpl) ml);
+        }
+    }
+
+    /**
+     * Reverts the mini-labels of the supervised edges.
+     */
+    private void revertEdgeMiniLabels() {
+        for (DirectedEdgeImpl e : supervisedEdges) {
+            revertEdgeMiniLabels(e);
         }
     }
 

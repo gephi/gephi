@@ -5,7 +5,7 @@ import org.gephi.preview.api.Color;
 import org.gephi.preview.api.EdgeColorizerClient;
 import org.gephi.preview.api.EdgeMiniLabel;
 import org.gephi.preview.api.supervisors.DirectedEdgeSupervisor;
-import org.gephi.preview.api.util.HAlign;
+import org.gephi.preview.util.HAlignImpl;
 import org.gephi.preview.api.util.Holder;
 
 /**
@@ -17,7 +17,7 @@ public abstract class EdgeMiniLabelImpl extends AbstractEdgeLabel
         implements EdgeMiniLabel {
 
     protected final DirectedEdgeImpl parent;
-    protected HAlign hAlign;
+    protected HAlignImpl hAlign;
 
     /**
      * Constructor.
@@ -44,7 +44,7 @@ public abstract class EdgeMiniLabelImpl extends AbstractEdgeLabel
      */
     public abstract void genPosition();
 
-    public HAlign getHAlign() {
+    public HAlignImpl getHAlign() {
         return hAlign;
     }
 

@@ -72,6 +72,10 @@ public abstract class AbstractEdgeLabel implements LabelShortenerClient, EdgeChi
         colorHolder.setComponent(color);
     }
 
+    public void revertOriginalValue() {
+        setValue(originalValue);
+    }
+
     /**
      * Sets the edge label's position above its parent edge's one.
      */

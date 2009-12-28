@@ -26,31 +26,23 @@ public class NodeLabelImpl extends AbstractNodeChild
         originalValue = value;
     }
 
-    /**
-     * @see LabelShortenerClient#getOriginalValue()
-     */
+    public Font getFont() {
+        return parent.getLabelFont();
+    }
+
     public String getOriginalValue() {
         return originalValue;
     }
 
-    /**
-     * @see NodeLabel#getValue()
-     */
     public String getValue() {
         return value;
     }
 
-    /**
-     * @see LabelShortenerClient#getOriginalValue()
-     */
     public void setValue(String value) {
         this.value = value;
     }
 
-    /**
-     * @see NodeLabel#getFont()
-     */
-    public Font getFont() {
-        return parent.getLabelFont();
+    public void revertOriginalValue() {
+        setValue(originalValue);
     }
 }

@@ -20,10 +20,12 @@ public class UnidirectionalEdgeSupervisorImpl extends DirectedEdgeSupervisorImpl
         curvedFlag = false;
         colorizer = new EdgeB1ColorMode();
         showLabelsFlag = true;
+        shortenLabelsFlag = false;
         labelMaxChar = 10;
         labelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
         labelColorizer = new ParentColorMode();
         showMiniLabelsFlag = true;
+        shortenMiniLabelsFlag = false;
         miniLabelMaxChar = 10;
         miniLabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 8);
         miniLabelAddedRadius = 15f;

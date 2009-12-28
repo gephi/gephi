@@ -27,6 +27,7 @@ public class NodeSupervisorImpl implements NodeSupervisor {
     private GenericColorizer nodeBorderColorizer = new CustomColorMode(0, 0, 0);
     private Boolean showNodeLabels = true;
     private Font nodeLabelfont = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
+    private Boolean shortenLabelsFlag = false;
     private Integer nodeLabelMaxChar = 10;
     private NodeChildColorizer nodeLabelColorizer = new CustomColorMode(0, 0, 0);
     private Boolean showNodeLabelBorders = true;
@@ -43,10 +44,10 @@ public class NodeSupervisorImpl implements NodeSupervisor {
     public void addNode(NodeImpl node) {
         supervisedNodes.add(node);
 
-        colorNodes();
-        shortenNodeLabels();
-        colorNodeLabels();
-        colorNodeLabelBorders();
+        colorNode(node);
+        colorNodeLabel(node.getLabel());
+        colorNodeLabelBorder(node.getLabelBorder());
+        updateLabelValue(node.getLabel());
     }
 
     /**
@@ -181,7 +182,26 @@ public class NodeSupervisorImpl implements NodeSupervisor {
      */
     public void setNodeLabelMaxChar(Integer value) {
         nodeLabelMaxChar = value;
-        shortenNodeLabels();
+        updateLabelValues();
+    }
+
+    /**
+     * Returns whether the node labels must be shortened.
+     *
+     * @return true to shorten the node labels
+     */
+    public Boolean getShortenLabelsFlag() {
+        return shortenLabelsFlag;
+    }
+
+    /**
+     * Defines if the node labels must be shortened.
+     *
+     * @param value  true to shorten the node labels
+     */
+    public void setShortenLabelsFlag(Boolean value) {
+        shortenLabelsFlag = value;
+        updateLabelValues();
     }
 
     /**
@@ -259,6 +279,30 @@ public class NodeSupervisorImpl implements NodeSupervisor {
     }
 
     /**
+     * Updates the node label by shortening its value or by reverting its
+     * original one.
+     */
+    private void updateLabelValue(NodeLabelImpl nodeLabel) {
+        if (shortenLabelsFlag) {
+            shortenNodeLabel(nodeLabel);
+        } else {
+            revertLabel(nodeLabel);
+        }
+    }
+
+    /**
+     * Updates the node labels by shortening their values or by reverting their
+     * original ones.
+     */
+    private void updateLabelValues() {
+        if (shortenLabelsFlag) {
+            shortenNodeLabels();
+        } else {
+            revertLabels();
+        }
+    }
+
+    /**
      * Shortens the given node label.
      *
      * @param nodeLabel  the node label to shorten
@@ -274,6 +318,26 @@ public class NodeSupervisorImpl implements NodeSupervisor {
         for (NodeImpl n : supervisedNodes) {
             if (n.hasLabel()) {
                 shortenNodeLabel(n.getLabel());
+            }
+        }
+    }
+
+    /**
+     * Reverts the original value of the given node label.
+     *
+     * @param nodeLabel  the node label to revert the original value
+     */
+    private void revertLabel(NodeLabelImpl nodeLabel) {
+        LabelShortener.revertLabel(nodeLabel);
+    }
+
+    /**
+     * Reverts the labels of the supervised nodes.
+     */
+    private void revertLabels() {
+        for (NodeImpl n : supervisedNodes) {
+            if (n.hasLabel()) {
+                revertLabel(n.getLabel());
             }
         }
     }

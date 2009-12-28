@@ -53,6 +53,20 @@ public interface DirectedEdgeSupervisor extends EdgeSupervisor {
     public void setMiniLabelMaxChar(Integer value);
 
     /**
+     * Returns whether the edge mini-labels must be shortened.
+     *
+     * @return true to shorten the edge mini-labels
+     */
+    public Boolean getShortenMiniLabelsFlag();
+
+    /**
+     * Defines if the edge mini-labels must be shortened.
+     *
+     * @param value  true to shorten the edge mini-labels
+     */
+    public void setShortenMiniLabelsFlag(Boolean value);
+
+    /**
      * Returns the edge mini-label added radius.
      *
      * @return the edge mini-label added radius
