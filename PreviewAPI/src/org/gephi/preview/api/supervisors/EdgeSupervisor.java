@@ -89,6 +89,20 @@ public interface EdgeSupervisor extends Supervisor {
     public void setLabelMaxChar(Integer value);
 
     /**
+     * Returns whether the edge labels must be shortened.
+     *
+     * @return true to shorten the edge labels
+     */
+    public Boolean getShortenLabelsFlag();
+
+    /**
+     * Defines if the edge labels must be shortened.
+     *
+     * @param value  true to shorten the edge labels
+     */
+    public void setShortenLabelsFlag(Boolean value);
+
+    /**
      * Returns the edge label colorizer.
      *
      * @return the edge label colorizer

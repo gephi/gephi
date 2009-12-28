@@ -41,9 +41,6 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
         updateEdgeLabelValue(edge);
     }
 
-    /**
-     * Clears the list of supervised edges.
-     */
     public void clearSupervised() {
         getSupervisedEdges().clear();
     }
@@ -58,140 +55,65 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
         return controller.getGlobalEdgeSupervisor();
     }
 
-    /**
-     * Returns true if the edges must be displayed in the preview.
-     *
-     * @return true if the edges must be displayed in the preview
-     */
     public Boolean getShowFlag() {
         return getGlobalEdgeSupervisor().getShowFlag();
     }
 
-    /**
-     * Returns true if the edges are curved.
-     * 
-     * @return true if the edges are curved
-     */
     public Boolean getCurvedFlag() {
         return curvedFlag;
     }
 
-    /**
-     * Defines if the edges are curved.
-     *
-     * @param value  true for curved edges
-     */
     public void setCurvedFlag(Boolean value) {
         curvedFlag = value;
     }
 
-    /**
-     * Returns the edge colorizer.
-     *
-     * @return the edge colorizer
-     */
     public EdgeColorizer getColorizer() {
         return colorizer;
     }
 
-    /**
-     * Defines the edge colorizer.
-     *
-     * @param value  the edge colorizer to set
-     */
     public void setColorizer(EdgeColorizer value) {
         colorizer = value;
         colorEdges();
     }
 
-    /**
-     * Returns true if the edge labels must be displayed in the preview.
-     *
-     * @return true if the edge labels must be displayed in the preview
-     */
     public Boolean getShowLabelsFlag() {
         return showLabelsFlag;
     }
 
-    /**
-     * Defines if the edge labels must be displayed in the preview.
-     *
-     * @param value  true to display the edge labels in the preview
-     */
     public void setShowLabelsFlag(Boolean value) {
         showLabelsFlag = value;
     }
 
-    /**
-     * Returns the edge label font.
-     *
-     * @return the edge label font
-     */
     public Font getLabelFont() {
         return labelFont;
     }
 
-    /**
-     * Defines the edge label font.
-     *
-     * @param value  the edge label font to set
-     */
     public void setLabelFont(Font value) {
         labelFont = value;
     }
 
-    /**
-     * Returns the edge label character limit.
-     *
-     * @return the edge label character limit
-     */
     public Integer getLabelMaxChar() {
         return labelMaxChar;
     }
 
-    /**
-     * Defines the edge label character limit.
-     *
-     * @param value  the edge label character limit to set
-     */
     public void setLabelMaxChar(Integer value) {
         labelMaxChar = value;
         updateEdgeLabelValues();
     }
 
-    /**
-     * Returns whether the edge labels must be shortened.
-     *
-     * @return true to shorten the edge labels
-     */
     public Boolean getShortenLabelsFlag() {
         return shortenLabelsFlag;
     }
 
-    /**
-     * Defines if the edge labels must be shortened.
-     *
-     * @param value  true to shorten the edge labels
-     */
     public void setShortenLabelsFlag(Boolean value) {
         shortenLabelsFlag = value;
         updateEdgeLabelValues();
     }
 
-    /**
-     * Returns the edge label colorizer.
-     *
-     * @return the edge label colorizer
-     */
     public EdgeChildColorizer getLabelColorizer() {
         return labelColorizer;
     }
 
-    /**
-     * Defines the edge label colorizer.
-     *
-     * @param value  the edge label colorizer to set
-     */
     public void setLabelColorizer(EdgeChildColorizer value) {
         labelColorizer = value;
         colorEdgeLabels();
