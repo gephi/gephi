@@ -69,13 +69,14 @@ public abstract class DirectedEdgeImpl extends EdgeImpl implements DirectedEdge 
 
     public Boolean showArrows() {
         DirectedEdgeSupervisor supervisor = getDirectedEdgeSupervisor();
-        float minlength = node1.getRadius() + node2.getRadius() + 2 * supervisor.getArrowAddedRadius() + 2 * supervisor.getArrowSize();
+        float minlength = node1.getRadius() + node2.getRadius() + 2 * supervisor.getArrowAddedRadius() + 2 * supervisor.getArrowSize() + 30;
         return supervisor.getShowArrowsFlag() && length >= minlength;
     }
 
     public Boolean showMiniLabels() {
         DirectedEdgeSupervisor supervisor = getDirectedEdgeSupervisor();
-        float minlength = node1.getRadius() + node2.getRadius() + 2 * 0.65f * supervisor.getMiniLabelMaxChar() * supervisor.getMiniLabelFont().getSize();
+        int labelSize = supervisor.getShortenMiniLabelsFlag() ? supervisor.getMiniLabelMaxChar() : 10;
+        float minlength = node1.getRadius() + node2.getRadius() + 2 * 0.65f * labelSize * supervisor.getMiniLabelFont().getSize() + 30;
         return supervisor.getShowMiniLabelsFlag() && length >= minlength;
     }
 

@@ -147,7 +147,8 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
 
     public Boolean showLabel() {
         EdgeSupervisor supervisor = getEdgeSupervisor();
-        float minlength = node1.getRadius() + node2.getRadius() + 0.65f * supervisor.getLabelMaxChar() * supervisor.getLabelFont().getSize();
+        int labelSize = supervisor.getShortenLabelsFlag() ? supervisor.getLabelMaxChar() : 10;
+        float minlength = node1.getRadius() + node2.getRadius() + 0.65f * labelSize * supervisor.getLabelFont().getSize();
         return supervisor.getShowLabelsFlag() && length >= minlength;
     }
 
