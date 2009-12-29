@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayDeque;
+import java.util.Locale;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.GVTBuilder;
@@ -16,8 +17,6 @@ import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.svg2svg.SVGTranscoder;
-import org.gephi.io.exporter.Exporter;
-import org.gephi.io.exporter.FileExporter;
 import org.gephi.io.exporter.FileType;
 import org.gephi.io.exporter.VectorialFileExporter;
 import org.gephi.io.exporter.preview.util.LengthUnit;
@@ -70,9 +69,6 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
     private boolean cancel = false;
     private Element lastLabel;
 
-    /**
-     * @see VectorialFileExporter#exportData(java.io.File, org.gephi.workspace.api.Workspace)
-     */
     public boolean exportData(File file, Workspace workspace) throws Exception {
         try {
             SupportSize supportSize = new SupportSize(210, 297, LengthUnit.MILLIMETER);
@@ -86,38 +82,23 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         return !c;
     }
 
-    /**
-     * @see FileExporter#getFileTypes()
-     */
     public FileType[] getFileTypes() {
         return new FileType[]{new FileType(".svg", "SVG files")};
     }
 
-    /**
-     * @see Exporter#getName()
-     */
     public String getName() {
         return "SVG Exporter";
     }
 
-    /**
-     * @see LongTask#cancel()
-     */
     public boolean cancel() {
         cancel = true;
         return true;
     }
 
-    /**
-     * @see LongTask#setProgressTicket(org.gephi.utils.progress.ProgressTicket)
-     */
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progress = progressTicket;
     }
 
-    /**
-     * @see GraphRenderer#renderGraph(org.gephi.preview.api.Graph)
-     */
     public void renderGraph(Graph graph) {
         Element groupElem = createElement("g");
         groupElem.setAttribute("id", "graph");
@@ -136,9 +117,6 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         popParentElement();
     }
 
-    /**
-     * @see GraphRenderer#renderGraph(org.gephi.preview.api.Graph)
-     */
     public void renderGraphEdges(Graph graph) {
         Element edgeGroupElem = createElement("g");
         edgeGroupElem.setAttribute("id", "edges");
@@ -274,7 +252,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         pushParentElement(groupElem);
 
         Element selfLoopElem = createElement("path");
-        selfLoopElem.setAttribute("d", String.format("M %f,%f C %f,%f %f,%f %f,%f",
+        selfLoopElem.setAttribute("d", String.format(Locale.ENGLISH, "M %f,%f C %f,%f %f,%f %f,%f",
                 curve.getPt1().getX(), curve.getPt1().getY(),
                 curve.getPt2().getX(), curve.getPt2().getY(),
                 curve.getPt3().getX(), curve.getPt3().getY(),
@@ -309,7 +287,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
 
         // attach straight edge
         Element edgeElem = createElement("path");
-        edgeElem.setAttribute("d", String.format("M %f,%f L %f,%f",
+        edgeElem.setAttribute("d", String.format(Locale.ENGLISH, "M %f,%f L %f,%f",
                 boundary1.getX(), boundary1.getY(),
                 boundary2.getX(), boundary2.getY()));
         edgeElem.setAttribute("stroke", edge.getColor().toHexString());
@@ -324,7 +302,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
     public void renderCurvedEdge(Edge edge) {
         for (CubicBezierCurve curve : edge.getCurves()) {
             Element curveElem = createElement("path");
-            curveElem.setAttribute("d", String.format("M %f,%f C %f,%f %f,%f %f,%f",
+            curveElem.setAttribute("d", String.format(Locale.ENGLISH, "M %f,%f C %f,%f %f,%f %f,%f",
                     curve.getPt1().getX(), curve.getPt1().getY(),
                     curve.getPt2().getX(), curve.getPt2().getY(),
                     curve.getPt3().getX(), curve.getPt3().getY(),
@@ -350,7 +328,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
 
     public void renderEdgeArrow(EdgeArrow arrow) {
         Element arrowElem = createElement("polyline");
-        arrowElem.setAttribute("points", String.format("%f,%f %f,%f %f,%f",
+        arrowElem.setAttribute("points", String.format(Locale.ENGLISH, "%f,%f %f,%f %f,%f",
                 arrow.getPt1().getX(), arrow.getPt1().getY(),
                 arrow.getPt2().getX(), arrow.getPt2().getY(),
                 arrow.getPt3().getX(), arrow.getPt3().getY()));
@@ -369,7 +347,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         labelElem.setAttribute("fill", label.getColor().toHexString());
         labelElem.setAttribute("font-family", label.getFont().getFamily());
         labelElem.setAttribute("font-size", Integer.toString(label.getFont().getSize()));
-        labelElem.setAttribute("transform", String.format("translate(%f,%f) rotate(%f)",
+        labelElem.setAttribute("transform", String.format(Locale.ENGLISH, "translate(%f,%f) rotate(%f)",
                 label.getPosition().getX(), label.getPosition().getY(),
                 Math.toDegrees(label.getAngle())));
         labelElem.appendChild(text);
@@ -386,7 +364,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         miniLabelElem.setAttribute("fill", miniLabel.getColor().toHexString());
         miniLabelElem.setAttribute("font-family", miniLabel.getFont().getFamily());
         miniLabelElem.setAttribute("font-size", Integer.toString(miniLabel.getFont().getSize()));
-        miniLabelElem.setAttribute("transform", String.format("translate(%f,%f) rotate(%f)",
+        miniLabelElem.setAttribute("transform", String.format(Locale.ENGLISH, "translate(%f,%f) rotate(%f)",
                 miniLabel.getPosition().getX(), miniLabel.getPosition().getY(),
                 Math.toDegrees(miniLabel.getAngle())));
         miniLabelElem.appendChild(text);
@@ -467,9 +445,11 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         svgRoot.setAttributeNS(null, "width", supportSize.getWidth());
         svgRoot.setAttributeNS(null, "height", supportSize.getHeight());
         svgRoot.setAttributeNS(null, "version", "1.1");
-        svgRoot.setAttributeNS(null, "viewBox", String.format("%d %d %d %d",
-                graphSheet.getTopLeftPosition().getX(), graphSheet.getTopLeftPosition().getY(),
-                graphSheet.getWidth(), graphSheet.getHeight()));
+        svgRoot.setAttributeNS(null, "viewBox", String.format(Locale.ENGLISH, "%d %d %d %d",
+                graphSheet.getTopLeftPosition().getX().intValue(),
+                graphSheet.getTopLeftPosition().getY().intValue(),
+                graphSheet.getWidth().intValue(),
+                graphSheet.getHeight().intValue()));
         pushParentElement(svgRoot);
 
         // draws the graph exporting it into the DOM
