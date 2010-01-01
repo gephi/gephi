@@ -35,6 +35,8 @@ import javax.swing.event.ChangeListener;
  */
 public class JRangeSliderPanel extends javax.swing.JPanel {
 
+    public static final String LOWER_BOUND = "lowerbound";
+    public static final String UPPER_BOUND = "upperbound";
     private static final int SLIDER_MAXIMUM = 1000;
     private String lowerBound = "NaN";
     private String upperBound = "NaN";
@@ -60,7 +62,7 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
                     lowerBound = lowerBoundTextField.getText();
                     if (range != null) {
                         range.setLowerBound(lowerBound);
-                        firePropertyChange("lowerBound", null, lowerBound);
+                        firePropertyChange(LOWER_BOUND, null, lowerBound);
                     }
                 } else {
                     lowerBound = lowerBoundTextField.getText();
@@ -91,7 +93,7 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
                     upperBound = upperBoundTextField.getText();
                     if (range != null) {
                         range.setUpperBound(upperBound);
-                        firePropertyChange("upperBound", null, upperBound);
+                        firePropertyChange(UPPER_BOUND, null, upperBound);
                     }
                 } else {
                     upperBound = upperBoundTextField.getText();
@@ -133,6 +135,10 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
 
     public JRangeSlider getSlider() {
         return (JRangeSlider) rangeSlider;
+    }
+
+    public Range getRange() {
+        return range;
     }
 
     public void setRange(Range range) {
@@ -209,7 +215,7 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
 
     public static class Range {
 
-        private JRangeSlider slider;
+        private JRangeSliderPanel slider;
         private Object min;
         private Object max;
         private Object lowerBound;
@@ -217,7 +223,7 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
         private int sliderLowValue = -1;
         private int sliderUpValue = -1;
 
-        public Range(JRangeSlider slider, Object min, Object max) {
+        public Range(JRangeSliderPanel slider, Object min, Object max) {
             this.slider = slider;
             this.min = min;
             this.max = max;
@@ -225,12 +231,20 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
             this.upperBound = max;
         }
 
-        public Range(JRangeSlider slider, Object min, Object max, Object lowerBound, Object upperBound) {
+        public Range(JRangeSliderPanel slider, Object min, Object max, Object lowerBound, Object upperBound) {
             this.slider = slider;
             this.min = min;
             this.max = max;
             this.lowerBound = lowerBound;
             this.upperBound = upperBound;
+        }
+
+        public Object getLowerBound() {
+            return lowerBound;
+        }
+
+        public Object getUpperBound() {
+            return upperBound;
         }
 
         private void setLowerBound(String bound) {
@@ -357,18 +371,18 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
             }
             sliderLowValue = (int) (normalizedLow * SLIDER_MAXIMUM);
             sliderUpValue = (int) (normalizedUp * SLIDER_MAXIMUM);
-            slider.setValue(sliderLowValue);
-            slider.setUpperValue(sliderUpValue);
+            slider.getSlider().setValue(sliderLowValue);
+            slider.getSlider().setUpperValue(sliderUpValue);
         }
 
         private void refreshBounds() {
-            boolean lowerChanged = slider.getValue() != sliderLowValue;
-            boolean upperChanged = slider.getUpperValue() != sliderUpValue;
-            sliderLowValue = slider.getValue();
-            sliderUpValue = slider.getUpperValue();
+            boolean lowerChanged = slider.getSlider().getValue() != sliderLowValue;
+            boolean upperChanged = slider.getSlider().getUpperValue() != sliderUpValue;
+            sliderLowValue = slider.getSlider().getValue();
+            sliderUpValue = slider.getSlider().getUpperValue();
 
-            double normalizedLow = slider.getValue() / (double) SLIDER_MAXIMUM;
-            double normalizedUp = slider.getUpperValue() / (double) SLIDER_MAXIMUM;
+            double normalizedLow = slider.getSlider().getValue() / (double) SLIDER_MAXIMUM;
+            double normalizedUp = slider.getSlider().getUpperValue() / (double) SLIDER_MAXIMUM;
             if (min instanceof Float) {
                 lowerBound = lowerChanged ? new Float((normalizedLow * ((Float) max - (Float) min)) + (Float) min) : lowerBound;
                 upperBound = upperChanged ? new Float((normalizedUp * ((Float) max - (Float) min)) + (Float) min) : upperBound;
@@ -381,6 +395,13 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
             } else if (min instanceof Long) {
                 lowerBound = lowerChanged ? new Long((long) ((normalizedLow * ((Long) max - (Long) min)) + (Long) min)) : lowerBound;
                 upperBound = upperChanged ? new Long((long) ((normalizedUp * ((Long) max - (Long) min)) + (Long) min)) : upperBound;
+            }
+
+            if (lowerChanged) {
+                slider.firePropertyChange(LOWER_BOUND, null, lowerBound);
+            }
+            if (upperChanged) {
+                slider.firePropertyChange(UPPER_BOUND, null, upperBound);
             }
         }
     }
