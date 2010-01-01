@@ -394,6 +394,8 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         GraphSheet graphSheet = controller.getGraphSheet();
         Graph graph = graphSheet.getGraph();
 
+        Progress.start(progress);
+
         // calculates progress units count
         int max = 0;
         if (graph.showNodes()) {
