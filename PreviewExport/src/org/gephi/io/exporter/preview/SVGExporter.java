@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayDeque;
+import java.util.HashMap;
 import java.util.Locale;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.DocumentLoader;
@@ -62,12 +62,16 @@ import org.w3c.dom.svg.SVGRect;
 public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTask {
 
     private final static float MARGIN = 25f;
-    private final ArrayDeque<Element> parentStack = new ArrayDeque<Element>();
     private final String namespaceURI = SVGDOMImplementation.SVG_NAMESPACE_URI;
+    private final HashMap<NodeLabel, SVGLocatable> nodeLabelMap = new HashMap<NodeLabel, SVGLocatable>();
     private Document doc;
     private ProgressTicket progress;
     private boolean cancel = false;
-    private Element lastLabel;
+    private Element svgRoot;
+    private Element nodeGroupElem;
+    private Element edgeGroupElem;
+    private Element labelGroupElem;
+    private Element labelBorderGroupElem;
 
     public boolean exportData(File file, Workspace workspace) throws Exception {
         try {
@@ -100,28 +104,22 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     public void renderGraph(Graph graph) {
-        Element groupElem = createElement("g");
-        groupElem.setAttribute("id", "graph");
-        appendToParentElement(groupElem);
-        pushParentElement(groupElem);
-
         if (graph.showEdges()) {
             renderGraphEdges(graph);
         }
 
-        // nodes are above edges and self-loops
         if (graph.showNodes()) {
             renderGraphNodes(graph);
         }
 
-        popParentElement();
+        renderGraphLabels(graph);
+
+        renderGraphLabelBorders(graph);
     }
 
     public void renderGraphEdges(Graph graph) {
-        Element edgeGroupElem = createElement("g");
-        edgeGroupElem.setAttribute("id", "edges");
-        appendToParentElement(edgeGroupElem);
-        pushParentElement(edgeGroupElem);
+        edgeGroupElem = createGroupElem("edges");
+        svgRoot.appendChild(edgeGroupElem);
 
         renderGraphUnidirectionalEdges(graph);
         renderGraphBidirectionalEdges(graph);
@@ -130,8 +128,6 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         if (graph.showSelfLoops()) {
             renderGraphSelfLoops(graph);
         }
-
-        popParentElement();
     }
 
     public void renderGraphSelfLoops(Graph graph) {
@@ -142,29 +138,13 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
 
     public void renderGraphUnidirectionalEdges(Graph graph) {
         for (UnidirectionalEdge edge : graph.getUnidirectionalEdges()) {
-            renderEdge(edge);
-
-            if (edge.showArrows()) {
-                renderEdgeArrows(edge);
-            }
-
-            if (edge.showMiniLabels()) {
-                renderEdgeMiniLabels(edge);
-            }
+            renderDirectedEdge(edge);
         }
     }
 
     public void renderGraphBidirectionalEdges(Graph graph) {
         for (BidirectionalEdge edge : graph.getBidirectionalEdges()) {
-            renderEdge(edge);
-
-            if (edge.showArrows()) {
-                renderEdgeArrows(edge);
-            }
-
-            if (edge.showMiniLabels()) {
-                renderEdgeMiniLabels(edge);
-            }
+            renderDirectedEdge(edge);
         }
     }
 
@@ -175,23 +155,67 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     public void renderGraphNodes(Graph graph) {
-        Element nodeGroupElem = createElement("g");
-        nodeGroupElem.setAttribute("id", "nodes");
-        appendToParentElement(nodeGroupElem);
-        pushParentElement(nodeGroupElem);
+        nodeGroupElem = createGroupElem("nodes");
+        svgRoot.appendChild(nodeGroupElem);
 
         for (Node n : graph.getNodes()) {
             renderNode(n);
         }
+    }
 
-        popParentElement();
+    public void renderGraphLabels(Graph graph) {
+        labelGroupElem = createGroupElem("labels");
+        svgRoot.appendChild(labelGroupElem);
+
+        for (UnidirectionalEdge e : graph.getUnidirectionalEdges()) {
+            if (!e.isCurved()) {
+                if (e.showLabel() && e.hasLabel()) {
+                    renderEdgeLabel(e.getLabel());
+                }
+
+                if (e.showMiniLabels()) {
+                    renderEdgeMiniLabels(e);
+                }
+            }
+        }
+
+        for (BidirectionalEdge e : graph.getBidirectionalEdges()) {
+            if (!e.isCurved()) {
+                if (e.showLabel() && e.hasLabel()) {
+                    renderEdgeLabel(e.getLabel());
+                }
+
+                if (e.showMiniLabels()) {
+                    renderEdgeMiniLabels(e);
+                }
+            }
+        }
+
+        for (UndirectedEdge e : graph.getUndirectedEdges()) {
+            if (e.showLabel() && !e.isCurved() && e.hasLabel()) {
+                renderEdgeLabel(e.getLabel());
+            }
+        }
+
+        for (Node n : graph.getNodes()) {
+            if (n.showLabel() && n.hasLabel()) {
+                renderNodeLabel(n.getLabel());
+            }
+        }
+    }
+
+    public void renderGraphLabelBorders(Graph graph) {
+        labelBorderGroupElem = createGroupElem("label borders");
+        svgRoot.insertBefore(labelBorderGroupElem, labelGroupElem);
+
+        for (Node n : graph.getNodes()) {
+            if (n.showLabel() && n.hasLabel() && n.showLabelBorders()) {
+                renderNodeLabelBorder(n.getLabelBorder());
+            }
+        }
     }
 
     public void renderNode(Node node) {
-        Element groupElem = createElement("g");
-        appendToParentElement(groupElem);
-        pushParentElement(groupElem);
-
         Element nodeElem = createElement("circle");
         nodeElem.setAttribute("cx", node.getPosition().getX().toString());
         nodeElem.setAttribute("cy", node.getPosition().getY().toString());
@@ -199,17 +223,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         nodeElem.setAttribute("fill", node.getColor().toHexString());
         nodeElem.setAttribute("stroke", node.getBorderColor().toHexString());
         nodeElem.setAttribute("stroke-width", node.getBorderWidth().toString());
-        appendToParentElement(nodeElem);
-
-        if (node.showLabel() && node.hasLabel()) {
-            renderNodeLabel(node.getLabel());
-
-            if (node.showLabelBorders()) {
-                renderNodeLabelBorder(node.getLabelBorder());
-            }
-        }
-
-        popParentElement();
+        nodeGroupElem.appendChild(nodeElem);
 
         Progress.progress(progress);
     }
@@ -225,15 +239,15 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         labelElem.setAttribute("font-family", label.getFont().getFamily());
         labelElem.setAttribute("font-size", Integer.toString(label.getFont().getSize()));
         labelElem.appendChild(labelText);
-        appendToParentElement(labelElem);
+        labelGroupElem.appendChild(labelElem);
 
-        // need to save label in order to eventually draw its border
-        lastLabel = labelElem;
+        // need to save the label element in order to eventually draw its border
+        nodeLabelMap.put(label, (SVGLocatable) labelElem);
     }
 
     public void renderNodeLabelBorder(NodeLabelBorder border) {
         // retrieve label's bounding box
-        SVGRect rect = ((SVGLocatable) lastLabel).getBBox();
+        SVGRect rect = nodeLabelMap.get(border.getLabel()).getBBox();
 
         Element borderElem = createElement("rect");
         borderElem.setAttribute("x", Float.toString(rect.getX()));
@@ -241,15 +255,11 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         borderElem.setAttribute("width", Float.toString(rect.getWidth()));
         borderElem.setAttribute("height", Float.toString(rect.getHeight()));
         borderElem.setAttribute("fill", border.getColor().toHexString());
-        insertBeforeElement(borderElem, lastLabel);
+        labelBorderGroupElem.appendChild(borderElem);
     }
 
     public void renderSelfLoop(SelfLoop selfLoop) {
         CubicBezierCurve curve = selfLoop.getCurve();
-
-        Element groupElem = createElement("g");
-        appendToParentElement(groupElem);
-        pushParentElement(groupElem);
 
         Element selfLoopElem = createElement("path");
         selfLoopElem.setAttribute("d", String.format(Locale.ENGLISH, "M %f,%f C %f,%f %f,%f %f,%f",
@@ -260,23 +270,23 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         selfLoopElem.setAttribute("stroke", selfLoop.getColor().toHexString());
         selfLoopElem.setAttribute("stroke-width", Float.toString(selfLoop.getThickness()));
         selfLoopElem.setAttribute("fill", "none");
-        appendToParentElement(selfLoopElem);
+        edgeGroupElem.appendChild(selfLoopElem);
+    }
 
-        popParentElement();
+    public void renderDirectedEdge(DirectedEdge edge) {
+        renderEdge(edge);
+
+        if (!edge.isCurved() && edge.showArrows()) {
+            renderEdgeArrows(edge);
+        }
     }
 
     public void renderEdge(Edge edge) {
-        Element groupElem = createElement("g");
-        appendToParentElement(groupElem);
-        pushParentElement(groupElem);
-
         if (edge.isCurved()) {
             renderCurvedEdge(edge);
         } else {
             renderStraightEdge(edge);
         }
-
-        popParentElement();
 
         Progress.progress(progress);
     }
@@ -285,18 +295,13 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Point boundary1 = edge.getNode1().getPosition();
         Point boundary2 = edge.getNode2().getPosition();
 
-        // attach straight edge
         Element edgeElem = createElement("path");
         edgeElem.setAttribute("d", String.format(Locale.ENGLISH, "M %f,%f L %f,%f",
                 boundary1.getX(), boundary1.getY(),
                 boundary2.getX(), boundary2.getY()));
         edgeElem.setAttribute("stroke", edge.getColor().toHexString());
         edgeElem.setAttribute("stroke-width", Float.toString(edge.getThickness()));
-        appendToParentElement(edgeElem);
-
-        if (edge.showLabel() && edge.hasLabel()) {
-            renderEdgeLabel(edge.getLabel());
-        }
+        edgeGroupElem.appendChild(edgeElem);
     }
 
     public void renderCurvedEdge(Edge edge) {
@@ -310,7 +315,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
             curveElem.setAttribute("stroke", edge.getColor().toHexString());
             curveElem.setAttribute("stroke-width", Float.toString(edge.getThickness()));
             curveElem.setAttribute("fill", "none");
-            appendToParentElement(curveElem);
+            edgeGroupElem.appendChild(curveElem);
         }
     }
 
@@ -334,7 +339,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
                 arrow.getPt3().getX(), arrow.getPt3().getY()));
         arrowElem.setAttribute("fill", arrow.getColor().toHexString());
         arrowElem.setAttribute("stroke", "none");
-        appendToParentElement(arrowElem);
+        edgeGroupElem.appendChild(arrowElem);
     }
 
     public void renderEdgeLabel(EdgeLabel label) {
@@ -351,7 +356,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
                 label.getPosition().getX(), label.getPosition().getY(),
                 Math.toDegrees(label.getAngle())));
         labelElem.appendChild(text);
-        appendToParentElement(labelElem);
+        labelGroupElem.appendChild(labelElem);
     }
 
     public void renderEdgeMiniLabel(EdgeMiniLabel miniLabel) {
@@ -368,7 +373,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
                 miniLabel.getPosition().getX(), miniLabel.getPosition().getY(),
                 Math.toDegrees(miniLabel.getAngle())));
         miniLabelElem.appendChild(text);
-        appendToParentElement(miniLabelElem);
+        labelGroupElem.appendChild(miniLabelElem);
     }
 
     /**
@@ -378,7 +383,12 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         progress = null;
         cancel = false;
         doc = null;
-        lastLabel = null;
+        nodeLabelMap.clear();
+        svgRoot = null;
+        nodeGroupElem = null;
+        edgeGroupElem = null;
+        labelGroupElem = null;
+        labelBorderGroupElem = null;
     }
 
     /**
@@ -443,7 +453,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         graphSheet.setMargin(MARGIN);
 
         // root element
-        Element svgRoot = doc.getDocumentElement();
+        svgRoot = doc.getDocumentElement();
         svgRoot.setAttributeNS(null, "width", supportSize.getWidth());
         svgRoot.setAttributeNS(null, "height", supportSize.getHeight());
         svgRoot.setAttributeNS(null, "version", "1.1");
@@ -452,13 +462,9 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
                 graphSheet.getTopLeftPosition().getY().intValue(),
                 graphSheet.getWidth().intValue(),
                 graphSheet.getHeight().intValue()));
-        pushParentElement(svgRoot);
 
         // draws the graph exporting it into the DOM
         renderGraph(graphSheet.getGraph());
-
-        // empties parent element stack
-        popParentElement();
     }
 
     /**
@@ -515,40 +521,15 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     /**
-     * Appends the given element to the current parent element.
+     * Creates the group element corresponding to the given type.
      *
-     * @param element  the element to append
+     * @param type  the name of the group element to create
+     * @return      the created group element
      */
-    private void appendToParentElement(Element element) {
-        parentStack.peek().appendChild(element);
-    }
+    private Element createGroupElem(String name) {
+        Element group = createElement("g");
+        group.setAttribute("id", name);
 
-    /**
-     * Inserts a new element just before a given child of the current parent
-     * element.
-     * 
-     * @param newChild  the new element to insert
-     * @param refChild  the reference child element
-     */
-    private void insertBeforeElement(Element newChild, Element refChild) {
-        parentStack.peek().insertBefore(newChild, refChild);
-    }
-
-    /**
-     * Pushes the given element onto the parent element stack.
-     *
-     * @param element  the element to push
-     */
-    private void pushParentElement(Element element) {
-        parentStack.push(element);
-    }
-
-    /**
-     * Pops an element from the parent element stack.
-     *
-     * @return the element at the top of the parent element stack
-     */
-    private Element popParentElement() {
-        return parentStack.pop();
+        return group;
     }
 }
