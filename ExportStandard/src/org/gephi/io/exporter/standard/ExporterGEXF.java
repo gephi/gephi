@@ -33,7 +33,6 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
-import org.gephi.io.exporter.FileExporter;
 import org.gephi.io.exporter.FileType;
 import org.gephi.io.exporter.GraphFileExporterSettings;
 import org.gephi.io.exporter.XMLGraphFileExporter;
@@ -50,7 +49,7 @@ import org.w3c.dom.Text;
  *
  * @author Sebastien Heymann
  */
-@ServiceProvider(service=FileExporter.class)
+@ServiceProvider(service=XMLGraphFileExporter.class)
 public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
 
     private boolean cancel = false;

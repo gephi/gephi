@@ -69,7 +69,7 @@ public class GraphFileExporterUI implements ExporterClassUI {
     }
 
     public boolean isEnable() {
-        return !Lookup.getDefault().lookupAll(GraphFileExporter.class).isEmpty();
+        return true;
     }
 
     public void action() {

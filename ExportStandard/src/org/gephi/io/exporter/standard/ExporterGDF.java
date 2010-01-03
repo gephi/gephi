@@ -34,7 +34,6 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
-import org.gephi.io.exporter.FileExporter;
 import org.gephi.io.exporter.FileType;
 import org.gephi.io.exporter.GraphFileExporterSettings;
 import org.gephi.io.exporter.TextGraphFileExporter;
@@ -48,7 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = FileExporter.class)
+@ServiceProvider(service = TextGraphFileExporter.class)
 public class ExporterGDF implements TextGraphFileExporter, LongTask {
 
     private boolean cancel = false;
