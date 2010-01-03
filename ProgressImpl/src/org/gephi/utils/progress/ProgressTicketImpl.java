@@ -37,7 +37,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
 
     public ProgressTicketImpl(String displayName, Cancellable cancellable) {
         //TODO lookup if UI or not
-        handle = ProgressHandleFactory.createHandle(displayName);
+        handle = ProgressHandleFactory.createHandle(displayName, cancellable);
     }
 
     /**
