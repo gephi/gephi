@@ -55,7 +55,7 @@ public class ImporterPajek implements TextImporter, LongTask {
     private LineNumberReader reader;
     private NodeDraft[] verticesArray;
 
-    public void importData(LineNumberReader reader, ContainerLoader container, Report report) throws Exception {
+    public boolean importData(LineNumberReader reader, ContainerLoader container, Report report) throws Exception {
         this.container = container;
         this.report = report;
         this.reader = reader;
@@ -66,7 +66,9 @@ public class ImporterPajek implements TextImporter, LongTask {
             clean();
             throw e;
         }
+        boolean result = !cancel;
         clean();
+        return result;
     }
 
     private void clean() {

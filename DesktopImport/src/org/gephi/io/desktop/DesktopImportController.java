@@ -151,8 +151,9 @@ public class DesktopImportController implements ImportController {
 
             public void run() {
                 try {
-                    xmlImporter.importData(document, container.getLoader(), report);
-                    finishImport(container);
+                    if (xmlImporter.importData(document, container.getLoader(), report)) {
+                        finishImport(container);
+                    }
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
@@ -187,8 +188,9 @@ public class DesktopImportController implements ImportController {
 
             public void run() {
                 try {
-                    textImporter.importData(reader, container.getLoader(), report);
-                    finishImport(container);
+                    if(textImporter.importData(reader, container.getLoader(), report)) {
+                        finishImport(container);
+                    }
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
@@ -261,8 +263,9 @@ public class DesktopImportController implements ImportController {
 
                 public void run() {
                     try {
-                        importer.importData(db, container.getLoader(), report);
-                        finishImport(container);
+                        if(importer.importData(db, container.getLoader(), report)) {
+                            finishImport(container);
+                        }
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         throw new RuntimeException(ex);

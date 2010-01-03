@@ -48,20 +48,46 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service=DatabaseImporter.class)
+@ServiceProvider(service = DatabaseImporter.class)
 public class EdgeListImporter implements DatabaseImporter {
 
     private Report report;
     private EdgeListDatabase database;
     private ContainerLoader container;
+    private Connection connection;
 
-    public void importData(Database database, ContainerLoader container, Report report) throws Exception {
+    public boolean importData(Database database, ContainerLoader container, Report report) throws Exception {
         this.database = (EdgeListDatabase) database;
         this.container = container;
         this.report = report;
 
+        try {
+            importData();
+        } catch (Exception e) {
+            clean();
+            throw e;
+        }
+        clean();
+        return true;
+    }
+
+    private void clean() {
+        //Close connection
+        if (connection != null) {
+            try {
+                connection.close();
+                report.log("Database connection terminated");
+            } catch (Exception e) { /* ignore close errors */ }
+        }
+
+        report = null;
+        database = null;
+        connection = null;
+        container = null;
+    }
+
+    private void importData() throws Exception {
         //Connect database
-        Connection connection = null;
         String url = SQLUtils.getUrl(database.getSQLDriver(), database.getHost(), database.getPort(), database.getDBName());
         try {
             report.log("Try to connect at " + url);
@@ -85,15 +111,6 @@ public class EdgeListImporter implements DatabaseImporter {
         getEdges(connection);
         getNodesAttributes(connection);
         getEdgesAttributes(connection);
-
-        //Close connection
-        if (connection != null) {
-            try {
-                connection.close();
-                report.log("Database connection terminated");
-            } catch (Exception e) { /* ignore close errors */ }
-        }
-
     }
 
     private void getNodes(Connection connection) throws SQLException {

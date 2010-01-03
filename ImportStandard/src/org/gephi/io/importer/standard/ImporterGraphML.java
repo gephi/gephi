@@ -85,7 +85,7 @@ public class ImporterGraphML implements XMLImporter, LongTask {
         properties.addEdgePropertyAssociation(EdgeProperties.WEIGHT, "weight");
     }
 
-    public void importData(Document document, ContainerLoader container, Report report) throws Exception {
+    public boolean importData(Document document, ContainerLoader container, Report report) throws Exception {
         this.container = container;
         this.report = report;
         this.nodePropertiesAttributes = new HashMap<String, NodeProperties>();
@@ -97,7 +97,9 @@ public class ImporterGraphML implements XMLImporter, LongTask {
             clean();
             throw e;
         }
+        boolean result = !cancel;
         clean();
+        return result;
     }
 
     private void clean() {

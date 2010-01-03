@@ -25,6 +25,7 @@ import org.gephi.io.container.ContainerLoader;
 import org.gephi.io.logging.Report;
 
 /**
+ * Importers interface for {@link InputStream} input.
  *
  * @author Mathieu Bastian
  */
@@ -36,7 +37,8 @@ public interface StreamImporter extends Importer {
      * @param stream the input stream where data are pushed
      * @param container container loading interface
      * @param report the import report for logging informations and issues
+     * @return <code>true</code> if the import is successfull and can be processed or <code>false</code> otherwise
      * @throws java.lang.Exception for catching eventual exceptions
      */
-    public void importData(InputStream stream, ContainerLoader containter, Report report) throws Exception;
+    public boolean importData(InputStream stream, ContainerLoader container, Report report) throws Exception;
 }

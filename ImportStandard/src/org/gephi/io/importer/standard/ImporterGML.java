@@ -55,7 +55,7 @@ public class ImporterGML implements TextImporter, LongTask {
     private ProgressTicket progressTicket;
     private boolean cancel = false;
 
-    public void importData(LineNumberReader reader, ContainerLoader container, Report report) throws Exception {
+    public boolean importData(LineNumberReader reader, ContainerLoader container, Report report) throws Exception {
         this.container = container;
         this.report = report;
 
@@ -65,7 +65,9 @@ public class ImporterGML implements TextImporter, LongTask {
             clean();
             throw e;
         }
+        boolean result = !cancel;
         clean();
+        return result;
     }
 
     private void clean() {
