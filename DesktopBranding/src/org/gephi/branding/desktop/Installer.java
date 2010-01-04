@@ -20,7 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.branding.desktop;
 
+import java.util.logging.Logger;
 import javax.swing.UIManager;
+import org.gephi.branding.desktop.reporter.ReporterHandler;
 import org.gephi.project.api.ProjectController;
 import org.openide.modules.ModuleInstall;
 import org.openide.util.Lookup;
@@ -38,6 +40,9 @@ public class Installer extends ModuleInstall {
 
         //TopTab
         UIManager.put("ViewTabDisplayerUI", "org.gephi.branding.desktop.NoTabsTabDisplayerUI");
+
+        //Handler
+        Logger.getLogger("").addHandler(new ReporterHandler());
     }
 
     private void initGephi() {
