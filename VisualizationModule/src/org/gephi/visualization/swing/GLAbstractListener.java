@@ -59,7 +59,9 @@ public abstract class GLAbstractListener implements GLEventListener {
 
         //FSAA
         int antialisaing = vizController.getVizConfig().getAntialiasing();
-        if (antialisaing == 2) {
+        if (antialisaing == 0) {
+            caps.setSampleBuffers(false);
+        } else if (antialisaing == 2) {
             caps.setSampleBuffers(true);
             caps.setNumSamples(2);
         } else if (antialisaing == 4) {

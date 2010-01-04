@@ -52,6 +52,8 @@ final class OpenGLPanel extends javax.swing.JPanel {
             public void actionPerformed(ActionEvent arg0) {
                 if (antialisaingCombobox.getSelectedIndex() > 0) {
                     antiAliasing = (int) Math.pow(2, antialisaingCombobox.getSelectedIndex());
+                } else {
+                    antiAliasing = 0;
                 }
             }
         });
