@@ -82,6 +82,7 @@ public class VizConfig {
     public static final String TOOLBAR = "VizConfig.toolbar";
     public static final String MOUSE_SELECTION_DIAMETER = "VizConfig.mouseSelectionDiameter";
     public static final String MOUSE_SELECTION_ZOOM_PROPORTIONAL = "VizConfig.mouseSelectionZoomProportionnal";
+    public static final String MOUSE_SELECTION_WHILE_DRAGGING = "VizConfig.mouseSelectionUpdateWhileDragging";
     public static final String DISABLE_LOD = "VizConfig.disableLOD";
     //Default values
     public static final boolean DEFAULT_USE_3D = false;
@@ -131,6 +132,7 @@ public class VizConfig {
     public static final boolean DEFAULT_TOOLBAR = true;
     public static final int DEFAULT_MOUSE_SELECTION_DIAMETER = 1;
     public static final boolean DEFAULT_MOUSE_SELECTION_ZOOM_PROPORTIONAL = false;
+    public static final boolean DEFAULT_MOUSE_SELECTION_WHILE_DRAGGING = false;
     public static final boolean DEFAULT_DISABLE_LOD = false;
     public static final boolean DEFAULT_SHOW_HULLS = true;
     //Default config - loaded in the VizModel
@@ -202,6 +204,7 @@ public class VizConfig {
     protected boolean propertiesbar = NbPreferences.forModule(VizConfig.class).getBoolean(HIGHTLIGHT_ANIMATION, DEFAULT_HIGHTLIGHT_ANIMATION);
     protected int mouseSelectionDiameter = NbPreferences.forModule(VizConfig.class).getInt(MOUSE_SELECTION_DIAMETER, DEFAULT_MOUSE_SELECTION_DIAMETER);
     protected boolean mouseSelectionZoomProportionnal = NbPreferences.forModule(VizConfig.class).getBoolean(MOUSE_SELECTION_ZOOM_PROPORTIONAL, DEFAULT_MOUSE_SELECTION_ZOOM_PROPORTIONAL);
+    protected boolean mouseSelectionUpdateWhileDragging = NbPreferences.forModule(VizConfig.class).getBoolean(MOUSE_SELECTION_WHILE_DRAGGING, DEFAULT_MOUSE_SELECTION_WHILE_DRAGGING);
     protected boolean disableLOD = NbPreferences.forModule(VizConfig.class).getBoolean(DISABLE_LOD, DEFAULT_DISABLE_LOD);
 
     public int getAntialiasing() {
@@ -456,6 +459,10 @@ public class VizConfig {
         return mouseSelectionZoomProportionnal;
     }
 
+    public boolean isMouseSelectionUpdateWhileDragging() {
+        return mouseSelectionUpdateWhileDragging;
+    }
+
     public boolean isCustomSelection() {
         return customSelection;
     }
@@ -491,6 +498,10 @@ public class VizConfig {
 
     public void setCustomSelection(boolean customSelection) {
         this.customSelection = customSelection;
+    }
+
+    public void setMouseSelectionUpdateWhileDragging(boolean mouseSelectionUpdateWhileDragging) {
+        this.mouseSelectionUpdateWhileDragging = mouseSelectionUpdateWhileDragging;
     }
 
     public boolean isDisableLOD() {

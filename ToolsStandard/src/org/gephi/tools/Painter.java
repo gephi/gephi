@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service=Tool.class)
+@ServiceProvider(service = Tool.class)
 public class Painter implements Tool {
 
     private ToolEventListener[] listeners;
@@ -97,6 +97,6 @@ public class Painter implements Tool {
     }
 
     public ToolSelectionType getSelectionType() {
-        return ToolSelectionType.SELECTION;
+        return ToolSelectionType.SELECTION_AND_DRAGGING;
     }
 }

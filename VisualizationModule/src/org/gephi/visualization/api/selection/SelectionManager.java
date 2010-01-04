@@ -44,6 +44,7 @@ public class SelectionManager implements VizArchitecture {
     //Settings
     private int mouseSelectionDiameter;
     private boolean mouseSelectionZoomProportionnal;
+    private boolean selectionUpdateWhileDragging;
     //States
     private boolean blocked = false;
 
@@ -55,6 +56,7 @@ public class SelectionManager implements VizArchitecture {
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.engine = VizController.getInstance().getEngine();
         mouseSelectionDiameter = vizConfig.getMouseSelectionDiameter();
+        selectionUpdateWhileDragging = vizConfig.isMouseSelectionUpdateWhileDragging();
     }
 
     public void blockSelection(boolean block) {
@@ -70,6 +72,11 @@ public class SelectionManager implements VizArchitecture {
     public void disableSelection() {
         vizConfig.setSelectionEnable(false);
         this.blocked = false;
+        fireChangeEvent();
+    }
+
+    public void setDraggingEnable(boolean dragging) {
+        vizConfig.setMouseSelectionUpdateWhileDragging(!dragging);
         fireChangeEvent();
     }
 
@@ -178,6 +185,14 @@ public class SelectionManager implements VizArchitecture {
 
     public boolean isMouseSelectionZoomProportionnal() {
         return mouseSelectionZoomProportionnal;
+    }
+
+    public boolean isSelectionUpdateWhileDragging() {
+        return selectionUpdateWhileDragging;
+    }
+
+    public void setSelectionUpdateWhileDragging(boolean selectionUpdateWhileDragging) {
+        this.selectionUpdateWhileDragging = selectionUpdateWhileDragging;
     }
 
     public boolean isBlocked() {

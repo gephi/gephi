@@ -23,13 +23,14 @@ package org.gephi.tools.spi;
 /**
  * Enum setting for {@link Tool} implementations.
  * <ul><li>
- * <b>NO_SELECTION:</b> Selection is disabled when the tool is used.</li>
+ * <b>NONE:</b> Selection features are disabled when the tool is used.</li>
  * <li><b>SELECTION:</b> Selection is enabled when the tool is used.</li>
+ * <li><b>SELECTION_AND_DRAGGING:</b> Selection and dragging is enabled when the tool is used.</li>
  * </ul>
  *
  * @author Mathieu Bastian
  */
 public enum ToolSelectionType {
 
-    NO_SELECTION, SELECTION;
+    NONE, SELECTION, SELECTION_AND_DRAGGING
 }

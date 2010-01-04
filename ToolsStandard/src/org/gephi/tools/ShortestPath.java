@@ -45,16 +45,14 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service=Tool.class)
+@ServiceProvider(service = Tool.class)
 public class ShortestPath implements Tool {
 
     //Architecture
     private ToolEventListener[] listeners;
     private ShortestPathPanel shortestPathPanel;
-
     //Settings
     private Color color;
-
     //State
     private Node sourceNode;
 

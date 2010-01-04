@@ -502,11 +502,15 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void mouseDrag() {
-        float[] drag = graphIO.getMouseDrag();
-        for (ModelImpl obj : selectedObjects[0]) {
-            float[] mouseDistance = obj.getDragDistanceFromMouse();
-            obj.getObj().setX(drag[0] + mouseDistance[0]);
-            obj.getObj().setY(drag[1] + mouseDistance[1]);
+        if (vizConfig.isMouseSelectionUpdateWhileDragging()) {
+            mouseMove();
+        } else {
+            float[] drag = graphIO.getMouseDrag();
+            for (ModelImpl obj : selectedObjects[0]) {
+                float[] mouseDistance = obj.getDragDistanceFromMouse();
+                obj.getObj().setX(drag[0] + mouseDistance[0]);
+                obj.getObj().setY(drag[1] + mouseDistance[1]);
+            }
         }
     }
 

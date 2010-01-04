@@ -41,7 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service=Tool.class)
+@ServiceProvider(service = Tool.class)
 public class Brush implements Tool {
 
     //Architecture

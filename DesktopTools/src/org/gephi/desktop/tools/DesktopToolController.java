@@ -95,11 +95,16 @@ public class DesktopToolController implements ToolController {
         }
         currentHandlers = handlers.toArray(new ToolEventHandler[0]);
         switch (tool.getSelectionType()) {
-            case NO_SELECTION:
+            case NONE:
                 VizController.getInstance().getSelectionManager().disableSelection();
                 break;
             case SELECTION:
                 VizController.getInstance().getSelectionManager().blockSelection(true);
+                VizController.getInstance().getSelectionManager().setDraggingEnable(false);
+                break;
+            case SELECTION_AND_DRAGGING:
+                VizController.getInstance().getSelectionManager().blockSelection(true);
+                VizController.getInstance().getSelectionManager().setDraggingEnable(true);
                 break;
         }
         currentTool = tool;
@@ -174,7 +179,7 @@ public class DesktopToolController implements ToolController {
                 if (selectionManager.isRectangleSelection() && currentTool != null) {
                     toolbar.clearSelection();
                     unselect();
-                } else if (selectionManager.isSelectionEnabled() && currentTool != null && currentTool.getSelectionType() == ToolSelectionType.NO_SELECTION) {
+                } else if (selectionManager.isSelectionEnabled() && currentTool != null && currentTool.getSelectionType() == ToolSelectionType.NONE) {
                     toolbar.clearSelection();
                     unselect();
                 }

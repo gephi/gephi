@@ -41,13 +41,12 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service=Tool.class)
+@ServiceProvider(service = Tool.class)
 public class NodePencil implements Tool {
 
     //Architecture
     private ToolEventListener[] listeners;
     private NodePencilPanel nodePencilPanel;
-
     //Settings
     private Color color;
     private float size;
@@ -117,6 +116,6 @@ public class NodePencil implements Tool {
     }
 
     public ToolSelectionType getSelectionType() {
-        return ToolSelectionType.NO_SELECTION;
+        return ToolSelectionType.NONE;
     }
 }
