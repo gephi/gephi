@@ -62,11 +62,6 @@ public class ReportPanel extends javax.swing.JPanel {
 
     public void showDialog() {
         ReportController reportController = new ReportController();
-
-        //Set
-        report.setUserDescription(problemArea.getText());
-        report.setUserEmail(emailTextField.getText());
-
         Object[] options = new Object[2];
         options[0] = NbBundle.getMessage(ReportPanel.class, "ReportPanel.dialog.sendButton");
         options[1] = DialogDescriptor.CANCEL_OPTION;
@@ -74,6 +69,9 @@ public class ReportPanel extends javax.swing.JPanel {
 
         DialogDescriptor dd = new DialogDescriptor(this, title, true, options, options[0], DialogDescriptor.DEFAULT_ALIGN, null, null);
         if (DialogDisplayer.getDefault().notify(dd) == options[0]) {
+            //Set
+            report.setUserDescription(problemArea.getText());
+            report.setUserEmail(emailTextField.getText());
             reportController.sendReport(report);
         }
     }
