@@ -17,13 +17,8 @@ public class ProcessingPreview extends PApplet
     private PVector trans = new PVector();
     private PVector lastMove = new PVector();
     private float scaling;
-    private PFont nodeLabelFont;
-    private PFont uniEdgeLabelFont;
     private PFont uniEdgeMiniLabelFont;
-    private PFont biEdgeLabelFont;
     private PFont biEdgeMiniLabelFont;
-    private PFont edgeLabelFont;
-    private PFont edgeMiniLabelFont;
     private GraphSheet graphSheet = null;
     private final static float MARGIN = 10f;
 
@@ -35,10 +30,7 @@ public class ProcessingPreview extends PApplet
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
 
         // updates fonts
-        nodeLabelFont = createFont(controller.getNodeSupervisor().getBaseNodeLabelFont());
-        uniEdgeLabelFont = createFont(controller.getUniEdgeSupervisor().getBaseLabelFont());
         uniEdgeMiniLabelFont = createFont(controller.getUniEdgeSupervisor().getMiniLabelFont());
-        biEdgeLabelFont = createFont(controller.getBiEdgeSupervisor().getBaseLabelFont());
         biEdgeMiniLabelFont = createFont(controller.getBiEdgeSupervisor().getMiniLabelFont());
 
         // redraws the applet
@@ -202,19 +194,15 @@ public class ProcessingPreview extends PApplet
     }
 
     public void renderGraphNodes(Graph graph) {
-        textFont(nodeLabelFont);
-        textAlign(CENTER, CENTER);
+
         for (Node n : graph.getNodes()) {
             renderNode(n);
         }
     }
 
     public void renderGraphLabels(Graph graph) {
-        edgeLabelFont = uniEdgeLabelFont;
-        edgeMiniLabelFont = uniEdgeMiniLabelFont;
-
+        textFont(uniEdgeMiniLabelFont);
         for (UnidirectionalEdge e : graph.getUnidirectionalEdges()) {
-
             if (!e.isCurved()) {
                 if (e.showLabel() && e.hasLabel()) {
                     renderEdgeLabel(e.getLabel());
@@ -226,9 +214,7 @@ public class ProcessingPreview extends PApplet
             }
         }
 
-        edgeLabelFont = biEdgeLabelFont;
-        edgeMiniLabelFont = biEdgeMiniLabelFont;
-
+        textFont(biEdgeMiniLabelFont);
         for (BidirectionalEdge e : graph.getBidirectionalEdges()) {
             if (!e.isCurved()) {
                 if (e.showLabel() && e.hasLabel()) {
@@ -275,6 +261,9 @@ public class ProcessingPreview extends PApplet
     }
 
     public void renderNodeLabel(NodeLabel label) {
+        textFont(createFont(label.getFont()));
+        textAlign(CENTER, CENTER);
+        
         fill(label.getColor().getRed(),
                 label.getColor().getGreen(),
                 label.getColor().getBlue());
@@ -284,10 +273,12 @@ public class ProcessingPreview extends PApplet
     }
 
     public void renderNodeLabelBorder(NodeLabelBorder border) {
+        textFont(createFont(border.getLabel().getFont()));
         noStroke();
         fill(border.getColor().getRed(),
                 border.getColor().getGreen(),
                 border.getColor().getBlue());
+        
         rect(border.getPosition().getX(), border.getPosition().getY(),
                 textWidth(border.getLabel().getValue()), (textAscent() + textDescent()));
     }
@@ -337,7 +328,6 @@ public class ProcessingPreview extends PApplet
     }
 
     public void renderEdgeMiniLabels(DirectedEdge edge) {
-        textFont(edgeMiniLabelFont);
         for (EdgeMiniLabel ml : edge.getMiniLabels()) {
             renderEdgeMiniLabel(ml);
         }
@@ -369,7 +359,7 @@ public class ProcessingPreview extends PApplet
     }
 
     public void renderEdgeLabel(EdgeLabel label) {
-        textFont(edgeLabelFont);
+        textFont(createFont(label.getFont()));
         textAlign(CENTER, BASELINE);
 
         pushMatrix();
