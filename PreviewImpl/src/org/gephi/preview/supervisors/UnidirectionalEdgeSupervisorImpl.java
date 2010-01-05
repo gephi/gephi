@@ -22,7 +22,7 @@ public class UnidirectionalEdgeSupervisorImpl extends DirectedEdgeSupervisorImpl
         showLabelsFlag = true;
         shortenLabelsFlag = false;
         labelMaxChar = 10;
-        labelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
+        baseLabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
         labelColorizer = new ParentColorMode();
         showMiniLabelsFlag = true;
         shortenMiniLabelsFlag = false;

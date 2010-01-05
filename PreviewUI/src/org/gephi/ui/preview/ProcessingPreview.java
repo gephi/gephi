@@ -36,9 +36,9 @@ public class ProcessingPreview extends PApplet
 
         // updates fonts
         nodeLabelFont = createFont(controller.getNodeSupervisor().getNodeLabelFont());
-        uniEdgeLabelFont = createFont(controller.getUniEdgeSupervisor().getLabelFont());
+        uniEdgeLabelFont = createFont(controller.getUniEdgeSupervisor().getBaseLabelFont());
         uniEdgeMiniLabelFont = createFont(controller.getUniEdgeSupervisor().getMiniLabelFont());
-        biEdgeLabelFont = createFont(controller.getBiEdgeSupervisor().getLabelFont());
+        biEdgeLabelFont = createFont(controller.getBiEdgeSupervisor().getBaseLabelFont());
         biEdgeMiniLabelFont = createFont(controller.getBiEdgeSupervisor().getMiniLabelFont());
 
         // redraws the applet

@@ -176,13 +176,15 @@ public class PreviewGraphFactory {
      */
     private UnidirectionalEdgeImpl createPreviewUnidirectionalEdge(GraphImpl previewGraph, org.gephi.graph.api.Edge sourceEdge) {
         org.gephi.graph.api.EdgeData sourceEdgeData = sourceEdge.getEdgeData();
+        org.gephi.graph.api.TextData sourceEdgeTextData = sourceEdgeData.getTextData();
 
         UnidirectionalEdgeImpl previewEdge = new UnidirectionalEdgeImpl(
                 previewGraph,
                 sourceEdgeData.getSize(),
                 nodeMap.get(sourceEdge.getSource().getId()),
                 nodeMap.get(sourceEdge.getTarget().getId()),
-                sourceEdgeData.getLabel());
+                sourceEdgeData.getLabel(),
+                sourceEdgeTextData.getSize());
 
         previewGraph.addUnidirectionalEdge(previewEdge);
 
@@ -198,13 +200,15 @@ public class PreviewGraphFactory {
      */
     private BidirectionalEdgeImpl createPreviewBidirectionalEdge(GraphImpl previewGraph, org.gephi.graph.api.Edge sourceEdge) {
         org.gephi.graph.api.EdgeData sourceEdgeData = sourceEdge.getEdgeData();
+        org.gephi.graph.api.TextData sourceEdgeTextData = sourceEdgeData.getTextData();
 
         BidirectionalEdgeImpl previewEdge = new BidirectionalEdgeImpl(
                 previewGraph,
                 sourceEdgeData.getSize(),
                 nodeMap.get(sourceEdge.getSource().getId()),
                 nodeMap.get(sourceEdge.getTarget().getId()),
-                sourceEdgeData.getLabel());
+                sourceEdgeData.getLabel(),
+                sourceEdgeTextData.getSize());
 
         previewGraph.addBidirectionalEdge(previewEdge);
 
@@ -220,13 +224,15 @@ public class PreviewGraphFactory {
      */
     private UndirectedEdgeImpl createPreviewUndirectedEdge(GraphImpl previewGraph, org.gephi.graph.api.Edge sourceEdge) {
         org.gephi.graph.api.EdgeData sourceEdgeData = sourceEdge.getEdgeData();
+        org.gephi.graph.api.TextData sourceEdgeTextData = sourceEdgeData.getTextData();
 
         UndirectedEdgeImpl previewEdge = new UndirectedEdgeImpl(
                 previewGraph,
                 sourceEdgeData.getSize(),
                 nodeMap.get(sourceEdge.getSource().getId()),
                 nodeMap.get(sourceEdge.getTarget().getId()),
-                sourceEdgeData.getLabel());
+                sourceEdgeData.getLabel(),
+                sourceEdgeTextData.getSize());
 
         previewGraph.addUndirectedEdge(previewEdge);
 

@@ -9,6 +9,7 @@ import org.gephi.preview.api.EdgeColorizer;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.supervisors.EdgeSupervisor;
 import org.gephi.preview.api.supervisors.GlobalEdgeSupervisor;
+import org.gephi.preview.updaters.LabelFontAdjuster;
 import org.gephi.preview.updaters.LabelShortener;
 import org.openide.util.Lookup;
 
@@ -24,7 +25,7 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
     protected Boolean showLabelsFlag;
     protected Boolean shortenLabelsFlag;
     protected Integer labelMaxChar;
-    protected Font labelFont;
+    protected Font baseLabelFont;
     protected EdgeChildColorizer labelColorizer;
 
     /**
@@ -39,6 +40,7 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
         colorEdge(edge);
         colorEdgeLabel(edge);
         updateEdgeLabelValue(edge);
+        adjustEdgeLabelFont(edge);
     }
 
     public void clearSupervised() {
@@ -84,12 +86,13 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
         showLabelsFlag = value;
     }
 
-    public Font getLabelFont() {
-        return labelFont;
+    public Font getBaseLabelFont() {
+        return baseLabelFont;
     }
 
-    public void setLabelFont(Font value) {
-        labelFont = value;
+    public void setBaseLabelFont(Font value) {
+        baseLabelFont = value;
+        adjustEdgeLabelFonts();
     }
 
     public Integer getLabelMaxChar() {
@@ -252,6 +255,35 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
     private void revertEdgeLabels() {
         for (EdgeImpl e : getSupervisedEdges()) {
             revertEdgeLabel(e);
+        }
+    }
+
+    /**
+     * Adjusts the font of the given edge label.
+     *
+     * @param label  the edge label to adjust the font
+     */
+    private void adjustEdgeLabelFont(EdgeLabelImpl label) {
+        LabelFontAdjuster.adjustFont(label);
+    }
+
+    /**
+     * Adjusts the label font of a given edge.
+     *
+     * @param edge  the edge to adjust the label font
+     */
+    private void adjustEdgeLabelFont(EdgeImpl edge) {
+        if (edge.hasLabel()) {
+            adjustEdgeLabelFont(edge.getLabel());
+        }
+    }
+
+    /**
+     * Adjusts the label fonts of the supervised edges.
+     */
+    private void adjustEdgeLabelFonts() {
+        for (EdgeImpl e : getSupervisedEdges()) {
+            adjustEdgeLabelFont(e);
         }
     }
 }
