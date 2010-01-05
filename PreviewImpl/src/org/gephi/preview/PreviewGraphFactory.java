@@ -128,13 +128,15 @@ public class PreviewGraphFactory {
      */
     private NodeImpl createPreviewNode(GraphImpl previewGraph, org.gephi.graph.api.Node sourceNode) {
         org.gephi.graph.api.NodeData sourceNodeData = sourceNode.getNodeData();
+        org.gephi.graph.api.TextData sourceNodeTextData = sourceNodeData.getTextData();
 
         NodeImpl previewNode = new NodeImpl(
                 previewGraph,
-                sourceNodeData.getLabel(),
                 sourceNodeData.x(),
                 -sourceNodeData.y(), // different referential from the workspace one
                 sourceNodeData.getRadius(),
+                sourceNodeData.getLabel(),
+                sourceNodeTextData.getSize(),
                 sourceNodeData.r(),
                 sourceNodeData.g(),
                 sourceNodeData.b());
@@ -176,13 +178,15 @@ public class PreviewGraphFactory {
      */
     private UnidirectionalEdgeImpl createPreviewUnidirectionalEdge(GraphImpl previewGraph, org.gephi.graph.api.Edge sourceEdge) {
         org.gephi.graph.api.EdgeData sourceEdgeData = sourceEdge.getEdgeData();
+        org.gephi.graph.api.TextData sourceEdgeTextData = sourceEdgeData.getTextData();
 
         UnidirectionalEdgeImpl previewEdge = new UnidirectionalEdgeImpl(
                 previewGraph,
                 sourceEdgeData.getSize(),
                 nodeMap.get(sourceEdge.getSource().getId()),
                 nodeMap.get(sourceEdge.getTarget().getId()),
-                sourceEdgeData.getLabel());
+                sourceEdgeData.getLabel(),
+                sourceEdgeTextData.getSize());
 
         previewGraph.addUnidirectionalEdge(previewEdge);
 
@@ -198,13 +202,15 @@ public class PreviewGraphFactory {
      */
     private BidirectionalEdgeImpl createPreviewBidirectionalEdge(GraphImpl previewGraph, org.gephi.graph.api.Edge sourceEdge) {
         org.gephi.graph.api.EdgeData sourceEdgeData = sourceEdge.getEdgeData();
+        org.gephi.graph.api.TextData sourceEdgeTextData = sourceEdgeData.getTextData();
 
         BidirectionalEdgeImpl previewEdge = new BidirectionalEdgeImpl(
                 previewGraph,
                 sourceEdgeData.getSize(),
                 nodeMap.get(sourceEdge.getSource().getId()),
                 nodeMap.get(sourceEdge.getTarget().getId()),
-                sourceEdgeData.getLabel());
+                sourceEdgeData.getLabel(),
+                sourceEdgeTextData.getSize());
 
         previewGraph.addBidirectionalEdge(previewEdge);
 
@@ -220,13 +226,15 @@ public class PreviewGraphFactory {
      */
     private UndirectedEdgeImpl createPreviewUndirectedEdge(GraphImpl previewGraph, org.gephi.graph.api.Edge sourceEdge) {
         org.gephi.graph.api.EdgeData sourceEdgeData = sourceEdge.getEdgeData();
+        org.gephi.graph.api.TextData sourceEdgeTextData = sourceEdgeData.getTextData();
 
         UndirectedEdgeImpl previewEdge = new UndirectedEdgeImpl(
                 previewGraph,
                 sourceEdgeData.getSize(),
                 nodeMap.get(sourceEdge.getSource().getId()),
                 nodeMap.get(sourceEdge.getTarget().getId()),
-                sourceEdgeData.getLabel());
+                sourceEdgeData.getLabel(),
+                sourceEdgeTextData.getSize());
 
         previewGraph.addUndirectedEdge(previewEdge);
 

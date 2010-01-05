@@ -5,6 +5,7 @@ import org.gephi.preview.api.Color;
 import org.gephi.preview.api.EdgeColorizerClient;
 import org.gephi.preview.api.EdgeLabel;
 import org.gephi.preview.api.util.Holder;
+import org.gephi.preview.updaters.LabelFontAdjusterClient;
 import org.gephi.preview.util.Vector;
 
 /**
@@ -12,19 +13,24 @@ import org.gephi.preview.util.Vector;
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
-public class EdgeLabelImpl extends AbstractEdgeLabel implements EdgeLabel {
+public class EdgeLabelImpl extends AbstractEdgeLabel
+        implements EdgeLabel, LabelFontAdjusterClient {
 
-    protected final EdgeImpl parent;
+    private final EdgeImpl parent;
+    private final float labelSizeFactor;
+    private Font font;
 
     /**
      * Constructor.
      *
-     * @param parent  the parent edge of the edge label
-     * @param value   the value of the edge label
+     * @param parent     the parent edge of the edge label
+     * @param value      the value of the edge label
+     * @param labelSize  the size of the edge label
      */
-    public EdgeLabelImpl(EdgeImpl parent, String value) {
+    public EdgeLabelImpl(EdgeImpl parent, String value, float labelSize) {
         super(value);
         this.parent = parent;
+        labelSizeFactor = labelSize;
         genPosition();
     }
 
@@ -47,7 +53,15 @@ public class EdgeLabelImpl extends AbstractEdgeLabel implements EdgeLabel {
     }
 
     public Font getFont() {
-        return parent.getLabelFont();
+        return font;
+    }
+
+    public Font getBaseFont() {
+        return parent.getBaseLabelFont();
+    }
+
+    public float getSizeFactor() {
+        return labelSizeFactor;
     }
 
     public Float getAngle() {
@@ -60,5 +74,9 @@ public class EdgeLabelImpl extends AbstractEdgeLabel implements EdgeLabel {
 
     public Holder<Color> getParentColorHolder() {
         return parent.getColorHolder();
+    }
+
+    public void setFont(Font font) {
+        this.font = font;
     }
 }

@@ -32,8 +32,9 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
      * @param node1      the edge's node 1
      * @param node2      the edge's node 2
      * @param label      the edge's label
+     * @param labelSize  the edge's label size
      */
-    protected EdgeImpl(GraphImpl parent, float thickness, NodeImpl node1, NodeImpl node2, String label) {
+    protected EdgeImpl(GraphImpl parent, float thickness, NodeImpl node1, NodeImpl node2, String label, float labelSize) {
         super(parent, thickness);
         this.node1 = node1;
         this.node2 = node2;
@@ -49,7 +50,7 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
 
         // generate label
         if (null != label) {
-            this.label = new EdgeLabelImpl(this, label);
+            this.label = new EdgeLabelImpl(this, label, labelSize);
         }
     }
 
@@ -103,12 +104,12 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
     }
 
     /**
-     * Returns the edge label font.
+     * Returns the edge's base label font.
      *
-     * @return the edge label font
+     * @return the edge's base label font
      */
-    public Font getLabelFont() {
-        return getEdgeSupervisor().getLabelFont();
+    public Font getBaseLabelFont() {
+        return getEdgeSupervisor().getBaseLabelFont();
     }
 
     /**
@@ -146,9 +147,13 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
     }
 
     public Boolean showLabel() {
+        if (!hasLabel()) {
+            return false;
+        }
+
         EdgeSupervisor supervisor = getEdgeSupervisor();
-        int labelSize = supervisor.getShortenLabelsFlag() ? supervisor.getLabelMaxChar() : 10;
-        float minlength = node1.getRadius() + node2.getRadius() + 0.65f * labelSize * supervisor.getLabelFont().getSize();
+        int labelCharCount = supervisor.getShortenLabelsFlag() ? supervisor.getLabelMaxChar() : 10;
+        float minlength = node1.getRadius() + node2.getRadius() + 0.65f * labelCharCount * label.getFont().getSize();
         return supervisor.getShowLabelsFlag() && length >= minlength;
     }
 

@@ -57,6 +57,20 @@ public interface GraphRenderer {
     public void renderGraphNodes(Graph graph);
 
     /**
+     * Renders the labels of the given preview graph.
+     *
+     * @param graph  the graph to render the labels
+     */
+    public void renderGraphLabels(Graph graph);
+
+    /**
+     * Renders the label borders of the given preview graph.
+     *
+     * @param graph  the graph to render the label borders
+     */
+    public void renderGraphLabelBorders(Graph graph);
+
+    /**
      * Renders the given preview node.
      *
      * @param node  the node to render
@@ -83,6 +97,13 @@ public interface GraphRenderer {
      * @param selfLoop  the self-loop to render
      */
     public void renderSelfLoop(SelfLoop selfLoop);
+
+    /**
+     * Renders the given preview directed edge.
+     *
+     * @param edge  the directed edge to render
+     */
+    public void renderDirectedEdge(DirectedEdge edge);
 
     /**
      * Renders the given preview edge.

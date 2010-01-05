@@ -17,13 +17,8 @@ public class ProcessingPreview extends PApplet
     private PVector trans = new PVector();
     private PVector lastMove = new PVector();
     private float scaling;
-    private PFont nodeLabelFont;
-    private PFont uniEdgeLabelFont;
     private PFont uniEdgeMiniLabelFont;
-    private PFont biEdgeLabelFont;
     private PFont biEdgeMiniLabelFont;
-    private PFont edgeLabelFont;
-    private PFont edgeMiniLabelFont;
     private GraphSheet graphSheet = null;
     private final static float MARGIN = 10f;
 
@@ -35,10 +30,7 @@ public class ProcessingPreview extends PApplet
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
 
         // updates fonts
-        nodeLabelFont = createFont(controller.getNodeSupervisor().getNodeLabelFont());
-        uniEdgeLabelFont = createFont(controller.getUniEdgeSupervisor().getLabelFont());
         uniEdgeMiniLabelFont = createFont(controller.getUniEdgeSupervisor().getMiniLabelFont());
-        biEdgeLabelFont = createFont(controller.getBiEdgeSupervisor().getLabelFont());
         biEdgeMiniLabelFont = createFont(controller.getBiEdgeSupervisor().getMiniLabelFont());
 
         // redraws the applet
@@ -158,10 +150,13 @@ public class ProcessingPreview extends PApplet
             renderGraphEdges(graph);
         }
 
-        // nodes are above edges and self-loops
         if (graph.showNodes()) {
             renderGraphNodes(graph);
         }
+
+        renderGraphLabelBorders(graph);
+
+        renderGraphLabels(graph);
     }
 
     public void renderGraphEdges(Graph graph) {
@@ -182,35 +177,13 @@ public class ProcessingPreview extends PApplet
 
     public void renderGraphUnidirectionalEdges(Graph graph) {
         for (UnidirectionalEdge edge : graph.getUnidirectionalEdges()) {
-            edgeLabelFont = uniEdgeLabelFont;
-            edgeMiniLabelFont = uniEdgeMiniLabelFont;
-
-            renderEdge(edge);
-
-            if (edge.showArrows()) {
-                renderEdgeArrows(edge);
-            }
-
-            if (edge.showMiniLabels()) {
-                renderEdgeMiniLabels(edge);
-            }
+            renderDirectedEdge(edge);
         }
     }
 
     public void renderGraphBidirectionalEdges(Graph graph) {
         for (BidirectionalEdge edge : graph.getBidirectionalEdges()) {
-            edgeLabelFont = biEdgeLabelFont;
-            edgeMiniLabelFont = biEdgeMiniLabelFont;
-
-            renderEdge(edge);
-
-            if (edge.showArrows()) {
-                renderEdgeArrows(edge);
-            }
-
-            if (edge.showMiniLabels()) {
-                renderEdgeMiniLabels(edge);
-            }
+            renderDirectedEdge(edge);
         }
     }
 
@@ -221,15 +194,61 @@ public class ProcessingPreview extends PApplet
     }
 
     public void renderGraphNodes(Graph graph) {
-        textFont(nodeLabelFont);
-        textAlign(CENTER, CENTER);
+
         for (Node n : graph.getNodes()) {
             renderNode(n);
         }
     }
 
+    public void renderGraphLabels(Graph graph) {
+        textFont(uniEdgeMiniLabelFont);
+        for (UnidirectionalEdge e : graph.getUnidirectionalEdges()) {
+            if (!e.isCurved()) {
+                if (e.showLabel() && e.hasLabel()) {
+                    renderEdgeLabel(e.getLabel());
+                }
+
+                if (e.showMiniLabels()) {
+                    renderEdgeMiniLabels(e);
+                }
+            }
+        }
+
+        textFont(biEdgeMiniLabelFont);
+        for (BidirectionalEdge e : graph.getBidirectionalEdges()) {
+            if (!e.isCurved()) {
+                if (e.showLabel() && e.hasLabel()) {
+                    renderEdgeLabel(e.getLabel());
+                }
+
+                if (e.showMiniLabels()) {
+                    renderEdgeMiniLabels(e);
+                }
+            }
+        }
+
+        for (UndirectedEdge e : graph.getUndirectedEdges()) {
+            if (e.showLabel() && !e.isCurved() && e.hasLabel()) {
+                renderEdgeLabel(e.getLabel());
+            }
+        }
+
+        for (Node n : graph.getNodes()) {
+            if (n.showLabel() && n.hasLabel()) {
+                renderNodeLabel(n.getLabel());
+            }
+        }
+    }
+
+    public void renderGraphLabelBorders(Graph graph) {
+        for (Node n : graph.getNodes()) {
+            if (n.showLabel() && n.hasLabel() && n.showLabelBorders()) {
+                renderNodeLabelBorder(n.getLabelBorder());
+            }
+        }
+    }
+
     public void renderNode(Node node) {
-        // draws the node itself
         stroke(node.getBorderColor().getRed(),
                 node.getBorderColor().getGreen(),
                 node.getBorderColor().getBlue());
@@ -239,19 +258,12 @@ public class ProcessingPreview extends PApplet
                 node.getColor().getBlue());
         ellipse(node.getPosition().getX(), node.getPosition().getY(),
                 node.getDiameter(), node.getDiameter());
-
-        if (node.showLabel() && node.hasLabel()) {
-            // draws a label border
-            if (node.showLabelBorders()) {
-                renderNodeLabelBorder(node.getLabelBorder());
-            }
-
-            // draws the node's label
-            renderNodeLabel(node.getLabel());
-        }
     }
 
     public void renderNodeLabel(NodeLabel label) {
+        textFont(createFont(label.getFont()));
+        textAlign(CENTER, CENTER);
+        
         fill(label.getColor().getRed(),
                 label.getColor().getGreen(),
                 label.getColor().getBlue());
@@ -261,10 +273,12 @@ public class ProcessingPreview extends PApplet
     }
 
     public void renderNodeLabelBorder(NodeLabelBorder border) {
+        textFont(createFont(border.getLabel().getFont()));
         noStroke();
         fill(border.getColor().getRed(),
                 border.getColor().getGreen(),
                 border.getColor().getBlue());
+        
         rect(border.getPosition().getX(), border.getPosition().getY(),
                 textWidth(border.getLabel().getValue()), (textAscent() + textDescent()));
     }
@@ -282,6 +296,14 @@ public class ProcessingPreview extends PApplet
                 curve.getPt2().getX(), curve.getPt2().getY(),
                 curve.getPt3().getX(), curve.getPt3().getY(),
                 curve.getPt4().getX(), curve.getPt4().getY());
+    }
+
+    public void renderDirectedEdge(DirectedEdge edge) {
+        renderEdge(edge);
+
+        if (!edge.isCurved() && edge.showArrows()) {
+            renderEdgeArrows(edge);
+        }
     }
 
     public void renderEdge(Edge edge) {
@@ -306,7 +328,6 @@ public class ProcessingPreview extends PApplet
     }
 
     public void renderEdgeMiniLabels(DirectedEdge edge) {
-        textFont(edgeMiniLabelFont);
         for (EdgeMiniLabel ml : edge.getMiniLabels()) {
             renderEdgeMiniLabel(ml);
         }
@@ -317,10 +338,6 @@ public class ProcessingPreview extends PApplet
         Point boundary2 = edge.getNode2().getPosition();
 
         line(boundary1.getX(), boundary1.getY(), boundary2.getX(), boundary2.getY());
-
-        if (edge.showLabel() && edge.hasLabel()) {
-            renderEdgeLabel(edge.getLabel());
-        }
     }
 
     public void renderCurvedEdge(Edge edge) {
@@ -342,7 +359,7 @@ public class ProcessingPreview extends PApplet
     }
 
     public void renderEdgeLabel(EdgeLabel label) {
-        textFont(edgeLabelFont);
+        textFont(createFont(label.getFont()));
         textAlign(CENTER, BASELINE);
 
         pushMatrix();

@@ -27,9 +27,10 @@ public abstract class DirectedEdgeImpl extends EdgeImpl implements DirectedEdge 
      * @param node1      the edge's node 1
      * @param node2      the edge's node 2
      * @param label      the edge's label
+     * @param labelSize  the edge's label size
      */
-    protected DirectedEdgeImpl(GraphImpl parent, float thickness, NodeImpl node1, NodeImpl node2, String label) {
-        super(parent, thickness, node1, node2, label);
+    protected DirectedEdgeImpl(GraphImpl parent, float thickness, NodeImpl node1, NodeImpl node2, String label, float labelSize) {
+        super(parent, thickness, node1, node2, label, labelSize);
 
         // generate arrows
         arrows.add(new EdgeArrowB1Out(this));

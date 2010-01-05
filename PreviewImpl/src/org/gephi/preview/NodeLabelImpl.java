@@ -2,6 +2,7 @@ package org.gephi.preview;
 
 import java.awt.Font;
 import org.gephi.preview.api.NodeLabel;
+import org.gephi.preview.updaters.LabelFontAdjusterClient;
 import org.gephi.preview.updaters.LabelShortenerClient;
 
 /**
@@ -10,10 +11,12 @@ import org.gephi.preview.updaters.LabelShortenerClient;
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 public class NodeLabelImpl extends AbstractNodeChild
-        implements NodeLabel, LabelShortenerClient {
+        implements NodeLabel, LabelShortenerClient, LabelFontAdjusterClient {
 
     private final String originalValue;
+    private final float labelSizeFactor;
     private String value;
+    private Font font;
 
     /**
      * Constructor.
@@ -21,13 +24,22 @@ public class NodeLabelImpl extends AbstractNodeChild
      * @param parent  the label's parent node
      * @param value   the label value
      */
-    public NodeLabelImpl(NodeImpl parent, String value) {
+    public NodeLabelImpl(NodeImpl parent, String value, float labelSize) {
         super(parent);
-        originalValue = value;
+        this.originalValue = value;
+        this.labelSizeFactor = labelSize;
     }
 
     public Font getFont() {
-        return parent.getLabelFont();
+        return font;
+    }
+
+    public Font getBaseFont() {
+        return parent.getBaseLabelFont();
+    }
+
+    public float getSizeFactor() {
+        return labelSizeFactor;
     }
 
     public String getOriginalValue() {
@@ -40,6 +52,10 @@ public class NodeLabelImpl extends AbstractNodeChild
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public void setFont(Font font) {
+        this.font = font;
     }
 
     public void revertOriginalValue() {

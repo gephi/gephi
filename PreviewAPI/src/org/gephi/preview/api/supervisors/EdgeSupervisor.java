@@ -61,18 +61,18 @@ public interface EdgeSupervisor extends Supervisor {
     public void setShowLabelsFlag(Boolean value);
 
     /**
-     * Returns the edge label font.
+     * Returns the base edge label font.
      *
-     * @return the edge label font
+     * @return the base edge label font
      */
-    public Font getLabelFont();
+    public Font getBaseLabelFont();
 
     /**
-     * Defines the edge label font.
+     * Defines the base edge label font.
      *
-     * @param value  the edge label font to set
+     * @param value  the base edge label font to set
      */
-    public void setLabelFont(Font value);
+    public void setBaseLabelFont(Font value);
 
     /**
      * Returns the edge label character limit.

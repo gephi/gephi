@@ -77,7 +77,7 @@ public class PreviewNode extends AbstractNode {
                         createProperty(ns, NodeColorizer.class, "nodeColorizer", "nodeColor", "Node Color", NodeColorizerPropertyEditor.class),
                         createProperty(ns, GenericColorizer.class, "nodeBorderColorizer", "nodeBorderColor", "Node Border Color", GenericColorizerPropertyEditor.class),
                         createProperty(ns, Boolean.class, "showNodeLabels", "showNodeLabels", "Show Node Labels"),
-                        createProperty(ns, Font.class, "nodeLabelFont", "nodeLabelFont", "Node Label Font"),
+                        createProperty(ns, Font.class, "baseNodeLabelFont", "nodeLabelFont", "Node Label Font"),
                         createProperty(ns, Boolean.class, "shortenLabelsFlag", "shortenNodeLabels", "Shorten Node Labels"),
                         createProperty(ns, Integer.class, "nodeLabelMaxChar", "nodeLabelMaxChar", "Node Label Char Limit"),
                         createProperty(ns, NodeChildColorizer.class, "nodeLabelColorizer", "nodeLabelColor", "Node Label Color", NodeChildColorizerPropertyEditor.class),
@@ -98,7 +98,7 @@ public class PreviewNode extends AbstractNode {
                         createProperty(unes, Boolean.class, "showLabelsFlag", "showUndirectedEdgeLabels", "Show Undirected Edge Labels"),
                         createProperty(unes, Boolean.class, "shortenLabelsFlag", "shortenUndirectedEdgeLabels", "Shorten Undirected Edge Labels"),
                         createProperty(unes, Integer.class, "labelMaxChar", "undirectedEdgeLabelMaxChar", "Undirected Edge Label Char Limit"),
-                        createProperty(unes, Font.class, "labelFont", "undirectedEdgeLabelFont", "Undirected Edge Label Font"),
+                        createProperty(unes, Font.class, "baseLabelFont", "undirectedEdgeLabelFont", "Undirected Edge Label Font"),
                         createProperty(unes, EdgeChildColorizer.class, "labelColorizer", "undirectedEdgeLabelColor", "Undirected Edge Label Color", EdgeChildColorizerPropertyEditor.class)
                     });
 
@@ -108,7 +108,7 @@ public class PreviewNode extends AbstractNode {
                         createProperty(ues, Boolean.class, "showLabelsFlag", "showUniEdgeLabels", "Show Uni. Edge Labels"),
                         createProperty(ues, Boolean.class, "shortenLabelsFlag", "shortenUniEdgeLabels", "Shorten Uni. Edge Labels"),
                         createProperty(ues, Integer.class, "labelMaxChar", "uniEdgeLabelMaxChar", "Uni. Edge Label Char Limit"),
-                        createProperty(ues, Font.class, "labelFont", "uniEdgeLabelFont", "Uni. Edge Label Font"),
+                        createProperty(ues, Font.class, "baseLabelFont", "uniEdgeLabelFont", "Uni. Edge Label Font"),
                         createProperty(ues, EdgeChildColorizer.class, "labelColorizer", "uniEdgeLabelColor", "Uni. Edge Label Color", EdgeChildColorizerPropertyEditor.class),
                         createProperty(ues, Boolean.class, "showMiniLabelsFlag", "showUniEdgeMiniLabels", "Show Uni. Edge Mini-Labels"),
                         createProperty(ues, Float.class, "miniLabelAddedRadius", "uniEdgeMiniLabelAddedRadius", "Uni. Edge Mini-Label Added Radius"),
@@ -128,7 +128,7 @@ public class PreviewNode extends AbstractNode {
                         createProperty(bes, Boolean.class, "showLabelsFlag", "showBiEdgeLabels", "Show Bi. Edge Labels"),
                         createProperty(bes, Boolean.class, "shortenLabelsFlag", "shortenBiEdgeLabels", "Shorten Bi. Edge Labels"),
                         createProperty(bes, Integer.class, "labelMaxChar", "biEdgeLabelMaxChar", "Bi. Edge Label Char Limit"),
-                        createProperty(bes, Font.class, "labelFont", "biEdgeLabelFont", "Bi. Edge Label Font"),
+                        createProperty(bes, Font.class, "baseLabelFont", "biEdgeLabelFont", "Bi. Edge Label Font"),
                         createProperty(bes, EdgeChildColorizer.class, "labelColorizer", "biEdgeLabelColor", "Bi. Edge Label Color", EdgeChildColorizerPropertyEditor.class),
                         createProperty(bes, Boolean.class, "showMiniLabelsFlag", "showBiEdgeMiniLabels", "Show Bi. Edge Mini-Labels"),
                         createProperty(bes, Float.class, "miniLabelAddedRadius", "biEdgeMiniLabelAddedRadius", "Bi. Edge Mini-Label Added Radius"),
