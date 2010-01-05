@@ -35,7 +35,7 @@ public class ProcessingPreview extends PApplet
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
 
         // updates fonts
-        nodeLabelFont = createFont(controller.getNodeSupervisor().getNodeLabelFont());
+        nodeLabelFont = createFont(controller.getNodeSupervisor().getBaseNodeLabelFont());
         uniEdgeLabelFont = createFont(controller.getUniEdgeSupervisor().getBaseLabelFont());
         uniEdgeMiniLabelFont = createFont(controller.getUniEdgeSupervisor().getMiniLabelFont());
         biEdgeLabelFont = createFont(controller.getBiEdgeSupervisor().getBaseLabelFont());

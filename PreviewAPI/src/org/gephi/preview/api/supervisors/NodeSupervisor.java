@@ -83,18 +83,18 @@ public interface NodeSupervisor extends Supervisor {
     public void setShowNodeLabels(Boolean value);
 
     /**
-     * Returns the node label font.
+     * Returns the base node label font.
      *
-     * @return the node label font
+     * @return the base node label font
      */
-    public Font getNodeLabelFont();
+    public Font getBaseNodeLabelFont();
 
     /**
-     * Defines the node label font.
+     * Defines the base node label font.
      *
-     * @param value  the node label font to set
+     * @param value  the base node label font to set
      */
-    public void setNodeLabelFont(Font value);
+    public void setBaseNodeLabelFont(Font value);
 
     /**
      * Returns the node label character limit.

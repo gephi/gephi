@@ -77,7 +77,7 @@ public class PreviewNode extends AbstractNode {
                         createProperty(ns, NodeColorizer.class, "nodeColorizer", "nodeColor", "Node Color", NodeColorizerPropertyEditor.class),
                         createProperty(ns, GenericColorizer.class, "nodeBorderColorizer", "nodeBorderColor", "Node Border Color", GenericColorizerPropertyEditor.class),
                         createProperty(ns, Boolean.class, "showNodeLabels", "showNodeLabels", "Show Node Labels"),
-                        createProperty(ns, Font.class, "nodeLabelFont", "nodeLabelFont", "Node Label Font"),
+                        createProperty(ns, Font.class, "baseNodeLabelFont", "nodeLabelFont", "Node Label Font"),
                         createProperty(ns, Boolean.class, "shortenLabelsFlag", "shortenNodeLabels", "Shorten Node Labels"),
                         createProperty(ns, Integer.class, "nodeLabelMaxChar", "nodeLabelMaxChar", "Node Label Char Limit"),
                         createProperty(ns, NodeChildColorizer.class, "nodeLabelColorizer", "nodeLabelColor", "Node Label Color", NodeChildColorizerPropertyEditor.class),

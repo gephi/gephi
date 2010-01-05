@@ -128,13 +128,15 @@ public class PreviewGraphFactory {
      */
     private NodeImpl createPreviewNode(GraphImpl previewGraph, org.gephi.graph.api.Node sourceNode) {
         org.gephi.graph.api.NodeData sourceNodeData = sourceNode.getNodeData();
+        org.gephi.graph.api.TextData sourceNodeTextData = sourceNodeData.getTextData();
 
         NodeImpl previewNode = new NodeImpl(
                 previewGraph,
-                sourceNodeData.getLabel(),
                 sourceNodeData.x(),
                 -sourceNodeData.y(), // different referential from the workspace one
                 sourceNodeData.getRadius(),
+                sourceNodeData.getLabel(),
+                sourceNodeTextData.getSize(),
                 sourceNodeData.r(),
                 sourceNodeData.g(),
                 sourceNodeData.b());

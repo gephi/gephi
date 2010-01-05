@@ -11,6 +11,7 @@ import org.gephi.preview.api.NodeChildColorizer;
 import org.gephi.preview.api.NodeColorizer;
 import org.gephi.preview.api.supervisors.NodeSupervisor;
 import org.gephi.preview.updaters.CustomColorMode;
+import org.gephi.preview.updaters.LabelFontAdjuster;
 import org.gephi.preview.updaters.LabelShortener;
 import org.gephi.preview.updaters.NodeOriginalColorMode;
 
@@ -26,7 +27,7 @@ public class NodeSupervisorImpl implements NodeSupervisor {
     private NodeColorizer nodeColorizer = new NodeOriginalColorMode();
     private GenericColorizer nodeBorderColorizer = new CustomColorMode(0, 0, 0);
     private Boolean showNodeLabels = true;
-    private Font nodeLabelfont = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
+    private Font baseNodeLabelfont = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
     private Boolean shortenLabelsFlag = false;
     private Integer nodeLabelMaxChar = 10;
     private NodeChildColorizer nodeLabelColorizer = new CustomColorMode(0, 0, 0);
@@ -48,138 +49,67 @@ public class NodeSupervisorImpl implements NodeSupervisor {
         colorNodeLabel(node.getLabel());
         colorNodeLabelBorder(node.getLabelBorder());
         updateLabelValue(node.getLabel());
+        adjustNodeLabelFont(node);
     }
 
-    /**
-     * Clears the list of supervised nodes.
-     */
     public void clearSupervised() {
         supervisedNodes.clear();
     }
 
-    /**
-     * Returns true if the nodes must be displayed in the preview.
-     *
-     * @return true if the nodes must be displayed in the preview
-     */
     public Boolean getShowNodes() {
         return showNodes;
     }
 
-    /**
-     * Defines if the nodes must be displayed in the preview.
-     *
-     * @param value  true to display the nodes in the preview
-     */
     public void setShowNodes(Boolean value) {
         showNodes = value;
     }
 
-    /**
-     * Returns the node border width.
-     *
-     * @return the node border width
-     */
     public Float getNodeBorderWidth() {
         return nodeBorderWidth;
     }
 
-    /**
-     * Defines the node border width.
-     *
-     * @param value  the node border width to set
-     */
     public void setNodeBorderWidth(Float value) {
         nodeBorderWidth = value;
     }
 
-    /**
-     * Returns the node colorizer.
-     *
-     * @return the node colorizer
-     */
     public NodeColorizer getNodeColorizer() {
         return nodeColorizer;
     }
 
-    /**
-     * Defines the node colorizer.
-     *
-     * @param value  the node colorizer to set
-     */
     public void setNodeColorizer(NodeColorizer value) {
         nodeColorizer = value;
         colorNodes();
     }
 
-    /**
-     * Returns the node border colorizer.
-     *
-     * @return the node border colorizer
-     */
     public GenericColorizer getNodeBorderColorizer() {
         return nodeBorderColorizer;
     }
 
-    /**
-     * Defines the node border colorizer.
-     *
-     * @param value  the node border colorizer to set
-     */
     public void setNodeBorderColorizer(GenericColorizer value) {
         nodeBorderColorizer = value;
     }
 
-    /**
-     * Returns true if the node labels must be displayed in the preview.
-     *
-     * @return true if the node labels must be displayed in the preview
-     */
     public Boolean getShowNodeLabels() {
         return showNodeLabels;
     }
 
-    /**
-     * Defines if the node labels must be displayed in the preview.
-     *
-     * @param value  true to display the node labels in the preview
-     */
     public void setShowNodeLabels(Boolean value) {
         showNodeLabels = value;
     }
 
-    /**
-     * Returns the node label font.
-     *
-     * @return the node label font
-     */
-    public Font getNodeLabelFont() {
-        return nodeLabelfont;
+    public Font getBaseNodeLabelFont() {
+        return baseNodeLabelfont;
     }
 
-    /**
-     * Defines the node label font.
-     *
-     * @param value  the node label font to set
-     */
-    public void setNodeLabelFont(Font value) {
-        nodeLabelfont = value;
+    public void setBaseNodeLabelFont(Font value) {
+        baseNodeLabelfont = value;
+        adjustNodeLabelFonts();
     }
 
-    /**
-     * Returns the node label character limit.
-     *
-     * @return the node label character limit
-     */
     public Integer getNodeLabelMaxChar() {
         return nodeLabelMaxChar;
     }
 
-    /**
-     * Defines the node label character limit.
-     *
-     * @param value  the node label character limit to set
-     */
     public void setNodeLabelMaxChar(Integer value) {
         nodeLabelMaxChar = value;
         updateLabelValues();
@@ -204,57 +134,27 @@ public class NodeSupervisorImpl implements NodeSupervisor {
         updateLabelValues();
     }
 
-    /**
-     * Returns the node label colorizer.
-     *
-     * @return the node label colorizer
-     */
     public NodeChildColorizer getNodeLabelColorizer() {
         return nodeLabelColorizer;
     }
 
-    /**
-     * Defines the node label colorizer.
-     *
-     * @param value  the node label colorizer to set
-     */
     public void setNodeLabelColorizer(NodeChildColorizer value) {
         nodeLabelColorizer = value;
         colorNodeLabels();
     }
 
-    /**
-     * Returns true if the node label borders must be displayed in the preview.
-     *
-     * @return true if the node label borders must be displayed in the preview
-     */
     public Boolean getShowNodeLabelBorders() {
         return showNodeLabelBorders;
     }
 
-    /**
-     * Defines if the node label borders must be displayed in the preview.
-     *
-     * @param value  true to display the node label borders in the preview
-     */
     public void setShowNodeLabelBorders(Boolean value) {
         showNodeLabelBorders = value;
     }
 
-    /**
-     * Returns the node label border colorizer.
-     *
-     * @return the node label border colorizer
-     */
     public NodeChildColorizer getNodeLabelBorderColorizer() {
         return nodeLabelBorderColorizer;
     }
 
-    /**
-     * Defines the node label border colorizer.
-     *
-     * @param value  the node label border colorizer to set
-     */
     public void setNodeLabelBorderColorizer(NodeChildColorizer value) {
         nodeLabelBorderColorizer = value;
         colorNodeLabelBorders();
@@ -378,6 +278,35 @@ public class NodeSupervisorImpl implements NodeSupervisor {
     private void colorNodeLabelBorders() {
         for (NodeImpl n : supervisedNodes) {
             colorNodeLabelBorder(n.getLabelBorder());
+        }
+    }
+
+    /**
+     * Adjusts the font of the given node label.
+     *
+     * @param label  the node label to adjust the font
+     */
+    private void adjustNodeLabelFont(NodeLabelImpl label) {
+        LabelFontAdjuster.adjustFont(label);
+    }
+
+    /**
+     * Adjusts the label font of a given node.
+     *
+     * @param edge  the node to adjust the label font
+     */
+    private void adjustNodeLabelFont(NodeImpl node) {
+        if (node.hasLabel()) {
+            adjustNodeLabelFont(node.getLabel());
+        }
+    }
+
+    /**
+     * Adjusts the label fonts of the supervised nodes.
+     */
+    private void adjustNodeLabelFonts() {
+        for (NodeImpl n : supervisedNodes) {
+            adjustNodeLabelFont(n);
         }
     }
 }

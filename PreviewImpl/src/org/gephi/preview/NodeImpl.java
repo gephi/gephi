@@ -41,12 +41,12 @@ public class NodeImpl implements Node, NodeColorizerClient {
      * @param g       the green color component
      * @param b       the blue color component
      */
-    public NodeImpl(GraphImpl parent, String label, float x, float y, float radius, float r, float g, float b) {
+    public NodeImpl(GraphImpl parent, float x, float y, float radius, String label, float labelSize, float r, float g, float b) {
         this.parent = parent;
         this.position = new PointImpl(x, y);
         this.radius = radius;
         this.originalColor = new SimpleColor(r, g, b, 0);
-        this.label = new NodeLabelImpl(this, label);
+        this.label = new NodeLabelImpl(this, label, labelSize);
         this.labelBorder = new NodeLabelBorderImpl(this);
 
         Vector topLeftVector = new Vector(position);
@@ -100,12 +100,12 @@ public class NodeImpl implements Node, NodeColorizerClient {
     }
 
     /**
-     * Returns the label font.
+     * Returns the base label font.
      *
-     * @return the label font
+     * @return the base label font
      */
-    public Font getLabelFont() {
-        return getNodeSupervisor().getNodeLabelFont();
+    public Font getBaseLabelFont() {
+        return getNodeSupervisor().getBaseNodeLabelFont();
     }
 
     public NodeLabelBorderImpl getLabelBorder() {
