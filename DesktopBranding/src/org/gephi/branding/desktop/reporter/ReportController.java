@@ -26,16 +26,12 @@ import java.awt.Toolkit;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.OperatingSystemMXBean;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import javax.xml.parsers.DocumentBuilder;
@@ -45,9 +41,10 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.openide.awt.StatusDisplayer;
 import org.openide.modules.ModuleInfo;
 import org.openide.modules.SpecificationVersion;
 import org.openide.util.Lookup;
@@ -66,7 +63,9 @@ public class ReportController {
         Thread thread = new Thread(new Runnable() {
 
             public void run() {
+                ProgressHandle handle = ProgressHandleFactory.createHandle(NbBundle.getMessage(ReportController.class, "ReportController.status.sending"));
                 try {
+                    handle.start();
                     logMessageLog(report);
                     logVersion(report);
                     logScreenSize(report);
@@ -79,6 +78,7 @@ public class ReportController {
                     Document doc = buildXMLDocument(report);
                     if (doc != null) {
                         if (sendDocument(doc)) {
+                            handle.finish();
                             DialogDisplayer.getDefault().notify(
                                     new NotifyDescriptor.Message(NbBundle.getMessage(ReportController.class, "ReportController.status.sent"),
                                     NotifyDescriptor.INFORMATION_MESSAGE));
@@ -88,6 +88,7 @@ public class ReportController {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                handle.finish();
                 DialogDisplayer.getDefault().notify(
                         new NotifyDescriptor.Message(NbBundle.getMessage(ReportController.class, "ReportController.status.failed"),
                         NotifyDescriptor.WARNING_MESSAGE));
