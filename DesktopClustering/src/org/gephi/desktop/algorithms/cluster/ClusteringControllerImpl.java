@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.algorithms.cluster;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.algorithms.cluster.api.Cluster;
 import org.gephi.algorithms.cluster.api.Clusterer;
 import org.gephi.algorithms.cluster.api.ClusteringController;
@@ -35,8 +37,6 @@ import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.selection.SelectionManager;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
 
 /**
@@ -53,9 +53,7 @@ public class ClusteringControllerImpl implements ClusteringController {
         errorHandler = new LongTaskErrorHandler() {
 
             public void fatalError(Throwable t) {
-                NotifyDescriptor.Message e = new NotifyDescriptor.Message(t.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
-                DialogDisplayer.getDefault().notifyLater(e);
-                t.printStackTrace();
+               Logger.getLogger("").log(Level.SEVERE, "", t.getCause());
             }
         };
         executor.setDefaultErrorHandler(errorHandler);

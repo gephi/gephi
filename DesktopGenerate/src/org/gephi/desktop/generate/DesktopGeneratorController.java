@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.generate;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -89,9 +91,7 @@ public class DesktopGeneratorController implements GeneratorController {
         LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
 
             public void fatalError(Throwable t) {
-                NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
-                DialogDisplayer.getDefault().notify(ex);
-                t.printStackTrace();
+                Logger.getLogger("").log(Level.WARNING, "", t.getCause());
             }
         };
 

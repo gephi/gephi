@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -118,9 +120,7 @@ public class DesktopImportController implements ImportController {
             }
 
         } catch (Exception ex) {
-            NotifyDescriptor.Message e = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
-            DialogDisplayer.getDefault().notifyLater(e);
-            ex.printStackTrace();
+            Logger.getLogger("").log(Level.WARNING, "", ex);
         }
     }
 
@@ -137,12 +137,7 @@ public class DesktopImportController implements ImportController {
         final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
 
             public void fatalError(Throwable t) {
-                t = t.getCause();
-                String msg = NbBundle.getMessage(DesktopImportController.class, "DesktopImportController.import.error", new Object[]{t.getClass().getSimpleName(), t.getLocalizedMessage(), t.getStackTrace()[0].getClassName(), t.getStackTrace()[0].getLineNumber()});
-                String title = NbBundle.getMessage(DesktopImportController.class, "DesktopImportController.import.error.title");
-                NotifyDescriptor ex = new NotifyDescriptor(msg, title, NotifyDescriptor.WARNING_MESSAGE, NotifyDescriptor.WARNING_MESSAGE, null, null);
-                DialogDisplayer.getDefault().notify(ex);
-                t.printStackTrace();
+                Logger.getLogger("").log(Level.WARNING, "", t.getCause());
             }
         };
 
@@ -174,12 +169,7 @@ public class DesktopImportController implements ImportController {
         final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
 
             public void fatalError(Throwable t) {
-                t = t.getCause();
-                String msg = NbBundle.getMessage(DesktopImportController.class, "DesktopImportController.import.error", new Object[]{t.getClass().getSimpleName(), t.getLocalizedMessage(), t.getStackTrace()[0].getClassName(), t.getStackTrace()[0].getLineNumber()});
-                String title = NbBundle.getMessage(DesktopImportController.class, "DesktopImportController.import.error.title");
-                NotifyDescriptor ex = new NotifyDescriptor(msg, title, NotifyDescriptor.WARNING_MESSAGE, NotifyDescriptor.WARNING_MESSAGE, null, null);
-                DialogDisplayer.getDefault().notify(ex);
-                t.printStackTrace();
+                Logger.getLogger("").log(Level.WARNING, "", t.getCause());
             }
         };
 
@@ -248,12 +238,7 @@ public class DesktopImportController implements ImportController {
             final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
 
                 public void fatalError(Throwable t) {
-                    t = t.getCause();
-                    String msg = NbBundle.getMessage(DesktopImportController.class, "DesktopImportController.import.error", new Object[]{t.getClass().getSimpleName(), t.getLocalizedMessage(), t.getStackTrace()[0].getClassName(), t.getStackTrace()[0].getLineNumber()});
-                    String title = NbBundle.getMessage(DesktopImportController.class, "DesktopImportController.import.error.title");
-                    NotifyDescriptor ex = new NotifyDescriptor(msg, title, NotifyDescriptor.WARNING_MESSAGE, NotifyDescriptor.WARNING_MESSAGE, null, null);
-                    DialogDisplayer.getDefault().notify(ex);
-                    t.printStackTrace();
+                    Logger.getLogger("").log(Level.WARNING, "", t.getCause());
                 }
             };
 
@@ -274,9 +259,7 @@ public class DesktopImportController implements ImportController {
             }, "Import database", errorHandler);
 
         } catch (Exception ex) {
-            NotifyDescriptor.Message e = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
-            DialogDisplayer.getDefault().notifyLater(e);
-            ex.printStackTrace();
+            Logger.getLogger("").log(Level.WARNING, "", ex);
         }
     }
 

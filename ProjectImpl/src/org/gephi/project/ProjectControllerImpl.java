@@ -23,6 +23,8 @@ package org.gephi.project;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -92,9 +94,7 @@ public class ProjectControllerImpl implements ProjectController {
 
             public void fatalError(Throwable t) {
                 unlockProjectActions();
-                NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
-                DialogDisplayer.getDefault().notify(ex);
-                t.printStackTrace();
+                Logger.getLogger("").log(Level.WARNING, "", t.getCause());
             }
         });
         longTaskExecutor.setLongTaskListener(new LongTaskListener() {

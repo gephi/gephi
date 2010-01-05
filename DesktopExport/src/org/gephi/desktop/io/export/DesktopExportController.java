@@ -24,6 +24,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -101,9 +103,7 @@ public class DesktopExportController implements ExportController {
                 exportXML(exporter, fileObject, settings);
             }
         } catch (Exception ex) {
-            NotifyDescriptor.Message e = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
-            DialogDisplayer.getDefault().notifyLater(e);
-            ex.printStackTrace();
+            Logger.getLogger("").log(Level.WARNING, "", ex);
         }
     }
 
@@ -114,9 +114,7 @@ public class DesktopExportController implements ExportController {
 
             exportVectorial(exporter, fileObject, workspace);
         } catch (Exception ex) {
-            NotifyDescriptor.Message e = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
-            DialogDisplayer.getDefault().notifyLater(e);
-            ex.printStackTrace();
+            Logger.getLogger("").log(Level.WARNING, "", ex);
         }
     }
 
@@ -149,9 +147,7 @@ public class DesktopExportController implements ExportController {
             final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
 
                 public void fatalError(Throwable t) {
-                    NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
-                    DialogDisplayer.getDefault().notify(ex);
-                    t.printStackTrace();
+                    Logger.getLogger("").log(Level.WARNING, "", t.getCause());
                 }
             };
 
@@ -196,9 +192,7 @@ public class DesktopExportController implements ExportController {
             final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
 
                 public void fatalError(Throwable t) {
-                    NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
-                    DialogDisplayer.getDefault().notify(ex);
-                    t.printStackTrace();
+                    Logger.getLogger("").log(Level.WARNING, "", t.getCause());
                 }
             };
 
@@ -241,9 +235,7 @@ public class DesktopExportController implements ExportController {
         final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
 
             public void fatalError(Throwable t) {
-                NotifyDescriptor.Exception ex = new NotifyDescriptor.Exception(t);
-                DialogDisplayer.getDefault().notify(ex);
-                t.printStackTrace();
+                Logger.getLogger("").log(Level.WARNING, "", t.getCause());
             }
         };
 
