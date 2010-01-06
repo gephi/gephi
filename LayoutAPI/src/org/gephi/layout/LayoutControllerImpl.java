@@ -103,7 +103,6 @@ public class LayoutControllerImpl implements LayoutController {
         if (model.getSelectedLayout() != null && graphController.getModel() != null) {
             model.getSelectedLayout().setGraphController(graphController);
         }
-        System.out.println("LayoutController: Injecting graphController");
     }
 
     public boolean canExecute() {
@@ -121,25 +120,22 @@ public class LayoutControllerImpl implements LayoutController {
     private static class LayoutRun implements LongTask, Runnable {
 
         private Layout layout;
-        private boolean cancel = false;
+        private boolean stopRun = false;
 
         public LayoutRun(Layout layout) {
             this.layout = layout;
         }
 
         public void run() {
-            System.out.println("LayoutRun: run():");
-
             layout.initAlgo();
-            while (layout.canAlgo() && !cancel) {
+            while (layout.canAlgo() && !stopRun) {
                 layout.goAlgo();
             }
             layout.endAlgo();
-            System.out.println("LayoutRun: Layout end.");
         }
 
         public boolean cancel() {
-            cancel = true;
+            stopRun = true;
             return true;
         }
 

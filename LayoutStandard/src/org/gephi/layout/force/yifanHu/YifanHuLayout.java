@@ -51,6 +51,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     private float stepRatio;
     private int quadTreeMaxLevel;
     private float barnesHutTheta;
+    private float convergenceThreshold;
     private boolean adaptiveCooling;
     private Displacement displacement;
     private double energy0;
@@ -64,7 +65,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
     protected void postAlgo() {
         updateStep();
-        if (Math.abs((energy - energy0) / energy) < 1e-3) {
+        if (Math.abs((energy - energy0) / energy) < getConvergenceThreshold()) {
             setConverged(true);
         }
     }
@@ -101,7 +102,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
     @Override
     public void resetPropertiesValues() {
-        setStepRatio((float) 0.9);
+        setStepRatio((float) 0.95);
         setRelativeStrength((float) 0.2);
         if (graph != null) {
             setOptimalDistance((float) (Math.pow(getRelativeStrength(), 1.0 / 3) * GraphUtils.getAverageEdgeLength(graph)));
@@ -113,6 +114,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         setQuadTreeMaxLevel(10);
         setBarnesHutTheta(1.2f);
         setAdaptiveCooling(true);
+        setConvergenceThreshold(1e-4f);
     }
 
     public LayoutProperty[] getProperties() {
@@ -122,33 +124,38 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class, "Optimal Distance", YIFANHU_CATEGORY,
-                    "The natural length of the springs.", "getOptimalDistance",
-                    "setOptimalDistance"));
+                this, Float.class, "Optimal Distance", YIFANHU_CATEGORY,
+                "The natural length of the springs. Bigger values mean nodes will be farther apart.",
+                "getOptimalDistance", "setOptimalDistance"));
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class, "Relative Strength", YIFANHU_CATEGORY,
-                    "The relative electrical force strength (compared to the springs)",
-                    "getRelativeStrength", "setRelativeStrength"));
+                this, Float.class, "Relative Strength", YIFANHU_CATEGORY,
+                "The relative strength between electrical force (repulsion) and spring force (attraction).",
+                "getRelativeStrength", "setRelativeStrength"));
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class, "Step size", YIFANHU_CATEGORY,
-                    "The step size used in the integration phase",
-                    "getStep", "setStep"));
+                this, Float.class, "Step size", YIFANHU_CATEGORY,
+                "The step size used in the integration phase. This value changes across iterations and must be set to meaningful value (fraction of the distance between nodes) before running the algoritm.",
+                "getStep", "setStep"));
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class, "Step ratio", YIFANHU_CATEGORY,
-                    "The ratio used to update the step size across iterations.",
-                    "getStepRatio", "setStepRatio"));
+                this, Float.class, "Step ratio", YIFANHU_CATEGORY,
+                "The ratio used to update the step size across iterations.",
+                "getStepRatio", "setStepRatio"));
             properties.add(LayoutProperty.createProperty(
-                    this, Boolean.class, "Adaptive Cooling", YIFANHU_CATEGORY,
-                    "Controls the use of adaptive cooling",
-                    "isAdaptiveCooling", "setAdaptiveCooling"));
+                this, Boolean.class, "Adaptive Cooling", YIFANHU_CATEGORY,
+                "Controls the use of adaptive cooling. It is used help the layout algoritm to avoid energy local minima.",
+                "isAdaptiveCooling", "setAdaptiveCooling"));
             properties.add(LayoutProperty.createProperty(
-                    this, Integer.class, "Quadtree Max Level", BARNESHUT_CATEGORY,
-                    "The max level to be used in the quadtree representation (smaller is less accurate, but faster)",
-                    "getQuadTreeMaxLevel", "setQuadTreeMaxLevel"));
+                this, Float.class, "Convergence Threshold", YIFANHU_CATEGORY,
+                "Relative energy convergence threshold. Smaller values mean more accuracy.",
+                "getConvergenceThreshold", "setConvergenceThreshold"));
+
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class, "Theta", BARNESHUT_CATEGORY,
-                    "The theta parameter for Barnes-Hut opening criteria (smaller is more accurate, but more expensive)",
-                    "getBarnesHutTheta", "setBarnesHutTheta"));
+                this, Integer.class, "Quadtree Max Level", BARNESHUT_CATEGORY,
+                "The maximun level to be used in the quadtree representation. Greater values mean more accuracy.",
+                "getQuadTreeMaxLevel", "setQuadTreeMaxLevel"));
+            properties.add(LayoutProperty.createProperty(
+                this, Float.class, "Theta", BARNESHUT_CATEGORY,
+                "The theta parameter for Barnes-Hut opening criteria. Smaller values mean more accuracy.",
+                "getBarnesHutTheta", "setBarnesHutTheta"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -320,6 +327,20 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     }
 
     /**
+     * @return the convergenceThreshold
+     */
+    public Float getConvergenceThreshold() {
+        return convergenceThreshold;
+    }
+
+    /**
+     * @param convergenceThreshold the convergenceThreshold to set
+     */
+    public void setConvergenceThreshold(Float convergenceThreshold) {
+        this.convergenceThreshold = convergenceThreshold;
+    }
+
+    /**
      * Fa = (n2 - n1) * ||n2 - n1|| / K
      * @author Helder Suzuki <heldersuzuki@gephi.org>
      */
@@ -333,9 +354,9 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
         @Override
         public ForceVector calculateForce(Spatial node1, Spatial node2,
-                float distance) {
+                                          float distance) {
             ForceVector f = new ForceVector(node2.x() - node1.x(),
-                    node2.y() - node1.y());
+                                            node2.y() - node1.y());
             f.multiply(distance / optimalDistance);
             return f;
         }
@@ -365,9 +386,9 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
         @Override
         public ForceVector calculateForce(Spatial node1, Spatial node2,
-                float distance) {
+                                          float distance) {
             ForceVector f = new ForceVector(node2.x() - node1.x(),
-                    node2.y() - node1.y());
+                                            node2.y() - node1.y());
             float scale = -relativeStrength * optimalDistance * optimalDistance / (distance * distance);
             if (Float.isNaN(scale) || Float.isInfinite(scale)) {
                 scale = -1;

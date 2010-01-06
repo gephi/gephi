@@ -20,8 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout;
 
-import org.gephi.layout.api.Layout;
-import org.gephi.layout.api.LayoutBuilder;
+import org.gephi.layout.spi.Layout;
+import org.gephi.layout.spi.LayoutBuilder;
 import org.openide.util.Lookup;
 
 /**
@@ -34,7 +34,7 @@ public class GetPropertySetsTest {
      * exceptions (tipically NoSuchMethodException).
      */
     @org.junit.Test
-    public void testMaxLevel0() throws NoSuchMethodException {
+    public void testGetProperties() throws NoSuchMethodException {
         for (LayoutBuilder layoutBuilder : Lookup.getDefault().lookupAll(LayoutBuilder.class)) {
             Layout layout = layoutBuilder.buildLayout();
             System.out.println("Layout: " + layoutBuilder.getName());

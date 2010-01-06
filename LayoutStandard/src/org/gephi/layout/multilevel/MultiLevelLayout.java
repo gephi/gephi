@@ -99,7 +99,7 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
             if (level > 0) {
                 coarseningStrategy.refine(graph);
                 level--;
-                layout = (YifanHuLayout) yifanHu.buildLayout();
+                layout = yifanHu.buildLayout();
                 layout.setGraphController(graphController);
                 layout.resetPropertiesValues();
                 layout.setAdaptiveCooling(false);
