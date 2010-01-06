@@ -140,7 +140,7 @@ public class ActionsToolbar extends JToolBar {
 
         //Reset label colors
         final JButton resetLabelVisibleButton = new JButton();
-        resetLabelVisibleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/resetLabelColor.png")));
+        resetLabelVisibleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/resetLabelVisible.png")));
         resetLabelVisibleButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetLabelVisible"));
         resetLabelVisibleButton.addActionListener(new ActionListener() {
 
