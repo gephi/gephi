@@ -59,6 +59,7 @@ public class DefaultScaler implements Scaler {
         float zMin = Float.POSITIVE_INFINITY;
         float zMax = Float.NEGATIVE_INFINITY;
         float sizeRatio = 0f;
+        float averageSize = 2.5f;
 
         //Measure
         for (NodeDraftGetter node : container.getUnloader().getNodes()) {
@@ -71,47 +72,48 @@ public class DefaultScaler implements Scaler {
             zMin = Math.min(node.getZ(), zMin);
             zMax = Math.max(node.getZ(), zMax);
         }
-        if (sizeMin == 0 && sizeMax == 0) {
-            return;
-        }
-        if (sizeMin == sizeMax) {
-            sizeRatio = sizeMinimum / sizeMin;
-        } else {
-            sizeRatio = (sizeMaximum - sizeMinimum) / (sizeMax - sizeMin);
-        }
 
-        //Watch octree limit
-        if (xMin * sizeRatio < -octreeLimit) {
-            sizeRatio = octreeLimit / xMin;
-        }
-        if (xMax * sizeRatio > octreeLimit) {
-            sizeRatio = octreeLimit / xMax;
-        }
-        if (yMin * sizeRatio < -octreeLimit) {
-            sizeRatio = octreeLimit / yMin;
-        }
-        if (yMax * sizeRatio > octreeLimit) {
-            sizeRatio = octreeLimit / yMax;
-        }
-        if (zMin * sizeRatio < -octreeLimit) {
-            sizeRatio = octreeLimit / zMin;
-        }
-        if (zMax * sizeRatio > octreeLimit) {
-            sizeRatio = octreeLimit / zMax;
-        }
+        if (sizeMin != 0 && sizeMax != 0) {
 
-        float averageSize = 0f;
+            if (sizeMin == sizeMax) {
+                sizeRatio = sizeMinimum / sizeMin;
+            } else {
+                sizeRatio = (sizeMaximum - sizeMinimum) / (sizeMax - sizeMin);
+            }
 
-        //Scale node size
-        for (NodeDraftGetter node : container.getUnloader().getNodes()) {
-            float size = (node.getSize() - sizeMin) * sizeRatio + sizeMinimum;
-            node.setSize(size);
-            node.setX(node.getX() * sizeRatio);
-            node.setY(node.getY() * sizeRatio);
-            node.setZ(node.getZ() * sizeRatio);
-            averageSize += size;
+            //Watch octree limit
+            if (xMin * sizeRatio < -octreeLimit) {
+                sizeRatio = octreeLimit / xMin;
+            }
+            if (xMax * sizeRatio > octreeLimit) {
+                sizeRatio = octreeLimit / xMax;
+            }
+            if (yMin * sizeRatio < -octreeLimit) {
+                sizeRatio = octreeLimit / yMin;
+            }
+            if (yMax * sizeRatio > octreeLimit) {
+                sizeRatio = octreeLimit / yMax;
+            }
+            if (zMin * sizeRatio < -octreeLimit) {
+                sizeRatio = octreeLimit / zMin;
+            }
+            if (zMax * sizeRatio > octreeLimit) {
+                sizeRatio = octreeLimit / zMax;
+            }
+
+            averageSize = 0f;
+
+            //Scale node size
+            for (NodeDraftGetter node : container.getUnloader().getNodes()) {
+                float size = (node.getSize() - sizeMin) * sizeRatio + sizeMinimum;
+                node.setSize(size);
+                node.setX(node.getX() * sizeRatio);
+                node.setY(node.getY() * sizeRatio);
+                node.setZ(node.getZ() * sizeRatio);
+                averageSize += size;
+            }
+            averageSize /= container.getUnloader().getNodes().size();
         }
-        averageSize /= container.getUnloader().getNodes().size();
 
         float weightMin = Float.POSITIVE_INFINITY;
         float weightMax = Float.NEGATIVE_INFINITY;
