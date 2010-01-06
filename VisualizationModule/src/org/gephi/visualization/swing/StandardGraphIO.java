@@ -54,7 +54,9 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
     protected float[] leftButtonMoving = {-1f, 0f, 0f};
     protected float[] middleButtonMoving = {-1f, 0f, 0f};
     protected float[] mousePosition = new float[2];
+    protected float[] mouseDrag3d = new float[2];
     protected float[] mouseDrag = new float[2];
+    protected float[] startDrag2d = new float[2];
     //Flags
     protected boolean draggingEnable = true;
     protected boolean dragging = false;
@@ -237,6 +239,9 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
             mousePosition[0] = x;
             mousePosition[1] = graphDrawable.viewport.get(3) - y;
 
+            mouseDrag3d[0] = (float) ((graphDrawable.viewport.get(2) / 2 - x) / graphDrawable.draggingMarker[0] + graphDrawable.cameraTarget[0]);
+            mouseDrag3d[1] = (float) ((y - graphDrawable.viewport.get(3) / 2) / graphDrawable.draggingMarker[1] + graphDrawable.cameraTarget[1]);
+
             if (vizController.getVizConfig().isSelectionEnable() && engine.isRectangleSelection()) {
                 if (!dragging) {
                     //Start drag
@@ -246,20 +251,26 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
                 }
                 engine.getScheduler().requireUpdateSelection();
             } else if (vizController.getVizConfig().isDraggingEnable()) {
-                mouseDrag[0] = (float) ((graphDrawable.viewport.get(2) / 2 - x) / graphDrawable.draggingMarker[0] + graphDrawable.cameraTarget[0]);
-                mouseDrag[1] = (float) ((y - graphDrawable.viewport.get(3) / 2) / graphDrawable.draggingMarker[1] + graphDrawable.cameraTarget[1]);
 
                 if (!dragging) {
                     //Start drag
                     dragging = true;
-                    vizEventManager.startDrag();
                     engine.getScheduler().requireStartDrag();
                 }
-
-                vizEventManager.drag();
                 engine.getScheduler().requireDrag();
             } else if (vizController.getVizConfig().isMouseSelectionUpdateWhileDragging()) {
                 engine.getScheduler().requireDrag();
+            } else {
+                if (!dragging) {
+                    //Start drag
+                    dragging = true;
+                    startDrag2d[0] = x;
+                    startDrag2d[1] = y;
+                    vizEventManager.startDrag();
+                }
+                mouseDrag[0] = x - startDrag2d[0];
+                mouseDrag[1] = startDrag2d[1] - y;
+                vizEventManager.drag();
             }
 
             leftButtonMoving[0] = x;
@@ -390,6 +401,10 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
     public float[] getMouseDrag() {
         return mouseDrag;
+    }
+
+    public float[] getMouseDrag3d() {
+        return mouseDrag3d;
     }
 
     public void centerOnZero() {

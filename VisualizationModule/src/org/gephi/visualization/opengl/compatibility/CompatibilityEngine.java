@@ -505,7 +505,7 @@ public class CompatibilityEngine extends AbstractEngine {
         if (vizConfig.isMouseSelectionUpdateWhileDragging()) {
             mouseMove();
         } else {
-            float[] drag = graphIO.getMouseDrag();
+            float[] drag = graphIO.getMouseDrag3d();
             for (ModelImpl obj : selectedObjects[0]) {
                 float[] mouseDistance = obj.getDragDistanceFromMouse();
                 obj.getObj().setX(drag[0] + mouseDistance[0]);
@@ -605,8 +605,8 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public void startDrag() {
-        float x = graphIO.getMouseDrag()[0];
-        float y = graphIO.getMouseDrag()[1];
+        float x = graphIO.getMouseDrag3d()[0];
+        float y = graphIO.getMouseDrag3d()[1];
 
         for (Iterator<ModelImpl> itr = selectedObjects[0].iterator(); itr.hasNext();) {
             ModelImpl o = itr.next();

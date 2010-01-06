@@ -22,6 +22,7 @@ package org.gephi.visualization.events;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -167,9 +168,20 @@ public class StandardVizEventManager implements VizEventManager {
     public void stopDrag() {
         handlers[VizEvent.Type.STOP_DRAG.ordinal()].dispatch();
     }
+    private static final int DRAGGING_FREQUENCY = 5;
+    private int draggingTick = 0;
 
     public void drag() {
-        handlers[VizEvent.Type.DRAG.ordinal()].dispatch();
+        if (draggingTick++ >= DRAGGING_FREQUENCY) {
+            draggingTick = 0;
+            VizEventTypeHandler handler = handlers[VizEvent.Type.DRAG.ordinal()];
+            if (handler.hasListeners()) {
+                float[] mouseDrag = Arrays.copyOf(graphIO.getMouseDrag(), 4);
+                mouseDrag[2] = graphIO.getMouseDrag3d()[0];
+                mouseDrag[3] = graphIO.getMouseDrag3d()[1];
+                handler.dispatch(mouseDrag);
+            }
+        }
     }
 
     public void mouseReleased() {
@@ -205,7 +217,6 @@ public class StandardVizEventManager implements VizEventManager {
 
         //Settings
         private final boolean limitRunning;
-
         //Data
         protected List<WeakReference<VizEventListener>> listeners;
         protected final VizEvent.Type type;
