@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
 <filesystem>
     <folder name="Actions">
         <folder name="Window">
             <file name="org-gephi-desktop-filters-FiltersAction.instance">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.desktop.filters.Bundle"/>
                 <attr name="component" methodvalue="org.gephi.desktop.filters.FiltersTopComponent.findInstance"/>
                 <attr name="displayName" bundlevalue="org.gephi.desktop.filters.Bundle#CTL_FiltersAction"/>
+                <attr name="iconBase" stringvalue="org/gephi/desktop/filters/resources/icon.png"/>
                 <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
             </file>
         </folder>
@@ -23,10 +23,9 @@
             <file name="FiltersTopComponent.settings" url="FiltersTopComponentSettings.xml"/>
         </folder>
         <folder name="Modes">
-            <folder name="filtersmode">
+            <folder name="layoutmode">
                 <file name="FiltersTopComponent.wstcref" url="FiltersTopComponentWstcref.xml"/>
             </folder>
-            <file name="filtersmode.wsmode" url="filtersWsmode.xml"/>
         </folder>
     </folder>
 </filesystem>
