@@ -6,6 +6,7 @@
             <file name="org-gephi-ui-layout-LayoutAction.instance">
                 <attr name="component" methodvalue="org.gephi.ui.layout.LayoutTopComponent.findInstance"/>
                 <attr name="displayName" bundlevalue="org.gephi.ui.layout.Bundle#CTL_LayoutAction"/>
+                <attr name="iconBase" stringvalue="org/gephi/ui/layout/resources/icon.png"/>
                 <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
             </file>
         </folder>

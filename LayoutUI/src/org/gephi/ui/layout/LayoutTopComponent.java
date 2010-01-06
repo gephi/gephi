@@ -38,7 +38,7 @@ autostore = false)
 public final class LayoutTopComponent extends TopComponent {
 
     private static LayoutTopComponent instance;
-   static final String ICON_PATH = "org/gephi/ui/layout/resources/icon.png";
+    static final String ICON_PATH = "org/gephi/ui/layout/resources/small.png";
     private static final String PREFERRED_ID = "LayoutTopComponent";
     private LayoutPanel layoutPanel;
     private LayoutModel model;
