@@ -6,6 +6,7 @@
             <file name="org-gephi-desktop-statistics-StatisticsAction.instance">
                 <attr name="component" methodvalue="org.gephi.desktop.statistics.StatisticsTopComponent.findInstance"/>
                 <attr name="displayName" bundlevalue="org.gephi.desktop.statistics.Bundle#CTL_StatisticsAction"/>
+                <attr name="iconBase" stringvalue="org/gephi/desktop/statistics/resources/icon.png"/>
                 <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
             </file>
         </folder>

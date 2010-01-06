@@ -4,15 +4,15 @@
     <folder name="Actions">
         <folder name="Window">
             <file name="org-gephi-ui-preview-PreviewAction.instance">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.ui.preview.Bundle"/>
                 <attr name="component" methodvalue="org.gephi.ui.preview.PreviewTopComponent.findInstance"/>
                 <attr name="displayName" bundlevalue="org.gephi.ui.preview.Bundle#CTL_PreviewAction"/>
+                <attr name="iconBase" stringvalue="org/gephi/ui/preview/resources/preview.png"/>
                 <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
             </file>
             <file name="org-gephi-ui-preview-PreviewSettingsAction.instance">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.ui.preview.Bundle"/>
                 <attr name="component" methodvalue="org.gephi.ui.preview.PreviewSettingsTopComponent.findInstance"/>
                 <attr name="displayName" bundlevalue="org.gephi.ui.preview.Bundle#CTL_PreviewSettingsAction"/>
+                <attr name="iconBase" stringvalue="org/gephi/desktop/statistics/resources/settings.png"/>
                 <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
             </file>
         </folder>

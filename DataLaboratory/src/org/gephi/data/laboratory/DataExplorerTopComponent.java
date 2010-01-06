@@ -73,7 +73,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         NONE, NODE, EDGE
     };
     private static DataExplorerTopComponent instance;
-    static final String ICON_PATH = "org/gephi/data/laboratory/resources/icon.png";
+    static final String ICON_PATH = "org/gephi/data/laboratory/resources/small.png";
     private static final String PREFERRED_ID = "DataExplorerTopComponent";
     //Settings
     private static final String DATA_LABORATORY_DYNAMIC_FILTERING = "DataLaboratory_Dynamic_Filtering";

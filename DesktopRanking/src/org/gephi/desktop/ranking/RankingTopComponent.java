@@ -43,7 +43,7 @@ import org.openide.windows.WindowManager;
 final class RankingTopComponent extends TopComponent implements Lookup.Provider {
 
     private static RankingTopComponent instance;
-    static final String ICON_PATH = "org/gephi/desktop/ranking/resources/icon.png";
+    static final String ICON_PATH = "org/gephi/desktop/ranking/resources/small.png";
     private static final String PREFERRED_ID = "RankingTopComponent";
     //UI
     private JToggleButton listButton;

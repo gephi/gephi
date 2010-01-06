@@ -36,7 +36,7 @@ import org.openide.windows.WindowManager;
 final class PartitionTopComponent extends TopComponent {
 
     private static PartitionTopComponent instance;
-    static final String ICON_PATH = "org/gephi/desktop/partition/resources/icon.png";
+    static final String ICON_PATH = "org/gephi/desktop/partition/resources/small.png";
     private static final String PREFERRED_ID = "PartitionTopComponent";
 
     private PartitionTopComponent() {

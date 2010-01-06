@@ -43,7 +43,7 @@ autostore = false)
 public final class StatisticsTopComponent extends TopComponent implements ChangeListener {
 
     private static StatisticsTopComponent instance;
-    static final String ICON_PATH = "org/gephi/desktop/statistics/resources/icon.png";
+    static final String ICON_PATH = "org/gephi/desktop/statistics/resources/small.png";
     private static final String PREFERRED_ID = "StatisticsTopComponent";
     //Model
     private StatisticsModelImpl model;
