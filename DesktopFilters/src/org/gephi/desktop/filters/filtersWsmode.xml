@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mode version="2.3">
+    <name unique="filtersmode" />
+  <kind type="editor" />
+  <state type="joined" />
+  <constraints>
+    <path orientation="horizontal" number="2" weight="0.19937205651491366"/>
+  </constraints>
+  <bounds x="0" y="0" width="0" height="0" />
+  <frame state="0"/>
+    <active-tc  id="FiltersTopComponent" />
+    <empty-behavior permanent="false"/>
+</mode>

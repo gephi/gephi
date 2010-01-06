@@ -23,9 +23,10 @@
             <file name="FiltersTopComponent.settings" url="FiltersTopComponentSettings.xml"/>
         </folder>
         <folder name="Modes">
-            <folder name="layoutmode">
+            <folder name="filtersmode">
                 <file name="FiltersTopComponent.wstcref" url="FiltersTopComponentWstcref.xml"/>
             </folder>
+            <file name="filtersmode.wsmode" url="filtersWsmode.xml"/>
         </folder>
     </folder>
 </filesystem>

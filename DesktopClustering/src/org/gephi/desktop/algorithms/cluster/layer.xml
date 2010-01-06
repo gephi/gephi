@@ -23,7 +23,7 @@
             <file name="ClusteringTopComponent.settings" url="ClusteringTopComponentSettings.xml"/>
         </folder>
         <folder name="Modes">
-            <folder name="statisticsmode">
+            <folder name="rankingmode">
                 <file name="ClusteringTopComponent.wstcref" url="ClusteringTopComponentWstcref.xml"/>
             </folder>
         </folder>

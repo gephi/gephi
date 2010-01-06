@@ -23,7 +23,7 @@
             <file name="PartitionTopComponent.settings" url="PartitionTopComponentSettings.xml"/>
         </folder>
         <folder name="Modes">
-            <folder name="statisticsmode">
+            <folder name="rankingmode">
                 <file name="PartitionTopComponent.wstcref" url="PartitionTopComponentWstcref.xml"/>
             </folder>
         </folder>

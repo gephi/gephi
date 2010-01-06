@@ -22,7 +22,7 @@
             <file name="EditToolTopComponent.settings" url="EditToolTopComponentSettings.xml"/>
         </folder>
         <folder name="Modes">
-            <folder name="statisticsmode">
+            <folder name="rankingmode">
                 <file name="EditToolTopComponent.wstcref" url="EditToolTopComponentWstcref.xml"/>
             </folder>
         </folder>

@@ -23,9 +23,10 @@
             <file name="RankingTopComponent.settings" url="RankingTopComponentSettings.xml"/>
         </folder>
         <folder name="Modes">
-            <folder name="statisticsmode">
+            <folder name="rankingmode">
                 <file name="RankingTopComponent.wstcref" url="RankingTopComponentWstcref.xml"/>
             </folder>
-        </folder>
+            <file name="rankingmode.wsmode" url="rankingWsmode.xml"/>
+        </folder>    
     </folder>
 </filesystem>

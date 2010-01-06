@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mode version="2.3">
-    <name unique="statisticsmode" />
+    <name unique="rankingmode" />
   <kind type="editor" />
   <state type="joined" />
   <constraints>
@@ -10,6 +10,6 @@
   </constraints>
   <bounds x="0" y="0" width="0" height="0" />
   <frame state="0"/>
-    <active-tc  id="StatisticsTopComponent" />
+    <active-tc  id="RankingTopComponent" />
     <empty-behavior permanent="false"/>
 </mode>
