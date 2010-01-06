@@ -88,7 +88,7 @@ public class CollapsePanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout());
 
-        buttonPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
+        buttonPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 3));
 
         extendButton.setText(org.openide.util.NbBundle.getMessage(CollapsePanel.class, "CollapsePanel.extendButton.text")); // NOI18N
         extendButton.setAlignmentY(0.0F);

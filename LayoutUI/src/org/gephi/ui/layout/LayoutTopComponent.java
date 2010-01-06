@@ -29,7 +29,7 @@ import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-//import org.openide.util.ImageUtilities;
+import org.openide.util.ImageUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.util.Lookup;
 
@@ -38,8 +38,7 @@ autostore = false)
 public final class LayoutTopComponent extends TopComponent {
 
     private static LayoutTopComponent instance;
-    /** path to the icon used by the component and its open action */
-//    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
+   static final String ICON_PATH = "org/gephi/ui/layout/resources/icon.png";
     private static final String PREFERRED_ID = "LayoutTopComponent";
     private LayoutPanel layoutPanel;
     private LayoutModel model;
@@ -48,7 +47,7 @@ public final class LayoutTopComponent extends TopComponent {
         initComponents();
         setName(NbBundle.getMessage(LayoutTopComponent.class, "CTL_LayoutTopComponent"));
         setToolTipText(NbBundle.getMessage(LayoutTopComponent.class, "HINT_LayoutTopComponent"));
-//        setIcon(ImageUtilities.loadImage(ICON_PATH, true));
+        setIcon(ImageUtilities.loadImage(ICON_PATH));
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
         layoutPanel = new LayoutPanel();

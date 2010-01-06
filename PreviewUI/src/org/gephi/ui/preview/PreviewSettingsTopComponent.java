@@ -6,27 +6,23 @@ import java.util.logging.Logger;
 import org.gephi.project.api.ProjectController;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.Node;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-//import org.openide.util.Utilities;
 
-/**
- * Top component displaying the preview settings.
- */
 final class PreviewSettingsTopComponent extends TopComponent {
 
     private static PreviewSettingsTopComponent instance;
-    /** path to the icon used by the component and its open action */
-//    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
+    static final String ICON_PATH = "org/gephi/ui/preview/resources/settings.png";
     private static final String PREFERRED_ID = "PreviewSettingsTopComponent";
 
     private PreviewSettingsTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(PreviewSettingsTopComponent.class, "CTL_PreviewSettingsTopComponent"));
         setToolTipText(NbBundle.getMessage(PreviewSettingsTopComponent.class, "HINT_PreviewSettingsTopComponent"));
-//        setIcon(Utilities.loadImage(ICON_PATH, true));
+        setIcon(ImageUtilities.loadImage(ICON_PATH));
 
         // property sheet
         PropertySheet ps = new PropertySheet();
@@ -54,8 +50,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
 
         if (value < 0) {
             value = 0;
-        }
-        else if (value > 100) {
+        } else if (value > 100) {
             value = 100;
         }
 

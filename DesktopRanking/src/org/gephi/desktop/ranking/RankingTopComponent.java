@@ -34,6 +34,7 @@ import org.gephi.ui.ranking.RankingToolbar;
 import org.gephi.ui.ranking.ResultListPanel;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -42,8 +43,7 @@ import org.openide.windows.WindowManager;
 final class RankingTopComponent extends TopComponent implements Lookup.Provider {
 
     private static RankingTopComponent instance;
-    /** path to the icon used by the component and its open action */
-//    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
+    static final String ICON_PATH = "org/gephi/desktop/ranking/resources/icon.png";
     private static final String PREFERRED_ID = "RankingTopComponent";
     //UI
     private JToggleButton listButton;
@@ -55,7 +55,7 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
     private RankingTopComponent() {
         setName(NbBundle.getMessage(RankingTopComponent.class, "CTL_RankingTopComponent"));
         setToolTipText(NbBundle.getMessage(RankingTopComponent.class, "HINT_RankingTopComponent"));
-//        setIcon(Utilities.loadImage(ICON_PATH, true));
+        setIcon(ImageUtilities.loadImage(ICON_PATH));
 
         RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
         rankingModel = rankingController.getRankingModel();

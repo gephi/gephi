@@ -31,11 +31,11 @@ import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-//import org.openide.util.ImageUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.statistics//Statistics//EN",
@@ -43,8 +43,7 @@ autostore = false)
 public final class StatisticsTopComponent extends TopComponent implements ChangeListener {
 
     private static StatisticsTopComponent instance;
-    /** path to the icon used by the component and its open action */
-//    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
+    static final String ICON_PATH = "org/gephi/desktop/statistics/resources/icon.png";
     private static final String PREFERRED_ID = "StatisticsTopComponent";
     //Model
     private StatisticsModelImpl model;
@@ -53,7 +52,7 @@ public final class StatisticsTopComponent extends TopComponent implements Change
         initComponents();
         setName(NbBundle.getMessage(StatisticsTopComponent.class, "CTL_StatisticsTopComponent"));
         setToolTipText(NbBundle.getMessage(StatisticsTopComponent.class, "HINT_StatisticsTopComponent"));
-//        setIcon(ImageUtilities.loadImage(ICON_PATH, true));
+        setIcon(ImageUtilities.loadImage(ICON_PATH));
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
         //Workspace events

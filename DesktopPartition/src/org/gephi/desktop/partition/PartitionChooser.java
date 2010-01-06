@@ -102,7 +102,7 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
 
         controlPanel.setLayout(new java.awt.GridBagLayout());
 
-        applyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/partition/apply.gif"))); // NOI18N
+        applyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/partition/resources/apply.gif"))); // NOI18N
         applyButton.setText(org.openide.util.NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.applyButton.text")); // NOI18N
         applyButton.setMargin(new java.awt.Insets(0, 14, 0, 14));
         applyButton.addActionListener(new java.awt.event.ActionListener() {
@@ -119,7 +119,7 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
         controlPanel.add(applyButton, gridBagConstraints);
 
         groupLink.setClickedColor(new java.awt.Color(0, 51, 255));
-        groupLink.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/partition/cluster.png"))); // NOI18N
+        groupLink.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/partition/resources/cluster.png"))); // NOI18N
         groupLink.setText(org.openide.util.NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.groupLink.text")); // NOI18N
         groupLink.setToolTipText(org.openide.util.NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.groupLink.toolTipText")); // NOI18N
         groupLink.setEnabled(false);
@@ -131,7 +131,7 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
         controlPanel.add(groupLink, gridBagConstraints);
 
         pieLink.setClickedColor(new java.awt.Color(0, 51, 255));
-        pieLink.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/partition/pie.png"))); // NOI18N
+        pieLink.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/partition/resources/pie.png"))); // NOI18N
         pieLink.setText(org.openide.util.NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.pieLink.text")); // NOI18N
         pieLink.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();

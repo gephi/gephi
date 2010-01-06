@@ -53,6 +53,7 @@ import org.gephi.ui.utils.BusyUtils;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.netbeans.swing.etable.ETableColumnModel;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -60,7 +61,6 @@ import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-//import org.openide.util.Utilities;
 
 /**
  *
@@ -73,8 +73,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         NONE, NODE, EDGE
     };
     private static DataExplorerTopComponent instance;
-    /** path to the icon used by the component and its open action */
-//    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
+    static final String ICON_PATH = "org/gephi/data/laboratory/resources/icon.png";
     private static final String PREFERRED_ID = "DataExplorerTopComponent";
     //Settings
     private static final String DATA_LABORATORY_DYNAMIC_FILTERING = "DataLaboratory_Dynamic_Filtering";
@@ -109,7 +108,7 @@ final class DataExplorerTopComponent extends TopComponent implements LookupListe
         initComponents();
         setName(NbBundle.getMessage(DataExplorerTopComponent.class, "CTL_DataExplorerTopComponent"));
         setToolTipText(NbBundle.getMessage(DataExplorerTopComponent.class, "HINT_DataExplorerTopComponent"));
-//        setIcon(Utilities.loadImage(ICON_PATH, true));
+        setIcon(ImageUtilities.loadImage(ICON_PATH));
 
         initEvents();
 

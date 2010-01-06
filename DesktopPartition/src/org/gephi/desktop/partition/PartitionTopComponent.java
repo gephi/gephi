@@ -27,24 +27,23 @@ import org.gephi.partition.api.PartitionModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-//import org.openide.util.Utilities;
 
 final class PartitionTopComponent extends TopComponent {
 
     private static PartitionTopComponent instance;
-    /** path to the icon used by the component and its open action */
-//    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
+    static final String ICON_PATH = "org/gephi/desktop/partition/resources/icon.png";
     private static final String PREFERRED_ID = "PartitionTopComponent";
 
     private PartitionTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(PartitionTopComponent.class, "CTL_PartitionTopComponent"));
         setToolTipText(NbBundle.getMessage(PartitionTopComponent.class, "HINT_PartitionTopComponent"));
-//        setIcon(Utilities.loadImage(ICON_PATH, true));
+        setIcon(ImageUtilities.loadImage(ICON_PATH));
 
         initEvents();
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);

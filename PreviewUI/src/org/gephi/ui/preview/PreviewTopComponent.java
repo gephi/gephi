@@ -6,19 +6,15 @@ import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import org.gephi.preview.api.GraphSheet;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-//import org.openide.util.Utilities;
 
-/**
- * Top component which displays the preview applet.
- */
 final class PreviewTopComponent extends TopComponent {
 
     private static PreviewTopComponent instance;
-    /** path to the icon used by the component and its open action */
-//    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
+    static final String ICON_PATH = "org/gephi/ui/preview/resources/preview.png";
     private static final String PREFERRED_ID = "PreviewTopComponent";
     private final ProcessingPreview sketch = new ProcessingPreview();
 
@@ -26,7 +22,7 @@ final class PreviewTopComponent extends TopComponent {
         initComponents();
         setName(NbBundle.getMessage(PreviewTopComponent.class, "CTL_PreviewTopComponent"));
         setToolTipText(NbBundle.getMessage(PreviewTopComponent.class, "HINT_PreviewTopComponent"));
-//        setIcon(Utilities.loadImage(ICON_PATH, true));
+        setIcon(ImageUtilities.loadImage(ICON_PATH));
 
         bannerPanel.setVisible(false);
 
@@ -125,7 +121,6 @@ final class PreviewTopComponent extends TopComponent {
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
         PreviewUIController.findInstance().refreshPreview();
     }//GEN-LAST:event_refreshButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel bannerLabel;
     private javax.swing.JPanel bannerPanel;
