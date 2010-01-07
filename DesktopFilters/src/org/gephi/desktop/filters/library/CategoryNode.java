@@ -65,9 +65,9 @@ public class CategoryNode extends AbstractNode {
         } catch (Exception e) {
         }
         if(category==null) {
-            return ImageUtilities.loadImage("org/gephi/desktop/filters/library/resources/library.gif");
+            return ImageUtilities.loadImage("org/gephi/desktop/filters/library/resources/library.png");
         } else {
-            return ImageUtilities.loadImage("org/gephi/desktop/filters/library/resources/folder.gif");
+            return ImageUtilities.loadImage("org/gephi/desktop/filters/library/resources/folder.png");
         }
     }
 

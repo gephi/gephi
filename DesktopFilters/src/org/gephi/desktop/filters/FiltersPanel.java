@@ -23,17 +23,7 @@ package org.gephi.desktop.filters;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import javax.swing.JPanel;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import org.gephi.desktop.filters.library.FiltersExplorer;
 import org.gephi.desktop.filters.query.QueryExplorer;
 import org.gephi.filters.api.FilterController;
@@ -41,7 +31,6 @@ import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.Query;
 import org.openide.explorer.ExplorerManager;
 import org.openide.util.Lookup;
-import org.w3c.dom.Document;
 
 /**
  *
@@ -104,13 +93,13 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         toolbar = new javax.swing.JToolBar();
         resetButton = new javax.swing.JButton();
         splitPane = new javax.swing.JSplitPane();
-        southPanel = new javax.swing.JPanel();
         libraryTree = new FiltersExplorer();
+        southPanel = new javax.swing.JPanel();
         filtersUIPanel = new javax.swing.JPanel();
         applyButton = new javax.swing.JButton();
+        selectButton = new javax.swing.JButton();
         southToolbar = new javax.swing.JToolBar();
-        dynamicRefreshButton = new javax.swing.JToggleButton();
-        jButton1 = new javax.swing.JButton();
+        liveButton = new javax.swing.JToggleButton();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -126,24 +115,27 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 1.0;
         add(toolbar, gridBagConstraints);
 
+        splitPane.setBorder(null);
         splitPane.setDividerLocation(260);
         splitPane.setDividerSize(3);
         splitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
+        libraryTree.setBorder(null);
+        splitPane.setLeftComponent(libraryTree);
+
         southPanel.setLayout(new java.awt.BorderLayout());
         splitPane.setRightComponent(southPanel);
-        splitPane.setLeftComponent(libraryTree);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -154,41 +146,38 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 1, 5);
         add(filtersUIPanel, gridBagConstraints);
 
-        applyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/filters/resources/apply.png"))); // NOI18N
+        applyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/filters/resources/filter.png"))); // NOI18N
         applyButton.setText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.applyButton.text")); // NOI18N
         applyButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 2, 3);
         add(applyButton, gridBagConstraints);
+
+        selectButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/filters/resources/select.png"))); // NOI18N
+        selectButton.setText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.selectButton.text")); // NOI18N
+        selectButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 2, 3);
+        add(selectButton, gridBagConstraints);
 
         southToolbar.setFloatable(false);
         southToolbar.setRollover(true);
 
-        dynamicRefreshButton.setText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.dynamicRefreshButton.text")); // NOI18N
-        dynamicRefreshButton.setFocusable(false);
-        dynamicRefreshButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        dynamicRefreshButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        southToolbar.add(dynamicRefreshButton);
-
-        jButton1.setText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.jButton1.text")); // NOI18N
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        southToolbar.add(jButton1);
+        liveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/filters/resources/live.png"))); // NOI18N
+        liveButton.setText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.liveButton.text")); // NOI18N
+        liveButton.setFocusable(false);
+        southToolbar.add(liveButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -200,50 +189,13 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         add(southToolbar, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (model.getQueries().length == 0) {
-            //Load
-            try {
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                Document document = builder.parse(new File("model.xml"));
-                //((FilterModelImpl) model).readXML(document);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        } else {
-            //Save
-            try {
-                //Create doc
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder documentBuilder = factory.newDocumentBuilder();
-                final Document document = documentBuilder.newDocument();
-                document.setXmlVersion("1.0");
-                document.setXmlStandalone(true);
-
-                //Write doc
-                // ((FilterModelImpl) model).writeXML(document);
-
-                //Write XML file
-                Source source = new DOMSource(document);
-                Result result = new StreamResult(new File("model.xml"));
-                Transformer transformer = TransformerFactory.newInstance().newTransformer();
-                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-                transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-                transformer.transform(source, result);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyButton;
-    private javax.swing.JToggleButton dynamicRefreshButton;
     private javax.swing.JPanel filtersUIPanel;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane libraryTree;
+    private javax.swing.JToggleButton liveButton;
     private javax.swing.JButton resetButton;
+    private javax.swing.JButton selectButton;
     private javax.swing.JPanel southPanel;
     private javax.swing.JToolBar southToolbar;
     private javax.swing.JSplitPane splitPane;

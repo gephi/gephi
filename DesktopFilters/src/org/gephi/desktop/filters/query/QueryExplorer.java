@@ -45,7 +45,6 @@ public class QueryExplorer extends BeanTreeView {
     public QueryExplorer() {
         setRootVisible(true);
         setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-
     }
 
     public void setup(ExplorerManager manager, FilterModel model, FilterUIModel filterUIModel) {
