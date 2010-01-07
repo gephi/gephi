@@ -20,22 +20,28 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.filters.api;
 
-import javax.swing.Icon;
-import javax.swing.JPanel;
+import org.gephi.filters.spi.Filter;
+import org.gephi.filters.spi.FilterProperty;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface FilterBuilder {
+public interface FilterController {
 
-    public String getName();
+    public Query createQuery(Filter filter);
 
-    public Icon getIcon();
+    public void add(Query query);
 
-    public Filter getFilter();
+    public void remove(Query query);
 
-    public JPanel getUI(Filter filter);
+    public void rename(Query query, String name);
 
-    public Class getFilterClass();
+    public void setSubQuery(Query query, Query subQuery);
+
+    public void removeSubQuery(Query query, Query parent);
+
+    public void propertyChanged(FilterProperty property);
+
+    public FilterModel getModel();
 }

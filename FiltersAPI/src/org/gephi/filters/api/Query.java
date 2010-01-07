@@ -20,19 +20,27 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.filters.api;
 
-import javax.swing.event.ChangeListener;
+import org.gephi.filters.spi.Filter;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface FilterModel {
+public interface Query {
 
-    public FilterLibrary getLibrary();
+    public String getName();
 
-    public Query getCurrentQuery();
+    public Query[] getChildren();
 
-    public Query[] getQueries();
+    public int getChildrenSlotsCount();
 
-    public void addChangeListener(ChangeListener listener);
+    public Query getParent();
+
+    public int getParametersCount();
+
+    public String getParameterName(int index);
+
+    public Object getParameterValue(int index);
+
+    public Filter getFilter();
 }

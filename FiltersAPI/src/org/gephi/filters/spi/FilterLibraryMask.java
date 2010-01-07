@@ -18,21 +18,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.filters.api;
-
-import javax.swing.event.ChangeListener;
+package org.gephi.filters.spi;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface FilterModel {
+public interface FilterLibraryMask {
 
-    public FilterLibrary getLibrary();
+    public Category getCategory();
 
-    public Query getCurrentQuery();
-
-    public Query[] getQueries();
-
-    public void addChangeListener(ChangeListener listener);
+    public boolean isValid();
 }

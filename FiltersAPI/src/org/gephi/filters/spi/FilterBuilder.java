@@ -18,16 +18,26 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.filters.api;
+package org.gephi.filters.spi;
 
-import javax.swing.event.ChangeListener;
-import org.gephi.graph.api.Predicate;
+import javax.swing.Icon;
+import javax.swing.JPanel;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Filter {
+public interface FilterBuilder {
 
-    public Predicate getPredicate();
+    public Category getCategory();
+
+    public String getName();
+
+    public Icon getIcon();
+
+    public String getDescription();
+
+    public Filter getFilter();
+
+    public JPanel getPanel(Filter filter);
 }
