@@ -82,18 +82,31 @@ public class ImporterTLP implements TextImporter, LongTask {
 
     private void walkFile(BufferedReader reader) throws Exception {
         int cptLine = 0;
+        int state = 0; // 0=topology, 1=properties
         while (reader.ready() && !cancel) {
             String line = reader.readLine();
             if(!isComment(line)) {
                 String[] tokens = line.split("\\s|\\)");
                 if(tokens.length > 0) {
-                    if(tokens[0].equals("(nodes")) {
-                        //Nodes
-                        parseNodes(tokens);
+                    if(state == 0) {
+                        // topology
+                        if(tokens[0].equals("(nodes")) {
+                            //Nodes
+                            parseNodes(tokens);
+                        }
+                        else if(tokens[0].equals("(edge")) {
+                            //Edges
+                            parseEdge(tokens, cptLine);
+                        }
+                        else if(tokens[0].equals("(property")) {
+                            //switch to properties grabbing
+                            state = 1;
+                        }
                     }
-                    else if(tokens[0].equals("(edge")) {
-                        //Edges
-                        parseEdge(tokens, cptLine);
+                    if(state == 1) {
+                        // properties
+                        // exit loop for the moment
+                        return;
                     }
                 }
             }
