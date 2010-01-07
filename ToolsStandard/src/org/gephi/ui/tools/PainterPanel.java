@@ -20,15 +20,25 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.tools;
 
+import java.awt.Color;
+import org.gephi.ui.components.JColorButton;
+
 /**
  *
  * @author Mathieu
  */
 public class PainterPanel extends javax.swing.JPanel {
 
-    /** Creates new form PainterPanel */
     public PainterPanel() {
         initComponents();
+    }
+
+    public void setColor(Color color) {
+        ((JColorButton) colorButton).setColor(color);
+    }
+
+    public Color getColor() {
+        return ((JColorButton) colorButton).getColor();
     }
 
     /** This method is called from within the constructor to
@@ -40,17 +50,36 @@ public class PainterPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        colorButton = new JColorButton(Color.BLACK);
+        labelColor = new javax.swing.JLabel();
+
+        colorButton.setText(org.openide.util.NbBundle.getMessage(PainterPanel.class, "PainterPanel.colorButton.text")); // NOI18N
+        colorButton.setContentAreaFilled(false);
+        colorButton.setFocusPainted(false);
+
+        labelColor.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelColor.setText(org.openide.util.NbBundle.getMessage(PainterPanel.class, "PainterPanel.labelColor.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 405, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(labelColor)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(468, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 237, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(labelColor, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton colorButton;
+    private javax.swing.JLabel labelColor;
     // End of variables declaration//GEN-END:variables
 }

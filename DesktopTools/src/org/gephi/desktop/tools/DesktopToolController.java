@@ -38,6 +38,7 @@ import org.gephi.tools.spi.NodeClickEventListener;
 import org.gephi.tools.spi.NodePressingEventListener;
 import org.gephi.tools.spi.Tool;
 import org.gephi.tools.api.ToolController;
+import org.gephi.tools.spi.NodePressAndDraggingEventListener;
 import org.gephi.tools.spi.ToolEventListener;
 import org.gephi.tools.spi.ToolSelectionType;
 import org.gephi.tools.spi.ToolUI;
@@ -89,6 +90,11 @@ public class DesktopToolController implements ToolController {
                 MouseClickEventHandler h = new MouseClickEventHandler(toolListener);
                 h.select();
                 handlers.add(h);
+            } else if (toolListener instanceof NodePressAndDraggingEventListener) {
+                NodeClickAndDraggingEventHandler h = new NodeClickAndDraggingEventHandler(toolListener);
+                h.select();
+                handlers.add(h);
+
             } else {
                 throw new RuntimeException("The ToolEventListener " + toolListener.getClass().getSimpleName() + " cannot be recognized");
             }
@@ -202,6 +208,7 @@ public class DesktopToolController implements ToolController {
         public void unselect();
     }
 
+    //HANDLERS
     private static class NodeClickEventHandler implements ToolEventHandler {
 
         private NodeClickEventListener toolEventListener;
@@ -254,6 +261,58 @@ public class DesktopToolController implements ToolController {
                 }
             };
             currentListeners[1] = new VizEventListener() {
+
+                public void handleEvent(VizEvent event) {
+                    toolEventListener.released();
+                }
+
+                public Type getType() {
+                    return VizEvent.Type.MOUSE_RELEASED;
+                }
+            };
+            VizController.getInstance().getVizEventManager().addListener(currentListeners);
+        }
+
+        public void unselect() {
+            VizController.getInstance().getVizEventManager().removeListener(currentListeners);
+            toolEventListener = null;
+            currentListeners = null;
+        }
+    }
+
+    private static class NodeClickAndDraggingEventHandler implements ToolEventHandler {
+
+        private NodePressAndDraggingEventListener toolEventListener;
+        private VizEventListener[] currentListeners;
+
+        public NodeClickAndDraggingEventHandler(ToolEventListener toolListener) {
+            this.toolEventListener = (NodePressAndDraggingEventListener) toolListener;
+        }
+
+        public void select() {
+            currentListeners = new VizEventListener[3];
+            currentListeners[0] = new VizEventListener() {
+
+                public void handleEvent(VizEvent event) {
+                    toolEventListener.pressNodes((Node[]) event.getData());
+                }
+
+                public Type getType() {
+                    return VizEvent.Type.NODE_LEFT_PRESS;
+                }
+            };
+            currentListeners[1] = new VizEventListener() {
+
+                public void handleEvent(VizEvent event) {
+                    float[] mouseDrag = (float[]) event.getData();
+                    toolEventListener.drag(mouseDrag[0], mouseDrag[1]);
+                }
+
+                public Type getType() {
+                    return VizEvent.Type.DRAG;
+                }
+            };
+            currentListeners[2] = new VizEventListener() {
 
                 public void handleEvent(VizEvent event) {
                     toolEventListener.released();

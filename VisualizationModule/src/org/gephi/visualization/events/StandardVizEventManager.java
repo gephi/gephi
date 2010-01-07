@@ -76,6 +76,7 @@ public class StandardVizEventManager implements VizEventManager {
         handlersList.add(new VizEventTypeHandler(VizEvent.Type.NODE_LEFT_CLICK, false));
         handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_LEFT_PRESSING, false));
         handlersList.add(new VizEventTypeHandler(VizEvent.Type.MOUSE_RELEASED, false));
+        handlersList.add(new VizEventTypeHandler(VizEvent.Type.NODE_LEFT_PRESS, false));
         handlersList.add(new VizEventTypeHandler(VizEvent.Type.NODE_LEFT_PRESSING, false));
         Collections.sort(handlersList, new Comparator() {
 
@@ -119,6 +120,18 @@ public class StandardVizEventManager implements VizEventManager {
     public void mouseLeftPress() {
         handlers[VizEvent.Type.MOUSE_LEFT_PRESS.ordinal()].dispatch();
         pressingTick = PRESSING_FREQUENCY;
+        VizEventTypeHandler pressHandler = handlers[VizEvent.Type.NODE_LEFT_PRESS.ordinal()];
+        if (pressHandler.hasListeners()) {
+            //Check if some node are selected
+            ModelImpl[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+            if (modelArray.length > 0) {
+                Node[] nodeArray = new Node[modelArray.length];
+                for (int i = 0; i < modelArray.length; i++) {
+                    nodeArray[i] = ((NodeData) modelArray[i].getObj()).getNode();
+                }
+                pressHandler.dispatch(nodeArray);
+            }
+        }
     }
 
     public void mouseMiddleClick() {

@@ -115,7 +115,6 @@ public class Brush implements Tool {
         listeners[0] = new NodePressingEventListener() {
 
             public void pressingNodes(Node[] nodes) {
-                System.out.println("-------Nodes pressed");
                 diffusionMethod = brushPanel.getDiffusionMethod();
                 color = brushPanel.getColor().getColorComponents(color);
                 intensity = brushPanel.getIntensity();
@@ -123,7 +122,6 @@ public class Brush implements Tool {
             }
 
             public void released() {
-                System.out.println("-----released");
             }
         };
         return listeners;

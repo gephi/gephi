@@ -20,18 +20,16 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.tools;
 
-import java.awt.Color;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.gephi.graph.api.Node;
-import org.gephi.tools.spi.NodePressingEventListener;
+import org.gephi.tools.spi.NodePressAndDraggingEventListener;
 import org.gephi.tools.spi.Tool;
 import org.gephi.tools.spi.ToolEventListener;
 import org.gephi.tools.spi.ToolSelectionType;
 import org.gephi.tools.spi.ToolUI;
-import org.gephi.ui.tools.PainterPanel;
+import org.gephi.ui.tools.SizerPanel;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -40,42 +38,55 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = Tool.class)
-public class Painter implements Tool {
+public class Sizer implements Tool {
 
+    private SizerPanel sizerPanel;
     private ToolEventListener[] listeners;
-    private PainterPanel painterPanel;
-    //Settings
-    private float[] color = {1f, 0f, 0f};
-    private float intensity = 0.1f;
+    private final float INTENSITY = 0.4f;
+    private final float LIMIT = 0.1f;
+    //Vars
+    private Node[] nodes;
+    private float[] sizes;
 
     public void select() {
     }
 
     public void unselect() {
         listeners = null;
-        painterPanel = null;
+        sizerPanel = null;
+        nodes = null;
+        sizes = null;
     }
 
     public ToolEventListener[] getListeners() {
         listeners = new ToolEventListener[1];
-        listeners[0] = new NodePressingEventListener() {
+        listeners[0] = new NodePressAndDraggingEventListener() {
 
-            public void pressingNodes(Node[] nodes) {
-                color = painterPanel.getColor().getColorComponents(color);
-                for (Node node : nodes) {
-                    float r = node.getNodeData().r();
-                    float g = node.getNodeData().g();
-                    float b = node.getNodeData().b();
-                    r = intensity * color[0] + (1 - intensity) * r;
-                    g = intensity * color[1] + (1 - intensity) * g;
-                    b = intensity * color[2] + (1 - intensity) * b;
-                    node.getNodeData().setR(r);
-                    node.getNodeData().setG(g);
-                    node.getNodeData().setB(b);
+            public void pressNodes(Node[] nodes) {
+                Sizer.this.nodes = nodes;
+                sizes = new float[nodes.length];
+                for (int i = 0; i < nodes.length; i++) {
+                    Node n = nodes[i];
+                    sizes[i] = n.getNodeData().getSize();
                 }
             }
 
             public void released() {
+                nodes = null;
+            }
+
+            public void drag(float displacementX, float displacementY) {
+                if (nodes != null) {
+                    for (int i = 0; i < nodes.length; i++) {
+                        Node n = nodes[i];
+                        float size = sizes[i];
+                        size += displacementY * INTENSITY;
+                        if (size < LIMIT) {
+                            size = LIMIT;
+                        }
+                        n.getNodeData().setSize(size);
+                    }
+                }
             }
         };
         return listeners;
@@ -85,13 +96,12 @@ public class Painter implements Tool {
         return new ToolUI() {
 
             public JPanel getPropertiesBar(Tool tool) {
-                painterPanel = new PainterPanel();
-                painterPanel.setColor(new Color(color[0], color[1], color[2]));
-                return painterPanel;
+                sizerPanel = new SizerPanel();
+                return sizerPanel;
             }
 
             public String getName() {
-                return NbBundle.getMessage(Painter.class, "Painter.name");
+                return NbBundle.getMessage(Sizer.class, "Sizer.name");
             }
 
             public Icon getIcon() {
@@ -99,16 +109,17 @@ public class Painter implements Tool {
             }
 
             public String getDescription() {
-                return NbBundle.getMessage(Painter.class, "Painter.description");
+                return NbBundle.getMessage(Sizer.class, "Sizer.description");
             }
 
             public int getPosition() {
-                return 100;
+                return 105;
             }
         };
     }
 
     public ToolSelectionType getSelectionType() {
-        return ToolSelectionType.SELECTION;
+        return ToolSelectionType.SELECTION_AND_DRAGGING;
     }
 }
+
