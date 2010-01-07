@@ -25,6 +25,7 @@
             </module-dependencies>
             <public-packages>
                 <package>org.gephi.filters.api</package>
+                <package>org.gephi.filters.spi</package>
             </public-packages>
         </data>
     </configuration>

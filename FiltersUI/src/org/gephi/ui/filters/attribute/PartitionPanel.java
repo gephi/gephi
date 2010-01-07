@@ -18,24 +18,32 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ui.filters;
+package org.gephi.ui.filters.attribute;
 
-import org.gephi.filters.*;
-import org.gephi.ui.components.JRangeSliderPanel;
+import java.awt.FlowLayout;
+import javax.swing.JToggleButton;
+import org.gephi.filters.attribute.PartitionBuilder.PartitionFilter;
+import org.gephi.ui.components.WrapLayout;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class DegreeRangePanel extends javax.swing.JPanel {
+public class PartitionPanel extends javax.swing.JPanel {
 
-    public DegreeRangePanel() {
+    public PartitionPanel() {
+        super(new WrapLayout(FlowLayout.LEFT, 0, 0));
         initComponents();
     }
 
-    public void setup(DegreeRangeFilter filter) {
-        JRangeSliderPanel r = (JRangeSliderPanel) rangeSliderPanel;
-        r.setRange(new JRangeSliderPanel.Range(r.getSlider(), filter.getMinimum(), filter.getMaximum(), filter.getLowerBound(), filter.getUpperBound()));
+    public void setup(PartitionFilter filter) {
+        removeAll();
+        for (int i = 0; i < 10; i++) {
+            JToggleButton tb = new JToggleButton("Partition " + i);
+            add(tb);
+        }
+        revalidate();
+        repaint();
     }
 
     /** This method is called from within the constructor to
@@ -46,13 +54,7 @@ public class DegreeRangePanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
-        rangeSliderPanel = new JRangeSliderPanel();
-
-        setLayout(new java.awt.BorderLayout());
-        add(rangeSliderPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel rangeSliderPanel;
     // End of variables declaration//GEN-END:variables
 }

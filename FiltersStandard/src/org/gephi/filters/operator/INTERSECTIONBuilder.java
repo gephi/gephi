@@ -18,43 +18,58 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ui.filters;
+package org.gephi.filters.operator;
 
-import org.gephi.filters.*;
 import javax.swing.Icon;
 import javax.swing.JPanel;
-import org.gephi.filters.api.Filter;
-import org.gephi.filters.api.FilterBuilder;
-import org.openide.util.NbBundle;
+import org.gephi.filters.spi.Category;
+import org.gephi.filters.spi.Filter;
+import org.gephi.filters.spi.FilterBuilder;
+import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.spi.Operator;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class DegreeRangeBuilder implements FilterBuilder {
+public class INTERSECTIONBuilder implements FilterBuilder {
+
+    public Category getCategory() {
+        return new Category("Operator");
+    }
 
     public String getName() {
-        return NbBundle.getMessage(DegreeRangeBuilder.class, "Filters.DegreeRangeBuilder.name");
+        return "INTERSECTION";
     }
 
     public Icon getIcon() {
         return null;
     }
 
-    public DegreeRangeFilter getFilter() {
-        return new DegreeRangeFilter();
+    public String getDescription() {
+        return null;
     }
 
-    public Class getFilterClass() {
-        return DegreeRangeFilter.class;
+    public Filter getFilter() {
+        return new IntersectionOperator();
     }
 
-    public JPanel getUI(Filter filter) {
-        if (!(filter instanceof DegreeRangeFilter)) {
-            throw new IllegalArgumentException("The filter must be an instance of DegreeRangeFilter");
+    public JPanel getPanel(Filter filter) {
+        return null;
+    }
+
+    private static class IntersectionOperator implements Operator {
+
+        public int getInputCount() {
+            return Integer.MAX_VALUE;
         }
-        DegreeRangePanel panel = new DegreeRangePanel();
-        panel.setup((DegreeRangeFilter) filter);
-        return panel;
+
+        public String getName() {
+            return "INTERSECTION";
+        }
+
+        public FilterProperty[] getProperties() {
+            return null;
+        }
     }
 }
