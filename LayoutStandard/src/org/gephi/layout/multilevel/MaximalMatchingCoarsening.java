@@ -30,18 +30,10 @@ import org.gephi.graph.api.Node;
  */
 public class MaximalMatchingCoarsening implements MultiLevelLayout.CoarseningStrategy {
 
-//    public void print(ClusteredGraph graph) {
-//        System.out.println("------ print ------");
-//        for (int i = 0; i <= graph.getHeight(); i++) {
-//            System.out.printf("Level %d: %d nodes\n", i, graph.getNodes(i).toArray().length);
-//        }
-//        System.out.println("Topnodes: " + graph.getTopNodes().toArray().length);
-//    }
     public void coarsen(HierarchicalGraph g) {
         HierarchicalGraph graph = g;
         int retract = 0;
         int count = 0;
-        //print(graph);
         for (Edge e : graph.getEdgesAndMetaEdges().toArray()) {
             Node a = e.getSource();
             Node b = e.getTarget();
@@ -57,9 +49,6 @@ public class MaximalMatchingCoarsening implements MultiLevelLayout.CoarseningStr
                 retract++;
             }
         }
-        System.out.println("count = " + count);
-        System.out.println("Retract: " + retract);
-    // print(graph);
     }
 
     public void refine(HierarchicalGraph graph) {
@@ -80,7 +69,6 @@ public class MaximalMatchingCoarsening implements MultiLevelLayout.CoarseningStr
                 }
                 graph.ungroupNodes(node);
             }
-//                    System.out.println("graph.getChildrenCount(node): " + graph.getChildrenCount(node));
         }
         System.out.println("COUNT = " + count);
         System.out.println("REFINED = " + refined);

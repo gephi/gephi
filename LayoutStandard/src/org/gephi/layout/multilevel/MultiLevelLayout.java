@@ -43,12 +43,15 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
     private YifanHuLayout layout;
     private YifanHuProportional yifanHu;
     private CoarseningStrategy coarseningStrategy;
-    private double optimalDistance;
     private int minSize;
     private double minCoarseningRate;
+    private float stepRatio;
+    private float optimalDistance;
+    private int quadTreeMaxLevel;
+    private float barnesHutTheta;
 
     public MultiLevelLayout(LayoutBuilder layoutBuilder,
-            CoarseningStrategy coarseningStrategy) {
+                            CoarseningStrategy coarseningStrategy) {
         super(layoutBuilder);
         this.coarseningStrategy = coarseningStrategy;
         //     this.yifanHu = new YifanHu();
@@ -71,7 +74,6 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
             level++;
             int newGraphSize = graph.getTopNodes().toArray().length;
             if (newGraphSize < getMinSize() || newGraphSize > graphSize * getMinCoarseningRate()) {
-                System.out.printf("Size: BEFORE = %d   AFTER = %d\n", graphSize, newGraphSize);
                 break;
             }
         }
@@ -81,14 +83,19 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
         random.initAlgo();
         random.goAlgo();
 
+        initYifanHu();
+    }
+
+    void initYifanHu() {
         layout = yifanHu.buildLayout();
         layout.setGraphController(graphController);
         layout.resetPropertiesValues();
         layout.setAdaptiveCooling(false);
-        layout.setStepRatio(0.95f);
-        layout.setOptimalDistance(100f);
+        layout.setStepRatio(stepRatio);
+        layout.setOptimalDistance(optimalDistance);
+        layout.setBarnesHutTheta(barnesHutTheta);
+        layout.setQuadTreeMaxLevel(quadTreeMaxLevel);
         layout.initAlgo();
-
     }
 
     public void goAlgo() {
@@ -99,13 +106,8 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
             if (level > 0) {
                 coarseningStrategy.refine(graph);
                 level--;
-                layout = yifanHu.buildLayout();
-                layout.setGraphController(graphController);
-                layout.resetPropertiesValues();
-                layout.setAdaptiveCooling(false);
-                layout.setStepRatio(0.95f);
-                layout.setOptimalDistance(100f);
-                layout.initAlgo();
+
+                initYifanHu();
             } else {
                 setConverged(true);
                 layout = null;
@@ -123,38 +125,49 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
     public void resetPropertiesValues() {
         setMinSize(3);
         setMinCoarseningRate(0.75d);
+        setStepRatio(0.97f);
+        setOptimalDistance(100f);
+        setQuadTreeMaxLevel(10);
+        setBarnesHutTheta(1.2f);
     }
 
     public LayoutProperty[] getProperties() {
         List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
         final String MULTILEVEL_CATEGORY = "Multi-level";
+        final String YIFANHU_CATEGORY = "Yifan Hu's properties";
+        final String BARNESHUT_CATEGORY = "Barnes-Hut's properties";
+
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Integer.class, "Minimum level size", MULTILEVEL_CATEGORY,
-                    "The minimum amount of nodes every level must have (bigger values mean less levels)",
-                    "getMinSize", "setMinSize"));
+                this, Integer.class, "Minimum level size", MULTILEVEL_CATEGORY,
+                "The minimum amount of nodes every level must have (bigger values mean less levels)",
+                "getMinSize", "setMinSize"));
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class, "Minimum coarsening rate", MULTILEVEL_CATEGORY,
-                    "The minimum relative size between two levels (smaller values mean less levels)",
-                    "getMinCoarseningRate", "setMinCoarseningRate"));
+                this, Double.class, "Minimum coarsening rate", MULTILEVEL_CATEGORY,
+                "The minimum relative size between two levels (smaller values mean less levels)",
+                "getMinCoarseningRate", "setMinCoarseningRate"));
+
+            properties.add(LayoutProperty.createProperty(
+                this, Float.class, "Step ratio", YIFANHU_CATEGORY,
+                "The ratio used to update the step size across iterations.",
+                "getStepRatio", "setStepRatio"));
+            properties.add(LayoutProperty.createProperty(
+                this, Float.class, "Optimal Distance", YIFANHU_CATEGORY,
+                "The natural length of the springs. Bigger values mean nodes will be farther apart.",
+                "getOptimalDistance", "setOptimalDistance"));
+
+            properties.add(LayoutProperty.createProperty(
+                this, Integer.class, "Quadtree Max Level", BARNESHUT_CATEGORY,
+                "The maximun level to be used in the quadtree representation. Greater values mean more accuracy.",
+                "getQuadTreeMaxLevel", "setQuadTreeMaxLevel"));
+            properties.add(LayoutProperty.createProperty(
+                this, Float.class, "Theta", BARNESHUT_CATEGORY,
+                "The theta parameter for Barnes-Hut opening criteria. Smaller values mean more accuracy.",
+                "getBarnesHutTheta", "setBarnesHutTheta"));
         } catch (Exception e) {
             e.printStackTrace();
         }
         return properties.toArray(new LayoutProperty[0]);
-    }
-
-    /**
-     * @return the optimalDistance
-     */
-    public Double getOptimalDistance() {
-        return optimalDistance;
-    }
-
-    /**
-     * @param optimalDistance the optimalDistance to set
-     */
-    public void setOptimalDistance(Double optimalDistance) {
-        this.optimalDistance = optimalDistance;
     }
 
     /**
@@ -183,6 +196,62 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
      */
     public void setMinCoarseningRate(Double minCoarseningRate) {
         this.minCoarseningRate = minCoarseningRate;
+    }
+
+    /**
+     * @return the stepRatio
+     */
+    public Float getStepRatio() {
+        return stepRatio;
+    }
+
+    /**
+     * @param stepRatio the stepRatio to set
+     */
+    public void setStepRatio(Float stepRatio) {
+        this.stepRatio = stepRatio;
+    }
+
+    /**
+     * @return the optimalDistance
+     */
+    public Float getOptimalDistance() {
+        return optimalDistance;
+    }
+
+    /**
+     * @param optimalDistance the optimalDistance to set
+     */
+    public void setOptimalDistance(Float optimalDistance) {
+        this.optimalDistance = optimalDistance;
+    }
+
+    /**
+     * @return the quadTreeMaxLevel
+     */
+    public Integer getQuadTreeMaxLevel() {
+        return quadTreeMaxLevel;
+    }
+
+    /**
+     * @param quadTreeMaxLevel the quadTreeMaxLevel to set
+     */
+    public void setQuadTreeMaxLevel(Integer quadTreeMaxLevel) {
+        this.quadTreeMaxLevel = quadTreeMaxLevel;
+    }
+
+    /**
+     * @return the barnesHutTheta
+     */
+    public Float getBarnesHutTheta() {
+        return barnesHutTheta;
+    }
+
+    /**
+     * @param barnesHutTheta the barnesHutTheta to set
+     */
+    public void setBarnesHutTheta(Float barnesHutTheta) {
+        this.barnesHutTheta = barnesHutTheta;
     }
 
     public interface CoarseningStrategy {

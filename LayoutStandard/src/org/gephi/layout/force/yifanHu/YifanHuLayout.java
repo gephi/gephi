@@ -47,6 +47,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     private float optimalDistance;
     private float relativeStrength;
     private float step;
+    private float initialStep;
     private int progress;
     private float stepRatio;
     private int quadTreeMaxLevel;
@@ -89,11 +90,11 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
                 progress++;
                 if (progress >= 5) {
                     progress = 0;
-                    setStep(getStep() / getStepRatio());
+                    setStep(step / getStepRatio());
                 }
             } else {
                 progress = 0;
-                setStep(getStep() * getStepRatio());
+                setStep(step * getStepRatio());
             }
         } else {
             setStep(step * getStepRatio());
@@ -107,10 +108,11 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         if (graph != null) {
             setOptimalDistance((float) (Math.pow(getRelativeStrength(), 1.0 / 3) * GraphUtils.getAverageEdgeLength(graph)));
         } else {
-            setOptimalDistance(1.0f);
+            setOptimalDistance(100.0f);
         }
 
-        setStep(100f);
+        setInitialStep(optimalDistance / 5);
+        setStep(initialStep);
         setQuadTreeMaxLevel(10);
         setBarnesHutTheta(1.2f);
         setAdaptiveCooling(true);
@@ -131,10 +133,11 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
                 this, Float.class, "Relative Strength", YIFANHU_CATEGORY,
                 "The relative strength between electrical force (repulsion) and spring force (attraction).",
                 "getRelativeStrength", "setRelativeStrength"));
+
             properties.add(LayoutProperty.createProperty(
-                this, Float.class, "Step size", YIFANHU_CATEGORY,
-                "The step size used in the integration phase. This value changes across iterations and must be set to meaningful value (fraction of the distance between nodes) before running the algoritm.",
-                "getStep", "setStep"));
+                this, Float.class, "Initial Step size", YIFANHU_CATEGORY,
+                "The initial step size used in the integration phase. Set this value to a meaningful size compared to the optimal distance (10% is a good starting point).",
+                "getInitialStep", "setInitialStep"));
             properties.add(LayoutProperty.createProperty(
                 this, Float.class, "Step ratio", YIFANHU_CATEGORY,
                 "The ratio used to update the step size across iterations.",
@@ -175,6 +178,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         }
         progress = 0;
         setConverged(false);
+        setStep(initialStep);
     }
 
     public void endAlgo() {
@@ -210,7 +214,6 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
             f2.subtract(f);
         }
 
-        // System.out.println("step = " + getStep());
         // Calculate energy and max force.
         energy0 = energy;
         energy = 0;
@@ -285,13 +288,6 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     }
 
     /**
-     * @return the step
-     */
-    public Float getStep() {
-        return step;
-    }
-
-    /**
      * @param step the step to set
      */
     public void setStep(Float step) {
@@ -338,6 +334,20 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
      */
     public void setConvergenceThreshold(Float convergenceThreshold) {
         this.convergenceThreshold = convergenceThreshold;
+    }
+
+    /**
+     * @return the initialStep
+     */
+    public Float getInitialStep() {
+        return initialStep;
+    }
+
+    /**
+     * @param initialStep the initialStep to set
+     */
+    public void setInitialStep(Float initialStep) {
+        this.initialStep = initialStep;
     }
 
     /**
