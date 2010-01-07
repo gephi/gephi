@@ -73,10 +73,12 @@ public class Sizer implements Tool {
 
             public void released() {
                 nodes = null;
+                sizerPanel.setAvgSize(-1);
             }
 
             public void drag(float displacementX, float displacementY) {
                 if (nodes != null) {
+                    float averageSize = 0f;
                     for (int i = 0; i < nodes.length; i++) {
                         Node n = nodes[i];
                         float size = sizes[i];
@@ -84,8 +86,11 @@ public class Sizer implements Tool {
                         if (size < LIMIT) {
                             size = LIMIT;
                         }
+                        averageSize += size;
                         n.getNodeData().setSize(size);
                     }
+                    averageSize /= nodes.length;
+                    sizerPanel.setAvgSize(averageSize);
                 }
             }
         };

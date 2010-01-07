@@ -23,7 +23,6 @@ package org.gephi.tools;
 import java.awt.Color;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.gephi.graph.api.Node;
 import org.gephi.tools.spi.NodePressingEventListener;

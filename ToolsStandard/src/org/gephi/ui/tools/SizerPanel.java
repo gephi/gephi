@@ -18,9 +18,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 package org.gephi.ui.tools;
+
+import java.text.DecimalFormat;
 
 /**
  *
@@ -28,9 +28,29 @@ package org.gephi.ui.tools;
  */
 public class SizerPanel extends javax.swing.JPanel {
 
+    private float avgSize;
+    private DecimalFormat formatter;
+
     /** Creates new form SizePanel */
     public SizerPanel() {
         initComponents();
+        formatter = new DecimalFormat();
+        formatter.setMaximumFractionDigits(2);
+    }
+
+    public float getAvgSize() {
+        return avgSize;
+    }
+
+    public void setAvgSize(float avgSize) {
+        this.avgSize = avgSize;
+        if (avgSize == -1) {
+            sizeLabel.setText("NaN");
+        }
+        String str = formatter.format(avgSize);
+        if (!str.equals(sizeLabel.getText())) {
+            sizeLabel.setText(str);
+        }
     }
 
     /** This method is called from within the constructor to
@@ -44,7 +64,8 @@ public class SizerPanel extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        labelSize = new javax.swing.JLabel();
+        sizeLabel = new javax.swing.JLabel();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -60,20 +81,26 @@ public class SizerPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 0);
         add(jLabel1, gridBagConstraints);
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        jLabel2.setText(org.openide.util.NbBundle.getMessage(SizerPanel.class, "SizerPanel.jLabel2.text")); // NOI18N
+        labelSize.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelSize.setText(org.openide.util.NbBundle.getMessage(SizerPanel.class, "SizerPanel.labelSize.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
-        add(jLabel2, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 4);
+        add(labelSize, gridBagConstraints);
+
+        sizeLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        sizeLabel.setText(org.openide.util.NbBundle.getMessage(SizerPanel.class, "SizerPanel.sizeLabel.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 3);
+        add(sizeLabel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel labelSize;
+    private javax.swing.JLabel sizeLabel;
     // End of variables declaration//GEN-END:variables
-
 }
