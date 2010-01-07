@@ -55,7 +55,7 @@ public class FilterBuilderNode extends AbstractNode {
             }
         } catch (Exception e) {
         }
-        return ImageUtilities.loadImage("filtersui/desktop/library/resources/filter.png");
+        return ImageUtilities.loadImage("org/gephi/desktop/filters/library/resources/filter.png");
     }
 
     @Override

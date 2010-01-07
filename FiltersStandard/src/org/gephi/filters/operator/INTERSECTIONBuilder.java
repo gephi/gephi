@@ -27,11 +27,13 @@ import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.filters.spi.Operator;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service=FilterBuilder.class)
 public class INTERSECTIONBuilder implements FilterBuilder {
 
     public Category getCategory() {

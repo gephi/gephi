@@ -28,11 +28,13 @@ import org.gephi.filters.api.Range;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.filters.spi.Operator;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service=FilterController.class)
 public class FilterControllerImpl implements FilterController {
 
     private FilterModelImpl model;

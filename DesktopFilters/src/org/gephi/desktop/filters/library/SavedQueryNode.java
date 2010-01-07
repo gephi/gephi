@@ -65,6 +65,8 @@ public class SavedQueryNode extends AbstractNode {
         if (query.getChildren() != null) {
             if (query.getParametersCount() == 0) {
                 res += "(";
+            } else {
+                res += ",";
             }
             for (Query child : query.getChildren()) {
                 res += getQueryName(child);

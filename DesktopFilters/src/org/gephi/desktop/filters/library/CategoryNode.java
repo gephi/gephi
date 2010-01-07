@@ -35,6 +35,7 @@ import org.openide.nodes.Node;
 import org.openide.nodes.NodeTransfer;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.datatransfer.PasteType;
 
 /**
@@ -51,7 +52,7 @@ public class CategoryNode extends AbstractNode {
         if (category != null) {
             setName(category.getName());
         } else {
-            setName("Library");
+            setName(NbBundle.getMessage(CategoryNode.class, "RootNode.name"));
         }
     }
 
@@ -63,7 +64,11 @@ public class CategoryNode extends AbstractNode {
             }
         } catch (Exception e) {
         }
-        return ImageUtilities.loadImage("filtersui/desktop/library/resources/folder.gif");
+        if(category==null) {
+            return ImageUtilities.loadImage("org/gephi/desktop/filters/library/resources/library.gif");
+        } else {
+            return ImageUtilities.loadImage("org/gephi/desktop/filters/library/resources/folder.gif");
+        }
     }
 
     @Override

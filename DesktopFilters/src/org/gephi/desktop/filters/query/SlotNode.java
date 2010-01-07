@@ -49,7 +49,7 @@ public class SlotNode extends AbstractNode {
     public SlotNode(Query parent) {
         super(Children.LEAF);
         this.parent = parent;
-        setIconBaseWithExtension("filtersui/desktop/query/resources/drop.png");
+        setIconBaseWithExtension("org/gephi/desktop/filters/query/resources/drop.png");
     }
 
     @Override

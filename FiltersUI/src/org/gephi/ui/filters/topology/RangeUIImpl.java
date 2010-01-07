@@ -20,10 +20,21 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.filters.topology;
 
+import javax.swing.JPanel;
+import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.topology.RangeUI;
+import org.openide.util.lookup.ServiceProvider;
+
 /**
  *
  * @author Mathieu Bastian
  */
-public interface RangeUIImpl {
+@ServiceProvider(service=RangeUI.class)
+public class RangeUIImpl implements RangeUI {
 
+    public JPanel getPanel(FilterProperty property) {
+        RangePanel rangePanel = new RangePanel();
+        rangePanel.setup(property);
+        return rangePanel;
+    }
 }

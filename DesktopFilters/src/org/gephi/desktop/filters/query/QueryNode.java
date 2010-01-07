@@ -43,7 +43,7 @@ public class QueryNode extends AbstractNode {
         super(new QueryChildren(query));
         this.query = query;
         setName(query.getName());
-        setIconBaseWithExtension("filtersui/desktop/query/resources/query.png");
+        setIconBaseWithExtension("org/gephi/desktop/filters/query/resources/query.png");
     }
 
     /*@Override
@@ -89,7 +89,7 @@ public class QueryNode extends AbstractNode {
     private class RemoveAction extends AbstractAction {
 
         public RemoveAction() {
-            super("Remove");
+            super(NbBundle.getMessage(QueryNode.class, "QueryNode.actions.remove"));
         }
 
         public void actionPerformed(ActionEvent e) {

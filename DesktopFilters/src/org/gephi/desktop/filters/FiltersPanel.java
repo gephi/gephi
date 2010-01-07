@@ -132,7 +132,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         gridBagConstraints.weightx = 1.0;
         add(toolbar, gridBagConstraints);
 
-        splitPane.setDividerLocation(150);
+        splitPane.setDividerLocation(260);
         splitPane.setDividerSize(3);
         splitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 

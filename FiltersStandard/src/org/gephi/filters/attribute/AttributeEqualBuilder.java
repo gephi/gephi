@@ -30,11 +30,13 @@ import org.gephi.filters.spi.FilterProperty;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service=FilterBuilder.class)
 public class AttributeEqualBuilder implements FilterBuilder {
 
     public Category getCategory() {
