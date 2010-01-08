@@ -18,23 +18,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ui.filters.topology;
 
-import javax.swing.JPanel;
-import org.gephi.filters.RangeFilter;
-import org.gephi.filters.topology.RangeUI;
-import org.openide.util.lookup.ServiceProvider;
+package org.gephi.filters;
+
+import org.gephi.filters.spi.Filter;
+import org.gephi.filters.spi.FilterProperty;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = RangeUI.class)
-public class RangeUIImpl implements RangeUI {
+public interface RangeFilter extends Filter {
 
-    public JPanel getPanel(RangeFilter rangeFilter) {
-        RangePanel rangePanel = new RangePanel();
-        rangePanel.setup(rangeFilter);
-        return rangePanel;
-    }
+    public FilterProperty getRangeProperty();
+
+    public Object getMinimum();
+
+    public Object getMaximum();
 }

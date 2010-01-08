@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.filters.topology;
 
 import javax.swing.JPanel;
-import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.RangeFilter;
 
 /**
  *
@@ -29,5 +29,5 @@ import org.gephi.filters.spi.FilterProperty;
  */
 public interface RangeUI {
 
-    public JPanel getPanel(FilterProperty property);
+    public JPanel getPanel(RangeFilter rangeFilter);
 }

@@ -22,6 +22,7 @@ package org.gephi.ui.filters.topology;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import org.gephi.filters.RangeFilter;
 import org.gephi.filters.api.Range;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.ui.components.JRangeSliderPanel;
@@ -34,8 +35,6 @@ import org.gephi.ui.filters.JQuickHistogram;
 public class RangePanel extends javax.swing.JPanel {
 
     private JQuickHistogram histogram;
-    private Object min = 0;
-    private Object max = 100;
 
     public RangePanel() {
         initComponents();
@@ -44,12 +43,12 @@ public class RangePanel extends javax.swing.JPanel {
         histogram.setConstraintHeight(30);
     }
 
-    public void setup(final FilterProperty rangeProperty) {
+    public void setup(final RangeFilter rangeFilter) {
         final JRangeSliderPanel r = (JRangeSliderPanel) rangeSliderPanel;
-        //checkForUnitializedRange(rangeProperty);
-        Range range = (Range) rangeProperty.getValue();
+        Range range = (Range) rangeFilter.getRangeProperty().getValue();
 
-        r.setRange(new JRangeSliderPanel.Range(r, min, max, range.getLowerBound(), range.getUpperBound()));
+        r.setRange(new JRangeSliderPanel.Range(
+                r, rangeFilter.getMinimum(), rangeFilter.getMaximum(), range.getLowerBound(), range.getUpperBound()));
 
         r.addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -57,11 +56,11 @@ public class RangePanel extends javax.swing.JPanel {
                 try {
                     if (evt.getPropertyName().equals(JRangeSliderPanel.LOWER_BOUND)) {
                         Range newRange = new Range(r.getRange().getLowerBound(), r.getRange().getUpperBound());
-                        rangeProperty.getProperty().setValue(newRange);
+                        rangeFilter.getRangeProperty().getProperty().setValue(newRange);
                         setupHistogram(newRange);
                     } else if (evt.getPropertyName().equals(JRangeSliderPanel.UPPER_BOUND)) {
                         Range newRange = new Range(r.getRange().getLowerBound(), r.getRange().getUpperBound());
-                        rangeProperty.getProperty().setValue(newRange);
+                        rangeFilter.getRangeProperty().getProperty().setValue(newRange);
                         setupHistogram(newRange);
                     }
                 } catch (Exception e) {
@@ -78,106 +77,23 @@ public class RangePanel extends javax.swing.JPanel {
             histogram.addData(Math.random() * 100);
         }
         histogram.sortData();
-        float rangeLowerBound = 0f;
-        float rangeUpperBound = 0f;
+        double rangeLowerBound = 0.0;
+        double rangeUpperBound = 0.0;
         if (range.getRangeType().equals(Integer.class)) {
-            rangeLowerBound = ((Integer) range.getLowerBound()).floatValue();
-            rangeUpperBound = ((Integer) range.getUpperBound()).floatValue();
+            rangeLowerBound = ((Integer) range.getLowerBound()).doubleValue();
+            rangeUpperBound = ((Integer) range.getUpperBound()).doubleValue();
         } else if (range.getRangeType().equals(Float.class)) {
-            rangeLowerBound = ((Float) range.getLowerBound()).floatValue();
-            rangeUpperBound = ((Float) range.getUpperBound()).floatValue();
+            rangeLowerBound = ((Float) range.getLowerBound()).doubleValue();
+            rangeUpperBound = ((Float) range.getUpperBound()).doubleValue();
         } else if (range.getRangeType().equals(Double.class)) {
-            rangeLowerBound = ((Double) range.getLowerBound()).floatValue();
-            rangeUpperBound = ((Double) range.getUpperBound()).floatValue();
+            rangeLowerBound = ((Double) range.getLowerBound()).doubleValue();
+            rangeUpperBound = ((Double) range.getUpperBound()).doubleValue();
         } else if (range.getRangeType().equals(Long.class)) {
-            rangeLowerBound = ((Long) range.getLowerBound()).floatValue();
-            rangeUpperBound = ((Long) range.getUpperBound()).floatValue();
+            rangeLowerBound = ((Long) range.getLowerBound()).doubleValue();
+            rangeUpperBound = ((Long) range.getUpperBound()).doubleValue();
         }
-        //histogram.setRangeLowerBound(rangeLowerBound);
-        //histogram.setRangeUpperBound(rangeUpperBound);
-    }
-
-    private void checkForUnitializedRange(FilterProperty rangeProperty) {
-        try {
-            if (rangeProperty.getValue() == null) {
-                Range range = null;
-                if (min instanceof Integer) {
-                    range = new Range((Integer) min, (Integer) max);
-                } else if (min instanceof Float) {
-                    range = new Range((Float) min, (Float) max);
-                } else if (min instanceof Double) {
-                    range = new Range((Double) min, (Double) max);
-                } else if (min instanceof Long) {
-                    range = new Range((Long) min, (Long) max);
-                }
-                rangeProperty.getProperty().setValue(range);
-            } else {
-                Range range = (Range) rangeProperty.getValue();
-                //Remove this
-                if (range.getRangeType().equals(Integer.class)) {
-                    min = new Integer(0);
-                    max = new Integer(100);
-                } else if (range.getRangeType().equals(Float.class)) {
-                    min = new Float(0);
-                    max = new Float(100);
-                } else if (range.getRangeType().equals(Double.class)) {
-                    min = new Double(0);
-                    max = new Double(100);
-                } else if (range.getRangeType().equals(Long.class)) {
-                    min = new Long(0);
-                    max = new Long(100);
-                }
-                //End
-                if (range.getRangeType().equals(Integer.class)) {
-                    Integer lowerBound = range.getLowerInteger();
-                    Integer upperBound = range.getUpperInteger();
-                    if ((Integer) min > lowerBound || (Integer) max < lowerBound || lowerBound.equals(upperBound)) {
-                        lowerBound = (Integer) min;
-                    }
-                    if ((Integer) min > upperBound || (Integer) max < upperBound || lowerBound.equals(upperBound)) {
-                        upperBound = (Integer) max;
-                    }
-                    range = new Range(lowerBound, upperBound);
-                } else if (range.getRangeType().equals(Float.class)) {
-                    Float lowerBound = range.getLowerFloat();
-                    Float upperBound = range.getUpperFloat();
-                    if ((Float) min > lowerBound || (Float) max < lowerBound || lowerBound.equals(upperBound)) {
-                        lowerBound = (Float) min;
-                    }
-                    if ((Float) min > upperBound || (Float) max < upperBound || lowerBound.equals(upperBound)) {
-                        upperBound = (Float) max;
-                    }
-                    range = new Range(lowerBound, upperBound);
-                }
-                if (range.getRangeType().equals(Double.class)) {
-                    Double lowerBound = range.getLowerDouble();
-                    Double upperBound = range.getUpperDouble();
-                    if ((Double) min > lowerBound || (Double) max < lowerBound || lowerBound.equals(upperBound)) {
-                        lowerBound = (Double) min;
-                    }
-                    if ((Double) min > upperBound || (Double) max < upperBound || lowerBound.equals(upperBound)) {
-                        upperBound = (Double) max;
-                    }
-                    range = new Range(lowerBound, upperBound);
-                }
-                if (range.getRangeType().equals(Long.class)) {
-                    Long lowerBound = range.getLowerLong();
-                    Long upperBound = range.getUpperLong();
-                    if ((Long) min > lowerBound || (Long) max < lowerBound || lowerBound.equals(upperBound)) {
-                        lowerBound = (Long) min;
-                    }
-                    if ((Long) min > upperBound || (Long) max < upperBound || lowerBound.equals(upperBound)) {
-                        upperBound = (Long) max;
-                    }
-                    range = new Range(lowerBound, upperBound);
-                }
-                if (!rangeProperty.getValue().equals(range)) {
-                    rangeProperty.getProperty().setValue(range);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        histogram.setLowerBound(rangeLowerBound);
+        histogram.setUpperBound(rangeUpperBound);
     }
 
     /** This method is called from within the constructor to

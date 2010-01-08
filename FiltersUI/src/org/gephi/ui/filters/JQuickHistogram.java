@@ -47,7 +47,6 @@ public class JQuickHistogram {
 
     public JQuickHistogram() {
         clear();
-
     }
 
     public void clear() {
@@ -78,6 +77,14 @@ public class JQuickHistogram {
 
     public void sortData() {
         Collections.sort(data);
+    }
+
+    public void setLowerBound(Double lowerBound) {
+        this.minRange = lowerBound;
+    }
+
+    public void setUpperBound(Double upperBound) {
+        this.maxRange = upperBound;
     }
 
     public JPanel getPanel() {

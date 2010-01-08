@@ -22,12 +22,17 @@ package org.gephi.filters.topology;
 
 import javax.swing.Icon;
 import javax.swing.JPanel;
+import org.gephi.filters.RangeFilter;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.Range;
 import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
+import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -37,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service=FilterBuilder.class)
+@ServiceProvider(service = FilterBuilder.class)
 public class OutDegreeRangeBuilder implements FilterBuilder {
 
     public Category getCategory() {
@@ -63,17 +68,44 @@ public class OutDegreeRangeBuilder implements FilterBuilder {
     public JPanel getPanel(Filter filter) {
         RangeUI ui = Lookup.getDefault().lookup(RangeUI.class);
         if (ui != null) {
-            return ui.getPanel(filter.getProperties()[0]);
+            return ui.getPanel((OutDegreeRangeFilter) filter);
         }
         return null;
     }
 
-    public static class OutDegreeRangeFilter implements Filter {
+    public static class OutDegreeRangeFilter implements RangeFilter {
 
+        private Integer min = 0;
+        private Integer max = 0;
         private Range range = new Range(0, 0);
 
         public String getName() {
             return NbBundle.getMessage(OutDegreeRangeBuilder.class, "OutDegreeRangeBuilder.name");
+        }
+
+        public OutDegreeRangeFilter() {
+            refreshMinMax();
+        }
+
+        private void refreshMinMax() {
+            GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
+            DirectedGraph graph = gm.getDirectedGraphVisible();
+            min = Integer.MAX_VALUE;
+            max = Integer.MIN_VALUE;
+            for (Node n : graph.getNodes()) {
+                int degree = graph.getOutDegree(n);
+                min = Math.min(min, degree);
+                max = Math.max(max, degree);
+            }
+            Integer lowerBound = range.getLowerInteger();
+            Integer upperBound = range.getUpperInteger();
+            if ((Integer) min > lowerBound || (Integer) max < lowerBound || lowerBound.equals(upperBound)) {
+                lowerBound = (Integer) min;
+            }
+            if ((Integer) min > upperBound || (Integer) max < upperBound || lowerBound.equals(upperBound)) {
+                upperBound = (Integer) max;
+            }
+            range = new Range(lowerBound, upperBound);
         }
 
         public FilterProperty[] getProperties() {
@@ -85,6 +117,18 @@ public class OutDegreeRangeBuilder implements FilterBuilder {
                 Exceptions.printStackTrace(ex);
             }
             return new FilterProperty[0];
+        }
+
+        public FilterProperty getRangeProperty() {
+            return getProperties()[0];
+        }
+
+        public Object getMinimum() {
+            return min;
+        }
+
+        public Object getMaximum() {
+            return max;
         }
 
         public Range getRange() {
