@@ -51,7 +51,9 @@ public class CategoryChildFactory extends ChildFactory<Object> {
             public int compare(Object o1, Object o2) {
                 String s1;
                 String s2;
-                if (o1 instanceof Category && o2 instanceof Category) {
+                if (o1 == FiltersExplorer.QUERIES || o2 == FiltersExplorer.QUERIES) {
+                    return o1 == FiltersExplorer.QUERIES ? 1 : -1;
+                } else if (o1 instanceof Category && o2 instanceof Category) {
                     s1 = ((Category) o1).getName();
                     s2 = ((Category) o2).getName();
                     return s1.compareTo(s2);
