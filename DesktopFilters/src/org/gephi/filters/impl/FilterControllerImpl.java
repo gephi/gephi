@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.filters.impl;
 
 import java.beans.PropertyEditorManager;
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.Query;
@@ -46,6 +47,7 @@ public class FilterControllerImpl implements FilterController {
     public FilterControllerImpl() {
         //Register range editor
         PropertyEditorManager.registerEditor(Range.class, RangePropertyEditor.class);
+        PropertyEditorManager.registerEditor(AttributeColumn.class, AttributeColumnPropertyEditor.class);
 
         //Model management
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);

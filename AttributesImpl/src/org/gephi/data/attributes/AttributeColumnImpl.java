@@ -71,6 +71,11 @@ public class AttributeColumnImpl implements AttributeColumn {
     }
 
     @Override
+    public String toString() {
+        return title + " (" + type.toString() + ")";
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof AttributeColumn) {
             AttributeColumnImpl o = (AttributeColumnImpl) obj;

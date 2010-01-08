@@ -120,6 +120,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
                 filterProperties = new FilterProperty[0];
                 try {
                     filterProperties = new FilterProperty[]{
+                                FilterProperty.createProperty(this, AttributeColumn.class, "column"),
                                 FilterProperty.createProperty(this, String.class, "pattern"),
                                 FilterProperty.createProperty(this, Boolean.class, "useRegex")
                             };
