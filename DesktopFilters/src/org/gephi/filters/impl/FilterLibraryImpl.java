@@ -23,6 +23,7 @@ package org.gephi.filters.impl;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.Category;
+import org.gephi.filters.spi.CategoryBuilder;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterLibraryMask;
@@ -49,6 +50,10 @@ public class FilterLibraryImpl implements FilterLibrary {
 
         for (Query query : Lookup.getDefault().lookupAll(Query.class)) {
             content.add(query);
+        }
+
+        for (CategoryBuilder catBuilder : Lookup.getDefault().lookupAll(CategoryBuilder.class)) {
+            content.add(catBuilder);
         }
 
         content.add(new HierarchicalGraphMask());

@@ -22,6 +22,7 @@ package org.gephi.desktop.filters;
 
 import java.awt.BorderLayout;
 import java.util.logging.Logger;
+import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.impl.FilterModelImpl;
 import org.gephi.project.api.ProjectController;
@@ -58,6 +59,7 @@ public final class FiltersTopComponent extends TopComponent {
         add(panel, BorderLayout.CENTER);
 
         //Model management
+        FilterController controller = Lookup.getDefault().lookup(FilterController.class);
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
 

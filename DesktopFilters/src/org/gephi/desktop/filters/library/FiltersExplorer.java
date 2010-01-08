@@ -28,6 +28,7 @@ import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.Category;
+import org.gephi.filters.spi.CategoryBuilder;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterLibraryMask;
 import org.openide.explorer.ExplorerManager;
@@ -109,6 +110,14 @@ public class FiltersExplorer extends BeanTreeView {
                     return false;
                 }
             }
+            for (CategoryBuilder cb : filterLibrary.getLookup().lookupAll(CategoryBuilder.class)) {
+                if (cb.getCategory().equals(category)) {
+                    return false;
+                }
+                if (cb.getCategory().getParent() != null && cb.getCategory().getParent().equals(category)) {
+                    return false;
+                }
+            }
             return true;
         }
 
@@ -123,7 +132,7 @@ public class FiltersExplorer extends BeanTreeView {
                 if (category == null) {
                     cats.add(QUERIES);
                 }
-                //get categories from builders
+                //get categories from filter builders
                 for (FilterBuilder fb : filterLibrary.getLookup().lookupAll(FilterBuilder.class)) {
                     if (fb.getCategory() == null) {
                         if (category == null) {
@@ -141,6 +150,14 @@ public class FiltersExplorer extends BeanTreeView {
                         }
                     } else if (fb.getCategory().equals(category)) {
                         cats.add(fb);
+                    }
+                }
+                //get categories from cat builders
+                for (CategoryBuilder cb : filterLibrary.getLookup().lookupAll(CategoryBuilder.class)) {
+                    if (cb.getCategory().getParent() == category) {
+                        cats.add(cb.getCategory());
+                    } else if (cb.getCategory().getParent() != null && cb.getCategory().getParent().getParent() == category) {
+                        cats.add(cb.getCategory().getParent());
                     }
                 }
             }

@@ -47,7 +47,7 @@ public class CategoryNode extends AbstractNode {
     private Category category;
 
     public CategoryNode(FiltersExplorer.Utils utils, Category category) {
-        super(utils.isLeaf(category) ? Children.LEAF : new CategoryChildren(utils, utils.getChildren(category)));
+        super(utils.isLeaf(category) ? Children.LEAF : Children.create(new CategoryChildFactory(utils, category), true));
         this.category = category;
         if (category != null) {
             setName(category.getName());
@@ -64,7 +64,7 @@ public class CategoryNode extends AbstractNode {
             }
         } catch (Exception e) {
         }
-        if(category==null) {
+        if (category == null) {
             return ImageUtilities.loadImage("org/gephi/desktop/filters/library/resources/library.png");
         } else {
             return ImageUtilities.loadImage("org/gephi/desktop/filters/library/resources/folder.png");
