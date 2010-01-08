@@ -158,6 +158,10 @@ public class FiltersExplorer extends BeanTreeView {
                         cats.add(cb.getCategory());
                     } else if (cb.getCategory().getParent() != null && cb.getCategory().getParent().getParent() == category) {
                         cats.add(cb.getCategory().getParent());
+                    } else if (cb.getCategory() == category) {
+                        for (FilterBuilder fb : cb.getBuilders()) {
+                            cats.add(fb);
+                        }
                     }
                 }
             }
