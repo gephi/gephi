@@ -118,6 +118,8 @@ public class FilterControllerImpl implements FilterController {
     }
 
     public void propertyChanged(FilterProperty property) {
-        model.propertyChanged(property);
+        if (model != null) {
+            model.propertyChanged(property);
+        }
     }
 }

@@ -190,7 +190,7 @@ public class FilterModelImpl implements FilterModel {
     //PERSISTENCE
     private int queryId = 0;
 
-    public void writeXML(Document document) {
+    public Element writeXML(Document document) {
         Element filterModelE = document.createElement("filtermodel");
 
         //Queries
@@ -200,7 +200,7 @@ public class FilterModelImpl implements FilterModel {
             writeQuery(document, queriesE, query, -1);
         }
         filterModelE.appendChild(queriesE);
-        document.appendChild(filterModelE);
+        return filterModelE;
     }
 
     private void writeQuery(Document document, Element parentElement, Query query, int parentId) {
@@ -249,12 +249,12 @@ public class FilterModelImpl implements FilterModel {
         return null;
     }
 
-    public void readXML(Document document) {
+    public void readXML(Element filterModelE) {
         queries.clear();
         currentQuery = null;
 
         Map<Integer, Query> idMap = new HashMap<Integer, Query>();
-        NodeList queryList = document.getElementsByTagName("query");
+        NodeList queryList = filterModelE.getElementsByTagName("query");
         for (int i = 0; i < queryList.getLength(); i++) {
             Node n = queryList.item(i);
             if (n.getNodeType() == Node.ELEMENT_NODE) {
