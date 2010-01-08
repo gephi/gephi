@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.filters.topology;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.filters.RangeFilter;
@@ -106,6 +108,16 @@ public class InDegreeRangeBuilder implements FilterBuilder {
                 upperBound = (Integer) max;
             }
             range = new Range(lowerBound, upperBound);
+        }
+
+        public Object[] getValues() {
+            List<Integer> degrees = new ArrayList<Integer>();
+            GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
+            DirectedGraph graph = gm.getDirectedGraphVisible();
+            for (Node n : graph.getNodes()) {
+                degrees.add(graph.getInDegree(n));
+            }
+            return degrees.toArray();
         }
 
         public FilterProperty[] getProperties() {

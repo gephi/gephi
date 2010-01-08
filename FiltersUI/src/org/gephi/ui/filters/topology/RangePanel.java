@@ -57,24 +57,25 @@ public class RangePanel extends javax.swing.JPanel {
                     if (evt.getPropertyName().equals(JRangeSliderPanel.LOWER_BOUND)) {
                         Range newRange = new Range(r.getRange().getLowerBound(), r.getRange().getUpperBound());
                         rangeFilter.getRangeProperty().getProperty().setValue(newRange);
-                        setupHistogram(newRange);
+                        setupHistogram(rangeFilter, newRange);
                     } else if (evt.getPropertyName().equals(JRangeSliderPanel.UPPER_BOUND)) {
                         Range newRange = new Range(r.getRange().getLowerBound(), r.getRange().getUpperBound());
                         rangeFilter.getRangeProperty().getProperty().setValue(newRange);
-                        setupHistogram(newRange);
+                        setupHistogram(rangeFilter, newRange);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
-        setupHistogram(range);
+        setupHistogram(rangeFilter, range);
     }
 
-    private void setupHistogram(Range range) {
+    private void setupHistogram(RangeFilter rangeFilter, Range range) {
+        Object[] data = rangeFilter.getValues();
         histogram.clear();
-        for (int i = 0; i < 1000; i++) {
-            histogram.addData(Math.random() * 100);
+        for (int i = 0; i < data.length; i++) {
+            histogram.addData(data[i]);
         }
         histogram.sortData();
         double rangeLowerBound = 0.0;
@@ -94,6 +95,9 @@ public class RangePanel extends javax.swing.JPanel {
         }
         histogram.setLowerBound(rangeLowerBound);
         histogram.setUpperBound(rangeUpperBound);
+
+        revalidate();
+        repaint();
     }
 
     /** This method is called from within the constructor to
