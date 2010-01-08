@@ -22,6 +22,7 @@ package org.gephi.desktop.filters.library;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.swing.Action;
 import org.gephi.desktop.filters.FilterUIModel;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.FilterModel;
@@ -31,6 +32,8 @@ import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterLibraryMask;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
+import org.openide.nodes.AbstractNode;
+import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
@@ -59,7 +62,13 @@ public class FiltersExplorer extends BeanTreeView {
             manager.setRootContext(new CategoryNode(new Utils(), null));
         } else {
             this.filterLibrary = null;
-            manager.setRootContext(Node.EMPTY);
+            manager.setRootContext(new AbstractNode(Children.LEAF) {
+
+                @Override
+                public Action[] getActions(boolean context) {
+                    return new Action[0];
+                }
+            });
         }
         updateEnabled(model != null);
     }

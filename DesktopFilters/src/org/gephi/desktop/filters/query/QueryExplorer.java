@@ -22,6 +22,7 @@ package org.gephi.desktop.filters.query;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import javax.swing.Action;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.TreeSelectionModel;
@@ -30,6 +31,8 @@ import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.Query;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
+import org.openide.nodes.AbstractNode;
+import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 
 /**
@@ -64,7 +67,13 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
             model.addChangeListener(this);
             manager.setRootContext(new RootNode(new QueryChildren(model.getQueries())));
         } else {
-            manager.setRootContext(Node.EMPTY);
+            manager.setRootContext(new AbstractNode(Children.LEAF) {
+
+                @Override
+                public Action[] getActions(boolean context) {
+                    return new Action[0];
+                }
+            });
         }
         updateEnabled(model != null);
 
