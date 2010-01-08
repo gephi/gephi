@@ -35,4 +35,6 @@ public interface FilterModel {
     public Query[] getQueries();
 
     public void addChangeListener(ChangeListener listener);
+
+    public void removeChangeListener(ChangeListener listener);
 }

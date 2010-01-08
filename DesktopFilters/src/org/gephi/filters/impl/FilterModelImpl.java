@@ -177,6 +177,10 @@ public class FilterModelImpl implements FilterModel {
         }
     }
 
+    public void removeChangeListener(ChangeListener listener) {
+        listeners.remove(listener);
+    }
+
     private void fireChangeEvent() {
         ChangeEvent evt = new ChangeEvent(this);
         for (ChangeListener l : listeners) {

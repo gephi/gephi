@@ -24,11 +24,14 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
 import org.gephi.desktop.filters.library.FiltersExplorer;
 import org.gephi.desktop.filters.query.QueryExplorer;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.Query;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.explorer.ExplorerManager;
 import org.openide.util.Lookup;
 
@@ -39,45 +42,74 @@ import org.openide.util.Lookup;
 public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.Provider {
 
     private ExplorerManager manager = new ExplorerManager();
-    private FilterModel model;
-    private FilterUIModel uIModel;
+    //Models
+    private FilterModel filterModel;
+    private FilterUIModel uiModel;
+    //Components
+    private FilterPanelPanel filterPanelPanel;
+    private QueryExplorer queriesExplorer;
+    private QueriesPanel queriesPanel;
 
     public FiltersPanel() {
         initComponents();
-        uIModel = new FilterUIModel();
-        model = Lookup.getDefault().lookup(FilterController.class).getModel();
-        ((FiltersExplorer) libraryTree).setup(manager, model, uIModel);
+        //Toolbar
+        Border b = (Border) UIManager.get("Nb.Editor.Toolbar.border"); //NOI18N
+        toolbar.setBorder(b);
+        if (UIUtils.isAquaLookAndFeel()) {
+            toolbar.setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
 
-        southPanel.add(new FunctionPanel(), BorderLayout.CENTER);
-        filtersUIPanel.add(new FilterPanelPanel(uIModel));
+        queriesPanel = new QueriesPanel();
+        southPanel.add(queriesPanel, BorderLayout.CENTER);
+        filterPanelPanel = new FilterPanelPanel();
+        filtersUIPanel.add(filterPanelPanel);
 
         resetButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 FilterController controller = Lookup.getDefault().lookup(FilterController.class);
-                for (Query query : model.getQueries()) {
+                for (Query query : filterModel.getQueries()) {
                     controller.remove(query);
                 }
-                uIModel.setSelectedFilter(null);
+                uiModel.setSelectedFilter(null);
             }
         });
-
+        updateEnabled(false);
     }
 
-    private class FunctionPanel extends JPanel implements ExplorerManager.Provider {
+    public void refreshModel(FilterModel filterModel, FilterUIModel uiModel) {
+        this.filterModel = filterModel;
+        this.uiModel = uiModel;
+        //Unsetup
+        filterPanelPanel.unsetup();
+        queriesExplorer.unsetup();
+        //Setup
+        ((FiltersExplorer) libraryTree).setup(manager, filterModel, uiModel);
+        queriesExplorer.setup(queriesPanel.manager, filterModel, uiModel);
+        filterPanelPanel.setup(uiModel);
+        updateEnabled(filterModel != null);
+    }
+
+    private class QueriesPanel extends JPanel implements ExplorerManager.Provider {
 
         private ExplorerManager manager = new ExplorerManager();
 
-        public FunctionPanel() {
+        public QueriesPanel() {
             super(new BorderLayout());
-            QueryExplorer functionExplorer = new QueryExplorer();
-            functionExplorer.setup(manager, model, uIModel);
-            add(functionExplorer, BorderLayout.CENTER);
+            queriesExplorer = new QueryExplorer();
+            add(queriesExplorer, BorderLayout.CENTER);
         }
 
         public ExplorerManager getExplorerManager() {
             return manager;
         }
+    }
+
+    private void updateEnabled(boolean enabled) {
+        resetButton.setEnabled(enabled);
+        selectButton.setEnabled(enabled);
+        filterButton.setEnabled(enabled);
+        liveButton.setEnabled(enabled);
     }
 
     /** This method is called from within the constructor to
@@ -96,7 +128,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         libraryTree = new FiltersExplorer();
         southPanel = new javax.swing.JPanel();
         filtersUIPanel = new javax.swing.JPanel();
-        applyButton = new javax.swing.JButton();
+        filterButton = new javax.swing.JButton();
         selectButton = new javax.swing.JButton();
         southToolbar = new javax.swing.JToolBar();
         liveButton = new javax.swing.JToggleButton();
@@ -152,15 +184,15 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 1, 5);
         add(filtersUIPanel, gridBagConstraints);
 
-        applyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/filters/resources/filter.png"))); // NOI18N
-        applyButton.setText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.applyButton.text")); // NOI18N
-        applyButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
+        filterButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/filters/resources/filter.png"))); // NOI18N
+        filterButton.setText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.filterButton.text")); // NOI18N
+        filterButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 2, 3);
-        add(applyButton, gridBagConstraints);
+        add(filterButton, gridBagConstraints);
 
         selectButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/filters/resources/select.png"))); // NOI18N
         selectButton.setText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.selectButton.text")); // NOI18N
@@ -188,9 +220,8 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
         add(southToolbar, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton applyButton;
+    private javax.swing.JButton filterButton;
     private javax.swing.JPanel filtersUIPanel;
     private javax.swing.JScrollPane libraryTree;
     private javax.swing.JToggleButton liveButton;

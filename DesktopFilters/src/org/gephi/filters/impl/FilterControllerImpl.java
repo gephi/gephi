@@ -28,22 +28,59 @@ import org.gephi.filters.api.Range;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.filters.spi.Operator;
+import org.gephi.project.api.ProjectController;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceListener;
+import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service=FilterController.class)
+@ServiceProvider(service = FilterController.class)
 public class FilterControllerImpl implements FilterController {
 
     private FilterModelImpl model;
 
     public FilterControllerImpl() {
-        this.model = new FilterModelImpl();
-
         //Register range editor
         PropertyEditorManager.registerEditor(Range.class, RangePropertyEditor.class);
+
+        //Model management
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.addWorkspaceListener(new WorkspaceListener() {
+
+            public void initialize(Workspace workspace) {
+                workspace.add(new FilterModelImpl());
+            }
+
+            public void select(Workspace workspace) {
+                model = (FilterModelImpl) workspace.getLookup().lookup(FilterModel.class);
+                if (model == null) {
+                    model = new FilterModelImpl();
+                    workspace.add(model);
+                }
+            }
+
+            public void unselect(Workspace workspace) {
+            }
+
+            public void close(Workspace workspace) {
+            }
+
+            public void disable() {
+                model = null;
+            }
+        });
+        if (pc.getCurrentWorkspace() != null) {
+            Workspace workspace = pc.getCurrentWorkspace();
+            model = (FilterModelImpl) workspace.getLookup().lookup(FilterModel.class);
+            if (model == null) {
+                model = new FilterModelImpl();
+                workspace.add(model);
+            }
+        }
     }
 
     public Query createQuery(Filter filter) {

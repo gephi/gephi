@@ -48,19 +48,24 @@ public class FiltersExplorer extends BeanTreeView {
     private FilterUIModel uiModel;
 
     public FiltersExplorer() {
-        setRootVisible(true);
     }
 
     public void setup(ExplorerManager manager, FilterModel model, FilterUIModel uiModel) {
         this.manager = manager;
-        this.filterLibrary = model.getLibrary();
+
         this.uiModel = uiModel;
-        manager.setRootContext(new CategoryNode(new Utils(), null));
+        if (model != null) {
+            this.filterLibrary = model.getLibrary();
+            manager.setRootContext(new CategoryNode(new Utils(), null));
+        } else {
+            this.filterLibrary = null;
+            manager.setRootContext(Node.EMPTY);
+        }
+        updateEnabled(model != null);
     }
 
     protected class Utils implements LookupListener {
 
-        private Set<FilterBuilder> builders;
         private Lookup.Result<FilterBuilder> lookupResult;
         private Lookup.Result<Query> lookupResult2;
 
@@ -69,23 +74,9 @@ public class FiltersExplorer extends BeanTreeView {
             lookupResult.addLookupListener(this);
             lookupResult2 = filterLibrary.getLookup().lookupResult(Query.class);
             lookupResult2.addLookupListener(this);
-            /*builders = new HashSet<FilterBuilder>(filterLibrary.getLookup().lookupAll(FilterBuilder.class));*/
         }
 
         public void resultChanged(LookupEvent ev) {
-            /*Lookup.Result<FilterBuilder> result = (Lookup.Result) ev.getSource();
-            Collection<? extends FilterBuilder> collection = result.allInstances();
-
-            for (FilterBuilder b : collection) {
-            if (!builders.contains(b)) {
-            addBuilder(b);
-            }
-            }
-            builders.removeAll(collection);
-            for (FilterBuilder b : builders) {
-            removeBuilder(b);
-            }
-            builders = new HashSet<FilterBuilder>(collection);*/
             saveExpandStatus((CategoryNode) manager.getRootContext());
             manager.setRootContext(new CategoryNode(this, null));
             loadExpandStatus((CategoryNode) manager.getRootContext());
@@ -155,14 +146,6 @@ public class FiltersExplorer extends BeanTreeView {
             }
             return true;
         }
-
-        /*private void addBuilder(FilterBuilder builder) {
-        System.out.println("Add Builder " + builder.getName());
-        }
-
-        private void removeBuilder(FilterBuilder builder) {
-        System.out.println("Remove Builder " + builder.getName());
-        }*/
     }
     private final Category UNSORTED = new Category(
             NbBundle.getMessage(FiltersExplorer.class, "FiltersExplorer.UnsortedCategory"),
@@ -173,7 +156,15 @@ public class FiltersExplorer extends BeanTreeView {
             null,
             null);
 
+    private void updateEnabled(boolean enabled) {
+        setRootVisible(enabled);
+        setEnabled(enabled);
+    }
+
     private void loadExpandStatus(CategoryNode node) {
+        if (uiModel == null) {
+            return;
+        }
         if (uiModel.isExpanded(node.getCategory())) {
             expandNode(node);
         }
@@ -185,6 +176,9 @@ public class FiltersExplorer extends BeanTreeView {
     }
 
     private void saveExpandStatus(CategoryNode node) {
+        if (uiModel == null) {
+            return;
+        }
         uiModel.setExpand(node.getCategory(), isExpanded(node));
         for (Node n : node.getChildren().getNodes()) {
             if (n instanceof CategoryNode) {

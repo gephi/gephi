@@ -36,58 +36,80 @@ import org.openide.nodes.Node;
  *
  * @author Mathieu Bastian
  */
-public class QueryExplorer extends BeanTreeView {
+public class QueryExplorer extends BeanTreeView implements PropertyChangeListener, ChangeListener {
 
     private ExplorerManager manager;
     private FilterModel model;
     private FilterUIModel uiModel;
+    //state
+    private boolean listenSelectedNodes = false;
 
     public QueryExplorer() {
-        setRootVisible(true);
         setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     }
 
-    public void setup(ExplorerManager manager, FilterModel model, FilterUIModel filterUIModel) {
+    public void unsetup() {
+        if (model != null) {
+            model.removeChangeListener(this);
+            model = null;
+        }
+    }
+
+    public void setup(ExplorerManager manager, FilterModel model, FilterUIModel uiModel) {
         this.manager = manager;
         this.model = model;
-        this.uiModel = filterUIModel;
-        manager.setRootContext(new RootNode(new QueryChildren(model.getQueries())));
+        this.uiModel = uiModel;
 
-        model.addChangeListener(new ChangeListener() {
+        if (model != null) {
+            model.addChangeListener(this);
+            manager.setRootContext(new RootNode(new QueryChildren(model.getQueries())));
+        } else {
+            manager.setRootContext(Node.EMPTY);
+        }
+        updateEnabled(model != null);
 
-            public void stateChanged(ChangeEvent e) {
-                System.out.println("model updated");
-                saveExpandStatus(QueryExplorer.this.manager.getRootContext());
-                QueryExplorer.this.manager.setRootContext(new RootNode(new QueryChildren(QueryExplorer.this.model.getQueries())));
-                loadExpandStatus(QueryExplorer.this.manager.getRootContext());
+        if (!listenSelectedNodes) {
+            manager.addPropertyChangeListener(this);
+            listenSelectedNodes = true;
+        }
+    }
+
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals(ExplorerManager.PROP_SELECTED_NODES)) {
+            if (uiModel == null) {
+                return;
             }
-        });
-
-        manager.addPropertyChangeListener(new PropertyChangeListener() {
-
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals(ExplorerManager.PROP_SELECTED_NODES)) {
-                    Node[] nodeArray = (Node[]) evt.getNewValue();
-                    if (nodeArray.length > 0) {
-                        Node node = ((Node[]) evt.getNewValue())[0];
-                        if (node instanceof RootNode) {
-                            uiModel.setSelectedFilter(null);
-                            return;
-                        }
-                        while (!(node instanceof QueryNode)) {
-                            node = node.getParentNode();
-                            if (node.getParentNode() == null) {
-                                uiModel.setSelectedFilter(null);
-                                return;
-                            }
-                        }
-                        QueryNode functionNode = (QueryNode) node;
-                        Query func = functionNode.qetQuery();
-                        uiModel.setSelectedFilter(func.getFilter());
+            Node[] nodeArray = (Node[]) evt.getNewValue();
+            if (nodeArray.length > 0) {
+                Node node = ((Node[]) evt.getNewValue())[0];
+                if (node instanceof RootNode) {
+                    uiModel.setSelectedFilter(null);
+                    return;
+                }
+                while (!(node instanceof QueryNode)) {
+                    node = node.getParentNode();
+                    if (node.getParentNode() == null) {
+                        uiModel.setSelectedFilter(null);
+                        return;
                     }
                 }
+                QueryNode functionNode = (QueryNode) node;
+                Query func = functionNode.qetQuery();
+                uiModel.setSelectedFilter(func.getFilter());
             }
-        });
+        }
+    }
+
+    public void stateChanged(ChangeEvent e) {
+        System.out.println("model updated");
+        saveExpandStatus(QueryExplorer.this.manager.getRootContext());
+        QueryExplorer.this.manager.setRootContext(new RootNode(new QueryChildren(QueryExplorer.this.model.getQueries())));
+        loadExpandStatus(QueryExplorer.this.manager.getRootContext());
+    }
+
+    private void updateEnabled(boolean enabled) {
+        setRootVisible(enabled);
+        setEnabled(enabled);
     }
 
     private void loadExpandStatus(Node node) {

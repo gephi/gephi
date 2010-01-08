@@ -1,16 +1,38 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+Copyright 2008 WebAtlas
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.filters;
 
 import java.awt.BorderLayout;
 import java.util.logging.Logger;
+import org.gephi.filters.api.FilterModel;
+import org.gephi.filters.impl.FilterModelImpl;
+import org.gephi.project.api.ProjectController;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 import org.openide.util.ImageUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
+import org.openide.util.Lookup;
 
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.filters//Filters//EN",
 autostore = false)
@@ -19,6 +41,11 @@ public final class FiltersTopComponent extends TopComponent {
     private static FiltersTopComponent instance;
     static final String ICON_PATH = "org/gephi/desktop/filters/resources/small.png";
     private static final String PREFERRED_ID = "FiltersTopComponent";
+    //Panel
+    private FiltersPanel panel;
+    //Models
+    private FilterModel filterModel;
+    private FilterUIModel uiModel;
 
     public FiltersTopComponent() {
         initComponents();
@@ -27,7 +54,62 @@ public final class FiltersTopComponent extends TopComponent {
         setIcon(ImageUtilities.loadImage(ICON_PATH, true));
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
-        add(new FiltersPanel(), BorderLayout.CENTER);
+        panel = new FiltersPanel();
+        add(panel, BorderLayout.CENTER);
+
+        //Model management
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.addWorkspaceListener(new WorkspaceListener() {
+
+            public void initialize(Workspace workspace) {
+                workspace.add(new FilterModelImpl());
+                workspace.add(new FilterUIModel());
+            }
+
+            public void select(Workspace workspace) {
+                filterModel = workspace.getLookup().lookup(FilterModel.class);
+                uiModel = workspace.getLookup().lookup(FilterUIModel.class);
+                if (filterModel == null) {
+                    filterModel = new FilterModelImpl();
+                    workspace.add(filterModel);
+                }
+                if (uiModel == null) {
+                    uiModel = new FilterUIModel();
+                    workspace.add(uiModel);
+                }
+                refreshModel();
+            }
+
+            public void unselect(Workspace workspace) {
+            }
+
+            public void close(Workspace workspace) {
+            }
+
+            public void disable() {
+                filterModel = null;
+                uiModel = null;
+                refreshModel();
+            }
+        });
+        if (pc.getCurrentWorkspace() != null) {
+            Workspace workspace = pc.getCurrentWorkspace();
+            filterModel = workspace.getLookup().lookup(FilterModel.class);
+            uiModel = workspace.getLookup().lookup(FilterUIModel.class);
+            if (filterModel == null) {
+                filterModel = new FilterModelImpl();
+                workspace.add(filterModel);
+            }
+            if (uiModel == null) {
+                uiModel = new FilterUIModel();
+                workspace.add(uiModel);
+            }
+        }
+        refreshModel();
+    }
+
+    private void refreshModel() {
+        panel.refreshModel(filterModel, uiModel);
     }
 
     /** This method is called from within the constructor to

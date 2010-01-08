@@ -28,41 +28,67 @@ import org.gephi.filters.api.FilterController;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class FilterPanelPanel extends JPanel {
+public class FilterPanelPanel extends JPanel implements ChangeListener {
 
     private Filter selectedFilter;
+    private final String settingsString;
+    private FilterUIModel uiModel;
 
-    public FilterPanelPanel(final FilterUIModel model) {
+    public FilterPanelPanel() {
         super(new BorderLayout());
-        model.addChangeListener(new ChangeListener() {
+        settingsString = NbBundle.getMessage(FilterPanelPanel.class, "FilterPanelPanel.settings");
+    }
 
-            public void stateChanged(ChangeEvent e) {
-                if (model.getSelectedFilter() != selectedFilter) {
-                    selectedFilter = model.getSelectedFilter();
-                    setFilter(selectedFilter);
-                }
+    public void stateChanged(ChangeEvent e) {
+        refreshModel();
+    }
+
+    private void refreshModel() {
+        if (uiModel != null) {
+            if (uiModel.getSelectedFilter() != selectedFilter) {
+                selectedFilter = uiModel.getSelectedFilter();
+                setFilter(selectedFilter);
             }
-        });
+        } else {
+            setFilter(null);
+        }
+    }
+
+    public void setup(FilterUIModel model) {
+        uiModel = model;
+        if (model != null) {
+            model.addChangeListener(this);
+        }
+        refreshModel();
+    }
+
+    public void unsetup() {
+        if (uiModel != null) {
+            uiModel.removeChangeListener(this);
+            uiModel = null;
+            refreshModel();
+        }
     }
 
     private void setFilter(Filter filter) {
-        FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
-        FilterBuilder builder = filterController.getModel().getLibrary().getBuilder(filter);
 
         //UI update
         removeAll();
         setBorder(null);
         if (filter != null) {
+            FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
+            FilterBuilder builder = filterController.getModel().getLibrary().getBuilder(filter);
             try {
                 JPanel panel = builder.getPanel(filter);
                 if (panel != null) {
                     add(panel, BorderLayout.CENTER);
-                    setBorder(javax.swing.BorderFactory.createTitledBorder(filter.getName() + " Settings"));
+                    setBorder(javax.swing.BorderFactory.createTitledBorder(filter.getName() + " " + settingsString));
                 }
             } catch (Exception e) {
             }

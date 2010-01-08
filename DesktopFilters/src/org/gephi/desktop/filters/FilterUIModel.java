@@ -96,6 +96,10 @@ public final class FilterUIModel {
         }
     }
 
+    public void removeChangeListener(ChangeListener listener) {
+        listeners.remove(listener);
+    }
+
     private void fireChangeEvent() {
         ChangeEvent evt = new ChangeEvent(this);
         for (ChangeListener listener : listeners) {
