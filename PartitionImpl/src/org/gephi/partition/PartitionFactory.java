@@ -47,9 +47,9 @@ import org.gephi.ui.utils.PaletteUtils;
 public class PartitionFactory {
 
     public static boolean isNodePartitionColumn(AttributeColumn column, Graph graph) {
-        if (column.getType().equals(AttributeType.STRING) ||
-                column.getType().equals(AttributeType.BOOLEAN) ||
-                column.getType().equals(AttributeType.INT)) {
+        if (column.getType().equals(AttributeType.STRING)
+                || column.getType().equals(AttributeType.BOOLEAN)
+                || column.getType().equals(AttributeType.INT)) {
             Set values = new HashSet();
             int nonNullvalues = 0;
             for (Node n : graph.getNodes()) {
@@ -67,9 +67,9 @@ public class PartitionFactory {
     }
 
     public static boolean isEdgePartitionColumn(AttributeColumn column, Graph graph) {
-        if (column.getType().equals(AttributeType.STRING) ||
-                column.getType().equals(AttributeType.BOOLEAN) ||
-                column.getType().equals(AttributeType.INT)) {
+        if (column.getType().equals(AttributeType.STRING)
+                || column.getType().equals(AttributeType.BOOLEAN)
+                || column.getType().equals(AttributeType.INT)) {
             Set values = new HashSet();
             int nonNullvalues = 0;
             for (Edge n : graph.getEdges()) {
@@ -179,6 +179,10 @@ public class PartitionFactory {
             }
         }
 
+        public AttributeColumn getColumn() {
+            return column;
+        }
+
         @Override
         public String toString() {
             return column.getTitle();
@@ -224,6 +228,10 @@ public class PartitionFactory {
                 p.setColor(colors.get(i));
                 i++;
             }
+        }
+
+        public AttributeColumn getColumn() {
+            return column;
         }
 
         @Override

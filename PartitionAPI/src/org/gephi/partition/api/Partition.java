@@ -21,12 +21,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.partition.api;
 
 import java.util.Map;
+import org.gephi.data.attributes.api.AttributeColumn;
 
 /**
  *
  * @author Mathieu Bastian
  */
 public interface Partition<Element> {
+
+    public AttributeColumn getColumn();
 
     public int getPartsCount();
 

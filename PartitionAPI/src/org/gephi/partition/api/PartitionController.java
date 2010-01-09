@@ -45,4 +45,6 @@ public interface PartitionController {
     public void ungroup(Partition partition);
 
     public void showPie(boolean showPie);
+
+    public PartitionModel getModel();
 }
