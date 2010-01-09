@@ -18,23 +18,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ui.filters.attribute;
+package org.gephi.filters.partition;
 
 import javax.swing.JPanel;
-import org.gephi.filters.attribute.PartitionBuilder.PartitionFilter;
-import org.gephi.filters.attribute.PartitionUI;
-import org.openide.util.lookup.ServiceProvider;
+import org.gephi.filters.partition.PartitionBuilder.PartitionFilter;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = PartitionUI.class)
-public class PartitionUIImpl implements PartitionUI {
+public interface PartitionUI {
 
-    public JPanel getPanel(PartitionFilter filter) {
-        PartitionPanel panel = new PartitionPanel();
-        panel.setup(filter);
-        return panel;
-    }
+    public JPanel getPanel(PartitionFilter filter);
 }

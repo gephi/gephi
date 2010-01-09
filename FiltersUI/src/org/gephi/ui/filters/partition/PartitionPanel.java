@@ -18,11 +18,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ui.filters.attribute;
+package org.gephi.ui.filters.partition;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
 import javax.swing.JToggleButton;
-import org.gephi.filters.attribute.PartitionBuilder.PartitionFilter;
+import org.gephi.filters.partition.PartitionBuilder.PartitionFilter;
+import org.gephi.partition.api.Part;
+import org.gephi.partition.api.Partition;
+import org.gephi.ui.components.PaletteIcon;
 import org.gephi.ui.components.WrapLayout;
 
 /**
@@ -38,9 +42,12 @@ public class PartitionPanel extends javax.swing.JPanel {
 
     public void setup(PartitionFilter filter) {
         removeAll();
-        for (int i = 0; i < 10; i++) {
-            JToggleButton tb = new JToggleButton("Partition " + i);
-            add(tb);
+        Partition partition = filter.getPartition();
+        if (partition != null) {
+            for (Part p : partition.getParts()) {
+                JToggleButton tb = new JToggleButton(p.getDisplayName(), new PaletteIcon(new Color[]{p.getColor()}));
+                add(tb);
+            }
         }
         revalidate();
         repaint();
