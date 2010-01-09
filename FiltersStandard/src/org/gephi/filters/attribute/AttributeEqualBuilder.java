@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.CategoryBuilder;
@@ -59,8 +60,10 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         AttributeModel am = Lookup.getDefault().lookup(AttributeController.class).getModel();
         AttributeColumn[] columns = am.getNodeTable().getColumns();
         for (AttributeColumn c : columns) {
-            AttributeEqualFilterBuilder b = new AttributeEqualFilterBuilder(c);
-            builders.add(b);
+            if (AttributeUtils.getDefault().isStringColumn(c)) {
+                AttributeEqualFilterBuilder b = new AttributeEqualFilterBuilder(c);
+                builders.add(b);
+            }
         }
         return builders.toArray(new FilterBuilder[0]);
     }

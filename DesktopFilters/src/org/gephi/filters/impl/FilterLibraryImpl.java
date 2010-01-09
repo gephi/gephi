@@ -88,6 +88,16 @@ public class FilterLibraryImpl implements FilterLibrary {
             } catch (Exception e) {
             }
         }
+        for (CategoryBuilder catBuilder : Lookup.getDefault().lookupAll(CategoryBuilder.class)) {
+            for (FilterBuilder builder : catBuilder.getBuilders()) {
+                try {
+                    if (builder.getFilter().getClass() == filter.getClass()) {
+                        return builder;
+                    }
+                } catch (Exception e) {
+                }
+            }
+        }
         return null;
     }
 

@@ -23,10 +23,13 @@ package org.gephi.ui.filters.attribute;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.regex.Pattern;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.filters.attribute.AttributeEqualBuilder;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.ui.ValidationGroup;
+import org.netbeans.validation.api.ui.ValidationListener;
 import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.nodes.Node.Property;
 
@@ -36,18 +39,33 @@ import org.openide.nodes.Node.Property;
  */
 public class AttributeEqualPanel extends javax.swing.JPanel implements ActionListener {
 
+    private AttributeEqualBuilder.AttributeEqualFilter filter;
+
     public AttributeEqualPanel() {
         initComponents();
 
         okButton.addActionListener(this);
     }
 
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent evt) {
+        Property<String> pattern = filter.getProperties()[1].getProperty();
+        Property<Boolean> useRegex = filter.getProperties()[2].getProperty();
+        try {
+            if (pattern.getValue() == null || !pattern.getValue().equals(textField.getText())) {
+                pattern.setValue(textField.getText());
+            }
+            if (useRegex.getValue() == null || !useRegex.getValue().equals(regexCheckbox.isSelected())) {
+                useRegex.setValue(regexCheckbox.isSelected());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setup(AttributeEqualBuilder.AttributeEqualFilter filter) {
-        Property<String> pattern = filter.getProperties()[0].getProperty();
-        Property<Boolean> useRegex = filter.getProperties()[1].getProperty();
+        this.filter = filter;
+        Property<String> pattern = filter.getProperties()[1].getProperty();
+        Property<Boolean> useRegex = filter.getProperties()[2].getProperty();
         try {
             textField.setText(pattern.getValue());
             regexCheckbox.setSelected(useRegex.getValue());
@@ -56,15 +74,17 @@ public class AttributeEqualPanel extends javax.swing.JPanel implements ActionLis
         }
     }
 
-    public static ValidationPanel createValidationPanel(AttributeEqualPanel innerPanel) {
-        ValidationPanel validationPanel = new ValidationPanel();
-        if (innerPanel == null) {
-            innerPanel = new AttributeEqualPanel();
-        }
+    public static ValidationPanel createValidationPanel(final AttributeEqualPanel innerPanel) {
+        final ValidationPanel validationPanel = new ValidationPanel();
         validationPanel.setInnerComponent(innerPanel);
 
         ValidationGroup group = validationPanel.getValidationGroup();
+        validationPanel.addChangeListener(new ChangeListener() {
 
+            public void stateChanged(ChangeEvent e) {
+                innerPanel.okButton.setEnabled(!validationPanel.isProblem());
+            }
+        });
         //Node field
         group.add(innerPanel.textField, new RegexValidator(innerPanel));
 
