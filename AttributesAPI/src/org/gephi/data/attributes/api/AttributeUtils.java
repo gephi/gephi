@@ -32,6 +32,10 @@ public abstract class AttributeUtils {
 
     public abstract boolean isNumberColumn(AttributeColumn column);
 
+    public abstract Object getMin(AttributeColumn column, Object[] values);
+
+    public abstract Object getMax(AttributeColumn column, Object[] values);
+
     public static synchronized AttributeUtils getDefault() {
         return Lookup.getDefault().lookup(AttributeUtils.class);
     }
