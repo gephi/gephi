@@ -70,7 +70,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
             int ratioProgress = (int) (100.0 * workunit / progressTotal);
             if (ratioProgress != progress100) {
                 progress100 = ratioProgress;
-                handle.progress(ratioProgress);
+                handle.progress(progress100 <= 100 ? progress100 : 100);
             }
         }
     }
@@ -96,7 +96,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
             int ratioProgress = (int) (100.0 * workunit / progressTotal);
             if (ratioProgress != progress100) {
                 progress100 = ratioProgress;
-                handle.progress(message, ratioProgress);
+                handle.progress(message, progress100 <= 100 ? progress100 : 100);
             }
         }
     }
