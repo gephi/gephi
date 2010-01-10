@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.filters.attribute;
 
+import java.text.DecimalFormat;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -49,6 +50,8 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
     }
 
     public void setup(EqualNumberFilter filter) {
+        this.filter = filter;
+        this.setToolTipText(filter.getName() + " '" + filter.getColumn().getTitle() + "'");
         Number match = filter.getMatch();
         Number stepSize = null;
         switch (filter.getColumn().getType()) {
@@ -71,7 +74,19 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
             default:
                 throw new IllegalArgumentException("Column must be number");
         }
-        SpinnerNumberModel model = new SpinnerNumberModel(match, (Comparable) filter.getMinimun(), (Comparable) filter.getMaximum(), stepSize);
+        Comparable min = (Comparable) filter.getMinimun();
+        Comparable max = (Comparable) filter.getMaximum();
+        if (min.equals(Double.NEGATIVE_INFINITY) || min.equals(Integer.MIN_VALUE)) {
+            minLabel.setText("");
+            maxLabel.setText("");
+        } else {
+            DecimalFormat df = new DecimalFormat();
+            df.setMaximumFractionDigits(5);
+            minLabel.setText(df.format(min));
+            maxLabel.setText(df.format(max));
+        }
+
+        SpinnerNumberModel model = new SpinnerNumberModel(match, min, max, stepSize);
         valueSpinner.setModel(model);
         model.addChangeListener(WeakListeners.change(this, model));
     }
@@ -84,18 +99,73 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         labelValue = new javax.swing.JLabel();
         valueSpinner = new javax.swing.JSpinner();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        minLabel = new javax.swing.JLabel();
+        maxLabel = new javax.swing.JLabel();
+
+        setLayout(new java.awt.GridBagLayout());
 
         labelValue.setText(org.openide.util.NbBundle.getMessage(EqualNumberPanel.class, "EqualNumberPanel.labelValue.text")); // NOI18N
-        add(labelValue);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
+        add(labelValue, gridBagConstraints);
 
-        valueSpinner.setPreferredSize(new java.awt.Dimension(60, 20));
-        add(valueSpinner);
+        valueSpinner.setPreferredSize(new java.awt.Dimension(75, 20));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        add(valueSpinner, gridBagConstraints);
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(EqualNumberPanel.class, "EqualNumberPanel.jLabel1.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        add(jLabel1, gridBagConstraints);
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel2.setText(org.openide.util.NbBundle.getMessage(EqualNumberPanel.class, "EqualNumberPanel.jLabel2.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        add(jLabel2, gridBagConstraints);
+
+        minLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        minLabel.setText(org.openide.util.NbBundle.getMessage(EqualNumberPanel.class, "EqualNumberPanel.minLabel.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        add(minLabel, gridBagConstraints);
+
+        maxLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        maxLabel.setText(org.openide.util.NbBundle.getMessage(EqualNumberPanel.class, "EqualNumberPanel.maxLabel.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        add(maxLabel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel labelValue;
+    private javax.swing.JLabel maxLabel;
+    private javax.swing.JLabel minLabel;
     private javax.swing.JSpinner valueSpinner;
     // End of variables declaration//GEN-END:variables
 }

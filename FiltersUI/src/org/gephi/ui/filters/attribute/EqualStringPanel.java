@@ -63,6 +63,7 @@ public class EqualStringPanel extends javax.swing.JPanel implements ActionListen
 
     public void setup(AttributeEqualBuilder.EqualStringFilter filter) {
         this.filter = filter;
+        this.setToolTipText(filter.getName() + " '" + filter.getColumn().getTitle() + "'");
         Property<String> pattern = filter.getProperties()[1].getProperty();
         Property<Boolean> useRegex = filter.getProperties()[2].getProperty();
         try {

@@ -41,8 +41,10 @@ public class EqualBooleanPanel extends javax.swing.JPanel implements ActionListe
 
     public void setup(EqualBooleanFilter filter) {
         this.filter = filter;
+        this.setToolTipText(filter.getName() + " '" + filter.getColumn().getTitle() + "'");
         group.clearSelection();
-        trueButton.setSelected(filter.isMatch());
+        group.setSelected(trueButton.getModel(), filter.isMatch());
+        group.setSelected(falseButton.getModel(), !filter.isMatch());
     }
 
     public void actionPerformed(ActionEvent evt) {
