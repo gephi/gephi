@@ -64,6 +64,23 @@
                 <package>org.apache.batik.util.io</package>
                 <package>org.apache.batik.util.resources</package>
                 <package>org.apache.batik.xml</package>
+                <package>org.apache.fop</package>
+                <package>org.apache.fop.apps</package>
+                <package>org.apache.fop.fo</package>
+                <package>org.apache.fop.fonts</package>
+                <package>org.apache.fop.fonts.apps</package>
+                <package>org.apache.fop.fonts.autodetect</package>
+                <package>org.apache.fop.fonts.base14</package>
+                <package>org.apache.fop.fonts.truetype</package>
+                <package>org.apache.fop.fonts.type1</package>
+                <package>org.apache.fop.image</package>
+                <package>org.apache.fop.image.analyser</package>
+                <package>org.apache.fop.pdf</package>
+                <package>org.apache.fop.render.pdf</package>
+                <package>org.apache.fop.render.ps</package>
+                <package>org.apache.fop.render.ps.extensions</package>
+                <package>org.apache.fop.svg</package>
+                <package>org.apache.fop.util</package>
                 <package>org.w3c.css.sac</package>
                 <package>org.w3c.css.sac.helpers</package>
                 <package>org.w3c.dom</package>
@@ -126,6 +143,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/batik-bridge.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/batik-bridge.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/pdf-transcoder.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pdf-transcoder.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>
