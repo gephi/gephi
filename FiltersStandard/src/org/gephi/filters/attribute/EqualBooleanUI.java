@@ -21,13 +21,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.filters.attribute;
 
 import javax.swing.JPanel;
-import org.gephi.filters.attribute.AttributeEqualBuilder.AttributeEqualFilter;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface AttributeEqualUI {
+public interface EqualBooleanUI {
 
-    public JPanel getPanel(AttributeEqualFilter filter);
+    public JPanel getPanel(AttributeEqualBuilder.EqualBooleanFilter filter);
 }

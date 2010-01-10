@@ -48,6 +48,11 @@ public class FilterBuilderNode extends AbstractNode {
     }
 
     @Override
+    public String getHtmlDisplayName() {
+        return super.getName();
+    }
+
+    @Override
     public Image getIcon(int type) {
         try {
             if (filterBuilder.getIcon() != null) {

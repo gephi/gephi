@@ -29,7 +29,6 @@ import org.gephi.filters.attribute.AttributeEqualBuilder;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.ui.ValidationGroup;
-import org.netbeans.validation.api.ui.ValidationListener;
 import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.nodes.Node.Property;
 
@@ -37,11 +36,11 @@ import org.openide.nodes.Node.Property;
  *
  * @author Mathieu Bastian
  */
-public class AttributeEqualPanel extends javax.swing.JPanel implements ActionListener {
+public class EqualStringPanel extends javax.swing.JPanel implements ActionListener {
 
-    private AttributeEqualBuilder.AttributeEqualFilter filter;
+    private AttributeEqualBuilder.EqualStringFilter filter;
 
-    public AttributeEqualPanel() {
+    public EqualStringPanel() {
         initComponents();
 
         okButton.addActionListener(this);
@@ -62,7 +61,7 @@ public class AttributeEqualPanel extends javax.swing.JPanel implements ActionLis
         }
     }
 
-    public void setup(AttributeEqualBuilder.AttributeEqualFilter filter) {
+    public void setup(AttributeEqualBuilder.EqualStringFilter filter) {
         this.filter = filter;
         Property<String> pattern = filter.getProperties()[1].getProperty();
         Property<Boolean> useRegex = filter.getProperties()[2].getProperty();
@@ -74,7 +73,7 @@ public class AttributeEqualPanel extends javax.swing.JPanel implements ActionLis
         }
     }
 
-    public static ValidationPanel createValidationPanel(final AttributeEqualPanel innerPanel) {
+    public static ValidationPanel createValidationPanel(final EqualStringPanel innerPanel) {
         final ValidationPanel validationPanel = new ValidationPanel();
         validationPanel.setInnerComponent(innerPanel);
 
@@ -108,14 +107,14 @@ public class AttributeEqualPanel extends javax.swing.JPanel implements ActionLis
 
         setLayout(new java.awt.GridBagLayout());
 
-        labelPattern.setText(org.openide.util.NbBundle.getMessage(AttributeEqualPanel.class, "AttributeEqualPanel.labelPattern.text")); // NOI18N
+        labelPattern.setText(org.openide.util.NbBundle.getMessage(EqualStringPanel.class, "EqualStringPanel.labelPattern.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new java.awt.Insets(0, 3, 0, 3);
         add(labelPattern, gridBagConstraints);
 
-        textField.setText(org.openide.util.NbBundle.getMessage(AttributeEqualPanel.class, "AttributeEqualPanel.textField.text")); // NOI18N
+        textField.setText(org.openide.util.NbBundle.getMessage(EqualStringPanel.class, "EqualStringPanel.textField.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -123,14 +122,14 @@ public class AttributeEqualPanel extends javax.swing.JPanel implements ActionLis
         gridBagConstraints.weightx = 1.0;
         add(textField, gridBagConstraints);
 
-        regexCheckbox.setText(org.openide.util.NbBundle.getMessage(AttributeEqualPanel.class, "AttributeEqualPanel.regexCheckbox.text")); // NOI18N
+        regexCheckbox.setText(org.openide.util.NbBundle.getMessage(EqualStringPanel.class, "EqualStringPanel.regexCheckbox.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(regexCheckbox, gridBagConstraints);
 
-        okButton.setText(org.openide.util.NbBundle.getMessage(AttributeEqualPanel.class, "AttributeEqualPanel.okButton.text")); // NOI18N
+        okButton.setText(org.openide.util.NbBundle.getMessage(EqualStringPanel.class, "EqualStringPanel.okButton.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
@@ -146,9 +145,9 @@ public class AttributeEqualPanel extends javax.swing.JPanel implements ActionLis
 
     private static class RegexValidator implements Validator<String> {
 
-        private AttributeEqualPanel panel;
+        private EqualStringPanel panel;
 
-        public RegexValidator(AttributeEqualPanel panel) {
+        public RegexValidator(EqualStringPanel panel) {
             this.panel = panel;
         }
 

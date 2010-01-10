@@ -88,7 +88,8 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         }
 
         public String getName() {
-            return column.getTitle();
+            return "<font color='#000000'>" + column.getTitle() + "</font> "
+                    + "<font color='#999999'><i>" + column.getType().toString() + "</i></font>";
         }
 
         public Icon getIcon() {

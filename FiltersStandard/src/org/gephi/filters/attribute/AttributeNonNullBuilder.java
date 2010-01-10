@@ -12,7 +12,7 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.filters.api.FilterLibrary;
-import org.gephi.filters.attribute.AttributeEqualBuilder.AttributeEqualFilter;
+import org.gephi.filters.attribute.AttributeEqualBuilder.EqualStringFilter;
 import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.CategoryBuilder;
 import org.gephi.filters.spi.Filter;
@@ -63,7 +63,8 @@ public class AttributeNonNullBuilder implements CategoryBuilder {
         }
 
         public String getName() {
-            return column.getTitle();
+            return "<font color='#000000'>" + column.getTitle() + "</font> "
+                    + "<font color='#999999'><i>" + column.getType().toString() + "</i></font>";
         }
 
         public Icon getIcon() {

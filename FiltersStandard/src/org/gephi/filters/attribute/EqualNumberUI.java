@@ -18,23 +18,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ui.filters.attribute;
+package org.gephi.filters.attribute;
 
 import javax.swing.JPanel;
-import org.gephi.filters.attribute.AttributeEqualBuilder.AttributeEqualFilter;
-import org.gephi.filters.attribute.AttributeEqualUI;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = AttributeEqualUI.class)
-public class AttributeEqualUIImpl implements AttributeEqualUI {
+public interface EqualNumberUI {
 
-    public JPanel getPanel(AttributeEqualFilter filter) {
-        AttributeEqualPanel panel = new AttributeEqualPanel();
-        panel.setup(filter);
-        return AttributeEqualPanel.createValidationPanel(panel);
-    }
+    public JPanel getPanel(AttributeEqualBuilder.EqualNumberFilter filter);
 }
+
