@@ -38,6 +38,7 @@ public class JQuickHistogram {
     private int constraintHeight = 0;
     private int constraintWidth = 0;
     private JPanel panel;
+    private boolean inclusive = true;
     //Data
     private List<Double> data;
     private Double minValue;
@@ -106,6 +107,60 @@ public class JQuickHistogram {
         panel.setMinimumSize(new Dimension(constraintWidth, constraintHeight));
     }
 
+    public int countValues() {
+        return data.size();
+    }
+
+    public int countInRange() {
+        int res = 0;
+        for (int i = 0; i < data.size(); i++) {
+            Double d = data.get(i);
+            if ((inclusive && d >= minRange && d <= maxRange) || (!inclusive && d > minRange && d < maxRange)) {
+                res++;
+            }
+        }
+        return res;
+    }
+
+    public double getAverage() {
+        double res = 0;
+        for (int i = 0; i < data.size(); i++) {
+            double d = data.get(i);
+            res += d;
+        }
+        return res /= data.size();
+    }
+
+    public double getAverageInRange() {
+        double res = 0;
+        int c = 0;
+        for (int i = 0; i < data.size(); i++) {
+            double d = data.get(i);
+            if ((inclusive && d >= minRange && d <= maxRange) || (!inclusive && d > minRange && d < maxRange)) {
+                res += d;
+                c++;
+            }
+        }
+        return res /= c;
+    }
+
+    public double getMedian() {
+        return data.get((data.size()+1)/2);
+    }
+
+    public double getMedianInRange() {
+        int median = (countInRange()+1)/2;
+        for (int i = 0; i < data.size(); i++) {
+            double d = data.get(i);
+            if ((inclusive && d >= minRange && d <= maxRange) || (!inclusive && d > minRange && d < maxRange)) {
+                if(median--==0) {
+                    return d;
+                }
+            }
+        }
+        return -1.;
+    }
+
     private static class JQuickHistogramPanel extends JPanel {
 
         private Color fillColor = new Color(0xCFD2D3);
@@ -136,7 +191,6 @@ public class JQuickHistogram {
             if (dataSize < currentWidth) {
                 int rectWidth = (int) (currentWidth / (float) dataSize);
                 int leftover = currentWidth - rectWidth * dataSize;
-                System.out.println(rectWidth + " " + leftover);
                 int xPosition = 0;
                 for (int i = 0; i < dataSize; i++) {
                     Double data = histogram.data.get(i);
