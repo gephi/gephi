@@ -1,6 +1,7 @@
 package org.gephi.ui.preview;
 
 import java.awt.Font;
+import java.util.HashMap;
 import org.gephi.preview.api.*;
 import org.openide.util.Lookup;
 import processing.core.*;
@@ -20,6 +21,7 @@ public class ProcessingPreview extends PApplet
     private PFont uniEdgeMiniLabelFont;
     private PFont biEdgeMiniLabelFont;
     private GraphSheet graphSheet = null;
+    private final HashMap<Font, PFont> fontMap = new HashMap<Font, PFont>();
     private final static float MARGIN = 10f;
 
     /**
@@ -30,8 +32,9 @@ public class ProcessingPreview extends PApplet
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
 
         // updates fonts
-        uniEdgeMiniLabelFont = createFont(controller.getUniEdgeSupervisor().getMiniLabelFont());
-        biEdgeMiniLabelFont = createFont(controller.getBiEdgeSupervisor().getMiniLabelFont());
+        fontMap.clear();
+        uniEdgeMiniLabelFont = getPFont(controller.getUniEdgeSupervisor().getMiniLabelFont());
+        biEdgeMiniLabelFont = getPFont(controller.getBiEdgeSupervisor().getMiniLabelFont());
 
         // redraws the applet
         redraw();
@@ -133,16 +136,6 @@ public class ProcessingPreview extends PApplet
         trans.set(center);
         trans.sub(scaledCenter);
         lastMove.set(trans);
-    }
-
-    /**
-     * Creates a Processing font from a classic font.
-     *
-     * @param font  a font to transform
-     * @return a Processing font
-     */
-    private PFont createFont(Font font) {
-        return createFont(font.getName(), font.getSize());
     }
 
     public void renderGraph(Graph graph) {
@@ -261,7 +254,7 @@ public class ProcessingPreview extends PApplet
     }
 
     public void renderNodeLabel(NodeLabel label) {
-        textFont(createFont(label.getFont()));
+        textFont(getPFont(label.getFont()));
         textAlign(CENTER, CENTER);
         
         fill(label.getColor().getRed(),
@@ -273,7 +266,7 @@ public class ProcessingPreview extends PApplet
     }
 
     public void renderNodeLabelBorder(NodeLabelBorder border) {
-        textFont(createFont(border.getLabel().getFont()));
+        textFont(getPFont(border.getLabel().getFont()));
         noStroke();
         fill(border.getColor().getRed(),
                 border.getColor().getGreen(),
@@ -359,7 +352,7 @@ public class ProcessingPreview extends PApplet
     }
 
     public void renderEdgeLabel(EdgeLabel label) {
-        textFont(createFont(label.getFont()));
+        textFont(getPFont(label.getFont()));
         textAlign(CENTER, BASELINE);
 
         pushMatrix();
@@ -382,5 +375,31 @@ public class ProcessingPreview extends PApplet
         rotate(miniLabel.getAngle());
         text(miniLabel.getValue(), 0, 0);
         popMatrix();
+    }
+
+    /**
+     * Creates a Processing font from a classic font.
+     *
+     * @param font  a font to transform
+     * @return      a Processing font
+     */
+    private PFont createFont(Font font) {
+        return createFont(font.getName(), font.getSize());
+    }
+    
+    /**
+     * Returns the Processing font related to the given classic font.
+     *
+     * @param font  a classic font
+     * @return      the related Processing font
+     */
+    private PFont getPFont(Font font) {
+        if (fontMap.containsKey(font)) {
+            return fontMap.get(font);
+        }
+
+        PFont pFont = createFont(font);
+        fontMap.put(font, pFont);
+        return pFont;
     }
 }
