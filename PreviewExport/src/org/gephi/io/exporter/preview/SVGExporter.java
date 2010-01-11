@@ -379,7 +379,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
     /**
      * Cleans all fields.
      */
-    private void clean() {
+    public void clean() {
         progress = null;
         cancel = false;
         doc = null;
@@ -432,7 +432,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
      * @param graphSheet   the preview graph sheet
      * @param supportSize  the support size of the exported image
      */
-    private void buildDOM(GraphSheet graphSheet, SupportSize supportSize) {
+    protected Document buildDOM(GraphSheet graphSheet, SupportSize supportSize) {
         // creates SVG document
         DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
         DocumentType doctype = impl.createDocumentType(
@@ -465,6 +465,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
 
         // draws the graph exporting it into the DOM
         renderGraph(graphSheet.getGraph());
+        return doc;
     }
 
     /**
