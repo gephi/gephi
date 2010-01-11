@@ -22,6 +22,8 @@ package org.gephi.ui.filters.partition;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JToggleButton;
 import org.gephi.filters.partition.PartitionBuilder.PartitionFilter;
 import org.gephi.partition.api.Part;
@@ -33,19 +35,34 @@ import org.gephi.ui.components.WrapLayout;
  *
  * @author Mathieu Bastian
  */
-public class PartitionPanel extends javax.swing.JPanel {
+public class PartitionPanel extends javax.swing.JPanel implements ActionListener {
+
+    private final Object KEY = new Object();
+    private PartitionFilter filter;
 
     public PartitionPanel() {
         super(new WrapLayout(FlowLayout.LEFT, 0, 0));
         initComponents();
     }
 
+    public void actionPerformed(ActionEvent e) {
+        JToggleButton tb = (JToggleButton)e.getSource();
+        Part p = (Part)tb.getClientProperty(KEY);
+        if(tb.isSelected()) {
+            filter.addPart(p);
+        } else {
+            filter.removePart(p);
+        }
+    }
+
     public void setup(PartitionFilter filter) {
+        this.filter = filter;
         removeAll();
         Partition partition = filter.getPartition();
         if (partition != null) {
             for (Part p : partition.getParts()) {
                 JToggleButton tb = new JToggleButton(p.getDisplayName(), new PaletteIcon(new Color[]{p.getColor()}));
+                tb.putClientProperty(KEY, p);
                 add(tb);
             }
         }

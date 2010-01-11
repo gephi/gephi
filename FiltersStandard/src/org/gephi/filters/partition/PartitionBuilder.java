@@ -33,6 +33,7 @@ import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.partition.api.EdgePartition;
 import org.gephi.partition.api.NodePartition;
+import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.PartitionController;
 import org.openide.util.Exceptions;
@@ -128,24 +129,37 @@ public class PartitionBuilder implements CategoryBuilder {
 
         private Partition partition;
         private FilterProperty[] filterProperties;
+        private List<Part> parts;
 
         public PartitionFilter(Partition partition) {
             this.partition = partition;
+            parts = new ArrayList<Part>();
         }
 
         public String getName() {
             return NbBundle.getMessage(PartitionBuilder.class, "PartitionBuilder.name");
         }
 
+        public void addPart(Part part) {
+            if (!parts.contains(part)) {
+                parts.add(part);
+            }
+        }
+
+        public void removePart(Part part) {
+            parts.remove(part);
+        }
+
         public FilterProperty[] getProperties() {
             if (filterProperties == null) {
                 filterProperties = new FilterProperty[0];
-//                try {
-//                    filterProperties = new FilterProperty[]{
-//                                FilterProperty.createProperty(this, AttributeColumn.class, "column"),};
-//                } catch (Exception ex) {
-//                    Exceptions.printStackTrace(ex);
-//                }
+                try {
+                    filterProperties = new FilterProperty[]{
+                                FilterProperty.createProperty(this, Partition.class, "partition"),
+                                FilterProperty.createProperty(this, List.class, "parts")};
+                } catch (Exception ex) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
             return filterProperties;
         }

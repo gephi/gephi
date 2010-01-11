@@ -60,6 +60,18 @@ public final class FilterProperty {
         return filter;
     }
 
+    /**
+     * Create a property.
+     * @param filter The filter instance
+     * @param valueType The type of the property value, ex: <code>Double.class</code>
+     * @param propertyName The display name of the property
+     * @param getMethod The name of the get method for this property, must exist
+     * to make Java reflexion working.
+     * @param setMethod The name of the set method for this property, must exist
+     * to make Java reflexion working.
+     * @return the created property
+     * @throws NoSuchMethodException if the getter or setter methods cannot be found
+     */
     public static FilterProperty createProperty(Filter filter, Class valueType, String propertyName, String getMethod, String setMethod) throws NoSuchMethodException {
         final FilterProperty filterProperty = new FilterProperty(filter);
         Property property = new PropertySupport.Reflection(
@@ -77,6 +89,13 @@ public final class FilterProperty {
         return filterProperty;
     }
 
+    /**
+     * Create a property.
+     * @param filter The filter instance
+     * @param valueType The type of the property value, ex: <code>Double.class</code>
+     * @param filedName The Java field name of the property
+     * @throws NoSuchMethodException if the getter or setter methods cannot be found
+     */
     public static FilterProperty createProperty(Filter filter, Class valueType, String fieldName) throws NoSuchMethodException {
         if (valueType == Boolean.class) {
             valueType = boolean.class;
