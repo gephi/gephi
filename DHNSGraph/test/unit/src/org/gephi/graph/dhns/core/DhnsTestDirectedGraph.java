@@ -30,7 +30,6 @@ import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -65,11 +64,11 @@ public class DhnsTestDirectedGraph {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = new Dhns(controller, null);
-        graphGlobal = new HierarchicalDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure());
+        graphGlobal = new HierarchicalDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure().getMainView());
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
-        TreeStructure treeStructure = dhnsGlobal.getGraphStructure().getStructure();
+        TreeStructure treeStructure = dhnsGlobal.getGraphStructure().getMainView().getStructure();
         GraphFactoryImpl factory = dhnsGlobal.factory();
 
         //Nodes
@@ -130,7 +129,7 @@ public class DhnsTestDirectedGraph {
         DurableTreeList durableTreeList = new DurableTreeList();
         List<AbstractNode> expected = new ArrayList<AbstractNode>();
         for (int i = 0; i < 10; i++) {
-            PreNode node = new PreNode(i, 0, 0, 0, null);
+            AbstractNode node = new AbstractNode(i, 0, 0, 0, 0, null);
             expected.add(node);
             durableTreeList.add(node);
         }
@@ -198,8 +197,8 @@ public class DhnsTestDirectedGraph {
         System.out.println("testAddNode");
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller, null);
-        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure());
-        TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
+        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure().getMainView());
+        TreeStructure treeStructure = dhns.getGraphStructure().getMainView().getStructure();
         GraphFactoryImpl factory = dhns.factory();
 
         for (int i = 0; i < 10; i++) {
@@ -217,15 +216,15 @@ public class DhnsTestDirectedGraph {
 
         for (int i = 0; i < 10; i++) {
             AbstractNode n = treeStructure.getNodeAt(i);
-            assertEquals("prenode pre", i, n.getPre());
-            assertEquals("prenode id", i - 1, n.getId());
-            assertEquals("prenode enabled", i > 0, n.isEnabled());
-            assertEquals("prenode avl node", i, n.avlNode.getIndex());
+            assertEquals("AbstractNode pre", i, n.getPre());
+            assertEquals("AbstractNode id", i - 1, n.getId());
+            assertEquals("AbstractNode enabled", i > 0, n.isEnabled());
+            assertEquals("AbstractNode avl node", i, n.avlNode.getIndex());
             if (n.avlNode.next() != null) {
-                assertEquals("prenode next", treeStructure.getNodeAt(i + 1).avlNode, n.avlNode.next());
+                assertEquals("AbstractNode next", treeStructure.getNodeAt(i + 1).avlNode, n.avlNode.next());
             }
             if (n.avlNode.previous() != null) {
-                assertEquals("prenode previous", treeStructure.getNodeAt(i - 1).avlNode, n.avlNode.previous());
+                assertEquals("AbstractNode previous", treeStructure.getNodeAt(i - 1).avlNode, n.avlNode.previous());
             }
         }
 
@@ -242,8 +241,8 @@ public class DhnsTestDirectedGraph {
     public void testRemoveNode() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller, null);
-        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure());
-        TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
+        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure().getMainView());
+        TreeStructure treeStructure = dhns.getGraphStructure().getMainView().getStructure();
         GraphFactoryImpl factory = dhns.factory();
 
         Node first = null;
@@ -271,13 +270,13 @@ public class DhnsTestDirectedGraph {
         for (int i = 0; i < treeStructure.getTreeSize(); i++) {
             AbstractNode n = treeStructure.getNodeAt(i);
             System.out.print(n.getId() + " ");
-            assertEquals("prenode pre", i, n.getPre());
-            assertEquals("prenode avl node", i, n.avlNode.getIndex());
+            assertEquals("AbstractNode pre", i, n.getPre());
+            assertEquals("AbstractNode avl node", i, n.avlNode.getIndex());
             if (n.avlNode.next() != null) {
-                assertEquals("prenode next", treeStructure.getNodeAt(i + 1).avlNode, n.avlNode.next());
+                assertEquals("AbstractNode next", treeStructure.getNodeAt(i + 1).avlNode, n.avlNode.next());
             }
             if (n.avlNode.previous() != null) {
-                assertEquals("prenode previous", treeStructure.getNodeAt(i - 1).avlNode, n.avlNode.previous());
+                assertEquals("AbstractNode previous", treeStructure.getNodeAt(i - 1).avlNode, n.avlNode.previous());
             }
         }
         System.out.println();
@@ -290,13 +289,13 @@ public class DhnsTestDirectedGraph {
         for (int i = 0; i < treeStructure.getTreeSize(); i++) {
             AbstractNode n = treeStructure.getNodeAt(i);
             System.out.print(n.getId() + " ");
-            assertEquals("prenode pre", i, n.getPre());
-            assertEquals("prenode avl node", i, n.avlNode.getIndex());
+            assertEquals("AbstractNode pre", i, n.getPre());
+            assertEquals("AbstractNode avl node", i, n.avlNode.getIndex());
             if (n.avlNode.next() != null) {
-                assertEquals("prenode next", treeStructure.getNodeAt(i + 1).avlNode, n.avlNode.next());
+                assertEquals("AbstractNode next", treeStructure.getNodeAt(i + 1).avlNode, n.avlNode.next());
             }
             if (n.avlNode.previous() != null) {
-                assertEquals("prenode previous", treeStructure.getNodeAt(i - 1).avlNode, n.avlNode.previous());
+                assertEquals("AbstractNode previous", treeStructure.getNodeAt(i - 1).avlNode, n.avlNode.previous());
             }
         }
         System.out.println();
@@ -310,13 +309,13 @@ public class DhnsTestDirectedGraph {
         for (int i = 0; i < treeStructure.getTreeSize(); i++) {
             AbstractNode n = treeStructure.getNodeAt(i);
             System.out.print(n.getId() + " ");
-            assertEquals("prenode pre", i, n.getPre());
-            assertEquals("prenode avl node", i, n.avlNode.getIndex());
+            assertEquals("AbstractNode pre", i, n.getPre());
+            assertEquals("AbstractNode avl node", i, n.avlNode.getIndex());
             if (n.avlNode.next() != null) {
-                assertEquals("prenode next", treeStructure.getNodeAt(i + 1).avlNode, n.avlNode.next());
+                assertEquals("AbstractNode next", treeStructure.getNodeAt(i + 1).avlNode, n.avlNode.next());
             }
             if (n.avlNode.previous() != null) {
-                assertEquals("prenode previous", treeStructure.getNodeAt(i - 1).avlNode, n.avlNode.previous());
+                assertEquals("AbstractNode previous", treeStructure.getNodeAt(i - 1).avlNode, n.avlNode.previous());
             }
         }
         System.out.println();
@@ -326,9 +325,9 @@ public class DhnsTestDirectedGraph {
         assertFalse(graph.contains(middle));
         assertFalse(graph.contains(end));
 
-        PreNode preNode = (PreNode) first;
-        assertNull(preNode.avlNode);
-        assertNull(preNode.parent);
+        AbstractNode AbstractNode = (AbstractNode) first;
+        assertNull(AbstractNode.avlNode);
+        assertNull(AbstractNode.parent);
 
         //Test
         assertEquals("tree size", 8, treeStructure.getTreeSize());
@@ -348,7 +347,7 @@ public class DhnsTestDirectedGraph {
     @Test
     public void testClearNodes() {
 
-        TreeStructure treeStructure = dhnsGlobal.getGraphStructure().getStructure();
+        TreeStructure treeStructure = dhnsGlobal.getGraphStructure().getMainView().getStructure();
         graphGlobal.clear();
 
         //Test
@@ -358,17 +357,17 @@ public class DhnsTestDirectedGraph {
 
         assertFalse("not contains anymore", graphGlobal.contains(nodeMap.get("Node 1")));
 
-        PreNode preNode = (PreNode) nodeMap.get("Node 2");
-        assertNull("clean clear", preNode.avlNode);
-        assertNull("clean clear", preNode.parent);
+        AbstractNode AbstractNode = (AbstractNode) nodeMap.get("Node 2");
+        assertNull("clean clear", AbstractNode.avlNode);
+        assertNull("clean clear", AbstractNode.parent);
     }
 
     @Test
     public void testAddEdge() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller, null);
-        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure());
-        TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
+        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure().getMainView());
+        TreeStructure treeStructure = dhns.getGraphStructure().getMainView().getStructure();
         GraphFactoryImpl factory = dhns.factory();
 
         Node node1 = factory.newNode();
@@ -380,16 +379,16 @@ public class DhnsTestDirectedGraph {
 
         //Test normal edge
         graph.addEdge(node1, node2);
-        PreNode preNode1 = (PreNode) node1;
-        PreNode preNode2 = (PreNode) node2;
+        AbstractNode AbstractNode1 = (AbstractNode) node1;
+        AbstractNode AbstractNode2 = (AbstractNode) node2;
 
-        AbstractEdge edge = preNode1.getEdgesOutTree().getItem(preNode2.getNumber());
+        AbstractEdge edge = AbstractNode1.getEdgesOutTree().getItem(AbstractNode2.getNumber());
         assertNotNull("find OUT edge", edge);
-        assertTrue("contains OUT edge", preNode1.getEdgesOutTree().contains(edge));
+        assertTrue("contains OUT edge", AbstractNode1.getEdgesOutTree().contains(edge));
 
-        AbstractEdge edge2 = preNode2.getEdgesInTree().getItem(preNode1.getNumber());
+        AbstractEdge edge2 = AbstractNode2.getEdgesInTree().getItem(AbstractNode1.getNumber());
         assertNotNull("find IN edge", edge);
-        assertTrue("contains IN edge", preNode2.getEdgesInTree().contains(edge2));
+        assertTrue("contains IN edge", AbstractNode2.getEdgesInTree().contains(edge2));
 
         assertSame("edges equal", edge, edge2);
 
@@ -402,15 +401,15 @@ public class DhnsTestDirectedGraph {
         //Test self loop
         graph.addEdge(node3, node3);
 
-        PreNode preNode3 = (PreNode) node3;
+        AbstractNode AbstractNode3 = (AbstractNode) node3;
 
-        AbstractEdge edge3 = preNode3.getEdgesOutTree().getItem(preNode3.getNumber());
+        AbstractEdge edge3 = AbstractNode3.getEdgesOutTree().getItem(AbstractNode3.getNumber());
         assertNotNull("find OUT edge", edge);
-        assertTrue("contains OUT edge", preNode3.getEdgesOutTree().contains(edge3));
+        assertTrue("contains OUT edge", AbstractNode3.getEdgesOutTree().contains(edge3));
 
-        AbstractEdge edge4 = preNode3.getEdgesInTree().getItem(preNode3.getNumber());
+        AbstractEdge edge4 = AbstractNode3.getEdgesInTree().getItem(AbstractNode3.getNumber());
         assertNotNull("find IN edge", edge);
-        assertTrue("contains IN edge", preNode3.getEdgesInTree().contains(edge3));
+        assertTrue("contains IN edge", AbstractNode3.getEdgesInTree().contains(edge3));
 
         assertSame("edges equal", edge3, edge4);
 
@@ -420,8 +419,8 @@ public class DhnsTestDirectedGraph {
     @Test
     public void testRemoveEdge() {
         GraphFactoryImpl factory = dhnsGlobal.factory();
-        PreNode node3 = (PreNode) nodeMap.get("Node 1");
-        PreNode node4 = (PreNode) nodeMap.get("Node 2");
+        AbstractNode node3 = (AbstractNode) nodeMap.get("Node 1");
+        AbstractNode node4 = (AbstractNode) nodeMap.get("Node 2");
         AbstractEdge edge = factory.newEdge(node3, node4);
 
         graphGlobal.addEdge(edge);

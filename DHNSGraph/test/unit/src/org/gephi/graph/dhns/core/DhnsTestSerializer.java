@@ -69,7 +69,7 @@ public class DhnsTestSerializer {
         //Graph 1 - Multilevel sample without edges
         DhnsGraphController controller1 = new DhnsGraphController();
         dhns1 = new Dhns(controller1, null);
-        graph1 = new HierarchicalDirectedGraphImpl(dhns1, dhns1.getGraphStructure());
+        graph1 = new HierarchicalDirectedGraphImpl(dhns1, dhns1.getGraphStructure().getMainView());
         GraphFactoryImpl factory1 = dhns1.factory();
 
         AbstractNode nodeA = factory1.newNode();
@@ -88,7 +88,7 @@ public class DhnsTestSerializer {
         nodeMap2 = new HashMap<String, Node>();
         DhnsGraphController controller2 = new DhnsGraphController();
         dhns2 = new Dhns(controller2, null);
-        graph2 = new HierarchicalDirectedGraphImpl(dhns2, dhns2.getGraphStructure());
+        graph2 = new HierarchicalDirectedGraphImpl(dhns2, dhns2.getGraphStructure().getMainView());
         GraphFactoryImpl factory2 = dhns2.factory();
 
         for (int i = 0; i < 10; i++) {
@@ -123,11 +123,11 @@ public class DhnsTestSerializer {
     @Test
     public void testTreeStructureSerializer() {
         DHNSSerializer dHNSSerializer = new DHNSSerializer();
-        Element e1 = dHNSSerializer.writeTreeStructure(dHNSSerializer.createDocument(), dhns1.getGraphStructure().getStructure());
+        Element e1 = dHNSSerializer.writeTreeStructure(dHNSSerializer.createDocument(), dhns1.getGraphStructure().getMainView().getStructure());
         String s1 = printXML(e1);
         graph1.clear();
         dHNSSerializer.readTreeStructure(e1, dhns1.getGraphStructure(), dhns1.factory());
-        Element e2 = dHNSSerializer.writeTreeStructure(dHNSSerializer.createDocument(), dhns1.getGraphStructure().getStructure());
+        Element e2 = dHNSSerializer.writeTreeStructure(dHNSSerializer.createDocument(), dhns1.getGraphStructure().getMainView().getStructure());
         String s2 = printXML(e2);
         assertEquals(s1, s2);
     }
@@ -135,11 +135,11 @@ public class DhnsTestSerializer {
     @Test
     public void testEdgesSerializer() {
         DHNSSerializer dHNSSerializer = new DHNSSerializer();
-        Element e1 = dHNSSerializer.writeEdges(dHNSSerializer.createDocument(), dhns2.getGraphStructure().getStructure());
+        Element e1 = dHNSSerializer.writeEdges(dHNSSerializer.createDocument(), dhns2.getGraphStructure().getMainView().getStructure());
         String s1 = printXML(e1);
         graph2.clearEdges();
         dHNSSerializer.readEdges(e1, dhns2.getGraphStructure(), dhns2.factory());
-        Element e2 = dHNSSerializer.writeEdges(dHNSSerializer.createDocument(), dhns2.getGraphStructure().getStructure());
+        Element e2 = dHNSSerializer.writeEdges(dHNSSerializer.createDocument(), dhns2.getGraphStructure().getMainView().getStructure());
         String s2 = printXML(e2);
         assertEquals(s1, s2);
     }

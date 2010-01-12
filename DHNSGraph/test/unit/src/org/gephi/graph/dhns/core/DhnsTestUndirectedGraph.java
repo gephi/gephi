@@ -28,7 +28,7 @@ import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImpl;
 import org.gephi.graph.dhns.graph.HierarchicalUndirectedGraphImpl;
-import org.gephi.graph.dhns.node.PreNode;
+import org.gephi.graph.dhns.node.AbstractNode;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -62,12 +62,12 @@ public class DhnsTestUndirectedGraph {
     public void setUp() {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = new Dhns(controller, null);
-        graphGlobal = new HierarchicalUndirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure());
-        HierarchicalDirectedGraphImpl diGraph = new HierarchicalDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure());
+        graphGlobal = new HierarchicalUndirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure().getMainView());
+        HierarchicalDirectedGraphImpl diGraph = new HierarchicalDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure().getMainView());
         nodeMap = new HashMap<String, Node>();
         edgeMap = new HashMap<String, Edge>();
 
-        TreeStructure treeStructure = dhnsGlobal.getGraphStructure().getStructure();
+        TreeStructure treeStructure = dhnsGlobal.getGraphStructure().getMainView().getStructure();
         GraphFactoryImpl factory = dhnsGlobal.factory();
 
         //Nodes
@@ -127,8 +127,8 @@ public class DhnsTestUndirectedGraph {
     public void testAddEdge() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller, null);
-        HierarchicalUndirectedGraphImpl graph = new HierarchicalUndirectedGraphImpl(dhns, dhnsGlobal.getGraphStructure());
-        TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
+        HierarchicalUndirectedGraphImpl graph = new HierarchicalUndirectedGraphImpl(dhns, dhnsGlobal.getGraphStructure().getMainView());
+        TreeStructure treeStructure = dhns.getGraphStructure().getMainView().getStructure();
         GraphFactoryImpl factory = dhns.factory();
 
         Node node1 = factory.newNode();
@@ -140,8 +140,8 @@ public class DhnsTestUndirectedGraph {
 
         //Test normal edge
         graph.addEdge(node1, node2);
-        PreNode preNode1 = (PreNode) node1;
-        PreNode preNode2 = (PreNode) node2;
+        AbstractNode preNode1 = (AbstractNode) node1;
+        AbstractNode preNode2 = (AbstractNode) node2;
 
         AbstractEdge edge = preNode1.getEdgesOutTree().getItem(preNode2.getNumber());
         assertNotNull("find OUT edge", edge);
@@ -167,7 +167,7 @@ public class DhnsTestUndirectedGraph {
         //Test self loop
         graph.addEdge(node3, node3);
 
-        PreNode preNode3 = (PreNode) node3;
+        AbstractNode preNode3 = (AbstractNode) node3;
 
         AbstractEdge edge3 = preNode3.getEdgesOutTree().getItem(preNode3.getNumber());
         assertNotNull("find OUT edge", edge);
@@ -185,10 +185,10 @@ public class DhnsTestUndirectedGraph {
     @Test
     public void testRemoveEdge() {
         GraphFactoryImpl factory = dhnsGlobal.factory();
-        PreNode node3 = (PreNode) nodeMap.get("Node 1");
-        PreNode node4 = (PreNode) nodeMap.get("Node 2");
-        PreNode node5 = (PreNode) nodeMap.get("Node 5");
-        PreNode node6 = (PreNode) nodeMap.get("Node 6");
+        AbstractNode node3 = (AbstractNode) nodeMap.get("Node 1");
+        AbstractNode node4 = (AbstractNode) nodeMap.get("Node 2");
+        AbstractNode node5 = (AbstractNode) nodeMap.get("Node 5");
+        AbstractNode node6 = (AbstractNode) nodeMap.get("Node 6");
         AbstractEdge edge = factory.newEdge(node3, node4);
 
         graphGlobal.addEdge(edge);
@@ -210,7 +210,7 @@ public class DhnsTestUndirectedGraph {
         assertNull(node5.getEdgesInTree().getItem(node6.getNumber()));
         assertNull(node6.getEdgesInTree().getItem(node5.getNumber()));
 
-        PreNode node7 = (PreNode) nodeMap.get("Node 7");
+        AbstractNode node7 = (AbstractNode) nodeMap.get("Node 7");
         graphGlobal.removeEdge(edgeMap.get("7-7"));
 
         assertNull(node7.getEdgesOutTree().getItem(node7.getNumber()));

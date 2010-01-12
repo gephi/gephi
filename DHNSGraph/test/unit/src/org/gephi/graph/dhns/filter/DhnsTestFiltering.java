@@ -35,9 +35,7 @@ import org.gephi.graph.dhns.core.IDGen;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImpl;
-import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImplFiltered;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.views.ViewImpl;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -46,7 +44,7 @@ import static org.junit.Assert.*;
 
 public class DhnsTestFiltering {
 
-    private Dhns dhnsGlobal;
+   /* private Dhns dhnsGlobal;
     private HierarchicalDirectedGraphImplFiltered graphGlobal;
     private Map<String, Node> nodeMap;
     private Map<String, Edge> edgeMap;
@@ -132,12 +130,12 @@ public class DhnsTestFiltering {
 
     @Test
     public void testFiltering() {
-        /*dhnsGlobal.getGraphStructure().getStructure().showTreeAsTable();
-        graphGlobal.getView().addPredicate(new DegreePredicate(3, 5));
-        Node[] actual = graphGlobal.getNodes().toArray();
-        for (int i = 0; i < actual.length; i++) {
-        System.out.println(actual[i].getId());
-        }*/
+//        dhnsGlobal.getGraphStructure().getStructure().showTreeAsTable();
+//        graphGlobal.getView().addPredicate(new DegreePredicate(3, 5));
+//        Node[] actual = graphGlobal.getNodes().toArray();
+//        for (int i = 0; i < actual.length; i++) {
+//        System.out.println(actual[i].getId());
+//        }
         //((ViewImpl) graphGlobal.getView()).getGraphStructure().getStructure().showTreeAsTable();
     }
 
@@ -145,7 +143,7 @@ public class DhnsTestFiltering {
     public void testGrouping() {
         //graphGlobal.getView().addPredicate(new DegreePredicate(3, 5));
         graphGlobal.groupNodes(new Node[]{nodeMap.get("Node 1"), nodeMap.get("Node 2")});
-        dhnsGlobal.getGraphStructure().getStructure().showTreeAsTable();
+        dhnsGlobal.getGraphStructure().getMainView().getStructure().showTreeAsTable();
         Node[] actual = graphGlobal.getNodes().toArray();
         for (int i = 0; i < actual.length; i++) {
             System.out.println(actual[i].getId());
@@ -157,84 +155,84 @@ public class DhnsTestFiltering {
         }
     }
 
-    @Test
-    public void testMetaEdgesProcessing() {
-        /*Dhns dhns = new Dhns(new DhnsGraphController());
-        GraphStructure graphStructure = dhns.getGraphStructure();
-        TreeStructure treeStructure = graphStructure.getStructure();
-        GraphFactoryImpl factoryImpl = new GraphFactoryImpl(new IDGen(), null);
-        EdgeProcessor edgeProcessor = new EdgeProcessor(dhns);
-
-        AbstractNode n1 = factoryImpl.newNode();
-        AbstractNode n2 = factoryImpl.newNode();
-        AbstractNode n3 = factoryImpl.newNode();
-        AbstractNode n4 = factoryImpl.newNode();
-        AbstractNode n5 = factoryImpl.newNode();
-        AbstractNode n6 = factoryImpl.newNode();
-
-        treeStructure.insertAsChild(n1, treeStructure.getRoot());
-        treeStructure.insertAsChild(n4, treeStructure.getRoot());
-        treeStructure.insertAsChild(n2, n1);
-        treeStructure.insertAsChild(n3, n1);
-        treeStructure.insertAsChild(n5, n4);
-        treeStructure.insertAsChild(n6, n4);
-
-        AbstractEdge e23 = factoryImpl.newEdge(n2, n3);
-        AbstractEdge e25 = factoryImpl.newEdge(n2, n5);
-        AbstractEdge e52 = factoryImpl.newEdge(n5, n2);
-        AbstractEdge e53 = factoryImpl.newEdge(n5, n3);
-        AbstractEdge e65 = factoryImpl.newEdge(n6, n5);
-
-        n2.getEdgesOutTree().add(e23);
-        n3.getEdgesInTree().add(e23);
-        n2.getEdgesOutTree().add(e25);
-        n5.getEdgesInTree().add(e25);
-        n5.getEdgesOutTree().add(e52);
-        n2.getEdgesInTree().add(e52);
-        n5.getEdgesOutTree().add(e53);
-        n3.getEdgesInTree().add(e53);
-        n6.getEdgesOutTree().add(e65);
-        n5.getEdgesInTree().add(e65);
-
-        n1.setEnabled(true);
-        n4.setEnabled(true);
-
-        edgeProcessor.computeMetaEdges(graphStructure);
-
-        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, graphStructure);
-        Edge[] actual = graph.getMetaEdges().toArray();
-        assertEquals(2, actual.length);
-        MetaEdgeImpl metaEdge14 = (MetaEdgeImpl)actual[0];
-        MetaEdgeImpl metaEdge41 = (MetaEdgeImpl)actual[1];
-        assertSame(n1, metaEdge14.getSource());
-        assertSame(n4, metaEdge14.getTarget());
-        assertEquals(1f, metaEdge14.getWeight(),0);
-        assertSame(n4, metaEdge41.getSource());
-        assertSame(n1, metaEdge41.getTarget());
-        assertEquals(2f, metaEdge41.getWeight(),0);
-        edgeProcessor.clearAllMetaEdges();
-
-        n1.setEnabled(false);
-        n3.setEnabled(true);
-
-        edgeProcessor.computeMetaEdges(graphStructure);
-
-        actual = graph.getMetaEdges().toArray();
-        assertEquals(1, actual.length);
-        MetaEdgeImpl metaEdge43 = (MetaEdgeImpl)actual[0];
-        assertSame(n4, metaEdge43.getSource());
-        assertSame(n3, metaEdge43.getTarget());
-        edgeProcessor.clearAllMetaEdges();
-
-        n4.setEnabled(false);
-        n5.setEnabled(true);
-
-        edgeProcessor.computeMetaEdges(graphStructure);
-
-        actual = graph.getMetaEdges().toArray();
-        assertEquals(0, actual.length);
-
-        treeStructure.showTreeAsTable();*/
+//    @Test
+//    public void testMetaEdgesProcessing() {
+//        Dhns dhns = new Dhns(new DhnsGraphController());
+//        GraphStructure graphStructure = dhns.getGraphStructure();
+//        TreeStructure treeStructure = graphStructure.getStructure();
+//        GraphFactoryImpl factoryImpl = new GraphFactoryImpl(new IDGen(), null);
+//        EdgeProcessor edgeProcessor = new EdgeProcessor(dhns);
+//
+//        AbstractNode n1 = factoryImpl.newNode();
+//        AbstractNode n2 = factoryImpl.newNode();
+//        AbstractNode n3 = factoryImpl.newNode();
+//        AbstractNode n4 = factoryImpl.newNode();
+//        AbstractNode n5 = factoryImpl.newNode();
+//        AbstractNode n6 = factoryImpl.newNode();
+//
+//        treeStructure.insertAsChild(n1, treeStructure.getRoot());
+//        treeStructure.insertAsChild(n4, treeStructure.getRoot());
+//        treeStructure.insertAsChild(n2, n1);
+//        treeStructure.insertAsChild(n3, n1);
+//        treeStructure.insertAsChild(n5, n4);
+//        treeStructure.insertAsChild(n6, n4);
+//
+//        AbstractEdge e23 = factoryImpl.newEdge(n2, n3);
+//        AbstractEdge e25 = factoryImpl.newEdge(n2, n5);
+//        AbstractEdge e52 = factoryImpl.newEdge(n5, n2);
+//        AbstractEdge e53 = factoryImpl.newEdge(n5, n3);
+//        AbstractEdge e65 = factoryImpl.newEdge(n6, n5);
+//
+//        n2.getEdgesOutTree().add(e23);
+//        n3.getEdgesInTree().add(e23);
+//        n2.getEdgesOutTree().add(e25);
+//        n5.getEdgesInTree().add(e25);
+//        n5.getEdgesOutTree().add(e52);
+//        n2.getEdgesInTree().add(e52);
+//        n5.getEdgesOutTree().add(e53);
+//        n3.getEdgesInTree().add(e53);
+//        n6.getEdgesOutTree().add(e65);
+//        n5.getEdgesInTree().add(e65);
+//
+//        n1.setEnabled(true);
+//        n4.setEnabled(true);
+//
+//        edgeProcessor.computeMetaEdges(graphStructure);
+//
+//        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, graphStructure);
+//        Edge[] actual = graph.getMetaEdges().toArray();
+//        assertEquals(2, actual.length);
+//        MetaEdgeImpl metaEdge14 = (MetaEdgeImpl)actual[0];
+//        MetaEdgeImpl metaEdge41 = (MetaEdgeImpl)actual[1];
+//        assertSame(n1, metaEdge14.getSource());
+//        assertSame(n4, metaEdge14.getTarget());
+//        assertEquals(1f, metaEdge14.getWeight(),0);
+//        assertSame(n4, metaEdge41.getSource());
+//        assertSame(n1, metaEdge41.getTarget());
+//        assertEquals(2f, metaEdge41.getWeight(),0);
+//        edgeProcessor.clearAllMetaEdges();
+//
+//        n1.setEnabled(false);
+//        n3.setEnabled(true);
+//
+//        edgeProcessor.computeMetaEdges(graphStructure);
+//
+//        actual = graph.getMetaEdges().toArray();
+//        assertEquals(1, actual.length);
+//        MetaEdgeImpl metaEdge43 = (MetaEdgeImpl)actual[0];
+//        assertSame(n4, metaEdge43.getSource());
+//        assertSame(n3, metaEdge43.getTarget());
+//        edgeProcessor.clearAllMetaEdges();
+//
+//        n4.setEnabled(false);
+//        n5.setEnabled(true);
+//
+//        edgeProcessor.computeMetaEdges(graphStructure);
+//
+//        actual = graph.getMetaEdges().toArray();
+//        assertEquals(0, actual.length);
+//
+//        treeStructure.showTreeAsTable();
     }
 
     @Test
@@ -338,5 +336,5 @@ public class DhnsTestFiltering {
         for (int i = 0; i < actual.length; i++) {
             System.out.println(actual[i].getSource().getNodeData().getLabel() + "->" + actual[i].getTarget().getNodeData().getLabel());
         }
-    }
+    }*/
 }
