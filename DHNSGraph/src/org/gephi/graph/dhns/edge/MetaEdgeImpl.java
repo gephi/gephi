@@ -72,4 +72,15 @@ public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
     public boolean isMetaEdge() {
         return true;
     }
+
+    public AbstractEdge getUndirected() {
+        if (source == target) {
+            return this;
+        }
+        AbstractEdge mutual = source.getEdgesInTree().getItem(target.getNumber());
+        if (mutual != null && mutual.getId() < ID) {
+            return mutual;
+        }
+        return this;
+    }
 }

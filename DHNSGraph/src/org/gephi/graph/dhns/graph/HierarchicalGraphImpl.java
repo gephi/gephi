@@ -21,25 +21,20 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.graph;
 
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
-import org.gephi.graph.api.View;
+import org.gephi.graph.api.GraphView;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphStructure;
-import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.edge.iterators.HierarchyEdgeIterator;
+import org.gephi.graph.dhns.core.GraphViewImpl;
 import org.gephi.graph.dhns.filter.Tautology;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.node.CloneNode;
-import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantIterator;
 import org.gephi.graph.dhns.node.iterators.LevelIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
-import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.gephi.graph.dhns.utils.TreeNodeWrapper;
 
 /**
@@ -48,12 +43,11 @@ import org.gephi.graph.dhns.utils.TreeNodeWrapper;
  */
 public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements HierarchicalGraph {
 
-    public HierarchicalGraphImpl(Dhns dhns, GraphStructure structure) {
-        this.dhns = dhns;
-        this.structure = structure;
+    public HierarchicalGraphImpl(Dhns dhns, GraphViewImpl view) {
+        super(dhns, view);
     }
 
-    public abstract HierarchicalGraphImpl copy(Dhns dhns, GraphStructure structure, View view);
+    public abstract HierarchicalGraphImpl copy(Dhns dhns, GraphViewImpl view);
 
     public boolean addNode(Node node, Node parent) {
         if (node == null) {
@@ -64,23 +58,17 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
         if (parent != null) {
             absParent = checkNode(parent);
         }
-        if (!dhns.getSettingsManager().isAllowMultilevel() && absNode.isValid()) {
+        if (absNode.isValid(view.getViewId())) {
             return false;
         }
-        if (dhns.getSettingsManager().isAllowMultilevel() && parent != null && absNode.isValid()) {
-            //Verify the parent node is not a descendant of node
-            readLock();
-            if (isDescendant(node, parent)) {
-                readUnlock();
-                throw new IllegalArgumentException("Parent can't be a descendant of node");
-            }
-            readUnlock();
+        if (absNode.avlNode != null) { //exist in another view
+            absNode = new AbstractNode(absNode.getNodeData(), view.getViewId());
         }
-        if (!absNode.hasAttributes()) {
-            absNode.setAttributes(dhns.factory().newNodeAttributes());
+        if (!absNode.getNodeData().hasAttributes()) {
+            absNode.getNodeData().setAttributes(dhns.factory().newNodeAttributes());
         }
         dhns.getDynamicManager().pushNode(node.getNodeData());
-        dhns.getStructureModifier().addNode(node, absParent);
+        view.getStructureModifier().addNode(absNode, absParent);
         return true;
     }
 
@@ -95,8 +83,10 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
 
         AbstractNode absNode = (AbstractNode) node;
         boolean res = false;
-        if (absNode.isValid()) {
-            res = structure.getStructure().getTree().contains(absNode);
+        if (absNode.isValid(view.getViewId())) {
+            res = structure.getTree().contains(absNode);
+        } else if ((absNode = absNode.getInView(view.getViewId())) != null) {
+            res = structure.getTree().contains(absNode);
         }
         return res;
     }
@@ -113,40 +103,40 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
 
     public NodeIterable getNodes() {
         readLock();
-        return dhns.newNodeIterable(new TreeIterator(structure.getStructure(), true, Tautology.instance));
+        return dhns.newNodeIterable(new TreeIterator(structure, true, Tautology.instance));
     }
 
     public NodeIterable getNodesTree() {
         readLock();
-        return dhns.newNodeIterable(new TreeIterator(structure.getStructure(), false, Tautology.instance));
+        return dhns.newNodeIterable(new TreeIterator(structure, false, Tautology.instance));
     }
 
     public int getNodeCount() {
-        int count = structure.getStructure().getTreeSize() - 1;// -1 Exclude virtual root
+        int count = structure.getTreeSize() - 1;// -1 Exclude virtual root
         return count;
     }
 
     public NodeIterable getNodes(int level) {
         level += 1;     //Because we ignore the virtual root
         readLock();
-        int height = structure.getStructure().treeHeight;
+        int height = structure.treeHeight;
         if (level > height) {
             readUnlock();
             throw new IllegalArgumentException("Level must be between 0 and the height of the tree, currently height=" + (height - 1));
         }
-        return dhns.newNodeIterable(new LevelIterator(structure.getStructure(), level, Tautology.instance));
+        return dhns.newNodeIterable(new LevelIterator(structure, level, Tautology.instance));
 
     }
 
     public int getLevelSize(int level) {
         level += 1;     //Because we ignore the virtual root
-        int height = structure.getStructure().treeHeight;
+        int height = structure.treeHeight;
         if (level > height) {
             readUnlock();
             throw new IllegalArgumentException("Level must be between 0 and the height of the tree, currently height=" + (height - 1));
         }
         int res = 0;
-        for (LevelIterator itr = new LevelIterator(structure.getStructure(), level, Tautology.instance); itr.hasNext();) {
+        for (LevelIterator itr = new LevelIterator(structure, level, Tautology.instance); itr.hasNext();) {
             itr.next();
             res++;
         }
@@ -183,36 +173,33 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
 
     public boolean removeNode(Node node) {
         AbstractNode absNode = checkNode(node);
-        if (!absNode.isValid()) {
-            return false;
-        }
-        dhns.getStructureModifier().deleteNode(node);
+        view.getStructureModifier().deleteNode(absNode);
         return true;
     }
 
     public void clear() {
-        dhns.getStructureModifier().clear();
+        view.getStructureModifier().clear();
     }
 
     public void clearEdges() {
-        dhns.getStructureModifier().clearEdges();
+        view.getStructureModifier().clearEdges();
     }
 
     public void clearEdges(Node node) {
-        checkNode(node);
-        dhns.getStructureModifier().clearEdges(node);
+        AbstractNode absNode = checkNode(node);
+        view.getStructureModifier().clearEdges(absNode);
     }
 
     public void clearMetaEdges(Node node) {
-        checkNode(node);
-        dhns.getStructureModifier().clearMetaEdges(node);
+        AbstractNode absNode = checkNode(node);
+        view.getStructureModifier().clearMetaEdges(absNode);
     }
 
     public ImmutableTreeNode wrapToTreeNode() {
-        TreeNodeWrapper wrapper = new TreeNodeWrapper(structure.getStructure());
+        TreeNodeWrapper wrapper = new TreeNodeWrapper(structure);
         ImmutableTreeNode treeNode;
         readLock();
-        treeNode = wrapper.wrap(new TreeIterator(structure.getStructure(), false, Tautology.instance));
+        treeNode = wrapper.wrap(new TreeIterator(structure, false, Tautology.instance));
         readUnlock();
         return treeNode;
     }
@@ -220,7 +207,7 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     public int getChildrenCount(Node node) {
         AbstractNode absNode = checkNode(node);
         int count = 0;
-        ChildrenIterator itr = new ChildrenIterator(structure.getStructure(), absNode, Tautology.instance);
+        ChildrenIterator itr = new ChildrenIterator(structure, absNode, Tautology.instance);
         for (; itr.hasNext();) {
             itr.next();
             count++;
@@ -231,7 +218,7 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     public Node getParent(Node node) {
         AbstractNode absNode = checkNode(node);
         Node parent = null;
-        if (absNode.parent != structure.getStructure().getRoot()) {
+        if (absNode.parent != structure.getRoot()) {
             parent = absNode.parent;
         }
         return parent;
@@ -240,36 +227,25 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     public NodeIterable getChildren(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);
-        return dhns.newNodeIterable(new ChildrenIterator(structure.getStructure(), absNode, Tautology.instance));
+        return dhns.newNodeIterable(new ChildrenIterator(structure, absNode, Tautology.instance));
     }
 
     public NodeIterable getDescendant(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);
-        return dhns.newNodeIterable(new DescendantIterator(structure.getStructure(), absNode, Tautology.instance));
+        return dhns.newNodeIterable(new DescendantIterator(structure, absNode, Tautology.instance));
     }
 
     public NodeIterable getTopNodes() {
         readLock();
-        return dhns.newNodeIterable(new ChildrenIterator(structure.getStructure(), Tautology.instance));
+        return dhns.newNodeIterable(new ChildrenIterator(structure, Tautology.instance));
     }
 
     public boolean isDescendant(Node node, Node descendant) {
-        AbstractNode abstractNode = checkNode(node);
-        AbstractNode preDesc = checkNode(descendant);
+        AbstractNode absNode = checkNode(node);
+        AbstractNode absDesc = checkNode(descendant);
         boolean res = false;
-        if (dhns.getSettingsManager().isAllowMultilevel()) {
-            //Check if clones of descendants are descendants
-            PreNode preNode = preDesc.getOriginalNode();
-            res = preDesc.getPre() > abstractNode.getPre() && preDesc.getPost() < abstractNode.getPost();
-            CloneNode cn = preNode.getClones();
-            while (cn != null) {
-                res = res || cn.getPre() > abstractNode.getPre() && cn.getPost() < abstractNode.getPost();
-                cn = cn.getNext();
-            }
-        } else {
-            res = preDesc.getPre() > abstractNode.getPre() && preDesc.getPost() < abstractNode.getPost();
-        }
+        res = absDesc.getPre() > absNode.getPre() && absDesc.getPost() < absNode.getPost();
         return res;
     }
 
@@ -279,8 +255,8 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
 
     public boolean isFollowing(Node node, Node following) {
         AbstractNode absNode = checkNode(node);
-        AbstractNode preFoll = checkNode(following);
-        boolean res = preFoll.getPre() > absNode.getPre() && preFoll.getPost() > absNode.getPost();
+        AbstractNode absFoll = checkNode(following);
+        boolean res = absFoll.getPre() > absNode.getPre() && absFoll.getPost() > absNode.getPost();
         return res;
     }
 
@@ -290,20 +266,13 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
 
     public boolean isParent(Node node, Node parent) {
         AbstractNode absNode = checkNode(node);
-        checkNode(parent);
-        PreNode preNode = absNode.getOriginalNode();
-        boolean res = preNode.parent == parent;
-        if (dhns.getSettingsManager().isAllowMultilevel() && !res) {
-            CloneNode cn = preNode.getClones();
-            while (cn != null) {
-                res = res | cn.parent == parent;
-            }
-        }
+        AbstractNode absParent = checkNode(parent);
+        boolean res = absNode.parent == absParent;
         return res;
     }
 
     public int getHeight() {
-        int res = structure.getStructure().treeHeight - 1;
+        int res = structure.treeHeight - 1;
         return res;
     }
 
@@ -314,12 +283,12 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     }
 
     public void moveToGroup(Node node, Node nodeGroup) {
-        checkNode(node);
-        checkNode(nodeGroup);
-        if (isDescendant(node, nodeGroup)) {
+        AbstractNode absNode = checkNode(node);
+        AbstractNode absGroup = checkNode(nodeGroup);
+        if (isDescendant(absNode, absGroup)) {
             throw new IllegalArgumentException("nodeGroup can't be a descendant of node");
         }
-        dhns.getStructureModifier().moveToGroup(node, nodeGroup);
+        view.getStructureModifier().moveToGroup(absNode, absGroup);
     }
 
     public void removeFromGroup(Node node) {
@@ -327,7 +296,7 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
         if (absNode.parent.parent == null) {   //Equal root
             throw new IllegalArgumentException("Node parent can't be the root of the tree");
         }
-        dhns.getStructureModifier().moveToGroup(node, absNode.parent.parent);
+        view.getStructureModifier().moveToGroup(absNode, absNode.parent.parent);
     }
 
     public Node groupNodes(Node[] nodes) {
@@ -343,7 +312,7 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
                 throw new IllegalArgumentException("All nodes must have the same parent");
             }
         }
-        Node group = dhns.getStructureModifier().group(nodes);
+        Node group = view.getStructureModifier().group(nodes);
         return group;
     }
 
@@ -353,32 +322,24 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
             throw new IllegalArgumentException("nodeGroup can't be empty");
         }
 
-        dhns.getStructureModifier().ungroup(absNode);
-    }
-
-    public EdgeIterable getHierarchyEdges() {
-        readLock();
-
-        return dhns.newEdgeIterable(new HierarchyEdgeIterator(structure.getStructure(), new TreeListIterator(structure.getStructure().getTree(), 1)));
+        view.getStructureModifier().ungroup(absNode);
     }
 
     public boolean expand(Node node) {
-
         AbstractNode absNode = checkNode(node);
         if (absNode.size == 0 || !absNode.isEnabled()) {
             return false;
         }
-        dhns.getStructureModifier().expand(node);
+        view.getStructureModifier().expand(absNode);
         return true;
     }
 
     public boolean retract(Node node) {
-
         AbstractNode absNode = checkNode(node);
         if (absNode.size == 0 || absNode.isEnabled()) {
             return false;
         }
-        dhns.getStructureModifier().retract(node);
+        view.getStructureModifier().retract(absNode);
         return true;
     }
 
@@ -389,22 +350,22 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     }
 
     public void resetViewToLeaves() {
-        dhns.getStructureModifier().resetViewToLeaves();
+        view.getStructureModifier().resetViewToLeaves();
     }
 
     public void resetViewToLevel(int level) {
         readLock();
         level += 1;     //Because we ignore the virtual root
-        int height = structure.getStructure().treeHeight;
+        int height = structure.treeHeight;
         if (level > height) {
             readUnlock();
             throw new IllegalArgumentException("Level must be between 0 and the height of the tree, currently height=" + (height - 1));
         }
         readUnlock();
-        dhns.getStructureModifier().resetViewToLevel(level);
+        view.getStructureModifier().resetViewToLevel(level);
     }
 
     public void resetViewToTopNodes() {
-        dhns.getStructureModifier().resetViewToTopNodes();
+        view.getStructureModifier().resetViewToTopNodes();
     }
 }

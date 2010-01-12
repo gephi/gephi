@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.core;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.graph.dhns.utils.avl.AbstractEdgeTree;
 import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
 
@@ -29,18 +31,25 @@ import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
  */
 public class GraphStructure {
 
-    private TreeStructure treeStructure;
-    private AbstractNodeTree nodeDictionnary;
-    private AbstractEdgeTree edgeDictionnary;
+    private final GraphViewImpl mainView;
+    private final List<GraphViewImpl> views;
+    private final AbstractNodeTree nodeDictionnary;
+    private final AbstractEdgeTree edgeDictionnary;
+    private GraphViewImpl visibleView;
 
-    public GraphStructure() {
-        treeStructure = new TreeStructure(this);
+    public GraphStructure(Dhns dhns) {
         nodeDictionnary = new AbstractNodeTree();
         edgeDictionnary = new AbstractEdgeTree();
+        views = new ArrayList<GraphViewImpl>();
+
+        //Main view
+        mainView = new GraphViewImpl(dhns, 0);
+        views.add(mainView);
+        visibleView = mainView;
     }
 
-    public TreeStructure getStructure() {
-        return treeStructure;
+    public GraphViewImpl getMainView() {
+        return mainView;
     }
 
     public AbstractNodeTree getNodeDictionnary() {
@@ -49,5 +58,13 @@ public class GraphStructure {
 
     public AbstractEdgeTree getEdgeDictionnary() {
         return edgeDictionnary;
+    }
+
+    public GraphViewImpl getVisibleView() {
+        return visibleView;
+    }
+
+    public void setVisibleView(GraphViewImpl visibleView) {
+        this.visibleView = visibleView;
     }
 }

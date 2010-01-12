@@ -32,7 +32,6 @@ import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.edge.SelfLoopImpl;
 import org.gephi.graph.dhns.edge.MixedEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.node.PreNode;
 import org.openide.util.Lookup;
 
 /**
@@ -76,8 +75,8 @@ public class GraphFactoryImpl implements GraphFactory {
     }
 
     public AbstractNode newNode() {
-        PreNode node = new PreNode(idGen.newNodeId(), 0, 0, 0, null);
-        node.setAttributes(newNodeAttributes());
+        AbstractNode node = new AbstractNode(idGen.newNodeId(), 0, 0, 0, 0, null);  //with wiew = 0
+        node.getNodeData().setAttributes(newNodeAttributes());
         node.getNodeData().setTextData(newTextData());
         return node;
     }

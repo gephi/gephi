@@ -35,8 +35,6 @@ public interface GraphModel {
 
     public GraphSettings settings();
 
-    public Views views();
-
     public Graph getGraph();
 
     public DirectedGraph getDirectedGraph();
@@ -69,21 +67,21 @@ public interface GraphModel {
 
     public HierarchicalMixedGraph getHierarchicalMixedGraphVisible();
 
-    public Graph getGraph(View view);
+    public Graph getGraph(GraphView view);
 
-    public DirectedGraph getDirectedGraph(View view);
+    public DirectedGraph getDirectedGraph(GraphView view);
 
-    public UndirectedGraph getUndirectedGraph(View view);
+    public UndirectedGraph getUndirectedGraph(GraphView view);
 
-    public MixedGraph getMixedGraph(View view);
+    public MixedGraph getMixedGraph(GraphView view);
 
-    public HierarchicalGraph getHierarchicalGraph(View view);
+    public HierarchicalGraph getHierarchicalGraph(GraphView view);
 
-    public HierarchicalDirectedGraph getHierarchicalDirectedGraph(View view);
+    public HierarchicalDirectedGraph getHierarchicalDirectedGraph(GraphView view);
 
-    public HierarchicalUndirectedGraph getHierarchicalUndirectedGraph(View view);
+    public HierarchicalUndirectedGraph getHierarchicalUndirectedGraph(GraphView view);
 
-    public HierarchicalMixedGraph getHierarchicalMixedGraph(View view);
+    public HierarchicalMixedGraph getHierarchicalMixedGraph(GraphView view);
 
     public GraphModel copy();
 

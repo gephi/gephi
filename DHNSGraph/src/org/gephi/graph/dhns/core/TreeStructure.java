@@ -20,11 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.core;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.node.CloneNode;
-import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 
 /**
@@ -37,14 +33,16 @@ public class TreeStructure {
     DurableTreeList tree;
     AbstractNode root;
     public int treeHeight;
+    private final int viewId;
 
-    public TreeStructure(GraphStructure graphStructure) {
+    public TreeStructure(int viewId) {
         tree = new DurableTreeList();
+        this.viewId = viewId;
         initRoot();
     }
 
     private void initRoot() {
-        root = new PreNode(-1, 0, 0, 0, null);
+        root = new AbstractNode(-1, viewId, 0, 0, 0, null);
         tree.add(root);
     }
 
@@ -71,7 +69,7 @@ public class TreeStructure {
         return parent;
     }
 
-    public AbstractNode[] getEnabledAncestorsOrSelf(AbstractNode node) {
+    /*public AbstractNode[] getEnabledAncestorsOrSelf(AbstractNode node) {
         PreNode preNode = node.getOriginalNode();
         if (preNode.getClones() == null) {
             AbstractNode enabled = getEnabledAncestorOrSelf(preNode);
@@ -96,7 +94,7 @@ public class TreeStructure {
             }
             return nodeList.toArray(new AbstractNode[0]);
         }
-    }
+    }*/
 
     public AbstractNode getEnabledAncestor(AbstractNode node) {
         AbstractNode parent = node.parent;
@@ -234,11 +232,11 @@ public class TreeStructure {
     }
 
     public void showTreeAsTable() {
-        System.out.println("pre\tsize\tlevel\tparent\tpost\tenabled\tid\tclone");
+        System.out.println("pre\tsize\tlevel\tparent\tpost\tenabled\tid");
         System.out.println("-----------------------------------------------------------------");
         int pre = 0;
         for (AbstractNode p : tree) {
-            System.out.println(p.pre + "\t" + p.size + "\t" + p.level + "\t" + p.parent + "\t" + p.post + "\t" + p.isEnabled() + "\t" + p.getId() + "\t" + p.isClone());
+            System.out.println(p.pre + "\t" + p.size + "\t" + p.level + "\t" + p.parent + "\t" + p.post + "\t" + p.isEnabled() + "\t" + p.getId());
             pre++;
         }
     }

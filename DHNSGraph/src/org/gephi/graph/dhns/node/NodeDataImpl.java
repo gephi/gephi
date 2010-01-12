@@ -29,6 +29,7 @@ import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.TextData;
+import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
 
 /**
  * Implementation of the node data interface.
@@ -37,7 +38,10 @@ import org.gephi.graph.api.TextData;
  */
 public class NodeDataImpl implements NodeData, GroupData, DynamicData {
 
-    protected Node node;
+    //Dhns
+    protected final int ID;
+    protected final AbstractNodeTree nodes;
+    //NodeData
     protected LayoutData layoutData;
     protected float x;
     protected float y;
@@ -55,14 +59,26 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
     protected float dynamicRangeFrom = -1;
     protected float dynamicRangeTo = -1;
 
-    public NodeDataImpl(Node node) {
-        this.node = node;
+    public NodeDataImpl(int ID, AbstractNode rootNode) {
+        this.nodes = new AbstractNodeTree();
+        if (rootNode != null) {
+            this.nodes.add(rootNode);
+        }
+        this.ID = ID;
         this.x = (float) ((0.01 + Math.random()) * 1000) - 500;
         this.y = (float) ((0.01 + Math.random()) * 1000) - 500;
     }
 
+    public int getID() {
+        return ID;
+    }
+
+    public AbstractNodeTree getNodes() {
+        return nodes;
+    }
+
     public Node getNode() {
-        return node;
+        return nodes.get(0);
     }
 
     public LayoutData getLayoutData() {
@@ -79,6 +95,10 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
 
     public void setAttributes(Attributes attributes) {
         this.attributes = attributes;
+    }
+
+    public boolean hasAttributes() {
+        return attributes != null;
     }
 
     public float x() {
@@ -183,7 +203,7 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
     public String getId() {
         String id = (String) attributes.getValue(PropertiesColumn.NODE_ID.getIndex());
         if (id == null || id.isEmpty()) {
-            return Integer.toString(node.getId());
+            return Integer.toString(ID);
         }
         return id;
     }

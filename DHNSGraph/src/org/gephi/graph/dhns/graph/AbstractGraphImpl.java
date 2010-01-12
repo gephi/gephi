@@ -23,13 +23,12 @@ package org.gephi.graph.dhns.graph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.View;
 import org.gephi.graph.dhns.core.Dhns;
-import org.gephi.graph.dhns.core.GraphStructure;
+import org.gephi.graph.dhns.core.GraphViewImpl;
+import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.views.ViewImpl;
 
 /**
  * Utilities methods for managing graphs implementation like locking of non-null checking
@@ -38,16 +37,14 @@ import org.gephi.graph.dhns.views.ViewImpl;
  */
 public abstract class AbstractGraphImpl {
 
-    protected Dhns dhns;
-    protected GraphStructure structure;
-    protected ViewImpl view;
+    protected final Dhns dhns;
+    protected final GraphViewImpl view;
+    protected final TreeStructure structure;
 
-    public View getView() {
-        return view;
-    }
-
-    public void setStructure(GraphStructure structure) {
-        this.structure = structure;
+    public AbstractGraphImpl(Dhns dhns, GraphViewImpl view) {
+        this.dhns = dhns;
+        this.view = view;
+        this.structure = view.getStructure();
     }
 
     public GraphModel getGraphModel() {
@@ -86,20 +83,15 @@ public abstract class AbstractGraphImpl {
         if (node == null) {
             throw new IllegalArgumentException("node can't be null");
         }
-        AbstractNode preNode = (AbstractNode) node;
-        if (!preNode.isValid() || preNode.avlNode.getList() != structure.getStructure().getTree()) {
-            //Try to find it in this dictionnary
-            preNode = structure.getNodeDictionnary().get(preNode.getId());
-            if (preNode != null) {
-                preNode = preNode.getOriginalNode();
-            } else {
-                preNode = ((AbstractNode) node).getRootNode();
-                if (preNode == null) {
-                    throw new IllegalArgumentException("Node must be in the graph");
-                }
+        AbstractNode absNode = (AbstractNode) node;
+        if (!absNode.isValid(view.getViewId())) {
+            //Try to find the node in the proper view
+            absNode = absNode.getInView(view.getViewId());
+            if (absNode == null) {
+                throw new IllegalArgumentException("Node must be in the graph");
             }
         }
-        return preNode;
+        return absNode;
     }
 
     protected AbstractEdge checkEdge(Edge edge) {
@@ -107,12 +99,9 @@ public abstract class AbstractGraphImpl {
             throw new IllegalArgumentException("edge can't be null");
         }
         AbstractEdge abstractEdge = (AbstractEdge) edge;
-        if (!abstractEdge.isValid() || abstractEdge.getSource().avlNode.getList() != structure.getStructure().getTree()) {
-            //Try to find it in the dictionnary
-            abstractEdge = structure.getEdgeDictionnary().get(abstractEdge.getId());
-            if (abstractEdge == null) {
-                throw new IllegalArgumentException("Nodes must be in the graph");
-            }
+        if (!abstractEdge.isValid()) {
+            throw new IllegalArgumentException("Nodes must be in the graph");
+
         }
         if (abstractEdge.isMetaEdge()) {
             throw new IllegalArgumentException("Edge can't be a meta edge");
@@ -150,6 +139,6 @@ public abstract class AbstractGraphImpl {
     }
 
     protected AbstractEdge getSymmetricEdge(AbstractEdge edge) {
-        return edge.getTarget().getEdgesOutTree().getItem(edge.getSource().getNumber());
+        return edge.getTarget(view.getViewId()).getEdgesOutTree().getItem(edge.getSource().getNumber());
     }
 }

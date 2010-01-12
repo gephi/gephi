@@ -24,9 +24,13 @@ package org.gephi.graph.api;
  *
  * @author Mathieu Bastian
  */
-public interface View {
+public interface GraphView {
 
-    public enum HierarchyFiltering{FLAT, CHILDREN, FULL};
+    public int getViewId();
+
+    public boolean isMainView();
+
+    /*public enum HierarchyFiltering{FLAT, CHILDREN, FULL};
 
     public void addPredicate(Predicate predicate);
 
@@ -36,5 +40,5 @@ public interface View {
 
     public void updatePredicate(Predicate[] oldPredicate, Predicate[] newPredicate);
 
-    public void setHierarchyFiltering(HierarchyFiltering hierarchyFiltering);
+    public void setHierarchyFiltering(HierarchyFiltering hierarchyFiltering);*/
 }

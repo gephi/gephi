@@ -24,7 +24,7 @@ import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.node.iterators.PreNodeTreeListIterator;
+import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 
 /**
  * Business class for managing Edges and MetaEdges.
@@ -34,16 +34,15 @@ import org.gephi.graph.dhns.node.iterators.PreNodeTreeListIterator;
 public class EdgeProcessor {
 
     //Architecture
-    private TreeStructure treeStructure;
-    private IDGen idGen;
-    private Dhns dhns;
-
+    private final TreeStructure treeStructure;
+    private final IDGen idGen;
+    private final Dhns dhns;
     //Cache
     private ParamAVLIterator<AbstractEdge> edgeIterator;
 
-    public EdgeProcessor(Dhns dhns) {
+    public EdgeProcessor(Dhns dhns, GraphViewImpl view) {
         this.dhns = dhns;
-        this.treeStructure = dhns.getGraphStructure().getStructure();
+        this.treeStructure = view.getStructure();
         this.idGen = dhns.getIdGen();
         this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
     }
@@ -141,7 +140,7 @@ public class EdgeProcessor {
     }
 
     public void clearAllEdges() {
-        for (PreNodeTreeListIterator itr = new PreNodeTreeListIterator(treeStructure.getTree()); itr.hasNext();) {
+        for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree()); itr.hasNext();) {
             AbstractNode node = itr.next();
             node.getEdgesInTree().clear();
             node.getEdgesOutTree().clear();
@@ -151,7 +150,7 @@ public class EdgeProcessor {
     }
 
     public void clearAllMetaEdges() {
-        for (PreNodeTreeListIterator itr = new PreNodeTreeListIterator(treeStructure.getTree()); itr.hasNext();) {
+        for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree()); itr.hasNext();) {
             AbstractNode node = itr.next();
             node.clearMetaEdges();
         }
@@ -171,7 +170,7 @@ public class EdgeProcessor {
                 edgeIterator.setNode(desc.getEdgesOutTree());
                 while (edgeIterator.hasNext()) {
                     AbstractEdge edge = edgeIterator.next();
-                    AbstractNode[] enabledAncestors = treeStructure.getEnabledAncestorsOrSelf(edge.getTarget());
+                    AbstractNode[] enabledAncestors = new AbstractNode[]{treeStructure.getEnabledAncestorOrSelf(edge.getTarget())}; //todo remove array
                     if (enabledAncestors != null) {
                         for (int j = 0; j < enabledAncestors.length; j++) {
                             AbstractNode targetNode = enabledAncestors[j];
@@ -192,7 +191,7 @@ public class EdgeProcessor {
                 edgeIterator.setNode(desc.getEdgesInTree());
                 while (edgeIterator.hasNext()) {
                     AbstractEdge edge = edgeIterator.next();
-                    AbstractNode[] enabledAncestors = treeStructure.getEnabledAncestorsOrSelf(edge.getSource());
+                    AbstractNode[] enabledAncestors = new AbstractNode[]{treeStructure.getEnabledAncestorOrSelf(edge.getSource())};
                     if (enabledAncestors != null) {
                         for (int j = 0; j < enabledAncestors.length; j++) {
                             AbstractNode sourceNode = enabledAncestors[j];
@@ -248,8 +247,8 @@ public class EdgeProcessor {
             return;
         }
 
-        AbstractNode[] sourceAncestors = treeStructure.getEnabledAncestorsOrSelf(edge.getSource());
-        AbstractNode[] targetAncestors = treeStructure.getEnabledAncestorsOrSelf(edge.getTarget());
+        AbstractNode[] sourceAncestors = new AbstractNode[]{treeStructure.getEnabledAncestorOrSelf(edge.getSource())};
+        AbstractNode[] targetAncestors = new AbstractNode[]{treeStructure.getEnabledAncestorOrSelf(edge.getTarget())};
 
         if (sourceAncestors != null && targetAncestors != null) {
             for (int i = 0; i < sourceAncestors.length; i++) {

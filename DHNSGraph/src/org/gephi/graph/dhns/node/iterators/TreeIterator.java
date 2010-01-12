@@ -42,10 +42,8 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
     protected int nextIndex;
     protected int diffIndex;
     protected DurableAVLNode currentNode;
-
     //Settings
     protected final boolean skipping;
-
     //Predicate
     protected Predicate<AbstractNode> predicate;
 
@@ -72,13 +70,7 @@ public class TreeIterator extends AbstractNodeIterator implements Iterator<Node>
                     currentNode = currentNode.next();
                 }
 
-                if (currentNode.getValue().isClone()) {
-                    nextIndex = currentNode.getValue().getPre() + 1 + currentNode.getValue().size;
-                    diffIndex = nextIndex - currentNode.getValue().pre;
-                    if (nextIndex >= treeSize) {
-                        return false;
-                    }
-                } else if (skipping) {
+                if (skipping) {
                     while (!currentNode.getValue().isEnabled() || !predicate.evaluate(currentNode.getValue())) {
                         ++nextIndex;
                         if (nextIndex >= treeSize) {

@@ -40,17 +40,14 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Predicate;
 import org.gephi.graph.api.UndirectedGraph;
-import org.gephi.graph.api.View;
+import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Views;
 import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImpl;
-import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImplFiltered;
 import org.gephi.graph.dhns.graph.HierarchicalMixedGraphImpl;
-import org.gephi.graph.dhns.graph.HierarchicalMixedGraphImplFiltered;
 import org.gephi.graph.dhns.graph.HierarchicalUndirectedGraphImpl;
-import org.gephi.graph.dhns.graph.HierarchicalUndirectedGraphImplFiltered;
 import org.gephi.graph.dhns.graph.iterators.EdgeIterableImpl;
 import org.gephi.graph.dhns.graph.iterators.NodeIterableImpl;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
@@ -68,13 +65,11 @@ public class Dhns implements GraphModel {
     //Core
     private DhnsGraphController controller;
     private GraphStructure graphStructure;
-    private StructureModifier structureModifier;
     private GraphVersion graphVersion;
     private EventManager eventManager;
     private DynamicManager dynamicManager;
     private DecoratorFactoryImpl decoratorFactory;
     private SettingsManager settingsManager;
-    private ViewManager viewManager;
     private GraphFactoryImpl factory;
     //Type
     private boolean directed = false;
@@ -85,14 +80,12 @@ public class Dhns implements GraphModel {
 
     public Dhns(DhnsGraphController controller, Workspace workspace) {
         this.controller = controller;
-        graphStructure = new GraphStructure();
         graphVersion = new GraphVersion();
-        structureModifier = new StructureModifier(this);
         eventManager = new EventManager(this);
         dynamicManager = new DynamicManager(this);
         decoratorFactory = new DecoratorFactoryImpl(this);
         settingsManager = new SettingsManager(this);
-        viewManager = new ViewManager(this);
+        graphStructure = new GraphStructure(this);
 
         //AttributeFactory
         AttributeRowFactory attributeRowFactory = null;
@@ -118,10 +111,6 @@ public class Dhns implements GraphModel {
         return graphStructure;
     }
 
-    public StructureModifier getStructureModifier() {
-        return structureModifier;
-    }
-
     public GraphVersion getGraphVersion() {
         return graphVersion;
     }
@@ -144,10 +133,6 @@ public class Dhns implements GraphModel {
 
     public SettingsManager getSettingsManager() {
         return settingsManager;
-    }
-
-    public ViewManager getViewManager() {
-        return viewManager;
     }
 
     public NodeIterable newNodeIterable(AbstractNodeIterator iterator) {
@@ -239,7 +224,7 @@ public class Dhns implements GraphModel {
     }
 
     public boolean isHierarchical() {
-        return graphStructure.getStructure().treeHeight - 1 > 0;       //height>0
+        return graphStructure.getMainView().getStructure().treeHeight - 1 > 0;       //height>0
     }
 
     public boolean isDynamic() {
@@ -267,15 +252,15 @@ public class Dhns implements GraphModel {
     }
 
     public DirectedGraph getDirectedGraph() {
-        return new HierarchicalDirectedGraphImpl(this, graphStructure);
+        return new HierarchicalDirectedGraphImpl(this, graphStructure.getMainView());
     }
 
     public UndirectedGraph getUndirectedGraph() {
-        return new HierarchicalUndirectedGraphImpl(this, graphStructure);
+        return new HierarchicalUndirectedGraphImpl(this, graphStructure.getMainView());
     }
 
     public MixedGraph getMixedGraph() {
-        return new HierarchicalMixedGraphImpl(this, graphStructure);
+        return new HierarchicalMixedGraphImpl(this, graphStructure.getMainView());
     }
 
     public HierarchicalGraph getHierarchicalGraph() {
@@ -291,22 +276,22 @@ public class Dhns implements GraphModel {
     }
 
     public HierarchicalDirectedGraph getHierarchicalDirectedGraph() {
-        return new HierarchicalDirectedGraphImpl(this, graphStructure);
+        return new HierarchicalDirectedGraphImpl(this, graphStructure.getMainView());
     }
 
     public HierarchicalMixedGraph getHierarchicalMixedGraph() {
-        return new HierarchicalMixedGraphImpl(this, graphStructure);
+        return new HierarchicalMixedGraphImpl(this, graphStructure.getMainView());
     }
 
     public HierarchicalUndirectedGraph getHierarchicalUndirectedGraph() {
-        return new HierarchicalUndirectedGraphImpl(this, graphStructure);
+        return new HierarchicalUndirectedGraphImpl(this, graphStructure.getMainView());
     }
 
-    public DirectedGraph getDirectedGraph(View view) {
-        return new HierarchicalDirectedGraphImplFiltered(this, this.graphStructure, view);
+    public DirectedGraph getDirectedGraph(GraphView view) {
+        return new HierarchicalDirectedGraphImpl(this, (GraphViewImpl) view);
     }
 
-    public Graph getGraph(View view) {
+    public Graph getGraph(GraphView view) {
         if (directed) {
             return getDirectedGraph(view);
         } else if (undirected) {
@@ -318,11 +303,11 @@ public class Dhns implements GraphModel {
         }
     }
 
-    public HierarchicalDirectedGraph getHierarchicalDirectedGraph(View view) {
-        return new HierarchicalDirectedGraphImplFiltered(this, this.graphStructure, view);
+    public HierarchicalDirectedGraph getHierarchicalDirectedGraph(GraphView view) {
+        return new HierarchicalDirectedGraphImpl(this, (GraphViewImpl) view);
     }
 
-    public HierarchicalGraph getHierarchicalGraph(View view) {
+    public HierarchicalGraph getHierarchicalGraph(GraphView view) {
         if (directed) {
             return getHierarchicalDirectedGraph(view);
         } else if (undirected) {
@@ -334,72 +319,68 @@ public class Dhns implements GraphModel {
         }
     }
 
-    public HierarchicalMixedGraph getHierarchicalMixedGraph(View view) {
-        return new HierarchicalMixedGraphImplFiltered(this, this.graphStructure, view);
+    public HierarchicalMixedGraph getHierarchicalMixedGraph(GraphView view) {
+        return new HierarchicalMixedGraphImpl(this, (GraphViewImpl) view);
     }
 
-    public HierarchicalUndirectedGraph getHierarchicalUndirectedGraph(View view) {
-        return new HierarchicalUndirectedGraphImplFiltered(this, this.graphStructure, view);
+    public HierarchicalUndirectedGraph getHierarchicalUndirectedGraph(GraphView view) {
+        return new HierarchicalUndirectedGraphImpl(this, (GraphViewImpl) view);
     }
 
-    public MixedGraph getMixedGraph(View view) {
-        return new HierarchicalMixedGraphImplFiltered(this, this.graphStructure, view);
+    public MixedGraph getMixedGraph(GraphView view) {
+        return new HierarchicalMixedGraphImpl(this, (GraphViewImpl) view);
     }
 
-    public UndirectedGraph getUndirectedGraph(View view) {
-        return new HierarchicalUndirectedGraphImplFiltered(this, this.graphStructure, view);
+    public UndirectedGraph getUndirectedGraph(GraphView view) {
+        return new HierarchicalUndirectedGraphImpl(this, (GraphViewImpl) view);
     }
 
     public Graph getGraphVisible() {
         if (directed) {
-            return getDirectedGraph(viewManager.getVisibleView());
+            return getDirectedGraph(graphStructure.getVisibleView());
         } else if (undirected) {
-            return getUndirectedGraph(viewManager.getVisibleView());
+            return getUndirectedGraph(graphStructure.getVisibleView());
         } else if (mixed) {
-            return getMixedGraph(viewManager.getVisibleView());
+            return getMixedGraph(graphStructure.getVisibleView());
         } else {
-            return getDirectedGraph(viewManager.getVisibleView());
+            return getDirectedGraph(graphStructure.getVisibleView());
         }
     }
 
     public DirectedGraph getDirectedGraphVisible() {
-        return getDirectedGraph(viewManager.getVisibleView());
+        return getDirectedGraph(graphStructure.getVisibleView());
     }
 
     public UndirectedGraph getUndirectedGraphVisible() {
-        return getUndirectedGraph(viewManager.getVisibleView());
+        return getUndirectedGraph(graphStructure.getVisibleView());
     }
 
     public MixedGraph getMixedGraphVisible() {
-        return getMixedGraph(viewManager.getVisibleView());
+        return getMixedGraph(graphStructure.getVisibleView());
     }
 
     public HierarchicalGraph getHierarchicalGraphVisible() {
         if (directed) {
-            return getHierarchicalDirectedGraph(viewManager.getVisibleView());
+            return getHierarchicalDirectedGraph(graphStructure.getVisibleView());
         } else if (undirected) {
-            return getHierarchicalUndirectedGraph(viewManager.getVisibleView());
+            return getHierarchicalUndirectedGraph(graphStructure.getVisibleView());
         } else if (mixed) {
-            return getHierarchicalMixedGraph(viewManager.getVisibleView());
+            return getHierarchicalMixedGraph(graphStructure.getVisibleView());
         } else {
-            return getHierarchicalDirectedGraph(viewManager.getVisibleView());
+            return getHierarchicalDirectedGraph(graphStructure.getVisibleView());
         }
     }
 
     public HierarchicalDirectedGraph getHierarchicalDirectedGraphVisible() {
-        return getHierarchicalDirectedGraph(viewManager.getVisibleView());
+        return getHierarchicalDirectedGraph(graphStructure.getVisibleView());
     }
 
     public HierarchicalMixedGraph getHierarchicalMixedGraphVisible() {
-        return getHierarchicalMixedGraph(viewManager.getVisibleView());
+        return getHierarchicalMixedGraph(graphStructure.getVisibleView());
     }
 
     public HierarchicalUndirectedGraph getHierarchicalUndirectedGraphVisible() {
-        return getHierarchicalUndirectedGraph(viewManager.getVisibleView());
-    }
-
-    public Views views() {
-        return viewManager;
+        return getHierarchicalUndirectedGraph(graphStructure.getVisibleView());
     }
 
     public GraphSettings settings() {

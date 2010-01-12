@@ -26,9 +26,9 @@ package org.gephi.graph.api;
  */
 public interface Views {
 
-    public View getVisibleView();
+    public GraphView getVisibleView();
 
-    public View createView(View view);
+    public GraphView createView(GraphView view);
 
-    public void setVisibleView(View view);
+    public void setVisibleView(GraphView view);
 }

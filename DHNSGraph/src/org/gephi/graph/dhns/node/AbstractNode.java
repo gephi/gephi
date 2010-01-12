@@ -21,11 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.node;
 
 import org.gephi.datastructure.avl.simple.AVLItem;
-import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Group;
 import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.graph.dhns.utils.avl.EdgeOppositeTree;
 import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
@@ -35,56 +33,147 @@ import org.gephi.graph.dhns.utils.avl.MetaEdgeTree;
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractNode implements Node, Group, AVLItem {
+public class AbstractNode implements Node, Group, AVLItem {
 
-    //Tree Structure
+    //For all views
+    protected final NodeDataImpl nodeData;
+    //Particular
+    protected final int viewId;
+    public AbstractNode parent;
     public int pre;
     public int size;
-    public AbstractNode parent;
     public int level;
     public int post;
     public DurableAVLNode avlNode;
+    protected boolean enabled;
+    private EdgeOppositeTree edgesOutTree;
+    private EdgeOppositeTree edgesInTree;
+    private MetaEdgeTree metaEdgesOutTree;
+    private MetaEdgeTree metaEdgesInTree;
 
-    public abstract AbstractNode getRootNode();
+    public AbstractNode(int ID, int viewId) {
+        this(viewId, new NodeDataImpl(ID, null), 0, 0, 0, null);
+        nodeData.getNodes().add(this);
+    }
 
-    //Structure methods
+    public AbstractNode(NodeDataImpl nodeData, int viewId) {
+        this(viewId, nodeData, 0, 0, 0, null);
+        nodeData.getNodes().add(this);
+    }
+
+    public AbstractNode(int ID, int viewId, int pre, int size, int level, AbstractNode parent) {
+        this(viewId, new NodeDataImpl(ID, null), pre, size, level, parent);
+        nodeData.getNodes().add(this);
+    }
+
+    public AbstractNode(NodeDataImpl nodeData, int viewId, int pre, int size, int level, AbstractNode parent) {
+        this(viewId, nodeData, pre, size, level, parent);
+        nodeData.getNodes().add(this);
+    }
+
+    private AbstractNode(int viewId, NodeDataImpl nodeData, int pre, int size, int level, AbstractNode parent) {
+        this.viewId = viewId;
+        this.parent = parent;
+        this.pre = pre;
+        this.size = size;
+        this.level = level;
+        this.post = pre - level + size;
+        this.nodeData = nodeData;
+        edgesOutTree = new EdgeOppositeTree(this);
+        edgesInTree = new EdgeOppositeTree(this);
+        metaEdgesOutTree = new MetaEdgeTree(this);
+        metaEdgesInTree = new MetaEdgeTree(this);
+    }
+
+    public int getViewId() {
+        return viewId;
+    }
+
+    public int getPre() {
+        return pre;
+    }
+
     public int getPost() {
         this.post = pre - level + size;
         return post;
     }
 
-    public int getPre() {
-        return avlNode.getIndex();
+    @Override
+    public int getId() {
+        return nodeData.ID;
     }
 
-    //Abstract
-    public abstract boolean isEnabled();
+    @Override
+    public int getNumber() {
+        return nodeData.ID;
+    }
 
-    public abstract void setEnabled(boolean enabled);
+    @Override
+    public NodeDataImpl getNodeData() {
+        return nodeData;
+    }
 
-    public abstract MetaEdgeTree getMetaEdgesOutTree();
+    @Override
+    public GroupData getGroupData() {
+        return nodeData;
+    }
 
-    public abstract MetaEdgeTree getMetaEdgesInTree();
+    public EdgeOppositeTree getEdgesInTree() {
+        return edgesInTree;
+    }
 
-    public abstract void clearMetaEdges();
+    public void setEdgesInTree(EdgeOppositeTree edgesInTree) {
+        this.edgesInTree = edgesInTree;
+    }
 
-    public abstract EdgeOppositeTree getEdgesOutTree();
+    public EdgeOppositeTree getEdgesOutTree() {
+        return edgesOutTree;
+    }
 
-    public abstract EdgeOppositeTree getEdgesInTree();
+    public void setEdgesOutTree(EdgeOppositeTree edgesOutTree) {
+        this.edgesOutTree = edgesOutTree;
+    }
 
-    public abstract boolean isValid();
+    public MetaEdgeTree getMetaEdgesInTree() {
+        return metaEdgesInTree;
+    }
 
-    public abstract boolean isClone();
+    public void setMetaEdgesInTree(MetaEdgeTree metaEdgesInTree) {
+        this.metaEdgesInTree = metaEdgesInTree;
+    }
 
-    public abstract int getId();
+    public MetaEdgeTree getMetaEdgesOutTree() {
+        return metaEdgesOutTree;
+    }
 
-    public abstract NodeData getNodeData();
+    public void setMetaEdgesOutTree(MetaEdgeTree metaEdgesOutTree) {
+        this.metaEdgesOutTree = metaEdgesOutTree;
+    }
 
-    public abstract GroupData getGroupData();
+    public boolean isEnabled() {
+        return enabled;
+    }
 
-    public abstract boolean hasAttributes();
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
-    public abstract void setAttributes(Attributes attributes);
+    public void clearMetaEdges() {
+        metaEdgesOutTree = new MetaEdgeTree(this);
+        metaEdgesInTree = new MetaEdgeTree(this);
+    }
 
-    public abstract PreNode getOriginalNode();
+    public boolean isValid(int viewId) {
+        return avlNode != null && this.viewId == viewId;
+    }
+
+    public AbstractNode getInView(int viewId) {
+        if (avlNode == null) {
+            return null;
+        }
+        if (this.viewId == viewId) {
+            return this;
+        }
+        return nodeData.getNodes().get(viewId);
+    }
 }

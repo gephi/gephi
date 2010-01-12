@@ -56,7 +56,7 @@ public class EdgeIterator extends AbstractEdgeIterator implements Iterator<Edge>
 
     @Override
     public boolean hasNext() {
-        while (pointer == null || (undirected && pointer.getUndirected() != pointer) || !edgePredicate.evaluate(pointer)) {
+        while (pointer == null || (undirected && pointer.getUndirected(currentNode.getViewId()) != pointer) || !edgePredicate.evaluate(pointer)) {
             while (!edgeIterator.hasNext()) {
                 if (nodeIterator.hasNext()) {
                     currentNode = nodeIterator.next();

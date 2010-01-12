@@ -57,7 +57,7 @@ public class EdgeAndMetaEdgeIterator extends AbstractEdgeIterator implements Ite
 
     @Override
     public boolean hasNext() {
-        while (pointer == null || (undirected && ((metaEdge && ((MetaEdgeImpl) pointer).getUndirected() != pointer) || (!metaEdge && pointer.getUndirected() != pointer)))) {
+        while (pointer == null || (undirected && ((metaEdge && ((MetaEdgeImpl) pointer).getUndirected() != pointer) || (!metaEdge && pointer.getUndirected(currentNode.getViewId()) != pointer)))) {
             while (!edgeIterator.hasNext()) {
                 if (currentNode != null && !metaEdge) {
                     metaEdge = true;

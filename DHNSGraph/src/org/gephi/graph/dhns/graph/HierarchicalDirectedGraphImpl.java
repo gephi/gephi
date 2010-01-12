@@ -26,9 +26,9 @@ import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.MetaEdge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
-import org.gephi.graph.api.View;
+import org.gephi.graph.api.GraphView;
 import org.gephi.graph.dhns.core.Dhns;
-import org.gephi.graph.dhns.core.GraphStructure;
+import org.gephi.graph.dhns.core.GraphViewImpl;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.EdgeAndMetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
@@ -48,8 +48,8 @@ import org.gephi.graph.dhns.node.iterators.TreeIterator;
  */
 public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl implements HierarchicalDirectedGraph {
 
-    public HierarchicalDirectedGraphImpl(Dhns dhns, GraphStructure structure) {
-        super(dhns, structure);
+    public HierarchicalDirectedGraphImpl(Dhns dhns, GraphViewImpl view) {
+        super(dhns, view);
     }
 
     //Graph
@@ -58,7 +58,7 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
         if (!edge.isDirected()) {
             throw new IllegalArgumentException("Can't add an undirected egde");
         }
-        if (checkEdgeExist(absEdge.getSource(), absEdge.getTarget())) {
+        if (checkEdgeExist(absEdge.getSource(view.getViewId()), absEdge.getTarget(view.getViewId()))) {
             //Edge already exist
             return false;
         }
@@ -66,22 +66,22 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
             absEdge.setAttributes(dhns.factory().newEdgeAttributes());
         }
         dhns.getDynamicManager().pushEdge(absEdge.getEdgeData());
-        dhns.getStructureModifier().addEdge(edge);
+        view.getStructureModifier().addEdge(absEdge);
         dhns.touchDirected();
         return true;
     }
 
     //Directed
     public boolean addEdge(Node source, Node target) {
-        AbstractNode preSource = checkNode(source);
-        AbstractNode preTarget = checkNode(target);
-        if (checkEdgeExist(preSource, preTarget)) {
+        AbstractNode absSource = checkNode(source);
+        AbstractNode absTarget = checkNode(target);
+        if (checkEdgeExist(absSource, absTarget)) {
             //Edge already exist
             return false;
         }
         AbstractEdge edge = dhns.factory().newEdge(source, target);
         dhns.getDynamicManager().pushEdge(edge.getEdgeData());
-        dhns.getStructureModifier().addEdge(edge);
+        view.getStructureModifier().addEdge(edge);
         dhns.touchDirected();
         return true;
     }
@@ -89,8 +89,8 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
     //Directed
     public boolean removeEdge(Edge edge) {
         AbstractEdge absEdge = checkEdge(edge);
-        AbstractEdge undirected = absEdge.getUndirected();      //Ensure that the edge with the min id is removed before his mutual with a greater id
-        return dhns.getStructureModifier().deleteEdge(undirected);
+        AbstractEdge undirected = absEdge.getUndirected(view.getViewId());      //Ensure that the edge with the min id is removed before his mutual with a greater id
+        return view.getStructureModifier().deleteEdge(undirected);
     }
 
     //Directed
@@ -134,13 +134,17 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
 
     //Graph
     public boolean contains(Edge edge) {
-        return getEdge(edge.getSource(), edge.getTarget()) != null;
+        if (edge == null) {
+            throw new NullPointerException();
+        }
+        AbstractEdge absEdge = (AbstractEdge)edge;
+        return getEdge(absEdge.getSource(view.getViewId()), absEdge.getTarget(view.getViewId())) != null;
     }
 
     //Graph
     public EdgeIterable getEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false, Tautology.instance), false, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), false, Tautology.instance, Tautology.instance));
     }
 
     //Directed
@@ -173,6 +177,9 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
 
     //Directed
     public Edge getEdge(Node source, Node target) {
+        if(source==null || target==null) {
+            return null;
+        }
         AbstractNode sourceNode = checkNode(source);
         AbstractNode targetNode = checkNode(target);
         AbstractEdge res = sourceNode.getEdgesOutTree().getItem(targetNode.getNumber());
@@ -182,7 +189,7 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
     //Graph
     public int getEdgeCount() {
         int count = 0;
-        for (EdgeIterator itr = new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false, Tautology.instance), false, Tautology.instance, Tautology.instance); itr.hasNext();) {
+        for (EdgeIterator itr = new EdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), false, Tautology.instance, Tautology.instance); itr.hasNext();) {
             itr.next();
             count++;
         }
@@ -214,25 +221,25 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
     public EdgeIterable getInnerEdges(Node nodeGroup) {
         readLock();
         AbstractNode absNode = checkNode(nodeGroup);
-        return dhns.newEdgeIterable(new RangeEdgeIterator(structure.getStructure(), absNode, absNode, true, false, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new RangeEdgeIterator(structure, absNode, absNode, true, false, Tautology.instance, Tautology.instance));
     }
 
     //ClusteredGraph
     public EdgeIterable getOuterEdges(Node nodeGroup) {
         readLock();
         AbstractNode absNode = checkNode(nodeGroup);
-        return dhns.newEdgeIterable(new RangeEdgeIterator(structure.getStructure(), absNode, absNode, false, false, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new RangeEdgeIterator(structure, absNode, absNode, false, false, Tautology.instance, Tautology.instance));
     }
 
     //ClusteredGraph
     public EdgeIterable getMetaEdges() {
         readLock();
-        return dhns.newEdgeIterable(new MetaEdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), true, Tautology.instance), false));
+        return dhns.newEdgeIterable(new MetaEdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), false));
     }
 
     public EdgeIterable getEdgesAndMetaEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeAndMetaEdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false, Tautology.instance), false, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new EdgeAndMetaEdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), false, Tautology.instance, Tautology.instance));
     }
 
     //ClusteredGraph
@@ -285,7 +292,15 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
     }
 
     @Override
-    public HierarchicalDirectedGraphImpl copy(Dhns dhns, GraphStructure structure, View view) {
-        return new HierarchicalDirectedGraphImpl(dhns, structure);
+    public HierarchicalDirectedGraphImpl copy(Dhns dhns, GraphViewImpl view) {
+        return new HierarchicalDirectedGraphImpl(dhns, view);
+    }
+
+    public EdgeIterable getHierarchyEdges() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public GraphView getView() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

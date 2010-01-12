@@ -307,5 +307,5 @@ public interface Graph {
 
     public GraphModel getGraphModel();
 
-    public View getView();
+    public GraphView getView();
 }

@@ -89,7 +89,7 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
     }
 
     protected boolean testTarget(AbstractEdge edgeImpl) {
-        if (!undirected || edgeImpl.getUndirected() == edgeImpl) {
+        if (!undirected || edgeImpl.getUndirected(currentNode.getViewId()) == edgeImpl) {
             if (edgePredicate.evaluate(edgeImpl)) {
                 if (IN) {
                     AbstractNode source = edgeImpl.getSource();

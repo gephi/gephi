@@ -26,9 +26,9 @@ import org.gephi.graph.api.HierarchicalMixedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Predicate;
-import org.gephi.graph.api.View;
+import org.gephi.graph.api.GraphView;
 import org.gephi.graph.dhns.core.Dhns;
-import org.gephi.graph.dhns.core.GraphStructure;
+import org.gephi.graph.dhns.core.GraphViewImpl;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
@@ -42,8 +42,8 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
     private Predicate<AbstractEdge> undirectedPredicate;
     private Predicate<AbstractEdge> directedPredicate;
 
-    public HierarchicalMixedGraphImpl(Dhns dhns, GraphStructure structure) {
-        super(dhns, structure);
+    public HierarchicalMixedGraphImpl(Dhns dhns, GraphViewImpl view) {
+        super(dhns, view);
         directedPredicate = new Predicate<AbstractEdge>() {
 
             public boolean evaluate(AbstractEdge t) {
@@ -63,7 +63,9 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
         if (!edge.isDirected()) {
             throw new IllegalArgumentException("Can't add an undirected egde");
         }
-        if (checkEdgeExist(absEdge.getSource(), absEdge.getTarget())) {
+        AbstractNode source = checkNode(edge.getSource());
+        AbstractNode target = checkNode(edge.getTarget());
+        if (checkEdgeExist(source, target)) {
             //Edge already exist
             return false;
         }
@@ -76,7 +78,7 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
             absEdge.setAttributes(dhns.factory().newEdgeAttributes());
         }
         dhns.getDynamicManager().pushEdge(edge.getEdgeData());
-        dhns.getStructureModifier().addEdge(edge);
+        view.getStructureModifier().addEdge(absEdge);
         if (absEdge.isDirected()) {
             dhns.touchDirected();
         } else {
@@ -86,13 +88,13 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
     }
 
     public boolean addEdge(Node source, Node target, boolean directed) {
-        AbstractNode preSource = checkNode(source);
-        AbstractNode preTarget = checkNode(target);
-        if (checkEdgeExist(preSource, preTarget)) {
+        AbstractNode absSource = checkNode(source);
+        AbstractNode absTarget = checkNode(target);
+        if (directed && checkEdgeExist(absSource, absTarget)) {
             //Edge already exist
             return false;
         }
-        AbstractEdge symmetricEdge = preSource.getEdgesInTree().getItem(preTarget.getNumber());
+        AbstractEdge symmetricEdge = absSource.getEdgesInTree().getItem(absTarget.getNumber());
         if (symmetricEdge != null && (!symmetricEdge.isDirected() || !directed)) {
             //The symmetric edge exist and is undirected
             return false;
@@ -100,7 +102,7 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
 
         AbstractEdge edge = dhns.factory().newEdge(source, target, 1.0f, directed);
         dhns.getDynamicManager().pushEdge(edge.getEdgeData());
-        dhns.getStructureModifier().addEdge(edge);
+        view.getStructureModifier().addEdge(edge);
         if (directed) {
             dhns.touchDirected();
         } else {
@@ -111,18 +113,18 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
 
     public boolean removeEdge(Edge edge) {
         AbstractEdge absEdge = checkEdge(edge);
-        AbstractEdge undirected = absEdge.getUndirected();      //Ensure that the edge with the min id is removed before his mutual with a greater id
-        return dhns.getStructureModifier().deleteEdge(undirected);
+        AbstractEdge undirected = absEdge.getUndirected(view.getViewId());      //Ensure that the edge with the min id is removed before his mutual with a greater id
+        return view.getStructureModifier().deleteEdge(undirected);
     }
 
     public EdgeIterable getDirectedEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false, Tautology.instance), false, Tautology.instance, Tautology.instance), directedPredicate);
+        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), false, Tautology.instance, Tautology.instance), directedPredicate);
     }
 
     public EdgeIterable getUndirectedEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false, Tautology.instance), false, Tautology.instance, Tautology.instance), undirectedPredicate);
+        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), false, Tautology.instance, Tautology.instance), undirectedPredicate);
     }
 
     public boolean isDirected(Edge edge) {
@@ -131,10 +133,17 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
     }
 
     public boolean contains(Edge edge) {
-        return getEdge(edge.getSource(), edge.getTarget()) != null;
+        if (edge == null) {
+            throw new NullPointerException();
+        }
+        AbstractEdge absEdge = (AbstractEdge) edge;
+        return getEdge(absEdge.getSource(view.getViewId()), absEdge.getTarget(view.getViewId())) != null;
     }
 
     public Edge getEdge(Node node1, Node node2) {
+        if (node1 == null || node2 == null) {
+            return null;
+        }
         readLock();
         AbstractNode sourceNode = checkNode(node1);
         AbstractNode targetNode = checkNode(node2);
@@ -148,7 +157,7 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
 
     public EdgeIterable getEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false, Tautology.instance), false, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), false, Tautology.instance, Tautology.instance));
     }
 
     public NodeIterable getNeighbors(Node node) {
@@ -166,7 +175,7 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
     public int getEdgeCount() {
         readLock();
         int count = 0;
-        for (EdgeIterator itr = new EdgeIterator(structure.getStructure(), new TreeIterator(structure.getStructure(), false, Tautology.instance), false, Tautology.instance, Tautology.instance); itr.hasNext();) {
+        for (EdgeIterator itr = new EdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), false, Tautology.instance, Tautology.instance); itr.hasNext();) {
             itr.next();
             count++;
         }
@@ -243,8 +252,15 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
     }
 
     @Override
-    public HierarchicalMixedGraphImpl copy(Dhns dhns, GraphStructure structure, View view) {
-        return new HierarchicalMixedGraphImpl(dhns, structure);
+    public HierarchicalMixedGraphImpl copy(Dhns dhns, GraphViewImpl view) {
+        return new HierarchicalMixedGraphImpl(dhns, view);
+    }
 
+    public EdgeIterable getHierarchyEdges() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public GraphView getView() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

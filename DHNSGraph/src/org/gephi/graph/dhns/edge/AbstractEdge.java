@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.edge;
 
-import org.gephi.graph.api.EdgeData;
 import org.gephi.datastructure.avl.simple.AVLItem;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
@@ -62,6 +61,14 @@ public abstract class AbstractEdge implements Edge, AVLItem {
         return target;
     }
 
+    public AbstractNode getSource(int viewId) {
+        return source.getInView(viewId);
+    }
+
+    public AbstractNode getTarget(int viewId) {
+        return target.getInView(viewId);
+    }
+
     public float getWeight() {
         return weight;
     }
@@ -78,11 +85,11 @@ public abstract class AbstractEdge implements Edge, AVLItem {
         return edgeData;
     }
 
-    public AbstractEdge getUndirected() {
+    public AbstractEdge getUndirected(int viewId) {
         if (source == target) {
             return this;
         }
-        AbstractEdge mutual = source.getEdgesInTree().getItem(target.getNumber());
+        AbstractEdge mutual = getSource(viewId).getEdgesInTree().getItem(target.getNumber());
         if (mutual != null && mutual.getId() < ID) {
             return mutual;
         }
@@ -97,8 +104,12 @@ public abstract class AbstractEdge implements Edge, AVLItem {
         return source == target;
     }
 
+    public boolean isValid(int viewId) {
+        return source.isValid(viewId) && target.isValid(viewId);
+    }
+
     public boolean isValid() {
-        return source.isValid() && target.isValid();
+        return source.avlNode != null && target.avlNode != null;
     }
 
     public boolean isMetaEdge() {

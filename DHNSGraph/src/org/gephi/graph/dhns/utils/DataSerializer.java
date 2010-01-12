@@ -31,8 +31,6 @@ import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.filter.Tautology;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.NodeDataImpl;
-import org.gephi.graph.dhns.node.PreNode;
-import org.gephi.graph.dhns.node.iterators.PreNodeTreeListIterator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -55,7 +53,7 @@ public class DataSerializer {
     public Element writeData(Document document, Dhns dhns) {
         Element dataE = document.createElement(ELEMENT_DATA);
 
-        TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
+        /*TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
         PreNodeTreeListIterator preNodeTreeListIterator = new PreNodeTreeListIterator(treeStructure.getTree(), 1);
         for (; preNodeTreeListIterator.hasNext();) {
             PreNode preNode = preNodeTreeListIterator.next();
@@ -73,14 +71,14 @@ public class DataSerializer {
                 Element edgeDataE = writeEdgeData(document, edgeData);
                 dataE.appendChild(edgeDataE);
             }
-        }
+        }*/
 
         return dataE;
     }
 
     public void readData(Element dataE, Dhns dhns) {
 
-        TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
+        /*TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
         NodeList dataListE = dataE.getChildNodes();
         for (int i = 0; i < dataListE.getLength(); i++) {
             if (dataListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
@@ -97,14 +95,14 @@ public class DataSerializer {
                     readEdgeData(itemE, edgeDataImpl);
                 }
             }
-        }
+        }*/
     }
 
     public Element writeNodeData(Document document, NodeData nodeData) {
         Element nodeDataE = document.createElement(ELEMENT_NODEDATA);
         org.gephi.graph.api.Node node = nodeData.getNode();
 
-        nodeDataE.setAttribute("nodepre", String.valueOf(node.getPre()));
+        /*nodeDataE.setAttribute("nodepre", String.valueOf(node.getPre()));*/
 
         if (!nodeData.getId().equals("" + node.getId())) {
             nodeDataE.setAttribute("id", nodeData.getId());
@@ -159,8 +157,8 @@ public class DataSerializer {
         Element edgeDataE = document.createElement(ELEMENT_EDGEDATA);
         Edge edge = edgeData.getEdge();
 
-        edgeDataE.setAttribute("sourcepre", String.valueOf(edge.getSource().getPre()));
-        edgeDataE.setAttribute("targetpre", String.valueOf(edge.getTarget().getPre()));
+        /*edgeDataE.setAttribute("sourcepre", String.valueOf(edge.getSource().getPre()));
+        edgeDataE.setAttribute("targetpre", String.valueOf(edge.getTarget().getPre()));*/
 
         if (!edgeData.getId().equals("" + edge.getId())) {
             edgeDataE.setAttribute("id", edgeData.getId());

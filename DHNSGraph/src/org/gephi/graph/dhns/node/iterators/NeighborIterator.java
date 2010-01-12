@@ -50,10 +50,11 @@ public class NeighborIterator extends AbstractNodeIterator implements Iterator<N
         while (edgeIterator.hasNext()) {
             AbstractEdge edge = edgeIterator.next();
             if (!edge.isSelfLoop()) {
-                if (edge.getSource() == owner) {
-                    pointer = edge.getTarget();
+                AbstractNode source = edge.getSource(owner.getViewId());
+                if (source == owner) {
+                    pointer = edge.getTarget(owner.getViewId());
                 } else {
-                    pointer = edge.getSource();
+                    pointer = source;
                 }
                 if (predicate.evaluate(pointer)) {
                     return true;

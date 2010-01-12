@@ -41,8 +41,6 @@ import org.gephi.graph.dhns.edge.MixedEdgeImpl;
 import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.edge.SelfLoopImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.node.CloneNode;
-import org.gephi.graph.dhns.node.PreNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.openide.util.Exceptions;
 import org.w3c.dom.Document;
@@ -102,10 +100,10 @@ public class DHNSSerializer {
         dhnsE.appendChild(graphVersionE);
         Element settingsE = writeSettings(document, dhns.getSettingsManager());
         dhnsE.appendChild(settingsE);
-        Element treeStructureE = writeTreeStructure(document, dhns.getGraphStructure().getStructure());
+        /*Element treeStructureE = writeTreeStructure(document, dhns.getGraphStructure().getStructure());
         dhnsE.appendChild(treeStructureE);
         Element edgesE = writeEdges(document, dhns.getGraphStructure().getStructure());
-        dhnsE.appendChild(edgesE);
+        dhnsE.appendChild(edgesE);*/
 
         return dhnsE;
     }
@@ -166,7 +164,7 @@ public class DHNSSerializer {
 
     public void readEdges(Element edgesE, GraphStructure graphStructure, GraphFactoryImpl factory) {
         NodeList edgesListE = edgesE.getChildNodes();
-        TreeStructure treeStructure = graphStructure.getStructure();
+/*        TreeStructure treeStructure = graphStructure.getStructure();
         for (int i = 0; i < edgesListE.getLength(); i++) {
             if (edgesListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element edgeE = (Element) edgesListE.item(i);
@@ -188,13 +186,13 @@ public class DHNSSerializer {
                 target.getEdgesInTree().add(edge);
                 graphStructure.getEdgeDictionnary().add(edge);
             }
-        }
+        }*/
     }
 
     public Element writeTreeStructure(Document document, TreeStructure treeStructure) {
         Element treeStructureE = document.createElement(ELEMENT_TREESTRUCTURE);
 
-        Element treeE = document.createElement(ELEMENT_TREESTRUCTURE_TREE);
+       /* Element treeE = document.createElement(ELEMENT_TREESTRUCTURE_TREE);
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             Element nodeE;
@@ -210,13 +208,13 @@ public class DHNSSerializer {
             nodeE.setAttribute("parent", String.valueOf(node.parent.pre));
             treeE.appendChild(nodeE);
         }
-        treeStructureE.appendChild(treeE);
+        treeStructureE.appendChild(treeE);*/
         return treeStructureE;
     }
 
     public void readTreeStructure(Element treeStructureE, GraphStructure graphStructure, GraphFactoryImpl factory) {
         NodeList nodesE = treeStructureE.getChildNodes();
-        TreeStructure treeStructure = graphStructure.getStructure();
+        /*TreeStructure treeStructure = graphStructure.getStructure();
         for (int i = 0; i < nodesE.getLength(); i++) {
             if (nodesE.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 if (((Element) nodesE.item(i)).getTagName().equals(ELEMENT_TREESTRUCTURE_TREE)) {
@@ -244,7 +242,7 @@ public class DHNSSerializer {
                     graphStructure.getNodeDictionnary().add(preNode);
                 }
             }
-        }
+        }*/
     }
 
     public Element writeGraphVersion(Document document, GraphVersion graphVersion) {

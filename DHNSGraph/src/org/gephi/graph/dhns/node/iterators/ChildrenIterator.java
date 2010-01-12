@@ -43,7 +43,6 @@ public class ChildrenIterator extends AbstractNodeIterator implements Iterator<N
     protected int diffIndex;
     protected DurableAVLNode currentNode;
     protected boolean loopStart = true;
-
     //Predicate
     protected Predicate<AbstractNode> predicate;
 
