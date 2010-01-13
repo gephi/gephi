@@ -110,26 +110,26 @@ public class Edge3dModel extends Edge2dModel {
             float g;
             float b;
             float a;
-            if (vizModel.isEdgeHasUniColor()) {
-                float[] uni = vizModel.getEdgeUniColor();
-                r = uni[0];
-                g = uni[1];
-                b = uni[2];
-                a = uni[3];
-            } else {
-                r = obj.r();
-                if (r == -1f) {
+            r = obj.r();
+            if (r == -1f) {
+                if (vizModel.isEdgeHasUniColor()) {
+                    float[] uni = vizModel.getEdgeUniColor();
+                    r = uni[0];
+                    g = uni[1];
+                    b = uni[2];
+                    a = uni[3];
+                } else {
                     NodeData source = obj.getSource();
                     r = 0.498f * source.r();
                     g = 0.498f * source.g();
                     b = 0.498f * source.b();
                     a = obj.alpha();
-                } else {
-                    g = 0.498f * obj.g();
-                    b = 0.498f * obj.b();
-                    r *= 0.498f;
-                    a = obj.alpha();
                 }
+            } else {
+                g = 0.498f * obj.g();
+                b = 0.498f * obj.b();
+                r *= 0.498f;
+                a = obj.alpha();
             }
             if (vizModel.getConfig().isLightenNonSelected()) {
                 float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();

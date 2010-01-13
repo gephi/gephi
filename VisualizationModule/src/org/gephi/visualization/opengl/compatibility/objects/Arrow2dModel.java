@@ -100,26 +100,26 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
             float g;
             float b;
             float a;
-            if (vizModel.isEdgeHasUniColor()) {
-                float[] uni = vizModel.getEdgeUniColor();
-                r = uni[0];
-                g = uni[1];
-                b = uni[2];
-                a = uni[3];
-            } else {
-                r = edge.r();
-                if (r == -1f) {
+            r = edge.r();
+            if (r == -1f) {
+                if (vizModel.isEdgeHasUniColor()) {
+                    float[] uni = vizModel.getEdgeUniColor();
+                    r = uni[0];
+                    g = uni[1];
+                    b = uni[2];
+                    a = uni[3];
+                } else {
                     NodeData source = edge.getSource();
                     r = 0.498f * source.r();
                     g = 0.498f * source.g();
                     b = 0.498f * source.b();
                     a = edge.alpha();
-                } else {
-                    g = 0.498f * edge.g();
-                    b = 0.498f * edge.b();
-                    r *= 0.498f;
-                    a = edge.alpha();
                 }
+            } else {
+                g = 0.498f * edge.g();
+                b = 0.498f * edge.b();
+                r *= 0.498f;
+                a = edge.alpha();
             }
             if (vizModel.getConfig().isLightenNonSelected()) {
                 float lightColorFactor = vizModel.getConfig().getLightenNonSelectedFactor();
