@@ -206,7 +206,8 @@ public class VizConfig {
     protected boolean mouseSelectionZoomProportionnal = NbPreferences.forModule(VizConfig.class).getBoolean(MOUSE_SELECTION_ZOOM_PROPORTIONAL, DEFAULT_MOUSE_SELECTION_ZOOM_PROPORTIONAL);
     protected boolean mouseSelectionUpdateWhileDragging = NbPreferences.forModule(VizConfig.class).getBoolean(MOUSE_SELECTION_WHILE_DRAGGING, DEFAULT_MOUSE_SELECTION_WHILE_DRAGGING);
     protected boolean disableLOD = NbPreferences.forModule(VizConfig.class).getBoolean(DISABLE_LOD, DEFAULT_DISABLE_LOD);
-
+    protected boolean enableAutoSelect = true;
+    
     public int getAntialiasing() {
         return antialiasing;
     }
@@ -514,5 +515,13 @@ public class VizConfig {
 
     public boolean isDefaultShowHulls() {
         return defaultShowHulls;
+    }
+
+    public boolean isEnableAutoSelect() {
+        return enableAutoSelect;
+    }
+
+    public void setEnableAutoSelect(boolean enableAutoSelect) {
+        this.enableAutoSelect = enableAutoSelect;
     }
 }

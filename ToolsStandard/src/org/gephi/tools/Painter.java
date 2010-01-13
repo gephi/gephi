@@ -45,7 +45,7 @@ public class Painter implements Tool {
     private PainterPanel painterPanel;
     //Settings
     private float[] color = {1f, 0f, 0f};
-    private float intensity = 0.1f;
+    private float intensity = 0.3f;
 
     public void select() {
     }

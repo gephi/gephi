@@ -53,6 +53,7 @@ public class ShortestPath implements Tool {
     private ShortestPathPanel shortestPathPanel;
     //Settings
     private Color color;
+    private boolean settingEdgeSourceColor;
     //State
     private Node sourceNode;
 
@@ -62,12 +63,17 @@ public class ShortestPath implements Tool {
     }
 
     public void select() {
+        settingEdgeSourceColor = !VizController.getInstance().getVizModel().isEdgeHasUniColor();
+        VizController.getInstance().getVizModel().setEdgeHasUniColor(true);
+        VizController.getInstance().getVizConfig().setEnableAutoSelect(false);
     }
 
     public void unselect() {
         listeners = null;
         sourceNode = null;
         shortestPathPanel = null;
+        VizController.getInstance().getVizModel().setEdgeHasUniColor(settingEdgeSourceColor);
+        VizController.getInstance().getVizConfig().setEnableAutoSelect(true);
     }
 
     public ToolEventListener[] getListeners() {
