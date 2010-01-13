@@ -91,7 +91,7 @@ public class DesktopToolController implements ToolController {
                 h.select();
                 handlers.add(h);
             } else if (toolListener instanceof NodePressAndDraggingEventListener) {
-                NodeClickAndDraggingEventHandler h = new NodeClickAndDraggingEventHandler(toolListener);
+                NodePressAndDraggingEventHandler h = new NodePressAndDraggingEventHandler(toolListener);
                 h.select();
                 handlers.add(h);
 
@@ -280,12 +280,12 @@ public class DesktopToolController implements ToolController {
         }
     }
 
-    private static class NodeClickAndDraggingEventHandler implements ToolEventHandler {
+    private static class NodePressAndDraggingEventHandler implements ToolEventHandler {
 
         private NodePressAndDraggingEventListener toolEventListener;
         private VizEventListener[] currentListeners;
 
-        public NodeClickAndDraggingEventHandler(ToolEventListener toolListener) {
+        public NodePressAndDraggingEventHandler(ToolEventListener toolListener) {
             this.toolEventListener = (NodePressAndDraggingEventListener) toolListener;
         }
 

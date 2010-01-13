@@ -30,6 +30,7 @@ import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.TextData;
 import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
+import org.gephi.graph.dhns.utils.avl.ViewNodeTree;
 
 /**
  * Implementation of the node data interface.
@@ -40,7 +41,7 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
 
     //Dhns
     protected final int ID;
-    protected final AbstractNodeTree nodes;
+    protected final ViewNodeTree nodes;
     //NodeData
     protected LayoutData layoutData;
     protected float x;
@@ -60,7 +61,7 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
     protected float dynamicRangeTo = -1;
 
     public NodeDataImpl(int ID, AbstractNode rootNode) {
-        this.nodes = new AbstractNodeTree();
+        this.nodes = new ViewNodeTree();
         if (rootNode != null) {
             this.nodes.add(rootNode);
         }
@@ -73,7 +74,7 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
         return ID;
     }
 
-    public AbstractNodeTree getNodes() {
+    public ViewNodeTree getNodes() {
         return nodes;
     }
 
