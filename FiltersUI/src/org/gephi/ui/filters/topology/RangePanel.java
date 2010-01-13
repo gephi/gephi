@@ -24,12 +24,15 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import javax.swing.SwingUtilities;
 import org.gephi.filters.RangeFilter;
 import org.gephi.filters.api.Range;
 import org.gephi.ui.components.JRangeSliderPanel;
 import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.gephi.ui.filters.JQuickHistogram;
+import org.openide.util.ImageUtilities;
 
 /**
  *
@@ -156,13 +159,16 @@ public class RangePanel extends javax.swing.JPanel {
         if (histogram.countValues() == 0) {
             return null;
         }
+        NumberFormat formatter = DecimalFormat.getNumberInstance();
+        formatter.setMaximumFractionDigits(3);
+        String average = formatter.format(histogram.getAverage());
+        String averageInRange = formatter.format(histogram.getAverageInRange());
         RichTooltip richTooltip = new RichTooltip();
-        richTooltip.setTitle("Statistics (In Range)");
+        richTooltip.setTitle("Statistics (In-Range)");
         richTooltip.addDescriptionSection("<html><b># of Values:</b> " + histogram.countValues() + " (" + histogram.countInRange() + ")");
-        richTooltip.addDescriptionSection("<html><b>Average:</b> " + histogram.getAverage() + " (" + histogram.getAverageInRange() + ")");
+        richTooltip.addDescriptionSection("<html><b>Average:</b> " + average + " (" + averageInRange + ")");
         richTooltip.addDescriptionSection("<html><b>Median:</b> " + histogram.getMedian() + " (" + histogram.getMedianInRange() + ")");
         return richTooltip;
-
     }
 
     /** This method is called from within the constructor to
