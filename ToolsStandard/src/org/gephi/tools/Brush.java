@@ -49,7 +49,7 @@ public class Brush implements Tool {
     private BrushPanel brushPanel;
     //Settings
     private float[] color = {1f, 0f, 0f};
-    private float intensity = 0.1f;
+    private float intensity = 0.3f;
     private DiffusionMethods.DiffusionMethod diffusionMethod = DiffusionMethods.DiffusionMethod.NEIGHBORS;
 
     public void select() {

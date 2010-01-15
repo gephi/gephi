@@ -197,7 +197,7 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     }
 
     protected boolean isUnderMouse(ModelImpl obj) {
-        if (obj.isAutoSelected()) {
+        if (vizConfig.isEnableAutoSelect() && obj.isAutoSelected()) {
             return true;
         }
         if (obj.onlyAutoSelect()) {
