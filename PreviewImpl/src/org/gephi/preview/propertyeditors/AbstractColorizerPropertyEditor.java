@@ -1,4 +1,4 @@
-package org.gephi.ui.preview.propertyeditors;
+package org.gephi.preview.propertyeditors;
 
 import java.beans.PropertyEditorSupport;
 import java.util.regex.Matcher;

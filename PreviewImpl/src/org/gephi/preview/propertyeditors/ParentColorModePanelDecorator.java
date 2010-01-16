@@ -1,4 +1,4 @@
-package org.gephi.ui.preview.propertyeditors;
+package org.gephi.preview.propertyeditors;
 
 import org.gephi.preview.api.Colorizer;
 

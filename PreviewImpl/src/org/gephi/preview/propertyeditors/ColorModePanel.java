@@ -1,4 +1,4 @@
-package org.gephi.ui.preview.propertyeditors;
+package org.gephi.preview.propertyeditors;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;

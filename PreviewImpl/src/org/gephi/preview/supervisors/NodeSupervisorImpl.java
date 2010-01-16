@@ -9,7 +9,11 @@ import org.gephi.preview.NodeLabelImpl;
 import org.gephi.preview.api.GenericColorizer;
 import org.gephi.preview.api.NodeChildColorizer;
 import org.gephi.preview.api.NodeColorizer;
+import org.gephi.preview.api.SupervisorPropery;
 import org.gephi.preview.api.supervisors.NodeSupervisor;
+import org.gephi.preview.propertyeditors.GenericColorizerPropertyEditor;
+import org.gephi.preview.propertyeditors.NodeChildColorizerPropertyEditor;
+import org.gephi.preview.propertyeditors.NodeColorizerPropertyEditor;
 import org.gephi.preview.updaters.CustomColorMode;
 import org.gephi.preview.updaters.LabelFontAdjuster;
 import org.gephi.preview.updaters.LabelShortener;
@@ -308,5 +312,27 @@ public class NodeSupervisorImpl implements NodeSupervisor {
         for (NodeImpl n : supervisedNodes) {
             adjustNodeLabelFont(n);
         }
+    }
+
+    public SupervisorPropery[] getProperties() {
+        final String CATEGORY = "Node Settings";
+        try {
+            return new SupervisorPropery[]{
+                        SupervisorPropery.createProperty(this, Boolean.class, "showNodes", CATEGORY, "Show Nodes"),
+                        SupervisorPropery.createProperty(this, Float.class, "nodeBorderWidth", CATEGORY, "Node Border Width"),
+                        SupervisorPropery.createProperty(this, NodeColorizer.class, "nodeColorizer", CATEGORY, "Node Color", NodeColorizerPropertyEditor.class),
+                        SupervisorPropery.createProperty(this, GenericColorizer.class, "nodeBorderColorizer", CATEGORY, "Node Border Color", GenericColorizerPropertyEditor.class),
+                        SupervisorPropery.createProperty(this, Boolean.class, "showNodeLabels", CATEGORY, "Show Node Labels"),
+                        SupervisorPropery.createProperty(this, Font.class, "baseNodeLabelFont", CATEGORY, "Node Label Font"),
+                        SupervisorPropery.createProperty(this, Boolean.class, "shortenLabelsFlag", CATEGORY, "Shorten Node Labels"),
+                        SupervisorPropery.createProperty(this, Integer.class, "nodeLabelMaxChar", CATEGORY, "Node Label Char Limit"),
+                        SupervisorPropery.createProperty(this, NodeChildColorizer.class, "nodeLabelColorizer", CATEGORY, "Node Label Color", NodeChildColorizerPropertyEditor.class),
+                        SupervisorPropery.createProperty(this, Boolean.class, "showNodeLabelBorders", CATEGORY, "Bordered Node Labels"),
+                        SupervisorPropery.createProperty(this, NodeChildColorizer.class, "nodeLabelBorderColorizer", CATEGORY, "Node Label Border Color", NodeChildColorizerPropertyEditor.class)
+                    };
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new SupervisorPropery[0];
     }
 }

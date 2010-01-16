@@ -1,4 +1,4 @@
-package org.gephi.ui.preview.propertyeditors;
+package org.gephi.preview.propertyeditors;
 
 import java.awt.Component;
 
@@ -6,10 +6,10 @@ import java.awt.Component;
  *
  * @author jeremy
  */
-public class NodeColorizerPropertyEditor extends GenericColorizerPropertyEditor {
+public class NodeChildColorizerPropertyEditor extends GenericColorizerPropertyEditor {
 
     @Override
-    public boolean supportsNodeOriginalColorMode() {
+    public boolean supportsParentColorMode() {
         return true;
     }
 
@@ -17,7 +17,7 @@ public class NodeColorizerPropertyEditor extends GenericColorizerPropertyEditor 
     public Component getCustomEditor() {
         ColorModePanel p;
         p = (ColorModePanel) super.getCustomEditor();
-        p = new NodeOriginalColorModePanelDecorator(this, p);
+        p = new ParentColorModePanelDecorator(this, p);
 
         return p;
     }

@@ -1,4 +1,4 @@
-package org.gephi.ui.preview.propertyeditors;
+package org.gephi.preview.propertyeditors;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

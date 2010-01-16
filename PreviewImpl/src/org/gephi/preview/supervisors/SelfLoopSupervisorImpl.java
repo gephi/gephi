@@ -4,7 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 import org.gephi.preview.SelfLoopImpl;
 import org.gephi.preview.api.EdgeColorizer;
+import org.gephi.preview.api.SupervisorPropery;
 import org.gephi.preview.api.supervisors.SelfLoopSupervisor;
+import org.gephi.preview.propertyeditors.EdgeColorizerPropertyEditor;
 import org.gephi.preview.updaters.CustomColorMode;
 
 /**
@@ -91,5 +93,17 @@ public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
         for (SelfLoopImpl sl : supervisedSelfLoops) {
             colorSelfLoop(sl);
         }
+    }
+
+    public SupervisorPropery[] getProperties() {
+        final String CATEGORY = "Self-Loop Global Settings";
+        try {
+            return new SupervisorPropery[]{
+                        SupervisorPropery.createProperty(this, Boolean.class, "showFlag", CATEGORY, "Show Self-Loops"),
+                        SupervisorPropery.createProperty(this, EdgeColorizer.class, "colorizer", CATEGORY, "Self-Loop Color", EdgeColorizerPropertyEditor.class)};
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new SupervisorPropery[0];
     }
 }
