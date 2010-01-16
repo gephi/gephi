@@ -832,7 +832,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public void startAnimating() {
         if (!scheduler.isAnimating()) {
-            System.out.println("start animating");
+            //System.out.println("start animating");
             scheduler.start();
             graphIO.startMouseListening();
         }
@@ -841,7 +841,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public void stopAnimating() {
         if (scheduler.isAnimating()) {
-            System.out.println("stop animating");
+            //System.out.println("stop animating");
             scheduler.stop();
             graphIO.stopMouseListening();
         }

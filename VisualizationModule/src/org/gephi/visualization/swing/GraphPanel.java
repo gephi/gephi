@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.text.NumberFormat;
 
 import javax.media.opengl.GLJPanel;
 import org.gephi.visualization.GraphLimits;
@@ -36,9 +37,12 @@ import org.gephi.visualization.VizController;
 public class GraphPanel extends GraphDrawableImpl {
 
     private GLJPanel gljPanel;
+    private NumberFormat formatter;
 
     public GraphPanel() {
         super();
+        formatter = NumberFormat.getNumberInstance();
+        formatter.setMaximumFractionDigits(1);
 
         //Init GLJPanel as the drawable
         gljPanel = new GLJPanel(getCaps(), null, null) {
@@ -72,7 +76,8 @@ public class GraphPanel extends GraphDrawableImpl {
     private void render2DForeground(Graphics2D g) {
         if (vizController.getVizConfig().isShowFPS()) {
             g.setColor(Color.LIGHT_GRAY);
-            g.drawString("" + fps, 10, 15);
+            String fpsRound = formatter.format(fps);
+            g.drawString(fpsRound, 10, 15);
         }
 
         GraphLimits limits = VizController.getInstance().getLimits();

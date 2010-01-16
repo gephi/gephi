@@ -26,6 +26,8 @@ public abstract class GLAbstractListener implements GLEventListener {
     private static final boolean DEBUG = true;
     private long startTime = 0;
     protected float fps;
+    protected float fpsAvg = 0;
+    protected float fpsCount = 0;
     private volatile boolean resizing = false;
     public final float viewField = 30.0f;
     public final float nearDistance = 1.0f;
@@ -190,9 +192,12 @@ public abstract class GLAbstractListener implements GLEventListener {
             startTime = System.currentTimeMillis() - 1;
         }
         long endTime = System.currentTimeMillis();
-        long tpsEcoule = endTime - startTime;
+        long delta = endTime - startTime;
         startTime = endTime;
-        fps = (int) (1000.0f / tpsEcoule);
+        fps = 1000.0f / delta;
+        if (fps < 100) {
+            fpsAvg = (fpsAvg * fpsCount + fps) / ++fpsCount;
+        } 
 
         GL gl = drawable.getGL();
 
@@ -280,5 +285,14 @@ public abstract class GLAbstractListener implements GLEventListener {
 
     public GraphicalConfiguration getGraphicalConfiguration() {
         return graphicalConfiguration;
+    }
+
+    protected void resetFpsAverage() {
+        fpsAvg = 0;
+        fpsCount = 0;
+    }
+
+    protected float getFpsAverage() {
+        return fpsAvg;
     }
 }

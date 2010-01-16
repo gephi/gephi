@@ -55,5 +55,7 @@ public interface Scheduler {
 
     public void requireMouseClick();
 
-    public void setFps(int maxFps);
+    public void setFps(float maxFps);
+
+    public float getFps();
 }

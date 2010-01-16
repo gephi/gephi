@@ -71,14 +71,44 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
             final int maxVal = 30;
             graphComponent.addMouseListener(new MouseAdapter() {
 
+                private float lastTarget = 0.1f;
+
                 @Override
                 public void mouseEntered(MouseEvent e) {
+                    if (!scheduler.isAnimating()) {
+                        engine.startDisplay();
+                    }
                     scheduler.setFps(maxVal);
+                    resetFpsAverage();
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    scheduler.setFps(minVal);
+                    float fps = getFpsAverage();
+                    float target = (float) (fps / (1. / Math.sqrt(getFpsAverage()) * 10.));
+                    if (fps == 0f) {
+                        target = lastTarget;
+                    }
+                    if (target <= 0.005f) {
+                        engine.stopDisplay();
+                    } else if (target > minVal) {
+                        target = minVal;
+                    }
+                    lastTarget = target;
+                    scheduler.setFps(target);
+                }
+            });
+        } else if (vizController.getVizConfig().isPauseLoopWhenMouseOut()) {
+            graphComponent.addMouseListener(new MouseAdapter() {
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    engine.startDisplay();
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    engine.stopDisplay();
                 }
             });
         }
@@ -134,7 +164,7 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
     protected void render3DScene(GL gl, GLU glu) {
 
         scheduler.display(gl, glu);
-    //renderTestCube(gl);
+        //renderTestCube(gl);
     }
 
     private void renderTestCube(GL gl) {
@@ -197,7 +227,6 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
     public void display() {
         drawable.display();
     }
-
 
     //Utils
     public double[] myGluProject(float x, float y) {

@@ -67,6 +67,7 @@ public class VizConfig {
     public static final String SHOW_FPS = "VizConfig.showFPS";
     public static final String REDUCE_FPS_MOUSE_OUT = "VizConfig.reduceFpsWhenMouseOut";
     public static final String REDUCE_FPS_MOUSE_OUT_VALUE = "VizConfig.reduceFpsWhenMouseOutValue";
+    public static final String PAUSE_LOOP_MOUSE_OUT = "VizConfig.pauseLoopWhenMouseOut";
     public static final String HIGHTLIGHT_COLOR = "VizConfig.lightenNonSelectedColor";
     public static final String HIGHTLIGHT_ANIMATION = "VizConfig.lightenNonSelectedAnimation";
     public static final String NODE_SELECTED_UNIQUE_COLOR = "VizConfig.uniColorSelectedColor";
@@ -116,6 +117,7 @@ public class VizConfig {
     public static final boolean DEFAULT_CAMERA_CONTROL = true;
     public static final boolean DEFAULT_SHOW_FPS = true;
     public static final boolean DEFAULT_REDUCE_FPS_MOUSE_OUT = true;
+    public static final boolean DEFAULT_PAUSE_LOOP_MOUSE_OUT = false;
     public static final int DEFAULT_REDUCE_FPS_MOUSE_OUT_VALUE = 20;
     public static final Color DEFAULT_HIGHTLIGHT_COLOR = new Color(0.95f, 0.95f, 0.95f, 1f);
     public static final boolean DEFAULT_HIGHTLIGHT_ANIMATION = true;
@@ -184,6 +186,7 @@ public class VizConfig {
     protected boolean showFPS = NbPreferences.forModule(VizConfig.class).getBoolean(SHOW_FPS, DEFAULT_SHOW_FPS);
     protected boolean reduceFpsWhenMouseOut = NbPreferences.forModule(VizConfig.class).getBoolean(REDUCE_FPS_MOUSE_OUT, DEFAULT_REDUCE_FPS_MOUSE_OUT);
     protected int reduceFpsWhenMouseOutValue = NbPreferences.forModule(VizConfig.class).getInt(REDUCE_FPS_MOUSE_OUT_VALUE, DEFAULT_REDUCE_FPS_MOUSE_OUT_VALUE);
+    protected boolean pauseLoopWhenMouseOut = NbPreferences.forModule(VizConfig.class).getBoolean(PAUSE_LOOP_MOUSE_OUT, DEFAULT_PAUSE_LOOP_MOUSE_OUT);
     protected boolean showArrows = true;        //Overriden in Engine
     protected boolean lightenNonSelected = true;        //Overriden in Engine
     protected float[] lightenNonSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(HIGHTLIGHT_COLOR, ColorUtils.encode(DEFAULT_HIGHTLIGHT_COLOR))).getRGBColorComponents(null);
@@ -206,8 +209,8 @@ public class VizConfig {
     protected boolean mouseSelectionZoomProportionnal = NbPreferences.forModule(VizConfig.class).getBoolean(MOUSE_SELECTION_ZOOM_PROPORTIONAL, DEFAULT_MOUSE_SELECTION_ZOOM_PROPORTIONAL);
     protected boolean mouseSelectionUpdateWhileDragging = NbPreferences.forModule(VizConfig.class).getBoolean(MOUSE_SELECTION_WHILE_DRAGGING, DEFAULT_MOUSE_SELECTION_WHILE_DRAGGING);
     protected boolean disableLOD = NbPreferences.forModule(VizConfig.class).getBoolean(DISABLE_LOD, DEFAULT_DISABLE_LOD);
-    protected boolean enableAutoSelect = true;
-    
+    protected boolean enableAutoSelect = true;      //Overriden in Engine - Temporary used by tools like ShortestPath
+
     public int getAntialiasing() {
         return antialiasing;
     }
@@ -523,5 +526,13 @@ public class VizConfig {
 
     public void setEnableAutoSelect(boolean enableAutoSelect) {
         this.enableAutoSelect = enableAutoSelect;
+    }
+
+    public boolean isPauseLoopWhenMouseOut() {
+        return pauseLoopWhenMouseOut;
+    }
+
+    public void setPauseLoopWhenMouseOut(boolean pauseLoopWhenMouseOut) {
+        this.pauseLoopWhenMouseOut = pauseLoopWhenMouseOut;
     }
 }

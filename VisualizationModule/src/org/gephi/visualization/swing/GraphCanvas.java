@@ -25,6 +25,7 @@ import java.awt.Component;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.text.NumberFormat;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLCanvas;
 import javax.media.opengl.glu.GLU;
@@ -39,9 +40,12 @@ public class GraphCanvas extends GraphDrawableImpl {
 
     private GLCanvas glCanvas;
     private GLUT glut = new GLUT();
+    private NumberFormat formatter;
 
     public GraphCanvas() {
         super();
+        formatter = NumberFormat.getNumberInstance();
+        formatter.setMaximumFractionDigits(1);
         glCanvas = new GLCanvas(getCaps());
         super.initDrawable(glCanvas);
         glCanvas.setMinimumSize(new Dimension(0, 0));   //Fix Canvas resize Issue
@@ -69,8 +73,8 @@ public class GraphCanvas extends GraphDrawableImpl {
             gl.glDepthFunc(gl.GL_ALWAYS);
             gl.glColor3i(192, 192, 192);
             gl.glRasterPos2f(10, 15);
-
-            glut.glutBitmapString(GLUT.BITMAP_HELVETICA_10, "" + fps);
+            String fpsRound = formatter.format(fps);
+            glut.glutBitmapString(GLUT.BITMAP_HELVETICA_10, fpsRound);
 
             gl.glDepthFunc(gl.GL_LESS);
             gl.glPopMatrix();

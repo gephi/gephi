@@ -22,7 +22,6 @@ package org.gephi.visualization.opengl.compatibility;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -62,7 +61,7 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     private GLU glu;
     //Animator
     private SimpleFPSAnimator simpleFPSAnimator;
-    private int fpsLimit = 30;
+    private float fpsLimit = 30f;
 
     public void initArchitecture() {
         this.graphDrawable = VizController.getInstance().getDrawable();
@@ -164,14 +163,16 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     }
 
     @Override
-    public void start() {
+    public synchronized  void start() {
         simpleFPSAnimator = new SimpleFPSAnimator(this, graphDrawable, fpsLimit);
         simpleFPSAnimator.start();
-
     }
 
     @Override
-    public void stop() {
+    public synchronized void stop() {
+        if(simpleFPSAnimator==null) {
+            return;
+        }
         if (simpleFPSAnimator.isAnimating()) {
             simpleFPSAnimator.shutdown();
         }
@@ -315,10 +316,14 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
         mouseClick.set(true);
     }
 
-    public void setFps(int maxFps) {
+    public void setFps(float maxFps) {
         this.fpsLimit = maxFps;
         if (simpleFPSAnimator != null) {
             simpleFPSAnimator.setFps(maxFps);
         }
+    }
+
+    public float getFps() {
+        return fpsLimit;
     }
 }
