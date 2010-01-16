@@ -27,14 +27,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.api.LayoutModel;
 import org.gephi.layout.spi.LayoutProperty;
 import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
 import org.gephi.utils.longtask.LongTaskListener;
-import org.openide.util.Exceptions;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -64,6 +66,12 @@ public class LayoutModelImpl implements LayoutModel {
 
             public void taskFinished(LongTask task) {
                 setRunning(false);
+            }
+        });
+        executor.setDefaultErrorHandler(new LongTaskErrorHandler() {
+
+            public void fatalError(Throwable t) {
+                Logger.getLogger("").log(Level.SEVERE, "", t.getCause());
             }
         });
     }
