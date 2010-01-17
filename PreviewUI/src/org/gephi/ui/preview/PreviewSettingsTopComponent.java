@@ -3,6 +3,7 @@ package org.gephi.ui.preview;
 import java.awt.BorderLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
+import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.project.api.ProjectController;
 import org.openide.explorer.propertysheet.PropertySheet;
@@ -44,6 +45,10 @@ final class PreviewSettingsTopComponent extends TopComponent {
 
     public void refreshModel() {
         propertySheet.setNodes(new Node[]{new PreviewNode()});
+        PreviewModel pc = Lookup.getDefault().lookup(PreviewController.class).getModel();
+        if(pc != null) {
+            visibilityRatioSpinner.setValue((int)(pc.getVisibilityRatio()*100));
+        }
     }
 
     /**

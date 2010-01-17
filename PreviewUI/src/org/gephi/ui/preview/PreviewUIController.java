@@ -58,6 +58,12 @@ public class PreviewUIController implements GraphListener {
 
             public void disable() {
                 disableRefresh();
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    public void run() {
+                        PreviewSettingsTopComponent.findInstance().refreshModel();
+                    }
+                });
             }
         });
     }
@@ -89,25 +95,28 @@ public class PreviewUIController implements GraphListener {
      * Refreshes the preview applet.
      */
     public void refreshPreview() {
-        PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
-        PreviewTopComponent previewTopComponent = PreviewTopComponent.findInstance();
-        PreviewSettingsTopComponent previewSettingsTopComponent = PreviewSettingsTopComponent.findInstance();
-        boolean newGraphFlag = false;
-        float visibilityRatio = previewSettingsTopComponent.getVisibilityRatio();
-        GraphSheet controllerGraphSheet = previewController.getPartialGraphSheet(visibilityRatio);
+        final PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
+        final PreviewTopComponent previewTopComponent = PreviewTopComponent.findInstance();
+        final float visibilityRatio = PreviewSettingsTopComponent.findInstance().getVisibilityRatio();
 
-        hideRefreshNotification();
+        Thread refreshThread = new Thread(new Runnable() {
 
-        if (null == graphSheet || controllerGraphSheet != graphSheet) {
-            graphSheet = controllerGraphSheet;
-            newGraphFlag = true;
-        }
+            public void run() {
+                previewTopComponent.setRefresh(true);
+                disableRefresh();
+                hideRefreshNotification();
+                GraphSheet controllerGraphSheet = previewController.getPartialGraphSheet(visibilityRatio);
+                if (null == graphSheet || controllerGraphSheet != graphSheet) {
+                    graphSheet = controllerGraphSheet;
+                    previewTopComponent.setGraph(graphSheet);
+                }
+                previewTopComponent.refreshPreview();
 
-        if (newGraphFlag) {
-            previewTopComponent.setGraph(graphSheet);
-        }
-
-        previewTopComponent.refreshPreview();
+                previewTopComponent.setRefresh(false);
+                enableRefresh();
+            }
+        }, "Refresh Preview");
+        refreshThread.start();
     }
 
     /**
@@ -138,8 +147,6 @@ public class PreviewUIController implements GraphListener {
                 previewSettingsTopComponent.disableRefreshButton();
             }
         });
-
-        PreviewSettingsTopComponent.findInstance().refreshModel();
     }
 
     /**

@@ -1,11 +1,15 @@
 package org.gephi.ui.preview;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.SwingUtilities;
 import org.gephi.preview.api.GraphSheet;
+import org.jdesktop.swingx.JXBusyLabel;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -27,11 +31,22 @@ final class PreviewTopComponent extends TopComponent {
         bannerPanel.setVisible(false);
 
         // inits the preview applet
-        previewPanel.add(sketch, BorderLayout.CENTER);
+        sketchPanel.add(sketch, BorderLayout.CENTER);
         sketch.init();
 
         // forces the controller instanciation
         PreviewUIController.findInstance();
+    }
+
+    public void setRefresh(final boolean refresh) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                CardLayout cl = (CardLayout) previewPanel.getLayout();
+                cl.show(previewPanel, refresh ? "refreshCard" : "previewCard");
+                ((JXBusyLabel) busyLabel).setBusy(refresh);
+            }
+        });
     }
 
     /**
@@ -65,6 +80,9 @@ final class PreviewTopComponent extends TopComponent {
         bannerLabel = new javax.swing.JLabel();
         refreshButton = new javax.swing.JButton();
         previewPanel = new javax.swing.JPanel();
+        sketchPanel = new javax.swing.JPanel();
+        refreshPanel = new javax.swing.JPanel();
+        busyLabel = new JXBusyLabel(new Dimension(20,20));
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -100,19 +118,31 @@ final class PreviewTopComponent extends TopComponent {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 24;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         add(bannerPanel, gridBagConstraints);
 
-        previewPanel.setBackground(new java.awt.Color(255, 255, 255));
-        previewPanel.setLayout(new java.awt.BorderLayout());
+        previewPanel.setLayout(new java.awt.CardLayout());
+
+        sketchPanel.setBackground(new java.awt.Color(255, 255, 255));
+        sketchPanel.setLayout(new java.awt.BorderLayout());
+        previewPanel.add(sketchPanel, "previewCard");
+
+        refreshPanel.setLayout(new java.awt.GridBagLayout());
+
+        busyLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        org.openide.awt.Mnemonics.setLocalizedText(busyLabel, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.busyLabel.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        refreshPanel.add(busyLabel, gridBagConstraints);
+
+        previewPanel.add(refreshPanel, "refreshCard");
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 535;
-        gridBagConstraints.ipady = 304;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         add(previewPanel, gridBagConstraints);
@@ -124,8 +154,11 @@ final class PreviewTopComponent extends TopComponent {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel bannerLabel;
     private javax.swing.JPanel bannerPanel;
+    private javax.swing.JLabel busyLabel;
     private javax.swing.JPanel previewPanel;
     private javax.swing.JButton refreshButton;
+    private javax.swing.JPanel refreshPanel;
+    private javax.swing.JPanel sketchPanel;
     // End of variables declaration//GEN-END:variables
 
     /**
