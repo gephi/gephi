@@ -21,7 +21,7 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
     protected final Vector direction;
     protected final float length;
     protected final ArrayList<CubicBezierCurve> curves = new ArrayList<CubicBezierCurve>();
-    private EdgeLabelImpl label = null;
+    private final EdgeLabelImpl label;
     protected static final float BEZIER_CURVE_FACTOR = 0.2f;
 
     /**
@@ -51,6 +51,8 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
         // generate label
         if (null != label) {
             this.label = new EdgeLabelImpl(this, label, labelSize);
+        } else {
+            this.label = null;
         }
     }
 

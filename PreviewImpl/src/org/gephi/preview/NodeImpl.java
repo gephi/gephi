@@ -44,8 +44,13 @@ public class NodeImpl implements Node, NodeColorizerClient {
         this.position = new PointImpl(x, y);
         this.radius = radius;
         this.originalColor = new SimpleColor(r, g, b, 0);
-        this.label = new NodeLabelImpl(this, label, labelSize);
-        this.labelBorder = new NodeLabelBorderImpl(this);
+        if (label != null) {
+            this.label = new NodeLabelImpl(this, label, labelSize);
+            this.labelBorder = new NodeLabelBorderImpl(this);
+        } else {
+            this.label = null;
+            this.labelBorder = null;
+        }
 
         Vector topLeftVector = new Vector(position);
         topLeftVector.sub(radius, radius, 0);

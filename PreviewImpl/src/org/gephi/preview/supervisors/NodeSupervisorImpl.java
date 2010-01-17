@@ -207,10 +207,12 @@ public class NodeSupervisorImpl implements NodeSupervisor {
      * original one.
      */
     private void updateLabelValue(NodeLabelImpl nodeLabel) {
-        if (shortenLabelsFlag) {
-            shortenNodeLabel(nodeLabel);
-        } else {
-            revertLabel(nodeLabel);
+        if (nodeLabel != null) {
+            if (shortenLabelsFlag) {
+                shortenNodeLabel(nodeLabel);
+            } else {
+                revertLabel(nodeLabel);
+            }
         }
     }
 
@@ -272,7 +274,9 @@ public class NodeSupervisorImpl implements NodeSupervisor {
      * @param node  the node label to color
      */
     private void colorNodeLabel(NodeLabelImpl nodeLabel) {
-        nodeLabelColorizer.color(nodeLabel);
+        if (nodeLabel != null) {
+            nodeLabelColorizer.color(nodeLabel);
+        }
     }
 
     /**
@@ -292,7 +296,9 @@ public class NodeSupervisorImpl implements NodeSupervisor {
      * @param node  the node label border to color
      */
     private void colorNodeLabelBorder(NodeLabelBorderImpl nodeLabelBorder) {
-        nodeLabelBorderColorizer.color(nodeLabelBorder);
+        if (nodeLabelBorder != null) {
+            nodeLabelBorderColorizer.color(nodeLabelBorder);
+        }
     }
 
     /**
