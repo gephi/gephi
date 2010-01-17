@@ -54,6 +54,7 @@ public final class SupervisorPropery {
                 supervisor, valueType, propertyName);
 
         property.setName(propertyName);
+        property.setDisplayName(propertyDescription);
         property.setShortDescription(propertyDescription);
 
         return new SupervisorPropery(property, propertyCategory);
