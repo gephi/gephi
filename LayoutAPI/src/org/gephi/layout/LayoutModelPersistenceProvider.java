@@ -19,7 +19,10 @@ public class LayoutModelPersistenceProvider implements WorkspacePersistenceProvi
 
     public Element writeXML(Document document, Workspace workspace) {
         LayoutModelImpl model = workspace.getLookup().lookup(LayoutModelImpl.class);
-        return model.writeXML(document);
+        if(model!=null) {
+            return model.writeXML(document);
+        }
+        return null;
     }
 
     public void readXML(Element element, Workspace workspace) {

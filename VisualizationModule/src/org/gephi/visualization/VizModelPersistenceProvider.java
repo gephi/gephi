@@ -35,7 +35,10 @@ public class VizModelPersistenceProvider implements WorkspacePersistenceProvider
 
     public Element writeXML(Document document, Workspace workspace) {
         VizModel model = workspace.getLookup().lookup(VizModel.class);
-        return model.writeXML(document);
+        if(model!=null) {
+            return model.writeXML(document);
+        }
+        return null;
     }
 
     public void readXML(Element element, Workspace workspace) {
