@@ -4,6 +4,9 @@
  */
 package org.gephi.preview;
 
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorManager;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.graph.api.GraphEvent;
@@ -24,6 +27,12 @@ import org.gephi.preview.supervisors.SelfLoopSupervisorImpl;
 import org.gephi.preview.supervisors.UndirectedEdgeSupervisorImpl;
 import org.gephi.preview.supervisors.UnidirectionalEdgeSupervisorImpl;
 import org.gephi.workspace.api.Workspace;
+import org.openide.nodes.Node.Property;
+import org.openide.util.Exceptions;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -154,5 +163,95 @@ public class PreviewModelImpl implements PreviewModel, GraphListener {
 
     public void setVisibilityRatio(float visibilityRatio) {
         this.visibilityRatio = visibilityRatio;
+    }
+
+    //PERSISTENCE
+    public Element writeXML(Document document) {
+        Element previewModelE = document.createElement("previewmodel");
+
+        //Ratio
+        Element visibilityRatioE = document.createElement("ratio");
+        visibilityRatioE.setTextContent(String.valueOf(visibilityRatio));
+        previewModelE.appendChild(visibilityRatioE);
+
+        //Properties
+        writeProperties(document, previewModelE, nodeSupervisor);
+        writeProperties(document, previewModelE, globalEdgeSupervisor);
+        writeProperties(document, previewModelE, selfLoopSupervisor);
+        writeProperties(document, previewModelE, uniEdgeSupervisor);
+        writeProperties(document, previewModelE, biEdgeSupervisor);
+        writeProperties(document, previewModelE, undirectedEdgeSupervisor);
+
+        return previewModelE;
+    }
+
+    private void writeProperties(Document document, Element parent, Supervisor supervisor) {
+        for (SupervisorPropery p : supervisor.getProperties()) {
+            String propertyName = p.getProperty().getName();
+            try {
+                Object propertyValue = p.getProperty().getValue();
+                if (propertyValue != null) {
+                    PropertyEditor editor = p.getProperty().getPropertyEditor();
+                    if (editor == null) {
+                        editor = PropertyEditorManager.findEditor(p.getProperty().getValueType());
+                    }
+                    if (editor != null) {
+                        Element propertyE = document.createElement("previewproperty");
+                        propertyE.setAttribute("name", propertyName);
+                        editor.setValue(propertyValue);
+                        propertyE.setTextContent(editor.getAsText());
+                        parent.appendChild(propertyE);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void readXML(Element previewModelE) {
+        Map<String, Property> propertiesMap = getPropertiesMap();
+
+        NodeList childList = previewModelE.getChildNodes();
+        for (int i = 0; i < childList.getLength(); i++) {
+            Node n = childList.item(i);
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                Element childE = (Element) n;
+                if (childE.getNodeName().equals("ratio")) {
+                    visibilityRatio = Float.parseFloat(childE.getTextContent());
+                } else if (childE.getNodeName().equals("previewproperty")) {
+                    String name = childE.getAttribute("name");
+                    Property p = propertiesMap.get(name);
+                    if (p != null) {
+                        PropertyEditor editor = p.getPropertyEditor();
+                        if (editor == null) {
+                            editor = PropertyEditorManager.findEditor(p.getValueType());
+                        }
+                        if (editor != null) {
+                            editor.setAsText(childE.getTextContent());
+                            if (editor.getValue() != null) {
+                                try {
+                                    p.setValue(editor.getValue());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private Map<String, Property> getPropertiesMap() {
+        Map<String, Property> propertiesMap = new HashMap<String, Property>();
+        Supervisor[] supervisors = new Supervisor[]{nodeSupervisor, globalEdgeSupervisor, selfLoopSupervisor, uniEdgeSupervisor, biEdgeSupervisor, undirectedEdgeSupervisor};
+        for (Supervisor s : supervisors) {
+            for (SupervisorPropery p : s.getProperties()) {
+                String propertyName = p.getProperty().getName();
+                propertiesMap.put(propertyName, p.getProperty());
+            }
+        }
+        return propertiesMap;
     }
 }
