@@ -23,4 +23,12 @@ public interface PreviewController {
     public GraphSheet getPartialGraphSheet(float visibilityRatio);
 
     public PreviewModel getModel();
+
+    public PreviewPreset[] getDefaultPresets();
+
+    public PreviewPreset[] getUserPresets();
+
+    public void savePreset(String name);
+
+    public void setCurrentPreset(PreviewPreset preset);
 }

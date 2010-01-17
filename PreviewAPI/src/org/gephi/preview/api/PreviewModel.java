@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.gephi.preview.api;
 
 import org.gephi.preview.api.supervisors.DirectedEdgeSupervisor;
@@ -60,4 +59,6 @@ public interface PreviewModel {
     public UndirectedEdgeSupervisor getUndirectedEdgeSupervisor();
 
     public float getVisibilityRatio();
+
+    public PreviewPreset getCurrentPreset();
 }

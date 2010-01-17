@@ -1,11 +1,16 @@
 package org.gephi.preview;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.GraphSheet;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewPreset;
+import org.gephi.preview.presets.DefaultPreset;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
@@ -20,8 +25,9 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = PreviewController.class)
 public class PreviewControllerImpl implements PreviewController {
 
-    //Fatory
+    //Utils
     private final PreviewGraphFactory factory = new PreviewGraphFactory();
+    private final PresetUtils presetUtils = new PresetUtils();
     //Current graphs
     private GraphImpl previewGraph = null;
     private PartialGraphImpl partialPreviewGraph = null;
@@ -149,5 +155,32 @@ public class PreviewControllerImpl implements PreviewController {
 
     public PreviewModel getModel() {
         return model;
+    }
+
+    public PreviewPreset[] getDefaultPresets() {
+        List<PreviewPreset> presets = new ArrayList<PreviewPreset>();
+        presets.add(new DefaultPreset());
+        return presets.toArray(new PreviewPreset[0]);
+    }
+
+    public PreviewPreset[] getUserPresets() {
+        PreviewPreset[] presetsArray = presetUtils.getPresets();
+        Arrays.sort(presetsArray);
+        return presetsArray;
+    }
+
+    public void savePreset(String name) {
+        if (model != null) {
+            PreviewPreset preset = model.wrapPreset(name);
+            presetUtils.savePreset(preset);
+            model.setCurrentPreset(preset);
+        }
+    }
+
+    public void setCurrentPreset(PreviewPreset preset) {
+        if (model != null) {
+            model.setCurrentPreset(preset);
+            model.applyPreset(preset);
+        }
     }
 }

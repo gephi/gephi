@@ -13,6 +13,7 @@ import org.gephi.graph.api.GraphEvent;
 import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewPreset;
 import org.gephi.preview.api.SupervisorPropery;
 import org.gephi.preview.api.supervisors.DirectedEdgeSupervisor;
 import org.gephi.preview.api.supervisors.GlobalEdgeSupervisor;
@@ -20,6 +21,7 @@ import org.gephi.preview.api.supervisors.NodeSupervisor;
 import org.gephi.preview.api.supervisors.SelfLoopSupervisor;
 import org.gephi.preview.api.supervisors.Supervisor;
 import org.gephi.preview.api.supervisors.UndirectedEdgeSupervisor;
+import org.gephi.preview.presets.DefaultPreset;
 import org.gephi.preview.supervisors.BidirectionalEdgeSupervisorImpl;
 import org.gephi.preview.supervisors.GlobalEdgeSupervisorImpl;
 import org.gephi.preview.supervisors.NodeSupervisorImpl;
@@ -49,17 +51,17 @@ public class PreviewModelImpl implements PreviewModel, GraphListener {
     private final UndirectedEdgeSupervisorImpl undirectedEdgeSupervisor;
     //States
     private boolean updateFlag = true;
-    private Map<String, Object> propertiesValues;
     private float visibilityRatio = 1;
+    private PreviewPreset currentPreset;
 
     public PreviewModelImpl() {
-        propertiesValues = new HashMap<String, Object>();
         nodeSupervisor = new NodeSupervisorImpl();
         globalEdgeSupervisor = new GlobalEdgeSupervisorImpl();
         selfLoopSupervisor = new SelfLoopSupervisorImpl();
         uniEdgeSupervisor = new UnidirectionalEdgeSupervisorImpl();
         biEdgeSupervisor = new BidirectionalEdgeSupervisorImpl();
         undirectedEdgeSupervisor = new UndirectedEdgeSupervisorImpl();
+        currentPreset = new DefaultPreset();
     }
 
     public void select(Workspace workspace) {
@@ -80,38 +82,6 @@ public class PreviewModelImpl implements PreviewModel, GraphListener {
      */
     public void graphChanged(GraphEvent event) {
         updateFlag = true;
-    }
-
-    public void loadProperties(Supervisor[] supervisors) {
-        for (Supervisor s : supervisors) {
-            for (SupervisorPropery p : s.getProperties()) {
-                String propertyName = p.getProperty().getName();
-                Object propertyValue = propertiesValues.get(propertyName);
-                if (propertyValue != null) {
-                    try {
-                        p.getProperty().setValue(propertyValue);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
-
-    public void saveProperties(Supervisor[] supervisors) {
-        for (Supervisor s : supervisors) {
-            for (SupervisorPropery p : s.getProperties()) {
-                String propertyName = p.getProperty().getName();
-                try {
-                    Object propertyValue = p.getProperty().getValue();
-                    if (propertyValue != null) {
-                        propertiesValues.put(propertyName, propertyValue);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
     /**
@@ -163,6 +133,64 @@ public class PreviewModelImpl implements PreviewModel, GraphListener {
 
     public void setVisibilityRatio(float visibilityRatio) {
         this.visibilityRatio = visibilityRatio;
+    }
+
+    public PreviewPreset getCurrentPreset() {
+        return currentPreset;
+    }
+
+    public void setCurrentPreset(PreviewPreset currentPreset) {
+        this.currentPreset = currentPreset;
+    }
+
+    public PreviewPreset wrapPreset(String name) {
+        Map<String, String> propertiesMap = new HashMap<String, String>();
+        for (Property p : getPropertiesMap().values()) {
+            try {
+                Object propertyValue = p.getValue();
+                if (propertyValue != null) {
+                    PropertyEditor editor = p.getPropertyEditor();
+                    if (editor == null) {
+                        editor = PropertyEditorManager.findEditor(p.getValueType());
+                    }
+                    if (editor != null) {
+                        editor.setValue(propertyValue);
+                        String val = editor.getAsText();
+                        if (!val.isEmpty()) {
+                            propertiesMap.put(p.getName(), val);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return new PreviewPreset(name, propertiesMap);
+    }
+
+    public void applyPreset(PreviewPreset preset) {
+        Map<String, String> propertiesMap = preset.getProperties();
+        for (Property p : getPropertiesMap().values()) {
+            try {
+                PropertyEditor editor = p.getPropertyEditor();
+                if (editor == null) {
+                    editor = PropertyEditorManager.findEditor(p.getValueType());
+                }
+                if (editor != null) {
+                    String valueStr = propertiesMap.get(p.getName());
+                    if (valueStr != null && !valueStr.isEmpty()) {
+                        editor.setAsText(valueStr);
+                        Object value = editor.getValue();
+                        if (value != null) {
+                            p.setValue(value);
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     //PERSISTENCE
