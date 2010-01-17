@@ -1,11 +1,9 @@
 package org.gephi.preview;
 
 import org.gephi.preview.api.CubicBezierCurve;
-import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.SelfLoop;
 import org.gephi.preview.supervisors.SelfLoopSupervisorImpl;
 import org.gephi.preview.util.Vector;
-import org.openide.util.Lookup;
 
 /**
  * Implementation of a preview self-loop.
@@ -96,7 +94,6 @@ public class SelfLoopImpl extends AbstractEdge implements SelfLoop {
      * @return the controller's self-loop supervisor
      */
     public SelfLoopSupervisorImpl getSelfLoopSupervisor() {
-        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        return (SelfLoopSupervisorImpl) controller.getSelfLoopSupervisor();
+        return (SelfLoopSupervisorImpl) parent.getModel().getSelfLoopSupervisor();
     }
 }

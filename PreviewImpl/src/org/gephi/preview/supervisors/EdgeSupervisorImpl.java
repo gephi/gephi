@@ -54,7 +54,7 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
      */
     public GlobalEdgeSupervisor getGlobalEdgeSupervisor() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        return controller.getGlobalEdgeSupervisor();
+        return controller.getModel().getGlobalEdgeSupervisor();
     }
 
     public Boolean getShowFlag() {

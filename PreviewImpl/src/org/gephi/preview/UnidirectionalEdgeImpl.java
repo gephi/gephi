@@ -1,9 +1,7 @@
 package org.gephi.preview;
 
-import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.UnidirectionalEdge;
 import org.gephi.preview.supervisors.DirectedEdgeSupervisorImpl;
-import org.openide.util.Lookup;
 
 /**
  * Implementation of an unidirectional preview edge.
@@ -31,7 +29,6 @@ public class UnidirectionalEdgeImpl extends DirectedEdgeImpl
 
     @Override
     public DirectedEdgeSupervisorImpl getDirectedEdgeSupervisor() {
-        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        return (DirectedEdgeSupervisorImpl) controller.getUniEdgeSupervisor();
+        return (DirectedEdgeSupervisorImpl) parent.getModel().getUniEdgeSupervisor();
     }
 }

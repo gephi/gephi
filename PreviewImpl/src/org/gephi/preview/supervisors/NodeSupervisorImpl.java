@@ -26,18 +26,38 @@ import org.gephi.preview.updaters.NodeOriginalColorMode;
  */
 public class NodeSupervisorImpl implements NodeSupervisor {
 
-    private Boolean showNodes = true;
-    private Float nodeBorderWidth = 1f;
-    private NodeColorizer nodeColorizer = new NodeOriginalColorMode();
-    private GenericColorizer nodeBorderColorizer = new CustomColorMode(0, 0, 0);
-    private Boolean showNodeLabels = true;
-    private Font baseNodeLabelfont = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
-    private Boolean shortenLabelsFlag = false;
-    private Integer nodeLabelMaxChar = 10;
-    private NodeChildColorizer nodeLabelColorizer = new CustomColorMode(0, 0, 0);
-    private Boolean showNodeLabelBorders = true;
-    private NodeChildColorizer nodeLabelBorderColorizer = new CustomColorMode(255, 255, 255);
+    //Properties
+    private Boolean showNodes;
+    private Float nodeBorderWidth;
+    private NodeColorizer nodeColorizer;
+    private GenericColorizer nodeBorderColorizer;
+    private Boolean showNodeLabels;
+    private Font baseNodeLabelfont;
+    private Boolean shortenLabelsFlag;
+    private Integer nodeLabelMaxChar;
+    private NodeChildColorizer nodeLabelColorizer;
+    private Boolean showNodeLabelBorders;
+    private NodeChildColorizer nodeLabelBorderColorizer;
+    //Architecture
     private final Set<NodeImpl> supervisedNodes = new HashSet<NodeImpl>();
+
+    public NodeSupervisorImpl() {
+        defaultValues();
+    }
+
+    public void defaultValues() {
+        showNodes = true;
+        nodeBorderWidth = 1f;
+        nodeColorizer = new NodeOriginalColorMode();
+        nodeBorderColorizer = new CustomColorMode(0, 0, 0);
+        showNodeLabels = true;
+        baseNodeLabelfont = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
+        shortenLabelsFlag = false;
+        nodeLabelMaxChar = 10;
+        nodeLabelColorizer = new CustomColorMode(0, 0, 0);
+        showNodeLabelBorders = true;
+        nodeLabelBorderColorizer = new CustomColorMode(255, 255, 255);
+    }
 
     /**
      * Adds the given node to the list of the supervised nodes.

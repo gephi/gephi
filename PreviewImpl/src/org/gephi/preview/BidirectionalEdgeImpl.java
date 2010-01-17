@@ -1,10 +1,8 @@
 package org.gephi.preview;
 
 import org.gephi.preview.api.BidirectionalEdge;
-import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.supervisors.DirectedEdgeSupervisorImpl;
 import org.gephi.preview.util.Vector;
-import org.openide.util.Lookup;
 
 /**
  * Implementation of a bidirectional edge.
@@ -36,8 +34,7 @@ public class BidirectionalEdgeImpl extends DirectedEdgeImpl
 
     @Override
     public DirectedEdgeSupervisorImpl getDirectedEdgeSupervisor() {
-        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        return (DirectedEdgeSupervisorImpl) controller.getBiEdgeSupervisor();
+        return (DirectedEdgeSupervisorImpl) parent.getModel().getBiEdgeSupervisor();
     }
 
     /**

@@ -13,8 +13,18 @@ import org.gephi.preview.api.supervisors.GlobalEdgeSupervisor;
  */
 public class GlobalEdgeSupervisorImpl implements GlobalEdgeSupervisor {
 
-    private boolean showEdges = true;
+    //Properties
+    private boolean showEdges;
+    //Architecture
     private final Set<EdgeImpl> supervisedEdges = new HashSet<EdgeImpl>();
+
+    public GlobalEdgeSupervisorImpl() {
+        defaultValues();
+    }
+
+    public void defaultValues() {
+        showEdges = true;
+    }
 
     /**
      * Adds the given edge to the list of the supervised edges.

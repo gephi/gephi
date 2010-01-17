@@ -1,6 +1,7 @@
 package org.gephi.preview;
 
 import java.util.HashMap;
+import org.gephi.preview.api.PreviewModel;
 
 /**
  * Factory creating preview graphs from workspace graphs.
@@ -17,9 +18,9 @@ public class PreviewGraphFactory {
      * @param sourceGraph   the undirected graph
      * @return              a generated preview graph
      */
-    public GraphImpl createPreviewGraph(org.gephi.graph.api.UndirectedGraph sourceGraph) {
+    public GraphImpl createPreviewGraph(PreviewModel model, org.gephi.graph.api.UndirectedGraph sourceGraph) {
         // creates graph
-        GraphImpl previewGraph = new GraphImpl();
+        GraphImpl previewGraph = new GraphImpl(model);
 
         // creates nodes
         for (org.gephi.graph.api.Node sourceNode : sourceGraph.getNodes()) {
@@ -49,9 +50,9 @@ public class PreviewGraphFactory {
      * @param sourceGraph   the directed graph
      * @return              a generated preview graph
      */
-    public GraphImpl createPreviewGraph(org.gephi.graph.api.DirectedGraph sourceGraph) {
+    public GraphImpl createPreviewGraph(PreviewModel model, org.gephi.graph.api.DirectedGraph sourceGraph) {
         // creates graph
-        GraphImpl previewGraph = new GraphImpl();
+        GraphImpl previewGraph = new GraphImpl(model);
 
         // creates nodes
         for (org.gephi.graph.api.Node sourceNode : sourceGraph.getNodes()) {
@@ -85,9 +86,9 @@ public class PreviewGraphFactory {
      * @param sourceGraph   the mixed graph
      * @return              a generated preview graph
      */
-    public GraphImpl createPreviewGraph(org.gephi.graph.api.MixedGraph sourceGraph) {
+    public GraphImpl createPreviewGraph(PreviewModel model, org.gephi.graph.api.MixedGraph sourceGraph) {
         // creates graph
-        GraphImpl previewGraph = new GraphImpl();
+        GraphImpl previewGraph = new GraphImpl(model);
 
         // creates nodes
         for (org.gephi.graph.api.Node sourceNode : sourceGraph.getNodes()) {

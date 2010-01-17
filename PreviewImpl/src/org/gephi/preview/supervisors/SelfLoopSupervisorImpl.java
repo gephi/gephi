@@ -16,9 +16,20 @@ import org.gephi.preview.updaters.CustomColorMode;
  */
 public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
 
-    private Boolean show = true;
-    private EdgeColorizer colorizer = new CustomColorMode(0, 0, 0);
+    //Properties
+    private Boolean show;
+    private EdgeColorizer colorizer;
+    //Architecture
     private final Set<SelfLoopImpl> supervisedSelfLoops = new HashSet<SelfLoopImpl>();
+
+    public SelfLoopSupervisorImpl() {
+        defaultValues();
+    }
+
+    public void defaultValues() {
+        show = true;
+        colorizer = new CustomColorMode(0, 0, 0);
+    }
 
     /**
      * Adds the given self-loop to the list of the supervised self-loops.

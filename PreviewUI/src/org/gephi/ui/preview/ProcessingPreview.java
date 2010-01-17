@@ -30,11 +30,12 @@ public class ProcessingPreview extends PApplet
      */
     public void refresh() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+        PreviewModel model = controller.getModel();
 
         // updates fonts
         fontMap.clear();
-        uniEdgeMiniLabelFont = getPFont(controller.getUniEdgeSupervisor().getMiniLabelFont());
-        biEdgeMiniLabelFont = getPFont(controller.getBiEdgeSupervisor().getMiniLabelFont());
+        uniEdgeMiniLabelFont = getPFont(model.getUniEdgeSupervisor().getMiniLabelFont());
+        biEdgeMiniLabelFont = getPFont(model.getBiEdgeSupervisor().getMiniLabelFont());
 
         // redraws the applet
         redraw();
@@ -256,7 +257,7 @@ public class ProcessingPreview extends PApplet
     public void renderNodeLabel(NodeLabel label) {
         textFont(getPFont(label.getFont()));
         textAlign(CENTER, CENTER);
-        
+
         fill(label.getColor().getRed(),
                 label.getColor().getGreen(),
                 label.getColor().getBlue());
@@ -271,7 +272,7 @@ public class ProcessingPreview extends PApplet
         fill(border.getColor().getRed(),
                 border.getColor().getGreen(),
                 border.getColor().getBlue());
-        
+
         rect(border.getPosition().getX(), border.getPosition().getY(),
                 textWidth(border.getLabel().getValue()), (textAscent() + textDescent()));
     }
@@ -386,7 +387,7 @@ public class ProcessingPreview extends PApplet
     private PFont createFont(Font font) {
         return createFont(font.getName(), font.getSize());
     }
-    
+
     /**
      * Returns the Processing font related to the given classic font.
      *

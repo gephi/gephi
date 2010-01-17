@@ -3,6 +3,7 @@ package org.gephi.ui.preview;
 import java.awt.BorderLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
+import org.gephi.preview.api.PreviewModel;
 import org.gephi.project.api.ProjectController;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.Node;
@@ -17,6 +18,8 @@ final class PreviewSettingsTopComponent extends TopComponent {
     private static PreviewSettingsTopComponent instance;
     static final String ICON_PATH = "org/gephi/ui/preview/resources/settings.png";
     private static final String PREFERRED_ID = "PreviewSettingsTopComponent";
+    //Component
+    private PropertySheet propertySheet;
 
     private PreviewSettingsTopComponent() {
         initComponents();
@@ -25,9 +28,9 @@ final class PreviewSettingsTopComponent extends TopComponent {
         setIcon(ImageUtilities.loadImage(ICON_PATH));
 
         // property sheet
-        PropertySheet ps = new PropertySheet();
-        ps.setNodes(new Node[]{new PreviewNode()});
-        propertiesPanel.add(ps, BorderLayout.CENTER);
+        propertySheet = new PropertySheet();
+        propertySheet.setNodes(new Node[]{new PreviewNode()});
+        propertiesPanel.add(propertySheet, BorderLayout.CENTER);
 
         // checks the state of the workspace
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -37,6 +40,10 @@ final class PreviewSettingsTopComponent extends TopComponent {
 
         // forces the controller instanciation
         PreviewUIController.findInstance();
+    }
+
+    public void refreshModel() {
+        propertySheet.setNodes(new Node[]{new PreviewNode()});
     }
 
     /**

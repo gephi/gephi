@@ -17,6 +17,10 @@ public class BidirectionalEdgeSupervisorImpl extends DirectedEdgeSupervisorImpl 
      * Initializes default values.
      */
     public BidirectionalEdgeSupervisorImpl() {
+        defaultValues();
+    }
+
+    public void defaultValues() {
         curvedFlag = false;
         colorizer = new EdgeBothBColorMode();
         showLabelsFlag = true;

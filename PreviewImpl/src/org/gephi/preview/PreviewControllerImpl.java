@@ -1,24 +1,11 @@
 package org.gephi.preview;
 
 import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphEvent;
-import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.GraphSheet;
 import org.gephi.preview.api.PreviewController;
-import org.gephi.preview.api.supervisors.DirectedEdgeSupervisor;
-import org.gephi.preview.api.supervisors.GlobalEdgeSupervisor;
-import org.gephi.preview.api.supervisors.NodeSupervisor;
-import org.gephi.preview.api.supervisors.SelfLoopSupervisor;
-import org.gephi.preview.api.supervisors.UndirectedEdgeSupervisor;
-import org.gephi.preview.supervisors.BidirectionalEdgeSupervisorImpl;
-import org.gephi.preview.supervisors.DirectedEdgeSupervisorImpl;
-import org.gephi.preview.supervisors.GlobalEdgeSupervisorImpl;
-import org.gephi.preview.supervisors.NodeSupervisorImpl;
-import org.gephi.preview.supervisors.SelfLoopSupervisorImpl;
-import org.gephi.preview.supervisors.UndirectedEdgeSupervisorImpl;
-import org.gephi.preview.supervisors.UnidirectionalEdgeSupervisorImpl;
+import org.gephi.preview.api.PreviewModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
@@ -31,50 +18,38 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
 @ServiceProvider(service = PreviewController.class)
-public class PreviewControllerImpl implements PreviewController, GraphListener {
+public class PreviewControllerImpl implements PreviewController {
 
-    private GraphModel graphModel = null;
+    //Fatory
+    private final PreviewGraphFactory factory = new PreviewGraphFactory();
+    //Current graphs
     private GraphImpl previewGraph = null;
     private PartialGraphImpl partialPreviewGraph = null;
     private GraphSheetImpl graphSheet = null;
     private GraphSheetImpl partialGraphSheet = null;
-    private boolean updateFlag = false;
-    private final NodeSupervisorImpl nodeSupervisor = new NodeSupervisorImpl();
-    private final GlobalEdgeSupervisorImpl globalEdgeSupervisor = new GlobalEdgeSupervisorImpl();
-    private final SelfLoopSupervisorImpl selfLoopSupervisor = new SelfLoopSupervisorImpl();
-    private final DirectedEdgeSupervisorImpl uniEdgeSupervisor = new UnidirectionalEdgeSupervisorImpl();
-    private final DirectedEdgeSupervisorImpl biEdgeSupervisor = new BidirectionalEdgeSupervisorImpl();
-    private final UndirectedEdgeSupervisorImpl undirectedEdgeSupervisor = new UndirectedEdgeSupervisorImpl();
-    private final PreviewGraphFactory factory = new PreviewGraphFactory();
+    //Model
+    private PreviewModelImpl model;
 
     /**
      * Constructor.
      */
     public PreviewControllerImpl() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        final GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-
-        // checks the current workspace state before listening to the related events
-        if (pc.getCurrentWorkspace() != null) {
-            updateFlag = true;
-            graphModel = gc.getModel();
-            graphModel.addGraphListener(this);
-        }
-
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
+                workspace.add(new PreviewModelImpl());
             }
 
             public void select(Workspace workspace) {
-                updateFlag = true;
-                graphModel = gc.getModel();
-                graphModel.addGraphListener(PreviewControllerImpl.this);
+                model = (PreviewModelImpl) workspace.getLookup().lookup(PreviewModel.class);
+                if (model == null) {
+                    model = new PreviewModelImpl();
+                    workspace.add(model);
+                }
             }
 
             public void unselect(Workspace workspace) {
-                graphModel.removeGraphListener(PreviewControllerImpl.this);
-                graphModel = null;
             }
 
             public void close(Workspace workspace) {
@@ -82,19 +57,19 @@ public class PreviewControllerImpl implements PreviewController, GraphListener {
 
             public void disable() {
                 graphSheet = null;
+                model = null;
             }
         });
-    }
 
-    /**
-     * Sets the update flag when the structure of the workspace graph has
-     * changed.
-     *
-     * @param event
-     * @see GraphListener#graphChanged(org.gephi.graph.api.GraphEvent)
-     */
-    public void graphChanged(GraphEvent event) {
-        updateFlag = true;
+        // checks the current workspace state
+        if (pc.getCurrentWorkspace() != null) {
+            Workspace workspace = pc.getCurrentWorkspace();
+            model = (PreviewModelImpl) workspace.getLookup().lookup(PreviewModel.class);
+            if (model == null) {
+                model = new PreviewModelImpl();
+                workspace.add(model);
+            }
+        }
     }
 
     /**
@@ -103,12 +78,13 @@ public class PreviewControllerImpl implements PreviewController, GraphListener {
      * @return the current preview graph
      */
     public Graph getGraph() {
-        // the preview graph is built if needed
-        if (updateFlag) {
-            buildGraph();
+        if (model != null) {
+            if (model.isUpdateFlag()) {
+                buildGraph();
+            }
+            return previewGraph;
         }
-
-        return previewGraph;
+        return null;
     }
 
     /**
@@ -118,28 +94,35 @@ public class PreviewControllerImpl implements PreviewController, GraphListener {
      * @return                 a subgraph of the current preview graph
      */
     public Graph getPartialGraph(float visibilityRatio) {
-        if (updateFlag || null == partialPreviewGraph || partialPreviewGraph.getVisibilityRatio() != visibilityRatio) {
-            partialPreviewGraph = new PartialGraphImpl(getGraph(), visibilityRatio);
+        if (model != null) {
+            if (model.isUpdateFlag() || null == partialPreviewGraph || partialPreviewGraph.getVisibilityRatio() != visibilityRatio) {
+                partialPreviewGraph = new PartialGraphImpl(getGraph(), visibilityRatio);
+                model.setVisibilityRatio(visibilityRatio);
+            }
+            return partialPreviewGraph;
         }
-
-        return partialPreviewGraph;
+        return null;
     }
 
     public GraphSheet getGraphSheet() {
-        if (updateFlag || null == graphSheet || graphSheet.getGraph() != previewGraph) {
-            graphSheet = new GraphSheetImpl(getGraph());
+        if (model != null) {
+            if (model.isUpdateFlag() || null == graphSheet || graphSheet.getGraph() != previewGraph) {
+                graphSheet = new GraphSheetImpl(getGraph());
+            }
+            return graphSheet;
         }
-
-        return graphSheet;
+        return null;
     }
 
     public GraphSheet getPartialGraphSheet(float visibilityRatio) {
-        if (updateFlag || null == partialGraphSheet
-                || ((PartialGraphImpl) partialGraphSheet.getGraph()).getVisibilityRatio() != visibilityRatio) {
-            partialGraphSheet = new GraphSheetImpl(getPartialGraph(visibilityRatio));
+        if (model != null) {
+            if (model.isUpdateFlag() || null == partialGraphSheet
+                    || ((PartialGraphImpl) partialGraphSheet.getGraph()).getVisibilityRatio() != visibilityRatio) {
+                partialGraphSheet = new GraphSheetImpl(getPartialGraph(visibilityRatio));
+            }
+            return partialGraphSheet;
         }
-
-        return partialGraphSheet;
+        return null;
     }
 
     /**
@@ -151,51 +134,20 @@ public class PreviewControllerImpl implements PreviewController, GraphListener {
      * @see PreviewController#buildGraph()
      */
     public void buildGraph() {
-        clearSupervisors();
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        model.clearSupervisors();
 
         if (graphModel.isUndirected()) {
-            previewGraph = factory.createPreviewGraph(graphModel.getUndirectedGraph());
+            previewGraph = factory.createPreviewGraph(model, graphModel.getUndirectedGraph());
         } else if (graphModel.isDirected()) {
-            previewGraph = factory.createPreviewGraph(graphModel.getDirectedGraph());
+            previewGraph = factory.createPreviewGraph(model, graphModel.getDirectedGraph());
         } else if (graphModel.isMixed()) {
-            previewGraph = factory.createPreviewGraph(graphModel.getMixedGraph());
+            previewGraph = factory.createPreviewGraph(model, graphModel.getMixedGraph());
         }
-
-        updateFlag = false;
+        model.setUpdateFlag(false);
     }
 
-    public NodeSupervisor getNodeSupervisor() {
-        return nodeSupervisor;
-    }
-
-    public GlobalEdgeSupervisor getGlobalEdgeSupervisor() {
-        return globalEdgeSupervisor;
-    }
-
-    public SelfLoopSupervisor getSelfLoopSupervisor() {
-        return selfLoopSupervisor;
-    }
-
-    public DirectedEdgeSupervisor getUniEdgeSupervisor() {
-        return uniEdgeSupervisor;
-    }
-
-    public DirectedEdgeSupervisor getBiEdgeSupervisor() {
-        return biEdgeSupervisor;
-    }
-
-    public UndirectedEdgeSupervisor getUndirectedEdgeSupervisor() {
-        return undirectedEdgeSupervisor;
-    }
-
-    /**
-     * Clears the supervisors' lists of supervised elements.
-     */
-    private void clearSupervisors() {
-        nodeSupervisor.clearSupervised();
-        globalEdgeSupervisor.clearSupervised();
-        selfLoopSupervisor.clearSupervised();
-        uniEdgeSupervisor.clearSupervised();
-        biEdgeSupervisor.clearSupervised();
+    public PreviewModel getModel() {
+        return model;
     }
 }

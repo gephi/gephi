@@ -12,7 +12,7 @@ import org.gephi.preview.util.HolderImpl;
  */
 public abstract class AbstractEdge implements EdgeColorizerClient {
 
-    private final GraphImpl parent;
+    protected final GraphImpl parent;
     private final Float thickness;
     protected final HolderImpl<Color> colorHolder = new HolderImpl<Color>();
 

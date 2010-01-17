@@ -1,10 +1,8 @@
 package org.gephi.preview;
 
-import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.UndirectedEdge;
 import org.gephi.preview.supervisors.EdgeSupervisorImpl;
 import org.gephi.preview.supervisors.UndirectedEdgeSupervisorImpl;
-import org.openide.util.Lookup;
 
 /**
  * Implementation of an undirected edge.
@@ -35,8 +33,7 @@ public class UndirectedEdgeImpl extends EdgeImpl implements UndirectedEdge {
      * @return the undirected edge supervisor
      */
     public UndirectedEdgeSupervisorImpl getUndirectedEdgeSupervisor() {
-        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        return (UndirectedEdgeSupervisorImpl) controller.getUndirectedEdgeSupervisor();
+        return (UndirectedEdgeSupervisorImpl) parent.getModel().getUndirectedEdgeSupervisor();
     }
 
     @Override

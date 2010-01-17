@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import org.gephi.preview.api.BidirectionalEdge;
 import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.Node;
-import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.SelfLoop;
 import org.gephi.preview.api.UndirectedEdge;
 import org.gephi.preview.api.UnidirectionalEdge;
-import org.openide.util.Lookup;
 
 /**
  * Implementation of a preview graph.
@@ -17,11 +16,16 @@ import org.openide.util.Lookup;
  */
 public class GraphImpl implements Graph {
 
+    private final PreviewModel model;
     private final ArrayList<Node> nodes = new ArrayList<Node>();
     private final ArrayList<SelfLoop> selfLoops = new ArrayList<SelfLoop>();
     private final ArrayList<UnidirectionalEdge> uniEdges = new ArrayList<UnidirectionalEdge>();
     private final ArrayList<BidirectionalEdge> biEdges = new ArrayList<BidirectionalEdge>();
     private final ArrayList<UndirectedEdge> undirectedEdges = new ArrayList<UndirectedEdge>();
+
+    public GraphImpl(PreviewModel model) {
+        this.model = model;
+    }
 
     public Iterable<Node> getNodes() {
         return nodes;
@@ -109,17 +113,18 @@ public class GraphImpl implements Graph {
     }
 
     public Boolean showNodes() {
-        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        return controller.getNodeSupervisor().getShowNodes();
+        return model.getNodeSupervisor().getShowNodes();
     }
 
     public Boolean showEdges() {
-        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        return controller.getGlobalEdgeSupervisor().getShowFlag();
+        return model.getGlobalEdgeSupervisor().getShowFlag();
     }
 
     public Boolean showSelfLoops() {
-        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        return controller.getSelfLoopSupervisor().getShowFlag();
+        return model.getSelfLoopSupervisor().getShowFlag();
+    }
+
+    public PreviewModel getModel() {
+        return model;
     }
 }

@@ -29,6 +29,10 @@ public class UndirectedEdgeSupervisorImpl extends EdgeSupervisorImpl
      * Initializes default values.
      */
     public UndirectedEdgeSupervisorImpl() {
+        defaultValues();
+    }
+
+    public void defaultValues() {
         curvedFlag = false;
         colorizer = new EdgeBothBColorMode();
         showLabelsFlag = true;

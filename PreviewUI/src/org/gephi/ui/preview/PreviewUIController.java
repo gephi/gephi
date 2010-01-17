@@ -7,6 +7,7 @@ import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.preview.api.GraphSheet;
 import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.PreviewModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
@@ -27,15 +28,15 @@ public class PreviewUIController implements GraphListener {
      * Private constructor.
      */
     private PreviewUIController() {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
         final GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-
-        // checks the current workspace state before listening to the related events
-        if (pc.getCurrentWorkspace() != null) {
+        PreviewModel previewModel = previewController.getModel();
+        if (previewModel != null) {
             graphModel = gc.getModel();
             graphModel.addGraphListener(this);
         }
 
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
@@ -137,6 +138,8 @@ public class PreviewUIController implements GraphListener {
                 previewSettingsTopComponent.disableRefreshButton();
             }
         });
+
+        PreviewSettingsTopComponent.findInstance().refreshModel();
     }
 
     /**
@@ -152,6 +155,7 @@ public class PreviewUIController implements GraphListener {
             public void run() {
                 PreviewTopComponent previewTopComponent = PreviewTopComponent.findInstance();
                 previewTopComponent.showBannerPanel();
+                PreviewSettingsTopComponent.findInstance().refreshModel();
             }
         });
     }
