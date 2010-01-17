@@ -183,6 +183,9 @@ public class PartialGraphImpl implements Graph {
      */
     private void updateVisibleNodes() {
         int visibleNodesCount = (int) (originalGraph.countNodes() * visibilityRatio);
+        if (visibleNodesCount == 0) {
+            visibleNodesCount = Math.min(10, originalGraph.countNodes());
+        }
         Iterator<Node> nodeIt = originalGraph.getNodes().iterator();
 
         visibleNodes.clear();

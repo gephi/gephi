@@ -2,7 +2,10 @@ package org.gephi.ui.preview;
 
 import java.awt.BorderLayout;
 import java.io.Serializable;
+import java.text.NumberFormat;
 import java.util.logging.Logger;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.project.api.ProjectController;
@@ -41,13 +44,27 @@ final class PreviewSettingsTopComponent extends TopComponent {
 
         // forces the controller instanciation
         PreviewUIController.findInstance();
+
+        ratioSlider.addChangeListener(new ChangeListener() {
+
+            NumberFormat formatter = NumberFormat.getPercentInstance();
+
+            public void stateChanged(ChangeEvent e) {
+                float val = ratioSlider.getValue()/100f;
+                if(val==0f) {
+                    ratioLabel.setText("Minimum");
+                } else {
+                    ratioLabel.setText(formatter.format(val));
+                }
+            }
+        });
     }
 
     public void refreshModel() {
         propertySheet.setNodes(new Node[]{new PreviewNode()});
         PreviewModel pc = Lookup.getDefault().lookup(PreviewController.class).getModel();
         if(pc != null) {
-            visibilityRatioSpinner.setValue((int)(pc.getVisibilityRatio()*100));
+            ratioSlider.setValue((int)(pc.getVisibilityRatio()*100));
         }
     }
 
@@ -58,7 +75,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
      * @return the graph visibility ratio
      */
     public float getVisibilityRatio() {
-        float value = (Integer) visibilityRatioSpinner.getValue();
+        float value = (Integer) ratioSlider.getValue();
 
         if (value < 0) {
             value = 0;
@@ -98,11 +115,13 @@ final class PreviewSettingsTopComponent extends TopComponent {
 
         refreshButton = new javax.swing.JButton();
         propertiesPanel = new javax.swing.JPanel();
-        visibilityRatioLabel = new javax.swing.JLabel();
-        visibilityRatioSpinner = new javax.swing.JSpinner();
+        labelRatio = new javax.swing.JLabel();
+        ratioLabel = new javax.swing.JLabel();
+        ratioSlider = new javax.swing.JSlider();
 
         setLayout(new java.awt.GridBagLayout());
 
+        refreshButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/preview/resources/refresh.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.refreshButton.text")); // NOI18N
         refreshButton.setEnabled(false);
         refreshButton.addActionListener(new java.awt.event.ActionListener() {
@@ -111,48 +130,61 @@ final class PreviewSettingsTopComponent extends TopComponent {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 0);
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(7, 5, 0, 10);
         add(refreshButton, gridBagConstraints);
 
         propertiesPanel.setLayout(new java.awt.BorderLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         add(propertiesPanel, gridBagConstraints);
 
-        org.openide.awt.Mnemonics.setLocalizedText(visibilityRatioLabel, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.visibilityRatioLabel.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelRatio, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.labelRatio.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(2, 5, 2, 5);
-        add(visibilityRatioLabel, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(5, 7, 3, 5);
+        add(labelRatio, gridBagConstraints);
 
-        visibilityRatioSpinner.setValue(new Integer(100));
+        org.openide.awt.Mnemonics.setLocalizedText(ratioLabel, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.ratioLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        add(visibilityRatioSpinner, gridBagConstraints);
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 3, 0);
+        add(ratioLabel, gridBagConstraints);
+
+        ratioSlider.setPreferredSize(new java.awt.Dimension(120, 23));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 3, 5, 20);
+        add(ratioSlider, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
         PreviewUIController.findInstance().refreshPreview();
 }//GEN-LAST:event_refreshButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel labelRatio;
     private javax.swing.JPanel propertiesPanel;
+    private javax.swing.JLabel ratioLabel;
+    private javax.swing.JSlider ratioSlider;
     private javax.swing.JButton refreshButton;
-    private javax.swing.JLabel visibilityRatioLabel;
-    private javax.swing.JSpinner visibilityRatioSpinner;
     // End of variables declaration//GEN-END:variables
 
     /**
