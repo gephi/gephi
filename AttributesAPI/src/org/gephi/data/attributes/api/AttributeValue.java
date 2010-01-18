@@ -21,12 +21,29 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.api;
 
 /**
+ * Cell that contains the value for a particular {@link AttributeColumn} and
+ * {@link AttributeRow}.
+ * <p>
+ * Cells are build from a {@link AttributeValueFactory}, that can be get from the
+ * {@link AttributeModel}.
  *
  * @author Mathieu Bastian
  */
 public interface AttributeValue {
 
+    /**
+     * Returns the column this value belongs.
+     * 
+     * @return  the column this value belongs
+     */
     public AttributeColumn getColumn();
 
+    /**
+     * Returns the value. May be <code>null</code> or equal to the column's
+     * default value.
+     *
+     * @return  the value or <code>null</code>
+     * @see     AttributeColumn#getDefaultValue()
+     */
     public Object getValue();
 }

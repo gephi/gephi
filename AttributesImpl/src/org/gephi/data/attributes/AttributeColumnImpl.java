@@ -30,12 +30,12 @@ import org.gephi.data.attributes.api.AttributeType;
  */
 public class AttributeColumnImpl implements AttributeColumn {
 
-    protected int index;
-    protected String id;
-    protected String title;
-    protected AttributeType type;
-    protected AttributeOrigin origin;
-    protected AttributeValueImpl defaultValue;
+    protected final int index;
+    protected final String id;
+    protected final String title;
+    protected final AttributeType type;
+    protected final AttributeOrigin origin;
+    protected final AttributeValueImpl defaultValue;
 
     public AttributeColumnImpl(int index, String id, String title, AttributeType attributeType, AttributeOrigin origin, Object defaultValue) {
         this.index = index;

@@ -26,17 +26,71 @@ package org.gephi.data.attributes.api;
  */
 public interface AttributeModel {
 
+    /**
+     * Returns the <b>node</b> table. Contains all the columns associated to
+     * node elements.
+     * <p>
+     * An <code>AttributeModel</code> has always <b>node</b> and <b>edge</b>
+     * tables by default.
+     *
+     * @return      the node table, contains node columns
+     */
     public AttributeTable getNodeTable();
 
+    /**
+     * Returns the <b>edge</b> table. Contains all the columns associated to
+     * edge elements.
+     * <p>
+     * An <code>AttributeModel</code> has always <b>node</b> and <b>edge</b>
+     * tables by default.
+     *
+     * @return      the edge table, contains edge columns
+     */
     public AttributeTable getEdgeTable();
 
+    /**
+     * Returns the <code>AttributeTable</code> which has the given <code>name</code>
+     * or <code>null</code> if this table doesn't exist.
+     *
+     * @param name  the table's name
+     * @return      the table that has been found, or <code>null</code>
+     */
     public AttributeTable getTable(String name);
 
+    /**
+     * Returns all tables this model contains. By default, only contains
+     * <b>node</b> and <b>edge</b> tables.
+     *
+     * @return      all the tables of this model
+     */
     public AttributeTable[] getTables();
 
+    /**
+     * Return the value factory.
+     * 
+     * @return      the value factory
+     */
     public AttributeValueFactory valueFactory();
 
+    /**
+     * Returns the row factory.
+     *
+     * @return      the row factory
+     */
     public AttributeRowFactory rowFactory();
-    
+
+    /**
+     * Merge <code>model</code> in this model. Makes the union of tables and
+     * columns of both models. Copy tables this model don't
+     * have and merge existing ones. For existing tables, call
+     * {@link AttributeTable#mergeTable(org.gephi.data.attributes.api.AttributeTable)}
+     * to merge columns.
+     * <p>
+     * Columns are compared according to their <code>id</code> and <code>type</code>.
+     * Columns found in <code>model</code> are appended only if they no column
+     * exist with the same <code>id</code> and <code>type</code>.
+     *
+     * @param model the model that is to be merged in this model
+     */
     public void mergeModel(AttributeModel model);
 }

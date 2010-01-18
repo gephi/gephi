@@ -21,10 +21,22 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.api;
 
 /**
+ * Factory which is building exclusively {@link AttributeValue}. It can be get
+ * from the {@link AttributeModel#valueFactory()}.
  *
  * @author Mathieu Bastian
  */
 public interface AttributeValueFactory {
 
+    /**
+     * Returns a new cell value for the given <code>column</code> and
+     * <code>value</code>. The <code>value</code> can be <code>null</code>.
+     * <p>
+     * The <code>value</code> type should be compatible with the column type.
+     *
+     * @param column    the column where the cell belongs
+     * @param value     a compatible value, or <code>null</code>
+     * @return          the new value for the given column
+     */
     public AttributeValue newValue(AttributeColumn column, Object value);
 }

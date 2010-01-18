@@ -21,20 +21,75 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.api;
 
 /**
- *
+ * Column is the header of a data column. It belongs to an <code>AttributeTable</code>
+ * and is the key to access data within <code>AttributeRow</code>.
+ * <p>
+ * It contains its index that may be used to get the appropriate value in the
+ * <code>AttributeRow</code> values array.
+ * <h2>Iterate rows values</h2>
+ * <pre>
+ * Attribute row = ...;
+ * for(AttributeColumn column : table.getColumns()) {
+ *      Object value = row.getValue(column);
+ * }
+ * </pre>
+ * 
  * @author Mathieu Bastian
+ * @see AttributeRow
+ * @see AttributeTable
  */
 public interface AttributeColumn {
 
+    /**
+     * Returns the type of this column content.
+     *
+     * @return  the type of this column
+     */
     public AttributeType getType();
 
+    /**
+     * Returns the title of this column. The title is a human-readable text that
+     * describes the column data. When no title exists, returns the <code>Id</code>
+     * of this column.
+     *
+     * @return  the title of this column, if exists, or the <code>Id</code> otherwise
+     */
     public String getTitle();
 
+    /**
+     * Returns the index of this column. The index is the fastest way to access a
+     * column from its <code>AttributeTable</code> or manipulate
+     * <code>AttributeRow</code>.
+     * 
+     * @return  the index of this column
+     * @see     AttributeTable#getColumn(int)
+     * @see     AttributeRow#getValue(int)
+     */
     public int getIndex();
 
+    /**
+     * Returns the origin of this column content, meta-data that describes where
+     * the column comes from. Default value is <code>AttributeOrigin.DATA</code>.
+     *
+     * @return  the origin of this column content
+     */
     public AttributeOrigin getOrigin();
 
+    /**
+     * Returns the id of this column. The id is the unique identifier that describes
+     * the column data.
+     *
+     * @return  the id of this column
+     */
     public String getId();
 
+    /**
+     * Returns the default value for this column. May be <code>null</code>.
+     * <p>
+     * The returned <code>Object</code> class type is equal to the class obtained
+     * with <code>AttributeType.getType()</code>.
+     *
+     * @return  the default value, or <code>null</code>
+     */
     public Object getDefaultValue();
 }

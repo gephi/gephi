@@ -47,14 +47,34 @@ public enum AttributeType {
         return type.getSimpleName();
     }
 
+    /**
+     * The name of the enum constant.
+     *
+     * @return the name of the enum constant
+     */
     public String getTypeString() {
         return super.toString();
     }
 
+    /**
+     * Returns the <code>Class</code> the type is associated with.
+     *
+     * @return      the <code>class</code> the type is associated with
+     */
     public Class getType() {
         return type;
     }
 
+    /**
+     * Try to parse the given <code>str</code> snippet in an object of the type
+     * associated to this <code>AttributeType</code>. For instance if the type
+     * is <b>Boolean</b>, and <code>str</code> equals <code>true</code>, this
+     * method will succeed to return a <code>Boolean</code> instance. May
+     * throw <code>NumberFormatException</code>.
+     * 
+     * @param str   the string that is to be parsed
+     * @return      an instance of the type of this  <code>AttributeType</code>.
+     */
     public Object parse(String str) {
         switch (this) {
             case FLOAT:
@@ -73,6 +93,19 @@ public enum AttributeType {
         return str;
     }
 
+    /**
+     * Build an <code>AttributeType</code> from the given <code>obj</code> type.
+     * If the given <code>obj</code> class match with an
+     * <code>AttributeType</code> type, returns this type. Returns <code>null</code>
+     * otherwise.
+     * <p>
+     * For instance if
+     * <b>obj instanceof Float</b> equals <b>true</b>, returns
+     * <code>AttributeType.FLOAT</code>.
+     *
+     * @param obj   the object that is to be parsed
+     * @return      the compatible <code>AttributeType</code>, or <code>null</code>
+     */
     public static AttributeType parse(Object obj) {
         Class c = obj.getClass();
         if (c.equals(String.class)) {

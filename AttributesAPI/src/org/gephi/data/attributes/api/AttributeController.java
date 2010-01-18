@@ -21,12 +21,40 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.api;
 
 /**
- *
+ * This controller is the access door to <code>AttributeModel</code>, that contains
+ * all attributes data. Attributes are simply any data that could be associated
+ * with elements like nodes or edges. This module helps to organize data in
+ * columsn and rows in a way they can be accessed in multiple, yet efficient ways.
+ * <p>
+ * This controller is a service, and exist in the system as a singleton. It can be
+ * retrieved by using the following command:
+ * <pre>
+ * AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
+ * </pre>
  * @author Mathieu Bastian
  */
 public interface AttributeController {
 
+    /**
+     * Returns the model for the current <code>Workspace</code>. May return
+     * <code>null</code> if there currently no <code>Worksapce</code> active.
+     * <p>
+     * The controller maintains the current project status and is responsible of
+     * maintaining one <code>AttributeModel</code> instance per <code>Workspace</code>.
+     * Hence, the model can also be accessed by using the following code:
+     * <pre>
+     * Workspace.getLookup().get(AttributeModel.class);
+     * </pre>
+     * @return the currently active model
+     */
     public AttributeModel getModel();
 
+    /**
+     * Create a new model independent from any <code>Workspace</code>. The model
+     * can be used indepedently and then merged in another model.
+     *
+     * @return a new independent model
+     * @see AttributeModel#mergeModel(org.gephi.data.attributes.api.AttributeModel)
+     */
     public AttributeModel newModel();
 }

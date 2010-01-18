@@ -21,14 +21,36 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.api;
 
 /**
+ * Factory which is building exclusively {@link AttributeRow}. It can be get
+ * from the {@link AttributeModel#rowFactory()}.
  *
  * @author Mathieu Bastian
  */
 public interface AttributeRowFactory {
 
+    /**
+     * Returns a new row for the <b>node</b> table.
+     *
+     * @return  a newly created row for the node table
+     * @see     AttributeModel#getNodeTable()
+     */
     public AttributeRow newNodeRow();
 
+    /**
+     * Returns a new row for the <b>edge</b> table.
+     *
+     * @return  a newly created row for the edge table
+     * @see     AttributeModel#getEdgeTable()
+     */
     public AttributeRow newEdgeRow();
 
+    /**
+     * Returns a new row for the given <code>tableName</code>, or <code>null</code>
+     * if no table with this name exists.
+     *
+     * @return  a newly created row for the given table, or <code>null</code>
+     *          otherwise
+     * @see AttributeModel#getTable(java.lang.String) 
+     */
     public AttributeRow newRowForTable(String tableName);
 }
