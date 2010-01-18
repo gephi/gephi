@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+    <body bgcolor="white">
+        General API that defines the data structure.
+        <p>
+            Gephi uses <b>Attribute API</b> to store all data for elements (nodes, edges)
+            that are specific to the data manipulated - i.e. imported from a file
+            or a datasource.
+        </p>
+        <p>
+            The <code>AttributeController</code> is managing models and is the
+            access door to the system. This controller is a service, and can be
+            retrieved by using the following command:
+        </p>
+        <p><code>AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);</code></p>
+        <p>
+            Using the Attributes API, it is possible to add data columns of any type,
+            and push data to rows dynamically.
+        </p>
+    </body>
+</html>

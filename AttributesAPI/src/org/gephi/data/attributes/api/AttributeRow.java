@@ -21,9 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.api;
 
 import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.EdgeData;
+import org.gephi.graph.api.NodeData;
 
 /**
- * Rows contains <code>AttributeValue</code>, one for each column. Rows are
+ * Rows contains {@link AttributeValue}, one for each column. Rows are
  * not stored in columns and nor in tables, they are stored in the object that
  * possess the row, for instance <code>Nodes</code> or <code>Edges</code>.
  * <p>
@@ -33,12 +35,17 @@ import org.gephi.graph.api.Attributes;
  * For instance, if an table contains a single column <b>label</b>, the column
  * index is equal to <b>0</b> and the value can be retrieved in the following ways:
  * <ul>
- * <li><code>row.getValue(column)</code></li>
- * <li><code>row.getValue("label")</code></li>
- * <li><code>row.getValue(0)</code></li>
+ * <li><code>row.getValue(column);</code></li>
+ * <li><code>row.getValue("label");</code></li>
+ * <li><code>row.getValue(0);</code></li>
  * </ul>
  * Rows are build from a {@link AttributeRowFactory}, that can be get from the
  * {@link AttributeModel}.
+ * <h3>Nodes and edges</h3>
+ * Nodes and edges elements are build from <b>Graph API</b>, and already have a
+ * default row that can be found with {@link NodeData#getAttributes()} and
+ * {@link EdgeData#getAttributes()}. Please cast <code>Attributes</code> in
+ * <code>AttributesRow</code> to profit from the complete API.
  *
  * @author Mathieu Bastian
  * @see AttributeColumn

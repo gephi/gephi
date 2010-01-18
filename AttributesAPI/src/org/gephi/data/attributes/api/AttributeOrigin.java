@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.api;
 
 /**
- * The different origin an {@link AttributeColumn} can have:
+ * Meta-data that describes the origin of columns content. Default value is <b>DATA</b>.
  * <ul><li><b>PROPERTY:</b> The attribute is a static field like Label, X or Y.</li>
  * <li><b>DATA:</b> The attribute is a normal associated data to the object.</li>
  * <li><b>COMPUTED:</b> The attribute has been computed during the program execution.</li></ul>

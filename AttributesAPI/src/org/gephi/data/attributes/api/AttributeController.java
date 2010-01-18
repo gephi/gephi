@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.api;
 
 /**
- * This controller is the access door to <code>AttributeModel</code>, that contains
+ * This controller is the access door to {@link AttributeModel}, that contains
  * all attributes data. Attributes are simply any data that could be associated
  * with elements like nodes or edges. This module helps to organize data in
  * columsn and rows in a way they can be accessed in multiple, yet efficient ways.

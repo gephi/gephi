@@ -24,7 +24,13 @@ import org.openide.util.Lookup;
 import org.openide.util.LookupListener;
 
 /**
- * Table that contains columns, holded by an {@link AttributModel}.
+ * Table hosts columns and permits all manipulation on them. Columns can be
+ * appened with different level of details. The table maintains a map with
+ * column identifier and title (header) in order they can be retrieved efficiently.
+ * <p>
+ * Tracking added or removed columlns can be performed by creating a
+ * <code>LookupListener</code> on this table lookup, with <code>AttributeColumn</code>
+ * as lookup result. See {@link #getLookup()}.
  *
  * @author Mathieu Bastian
  * @see AttributeColumn

@@ -21,8 +21,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.api;
 
 /**
+ * Represents the data model, like a standard database would do. As a database,
+ * contains a list of tables, where columns are defined. By default, a model
+ * owns a <b>node</b> and <b>edge</b> table, but more could exist, depending
+ * of the model implementation.
+ * <p>
+ * The model also provides factories that are linked to this model. Use row
+ * factory to build new rows and value factory to push new values to these
+ * rows. Columns are manipulated from the <code>AttributeTable</code> class.
  *
  * @author Mathieu Bastian
+ * @see AttributeController
  */
 public interface AttributeModel {
 
@@ -83,7 +92,7 @@ public interface AttributeModel {
      * Merge <code>model</code> in this model. Makes the union of tables and
      * columns of both models. Copy tables this model don't
      * have and merge existing ones. For existing tables, call
-     * {@link AttributeTable#mergeTable(org.gephi.data.attributes.api.AttributeTable)}
+     * {@link AttributeTable#mergeTable(AttributeTable)}
      * to merge columns.
      * <p>
      * Columns are compared according to their <code>id</code> and <code>type</code>.
