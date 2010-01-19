@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-OpenIDE-Module: org.gephi.processing
-OpenIDE-Module-Localizing-Bundle: org/gephi/processing/Bundle.properties
+OpenIDE-Module: org.gephi.lib.processing
+OpenIDE-Module-Localizing-Bundle: org/gephi/lib/processing/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.0.9
 

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 AutoUpdate-Show-In-Client: false
-OpenIDE-Module: org.gephi.jogl
-OpenIDE-Module-Localizing-Bundle: org/gephi/jogl/Bundle.properties
+OpenIDE-Module: org.gephi.lib.jogl
+OpenIDE-Module-Localizing-Bundle: org/gephi/lib/jogl/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.1
-OpenIDE-Module-Install: org/gephi/jogl/JOGLNativesInstaller.class
+OpenIDE-Module-Install: org/gephi/lib/jogl/JOGLNativesInstaller.class
 

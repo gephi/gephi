@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 AutoUpdate-Show-In-Client: false
-OpenIDE-Module: org.gephi.visualization.gleem
-OpenIDE-Module-Localizing-Bundle: org/gephi/visualization/gleem/Bundle.properties
+OpenIDE-Module: org.gephi.lib.gleem
+OpenIDE-Module-Localizing-Bundle: org/gephi/lib/gleem/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.0
 

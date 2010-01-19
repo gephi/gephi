@@ -21,8 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.ui.generator.standard;
 
-import org.gephi.validation.BetweenZeroAndOneValidator;
-import org.gephi.validation.PositiveNumberValidator;
+import org.gephi.lib.validation.BetweenZeroAndOneValidator;
+import org.gephi.lib.validation.PositiveNumberValidator;
 import org.netbeans.validation.api.builtin.Validators;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;

@@ -3,7 +3,7 @@
     <type>org.netbeans.modules.apisupport.project</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
-            <code-name-base>org.gephi.validation</code-name-base>
+            <code-name-base>org.gephi.lib.validation</code-name-base>
             <suite-component/>
             <module-dependencies>
                 <dependency>
@@ -16,7 +16,7 @@
                 </dependency>
             </module-dependencies>
             <public-packages>
-                <package>org.gephi.validation</package>
+                <package>org.gephi.lib.validation</package>
                 <package>org.netbeans.validation.api</package>
                 <package>org.netbeans.validation.api.builtin</package>
                 <package>org.netbeans.validation.api.conversion</package>

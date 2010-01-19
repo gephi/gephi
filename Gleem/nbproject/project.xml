@@ -3,11 +3,11 @@
     <type>org.netbeans.modules.apisupport.project</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
-            <code-name-base>org.gephi.visualization.gleem</code-name-base>
+            <code-name-base>org.gephi.lib.gleem</code-name-base>
             <suite-component/>
             <module-dependencies/>
             <public-packages>
-                <package>org.gephi.visualization.gleem.linalg</package>
+                <package>org.gephi.lib.gleem.linalg</package>
             </public-packages>
         </data>
     </configuration>

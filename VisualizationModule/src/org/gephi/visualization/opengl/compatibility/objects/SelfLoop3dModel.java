@@ -26,7 +26,7 @@ import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.ModelImpl;
-import org.gephi.visualization.gleem.linalg.Vec3f;
+import org.gephi.lib.gleem.linalg.Vec3f;
 import org.gephi.visualization.opengl.octree.Octant;
 
 /**

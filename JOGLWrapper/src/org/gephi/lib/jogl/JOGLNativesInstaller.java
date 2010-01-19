@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.jogl;
+package org.gephi.lib.jogl;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;

@@ -25,7 +25,7 @@ import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.ModelImpl;
-import org.gephi.visualization.gleem.linalg.Vecf;
+import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.hull.ConvexHull;
 import org.gephi.visualization.opengl.octree.Octant;
 

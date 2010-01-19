@@ -37,60 +37,27 @@
  * WARRANTY OF FITNESS FOR SUCH USES.
  */
 
-package org.gephi.visualization.gleem.linalg;
+package org.gephi.lib.gleem.linalg;
 
-/** Arbitrary-length integer vector class. Currently very simple and
-    only supports a few needed operations. */
+/** Wraps a 3D point and parametric time value. */
 
-public class Veci {
-  private int[] data;
+public class IntersectionPoint {
+  private Vec3f intPt = new Vec3f();
+  private float t;
 
-  public Veci(int n) {
-    data = new int[n];
+  public Vec3f getIntersectionPoint() {
+    return intPt;
   }
 
-  public Veci(Veci arg) {
-    data = new int[arg.data.length];
-    System.arraycopy(arg.data, 0, data, 0, data.length);
+  public void setIntersectionPoint(Vec3f newPt) {
+    intPt.set(newPt);
   }
 
-  public int length() {
-    return data.length;
+  public float getT() {
+    return t;
   }
 
-  public int get(int i) {
-    return data[i];
-  }
-
-  public void set(int i, int val) {
-    data[i] = val;
-  }
-
-  public Vec2f toVec2f() throws DimensionMismatchException {
-    if (length() != 2)
-      throw new DimensionMismatchException();
-    Vec2f out = new Vec2f();
-    for (int i = 0; i < 2; i++) {
-      out.set(i, get(i));
-    }
-    return out;
-  }
-
-  public Vec3f toVec3f() throws DimensionMismatchException {
-    if (length() != 3)
-      throw new DimensionMismatchException();
-    Vec3f out = new Vec3f();
-    for (int i = 0; i < 3; i++) {
-      out.set(i, get(i));
-    }
-    return out;
-  }
-
-  public Vecf toVecf() {
-    Vecf out = new Vecf(length());
-    for (int i = 0; i < length(); i++) {
-      out.set(i, get(i));
-    }
-    return out;
+  public void setT(float t) {
+    this.t = t;
   }
 }

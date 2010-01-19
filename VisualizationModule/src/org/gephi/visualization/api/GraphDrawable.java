@@ -23,7 +23,7 @@ package org.gephi.visualization.api;
 import java.awt.Component;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
-import org.gephi.visualization.gleem.linalg.Vec3f;
+import org.gephi.lib.gleem.linalg.Vec3f;
 
 /**
  *

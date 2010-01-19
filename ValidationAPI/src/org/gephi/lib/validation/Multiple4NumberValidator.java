@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.gephi.validation;
+package org.gephi.lib.validation;
 
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;

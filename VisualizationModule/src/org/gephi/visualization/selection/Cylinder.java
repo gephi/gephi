@@ -30,7 +30,7 @@ import org.gephi.visualization.api.GraphIO;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.visualization.api.selection.SelectionArea;
 import org.gephi.visualization.api.selection.SelectionManager;
-import org.gephi.visualization.gleem.linalg.Vecf;
+import org.gephi.lib.gleem.linalg.Vecf;
 
 /**
  *

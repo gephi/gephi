@@ -28,7 +28,7 @@ import org.gephi.datastructure.avl.simple.AVLItem;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.VizModel;
-import org.gephi.visualization.gleem.linalg.Vecf;
+import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
 
 /**

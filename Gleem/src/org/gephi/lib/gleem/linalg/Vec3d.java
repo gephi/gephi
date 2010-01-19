@@ -4,7 +4,7 @@
  * See the file GLEEM-LICENSE.txt in the doc/ directory for licensing terms.
  */
 
-package org.gephi.visualization.gleem.linalg;
+package org.gephi.lib.gleem.linalg;
 
 /** 3-element double-precision vector */
 

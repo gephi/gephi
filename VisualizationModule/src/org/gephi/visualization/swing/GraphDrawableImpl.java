@@ -35,7 +35,7 @@ import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.GraphDrawable;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.gleem.linalg.Vec3f;
+import org.gephi.lib.gleem.linalg.Vec3f;
 import org.gephi.visualization.api.Scheduler;
 
 /**

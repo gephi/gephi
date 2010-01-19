@@ -39,7 +39,7 @@ import org.gephi.visualization.api.VizConfig;
 import org.gephi.visualization.api.selection.SelectionArea;
 import org.gephi.visualization.bridge.DataBridge;
 import org.gephi.visualization.bridge.EventBridge;
-import org.gephi.visualization.gleem.linalg.Vecf;
+import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.mode.ModeManager;
 import org.gephi.visualization.opengl.octree.Octree;
 import org.gephi.visualization.opengl.text.TextManager;

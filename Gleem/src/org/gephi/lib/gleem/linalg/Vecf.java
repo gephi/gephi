@@ -37,54 +37,61 @@
  * WARRANTY OF FITNESS FOR SUCH USES.
  */
 
-package org.gephi.visualization.gleem.linalg;
+package org.gephi.lib.gleem.linalg;
 
-/** Utility math routines. */
 
-public class MathUtil {
-  /** Makes an arbitrary vector perpendicular to <B>src</B> and
-      inserts it into <B>dest</B>. Returns false if the source vector
-      was equal to (0, 0, 0). */
-  public static boolean makePerpendicular(Vec3f src,
-                                          Vec3f dest) {
-    if ((src.x() == 0.0f) && (src.y() == 0.0f) && (src.z() == 0.0f)) {
-      return false;
-    }
+/** Arbitrary-length single-precision vector class. Currently very
+    simple and only supports a few needed operations. */
 
-    if (src.x() != 0.0f) {
-      if (src.y() != 0.0f) {
-	dest.set(-src.y(), src.x(), 0.0f);
-      }	else {
-	dest.set(-src.z(), 0.0f, src.x());
-      }
-    } else {
-      dest.set(1.0f, 0.0f, 0.0f);
-    }
-    return true;
+public class Vecf {
+  private float[] data;
+
+  public Vecf(int n) {
+    data = new float[n];
   }
 
-  /** Returns 1 if the sign of the given argument is positive; -1 if
-      negative; 0 if 0. */
-  public static int sgn(float f) {
-    if (f > 0) {
-      return 1;
-    } else if (f < 0) {
-      return -1;
+  public Vecf(Vecf arg) {
+    data = new float[arg.data.length];
+    System.arraycopy(arg.data, 0, data, 0, data.length);
+  }
+
+  public int length() {
+    return data.length;
+  }
+
+  public float get(int i) {
+    return data[i];
+  }
+
+  public void set(int i, float val) {
+    data[i] = val;
+  }
+
+  public Vec2f toVec2f() throws DimensionMismatchException {
+    if (length() != 2)
+      throw new DimensionMismatchException();
+    Vec2f out = new Vec2f();
+    for (int i = 0; i < 2; i++) {
+      out.set(i, get(i));
     }
-    return 0;
+    return out;
   }
 
-  /** Clamps argument between min and max values. */
-  public static float clamp(float val, float min, float max) {
-    if (val < min) return min;
-    if (val > max) return max;
-    return val;
+  public Vec3f toVec3f() throws DimensionMismatchException {
+    if (length() != 3)
+      throw new DimensionMismatchException();
+    Vec3f out = new Vec3f();
+    for (int i = 0; i < 3; i++) {
+      out.set(i, get(i));
+    }
+    return out;
   }
 
-  /** Clamps argument between min and max values. */
-  public static int clamp(int val, int min, int max) {
-    if (val < min) return min;
-    if (val > max) return max;
-    return val;
+  public Veci toInt() {
+    Veci out = new Veci(length());
+    for (int i = 0; i < length(); i++) {
+      out.set(i, (int) get(i));
+    }
+    return out;
   }
 }

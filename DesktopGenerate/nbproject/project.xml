@@ -39,7 +39,7 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.gephi.validation</code-name-base>
+                    <code-name-base>org.gephi.lib.validation</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>

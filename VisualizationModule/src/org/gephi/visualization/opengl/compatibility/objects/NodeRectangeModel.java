@@ -27,7 +27,7 @@ import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.GraphDrawable;
 import org.gephi.visualization.api.ModelImpl;
-import org.gephi.visualization.gleem.linalg.Vecf;
+import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.opengl.octree.Octant;
 
 /**

@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization;
 
-import org.gephi.visualization.gleem.linalg.Vec3f;
+import org.gephi.lib.gleem.linalg.Vec3f;
 
 /**
  *

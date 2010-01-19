@@ -23,7 +23,7 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.gephi.processing</code-name-base>
+                    <code-name-base>org.gephi.lib.processing</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>

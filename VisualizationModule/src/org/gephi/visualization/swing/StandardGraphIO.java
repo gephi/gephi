@@ -33,8 +33,8 @@ import org.gephi.visualization.api.GraphContextMenu;
 import org.gephi.visualization.api.GraphIO;
 import org.gephi.visualization.api.VizEventManager;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.gleem.linalg.MathUtil;
-import org.gephi.visualization.gleem.linalg.Vec3f;
+import org.gephi.lib.gleem.linalg.MathUtil;
+import org.gephi.lib.gleem.linalg.Vec3f;
 import org.gephi.visualization.selection.Rectangle;
 
 /**

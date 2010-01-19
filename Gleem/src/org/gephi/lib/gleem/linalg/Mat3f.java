@@ -37,7 +37,7 @@
  * WARRANTY OF FITNESS FOR SUCH USES.
  */
 
-package org.gephi.visualization.gleem.linalg;
+package org.gephi.lib.gleem.linalg;
 
 /** 3x3 matrix class useful for simple linear algebra. Representation
     is (as Mat4f) in row major order and assumes multiplication by
