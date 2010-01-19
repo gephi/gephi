@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.gephi.io.exporter.standard
 OpenIDE-Module-Localizing-Bundle: org/gephi/io/exporter/standard/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Specification-Version: 0.7
 

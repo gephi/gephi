@@ -3,5 +3,5 @@ AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.gephi.graph.dhns
 OpenIDE-Module-Layer: org/gephi/graph/dhns/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/graph/dhns/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Specification-Version: 0.7
 

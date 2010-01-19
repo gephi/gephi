@@ -38,7 +38,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import org.gephi.desktop.io.export.api.ExporterClassUI;
+import org.gephi.desktop.io.export.spi.ExporterClassUI;
 import org.gephi.io.exporter.ExportController;
 import org.gephi.io.exporter.FileType;
 import org.gephi.io.exporter.FileExporter;

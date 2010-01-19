@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: false
+OpenIDE-Module: org.gephi.ui.datatable
+OpenIDE-Module-Layer: org/gephi/ui/datatable/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/gephi/ui/datatable/Bundle.properties
+OpenIDE-Module-Specification-Version: 0.7
+

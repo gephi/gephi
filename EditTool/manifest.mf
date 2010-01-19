@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 OpenIDE-Module: org.gephi.tool.edit
 OpenIDE-Module-Layer: org/gephi/tool/edit/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/tool/edit/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Specification-Version: 0.7
 

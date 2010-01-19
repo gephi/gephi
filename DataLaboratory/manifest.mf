@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-AutoUpdate-Show-In-Client: false
-OpenIDE-Module: org.gephi.data.laboratory
-OpenIDE-Module-Layer: org/gephi/data/laboratory/layer.xml
-OpenIDE-Module-Localizing-Bundle: org/gephi/data/laboratory/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
-

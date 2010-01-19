@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import org.gephi.desktop.io.export.api.ExporterClassUI;
+import org.gephi.desktop.io.export.spi.ExporterClassUI;
 import org.gephi.project.api.ProjectController;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;

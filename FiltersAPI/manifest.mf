@@ -3,5 +3,5 @@ AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.gephi.filters.api
 OpenIDE-Module-Layer: org/gephi/filters/api/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/filters/api/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Specification-Version: 0.7
 

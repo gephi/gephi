@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 OpenIDE-Module: org.jdesktop.swingx
 OpenIDE-Module-Localizing-Bundle: org/jdesktop/swingx/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Specification-Version: 1.6
 

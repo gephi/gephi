@@ -3,5 +3,5 @@ AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.gephi.tools
 OpenIDE-Module-Layer: org/gephi/tools/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/tools/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Specification-Version: 0.7
 
