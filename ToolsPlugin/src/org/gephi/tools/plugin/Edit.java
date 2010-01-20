@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.tool.edit;
+package org.gephi.tools.plugin;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -29,6 +29,7 @@ import org.gephi.tools.spi.Tool;
 import org.gephi.tools.spi.ToolEventListener;
 import org.gephi.tools.spi.ToolSelectionType;
 import org.gephi.tools.spi.ToolUI;
+import org.gephi.ui.tools.plugin.edit.EditToolTopComponent;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.WindowManager;
@@ -75,7 +76,7 @@ public class Edit implements Tool {
             }
 
             public Icon getIcon() {
-                return new ImageIcon(getClass().getResource("/org/gephi/tool/edit/edit.png"));
+                return new ImageIcon(getClass().getResource("/org/gephi/ui/tools/plugin/edit/edit.png"));
             }
 
             public String getName() {

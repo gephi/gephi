@@ -1,24 +1,8 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
-Website : http://www.gephi.org
-
-This file is part of Gephi.
-
-Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Gephi is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
-package org.gephi.tool.edit;
+package org.gephi.ui.tools.plugin.edit;
 
 import java.util.logging.Logger;
 import org.gephi.graph.api.Node;
@@ -33,7 +17,7 @@ import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.util.Lookup;
 
-@ConvertAsProperties(dtd = "-//org.gephi.tool.edit//EditTool//EN",
+@ConvertAsProperties(dtd = "-//org.gephi.ui.tools.plugin.edit//EditTool//EN",
 autostore = false)
 public final class EditToolTopComponent extends TopComponent {
 
@@ -49,7 +33,6 @@ public final class EditToolTopComponent extends TopComponent {
 //        setIcon(ImageUtilities.loadImage(ICON_PATH, true));
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
-        System.out.println("register");
         Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
@@ -93,6 +76,18 @@ public final class EditToolTopComponent extends TopComponent {
         propertySheet = new PropertySheet();
 
         setLayout(new java.awt.GridBagLayout());
+
+        javax.swing.GroupLayout propertySheetLayout = new javax.swing.GroupLayout(propertySheet);
+        propertySheet.setLayout(propertySheetLayout);
+        propertySheetLayout.setHorizontalGroup(
+            propertySheetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 390, Short.MAX_VALUE)
+        );
+        propertySheetLayout.setVerticalGroup(
+            propertySheetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 290, Short.MAX_VALUE)
+        );
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
