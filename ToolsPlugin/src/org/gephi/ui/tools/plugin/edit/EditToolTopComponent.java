@@ -76,18 +76,6 @@ public final class EditToolTopComponent extends TopComponent {
         propertySheet = new PropertySheet();
 
         setLayout(new java.awt.GridBagLayout());
-
-        javax.swing.GroupLayout propertySheetLayout = new javax.swing.GroupLayout(propertySheet);
-        propertySheet.setLayout(propertySheetLayout);
-        propertySheetLayout.setHorizontalGroup(
-            propertySheetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 390, Short.MAX_VALUE)
-        );
-        propertySheetLayout.setVerticalGroup(
-            propertySheetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 290, Short.MAX_VALUE)
-        );
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
