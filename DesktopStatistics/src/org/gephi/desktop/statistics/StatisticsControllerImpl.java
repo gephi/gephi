@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.statistics;
 
+import org.gephi.statistics.spi.StatisticsBuilder;
+import org.gephi.statistics.spi.Statistics;
 import java.util.ArrayList;
 import org.gephi.statistics.api.*;
 import java.util.List;
@@ -28,7 +30,7 @@ import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.ProjectController;
-import org.gephi.statistics.ui.api.StatisticsUI;
+import org.gephi.statistics.spi.StatisticsUI;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.longtask.LongTaskExecutor;
 import org.gephi.utils.longtask.LongTaskListener;
@@ -149,5 +151,9 @@ public class StatisticsControllerImpl implements StatisticsController {
 
     public void setStatisticsUIVisible(StatisticsUI ui, boolean visible) {
         model.setVisible(ui, visible);
+    }
+
+    public StatisticsModelImpl getModel() {
+        return model;
     }
 }

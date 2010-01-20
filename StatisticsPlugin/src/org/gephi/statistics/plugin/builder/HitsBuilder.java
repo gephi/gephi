@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,28 +18,30 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.gephi.statistics.plugin.builder;
 
-package org.gephi.statistics.api;
-
+import org.gephi.statistics.plugin.Hits;
 import org.gephi.statistics.spi.Statistics;
-import javax.swing.event.ChangeListener;
-import org.gephi.statistics.spi.StatisticsUI;
+import org.gephi.statistics.spi.StatisticsBuilder;
+import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
- * @author Mathieu Bastian
+ * @author pjmcswee
  */
-public interface StatisticsModel {
+@ServiceProvider(service = StatisticsBuilder.class)
+public class HitsBuilder implements StatisticsBuilder {
 
-    public Statistics[] getStatistics();
+    public String getName() {
+        return NbBundle.getMessage(HitsBuilder.class, "Hits.name");
+    }
 
-    public Statistics getStatistics(StatisticsUI statisticsUI);
+    public Statistics getStatistics() {
+        return new Hits();
+    }
 
-    public boolean isStatisticsUIVisible(StatisticsUI statisticsUI);
-
-    public boolean isRunning(StatisticsUI statisticsUI);
-
-    public void addChangeListener(ChangeListener changeListener);
-
-    public void removeChangeListener(ChangeListener changeListener);
+    public Class<? extends Statistics> getStatisticsClass() {
+        return Hits.class;
+    }
 }

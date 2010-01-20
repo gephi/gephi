@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: false
+OpenIDE-Module: org.gephi.statistics.plugin
+OpenIDE-Module-Layer: org/gephi/statistics/plugin/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/gephi/statistics/plugin/Bundle.properties
+OpenIDE-Module-Specification-Version: 0.7
+

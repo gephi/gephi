@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,30 +18,30 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.statistics.api;
+package org.gephi.statistics.plugin.builder;
 
+import org.gephi.statistics.plugin.ClusteringCoefficient;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsBuilder;
-import java.util.List;
-import org.gephi.statistics.spi.StatisticsUI;
-import org.gephi.utils.longtask.LongTaskListener;
+import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
- * 
- * @author Mathieu Bastian
+ * @author pjmcswee
  */
-public interface StatisticsController {
+@ServiceProvider(service=StatisticsBuilder.class)
+public class ClusteringCoefficientBuilder implements StatisticsBuilder {
 
-    /** */
-    public List<StatisticsBuilder> getStatistics();
+    public String getName() {
+        return NbBundle.getMessage(ClusteringCoefficientBuilder.class, "ClusteringCoefficent.name");
+    }
 
-    /** */
-    public void execute(Statistics statistics, LongTaskListener listener);
+    public Statistics getStatistics() {
+        return new ClusteringCoefficient();
+    }
 
-    public StatisticsBuilder getBuilder(Class<? extends Statistics> statistics);
-
-    public void setStatisticsUIVisible(StatisticsUI ui, boolean visible);
-
-    public StatisticsModel getModel();
+    public Class<? extends Statistics> getStatisticsClass() {
+        return ClusteringCoefficient.class;
+    }
 }

@@ -33,7 +33,7 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import org.gephi.statistics.api.StatisticsController;
 import org.gephi.statistics.api.StatisticsModel;
-import org.gephi.statistics.ui.api.StatisticsUI;
+import org.gephi.statistics.spi.StatisticsUI;
 import org.gephi.ui.components.JSqueezeBoxPanel;
 import org.openide.util.Lookup;
 

@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,28 +18,26 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package org.gephi.statistics.api;
-
-import org.gephi.statistics.spi.Statistics;
-import javax.swing.event.ChangeListener;
-import org.gephi.statistics.spi.StatisticsUI;
+package org.gephi.statistics.spi;
 
 /**
- *
- * @author Mathieu Bastian
+ * The class that is responsible of instancing new Statistics
+ * @author pjmcswee
  */
-public interface StatisticsModel {
+public interface StatisticsBuilder {
 
-    public Statistics[] getStatistics();
+    /**
+     * @return The name of the Statistics
+     */
+    public String getName();
 
-    public Statistics getStatistics(StatisticsUI statisticsUI);
+    /**
+     * @return the statistic from this builder.
+     */
+    public Statistics getStatistics();
 
-    public boolean isStatisticsUIVisible(StatisticsUI statisticsUI);
-
-    public boolean isRunning(StatisticsUI statisticsUI);
-
-    public void addChangeListener(ChangeListener changeListener);
-
-    public void removeChangeListener(ChangeListener changeListener);
+    /**
+     * @return the Statistics class this builder create
+     */
+    public Class<? extends Statistics> getStatisticsClass();
 }

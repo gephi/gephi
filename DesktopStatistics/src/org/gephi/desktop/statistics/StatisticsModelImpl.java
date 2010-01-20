@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.gephi.statistics.api.Statistics;
+import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.api.StatisticsModel;
-import org.gephi.statistics.ui.api.StatisticsUI;
+import org.gephi.statistics.spi.StatisticsUI;
 
 /**
  *
