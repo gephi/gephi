@@ -7,19 +7,19 @@
             <suite-component/>
             <module-dependencies>
                 <dependency>
-                    <code-name-base>org.gephi.lib.batik</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.7</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.gephi.io.exporter</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>0.7</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.gephi.lib.batik</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.7</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
