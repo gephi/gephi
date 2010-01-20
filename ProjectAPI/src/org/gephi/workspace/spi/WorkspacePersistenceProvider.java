@@ -18,27 +18,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.project.api;
+package org.gephi.workspace.spi;
+
+import org.gephi.workspace.api.Workspace;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface ProjectMetaData {
+public interface WorkspacePersistenceProvider {
 
-    public String getKeywords();
+    public Element writeXML(Document document, Workspace workspace);
 
-    public String getAuthor();
+    public void readXML(Element element, Workspace workspace);
 
-    public String getDescription();
-
-    public String getTitle();
-
-    public void setAuthor(String author);
-
-    public void setDescription(String description);
-
-    public void setKeywords(String keywords);
-
-    public void setTitle(String title);
+    public String getIdentifier();
 }

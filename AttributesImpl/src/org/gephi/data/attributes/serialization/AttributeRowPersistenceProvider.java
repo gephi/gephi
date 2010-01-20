@@ -24,7 +24,7 @@ import org.gephi.data.attributes.AbstractAttributeModel;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.api.WorkspacePersistenceProvider;
+import org.gephi.workspace.spi.WorkspacePersistenceProvider;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

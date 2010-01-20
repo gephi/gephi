@@ -27,7 +27,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.TextData;
 import org.gephi.visualization.opengl.text.TextDataImpl;
 import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.api.WorkspacePersistenceProvider;
+import org.gephi.workspace.spi.WorkspacePersistenceProvider;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

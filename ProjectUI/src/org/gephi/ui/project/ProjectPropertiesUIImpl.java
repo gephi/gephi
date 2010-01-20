@@ -18,27 +18,33 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.project.api;
+package org.gephi.ui.project;
+
+import javax.swing.JPanel;
+import org.gephi.project.api.Project;
+import org.gephi.project.api.ProjectPropertiesUI;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface ProjectMetaData {
+@ServiceProvider(service = ProjectPropertiesUI.class)
+public class ProjectPropertiesUIImpl implements ProjectPropertiesUI {
 
-    public String getKeywords();
+    private ProjectPropertiesEditor panel;
 
-    public String getAuthor();
+    public JPanel getPanel() {
+        panel = new ProjectPropertiesEditor();
+        return panel;
+    }
 
-    public String getDescription();
+    public void setup(Project project) {
+        panel.load(project);
+    }
 
-    public String getTitle();
-
-    public void setAuthor(String author);
-
-    public void setDescription(String description);
-
-    public void setKeywords(String keywords);
-
-    public void setTitle(String title);
+    public void unsetup(Project project) {
+        panel.save(project);
+        panel = null;
+    }
 }
