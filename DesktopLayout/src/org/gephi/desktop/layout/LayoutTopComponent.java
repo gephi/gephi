@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ui.layout;
+package org.gephi.desktop.layout;
 
 import java.awt.BorderLayout;
 import java.util.logging.Logger;
@@ -33,12 +33,12 @@ import org.openide.util.ImageUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.util.Lookup;
 
-@ConvertAsProperties(dtd = "-//org.gephi.ui.layout//Layout//EN",
+@ConvertAsProperties(dtd = "-//org.gephi.desktop.layout//Layout//EN",
 autostore = false)
 public final class LayoutTopComponent extends TopComponent {
 
     private static LayoutTopComponent instance;
-    static final String ICON_PATH = "org/gephi/ui/layout/resources/small.png";
+    static final String ICON_PATH = "org/gephi/desktop/layout/resources/small.png";
     private static final String PREFERRED_ID = "LayoutTopComponent";
     private LayoutPanel layoutPanel;
     private LayoutModel model;

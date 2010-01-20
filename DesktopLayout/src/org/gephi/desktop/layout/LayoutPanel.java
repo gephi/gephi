@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ui.layout;
+package org.gephi.desktop.layout;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -42,7 +42,7 @@ import org.gephi.layout.api.LayoutModel;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutUI;
 import org.gephi.ui.components.richtooltip.RichTooltip;
-import org.gephi.ui.layout.LayoutPresetPersistence.Preset;
+import org.gephi.desktop.layout.LayoutPresetPersistence.Preset;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
@@ -175,10 +175,10 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
         if (model == null || !model.isRunning()) {
             runButton.setText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.runButton.text"));
-            runButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/layout/resources/run.gif", false));
+            runButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/layout/resources/run.gif", false));
         } else if (model.isRunning()) {
             runButton.setText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.stopButton.text"));
-            runButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/layout/resources/stop.png", false));
+            runButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/layout/resources/stop.png", false));
         }
 
         boolean enabled = model != null && model.getSelectedLayout() != null;
@@ -278,7 +278,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         add(layoutCombobox, gridBagConstraints);
 
         infoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        infoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/layout/resources/layoutInfo.png"))); // NOI18N
+        infoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/layout/resources/layoutInfo.png"))); // NOI18N
         infoLabel.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.infoLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -287,7 +287,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         gridBagConstraints.insets = new java.awt.Insets(2, 7, 0, 0);
         add(infoLabel, gridBagConstraints);
 
-        runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/layout/resources/run.gif"))); // NOI18N
+        runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/layout/resources/run.gif"))); // NOI18N
         runButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.runButton.text")); // NOI18N
         runButton.setIconTextGap(5);
         runButton.setMargin(new java.awt.Insets(2, 7, 2, 14));
@@ -306,7 +306,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         layoutToolbar.setFloatable(false);
         layoutToolbar.setRollover(true);
 
-        presetsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/layout/resources/preset.png"))); // NOI18N
+        presetsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/layout/resources/preset.png"))); // NOI18N
         presetsButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.text")); // NOI18N
         presetsButton.setFocusable(false);
         presetsButton.setIconTextGap(0);
@@ -417,8 +417,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
         public LayoutDescriptionImage(LayoutUI layoutUI) {
             this.layoutUI = layoutUI;
-            greenIcon = ImageUtilities.loadImage("org/gephi/ui/layout/resources/yellow.png");
-            grayIcon = ImageUtilities.loadImage("org/gephi/ui/layout/resources/grey.png");
+            greenIcon = ImageUtilities.loadImage("org/gephi/desktop/layout/resources/yellow.png");
+            grayIcon = ImageUtilities.loadImage("org/gephi/desktop/layout/resources/grey.png");
             qualityStr = NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.tooltip.quality");
             speedStr = NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.tooltip.speed");
         }
