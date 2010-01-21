@@ -3,7 +3,7 @@
     <type>org.netbeans.modules.apisupport.project</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
-            <code-name-base>org.gephi.io.importer</code-name-base>
+            <code-name-base>org.gephi.io.importer.api</code-name-base>
             <suite-component/>
             <module-dependencies>
                 <dependency>
@@ -35,7 +35,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>7.13.1.1.1</specification-version>
+                        <specification-version>7.32.1.1.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -43,17 +43,14 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>7.18.1.1</specification-version>
+                        <specification-version>7.31.1.1</specification-version>
                     </run-dependency>
                 </dependency>
             </module-dependencies>
             <public-packages>
-                <package>org.gephi.io.container</package>
-                <package>org.gephi.io.database</package>
-                <package>org.gephi.io.importer</package>
-                <package>org.gephi.io.logging</package>
-                <package>org.gephi.io.processor</package>
-                <package>org.gephi.ui.database</package>
+                <package>org.gephi.io.importer.api</package>
+                <package>org.gephi.io.importer.spi</package>
+                <package>org.gephi.io.processor.spi</package>
             </public-packages>
         </data>
     </configuration>

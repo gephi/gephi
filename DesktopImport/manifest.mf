@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 AutoUpdate-Show-In-Client: false
-OpenIDE-Module: org.gephi.io.desktop
-OpenIDE-Module-Layer: org/gephi/io/desktop/layer.xml
-OpenIDE-Module-Localizing-Bundle: org/gephi/io/desktop/Bundle.properties
+OpenIDE-Module: org.gephi.desktop.importer
+OpenIDE-Module-Layer: org/gephi/desktop/importer/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/importer/Bundle.properties
 OpenIDE-Module-Specification-Version: 0.7
 

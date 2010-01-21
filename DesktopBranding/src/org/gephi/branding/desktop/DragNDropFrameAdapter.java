@@ -21,18 +21,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.branding.desktop;
 
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetAdapter;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.TransferHandler;
-import org.gephi.io.importer.ImportController;
+import org.gephi.io.importer.api.ImportController;
 import org.gephi.project.api.ProjectController;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;

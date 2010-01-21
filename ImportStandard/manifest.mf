@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-AutoUpdate-Show-In-Client: false
-OpenIDE-Module: org.gephi.io.importer.standard
-OpenIDE-Module-Layer: org/gephi/io/importer/standard/layer.xml
-OpenIDE-Module-Localizing-Bundle: org/gephi/io/importer/standard/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
-

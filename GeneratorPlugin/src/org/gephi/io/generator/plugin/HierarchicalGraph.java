@@ -20,10 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.generator.plugin;
 
-import org.gephi.io.container.ContainerLoader;
-import org.gephi.io.container.NodeDraft;
 import org.gephi.io.generator.spi.Generator;
 import org.gephi.io.generator.spi.GeneratorUI;
+import org.gephi.io.importer.api.ContainerLoader;
+import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.lookup.ServiceProvider;
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<filesystem>
+    <folder name="Menu">
+        <folder name="File">
+            <file name="org-gephi-desktop-importer-ImportDB.instance">
+                <attr name="position" intvalue="600"/>
+            </file>
+        </folder>
+    </folder>
+</filesystem>
