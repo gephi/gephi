@@ -27,12 +27,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.io.container.Container;
 import org.gephi.io.container.ContainerFactory;
-import org.gephi.io.generator.Generator;
-import org.gephi.io.generator.GeneratorController;
+import org.gephi.io.generator.api.GeneratorController;
+import org.gephi.io.generator.spi.Generator;
+import org.gephi.io.generator.spi.GeneratorUI;
 import org.gephi.io.logging.Report;
 import org.gephi.io.processor.Processor;
 import org.gephi.project.api.ProjectController;
-import org.gephi.ui.generator.GeneratorUI;
 import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
 import org.gephi.workspace.api.Workspace;
@@ -41,11 +41,13 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service = GeneratorController.class)
 public class DesktopGeneratorController implements GeneratorController {
 
     private LongTaskExecutor executor;

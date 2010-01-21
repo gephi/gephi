@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-AutoUpdate-Show-In-Client: false
-OpenIDE-Module: org.gephi.io.generator.standard
-OpenIDE-Module-Localizing-Bundle: org/gephi/io/generator/standard/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7
-

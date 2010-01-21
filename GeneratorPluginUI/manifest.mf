@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: false
+OpenIDE-Module: org.gephi.ui.generator.plugin
+OpenIDE-Module-Layer: org/gephi/ui/generator/plugin/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/gephi/ui/generator/plugin/Bundle.properties
+OpenIDE-Module-Specification-Version: 0.7
+
