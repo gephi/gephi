@@ -39,11 +39,11 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.gephi.desktop.io.export.spi.ExporterClassUI;
-import org.gephi.io.exporter.ExportController;
-import org.gephi.io.exporter.FileExporter;
-import org.gephi.io.exporter.FileType;
-import org.gephi.io.exporter.VectorialFileExporter;
-import org.gephi.ui.exporter.ExporterUI;
+import org.gephi.io.exporter.api.ExportController;
+import org.gephi.io.exporter.api.FileType;
+import org.gephi.io.exporter.spi.ExporterUI;
+import org.gephi.io.exporter.spi.FileExporter;
+import org.gephi.io.exporter.spi.VectorialFileExporter;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -53,11 +53,13 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service = ExporterClassUI.class)
 public class VectorialFileExporterUI implements ExporterClassUI {
 
     private VectorialFileExporter selectedExporter;

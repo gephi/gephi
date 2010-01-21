@@ -38,34 +38,34 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.gephi.io.exporter.ExportController;
-import org.gephi.io.exporter.Exporter;
-import org.gephi.io.exporter.FileType;
-import org.gephi.io.exporter.FileExporter;
-import org.gephi.io.exporter.GraphFileExporter;
-import org.gephi.io.exporter.GraphFileExporterSettings;
-import org.gephi.io.exporter.TextGraphFileExporter;
-import org.gephi.io.exporter.VectorialFileExporter;
-import org.gephi.io.exporter.XMLGraphFileExporter;
+import org.gephi.io.exporter.api.ExportController;
+import org.gephi.io.exporter.api.FileType;
+import org.gephi.io.exporter.spi.Exporter;
+import org.gephi.io.exporter.spi.ExporterUI;
+import org.gephi.io.exporter.spi.FileExporter;
+import org.gephi.io.exporter.spi.GraphFileExporter;
+import org.gephi.io.exporter.spi.GraphFileExporterSettings;
+import org.gephi.io.exporter.spi.TextGraphFileExporter;
+import org.gephi.io.exporter.spi.VectorialFileExporter;
+import org.gephi.io.exporter.spi.XMLGraphFileExporter;
 import org.gephi.project.api.ProjectController;
-import org.gephi.ui.exporter.ExporterUI;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
 import org.gephi.workspace.api.Workspace;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Document;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service = ExportController.class)
 public class DesktopExportController implements ExportController {
 
     private LongTaskExecutor executor;
