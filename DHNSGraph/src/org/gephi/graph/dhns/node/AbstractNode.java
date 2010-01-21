@@ -90,7 +90,7 @@ public class AbstractNode implements Node, Group, AVLItem {
     }
 
     public int getPre() {
-        return pre;
+        return avlNode.getIndex();
     }
 
     public int getPost() {

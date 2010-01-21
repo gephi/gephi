@@ -127,7 +127,7 @@ public class DhnsTestUndirectedGraph {
     public void testAddEdge() {
         DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller, null);
-        HierarchicalUndirectedGraphImpl graph = new HierarchicalUndirectedGraphImpl(dhns, dhnsGlobal.getGraphStructure().getMainView());
+        HierarchicalUndirectedGraphImpl graph = new HierarchicalUndirectedGraphImpl(dhns, dhns.getGraphStructure().getMainView());
         TreeStructure treeStructure = dhns.getGraphStructure().getMainView().getStructure();
         GraphFactoryImpl factory = dhns.factory();
 
