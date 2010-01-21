@@ -70,32 +70,31 @@ public class TreeStructure {
     }
 
     /*public AbstractNode[] getEnabledAncestorsOrSelf(AbstractNode node) {
-        PreNode preNode = node.getOriginalNode();
-        if (preNode.getClones() == null) {
-            AbstractNode enabled = getEnabledAncestorOrSelf(preNode);
-            if (enabled != null) {
-                return new AbstractNode[]{enabled};
-            } else {
-                return null;
-            }
-        } else {
-            List<AbstractNode> nodeList = new ArrayList<AbstractNode>();
-            AbstractNode enabled = getEnabledAncestorOrSelf(preNode);
-            if (enabled != null) {
-                nodeList.add(enabled);
-            }
-            CloneNode cn = preNode.getClones();
-            while (cn != null) {
-                enabled = getEnabledAncestorOrSelf(cn);
-                if (enabled != null && !nodeList.contains(enabled)) {
-                    nodeList.add(enabled.getOriginalNode());
-                }
-                cn = cn.getNext();
-            }
-            return nodeList.toArray(new AbstractNode[0]);
-        }
+    PreNode preNode = node.getOriginalNode();
+    if (preNode.getClones() == null) {
+    AbstractNode enabled = getEnabledAncestorOrSelf(preNode);
+    if (enabled != null) {
+    return new AbstractNode[]{enabled};
+    } else {
+    return null;
+    }
+    } else {
+    List<AbstractNode> nodeList = new ArrayList<AbstractNode>();
+    AbstractNode enabled = getEnabledAncestorOrSelf(preNode);
+    if (enabled != null) {
+    nodeList.add(enabled);
+    }
+    CloneNode cn = preNode.getClones();
+    while (cn != null) {
+    enabled = getEnabledAncestorOrSelf(cn);
+    if (enabled != null && !nodeList.contains(enabled)) {
+    nodeList.add(enabled.getOriginalNode());
+    }
+    cn = cn.getNext();
+    }
+    return nodeList.toArray(new AbstractNode[0]);
+    }
     }*/
-
     public AbstractNode getEnabledAncestor(AbstractNode node) {
         AbstractNode parent = node.parent;
         while (!parent.isEnabled()) {
@@ -143,33 +142,33 @@ public class TreeStructure {
             treeHeight = maxLevel;
         }
 
-    /* nodeSize = node.size;
-    int nodePre = node.getPre();
-    boolean forward = newParent.getPre()+newParent.size+1 > nodePre;
+        /* nodeSize = node.size;
+        int nodePre = node.getPre();
+        boolean forward = newParent.getPre()+newParent.size+1 > nodePre;
 
-    //Move node itself
-    decrementAncestorSize(node, 1);
-    tree.removeAndKeepParent(nodePre);
-    insertAsChild(node, newParent);
-    node.size = 0;
+        //Move node itself
+        decrementAncestorSize(node, 1);
+        tree.removeAndKeepParent(nodePre);
+        insertAsChild(node, newParent);
+        node.size = 0;
 
-    //showTreeAsTable();
+        //showTreeAsTable();
 
-    if(nodeSize>0) {
-    //Move descendants
-    for(int i=0;i<nodeSize;i++) {
-    int descPre = nodePre;
-    if(!forward) {
-    descPre += i + 1;
-    }
-    decrementAncestorSize(node, 1);
-    PreNode descendant = tree.removeAndKeepParent(descPre);
-    //System.out.println("descendant "+descendant.getId());
-    PreNode parent = descendant.parent;
-    insertAsChild(descendant, parent);
-    descendant.size = 0;
-    }
-    }*/
+        if(nodeSize>0) {
+        //Move descendants
+        for(int i=0;i<nodeSize;i++) {
+        int descPre = nodePre;
+        if(!forward) {
+        descPre += i + 1;
+        }
+        decrementAncestorSize(node, 1);
+        PreNode descendant = tree.removeAndKeepParent(descPre);
+        //System.out.println("descendant "+descendant.getId());
+        PreNode parent = descendant.parent;
+        insertAsChild(descendant, parent);
+        descendant.size = 0;
+        }
+        }*/
     }
 
     public void deleteAtPre(AbstractNode node) {
@@ -236,7 +235,7 @@ public class TreeStructure {
         System.out.println("-----------------------------------------------------------------");
         int pre = 0;
         for (AbstractNode p : tree) {
-            System.out.println(p.pre + "\t" + p.size + "\t" + p.level + "\t" + p.parent + "\t" + p.post + "\t" + p.isEnabled() + "\t" + p.getId());
+            System.out.println(p.pre + "\t" + p.size + "\t" + p.level + "\t" + (p.parent == null ? "null" : p.parent.getPre()) + "\t" + p.post + "\t" + p.isEnabled() + "\t" + p.getId());
             pre++;
         }
     }

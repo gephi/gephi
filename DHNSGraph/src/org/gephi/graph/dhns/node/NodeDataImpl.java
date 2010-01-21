@@ -54,6 +54,7 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
     protected float size = 1f;
     protected Model model;
     protected boolean fixed;
+    protected String label;
     protected Attributes attributes;
     protected TextData textData;
     protected Model hullModel;
@@ -178,7 +179,11 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
     }
 
     public void setLabel(String label) {
-        attributes.setValue(PropertiesColumn.NODE_LABEL.getIndex(), label);
+        if (attributes != null) {
+            attributes.setValue(PropertiesColumn.NODE_LABEL.getIndex(), label);
+        } else {
+            this.label = label;
+        }
     }
 
     public float alpha() {
@@ -198,7 +203,11 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
     }
 
     public String getLabel() {
-        return (String) attributes.getValue(PropertiesColumn.NODE_LABEL.getIndex());
+        if (attributes != null) {
+            return (String) attributes.getValue(PropertiesColumn.NODE_LABEL.getIndex());
+        } else {
+            return label;
+        }
     }
 
     public String getId() {

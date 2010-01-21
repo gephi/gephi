@@ -43,6 +43,7 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     protected float g = 0f;
     protected float b = 0f;
     protected float alpha = 1f;
+    private String label;
     private Model model;
     protected Attributes attributes;
     protected TextData textData;
@@ -66,7 +67,11 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     }
 
     public String getLabel() {
-        return (String) attributes.getValue(PropertiesColumn.EDGE_LABEL.getIndex());
+        if (attributes != null) {
+            return (String) attributes.getValue(PropertiesColumn.EDGE_LABEL.getIndex());
+        } else {
+            return label;
+        }
     }
 
     public LayoutData getLayoutData() {
@@ -176,7 +181,11 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     }
 
     public void setLabel(String label) {
-        attributes.setValue(PropertiesColumn.EDGE_LABEL.getIndex(), label);
+        if (attributes != null) {
+            attributes.setValue(PropertiesColumn.EDGE_LABEL.getIndex(), label);
+        } else {
+            this.label = label;
+        }
     }
 
     public DynamicData getDynamicData() {
