@@ -18,34 +18,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.filters.api;
+package org.gephi.filters.spi;
 
-import org.gephi.filters.spi.Filter;
-import org.gephi.filters.spi.FilterProperty;
+import org.gephi.graph.api.Graph;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface FilterController {
+public interface ComplexFilter extends Filter {
 
-    public Query createQuery(Filter filter);
-
-    public void add(Query query);
-
-    public void remove(Query query);
-
-    public void rename(Query query, String name);
-
-    public void setSubQuery(Query query, Query subQuery);
-
-    public void removeSubQuery(Query query, Query parent);
-
-    public void filter(Query query);
-
-    public void select(Query query);
-
-    public void propertyChanged(FilterProperty property);
-
-    public FilterModel getModel();
+    public Graph filter(Graph graph);
 }

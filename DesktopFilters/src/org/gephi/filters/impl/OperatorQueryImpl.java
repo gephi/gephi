@@ -30,6 +30,7 @@ import org.gephi.filters.spi.Operator;
 public class OperatorQueryImpl extends AbstractQueryImpl {
 
     private Operator operator;
+    private boolean simple = false; //Simple when children are only NodeFilter/EdgeFilter leaves
 
     public OperatorQueryImpl(Operator predicate) {
         this.operator = (Operator) predicate;
@@ -62,5 +63,13 @@ public class OperatorQueryImpl extends AbstractQueryImpl {
 
     public Filter getFilter() {
         return operator;
+    }
+
+    public void setSimple(boolean simple) {
+        this.simple = simple;
+    }
+
+    public boolean isSimple() {
+        return simple;
     }
 }

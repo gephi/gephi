@@ -27,6 +27,7 @@ import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.filters.spi.Operator;
+import org.gephi.graph.api.Graph;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -72,6 +73,16 @@ public class INTERSECTIONBuilder implements FilterBuilder {
 
         public FilterProperty[] getProperties() {
             return null;
+        }
+
+        public Graph filter(Graph[] graphs) {
+
+            return graphs[0];
+        }
+
+        public Graph filter(Graph graph, Filter[] filters) {
+
+            return graph;
         }
     }
 }

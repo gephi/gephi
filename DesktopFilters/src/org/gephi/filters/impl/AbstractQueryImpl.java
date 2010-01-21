@@ -20,9 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.filters.impl;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import org.gephi.filters.api.Query;
+import org.gephi.filters.spi.Operator;
+import org.gephi.graph.api.Graph;
 
 /**
  *
@@ -30,11 +34,12 @@ import org.gephi.filters.api.Query;
  */
 public abstract class AbstractQueryImpl implements Query {
 
-    protected List<Query> children;
+    protected List<AbstractQueryImpl> children;
     protected Query parent;
+    protected Graph result;
 
     public AbstractQueryImpl() {
-        this.children = new ArrayList<Query>();
+        this.children = new ArrayList<AbstractQueryImpl>();
     }
 
     public abstract int getChildrenSlotsCount();
@@ -57,13 +62,17 @@ public abstract class AbstractQueryImpl implements Query {
         return children.size();
     }
 
+    public AbstractQueryImpl getChildAt(int index) {
+        return children.get(index);
+    }
+
     public void addSubQuery(Query subQuery) {
-        children.add(subQuery);
+        children.add((AbstractQueryImpl) subQuery);
         ((AbstractQueryImpl) subQuery).setParent(this);
     }
 
     public void removeSubQuery(Query subQuery) {
-        children.remove(subQuery);
+        children.remove((AbstractQueryImpl)subQuery);
     }
 
     public Query getParent() {
@@ -72,5 +81,47 @@ public abstract class AbstractQueryImpl implements Query {
 
     public void setParent(Query parent) {
         this.parent = parent;
+    }
+
+    public void setResult(Graph result) {
+        this.result = result;
+    }
+
+    public Graph getResult() {
+        return result;
+    }
+
+    public AbstractQueryImpl[] getLeaves() {
+        ArrayList<AbstractQueryImpl> leaves = new ArrayList<AbstractQueryImpl>();
+        Deque<Query> stack = new ArrayDeque<Query>();
+        stack.add(this);
+        while (!stack.isEmpty()) {
+            AbstractQueryImpl query = (AbstractQueryImpl) stack.pop();
+            if (query.children.size() > 0) {
+                stack.addAll(query.children);
+            } else {
+                //Leaf
+                leaves.add(query);
+            }
+        }
+        return leaves.toArray(new AbstractQueryImpl[0]);
+    }
+
+    public AbstractQueryImpl copy() {
+        AbstractQueryImpl copy = null;
+        if (this instanceof FilterQueryImpl) {
+            copy = new FilterQueryImpl(this.getFilter());
+        } else if (this instanceof OperatorQueryImpl) {
+            copy = new OperatorQueryImpl((Operator) this.getFilter());
+        }
+
+        for (int i = 0; i < children.size(); i++) {
+            AbstractQueryImpl child = (AbstractQueryImpl) children.get(i);
+            AbstractQueryImpl childCopy = child.copy();
+            childCopy.parent = copy;
+            copy.children.add(childCopy);
+        }
+
+        return copy;
     }
 }

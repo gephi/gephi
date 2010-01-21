@@ -115,6 +115,15 @@ public class FilterControllerImpl implements FilterController {
         model.removeSubQuery(query, parent);
     }
 
+    public void filter(Query query) {
+        //FilterProcessor processor = new FilterProcessor();
+        //processor.process((AbstractQueryImpl)query);
+    }
+
+    public void select(Query query) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     public FilterModel getModel() {
         return model;
     }

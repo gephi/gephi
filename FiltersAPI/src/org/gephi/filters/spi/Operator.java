@@ -20,11 +20,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.filters.spi;
 
+import org.gephi.graph.api.Graph;
+
 /**
  *
  * @author Mathieu Bastian
  */
 public interface Operator extends Filter {
+
+    public Graph filter(Graph[] graphs);
+
+    public Graph filter(Graph graph, Filter[] filters);
 
     public int getInputCount();
 }
