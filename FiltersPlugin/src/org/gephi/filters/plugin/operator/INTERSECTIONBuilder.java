@@ -82,8 +82,36 @@ public class INTERSECTIONBuilder implements FilterBuilder {
         }
 
         public Graph filter(Graph[] graphs) {
-
-            return graphs[0];
+            Graph minGraph = graphs[0];
+            int minElements = Integer.MAX_VALUE;
+            for (int i = 0; i < graphs.length; i++) {
+                int count = graphs[i].getNodeCount();
+                if (count < minElements) {
+                    minGraph = graphs[i];
+                    minElements = count;
+                }
+            }
+            for (Node n : minGraph.getNodes().toArray()) {
+                for (int i = 0; i < graphs.length; i++) {
+                    if (graphs[i] != minGraph) {
+                        if (!graphs[i].contains(n)) {
+                            minGraph.removeNode(n);
+                            break;
+                        }
+                    }
+                }
+            }
+            for (Edge e : minGraph.getEdges().toArray()) {
+                for (int i = 0; i < graphs.length; i++) {
+                    if (graphs[i] != minGraph) {
+                        if (!graphs[i].contains(e)) {
+                            minGraph.removeEdge(e);
+                            break;
+                        }
+                    }
+                }
+            }
+            return minGraph;
         }
 
         public Graph filter(Graph graph, Filter[] filters) {

@@ -29,6 +29,8 @@ import org.gephi.filters.spi.NodeFilter;
 import org.gephi.filters.spi.Operator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
 
 /**
@@ -37,7 +39,8 @@ import org.gephi.graph.api.Node;
  */
 public class FilterProcessor {
 
-    public Graph process(AbstractQueryImpl query, Graph rootGraph) {
+    public Graph process(AbstractQueryImpl query, GraphModel graphModel) {
+        Graph rootGraph = graphModel.getGraph();
         query = simplifyQuery(query);
         AbstractQueryImpl[] tree = getTree(query, true);
         for (int i = 0; i < tree.length; i++) {
@@ -50,7 +53,8 @@ public class FilterProcessor {
                 }
             } else {
                 //Leaves
-                input = new Graph[] {rootGraph};    //duplicate root
+                GraphView newView = graphModel.newView();
+                input = new Graph[]{graphModel.getGraph(newView)};    //duplicate root
             }
             //PROCESS
             if (q instanceof OperatorQueryImpl && !((OperatorQueryImpl) q).isSimple()) {
@@ -64,15 +68,16 @@ public class FilterProcessor {
                 for (int k = 0; k < filters.length; k++) {
                     filters[k] = operatorQuery.getChildAt(k).getFilter();
                 }
-                q.setResult(op.filter(rootGraph, filters));
+                GraphView newView = graphModel.newView();
+                q.setResult(op.filter(graphModel.getGraph(newView), filters));
             } else {
                 FilterQueryImpl filterQuery = (FilterQueryImpl) q;
                 Filter filter = filterQuery.getFilter();
                 if (filter instanceof NodeFilter) {
-                    processNodeFilter((NodeFilter)filter, input[0]);
+                    processNodeFilter((NodeFilter) filter, input[0]);
                     q.setResult(input[0]);
                 } else if (filter instanceof EdgeFilter) {
-                    processEdgeFilter((EdgeFilter)filter, input[0]);
+                    processEdgeFilter((EdgeFilter) filter, input[0]);
                     q.setResult(input[0]);
                 } else {
                     ComplexFilter cf = (ComplexFilter) filter;
@@ -86,26 +91,26 @@ public class FilterProcessor {
 
     private void processNodeFilter(NodeFilter nodeFilter, Graph graph) {
         List<Node> nodesToRemove = new ArrayList<Node>();
-        for(Node n : graph.getNodes()) {
-            if(!nodeFilter.evaluate(graph, n)) {
+        for (Node n : graph.getNodes()) {
+            if (!nodeFilter.evaluate(graph, n)) {
                 nodesToRemove.add(n);
             }
         }
 
-        for(Node n : nodesToRemove) {
+        for (Node n : nodesToRemove) {
             graph.removeNode(n);
         }
     }
 
     private void processEdgeFilter(EdgeFilter edgeFilter, Graph graph) {
         List<Edge> edgesToRemove = new ArrayList<Edge>();
-        for(Edge e : graph.getEdges()) {
-            if(!edgeFilter.evaluate(graph, e)) {
+        for (Edge e : graph.getEdges()) {
+            if (!edgeFilter.evaluate(graph, e)) {
                 edgesToRemove.add(e);
             }
         }
 
-        for(Edge e : edgesToRemove) {
+        for (Edge e : edgesToRemove) {
             graph.removeEdge(e);
         }
     }

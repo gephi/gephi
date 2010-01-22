@@ -82,7 +82,27 @@ public class UNIONBuilder implements FilterBuilder {
         }
 
         public Graph filter(Graph[] graphs) {
-            return graphs[0];
+            Graph maxGraph = graphs[0];
+            int maxElements = 0;
+            for (int i = 0; i < graphs.length; i++) {
+                int count = graphs[i].getNodeCount();
+                if (count > maxElements) {
+                    maxGraph = graphs[i];
+                    maxElements = count;
+                }
+            }
+            for (int i = 0; i < graphs.length; i++) {
+                if (graphs[i] != maxGraph) {
+                    //Merge
+                    for (Node n : graphs[i].getNodes().toArray()) {
+                        maxGraph.addNode(n);
+                    }
+                    for (Edge e : graphs[i].getEdges().toArray()) {
+                        maxGraph.addEdge(e);
+                    }
+                }
+            }
+            return maxGraph;
         }
 
         public Graph filter(Graph graph, Filter[] filters) {

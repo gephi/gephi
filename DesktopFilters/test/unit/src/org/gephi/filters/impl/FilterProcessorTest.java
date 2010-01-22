@@ -32,6 +32,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphFactory;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.junit.After;
@@ -45,6 +46,7 @@ import org.openide.util.Lookup;
  */
 public class FilterProcessorTest {
 
+    private GraphModel graphModel;
     private Graph rootGraph;
     private Query simpleQuery;
     private Query chainQuery;
@@ -57,7 +59,8 @@ public class FilterProcessorTest {
         ProjectController pj = Lookup.getDefault().lookup(ProjectController.class);
         pj.newProject();
         GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        GraphFactory factory = gc.getModel().factory();
+        graphModel = gc.getModel();
+        GraphFactory factory = graphModel.factory();
         Graph graph = gc.getModel().getUndirectedGraph();
         rootGraph = graph;
 
@@ -72,25 +75,25 @@ public class FilterProcessorTest {
         graph.addEdge(factory.newEdge(graph.getNode(1), graph.getNode(3), 1f, false));
         graph.addEdge(factory.newEdge(graph.getNode(3), graph.getNode(2), 1f, false));
         graph.addEdge(factory.newEdge(graph.getNode(2), graph.getNode(0), 1f, false));
-        graph.addEdge(factory.newEdge(graph.getNode(4), graph.getNode(5), 1f, false));
-        graph.addEdge(factory.newEdge(graph.getNode(5), graph.getNode(7), 1f, false));
-        graph.addEdge(factory.newEdge(graph.getNode(7), graph.getNode(6), 1f, false));
-        graph.addEdge(factory.newEdge(graph.getNode(6), graph.getNode(4), 1f, false));
+        graph.addEdge(factory.newEdge(graph.getNode(4), graph.getNode(5), 2f, false));
+        graph.addEdge(factory.newEdge(graph.getNode(5), graph.getNode(7), 2f, false));
+        graph.addEdge(factory.newEdge(graph.getNode(7), graph.getNode(6), 2f, false));
+        graph.addEdge(factory.newEdge(graph.getNode(6), graph.getNode(4), 2f, false));
         graph.addEdge(factory.newEdge(graph.getNode(3), graph.getNode(4), 5f, false));
 
         //Query
-        NodeDegreeFilter nodeDegreeFilter = new NodeDegreeFilter();
+        NodeDegreeFilter nodeDegreeFilter = new NodeDegreeFilter(3);
         simpleQuery = new FilterQueryImpl(nodeDegreeFilter);
 
-        EdgeWeightFilter edgeWeightFilter = new EdgeWeightFilter();
-        chainQuery = new FilterQueryImpl(edgeWeightFilter);
-        ((FilterQueryImpl) chainQuery).addSubQuery(new FilterQueryImpl(new NodeDegreeFilter()));
+        nodeDegreeFilter = new NodeDegreeFilter(2);
+        chainQuery = new FilterQueryImpl(nodeDegreeFilter);
+        ((FilterQueryImpl) chainQuery).addSubQuery(new FilterQueryImpl(new EdgeWeightFilter(1)));
 
         complexQueryUnion = new OperatorQueryImpl(new UnionOperator());
         ((OperatorQueryImpl) complexQueryUnion).addSubQuery(new FilterQueryImpl(new NodeIdFilter(1)));
         ((OperatorQueryImpl) complexQueryUnion).addSubQuery(new FilterQueryImpl(new NodeIdFilter(3)));
 
-        veryComplexQueryInter = new FilterQueryImpl(new EdgeWeightFilter());
+        veryComplexQueryInter = new FilterQueryImpl(new EdgeWeightFilter(3));
         OperatorQueryImpl q1 = new OperatorQueryImpl(new UnionOperator());
         ((FilterQueryImpl) veryComplexQueryInter).addSubQuery(q1);
         q1.addSubQuery(new FilterQueryImpl(new NodeIdFilter(0)));
@@ -98,8 +101,8 @@ public class FilterProcessorTest {
         q2.addSubQuery(new FilterQueryImpl(new NodeIdFilter(1)));
         q2.addSubQuery(new FilterQueryImpl(new NodeIdFilter(2)));
         q1.addSubQuery(q2);
-        FilterQueryImpl q3 = new FilterQueryImpl(new NodeDegreeFilter());
-        q3.addSubQuery(new FilterQueryImpl(new EdgeWeightFilter()));
+        FilterQueryImpl q3 = new FilterQueryImpl(new NodeDegreeFilter(2));
+        q3.addSubQuery(new FilterQueryImpl(new EdgeWeightFilter(1)));
         q1.addSubQuery(q3);
     }
 
@@ -116,7 +119,7 @@ public class FilterProcessorTest {
     public void testProcess() {
         FilterProcessor filterProcessor = new FilterProcessor();
         printGraph(rootGraph);
-        Graph result = filterProcessor.process((AbstractQueryImpl) complexQueryUnion, rootGraph);
+        Graph result = filterProcessor.process((AbstractQueryImpl) chainQuery, graphModel);
         printGraph(result);
 //        printGraph(rootGraph);
 //        rootGraph.removeNode(rootGraph.getNode(0));
@@ -142,7 +145,11 @@ public class FilterProcessorTest {
 
     private static class EdgeWeightFilter implements EdgeFilter {
 
-        private final float threshold = 3;
+        private final float threshold;
+
+        public EdgeWeightFilter(float threshold) {
+            this.threshold = threshold;
+        }
 
         public boolean evaluate(Graph graph, Edge edge) {
             return edge.getWeight() > threshold;
@@ -159,7 +166,11 @@ public class FilterProcessorTest {
 
     private static class NodeDegreeFilter implements NodeFilter {
 
-        private final float threshold = 3;
+        private final float threshold;
+
+        public NodeDegreeFilter(float threshold) {
+            this.threshold = threshold;
+        }
 
         public boolean evaluate(Graph graph, Node node) {
             int degree = graph.getDegree(node);
@@ -211,7 +222,27 @@ public class FilterProcessorTest {
         }
 
         public Graph filter(Graph[] graphs) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            Graph maxGraph = graphs[0];
+            int maxElements = 0;
+            for (int i = 0; i < graphs.length; i++) {
+                int count = graphs[i].getNodeCount();
+                if (count > maxElements) {
+                    maxGraph = graphs[i];
+                    maxElements = count;
+                }
+            }
+            for (int i = 0; i < graphs.length; i++) {
+                if (graphs[i] != maxGraph) {
+                    //Merge
+                    for(Node n : graphs[i].getNodes().toArray()){
+                        maxGraph.addNode(n);
+                    }
+                    for(Edge e : graphs[i].getEdges().toArray()) {
+                        maxGraph.addEdge(e);
+                    }
+                }
+            }
+            return maxGraph;
         }
 
         public Graph filter(Graph graph, Filter[] filters) {

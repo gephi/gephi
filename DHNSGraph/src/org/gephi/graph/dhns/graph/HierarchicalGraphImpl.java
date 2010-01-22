@@ -62,6 +62,9 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
             return false;
         }
         if (absNode.avlNode != null) { //exist in another view
+            if(absNode.getInView(view.getViewId())!=null) {
+                return false;
+            }
             absNode = new AbstractNode(absNode.getNodeData(), view.getViewId());
         }
         if (!absNode.getNodeData().hasAttributes()) {
@@ -86,7 +89,7 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
         if (absNode.isValid(view.getViewId())) {
             res = structure.getTree().contains(absNode);
         } else if ((absNode = absNode.getInView(view.getViewId())) != null) {
-            res = structure.getTree().contains(absNode);
+            res = true;
         }
         return res;
     }
