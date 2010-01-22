@@ -33,6 +33,7 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.ProjectController;
+import org.gephi.visualization.VizController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
@@ -128,7 +129,14 @@ public class FilterControllerImpl implements FilterController {
     }
 
     public void select(Query query) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        FilterProcessor processor = new FilterProcessor();
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        Graph result = processor.process((AbstractQueryImpl) query, graphModel);
+        System.out.println("#Nodes: " + result.getNodeCount());
+        System.out.println("#Edges: " + result.getEdgeCount());
+
+        VizController.getInstance().getSelectionManager().selectNodes(result.getNodes().toArray());
+        VizController.getInstance().getSelectionManager().selectEdges(result.getEdges().toArray());
     }
 
     public FilterModel getModel() {

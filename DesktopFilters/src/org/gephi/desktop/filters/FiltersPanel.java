@@ -88,6 +88,15 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 }
             }
         });
+        selectButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (filterModel.getCurrentQuery() != null) {
+                    FilterController controller = Lookup.getDefault().lookup(FilterController.class);
+                    controller.select(filterModel.getCurrentQuery());
+                }
+            }
+        });
         updateEnabled(false);
     }
 

@@ -154,12 +154,19 @@ public class AttributeRangeBuilder implements CategoryBuilder {
 
         public boolean evaluate(Graph graph, Node node) {
             Object val = node.getNodeData().getAttributes().getValue(column.getIndex());
-            return range.isInRange(val);
+            if (val != null) {
+                return range.isInRange(val);
+            }
+            return false;
+
         }
 
         public boolean evaluate(Graph graph, Edge edge) {
             Object val = edge.getEdgeData().getAttributes().getValue(column.getIndex());
-            return range.isInRange(val);
+            if (val != null) {
+                return range.isInRange(val);
+            }
+            return false;
         }
 
         public Object[] getValues() {
