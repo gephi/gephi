@@ -22,6 +22,7 @@ package org.gephi.graph.dhns.graph;
 
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphViewImpl;
@@ -49,6 +50,10 @@ public abstract class AbstractGraphImpl {
 
     public GraphModel getGraphModel() {
         return dhns;
+    }
+
+    public GraphView getView() {
+        return view;
     }
 
     public void readLock() {

@@ -241,8 +241,4 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
     public EdgeIterable getHierarchyEdges() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    public GraphView getView() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

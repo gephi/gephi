@@ -259,8 +259,4 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
     public EdgeIterable getHierarchyEdges() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    public GraphView getView() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

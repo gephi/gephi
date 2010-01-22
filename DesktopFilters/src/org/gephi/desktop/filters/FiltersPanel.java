@@ -59,11 +59,16 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
             toolbar.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
 
+        //Components
         queriesPanel = new QueriesPanel();
         southPanel.add(queriesPanel, BorderLayout.CENTER);
         filterPanelPanel = new FilterPanelPanel();
         filtersUIPanel.add(filterPanelPanel);
 
+        initEvents();
+    }
+
+    private void initEvents() {
         resetButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -72,6 +77,15 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                     controller.remove(query);
                 }
                 uiModel.setSelectedFilter(null);
+            }
+        });
+        filterButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (filterModel.getCurrentQuery() != null) {
+                    FilterController controller = Lookup.getDefault().lookup(FilterController.class);
+                    controller.filter(filterModel.getCurrentQuery());
+                }
             }
         });
         updateEnabled(false);

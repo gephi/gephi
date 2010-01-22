@@ -29,6 +29,9 @@ import org.gephi.filters.api.Range;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.filters.spi.Operator;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
@@ -116,8 +119,12 @@ public class FilterControllerImpl implements FilterController {
     }
 
     public void filter(Query query) {
-        //FilterProcessor processor = new FilterProcessor();
-        //processor.process((AbstractQueryImpl)query);
+        FilterProcessor processor = new FilterProcessor();
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        Graph result = processor.process((AbstractQueryImpl) query, graphModel);
+        System.out.println("#Nodes: " + result.getNodeCount());
+        System.out.println("#Edges: " + result.getEdgeCount());
+        graphModel.setVisibleView(result.getView());
     }
 
     public void select(Query query) {

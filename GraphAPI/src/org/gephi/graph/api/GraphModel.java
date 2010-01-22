@@ -37,6 +37,8 @@ public interface GraphModel {
 
     public GraphView newView();
 
+    public void setVisibleView(GraphView view);
+
     public Graph getGraph();
 
     public DirectedGraph getDirectedGraph();
