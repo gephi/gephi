@@ -397,4 +397,8 @@ public class Dhns implements GraphModel {
     public GraphModel copy() {
         return null;
     }
+
+    public GraphView newView() {
+        return graphStructure.getNewView();
+    }
 }

@@ -58,7 +58,7 @@ public class EdgeOppositeTree extends ParamAVLTree<AbstractEdge> {
 
         @Override
         public int getNumber(AbstractEdge item) {
-            if (item.getSource() == owner) {
+            if (item.getSource().getId() == owner.getId()) {
                 return item.getTarget().getNumber();
             } else {
                 return item.getSource().getNumber();

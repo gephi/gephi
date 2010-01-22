@@ -22,6 +22,14 @@ package org.gephi.graph.dhns.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.gephi.datastructure.avl.param.ParamAVLIterator;
+import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.MixedEdgeImpl;
+import org.gephi.graph.dhns.edge.ProperEdgeImpl;
+import org.gephi.graph.dhns.edge.SelfLoopImpl;
+import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.gephi.graph.dhns.utils.avl.AbstractEdgeTree;
 import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
 
@@ -31,6 +39,8 @@ import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
  */
 public class GraphStructure {
 
+    private static AtomicInteger viewId = new AtomicInteger(1);
+    private final Dhns dhns;
     private final GraphViewImpl mainView;
     private final List<GraphViewImpl> views;
     private final AbstractNodeTree nodeDictionnary;
@@ -38,6 +48,7 @@ public class GraphStructure {
     private GraphViewImpl visibleView;
 
     public GraphStructure(Dhns dhns) {
+        this.dhns = dhns;
         nodeDictionnary = new AbstractNodeTree();
         edgeDictionnary = new AbstractEdgeTree();
         views = new ArrayList<GraphViewImpl>();
@@ -50,6 +61,38 @@ public class GraphStructure {
 
     public GraphViewImpl getMainView() {
         return mainView;
+    }
+
+    public GraphViewImpl getNewView() {
+        GraphViewImpl view = new GraphViewImpl(dhns, viewId.getAndIncrement());
+        TreeStructure newStructure = view.getStructure();
+        dhns.getReadLock().lock();
+
+        for (TreeListIterator itr = new TreeListIterator(mainView.getStructure().getTree(), 1); itr.hasNext();) {
+            AbstractNode node = itr.next();
+            AbstractNode nodeCopy = new AbstractNode(node.getNodeData(), view.getViewId());
+            nodeCopy.setEnabled(node.isEnabled());
+            AbstractNode parentCopy = node.parent != null ? newStructure.getNodeAt(node.parent.getPre()) : null;
+            newStructure.insertAsChild(nodeCopy, parentCopy);
+        }
+
+        //Edges
+        ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
+        for (TreeListIterator itr = new TreeListIterator(mainView.getStructure().getTree(), 1); itr.hasNext();) {
+            AbstractNode node = itr.next();
+            if (!node.getEdgesOutTree().isEmpty()) {
+                for (edgeIterator.setNode(node.getEdgesOutTree()); edgeIterator.hasNext();) {
+                    AbstractEdge edge = edgeIterator.next();
+                    AbstractNode sourceCopy = newStructure.getNodeAt(edge.getSource().getPre());
+                    AbstractNode targetCopy = newStructure.getNodeAt(edge.getTarget().getPre());
+                    sourceCopy.getEdgesOutTree().add(edge);
+                    targetCopy.getEdgesInTree().add(edge);
+                }
+            }
+        }
+        dhns.getReadLock().unlock();
+        views.add(view);
+        return view;
     }
 
     public AbstractNodeTree getNodeDictionnary() {
