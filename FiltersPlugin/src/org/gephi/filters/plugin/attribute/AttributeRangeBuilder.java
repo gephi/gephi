@@ -37,6 +37,9 @@ import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.filters.plugin.graph.RangeUI;
+import org.gephi.filters.spi.EdgeFilter;
+import org.gephi.filters.spi.NodeFilter;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -114,7 +117,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         }
     }
 
-    public static class AttributeRangelFilter implements RangeFilter {
+    public static class AttributeRangelFilter implements RangeFilter, NodeFilter, EdgeFilter {
 
         private FilterProperty[] filterProperties;
         private Range range;
@@ -147,6 +150,16 @@ public class AttributeRangeBuilder implements CategoryBuilder {
             upperBound = (Integer) max;
             }
             range = new Range(lowerBound, upperBound);*/
+        }
+
+        public boolean evaluate(Graph graph, Node node) {
+            Object val = node.getNodeData().getAttributes().getValue(column.getIndex());
+            return range.isInRange(val);
+        }
+
+        public boolean evaluate(Graph graph, Edge edge) {
+            Object val = edge.getEdgeData().getAttributes().getValue(column.getIndex());
+            return range.isInRange(val);
         }
 
         public Object[] getValues() {

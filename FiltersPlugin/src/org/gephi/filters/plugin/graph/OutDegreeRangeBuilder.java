@@ -32,6 +32,7 @@ import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
@@ -108,6 +109,11 @@ public class OutDegreeRangeBuilder implements FilterBuilder {
                 upperBound = (Integer) max;
             }
             range = new Range(lowerBound, upperBound);
+        }
+
+        public boolean evaluate(Graph graph, Node node) {
+            int degree = ((DirectedGraph)graph).getOutDegree(node);
+            return range.isInRange(degree);
         }
 
         public Object[] getValues() {

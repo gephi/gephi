@@ -110,6 +110,19 @@ public final class Range {
         return lowerLong.compareTo(value) <= 0 && upperLong.compareTo(value) >= 0;
     }
 
+    public boolean isInRange(Object value) {
+        if (rangeType == Double.class) {
+            return isInRange((Double)value);
+        } else if (rangeType == Float.class) {
+            return isInRange((Float)value);
+        } else if (rangeType == Integer.class) {
+            return isInRange((Integer)value);
+        } else if (rangeType == Long.class) {
+            return isInRange((Long)value);
+        }
+        return false;
+    }
+
     public Double getLowerDouble() {
         return lowerDouble;
     }
