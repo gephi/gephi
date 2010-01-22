@@ -31,6 +31,7 @@ import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.spi.NodeFilter;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -75,7 +76,7 @@ public class DegreeRangeBuilder implements FilterBuilder {
         return null;
     }
 
-    public static class DegreeRangeFilter implements RangeFilter {
+    public static class DegreeRangeFilter implements RangeFilter, NodeFilter {
 
         private Integer min = 0;
         private Integer max = 0;
@@ -108,6 +109,11 @@ public class DegreeRangeBuilder implements FilterBuilder {
                 upperBound = (Integer) max;
             }
             range = new Range(lowerBound, upperBound);
+        }
+
+        public boolean evaluate(Graph graph, Node node) {
+            int degree = graph.getDegree(node);
+            return range.isInRange(degree);
         }
 
         public Object[] getValues() {

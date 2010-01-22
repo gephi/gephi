@@ -22,6 +22,7 @@ package org.gephi.filters.plugin.attribute;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -32,9 +33,12 @@ import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.CategoryBuilder;
+import org.gephi.filters.spi.EdgeFilter;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.spi.NodeFilter;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -119,15 +123,36 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
     }
 
-    public static class EqualStringFilter implements Filter {
+    public static class EqualStringFilter implements NodeFilter, EdgeFilter {
 
         private FilterProperty[] filterProperties;
         private String pattern;
         private boolean useRegex;
         private AttributeColumn column;
+        private Pattern regex;
 
         public String getName() {
             return NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.name");
+        }
+
+        public boolean evaluate(Graph graph, Node node) {
+            Object val = node.getNodeData().getAttributes().getValue(column.getIndex());
+            if (val != null && useRegex) {
+                return regex.matcher((String) val).matches();
+            } else if (val != null) {
+                return pattern.equals((String) val);
+            }
+            return false;
+        }
+
+        public boolean evaluate(Graph graph, Edge edge) {
+            Object val = edge.getEdgeData().getAttributes().getValue(column.getIndex());
+            if (val != null && useRegex) {
+                return regex.matcher((String) val).matches();
+            } else if (val != null) {
+                return pattern.equals((String) val);
+            }
+            return false;
         }
 
         public FilterProperty[] getProperties() {
@@ -152,6 +177,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
 
         public void setPattern(String pattern) {
             this.pattern = pattern;
+            this.regex = Pattern.compile(pattern);
         }
 
         public boolean isUseRegex() {
@@ -211,7 +237,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
     }
 
-    public static class EqualNumberFilter implements Filter {
+    public static class EqualNumberFilter implements NodeFilter, EdgeFilter {
 
         private FilterProperty[] filterProperties;
         private Number match;
@@ -245,6 +271,22 @@ public class AttributeEqualBuilder implements CategoryBuilder {
                 }
             }
             return vals.toArray();
+        }
+
+        public boolean evaluate(Graph graph, Node node) {
+            Object val = node.getNodeData().getAttributes().getValue(column.getIndex());
+            if (val != null) {
+                return val.equals(match);
+            }
+            return false;
+        }
+
+        public boolean evaluate(Graph graph, Edge edge) {
+            Object val = edge.getEdgeData().getAttributes().getValue(column.getIndex());
+            if (val != null) {
+                return val.equals(match);
+            }
+            return false;
         }
 
         public FilterProperty[] getProperties() {
@@ -326,7 +368,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
     }
 
-    public static class EqualBooleanFilter implements Filter {
+    public static class EqualBooleanFilter implements NodeFilter, EdgeFilter {
 
         private FilterProperty[] filterProperties;
         private boolean match = false;
@@ -349,6 +391,22 @@ public class AttributeEqualBuilder implements CategoryBuilder {
                 }
             }
             return filterProperties;
+        }
+
+        public boolean evaluate(Graph graph, Node node) {
+            Object val = node.getNodeData().getAttributes().getValue(column.getIndex());
+            if (val != null) {
+                return val.equals(match);
+            }
+            return false;
+        }
+
+        public boolean evaluate(Graph graph, Edge edge) {
+            Object val = edge.getEdgeData().getAttributes().getValue(column.getIndex());
+            if (val != null) {
+                return val.equals(match);
+            }
+            return false;
         }
 
         public boolean isMatch() {
