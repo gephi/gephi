@@ -176,4 +176,8 @@ public class AbstractNode implements Node, Group, AVLItem {
         }
         return nodeData.getNodes().get(viewId);
     }
+
+    public void removeFromView(int viewId) {
+        nodeData.getNodes().remove(viewId);
+    }
 }

@@ -85,7 +85,7 @@ public class FilterProcessor {
                 }
             }
         }
-        Graph finalResult = tree[tree.length - 1].result;
+        Graph finalResult = tree[0].result;
         return finalResult;
     }
 

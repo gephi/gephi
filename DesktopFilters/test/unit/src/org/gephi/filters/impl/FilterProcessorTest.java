@@ -85,7 +85,7 @@ public class FilterProcessorTest {
         NodeDegreeFilter nodeDegreeFilter = new NodeDegreeFilter(3);
         simpleQuery = new FilterQueryImpl(nodeDegreeFilter);
 
-        nodeDegreeFilter = new NodeDegreeFilter(2);
+        nodeDegreeFilter = new NodeDegreeFilter(1);
         chainQuery = new FilterQueryImpl(nodeDegreeFilter);
         ((FilterQueryImpl) chainQuery).addSubQuery(new FilterQueryImpl(new EdgeWeightFilter(1)));
 
@@ -93,7 +93,7 @@ public class FilterProcessorTest {
         ((OperatorQueryImpl) complexQueryUnion).addSubQuery(new FilterQueryImpl(new NodeIdFilter(1)));
         ((OperatorQueryImpl) complexQueryUnion).addSubQuery(new FilterQueryImpl(new NodeIdFilter(3)));
 
-        veryComplexQueryInter = new FilterQueryImpl(new EdgeWeightFilter(3));
+        veryComplexQueryInter = new FilterQueryImpl(new EdgeWeightFilter(0));
         OperatorQueryImpl q1 = new OperatorQueryImpl(new UnionOperator());
         ((FilterQueryImpl) veryComplexQueryInter).addSubQuery(q1);
         q1.addSubQuery(new FilterQueryImpl(new NodeIdFilter(0)));
@@ -119,7 +119,7 @@ public class FilterProcessorTest {
     public void testProcess() {
         FilterProcessor filterProcessor = new FilterProcessor();
         printGraph(rootGraph);
-        Graph result = filterProcessor.process((AbstractQueryImpl) chainQuery, graphModel);
+        Graph result = filterProcessor.process((AbstractQueryImpl) veryComplexQueryInter, graphModel);
         printGraph(result);
 //        printGraph(rootGraph);
 //        rootGraph.removeNode(rootGraph.getNode(0));
@@ -174,7 +174,7 @@ public class FilterProcessorTest {
 
         public boolean evaluate(Graph graph, Node node) {
             int degree = graph.getDegree(node);
-            return degree < threshold;
+            return degree > threshold;
         }
 
         public String getName() {

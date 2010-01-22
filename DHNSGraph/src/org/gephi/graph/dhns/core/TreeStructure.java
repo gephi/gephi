@@ -173,9 +173,11 @@ public class TreeStructure {
 
     public void deleteAtPre(AbstractNode node) {
         int pre = node.getPre();
-        tree.remove(pre);
+        AbstractNode n = tree.remove(pre);
+        n.removeFromView(viewId);
         for (int i = 0; i < node.size; i++) {
-            AbstractNode n = tree.remove(pre);
+            n = tree.remove(pre);
+            n.removeFromView(viewId);
         }
     }
 
