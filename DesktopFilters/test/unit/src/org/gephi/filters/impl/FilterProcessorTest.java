@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.filters.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.EdgeFilter;
 import org.gephi.filters.spi.Filter;
@@ -85,12 +87,12 @@ public class FilterProcessorTest {
         ((FilterQueryImpl) chainQuery).addSubQuery(new FilterQueryImpl(new NodeDegreeFilter()));
 
         complexQueryUnion = new OperatorQueryImpl(new UnionOperator());
-        ((OperatorQueryImpl)complexQueryUnion).addSubQuery(new FilterQueryImpl(new NodeIdFilter(1)));
-        ((OperatorQueryImpl)complexQueryUnion).addSubQuery(new FilterQueryImpl(new NodeIdFilter(5)));
+        ((OperatorQueryImpl) complexQueryUnion).addSubQuery(new FilterQueryImpl(new NodeIdFilter(1)));
+        ((OperatorQueryImpl) complexQueryUnion).addSubQuery(new FilterQueryImpl(new NodeIdFilter(3)));
 
         veryComplexQueryInter = new FilterQueryImpl(new EdgeWeightFilter());
         OperatorQueryImpl q1 = new OperatorQueryImpl(new UnionOperator());
-        ((FilterQueryImpl)veryComplexQueryInter).addSubQuery(q1);
+        ((FilterQueryImpl) veryComplexQueryInter).addSubQuery(q1);
         q1.addSubQuery(new FilterQueryImpl(new NodeIdFilter(0)));
         OperatorQueryImpl q2 = new OperatorQueryImpl(new UnionOperator());
         q2.addSubQuery(new FilterQueryImpl(new NodeIdFilter(1)));
@@ -114,7 +116,7 @@ public class FilterProcessorTest {
     public void testProcess() {
         FilterProcessor filterProcessor = new FilterProcessor();
         printGraph(rootGraph);
-        Graph result = filterProcessor.process((AbstractQueryImpl)simpleQuery, rootGraph);
+        Graph result = filterProcessor.process((AbstractQueryImpl) complexQueryUnion, rootGraph);
         printGraph(result);
 //        printGraph(rootGraph);
 //        rootGraph.removeNode(rootGraph.getNode(0));
@@ -125,14 +127,14 @@ public class FilterProcessorTest {
         Node[] nodes = graph.getNodes().toArray();
         Edge[] edges = graph.getEdges().toArray();
         System.out.println("--- Graph");
-        System.out.println("--- Nodes: "+nodes.length);
-        System.out.println("--- Edges: "+edges.length);
-        for(Node n : nodes) {
-            System.out.println(""+n.getId());
+        System.out.println("--- Nodes: " + nodes.length);
+        System.out.println("--- Edges: " + edges.length);
+        for (Node n : nodes) {
+            System.out.println("" + n.getId());
         }
         System.out.println("---------------");
-        for(Edge e : edges) {
-            System.out.println(e.getSource().getId()+"-"+e.getTarget().getId());
+        for (Edge e : edges) {
+            System.out.println(e.getSource().getId() + "-" + e.getTarget().getId());
         }
         System.out.println("---------------");
         System.out.flush();
@@ -213,7 +215,52 @@ public class FilterProcessorTest {
         }
 
         public Graph filter(Graph graph, Filter[] filters) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            List<NodeFilter> nodeFilters = new ArrayList<NodeFilter>();
+            List<EdgeFilter> edgeFilters = new ArrayList<EdgeFilter>();
+            for (Filter f : filters) {
+                if (f instanceof NodeFilter) {
+                    nodeFilters.add((NodeFilter) f);
+                } else if (f instanceof EdgeFilter) {
+                    edgeFilters.add((EdgeFilter) f);
+                }
+            }
+            if (nodeFilters.size() > 0) {
+                List<Node> nodesToRemove = new ArrayList<Node>();
+                for (Node n : graph.getNodes()) {
+                    boolean remove = true;
+                    for (NodeFilter nf : nodeFilters) {
+                        if (nf.evaluate(graph, n)) {
+                            remove = false;
+                        }
+                    }
+                    if (remove) {
+                        nodesToRemove.add(n);
+                    }
+                }
+
+                for (Node n : nodesToRemove) {
+                    graph.removeNode(n);
+                }
+            }
+            if (edgeFilters.size() > 0) {
+                List<Edge> edgesToRemove = new ArrayList<Edge>();
+                for (Edge e : graph.getEdges()) {
+                    boolean remove = true;
+                    for (EdgeFilter nf : edgeFilters) {
+                        if (nf.evaluate(graph, e)) {
+                            remove = false;
+                        }
+                    }
+                    if (remove) {
+                        edgesToRemove.add(e);
+                    }
+                }
+
+                for (Edge e : edgesToRemove) {
+                    graph.removeEdge(e);
+                }
+            }
+            return graph;
         }
     }
 }

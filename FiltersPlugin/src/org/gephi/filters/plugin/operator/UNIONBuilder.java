@@ -20,21 +20,27 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.filters.plugin.operator;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.filters.spi.Category;
+import org.gephi.filters.spi.EdgeFilter;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.spi.NodeFilter;
 import org.gephi.filters.spi.Operator;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Node;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service=FilterBuilder.class)
+@ServiceProvider(service = FilterBuilder.class)
 public class UNIONBuilder implements FilterBuilder {
 
     public Category getCategory() {
@@ -80,6 +86,51 @@ public class UNIONBuilder implements FilterBuilder {
         }
 
         public Graph filter(Graph graph, Filter[] filters) {
+            List<NodeFilter> nodeFilters = new ArrayList<NodeFilter>();
+            List<EdgeFilter> edgeFilters = new ArrayList<EdgeFilter>();
+            for (Filter f : filters) {
+                if (f instanceof NodeFilter) {
+                    nodeFilters.add((NodeFilter) f);
+                } else if (f instanceof EdgeFilter) {
+                    edgeFilters.add((EdgeFilter) f);
+                }
+            }
+            if (nodeFilters.size() > 0) {
+                List<Node> nodesToRemove = new ArrayList<Node>();
+                for (Node n : graph.getNodes()) {
+                    boolean remove = true;
+                    for (NodeFilter nf : nodeFilters) {
+                        if (nf.evaluate(graph, n)) {
+                            remove = false;
+                        }
+                    }
+                    if (remove) {
+                        nodesToRemove.add(n);
+                    }
+                }
+
+                for (Node n : nodesToRemove) {
+                    graph.removeNode(n);
+                }
+            }
+            if (edgeFilters.size() > 0) {
+                List<Edge> edgesToRemove = new ArrayList<Edge>();
+                for (Edge e : graph.getEdges()) {
+                    boolean remove = true;
+                    for (EdgeFilter nf : edgeFilters) {
+                        if (nf.evaluate(graph, e)) {
+                            remove = false;
+                        }
+                    }
+                    if (remove) {
+                        edgesToRemove.add(e);
+                    }
+                }
+
+                for (Edge e : edgesToRemove) {
+                    graph.removeEdge(e);
+                }
+            }
             return graph;
         }
     }

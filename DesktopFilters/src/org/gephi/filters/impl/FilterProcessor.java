@@ -46,7 +46,7 @@ public class FilterProcessor {
             if (q.getChildrenCount() > 0) {
                 input = new Graph[q.getChildrenCount()];
                 for (int j = 0; j < input.length; j++) {
-                    input[i] = q.getChildAt(j).getResult();
+                    input[j] = q.getChildAt(j).getResult();
                 }
             } else {
                 //Leaves
@@ -60,7 +60,11 @@ public class FilterProcessor {
             } else if (q instanceof OperatorQueryImpl && ((OperatorQueryImpl) q).isSimple()) {
                 OperatorQueryImpl operatorQuery = (OperatorQueryImpl) q;
                 Operator op = (Operator) operatorQuery.getFilter();
-                q.setResult(op.filter(input));
+                Filter[] filters = new Filter[operatorQuery.getChildrenCount()];
+                for (int k = 0; k < filters.length; k++) {
+                    filters[k] = operatorQuery.getChildAt(k).getFilter();
+                }
+                q.setResult(op.filter(rootGraph, filters));
             } else {
                 FilterQueryImpl filterQuery = (FilterQueryImpl) q;
                 Filter filter = filterQuery.getFilter();
