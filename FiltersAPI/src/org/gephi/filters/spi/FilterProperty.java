@@ -39,9 +39,11 @@ public final class FilterProperty {
 
     protected Property property;
     protected Filter filter;
+    protected PropertyExecutor propertyExecutor;
 
     FilterProperty(Filter filter) {
         this.filter = filter;
+        propertyExecutor = Lookup.getDefault().lookup(PropertyExecutor.class);
     }
 
     public String getName() {
@@ -58,7 +60,6 @@ public final class FilterProperty {
     }
 
     public void setValue(Object value) {
-        PropertyExecutor propertyExecutor = Lookup.getDefault().lookup(PropertyExecutor.class);
         if (propertyExecutor != null) {
             propertyExecutor.setValue(this, value, new PropertyExecutor.Callback() {
 
@@ -70,6 +71,7 @@ public final class FilterProperty {
                     }
                 }
             });
+        } else {
             try {
                 property.setValue(value);
             } catch (Exception e) {

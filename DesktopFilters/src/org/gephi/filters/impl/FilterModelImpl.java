@@ -160,19 +160,6 @@ public class FilterModelImpl implements FilterModel {
         fireChangeEvent();
     }
 
-    public void propertyChanged(FilterProperty property) {
-        Filter filter = property.getFilter();
-        for (Query q : getAllQueries()) {
-            if (filter == q.getFilter()) {
-                if (q instanceof FilterQueryImpl) {
-                    ((FilterQueryImpl) q).updateParameters();
-                }
-            }
-        }
-        System.out.println(property.getName() + " changed");
-        fireChangeEvent();
-    }
-
     public void updateParameters(Query query) {
         ((FilterQueryImpl) query).updateParameters();
         fireChangeEvent();

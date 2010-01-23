@@ -27,6 +27,7 @@ import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.PropertyExecutor;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.api.Range;
+import org.gephi.filters.impl.FilterThread.PropertyModifier;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.filters.spi.Operator;
@@ -41,10 +42,13 @@ import org.openide.util.lookup.ServiceProviders;
  *
  * @author Mathieu Bastian
  */
- @ServiceProviders({@ServiceProvider(service=FilterController.class), @ServiceProvider(service=PropertyExecutor.class)})
+@ServiceProviders({
+    @ServiceProvider(service = FilterController.class),
+    @ServiceProvider(service = PropertyExecutor.class)})
 public class FilterControllerImpl implements FilterController, PropertyExecutor {
 
     private FilterModelImpl model;
+    private FilterThread filterThread;
 
     public FilterControllerImpl() {
         //Register range editor
@@ -120,7 +124,15 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         model.setFiltering(true);
         model.setCurrentQuery(query);
 
-        System.out.println("filter " + (query != null ? query.getName() : "null"));
+        if (filterThread != null) {
+            filterThread.setRunning(false);
+        }
+        if (query != null) {
+            filterThread = new FilterThread(model);
+            filterThread.setRootQuery((AbstractQueryImpl) query);
+            filterThread.start();
+        }
+
         /*FilterProcessor processor = new FilterProcessor();
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
         Graph result = processor.process((AbstractQueryImpl) query, graphModel);
@@ -148,23 +160,17 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         return model;
     }
 
-    public void propertyChanged(FilterProperty property) {
-        if (model != null) {
-            Query query = model.getQuery(property.getFilter());
-            if (query != null) {
-                AbstractQueryImpl rootQuery = ((AbstractQueryImpl) query).getRoot();
-                if (model.getCurrentQuery() == rootQuery) {
-                    //Modyfing current query parameter
-                    System.out.println("current query modify parameters");
-                } else {
-                    
-                    model.updateParameters(query);
-                }
-            }
-        }
-    }
-
     public void setValue(FilterProperty property, Object value, Callback callback) {
-        callback.setValue(value);
+        Query query = model.getQuery(property.getFilter());
+        AbstractQueryImpl rootQuery = ((AbstractQueryImpl) query).getRoot();
+        if (filterThread != null && model.getCurrentQuery() == rootQuery) {
+            //The query is currently being filtered by the thread, or finished to do it
+            filterThread.addModifier(new PropertyModifier(query, property, value, callback));
+            filterThread.setRootQuery(rootQuery);
+        } else {
+            //Update normally
+            callback.setValue(value);
+            model.updateParameters(query);
+        }
     }
 }
