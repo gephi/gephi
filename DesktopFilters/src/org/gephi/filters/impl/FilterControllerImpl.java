@@ -100,7 +100,6 @@ public class FilterControllerImpl implements FilterController {
         if (!model.hasQuery(query)) {
             model.addFirst(query);
         }
-        model.setCurrentQuery(query);
     }
 
     public void remove(Query query) {
@@ -120,23 +119,31 @@ public class FilterControllerImpl implements FilterController {
     }
 
     public void filter(Query query) {
-        FilterProcessor processor = new FilterProcessor();
+        model.setFiltering(true);
+        model.setCurrentQuery(query);
+        
+        System.out.println("filter "+(query!=null?query.getName():"null"));
+        /*FilterProcessor processor = new FilterProcessor();
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
         Graph result = processor.process((AbstractQueryImpl) query, graphModel);
         System.out.println("#Nodes: " + result.getNodeCount());
         System.out.println("#Edges: " + result.getEdgeCount());
-        graphModel.setVisibleView(result.getView());
+        graphModel.setVisibleView(result.getView());*/
     }
 
     public void select(Query query) {
-        FilterProcessor processor = new FilterProcessor();
+        model.setFiltering(false);
+        model.setCurrentQuery(query);
+        
+        System.out.println("select "+(query!=null?query.getName():"null"));
+        /*FilterProcessor processor = new FilterProcessor();
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
         Graph result = processor.process((AbstractQueryImpl) query, graphModel);
         System.out.println("#Nodes: " + result.getNodeCount());
         System.out.println("#Edges: " + result.getEdgeCount());
 
         VizController.getInstance().getSelectionManager().selectNodes(result.getNodes().toArray());
-        VizController.getInstance().getSelectionManager().selectEdges(result.getEdges().toArray());
+        VizController.getInstance().getSelectionManager().selectEdges(result.getEdges().toArray());*/
     }
 
     public FilterModel getModel() {

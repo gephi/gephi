@@ -50,8 +50,9 @@ import org.w3c.dom.NodeList;
 public class FilterModelImpl implements FilterModel {
 
     private FilterLibraryImpl filterLibraryImpl;
-    private Query currentQuery;
     private LinkedList<Query> queries;
+    private Query currentQuery;
+    private boolean filtering;
     //Listeners
     private List<ChangeListener> listeners;
 
@@ -65,10 +66,6 @@ public class FilterModelImpl implements FilterModel {
         return filterLibraryImpl;
     }
 
-    public Query getCurrentQuery() {
-        return currentQuery;
-    }
-
     public Query[] getQueries() {
         return queries.toArray(new Query[0]);
     }
@@ -80,11 +77,6 @@ public class FilterModelImpl implements FilterModel {
             }
         }
         return false;
-    }
-
-    public void setCurrentQuery(Query currentFunction) {
-        this.currentQuery = currentFunction;
-        fireChangeEvent();
     }
 
     public void addFirst(Query function) {
@@ -142,6 +134,31 @@ public class FilterModelImpl implements FilterModel {
             i++;
         }
         return -1;
+    }
+
+    public boolean isFiltering() {
+        return currentQuery != null && filtering;
+    }
+
+    public boolean isSelecting() {
+        return currentQuery != null && !filtering;
+    }
+
+    public void setFiltering(boolean filtering) {
+        this.filtering = filtering;
+    }
+
+    public void setSelecting(boolean filtering) {
+        this.filtering = filtering;
+    }
+
+    public Query getCurrentQuery() {
+        return currentQuery;
+    }
+
+    public void setCurrentQuery(Query currentQuery) {
+        this.currentQuery = currentQuery;
+        fireChangeEvent();
     }
 
     public void propertyChanged(FilterProperty property) {
@@ -251,7 +268,6 @@ public class FilterModelImpl implements FilterModel {
 
     public void readXML(Element filterModelE) {
         queries.clear();
-        currentQuery = null;
 
         Map<Integer, Query> idMap = new HashMap<Integer, Query>();
         NodeList queryList = filterModelE.getElementsByTagName("query");

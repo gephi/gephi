@@ -92,19 +92,19 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
             if (nodeArray.length > 0) {
                 Node node = ((Node[]) evt.getNewValue())[0];
                 if (node instanceof RootNode) {
-                    uiModel.setSelectedFilter(null);
+                    uiModel.setSelectedQuery(null);
                     return;
                 }
                 while (!(node instanceof QueryNode)) {
                     node = node.getParentNode();
                     if (node.getParentNode() == null) {
-                        uiModel.setSelectedFilter(null);
+                        uiModel.setSelectedQuery(null);
                         return;
                     }
                 }
-                QueryNode functionNode = (QueryNode) node;
-                Query func = functionNode.qetQuery();
-                uiModel.setSelectedFilter(func.getFilter());
+                QueryNode queryNode = (QueryNode) node;
+                Query query = queryNode.qetQuery();
+                uiModel.setSelectedQuery(query);
             }
         }
     }

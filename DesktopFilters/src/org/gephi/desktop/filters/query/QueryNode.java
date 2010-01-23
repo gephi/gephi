@@ -45,6 +45,7 @@ public class QueryNode extends AbstractNode {
         setName(query.getName());
         setIconBaseWithExtension("org/gephi/desktop/filters/query/resources/query.png");
     }
+    
 
     /*@Override
     public PasteType getDropType(final Transferable t, int action, int index) {

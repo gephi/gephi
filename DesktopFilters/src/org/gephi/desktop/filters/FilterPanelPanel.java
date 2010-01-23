@@ -25,7 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.filters.api.FilterController;
-import org.gephi.filters.spi.Filter;
+import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.FilterBuilder;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -36,7 +36,7 @@ import org.openide.util.NbBundle;
  */
 public class FilterPanelPanel extends JPanel implements ChangeListener {
 
-    private Filter selectedFilter;
+    private Query selectedQuery;
     private final String settingsString;
     private FilterUIModel uiModel;
 
@@ -51,12 +51,12 @@ public class FilterPanelPanel extends JPanel implements ChangeListener {
 
     private void refreshModel() {
         if (uiModel != null) {
-            if (uiModel.getSelectedFilter() != selectedFilter) {
-                selectedFilter = uiModel.getSelectedFilter();
-                setFilter(selectedFilter);
+            if (uiModel.getSelectedQuery() != selectedQuery) {
+                selectedQuery = uiModel.getSelectedQuery();
+                setQuery(selectedQuery);
             }
         } else {
-            setFilter(null);
+            setQuery(null);
         }
     }
 
@@ -76,19 +76,19 @@ public class FilterPanelPanel extends JPanel implements ChangeListener {
         }
     }
 
-    private void setFilter(Filter filter) {
+    private void setQuery(Query query) {
 
         //UI update
         removeAll();
         setBorder(null);
-        if (filter != null) {
+        if (query != null) {
             FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
-            FilterBuilder builder = filterController.getModel().getLibrary().getBuilder(filter);
+            FilterBuilder builder = filterController.getModel().getLibrary().getBuilder(query.getFilter());
             try {
-                JPanel panel = builder.getPanel(filter);
+                JPanel panel = builder.getPanel(query.getFilter());
                 if (panel != null) {
                     add(panel, BorderLayout.CENTER);
-                    setBorder(javax.swing.BorderFactory.createTitledBorder(filter.getName() + " " + settingsString));
+                    setBorder(javax.swing.BorderFactory.createTitledBorder(query.getFilter().getName() + " " + settingsString));
                 }
             } catch (Exception e) {
             }

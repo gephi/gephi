@@ -30,9 +30,13 @@ public interface FilterModel {
 
     public FilterLibrary getLibrary();
 
+    public Query[] getQueries();
+
     public Query getCurrentQuery();
 
-    public Query[] getQueries();
+    public boolean isFiltering();
+
+    public boolean isSelecting();
 
     public void addChangeListener(ChangeListener listener);
 

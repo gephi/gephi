@@ -34,7 +34,7 @@ import org.gephi.filters.spi.Filter;
  */
 public final class FilterUIModel {
 
-    private Filter selectedFilter;
+    private Query selectedQuery;
     private List<Query> expandedQueryNodes;
     private List<Query> expandedParametersNodes;
     private List<Category> expandedCategoryNodes;
@@ -47,12 +47,23 @@ public final class FilterUIModel {
         expandedParametersNodes = new ArrayList<Query>();
     }
 
-    public Filter getSelectedFilter() {
-        return selectedFilter;
+    public Query getSelectedQuery() {
+        return selectedQuery;
     }
 
-    public void setSelectedFilter(Filter filter) {
-        selectedFilter = filter;
+    public Query getSelectedRoot() {
+        if (selectedQuery != null) {
+            Query root = selectedQuery;
+            while (root.getParent() != null) {
+                root = root.getParent();
+            }
+            return root;
+        }
+        return null;
+    }
+
+    public void setSelectedQuery(Query query) {
+        selectedQuery = query;
         fireChangeEvent();
     }
 
