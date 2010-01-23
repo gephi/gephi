@@ -125,6 +125,9 @@ public class INTERSECTIONBuilder implements FilterBuilder {
                 }
             }
             if (nodeFilters.size() > 0) {
+                for (NodeFilter nf : nodeFilters) {
+                    nf.init(graph);
+                }
                 List<Node> nodesToRemove = new ArrayList<Node>();
                 for (Node n : graph.getNodes()) {
                     for (NodeFilter nf : nodeFilters) {
@@ -138,12 +141,19 @@ public class INTERSECTIONBuilder implements FilterBuilder {
                 for (Node n : nodesToRemove) {
                     graph.removeNode(n);
                 }
+
+                for (NodeFilter nf : nodeFilters) {
+                    nf.finish();
+                }
             }
             if (edgeFilters.size() > 0) {
+                for (EdgeFilter ef : edgeFilters) {
+                    ef.init(graph);
+                }
                 List<Edge> edgesToRemove = new ArrayList<Edge>();
                 for (Edge e : graph.getEdges()) {
-                    for (EdgeFilter nf : edgeFilters) {
-                        if (!nf.evaluate(graph, e)) {
+                    for (EdgeFilter ef : edgeFilters) {
+                        if (!ef.evaluate(graph, e)) {
                             edgesToRemove.add(e);
                             break;
                         }
@@ -152,6 +162,10 @@ public class INTERSECTIONBuilder implements FilterBuilder {
 
                 for (Edge e : edgesToRemove) {
                     graph.removeEdge(e);
+                }
+
+                for (EdgeFilter ef : edgeFilters) {
+                    ef.finish();
                 }
             }
             return graph;

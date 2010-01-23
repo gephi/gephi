@@ -81,25 +81,14 @@ public class DegreeRangeBuilder implements FilterBuilder {
         private Integer min = 0;
         private Integer max = 0;
         private Range range = new Range(0, 0);
+        //States
+        private List<Integer> values;
 
         public String getName() {
             return NbBundle.getMessage(DegreeRangeBuilder.class, "DegreeRangeBuilder.name");
         }
 
-        public DegreeRangeFilter() {
-            refreshMinMax();
-        }
-
-        private void refreshMinMax() {
-            GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
-            Graph graph = gm.getGraphVisible();
-            min = Integer.MAX_VALUE;
-            max = Integer.MIN_VALUE;
-            for (Node n : graph.getNodes()) {
-                int degree = graph.getDegree(n);
-                min = Math.min(min, degree);
-                max = Math.max(max, degree);
-            }
+        private void refreshRange() {
             Integer lowerBound = range.getLowerInteger();
             Integer upperBound = range.getUpperInteger();
             if ((Integer) min > lowerBound || (Integer) max < lowerBound || lowerBound.equals(upperBound)) {
@@ -111,19 +100,45 @@ public class DegreeRangeBuilder implements FilterBuilder {
             range = new Range(lowerBound, upperBound);
         }
 
+        public boolean init(Graph graph) {
+            values = new ArrayList<Integer>(graph.getNodeCount());
+            min = Integer.MAX_VALUE;
+            max = Integer.MIN_VALUE;
+            return true;
+        }
+
         public boolean evaluate(Graph graph, Node node) {
             int degree = graph.getDegree(node);
+            min = Math.min(min, degree);
+            max = Math.max(max, degree);
+            values.add(new Integer(degree));
             return range.isInRange(degree);
         }
 
+        public void finish() {
+            refreshRange();
+        }
+
         public Object[] getValues() {
-            List<Integer> degrees = new ArrayList<Integer>();
-            GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
-            Graph graph = gm.getGraphVisible();
-            for (Node n : graph.getNodes()) {
-                degrees.add(graph.getDegree(n));
+            System.out.println("getValues " + (values == null ? "null" : values.size()));
+            if (values == null) {
+                GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
+                Graph graph = gm.getGraph();
+                Integer[] degrees = new Integer[graph.getNodeCount()];
+                int i = 0;
+                min = Integer.MAX_VALUE;
+                max = Integer.MIN_VALUE;
+                for (Node n : graph.getNodes()) {
+                    int degree = graph.getDegree(n);
+                    min = Math.min(min, degree);
+                    max = Math.max(max, degree);
+                    degrees[i++] = degree;
+                }
+                refreshRange();
+                return degrees;
+            } else {
+                return values.toArray(new Integer[0]);
             }
-            return degrees.toArray();
         }
 
         public FilterProperty[] getProperties() {

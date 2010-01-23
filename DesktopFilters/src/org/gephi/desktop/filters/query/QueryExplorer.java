@@ -110,7 +110,7 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
     }
 
     public void stateChanged(ChangeEvent e) {
-        System.out.println("model updated");
+        //System.out.println("model updated");
         saveExpandStatus(QueryExplorer.this.manager.getRootContext());
         QueryExplorer.this.manager.setRootContext(new RootNode(new QueryChildren(QueryExplorer.this.model.getQueries())));
         loadExpandStatus(QueryExplorer.this.manager.getRootContext());

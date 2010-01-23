@@ -124,37 +124,38 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         private AttributeColumn column;
         private Object min = 0;
         private Object max = 0;
+        //States
+        private List<Object> values;
 
         public AttributeRangelFilter(AttributeColumn column) {
             this.column = column;
-            refreshMinMax();
         }
 
         public String getName() {
             return NbBundle.getMessage(AttributeRangeBuilder.class, "AttributeRangeBuilder.name");
         }
 
-        private void refreshMinMax() {
-            Object[] values = getValues();
-            min = AttributeUtils.getDefault().getMin(column, values);
-            max = AttributeUtils.getDefault().getMax(column, values);
-
-            range = new Range(min, max);
-
-            /*Integer lowerBound = range.getLowerInteger();
+        private void refreshRange() {
+            Integer lowerBound = range.getLowerInteger();
             Integer upperBound = range.getUpperInteger();
             if ((Integer) min > lowerBound || (Integer) max < lowerBound || lowerBound.equals(upperBound)) {
-            lowerBound = (Integer) min;
+                lowerBound = (Integer) min;
             }
             if ((Integer) min > upperBound || (Integer) max < upperBound || lowerBound.equals(upperBound)) {
-            upperBound = (Integer) max;
+                upperBound = (Integer) max;
             }
-            range = new Range(lowerBound, upperBound);*/
+            range = new Range(lowerBound, upperBound);
+        }
+
+        public boolean init(Graph graph) {
+            values = new ArrayList<Object>();
+            return true;
         }
 
         public boolean evaluate(Graph graph, Node node) {
             Object val = node.getNodeData().getAttributes().getValue(column.getIndex());
             if (val != null) {
+                values.add(val);
                 return range.isInRange(val);
             }
             return false;
@@ -164,22 +165,47 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         public boolean evaluate(Graph graph, Edge edge) {
             Object val = edge.getEdgeData().getAttributes().getValue(column.getIndex());
             if (val != null) {
+                values.add(val);
                 return range.isInRange(val);
             }
             return false;
         }
 
+        public void finish() {
+            refreshRange();
+        }
+
         public Object[] getValues() {
-            List<Object> vals = new ArrayList<Object>();
-            GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
-            Graph graph = gm.getGraphVisible();
-            for (Node n : graph.getNodes()) {
-                Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
-                if (val != null) {
-                    vals.add(val);
+            if (values == null) {
+                GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
+                Graph graph = gm.getGraph();
+                List<Object> vals = new ArrayList<Object>();
+                if (AttributeUtils.getDefault().isNodeColumn(column)) {
+                    for (Node n : graph.getNodes()) {
+                        Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
+                        if (val != null) {
+                            vals.add(val);
+                        }
+                    }
+                } else {
+                    for (Edge e : graph.getEdges()) {
+                        Object val = e.getEdgeData().getAttributes().getValue(column.getIndex());
+                        if (val != null) {
+                            vals.add(val);
+                        }
+                    }
                 }
+                Object[] valuesArray = vals.toArray();
+                min = AttributeUtils.getDefault().getMin(column, valuesArray);
+                max = AttributeUtils.getDefault().getMin(column, valuesArray);
+                refreshRange();
+                return valuesArray;
+            } else {
+                Object[] valuesArray = values.toArray();
+                min = AttributeUtils.getDefault().getMin(column, valuesArray);
+                max = AttributeUtils.getDefault().getMin(column, valuesArray);
+                return valuesArray;
             }
-            return vals.toArray();
         }
 
         public FilterProperty[] getProperties() {

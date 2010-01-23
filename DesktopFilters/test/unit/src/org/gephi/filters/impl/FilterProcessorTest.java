@@ -162,6 +162,13 @@ public class FilterProcessorTest {
         public FilterProperty[] getProperties() {
             return null;
         }
+
+        public boolean init(Graph graph) {
+            return true;
+        }
+
+        public void finish() {
+        }
     }
 
     private static class NodeDegreeFilter implements NodeFilter {
@@ -184,6 +191,13 @@ public class FilterProcessorTest {
         public FilterProperty[] getProperties() {
             return null;
         }
+
+        public boolean init(Graph graph) {
+            return true;
+        }
+
+        public void finish() {
+        }
     }
 
     private static class NodeIdFilter implements NodeFilter {
@@ -204,6 +218,13 @@ public class FilterProcessorTest {
 
         public FilterProperty[] getProperties() {
             return null;
+        }
+
+        public boolean init(Graph graph) {
+            return true;
+        }
+
+        public void finish() {
         }
     }
 
@@ -234,10 +255,10 @@ public class FilterProcessorTest {
             for (int i = 0; i < graphs.length; i++) {
                 if (graphs[i] != maxGraph) {
                     //Merge
-                    for(Node n : graphs[i].getNodes().toArray()){
+                    for (Node n : graphs[i].getNodes().toArray()) {
                         maxGraph.addNode(n);
                     }
-                    for(Edge e : graphs[i].getEdges().toArray()) {
+                    for (Edge e : graphs[i].getEdges().toArray()) {
                         maxGraph.addEdge(e);
                     }
                 }

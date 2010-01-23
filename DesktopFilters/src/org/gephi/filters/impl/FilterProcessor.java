@@ -79,7 +79,7 @@ public class FilterProcessor {
                 } else if (filter instanceof EdgeFilter) {
                     processEdgeFilter((EdgeFilter) filter, input[0]);
                     q.setResult(input[0]);
-                } else if(filter instanceof ComplexFilter) {
+                } else if (filter instanceof ComplexFilter) {
                     ComplexFilter cf = (ComplexFilter) filter;
                     q.setResult(cf.filter(input[0]));
                 } else {
@@ -93,6 +93,7 @@ public class FilterProcessor {
 
     private void processNodeFilter(NodeFilter nodeFilter, Graph graph) {
         List<Node> nodesToRemove = new ArrayList<Node>();
+        nodeFilter.init(graph);
         for (Node n : graph.getNodes()) {
             if (!nodeFilter.evaluate(graph, n)) {
                 nodesToRemove.add(n);
@@ -102,10 +103,12 @@ public class FilterProcessor {
         for (Node n : nodesToRemove) {
             graph.removeNode(n);
         }
+        nodeFilter.finish();
     }
 
     private void processEdgeFilter(EdgeFilter edgeFilter, Graph graph) {
         List<Edge> edgesToRemove = new ArrayList<Edge>();
+        edgeFilter.init(graph);
         for (Edge e : graph.getEdges()) {
             if (!edgeFilter.evaluate(graph, e)) {
                 edgesToRemove.add(e);
@@ -115,6 +118,7 @@ public class FilterProcessor {
         for (Edge e : edgesToRemove) {
             graph.removeEdge(e);
         }
+        edgeFilter.finish();
     }
 
     private AbstractQueryImpl simplifyQuery(AbstractQueryImpl query) {

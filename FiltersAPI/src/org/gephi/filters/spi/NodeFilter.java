@@ -30,5 +30,9 @@ import org.gephi.graph.api.Node;
  */
 public interface NodeFilter extends Filter {
 
+    public boolean init(Graph graph);
+
     public boolean evaluate(Graph graph, Node node);
+
+    public void finish();
 }

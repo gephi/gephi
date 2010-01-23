@@ -41,7 +41,7 @@ public class RangePanel extends javax.swing.JPanel {
 
     private JQuickHistogram histogram;
     //Info
-    private int numvalues;
+    private Object[] values;
     private RangeFilter filter;
 
     public RangePanel() {
@@ -51,33 +51,49 @@ public class RangePanel extends javax.swing.JPanel {
         histogram.setConstraintHeight(30);
     }
 
-    public void setup(RangeFilter rangeFilter) {
+    public void setup(final RangeFilter rangeFilter) {
         this.filter = rangeFilter;
-        final JRangeSliderPanel r = (JRangeSliderPanel) rangeSliderPanel;
-        Range range = (Range) rangeFilter.getRangeProperty().getValue();
+        new Thread(new Runnable() {
 
-        r.setRange(new JRangeSliderPanel.Range(
-                r, rangeFilter.getMinimum(), rangeFilter.getMaximum(), range.getLowerBound(), range.getUpperBound()));
+            public void run() {
+                final JRangeSliderPanel r = (JRangeSliderPanel) rangeSliderPanel;
+                values = rangeFilter.getValues();
+                Range range = (Range) rangeFilter.getRangeProperty().getValue();
 
-        r.addPropertyChangeListener(new PropertyChangeListener() {
+                r.setRange(new JRangeSliderPanel.Range(
+                        r, rangeFilter.getMinimum(), rangeFilter.getMaximum(), range.getLowerBound(), range.getUpperBound()));
 
-            public void propertyChange(PropertyChangeEvent evt) {
-                try {
-                    if (evt.getPropertyName().equals(JRangeSliderPanel.LOWER_BOUND)) {
-                        Range newRange = new Range(r.getRange().getLowerBound(), r.getRange().getUpperBound());
-                        filter.getRangeProperty().setValue(newRange);
-                        setupHistogram(filter, newRange);
-                    } else if (evt.getPropertyName().equals(JRangeSliderPanel.UPPER_BOUND)) {
-                        Range newRange = new Range(r.getRange().getLowerBound(), r.getRange().getUpperBound());
-                        filter.getRangeProperty().setValue(newRange);
-                        setupHistogram(filter, newRange);
+                r.addPropertyChangeListener(new PropertyChangeListener() {
+
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        try {
+                            if (evt.getPropertyName().equals(JRangeSliderPanel.LOWER_BOUND)) {
+                                final Range newRange = new Range(r.getRange().getLowerBound(), r.getRange().getUpperBound());
+                                filter.getRangeProperty().setValue(newRange);
+                                new Thread(new Runnable() {
+
+                                    public void run() {
+                                        setupHistogram(filter, newRange);
+                                    }
+                                }).start();
+                            } else if (evt.getPropertyName().equals(JRangeSliderPanel.UPPER_BOUND)) {
+                                final Range newRange = new Range(r.getRange().getLowerBound(), r.getRange().getUpperBound());
+                                filter.getRangeProperty().setValue(newRange);
+                                new Thread(new Runnable() {
+
+                                    public void run() {
+                                        setupHistogram(filter, newRange);
+                                    }
+                                }).start();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                });
+                setupHistogram(rangeFilter, range);
             }
-        });
-        setupHistogram(rangeFilter, range);
+        }).start();
 
         //Tooltip
         histogram.getPanel().addMouseListener(new MouseAdapter() {
@@ -114,44 +130,36 @@ public class RangePanel extends javax.swing.JPanel {
     }
 
     private void setupHistogram(final RangeFilter rangeFilter, final Range range) {
-        new Thread(new Runnable() {
+        histogram.clear();
+        for (int i = 0; i < values.length; i++) {
+            histogram.addData(values[i]);
+        }
+        histogram.sortData();
+        double rangeLowerBound = 0.0;
+        double rangeUpperBound = 0.0;
+        if (range.getRangeType().equals(Integer.class)) {
+            rangeLowerBound = ((Integer) range.getLowerBound()).doubleValue();
+            rangeUpperBound = ((Integer) range.getUpperBound()).doubleValue();
+        } else if (range.getRangeType().equals(Float.class)) {
+            rangeLowerBound = ((Float) range.getLowerBound()).doubleValue();
+            rangeUpperBound = ((Float) range.getUpperBound()).doubleValue();
+        } else if (range.getRangeType().equals(Double.class)) {
+            rangeLowerBound = ((Double) range.getLowerBound()).doubleValue();
+            rangeUpperBound = ((Double) range.getUpperBound()).doubleValue();
+        } else if (range.getRangeType().equals(Long.class)) {
+            rangeLowerBound = ((Long) range.getLowerBound()).doubleValue();
+            rangeUpperBound = ((Long) range.getUpperBound()).doubleValue();
+        }
+        histogram.setLowerBound(rangeLowerBound);
+        histogram.setUpperBound(rangeUpperBound);
+
+        SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                Object[] data = rangeFilter.getValues();
-                numvalues = data.length;
-                histogram.clear();
-                for (int i = 0; i < data.length; i++) {
-                    histogram.addData(data[i]);
-                }
-                histogram.sortData();
-                double rangeLowerBound = 0.0;
-                double rangeUpperBound = 0.0;
-                if (range.getRangeType().equals(Integer.class)) {
-                    rangeLowerBound = ((Integer) range.getLowerBound()).doubleValue();
-                    rangeUpperBound = ((Integer) range.getUpperBound()).doubleValue();
-                } else if (range.getRangeType().equals(Float.class)) {
-                    rangeLowerBound = ((Float) range.getLowerBound()).doubleValue();
-                    rangeUpperBound = ((Float) range.getUpperBound()).doubleValue();
-                } else if (range.getRangeType().equals(Double.class)) {
-                    rangeLowerBound = ((Double) range.getLowerBound()).doubleValue();
-                    rangeUpperBound = ((Double) range.getUpperBound()).doubleValue();
-                } else if (range.getRangeType().equals(Long.class)) {
-                    rangeLowerBound = ((Long) range.getLowerBound()).doubleValue();
-                    rangeUpperBound = ((Long) range.getUpperBound()).doubleValue();
-                }
-                histogram.setLowerBound(rangeLowerBound);
-                histogram.setUpperBound(rangeUpperBound);
-
-                SwingUtilities.invokeLater(new Runnable() {
-
-                    public void run() {
-                        revalidate();
-                        repaint();
-                    }
-                });
+                revalidate();
+                repaint();
             }
-        }).start();
-
+        });
     }
 
     private RichTooltip buildTooltip() {

@@ -135,8 +135,12 @@ public class AttributeEqualBuilder implements CategoryBuilder {
             return NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.name");
         }
 
+        public boolean init(Graph graph) {
+            return true;
+        }
+
         public boolean evaluate(Graph graph, Node node) {
-            if(pattern==null) {
+            if (pattern == null) {
                 return true;
             }
             Object val = node.getNodeData().getAttributes().getValue(column.getIndex());
@@ -156,6 +160,10 @@ public class AttributeEqualBuilder implements CategoryBuilder {
                 return pattern.equals((String) val);
             }
             return false;
+        }
+
+        public void finish() {
+            throw new UnsupportedOperationException("Not supported yet.");
         }
 
         public FilterProperty[] getProperties() {
@@ -247,38 +255,48 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         private AttributeColumn column;
         private Object min;
         private Object max;
+        //State
+        private List<Object> values;
 
         public EqualNumberFilter(AttributeColumn column) {
             this.column = column;
-            refreshMinMax();
+
+            //Default min-max
+            GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
+            Graph graph = gm.getGraph();
+            List<Object> vals = new ArrayList<Object>();
+            if (AttributeUtils.getDefault().isNodeColumn(column)) {
+                for (Node n : graph.getNodes()) {
+                    Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
+                    if (val != null) {
+                        vals.add(val);
+                    }
+                }
+            } else {
+                for (Edge e : graph.getEdges()) {
+                    Object val = e.getEdgeData().getAttributes().getValue(column.getIndex());
+                    if (val != null) {
+                        vals.add(val);
+                    }
+                }
+            }
+            Object[] valuesArray = vals.toArray();
+            min = AttributeUtils.getDefault().getMin(column, valuesArray);
+            max = AttributeUtils.getDefault().getMin(column, valuesArray);
         }
 
         public String getName() {
             return NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.name");
         }
 
-        private void refreshMinMax() {
-            Object[] values = getValues();
-            min = AttributeUtils.getDefault().getMin(column, values);
-            max = AttributeUtils.getDefault().getMax(column, values);
-        }
-
-        public Object[] getValues() {
-            List<Object> vals = new ArrayList<Object>();
-            GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
-            Graph graph = gm.getGraphVisible();
-            for (Node n : graph.getNodes()) {
-                Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
-                if (val != null) {
-                    vals.add(val);
-                }
-            }
-            return vals.toArray();
+        public boolean init(Graph graph) {
+            return true;
         }
 
         public boolean evaluate(Graph graph, Node node) {
             Object val = node.getNodeData().getAttributes().getValue(column.getIndex());
             if (val != null) {
+                values.add(val);
                 return val.equals(match);
             }
             return false;
@@ -287,9 +305,17 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         public boolean evaluate(Graph graph, Edge edge) {
             Object val = edge.getEdgeData().getAttributes().getValue(column.getIndex());
             if (val != null) {
+                values.add(val);
                 return val.equals(match);
             }
             return false;
+        }
+
+        public void finish() {
+            Object[] valuesArray = values.toArray();
+            min = AttributeUtils.getDefault().getMin(column, valuesArray);
+            max = AttributeUtils.getDefault().getMax(column, valuesArray);
+            values = null;
         }
 
         public FilterProperty[] getProperties() {
@@ -396,6 +422,10 @@ public class AttributeEqualBuilder implements CategoryBuilder {
             return filterProperties;
         }
 
+        public boolean init(Graph graph) {
+            return true;
+        }
+
         public boolean evaluate(Graph graph, Node node) {
             Object val = node.getNodeData().getAttributes().getValue(column.getIndex());
             if (val != null) {
@@ -410,6 +440,9 @@ public class AttributeEqualBuilder implements CategoryBuilder {
                 return val.equals(match);
             }
             return false;
+        }
+
+        public void finish() {
         }
 
         public boolean isMatch() {

@@ -29,5 +29,9 @@ import org.gephi.graph.api.Graph;
  */
 public interface EdgeFilter extends Filter {
 
+    public boolean init(Graph graph);
+
     public boolean evaluate(Graph graph, Edge edge);
+
+    public void finish();
 }
