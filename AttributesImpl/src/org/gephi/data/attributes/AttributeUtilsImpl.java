@@ -141,4 +141,30 @@ public class AttributeUtilsImpl extends AttributeUtils {
         }
         return null;
     }
+
+    @Override
+    public boolean isNodeColumn(AttributeColumn column) {
+        if (column == null) {
+            throw new NullPointerException();
+        }
+        AttributeColumnImpl columnImpl = (AttributeColumnImpl) column;
+        AttributeTableImpl table = columnImpl.getTable();
+        if (table == table.getModel().getNodeTable()) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isEdgeColumn(AttributeColumn column) {
+        if (column == null) {
+            throw new NullPointerException();
+        }
+        AttributeColumnImpl columnImpl = (AttributeColumnImpl) column;
+        AttributeTableImpl table = columnImpl.getTable();
+        if (table == table.getModel().getEdgeTable()) {
+            return true;
+        }
+        return false;
+    }
 }

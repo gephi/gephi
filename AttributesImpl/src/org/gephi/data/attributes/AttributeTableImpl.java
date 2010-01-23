@@ -86,7 +86,7 @@ public class AttributeTableImpl implements AttributeTable, Lookup.Provider {
             }
             defaultValue = model.getManagedValue(defaultValue, type);
         }
-        AttributeColumnImpl column = new AttributeColumnImpl(columns.size(), id, title, type, origin, defaultValue);
+        AttributeColumnImpl column = new AttributeColumnImpl(this, columns.size(), id, title, type, origin, defaultValue);
         columns.add(column);
         columnsMap.put(id, column);
         if (title != null && !title.equals(id)) {
@@ -166,6 +166,10 @@ public class AttributeTableImpl implements AttributeTable, Lookup.Provider {
 
     public AttributeFactoryImpl getFactory() {
         return model.getFactory();
+    }
+
+    public AbstractAttributeModel getModel() {
+        return model;
     }
 
     public synchronized void mergeTable(AttributeTable table) {

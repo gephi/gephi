@@ -30,6 +30,7 @@ import org.gephi.data.attributes.api.AttributeType;
  */
 public class AttributeColumnImpl implements AttributeColumn {
 
+    protected final AttributeTableImpl table;
     protected final int index;
     protected final String id;
     protected final String title;
@@ -37,13 +38,18 @@ public class AttributeColumnImpl implements AttributeColumn {
     protected final AttributeOrigin origin;
     protected final AttributeValueImpl defaultValue;
 
-    public AttributeColumnImpl(int index, String id, String title, AttributeType attributeType, AttributeOrigin origin, Object defaultValue) {
+    public AttributeColumnImpl(AttributeTableImpl table, int index, String id, String title, AttributeType attributeType, AttributeOrigin origin, Object defaultValue) {
+        this.table = table;
         this.index = index;
         this.id = id;
         this.type = attributeType;
         this.title = title;
         this.origin = origin;
         this.defaultValue = new AttributeValueImpl(this, defaultValue);
+    }
+
+    public AttributeTableImpl getTable() {
+        return table;
     }
 
     public AttributeType getType() {

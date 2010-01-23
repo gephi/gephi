@@ -28,6 +28,10 @@ import org.openide.util.Lookup;
  */
 public abstract class AttributeUtils {
 
+    public abstract boolean isNodeColumn(AttributeColumn column);
+
+    public abstract boolean isEdgeColumn(AttributeColumn column);
+
     public abstract boolean isStringColumn(AttributeColumn column);
 
     public abstract boolean isNumberColumn(AttributeColumn column);
