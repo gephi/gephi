@@ -138,4 +138,17 @@ public interface DirectedGraph extends Graph {
      * the graph
      */
     public int getOutDegree(Node node);
+
+    /**
+     * Returns the number of mutual edges incident to <code>node</code>. Edges are
+     * considered mutual when both incoming and outgoing edges exists for a same
+     * neighbour. Mutual edges are also called bi-directionnal.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
+     * @param node the node whose outdegree is to be returned
+     * @return the number of outgoing edges incident to <code>node</code>
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
+     * the graph
+     */
+    public int getMutualDegree(Node node);
 }

@@ -20,13 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
+import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.MetaEdge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
-import org.gephi.graph.api.GraphView;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphViewImpl;
 import org.gephi.graph.dhns.edge.AbstractEdge;
@@ -41,6 +41,7 @@ import org.gephi.graph.dhns.filter.Tautology;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
+import org.gephi.graph.dhns.utils.avl.EdgeOppositeTree;
 
 /**
  *
@@ -132,12 +133,30 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
         return count;
     }
 
+    public int getMutualDegree(Node node) {
+        AbstractNode absNode = checkNode(node);
+        int count = 0;
+        if (absNode.getEdgesOutTree().getCount() > 0 && absNode.getEdgesInTree().getCount() > 0) {
+            EdgeOppositeTree inTree = absNode.getEdgesInTree();
+            for (ParamAVLIterator<AbstractEdge> itr = new ParamAVLIterator<AbstractEdge>(); itr.hasNext();) {
+                AbstractEdge edge = itr.next();
+                if (!edge.isSelfLoop()) {
+                    if (inTree.hasNeighbour(edge.getTarget())) {
+                        count++;
+                    }
+                }
+            }
+        }
+
+        return count;
+    }
+
     //Graph
     public boolean contains(Edge edge) {
         if (edge == null) {
             throw new NullPointerException();
         }
-        AbstractEdge absEdge = (AbstractEdge)edge;
+        AbstractEdge absEdge = (AbstractEdge) edge;
         return getEdge(absEdge.getSource(view.getViewId()), absEdge.getTarget(view.getViewId())) != null;
     }
 
@@ -177,7 +196,7 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
 
     //Directed
     public Edge getEdge(Node source, Node target) {
-        if(source==null || target==null) {
+        if (source == null || target == null) {
             return null;
         }
         AbstractNode sourceNode = checkNode(source);

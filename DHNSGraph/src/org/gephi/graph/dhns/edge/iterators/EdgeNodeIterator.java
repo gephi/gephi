@@ -42,7 +42,7 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
     };
     protected AbstractNode node;
     protected int viewId;
-    protected ParamAVLIterator<ProperEdgeImpl> edgeIterator;
+    protected ParamAVLIterator<AbstractEdge> edgeIterator;
     protected EdgeNodeIteratorMode mode;
     protected AbstractEdge pointer;
     protected boolean undirected;
@@ -54,7 +54,7 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
         this.mode = mode;
         this.viewId = node.getViewId();
         this.undirected = undirected;
-        this.edgeIterator = new ParamAVLIterator<ProperEdgeImpl>();
+        this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
         if (mode.equals(EdgeNodeIteratorMode.OUT) || mode.equals(EdgeNodeIteratorMode.BOTH)) {
             this.edgeIterator.setNode(node.getEdgesOutTree());
         } else {

@@ -32,6 +32,7 @@ import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
@@ -80,25 +81,14 @@ public class MutualDegreeRangeBuilder implements FilterBuilder {
         private Integer min = 0;
         private Integer max = 0;
         private Range range = new Range(0, 0);
+        //States
+        private List<Integer> values;
 
         public String getName() {
             return NbBundle.getMessage(MutualDegreeRangeFilter.class, "MutualDegreeRangeBuilder.name");
         }
 
-        public MutualDegreeRangeFilter() {
-            refreshMinMax();
-        }
-
-        private void refreshMinMax() {
-            GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
-            DirectedGraph graph = gm.getDirectedGraphVisible();
-            min = Integer.MAX_VALUE;
-            max = Integer.MIN_VALUE;
-            for (Node n : graph.getNodes()) {
-                int degree = graph.getDegree(n);
-                min = Math.min(min, degree);
-                max = Math.max(max, degree);
-            }
+        private void refreshRange() {
             Integer lowerBound = range.getLowerInteger();
             Integer upperBound = range.getUpperInteger();
             if ((Integer) min > lowerBound || (Integer) max < lowerBound || lowerBound.equals(upperBound)) {
@@ -110,14 +100,47 @@ public class MutualDegreeRangeBuilder implements FilterBuilder {
             range = new Range(lowerBound, upperBound);
         }
 
-        public Object[] getValues() {
-            List<Integer> degrees = new ArrayList<Integer>();
-            GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
-            DirectedGraph graph = gm.getDirectedGraphVisible();
-            for (Node n : graph.getNodes()) {
-                degrees.add(graph.getDegree(n));
+        public boolean init(Graph graph) {
+            if (!(graph instanceof DirectedGraph)) {
+                return false;
             }
-            return degrees.toArray();
+            values = new ArrayList<Integer>(graph.getNodeCount());
+            min = Integer.MAX_VALUE;
+            max = Integer.MIN_VALUE;
+            return true;
+        }
+
+        public boolean evaluate(Graph graph, Node node) {
+            int degree = ((DirectedGraph) graph).getMutualDegree(node);
+            min = Math.min(min, degree);
+            max = Math.max(max, degree);
+            values.add(new Integer(degree));
+            return range.isInRange(degree);
+        }
+
+        public void finish() {
+            refreshRange();
+        }
+
+        public Object[] getValues() {
+            if (values == null) {
+                GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
+                DirectedGraph graph = gm.getDirectedGraph();
+                Integer[] degrees = new Integer[graph.getNodeCount()];
+                int i = 0;
+                min = Integer.MAX_VALUE;
+                max = Integer.MIN_VALUE;
+                for (Node n : graph.getNodes()) {
+                    int degree = graph.getMutualDegree(n);
+                    min = Math.min(min, degree);
+                    max = Math.max(max, degree);
+                    degrees[i++] = degree;
+                }
+                refreshRange();
+                return degrees;
+            } else {
+                return values.toArray(new Integer[0]);
+            }
         }
 
         public FilterProperty[] getProperties() {
