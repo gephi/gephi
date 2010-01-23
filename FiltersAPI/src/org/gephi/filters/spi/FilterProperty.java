@@ -20,10 +20,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.filters.spi;
 
+import java.beans.PropertyEditor;
 import java.lang.reflect.InvocationTargetException;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.filters.api.FilterController;
+import org.gephi.filters.api.PropertyExecutor;
 import org.openide.nodes.Node.Property;
 import org.openide.nodes.PropertySupport;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -52,8 +57,33 @@ public final class FilterProperty {
         return null;
     }
 
-    public Property getProperty() {
-        return property;
+    public void setValue(Object value) {
+        PropertyExecutor propertyExecutor = Lookup.getDefault().lookup(PropertyExecutor.class);
+        if (propertyExecutor != null) {
+            propertyExecutor.setValue(this, value, new PropertyExecutor.Callback() {
+
+                public void setValue(Object value) {
+                    try {
+                        property.setValue(value);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            try {
+                property.setValue(value);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public PropertyEditor getPropertyEditor() {
+        return property.getPropertyEditor();
+    }
+
+    public Class getValueType() {
+        return property.getValueType();
     }
 
     public Filter getFilter() {
@@ -74,15 +104,7 @@ public final class FilterProperty {
      */
     public static FilterProperty createProperty(Filter filter, Class valueType, String propertyName, String getMethod, String setMethod) throws NoSuchMethodException {
         final FilterProperty filterProperty = new FilterProperty(filter);
-        Property property = new PropertySupport.Reflection(
-                filter, valueType, getMethod, setMethod) {
-
-            @Override
-            public void setValue(Object val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-                super.setValue(val);
-                Lookup.getDefault().lookup(FilterController.class).propertyChanged(filterProperty);
-            }
-        };
+        Property property = new PropertySupport.Reflection(filter, valueType, getMethod, setMethod);
         property.setName(propertyName);
         filterProperty.property = property;
 
@@ -101,14 +123,7 @@ public final class FilterProperty {
             valueType = boolean.class;
         }
         final FilterProperty filterProperty = new FilterProperty(filter);
-        Property property = new PropertySupport.Reflection(filter, valueType, fieldName) {
-
-            @Override
-            public void setValue(Object val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-                super.setValue(val);
-                Lookup.getDefault().lookup(FilterController.class).propertyChanged(filterProperty);
-            }
-        };
+        Property property = new PropertySupport.Reflection(filter, valueType, fieldName);
         property.setName(fieldName);
         filterProperty.property = property;
 

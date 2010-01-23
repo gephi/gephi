@@ -45,7 +45,5 @@ public interface FilterController {
 
     public void select(Query query);
 
-    public void propertyChanged(FilterProperty property);
-
     public FilterModel getModel();
 }

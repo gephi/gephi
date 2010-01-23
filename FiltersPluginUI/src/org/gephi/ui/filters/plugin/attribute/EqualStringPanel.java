@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.filters.plugin.attribute.AttributeEqualBuilder;
+import org.gephi.filters.spi.FilterProperty;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.ui.ValidationGroup;
@@ -47,8 +48,8 @@ public class EqualStringPanel extends javax.swing.JPanel implements ActionListen
     }
 
     public void actionPerformed(ActionEvent evt) {
-        Property<String> pattern = filter.getProperties()[1].getProperty();
-        Property<Boolean> useRegex = filter.getProperties()[2].getProperty();
+        FilterProperty pattern = filter.getProperties()[1];
+        FilterProperty useRegex = filter.getProperties()[2];
         try {
             if (pattern.getValue() == null || !pattern.getValue().equals(textField.getText())) {
                 pattern.setValue(textField.getText());
@@ -64,11 +65,11 @@ public class EqualStringPanel extends javax.swing.JPanel implements ActionListen
     public void setup(AttributeEqualBuilder.EqualStringFilter filter) {
         this.filter = filter;
         this.setToolTipText(filter.getName() + " '" + filter.getColumn().getTitle() + "'");
-        Property<String> pattern = filter.getProperties()[1].getProperty();
-        Property<Boolean> useRegex = filter.getProperties()[2].getProperty();
+        FilterProperty pattern = filter.getProperties()[1];
+        FilterProperty useRegex = filter.getProperties()[2];
         try {
-            textField.setText(pattern.getValue());
-            regexCheckbox.setSelected(useRegex.getValue());
+            textField.setText((String) pattern.getValue());
+            regexCheckbox.setSelected((Boolean) useRegex.getValue());
         } catch (Exception e) {
             e.printStackTrace();
         }

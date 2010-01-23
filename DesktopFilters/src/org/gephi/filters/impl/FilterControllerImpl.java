@@ -24,27 +24,25 @@ import java.beans.PropertyEditorManager;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterModel;
+import org.gephi.filters.api.PropertyExecutor;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.api.Range;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.filters.spi.Operator;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.ProjectController;
-import org.gephi.visualization.VizController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = FilterController.class)
-public class FilterControllerImpl implements FilterController {
+ @ServiceProviders({@ServiceProvider(service=FilterController.class), @ServiceProvider(service=PropertyExecutor.class)})
+public class FilterControllerImpl implements FilterController, PropertyExecutor {
 
     private FilterModelImpl model;
 
@@ -121,8 +119,8 @@ public class FilterControllerImpl implements FilterController {
     public void filter(Query query) {
         model.setFiltering(true);
         model.setCurrentQuery(query);
-        
-        System.out.println("filter "+(query!=null?query.getName():"null"));
+
+        System.out.println("filter " + (query != null ? query.getName() : "null"));
         /*FilterProcessor processor = new FilterProcessor();
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
         Graph result = processor.process((AbstractQueryImpl) query, graphModel);
@@ -134,8 +132,8 @@ public class FilterControllerImpl implements FilterController {
     public void select(Query query) {
         model.setFiltering(false);
         model.setCurrentQuery(query);
-        
-        System.out.println("select "+(query!=null?query.getName():"null"));
+
+        System.out.println("select " + (query != null ? query.getName() : "null"));
         /*FilterProcessor processor = new FilterProcessor();
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
         Graph result = processor.process((AbstractQueryImpl) query, graphModel);
@@ -152,7 +150,21 @@ public class FilterControllerImpl implements FilterController {
 
     public void propertyChanged(FilterProperty property) {
         if (model != null) {
-            model.propertyChanged(property);
+            Query query = model.getQuery(property.getFilter());
+            if (query != null) {
+                AbstractQueryImpl rootQuery = ((AbstractQueryImpl) query).getRoot();
+                if (model.getCurrentQuery() == rootQuery) {
+                    //Modyfing current query parameter
+                    System.out.println("current query modify parameters");
+                } else {
+                    
+                    model.updateParameters(query);
+                }
+            }
         }
+    }
+
+    public void setValue(FilterProperty property, Object value, Callback callback) {
+        callback.setValue(value);
     }
 }

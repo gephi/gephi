@@ -91,6 +91,14 @@ public abstract class AbstractQueryImpl implements Query {
         return result;
     }
 
+    public AbstractQueryImpl getRoot() {
+        AbstractQueryImpl root = this;
+        while(root.getParent()!=null) {
+            root = (AbstractQueryImpl)root.getParent();
+        }
+        return root;
+    }
+
     public AbstractQueryImpl[] getLeaves() {
         ArrayList<AbstractQueryImpl> leaves = new ArrayList<AbstractQueryImpl>();
         Deque<Query> stack = new ArrayDeque<Query>();

@@ -23,7 +23,7 @@ package org.gephi.ui.filters.plugin.attribute;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.gephi.filters.plugin.attribute.AttributeEqualBuilder.EqualBooleanFilter;
-import org.openide.nodes.Node.Property;
+import org.gephi.filters.spi.FilterProperty;
 
 /**
  *
@@ -48,7 +48,7 @@ public class EqualBooleanPanel extends javax.swing.JPanel implements ActionListe
     }
 
     public void actionPerformed(ActionEvent evt) {
-        Property<Boolean> match = filter.getProperties()[1].getProperty();
+        FilterProperty match = filter.getProperties()[1];
         try {
             match.setValue(trueButton.isSelected());
         } catch (Exception e) {

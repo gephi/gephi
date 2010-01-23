@@ -65,11 +65,11 @@ public class RangePanel extends javax.swing.JPanel {
                 try {
                     if (evt.getPropertyName().equals(JRangeSliderPanel.LOWER_BOUND)) {
                         Range newRange = new Range(r.getRange().getLowerBound(), r.getRange().getUpperBound());
-                        filter.getRangeProperty().getProperty().setValue(newRange);
+                        filter.getRangeProperty().setValue(newRange);
                         setupHistogram(filter, newRange);
                     } else if (evt.getPropertyName().equals(JRangeSliderPanel.UPPER_BOUND)) {
                         Range newRange = new Range(r.getRange().getLowerBound(), r.getRange().getUpperBound());
-                        filter.getRangeProperty().getProperty().setValue(newRange);
+                        filter.getRangeProperty().setValue(newRange);
                         setupHistogram(filter, newRange);
                     }
                 } catch (Exception e) {

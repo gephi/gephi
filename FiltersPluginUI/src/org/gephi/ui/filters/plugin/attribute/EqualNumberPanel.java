@@ -25,7 +25,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.filters.plugin.attribute.AttributeEqualBuilder.EqualNumberFilter;
-import org.openide.nodes.Node.Property;
+import org.gephi.filters.spi.FilterProperty;
 import org.openide.util.WeakListeners;
 
 /**
@@ -41,7 +41,7 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
     }
 
     public void stateChanged(ChangeEvent evt) {
-        Property<Number> match = filter.getProperties()[1].getProperty();
+        FilterProperty match = filter.getProperties()[1];
         try {
             match.setValue((Number) valueSpinner.getValue());
         } catch (Exception e) {

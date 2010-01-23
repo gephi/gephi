@@ -36,7 +36,6 @@ import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
-import org.openide.nodes.Node.Property;
 import org.openide.util.Lookup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -174,6 +173,20 @@ public class FilterModelImpl implements FilterModel {
         fireChangeEvent();
     }
 
+    public void updateParameters(Query query) {
+        ((FilterQueryImpl) query).updateParameters();
+        fireChangeEvent();
+    }
+
+    public Query getQuery(Filter filter) {
+        for (Query q : getAllQueries()) {
+            if (filter == q.getFilter()) {
+                return q;
+            }
+        }
+        return null;
+    }
+
     public Query[] getAllQueries() {
         List<Query> result = new ArrayList<Query>();
         LinkedList<Query> stack = new LinkedList<Query>();
@@ -230,7 +243,7 @@ public class FilterModelImpl implements FilterModel {
         //Params
         for (int i = 0; i < query.getParametersCount(); i++) {
             FilterProperty prop = query.getFilter().getProperties()[i];
-            Element paramE = writeParameter(document, i, prop.getProperty());
+            Element paramE = writeParameter(document, i, prop);
             if (paramE != null) {
                 queryE.appendChild(paramE);
             }
@@ -246,7 +259,7 @@ public class FilterModelImpl implements FilterModel {
         }
     }
 
-    private Element writeParameter(Document document, int index, Property property) {
+    private Element writeParameter(Document document, int index, FilterProperty property) {
         Element parameterE = document.createElement("parameter");
         parameterE.setAttribute("index", String.valueOf(index));
         try {
@@ -312,7 +325,7 @@ public class FilterModelImpl implements FilterModel {
                 if (n.getNodeType() == Node.ELEMENT_NODE) {
                     Element paramE = (Element) n;
                     int index = Integer.parseInt(paramE.getAttribute("index"));
-                    Property property = query.getFilter().getProperties()[index].getProperty();
+                    FilterProperty property = query.getFilter().getProperties()[index];
                     try {
                         PropertyEditor editor = property.getPropertyEditor();
                         if (editor == null) {
