@@ -108,6 +108,14 @@ public class GraphStructure {
     }
 
     public void setVisibleView(GraphViewImpl visibleView) {
-        this.visibleView = visibleView;
+        if (this.visibleView == visibleView) {
+            return;
+        }
+        if (visibleView == null) {
+            this.visibleView = mainView;
+        } else {
+            this.visibleView = visibleView;
+        }
+        dhns.getGraphVersion().incNodeAndEdgeVersion();
     }
 }

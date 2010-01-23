@@ -50,6 +50,7 @@ public class FilterModelImpl implements FilterModel {
 
     private FilterLibraryImpl filterLibraryImpl;
     private LinkedList<Query> queries;
+    private FilterThread filterThread;
     private Query currentQuery;
     private boolean filtering;
     //Listeners
@@ -186,6 +187,14 @@ public class FilterModelImpl implements FilterModel {
             }
         }
         return result.toArray(new Query[0]);
+    }
+
+    public FilterThread getFilterThread() {
+        return filterThread;
+    }
+
+    public void setFilterThread(FilterThread filterThread) {
+        this.filterThread = filterThread;
     }
 
     public void addChangeListener(ChangeListener listener) {

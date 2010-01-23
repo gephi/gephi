@@ -136,6 +136,9 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         public boolean evaluate(Graph graph, Node node) {
+            if(pattern==null) {
+                return true;
+            }
             Object val = node.getNodeData().getAttributes().getValue(column.getIndex());
             if (val != null && useRegex) {
                 return regex.matcher((String) val).matches();

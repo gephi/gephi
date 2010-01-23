@@ -41,7 +41,6 @@ import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.Predicate;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.graph.api.GraphView;
-import org.gephi.graph.api.Views;
 import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
@@ -403,6 +402,6 @@ public class Dhns implements GraphModel {
     }
 
     public void setVisibleView(GraphView view) {
-        graphStructure.setVisibleView((GraphViewImpl)view);
+        graphStructure.setVisibleView(view != null ? (GraphViewImpl) view : null);
     }
 }

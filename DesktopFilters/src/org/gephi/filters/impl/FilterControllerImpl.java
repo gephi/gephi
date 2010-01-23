@@ -31,6 +31,8 @@ import org.gephi.filters.impl.FilterThread.PropertyModifier;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.filters.spi.Operator;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
@@ -48,7 +50,6 @@ import org.openide.util.lookup.ServiceProviders;
 public class FilterControllerImpl implements FilterController, PropertyExecutor {
 
     private FilterModelImpl model;
-    private FilterThread filterThread;
 
     public FilterControllerImpl() {
         //Register range editor
@@ -124,36 +125,38 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         model.setFiltering(true);
         model.setCurrentQuery(query);
 
-        if (filterThread != null) {
-            filterThread.setRunning(false);
+        if (model.getFilterThread() != null) {
+            model.getFilterThread().setRunning(false);
+            model.setFilterThread(null);
         }
         if (query != null) {
-            filterThread = new FilterThread(model);
+            FilterThread filterThread = new FilterThread(model);
+            model.setFilterThread(filterThread);
             filterThread.setRootQuery((AbstractQueryImpl) query);
             filterThread.start();
+        } else {
+            GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+            graphModel.setVisibleView(null);
         }
-
-        /*FilterProcessor processor = new FilterProcessor();
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-        Graph result = processor.process((AbstractQueryImpl) query, graphModel);
-        System.out.println("#Nodes: " + result.getNodeCount());
-        System.out.println("#Edges: " + result.getEdgeCount());
-        graphModel.setVisibleView(result.getView());*/
     }
 
     public void select(Query query) {
         model.setFiltering(false);
         model.setCurrentQuery(query);
 
-        System.out.println("select " + (query != null ? query.getName() : "null"));
-        /*FilterProcessor processor = new FilterProcessor();
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-        Graph result = processor.process((AbstractQueryImpl) query, graphModel);
-        System.out.println("#Nodes: " + result.getNodeCount());
-        System.out.println("#Edges: " + result.getEdgeCount());
-
-        VizController.getInstance().getSelectionManager().selectNodes(result.getNodes().toArray());
-        VizController.getInstance().getSelectionManager().selectEdges(result.getEdges().toArray());*/
+        if (model.getFilterThread() != null) {
+            model.getFilterThread().setRunning(false);
+            model.setFilterThread(null);
+        }
+        if (query != null) {
+            FilterThread filterThread = new FilterThread(model);
+            model.setFilterThread(filterThread);
+            filterThread.setRootQuery((AbstractQueryImpl) query);
+            filterThread.start();
+        } else {
+            GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+            graphModel.setVisibleView(null);
+        }
     }
 
     public FilterModel getModel() {
@@ -163,7 +166,8 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     public void setValue(FilterProperty property, Object value, Callback callback) {
         Query query = model.getQuery(property.getFilter());
         AbstractQueryImpl rootQuery = ((AbstractQueryImpl) query).getRoot();
-        if (filterThread != null && model.getCurrentQuery() == rootQuery) {
+        FilterThread filterThread = null;
+        if ((filterThread = model.getFilterThread()) != null && model.getCurrentQuery() == rootQuery) {
             //The query is currently being filtered by the thread, or finished to do it
             filterThread.addModifier(new PropertyModifier(query, property, value, callback));
             filterThread.setRootQuery(rootQuery);

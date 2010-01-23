@@ -54,28 +54,28 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
         this.setToolTipText(filter.getName() + " '" + filter.getColumn().getTitle() + "'");
         Number match = filter.getMatch();
         Number stepSize = null;
+        Comparable min = (Comparable) filter.getMinimun();
+        Comparable max = (Comparable) filter.getMaximum();
         switch (filter.getColumn().getType()) {
             case DOUBLE:
-                match = (match != null ? match : new Double(0.0));
+                match = (match != null ? match : new Double((Double)min));
                 stepSize = new Double(.1);
                 break;
             case FLOAT:
-                match = (match != null ? match : new Float(0f));
+                match = (match != null ? match : new Float((Float)min));
                 stepSize = new Float(.1f);
                 break;
             case LONG:
-                match = (match != null ? match : new Long(0l));
+                match = (match != null ? match : new Long((Long)min));
                 stepSize = new Long(1l);
                 break;
             case INT:
-                match = (match != null ? match : new Integer(0));
+                match = (match != null ? match : new Integer((Integer)min));
                 stepSize = 1;
                 break;
             default:
                 throw new IllegalArgumentException("Column must be number");
         }
-        Comparable min = (Comparable) filter.getMinimun();
-        Comparable max = (Comparable) filter.getMaximum();
         if (min.equals(Double.NEGATIVE_INFINITY) || min.equals(Integer.MIN_VALUE)) {
             minLabel.setText("");
             maxLabel.setText("");

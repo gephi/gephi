@@ -91,6 +91,7 @@ public class FilterPanelPanel extends JPanel implements ChangeListener {
                     setBorder(javax.swing.BorderFactory.createTitledBorder(query.getFilter().getName() + " " + settingsString));
                 }
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 

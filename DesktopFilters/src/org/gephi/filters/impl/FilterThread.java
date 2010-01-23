@@ -10,7 +10,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.gephi.filters.api.PropertyExecutor.Callback;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.FilterProperty;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.visualization.VizController;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -23,10 +28,12 @@ public class FilterThread extends Thread {
     ConcurrentHashMap<String, PropertyModifier> modifiersMap;
     private boolean running = true;
     private final Object lock = new Object();
+    private final boolean filtering;
 
     public FilterThread(FilterModelImpl model) {
         super("Filter Thread");
         this.model = model;
+        this.filtering = model.isFiltering();
         rootQuery = new AtomicReference<AbstractQueryImpl>();
         modifiersMap = new ConcurrentHashMap<String, PropertyModifier>();
     }
@@ -54,12 +61,17 @@ public class FilterThread extends Thread {
             if (propertyModified) {
                 model.updateParameters(q);
             }
-            try {
-                System.out.println("filter query " + q.getName());
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+            if (filtering) {
+                filter(q);
+            } else {
+                select(q);
             }
+            /*try {
+            System.out.println("filter query " + q.getName());
+            Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            }*/
         }
         //clear map
         Query q = null;
@@ -71,6 +83,33 @@ public class FilterThread extends Thread {
         modifiersMap.clear();
         if (q != null) {
             model.updateParameters(q);
+        }
+    }
+
+    private void filter(AbstractQueryImpl query) {
+        FilterProcessor processor = new FilterProcessor();
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        Graph result = processor.process((AbstractQueryImpl) query, graphModel);
+        System.out.println("#Nodes: " + result.getNodeCount());
+        System.out.println("#Edges: " + result.getEdgeCount());
+        if (running) {
+            graphModel.setVisibleView(result.getView());
+        } else {
+            //destroy view
+        }
+    }
+
+    private void select(AbstractQueryImpl query) {
+        FilterProcessor processor = new FilterProcessor();
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        Graph result = processor.process((AbstractQueryImpl) query, graphModel);
+        System.out.println("#Nodes: " + result.getNodeCount());
+        System.out.println("#Edges: " + result.getEdgeCount());
+        if (running) {
+            VizController.getInstance().getSelectionManager().selectNodes(result.getNodes().toArray());
+            VizController.getInstance().getSelectionManager().selectEdges(result.getEdges().toArray());
+        } else {
+            //destroy view
         }
     }
 

@@ -79,9 +79,11 @@ public class FilterProcessor {
                 } else if (filter instanceof EdgeFilter) {
                     processEdgeFilter((EdgeFilter) filter, input[0]);
                     q.setResult(input[0]);
-                } else {
+                } else if(filter instanceof ComplexFilter) {
                     ComplexFilter cf = (ComplexFilter) filter;
                     q.setResult(cf.filter(input[0]));
+                } else {
+                    q.setResult(input[0]);  //Put input as result, the filter don't do anything
                 }
             }
         }
