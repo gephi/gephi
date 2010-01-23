@@ -18,36 +18,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.partition.api;
-
-import org.gephi.partition.spi.Transformer;
-import org.gephi.partition.spi.TransformerBuilder;
+package org.gephi.partition.spi;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface PartitionController {
+public interface TransformerBuilder {
 
-    public void setSelectedPartition(Partition partition);
+    public Transformer getTransformer();
 
-    public void setSelectedPartitioning(int partitioning);
+    public TransformerUI getUI();
 
-    public void setSelectedTransformerBuilder(TransformerBuilder builder);
+    public static interface Node extends TransformerBuilder {
+    }
 
-    public void refreshPartitions();
-
-    public void transform(Partition partition, Transformer transformer);
-
-    public boolean isGroupable(Partition partition);
-
-    public boolean isUngroupable(Partition partition);
-
-    public void group(Partition partition);
-
-    public void ungroup(Partition partition);
-
-    public void showPie(boolean showPie);
-
-    public PartitionModel getModel();
+    public static interface Edge extends TransformerBuilder {
+    }
 }

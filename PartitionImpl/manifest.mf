@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-AutoUpdate-Show-In-Client: false
-OpenIDE-Module: org.gephi.partition
-OpenIDE-Module-Layer: org/gephi/partition/layer.xml
-OpenIDE-Module-Localizing-Bundle: org/gephi/partition/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
-

@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.partition.api;
 
+import org.gephi.partition.spi.Transformer;
+import org.gephi.partition.spi.TransformerBuilder;
 import java.beans.PropertyChangeListener;
 
 /**

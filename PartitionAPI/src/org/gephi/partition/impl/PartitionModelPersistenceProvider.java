@@ -18,36 +18,30 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.partition.api;
+package org.gephi.partition.impl;
 
-import org.gephi.partition.spi.Transformer;
-import org.gephi.partition.spi.TransformerBuilder;
+import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.spi.WorkspacePersistenceProvider;
+import org.openide.util.lookup.ServiceProvider;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface PartitionController {
+@ServiceProvider(service = WorkspacePersistenceProvider.class)
+public class PartitionModelPersistenceProvider implements WorkspacePersistenceProvider {
 
-    public void setSelectedPartition(Partition partition);
+    public Element writeXML(Document document, Workspace workspace) {
+        return document.createElement("partitionmodel");
+    }
 
-    public void setSelectedPartitioning(int partitioning);
+    public void readXML(Element element, Workspace workspace) {
+        workspace.add(new PartitionModelImpl());
+    }
 
-    public void setSelectedTransformerBuilder(TransformerBuilder builder);
-
-    public void refreshPartitions();
-
-    public void transform(Partition partition, Transformer transformer);
-
-    public boolean isGroupable(Partition partition);
-
-    public boolean isUngroupable(Partition partition);
-
-    public void group(Partition partition);
-
-    public void ungroup(Partition partition);
-
-    public void showPie(boolean showPie);
-
-    public PartitionModel getModel();
+    public String getIdentifier() {
+        return "partitionmodel";
+    }
 }
