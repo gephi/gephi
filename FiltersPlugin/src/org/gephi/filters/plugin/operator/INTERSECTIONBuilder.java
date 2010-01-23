@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.filters.plugin.operator;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JPanel;
@@ -125,8 +126,11 @@ public class INTERSECTIONBuilder implements FilterBuilder {
                 }
             }
             if (nodeFilters.size() > 0) {
-                for (NodeFilter nf : nodeFilters) {
-                    nf.init(graph);
+                for (Iterator<NodeFilter> itr = nodeFilters.iterator(); itr.hasNext();) {
+                    NodeFilter nf = itr.next();
+                    if (!nf.init(graph)) {
+                        itr.remove();
+                    }
                 }
                 List<Node> nodesToRemove = new ArrayList<Node>();
                 for (Node n : graph.getNodes()) {
@@ -147,8 +151,11 @@ public class INTERSECTIONBuilder implements FilterBuilder {
                 }
             }
             if (edgeFilters.size() > 0) {
-                for (EdgeFilter ef : edgeFilters) {
-                    ef.init(graph);
+                for (Iterator<EdgeFilter> itr = edgeFilters.iterator();itr.hasNext();) {
+                    EdgeFilter ef = itr.next();
+                    if(!ef.init(graph)) {
+                        itr.remove();
+                    }
                 }
                 List<Edge> edgesToRemove = new ArrayList<Edge>();
                 for (Edge e : graph.getEdges()) {

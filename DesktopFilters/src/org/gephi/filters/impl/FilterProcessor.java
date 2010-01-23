@@ -92,33 +92,35 @@ public class FilterProcessor {
     }
 
     private void processNodeFilter(NodeFilter nodeFilter, Graph graph) {
-        List<Node> nodesToRemove = new ArrayList<Node>();
-        nodeFilter.init(graph);
-        for (Node n : graph.getNodes()) {
-            if (!nodeFilter.evaluate(graph, n)) {
-                nodesToRemove.add(n);
+        if (nodeFilter.init(graph)) {
+            List<Node> nodesToRemove = new ArrayList<Node>();
+            for (Node n : graph.getNodes()) {
+                if (!nodeFilter.evaluate(graph, n)) {
+                    nodesToRemove.add(n);
+                }
             }
-        }
 
-        for (Node n : nodesToRemove) {
-            graph.removeNode(n);
+            for (Node n : nodesToRemove) {
+                graph.removeNode(n);
+            }
+            nodeFilter.finish();
         }
-        nodeFilter.finish();
     }
 
     private void processEdgeFilter(EdgeFilter edgeFilter, Graph graph) {
-        List<Edge> edgesToRemove = new ArrayList<Edge>();
-        edgeFilter.init(graph);
-        for (Edge e : graph.getEdges()) {
-            if (!edgeFilter.evaluate(graph, e)) {
-                edgesToRemove.add(e);
+        if (edgeFilter.init(graph)) {
+            List<Edge> edgesToRemove = new ArrayList<Edge>();
+            for (Edge e : graph.getEdges()) {
+                if (!edgeFilter.evaluate(graph, e)) {
+                    edgesToRemove.add(e);
+                }
             }
-        }
 
-        for (Edge e : edgesToRemove) {
-            graph.removeEdge(e);
+            for (Edge e : edgesToRemove) {
+                graph.removeEdge(e);
+            }
+            edgeFilter.finish();
         }
-        edgeFilter.finish();
     }
 
     private AbstractQueryImpl simplifyQuery(AbstractQueryImpl query) {
