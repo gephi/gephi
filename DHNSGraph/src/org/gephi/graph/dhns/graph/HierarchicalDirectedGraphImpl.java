@@ -138,7 +138,7 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
         int count = 0;
         if (absNode.getEdgesOutTree().getCount() > 0 && absNode.getEdgesInTree().getCount() > 0) {
             EdgeOppositeTree inTree = absNode.getEdgesInTree();
-            for (ParamAVLIterator<AbstractEdge> itr = new ParamAVLIterator<AbstractEdge>(); itr.hasNext();) {
+            for (ParamAVLIterator<AbstractEdge> itr = new ParamAVLIterator<AbstractEdge>(absNode.getEdgesOutTree()); itr.hasNext();) {
                 AbstractEdge edge = itr.next();
                 if (!edge.isSelfLoop()) {
                     if (inTree.hasNeighbour(edge.getTarget())) {

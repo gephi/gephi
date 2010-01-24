@@ -31,6 +31,7 @@ import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.spi.NodeFilter;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -76,7 +77,7 @@ public class MutualDegreeRangeBuilder implements FilterBuilder {
         return null;
     }
 
-    public static class MutualDegreeRangeFilter implements RangeFilter {
+    public static class MutualDegreeRangeFilter implements RangeFilter, NodeFilter {
 
         private Integer min = 0;
         private Integer max = 0;
