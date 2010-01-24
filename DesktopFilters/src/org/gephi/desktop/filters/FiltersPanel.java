@@ -24,6 +24,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
@@ -156,8 +157,13 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 controller.select(uiModel.getSelectedRoot());
             }
         }
-        filterButton.setSelected(filterModel.isFiltering());
-        selectButton.setSelected(filterModel.isSelecting());
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                filterButton.setSelected(filterModel.isFiltering());
+                selectButton.setSelected(filterModel.isSelecting());
+            }
+        });
     }
 
     private void unsetup() {

@@ -22,6 +22,7 @@ package org.gephi.desktop.filters;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.filters.api.FilterController;
@@ -76,26 +77,31 @@ public class FilterPanelPanel extends JPanel implements ChangeListener {
         }
     }
 
-    private void setQuery(Query query) {
+    private void setQuery(final Query query) {
+        SwingUtilities.invokeLater(new Runnable() {
 
-        //UI update
-        removeAll();
-        setBorder(null);
-        if (query != null) {
-            FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
-            FilterBuilder builder = filterController.getModel().getLibrary().getBuilder(query.getFilter());
-            try {
-                JPanel panel = builder.getPanel(query.getFilter());
-                if (panel != null) {
-                    add(panel, BorderLayout.CENTER);
-                    setBorder(javax.swing.BorderFactory.createTitledBorder(query.getFilter().getName() + " " + settingsString));
+            public void run() {
+                //UI update
+                removeAll();
+                setBorder(null);
+                if (query != null) {
+                    FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
+                    FilterBuilder builder = filterController.getModel().getLibrary().getBuilder(query.getFilter());
+                    try {
+                        JPanel panel = builder.getPanel(query.getFilter());
+                        if (panel != null) {
+                            add(panel, BorderLayout.CENTER);
+                            setBorder(javax.swing.BorderFactory.createTitledBorder(query.getFilter().getName() + " " + settingsString));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
 
-        revalidate();
-        repaint();
+                revalidate();
+                repaint();
+            }
+        });
+
     }
 }

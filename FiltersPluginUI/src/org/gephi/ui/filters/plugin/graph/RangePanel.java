@@ -58,10 +58,16 @@ public class RangePanel extends javax.swing.JPanel {
             public void run() {
                 final JRangeSliderPanel r = (JRangeSliderPanel) rangeSliderPanel;
                 values = rangeFilter.getValues();
-                Range range = (Range) rangeFilter.getRangeProperty().getValue();
+                final Range range = (Range) rangeFilter.getRangeProperty().getValue();
 
-                r.setRange(new JRangeSliderPanel.Range(
-                        r, rangeFilter.getMinimum(), rangeFilter.getMaximum(), range.getLowerBound(), range.getUpperBound()));
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    public void run() {
+                        r.setRange(new JRangeSliderPanel.Range(
+                                r, rangeFilter.getMinimum(), rangeFilter.getMaximum(), range.getLowerBound(), range.getUpperBound()));
+                    }
+                });
+
 
                 r.addPropertyChangeListener(new PropertyChangeListener() {
 

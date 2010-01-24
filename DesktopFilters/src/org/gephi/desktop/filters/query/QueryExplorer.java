@@ -23,6 +23,7 @@ package org.gephi.desktop.filters.query;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.Action;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.TreeSelectionModel;
@@ -103,17 +104,27 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
                     }
                 }
                 QueryNode queryNode = (QueryNode) node;
-                Query query = queryNode.qetQuery();
-                uiModel.setSelectedQuery(query);
+                final Query query = queryNode.qetQuery();
+                new Thread(new Runnable() {
+
+                    public void run() {
+                        uiModel.setSelectedQuery(query);
+                    }
+                }).start();
             }
         }
     }
 
     public void stateChanged(ChangeEvent e) {
         //System.out.println("model updated");
-        saveExpandStatus(QueryExplorer.this.manager.getRootContext());
-        QueryExplorer.this.manager.setRootContext(new RootNode(new QueryChildren(QueryExplorer.this.model.getQueries())));
-        loadExpandStatus(QueryExplorer.this.manager.getRootContext());
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                saveExpandStatus(QueryExplorer.this.manager.getRootContext());
+                QueryExplorer.this.manager.setRootContext(new RootNode(new QueryChildren(QueryExplorer.this.model.getQueries())));
+                loadExpandStatus(QueryExplorer.this.manager.getRootContext());
+            }
+        });
     }
 
     private void updateEnabled(boolean enabled) {
