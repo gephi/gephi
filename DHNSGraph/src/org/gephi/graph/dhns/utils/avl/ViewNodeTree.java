@@ -20,8 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.utils.avl;
 
-import java.lang.ref.ReferenceQueue;
-import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
@@ -43,7 +41,7 @@ public class ViewNodeTree {
             this.root = new AbstractNodeAVLNode(item);
         } else {
             while (true) {
-                int c = item.getViewId() - p.number;
+                int c = item.getViewId() - p.item.getViewId();
 
                 if (c < 0) {
                     if (p.left != null) {
@@ -245,7 +243,7 @@ public class ViewNodeTree {
         AbstractNodeAVLNode p = this.root;
 
         while (p != null) {
-            int c = number - p.number;
+            int c = number - p.item.getViewId();
 
             if (c < 0) {
                 p = p.left;
@@ -275,14 +273,14 @@ public class ViewNodeTree {
                         y = p.parent;
 
                         choice = 1;
-                        // goto LeftDelete;
+                    // goto LeftDelete;
                     } else {
                         p.parent.right = p.left;
 
                         y = p.parent;
 
                         choice = 2;
-                        //goto RightDelete;
+                    //goto RightDelete;
                     }
                 } else if (p.right.left == null) // Case 2: p's right child has no left child
                 {
@@ -307,7 +305,7 @@ public class ViewNodeTree {
                     y = p.right;
 
                     choice = 2;
-                    //goto RightDelete;
+                //goto RightDelete;
                 } else // Case 3: p's right child has a left child
                 {
                     AbstractNodeAVLNode s = p.right.left;
@@ -346,7 +344,7 @@ public class ViewNodeTree {
                     }
 
                     choice = 1;
-                    // goto LeftDelete;
+                // goto LeftDelete;
                 }
 
                 // rebalancing begins
@@ -456,7 +454,7 @@ public class ViewNodeTree {
 
                         if (y.balance == -1) {
                             choice = 0;
-                            //goto Done;
+                        //goto Done;
                         } else if (y.balance == -2) {
                             AbstractNodeAVLNode x = y.left;
 
@@ -535,7 +533,7 @@ public class ViewNodeTree {
                                     y.balance = -1;
 
                                     choice = 0;
-                                    //goto Done;
+                                //goto Done;
                                 } else {
                                     x.balance = 0;
                                     y.balance = 0;
@@ -558,11 +556,11 @@ public class ViewNodeTree {
                         if (y == y.parent.left) {
                             y = y.parent;
                             choice = 1;
-                            // goto LeftDelete;
+                        // goto LeftDelete;
                         } else {
                             y = y.parent;
                             choice = 2;
-                            //goto RightDelete;
+                        //goto RightDelete;
                         }
                     } else {
                         //Done
@@ -581,7 +579,7 @@ public class ViewNodeTree {
         AbstractNodeAVLNode p = this.root;
 
         while (p != null) {
-            int c = item.getViewId() - p.number;
+            int c = item.getViewId() - p.item.getViewId();
 
             if (c < 0) {
                 p = p.left;
@@ -599,14 +597,14 @@ public class ViewNodeTree {
         AbstractNodeAVLNode p = this.root;
 
         while (p != null) {
-            int c = number - p.number;
+            int c = number - p.item.getViewId();
 
             if (c < 0) {
                 p = p.left;
             } else if (c > 0) {
                 p = p.right;
             } else {
-                return p.item.get();
+                return p.item;
             }
         }
 
@@ -632,16 +630,14 @@ public class ViewNodeTree {
         AbstractNodeAVLNode left;
         AbstractNodeAVLNode right;
         int balance;
-        WeakReference<AbstractNode> item;
-        int number;
+        AbstractNode item;
 
         public AbstractNodeAVLNode(AbstractNode item) {
-            this.item = new WeakReference<AbstractNode>(item);
-            this.number = item.getViewId();
+            this.item = item;
         }
 
         public AbstractNodeAVLNode(AbstractNode item, AbstractNodeAVLNode parent) {
-            this(item);
+            this.item = item;
             this.parent = parent;
         }
     }
@@ -681,7 +677,7 @@ public class ViewNodeTree {
                 return false;
             }
 
-            current = this.next.item.get();
+            current = this.next.item;
 
             if (next.right == null) {
                 while ((next.parent != null) && (next == next.parent.right)) {

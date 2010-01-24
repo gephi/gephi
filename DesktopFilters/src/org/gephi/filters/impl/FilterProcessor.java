@@ -40,6 +40,7 @@ import org.gephi.graph.api.Node;
 public class FilterProcessor {
 
     public Graph process(AbstractQueryImpl query, GraphModel graphModel) {
+        List<GraphView> views = new ArrayList<GraphView>();
         Graph rootGraph = graphModel.getGraph();
         query = simplifyQuery(query);
         AbstractQueryImpl[] tree = getTree(query, true);
@@ -54,6 +55,7 @@ public class FilterProcessor {
             } else {
                 //Leaves
                 GraphView newView = graphModel.newView();
+                views.add(newView);
                 input = new Graph[]{graphModel.getGraph(newView)};    //duplicate root
             }
             //PROCESS
@@ -69,6 +71,7 @@ public class FilterProcessor {
                     filters[k] = operatorQuery.getChildAt(k).getFilter();
                 }
                 GraphView newView = graphModel.newView();
+                views.add(newView);
                 q.setResult(op.filter(graphModel.getGraph(newView), filters));
             } else {
                 FilterQueryImpl filterQuery = (FilterQueryImpl) q;
@@ -88,6 +91,14 @@ public class FilterProcessor {
             }
         }
         Graph finalResult = tree[0].result;
+
+        //Destroy intermediate views
+        GraphView finalView = finalResult.getView();
+        for (GraphView v : views) {
+            if (v != finalView) {
+                graphModel.destroyView(v);
+            }
+        }
         return finalResult;
     }
 

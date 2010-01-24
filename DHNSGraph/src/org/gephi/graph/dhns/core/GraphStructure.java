@@ -93,6 +93,12 @@ public class GraphStructure {
     }
 
     public void destroyView(GraphViewImpl view) {
+        dhns.getReadLock().lock();
+        for (TreeListIterator itr = new TreeListIterator(mainView.getStructure().getTree(), 1); itr.hasNext();) {
+            AbstractNode node = itr.next();
+            node.getNodeData().getNodes().remove(view.getViewId());
+        }
+        dhns.getReadLock().unlock();
         views.remove(view);
         if (this.visibleView == view) {
             this.visibleView = mainView;
