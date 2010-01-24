@@ -23,7 +23,6 @@ package org.gephi.graph.dhns.edge;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.DynamicData;
-import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.LayoutData;
 import org.gephi.graph.api.NodeData;
@@ -37,7 +36,7 @@ import org.gephi.graph.api.TextData;
  */
 public class EdgeDataImpl implements EdgeData, DynamicData {
 
-    protected Edge edge;
+    protected AbstractEdge edge;
     protected LayoutData layoutData;
     protected float r = -1f;
     protected float g = 0f;
@@ -50,11 +49,11 @@ public class EdgeDataImpl implements EdgeData, DynamicData {
     protected float dynamicRangeFrom = -1;
     protected float dynamicRangeTo = -1;
 
-    public EdgeDataImpl(Edge edge) {
+    public EdgeDataImpl(AbstractEdge edge) {
         this.edge = edge;
     }
 
-    public Edge getEdge() {
+    public AbstractEdge getEdge() {
         return edge;
     }
 

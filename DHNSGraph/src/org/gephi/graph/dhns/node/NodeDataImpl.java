@@ -29,7 +29,6 @@ import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.TextData;
-import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
 import org.gephi.graph.dhns.utils.avl.ViewNodeTree;
 
 /**
@@ -79,7 +78,7 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
         return nodes;
     }
 
-    public Node getNode() {
+    public AbstractNode getNode() {
         return nodes.get(0);
     }
 

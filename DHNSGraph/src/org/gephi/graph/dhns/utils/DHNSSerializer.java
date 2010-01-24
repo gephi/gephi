@@ -33,6 +33,7 @@ import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphFactoryImpl;
 import org.gephi.graph.dhns.core.GraphStructure;
 import org.gephi.graph.dhns.core.GraphVersion;
+import org.gephi.graph.dhns.core.GraphViewImpl;
 import org.gephi.graph.dhns.core.IDGen;
 import org.gephi.graph.dhns.core.SettingsManager;
 import org.gephi.graph.dhns.core.TreeStructure;
@@ -60,10 +61,12 @@ public class DHNSSerializer {
     private static final String ELEMENT_EDGES_PROPER = "ProperEdge";
     private static final String ELEMENT_EDGES_SELFLOOP = "SelfLoop";
     private static final String ELEMENT_EDGES_MIXED = "MixedEdge";
+    private static final String ELEMENT_VIEW = "View";
+    private static final String ELEMENT_VIEW_NODE = "ViewNode";
+    private static final String ELEMENT_VIEW_EDGE = "ViewEdge";
     private static final String ELEMENT_TREESTRUCTURE = "TreeStructure";
     private static final String ELEMENT_TREESTRUCTURE_TREE = "Tree";
-    private static final String ELEMENT_TREESTRUCTURE_CLONENODE = "CloneNode";
-    private static final String ELEMENT_TREESTRUCTURE_PRENODE = "PreNode";
+    private static final String ELEMENT_TREESTRUCTURE_NODE = "Node";
     private static final String ELEMENT_GRAPHVERSION = "GraphVersion";
     private static final String ELEMENT_SETTINGS = "Settings";
     private static final String ELEMENT_SETTINGS_PROPERTY = "Property";
@@ -96,14 +99,21 @@ public class DHNSSerializer {
 
         Element idGenE = writeIDGen(document, dhns.getIdGen());
         dhnsE.appendChild(idGenE);
-        Element graphVersionE = writeGraphVersion(document, dhns.getGraphVersion());
-        dhnsE.appendChild(graphVersionE);
         Element settingsE = writeSettings(document, dhns.getSettingsManager());
         dhnsE.appendChild(settingsE);
-        /*Element treeStructureE = writeTreeStructure(document, dhns.getGraphStructure().getStructure());
+        Element graphVersionE = writeGraphVersion(document, dhns.getGraphVersion());
+        dhnsE.appendChild(graphVersionE);
+        Element treeStructureE = writeTreeStructure(document, dhns.getGraphStructure().getMainView().getStructure());
         dhnsE.appendChild(treeStructureE);
-        Element edgesE = writeEdges(document, dhns.getGraphStructure().getStructure());
-        dhnsE.appendChild(edgesE);*/
+        Element edgesE = writeEdges(document, dhns.getGraphStructure().getMainView().getStructure());
+        dhnsE.appendChild(edgesE);
+
+        for (GraphViewImpl view : dhns.getGraphStructure().getViews()) {
+            if (view != dhns.getGraphStructure().getMainView()) {
+                Element viewE = writeGraphView(document, view);
+                dhnsE.appendChild(viewE);
+            }
+        }
 
         return dhnsE;
     }
@@ -120,14 +130,16 @@ public class DHNSSerializer {
                     dhns.getDynamicManager().setDynamic(Boolean.parseBoolean(itemE.getAttribute("dynamic")));
                 } else if (itemE.getTagName().equals(ELEMENT_IDGEN)) {
                     readIDGen(itemE, dhns.getIdGen());
-                } else if (itemE.getTagName().equals(ELEMENT_GRAPHVERSION)) {
-                    readGraphVersion(itemE, dhns.getGraphVersion());
                 } else if (itemE.getTagName().equals(ELEMENT_SETTINGS)) {
                     readSettings(itemE, dhns.getSettingsManager());
+                } else if (itemE.getTagName().equals(ELEMENT_GRAPHVERSION)) {
+                    readGraphVersion(itemE, dhns.getGraphVersion());
                 } else if (itemE.getTagName().equals(ELEMENT_TREESTRUCTURE)) {
                     readTreeStructure(itemE, dhns.getGraphStructure(), dhns.factory());
                 } else if (itemE.getTagName().equals(ELEMENT_EDGES)) {
                     readEdges(itemE, dhns.getGraphStructure(), dhns.factory());
+                } else if (itemE.getTagName().equals(ELEMENT_VIEW)) {
+                    readGraphView(itemE, dhns.getGraphStructure());
                 }
             }
 
@@ -164,7 +176,7 @@ public class DHNSSerializer {
 
     public void readEdges(Element edgesE, GraphStructure graphStructure, GraphFactoryImpl factory) {
         NodeList edgesListE = edgesE.getChildNodes();
-/*        TreeStructure treeStructure = graphStructure.getStructure();
+        TreeStructure treeStructure = graphStructure.getMainView().getStructure();
         for (int i = 0; i < edgesListE.getLength(); i++) {
             if (edgesListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element edgeE = (Element) edgesListE.item(i);
@@ -186,63 +198,113 @@ public class DHNSSerializer {
                 target.getEdgesInTree().add(edge);
                 graphStructure.getEdgeDictionnary().add(edge);
             }
-        }*/
+        }
     }
 
     public Element writeTreeStructure(Document document, TreeStructure treeStructure) {
         Element treeStructureE = document.createElement(ELEMENT_TREESTRUCTURE);
 
-       /* Element treeE = document.createElement(ELEMENT_TREESTRUCTURE_TREE);
+        Element treeE = document.createElement(ELEMENT_TREESTRUCTURE_TREE);
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
-            Element nodeE;
-            if (node.isClone()) {
-                nodeE = document.createElement(ELEMENT_TREESTRUCTURE_CLONENODE);
-                nodeE.setAttribute("prenode", String.valueOf(node.getOriginalNode().pre));
-            } else {
-                nodeE = document.createElement(ELEMENT_TREESTRUCTURE_PRENODE);
-                nodeE.setAttribute("enabled", String.valueOf(node.isEnabled()));
-                nodeE.setAttribute("id", String.valueOf(node.getId()));
-            }
+            Element nodeE = document.createElement(ELEMENT_TREESTRUCTURE_NODE);
+            nodeE.setAttribute("id", String.valueOf(node.getId()));
+            nodeE.setAttribute("enabled", String.valueOf(node.isEnabled()));
             nodeE.setAttribute("pre", String.valueOf(node.pre));
             nodeE.setAttribute("parent", String.valueOf(node.parent.pre));
             treeE.appendChild(nodeE);
         }
-        treeStructureE.appendChild(treeE);*/
+        treeStructureE.appendChild(treeE);
+
         return treeStructureE;
     }
 
     public void readTreeStructure(Element treeStructureE, GraphStructure graphStructure, GraphFactoryImpl factory) {
         NodeList nodesE = treeStructureE.getChildNodes();
-        /*TreeStructure treeStructure = graphStructure.getStructure();
+        NodeList nodesListE = null;
+        TreeStructure treeStructure = graphStructure.getMainView().getStructure();
         for (int i = 0; i < nodesE.getLength(); i++) {
             if (nodesE.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 if (((Element) nodesE.item(i)).getTagName().equals(ELEMENT_TREESTRUCTURE_TREE)) {
-                    nodesE = ((Element) nodesE.item(i)).getChildNodes();
+                    nodesListE = ((Element) nodesE.item(i)).getChildNodes();
                     break;
                 }
             }
         }
-        for (int i = 0; i < nodesE.getLength(); i++) {
-            if (nodesE.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                Element nodeE = (Element) nodesE.item(i);
-                Boolean enabled = Boolean.parseBoolean(nodeE.getAttribute("enabled"));
-                AbstractNode parentNode = treeStructure.getNodeAt(Integer.parseInt(nodeE.getAttribute("parent")));
-                if (nodeE.getTagName().equals(ELEMENT_TREESTRUCTURE_CLONENODE)) {
-                    AbstractNode preNode = treeStructure.getNodeAt(Integer.parseInt(nodeE.getAttribute("prenode")));
-                    CloneNode cloneNode = new CloneNode(preNode);
-                    cloneNode.parent = parentNode;
-                    treeStructure.insertAsChild(cloneNode, parentNode);
-                } else {
-                    PreNode preNode = new PreNode(Integer.parseInt(nodeE.getAttribute("id")), 0, 0, 0, parentNode);
-                    preNode.setEnabled(enabled);
-                    preNode.getNodeData().setAttributes(factory.newNodeAttributes());
-                    preNode.getNodeData().setTextData(factory.newTextData());
-                    treeStructure.insertAsChild(preNode, parentNode);
-                    graphStructure.getNodeDictionnary().add(preNode);
+        if (nodesListE != null) {
+            for (int i = 0; i < nodesListE.getLength(); i++) {
+                if (nodesListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                    Element nodeE = (Element) nodesListE.item(i);
+                    Boolean enabled = Boolean.parseBoolean(nodeE.getAttribute("enabled"));
+                    AbstractNode parentNode = treeStructure.getNodeAt(Integer.parseInt(nodeE.getAttribute("parent")));
+                    AbstractNode absNode = new AbstractNode(Integer.parseInt(nodeE.getAttribute("id")), 0, 0, 0, 0, parentNode);
+                    absNode.setEnabled(enabled);
+                    absNode.getNodeData().setAttributes(factory.newNodeAttributes());
+                    absNode.getNodeData().setTextData(factory.newTextData());
+                    treeStructure.insertAsChild(absNode, parentNode);
+                    graphStructure.getNodeDictionnary().add(absNode);
+
                 }
             }
-        }*/
+        }
+    }
+
+    public Element writeGraphView(Document document, GraphViewImpl graphView) {
+        Element viewE = document.createElement(ELEMENT_VIEW);
+        viewE.setAttribute("id", String.valueOf(graphView.getViewId()));
+
+        //Nodes
+        for (TreeListIterator itr = new TreeListIterator(graphView.getStructure().getTree(), 1); itr.hasNext();) {
+            AbstractNode node = itr.next();
+            Element nodeE = document.createElement(ELEMENT_TREESTRUCTURE_NODE);
+            nodeE.setAttribute("mainpre", String.valueOf(node.getInView(0).pre));
+            nodeE.setAttribute("enabled", String.valueOf(node.isEnabled()));
+            nodeE.setAttribute("pre", String.valueOf(node.pre));
+            nodeE.setAttribute("parent", String.valueOf(node.parent.pre));
+        }
+
+        //Edges
+        ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
+        for (TreeListIterator itr = new TreeListIterator(graphView.getStructure().getTree(), 1); itr.hasNext();) {
+            AbstractNode node = itr.next();
+            for (edgeIterator.setNode(node.getEdgesOutTree()); edgeIterator.hasNext();) {
+                AbstractEdge edge = edgeIterator.next();
+                Element edgeE = document.createElement(ELEMENT_VIEW_EDGE);
+                edgeE.setAttribute("source", String.valueOf(node.pre));
+                edgeE.setAttribute("target", String.valueOf(edge.getTarget(graphView.getViewId()).pre));
+                edgeE.setAttribute("id", String.valueOf(edge.getId()));
+            }
+        }
+
+        return viewE;
+    }
+
+    public void readGraphView(Element graphViewE, GraphStructure graphStructure) {
+        GraphViewImpl graphView = graphStructure.createView(Integer.parseInt(graphViewE.getAttribute("id")));
+        TreeStructure mainStructure = graphStructure.getMainView().getStructure();
+        TreeStructure treeStructure = graphView.getStructure();
+
+        NodeList nodesE = graphViewE.getChildNodes();
+        for (int i = 0; i < nodesE.getLength(); i++) {
+            if (nodesE.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                if (((Element) nodesE.item(i)).getTagName().equals(ELEMENT_VIEW_NODE)) {
+                    Element nodeViewE = (Element) nodesE.item(i);
+                    Boolean enabled = Boolean.parseBoolean(nodeViewE.getAttribute("enabled"));
+                    AbstractNode mainNode = mainStructure.getNodeAt(Integer.parseInt(nodeViewE.getAttribute("mainpre")));
+                    AbstractNode parentNode = treeStructure.getNodeAt(Integer.parseInt(nodeViewE.getAttribute("parent")));
+                    AbstractNode node = new AbstractNode(mainNode.getNodeData(), graphView.getViewId(), 0, 0, 0, parentNode);
+                    node.setEnabled(enabled);
+                    treeStructure.insertAsChild(node, parentNode);
+                } else if (((Element) nodesE.item(i)).getTagName().equals(ELEMENT_VIEW_EDGE)) {
+                    Element edgeViewE = (Element) nodesE.item(i);
+                    AbstractEdge edge = graphStructure.getEdgeDictionnary().get(Integer.parseInt(edgeViewE.getAttribute("id")));
+                    AbstractNode source = treeStructure.getNodeAt(Integer.parseInt(edgeViewE.getAttribute("source")));
+                    AbstractNode target = treeStructure.getNodeAt(Integer.parseInt(edgeViewE.getAttribute("target")));
+                    source.getEdgesOutTree().add(edge);
+                    target.getEdgesInTree().add(edge);
+                }
+            }
+        }
     }
 
     public Element writeGraphVersion(Document document, GraphVersion graphVersion) {

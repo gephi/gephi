@@ -56,8 +56,17 @@ public class GraphStructure {
         visibleView = mainView;
     }
 
+    public GraphViewImpl[] getViews() {
+        return views.toArray(new GraphViewImpl[0]);
+    }
+
     public GraphViewImpl getMainView() {
         return mainView;
+    }
+
+    public GraphViewImpl createView(int viewId) {   //used by deserializer
+        this.viewId.set(Math.max(viewId + 1, this.viewId.get()));
+        return new GraphViewImpl(dhns, viewId);
     }
 
     public GraphViewImpl getNewView() {

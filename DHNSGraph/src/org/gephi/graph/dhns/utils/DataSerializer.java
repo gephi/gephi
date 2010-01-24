@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.utils;
 
-import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.core.Dhns;
@@ -31,6 +30,7 @@ import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.filter.Tautology;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.NodeDataImpl;
+import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -53,32 +53,32 @@ public class DataSerializer {
     public Element writeData(Document document, Dhns dhns) {
         Element dataE = document.createElement(ELEMENT_DATA);
 
-        /*TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
-        PreNodeTreeListIterator preNodeTreeListIterator = new PreNodeTreeListIterator(treeStructure.getTree(), 1);
-        for (; preNodeTreeListIterator.hasNext();) {
-            PreNode preNode = preNodeTreeListIterator.next();
-            NodeData nodeData = preNode.getNodeData();
+        TreeStructure treeStructure = dhns.getGraphStructure().getMainView().getStructure();
+        TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1);
+        for (; itr.hasNext();) {
+            AbstractNode absNode = itr.next();
+            NodeDataImpl nodeData = absNode.getNodeData();
             if (nodeData != null) {
                 Element nodeDataE = writeNodeData(document, nodeData);
                 dataE.appendChild(nodeDataE);
             }
         }
 
-        EdgeIterator edgeIterator = new EdgeIterator(treeStructure, new PreNodeTreeListIterator(treeStructure.getTree(), 1), false, Tautology.instance, Tautology.instance);
+        EdgeIterator edgeIterator = new EdgeIterator(treeStructure, new TreeListIterator(treeStructure.getTree(), 1), false, Tautology.instance, Tautology.instance);
         for (; edgeIterator.hasNext();) {
-            EdgeData edgeData = edgeIterator.next().getEdgeData();
+            EdgeDataImpl edgeData = edgeIterator.next().getEdgeData();
             if (edgeData != null) {
                 Element edgeDataE = writeEdgeData(document, edgeData);
                 dataE.appendChild(edgeDataE);
             }
-        }*/
+        }
 
         return dataE;
     }
 
     public void readData(Element dataE, Dhns dhns) {
 
-        /*TreeStructure treeStructure = dhns.getGraphStructure().getStructure();
+        TreeStructure treeStructure = dhns.getGraphStructure().getMainView().getStructure();
         NodeList dataListE = dataE.getChildNodes();
         for (int i = 0; i < dataListE.getLength(); i++) {
             if (dataListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
@@ -95,14 +95,14 @@ public class DataSerializer {
                     readEdgeData(itemE, edgeDataImpl);
                 }
             }
-        }*/
+        }
     }
 
-    public Element writeNodeData(Document document, NodeData nodeData) {
+    public Element writeNodeData(Document document, NodeDataImpl nodeData) {
         Element nodeDataE = document.createElement(ELEMENT_NODEDATA);
-        org.gephi.graph.api.Node node = nodeData.getNode();
+        AbstractNode node = nodeData.getNode();
 
-        /*nodeDataE.setAttribute("nodepre", String.valueOf(node.getPre()));*/
+        nodeDataE.setAttribute("nodepre", String.valueOf(node.getPre()));
 
         if (!nodeData.getId().equals("" + node.getId())) {
             nodeDataE.setAttribute("id", nodeData.getId());
@@ -153,12 +153,12 @@ public class DataSerializer {
         }
     }
 
-    public Element writeEdgeData(Document document, EdgeData edgeData) {
+    public Element writeEdgeData(Document document, EdgeDataImpl edgeData) {
         Element edgeDataE = document.createElement(ELEMENT_EDGEDATA);
-        Edge edge = edgeData.getEdge();
+        AbstractEdge edge = edgeData.getEdge();
 
-        /*edgeDataE.setAttribute("sourcepre", String.valueOf(edge.getSource().getPre()));
-        edgeDataE.setAttribute("targetpre", String.valueOf(edge.getTarget().getPre()));*/
+        edgeDataE.setAttribute("sourcepre", String.valueOf(edge.getSource().getPre()));
+        edgeDataE.setAttribute("targetpre", String.valueOf(edge.getTarget().getPre()));
 
         if (!edgeData.getId().equals("" + edge.getId())) {
             edgeDataE.setAttribute("id", edgeData.getId());
