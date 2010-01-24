@@ -156,6 +156,28 @@ public class DhnsTestFiltering {
             }
         }
     }
+
+    @Test
+    public void testGC() {
+        DhnsGraphController controller = new DhnsGraphController();
+        Dhns dhns = new Dhns(controller, null);
+        Graph graph = dhns.getDirectedGraph();
+        AbstractNode node1 = dhns.factory().newNode();
+        AbstractNode node2 = dhns.factory().newNode();
+        graph.addNode(node1);
+        graph.addNode(node2);
+        GraphViewImpl view = (GraphViewImpl)dhns.newView();
+        int viewId = view.getViewId();
+        dhns.destroyView(view);
+        System.out.println("Free memory: "+Runtime.getRuntime().freeMemory());
+        view = null;
+        System.gc();
+        System.out.println("Free memory: "+Runtime.getRuntime().freeMemory());
+        AbstractNode n1 = node1.getInView(viewId);
+        AbstractNode n2 = node2.getInView(viewId);
+        assertNull(n1);
+        assertNull(n2);
+    }
 //    private void showEdges(TreeStructure treeStructure) {
 //        ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
 //        for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {

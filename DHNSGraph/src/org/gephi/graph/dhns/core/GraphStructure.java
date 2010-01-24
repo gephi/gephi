@@ -25,9 +25,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.edge.MixedEdgeImpl;
-import org.gephi.graph.dhns.edge.ProperEdgeImpl;
-import org.gephi.graph.dhns.edge.SelfLoopImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.gephi.graph.dhns.utils.avl.AbstractEdgeTree;
@@ -39,7 +36,7 @@ import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
  */
 public class GraphStructure {
 
-    private static AtomicInteger viewId = new AtomicInteger(1);
+    private final AtomicInteger viewId = new AtomicInteger(1);
     private final Dhns dhns;
     private final GraphViewImpl mainView;
     private final List<GraphViewImpl> views;
@@ -93,6 +90,14 @@ public class GraphStructure {
         dhns.getReadLock().unlock();
         views.add(view);
         return view;
+    }
+
+    public void destroyView(GraphViewImpl view) {
+        views.remove(view);
+        if (this.visibleView == view) {
+            this.visibleView = mainView;
+            dhns.getGraphVersion().incNodeAndEdgeVersion();
+        }
     }
 
     public AbstractNodeTree getNodeDictionnary() {

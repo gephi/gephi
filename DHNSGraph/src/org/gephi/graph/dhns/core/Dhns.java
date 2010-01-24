@@ -401,6 +401,10 @@ public class Dhns implements GraphModel {
         return graphStructure.getNewView();
     }
 
+    public void destroyView(GraphView view) {
+        graphStructure.destroyView((GraphViewImpl) view);
+    }
+
     public void setVisibleView(GraphView view) {
         graphStructure.setVisibleView(view != null ? (GraphViewImpl) view : null);
     }
