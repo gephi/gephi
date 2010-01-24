@@ -120,7 +120,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
     public static class AttributeRangelFilter implements RangeFilter, NodeFilter, EdgeFilter {
 
         private FilterProperty[] filterProperties;
-        private Range range;
+        private Range range = new Range(0, 0);
         private AttributeColumn column;
         private Object min = 0;
         private Object max = 0;

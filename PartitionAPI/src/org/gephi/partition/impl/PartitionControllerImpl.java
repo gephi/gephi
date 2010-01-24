@@ -25,6 +25,8 @@ import java.util.List;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
@@ -136,6 +138,18 @@ public class PartitionControllerImpl implements PartitionController {
                 }
             }, "Partition Model refresh");
             t.start();
+        }
+    }
+
+    public Partition buildPartition(AttributeColumn column, Graph graph) {
+        if (AttributeUtils.getDefault().isNodeColumn(column)) {
+            NodePartition partition = PartitionFactory.createNodePartition(column);
+            PartitionFactory.buildNodePartition(partition, graph);
+            return partition;
+        } else {
+            EdgePartition partition = PartitionFactory.createEdgePartition(column);
+            PartitionFactory.buildEdgePartition(partition, graph);
+            return partition;
         }
     }
 

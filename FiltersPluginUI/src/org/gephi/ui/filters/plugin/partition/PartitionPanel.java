@@ -25,6 +25,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
 import org.gephi.filters.plugin.partition.PartitionBuilder.PartitionFilter;
 import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
@@ -55,19 +56,32 @@ public class PartitionPanel extends javax.swing.JPanel implements ActionListener
         }
     }
 
-    public void setup(PartitionFilter filter) {
+    public void setup(final PartitionFilter filter) {
         this.filter = filter;
-        removeAll();
-        Partition partition = filter.getPartition();
-        if (partition != null) {
-            for (Part p : partition.getParts()) {
-                JToggleButton tb = new JToggleButton(p.getDisplayName(), new PaletteIcon(new Color[]{p.getColor()}));
-                tb.putClientProperty(KEY, p);
-                add(tb);
+        new Thread(new Runnable() {
+
+            public void run() {
+                final Partition partition = filter.getCurrentPartition();
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    public void run() {
+                        removeAll();
+
+                        if (partition != null) {
+                            for (Part p : partition.getParts()) {
+                                JToggleButton tb = new JToggleButton(p.getDisplayName(), new PaletteIcon(new Color[]{p.getColor()}));
+                                tb.putClientProperty(KEY, p);
+                                tb.addActionListener(PartitionPanel.this);
+                                add(tb);
+                            }
+                        }
+                        revalidate();
+                        repaint();
+                    }
+                });
             }
-        }
-        revalidate();
-        repaint();
+        }).start();
+
     }
 
     /** This method is called from within the constructor to

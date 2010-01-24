@@ -28,9 +28,16 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.CategoryBuilder;
+import org.gephi.filters.spi.EdgeFilter;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.spi.NodeFilter;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
 import org.gephi.partition.api.EdgePartition;
 import org.gephi.partition.api.NodePartition;
 import org.gephi.partition.api.Part;
@@ -125,7 +132,7 @@ public class PartitionBuilder implements CategoryBuilder {
         }
     }
 
-    public static class PartitionFilter implements Filter {
+    public static class PartitionFilter implements NodeFilter, EdgeFilter {
 
         private Partition partition;
         private FilterProperty[] filterProperties;
@@ -140,14 +147,54 @@ public class PartitionBuilder implements CategoryBuilder {
             return NbBundle.getMessage(PartitionBuilder.class, "PartitionBuilder.name");
         }
 
+        public boolean init(Graph graph) {
+            this.partition = Lookup.getDefault().lookup(PartitionController.class).buildPartition(partition.getColumn(), graph);
+            return true;
+        }
+
+        public boolean evaluate(Graph graph, Node node) {
+            Object value = node.getNodeData().getAttributes().getValue(partition.getColumn().getIndex());
+            if (value != null) {
+                int size = parts.size();
+                for (int i = 0; i < size; i++) {
+                    if (parts.get(i).getValue().equals(value)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public boolean evaluate(Graph graph, Edge edge) {
+            Object value = edge.getEdgeData().getAttributes().getValue(partition.getColumn().getIndex());
+            if (value != null) {
+                int size = parts.size();
+                for (int i = 0; i < size; i++) {
+                    if (parts.get(i).getValue().equals(value)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public void finish() {
+        }
+
         public void addPart(Part part) {
             if (!parts.contains(part)) {
-                parts.add(part);
+                List<Part> newParts = new ArrayList<Part>(parts.size() + 1);
+                newParts.addAll(parts);
+                newParts.add(part);
+                filterProperties[1].setValue(newParts);
             }
         }
 
         public void removePart(Part part) {
-            parts.remove(part);
+            List<Part> newParts = new ArrayList<Part>(parts);
+            if (newParts.remove(part)) {
+                filterProperties[1].setValue(newParts);
+            }
         }
 
         public FilterProperty[] getProperties() {
@@ -164,8 +211,29 @@ public class PartitionBuilder implements CategoryBuilder {
             return filterProperties;
         }
 
+        public Partition getCurrentPartition() {
+            if (partition.getPartsCount() == 0) {
+                //build partition
+                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+                this.partition = Lookup.getDefault().lookup(PartitionController.class).buildPartition(partition.getColumn(), graphModel.getGraphVisible());
+            }
+            return partition;
+        }
+
         public Partition getPartition() {
             return partition;
+        }
+
+        public List<Part> getParts() {
+            return parts;
+        }
+
+        public void setParts(List<Part> parts) {
+            this.parts = parts;
+        }
+
+        public void setPartition(Partition partition) {
+            this.partition = partition;
         }
     }
 }

@@ -12,12 +12,16 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.filters.api.FilterLibrary;
-import org.gephi.filters.plugin.attribute.AttributeEqualBuilder.EqualStringFilter;
 import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.CategoryBuilder;
+import org.gephi.filters.spi.EdgeFilter;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.spi.NodeFilter;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -86,13 +90,28 @@ public class AttributeNonNullBuilder implements CategoryBuilder {
         }
     }
 
-    public static class AttributeNonNullFilter implements Filter {
+    public static class AttributeNonNullFilter implements NodeFilter, EdgeFilter {
 
         private FilterProperty[] filterProperties;
         private AttributeColumn column;
 
         public String getName() {
             return NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeNonNullBuilder.name");
+        }
+
+        public boolean init(Graph graph) {
+            return true;
+        }
+
+        public boolean evaluate(Graph graph, Edge edge) {
+            return edge.getEdgeData().getAttributes().getValue(column.getIndex()) != null;
+        }
+
+        public boolean evaluate(Graph graph, Node node) {
+            return node.getNodeData().getAttributes().getValue(column.getIndex()) != null;
+        }
+
+        public void finish() {
         }
 
         public FilterProperty[] getProperties() {

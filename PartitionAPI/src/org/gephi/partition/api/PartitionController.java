@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.partition.api;
 
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.graph.api.Graph;
 import org.gephi.partition.spi.Transformer;
 import org.gephi.partition.spi.TransformerBuilder;
 
@@ -36,6 +38,8 @@ public interface PartitionController {
     public void setSelectedTransformerBuilder(TransformerBuilder builder);
 
     public void refreshPartitions();
+
+    public Partition buildPartition(AttributeColumn column, Graph graph);
 
     public void transform(Partition partition, Transformer transformer);
 
