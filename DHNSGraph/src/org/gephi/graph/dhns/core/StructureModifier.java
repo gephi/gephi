@@ -28,6 +28,7 @@ import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantAndSelfIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantIterator;
+import org.gephi.graph.dhns.node.iterators.TreeIterator;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 
 /**
@@ -161,6 +162,10 @@ public class StructureModifier {
             AbstractNode node = itr.next();
             node.setEnabled(node.size == 0);
         }
+        for (TreeIterator itr = new TreeIterator(treeStructure, true, Tautology.instance); itr.hasNext();) {
+            AbstractNode node = itr.next();
+            edgeProcessor.computeMetaEdges(node, node);
+        }
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
         dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
@@ -173,6 +178,10 @@ public class StructureModifier {
             AbstractNode node = itr.next();
             node.setEnabled(node.parent == treeStructure.root);
         }
+        for (TreeIterator itr = new TreeIterator(treeStructure, true, Tautology.instance); itr.hasNext();) {
+            AbstractNode node = itr.next();
+            edgeProcessor.computeMetaEdges(node, node);
+        }
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
         dhns.getEventManager().fireEvent(EventType.NODES_AND_EDGES_UPDATED);
@@ -184,6 +193,10 @@ public class StructureModifier {
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             node.setEnabled(node.level == level);
+        }
+        for (TreeIterator itr = new TreeIterator(treeStructure, true, Tautology.instance); itr.hasNext();) {
+            AbstractNode node = itr.next();
+            edgeProcessor.computeMetaEdges(node, node);
         }
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();

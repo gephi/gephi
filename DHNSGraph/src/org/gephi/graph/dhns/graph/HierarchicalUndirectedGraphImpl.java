@@ -86,7 +86,7 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
     }
 
     public boolean removeEdge(Edge edge) {
-        AbstractEdge absEdge =  checkEdge(edge);
+        AbstractEdge absEdge = checkEdge(edge);
         boolean res = false;
         if (!absEdge.isSelfLoop()) {
             //Remove also mutual edge if present
@@ -115,19 +115,19 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
     public EdgeIterable getEdges(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);
-        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, enabledNodePredicate, Tautology.instance));
     }
 
     public NodeIterable getNeighbors(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);
-        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, Tautology.instance, Tautology.instance), absNode, Tautology.instance));
+        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, enabledNodePredicate, Tautology.instance), absNode, Tautology.instance));
     }
 
     public int getEdgeCount() {
         //readLock();
         int count = 0;
-        for (EdgeIterator itr = new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), true, Tautology.instance, Tautology.instance); itr.hasNext();) {
+        for (EdgeIterator itr = new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), true, enabledNodePredicate, Tautology.instance); itr.hasNext();) {
             itr.next();
             count++;
         }
@@ -224,7 +224,7 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
 
     public EdgeIterable getEdgesAndMetaEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeAndMetaEdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), true, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new EdgeAndMetaEdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), true, enabledNodePredicate, Tautology.instance));
     }
 
     public EdgeIterable getMetaEdges(Node node) {

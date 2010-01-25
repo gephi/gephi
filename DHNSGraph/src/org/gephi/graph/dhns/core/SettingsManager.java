@@ -35,7 +35,6 @@ import org.gephi.graph.dhns.edge.SumMetaEdgeBuilder;
 public class SettingsManager implements GraphSettings {
 
     private Dhns dhns;
-
     //Settings
     private Boolean allowMultilevel;
     private Boolean autoMetaEdgeCreation;

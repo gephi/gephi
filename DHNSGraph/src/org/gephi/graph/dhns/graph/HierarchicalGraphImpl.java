@@ -147,8 +147,8 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
         int res = structure.getLevelSize(level);
         /*int res = 0;
         for (LevelIterator itr = new LevelIterator(structure, level, Tautology.instance); itr.hasNext();) {
-            itr.next();
-            res++;
+        itr.next();
+        res++;
         }*/
         return res;
     }
