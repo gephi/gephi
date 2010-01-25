@@ -60,7 +60,7 @@ public class StructureModifier {
 
     public void expand(AbstractNode node) {
         dhns.getWriteLock().lock();
-        if (node.level < treeStructure.treeHeight) {
+        if (node.level < treeStructure.getTreeHeight()) {
             business.expand(node);
         }
         graphVersion.incNodeAndEdgeVersion();
@@ -70,7 +70,7 @@ public class StructureModifier {
 
     public void retract(AbstractNode node) {
         dhns.getWriteLock().lock();
-        if (node.level < treeStructure.treeHeight) {
+        if (node.level < treeStructure.getTreeHeight()) {
             business.retract(node);
         }
         graphVersion.incNodeAndEdgeVersion();

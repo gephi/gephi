@@ -21,8 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.core;
 
 import java.util.AbstractList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 
@@ -75,6 +77,7 @@ public class DurableTreeList extends AbstractList<AbstractNode> implements Itera
     /** The current size of the list */
     int size = 0;
     private int preConsistent = 0;
+    protected int[] levelsSize;
 
     //-----------------------------------------------------------------------
     /**
@@ -82,6 +85,7 @@ public class DurableTreeList extends AbstractList<AbstractNode> implements Itera
      */
     public DurableTreeList() {
         super();
+        levelsSize = new int[1];
     }
 
     /**
@@ -197,6 +201,10 @@ public class DurableTreeList extends AbstractList<AbstractNode> implements Itera
             root = root.insert(index, obj);
             root.parent = null;
         }
+        if (obj.level >= levelsSize.length) {
+            levelsSize = Arrays.copyOf(levelsSize, levelsSize.length + 1);
+        }
+        levelsSize[obj.level]++;
         size++;
     }
 
@@ -234,6 +242,7 @@ public class DurableTreeList extends AbstractList<AbstractNode> implements Itera
         modCount++;
         checkInterval(index, 0, size() - 1);
         AbstractNode result = get(index);
+        levelsSize[result.level]--;
         result.avlNode.setIndex(index);
         root = root.remove(index);
         result.avlNode = null;
@@ -247,16 +256,17 @@ public class DurableTreeList extends AbstractList<AbstractNode> implements Itera
         checkInterval(index, 0, size() - 1);
 
         //Remove without setting null parent
-        AbstractNode node = get(index);
+        AbstractNode result = get(index);
+        levelsSize[result.level]--;
         root = root.remove(index);
-        node.avlNode = null;
-        node.size = 0;
+        result.avlNode = null;
+        result.size = 0;
         size--;
         incPreConsistent();
-        return node;
+        return result;
     }
 
-    public int move(int index, int destination) {
+    public void move(int index, int destination) {
         checkInterval(index, 0, size() - 1);
 
         AbstractNode node = get(index);
@@ -265,7 +275,6 @@ public class DurableTreeList extends AbstractList<AbstractNode> implements Itera
         int nodeLimit = node.pre + node.size;
         boolean forward = destinationPre > node.pre;
         int difflevel = 0;
-        int maxLevel = 0;
 
         //Move descendant & self
         int count = 0;
@@ -278,25 +287,21 @@ public class DurableTreeList extends AbstractList<AbstractNode> implements Itera
             }
 
             AbstractNode sourceNode = get(sourcePre);
+            levelsSize[sourceNode.level]--;
             root = root.remove(sourcePre);      //Remove
             sourceNode.avlNode = null;          //Remove
             size--;                             //Remove
             //System.out.println("add "+(destPre)+"   remove "+sourceNode.getId());
-            add(destPre, sourceNode);
 
             if (count == 0) {
                 sourceNode.parent = parent;
                 difflevel = node.parent.level - node.level + 1;
             }
             sourceNode.level += difflevel;
-            if (sourceNode.level > maxLevel) {
-                maxLevel = sourceNode.level;
-            }
+            add(destPre, sourceNode);
             count++;
         }
-
         incPreConsistent();
-        return maxLevel;
     }
 
     /**
@@ -307,6 +312,7 @@ public class DurableTreeList extends AbstractList<AbstractNode> implements Itera
         modCount++;
         root = null;
         size = 0;
+        levelsSize = new int[1];
     }
 
     //-----------------------------------------------------------------------
@@ -323,7 +329,6 @@ public class DurableTreeList extends AbstractList<AbstractNode> implements Itera
             throw new IndexOutOfBoundsException("Invalid index:" + index + ", size=" + size());
         }
     }
-
 
     //-----------------------------------------------------------------------
     /**
@@ -904,8 +909,8 @@ public class DurableTreeList extends AbstractList<AbstractNode> implements Itera
          * Used for debugging.
          */
         public String toString() {
-            return "AVLNode(" + relativePosition + "," + (left != null) + "," + value +
-                    "," + (getRightSubTree() != null) + ", faedelung " + rightIsNext + " )";
+            return "AVLNode(" + relativePosition + "," + (left != null) + "," + value
+                    + "," + (getRightSubTree() != null) + ", faedelung " + rightIsNext + " )";
         }
     }
 

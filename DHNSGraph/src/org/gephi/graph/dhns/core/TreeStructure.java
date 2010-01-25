@@ -30,10 +30,9 @@ import org.gephi.graph.dhns.node.iterators.TreeListIterator;
  */
 public class TreeStructure {
 
-    DurableTreeList tree;
-    AbstractNode root;
-    public int treeHeight;
-    private final int viewId;
+    protected DurableTreeList tree;
+    protected AbstractNode root;
+    protected final int viewId;
 
     public TreeStructure(int viewId) {
         tree = new DurableTreeList();
@@ -47,14 +46,6 @@ public class TreeStructure {
     }
 
     public AbstractNode getNodeAt(int pre) {
-        /*if(cacheNode!=null && cacheNode.avlNode.isConsistent() && cacheNode.pre == pre-1)
-        {
-        cacheNode = cacheNode.avlNode.next().getValue();
-        return cacheNode;
-        }
-
-        cacheNode = tree.get(pre);
-        return cacheNode;*/
         return tree.get(pre);
     }
 
@@ -124,10 +115,6 @@ public class TreeStructure {
         node.parent = parent;
         node.pre = parent.getPre() + parent.size + 1;
         node.level = parent.level + 1;
-        if (node.level > treeHeight) {
-            treeHeight++;
-        }
-
         tree.add(node.pre, node);
         incrementAncestorsSize(node);
     }
@@ -137,7 +124,7 @@ public class TreeStructure {
         AbstractNode sourceParent = node.parent;
         int sourceSize = 1 + node.size;
 
-        int maxLevel = tree.move(node.getPre(), newParent.getPre());
+        tree.move(node.getPre(), newParent.getPre());
 
         if (sourceParent != null) {
             decrementAncestorAndSelfSize(sourceParent, sourceSize);
@@ -145,11 +132,6 @@ public class TreeStructure {
 
         //Increment ancestor & self
         incrementAncestorsAndSelfSize(newParent, sourceSize);
-
-        //Update tree height
-        if (maxLevel > treeHeight) {
-            treeHeight = maxLevel;
-        }
 
         /* nodeSize = node.size;
         int nodePre = node.getPre();
@@ -260,12 +242,21 @@ public class TreeStructure {
         }
         tree.clear();
         root = null;
-        treeHeight = 0;
         initRoot();
     }
 
     public int getTreeSize() {
         return tree.size();
+    }
+
+    public int getTreeHeight() {
+        int[] levelsSize = tree.levelsSize;
+        for (int i = levelsSize.length - 1; i >= 0; i--) {
+            if (levelsSize[i] > 0) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     public DurableTreeList getTree() {

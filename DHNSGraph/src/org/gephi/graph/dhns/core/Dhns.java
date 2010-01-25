@@ -223,7 +223,7 @@ public class Dhns implements GraphModel {
     }
 
     public boolean isHierarchical() {
-        return graphStructure.getMainView().getStructure().treeHeight - 1 > 0;       //height>0
+        return graphStructure.getMainView().getStructure().getTreeHeight() - 1 > 0;       //height>0
     }
 
     public boolean isDynamic() {

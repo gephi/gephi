@@ -129,7 +129,7 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     public NodeIterable getNodes(int level) {
         level += 1;     //Because we ignore the virtual root
         readLock();
-        int height = structure.treeHeight;
+        int height = structure.getTreeHeight();
         if (level > height) {
             readUnlock();
             throw new IllegalArgumentException("Level must be between 0 and the height of the tree, currently height=" + (height - 1));
@@ -140,7 +140,7 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
 
     public int getLevelSize(int level) {
         level += 1;     //Because we ignore the virtual root
-        int height = structure.treeHeight;
+        int height = structure.getTreeHeight();
         if (level > height) {
             readUnlock();
             throw new IllegalArgumentException("Level must be between 0 and the height of the tree, currently height=" + (height - 1));
@@ -282,7 +282,7 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     }
 
     public int getHeight() {
-        int res = structure.treeHeight - 1;
+        int res = structure.getTreeHeight() - 1;
         return res;
     }
 
@@ -366,7 +366,7 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     public void resetViewToLevel(int level) {
         readLock();
         level += 1;     //Because we ignore the virtual root
-        int height = structure.treeHeight;
+        int height = structure.getTreeHeight();
         if (level > height) {
             readUnlock();
             throw new IllegalArgumentException("Level must be between 0 and the height of the tree, currently height=" + (height - 1));

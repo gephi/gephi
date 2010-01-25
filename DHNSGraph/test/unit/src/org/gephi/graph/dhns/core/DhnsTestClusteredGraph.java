@@ -651,7 +651,9 @@ public class DhnsTestClusteredGraph {
         graphGlobal2Directed.moveToGroup(nodeLevel0, graphGlobal2Directed.getTopNodes().toArray()[1]);
         assertEquals(2, graphGlobal2Directed.getHeight());
 
-        //graphGlobal2Directed.getNodes(2);
+        //Level after cancel the last move
+        graphGlobal2Directed.moveToGroup(nodeLevel0, dhnsGlobal2.getGraphStructure().getMainView().getStructure().getRoot());
+        assertEquals(1, graphGlobal2Directed.getHeight());
     }
 
     @Test
