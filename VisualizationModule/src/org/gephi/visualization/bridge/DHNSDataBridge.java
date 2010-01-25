@@ -275,8 +275,10 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         }
         //Refresh reader if sight changed
         if (graph != null) {
-            return graph.getNodeVersion() > nodeVersion || graph.getEdgeVersion() > edgeVersion || graph.getView().getViewId() != graphView;
-
+            if (graph.getGraphModel().getVisibleView().getViewId() != graphView) {
+                reset();
+            }
+            return graph.getNodeVersion() > nodeVersion || graph.getEdgeVersion() > edgeVersion;
         }
         return false;
     }

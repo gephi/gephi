@@ -408,4 +408,8 @@ public class Dhns implements GraphModel {
     public void setVisibleView(GraphView view) {
         graphStructure.setVisibleView(view != null ? (GraphViewImpl) view : null);
     }
+
+    public GraphView getVisibleView() {
+        return graphStructure.getVisibleView();
+    }
 }
