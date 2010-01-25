@@ -163,7 +163,6 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         public void finish() {
-            throw new UnsupportedOperationException("Not supported yet.");
         }
 
         public FilterProperty[] getProperties() {

@@ -20,8 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.filters.plugin.graph;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
@@ -104,34 +102,34 @@ public class RangePanel extends javax.swing.JPanel {
         //Tooltip
         /*histogram.getPanel().addMouseListener(new MouseAdapter() {
 
-            RichTooltip richTooltip;
+        RichTooltip richTooltip;
 
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                new Thread(new Runnable() {
+        @Override
+        public void mouseEntered(MouseEvent e) {
+        new Thread(new Runnable() {
 
-                    public void run() {
-                        richTooltip = buildTooltip();
+        public void run() {
+        richTooltip = buildTooltip();
 
-                        SwingUtilities.invokeLater(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
 
-                            public void run() {
-                                if (richTooltip != null) {
-                                    richTooltip.showTooltip(histogram.getPanel());
-                                }
-                            }
-                        });
-                    }
-                }).start();
-            }
+        public void run() {
+        if (richTooltip != null) {
+        richTooltip.showTooltip(histogram.getPanel());
+        }
+        }
+        });
+        }
+        }).start();
+        }
 
-            @Override
-            public void mouseExited(MouseEvent e) {
-                if (richTooltip != null) {
-                    richTooltip.hideTooltip();
-                    richTooltip = null;
-                }
-            }
+        @Override
+        public void mouseExited(MouseEvent e) {
+        if (richTooltip != null) {
+        richTooltip.hideTooltip();
+        richTooltip = null;
+        }
+        }
         });*/
     }
 

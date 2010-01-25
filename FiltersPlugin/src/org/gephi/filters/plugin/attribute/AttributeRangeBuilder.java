@@ -120,7 +120,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
     public static class AttributeRangelFilter implements RangeFilter, NodeFilter, EdgeFilter {
 
         private FilterProperty[] filterProperties;
-        private Range range = new Range(0, 0);
+        private Range range;
         private AttributeColumn column;
         private Object min = 0;
         private Object max = 0;
@@ -136,15 +136,11 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         }
 
         private void refreshRange() {
-            Integer lowerBound = range.getLowerInteger();
-            Integer upperBound = range.getUpperInteger();
-            if ((Integer) min > lowerBound || (Integer) max < lowerBound || lowerBound.equals(upperBound)) {
-                lowerBound = (Integer) min;
+            if (range == null) {
+                range = new Range(min, max);
+            } else {
+                range.trimBounds(min, max);
             }
-            if ((Integer) min > upperBound || (Integer) max < upperBound || lowerBound.equals(upperBound)) {
-                upperBound = (Integer) max;
-            }
-            range = new Range(lowerBound, upperBound);
         }
 
         public boolean init(Graph graph) {
@@ -197,13 +193,13 @@ public class AttributeRangeBuilder implements CategoryBuilder {
                 }
                 Object[] valuesArray = vals.toArray();
                 min = AttributeUtils.getDefault().getMin(column, valuesArray);
-                max = AttributeUtils.getDefault().getMin(column, valuesArray);
+                max = AttributeUtils.getDefault().getMax(column, valuesArray);
                 refreshRange();
                 return valuesArray;
             } else {
                 Object[] valuesArray = values.toArray();
                 min = AttributeUtils.getDefault().getMin(column, valuesArray);
-                max = AttributeUtils.getDefault().getMin(column, valuesArray);
+                max = AttributeUtils.getDefault().getMax(column, valuesArray);
                 return valuesArray;
             }
         }

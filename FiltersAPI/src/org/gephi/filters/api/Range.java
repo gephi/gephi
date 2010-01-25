@@ -112,15 +112,55 @@ public final class Range {
 
     public boolean isInRange(Object value) {
         if (rangeType == Double.class) {
-            return isInRange((Double)value);
+            return isInRange((Double) value);
         } else if (rangeType == Float.class) {
-            return isInRange((Float)value);
+            return isInRange((Float) value);
         } else if (rangeType == Integer.class) {
-            return isInRange((Integer)value);
+            return isInRange((Integer) value);
         } else if (rangeType == Long.class) {
-            return isInRange((Long)value);
+            return isInRange((Long) value);
         }
         return false;
+    }
+
+    public void trimBounds(Object min, Object max) {
+        if (rangeType == Double.class) {
+            Double minD = (Double) min;
+            Double maxD = (Double) max;
+            if (minD > lowerDouble || maxD < lowerDouble || lowerDouble.equals(upperDouble)) {
+                lowerDouble = minD;
+            }
+            if (minD > upperDouble || maxD < upperDouble || lowerDouble.equals(upperDouble)) {
+                upperDouble = maxD;
+            }
+        } else if (rangeType == Float.class) {
+            Float minF = (Float) min;
+            Float maxF = (Float) max;
+            if (minF > lowerFloat || maxF < lowerFloat || lowerFloat.equals(upperFloat)) {
+                lowerFloat = minF;
+            }
+            if (minF > upperFloat || maxF < upperFloat || lowerFloat.equals(upperFloat)) {
+                upperFloat = maxF;
+            }
+        } else if (rangeType == Integer.class) {
+            Integer minI = (Integer) min;
+            Integer maxI = (Integer) max;
+            if (minI > lowerInteger || maxI < lowerInteger || lowerInteger.equals(upperInteger)) {
+                lowerInteger = minI;
+            }
+            if (minI > upperInteger || maxI < upperInteger || lowerInteger.equals(upperInteger)) {
+                upperInteger = maxI;
+            }
+        } else if (rangeType == Long.class) {
+            Long minL = (Long) min;
+            Long maxL = (Long) max;
+            if (minL > lowerLong || maxL < lowerLong || lowerLong.equals(upperLong)) {
+                lowerLong = minL;
+            }
+            if (minL > upperLong || maxL < upperLong || lowerLong.equals(upperLong)) {
+                upperLong = maxL;
+            }
+        }
     }
 
     public Double getLowerDouble() {
