@@ -61,6 +61,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     //Version
     protected int nodeVersion = -1;
     protected int edgeVersion = -1;
+    protected int graphView = 0;
     //Attributes
     private int cacheMarker = 0;
 
@@ -97,6 +98,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         System.out.println("dynamic graph");
         graph = (ClusteredDirectedGraph) controller.getVisualizedGraph();
         }*/
+
+        graphView = graph.getView().getViewId();
 
         ModelClass[] object3dClasses = engine.getModelClasses();
 
@@ -261,8 +264,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     public boolean requireUpdate() {
         if (graph == null) {
             //Try to get a graph
-            if (controller.getModel() != null) {
-                GraphModel graphModel = controller.getModel();
+            GraphModel graphModel = controller.getModel();
+            if (graphModel != null) {
                 if (!graphModel.isDirected() && !graphModel.isUndirected() && !graphModel.isMixed()) {
                     return false;
                 } else {
@@ -272,7 +275,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         }
         //Refresh reader if sight changed
         if (graph != null) {
-            return graph.getNodeVersion() > nodeVersion || graph.getEdgeVersion() > edgeVersion;
+            return graph.getNodeVersion() > nodeVersion || graph.getEdgeVersion() > edgeVersion || graph.getView().getViewId() != graphView;
 
         }
         return false;

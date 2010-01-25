@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
+import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
@@ -111,7 +112,7 @@ public class GraphStructure {
         views.remove(view);
         if (this.visibleView == view) {
             this.visibleView = mainView;
-            dhns.getGraphVersion().incNodeAndEdgeVersion();
+            dhns.getEventManager().fireEvent(EventType.VIEWS_UPDATED);
         }
     }
 
@@ -136,6 +137,6 @@ public class GraphStructure {
         } else {
             this.visibleView = visibleView;
         }
-        dhns.getGraphVersion().incNodeAndEdgeVersion();
+        dhns.getEventManager().fireEvent(EventType.VIEWS_UPDATED);
     }
 }

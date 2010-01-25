@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.graph.api;
 
 /**
@@ -27,7 +26,10 @@ package org.gephi.graph.api;
  */
 public interface GraphEvent {
 
-    public enum EventType {NODES_UPDATED, EDGES_UPDATED, NODES_AND_EDGES_UPDATED};
+    public enum EventType {
+
+        NODES_UPDATED, EDGES_UPDATED, NODES_AND_EDGES_UPDATED, VIEWS_UPDATED
+    };
 
     public EventType getEventType();
 }
