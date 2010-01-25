@@ -835,7 +835,6 @@ public class DhnsTestClusteredGraph {
         dhnsGlobal.removeGraphListener(gl);
         assertEquals(0, dhnsGlobal.getEventManager().getListeners().size());
 
-
         GraphFactoryImpl factory = dhnsGlobal.factory();
         graphGlobal.addNode(factory.newNode());
     }

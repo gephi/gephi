@@ -33,7 +33,6 @@ import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.EdgeAndMetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
-
 import org.gephi.graph.dhns.edge.iterators.MetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.MetaEdgeNodeIterator;
 import org.gephi.graph.dhns.edge.iterators.RangeEdgeIterator;
@@ -98,14 +97,14 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
     public NodeIterable getSuccessors(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);
-        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT, false, Tautology.instance, Tautology.instance), absNode, Tautology.instance));
+        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT, false, enabledNodePredicate, Tautology.instance), absNode, Tautology.instance));
     }
 
     //Directed
     public NodeIterable getPredecessors(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);
-        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.IN, false, Tautology.instance, Tautology.instance), absNode, Tautology.instance));
+        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.IN, false, enabledNodePredicate, Tautology.instance), absNode, Tautology.instance));
 
     }
 
@@ -163,35 +162,35 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
     //Graph
     public EdgeIterable getEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), false, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), false, enabledNodePredicate, Tautology.instance));
     }
 
     //Directed
     public EdgeIterable getInEdges(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);
-        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.IN, false, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.IN, false, enabledNodePredicate, Tautology.instance));
     }
 
     //Directed
     public EdgeIterable getOutEdges(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);
-        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT, false, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT, false, enabledNodePredicate, Tautology.instance));
     }
 
     //Graph
     public EdgeIterable getEdges(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);
-        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, enabledNodePredicate, Tautology.instance));
     }
 
     //Graph
     public NodeIterable getNeighbors(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);
-        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, Tautology.instance, Tautology.instance), absNode, Tautology.instance));
+        return dhns.newNodeIterable(new NeighborIterator(new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, enabledNodePredicate, Tautology.instance), absNode, Tautology.instance));
     }
 
     //Directed
@@ -208,7 +207,7 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
     //Graph
     public int getEdgeCount() {
         int count = 0;
-        for (EdgeIterator itr = new EdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), false, Tautology.instance, Tautology.instance); itr.hasNext();) {
+        for (EdgeIterator itr = new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), false, enabledNodePredicate, Tautology.instance); itr.hasNext();) {
             itr.next();
             count++;
         }
@@ -258,7 +257,7 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
 
     public EdgeIterable getEdgesAndMetaEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeAndMetaEdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), false, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new EdgeAndMetaEdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), false, enabledNodePredicate, Tautology.instance));
     }
 
     //ClusteredGraph

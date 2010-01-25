@@ -172,7 +172,7 @@ public class EdgeProcessor {
                 edgeIterator.setNode(desc.getEdgesOutTree());
                 while (edgeIterator.hasNext()) {
                     AbstractEdge edge = edgeIterator.next();
-                    AbstractNode[] enabledAncestors = new AbstractNode[]{treeStructure.getEnabledAncestorOrSelf(edge.getTarget(viewId))}; //todo remove array
+                    AbstractNode[] enabledAncestors = treeStructure.getEnabledAncestorsOrSelf(edge.getTarget(viewId));
                     if (enabledAncestors != null) {
                         for (int j = 0; j < enabledAncestors.length; j++) {
                             AbstractNode targetNode = enabledAncestors[j];
@@ -193,7 +193,7 @@ public class EdgeProcessor {
                 edgeIterator.setNode(desc.getEdgesInTree());
                 while (edgeIterator.hasNext()) {
                     AbstractEdge edge = edgeIterator.next();
-                    AbstractNode[] enabledAncestors = new AbstractNode[]{treeStructure.getEnabledAncestorOrSelf(edge.getSource(viewId))};
+                    AbstractNode[] enabledAncestors = treeStructure.getEnabledAncestorsOrSelf(edge.getSource(viewId));
                     if (enabledAncestors != null) {
                         for (int j = 0; j < enabledAncestors.length; j++) {
                             AbstractNode sourceNode = enabledAncestors[j];
@@ -213,7 +213,9 @@ public class EdgeProcessor {
     }
 
     private void createMetaEdge(AbstractNode source, AbstractNode target, AbstractEdge edge) {
-        if (edge.getSource(viewId) == source && edge.getTarget(viewId) == target) {
+        AbstractNode edgeSource = edge.getSource(viewId);
+        AbstractNode edgeTarget = edge.getTarget(viewId);
+        if (edgeSource == source && edgeTarget == target) {
             return;
         }
         if (source == target) {
@@ -226,7 +228,7 @@ public class EdgeProcessor {
         }
         if (metaEdge != null) {
             if (metaEdge.addEdge(edge)) {
-                dhns.getSettingsManager().getMetaEdgeBuilder().pushEdge(edge, metaEdge);
+                dhns.getSettingsManager().getMetaEdgeBuilder().pushEdge(edge, edgeSource, edgeTarget, metaEdge);
             }
         }
     }
@@ -249,8 +251,8 @@ public class EdgeProcessor {
             return;
         }
 
-        AbstractNode[] sourceAncestors = new AbstractNode[]{treeStructure.getEnabledAncestorOrSelf(edge.getSource(viewId))};
-        AbstractNode[] targetAncestors = new AbstractNode[]{treeStructure.getEnabledAncestorOrSelf(edge.getTarget(viewId))};
+        AbstractNode[] sourceAncestors = treeStructure.getEnabledAncestorsOrSelf(edge.getSource(viewId));
+        AbstractNode[] targetAncestors = treeStructure.getEnabledAncestorsOrSelf(edge.getTarget(viewId));
 
         if (sourceAncestors != null && targetAncestors != null) {
             for (int i = 0; i < sourceAncestors.length; i++) {
@@ -262,8 +264,6 @@ public class EdgeProcessor {
                     }
                 }
             }
-
-
         }
 
 //        AbstractNode sourceParent = treeStructure.getEnabledAncestorOrSelf(edge.getSource(viewId));
@@ -286,15 +286,15 @@ public class EdgeProcessor {
         MetaEdgeImpl metaEdge = getMetaEdge(edge);
         if (metaEdge != null) {
             if (metaEdge.removeEdge(edge)) {
-                dhns.getSettingsManager().getMetaEdgeBuilder().pullEdge(edge, metaEdge);
+                AbstractNode edgeSource = edge.getSource(viewId);
+                AbstractNode edgeTarget = edge.getTarget(viewId);
+                dhns.getSettingsManager().getMetaEdgeBuilder().pullEdge(edge, edgeSource, edgeTarget, metaEdge);
             }
             if (metaEdge.isEmpty()) {
                 metaEdge.getSource(viewId).getMetaEdgesOutTree().remove(metaEdge);
                 metaEdge.getTarget(viewId).getMetaEdgesInTree().remove(metaEdge);
             }
         }
-
-
     }
 
     private MetaEdgeImpl getMetaEdge(AbstractNode source, AbstractNode target) {

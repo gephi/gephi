@@ -119,12 +119,12 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
 
     public EdgeIterable getDirectedEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), false, Tautology.instance, Tautology.instance), directedPredicate);
+        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), false, Tautology.instance, Tautology.instance), directedPredicate);
     }
 
     public EdgeIterable getUndirectedEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), false, Tautology.instance, Tautology.instance), undirectedPredicate);
+        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), false, Tautology.instance, Tautology.instance), undirectedPredicate);
     }
 
     public boolean isDirected(Edge edge) {
@@ -157,7 +157,7 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
 
     public EdgeIterable getEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), false, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), false, Tautology.instance, Tautology.instance));
     }
 
     public NodeIterable getNeighbors(Node node) {
@@ -175,7 +175,7 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
     public int getEdgeCount() {
         readLock();
         int count = 0;
-        for (EdgeIterator itr = new EdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), false, Tautology.instance, Tautology.instance); itr.hasNext();) {
+        for (EdgeIterator itr = new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), false, Tautology.instance, Tautology.instance); itr.hasNext();) {
             itr.next();
             count++;
         }

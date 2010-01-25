@@ -69,6 +69,15 @@ public class TreeStructure {
         return parent;
     }
 
+    public AbstractNode[] getEnabledAncestorsOrSelf(AbstractNode node) {
+        AbstractNode enabled = getEnabledAncestorOrSelf(node);
+        if (enabled != null) {
+            return new AbstractNode[]{enabled};
+        } else {
+            return null;
+        }
+    }
+
     /*public AbstractNode[] getEnabledAncestorsOrSelf(AbstractNode node) {
     PreNode preNode = node.getOriginalNode();
     if (preNode.getClones() == null) {

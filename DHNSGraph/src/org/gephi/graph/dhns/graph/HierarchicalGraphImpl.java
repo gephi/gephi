@@ -25,6 +25,7 @@ import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphViewImpl;
 import org.gephi.graph.dhns.filter.Tautology;
@@ -41,8 +42,16 @@ import org.gephi.graph.dhns.utils.TreeNodeWrapper;
  */
 public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements HierarchicalGraph {
 
+    protected Predicate<AbstractNode> enabledNodePredicate;
+
     public HierarchicalGraphImpl(Dhns dhns, GraphViewImpl view) {
         super(dhns, view);
+        enabledNodePredicate = new Predicate<AbstractNode>() {
+
+            public boolean evaluate(AbstractNode element) {
+                return element.isEnabled();
+            }
+        };
     }
 
     public abstract HierarchicalGraphImpl copy(Dhns dhns, GraphViewImpl view);
@@ -60,7 +69,7 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
             return false;
         }
         if (absNode.avlNode != null) { //exist in another view
-            if(absNode.getInView(view.getViewId())!=null) {
+            if (absNode.getInView(view.getViewId()) != null) {
                 return false;
             }
             absNode = new AbstractNode(absNode.getNodeData(), view.getViewId());

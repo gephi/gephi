@@ -109,7 +109,7 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
 
     public EdgeIterable getEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), true, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), true, enabledNodePredicate, Tautology.instance));
     }
 
     public EdgeIterable getEdges(Node node) {
@@ -127,7 +127,7 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
     public int getEdgeCount() {
         //readLock();
         int count = 0;
-        for (EdgeIterator itr = new EdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), true, Tautology.instance, Tautology.instance); itr.hasNext();) {
+        for (EdgeIterator itr = new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), true, Tautology.instance, Tautology.instance); itr.hasNext();) {
             itr.next();
             count++;
         }
@@ -224,7 +224,7 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
 
     public EdgeIterable getEdgesAndMetaEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeAndMetaEdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), true, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new EdgeAndMetaEdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), true, Tautology.instance, Tautology.instance));
     }
 
     public EdgeIterable getMetaEdges(Node node) {

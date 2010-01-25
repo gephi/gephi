@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.edge;
 
+import org.gephi.graph.dhns.node.AbstractNode;
+
 /**
  *
  * @author Mathieu Bastian
@@ -41,14 +43,14 @@ public class SumMetaEdgeBuilder implements MetaEdgeBuilder {
         this.nonDeepDivisor = divisor;
     }
 
-    public void pushEdge(AbstractEdge edge, MetaEdgeImpl metaEdge) {
+    public void pushEdge(AbstractEdge edge, AbstractNode source, AbstractNode target, MetaEdgeImpl metaEdge) {
         float edgeWeight = edge.weight;
         float metaWeight = metaEdge.getWeight();
         float div = 1f;
-        if (edge.getSource() == metaEdge.getSource() ||
-                edge.getSource() == metaEdge.getTarget() ||
-                edge.getTarget() == metaEdge.getTarget() ||
-                edge.getTarget() == metaEdge.getSource()) {
+        if (edge.getSource() == metaEdge.getSource()
+                || edge.getSource() == metaEdge.getTarget()
+                || edge.getTarget() == metaEdge.getTarget()
+                || edge.getTarget() == metaEdge.getSource()) {
             div = nonDeepDivisor;
         }
         metaWeight += edgeWeight / div;
@@ -58,14 +60,14 @@ public class SumMetaEdgeBuilder implements MetaEdgeBuilder {
         metaEdge.setWeight(metaWeight);
     }
 
-    public void pullEdge(AbstractEdge edge, MetaEdgeImpl metaEdge) {
+    public void pullEdge(AbstractEdge edge, AbstractNode source, AbstractNode target, MetaEdgeImpl metaEdge) {
         float edgeWeight = edge.weight;
         float metaWeight = metaEdge.getWeight();
         float div = 1f;
-        if (edge.getSource() == metaEdge.getSource() ||
-                edge.getSource() == metaEdge.getTarget() ||
-                edge.getTarget() == metaEdge.getTarget() ||
-                edge.getTarget() == metaEdge.getSource()) {
+        if (source == metaEdge.getSource()
+                || source == metaEdge.getTarget()
+                || target == metaEdge.getTarget()
+                || target == metaEdge.getSource()) {
             div = nonDeepDivisor;
         }
         metaWeight -= edgeWeight / div;

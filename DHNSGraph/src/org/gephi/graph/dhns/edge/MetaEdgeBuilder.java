@@ -20,13 +20,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.edge;
 
+import org.gephi.graph.dhns.node.AbstractNode;
+
 /**
  *
  * @author Mathieu Bastian
  */
 public interface MetaEdgeBuilder {
 
-    public void pushEdge(AbstractEdge edge, MetaEdgeImpl metaEdge);
+    public void pushEdge(AbstractEdge edge, AbstractNode source, AbstractNode target, MetaEdgeImpl metaEdge);
 
-    public void pullEdge(AbstractEdge edge, MetaEdgeImpl metaEdge);
+    public void pullEdge(AbstractEdge edge, AbstractNode source, AbstractNode target, MetaEdgeImpl metaEdge);
 }

@@ -22,7 +22,6 @@ package org.gephi.graph.dhns.edge;
 
 import org.gephi.graph.api.MetaEdge;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.utils.avl.EdgeTree;
 
 /**
  * Meta edge implementation. Edge between upper activated clusters in hierarchy. Contains lower edges.
