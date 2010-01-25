@@ -122,9 +122,6 @@
       <SubComponents>
         <Component class="javax.swing.JToggleButton" name="selectButton">
           <Properties>
-            <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-              <ComponentRef name="default"/>
-            </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/org/gephi/desktop/filters/resources/select.png"/>
             </Property>
@@ -138,9 +135,6 @@
         </Component>
         <Component class="javax.swing.JToggleButton" name="filterButton">
           <Properties>
-            <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-              <ComponentRef name="default"/>
-            </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/org/gephi/desktop/filters/resources/filter.png"/>
             </Property>

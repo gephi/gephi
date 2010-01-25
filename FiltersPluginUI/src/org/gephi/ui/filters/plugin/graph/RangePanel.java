@@ -102,7 +102,7 @@ public class RangePanel extends javax.swing.JPanel {
         }).start();
 
         //Tooltip
-        histogram.getPanel().addMouseListener(new MouseAdapter() {
+        /*histogram.getPanel().addMouseListener(new MouseAdapter() {
 
             RichTooltip richTooltip;
 
@@ -132,7 +132,7 @@ public class RangePanel extends javax.swing.JPanel {
                     richTooltip = null;
                 }
             }
-        });
+        });*/
     }
 
     private void setupHistogram(final RangeFilter rangeFilter, final Range range) {

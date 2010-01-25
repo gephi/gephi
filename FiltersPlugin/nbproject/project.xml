@@ -51,6 +51,7 @@
                 <package>org.gephi.filters.plugin</package>
                 <package>org.gephi.filters.plugin.attribute</package>
                 <package>org.gephi.filters.plugin.graph</package>
+                <package>org.gephi.filters.plugin.hierarchy</package>
                 <package>org.gephi.filters.plugin.operator</package>
                 <package>org.gephi.filters.plugin.partition</package>
             </public-packages>

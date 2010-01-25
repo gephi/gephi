@@ -80,6 +80,8 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                     controller.remove(query);
                 }
                 uiModel.setSelectedQuery(null);
+                controller.select(null);
+                controller.filter(null);
             }
         });
         filterButton.addActionListener(new ActionListener() {
