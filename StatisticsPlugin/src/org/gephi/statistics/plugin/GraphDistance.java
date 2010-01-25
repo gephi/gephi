@@ -101,10 +101,18 @@ public class GraphDistance implements Statistics, LongTask {
      */
     public void brandes(GraphModel graphModel, AttributeModel attributeModel) {
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn eccentricityCol = nodeTable.addColumn("eccentricity", "Eccentricity", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
-        AttributeColumn closenessCol = nodeTable.addColumn("closnesscentrality", "Closeness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
-        AttributeColumn betweenessCol = nodeTable.addColumn("betweenesscentrality", "Betweeness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
-
+        AttributeColumn eccentricityCol = nodeTable.getColumn("eccentricity");
+        AttributeColumn closenessCol = nodeTable.getColumn("closnesscentrality");
+        AttributeColumn betweenessCol = nodeTable.getColumn("betweenesscentrality");
+        if (eccentricityCol == null) {
+            eccentricityCol = nodeTable.addColumn("eccentricity", "Eccentricity", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        }
+        if (closenessCol == null) {
+            closenessCol = nodeTable.addColumn("closnesscentrality", "Closeness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        }
+        if (betweenessCol == null) {
+            betweenessCol = nodeTable.addColumn("betweenesscentrality", "Betweeness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        }
 
         Graph graph = null;
         if (mDirected) {

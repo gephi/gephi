@@ -26,7 +26,6 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
@@ -55,7 +54,6 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Exceptions;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -221,9 +219,14 @@ public class Hits implements Statistics, LongTask {
         }
 
         AttributeTable nodeTable = attributeModel.getNodeTable();
-
-        AttributeColumn authorityCol = nodeTable.addColumn("authority", "Authortiy", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
-        AttributeColumn hubsCol = nodeTable.addColumn("hub", "Hub", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
+        AttributeColumn authorityCol = nodeTable.getColumn("authority");
+        AttributeColumn hubsCol = nodeTable.getColumn("hub");
+        if (authorityCol == null) {
+            authorityCol = nodeTable.addColumn("authority", "Authortiy", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
+        }
+        if (hubsCol == null) {
+            hubsCol = nodeTable.addColumn("hub", "Hub", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
+        }
 
         for (Node s : graph.getNodes()) {
             int s_index = indicies.get(s);

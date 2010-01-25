@@ -66,8 +66,14 @@ public class InOutDegree implements Statistics, LongTask {
 
         //Attributes cols
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn inCol = nodeTable.addColumn("indegree", "In Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
-        AttributeColumn outCol = nodeTable.addColumn("outdegree", "Out Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
+        AttributeColumn inCol = nodeTable.getColumn("indegree");
+        AttributeColumn outCol = nodeTable.getColumn("outdegree");
+        if (inCol == null) {
+            inCol = nodeTable.addColumn("indegree", "In Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
+        }
+        if (outCol == null) {
+            outCol = nodeTable.addColumn("outdegree", "Out Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
+        }
 
         DirectedGraph graph = graphModel.getDirectedGraph();
         int i = 0;

@@ -410,8 +410,10 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
         avgClusteringCoeff = 0;
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn clusteringCol = nodeTable.addColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
-
+        AttributeColumn clusteringCol = nodeTable.getColumn("clustering");
+        if (clusteringCol == null) {
+            clusteringCol = nodeTable.addColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        }
 
         for (Node s : graph.getNodes()) {
             int v = indicies.get(s);

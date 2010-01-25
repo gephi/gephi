@@ -528,7 +528,10 @@ public class Modularity implements Statistics, LongTask {
      */
     public double finalQ(int[] pStruct, double[] pDegrees, UndirectedGraph pGraph, AttributeModel attributeModel) {
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn modCol = nodeTable.addColumn("modularity_class", "Modularity Class", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
+        AttributeColumn modCol = nodeTable.getColumn("modularity_class");
+        if (modCol == null) {
+            modCol = nodeTable.addColumn("modularity_class", "Modularity Class", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
+        }
 
         double res = 0;
         double[] internal = new double[pDegrees.length];

@@ -185,8 +185,11 @@ public class PageRank implements Statistics, LongTask {
 
         }
 
-        AttributeTable nodeClass = attributeModel.getNodeTable();
-        AttributeColumn pangeRanksCol = nodeClass.addColumn("pageranks", "Page Ranks", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        AttributeTable nodeTable = attributeModel.getNodeTable();
+        AttributeColumn pangeRanksCol = nodeTable.getColumn("pageranks");
+        if (pangeRanksCol == null) {
+            pangeRanksCol = nodeTable.addColumn("pageranks", "Page Ranks", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        }
 
         for (Node s : graph.getNodes()) {
             int s_index = indicies.get(s);
