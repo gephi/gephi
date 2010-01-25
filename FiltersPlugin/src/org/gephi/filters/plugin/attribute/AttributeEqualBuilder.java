@@ -281,7 +281,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
             }
             Object[] valuesArray = vals.toArray();
             min = AttributeUtils.getDefault().getMin(column, valuesArray);
-            max = AttributeUtils.getDefault().getMin(column, valuesArray);
+            max = AttributeUtils.getDefault().getMax(column, valuesArray);
         }
 
         public String getName() {
