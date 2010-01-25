@@ -259,6 +259,10 @@ public class TreeStructure {
         return 0;
     }
 
+    public int getLevelSize(int level) {
+        return tree.levelsSize[level];
+    }
+
     public DurableTreeList getTree() {
         return tree;
     }

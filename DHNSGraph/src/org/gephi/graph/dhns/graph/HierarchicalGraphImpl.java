@@ -142,14 +142,14 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
         level += 1;     //Because we ignore the virtual root
         int height = structure.getTreeHeight();
         if (level > height) {
-            readUnlock();
             throw new IllegalArgumentException("Level must be between 0 and the height of the tree, currently height=" + (height - 1));
         }
-        int res = 0;
+        int res = structure.getLevelSize(level);
+        /*int res = 0;
         for (LevelIterator itr = new LevelIterator(structure, level, Tautology.instance); itr.hasNext();) {
             itr.next();
             res++;
-        }
+        }*/
         return res;
     }
 
