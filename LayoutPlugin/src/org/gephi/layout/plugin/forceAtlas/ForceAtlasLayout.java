@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 
@@ -77,19 +76,15 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
         setCooling(1d);
     }
 
-    @Override
-    public void setGraphController(GraphController graphController) {
-        super.setGraphController(graphController);
-        this.graph = graphController.getModel().getGraphVisible();
-    }
-
     public void initAlgo() {
+        this.graph = graphModel.getGraphVisible();
         for (Node n : graph.getNodes()) {
             n.getNodeData().setLayoutData(new ForceVectorNodeLayoutData());
         }
     }
 
     public void goAlgo() {
+        this.graph = graphModel.getGraphVisible();
         for (Node n : graph.getNodes()) {
             ForceVectorNodeLayoutData layoutData = n.getNodeData().getLayoutData();
             layoutData.old_dx = layoutData.dx;

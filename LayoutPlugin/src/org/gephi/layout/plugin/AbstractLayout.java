@@ -3,7 +3,7 @@
  */
 package org.gephi.layout.plugin;
 
-import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 
@@ -14,7 +14,7 @@ import org.gephi.layout.spi.LayoutBuilder;
 public abstract class AbstractLayout implements Layout {
 
     private LayoutBuilder layoutBuilder;
-    protected GraphController graphController;
+    protected GraphModel graphModel;
     private boolean converged;
 
     public AbstractLayout(LayoutBuilder layoutBuilder) {
@@ -25,12 +25,12 @@ public abstract class AbstractLayout implements Layout {
         return layoutBuilder;
     }
 
-    public void setGraphController(GraphController graphController) {
-        this.graphController = graphController;
+    public void setGraphModel(GraphModel graphModel) {
+        this.graphModel = graphModel;
     }
 
     public boolean canAlgo() {
-        return !isConverged() && graphController != null;
+        return !isConverged() && graphModel != null;
     }
 
     public void setConverged(boolean converged) {

@@ -48,16 +48,12 @@ public class LabelAdjust extends AbstractLayout implements Layout {
     }
 
     public void initAlgo() {
-    }
-
-    @Override
-    public void setGraphController(GraphController graphController) {
-        super.setGraphController(graphController);
-        this.graph = graphController.getModel().getGraphVisible();
+        this.graph = graphModel.getGraphVisible();
     }
 
     public void goAlgo() {
         boolean somethingMoved = false;
+        this.graph = graphModel.getGraphVisible();
 
         Node[] nodes = graph.getNodes().toArray();
         for (Node n : nodes) {

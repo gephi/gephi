@@ -30,7 +30,6 @@ import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
 
-
 /**
  * Sample layout that scales the graph.
  * @author Helder Suzuki <heldersuzuki@gephi.org>
@@ -45,17 +44,13 @@ public class ScaleLayout extends AbstractLayout implements Layout {
         this.scale = scale;
     }
 
-    @Override
-    public void setGraphController(GraphController graphController) {
-        super.setGraphController(graphController);
-        graph = graphController.getModel().getGraphVisible();
-    }
-
     public void initAlgo() {
+        graph = graphModel.getGraphVisible();
         setConverged(false);
     }
 
     public void goAlgo() {
+        graph = graphModel.getGraphVisible();
         double xMean = 0, yMean = 0;
         for (Node n : graph.getNodes()) {
             xMean += n.getNodeData().x();

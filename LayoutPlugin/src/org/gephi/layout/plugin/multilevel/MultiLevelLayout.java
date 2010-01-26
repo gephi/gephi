@@ -22,7 +22,6 @@ package org.gephi.layout.plugin.multilevel;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.Layout;
@@ -51,20 +50,15 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
     private float barnesHutTheta;
 
     public MultiLevelLayout(LayoutBuilder layoutBuilder,
-                            CoarseningStrategy coarseningStrategy) {
+            CoarseningStrategy coarseningStrategy) {
         super(layoutBuilder);
         this.coarseningStrategy = coarseningStrategy;
         //     this.yifanHu = new YifanHu();
         this.yifanHu = new YifanHuProportional();
     }
 
-    @Override
-    public void setGraphController(GraphController graphController) {
-        super.setGraphController(graphController);
-        graph = graphController.getModel().getHierarchicalGraphVisible();
-    }
-
     public void initAlgo() {
+        graph = graphModel.getHierarchicalGraphVisible();
         setConverged(false);
         level = 0;
 
@@ -79,7 +73,7 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
         }
 
         Layout random = new RandomLayout(null, 1000);
-        random.setGraphController(graphController);
+        random.setGraphModel(graphModel);
         random.initAlgo();
         random.goAlgo();
 
@@ -88,7 +82,7 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
 
     void initYifanHu() {
         layout = yifanHu.buildLayout();
-        layout.setGraphController(graphController);
+        layout.setGraphModel(graphModel);
         layout.resetPropertiesValues();
         layout.setAdaptiveCooling(false);
         layout.setStepRatio(stepRatio);
@@ -99,6 +93,7 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
     }
 
     public void goAlgo() {
+        this.graph = graphModel.getHierarchicalGraphVisible();
         if (layout.canAlgo()) {
             layout.goAlgo();
         } else {
@@ -139,31 +134,31 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
 
         try {
             properties.add(LayoutProperty.createProperty(
-                this, Integer.class, "Minimum level size", MULTILEVEL_CATEGORY,
-                "The minimum amount of nodes every level must have (bigger values mean less levels)",
-                "getMinSize", "setMinSize"));
+                    this, Integer.class, "Minimum level size", MULTILEVEL_CATEGORY,
+                    "The minimum amount of nodes every level must have (bigger values mean less levels)",
+                    "getMinSize", "setMinSize"));
             properties.add(LayoutProperty.createProperty(
-                this, Double.class, "Minimum coarsening rate", MULTILEVEL_CATEGORY,
-                "The minimum relative size between two levels (smaller values mean less levels)",
-                "getMinCoarseningRate", "setMinCoarseningRate"));
+                    this, Double.class, "Minimum coarsening rate", MULTILEVEL_CATEGORY,
+                    "The minimum relative size between two levels (smaller values mean less levels)",
+                    "getMinCoarseningRate", "setMinCoarseningRate"));
 
             properties.add(LayoutProperty.createProperty(
-                this, Float.class, "Step ratio", YIFANHU_CATEGORY,
-                "The ratio used to update the step size across iterations.",
-                "getStepRatio", "setStepRatio"));
+                    this, Float.class, "Step ratio", YIFANHU_CATEGORY,
+                    "The ratio used to update the step size across iterations.",
+                    "getStepRatio", "setStepRatio"));
             properties.add(LayoutProperty.createProperty(
-                this, Float.class, "Optimal Distance", YIFANHU_CATEGORY,
-                "The natural length of the springs. Bigger values mean nodes will be farther apart.",
-                "getOptimalDistance", "setOptimalDistance"));
+                    this, Float.class, "Optimal Distance", YIFANHU_CATEGORY,
+                    "The natural length of the springs. Bigger values mean nodes will be farther apart.",
+                    "getOptimalDistance", "setOptimalDistance"));
 
             properties.add(LayoutProperty.createProperty(
-                this, Integer.class, "Quadtree Max Level", BARNESHUT_CATEGORY,
-                "The maximun level to be used in the quadtree representation. Greater values mean more accuracy.",
-                "getQuadTreeMaxLevel", "setQuadTreeMaxLevel"));
+                    this, Integer.class, "Quadtree Max Level", BARNESHUT_CATEGORY,
+                    "The maximun level to be used in the quadtree representation. Greater values mean more accuracy.",
+                    "getQuadTreeMaxLevel", "setQuadTreeMaxLevel"));
             properties.add(LayoutProperty.createProperty(
-                this, Float.class, "Theta", BARNESHUT_CATEGORY,
-                "The theta parameter for Barnes-Hut opening criteria. Smaller values mean more accuracy.",
-                "getBarnesHutTheta", "setBarnesHutTheta"));
+                    this, Float.class, "Theta", BARNESHUT_CATEGORY,
+                    "The theta parameter for Barnes-Hut opening criteria. Smaller values mean more accuracy.",
+                    "getBarnesHutTheta", "setBarnesHutTheta"));
         } catch (Exception e) {
             e.printStackTrace();
         }

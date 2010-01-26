@@ -167,10 +167,10 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     }
 
     public void initAlgo() {
-        if (graphController == null) {
+        if (graphModel == null) {
             return;
         }
-        graph = graphController.getModel().getHierarchicalGraphVisible();
+        graph = graphModel.getHierarchicalGraphVisible();
         energy = Float.POSITIVE_INFINITY;
         for (Node n : graph.getTopNodes()) {
             NodeData data = n.getNodeData();

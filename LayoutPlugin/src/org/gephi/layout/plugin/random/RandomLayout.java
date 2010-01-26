@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.Layout;
@@ -48,17 +47,13 @@ public class RandomLayout extends AbstractLayout implements Layout {
         random = new Random();
     }
 
-    @Override
-    public void setGraphController(GraphController graphController) {
-        super.setGraphController(graphController);
-        graph = graphController.getModel().getGraphVisible();
-    }
-
     public void initAlgo() {
         converged = false;
+        graph = graphModel.getGraphVisible();
     }
 
     public void goAlgo() {
+        graph = graphModel.getGraphVisible();
         for (Node n : graph.getNodes()) {
             n.getNodeData().setX((float) (-size / 2 + size * random.nextDouble()));
             n.getNodeData().setY((float) (-size / 2 + size * random.nextDouble()));

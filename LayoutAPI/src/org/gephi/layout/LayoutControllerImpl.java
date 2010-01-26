@@ -101,7 +101,7 @@ public class LayoutControllerImpl implements LayoutController {
     public void injectGraph() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         if (model.getSelectedLayout() != null && graphController.getModel() != null) {
-            model.getSelectedLayout().setGraphController(graphController);
+            model.getSelectedLayout().setGraphModel(graphController.getModel());
         }
     }
 

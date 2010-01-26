@@ -8,7 +8,6 @@ import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.Layout;
@@ -46,14 +45,9 @@ public class Test implements LayoutBuilder {
             super(layoutBuilder);
         }
 
-        @Override
-        public void setGraphController(GraphController graphController) {
-            super.setGraphController(graphController);
-            graph = (HierarchicalGraph) graphController.getModel().getGraphVisible();
-        }
-
         public void initAlgo() {
             converged = false;
+            graph = graphModel.getHierarchicalGraphVisible();
         }
 
 //        public void print(HierarchicalDirectedGraph graph) {
@@ -64,6 +58,7 @@ public class Test implements LayoutBuilder {
 //            System.out.println("Topnodes: " + graph.getTopNodes().toArray().length);
 //        }
         public void goAlgo() {
+            graph = graphModel.getHierarchicalGraphVisible();
             if (refine) {
                 System.out.println("------------REFINE-----------");
                 x.refine(graph);

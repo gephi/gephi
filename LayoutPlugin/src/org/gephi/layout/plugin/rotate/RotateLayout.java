@@ -23,7 +23,6 @@ package org.gephi.layout.plugin.rotate;
 import java.util.ArrayList;
 import java.util.List;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.Layout;
@@ -45,16 +44,12 @@ public class RotateLayout extends AbstractLayout implements Layout {
     }
 
     public void initAlgo() {
+        graph = graphModel.getGraphVisible();
         setConverged(false);
     }
 
-    @Override
-    public void setGraphController(GraphController graphController) {
-        super.setGraphController(graphController);
-        graph = graphController.getModel().getGraphVisible();
-    }
-
     public void goAlgo() {
+        graph = graphModel.getGraphVisible();
         double sin = Math.sin(getAngle() * Math.PI / 180);
         double cos = Math.cos(getAngle() * Math.PI / 180);
         double px = 0f;
@@ -80,8 +75,8 @@ public class RotateLayout extends AbstractLayout implements Layout {
         List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
         try {
             properties.add(LayoutProperty.createProperty(
-            this, Double.class, "Angle", null,
-            "Clockwise rotation angle in degrees", "getAngle", "setAngle"));
+                    this, Double.class, "Angle", null,
+                    "Clockwise rotation angle in degrees", "getAngle", "setAngle"));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.spi;
 
-import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 
 /**
  * A Layout algorithm should implement the Layout interface to allow the
@@ -30,7 +30,7 @@ import org.gephi.graph.api.GraphController;
  * should be instanciated. See the LayoutBuilder interface for a more detailed
  * description.
  *
- * @author Mathieu Bastian
+ * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
 public interface Layout {
 
@@ -40,10 +40,10 @@ public interface Layout {
     public void initAlgo();
 
     /**
-     * Injects the graphController for the graph this Layout should operate on.
-     * @param graphController
+     * Injects the graph model for the graph this Layout should operate on.
+     * @param graphModel
      */
-    public void setGraphController(GraphController graphController);
+    public void setGraphModel(GraphModel graphModel);
 
     /**
      * Run a step in the algorithm, should be called only if canAlgo() returns
