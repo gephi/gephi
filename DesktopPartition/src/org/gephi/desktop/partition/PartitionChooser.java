@@ -371,6 +371,7 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
             protected Object[] loadItems() {
                 PartitionController pc = Lookup.getDefault().lookup(PartitionController.class);
                 pc.refreshPartitions();
+                
                 if (model.getSelectedPartitioning() == PartitionModel.NODE_PARTITIONING) {
                     return model.getNodePartitions();
                 } else if (model.getSelectedPartitioning() == PartitionModel.EDGE_PARTITIONING) {
