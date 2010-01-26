@@ -35,6 +35,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
     private int progress100 = 0;
     private int progressTotal;
     private int currentUnit = 0;
+    private boolean started = false;
 
     public ProgressTicketImpl(String displayName, Cancellable cancellable) {
         //TODO lookup if UI or not
@@ -45,7 +46,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
      * Finish the task.
      */
     public void finish() {
-        if (handle != null) {
+        if (handle != null && started) {
             try {
                 handle.finish();
             } catch (Exception e) {
@@ -117,6 +118,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
      */
     public void start() {
         if (handle != null) {
+            started = true;
             handle.start();
         }
     }
@@ -127,6 +129,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
      */
     public void start(int workunits) {
         if (handle != null) {
+            started = true;
             this.progressTotal = workunits;
             handle.start(100);
         }
