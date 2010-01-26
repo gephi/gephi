@@ -156,7 +156,10 @@ public class PartitionBuilder implements CategoryBuilder {
             if (value != null) {
                 int size = parts.size();
                 for (int i = 0; i < size; i++) {
-                    if (parts.get(i).getValue().equals(value)) {
+                    Object obj = parts.get(i).getValue();
+                    if (obj == null && value == null) {
+                        return true;
+                    } else if (obj != null && obj.equals(value)) {
                         return true;
                     }
                 }
@@ -169,7 +172,10 @@ public class PartitionBuilder implements CategoryBuilder {
             if (value != null) {
                 int size = parts.size();
                 for (int i = 0; i < size; i++) {
-                    if (parts.get(i).getValue().equals(value)) {
+                    Object obj = parts.get(i).getValue();
+                    if (obj == null && value == null) {
+                        return true;
+                    } else if (obj != null && obj.equals(value)) {
                         return true;
                     }
                 }

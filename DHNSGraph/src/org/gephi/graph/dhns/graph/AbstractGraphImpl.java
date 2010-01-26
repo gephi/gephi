@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
+import javax.swing.SwingUtilities;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
@@ -58,6 +59,9 @@ public abstract class AbstractGraphImpl {
 
     public void readLock() {
         //System.out.println(Thread.currentThread()+ "read lock");
+        if (SwingUtilities.isEventDispatchThread()) {
+            System.err.println("WARNING: readLock() on the EDT");
+        }
         dhns.getReadLock().lock();
     }
 
@@ -67,6 +71,9 @@ public abstract class AbstractGraphImpl {
     }
 
     public void writeLock() {
+        if (SwingUtilities.isEventDispatchThread()) {
+            System.err.println("WARNING: writeLock() on the EDT");
+        }
         //System.out.println(Thread.currentThread()+ "write lock");
         dhns.getWriteLock().lock();
     }

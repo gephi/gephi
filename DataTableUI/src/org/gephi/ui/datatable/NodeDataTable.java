@@ -75,7 +75,11 @@ public class NodeDataTable {
                     return false;
                 }
                 if (value instanceof ImmutableTreeNode) {
-                    return pattern.matcher(((ImmutableTreeNode) value).getNode().getNodeData().getLabel()).find();
+                    String label = ((ImmutableTreeNode) value).getNode().getNodeData().getLabel();
+                    if (label != null) {
+                        return pattern.matcher(label).find();
+                    }
+                    return false;
                 }
                 return pattern.matcher(value.toString()).find();
             }

@@ -28,6 +28,7 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.PartitionController;
 import org.gephi.partition.api.PartitionModel;
@@ -288,11 +289,17 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
             if (model.isPie()) {
                 pieLink.setText(HIDE_PIE);
                 partitionPie = new PartitionPie();
-                partitionPie.setup(model.getSelectedPartition());
-                remove(centerScrollPane);
-                add(partitionPie, BorderLayout.CENTER);
-                revalidate();
-                repaint();
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    public void run() {
+                        partitionPie.setup(model.getSelectedPartition());
+                        remove(centerScrollPane);
+                        add(partitionPie, BorderLayout.CENTER);
+                        revalidate();
+                        repaint();
+                    }
+                });
+
                 return;
             } else {
                 pieLink.setText(SHOW_PIE);
@@ -371,7 +378,7 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
             protected Object[] loadItems() {
                 PartitionController pc = Lookup.getDefault().lookup(PartitionController.class);
                 pc.refreshPartitions();
-                
+
                 if (model.getSelectedPartitioning() == PartitionModel.NODE_PARTITIONING) {
                     return model.getNodePartitions();
                 } else if (model.getSelectedPartitioning() == PartitionModel.EDGE_PARTITIONING) {
