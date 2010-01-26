@@ -35,7 +35,7 @@ public class GephiDataLoader extends UniFileLoader {
     public static final String REQUIRED_MIME = "application/gephi";
 
     public GephiDataLoader() {
-        super("org.gephi.io.project.GephiDataObject");
+        super("org.gephi.project.io.GephiDataObject");
     }
 
     @Override
