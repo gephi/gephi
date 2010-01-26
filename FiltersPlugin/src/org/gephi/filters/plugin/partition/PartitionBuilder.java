@@ -71,13 +71,9 @@ public class PartitionBuilder implements CategoryBuilder {
         List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
         PartitionController pc = Lookup.getDefault().lookup(PartitionController.class);
         if (pc.getModel() != null) {
+            pc.refreshPartitions();
             NodePartition[] nodePartitions = pc.getModel().getNodePartitions();
             EdgePartition[] edgePartitions = pc.getModel().getEdgePartitions();
-            if (nodePartitions == null || nodePartitions.length == 0) {
-                pc.refreshPartitions();
-                nodePartitions = pc.getModel().getNodePartitions();
-                edgePartitions = pc.getModel().getEdgePartitions();
-            }
             for (NodePartition np : nodePartitions) {
                 PartitionFilterBuilder builder = new PartitionFilterBuilder(np.getColumn(), np);
                 builders.add(builder);
