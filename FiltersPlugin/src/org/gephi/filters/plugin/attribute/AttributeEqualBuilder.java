@@ -289,6 +289,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         public boolean init(Graph graph) {
+            values = new ArrayList<Object>();
             return true;
         }
 
