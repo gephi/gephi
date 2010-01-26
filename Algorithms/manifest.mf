@@ -3,4 +3,4 @@ AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.gephi.algorithms
 OpenIDE-Module-Layer: org/gephi/algorithms/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/algorithms/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Specification-Version: 0.7
