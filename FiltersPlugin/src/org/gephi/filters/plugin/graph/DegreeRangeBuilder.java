@@ -120,7 +120,6 @@ public class DegreeRangeBuilder implements FilterBuilder {
         }
 
         public Object[] getValues() {
-            System.out.println("getValues " + (values == null ? "null" : values.size()));
             if (values == null) {
                 GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
                 Graph graph = gm.getGraph();

@@ -107,6 +107,7 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
     private void initLevelsLinks(HierarchicalGraph graph) {
         int height = graph.getHeight();
         levelViewPanel.setLayout(new GridLayout(height + 2, 1));
+        levelViewPanel.removeAll();
         String levelStr = NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.linkLevel");
         String nodesStr = NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.linkLevel.nodes");
         String leavesStr = NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.linkLevel.leaves");

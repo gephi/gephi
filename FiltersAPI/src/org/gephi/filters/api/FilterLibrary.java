@@ -36,16 +36,20 @@ public interface FilterLibrary extends Lookup.Provider {
 
     public final static Category TOPOLOGY = new Category(
             NbBundle.getMessage(FilterLibrary.class, "FiltersLibrary.Category.Topology"),
-            ImageUtilities.loadImageIcon("filtersui/api/resources/folder.png", false),
+            null,
             null);
     public final static Category ATTRIBUTES = new Category(
             NbBundle.getMessage(FilterLibrary.class, "FiltersLibrary.Category.Attributes"),
-            ImageUtilities.loadImageIcon("filtersui/api/resources/folder.png", false),
+            null,
             null);
     public final static Category HIERARCHY = new Category(
             NbBundle.getMessage(FilterLibrary.class, "FiltersLibrary.Category.Hierarchy"),
-            ImageUtilities.loadImageIcon("filtersui/api/resources/folder.png", false),
+            null,
             TOPOLOGY);
+    public final static Category EDGE = new Category(
+            NbBundle.getMessage(FilterLibrary.class, "FiltersLibrary.Category.Edge"),
+            null,
+            null);
 
     public void addBuilder(FilterBuilder instance);
 
