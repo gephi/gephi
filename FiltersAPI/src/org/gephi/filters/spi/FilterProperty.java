@@ -37,7 +37,7 @@ import org.openide.util.Lookup;
  */
 public final class FilterProperty {
 
-    protected Property property;
+    protected PropertySupport.Reflection property;
     protected Filter filter;
     protected PropertyExecutor propertyExecutor;
 
@@ -84,6 +84,10 @@ public final class FilterProperty {
         return property.getPropertyEditor();
     }
 
+    public void setPropertyEditorClass(Class clazz) {
+        property.setPropertyEditorClass(clazz);
+    }
+
     public Class getValueType() {
         return property.getValueType();
     }
@@ -106,7 +110,7 @@ public final class FilterProperty {
      */
     public static FilterProperty createProperty(Filter filter, Class valueType, String propertyName, String getMethod, String setMethod) throws NoSuchMethodException {
         final FilterProperty filterProperty = new FilterProperty(filter);
-        Property property = new PropertySupport.Reflection(filter, valueType, getMethod, setMethod);
+        PropertySupport.Reflection property = new PropertySupport.Reflection(filter, valueType, getMethod, setMethod);
         property.setName(propertyName);
         filterProperty.property = property;
 
@@ -125,7 +129,7 @@ public final class FilterProperty {
             valueType = boolean.class;
         }
         final FilterProperty filterProperty = new FilterProperty(filter);
-        Property property = new PropertySupport.Reflection(filter, valueType, fieldName);
+        PropertySupport.Reflection property = new PropertySupport.Reflection(filter, valueType, fieldName);
         property.setName(fieldName);
         filterProperty.property = property;
 

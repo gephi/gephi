@@ -20,8 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.filters.plugin.partition;
 
+import java.beans.PropertyEditorSupport;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.StringTokenizer;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -197,12 +200,20 @@ public class PartitionBuilder implements CategoryBuilder {
             }
         }
 
+        public void unselectAll() {
+            filterProperties[1].setValue(new ArrayList<Part>());
+        }
+
+        public void selectAll() {
+            filterProperties[1].setValue(Arrays.asList(partition.getParts()));
+        }
+
         public FilterProperty[] getProperties() {
             if (filterProperties == null) {
                 filterProperties = new FilterProperty[0];
                 try {
                     filterProperties = new FilterProperty[]{
-                                FilterProperty.createProperty(this, Partition.class, "partition"),
+                                FilterProperty.createProperty(this, AttributeColumn.class, "column"),
                                 FilterProperty.createProperty(this, List.class, "parts")};
                 } catch (Exception ex) {
                     Exceptions.printStackTrace(ex);
@@ -226,6 +237,13 @@ public class PartitionBuilder implements CategoryBuilder {
 
         public List<Part> getParts() {
             return parts;
+        }
+
+        public AttributeColumn getColumn() {
+            return partition.getColumn();
+        }
+
+        public void setColumn(AttributeColumn column) {
         }
 
         public void setParts(List<Part> parts) {

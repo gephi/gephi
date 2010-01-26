@@ -157,7 +157,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
             if (val != null && useRegex) {
                 return regex.matcher((String) val).matches();
             } else if (val != null) {
-                return pattern.equals((String) val);
+                return pattern.contains((String) val);
             }
             return false;
         }

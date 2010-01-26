@@ -279,7 +279,16 @@ public class PartitionFactory {
         }
 
         public float getPercentage() {
-            return objects.length / (float) partition.getMap().size() * 100;
+            return objects.length / (float) partition.getMap().size();
+        }
+
+        public Partition getPartition() {
+            return partition;
+        }
+
+        @Override
+        public String toString() {
+            return getDisplayName();
         }
     }
 }

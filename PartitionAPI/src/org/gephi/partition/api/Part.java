@@ -41,4 +41,6 @@ public interface Part<Element> {
     public Color getColor();
 
     public float getPercentage();
+
+    public Partition getPartition();
 }

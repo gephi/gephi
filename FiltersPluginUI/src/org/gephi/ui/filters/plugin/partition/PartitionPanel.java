@@ -31,17 +31,27 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicListUI;
 import org.gephi.filters.plugin.partition.PartitionBuilder.PartitionFilter;
 import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -50,10 +60,13 @@ import org.gephi.partition.api.Partition;
 public class PartitionPanel extends javax.swing.JPanel {
 
     private PartitionFilter filter;
+    private JPopupMenu popupMenu;
 
     public PartitionPanel() {
         initComponents();
         setMinimumSize(new Dimension(50, 90));
+
+        //List renderer
         final ListCellRenderer renderer = new DefaultListCellRenderer() {
 
             @Override
@@ -77,29 +90,65 @@ public class PartitionPanel extends javax.swing.JPanel {
             }
         };
         list.setCellRenderer(renderer);
+
+        //List click
         MouseListener mouseListener = new MouseAdapter() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                int index = list.locationToIndex(e.getPoint());
-                PartWrapper pw = (PartWrapper) list.getModel().getElementAt(index);
-                pw.setEnabled(!pw.isEnabled());
-                list.repaint();
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    int index = list.locationToIndex(e.getPoint());
+                    PartWrapper pw = (PartWrapper) list.getModel().getElementAt(index);
+                    boolean set = !pw.isEnabled();
+                    pw.setEnabled(set);
+                    if (set) {
+                        filter.addPart(pw.getPart());
+                    } else {
+                        filter.removePart(pw.getPart());
+                    }
+                    list.repaint();
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (filter != null) {
+                    if (e.isPopupTrigger()) {
+                        popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                    }
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
             }
         };
         list.addMouseListener(mouseListener);
+
+        //Popup
+        createPopup();
     }
 
     public void setup(final PartitionFilter filter) {
         this.filter = filter;
         final Partition partition = filter.getCurrentPartition();
-        final DefaultListModel model = new DefaultListModel();
         if (partition != null) {
-            Part[] parts = partition.getParts();
-            for (int i = 0; i < parts.length; i++) {
-                PartWrapper pw = new PartWrapper(parts[i], parts[i].getColor());
-                model.add(i, pw);
-            }
+            refresh(partition, filter.getParts());
+        }
+    }
+
+    private void refresh(Partition partition, List<Part> currentParts) {
+        final DefaultListModel model = new DefaultListModel();
+
+        Set<Part> filterParts = new HashSet<Part>(currentParts);
+        Part[] parts = partition.getParts();
+        for (int i = 0; i < parts.length; i++) {
+            PartWrapper pw = new PartWrapper(parts[i], parts[i].getColor());
+            pw.setEnabled(filterParts.contains(parts[i]));
+            model.add(i, pw);
         }
         list.setModel(model);
     }
@@ -109,12 +158,14 @@ public class PartitionPanel extends javax.swing.JPanel {
         private final Part part;
         private final PaletteIcon icon;
         private final PaletteIcon disabledIcon;
-        private boolean enabled;
+        private boolean enabled = false;
+        private static final NumberFormat formatter = NumberFormat.getPercentInstance();
 
         public PartWrapper(Part part, Color color) {
             this.part = part;
             this.icon = new PaletteIcon(color);
             this.disabledIcon = new PaletteIcon();
+            formatter.setMaximumFractionDigits(2);
         }
 
         public PaletteIcon getIcon() {
@@ -127,7 +178,8 @@ public class PartitionPanel extends javax.swing.JPanel {
 
         @Override
         public String toString() {
-            return part.getDisplayName();
+            String percentage = formatter.format(part.getPercentage());
+            return part.getDisplayName() + " (" + percentage + ")";
         }
 
         public boolean isEnabled() {
@@ -137,6 +189,36 @@ public class PartitionPanel extends javax.swing.JPanel {
         public void setEnabled(boolean enabled) {
             this.enabled = enabled;
         }
+    }
+
+    private void createPopup() {
+        popupMenu = new JPopupMenu();
+        JMenuItem refreshItem = new JMenuItem(NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.action.refresh"));
+        refreshItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                setup(filter);
+            }
+        });
+        popupMenu.add(refreshItem);
+        JMenuItem selectItem = new JMenuItem(NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.action.selectall"));
+        selectItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                filter.selectAll();
+                refresh(filter.getCurrentPartition(), Arrays.asList(filter.getCurrentPartition().getParts()));
+            }
+        });
+        popupMenu.add(selectItem);
+        JMenuItem unselectItem = new JMenuItem(NbBundle.getMessage(PartitionPanel.class, "PartitionPanel.action.unselectall"));
+        unselectItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                filter.unselectAll();
+                refresh(filter.getCurrentPartition(), new ArrayList<Part>());
+            }
+        });
+        popupMenu.add(unselectItem);
     }
 
     public static void computeListSize(final JList list) {
@@ -215,6 +297,7 @@ public class PartitionPanel extends javax.swing.JPanel {
         setLayout(new java.awt.BorderLayout());
 
         jScrollPane1.setBorder(null);
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         list.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         list.setOpaque(false);

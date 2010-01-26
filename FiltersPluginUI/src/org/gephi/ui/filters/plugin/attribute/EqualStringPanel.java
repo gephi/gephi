@@ -31,7 +31,6 @@ import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
-import org.openide.nodes.Node.Property;
 
 /**
  *
