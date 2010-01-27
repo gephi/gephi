@@ -56,7 +56,7 @@ public class ClustersNode extends AbstractNode {
 
     @Override
     public Image getIcon(int type) {
-        return new ImageIcon(getClass().getResource("/org/gephi/desktop/algorithms/cluster/cluster.png")).getImage();
+        return new ImageIcon(getClass().getResource("/org/gephi/desktop/cluster/resources>cluster.png")).getImage();
     }
 
     @Override
