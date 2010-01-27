@@ -43,6 +43,7 @@ import org.gephi.utils.longtask.LongTaskErrorHandler;
 import org.gephi.utils.longtask.LongTaskExecutor;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.selection.SelectionManager;
+import org.openide.awt.StatusDisplayer;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -101,6 +102,7 @@ public class ClusteringControllerImpl implements ClusteringController {
             AttributeColumn col = am.getNodeTable().getColumn(id);
             if (col == null) {
                 col = am.getNodeTable().addColumn(id, title, AttributeType.INT, AttributeOrigin.COMPUTED, null);
+                StatusDisplayer.getDefault().setStatusText("A new column \""+title+"\" has been created");
             }
             for (int i = 0; i < clusters.length; i++) {
                 Integer clusterId = new Integer(i);

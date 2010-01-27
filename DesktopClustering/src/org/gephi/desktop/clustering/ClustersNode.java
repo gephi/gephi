@@ -24,11 +24,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.clustering;
 
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.ImageIcon;
 import org.gephi.clustering.api.Cluster;
 import org.gephi.clustering.api.ClusteringController;
 import org.openide.nodes.AbstractNode;
@@ -46,17 +44,13 @@ public class ClustersNode extends AbstractNode {
     public ClustersNode(Cluster[] clusters) {
         super(new ClustersChildren(clusters));
         this.clusters = clusters;
+        setIconBaseWithExtension("org/gephi/desktop/clustering/resources/cluster.png");
     }
 
     @Override
     public String getHtmlDisplayName() {
         String msg = "<html>" + NbBundle.getMessage(ClusterNode.class, "ClustersNode.displayName") + " - <font color='AAAAAA'><i> " + clusters.length + "</i></font></html>";
         return msg;
-    }
-
-    @Override
-    public Image getIcon(int type) {
-        return new ImageIcon(getClass().getResource("/org/gephi/desktop/cluster/resources>cluster.png")).getImage();
     }
 
     @Override

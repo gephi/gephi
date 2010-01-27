@@ -30,6 +30,7 @@ import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.clustering//Clustering//EN",
@@ -38,7 +39,7 @@ public final class ClusteringTopComponent extends TopComponent implements Change
 
     private static ClusteringTopComponent instance;
     /** path to the icon used by the component and its open action */
-//    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
+    static final String ICON_PATH = "org/gephi/desktop/clustering/resources/small.png";
     private static final String PREFERRED_ID = "ClusteringTopComponent";
     //Const
     private final String NO_SELECTION;
@@ -51,7 +52,7 @@ public final class ClusteringTopComponent extends TopComponent implements Change
         initComponents();
         setName(NbBundle.getMessage(ClusteringTopComponent.class, "CTL_ClusteringTopComponent"));
         setToolTipText(NbBundle.getMessage(ClusteringTopComponent.class, "HINT_ClusteringTopComponent"));
-//        setIcon(ImageUtilities.loadImage(ICON_PATH, true));
+        setIcon(ImageUtilities.loadImage(ICON_PATH, false));
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
         ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
