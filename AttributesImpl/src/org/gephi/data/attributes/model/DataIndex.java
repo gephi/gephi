@@ -23,6 +23,7 @@ package org.gephi.data.attributes.model;
 import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
 import org.gephi.data.attributes.type.StringList;
+import org.gephi.data.attributes.type.TimeInterval;
 
 /**
  * The index where values of the current {@link IndexedAttributeManager} are. This index stores the objects
@@ -42,6 +43,7 @@ public class DataIndex {
     private WeakHashMap<StringList, WeakReference<StringList>> stringListMap;
     private WeakHashMap<Long, WeakReference<Long>> longMap;
     private WeakHashMap<Double, WeakReference<Double>> doubleMap;
+    private WeakHashMap<TimeInterval, WeakReference<TimeInterval>> timeIntervalMap;
 
     public DataIndex() {
         floatMap = new WeakHashMap<Float, WeakReference<Float>>();
@@ -51,6 +53,7 @@ public class DataIndex {
         stringListMap = new WeakHashMap<StringList, WeakReference<StringList>>();
         longMap = new WeakHashMap<Long, WeakReference<Long>>();
         doubleMap = new WeakHashMap<Double, WeakReference<Double>>();
+        timeIntervalMap = new WeakHashMap<TimeInterval, WeakReference<TimeInterval>>();
     }
 
     public int countEntries() {
@@ -62,6 +65,7 @@ public class DataIndex {
         entries += stringListMap.size();
         entries += longMap.size();
         entries += doubleMap.size();
+        entries += timeIntervalMap.size();
 
         return entries;
     }
@@ -143,6 +147,17 @@ public class DataIndex {
         return value.get();
     }
 
+    TimeInterval pushData(TimeInterval data) {
+        WeakReference<TimeInterval> value = timeIntervalMap.get(data);
+        if (value == null) {
+            WeakReference<TimeInterval> weakRef = new WeakReference<TimeInterval>(data);
+            timeIntervalMap.put(data, weakRef);
+            return data;
+        }
+
+        return value.get();
+    }
+
     public void clear() {
         stringListMap.clear();
         stringMap.clear();
@@ -151,5 +166,6 @@ public class DataIndex {
         intMap.clear();
         longMap.clear();
         doubleMap.clear();
+        timeIntervalMap.clear();
     }
 }

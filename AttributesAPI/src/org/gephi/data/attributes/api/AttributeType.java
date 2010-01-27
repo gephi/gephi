@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.api;
 
 import org.gephi.data.attributes.type.StringList;
+import org.gephi.data.attributes.type.TimeInterval;
 
 /**
  * The different type an {@link AttributeColumn} can have.
@@ -35,7 +36,8 @@ public enum AttributeType {
     LONG(Long.class),
     BOOLEAN(Boolean.class),
     STRING(String.class),
-    LIST_STRING(StringList.class);
+    LIST_STRING(StringList.class),
+    TIME_INTERVAL(TimeInterval.class);
     private final Class type;
 
     AttributeType(Class type) {
@@ -89,6 +91,8 @@ public enum AttributeType {
                 return new Boolean(str);
             case LIST_STRING:
                 return new StringList(str);
+            case TIME_INTERVAL:
+                return new TimeInterval(str);
         }
         return str;
     }
@@ -122,6 +126,8 @@ public enum AttributeType {
             return AttributeType.BOOLEAN;
         } else if (c.equals(StringList.class)) {
             return AttributeType.LIST_STRING;
+        } else if (c.equals(TimeInterval.class)) {
+            return AttributeType.TIME_INTERVAL;
         }
         return null;
     }
