@@ -228,7 +228,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
     }
 
     private void setSelectedLayout(LayoutBuilder builder) {
-        controller.setLayout(model.getLayout(builder));
+        controller.setLayout(builder != null ? model.getLayout(builder) : null);
     }
 
     private void reset() {
