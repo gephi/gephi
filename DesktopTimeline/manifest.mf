@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.desktop.timeline
+OpenIDE-Module-Layer: org/gephi/desktop/timeline/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/timeline/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

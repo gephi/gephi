@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="Window">
+            <file name="org-gephi-desktop-timeline-TimelineAction.instance">
+                <attr name="component" methodvalue="org.gephi.desktop.timeline.TimelineTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="org.gephi.desktop.timeline.Bundle#CTL_TimelineAction"/>
+                <attr name="iconBase" stringvalue="org/gephi/desktop/timeline/resources/ui-status-bar.png"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="TimelineAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-timeline-TimelineAction.instance"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="TimelineTopComponent.settings" url="TimelineTopComponentSettings.xml"/>
+        </folder>
+        <folder name="Modes">
+            <folder name="output">
+                <file name="TimelineTopComponent.wstcref" url="TimelineTopComponentWstcref.xml"/>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="Window">
+            <file name="org-gephi-ui-timeline-plugin-drawers-minimal-TestMinimalAction.instance">
+                <attr name="component" methodvalue="org.gephi.ui.timeline.plugin.drawers.minimal.TestMinimalTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="org.gephi.ui.timeline.plugin.drawers.minimal.Bundle#CTL_TestMinimalAction"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="TestMinimalAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-ui-timeline-plugin-drawers-minimal-TestMinimalAction.instance"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="TestMinimalTopComponent.settings" url="TestMinimalTopComponentSettings.xml"/>
+        </folder>
+        <folder name="Modes">
+            <folder name="output">
+                <file name="TestMinimalTopComponent.wstcref" url="TestMinimalTopComponentWstcref.xml"/>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>
