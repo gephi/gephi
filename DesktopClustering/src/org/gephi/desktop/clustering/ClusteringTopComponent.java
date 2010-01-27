@@ -14,6 +14,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.gephi.clustering.api.Cluster;
 import org.gephi.clustering.api.ClusteringController;
 import org.gephi.clustering.spi.Clusterer;
 import org.gephi.clustering.spi.ClustererBuilder;
@@ -198,7 +199,8 @@ public final class ClusteringTopComponent extends TopComponent implements Change
             return;
         }
         Clusterer clusterer = model.getSelectedClusterer();
-        clusterExplorer.initExplorer(clusterer.getClusters());
+        Cluster[] clusters = clusterer.getClusters();
+        clusterExplorer.initExplorer(clusters);
     }
 
     public void stateChanged(ChangeEvent e) {

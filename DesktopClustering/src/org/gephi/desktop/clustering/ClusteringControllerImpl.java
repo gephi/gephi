@@ -26,6 +26,12 @@ import org.gephi.clustering.api.Cluster;
 import org.gephi.clustering.api.ClusteringController;
 import org.gephi.clustering.api.ClusteringModel;
 import org.gephi.clustering.spi.Clusterer;
+import org.gephi.clustering.spi.ClustererBuilder;
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -55,7 +61,7 @@ public class ClusteringControllerImpl implements ClusteringController {
         errorHandler = new LongTaskErrorHandler() {
 
             public void fatalError(Throwable t) {
-                Logger.getLogger("").log(Level.SEVERE, "", t.getCause());
+                Logger.getLogger("").log(Level.WARNING, "", t.getCause());
             }
         };
         executor.setDefaultErrorHandler(errorHandler);
@@ -64,7 +70,7 @@ public class ClusteringControllerImpl implements ClusteringController {
     public void clusterize(final Clusterer clusterer) {
         //Get Graph
         GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        final Graph graph = gc.getModel().getGraph();
+        final Graph graph = gc.getModel().getGraphVisible();
 
         //Model
         final ClusteringModel model = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace().getLookup().lookup(ClusteringModel.class);
@@ -79,9 +85,30 @@ public class ClusteringControllerImpl implements ClusteringController {
             public void run() {
                 model.setRunning(true);
                 clusterer.execute(graph);
+                writeColumns(clusterer);
                 model.setRunning(false);
             }
         });
+    }
+
+    private void writeColumns(Clusterer clusterer) {
+        Cluster[] clusters = clusterer.getClusters();
+        if (clusters.length > 0) {
+            ClustererBuilder builder = getBuilder(clusterer);
+            AttributeModel am = Lookup.getDefault().lookup(AttributeController.class).getModel();
+            String id = "clustering_" + builder.getName();
+            String title = "Clustering (" + builder.getName() + ")";
+            AttributeColumn col = am.getNodeTable().getColumn(id);
+            if (col == null) {
+                col = am.getNodeTable().addColumn(id, title, AttributeType.INT, AttributeOrigin.COMPUTED, null);
+            }
+            for (int i = 0; i < clusters.length; i++) {
+                Integer clusterId = new Integer(i);
+                for (Node n : clusters[i].getNodes()) {
+                    n.getNodeData().getAttributes().setValue(col.getIndex(), clusterId);
+                }
+            }
+        }
     }
 
     public void selectCluster(Cluster cluster) {
@@ -130,5 +157,14 @@ public class ClusteringControllerImpl implements ClusteringController {
 
     public boolean canUngroup(Cluster cluster) {
         return cluster.getMetaNode() != null;
+    }
+
+    private ClustererBuilder getBuilder(Clusterer clusterer) {
+        for (ClustererBuilder b : Lookup.getDefault().lookupAll(ClustererBuilder.class)) {
+            if (b.getClustererClass().equals(clusterer.getClass())) {
+                return b;
+            }
+        }
+        return null;
     }
 }
