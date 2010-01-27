@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.swing.SwingUtilities;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
@@ -68,6 +70,14 @@ public abstract class AbstractGraphImpl {
     public void readUnlock() {
         //System.out.println(Thread.currentThread()+ "read unlock");
         dhns.getReadLock().unlock();
+    }
+
+    public void readUnlockAll() {
+        ReentrantReadWriteLock lock = dhns.getReadWriteLock();
+        final int nReadLocks = lock.getReadHoldCount();
+        for (int n = 0; n < nReadLocks; n++) {
+            lock.readLock().unlock();
+        }
     }
 
     public void writeLock() {
