@@ -26,6 +26,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.utils.progress.ProgressTicketProvider;
 import org.openide.util.Cancellable;
@@ -99,7 +101,7 @@ public final class LongTaskExecutor {
         if (executor == null) {
             this.executor = Executors.newSingleThreadExecutor(new NamedThreadFactory());
         }
-        if(errorHandler!=null) {
+        if (errorHandler != null) {
             this.errorHandler = errorHandler;
         }
         runningTask = new RunningLongTask(task, runnable, taskName);
@@ -166,7 +168,7 @@ public final class LongTaskExecutor {
      * @param errorHandler the default error handler
      */
     public void setDefaultErrorHandler(LongTaskErrorHandler errorHandler) {
-        if(errorHandler!=null) {
+        if (errorHandler != null) {
             this.errorHandler = errorHandler;
         }
     }
@@ -223,7 +225,7 @@ public final class LongTaskExecutor {
                 if (err != null) {
                     err.fatalError(e);
                 } else {
-                    throw new RuntimeException(e);
+                    Logger.getLogger("").log(Level.SEVERE, "", e);
                 }
             }
 
@@ -235,9 +237,9 @@ public final class LongTaskExecutor {
 
         public boolean cancel() {
             /*if (inBackground) {
-                if (future != null && future.cancel(false)) {
-                    return true;
-                }
+            if (future != null && future.cancel(false)) {
+            return true;
+            }
             }*/
             if (task != null) {
                 return task.cancel();
