@@ -30,6 +30,8 @@ public interface ClusteringController {
 
     public void clusterize(Clusterer clusterer);
 
+    public void cancelClusterize(Clusterer clusterer);
+
     public void selectCluster(Cluster cluster);
 
     public void groupCluster(Cluster cluster);

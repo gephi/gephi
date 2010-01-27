@@ -62,7 +62,7 @@ public class ClusteringControllerImpl implements ClusteringController {
         errorHandler = new LongTaskErrorHandler() {
 
             public void fatalError(Throwable t) {
-                Logger.getLogger("").log(Level.WARNING, "", t.getCause());
+                Logger.getLogger("").log(Level.SEVERE, "", t.getCause() != null ? t.getCause() : t);
             }
         };
         executor.setDefaultErrorHandler(errorHandler);
@@ -71,7 +71,7 @@ public class ClusteringControllerImpl implements ClusteringController {
     public void clusterize(final Clusterer clusterer) {
         //Get Graph
         GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        final Graph graph = gc.getModel().getGraphVisible();
+        final GraphModel graphModel = gc.getModel();
 
         //Model
         final ClusteringModel model = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace().getLookup().lookup(ClusteringModel.class);
@@ -85,16 +85,20 @@ public class ClusteringControllerImpl implements ClusteringController {
 
             public void run() {
                 model.setRunning(true);
-                clusterer.execute(graph);
+                clusterer.execute(graphModel);
                 writeColumns(clusterer);
                 model.setRunning(false);
             }
         });
     }
 
+    public void cancelClusterize(Clusterer clusterer) {
+        executor.cancel();
+    }
+
     private void writeColumns(Clusterer clusterer) {
         Cluster[] clusters = clusterer.getClusters();
-        if (clusters.length > 0) {
+        if (clusters != null && clusters.length > 0) {
             ClustererBuilder builder = getBuilder(clusterer);
             AttributeModel am = Lookup.getDefault().lookup(AttributeController.class).getModel();
             String id = "clustering_" + builder.getName();
@@ -102,7 +106,7 @@ public class ClusteringControllerImpl implements ClusteringController {
             AttributeColumn col = am.getNodeTable().getColumn(id);
             if (col == null) {
                 col = am.getNodeTable().addColumn(id, title, AttributeType.INT, AttributeOrigin.COMPUTED, null);
-                StatusDisplayer.getDefault().setStatusText("A new column \""+title+"\" has been created");
+                StatusDisplayer.getDefault().setStatusText("A new column \"" + title + "\" has been created");
             }
             for (int i = 0; i < clusters.length; i++) {
                 Integer clusterId = new Integer(i);

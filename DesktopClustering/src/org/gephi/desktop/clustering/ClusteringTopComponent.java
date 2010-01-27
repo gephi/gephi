@@ -135,6 +135,8 @@ public final class ClusteringTopComponent extends TopComponent implements Change
             runButton.setEnabled(false);
             resetLink.setEnabled(false);
             descriptionLabel.setText("");
+            runButton.setText(NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.runButton.text"));
+            runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/clustering/resources/run.gif"))); // NOI18N
             refreshResults();
         } else {
             algorithmComboBox.setEnabled(true);
@@ -144,6 +146,8 @@ public final class ClusteringTopComponent extends TopComponent implements Change
                 resetLink.setEnabled(false);
                 descriptionLabel.setText("");
                 algorithmComboBox.setSelectedItem(NO_SELECTION);
+                runButton.setText(NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.runButton.text"));
+                runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/clustering/resources/run.gif"))); // NOI18N
                 refreshResults();
             } else {
                 ClustererBuilder selectedBuilder = getBuilder(model.getSelectedClusterer());
@@ -156,12 +160,16 @@ public final class ClusteringTopComponent extends TopComponent implements Change
                 if (model.isRunning()) {
                     algorithmComboBox.setEnabled(false);
                     settingsButton.setEnabled(false);
-                    runButton.setEnabled(false);
+                    runButton.setEnabled(true);
                     resetLink.setEnabled(false);
+                    runButton.setText(NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.runButton.stop"));
+                    runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/clustering/resources/stop.png"))); // NOI18N
                 } else {
                     settingsButton.setEnabled(true);
                     runButton.setEnabled(true);
                     resetLink.setEnabled(true);
+                    runButton.setText(NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.runButton.text"));
+                    runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/clustering/resources/run.gif"))); // NOI18N
                     refreshResults();
                 }
             }
@@ -169,9 +177,17 @@ public final class ClusteringTopComponent extends TopComponent implements Change
     }
 
     private void run() {
-        Clusterer clusterer = model.getSelectedClusterer();
-        ClusteringController controller = Lookup.getDefault().lookup(ClusteringController.class);
-        controller.clusterize(clusterer);
+        if (!model.isRunning()) {
+            Clusterer clusterer = model.getSelectedClusterer();
+            ClusteringController controller = Lookup.getDefault().lookup(ClusteringController.class);
+            controller.clusterize(clusterer);
+        } else {
+            //stop
+            Clusterer clusterer = model.getSelectedClusterer();
+            ClusteringController controller = Lookup.getDefault().lookup(ClusteringController.class);
+            controller.cancelClusterize(clusterer);
+        }
+
     }
 
     private void settings() {
@@ -277,7 +293,7 @@ public final class ClusteringTopComponent extends TopComponent implements Change
 
         descriptionLabel.setLineWrap(true);
         org.openide.awt.Mnemonics.setLocalizedText(descriptionLabel, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.descriptionLabel.text")); // NOI18N
-        descriptionLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        descriptionLabel.setFont(new java.awt.Font("Tahoma", 0, 10));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -295,7 +311,7 @@ public final class ClusteringTopComponent extends TopComponent implements Change
         gridBagConstraints.weighty = 1.0;
         add(resultPanel, gridBagConstraints);
 
-        runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/clustering/resources/apply.gif"))); // NOI18N
+        runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/clustering/resources/run.gif"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(runButton, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.runButton.text")); // NOI18N
         runButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
