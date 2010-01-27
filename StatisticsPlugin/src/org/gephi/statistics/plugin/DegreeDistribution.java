@@ -125,10 +125,12 @@ public class DegreeDistribution implements Statistics, LongTask {
         //on the mDirected variable.
         Graph graph;
         if (this.mDirected) {
-            graph = graphModel.getDirectedGraph();
+            graph = graphModel.getDirectedGraphVisible();
         } else {
             graph = graphModel.getUndirectedGraph();
         }
+
+        graph.readLock();
 
         this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
 
@@ -162,9 +164,12 @@ public class DegreeDistribution implements Statistics, LongTask {
             Progress.progress(mProgress, nodeCount);
             nodeCount++;
             if (this.mIsCanceled) {
+                graph.readUnlockAll();
                 return;
             }
         }
+
+        graph.readUnlock();
 
         if (this.mDirected) {
             double[] inFit = new double[2];

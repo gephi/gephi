@@ -95,10 +95,12 @@ public class Hits implements Statistics, LongTask {
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
 
         if (useUndirected) {
-            graph = graphModel.getUndirectedGraph();
+            graph = graphModel.getUndirectedGraphVisible();
         } else {
-            graph = graphModel.getDirectedGraph();
+            graph = graphModel.getDirectedGraphVisible();
         }
+
+        graph.readLock();
 
         //DirectedGraph digraph = graphController.getDirectedGraph();
         int N = graph.getNodeCount();
@@ -234,6 +236,8 @@ public class Hits implements Statistics, LongTask {
             row.setValue(authorityCol, (float) authority[s_index]);
             row.setValue(hubsCol, (float) hubs[s_index]);
         }
+
+        graph.readUnlockAll();
     }
 
     /**

@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.Hashtable;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
@@ -53,7 +52,6 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -101,11 +99,12 @@ public class PageRank implements Statistics, LongTask {
 
         Graph graph;
         if (mDirected) {
-            graph = graphModel.getUndirectedGraph();
+            graph = graphModel.getUndirectedGraphVisible();
         } else {
-            graph = graphModel.getDirectedGraph();
+            graph = graphModel.getDirectedGraphVisible();
         }
 
+        graph.readLock();
 
         this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
         //DirectedGraph digraph = graphController.getDirectedGraph();
@@ -139,6 +138,7 @@ public class PageRank implements Statistics, LongTask {
                     r += (mPageranks[s_index] / N);
                 }
                 if (mIsCanceled) {
+                    graph.readUnlockAll();
                     return;
                 }
             }
@@ -173,6 +173,7 @@ public class PageRank implements Statistics, LongTask {
                 }
 
                 if (mIsCanceled) {
+                    graph.readUnlockAll();
                     return;
                 }
 
@@ -197,7 +198,7 @@ public class PageRank implements Statistics, LongTask {
             row.setValue(pangeRanksCol, mPageranks[s_index]);
         }
 
-
+        graph.readUnlockAll();
     }
 
     /**
