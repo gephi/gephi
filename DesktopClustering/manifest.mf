@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 AutoUpdate-Show-In-Client: false
-OpenIDE-Module: org.gephi.desktop.algorithms.cluster
-OpenIDE-Module-Layer: org/gephi/desktop/algorithms/cluster/layer.xml
-OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/algorithms/cluster/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module: org.gephi.desktop.clustering
+OpenIDE-Module-Layer: org/gephi/desktop/clustering/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/clustering/Bundle.properties
+OpenIDE-Module-Specification-Version: 0.7
 
