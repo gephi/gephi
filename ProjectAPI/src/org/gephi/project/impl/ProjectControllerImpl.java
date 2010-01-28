@@ -469,7 +469,7 @@ public class ProjectControllerImpl implements ProjectController {
             for (WorkspaceDuplicateProvider dp : Lookup.getDefault().lookupAll(WorkspaceDuplicateProvider.class)) {
                 dp.duplicate(workspace, duplicate);
             }
-            openWorkspace(workspace);
+            openWorkspace(duplicate);
             return duplicate;
         }
         return null;

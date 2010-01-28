@@ -13,7 +13,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = WorkspaceDuplicateProvider.class)
+@ServiceProvider(service = WorkspaceDuplicateProvider.class, position = 100)
 public class AttributeModelDuplicateProvider implements WorkspaceDuplicateProvider {
 
     public void duplicate(Workspace source, Workspace destination) {

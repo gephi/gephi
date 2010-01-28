@@ -43,7 +43,7 @@ import org.openide.util.lookup.ServiceProviders;
  */
 @ServiceProviders({
     @ServiceProvider(service = GraphController.class),
-    @ServiceProvider(service = WorkspaceDuplicateProvider.class)})
+    @ServiceProvider(service = WorkspaceDuplicateProvider.class, position = 1000)})
 public class DhnsGraphController implements GraphController, WorkspaceDuplicateProvider {
 
     //Common architecture
