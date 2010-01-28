@@ -70,7 +70,7 @@ public interface ProjectController {
 
     public void cleanWorkspace(Workspace workspace);
 
-    public void duplicateWorkspace(Workspace workspace);
+    public Workspace duplicateWorkspace(Workspace workspace);
 
     public void setSource(Workspace workspace, String source);
 

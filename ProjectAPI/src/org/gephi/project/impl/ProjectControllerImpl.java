@@ -48,6 +48,7 @@ import org.gephi.workspace.api.WorkspaceInformation;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.gephi.workspace.impl.WorkspaceImpl;
 import org.gephi.workspace.impl.WorkspaceInformationImpl;
+import org.gephi.workspace.spi.WorkspaceDuplicateProvider;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
@@ -462,7 +463,16 @@ public class ProjectControllerImpl implements ProjectController {
     public void cleanWorkspace(Workspace workspace) {
     }
 
-    public void duplicateWorkspace(Workspace workspace) {
+    public Workspace duplicateWorkspace(Workspace workspace) {
+        if (projects.hasCurrentProject()) {
+            Workspace duplicate = newWorkspace(projects.getCurrentProject());
+            for (WorkspaceDuplicateProvider dp : Lookup.getDefault().lookupAll(WorkspaceDuplicateProvider.class)) {
+                dp.duplicate(workspace, duplicate);
+            }
+            openWorkspace(workspace);
+            return duplicate;
+        }
+        return null;
     }
 
     public void renameProject(Project project, final String name) {
