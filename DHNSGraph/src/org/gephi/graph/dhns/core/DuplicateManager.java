@@ -58,9 +58,15 @@ public class DuplicateManager {
                     AbstractNode targetCopy = newStructure.getNodeAt(edge.getTarget(view.getViewId()).getPre());
                     if (edge.isMixed()) {
                         edgeCopy = factory.newEdge(sourceCopy, targetCopy, edge.getWeight(), edge.isDirected());
+                        if (edge.isDirected()) {
+                            destination.touchDirected();
+                        } else {
+                            destination.touchUndirected();
+                        }
                     } else {
                         edgeCopy = factory.newEdge(sourceCopy, targetCopy);
                         edgeCopy.setWeight(edge.getWeight());
+                        destination.touchDirected();
                     }
                     duplicateEdgeData(edge.getEdgeData(), edgeCopy.getEdgeData());
                     sourceCopy.getEdgesOutTree().add(edgeCopy);

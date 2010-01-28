@@ -68,7 +68,7 @@ public class GraphFactoryImpl implements GraphFactory {
     }
 
     public TextData newTextData() {
-        if(textDataFactory==null) {
+        if (textDataFactory == null) {
             return null;
         }
         return textDataFactory.newTextData();
@@ -117,24 +117,4 @@ public class GraphFactoryImpl implements GraphFactory {
         edge.getEdgeData().setTextData(newTextData());
         return edge;
     }
-
-    /*public PreNode duplicateNode(PreNode node) {
-    PreNode duplicate = new PreNode(node.getId(), 0, 0, 0, node.parent);
-    duplicate.setVisible(node.isVisible());
-    return duplicate;
-    }
-
-    public AbstractEdge duplicateEdge(AbstractEdge edge, PreNode source, PreNode target) {
-    AbstractEdge duplicate;
-    if (edge.isSelfLoop()) {
-    duplicate = new SelfLoopImpl(edge.getId(), source);
-    } else if (edge.isMixed()) {
-    duplicate = new MixedEdgeImpl(edge.getId(), source, target, edge.isDirected());
-    } else {
-    duplicate = new ProperEdgeImpl(edge.getId(), source, target);
-    }
-    duplicate.setWeight(edge.getWeight());
-    duplicate.setVisible(edge.isVisible());
-    return duplicate;
-    }*/
 }

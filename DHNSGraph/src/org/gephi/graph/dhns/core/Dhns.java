@@ -28,6 +28,7 @@ import org.gephi.graph.api.DecoratorFactory;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphSettings;
@@ -404,6 +405,8 @@ public class Dhns implements GraphModel {
         }
         Dhns source = (Dhns) graphImpl.getGraphModel();
         source.getDuplicateManager().duplicate(this, (GraphViewImpl) graphImpl.getView());
+        graphVersion.incNodeAndEdgeVersion();
+        eventManager.fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
     public void clear() {

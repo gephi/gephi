@@ -33,4 +33,6 @@ public interface DataBridge {
     public boolean requireUpdate();
 
     public void reset();
+
+    public void resetGraph();
 }
