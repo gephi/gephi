@@ -47,5 +47,7 @@ public interface FilterController {
 
     public void exportToColumn(String title, Query query);
 
+    public void exportToNewWorkspace(Query query);
+
     public FilterModel getModel();
 }

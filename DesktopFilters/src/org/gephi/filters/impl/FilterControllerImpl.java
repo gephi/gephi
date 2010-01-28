@@ -198,6 +198,23 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToColumn.status", title));
     }
 
+    public void exportToNewWorkspace(Query query) {
+        Graph result;
+        if (model.getCurrentQuery() == query) {
+            GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+            result = graphModel.getGraph();
+        } else {
+            FilterProcessor processor = new FilterProcessor();
+            GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+            result = processor.process((AbstractQueryImpl) query, graphModel);
+        }
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        Workspace newWorkspace = pc.newWorkspace(pc.getCurrentProject());
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel(newWorkspace);
+        graphModel.pushFrom(result);
+        pc.openWorkspace(newWorkspace);
+    }
+
     public FilterModel getModel() {
         return model;
     }

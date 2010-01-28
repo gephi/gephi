@@ -124,7 +124,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                     if (DialogDisplayer.getDefault().notify(question) == NotifyDescriptor.OK_OPTION) {
                         String input = question.getInputText();
                         if (input != null && !input.isEmpty()) {
-                            controller.exportToColumn(input, uiModel.getSelectedQuery());
+                            controller.exportToColumn(input, uiModel.getSelectedRoot());
                         }
                     }
                 }
@@ -135,6 +135,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
             public void actionPerformed(ActionEvent e) {
                 if (uiModel.getSelectedQuery() != null) {
                     FilterController controller = Lookup.getDefault().lookup(FilterController.class);
+                    controller.exportToNewWorkspace(uiModel.getSelectedRoot());
                 }
             }
         });
