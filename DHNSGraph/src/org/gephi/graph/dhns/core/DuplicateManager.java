@@ -2,12 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.gephi.graph.dhns.core;
 
 import org.gephi.datastructure.avl.param.ParamAVLIterator;
+import org.gephi.graph.api.Attributes;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.EdgeDataImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.node.NodeDataImpl;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 
 /**
@@ -37,6 +39,7 @@ public class DuplicateManager {
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             AbstractNode nodeCopy = factory.newNode();
+            duplicateNodeData(node.getNodeData(), nodeCopy.getNodeData());
             nodeCopy.setEnabled(node.isEnabled());
             AbstractNode parentCopy = node.parent != null ? newStructure.getNodeAt(node.parent.getPre()) : null;
             newStructure.insertAsChild(nodeCopy, parentCopy);
@@ -59,6 +62,7 @@ public class DuplicateManager {
                         edgeCopy = factory.newEdge(sourceCopy, targetCopy);
                         edgeCopy.setWeight(edge.getWeight());
                     }
+                    duplicateEdgeData(edge.getEdgeData(), edgeCopy.getEdgeData());
                     sourceCopy.getEdgesOutTree().add(edgeCopy);
                     targetCopy.getEdgesInTree().add(edgeCopy);
                     newGraphStructure.getEdgeDictionnary().add(edgeCopy);
@@ -67,5 +71,35 @@ public class DuplicateManager {
         }
         destination.getWriteLock().unlock();
         dhns.getReadLock().unlock();
+    }
+
+    private void duplicateNodeData(NodeDataImpl source, NodeDataImpl dest) {
+        dest.setX(source.x());
+        dest.setY(source.y());
+        dest.setZ(source.z());
+        dest.setR(source.r());
+        dest.setG(source.g());
+        dest.setB(source.b());
+        dest.setAlpha(source.alpha());
+        dest.setSize(source.getSize());
+
+        //Attributes
+        Attributes sourceAttributes = source.getAttributes();
+        for (int i = 0; i < sourceAttributes.countValues(); i++) {
+            dest.getAttributes().setValue(i, sourceAttributes.getValue(i));
+        }
+    }
+
+    private void duplicateEdgeData(EdgeDataImpl source, EdgeDataImpl dest) {
+        dest.setR(source.r());
+        dest.setG(source.g());
+        dest.setB(source.b());
+        dest.setAlpha(source.alpha());
+
+        //Attributes
+        Attributes sourceAttributes = source.getAttributes();
+        for (int i = 0; i < sourceAttributes.countValues(); i++) {
+            dest.getAttributes().setValue(i, sourceAttributes.getValue(i));
+        }
     }
 }
