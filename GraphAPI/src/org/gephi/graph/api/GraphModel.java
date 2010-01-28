@@ -91,6 +91,8 @@ public interface GraphModel {
 
     public HierarchicalMixedGraph getHierarchicalMixedGraph(GraphView view);
 
+    public void pushFrom(Graph graph);
+
     public GraphModel copy();
 
     public void readXML(Element element);
