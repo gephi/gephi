@@ -95,6 +95,8 @@ public interface GraphModel {
 
     public GraphModel copy();
 
+    public void clear();
+
     public void readXML(Element element);
 
     public Element writeXML(Document document);

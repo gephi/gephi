@@ -72,6 +72,7 @@ public class Dhns implements GraphModel {
     private DecoratorFactoryImpl decoratorFactory;
     private SettingsManager settingsManager;
     private GraphFactoryImpl factory;
+    private DuplicateManager duplicateManager;
     //Type
     private boolean directed = false;
     private boolean undirected = false;
@@ -87,6 +88,7 @@ public class Dhns implements GraphModel {
         decoratorFactory = new DecoratorFactoryImpl(this);
         settingsManager = new SettingsManager(this);
         graphStructure = new GraphStructure(this);
+        duplicateManager = new DuplicateManager(this);
 
         //AttributeFactory
         AttributeRowFactory attributeRowFactory = null;
@@ -134,6 +136,10 @@ public class Dhns implements GraphModel {
 
     public SettingsManager getSettingsManager() {
         return settingsManager;
+    }
+
+    public DuplicateManager getDuplicateManager() {
+        return duplicateManager;
     }
 
     public NodeIterable newNodeIterable(AbstractNodeIterator iterator) {
@@ -396,7 +402,14 @@ public class Dhns implements GraphModel {
         if (graphImpl.getGraphModel() == this) {
             throw new IllegalArgumentException("The graph must be from a different Workspace");
         }
-        graphStructure.pushFrom(graphImpl);
+        Dhns source = (Dhns) graphImpl.getGraphModel();
+        source.getDuplicateManager().duplicate(this, (GraphViewImpl) graphImpl.getView());
+    }
+
+    public void clear() {
+        graphVersion = new GraphVersion();
+        dynamicManager = new DynamicManager(this);
+        graphStructure = new GraphStructure(this);
     }
 
     public void readXML(Element element) {
