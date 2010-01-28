@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.clustering.spi;
 
 import org.gephi.clustering.api.Cluster;
-import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphModel;
 
 /**
  *
@@ -29,7 +29,7 @@ import org.gephi.graph.api.Graph;
  */
 public interface Clusterer {
 
-    public void execute(Graph graph);
+    public void execute(GraphModel graphModel);
 
     public Cluster[] getClusters();
 }

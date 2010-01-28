@@ -30,6 +30,7 @@ import org.gephi.clustering.api.Cluster;
 import org.gephi.clustering.spi.Clusterer;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -89,14 +90,18 @@ public class MarkovClustering implements Clusterer, LongTask {
     private Cluster[] clusters;
     //LongTask
     private ProgressTicket progressTicket;
+    private boolean cancelled;
 
-    public void execute(Graph graph) {
-
+    public void execute(GraphModel graphModel) {
+        cancelled = false;
         Progress.start(progressTicket);
         Progress.setDisplayName(progressTicket, "MCL Clustering");
 
         HashMap<Integer, Node> nodeMap = new HashMap<Integer, Node>();
         HashMap<Node, Integer> intMap = new HashMap<Node, Integer>();
+
+        Graph graph = graphModel.getGraph();
+        graph.readLock();
 
         //Load matrix
         SparseMatrix matrix = new SparseMatrix();
@@ -118,13 +123,27 @@ public class MarkovClustering implements Clusterer, LongTask {
             }
             double weight = e.getWeight();
             matrix.add(sourceId, targetId, weight);
+
+            if (cancelled) {
+                graph.readUnlockAll();
+                return;
+            }
         }
+
+        graph.readUnlock();
 
         matrix = matrix.transpose();
         matrix = run(matrix, maxResidual, gammaExp, loopGain, zeroMax);
-        //System.out.println("result\n" + matrix.transpose().toStringDense());
+
+        if (cancelled) {
+            return;
+        }
 
         Map<Integer, ArrayList<Integer>> map = getClusters(matrix);
+
+        if (cancelled) {
+            return;
+        }
 
         int clusterNumber = 1;
         List<Cluster> clustersList = new ArrayList<Cluster>();
@@ -142,6 +161,9 @@ public class MarkovClustering implements Clusterer, LongTask {
                 clustersList.add(new MCLCluster(nodes, clusterNumber));
                 clusterNumber++;
             }
+            if (cancelled) {
+                return;
+            }
         }
         clusters = clustersList.toArray(new Cluster[0]);
 
@@ -153,7 +175,8 @@ public class MarkovClustering implements Clusterer, LongTask {
     }
 
     public boolean cancel() {
-        return false;
+        cancelled = true;
+        return true;
     }
 
     public void setProgressTicket(ProgressTicket progressTicket) {
@@ -217,12 +240,19 @@ public class MarkovClustering implements Clusterer, LongTask {
         double residual = 1.;
         int i = 0;
 
+        if (cancelled) {
+            return a;
+        }
+
         // main iteration
         while (residual > maxResidual) {
             i++;
             a = expand(a);
             residual = inflate(a, pGamma, maxZero);
             System.out.println("residual energy = " + residual);
+            if (cancelled) {
+                return a;
+            }
         }
         return a;
     }
@@ -258,6 +288,9 @@ public class MarkovClustering implements Clusterer, LongTask {
             double max = row.max();
             double sumsq = row.sum(2.);
             res = Math.max(res, max - sumsq);
+            if (cancelled) {
+                return res;
+            }
         }
         return res;
     }
@@ -287,6 +320,9 @@ public class MarkovClustering implements Clusterer, LongTask {
         }
         for (int i = 0; i < a.size(); i++) {
             a.add(i, i, loopGain);
+            if (cancelled) {
+                return;
+            }
         }
     }
 
@@ -386,9 +422,11 @@ public class MarkovClustering implements Clusterer, LongTask {
                         }
                     }
                 }
+                if (cancelled) {
+                    return clusters;
+                }
             }
         }
-        System.out.println("cluster count " + clusterCount);
 
         return clusters;
     }

@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map.Entry;
 import javax.swing.JLabel;
@@ -50,7 +51,7 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
 
     public NodeColorTransformerPanel() {
         net.miginfocom.swing.MigLayout migLayout1 = new net.miginfocom.swing.MigLayout();
-        migLayout1.setColumnConstraints("[pref!]20[pref!]");
+        migLayout1.setColumnConstraints("[pref!]4[pref!]20[pref]");
         setLayout(migLayout1);
 
         initComponents();
@@ -88,21 +89,27 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
                 i++;
             }
         }
-
+        NumberFormat formatter = NumberFormat.getPercentInstance();
+        formatter.setMaximumFractionDigits(2);
         this.partition = partition;
         for (final Part p : partition.getParts()) {
-            JLabel partLabel = new JLabel(p.getDisplayName());
-            add(partLabel);
             final ColorChooser colorChooser = new ColorChooser(nodeColorTransformer.getMap().get(p.getValue()));
-            colorChooser.setPreferredSize(new Dimension(16, 16));
-            colorChooser.setMaximumSize(new Dimension(16, 16));
+            colorChooser.setPreferredSize(new Dimension(13, 13));
+            colorChooser.setMaximumSize(new Dimension(13, 13));
             colorChooser.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
                     nodeColorTransformer.getMap().put(p.getValue(), colorChooser.getColor());
                 }
             });
-            add(colorChooser, "wrap");
+            add(colorChooser);
+            JLabel partLabel = new JLabel(p.getDisplayName());
+            partLabel.setFont(partLabel.getFont().deriveFont(10f));
+            add(partLabel);
+
+            JLabel percLabel = new JLabel("(" + formatter.format(p.getPercentage()) + ")");
+            percLabel.setFont(percLabel.getFont().deriveFont(10f));
+            add(percLabel, "wrap");
         }
     }
 

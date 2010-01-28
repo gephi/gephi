@@ -13,6 +13,7 @@ package org.gephi.ui.timeline.plugin.drawers.minimal;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -25,11 +26,14 @@ import java.util.List;
 import javax.swing.JPanel;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.spi.TimelineDrawer;
+import org.openide.util.lookup.ServiceProvider;
+
 
 /**
  *
  * @author jbilcke
  */
+@ServiceProvider(service = TimelineDrawer.class)
 public class MinimalDrawer extends JPanel implements TimelineDrawer {
     
     private static final long serialVersionUID = 1L;
@@ -37,8 +41,11 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer {
 
     /** Creates new form MinimalDrawer */
     public MinimalDrawer() {
-        
-        initComponents();
+        //initComponents();
+       this.setSize(new Dimension(800, 64));
+       System.out.println("width: "+getWidth());
+        System.out.println("height: "+getHeight());
+      setVisible(true);
 
     }
     private TimelineModel model = null;
@@ -51,13 +58,19 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer {
         return model;
     }
 
-
     private Integer mousex = null;
 
     private static Cursor CURSOR_DEFAULT = new Cursor(Cursor.DEFAULT_CURSOR);
     private static Cursor CURSOR_LEFT_HOOK = new Cursor(Cursor.E_RESIZE_CURSOR);
     private static Cursor CURSOR_CENTRAL_HOOK = new Cursor(Cursor.MOVE_CURSOR);
     private static Cursor CURSOR_RIGHT_HOOK = new Cursor(Cursor.W_RESIZE_CURSOR);
+
+
+    // minimal visible size; below these levesl, we do not show the
+    // corresponding information 
+    private int MIN_VISIBLE_SIZE_FOR_A_YEAR = 25;
+    private int MIN_VISIBLE_SIZE_FOR_A_MONTH = 25;
+    private int MIN_VISIBLE_SIZE_FOR_A_DAY = 25;
 
 
     public enum TimelineState {
@@ -91,22 +104,22 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 519, Short.MAX_VALUE)
+            .addGap(0, 776, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 128, Short.MAX_VALUE)
+            .addGap(0, 88, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-       @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-
+      
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         int width = getWidth();
         int height = getHeight();
-
+        settings.update(width, height);
         Graphics2D g2d = (Graphics2D) g;
 
         g2d.setBackground(settings.background.top);
@@ -114,8 +127,41 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer {
         g2d.fillRect(0, 0, width, height);
 
         g2d.setRenderingHints(settings.renderingHints);
-      
+
+
+        paintTimelineForDateTime(g2d);
+    //shape.quadTo(3, 3, 4, 4);
+    //shape.curveTo(5, 5, 6, 6, 7, 7);
+
+
+    }
+    private void paintTimelineForTesting(Graphics2D g2d) {
         g2d.setFont(settings.informations.font);
+
+        int width = getWidth();
+        int height = getHeight();
+        
+        String firstLabel = "hello";//model.getFirstComparable().toString();
+        String lastLabel = "world";//model.getLastComparable().toString();
+
+        // get the pixel length of the string
+        int lastLabelLength = (int) (settings.informations.fontMetrics.getStringBounds(lastLabel, null)).getWidth();
+
+        g2d.setColor(settings.informations.fontShadow);
+        g2d.drawString(firstLabel, 6, settings.informations.fontSize + 2);
+        g2d.drawString(lastLabel, width - 4 - lastLabelLength, settings.informations.fontSize + 2);
+
+        g2d.setColor(settings.informations.fontColor);
+        g2d.drawString(firstLabel, 5, settings.informations.fontSize + 1);
+        g2d.drawString(lastLabel, width - 5 - lastLabelLength, settings.informations.fontSize + 1);
+
+    }
+    private void paintTimelineForDateTime(Graphics2D g2d) {
+       g2d.setFont(settings.informations.font);
+       
+        int width = getWidth();
+        int height = getHeight();
+
 
         String firstLabel = "hello";//model.getFirstComparable().toString();
         String lastLabel = "world";//model.getLastComparable().toString();
@@ -123,16 +169,15 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer {
         // get the pixel length of the string
         int lastLabelLength = (int) (settings.informations.fontMetrics.getStringBounds(lastLabel, null)).getWidth();
 
-        g2d.drawString(firstLabel, 5, 12);
-        g2d.drawString(lastLabel, width - 5 - lastLabelLength, 12);
+        g2d.setColor(settings.informations.fontShadow);
+        g2d.drawString(firstLabel, 6, settings.informations.fontSize + 2);
+        g2d.drawString(lastLabel, width - 4 - lastLabelLength, settings.informations.fontSize + 2);
 
-
-    //shape.quadTo(3, 3, 4, 4);
-    //shape.curveTo(5, 5, 6, 6, 7, 7);
-
+        g2d.setColor(settings.informations.fontColor);
+        g2d.drawString(firstLabel, 5, settings.informations.fontSize + 1);
+        g2d.drawString(lastLabel, width - 5 - lastLabelLength, settings.informations.fontSize + 1);
 
     }
-
     private boolean inRange(int x, int a, int b) {
         return (a < x && x < b);
     }
@@ -142,7 +187,7 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer {
         mousex = null;
         //highlightedComponent = HighlightedComponent.NONE;
         currentState = TimelineState.IDLE;
-        this.getParent().repaint(); // so it will repaint all panels
+        this.getParent().repaint(); // so it will repaint upper and bottom panes
 
     }
 

@@ -281,19 +281,31 @@ public interface Graph {
     public void clearEdges();
 
     /**
-     * Acquire a read lock on the graph. Calling thread will be blocked until all write locks are released.
+     * Acquires a read lock on the graph. Calling thread will be blocked until all write locks are released.
      * Several threads can read but only once can write.
+     * <p>
+     * A read lock can be acquired several times by a thread, but be sure to call <code>readUnlock()</code>
+     * the same number of time you called this method, or use <code>readUnlockAll()</code> to release all
+     * locks.
      * @see ReentrantReadWriteLock
      */
     public void readLock();
 
     /**
-     * Release the read lock on the graph. Must be called from the same thread that locked the graph.
+     * Releases the read lock on the graph. Must be called from the same thread that locked the graph.
+     * <p>
+     * Use <code>readUnlockAll()</code> if you ignore the number of times the read lock has been acquired.
      */
     public void readUnlock();
 
     /**
-     * Acquire a write lock on the graph. Calling thread will be blocked until all read locks are released.
+     * Safe method that releases all read locks the calling thread has acquired. Use this method if you are
+     * cancelling a task and you don't know how many read locks have been acquired.
+     */
+    public void readUnlockAll();
+
+    /**
+     * Acquires a write lock on the graph. Calling thread will be blocked until all read locks are released.
      * Several threads can read but only once can write.
      * @see ReentrantReadWriteLock
      * @throws IllegalMonitorStateException if the current thread is holding a read lock

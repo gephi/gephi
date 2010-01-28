@@ -20,7 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.timeline.api;
 
-import org.gephi.timeline.spi.TimelineUI;
+import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Node;
+import org.gephi.workspace.api.Workspace;
 
 /**
  *
@@ -28,7 +31,10 @@ import org.gephi.timeline.spi.TimelineUI;
  */
 public interface TimelineController {
 
-    public void setTimelineUIVisible(TimelineUI ui, boolean visible);
-
-    public TimelineModel getModel();
+    public void pushSlice(Workspace workspace, String from, String to, Node node);
+    public void pushSlice(Workspace workspace, String from, String to, Edge edge);
+    public TimelineModel getModel(Workspace workspace);
+    public Double getFromDouble(Workspace workspace);
+    public Double getToDouble(Workspace workspace);
+    public TimeInterval getRangeTimeInterval(Workspace workspace);
 }

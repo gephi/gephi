@@ -21,14 +21,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.timeline.api;
 
 import java.util.List;
+import javax.swing.event.ChangeListener;
 
 /**
  *
  * @author Julian Bilcke <julian.bilcke@gmail.com>
  */
 public interface TimelineModel {
-
- public void addTimelineModelListener(TimelineModelListener listener);
 
     /** get the data array
      *
@@ -79,6 +78,12 @@ public interface TimelineModel {
     public void play(TimelinePlayMode playMode);
 
     public void pause();
-    public void isPlaying();
+    public boolean isPlaying();
     public void setTimelinePlayMode(TimelinePlayMode playMode);
+
+
+    public void addChangeListener(ChangeListener changeListener);
+
+    public void removeChangeListener(ChangeListener changeListener);
+
 }

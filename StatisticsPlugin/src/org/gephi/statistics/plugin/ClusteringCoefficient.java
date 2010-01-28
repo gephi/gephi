@@ -308,16 +308,17 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      * @param graphModel
      */
     public void triangles(GraphModel graphModel, AttributeModel attributeModel) {
-        Graph graph = graphModel.getDirectedGraph();
+        Graph graph = graphModel.getUndirectedGraphVisible();
         int ProgressCount = 0;
         Progress.start(progress, 7 * graph.getNodeCount());
 
         if (!directed) {
-            graph = graphModel.getUndirectedGraph();
+            graph = graphModel.getUndirectedGraphVisible();
         } else {
-            graph = graphModel.getDirectedGraph();
+            graph = graphModel.getDirectedGraphVisible();
         }
 
+        graph.readLock();
 
         N = graph.getNodeCount();
         Node[] nodes = new Node[N];
@@ -358,7 +359,6 @@ public class ClusteringCoefficient implements Statistics, LongTask {
                         ew.mCount++;
                     }
                 }
-
             }
 
             EdgeWrapper[] edges = new EdgeWrapper[neighborTable.size()];
@@ -371,20 +371,23 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             mNetwork[index].setArray(edges);
             index++;
             Progress.progress(progress, ++ProgressCount);
+
+            if (isCanceled) {
+                graph.readUnlockAll();
+                return;
+            }
         }
 
         Arrays.sort(mNetwork);
         for (int j = 0; j < N; j++) {
             mNetwork[j].setID(j);
             Progress.progress(progress, ++ProgressCount);
-
         }
 
         for (int j = 0; j < N; j++) {
             Arrays.sort(mNetwork[j].getArray(), new Renumbering());
             Progress.progress(progress, ++ProgressCount);
         }
-
 
         mTriangles = new int[N];
         mK = (int) Math.sqrt(N);
@@ -394,7 +397,6 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         for (int v = 0; v < mK && v < N; v++) {
             newVertex(v);
             Progress.progress(progress, ++ProgressCount);
-
         }
 
         /* remaining links */
@@ -406,6 +408,11 @@ public class ClusteringCoefficient implements Statistics, LongTask {
                 }
             }
             Progress.progress(progress, ++ProgressCount);
+
+            if (isCanceled) {
+                graph.readUnlockAll();
+                return;
+            }
         }
 
         avgClusteringCoeff = 0;
@@ -428,8 +435,15 @@ public class ClusteringCoefficient implements Statistics, LongTask {
                 avgClusteringCoeff += cc;
             }
             Progress.progress(progress, ++ProgressCount);
+
+            if (isCanceled) {
+                graph.readUnlockAll();
+                return;
+            }
         }
         avgClusteringCoeff /= N;
+
+        graph.readUnlock();
     }
 
     /**
@@ -438,18 +452,21 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      */
     public void bruteForce(GraphModel graphModel, AttributeModel attributeModel) {
         //The atrributes computed by the statistics
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn clusteringCol = nodeTable.addColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
-
+        AttributeColumn clusteringCol = nodeTable.getColumn("clustering");
+        if (clusteringCol == null) {
+            clusteringCol = nodeTable.addColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        }
 
         float totalCC = 0;
         Graph graph = null;
         if (!directed) {
-            graph = graphModel.getUndirectedGraph();
+            graph = graphModel.getUndirectedGraphVisible();
         } else {
-            graph = graphModel.getDirectedGraph();
+            graph = graphModel.getDirectedGraphVisible();
         }
+
+        graph.readLock();
 
         Progress.start(progress, graph.getNodeCount());
         int node_count = 0;
@@ -505,6 +522,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         }
         avgClusteringCoeff = totalCC / graph.getNodeCount();
 
+        graph.readUnlockAll();
     }
 
     /**

@@ -116,13 +116,15 @@ public class GraphDistance implements Statistics, LongTask {
 
         Graph graph = null;
         if (mDirected) {
-            graph = graphModel.getDirectedGraph();
+            graph = graphModel.getDirectedGraphVisible();
         } else {
-            graph = graphModel.getUndirectedGraph();
+            graph = graphModel.getUndirectedGraphVisible();
         }
 
-        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
+        graph.readLock();
 
+        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
+        
         mN = graph.getNodeCount();
 
         mBetweeness = new double[mN];
@@ -213,12 +215,11 @@ public class GraphDistance implements Statistics, LongTask {
             }
             count++;
             if (mIsCanceled) {
+                graph.readUnlockAll();
                 return;
             }
             Progress.progress(mProgress, count);
         }
-
-
 
         mAvgDist /= mN * (mN - 1.0f);
 
@@ -229,6 +230,8 @@ public class GraphDistance implements Statistics, LongTask {
             row.setValue(closenessCol, mCloseness[s_index]);
             row.setValue(betweenessCol, mBetweeness[s_index]);
         }
+
+        graph.readUnlock();
     }
 
     /**

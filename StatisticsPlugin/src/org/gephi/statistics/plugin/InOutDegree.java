@@ -75,8 +75,10 @@ public class InOutDegree implements Statistics, LongTask {
             outCol = nodeTable.addColumn("outdegree", "Out Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
         }
 
-        DirectedGraph graph = graphModel.getDirectedGraph();
+        DirectedGraph graph = graphModel.getDirectedGraphVisible();
         int i = 0;
+
+        graph.readLock();
 
         this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
 
@@ -99,6 +101,8 @@ public class InOutDegree implements Statistics, LongTask {
         mAvgInDegree /= graph.getNodeCount();
         mAvgOutDegree /= graph.getNodeCount();
         mAvgDegree /= graph.getNodeCount();
+
+        graph.readUnlockAll();
     }
 
     /**

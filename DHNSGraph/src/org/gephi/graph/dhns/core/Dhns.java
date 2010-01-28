@@ -44,7 +44,9 @@ import org.gephi.graph.api.GraphView;
 import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
+import org.gephi.graph.dhns.graph.AbstractGraphImpl;
 import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImpl;
+import org.gephi.graph.dhns.graph.HierarchicalGraphImpl;
 import org.gephi.graph.dhns.graph.HierarchicalMixedGraphImpl;
 import org.gephi.graph.dhns.graph.HierarchicalUndirectedGraphImpl;
 import org.gephi.graph.dhns.graph.iterators.EdgeIterableImpl;
@@ -384,6 +386,17 @@ public class Dhns implements GraphModel {
 
     public GraphSettings settings() {
         return settingsManager;
+    }
+
+    public void pushFrom(Graph graph) {
+        if (graph == null) {
+            throw new NullPointerException();
+        }
+        HierarchicalGraphImpl graphImpl = (HierarchicalGraphImpl) graph;
+        if (graphImpl.getGraphModel() == this) {
+            throw new IllegalArgumentException("The graph must be from a different Workspace");
+        }
+        graphStructure.pushFrom(graphImpl);
     }
 
     public void readXML(Element element) {

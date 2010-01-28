@@ -80,6 +80,14 @@ public class DhnsGraphController implements GraphController {
         return dhns;
     }
 
+    public GraphModel getModel(Workspace workspace) {
+        Dhns dhns = workspace.getLookup().lookup(Dhns.class);
+        if (dhns == null) {
+            dhns = newDhns(workspace);
+        }
+        return dhns;
+    }
+
     public GraphModel getModel() {
         return getCurrentDhns();
     }

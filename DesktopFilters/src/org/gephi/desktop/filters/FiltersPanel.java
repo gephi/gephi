@@ -35,8 +35,11 @@ import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.Query;
 import org.gephi.ui.utils.UIUtils;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.explorer.ExplorerManager;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -110,6 +113,32 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 }
             }
         });
+        exportColumnButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (uiModel.getSelectedQuery() != null) {
+                    FilterController controller = Lookup.getDefault().lookup(FilterController.class);
+                    NotifyDescriptor.InputLine question = new NotifyDescriptor.InputLine(
+                            NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.exportColumn.input"),
+                            NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.exportColumn.input.title"));
+                    if (DialogDisplayer.getDefault().notify(question) == NotifyDescriptor.OK_OPTION) {
+                        String input = question.getInputText();
+                        if (input != null && !input.isEmpty()) {
+                            controller.exportToColumn(input, uiModel.getSelectedRoot());
+                        }
+                    }
+                }
+            }
+        });
+        exportWorkspaceButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (uiModel.getSelectedQuery() != null) {
+                    FilterController controller = Lookup.getDefault().lookup(FilterController.class);
+                    controller.exportToNewWorkspace(uiModel.getSelectedRoot());
+                }
+            }
+        });
         updateEnabled(false);
     }
 
@@ -147,6 +176,8 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         resetButton.setEnabled(enabled);
         selectButton.setEnabled(enabled);
         filterButton.setEnabled(enabled);
+        exportColumnButton.setEnabled(enabled && uiModel.getSelectedQuery() != null);
+        exportWorkspaceButton.setEnabled(enabled && uiModel.getSelectedQuery() != null);
     }
 
     public void stateChanged(ChangeEvent e) {
@@ -164,6 +195,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
             public void run() {
                 filterButton.setSelected(filterModel.isFiltering());
                 selectButton.setSelected(filterModel.isSelecting());
+                updateEnabled(true);
             }
         });
     }
@@ -198,6 +230,9 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
 
         toolbar = new javax.swing.JToolBar();
         resetButton = new javax.swing.JButton();
+        separator = new javax.swing.JToolBar.Separator();
+        exportColumnButton = new javax.swing.JButton();
+        exportWorkspaceButton = new javax.swing.JButton();
         splitPane = new javax.swing.JSplitPane();
         libraryTree = new FiltersExplorer();
         southPanel = new javax.swing.JPanel();
@@ -217,6 +252,23 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         resetButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         resetButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(resetButton);
+        toolbar.add(separator);
+
+        exportColumnButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/filters/resources/table_export.png"))); // NOI18N
+        exportColumnButton.setText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.exportColumnButton.text")); // NOI18N
+        exportColumnButton.setToolTipText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.exportColumnButton.toolTipText")); // NOI18N
+        exportColumnButton.setFocusable(false);
+        exportColumnButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        exportColumnButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolbar.add(exportColumnButton);
+
+        exportWorkspaceButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/filters/resources/workspace_export.png"))); // NOI18N
+        exportWorkspaceButton.setText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.exportWorkspaceButton.text")); // NOI18N
+        exportWorkspaceButton.setToolTipText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.exportWorkspaceButton.toolTipText")); // NOI18N
+        exportWorkspaceButton.setFocusable(false);
+        exportWorkspaceButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        exportWorkspaceButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolbar.add(exportWorkspaceButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -288,11 +340,14 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonsPanel;
+    private javax.swing.JButton exportColumnButton;
+    private javax.swing.JButton exportWorkspaceButton;
     private javax.swing.JToggleButton filterButton;
     private javax.swing.JPanel filtersUIPanel;
     private javax.swing.JScrollPane libraryTree;
     private javax.swing.JButton resetButton;
     private javax.swing.JToggleButton selectButton;
+    private javax.swing.JToolBar.Separator separator;
     private javax.swing.JPanel southPanel;
     private javax.swing.JToolBar southToolbar;
     private javax.swing.JSplitPane splitPane;

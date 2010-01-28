@@ -24,36 +24,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import org.gephi.timeline.plugin.TimelineQuartzSimple;
-import org.gephi.timeline.api.TimelineProxy;
-import org.gephi.timeline.api.TimelineProxyListener;
-import org.gephi.timeline.api.TimelinePlayMode;
-import org.gephi.timeline.api.TimelineQuartz;
-import org.gephi.timeline.api.TimelineQuartzListener;
 
 /**
  *
  * @author Julian Bilcke
  */
-public class TimelineProxyDebug implements TimelineProxy, TimelineQuartzListener {
+public class TimelineProxyDebug {
 
     private Random random;
-    private List<TimelineProxyListener> listeners;
+
     private Float from;
     private Float to;
-    private TimelineQuartz quartz;
+
 
     // FAKE DATASET SIZE
     private List<Float> data;
     private int data_getNbOfFakeRevisions = 80;
     private Float speed;
 
-    public void setTimelinePlayMode(TimelinePlayMode playMode) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
-    public void play(TimelinePlayMode playMode) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
    public enum PlayMode {
         OLDEST,
@@ -69,7 +58,6 @@ public class TimelineProxyDebug implements TimelineProxy, TimelineQuartzListener
         to = 0.85f;
         speed = 0.0001f;
 
-        listeners = new ArrayList<TimelineProxyListener>();
 
         // WE GENERATE OUR FAKE DATASET
         random = new Random();
@@ -78,8 +66,7 @@ public class TimelineProxyDebug implements TimelineProxy, TimelineQuartzListener
             data.add(0.15f + random.nextFloat() * 0.6f);
         }
 
-        quartz = new TimelineQuartzSimple();
-        quartz.addTimelineQuartzListener(this);
+
     }
 
     public List<Float> getOverviewSample(int resolution) {
@@ -94,9 +81,7 @@ public class TimelineProxyDebug implements TimelineProxy, TimelineQuartzListener
         return tmp;
     }
 
-    public void addTimelineDataModelListener(TimelineProxyListener listener) {
-        listeners.add(listener);
-    }
+
 
     public List<Float> getZoomSample(int resolution) {
 
@@ -163,17 +148,7 @@ public class TimelineProxyDebug implements TimelineProxy, TimelineQuartzListener
         return data.get((int) (to * (float)data.size()));
     }
 
-    public void play() {
-        quartz.start();
-    }
 
-    public void pause() {
-        quartz.delayedStop();
-    }
-
-    public void isPlaying() {
-        quartz.isRunning();
-    }
     public void quartzTick(long delay) {
         // delay is the current "resolution" of the quartz
         // this is provided ases convenience, in case you would need it for your

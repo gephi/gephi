@@ -27,6 +27,18 @@ public class MinimalDrawerSettings {
     public RenderingHints renderingHints;
     public Kernel convolutionKernel;
     public ConvolveOp blurOperator;
+    private int lastWidth = 0;
+    private int lastHeight = 0;
+    void update(int width, int height) {
+        if (lastWidth == width && lastHeight == height) {
+            return;
+        }
+        lastWidth = width;
+        lastHeight = height;
+
+          background.paint = new GradientPaint(0, 0, background.top, 0, height, background.bottom, true);
+
+    }
 
     public class Background {
         public Color top;
@@ -36,6 +48,7 @@ public class MinimalDrawerSettings {
     public Background background = new Background();
     
     public class Informations {
+            public int fontSize;
             public Font font;
             public FontMetrics fontMetrics;
             public Color fontColor;
@@ -59,7 +72,8 @@ public class MinimalDrawerSettings {
         defaultStroke = new BasicStroke(1.0f);
         defaultStrokeColor = Color.black;
 
-        informations.font = new Font("DejaVu Sans Mono", 0, 12);
+        informations.fontSize = 12;
+        informations.font = new Font("DejaVu Sans Mono", 0, informations.fontSize);
         informations.fontMetrics = new FontMetrics(informations.font) {};
 
         hookLength = 16;

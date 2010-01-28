@@ -26,7 +26,6 @@ import java.util.LinkedList;
 import java.util.Random;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
@@ -38,7 +37,6 @@ import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -152,6 +150,10 @@ public class Modularity implements Statistics, LongTask {
                 invMap.put(index, hidden);
                 mCommunities.add(nodeCommunities[index]);
                 index++;
+
+                if (mIsCanceled) {
+                    return;
+                }
             }
 
             for (Node node : graph.getNodes()) {
@@ -171,6 +173,10 @@ public class Modularity implements Statistics, LongTask {
                     nodeConnections[neighbor_index].put(nodeCommunities[node_index], 1);
                     nodeCommunities[neighbor_index].connections.put(nodeCommunities[node_index], 1);
                     graphWeightSum++;
+                }
+
+                if (mIsCanceled) {
+                    return;
                 }
             }
             graphWeightSum /= 2.0;
@@ -449,10 +455,17 @@ public class Modularity implements Statistics, LongTask {
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         Progress.start(mProgress);
         Random rand = new Random();
-        UndirectedGraph graph = graphModel.getUndirectedGraph();
+        UndirectedGraph graph = graphModel.getUndirectedGraphVisible();
+
+        graph.readLock();
+
         this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
 
         mStructure = new CommunityStructure(graph);
+        if (mIsCanceled) {
+            graph.readUnlockAll();
+            return;
+        }
         boolean someChange = true;
         while (someChange) {
             someChange = false;
@@ -490,8 +503,16 @@ public class Modularity implements Statistics, LongTask {
                         mStructure.moveNodeTo(i, bestCommunity);
                         localChange = true;
                     }
+                    if (mIsCanceled) {
+                        graph.readUnlockAll();
+                        return;
+                    }
                 }
                 someChange = localChange || someChange;
+                if (mIsCanceled) {
+                    graph.readUnlockAll();
+                    return;
+                }
             }
 
             if (someChange) {
@@ -517,6 +538,8 @@ public class Modularity implements Statistics, LongTask {
         }
 
         mModularity = finalQ(comStructure, degreeCount, graph, attributeModel);
+
+        graph.readUnlock();
     }
 
     /**

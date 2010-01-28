@@ -4,13 +4,15 @@
  */
 package org.gephi.desktop.timeline;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.project.api.ProjectController;
 import org.gephi.timeline.api.TimelineModel;
-import org.gephi.timeline.spi.TimelineUI;
+import org.gephi.timeline.spi.TimelineDrawer;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.util.NbBundle;
@@ -28,20 +30,13 @@ autostore = false)
 public final class TimelineTopComponent extends TopComponent implements ChangeListener {
 
     private static TimelineTopComponent instance;
-
     /** path to the icon used by the component and its open action */
     static final String ICON_PATH = "org/gephi/desktop/timeline/resources/ui-status-bar.png";
     private static final String PREFERRED_ID = "TimelineTopComponent";
-
     private TimelineModel model;
-    private TimelineUI timelineUI;
+    private TimelineDrawer drawerPanel;
 
     public TimelineTopComponent() {
-        model = Lookup.getDefault().lookup(TimelineModel.class);
-        timelineUI = Lookup.getDefault().lookup(TimelineUI.class);
-        if (model != null && timelineUI != null) {
-            timelineUI.setModel(model);
-        }
         initComponents();
         setName(NbBundle.getMessage(TimelineTopComponent.class, "CTL_TimelineTopComponent"));
         setToolTipText(NbBundle.getMessage(TimelineTopComponent.class, "HINT_TimelineTopComponent"));
@@ -49,8 +44,12 @@ public final class TimelineTopComponent extends TopComponent implements ChangeLi
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
 
-
-
+        model = (TimelineModel) Lookup.getDefault().lookup(TimelineModelImpl.class);
+        drawerPanel = Lookup.getDefault().lookup(TimelineDrawer.class);
+        if (drawerPanel != null) {
+            drawerPanel.setModel(model);
+        }
+        timelinePanel.add((JPanel) drawerPanel);
 
         //Workspace events
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -81,7 +80,7 @@ public final class TimelineTopComponent extends TopComponent implements ChangeLi
         });
 
         if (pc.getCurrentWorkspace() != null) {
-            refreshModel(pc.getCurrentWorkspace().getLookup().lookup(StatisticsModelImpl.class));
+            refreshModel(pc.getCurrentWorkspace().getLookup().lookup(TimelineModelImpl.class));
         } else {
             refreshModel(null);
         }
@@ -90,14 +89,10 @@ public final class TimelineTopComponent extends TopComponent implements ChangeLi
         settingsButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                AvailableStatisticsChooser chooser = new AvailableStatisticsChooser();
-                chooser.setup(model, ((StatisticsPanel) statisticsPanel).getCategories());
-                DialogDescriptor dd = new DialogDescriptor(chooser, NbBundle.getMessage(StatisticsTopComponent.class, "AvailableStatisticsChooser.title"));
-                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-                    chooser.unsetup();
-                }
+                //
             }
         });
+
     }
 
     /** This method is called from within the constructor to
@@ -107,17 +102,18 @@ public final class TimelineTopComponent extends TopComponent implements ChangeLi
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         timelineToolbar = new javax.swing.JToolBar();
         settingsButton = new javax.swing.JButton();
-        drawerPanel = (timelineUI!=null) ? timelineUI.getDrawerPanel() : new JPanel();
+        timelinePanel = new javax.swing.JPanel();
 
-        setLayout(new java.awt.GridBagLayout());
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
+        timelineToolbar.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 1, new java.awt.Color(5, 4, 3)));
         timelineToolbar.setFloatable(false);
         timelineToolbar.setOrientation(1);
         timelineToolbar.setRollover(true);
+        timelineToolbar.setMaximumSize(new java.awt.Dimension(64, 32767));
 
         org.openide.awt.Mnemonics.setLocalizedText(settingsButton, org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settingsButton.text")); // NOI18N
         settingsButton.setFocusable(false);
@@ -125,39 +121,27 @@ public final class TimelineTopComponent extends TopComponent implements ChangeLi
         settingsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         timelineToolbar.add(settingsButton);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
-        add(timelineToolbar, gridBagConstraints);
+        add(timelineToolbar);
 
-        javax.swing.GroupLayout drawerPanelLayout = new javax.swing.GroupLayout(drawerPanel);
-        drawerPanel.setLayout(drawerPanelLayout);
-        drawerPanelLayout.setHorizontalGroup(
-            drawerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 333, Short.MAX_VALUE)
+        javax.swing.GroupLayout timelinePanelLayout = new javax.swing.GroupLayout(timelinePanel);
+        timelinePanel.setLayout(timelinePanelLayout);
+        timelinePanelLayout.setHorizontalGroup(
+            timelinePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 677, Short.MAX_VALUE)
         );
-        drawerPanelLayout.setVerticalGroup(
-            drawerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+        timelinePanelLayout.setVerticalGroup(
+            timelinePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
         );
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        add(drawerPanel, gridBagConstraints);
+        add(timelinePanel);
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel drawerPanel;
     private javax.swing.JButton settingsButton;
+    private javax.swing.JPanel timelinePanel;
     private javax.swing.JToolBar timelineToolbar;
     // End of variables declaration//GEN-END:variables
+
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
      * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
@@ -229,8 +213,7 @@ public final class TimelineTopComponent extends TopComponent implements ChangeLi
         return PREFERRED_ID;
     }
 
-
-    private void refreshModel(TimelineModelImpl model) {
+    private void refreshModel(TimelineModel model) {
         if (model != null && model != this.model) {
             if (this.model != null) {
                 this.model.removeChangeListener(this);
@@ -238,17 +221,19 @@ public final class TimelineTopComponent extends TopComponent implements ChangeLi
             model.addChangeListener(this);
         }
         this.model = model;
+        drawerPanel.setModel(model);
         refreshEnable(model != null);
-        ((TimelineDrawerPanel) timelinePanel).refreshModel(model);
+
+
+        // TODO repaint ?
     }
 
-
     private void refreshEnable(boolean enable) {
-        drawerPanel.setEnabled(enable);
+       // ((JPanel)drawerPanel).setEnabled(enable);
+        timelinePanel.setEnabled(enable);
         timelineToolbar.setEnabled(enable);
         settingsButton.setEnabled(enable);
     }
-
 
     public void stateChanged(ChangeEvent e) {
         refreshModel(model);
