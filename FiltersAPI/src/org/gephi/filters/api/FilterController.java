@@ -45,5 +45,7 @@ public interface FilterController {
 
     public void select(Query query);
 
+    public void exportToColumn(String title, Query query);
+
     public FilterModel getModel();
 }

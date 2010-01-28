@@ -22,6 +22,10 @@ package org.gephi.filters.impl;
 
 import java.beans.PropertyEditorManager;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.PropertyExecutor;
@@ -31,12 +35,17 @@ import org.gephi.filters.impl.FilterThread.PropertyModifier;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.filters.spi.Operator;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
 import org.gephi.workspace.api.WorkspaceListener;
+import org.openide.awt.StatusDisplayer;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
@@ -157,6 +166,36 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
             graphModel.setVisibleView(null);
         }
+    }
+
+    public void exportToColumn(String title, Query query) {
+        Graph result;
+        if (model.getCurrentQuery() == query) {
+            GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+            result = graphModel.getGraph();
+        } else {
+            FilterProcessor processor = new FilterProcessor();
+            GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+            result = processor.process((AbstractQueryImpl) query, graphModel);
+        }
+        AttributeModel am = Lookup.getDefault().lookup(AttributeController.class).getModel();
+        AttributeColumn nodeCol = am.getNodeTable().getColumn("filter_" + title);
+        if (nodeCol == null) {
+            nodeCol = am.getNodeTable().addColumn("filter_" + title, title, AttributeType.BOOLEAN, AttributeOrigin.COMPUTED, Boolean.FALSE);
+        }
+        AttributeColumn edgeCol = am.getEdgeTable().getColumn("filter_" + title);
+        if (edgeCol == null) {
+            edgeCol = am.getEdgeTable().addColumn("filter_" + title, title, AttributeType.BOOLEAN, AttributeOrigin.COMPUTED, Boolean.FALSE);
+        }
+        result.readLock();
+        for (Node n : result.getNodes()) {
+            n.getNodeData().getAttributes().setValue(nodeCol.getIndex(), Boolean.TRUE);
+        }
+        for (Edge e : result.getEdges()) {
+            e.getEdgeData().getAttributes().setValue(edgeCol.getIndex(), Boolean.TRUE);
+        }
+        result.readUnlock();
+        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToColumn.status", title));
     }
 
     public FilterModel getModel() {
