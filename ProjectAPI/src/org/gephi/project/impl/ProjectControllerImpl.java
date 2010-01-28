@@ -29,8 +29,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-
-
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Projects;
@@ -365,20 +363,22 @@ public class ProjectControllerImpl implements ProjectController {
     return ws;
     }*/
     public void deleteWorkspace(Workspace workspace) {
-        if (getCurrentWorkspace() == workspace) {
-            closeCurrentProject();
-        }
-        WorkspaceInformation wi = workspace.getLookup().lookup(WorkspaceInformation.class);
-
-        wi.getProject().getLookup().lookup(WorkspaceProviderImpl.class).removeWorkspace(workspace);
-
         //Event
         fireWorkspaceEvent(EventType.CLOSE, workspace);
-
-        if (getCurrentProject() == null || getCurrentProject().getLookup().lookup(WorkspaceProviderImpl.class).getWorkspaces().length == 0) {
-            //Event
-            fireWorkspaceEvent(EventType.DISABLE, workspace);
+        
+        WorkspaceInformation wi = workspace.getLookup().lookup(WorkspaceInformation.class);
+        WorkspaceProviderImpl workspaceProvider = wi.getProject().getLookup().lookup(WorkspaceProviderImpl.class);
+        if(getCurrentWorkspace()==workspace) {
+            //Select the one before, or after
+            Workspace toSelectWorkspace = workspaceProvider.getPrecedingWorkspace(workspace);
+            if(toSelectWorkspace==null) {
+                closeCurrentProject();
+                return;
+            } else {
+                openWorkspace(toSelectWorkspace);
+            }
         }
+        workspaceProvider.removeWorkspace(workspace);
     }
 
     public void openProject(Project project) {
