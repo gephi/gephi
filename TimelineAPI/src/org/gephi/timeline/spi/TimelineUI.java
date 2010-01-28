@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.timeline.spi;
 
 import javax.swing.JPanel;
+import org.gephi.timeline.api.TimelineModel;
 import org.openide.util.NbBundle;
 
 /**

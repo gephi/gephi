@@ -7,20 +7,24 @@ package org.gephi.desktop.timeline;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.gephi.timeline.spi.Timeline;
-import org.gephi.timeline.spi.TimelineUI;
+import org.gephi.timeline.api.TimelineModel;
 
 /**
  *
  * @author jbilcke
  */
-public class TimelineModelImpl {
+public class TimelineModelImpl implements TimelineModel {
     //Model
     private TimelineUI timelineUI;
     private List<Timeline> TimelineList;
     //Listeners
     private List<ChangeListener> listeners;
+    
+    //
+    private Float from;
+    private Float to;
 
     public TimelineModelImpl() {
         listeners = new ArrayList<ChangeListener>();
