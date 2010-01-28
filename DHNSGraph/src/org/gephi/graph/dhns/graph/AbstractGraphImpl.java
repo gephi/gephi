@@ -62,7 +62,14 @@ public abstract class AbstractGraphImpl {
     public void readLock() {
         //System.out.println(Thread.currentThread()+ "read lock");
         if (SwingUtilities.isEventDispatchThread()) {
-            System.err.println("WARNING: readLock() on the EDT");
+            Throwable r = new RuntimeException();
+            int i = 0;
+            for (i = 0; i < r.getStackTrace().length; i++) {
+                if (!r.getStackTrace()[i].toString().startsWith("org.gephi.graph.dhns")) {
+                    break;
+                }
+            }
+            System.err.println("WARNING: readLock() on the EDT - " + r.getStackTrace()[i].toString());
         }
         dhns.getReadLock().lock();
     }
@@ -82,7 +89,14 @@ public abstract class AbstractGraphImpl {
 
     public void writeLock() {
         if (SwingUtilities.isEventDispatchThread()) {
-            System.err.println("WARNING: writeLock() on the EDT");
+            Throwable r = new RuntimeException();
+            int i = 0;
+            for (i = 0; i < r.getStackTrace().length; i++) {
+                if (!r.getStackTrace()[i].toString().startsWith("org.gephi.graph.dhns")) {
+                    break;
+                }
+            }
+            System.err.println("WARNING: readLock() on the EDT - " + r.getStackTrace()[i].toString());
         }
         //System.out.println(Thread.currentThread()+ "write lock");
         dhns.getWriteLock().lock();
