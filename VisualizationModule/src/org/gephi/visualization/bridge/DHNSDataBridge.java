@@ -78,6 +78,10 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         cacheMarker++;
 
         GraphModel graphModel = controller.getModel();
+        if(graphModel==null) {
+            engine.worldUpdated(cacheMarker);
+            return;
+        }
         HierarchicalGraph graph;
         if (graphModel.isDirected()) {
             undirected = false;
