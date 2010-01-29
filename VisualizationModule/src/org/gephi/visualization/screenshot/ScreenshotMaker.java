@@ -42,6 +42,7 @@ import javax.media.opengl.GLDrawableFactory;
 import javax.media.opengl.GLPbuffer;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
@@ -69,13 +70,11 @@ public class ScreenshotMaker implements VizArchitecture {
     private final String TRANSPARENT_BACKGROUND_DEFAULT = "ScreenshotMaker_TransparentBackground_Default";
     private final String AUTOSAVE_DEFAULT = "ScreenshotMaker_Autosave_Default";
     private final String SHOW_MESSAGE = "ScreenshotMaker_Show_Message";
-
     //Architecture
     private GraphDrawableImpl drawable;
     private AbstractEngine engine;
     private TextManager textManager;
     private VizConfig vizConfig;
-
     //Settings
     private int antiAliasing = 2;
     private int width = 1024;
@@ -84,10 +83,8 @@ public class ScreenshotMaker implements VizArchitecture {
     private boolean finishedMessage = true;
     private boolean autoSave = false;
     private String defaultDirectory;
-
     //Running
     private File file;
-
     //State
     private boolean takeTicket = false;
 
@@ -189,21 +186,21 @@ public class ScreenshotMaker implements VizArchitecture {
         ImageUtil.flipImageVertically(image);
         writeImage(image);
 
-    /*Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("png");
-    if (iter.hasNext()) {
-    ImageWriter writer = iter.next();
-    ImageWriteParam iwp = writer.getDefaultWriteParam();
-    //iwp.setCompressionType("DEFAULT");
-    //iwp.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
-    //iwp.setCompressionQuality((int)(9*pngCompresssion));
-    FileImageOutputStream output = new FileImageOutputStream(file);
-    writer.setOutput(output);
-    IIOImage img = new IIOImage(image, null, null);
-    writer.write(null, img, iwp);
-    writer.dispose();
-    }*/
+        /*Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("png");
+        if (iter.hasNext()) {
+        ImageWriter writer = iter.next();
+        ImageWriteParam iwp = writer.getDefaultWriteParam();
+        //iwp.setCompressionType("DEFAULT");
+        //iwp.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
+        //iwp.setCompressionQuality((int)(9*pngCompresssion));
+        FileImageOutputStream output = new FileImageOutputStream(file);
+        writer.setOutput(output);
+        IIOImage img = new IIOImage(image, null, null);
+        writer.write(null, img, iwp);
+        writer.dispose();
+        }*/
 
-    //oldContext.makeCurrent();
+        //oldContext.makeCurrent();
     }
 
     private void writeImage(BufferedImage image) throws Exception {
@@ -268,8 +265,13 @@ public class ScreenshotMaker implements VizArchitecture {
     private void afterTaking() {
         WindowManager.getDefault().getMainWindow().setCursor(Cursor.getDefaultCursor());
         if (finishedMessage && file != null) {
-            String msg = NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.message", file.getName());
-            JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.title"), JOptionPane.INFORMATION_MESSAGE);
+            final String msg = NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.message", file.getName());
+            SwingUtilities.invokeLater(new Runnable() {
+
+                public void run() {
+                    JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.title"), JOptionPane.INFORMATION_MESSAGE);
+                }
+            });
         }
     }
     private static final String DATE_FORMAT_NOW = "HHmmss";
