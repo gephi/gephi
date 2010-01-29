@@ -30,6 +30,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.ui.utils.UIUtils;
@@ -119,6 +120,9 @@ public class SelectionToolbar extends JToolBar {
         setFloatable(false);
         setOrientation(JToolBar.VERTICAL);
         putClientProperty("JToolBar.isRollover", Boolean.TRUE); //NOI18N
+        if (UIUtils.isAquaLookAndFeel()) {
+            setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
         setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
     }
 

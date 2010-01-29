@@ -33,6 +33,7 @@ import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.NodeData;
+import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.objects.ModelClass;
@@ -673,6 +674,46 @@ public class CompatibilityEngine extends AbstractEngine {
         modl.setSelected(true);
         if (modl.getObj() instanceof NodeData) {
             selectedObjects[modelClasses[AbstractEngine.CLASS_NODE].getSelectionId()].add(modl);
+        }
+
+        forceSelectRefresh(modelClasses[AbstractEngine.CLASS_EDGE].getClassId());
+    }
+
+    @Override
+    public void selectObject(Model[] objs) {
+        if (!customSelection) {
+            vizConfig.setRectangleSelection(false);
+            customSelection = true;
+            configChanged = true;
+            //Reset
+            for (ModelClass objClass : selectableClasses) {
+                for (Iterator<ModelImpl> itr = selectedObjects[objClass.getSelectionId()].iterator(); itr.hasNext();) {
+                    ModelImpl o = itr.next();
+                    itr.remove();
+                    o.setSelected(false);
+                }
+            }
+            anySelected = true;
+            //Force highlight
+            if (vizController.getVizModel().isLightenNonSelectedAuto()) {
+
+                if (vizConfig.isLightenNonSelectedAnimation()) {
+                    //Start animation
+                    lightenAnimationDelta = 0.07f;
+                    vizConfig.setLightenNonSelected(true);
+                } else {
+                    vizConfig.setLightenNonSelected(true);
+                }
+            }
+        }
+        for (Model r : objs) {
+            if (r != null) {
+                ModelImpl mdl = (ModelImpl) r;
+                mdl.setSelected(true);
+                if (mdl instanceof NodeData) {
+                    selectedObjects[modelClasses[AbstractEngine.CLASS_NODE].getSelectionId()].add(mdl);
+                }
+            }
         }
 
         forceSelectRefresh(modelClasses[AbstractEngine.CLASS_EDGE].getClassId());

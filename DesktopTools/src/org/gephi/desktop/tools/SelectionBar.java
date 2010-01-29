@@ -24,8 +24,10 @@ import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JPopupMenu;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.selection.SelectionManager;
 import org.openide.util.NbBundle;
@@ -59,6 +61,10 @@ public class SelectionBar extends javax.swing.JPanel {
                 }
             }
         });
+
+        if (UIUtils.isAquaLookAndFeel()) {
+            setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
     }
 
     public JPopupMenu createPopup() {

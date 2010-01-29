@@ -145,11 +145,8 @@ public class SelectionManager implements VizArchitecture {
         if (!isCustomSelection()) {
             setCustomSelection();
         }
-        for (Node n : nodes) {
-            if (n.getNodeData().getModel() != null) {
-                engine.selectObject(n.getNodeData().getModel());
-            }
-        }
+        Model[] models = new Model[nodes.length];
+        engine.selectObject(models);
     }
 
     public void selectEdges(Edge[] edges) {
