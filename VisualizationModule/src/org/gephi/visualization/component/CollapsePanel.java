@@ -24,6 +24,8 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComponent;
+import javax.swing.UIManager;
+import org.gephi.ui.utils.UIUtils;
 
 /**
  *
@@ -36,6 +38,9 @@ public class CollapsePanel extends javax.swing.JPanel {
     /** Creates new form CollapsePanel */
     public CollapsePanel() {
         initComponents();
+        if (UIUtils.isAquaLookAndFeel()) {
+            setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
     }
 
     public void init(JComponent topBar, final JComponent extendedPanel, boolean extended) {
@@ -88,6 +93,7 @@ public class CollapsePanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout());
 
+        buttonPanel.setOpaque(false);
         buttonPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 3));
 
         extendButton.setText(org.openide.util.NbBundle.getMessage(CollapsePanel.class, "CollapsePanel.extendButton.text")); // NOI18N

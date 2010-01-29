@@ -54,6 +54,8 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
     /** Creates new form LabelSettingsPanel */
     public LabelSettingsPanel() {
         initComponents();
+
+        nodeFontButton.setFont(nodeFontButton.getFont().deriveFont(11));
     }
 
     public void setup() {
@@ -309,6 +311,8 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         hideNonSelectedCheckbox = new javax.swing.JCheckBox();
         configureLabelsButton = new javax.swing.JButton();
 
+        nodePanel.setOpaque(false);
+
         showNodeLabelsCheckbox.setText(org.openide.util.NbBundle.getMessage(LabelSettingsPanel.class, "LabelSettingsPanel.showNodeLabelsCheckbox.text")); // NOI18N
         showNodeLabelsCheckbox.setBorder(null);
         showNodeLabelsCheckbox.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -333,13 +337,12 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
             .addGroup(nodePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(showNodeLabelsCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(130, Short.MAX_VALUE))
+                .addContainerGap(163, Short.MAX_VALUE))
             .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(nodePanelLayout.createSequentialGroup()
                     .addGap(27, 27, 27)
                     .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(nodePanelLayout.createSequentialGroup()
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(labelNodeSize)
                             .addGap(18, 18, 18)
                             .addComponent(nodeSizeSlider, 0, 0, Short.MAX_VALUE))
@@ -358,7 +361,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
             .addGroup(nodePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(showNodeLabelsCheckbox)
-                .addContainerGap(80, Short.MAX_VALUE))
+                .addContainerGap(88, Short.MAX_VALUE))
             .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(nodePanelLayout.createSequentialGroup()
                     .addGap(31, 31, 31)
@@ -374,10 +377,12 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
                         .addGroup(nodePanelLayout.createSequentialGroup()
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(nodeSizeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addContainerGap(12, Short.MAX_VALUE)))
+                    .addContainerGap(25, Short.MAX_VALUE)))
         );
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
+
+        edgePanel.setOpaque(false);
 
         showEdgeLabelsCheckbox.setText(org.openide.util.NbBundle.getMessage(LabelSettingsPanel.class, "LabelSettingsPanel.showEdgeLabelsCheckbox.text")); // NOI18N
         showEdgeLabelsCheckbox.setBorder(null);
@@ -439,7 +444,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
                     .addGroup(edgePanelLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(edgeSizeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
@@ -457,7 +462,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         hideNonSelectedCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         hideNonSelectedCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
 
-        configureLabelsButton.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        configureLabelsButton.setFont(new java.awt.Font("Tahoma", 0, 10));
         configureLabelsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/configureLabels.png"))); // NOI18N
         configureLabelsButton.setText(org.openide.util.NbBundle.getMessage(LabelSettingsPanel.class, "LabelSettingsPanel.configureLabelsButton.text")); // NOI18N
         configureLabelsButton.setBorder(null);
@@ -492,10 +497,10 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+            .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
             .addComponent(nodePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(edgePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+            .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -507,11 +512,11 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
                     .addComponent(labelColorMode))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(hideNonSelectedCheckbox)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(configureLabelsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(49, Short.MAX_VALUE))
+                .addContainerGap(70, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

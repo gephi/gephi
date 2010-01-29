@@ -20,6 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.component;
 
+import javax.swing.JComponent;
+import javax.swing.UIManager;
+import org.gephi.ui.utils.UIUtils;
+
 /**
  *
  * @author Mathieu Bastian
@@ -29,10 +33,17 @@ public class VizExtendedBar extends javax.swing.JPanel {
     /** Creates new form VizExtendedBar */
     public VizExtendedBar(VizToolbarGroup[] groups) {
         initComponents();
+        if (UIUtils.isAquaLookAndFeel()) {
+            setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
 
         for (VizToolbarGroup g : groups) {
-            if(g.hasExtended()) {
-                tabbedPane.addTab(g.getName(),g.getExtendedComponent());
+            if (g.hasExtended()) {
+                JComponent c = g.getExtendedComponent();
+                if (UIUtils.isAquaLookAndFeel()) {
+                    c.setBackground(UIManager.getColor("NbExplorerView.background"));
+                }
+                tabbedPane.addTab(g.getName(), c);
             }
         }
     }

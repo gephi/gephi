@@ -21,20 +21,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.component;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import org.gephi.project.api.ProjectController;
 import org.gephi.tools.api.ToolController;
+import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.PropertiesBarAddon;
 import org.gephi.visualization.opengl.AbstractEngine;
@@ -83,8 +80,8 @@ final class GraphTopComponent extends TopComponent {
                 });
             }
         });
-    //remove(waitingLabel);
-    //add(drawable.getGraphComponent(), BorderLayout.CENTER);
+        //remove(waitingLabel);
+        //add(drawable.getGraphComponent(), BorderLayout.CENTER);
     }
 
     private void initCollapsePanel() {
@@ -106,6 +103,9 @@ final class GraphTopComponent extends TopComponent {
         if (tc != null) {
             if (VizController.getInstance().getVizConfig().isToolbar()) {
                 JPanel westPanel = new JPanel(new BorderLayout(0, 0));
+                if (UIUtils.isAquaLookAndFeel()) {
+                    westPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
+                }
 
                 toolbar = tc.getToolbar();
                 if (toolbar != null) {
@@ -121,6 +121,9 @@ final class GraphTopComponent extends TopComponent {
 
             if (VizController.getInstance().getVizConfig().isPropertiesbar()) {
                 JPanel northBar = new JPanel(new BorderLayout());
+                if (UIUtils.isAquaLookAndFeel()) {
+                    northBar.setBackground(UIManager.getColor("NbExplorerView.background"));
+                }
                 propertiesBar = tc.getPropertiesBar();
                 if (propertiesBar != null) {
                     northBar.add(propertiesBar, BorderLayout.CENTER);
@@ -190,7 +193,6 @@ final class GraphTopComponent extends TopComponent {
         add(waitingLabel, java.awt.BorderLayout.CENTER);
         add(collapsePanel, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.gephi.visualization.component.CollapsePanel collapsePanel;
     private javax.swing.JLabel waitingLabel;
@@ -222,8 +224,8 @@ final class GraphTopComponent extends TopComponent {
             return (GraphTopComponent) win;
         }
         Logger.getLogger(GraphTopComponent.class.getName()).warning(
-                "There seem to be multiple components with the '" + PREFERRED_ID +
-                "' ID. That is a potential source of errors and unexpected behavior.");
+                "There seem to be multiple components with the '" + PREFERRED_ID
+                + "' ID. That is a potential source of errors and unexpected behavior.");
         return getDefault();
     }
 

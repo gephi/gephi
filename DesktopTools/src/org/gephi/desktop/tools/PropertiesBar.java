@@ -31,6 +31,8 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
@@ -50,6 +52,9 @@ public class PropertiesBar extends JPanel {
         leftPanel.add(getFullScreenIcon(), BorderLayout.WEST);
         leftPanel.add(selectionBar = new SelectionBar(), BorderLayout.CENTER);
         add(leftPanel, BorderLayout.WEST);
+        if (UIUtils.isAquaLookAndFeel()) {
+            setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
     }
 
     public void select(JPanel propertiesBar) {

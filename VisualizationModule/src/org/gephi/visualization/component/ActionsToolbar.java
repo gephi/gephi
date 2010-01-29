@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
+import javax.swing.UIManager;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -179,6 +180,9 @@ public class ActionsToolbar extends JToolBar {
         setOrientation(JToolBar.VERTICAL);
         putClientProperty("JToolBar.isRollover", Boolean.TRUE); //NOI18N
         setBorder(BorderFactory.createEmptyBorder(0, 2, 15, 2));
+        if (UIUtils.isAquaLookAndFeel()) {
+            setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
     }
 
     @Override
