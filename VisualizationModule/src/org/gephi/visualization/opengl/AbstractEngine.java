@@ -27,6 +27,7 @@ import org.gephi.visualization.api.ModelImpl;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Model;
+import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.Engine;
@@ -164,6 +165,8 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
     public abstract ModelImpl[] getSelectedObjects(int modelClass);
 
     public abstract void selectObject(Model obj);
+
+    public abstract void selectObject(Model[] objs);
 
     public abstract void resetSelection();
 
