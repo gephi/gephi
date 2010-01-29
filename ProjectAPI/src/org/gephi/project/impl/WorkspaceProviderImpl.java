@@ -64,6 +64,24 @@ public class WorkspaceProviderImpl implements WorkspaceProvider {
         instanceContent.remove(workspace);
     }
 
+    public Workspace getPrecedingWorkspace(Workspace workspace) {
+        Workspace[] workspaces = getWorkspaces();
+        int index = -1;
+        for (int i = 0; i < workspaces.length; i++) {
+            if (workspaces[i] == workspace) {
+                index = i;
+            }
+        }
+        if (index != -1 && index >= 1) {
+            //Get preceding
+            return workspaces[index - 1];
+        } else if (index == 0 && workspaces.length > 1) {
+            //Get following
+            return workspaces[1];
+        }
+        return null;
+    }
+
     @Override
     public WorkspaceImpl getCurrentWorkspace() {
         return currentWorkspace;

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>org.joda.time</code-name-base>
+            <suite-component/>
+            <module-dependencies/>
+            <public-packages>
+                <package>org.joda.time</package>
+                <package>org.joda.time.base</package>
+                <package>org.joda.time.chrono</package>
+                <package>org.joda.time.convert</package>
+                <package>org.joda.time.field</package>
+                <package>org.joda.time.format</package>
+                <package>org.joda.time.tz</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/joda-time-1.6.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/joda-time-1.6.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>

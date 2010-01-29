@@ -31,14 +31,20 @@ import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.IDGen;
 import org.gephi.project.api.ProjectController;
 import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.spi.WorkspaceDuplicateProvider;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
 
 /**
  * Singleton which manages the graph access.
  *
  * @author Mathieu Bastian
  */
-public class DhnsGraphController implements GraphController {
+@ServiceProviders({
+    @ServiceProvider(service = GraphController.class),
+    @ServiceProvider(service = WorkspaceDuplicateProvider.class, position = 1000)})
+public class DhnsGraphController implements GraphController, WorkspaceDuplicateProvider {
 
     //Common architecture
     protected IDGen iDGen;
@@ -90,5 +96,16 @@ public class DhnsGraphController implements GraphController {
 
     public GraphModel getModel() {
         return getCurrentDhns();
+    }
+
+    public void duplicate(Workspace source, Workspace destination) {
+        Dhns sourceModel = source.getLookup().lookup(Dhns.class);
+        if (sourceModel != null) {
+            Dhns destModel = destination.getLookup().lookup(Dhns.class);
+            if (destModel == null) {
+                destModel = newDhns(destination);
+            }
+            sourceModel.getDuplicateManager().duplicate(destModel);
+        }
     }
 }

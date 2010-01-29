@@ -78,6 +78,11 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         cacheMarker++;
 
         GraphModel graphModel = controller.getModel();
+        if(graphModel==null) {
+            engine.worldUpdated(cacheMarker);
+            return;
+        }
+        HierarchicalGraph graph;
         if (graphModel.isDirected()) {
             undirected = false;
             graph = graphModel.getHierarchicalDirectedGraphVisible();
@@ -109,14 +114,14 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
         ModelClass nodeClass = object3dClasses[AbstractEngine.CLASS_NODE];
         if (nodeClass.isEnabled() && (graph.getNodeVersion() > nodeVersion || modeManager.requireModeChange())) {
-            updateNodes();
+            updateNodes(graph);
             nodeClass.setCacheMarker(cacheMarker);
         }
 
         ModelClass edgeClass = object3dClasses[AbstractEngine.CLASS_EDGE];
         if (edgeClass.isEnabled() && (graph.getEdgeVersion() > edgeVersion || modeManager.requireModeChange())) {
-            updateEdges();
-            updateMetaEdges();
+            updateEdges(graph);
+            updateMetaEdges(graph);
             edgeClass.setCacheMarker(cacheMarker);
             if (!undirected && vizConfig.isShowArrows()) {
                 object3dClasses[AbstractEngine.CLASS_ARROW].setCacheMarker(cacheMarker);
@@ -125,7 +130,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
         ModelClass potatoClass = object3dClasses[AbstractEngine.CLASS_POTATO];
         if (potatoClass.isEnabled() && (graph.getNodeVersion() > nodeVersion || modeManager.requireModeChange())) {
-            updatePotatoes();
+            updatePotatoes(graph);
             potatoClass.setCacheMarker(cacheMarker);
         }
 
@@ -137,7 +142,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         engine.worldUpdated(cacheMarker);
     }
 
-    private void updateNodes() {
+    private void updateNodes(HierarchicalGraph graph) {
         Modeler nodeInit = engine.getModelClasses()[AbstractEngine.CLASS_NODE].getCurrentModeler();
 
         NodeIterable nodeIterable;
@@ -166,7 +171,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         }
     }
 
-    private void updateEdges() {
+    private void updateEdges(HierarchicalGraph graph) {
         Modeler edgeInit = engine.getModelClasses()[AbstractEngine.CLASS_EDGE].getCurrentModeler();
         Modeler arrowInit = engine.getModelClasses()[AbstractEngine.CLASS_ARROW].getCurrentModeler();
 
@@ -203,7 +208,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         }
     }
 
-    public void updateMetaEdges() {
+    public void updateMetaEdges(HierarchicalGraph graph) {
         Modeler edgeInit = engine.getModelClasses()[AbstractEngine.CLASS_EDGE].getCurrentModeler();
 
         for (Edge edge : graph.getMetaEdges()) {
@@ -221,7 +226,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         }
     }
 
-    public void updatePotatoes() {
+    public void updatePotatoes(HierarchicalGraph graph) {
 
         ModelClass potatoClass = engine.getModelClasses()[AbstractEngine.CLASS_POTATO];
         if (potatoClass.isEnabled()) {
@@ -281,6 +286,10 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             return graph.getNodeVersion() > nodeVersion || graph.getEdgeVersion() > edgeVersion;
         }
         return false;
+    }
+
+    public void resetGraph() {
+        graph = null;
     }
 
     public void reset() {

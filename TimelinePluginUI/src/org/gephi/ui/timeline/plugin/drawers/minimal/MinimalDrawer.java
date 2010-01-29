@@ -22,12 +22,25 @@ import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ColorConvertOp;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import javax.swing.JPanel;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.spi.TimelineDrawer;
+import org.joda.time.DateTime;
+import org.joda.time.DateTime.Property;
+import org.joda.time.Days;
+import org.joda.time.Duration;
+import org.joda.time.Hours;
+import org.joda.time.Interval;
+import org.joda.time.Months;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
+import org.joda.time.chrono.ISOChronology;
 import org.openide.util.lookup.ServiceProvider;
-
 
 /**
  *
@@ -35,17 +48,17 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = TimelineDrawer.class)
 public class MinimalDrawer extends JPanel implements TimelineDrawer {
-    
+
     private static final long serialVersionUID = 1L;
     private MinimalDrawerSettings settings = new MinimalDrawerSettings();
 
     /** Creates new form MinimalDrawer */
     public MinimalDrawer() {
         //initComponents();
-       this.setSize(new Dimension(800, 64));
-       System.out.println("width: "+getWidth());
-        System.out.println("height: "+getHeight());
-      setVisible(true);
+        this.setSize(new Dimension(1000, 38));
+        System.out.println("width: " + getWidth());
+        System.out.println("height: " + getHeight());
+        setVisible(true);
 
     }
     private TimelineModel model = null;
@@ -57,21 +70,32 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer {
     public TimelineModel getModel() {
         return model;
     }
-
     private Integer mousex = null;
-
     private static Cursor CURSOR_DEFAULT = new Cursor(Cursor.DEFAULT_CURSOR);
     private static Cursor CURSOR_LEFT_HOOK = new Cursor(Cursor.E_RESIZE_CURSOR);
     private static Cursor CURSOR_CENTRAL_HOOK = new Cursor(Cursor.MOVE_CURSOR);
     private static Cursor CURSOR_RIGHT_HOOK = new Cursor(Cursor.W_RESIZE_CURSOR);
-
-
     // minimal visible size; below these levesl, we do not show the
     // corresponding information 
     private int MIN_VISIBLE_SIZE_FOR_A_YEAR = 25;
     private int MIN_VISIBLE_SIZE_FOR_A_MONTH = 25;
     private int MIN_VISIBLE_SIZE_FOR_A_DAY = 25;
 
+    public enum TimelineLevel {
+
+        MILLISECOND,
+        SECOND,
+        MINUTE,
+        HOUR,
+        DAY,
+        WEEK,
+        MONTH,
+        YEAR,
+        YEAR_10,
+        YEAR_20,
+        YEAR_50,
+        YEAR_100
+    }
 
     public enum TimelineState {
 
@@ -113,10 +137,13 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-      
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        int tmMarginTop = 2;
+        int tmMarginBottom = 4;
+
         int width = getWidth();
         int height = getHeight();
         settings.update(width, height);
@@ -124,60 +151,260 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer {
 
         g2d.setBackground(settings.background.top);
         g2d.setPaint(settings.background.paint);
-        g2d.fillRect(0, 0, width, height);
+        g2d.fillRect(0, tmMarginTop+1, width, height - tmMarginBottom-2);
 
         g2d.setRenderingHints(settings.renderingHints);
 
+        int selectedX = 200;
+        int selectedY = width - 200;
+        int selectedWidth = selectedY - selectedX;
+
+        //g2d.setColor(settings.shadowColor);
+        //g2d.drawRect(selectedX+1, tmMarginTop+1, selectedWidth, height - tmMarginBottom);
+        g2d.setPaint(settings.selection.paint);
+        g2d.fillRect(selectedX, tmMarginTop, selectedWidth, height - tmMarginBottom - 1);
 
         paintTimelineForDateTime(g2d);
-    //shape.quadTo(3, 3, 4, 4);
-    //shape.curveTo(5, 5, 6, 6, 7, 7);
+
+        g2d.setColor(settings.defaultStrokeColor);
+        g2d.drawRect(selectedX, tmMarginTop, selectedWidth, height - tmMarginBottom - 1);
 
 
     }
-    private void paintTimelineForTesting(Graphics2D g2d) {
-        g2d.setFont(settings.informations.font);
 
-        int width = getWidth();
-        int height = getHeight();
-        
-        String firstLabel = "hello";//model.getFirstComparable().toString();
-        String lastLabel = "world";//model.getLastComparable().toString();
 
-        // get the pixel length of the string
-        int lastLabelLength = (int) (settings.informations.fontMetrics.getStringBounds(lastLabel, null)).getWidth();
-
-        g2d.setColor(settings.informations.fontShadow);
-        g2d.drawString(firstLabel, 6, settings.informations.fontSize + 2);
-        g2d.drawString(lastLabel, width - 4 - lastLabelLength, settings.informations.fontSize + 2);
-
-        g2d.setColor(settings.informations.fontColor);
-        g2d.drawString(firstLabel, 5, settings.informations.fontSize + 1);
-        g2d.drawString(lastLabel, width - 5 - lastLabelLength, settings.informations.fontSize + 1);
-
-    }
     private void paintTimelineForDateTime(Graphics2D g2d) {
-       g2d.setFont(settings.informations.font);
-       
+        DateTime dtFrom = new DateTime(1455, 1, 1, 1, 1, 1, 1);
+        DateTime dtTo = new DateTime(1960, 2, 10, 1, 1, 1, 1);
+        paintUpperRulerForInterval(g2d, dtFrom, dtTo);
+        // paintHoverTip(g2d);
+    }
+
+    private void paintHoverTip(Graphics2D g2d) {
+        g2d.setFont(settings.informations.font);
+        g2d.setColor(settings.informations.fontColor);
+        int leftMargin = settings.informations.leftMargin;
+        int topMargin = settings.informations.topMargin + settings.informations.fontSize;
         int width = getWidth();
         int height = getHeight();
-
-
-        String firstLabel = "hello";//model.getFirstComparable().toString();
-        String lastLabel = "world";//model.getLastComparable().toString();
-
-        // get the pixel length of the string
-        int lastLabelLength = (int) (settings.informations.fontMetrics.getStringBounds(lastLabel, null)).getWidth();
-
-        g2d.setColor(settings.informations.fontShadow);
-        g2d.drawString(firstLabel, 6, settings.informations.fontSize + 2);
-        g2d.drawString(lastLabel, width - 4 - lastLabelLength, settings.informations.fontSize + 2);
-
-        g2d.setColor(settings.informations.fontColor);
-        g2d.drawString(firstLabel, 5, settings.informations.fontSize + 1);
-        g2d.drawString(lastLabel, width - 5 - lastLabelLength, settings.informations.fontSize + 1);
-
+        // TODO take these from the model
+        DateTime dtFrom = new DateTime(1987, 1, 1, 1, 1, 1, 1);
+        DateTime dtTo = new DateTime(1987, 2, 10, 1, 1, 1, 1);
+        Interval interval = new Interval(dtFrom, dtTo);
     }
+
+    private void paintUpperRulerForInterval(Graphics2D g2d, DateTime dtFrom, DateTime dtTo) {
+
+        g2d.setFont(settings.informations.font);
+        g2d.setColor(settings.informations.fontColor);
+        int leftMargin = settings.informations.leftMargin;
+        int textTopPosition = settings.informations.textTopPosition;
+        int width = getWidth();
+        int height = getHeight();
+        // TODO take these from the model
+
+        Interval interval = new Interval(dtFrom, dtTo);
+
+        Period p = interval.toPeriod(PeriodType.days());
+        // try to determine length if we had to show milliseconds
+
+        int n = p.getDays();
+        int unitSize = (int) (settings.informations.fontMetrics.getStringBounds("wednesday  ", null)).getWidth();
+        if (n < (width / unitSize)) {
+            System.out.println("jour");
+            for (int i = 0; i < n; i++) {
+                g2d.drawString(dtFrom.plusDays(i).dayOfMonth().getAsText(),
+                        leftMargin + 2 + i * (width / n),
+                        textTopPosition);
+                g2d.drawLine(leftMargin + i * (width / n), 2, leftMargin + i * (width / n), height - settings.informations.textBottomMargin);
+                paintSmallGraduations(g2d,
+                        leftMargin + i * (width / n),
+                        leftMargin + (i + 1) * (width / n),
+                        Hours.hoursBetween(dtFrom.plusDays(i), dtFrom.plusDays(i + 1)).getHours());
+            }
+
+            return;
+        }
+
+
+        unitSize = (int) (settings.informations.fontMetrics.getStringBounds("wed ", null)).getWidth();
+        if (n < (width / unitSize)) {
+            System.out.println("jou");
+            for (int i = 0; i < n; i++) {
+                g2d.drawString(dtFrom.plusDays(i).dayOfMonth().getAsShortText(),
+                        leftMargin + 2 + i * (width / n),
+                        textTopPosition);
+                g2d.drawLine(leftMargin + i * (width / n), 2, leftMargin + i * (width / n), height - settings.informations.textBottomMargin);
+
+                paintSmallGraduations(g2d,
+                        leftMargin + i * (width / n),
+                        leftMargin + (i + 1) * (width / n),
+                        Hours.hoursBetween(dtFrom.plusDays(i), dtFrom.plusDays(i + 1)).getHours());
+            }
+            return;
+        }
+
+
+        p = interval.toPeriod(PeriodType.days());
+        n = p.getDays();
+        unitSize = (int) (settings.informations.fontMetrics.getStringBounds("30", null)).getWidth();
+        if (n < (width / unitSize)) {
+            System.out.println("j");
+            for (int i = 0; i < n; i++) {
+                g2d.drawString("" + (dtFrom.getDayOfMonth() + i),
+                        leftMargin + 2 + i * (width / n),
+                        textTopPosition);
+                g2d.drawLine(leftMargin + i * (width / n), 2, leftMargin + i * (width / n), height - settings.informations.textBottomMargin);
+
+                paintSmallGraduations(g2d,
+                        leftMargin + i * (width / n),
+                        leftMargin + (i + 1) * (width / n),
+                        Hours.hoursBetween(dtFrom.plusDays(i), dtFrom.plusDays(i + 1)).getHours());
+            }
+            return;
+        }
+
+        p = interval.toPeriod(PeriodType.months());
+        n = p.getMonths();
+        unitSize = (int) (settings.informations.fontMetrics.getStringBounds("September  ", null)).getWidth();
+        if (n < (width / unitSize)) {
+            System.out.println("mois");
+            for (int i = 0; i < n; i++) {
+                g2d.drawString(dtFrom.plusMonths(i).monthOfYear().getAsText(),
+                        leftMargin + 2 + i * (width / n),
+                        textTopPosition);
+                g2d.drawLine(leftMargin + i * (width / n), 2, leftMargin + i * (width / n), height - settings.informations.textBottomMargin);
+
+                paintSmallGraduations(g2d,
+                        leftMargin + i * (width / n),
+                        leftMargin + (i + 1) * (width / n),
+                        Days.daysBetween(dtFrom.plusMonths(i), dtFrom.plusMonths(i + 1)).getDays());
+            }
+            return;
+        }
+
+
+        unitSize = (int) (settings.informations.fontMetrics.getStringBounds("dec ", null)).getWidth();
+        if (n < (width / unitSize)) {
+            System.out.println("mo");
+            for (int i = 0; i < n; i++) {
+                g2d.drawString(dtFrom.plusMonths(i).monthOfYear().getAsShortText(),
+                        leftMargin + 2 + i * (width / n),
+                        textTopPosition);
+                g2d.drawLine(leftMargin + i * (width / n), 2, leftMargin + i * (width / n), height - settings.informations.textBottomMargin);
+                paintSmallGraduations(g2d,
+                        leftMargin + i * (width / n),
+                        leftMargin + (i + 1) * (width / n),
+                        Days.daysBetween(dtFrom.plusMonths(i), dtFrom.plusMonths(i + 1)).getDays());
+            }
+            return;
+        }
+
+        unitSize = (int) (settings.informations.fontMetrics.getStringBounds("29 ", null)).getWidth();
+        if (n < (width / unitSize)) {
+            System.out.println("m");
+            for (int i = 0; i < n; i++) {
+                g2d.drawString("" + (dtFrom.getMonthOfYear() + i), leftMargin + 2 + i * (width / n),
+                        textTopPosition);
+                g2d.drawLine(leftMargin + i * (width / n), 2, leftMargin + i * (width / n), height - settings.informations.textBottomMargin);
+                paintSmallGraduations(g2d,
+                        leftMargin + i * (width / n),
+                        leftMargin + (i + 1) * (width / n),
+                        Days.daysBetween(dtFrom.plusMonths(i), dtFrom.plusMonths(i + 1)).getDays());
+            }
+            return;
+        }
+
+        p = interval.toPeriod(PeriodType.years());
+        n = p.getYears();
+        unitSize = (int) (settings.informations.fontMetrics.getStringBounds("1980 ", null)).getWidth();
+        if (n < (width / unitSize)) {
+            System.out.println("year");
+            for (int i = 0; i < n; i++) {
+                g2d.drawString("" + (dtFrom.getYear() + i), leftMargin + 2 + i * (width / n),
+                        textTopPosition);
+                g2d.drawLine(leftMargin + i * (width / n), 2, leftMargin + i * (width / n), height - settings.informations.textBottomMargin);
+                paintSmallGraduations(g2d,
+                        leftMargin + i * (width / n),
+                        leftMargin + (i + 1) * (width / n),
+                        Months.monthsBetween(dtFrom.plusYears(i), dtFrom.plusYears(i + 1)).getMonths());
+            }
+            return;
+        }
+
+        int group = 10;
+        n = p.getYears() / group;
+        if (n < (width / unitSize)) {
+            System.out.println("10 years");
+            for (int i = 0; i < n; i++) {
+                g2d.drawString("" + (dtFrom.getYear() + i * group), leftMargin + 2 + i * (width / n),
+                        textTopPosition);
+                g2d.drawLine(leftMargin + i * (width / n), 2, leftMargin + i * (width / n), height - settings.informations.textBottomMargin);
+                paintSmallGraduations(g2d,
+                        leftMargin + i * (width / n),
+                        leftMargin + (i + 1) * (width / n),
+                        Months.monthsBetween(dtFrom.plusYears(i * group), dtFrom.plusYears((i + 1) * group)).getMonths());
+            }
+            return;
+        }
+        group = 20;
+        n = p.getYears() / group;
+        if (n < (width / unitSize)) {
+            System.out.println("20 years");
+            for (int i = 0; i < n; i++) {
+                g2d.drawString("" + (dtFrom.getYear() + i * group), leftMargin + 2 + i * (width / n),
+                        textTopPosition);
+                g2d.drawLine(leftMargin + i * (width / n), 2, leftMargin + i * (width / n), height - settings.informations.textBottomMargin);
+                paintSmallGraduations(g2d,
+                        leftMargin + i * (width / n),
+                        leftMargin + (i + 1) * (width / n),
+                        Months.monthsBetween(dtFrom.plusYears(i * group), dtFrom.plusYears((i + 1) * group)).getMonths());
+            }
+            return;
+        }
+        group = 50;
+        n = p.getYears() / group;
+        if (n < (width / unitSize)) {
+            System.out.println("50 years");
+            for (int i = 0; i < n; i++) {
+                g2d.drawString("" + (dtFrom.getYear() + i * group), leftMargin + 2 + i * (width / n),
+                        textTopPosition);
+                g2d.drawLine(leftMargin + i * (width / n), 2, leftMargin + i * (width / n), height - settings.informations.textBottomMargin);
+                paintSmallGraduations(g2d,
+                        leftMargin + i * (width / n),
+                        leftMargin + (i + 1) * (width / n),
+                        Months.monthsBetween(dtFrom.plusYears(i * group), dtFrom.plusYears((i + 1) * group)).getMonths());
+            }
+            return;
+        }
+        group = 100;
+        n = p.getYears() / group;
+        if (n / 100 < (width / unitSize)) {
+            System.out.println("100 years");
+            for (int i = 0; i < n; i++) {
+                g2d.drawString("" + (dtFrom.getYear() + i * group), leftMargin + 2 + i * (width / n),
+                        textTopPosition);
+                g2d.drawLine(leftMargin + i * (width / n), 2, leftMargin + i * (width / n), height - settings.informations.textBottomMargin);
+                paintSmallGraduations(g2d,
+                        leftMargin + i * (width / n),
+                        leftMargin + (i + 1) * (width / n),
+                        Months.monthsBetween(dtFrom.plusYears(i * group), dtFrom.plusYears((i + 1) * group)).getMonths());
+            }
+        }
+        return;
+    }
+
+    private void paintSmallGraduations(Graphics2D g2d, int x, int y, int numOfGrads) {
+        int width = y - x;
+        int height = getHeight();
+        int leftMargin = x;
+        int topMargin = height - settings.informations.fontSize - 2;
+        for (int i = 1; i < numOfGrads; i++) {
+            int xi = leftMargin + i * (width / numOfGrads);
+            g2d.drawLine(xi, topMargin, xi, height - settings.informations.textBottomMargin);
+        }
+    }
+
     private boolean inRange(int x, int a, int b) {
         return (a < x && x < b);
     }
@@ -232,7 +459,7 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer {
 
     private void formMouseDragged(java.awt.event.MouseEvent evt) {
 
-   
+
         int x = evt.getX();
         float w = getWidth();
         int r = 16;//skin.getSelectionHookSideLength();
@@ -281,9 +508,8 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer {
         //model.selectTo(TOP_ALIGNMENT);        // TODO add your handling code here:
         this.repaint(); // so it will repaint all panels
 
-          
+
 
 
     }
-
 }

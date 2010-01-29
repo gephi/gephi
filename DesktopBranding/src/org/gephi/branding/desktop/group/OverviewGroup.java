@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.branding.desktop.group;
 
 import javax.swing.Icon;
+import org.openide.util.ImageUtilities;
 
 /**
  *
@@ -29,7 +30,7 @@ import javax.swing.Icon;
 public class OverviewGroup implements ComponentGroup {
 
     public Icon getIcon() {
-        return null;
+        return ImageUtilities.loadImageIcon("org/gephi/branding/desktop/group/overview.png", false);
     }
 
     public String getDisplayName() {

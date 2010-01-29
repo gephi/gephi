@@ -41,7 +41,11 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
+import org.gephi.utils.progress.Progress;
+import org.gephi.utils.progress.ProgressTicket;
+import org.gephi.utils.progress.ProgressTicketProvider;
 import org.gephi.workspace.api.Workspace;
+import org.gephi.workspace.api.WorkspaceInformation;
 import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.Lookup;
@@ -172,7 +176,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         Graph result;
         if (model.getCurrentQuery() == query) {
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-            result = graphModel.getGraph();
+            result = graphModel.getGraphVisible();
         } else {
             FilterProcessor processor = new FilterProcessor();
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
@@ -202,17 +206,33 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         Graph result;
         if (model.getCurrentQuery() == query) {
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-            result = graphModel.getGraph();
+            result = graphModel.getGraphVisible();
         } else {
             FilterProcessor processor = new FilterProcessor();
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
             result = processor.process((AbstractQueryImpl) query, graphModel);
         }
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        Workspace newWorkspace = pc.newWorkspace(pc.getCurrentProject());
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel(newWorkspace);
-        graphModel.pushFrom(result);
-        pc.openWorkspace(newWorkspace);
+
+        final Graph graphView = result;
+        new Thread(new Runnable() {
+
+            public void run() {
+                ProgressTicketProvider progressProvider = Lookup.getDefault().lookup(ProgressTicketProvider.class);
+                ProgressTicket ticket = null;
+                if (progressProvider != null) {
+                    ticket = progressProvider.createTicket("Export to workspace", null);
+                }
+                Progress.start(ticket);
+                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+                Workspace newWorkspace = pc.duplicateWorkspace(pc.getCurrentWorkspace());
+                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel(newWorkspace);
+                graphModel.clear();
+                graphModel.pushFrom(graphView);
+                Progress.finish(ticket);
+                String workspaceName = newWorkspace.getLookup().lookup(WorkspaceInformation.class).getName();
+                StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToNewWorkspace.status", workspaceName));
+            }
+        }, "Export filter to workspace").start();
     }
 
     public FilterModel getModel() {

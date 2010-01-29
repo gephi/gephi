@@ -71,7 +71,7 @@ public class LayoutModelImpl implements LayoutModel {
         executor.setDefaultErrorHandler(new LongTaskErrorHandler() {
 
             public void fatalError(Throwable t) {
-                Logger.getLogger("").log(Level.SEVERE, "", t.getCause());
+                Logger.getLogger("").log(Level.SEVERE, "", t.getCause() != null ? t.getCause() : t);
             }
         });
     }

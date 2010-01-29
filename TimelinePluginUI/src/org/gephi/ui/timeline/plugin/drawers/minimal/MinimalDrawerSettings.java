@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.gephi.ui.timeline.plugin.drawers.minimal;
 
 import java.awt.BasicStroke;
@@ -24,11 +23,47 @@ import java.util.Map;
  * @author jbilcke
  */
 public class MinimalDrawerSettings {
+
     public RenderingHints renderingHints;
     public Kernel convolutionKernel;
     public ConvolveOp blurOperator;
     private int lastWidth = 0;
     private int lastHeight = 0;
+
+    public class Zone {
+
+        public Color top;
+        public Color bottom;
+        public Paint paint;
+    }
+    public Zone background = new Zone();
+
+    public class Selection {
+
+        public Color top;
+        public Color bottom;
+        public Paint paint;
+    }
+    public Zone selection = new Zone();
+
+    public class Informations {
+
+        public int fontSize;
+        public Font font;
+        public FontMetrics fontMetrics;
+        public Color fontColor;
+
+        public int topMargin;
+        public int leftMargin;
+        public int textTopPosition;
+        public int textBottomMargin;
+    }
+    public Informations informations = new Informations();
+    public Stroke defaultStroke;
+    public Color defaultStrokeColor;
+    public Color shadowColor;
+    public int hookLength;
+
     void update(int width, int height) {
         if (lastWidth == width && lastHeight == height) {
             return;
@@ -36,51 +71,47 @@ public class MinimalDrawerSettings {
         lastWidth = width;
         lastHeight = height;
 
-          background.paint = new GradientPaint(0, 0, background.top, 0, height, background.bottom, true);
+        background.paint = new GradientPaint(0, 0, background.top, 0, height, background.bottom, true);
+        selection.paint = new GradientPaint(0, 0, selection.top, 0, height, selection.bottom, true);
 
     }
-
-    public class Background {
-        public Color top;
-        public Color bottom;
-        public Paint paint;
-    }
-    public Background background = new Background();
-    
-    public class Informations {
-            public int fontSize;
-            public Font font;
-            public FontMetrics fontMetrics;
-            public Color fontColor;
-            public Color fontShadow;
-    }
-    public Informations informations = new Informations();
-    
-    public Stroke defaultStroke;
-    public Color defaultStrokeColor;
-
-    public int hookLength;
 
     public MinimalDrawerSettings() {
         /* DEFINE THEME HERE */
-        background.top = new Color(101, 101, 101, 255);
-        background.bottom = new Color(47, 45, 43, 255);
+        //background.top = new Color(101, 101, 101, 255);
+        //background.bottom = new Color(47, 45, 43, 255);
+        //background.top = new Color(131, 131, 131, 255);
+        //background.bottom = new Color(77, 75, 73, 255);
+        background.top = new Color(151, 151, 151, 255);
+        background.bottom = new Color(97, 105, 103, 255);
         background.paint = new GradientPaint(0, 0, background.top, 0, 10, background.bottom, true);
 
-        informations.fontColor = new Color(235,235,235,255);
-        informations.fontShadow = new Color(35,35,35,255);
+        //selection.top = new Color(89, 161, 235, 153);
+        //selection.bottom = new Color(37, 104, 161, 153);
+        selection.top = new Color(108, 151, 194, 255);
+        selection.bottom = new Color(67, 107, 141, 255);
+        selection.paint = new GradientPaint(0, 0, selection.top, 0, 10, selection.bottom, true);
+
+        informations.fontColor = new Color(235, 235, 235, 255);
+        shadowColor = new Color(35, 35, 35, 105);
+
         defaultStroke = new BasicStroke(1.0f);
         defaultStrokeColor = Color.black;
 
         informations.fontSize = 12;
         informations.font = new Font("DejaVu Sans Mono", 0, informations.fontSize);
-        informations.fontMetrics = new FontMetrics(informations.font) {};
+        informations.fontMetrics = new FontMetrics(informations.font) {
+        };
+        informations.topMargin = 2;
+        informations.leftMargin = 2;
+        informations.textTopPosition = informations.topMargin + informations.fontSize;
+        informations.textBottomMargin = 3;
 
         hookLength = 16;
 
 
 
-                //System.out.println("Generating filters for " + this);
+        //System.out.println("Generating filters for " + this);
         // filters
         Map<Key, Object> map = new HashMap<Key, Object>();
         // bilinear
@@ -104,5 +135,4 @@ public class MinimalDrawerSettings {
         blurOperator = new ConvolveOp(convolutionKernel, ConvolveOp.EDGE_NO_OP,
                 renderingHints);
     }
-
 }

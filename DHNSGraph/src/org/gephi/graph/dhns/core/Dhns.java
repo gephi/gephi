@@ -28,6 +28,7 @@ import org.gephi.graph.api.DecoratorFactory;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphSettings;
@@ -72,6 +73,7 @@ public class Dhns implements GraphModel {
     private DecoratorFactoryImpl decoratorFactory;
     private SettingsManager settingsManager;
     private GraphFactoryImpl factory;
+    private DuplicateManager duplicateManager;
     //Type
     private boolean directed = false;
     private boolean undirected = false;
@@ -87,6 +89,7 @@ public class Dhns implements GraphModel {
         decoratorFactory = new DecoratorFactoryImpl(this);
         settingsManager = new SettingsManager(this);
         graphStructure = new GraphStructure(this);
+        duplicateManager = new DuplicateManager(this);
 
         //AttributeFactory
         AttributeRowFactory attributeRowFactory = null;
@@ -134,6 +137,10 @@ public class Dhns implements GraphModel {
 
     public SettingsManager getSettingsManager() {
         return settingsManager;
+    }
+
+    public DuplicateManager getDuplicateManager() {
+        return duplicateManager;
     }
 
     public NodeIterable newNodeIterable(AbstractNodeIterator iterator) {
@@ -396,7 +403,16 @@ public class Dhns implements GraphModel {
         if (graphImpl.getGraphModel() == this) {
             throw new IllegalArgumentException("The graph must be from a different Workspace");
         }
-        graphStructure.pushFrom(graphImpl);
+        Dhns source = (Dhns) graphImpl.getGraphModel();
+        source.getDuplicateManager().duplicate(this, (GraphViewImpl) graphImpl.getView());
+        graphVersion.incNodeAndEdgeVersion();
+        eventManager.fireEvent(EventType.NODES_AND_EDGES_UPDATED);
+    }
+
+    public void clear() {
+        graphVersion = new GraphVersion();
+        dynamicManager = new DynamicManager(this);
+        graphStructure = new GraphStructure(this);
     }
 
     public void readXML(Element element) {

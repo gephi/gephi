@@ -131,6 +131,7 @@ public class VizController {
 
             public void select(Workspace workspace) {
                 engine.reinit();
+                dataBridge.resetGraph();
             }
 
             public void unselect(Workspace workspace) {

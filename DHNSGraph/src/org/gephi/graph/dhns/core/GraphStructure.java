@@ -140,45 +140,4 @@ public class GraphStructure {
         }
         dhns.getEventManager().fireEvent(EventType.VIEWS_UPDATED);
     }
-
-    public void pushFrom(HierarchicalGraphImpl graph) {
-        GraphViewImpl view = (GraphViewImpl) graph.getView();
-        GraphFactoryImpl factory = dhns.factory();
-        graph.readLock();
-        TreeStructure treeStructure = view.getStructure();
-        TreeStructure newStructure = mainView.getStructure();
-        //Nodes
-        for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
-            AbstractNode node = itr.next();
-            AbstractNode nodeCopy = factory.newNode();
-            nodeCopy.setEnabled(node.isEnabled());
-            AbstractNode parentCopy = node.parent != null ? newStructure.getNodeAt(node.parent.getPre()) : null;
-            newStructure.insertAsChild(nodeCopy, parentCopy);
-            getNodeDictionnary().add(nodeCopy);
-        }
-
-        //Edges
-        ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
-        for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
-            AbstractNode node = itr.next();
-            if (!node.getEdgesOutTree().isEmpty()) {
-                for (edgeIterator.setNode(node.getEdgesOutTree()); edgeIterator.hasNext();) {
-                    AbstractEdge edge = edgeIterator.next();
-                    AbstractEdge edgeCopy;
-                    AbstractNode sourceCopy = newStructure.getNodeAt(edge.getSource(view.getViewId()).getPre());
-                    AbstractNode targetCopy = newStructure.getNodeAt(edge.getTarget(view.getViewId()).getPre());
-                    if (edge.isMixed()) {
-                        edgeCopy = factory.newEdge(sourceCopy, targetCopy, edge.getWeight(), edge.isDirected());
-                    } else {
-                        edgeCopy = factory.newEdge(sourceCopy, targetCopy);
-                        edgeCopy.setWeight(edge.getWeight());
-                    }
-                    sourceCopy.getEdgesOutTree().add(edgeCopy);
-                    targetCopy.getEdgesInTree().add(edgeCopy);
-                    getEdgeDictionnary().add(edgeCopy);
-                }
-            }
-        }
-        graph.readUnlock();
-    }
 }

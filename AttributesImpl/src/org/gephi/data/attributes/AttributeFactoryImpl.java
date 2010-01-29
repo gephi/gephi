@@ -38,6 +38,9 @@ public class AttributeFactoryImpl implements AttributeValueFactory, AttributeRow
     }
 
     public AttributeValue newValue(AttributeColumn column, Object value) {
+        if (value == null) {
+            return new AttributeValueImpl((AttributeColumnImpl) column, null);
+        }
         if (value.getClass() != column.getType().getType() && value.getClass() == String.class) {
             value = column.getType().parse((String) value);
         }
