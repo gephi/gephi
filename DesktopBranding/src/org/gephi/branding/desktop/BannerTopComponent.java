@@ -4,6 +4,7 @@
  */
 package org.gephi.branding.desktop;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -32,6 +33,10 @@ public final class BannerTopComponent extends TopComponent {
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "BannerTopComponent";
 
+    private String selectedGroup;
+    private transient ComponentGroup[] groups;
+    private transient JToggleButton[] buttons;
+
     public BannerTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(BannerTopComponent.class, "CTL_BannerTopComponent"));
@@ -46,9 +51,11 @@ public final class BannerTopComponent extends TopComponent {
 
         addGroupTabs();
     }
-    private String selectedGroup;
-    private transient ComponentGroup[] groups;
-    private transient JToggleButton[] buttons;
+
+    @Override
+    public Dimension getMinimumSize() {
+        return new Dimension(10,10);
+    }
 
     private void addGroupTabs() {
 
@@ -71,6 +78,8 @@ public final class BannerTopComponent extends TopComponent {
         for (final ComponentGroup group : groups) {
             JToggleButton toggleButton = new JToggleButton();
             toggleButton.setText(group.getDisplayName());
+            toggleButton.setFocusable(false);
+            toggleButton.setMargin(new java.awt.Insets(2, 10, 2, 10));
             toggleButton.setIcon(group.getIcon());
             toggleButton.addActionListener(new ActionListener() {
 
@@ -88,7 +97,7 @@ public final class BannerTopComponent extends TopComponent {
                 }
             });
             groupsButtonGroup.add(toggleButton);
-            groupsPanel.add(toggleButton);
+            toolbar.add(toggleButton);
             buttons[i++] = toggleButton;
         }
 
@@ -120,13 +129,30 @@ public final class BannerTopComponent extends TopComponent {
 
         groupsButtonGroup = new javax.swing.ButtonGroup();
         groupsPanel = new javax.swing.JPanel();
+        toolbar = new javax.swing.JToolBar();
         jLabel1 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.GridBagLayout());
 
         groupsPanel.setBackground(new java.awt.Color(255, 255, 255));
-        groupsPanel.setPreferredSize(new java.awt.Dimension(100, 80));
+        groupsPanel.setLayout(new java.awt.GridBagLayout());
+
+        toolbar.setBorder(null);
+        toolbar.setFloatable(false);
+        toolbar.setRollover(true);
+        toolbar.setFocusable(false);
+        toolbar.setOpaque(false);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
+        groupsPanel.add(toolbar, gridBagConstraints);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -150,6 +176,7 @@ public final class BannerTopComponent extends TopComponent {
     private javax.swing.ButtonGroup groupsButtonGroup;
     private javax.swing.JPanel groupsPanel;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JToolBar toolbar;
     // End of variables declaration//GEN-END:variables
 
     /**
