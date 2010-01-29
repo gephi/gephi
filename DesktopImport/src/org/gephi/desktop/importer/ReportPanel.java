@@ -38,7 +38,6 @@ import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.Report;
-import org.gephi.ui.components.JHTMLEditorPane;
 import org.gephi.ui.utils.BusyUtils;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.OutlineModel;
@@ -162,9 +161,13 @@ public class ReportPanel extends javax.swing.JPanel {
         Thread thread = new Thread(fillingThreads, new Runnable() {
 
             public void run() {
-                String str = report.getHtml();
-                //reportEditor.setContentType("text/html");
-                reportEditor.setText(str);
+                final String str = report.getText();
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    public void run() {
+                        reportEditor.setText(str);
+                    }
+                });
             }
         }, "Report Panel Issues Report");
         if (NbPreferences.forModule(ReportPanel.class).getBoolean(SHOW_REPORT, true)) {
@@ -172,36 +175,42 @@ public class ReportPanel extends javax.swing.JPanel {
         }
     }
 
-    private void fillStats(Container container) {
-        //Source
-        sourceLabel.setText(container.getSource());
+    private void fillStats(final Container container) {
+        SwingUtilities.invokeLater(new Runnable() {
 
-        //Autoscale
-        autoscaleCheckbox.setSelected(container.isAutoScale());
+            public void run() {
+                //Source
+                sourceLabel.setText(container.getSource());
 
-        ContainerUnloader unloader = container.getUnloader();
+                //Autoscale
+                autoscaleCheckbox.setSelected(container.isAutoScale());
 
-        //Node & Edge count
-        int nodeCount = unloader.getNodes().size();
-        int edgeCount = unloader.getEdges().size();
-        nodeCountLabel.setText("" + nodeCount);
-        edgeCountLabel.setText("" + edgeCount);
+                ContainerUnloader unloader = container.getUnloader();
 
-        switch (unloader.getEdgeDefault()) {
-            case DIRECTED:
-                graphTypeCombo.setSelectedIndex(0);
-                break;
-            case UNDIRECTED:
-                graphTypeCombo.setSelectedIndex(1);
-                break;
-            case MIXED:
-                graphTypeCombo.setSelectedIndex(2);
-                break;
-        }
+                //Node & Edge count
+                int nodeCount = unloader.getNodes().size();
+                int edgeCount = unloader.getEdges().size();
+                nodeCountLabel.setText("" + nodeCount);
+                edgeCountLabel.setText("" + edgeCount);
 
-        //Dynamic & Hierarchical graph
-        dynamicLabel.setText(String.valueOf(container.isDynamicGraph()));
-        hierarchicalLabel.setText(String.valueOf(container.isHierarchicalGraph()));
+                switch (unloader.getEdgeDefault()) {
+                    case DIRECTED:
+                        graphTypeCombo.setSelectedIndex(0);
+                        break;
+                    case UNDIRECTED:
+                        graphTypeCombo.setSelectedIndex(1);
+                        break;
+                    case MIXED:
+                        graphTypeCombo.setSelectedIndex(2);
+                        break;
+                }
+
+                //Dynamic & Hierarchical graph
+                dynamicLabel.setText(String.valueOf(container.isDynamicGraph()));
+                hierarchicalLabel.setText(String.valueOf(container.isHierarchicalGraph()));
+            }
+        });
+
     }
 
     public void destroy() {
@@ -232,7 +241,7 @@ public class ReportPanel extends javax.swing.JPanel {
         tab1ScrollPane = new javax.swing.JScrollPane();
         issuesOutline = new org.netbeans.swing.outline.Outline();
         tab2ScrollPane = new javax.swing.JScrollPane();
-        reportEditor = new JHTMLEditorPane();
+        reportEditor = new javax.swing.JEditorPane();
         labelGraphType = new javax.swing.JLabel();
         labelNodeCount = new javax.swing.JLabel();
         labelEdgeCount = new javax.swing.JLabel();

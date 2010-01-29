@@ -182,9 +182,6 @@
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
             <Component class="javax.swing.JEditorPane" name="reportEditor">
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JHTMLEditorPane()"/>
-              </AuxValues>
             </Component>
           </SubComponents>
         </Container>
