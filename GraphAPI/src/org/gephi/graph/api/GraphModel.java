@@ -20,9 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.api;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 /**
  *
  * @author Mathieu Bastian
@@ -30,8 +27,6 @@ import org.w3c.dom.Element;
 public interface GraphModel {
 
     public GraphFactory factory();
-
-    public DecoratorFactory decorators();
 
     public GraphSettings settings();
 
@@ -96,10 +91,6 @@ public interface GraphModel {
     public GraphModel copy();
 
     public void clear();
-
-    public void readXML(Element element);
-
-    public Element writeXML(Document document);
 
     /**
      * Add <code>graphListener</code> as a listener to this graph, if it is not already.

@@ -25,15 +25,15 @@ import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
-import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphViewImpl;
-import org.gephi.graph.dhns.filter.Tautology;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantIterator;
 import org.gephi.graph.dhns.node.iterators.LevelIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
+import org.gephi.graph.dhns.predicate.Predicate;
+import org.gephi.graph.dhns.predicate.Tautology;
 import org.gephi.graph.dhns.utils.TreeNodeWrapper;
 
 /**

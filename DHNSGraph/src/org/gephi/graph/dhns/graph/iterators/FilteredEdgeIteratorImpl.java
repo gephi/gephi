@@ -22,9 +22,9 @@ package org.gephi.graph.dhns.graph.iterators;
 
 import java.util.concurrent.locks.Lock;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
+import org.gephi.graph.dhns.predicate.Predicate;
 
 /**
  *

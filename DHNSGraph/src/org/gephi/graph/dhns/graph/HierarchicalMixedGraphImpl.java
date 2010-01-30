@@ -25,17 +25,16 @@ import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.HierarchicalMixedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
-import org.gephi.graph.api.Predicate;
-import org.gephi.graph.api.GraphView;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphViewImpl;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
-import org.gephi.graph.dhns.filter.Tautology;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
+import org.gephi.graph.dhns.predicate.Predicate;
+import org.gephi.graph.dhns.predicate.Tautology;
 
 public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements HierarchicalMixedGraph {
 

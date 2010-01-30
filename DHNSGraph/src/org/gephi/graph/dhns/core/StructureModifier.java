@@ -23,13 +23,13 @@ package org.gephi.graph.dhns.core;
 import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.filter.Tautology;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantAndSelfIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
+import org.gephi.graph.dhns.predicate.Tautology;
 
 /**
  * Business class for external operations on the data structure. Propose blocking mechanism.
