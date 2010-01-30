@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.utils.longtask;
+package org.gephi.utils.longtask.api;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -28,14 +28,20 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.utils.progress.ProgressTicketProvider;
 import org.openide.util.Cancellable;
 import org.openide.util.Lookup;
 
 /**
- *
+ * Portable long-task executor, that supports synchronous and asynchronous
+ * execution, progress, cancellation and error management.
+ * <p>
+ * Note that only one task can be executed by the executor at one time.
+ * 
  * @author Mathieu Bastian
+ * @see LongTask
  */
 public final class LongTaskExecutor {
 

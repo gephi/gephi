@@ -36,7 +36,7 @@ import org.gephi.graph.api.NodeData;
 import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.spi.GraphFileExporterSettings;
 import org.gephi.io.exporter.spi.XMLGraphFileExporter;
-import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.NbBundle;

@@ -176,9 +176,11 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         if (model == null || !model.isRunning()) {
             runButton.setText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.runButton.text"));
             runButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/layout/resources/run.gif", false));
+            runButton.setToolTipText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.runButton.tooltip"));
         } else if (model.isRunning()) {
             runButton.setText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.stopButton.text"));
             runButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/layout/resources/stop.png", false));
+            runButton.setToolTipText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.stopButton.tooltip"));
         }
 
         boolean enabled = model != null && model.getSelectedLayout() != null;

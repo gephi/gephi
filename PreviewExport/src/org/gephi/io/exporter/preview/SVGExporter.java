@@ -39,7 +39,7 @@ import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.SelfLoop;
 import org.gephi.preview.api.UndirectedEdge;
 import org.gephi.preview.api.UnidirectionalEdge;
-import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.workspace.api.Workspace;

@@ -24,7 +24,7 @@ import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsBuilder;
 import java.util.List;
 import org.gephi.statistics.spi.StatisticsUI;
-import org.gephi.utils.longtask.LongTaskListener;
+import org.gephi.utils.longtask.api.LongTaskListener;
 
 /**
  *

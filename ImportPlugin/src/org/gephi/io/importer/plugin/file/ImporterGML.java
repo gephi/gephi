@@ -37,7 +37,7 @@ import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.spi.FileFormatImporter;
 import org.gephi.io.importer.spi.TextImporter;
-import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.filesystems.FileObject;

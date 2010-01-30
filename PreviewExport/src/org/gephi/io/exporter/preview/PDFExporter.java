@@ -18,7 +18,7 @@ import org.gephi.io.exporter.spi.VectorialFileExporter;
 import org.gephi.preview.api.Graph;
 import org.gephi.preview.api.GraphSheet;
 import org.gephi.preview.api.PreviewController;
-import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.workspace.api.Workspace;

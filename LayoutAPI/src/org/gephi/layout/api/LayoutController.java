@@ -25,7 +25,7 @@ import org.gephi.workspace.api.Workspace;
 
 /**
  * A LayoutController is the one responsible for controlling the states of
- * the {@link LayoutModel}
+ * the {@link LayoutModel}. It always controls the current workspace model.
  * 
  * @author Mathieu Bastian
  */

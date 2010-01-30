@@ -4,6 +4,9 @@
  */
 package org.gephi.utils.longtask;
 
+import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.longtask.api.LongTaskListener;
+import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.progress.ProgressTicket;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

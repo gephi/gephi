@@ -43,7 +43,7 @@ public interface LayoutBuilder {
 
     /**
      * The name of the behaviour of the Layout's provided by this Builder.
-     * @return
+     * @return  the display neame of the layout algorithm
      */
     public String getName();
 
@@ -56,7 +56,7 @@ public interface LayoutBuilder {
 
     /**
      * Builds an instance of the Layout.
-     * @return
+     * @return  a new <code>Layout</code> instance
      */
     public Layout buildLayout();
 }

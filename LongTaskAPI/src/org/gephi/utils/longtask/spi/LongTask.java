@@ -18,13 +18,26 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.utils.longtask;
+package org.gephi.utils.longtask.spi;
+
+import org.gephi.utils.progress.ProgressTicket;
 
 /**
- *
+ * Interface that any class can implement to support progress and cancellation.
+ * 
  * @author Mathieu Bastian
  */
-public interface LongTaskErrorHandler {
+public interface LongTask {
 
-    public void fatalError(Throwable t);
+    /**
+     * Cancel the task. Returns <code>true</code> if the task has been sucessfully cancelled, <code>false</code> otherwise.
+     * @return  <code>true</code> if the task has been sucessfully cancelled, <code>false</code> otherwise
+     */
+    public boolean cancel();
+
+    /**
+     * Set the progress ticket for the long task. Can't be null.
+     * @param progressTicket the progress ticket for this task
+     */
+    public void setProgressTicket(ProgressTicket progressTicket);
 }

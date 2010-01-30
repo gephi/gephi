@@ -1,0 +1,15 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+    <body bgcolor="white">
+        Interfaces for creating new mayout algorithms.
+        <h3>Create a new Layout</h3>
+        <ol><li>Create a new module and set <code>LayoutAPI</code> and
+                <code>GraphAPI</code> as dependencies.</li>
+            <li>Create a new builder class by implementing <code>LayoutBuilder</code></li>
+            <li>Add <b>@ServiceProvider</b> annotation to your builder, that it can
+                be found by the system. Set <code>LayoutBuilder</code> as the
+                annotation parameter.</li>
+            <li>Create a new class that implements <code>Layout</code>. Set
+                instantiation code in <code>LayoutBuilder.buildLayout()</code>.</li></ol>
+    </body>
+</html>

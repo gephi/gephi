@@ -33,7 +33,8 @@
                 </dependency>
             </module-dependencies>
             <public-packages>
-                <package>org.gephi.utils.longtask</package>
+                <package>org.gephi.utils.longtask.api</package>
+                <package>org.gephi.utils.longtask.spi</package>
                 <package>org.gephi.utils.progress</package>
             </public-packages>
         </data>

@@ -18,13 +18,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.utils.longtask;
+package org.gephi.utils.longtask.api;
 
 /**
+ * Notify interface that can catch <code>Exception</code> thrown during an
+ * asynchronous task execution.
  *
  * @author Mathieu Bastian
  */
-public interface LongTaskListener {
+public interface LongTaskErrorHandler {
 
-    public void taskFinished(LongTask task);
+    public void fatalError(Throwable t);
 }

@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.generator.spi;
 
 import org.gephi.io.importer.api.ContainerLoader;
-import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.longtask.spi.LongTask;
 
 /**
  * Define a generator, that is generating graph structure from a bunch of parameters.

@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.utils.progress;
 
 /**
+ * Progress functionalities accessor.
  *
  * @author Mathieu Bastian
  */

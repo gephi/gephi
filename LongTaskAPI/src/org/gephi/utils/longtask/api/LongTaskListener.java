@@ -18,25 +18,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.utils.longtask;
+package org.gephi.utils.longtask.api;
 
-import org.gephi.utils.progress.ProgressTicket;
+import org.gephi.utils.longtask.spi.LongTask;
 
 /**
+ * Basic listener to be notified when a long task terminates.
  *
  * @author Mathieu Bastian
  */
-public interface LongTask {
+public interface LongTaskListener {
 
-    /**
-     * Cancel the task. Returns <code>true</code> if the task has been sucessfully cancelled, <code>false</code> otherwise.
-     * @return  <code>true</code> if the task has been sucessfully cancelled, <code>false</code> otherwise
-     */
-    public boolean cancel();
-
-    /**
-     * Set the progress ticket for the long task. Can't be null.
-     * @param progressTicket the progress ticket for this task
-     */
-    public void setProgressTicket(ProgressTicket progressTicket);
+    public void taskFinished(LongTask task);
 }
