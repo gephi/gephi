@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+    <body bgcolor="white">
+        Interfaces for creating new data importers.
+        <h3>Create a new Importer</h3>
+        <ol><li>Create a new module and set <code>ImportAPI</code> as a dependency.</li>
+            <li>Create a new class that implements the particular type of importers
+                you need:<ul><li>TextImporter (text files)</li>
+                    <li>XMLImporter (xml-based files)</li>
+                    <li>StreamImporter (Java ImputStream)</li>
+                    <li>DatabaseImporter (databases)</li></ul></li>
+            <li>Add <b>@ServiceProvider</b> annotation to your class to declare
+                you are implementing an Importer service. Put <code>FileFormatImporter.class</code>
+                as the annotation <b>service</b> parameter for text and XML,
+                <code>StreamImporter.class</code> for Streams and
+                <code>DatabaseImporter.class</code> for Databases.</li></ol>
+        <p>To let your export task be cancelled and its progress watched, implement
+            <code>LongTask</code> interface.</p>
+        <p>Note that Importers are singleton, it's preferable to always instantiate
+            an inner class importer when <code>importData()</code> is called.
+    </body>
+</html>
+

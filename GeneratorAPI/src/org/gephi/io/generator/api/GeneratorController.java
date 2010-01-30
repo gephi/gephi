@@ -23,12 +23,26 @@ package org.gephi.io.generator.api;
 import org.gephi.io.generator.spi.Generator;
 
 /**
- *
+ * Generator tasks controller, maintains generators list and the
+ * execution flow.
+ * 
  * @author Mathieu Bastian
+ * @see Generator
  */
 public interface GeneratorController {
 
+    /**
+     * Returns generators currently loaded in the system.
+     * @return          generators array that are available
+     */
     public Generator[] getGenerators();
 
+    /**
+     * Execute a generator task in a background thread.
+     * <p>
+     * The created elements are appened in the current workspace, or in a new
+     * workspace if the project is empty.
+     * @param generator the generator that is to be executed
+     */
     public void generate(Generator generator);
 }

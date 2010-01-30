@@ -146,6 +146,9 @@ public class SelectionManager implements VizArchitecture {
             setCustomSelection();
         }
         Model[] models = new Model[nodes.length];
+        for(int i=0;i<nodes.length;i++) {
+            models[i] = nodes[i].getNodeData().getModel();
+        }
         engine.selectObject(models);
     }
 

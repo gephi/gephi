@@ -23,6 +23,7 @@ package org.gephi.io.exporter.spi;
 import org.w3c.dom.Document;
 
 /**
+ * Graph export for XML-based files. Provides a document to write in.
  *
  * @author Mathieu Bastian
  */

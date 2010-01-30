@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.exporter.spi;
 
 /**
+ * Define a class that can export data.
  *
  * @author Mathieu Bastian
  */

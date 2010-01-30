@@ -18,21 +18,36 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.io.generator.spi;
 
 import javax.swing.JPanel;
-import org.gephi.io.generator.spi.Generator;
 
 /**
- *
+ * Defines settings panel for a particular generator. Responsible for loading and
+ * saving settings to the <code>Generator</code> instance.
+ * <p>
+ * Note that panels are compatible with <code>ValidationAPI</code>. If the
+ * <code>JPanel</code> returned from {@link #getPanel()} is a <code>ValidationPanel</code>
+ * instance, the dialog OK button will be linked to the <code>ValidationGroup</code>.
  * @author Mathieu Bastian
  */
 public interface GeneratorUI {
 
+    /**
+     * Returns the panel settings.
+     * @return          the panel settings
+     */
     public JPanel getPanel();
 
+    /**
+     * Push the generator instance to get settings values.
+     * @param generator the generator instance that is to be configured
+     */
     public void setup(Generator generator);
 
+    /**
+     * Notify UI that generator settings panel has been closed and that
+     * settings values can be written into current generator instance.
+     */
     public void unsetup();
 }

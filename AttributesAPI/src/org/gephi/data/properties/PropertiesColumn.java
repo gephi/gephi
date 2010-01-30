@@ -21,6 +21,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.properties;
 
 /**
+ * Enum that define static <code>AttributeColumn</code> indexes, like <code>ID</code>
+ * or <code>LABEL</code>. Use these enum to find the index of these columns in
+ * node and edge table.
+ * <h4>Get nodes ID column
+ * <pre>
+ * AttributeColumn col = nodeTable.getColumn(PropertiesColumn.NODE_ID);
  *
  * @author Mathieu Bastian
  */

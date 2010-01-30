@@ -21,19 +21,44 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.exporter.spi;
 
 import javax.swing.JPanel;
-import org.gephi.io.exporter.spi.Exporter;
 
 /**
+ * Define exporter settings user interface.
  *
  * @author Mathieu Bastian
  */
 public interface ExporterUI {
 
+    /**
+     * Returns the exporter settings panel.
+     *
+     * @return a settings panel, or <code>null</code>
+     */
     public JPanel getPanel();
 
+    /**
+     * Link the UI to the exporter and therefore to settings values. This method
+     * is called after <code>getPanel()</code> to push settings.
+     *
+     * @param exporter  the exporter that settings is to be set
+     */
     public void setup(Exporter exporter);
 
+    /**
+     * Notify UI the settings panel has been closed and that new values can be
+     * written.
+     *
+     * @param update    <code>true</code> if user clicked OK or <code>false</code>
+     *                  if CANCEL.
+     */
     public void unsetup(boolean update);
 
+    /**
+     * Returns <code>true</code> if this UI belongs to the given exporter.
+     *
+     * @param exporter  the exporter that has to be tested
+     * @return          <code>true</code> if the UI is matching with <code>exporter</code>,
+     *                  <code>false</code> otherwise.
+     */
     public boolean isMatchingExporter(Exporter exporter);
 }

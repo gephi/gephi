@@ -41,7 +41,7 @@ public interface FileFormatImporter extends Importer {
      * <p>
      * Use <code>FileObject.getExt()</code> to retrieve file extension. Matching can be done not only with
      * metadata but also with file content. The <code>fileObject</code> can be read in that way.
-     * @param fileOject the file in input
+     * @param fileObject the file in input
      * @return <code>true</code> if the importer is compatible with <code>fileObject</code> or <code>false</code>
      * otherwise
      */

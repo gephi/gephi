@@ -10,6 +10,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Complex type for specifying time interval. An, interval is two <code>double</code>
+ * with <code>start</code> inferior or equal to <code>end</code>. Thus intervals
+ * are inclusive.
+ * <p>
+ * This type accepts multiple, overlapping intervals.
  *
  * @author Mathieu Bastian
  */

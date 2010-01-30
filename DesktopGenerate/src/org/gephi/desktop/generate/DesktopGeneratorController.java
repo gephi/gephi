@@ -93,7 +93,7 @@ public class DesktopGeneratorController implements GeneratorController {
         LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
 
             public void fatalError(Throwable t) {
-                Logger.getLogger("").log(Level.WARNING, "", t.getCause());
+                Logger.getLogger("").log(Level.WARNING, "", t.getCause() != null ? t.getCause() : t);
             }
         };
 

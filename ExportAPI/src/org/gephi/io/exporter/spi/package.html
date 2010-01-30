@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+    <body bgcolor="white">
+        Interfaces that plugins are implementing to define and integrate new exporters.
+        <h3>Create a new Graph File exporter</h3>
+        <ol><li>Create a new module, and set <code>ExportAPI</code> as a dependency.</li>
+            <li>Create a new class that implements <code>TextGraphFileExporter</code>
+                or <code>XMLGraphFileExporter</code>.</li>
+            <li>Add <b>@ServiceProvider</b> annotation to your class to declare
+                you are implementing an Exporter service. Put <code>GraphFileExporter.class</code>
+                as the annotation <b>service</b> parameter.</li></ol>
+        <p>To let your export task be cancelled and its progress watched, implement
+            <code>LongTask</code> interface.</p>
+        <p>Note that Exporters are singleton, it's preferable to always instantiate
+            an inner class exporter when <code>exportData()</code> is called.
+        </p>
+    </body>
+</html>
+
