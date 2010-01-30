@@ -28,8 +28,8 @@ import java.awt.event.MouseEvent;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.ui.components.JPopupPane;
-import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.api.WorkspaceInformation;
+import org.gephi.project.api.Workspace;
+import org.gephi.project.api.WorkspaceInformation;
 import org.openide.util.Lookup;
 
 /**

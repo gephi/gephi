@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.api;
 
-import org.gephi.workspace.api.Workspace;
+import org.gephi.project.api.Workspace;
 
 /**
  *

@@ -50,7 +50,7 @@ import org.gephi.io.importer.spi.XMLImporter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.io.processor.spi.Scaler;
 import org.gephi.project.api.ProjectController;
-import org.gephi.workspace.api.Workspace;
+import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;

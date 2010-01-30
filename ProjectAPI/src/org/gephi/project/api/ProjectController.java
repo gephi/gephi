@@ -20,13 +20,16 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.api;
 
-import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.api.WorkspaceListener;
 import org.openide.loaders.DataObject;
 
 /**
- *
+ * Project controller, manage projects and workspaces states.
+ * <p>
+ * This controller is a service and can therefore be found in Lookup:
+ * <pre>ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);</pre>
  * @author Mathieu Bastian
+ * @see Project
+ * @see Workspace
  */
 public interface ProjectController {
 

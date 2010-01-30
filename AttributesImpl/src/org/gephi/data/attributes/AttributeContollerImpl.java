@@ -28,8 +28,8 @@ import org.gephi.data.attributes.model.IndexedAttributeModel;
 import org.gephi.data.attributes.model.TemporaryAttributeModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.WorkspaceProvider;
-import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.api.WorkspaceListener;
+import org.gephi.project.api.Workspace;
+import org.gephi.project.api.WorkspaceListener;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 

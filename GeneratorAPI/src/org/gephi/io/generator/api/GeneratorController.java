@@ -25,7 +25,9 @@ import org.gephi.io.generator.spi.Generator;
 /**
  * Generator tasks controller, maintains generators list and the
  * execution flow.
- * 
+ * <p>
+ * This controller is a singleton and can therefore be found in Lookup:
+ * <pre>GeneratorController gc = Lookup.getDefault().lookup(GeneratorController.class);</pre>
  * @author Mathieu Bastian
  * @see Generator
  */

@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.spi;
 
-import org.gephi.workspace.api.Workspace;
+import org.gephi.project.api.Workspace;
 
 /**
  * General settings class that is used by {@link GraphFileExporter} to get

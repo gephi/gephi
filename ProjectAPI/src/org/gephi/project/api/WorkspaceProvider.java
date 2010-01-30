@@ -20,8 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.api;
 
-import org.gephi.workspace.api.Workspace;
-
 /**
  * Maintains workspaces list for projects, and the currently selected workspace.
  *

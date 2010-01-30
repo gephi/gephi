@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.WorkspaceProvider;
-import org.gephi.workspace.api.Workspace;
+import org.gephi.project.api.Workspace;
 import org.gephi.workspace.impl.WorkspaceImpl;
 
 /**

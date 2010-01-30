@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.gephi.workspace.spi;
+package org.gephi.project.spi;
 
-import org.gephi.workspace.api.Workspace;
+import org.gephi.project.api.Workspace;
 
 /**
  *

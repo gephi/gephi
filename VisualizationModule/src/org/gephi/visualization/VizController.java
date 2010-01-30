@@ -45,8 +45,8 @@ import org.gephi.visualization.screenshot.ScreenshotMaker;
 import org.gephi.visualization.opengl.text.TextManager;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.gephi.visualization.swing.StandardGraphIO;
-import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.api.WorkspaceListener;
+import org.gephi.project.api.Workspace;
+import org.gephi.project.api.WorkspaceListener;
 import org.openide.util.Lookup;
 
 /**

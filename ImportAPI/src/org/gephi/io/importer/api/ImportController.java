@@ -24,7 +24,10 @@ import org.gephi.io.importer.spi.DatabaseType;
 import org.openide.filesystems.FileObject;
 
 /**
- *
+ * Manage and control the import executionf low.
+ * <p>
+ * This controller is a singleton and can therefore be found in Lookup:
+ * <pre>ImportController ic = Lookup.getDefault().lookup(ImportController.class);</pre>
  * @author Mathieu Bastian
  */
 public interface ImportController {

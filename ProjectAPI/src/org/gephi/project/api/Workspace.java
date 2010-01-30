@@ -18,8 +18,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.workspace.api;
+package org.gephi.project.api;
 
+import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.openide.util.Lookup;
 
 /**
@@ -30,6 +31,9 @@ import org.openide.util.Lookup;
  * possesses are usually divided by workspace, for instance one <code>GraphModel</code>
  * per workspace. Therefore this class has a Lookup mechanism to let modules store
  * their model in the workspace's lookup and query it when needed.
+ * <p>
+ * To know how you can manage loading and saving data in Gephi project files, see
+ * {@link WorkspacePersistenceProvider}.
  * <h3>How to associate new data model to the workspace</h3>
  * In your new module, listen to {@link WorkspaceListener} and call <code>add()</code>
  * method when initialize:

@@ -28,7 +28,7 @@ import org.gephi.preview.supervisors.NodeSupervisorImpl;
 import org.gephi.preview.supervisors.SelfLoopSupervisorImpl;
 import org.gephi.preview.supervisors.UndirectedEdgeSupervisorImpl;
 import org.gephi.preview.supervisors.UnidirectionalEdgeSupervisorImpl;
-import org.gephi.workspace.api.Workspace;
+import org.gephi.project.api.Workspace;
 import org.openide.nodes.Node.Property;
 import org.openide.util.Exceptions;
 import org.w3c.dom.Document;

@@ -28,7 +28,10 @@ import org.gephi.io.exporter.spi.Exporter;
 import org.openide.filesystems.FileObject;
 
 /**
- *
+ * Manage exporting tasls.
+ * <p>
+ * This controller is a singleton and can therefore be found in Lookup:
+ * <pre>ExportController ec = Lookup.getDefault().lookup(ExportController.class);</pre>
  * @author Mathieu Bastian
  */
 public interface ExportController {

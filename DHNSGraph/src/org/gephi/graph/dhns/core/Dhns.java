@@ -53,7 +53,7 @@ import org.gephi.graph.dhns.graph.HierarchicalUndirectedGraphImpl;
 import org.gephi.graph.dhns.graph.iterators.EdgeIterableImpl;
 import org.gephi.graph.dhns.graph.iterators.NodeIterableImpl;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
-import org.gephi.workspace.api.Workspace;
+import org.gephi.project.api.Workspace;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
