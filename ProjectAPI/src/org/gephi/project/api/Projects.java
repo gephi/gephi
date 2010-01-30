@@ -20,10 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.api;
 
-import org.openide.util.Lookup;
-
 /**
- *
+ * Hosts the project lists and the currently selected project.
+ * 
  * @author Mathieu Bastian
  */
 public interface Projects {
@@ -32,7 +31,5 @@ public interface Projects {
 
     public Project getCurrentProject();
 
-    public Lookup getLookup();
-
-    public void reinitLookup();
+    public Project[] getProjects();
 }

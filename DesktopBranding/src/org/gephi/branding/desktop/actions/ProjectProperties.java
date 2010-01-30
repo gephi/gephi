@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.ProjectPropertiesUI;
+import org.gephi.project.spi.ProjectPropertiesUI;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;

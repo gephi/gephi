@@ -24,8 +24,10 @@ import javax.swing.event.ChangeListener;
 import org.gephi.project.api.Project;
 
 /**
+ * Hosts various information about a workspace the module is maintaining.
  *
  * @author Mathieu Bastian
+ * @see Workspace
  */
 public interface WorkspaceInformation {
 

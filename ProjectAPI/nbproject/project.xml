@@ -81,6 +81,7 @@
             </module-dependencies>
             <public-packages>
                 <package>org.gephi.project.api</package>
+                <package>org.gephi.project.spi</package>
                 <package>org.gephi.workspace.api</package>
                 <package>org.gephi.workspace.spi</package>
             </public-packages>

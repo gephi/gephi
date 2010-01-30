@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.project.api;
 
 /**
+ * Hosts user data about a project. These information are usually saved to the
+ * project file.
  *
  * @author Mathieu Bastian
  */

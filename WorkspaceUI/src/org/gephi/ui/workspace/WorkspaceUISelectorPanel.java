@@ -55,7 +55,7 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel {
                 if (pc.getCurrentProject() == null) {
                     return;
                 }
-                for (Workspace w : pc.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getLookup().lookupAll(Workspace.class)) {
+                for (Workspace w : pc.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces()) {
                     content.addListComponent(new WorkspacePanePanel(w));
                 }
                 pane = new JPopupPane(WorkspaceUISelectorPanel.this, content);
@@ -122,7 +122,7 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel {
     private Workspace getPrecedentWorkspace(Workspace workspace) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         Workspace prec = null;
-        for (Workspace w : pc.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getLookup().lookupAll(Workspace.class)) {
+        for (Workspace w : pc.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces()) {
             if (w == workspace) {
                 break;
             }
@@ -134,7 +134,7 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel {
     private Workspace getNextWorkspace(Workspace workspace) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         Workspace prec = null;
-        for (Workspace w : pc.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getLookup().lookupAll(Workspace.class)) {
+        for (Workspace w : pc.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces()) {
             if (prec == workspace) {
                 return w;
             }

@@ -24,8 +24,10 @@ import javax.swing.event.ChangeListener;
 import org.openide.loaders.DataObject;
 
 /**
+ * Hosts various information about a project the module is maintaining.
  *
  * @author Mathieu Bastian
+ * @see Project
  */
 public interface ProjectInformation {
 

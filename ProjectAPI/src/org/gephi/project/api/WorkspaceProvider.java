@@ -21,11 +21,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.project.api;
 
 import org.gephi.workspace.api.Workspace;
-import org.openide.util.Lookup;
 
 /**
+ * Maintains workspaces list for projects, and the currently selected workspace.
  *
  * @author Mathieu Bastian
+ * @see Project
  */
 public interface WorkspaceProvider {
 
@@ -33,5 +34,5 @@ public interface WorkspaceProvider {
 
     public boolean hasCurrentWorkspace();
 
-    public Lookup getLookup();
+    public Workspace[] getWorkspaces();
 }

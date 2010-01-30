@@ -63,7 +63,7 @@ public class AttributeContollerImpl implements AttributeController {
             }
         });
         if (projectController.getCurrentProject() != null) {
-            for (Workspace workspace : projectController.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getLookup().lookupAll(Workspace.class)) {
+            for (Workspace workspace : projectController.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces()) {
                 AttributeModel m = workspace.getLookup().lookup(AttributeModel.class);
                 if (m == null) {
                     workspace.add(new IndexedAttributeModel());

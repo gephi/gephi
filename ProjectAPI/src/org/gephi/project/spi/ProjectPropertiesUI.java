@@ -18,11 +18,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.project.api;
+package org.gephi.project.spi;
 
 import javax.swing.JPanel;
+import org.gephi.project.api.Project;
 
 /**
+ * Interface for setting project meta-data dialog.
  *
  * @author Mathieu Bastian
  */

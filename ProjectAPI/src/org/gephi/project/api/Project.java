@@ -23,14 +23,38 @@ package org.gephi.project.api;
 import org.openide.util.Lookup;
 
 /**
+ * Project interface that internally stores, through its Lookup, various
+ * information and workspaces.
+ * <p>
+ * The lookup is a generic container for any instance, thus modules are free to
+ * store and query anything they want to be stored within a project.
  *
  * @author Mathieu Bastian
  */
 public interface Project extends Lookup.Provider {
 
+    /**
+     * Adds an abilities to this project.
+     *
+     * @param instance  the instance that is to be added to the lookup
+     */
     public void add(Object instance);
 
+    /**
+     * Removes an abilities to this project.
+     *
+     * @param instance  the instance that is to be removed from the lookup
+     */
     public void remove(Object instance);
 
+    /**
+     * Gets any optional abilities of this project.
+     * <p>
+     * May contains:
+     * <ol><li>{@link ProjectInformation}</li>
+     * <li>{@link ProjectMetaData}</li>
+     * <li>{@link WorkspaceProvider}</li></ol>
+     * @return the project's lookup
+     */
     public Lookup getLookup();
 }

@@ -22,7 +22,7 @@ package org.gephi.ui.project;
 
 import javax.swing.JPanel;
 import org.gephi.project.api.Project;
-import org.gephi.project.api.ProjectPropertiesUI;
+import org.gephi.project.spi.ProjectPropertiesUI;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
