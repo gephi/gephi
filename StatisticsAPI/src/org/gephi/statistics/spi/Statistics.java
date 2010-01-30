@@ -24,20 +24,27 @@ import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.GraphModel;
 
 /**
+ * Define a Statistics/Metrics execution task, that performs analysis and write results
+ * as new attribute columns and/or HTML report.
  *
- * @author Mathieu Bastian, Patrick J. McSweeney
+ * @author Patrick J. McSweeney, Mathieu Bastian
+ * @see StatisticsBuilder
  */
 public interface Statistics {
 
     /**
-     * Executes the Staistics
+     * Executes the statistics algorithm.
+     * <p>
+     * It is preferable to work on <b>visible</b> graphs, to be synchronized with the
+     * visualization.
      * @param graphModel The graph topology
      * @param attributeModel The elements attributes, and where to write table results
      */
     public void execute(GraphModel graphModel, AttributeModel attributeModel);
 
     /**
-     *
+     * Returns an HTML string that displays the statistics result. Can contains
+     * complex HTML snippets and images.
      * @return An HTML string that displays the results for this Statistics
      */
     public String getReport();

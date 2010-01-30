@@ -27,21 +27,49 @@ import org.gephi.statistics.spi.StatisticsUI;
 import org.gephi.utils.longtask.api.LongTaskListener;
 
 /**
- *
+ * Controller for executing Statistics/Metrics algorithms.
+ * <p>
+ * This controller is a service and can therefore be found in Lookup:
+ * <pre>StatisticsController sc = Lookup.getDefault().lookup(StatisticsController.class);</pre>
  * 
- * @author Mathieu Bastian
+ * @author Patrick J. McSweeney, Mathieu Bastian
+ * @see StatisticsBuilder
  */
 public interface StatisticsController {
 
-    /** */
+    /**
+     * Returns the lists of <code>StatisticsBuilder</code> in the system.
+     * @return              the builders list
+     */
     public List<StatisticsBuilder> getStatistics();
 
-    /** */
+    /**
+     * Execute the statistics algorithm. If <code>statistics</code> implements
+     * <code>LongTask</code>, execution is performed in a background thread and
+     * therefore this method returns immedialtely.
+     * @param statistics    the statistics algorithm instance
+     * @param listener      a listener that is notified when execution finished
+     */
     public void execute(Statistics statistics, LongTaskListener listener);
 
+    /**
+     * Finds the builder from the statistics class.
+     * @param statistics    the statistics class
+     * @return              the builder, or <code>null</code> if not found
+     */
     public StatisticsBuilder getBuilder(Class<? extends Statistics> statistics);
 
+    /**
+     * Sets the visible state for a given <code>StatisticsUI</code>.
+     * @param ui            the UI instance
+     * @param visible       <code>true</code> to display the front-end
+     */
     public void setStatisticsUIVisible(StatisticsUI ui, boolean visible);
 
+    /**
+     * Returns the current <code>StatisticsModel</code>, from the current
+     * workspace
+     * @return              the current <code>StatisticsModel</code>
+     */
     public StatisticsModel getModel();
 }
