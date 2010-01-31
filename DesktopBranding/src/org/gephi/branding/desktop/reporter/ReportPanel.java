@@ -25,6 +25,7 @@ import java.awt.event.ActionListener;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.util.NbBundle;
+import org.w3c.dom.Document;
 
 /**
  *
@@ -33,6 +34,7 @@ import org.openide.util.NbBundle;
 public class ReportPanel extends javax.swing.JPanel {
 
     private Report report;
+    private ReportController reportController;
 
     public ReportPanel(Report report) {
         this.report = report;
@@ -50,6 +52,17 @@ public class ReportPanel extends javax.swing.JPanel {
         labelEmail.setEnabled(followCheckBox.isSelected());
         emailTextField.setEnabled(followCheckBox.isSelected());
         helpLabel.setEnabled(followCheckBox.isSelected());
+        viewDataButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                //Set
+                ReportPanel.this.report.setUserDescription(problemArea.getText());
+                ReportPanel.this.report.setUserEmail(emailTextField.getText());
+                Document document = reportController.buildReportDocument(ReportPanel.this.report);
+                DialogDescriptor dd = new DialogDescriptor(new ViewDataPanel(document), NbBundle.getMessage(ReportPanel.class, "ReportPanel.viewData.title"), true, DialogDescriptor.DEFAULT_OPTION, null, null);
+                DialogDisplayer.getDefault().notify(dd);
+            }
+        });
 
         setup();
     }
@@ -61,7 +74,7 @@ public class ReportPanel extends javax.swing.JPanel {
     }
 
     public void showDialog() {
-        ReportController reportController = new ReportController();
+        reportController = new ReportController();
         Object[] options = new Object[2];
         options[0] = NbBundle.getMessage(ReportPanel.class, "ReportPanel.dialog.sendButton");
         options[1] = DialogDescriptor.CANCEL_OPTION;
@@ -95,6 +108,7 @@ public class ReportPanel extends javax.swing.JPanel {
         emailTextField = new javax.swing.JTextField();
         helpLabel = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        viewDataButton = new javax.swing.JButton();
 
         jLabel1.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.jLabel1.text")); // NOI18N
 
@@ -105,7 +119,7 @@ public class ReportPanel extends javax.swing.JPanel {
         problemArea.setRows(5);
         jScrollPane1.setViewportView(problemArea);
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11));
         jLabel2.setForeground(new java.awt.Color(0, 73, 204));
         jLabel2.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.jLabel2.text")); // NOI18N
 
@@ -115,11 +129,13 @@ public class ReportPanel extends javax.swing.JPanel {
 
         emailTextField.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.emailTextField.text")); // NOI18N
 
-        helpLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        helpLabel.setFont(new java.awt.Font("Tahoma", 0, 10));
         helpLabel.setForeground(new java.awt.Color(102, 102, 102));
         helpLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.helpLabel.text")); // NOI18N
 
         jLabel3.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.jLabel3.text")); // NOI18N
+
+        viewDataButton.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.viewDataButton.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -128,7 +144,10 @@ public class ReportPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
+                        .addComponent(viewDataButton))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
@@ -149,11 +168,12 @@ public class ReportPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(viewDataButton))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
                             .addComponent(summaryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -184,5 +204,6 @@ public class ReportPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelEmail;
     private javax.swing.JTextArea problemArea;
     private javax.swing.JTextField summaryTextField;
+    private javax.swing.JButton viewDataButton;
     // End of variables declaration//GEN-END:variables
 }

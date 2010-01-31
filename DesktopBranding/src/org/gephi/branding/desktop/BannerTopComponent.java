@@ -10,9 +10,8 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 import javax.swing.JToggleButton;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.gephi.branding.desktop.group.ComponentGroup;
 import org.gephi.branding.desktop.group.LaboratoryGroup;
 import org.gephi.branding.desktop.group.OverviewGroup;
@@ -22,6 +21,9 @@ import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 //import org.openide.util.ImageUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.openide.util.NbPreferences;
 import org.openide.windows.TopComponentGroup;
 
 @ConvertAsProperties(dtd = "-//org.gephi.branding.desktop//Banner//EN",
@@ -172,6 +174,7 @@ public final class BannerTopComponent extends TopComponent {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         add(jLabel1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup groupsButtonGroup;
     private javax.swing.JPanel groupsPanel;
