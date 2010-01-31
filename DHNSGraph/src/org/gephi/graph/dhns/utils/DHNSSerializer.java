@@ -93,7 +93,6 @@ public class DHNSSerializer {
         dhnsStatusE.setAttribute("directed", String.valueOf(dhns.isDirected()));
         dhnsStatusE.setAttribute("undirected", String.valueOf(dhns.isUndirected()));
         dhnsStatusE.setAttribute("mixed", String.valueOf(dhns.isMixed()));
-        dhnsStatusE.setAttribute("dynamic", String.valueOf(dhns.isDynamic()));
         dhnsStatusE.setAttribute("hierarchical", String.valueOf(dhns.isHierarchical()));
         dhnsE.appendChild(dhnsStatusE);
 
@@ -127,7 +126,6 @@ public class DHNSSerializer {
                     dhns.setDirected(Boolean.parseBoolean(itemE.getAttribute("directed")));
                     dhns.setUndirected(Boolean.parseBoolean(itemE.getAttribute("undirected")));
                     dhns.setMixed(Boolean.parseBoolean(itemE.getAttribute("mixed")));
-                    dhns.getDynamicManager().setDynamic(Boolean.parseBoolean(itemE.getAttribute("dynamic")));
                 } else if (itemE.getTagName().equals(ELEMENT_IDGEN)) {
                     readIDGen(itemE, dhns.getIdGen());
                 } else if (itemE.getTagName().equals(ELEMENT_SETTINGS)) {

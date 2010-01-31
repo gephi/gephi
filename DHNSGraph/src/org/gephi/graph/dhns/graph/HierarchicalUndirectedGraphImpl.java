@@ -64,7 +64,6 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
         if (!absEdge.hasAttributes()) {
             absEdge.setAttributes(dhns.factory().newEdgeAttributes());
         }
-        dhns.getDynamicManager().pushEdge(edge.getEdgeData());
         view.getStructureModifier().addEdge(absEdge);
         dhns.touchUndirected();
         return true;
@@ -78,7 +77,6 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
             return false;
         }
         AbstractEdge edge = dhns.factory().newEdge(absNode1, absNode2, 1.0f, false);
-        dhns.getDynamicManager().pushEdge(edge.getEdgeData());
         view.getStructureModifier().addEdge(edge);
         dhns.touchUndirected();
         return true;

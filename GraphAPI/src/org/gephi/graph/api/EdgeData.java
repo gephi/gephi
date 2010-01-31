@@ -45,6 +45,4 @@ public interface EdgeData extends Renderable {
     public void setLayoutData(LayoutData layoutData);
 
     public Attributes getAttributes();
-
-    public DynamicData getDynamicData();
 }

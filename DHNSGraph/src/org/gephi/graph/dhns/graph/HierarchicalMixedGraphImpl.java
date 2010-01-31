@@ -76,7 +76,6 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
         if (!absEdge.hasAttributes()) {
             absEdge.setAttributes(dhns.factory().newEdgeAttributes());
         }
-        dhns.getDynamicManager().pushEdge(edge.getEdgeData());
         view.getStructureModifier().addEdge(absEdge);
         if (absEdge.isDirected()) {
             dhns.touchDirected();
@@ -100,7 +99,6 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
         }
 
         AbstractEdge edge = dhns.factory().newEdge(source, target, 1.0f, directed);
-        dhns.getDynamicManager().pushEdge(edge.getEdgeData());
         view.getStructureModifier().addEdge(edge);
         if (directed) {
             dhns.touchDirected();

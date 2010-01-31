@@ -67,7 +67,6 @@ public class Dhns implements GraphModel {
     private GraphStructure graphStructure;
     private GraphVersion graphVersion;
     private EventManager eventManager;
-    private DynamicManager dynamicManager;
     private SettingsManager settingsManager;
     private GraphFactoryImpl factory;
     private DuplicateManager duplicateManager;
@@ -82,7 +81,6 @@ public class Dhns implements GraphModel {
         this.controller = controller;
         graphVersion = new GraphVersion();
         eventManager = new EventManager(this);
-        dynamicManager = new DynamicManager(this);
         settingsManager = new SettingsManager(this);
         graphStructure = new GraphStructure(this);
         duplicateManager = new DuplicateManager(this);
@@ -121,10 +119,6 @@ public class Dhns implements GraphModel {
 
     public IDGen getIdGen() {
         return controller.getIDGen();
-    }
-
-    public DynamicManager getDynamicManager() {
-        return dynamicManager;
     }
 
     public SettingsManager getSettingsManager() {
@@ -221,10 +215,6 @@ public class Dhns implements GraphModel {
 
     public boolean isHierarchical() {
         return graphStructure.getMainView().getStructure().getTreeHeight() - 1 > 0;       //height>0
-    }
-
-    public boolean isDynamic() {
-        return getDynamicManager().isDynamic();
     }
 
     public void addGraphListener(GraphListener graphListener) {
@@ -399,7 +389,6 @@ public class Dhns implements GraphModel {
 
     public void clear() {
         graphVersion = new GraphVersion();
-        dynamicManager = new DynamicManager(this);
         graphStructure = new GraphStructure(this);
     }
 

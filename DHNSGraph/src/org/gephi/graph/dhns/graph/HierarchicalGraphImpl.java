@@ -77,7 +77,6 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
         if (!absNode.getNodeData().hasAttributes()) {
             absNode.getNodeData().setAttributes(dhns.factory().newNodeAttributes());
         }
-        dhns.getDynamicManager().pushNode(node.getNodeData());
         view.getStructureModifier().addNode(absNode, absParent);
         return true;
     }

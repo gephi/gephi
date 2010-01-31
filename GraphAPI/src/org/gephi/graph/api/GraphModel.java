@@ -138,12 +138,4 @@ public interface GraphModel {
      * @see HierarchicalGraph
      */
     public boolean isHierarchical();
-
-    /**
-     * Returns <code>true</code> if the graph is <b>dynamical</b>. That means its structure is
-     * changing over time, elements have a life period.
-     * @return <code>true</code> if the graph is a dynamic graph
-     * @see DynamicGraph
-     */
-    public boolean isDynamic();
 }

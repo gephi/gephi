@@ -179,12 +179,12 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
     private Element createGraph(Document document, Graph graph) throws Exception {
         Element graphE = document.createElement("graph");
 
-        if(graphModel.isDynamic()) {
+        /*if(graphModel.isDynamic()) {
             graphE.setAttribute("type", "dynamic");
         }
-        else {
+        else {*/
             graphE.setAttribute("type", "static");
-        }
+       /* }*/
 
         if(graphModel.isDirected()) {
             graphE.setAttribute("defaultedgetype", "directed");

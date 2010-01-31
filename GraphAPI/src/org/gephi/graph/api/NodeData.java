@@ -46,6 +46,4 @@ public interface NodeData extends Renderable {
     public void setFixed(boolean fixed);
 
     public Attributes getAttributes();
-
-    public DynamicData getDynamicData();
 }

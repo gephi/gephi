@@ -174,7 +174,7 @@ public class DefaultProcessor implements Processor {
         if (nodeDraft.getDynamicFrom() != -1 && nodeDraft.getDynamicTo() != -1) {
             float from = nodeDraft.getDynamicFrom();
             float to = nodeDraft.getDynamicTo();
-            node.getNodeData().getDynamicData().setRange(from, to);
+           // node.getNodeData().getDynamicData().setRange(from, to);
         }
 
         //Attributes
