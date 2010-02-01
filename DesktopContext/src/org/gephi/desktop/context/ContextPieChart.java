@@ -43,6 +43,8 @@ public class ContextPieChart {
         plot.setInteriorGap(0);
         plot.setBackgroundPaint(null);
         plot.setBackgroundAlpha(1f);
+        plot.setSectionPaint("Visible", new Color(0x222222));
+        plot.setSectionPaint("Not visible", new Color(0xDDDDDD));
         chartPanel = new ChartPanel(chart, 100, 100, 10, 10, 300, 300, true, false, false, false, false, false);
         ((FlowLayout) chartPanel.getLayout()).setHgap(0);
         ((FlowLayout) chartPanel.getLayout()).setVgap(0);
