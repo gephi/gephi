@@ -42,13 +42,13 @@ public class EventManager {
         listeners = new ArrayList<GraphListener>();
     }
 
-    public void addListener(GraphListener listener) {
+    public synchronized void addListener(GraphListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
         }
     }
 
-    public void removeListener(GraphListener listener) {
+    public synchronized void removeListener(GraphListener listener) {
         listeners.remove(listener);
     }
 
@@ -73,7 +73,7 @@ public class EventManager {
         }
     }
 
-    private void dispatchEvent(GraphEvent event) {
+    private synchronized void dispatchEvent(GraphEvent event) {
         for (GraphListener list : listeners) {
             list.graphChanged(event);
         }
