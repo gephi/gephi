@@ -21,36 +21,34 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.desktop.partition;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.PartitionController;
 import org.gephi.partition.api.PartitionModel;
 import org.gephi.partition.spi.Transformer;
 import org.gephi.partition.spi.TransformerUI;
-import org.gephi.ui.components.JLazyComboBox;
 import org.gephi.ui.utils.BusyUtils;
 import org.gephi.ui.utils.BusyUtils.BusyLabel;
+import org.jdesktop.swingx.JXBusyLabel;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.util.Lookup;
-import org.openide.util.LookupEvent;
-import org.openide.util.LookupListener;
 import org.openide.util.NbBundle;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class PartitionChooser extends javax.swing.JPanel implements PropertyChangeListener, LookupListener {
+public class PartitionChooser extends javax.swing.JPanel implements PropertyChangeListener {
 
     //Const
     private final String NO_SELECTION;
@@ -61,8 +59,6 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
     private final String HIDE_PIE;
     //Architecture
     private PartitionModel model;
-    private Lookup.Result<AttributeColumn> nodeResult;
-    private Lookup.Result<AttributeColumn> edgeResult;
 
     public PartitionChooser() {
         initComponents();
@@ -90,7 +86,10 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
         java.awt.GridBagConstraints gridBagConstraints;
 
         chooserPanel = new javax.swing.JPanel();
-        partitionComboBox = new JLazyComboBox();
+        partitionComboBox = new javax.swing.JComboBox();
+        refreshToolbar = new javax.swing.JToolBar();
+        refreshBusyLabel = new JXBusyLabel(new Dimension(18,18));
+        refreshButton = new javax.swing.JButton();
         controlPanel = new javax.swing.JPanel();
         applyButton = new javax.swing.JButton();
         groupLink = new org.jdesktop.swingx.JXHyperlink();
@@ -104,12 +103,35 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
 
         partitionComboBox.setPreferredSize(new java.awt.Dimension(56, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         chooserPanel.add(partitionComboBox, gridBagConstraints);
+
+        refreshToolbar.setFloatable(false);
+        refreshToolbar.setRollover(true);
+        refreshToolbar.setOpaque(false);
+
+        refreshBusyLabel.setText(org.openide.util.NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.refreshBusyLabel.text")); // NOI18N
+        refreshBusyLabel.setVisible(false);
+        refreshToolbar.add(refreshBusyLabel);
+
+        refreshButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/partition/resources/refresh.png"))); // NOI18N
+        refreshButton.setText(org.openide.util.NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.refreshButton.text")); // NOI18N
+        refreshButton.setToolTipText(org.openide.util.NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.refreshButton.toolTipText")); // NOI18N
+        refreshButton.setFocusable(false);
+        refreshButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        refreshButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        refreshToolbar.add(refreshButton);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 0, 0);
+        chooserPanel.add(refreshToolbar, gridBagConstraints);
 
         add(chooserPanel, java.awt.BorderLayout.PAGE_START);
 
@@ -167,7 +189,6 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
     }//GEN-LAST:event_applyButtonActionPerformed
 
     private void initEvents() {
-        partitionComboBox.setModel(newLazyModel());
         partitionComboBox.addItemListener(new ItemListener() {
 
             public void itemStateChanged(ItemEvent e) {
@@ -206,6 +227,30 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
                 pc.showPie(pieLink.getText().equals(SHOW_PIE) ? true : false);
             }
         });
+        refreshButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                refreshBusyLabel.setVisible(true);
+                refreshButton.setVisible(false);
+                ((JXBusyLabel) refreshBusyLabel).setBusy(true);
+                new Thread(new Runnable() {
+
+                    public void run() {
+                        PartitionController pc = Lookup.getDefault().lookup(PartitionController.class);
+                        pc.refreshPartitions();
+                        SwingUtilities.invokeLater(new Runnable() {
+
+                            public void run() {
+                                ((JXBusyLabel) refreshBusyLabel).setBusy(false);
+                                refreshButton.setVisible(true);
+                                refreshBusyLabel.setVisible(false);
+                                refreshPartitions();
+                            }
+                        });
+                    }
+                }).start();
+            }
+        });
     }
     private TransformerUI currentUI;
     private JPanel currentPanel;
@@ -230,13 +275,17 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
     }
 
     private void refreshPartitions() {
+        partitionComboBox.setModel(getComboBoxModel());
+    }
+
+    private DefaultComboBoxModel getComboBoxModel() {
+        DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
         Partition[] partitionArray = new Partition[0];
         if (model.getSelectedPartitioning() == PartitionModel.NODE_PARTITIONING) {
             partitionArray = model.getNodePartitions();
         } else if (model.getSelectedPartitioning() == PartitionModel.EDGE_PARTITIONING) {
             partitionArray = model.getEdgePartitions();
         }
-        JLazyComboBox.LazyComboBoxModel comboBoxModel = newLazyModel();
         if (partitionArray.length > 0) {
             comboBoxModel.addElement(NO_SELECTION);
             for (Partition p : partitionArray) {
@@ -245,9 +294,8 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
                     comboBoxModel.setSelectedItem(p);
                 }
             }
-            comboBoxModel.setReset(false);
         }
-        partitionComboBox.setModel(comboBoxModel);
+        return comboBoxModel;
     }
     private BusyLabel busyLabel;
 
@@ -367,16 +415,6 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
         if (model != null) {
             this.model = model;
             model.addPropertyChangeListener(this);
-
-            if (nodeResult != null) {
-                nodeResult.removeLookupListener(this);
-                edgeResult.removeLookupListener(this);
-            }
-            AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-            nodeResult = ac.getModel().getNodeTable().getLookup().lookupResult(AttributeColumn.class);
-            edgeResult = ac.getModel().getNodeTable().getLookup().lookupResult(AttributeColumn.class);
-            nodeResult.addLookupListener(this);
-            edgeResult.addLookupListener(this);
         }
         refreshModel();
     }
@@ -386,17 +424,7 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
             model.removePropertyChangeListener(this);
             model = null;
         }
-        if (nodeResult != null) {
-            nodeResult.removeLookupListener(this);
-            edgeResult.removeLookupListener(this);
-        }
         refreshModel();
-    }
-
-    public void resultChanged(LookupEvent ev) {
-        if (model != null) {
-            ((JLazyComboBox.LazyComboBoxModel) partitionComboBox.getModel()).setReset(true);
-        }
     }
 
     private void setEnable(boolean enable) {
@@ -404,29 +432,6 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
         partitionComboBox.setEnabled(enable);
         groupLink.setEnabled(enable);
         pieLink.setEnabled(enable);
-    }
-
-    private JLazyComboBox.LazyComboBoxModel newLazyModel() {
-        return new JLazyComboBox.LazyComboBoxModel() {
-
-            @Override
-            protected Object[] loadItems() {
-                PartitionController pc = Lookup.getDefault().lookup(PartitionController.class);
-                pc.refreshPartitions();
-
-                if (model.getSelectedPartitioning() == PartitionModel.NODE_PARTITIONING) {
-                    return model.getNodePartitions();
-                } else if (model.getSelectedPartitioning() == PartitionModel.EDGE_PARTITIONING) {
-                    return model.getEdgePartitions();
-                }
-                return new Object[0];
-            }
-
-            @Override
-            protected Object getInitialSelection() {
-                return NO_SELECTION;
-            }
-        };
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyButton;
@@ -436,5 +441,8 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
     private org.jdesktop.swingx.JXHyperlink groupLink;
     private javax.swing.JComboBox partitionComboBox;
     private org.jdesktop.swingx.JXHyperlink pieLink;
+    private javax.swing.JLabel refreshBusyLabel;
+    private javax.swing.JButton refreshButton;
+    private javax.swing.JToolBar refreshToolbar;
     // End of variables declaration//GEN-END:variables
 }
