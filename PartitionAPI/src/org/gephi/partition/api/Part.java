@@ -26,7 +26,7 @@ import java.awt.Color;
  *
  * @author Mathieu Bastian
  */
-public interface Part<Element> {
+public interface Part<Element> extends Comparable {
 
     public Element[] getObjects();
 

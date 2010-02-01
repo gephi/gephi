@@ -432,6 +432,7 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
         partitionComboBox.setEnabled(enable);
         groupLink.setEnabled(enable);
         pieLink.setEnabled(enable);
+        refreshButton.setEnabled(enable);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyButton;
