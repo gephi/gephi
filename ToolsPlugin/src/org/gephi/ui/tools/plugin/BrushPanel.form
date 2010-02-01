@@ -24,10 +24,10 @@
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="labelIntensity" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="intensitySpinner" min="-2" pref="41" max="-2" attributes="0"/>
+              <Component id="intensitySpinner" min="-2" pref="54" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="260" max="32767" attributes="0"/>
+              <EmptySpace pref="247" max="32767" attributes="0"/>
               <Component id="labelDiffusion" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="diffusionCombobox" min="-2" max="-2" attributes="0"/>
@@ -41,7 +41,7 @@
               <Component id="labelColor" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
               <Component id="colorButton" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
               <Component id="labelIntensity" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
-              <Component id="intensitySpinner" alignment="3" min="-2" pref="22" max="-2" attributes="0"/>
+              <Component id="intensitySpinner" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
               <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
           </Group>
           <Group type="103" alignment="0" groupAlignment="3" attributes="0">

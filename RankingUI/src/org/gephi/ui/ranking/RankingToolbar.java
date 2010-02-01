@@ -168,9 +168,6 @@ public class RankingToolbar extends JToolBar {
         setRollover(true);
         Border b = (Border) UIManager.get("Nb.Editor.Toolbar.border"); //NOI18N
         setBorder(b);
-        if (UIUtils.isAquaLookAndFeel()) {
-            setBackground(UIManager.getColor("NbExplorerView.background"));
-        }
 
         elementGroup.add(nodeButton);
         nodeButton.setText(NbBundle.getMessage(RankingToolbar.class, "RankingToolbar.nodes.label"));

@@ -120,9 +120,7 @@ public class SelectionToolbar extends JToolBar {
         setFloatable(false);
         setOrientation(JToolBar.VERTICAL);
         putClientProperty("JToolBar.isRollover", Boolean.TRUE); //NOI18N
-        if (UIUtils.isAquaLookAndFeel()) {
-            setBackground(UIManager.getColor("NbExplorerView.background"));
-        }
+        setOpaque(false);
         setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
     }
 

@@ -25,6 +25,7 @@ import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.JToggleButton;
+import javax.swing.UIManager;
 import org.gephi.project.api.ProjectController;
 import org.gephi.ranking.api.RankingController;
 import org.gephi.ranking.api.RankingModel;
@@ -34,6 +35,7 @@ import org.gephi.ui.ranking.RankingToolbar;
 import org.gephi.ui.ranking.ResultListPanel;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -63,7 +65,9 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
         initEvents();
         initComponents();
         initSouth();
-
+        if (UIUtils.isAquaLookAndFeel()) {
+            mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
         refreshModel();
     }
 
@@ -179,30 +183,36 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        mainPanel = new javax.swing.JPanel();
         rankingToolbar = new RankingToolbar(model);
         rankingChooser = new RankingChooser(model, rankingModel);
         listResultContainerPanel = new javax.swing.JPanel();
         listResultPanel = new ResultListPanel();
         southToolbar = new javax.swing.JToolBar();
 
-        setLayout(new java.awt.GridBagLayout());
+        setOpaque(true);
+        setLayout(new java.awt.BorderLayout());
+
+        mainPanel.setLayout(new java.awt.GridBagLayout());
 
         rankingToolbar.setFloatable(false);
         rankingToolbar.setRollover(true);
+        rankingToolbar.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 1.0;
-        add(rankingToolbar, gridBagConstraints);
+        mainPanel.add(rankingToolbar, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        add(rankingChooser, gridBagConstraints);
+        mainPanel.add(rankingChooser, gridBagConstraints);
 
+        listResultContainerPanel.setOpaque(false);
         listResultContainerPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         listResultPanel.setBorder(null);
@@ -215,21 +225,25 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 5, 1, 5);
-        add(listResultContainerPanel, gridBagConstraints);
+        mainPanel.add(listResultContainerPanel, gridBagConstraints);
 
         southToolbar.setFloatable(false);
         southToolbar.setRollover(true);
+        southToolbar.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LAST_LINE_END;
         gridBagConstraints.weightx = 1.0;
-        add(southToolbar, gridBagConstraints);
+        mainPanel.add(southToolbar, gridBagConstraints);
+
+        add(mainPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel listResultContainerPanel;
     private javax.swing.JScrollPane listResultPanel;
+    private javax.swing.JPanel mainPanel;
     private javax.swing.JPanel rankingChooser;
     private javax.swing.JToolBar rankingToolbar;
     private javax.swing.JToolBar southToolbar;

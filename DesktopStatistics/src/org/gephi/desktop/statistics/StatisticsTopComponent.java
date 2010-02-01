@@ -23,11 +23,14 @@ package org.gephi.desktop.statistics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Logger;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -50,6 +53,7 @@ public final class StatisticsTopComponent extends TopComponent implements Change
 
     public StatisticsTopComponent() {
         initComponents();
+        initDesign();
         setName(NbBundle.getMessage(StatisticsTopComponent.class, "CTL_StatisticsTopComponent"));
         setToolTipText(NbBundle.getMessage(StatisticsTopComponent.class, "HINT_StatisticsTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH));
@@ -123,6 +127,14 @@ public final class StatisticsTopComponent extends TopComponent implements Change
         statisticsPanel.setEnabled(enable);
         toolbar.setEnabled(enable);
         settingsButton.setEnabled(enable);
+    }
+
+    private void initDesign() {
+        Border b = (Border) UIManager.get("Nb.Editor.Toolbar.border"); //NOI18N
+        toolbar.setBorder(b);
+        if (UIUtils.isAquaLookAndFeel()) {
+            toolbar.setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
     }
 
     /** This method is called from within the constructor to
