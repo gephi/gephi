@@ -37,7 +37,7 @@ public interface Partition<Element> {
 
     public Part<Element> getPart(Element element);
 
-    public Map<Element, Part<Element>> getMap();
+    public int getElementsCount();
 
     @Override
     public String toString();

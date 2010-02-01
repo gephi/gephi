@@ -228,7 +228,7 @@ public class PartitionBuilder implements CategoryBuilder {
             if (partition.getPartsCount() == 0) {
                 //build partition
                 GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-                this.partition = Lookup.getDefault().lookup(PartitionController.class).buildPartition(partition.getColumn(), graphModel.getGraphVisible());
+                this.partition = Lookup.getDefault().lookup(PartitionController.class).buildPartition(partition.getColumn(), graphModel.getGraph());
             }
             return partition;
         }
