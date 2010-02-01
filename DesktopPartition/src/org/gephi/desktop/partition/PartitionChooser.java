@@ -29,6 +29,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.partition.api.Partition;
@@ -39,8 +40,8 @@ import org.gephi.partition.spi.TransformerUI;
 import org.gephi.ui.components.JLazyComboBox;
 import org.gephi.ui.utils.BusyUtils;
 import org.gephi.ui.utils.BusyUtils.BusyLabel;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.util.Lookup;
-import org.openide.util.Lookup.Result;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.NbBundle;
@@ -66,6 +67,9 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
     public PartitionChooser() {
         initComponents();
         initEvents();
+        if (UIUtils.isAquaLookAndFeel()) {
+            setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
         NO_SELECTION = NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.choose.text");
         BUSY_MSG = NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.busyMessage");
         GROUP_LABEL = NbBundle.getMessage(PartitionChooser.class, "PartitionChooser.group.label");
@@ -95,6 +99,7 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
 
         setLayout(new java.awt.BorderLayout());
 
+        chooserPanel.setOpaque(false);
         chooserPanel.setLayout(new java.awt.GridBagLayout());
 
         partitionComboBox.setPreferredSize(new java.awt.Dimension(56, 25));
@@ -108,6 +113,7 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
 
         add(chooserPanel, java.awt.BorderLayout.PAGE_START);
 
+        controlPanel.setOpaque(false);
         controlPanel.setLayout(new java.awt.GridBagLayout());
 
         applyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/partition/resources/apply.gif"))); // NOI18N
@@ -151,6 +157,7 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
         add(controlPanel, java.awt.BorderLayout.PAGE_END);
 
         centerScrollPane.setBorder(null);
+        centerScrollPane.setOpaque(false);
         add(centerScrollPane, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -216,6 +223,7 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
             currentUI = model.getSelectedTransformerBuilder().getUI();
             if (model.getSelectedPartition() != null) {
                 currentPanel = currentUI.getPanel();
+                currentPanel.setOpaque(false);
                 currentUI.setup(model.getSelectedPartition(), t);
             }
         }
@@ -386,8 +394,8 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
     }
 
     public void resultChanged(LookupEvent ev) {
-        if(model!=null) {
-            ((JLazyComboBox.LazyComboBoxModel)partitionComboBox.getModel()).setReset(true);
+        if (model != null) {
+            ((JLazyComboBox.LazyComboBoxModel) partitionComboBox.getModel()).setReset(true);
         }
     }
 
