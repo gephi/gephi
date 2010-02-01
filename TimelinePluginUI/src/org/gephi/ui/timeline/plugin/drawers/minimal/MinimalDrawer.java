@@ -114,6 +114,7 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer, MouseListen
 
     public void mouseEntered(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet.");
+        mousex = e.getX();
     }
 
     public void mouseExited(MouseEvent e) {
@@ -584,28 +585,40 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer, MouseListen
         switch (currentState) {
             case RESIZE_FROM:
                 // TODO
-                selectedFrom += delta;
-                //model.selectFrom(((float) (sf + delta)) / w);
+                 if ((sf + delta <= 0)) {
+                    sf = 0;
+                }
+                 else if (Math.abs(st-sf+delta) > settings.selection.minimalWidth) {
+                    sf += delta;
+                    model.selectFrom(((float) (sf + delta)) / w);
+                } else {
+                }
                 break;
             case RESIZE_TO:
                 // TODO
-                selectedTo += delta;
-                //model.selectTo(((float) (st + delta)) / w);
+                  if ((st + delta >= w - 1)) {
+                    st = (int)w-1;
+                } else if (Math.abs((st+delta)-sf) > settings.selection.minimalWidth) {
+                    st += delta;
+                    model.selectTo(((float) (st + delta)) / w);
+                }
                 break;
             case MOVING:
-                selectedFrom += delta;
-                selectedTo += delta;
-                // TODO
-                //model.selectInterval(((float) (sf + delta)) / w, ((float) (st + delta)) / w);
+                if ((sf + delta <= 0)) {
+                    sf = 0;
+                } else if (st + delta >= w - 1) {
+                    st = (int)w-1;
+                }  else {
+                    sf += delta;
+                    st += delta;
+                    // TODO
+                    model.selectInterval(((float) (sf + delta)) / w, ((float) (st + delta)) / w);
+                }
                 break;
 
         }
 
-        //model.selectTo(TOP_ALIGNMENT);        // TODO add your handling code here:
         this.repaint(); // so it will repaint all panels
-
-
-
 
     }
 }

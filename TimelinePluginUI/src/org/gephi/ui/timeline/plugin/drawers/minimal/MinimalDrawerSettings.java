@@ -45,6 +45,7 @@ public class MinimalDrawerSettings {
         public Paint paint;
         public int visibleHookWidth; // the "visible hook" (mouse hook, to move the selection box)
         public int invisibleHookMargin; // let the "invisible hook" be a bit larger on the left..
+        public int minimalWidth;
 
         public Color mouseOverTopColor;
         public Color activatedTopColor;
@@ -102,8 +103,9 @@ public class MinimalDrawerSettings {
         selection.top = new Color(108, 151, 194, 255);
         selection.bottom = new Color(57, 97, 131, 255);
         selection.paint = new GradientPaint(0, 0, selection.top, 0, 20, selection.bottom, true);
-        selection.visibleHookWidth = 15; // the "visible hook" (mouse hook, to move the selection box)
+        selection.visibleHookWidth = 12; // the "visible hook" (mouse hook, to move the selection box)
         selection.invisibleHookMargin = 3; // let the "invisible hook" be a bit larger on the left..
+        selection.minimalWidth = 16;
         selection.mouseOverTopColor = new Color(102,195, 145, 255);
         selection.activatedTopColor = new Color(188, 118, 114, 255);
         selection.mouseOverBottomColor = new Color(60, 143, 96, 255);
