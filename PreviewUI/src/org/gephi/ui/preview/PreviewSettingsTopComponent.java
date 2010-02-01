@@ -7,12 +7,14 @@ import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewPreset;
 import org.gephi.project.api.ProjectController;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
@@ -40,7 +42,10 @@ final class PreviewSettingsTopComponent extends TopComponent {
         setName(NbBundle.getMessage(PreviewSettingsTopComponent.class, "CTL_PreviewSettingsTopComponent"));
         setToolTipText(NbBundle.getMessage(PreviewSettingsTopComponent.class, "HINT_PreviewSettingsTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH));
-
+        if (UIUtils.isAquaLookAndFeel()) {
+            mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
+        
         // property sheet
         propertySheet = new PropertySheet();
         propertySheet.setNodes(new Node[]{new PreviewNode()});
@@ -183,6 +188,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        mainPanel = new javax.swing.JPanel();
         presetPanel = new javax.swing.JPanel();
         presetComboBox = new javax.swing.JComboBox();
         presetToolbar = new javax.swing.JToolBar();
@@ -195,8 +201,11 @@ final class PreviewSettingsTopComponent extends TopComponent {
         ratioLabel = new javax.swing.JLabel();
         ratioSlider = new javax.swing.JSlider();
 
-        setLayout(new java.awt.GridBagLayout());
+        setLayout(new java.awt.BorderLayout());
 
+        mainPanel.setLayout(new java.awt.GridBagLayout());
+
+        presetPanel.setOpaque(false);
         presetPanel.setLayout(new java.awt.GridBagLayout());
 
         presetComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "---" }));
@@ -214,6 +223,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
         presetToolbar.setBorder(null);
         presetToolbar.setFloatable(false);
         presetToolbar.setRollover(true);
+        presetToolbar.setOpaque(false);
 
         org.openide.awt.Mnemonics.setLocalizedText(box, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.box.text")); // NOI18N
         box.setMaximumSize(new java.awt.Dimension(32767, 32767));
@@ -254,7 +264,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(presetPanel, gridBagConstraints);
+        mainPanel.add(presetPanel, gridBagConstraints);
 
         refreshButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/preview/resources/refresh.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.refreshButton.text")); // NOI18N
@@ -270,8 +280,9 @@ final class PreviewSettingsTopComponent extends TopComponent {
         gridBagConstraints.gridheight = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(7, 5, 0, 10);
-        add(refreshButton, gridBagConstraints);
+        mainPanel.add(refreshButton, gridBagConstraints);
 
+        propertiesPanel.setOpaque(false);
         propertiesPanel.setLayout(new java.awt.BorderLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -280,7 +291,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        add(propertiesPanel, gridBagConstraints);
+        mainPanel.add(propertiesPanel, gridBagConstraints);
 
         org.openide.awt.Mnemonics.setLocalizedText(labelRatio, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.labelRatio.text")); // NOI18N
         labelRatio.setEnabled(false);
@@ -289,7 +300,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 7, 3, 5);
-        add(labelRatio, gridBagConstraints);
+        mainPanel.add(labelRatio, gridBagConstraints);
 
         org.openide.awt.Mnemonics.setLocalizedText(ratioLabel, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.ratioLabel.text")); // NOI18N
         ratioLabel.setEnabled(false);
@@ -300,7 +311,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 3, 0);
-        add(ratioLabel, gridBagConstraints);
+        mainPanel.add(ratioLabel, gridBagConstraints);
 
         ratioSlider.setEnabled(false);
         ratioSlider.setPreferredSize(new java.awt.Dimension(120, 23));
@@ -311,7 +322,9 @@ final class PreviewSettingsTopComponent extends TopComponent {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 3, 5, 20);
-        add(ratioSlider, gridBagConstraints);
+        mainPanel.add(ratioSlider, gridBagConstraints);
+
+        add(mainPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
@@ -364,6 +377,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
     private javax.swing.JLabel box;
     private javax.swing.JLabel labelPreset;
     private javax.swing.JLabel labelRatio;
+    private javax.swing.JPanel mainPanel;
     private javax.swing.JComboBox presetComboBox;
     private javax.swing.JPanel presetPanel;
     private javax.swing.JToolBar presetToolbar;

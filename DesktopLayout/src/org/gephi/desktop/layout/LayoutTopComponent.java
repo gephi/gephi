@@ -22,10 +22,12 @@ package org.gephi.desktop.layout;
 
 import java.awt.BorderLayout;
 import java.util.logging.Logger;
+import javax.swing.UIManager;
 import org.gephi.layout.api.LayoutModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -51,6 +53,9 @@ public final class LayoutTopComponent extends TopComponent {
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
         layoutPanel = new LayoutPanel();
+        if (UIUtils.isAquaLookAndFeel()) {
+            layoutPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
         add(layoutPanel, BorderLayout.CENTER);
 
         Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {

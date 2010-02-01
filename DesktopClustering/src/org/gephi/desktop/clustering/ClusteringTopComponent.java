@@ -12,6 +12,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.clustering.api.Cluster;
@@ -22,6 +23,7 @@ import org.gephi.clustering.spi.ClustererUI;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -54,7 +56,10 @@ public final class ClusteringTopComponent extends TopComponent implements Change
         setToolTipText(NbBundle.getMessage(ClusteringTopComponent.class, "HINT_ClusteringTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH, false));
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
-
+        if (UIUtils.isAquaLookAndFeel()) {
+            mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
+        
         ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
@@ -251,6 +256,7 @@ public final class ClusteringTopComponent extends TopComponent implements Change
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        mainPanel = new javax.swing.JPanel();
         controlToolbar = new javax.swing.JToolBar();
         settingsButton = new javax.swing.JButton();
         algorithmComboBox = new javax.swing.JComboBox();
@@ -259,11 +265,14 @@ public final class ClusteringTopComponent extends TopComponent implements Change
         runButton = new javax.swing.JButton();
         resetLink = new org.jdesktop.swingx.JXHyperlink();
 
-        setLayout(new java.awt.GridBagLayout());
+        setLayout(new java.awt.BorderLayout());
+
+        mainPanel.setLayout(new java.awt.GridBagLayout());
 
         controlToolbar.setBorder(null);
         controlToolbar.setFloatable(false);
         controlToolbar.setRollover(true);
+        controlToolbar.setOpaque(false);
 
         org.openide.awt.Mnemonics.setLocalizedText(settingsButton, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.settingsButton.text")); // NOI18N
         settingsButton.setFocusable(false);
@@ -281,7 +290,7 @@ public final class ClusteringTopComponent extends TopComponent implements Change
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
-        add(controlToolbar, gridBagConstraints);
+        mainPanel.add(controlToolbar, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -289,7 +298,7 @@ public final class ClusteringTopComponent extends TopComponent implements Change
         gridBagConstraints.ipady = 10;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 3, 5);
-        add(algorithmComboBox, gridBagConstraints);
+        mainPanel.add(algorithmComboBox, gridBagConstraints);
 
         descriptionLabel.setLineWrap(true);
         org.openide.awt.Mnemonics.setLocalizedText(descriptionLabel, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.descriptionLabel.text")); // NOI18N
@@ -301,7 +310,9 @@ public final class ClusteringTopComponent extends TopComponent implements Change
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(2, 5, 0, 5);
-        add(descriptionLabel, gridBagConstraints);
+        mainPanel.add(descriptionLabel, gridBagConstraints);
+
+        resultPanel.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -309,7 +320,7 @@ public final class ClusteringTopComponent extends TopComponent implements Change
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        add(resultPanel, gridBagConstraints);
+        mainPanel.add(resultPanel, gridBagConstraints);
 
         runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/clustering/resources/run.gif"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(runButton, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.runButton.text")); // NOI18N
@@ -324,7 +335,7 @@ public final class ClusteringTopComponent extends TopComponent implements Change
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
-        add(runButton, gridBagConstraints);
+        mainPanel.add(runButton, gridBagConstraints);
 
         org.openide.awt.Mnemonics.setLocalizedText(resetLink, org.openide.util.NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.resetLink.text")); // NOI18N
         resetLink.addActionListener(new java.awt.event.ActionListener() {
@@ -337,7 +348,9 @@ public final class ClusteringTopComponent extends TopComponent implements Change
         gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 5);
-        add(resetLink, gridBagConstraints);
+        mainPanel.add(resetLink, gridBagConstraints);
+
+        add(mainPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     private void resetLinkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetLinkActionPerformed
@@ -355,6 +368,7 @@ public final class ClusteringTopComponent extends TopComponent implements Change
     private javax.swing.JComboBox algorithmComboBox;
     private javax.swing.JToolBar controlToolbar;
     private org.jdesktop.swingx.JXLabel descriptionLabel;
+    private javax.swing.JPanel mainPanel;
     private org.jdesktop.swingx.JXHyperlink resetLink;
     private javax.swing.JPanel resultPanel;
     private javax.swing.JButton runButton;

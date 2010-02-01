@@ -39,7 +39,7 @@ public class CollapsePanel extends javax.swing.JPanel {
     public CollapsePanel() {
         initComponents();
         if (UIUtils.isAquaLookAndFeel()) {
-            setBackground(UIManager.getColor("NbExplorerView.background"));
+            buttonPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
     }
 
@@ -91,9 +91,9 @@ public class CollapsePanel extends javax.swing.JPanel {
         buttonPanel = new javax.swing.JPanel();
         extendButton = new javax.swing.JButton();
 
+        setOpaque(false);
         setLayout(new java.awt.BorderLayout());
 
-        buttonPanel.setOpaque(false);
         buttonPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 3));
 
         extendButton.setText(org.openide.util.NbBundle.getMessage(CollapsePanel.class, "CollapsePanel.extendButton.text")); // NOI18N

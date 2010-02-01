@@ -39,6 +39,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -52,6 +54,7 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.ui.utils.BusyUtils;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.ui.utils.UIUtils;
 import org.netbeans.swing.etable.ETableColumnModel;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -109,6 +112,13 @@ final class DataTableTopComponent extends TopComponent implements LookupListener
         setName(NbBundle.getMessage(DataTableTopComponent.class, "CTL_DataTableTopComponent"));
         setToolTipText(NbBundle.getMessage(DataTableTopComponent.class, "HINT_DataTableTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH));
+
+        //toolbar
+        Border b = (Border) UIManager.get("Nb.Editor.Toolbar.border"); //NOI18N
+        controlToolbar.setBorder(b);
+        if (UIUtils.isAquaLookAndFeel()) {
+            controlToolbar.setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
 
         initEvents();
 
@@ -400,8 +410,8 @@ final class DataTableTopComponent extends TopComponent implements LookupListener
         elementGroup.add(nodesButton);
         org.openide.awt.Mnemonics.setLocalizedText(nodesButton, org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.nodesButton.text")); // NOI18N
         nodesButton.setFocusable(false);
-        nodesButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        nodesButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        nodesButton.setHorizontalTextPosition(0);
+        nodesButton.setVerticalTextPosition(3);
         nodesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nodesButtonActionPerformed(evt);
@@ -412,8 +422,8 @@ final class DataTableTopComponent extends TopComponent implements LookupListener
         elementGroup.add(edgesButton);
         org.openide.awt.Mnemonics.setLocalizedText(edgesButton, org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.edgesButton.text")); // NOI18N
         edgesButton.setFocusable(false);
-        edgesButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        edgesButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        edgesButton.setHorizontalTextPosition(0);
+        edgesButton.setVerticalTextPosition(3);
         edgesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 edgesButtonActionPerformed(evt);
@@ -448,7 +458,6 @@ final class DataTableTopComponent extends TopComponent implements LookupListener
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
         add(controlToolbar, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -473,7 +482,6 @@ final class DataTableTopComponent extends TopComponent implements LookupListener
         bannerPanel.add(labelBanner, gridBagConstraints);
 
         org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.refreshButton.text")); // NOI18N
-        refreshButton.setOpaque(false);
         refreshButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 refreshButtonActionPerformed(evt);

@@ -30,6 +30,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.ranking.api.Ranking;
@@ -38,7 +39,7 @@ import org.gephi.ranking.api.RankingModel;
 import org.gephi.ranking.api.RankingUIModel;
 import org.gephi.ranking.api.Transformer;
 import org.gephi.ui.components.SplineEditor.SplineEditor;
-import org.jdesktop.animation.timing.interpolation.Interpolator;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -183,6 +184,7 @@ public class RankingChooser extends javax.swing.JPanel {
             }
             centerPanel = transformerUI.getPanel(transformer, selectedRanking);
             centerPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5), BorderFactory.createEtchedBorder()));
+            centerPanel.setOpaque(false);
             add(centerPanel, BorderLayout.CENTER);
             applyButton.setVisible(true);
             splineButton.setVisible(true);
@@ -316,8 +318,10 @@ public class RankingChooser extends javax.swing.JPanel {
         applyButton = new javax.swing.JButton();
         splineButton = new org.jdesktop.swingx.JXHyperlink();
 
+        setOpaque(false);
         setLayout(new java.awt.BorderLayout());
 
+        chooserPanel.setOpaque(false);
         chooserPanel.setLayout(new java.awt.GridBagLayout());
 
         rankingComboBox.setToolTipText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.rankingComboBox.toolTipText")); // NOI18N
@@ -332,6 +336,7 @@ public class RankingChooser extends javax.swing.JPanel {
 
         add(chooserPanel, java.awt.BorderLayout.PAGE_START);
 
+        controlPanel.setOpaque(false);
         controlPanel.setLayout(new java.awt.GridBagLayout());
 
         applyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/ranking/apply.gif"))); // NOI18N

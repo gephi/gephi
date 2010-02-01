@@ -92,7 +92,7 @@ public class VizConfig {
     public static final boolean DEFAULT_EDGE_LABELS = false;
     public static final boolean DEFAULT_SHOW_EDGES = true;
     public static final boolean DEFAULT_HIGHLIGHT = true;
-    public static final boolean DEFAULT_NEIGHBOUR_SELECT = true;
+    public static final boolean DEFAULT_NEIGHBOUR_SELECT = false;
     public static final boolean DEFAULT_HIDE_NONSELECTED_EDGES = false;
     public static final boolean DEFAULT_SELECTEDNODE_UNIQUE_COLOR = false;
     public static final boolean DEFAULT_EDGE_HAS_UNIQUE_COLOR = false;

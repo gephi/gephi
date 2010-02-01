@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import javax.swing.JLabel;
@@ -92,7 +93,12 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
         NumberFormat formatter = NumberFormat.getPercentInstance();
         formatter.setMaximumFractionDigits(2);
         this.partition = partition;
-        for (final Part p : partition.getParts()) {
+
+        Part[] partsArray = partition.getParts();
+        Arrays.sort(partsArray);
+
+        for (int i = 0; i < partsArray.length; i++) {
+            final Part p = partsArray[partsArray.length - 1 - i];
             final ColorChooser colorChooser = new ColorChooser(nodeColorTransformer.getMap().get(p.getValue()));
             colorChooser.setPreferredSize(new Dimension(13, 13));
             colorChooser.setMaximumSize(new Dimension(13, 13));

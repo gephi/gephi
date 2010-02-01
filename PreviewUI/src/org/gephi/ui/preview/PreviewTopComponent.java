@@ -8,7 +8,9 @@ import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import org.gephi.preview.api.GraphSheet;
+import org.gephi.ui.utils.UIUtils;
 import org.jdesktop.swingx.JXBusyLabel;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
@@ -27,6 +29,9 @@ final class PreviewTopComponent extends TopComponent {
         setName(NbBundle.getMessage(PreviewTopComponent.class, "CTL_PreviewTopComponent"));
         setToolTipText(NbBundle.getMessage(PreviewTopComponent.class, "HINT_PreviewTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH));
+        if (UIUtils.isAquaLookAndFeel()) {
+            previewPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
 
         bannerPanel.setVisible(false);
 
@@ -127,6 +132,7 @@ final class PreviewTopComponent extends TopComponent {
         sketchPanel.setLayout(new java.awt.BorderLayout());
         previewPanel.add(sketchPanel, "previewCard");
 
+        refreshPanel.setOpaque(false);
         refreshPanel.setLayout(new java.awt.GridBagLayout());
 
         busyLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);

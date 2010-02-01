@@ -307,6 +307,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
 
         layoutToolbar.setFloatable(false);
         layoutToolbar.setRollover(true);
+        layoutToolbar.setOpaque(false);
 
         presetsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/layout/resources/preset.png"))); // NOI18N
         presetsButton.setText(org.openide.util.NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.text")); // NOI18N
@@ -329,6 +330,8 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         add(layoutToolbar, gridBagConstraints);
+
+        propertySheet.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;

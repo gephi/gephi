@@ -47,9 +47,7 @@ public class Toolbar extends JToolBar {
         setOrientation(JToolBar.VERTICAL);
         putClientProperty("JToolBar.isRollover", Boolean.TRUE); //NOI18N
         setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
-        if (UIUtils.isAquaLookAndFeel()) {
-            setBackground(UIManager.getColor("NbExplorerView.background"));
-        }
+        setOpaque(false);
     }
 
     @Override

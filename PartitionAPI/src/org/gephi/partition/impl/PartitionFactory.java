@@ -290,5 +290,11 @@ public class PartitionFactory {
         public String toString() {
             return getDisplayName();
         }
+
+        public int compareTo(Object o) {
+            int thisCount = objects.length;
+            int theirCount = ((PartImpl) o).objects.length;
+            return thisCount == theirCount ? 0 : thisCount > theirCount ? 1 : -1;
+        }
     }
 }
