@@ -106,6 +106,7 @@ public class FilterThread extends Thread {
         System.out.println("#Nodes: " + result.getNodeCount());
         System.out.println("#Edges: " + result.getEdgeCount());
         if (running) {
+            VizController.getInstance().getVizModel().setAutoSelectNeighbor(false);
             VizController.getInstance().getSelectionManager().selectNodes(result.getNodes().toArray());
             VizController.getInstance().getSelectionManager().selectEdges(result.getEdges().toArray());
         } else {

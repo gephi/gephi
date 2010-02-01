@@ -31,9 +31,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
+import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.NodeData;
-import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.objects.ModelClass;
@@ -714,6 +714,11 @@ public class CompatibilityEngine extends AbstractEngine {
                     o.setSelected(false);
                 }
             }
+
+             for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(modelClasses[AbstractEngine.CLASS_EDGE].getClassId()); itr.hasNext();) {
+                 ModelImpl obj = itr.next();
+                 obj.setSelected(false);
+             }
         }
         for (Model r : objs) {
             if (r != null) {
@@ -721,6 +726,8 @@ public class CompatibilityEngine extends AbstractEngine {
                 mdl.setSelected(true);
                 if (mdl.getObj() instanceof NodeData) {
                     selectedObjects[modelClasses[AbstractEngine.CLASS_NODE].getSelectionId()].add(mdl);
+                } else if(mdl.getObj() instanceof EdgeData)  {
+                    selectedObjects[modelClasses[AbstractEngine.CLASS_EDGE].getSelectionId()].add(mdl);
                 }
             }
         }
