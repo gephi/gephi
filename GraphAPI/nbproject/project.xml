@@ -25,6 +25,7 @@
             </module-dependencies>
             <public-packages>
                 <package>org.gephi.graph.api</package>
+                <package>org.gephi.graph.spi</package>
             </public-packages>
         </data>
     </configuration>

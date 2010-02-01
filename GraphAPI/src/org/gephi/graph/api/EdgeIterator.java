@@ -23,9 +23,10 @@ package org.gephi.graph.api;
 import java.util.Iterator;
 
 /**
+ * Iterator wrapper for edge elements
  *
  * @author Mathieu Bastian
+ * @see EdgeIterable
  */
 public interface EdgeIterator extends Iterator<Edge> {
-
 }

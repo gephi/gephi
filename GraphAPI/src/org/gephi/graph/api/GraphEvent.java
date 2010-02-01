@@ -21,11 +21,26 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.api;
 
 /**
- *
+ * Graph event interface, for listening to global changes.
+ * <ul>
+ * <li><b>NODES_UPDATED:</b> Nodes have been added or removed</li>
+ * <li><b>EDGES_UPDATED:</b> Edges have been added or removed</li>
+ * <li><b>NODES_AND_EDGES_UPDATED:</b> Nodes and edges have been added or removed</li>
+ * <li><b>VIEWS_UPDATED:</b> The current visible view changed</li>
+ * </ul>
  * @author Mathieu Bastian
+ * @see GraphListener
  */
 public interface GraphEvent {
 
+    /**
+     * <ul>
+     * <li><b>NODES_UPDATED:</b> Nodes have been added or removed</li>
+     * <li><b>EDGES_UPDATED:</b> Edges have been added or removed</li>
+     * <li><b>NODES_AND_EDGES_UPDATED:</b> Nodes and edges have been added or removed</li>
+     * <li><b>VIEWS_UPDATED:</b> The current visible view changed</li>
+     * </ul>
+     */
     public enum EventType {
 
         NODES_UPDATED, EDGES_UPDATED, NODES_AND_EDGES_UPDATED, VIEWS_UPDATED

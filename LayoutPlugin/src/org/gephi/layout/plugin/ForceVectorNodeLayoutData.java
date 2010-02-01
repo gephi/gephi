@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.layout.plugin;
 
-import org.gephi.graph.api.LayoutData;
+import org.gephi.graph.spi.LayoutData;
 
 
 /**

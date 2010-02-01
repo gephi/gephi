@@ -23,7 +23,7 @@ package org.gephi.graph.dhns.edge;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.EdgeData;
-import org.gephi.graph.api.LayoutData;
+import org.gephi.graph.spi.LayoutData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.TextData;

@@ -26,7 +26,7 @@ import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.TextData;
-import org.gephi.graph.api.TextDataFactory;
+import org.gephi.graph.spi.TextDataFactory;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.edge.SelfLoopImpl;

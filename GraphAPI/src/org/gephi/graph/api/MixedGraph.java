@@ -22,7 +22,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.api;
 
 /**
- *
+ * Graph that contains both directed and undirected edges.
+ * 
  * @author Mathieu Bastian
  */
 public interface MixedGraph extends Graph {

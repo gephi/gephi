@@ -18,17 +18,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.graph.api;
+package org.gephi.graph.spi;
 
-import javax.swing.tree.TreeNode;
+import org.gephi.graph.api.Renderable;
+import org.gephi.graph.api.TextData;
 
 /**
+ * Text data factory interface, implemented by other module that provide
+ * <code>TextData</code> instance.
  *
  * @author Mathieu Bastian
+ * @see Renderable
  */
-public interface Tree {
+public interface TextDataFactory {
 
-    public NodeIterable getNodes();
-
-    public EdgeIterable getEdges();
+    public TextData newTextData();
 }

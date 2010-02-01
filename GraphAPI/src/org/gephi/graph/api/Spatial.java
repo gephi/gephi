@@ -4,6 +4,7 @@
 package org.gephi.graph.api;
 
 /**
+ * Spatial data interface.
  *
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */

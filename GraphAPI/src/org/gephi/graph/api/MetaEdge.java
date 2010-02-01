@@ -18,13 +18,24 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.graph.api;
 
 /**
- *
+ * Meta edges are edges between a group and a leaf
+ * or between two groups. They represents proper edges between descendants of groups. Meta
+ * edges are always located only on nodes which are in the current view.
+ * <p>
+ * By default meta edges are automatically generated and maintained when
+ * the hierarchy is manipulated (expand/contract).
+ * 
  * @author Mathieu Bastian
+ * @see HierarchicalGraph
  */
 public interface MetaEdge extends Edge {
 
+    /**
+     * Returns the number of edges this meta-edge represents
+     * @return  the number of edges this meta-edge represents
+     */
+    public int getCount();
 }

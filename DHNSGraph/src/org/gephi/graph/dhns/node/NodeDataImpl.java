@@ -22,7 +22,7 @@ package org.gephi.graph.dhns.node;
 
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.graph.api.Attributes;
-import org.gephi.graph.api.LayoutData;
+import org.gephi.graph.spi.LayoutData;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.GroupData;

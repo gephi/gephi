@@ -21,8 +21,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.api;
 
 /**
+ * Proxy iterable for iterating nodes, users can either get <code>NodeIterator</code>
+ * or directly getting an <code>Node</code> array.
+ * <p>
+ * This iterable has an additionnal feature, it automatically <b>lock</b> the graph
+ * when the iterator is called and <b>unlock</b> it when iterator terminates. That
+ * means calling <code>break</code> before the iterator terminates won't unlock
+ * the graph. The <code>doBreak()</code> method will properly unlock the graph.
+ * Note that calling <code>toArray()</code> avoid this issue.
  *
  * @author Mathieu Bastian
+ * @see Graph#readLock()
  */
 public interface NodeIterable extends Iterable<Node> {
 

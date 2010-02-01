@@ -18,13 +18,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.gephi.graph.spi;
 
-package org.gephi.graph.api;
+import org.gephi.graph.api.NodeData;
 
 /**
+ * Interface that layout module extends to hosts temporary data to nodes when
+ * performing layout algorithm. Included directely in elements for performance
+ * reasons.
  *
  * @author Mathieu Bastian
+ * @see NodeData
  */
 public interface LayoutData {
-
 }

@@ -20,9 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.api;
 
+import org.gephi.graph.spi.LayoutData;
+
 /**
- *
+ * Contains all extended data related to an edge, including access to its
+ * attributes.
+ * 
  * @author Mathieu Bastian
+ * @see #getAttributes()
  */
 public interface EdgeData extends Renderable {
 
@@ -44,5 +49,10 @@ public interface EdgeData extends Renderable {
 
     public void setLayoutData(LayoutData layoutData);
 
+    /**
+     * Gets the access to the attributes, all the custom data related to this
+     * object.
+     * @return  the attributes of this edge
+     */
     public Attributes getAttributes();
 }

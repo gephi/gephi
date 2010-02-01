@@ -23,8 +23,10 @@ package org.gephi.graph.api;
 import java.util.EventListener;
 
 /**
+ * Basic graph listener for global events.
  *
  * @author Mathieu Bastian
+ * @see GraphEvent
  */
 public interface GraphListener extends EventListener {
 

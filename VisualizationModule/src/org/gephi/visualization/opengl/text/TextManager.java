@@ -34,7 +34,7 @@ import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
-import org.gephi.graph.api.TextDataFactory;
+import org.gephi.graph.spi.TextDataFactory;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.GraphDrawable;
