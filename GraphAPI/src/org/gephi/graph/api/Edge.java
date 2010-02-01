@@ -28,31 +28,31 @@ public interface Edge {
 
     /**
      * Returns the unique identifier of the edge.
-     * @return the Id of the edge
+     * @return          the Id of the edge
      */
     public int getId();
 
     /**
      * Returns the source of the edge.
-     * @return the source of the edge
+     * @return          the source of the edge
      */
     public Node getSource();
 
     /**
      * Returns the target of the edge.
-     * @return the target of the edge
+     * @return          the target of the edge
      */
     public Node getTarget();
 
     /**
      * Returns the weight of the edge. Default value is 1.0.
-     * @return the weight of the edge
+     * @return          the weight of the edge
      */
     public float getWeight();
 
     /**
      * Set the weight of the edge.
-     * @param weight the weight of the edge
+     * @param weight    the weight of the edge
      */
     public void setWeight(float weight);
 
@@ -63,20 +63,20 @@ public interface Edge {
      * <ul><li>If the edge has been created from an <b>undirected</b> graph, returns false.</li>
      * <li>If the edge has been created from a <b>directed</b> graph, returns true.</li>
      * <li>If the edge has been created from a <b>mixed</b> graph, returns the value set to the
-     * <code>MixedGraph.addEdge()</code> method.</li></ul>
-     * @return
+     * <code>addEdge()</code> method.</li></ul>
+     * @return           <code>true</code> if the edge is directed, <code>false</code> otherwise
      */
     public boolean isDirected();
 
     /**
      * Returns <code>true</code> if edge source and target are the same.
-     * @return <code>true</code> if the edge is a self-loop or <code>false</code> otherwise
+     * @return          <code>true</code> if the edge is a self-loop, <code>false</code> otherwise
      */
     public boolean isSelfLoop();
 
     /**
      * Returns edge data.
-     * @return edge data instance
+     * @return          edge data instance
      */
     public EdgeData getEdgeData();
 }

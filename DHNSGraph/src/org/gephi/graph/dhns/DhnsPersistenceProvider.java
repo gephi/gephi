@@ -22,8 +22,8 @@ package org.gephi.graph.dhns;
 
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.utils.DHNSSerializer;
-import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.spi.WorkspacePersistenceProvider;
+import org.gephi.project.api.Workspace;
+import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Document;

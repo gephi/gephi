@@ -24,7 +24,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeRowFactory;
-import org.gephi.graph.api.DecoratorFactory;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
@@ -39,13 +38,11 @@ import org.gephi.graph.api.HierarchicalUndirectedGraph;
 import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
-import org.gephi.graph.api.Predicate;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
-import org.gephi.graph.dhns.graph.AbstractGraphImpl;
 import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImpl;
 import org.gephi.graph.dhns.graph.HierarchicalGraphImpl;
 import org.gephi.graph.dhns.graph.HierarchicalMixedGraphImpl;
@@ -53,7 +50,8 @@ import org.gephi.graph.dhns.graph.HierarchicalUndirectedGraphImpl;
 import org.gephi.graph.dhns.graph.iterators.EdgeIterableImpl;
 import org.gephi.graph.dhns.graph.iterators.NodeIterableImpl;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
-import org.gephi.workspace.api.Workspace;
+import org.gephi.graph.dhns.predicate.Predicate;
+import org.gephi.project.api.Workspace;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -69,8 +67,6 @@ public class Dhns implements GraphModel {
     private GraphStructure graphStructure;
     private GraphVersion graphVersion;
     private EventManager eventManager;
-    private DynamicManager dynamicManager;
-    private DecoratorFactoryImpl decoratorFactory;
     private SettingsManager settingsManager;
     private GraphFactoryImpl factory;
     private DuplicateManager duplicateManager;
@@ -85,8 +81,6 @@ public class Dhns implements GraphModel {
         this.controller = controller;
         graphVersion = new GraphVersion();
         eventManager = new EventManager(this);
-        dynamicManager = new DynamicManager(this);
-        decoratorFactory = new DecoratorFactoryImpl(this);
         settingsManager = new SettingsManager(this);
         graphStructure = new GraphStructure(this);
         duplicateManager = new DuplicateManager(this);
@@ -125,14 +119,6 @@ public class Dhns implements GraphModel {
 
     public IDGen getIdGen() {
         return controller.getIDGen();
-    }
-
-    public DynamicManager getDynamicManager() {
-        return dynamicManager;
-    }
-
-    public DecoratorFactoryImpl getDecoratorFactory() {
-        return decoratorFactory;
     }
 
     public SettingsManager getSettingsManager() {
@@ -203,10 +189,6 @@ public class Dhns implements GraphModel {
         return factory;
     }
 
-    public DecoratorFactory decorators() {
-        return getDecoratorFactory();
-    }
-
     public boolean isDirected() {
         return directed;
     }
@@ -233,10 +215,6 @@ public class Dhns implements GraphModel {
 
     public boolean isHierarchical() {
         return graphStructure.getMainView().getStructure().getTreeHeight() - 1 > 0;       //height>0
-    }
-
-    public boolean isDynamic() {
-        return getDynamicManager().isDynamic();
     }
 
     public void addGraphListener(GraphListener graphListener) {
@@ -411,7 +389,6 @@ public class Dhns implements GraphModel {
 
     public void clear() {
         graphVersion = new GraphVersion();
-        dynamicManager = new DynamicManager(this);
         graphStructure = new GraphStructure(this);
     }
 

@@ -20,13 +20,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.WorkspaceProvider;
-import org.gephi.workspace.api.Workspace;
+import org.gephi.project.api.Workspace;
 import org.gephi.workspace.impl.WorkspaceImpl;
-import org.openide.util.Lookup;
-import org.openide.util.lookup.AbstractLookup;
-import org.openide.util.lookup.InstanceContent;
 
 /**
  *
@@ -36,9 +35,7 @@ public class WorkspaceProviderImpl implements WorkspaceProvider {
 
     private transient WorkspaceImpl currentWorkspace;
     private transient Project project;
-    //Lookup
-    private transient InstanceContent instanceContent;
-    private transient AbstractLookup lookup;
+    private transient List<Workspace> workspaces;
 
     public WorkspaceProviderImpl(Project project) {
         init(project);
@@ -46,38 +43,37 @@ public class WorkspaceProviderImpl implements WorkspaceProvider {
 
     public void init(Project project) {
         this.project = project;
-        instanceContent = new InstanceContent();
-        lookup = new AbstractLookup(instanceContent);
+        workspaces = new ArrayList<Workspace>();
     }
 
     public WorkspaceImpl newWorkspace() {
         WorkspaceImpl workspace = new WorkspaceImpl(project);
-        instanceContent.add(workspace);
+        workspaces.add(workspace);
         return workspace;
     }
 
     public void addWorkspace(Workspace workspace) {
-        instanceContent.add(workspace);
+        workspaces.add(workspace);
     }
 
     public void removeWorkspace(Workspace workspace) {
-        instanceContent.remove(workspace);
+        workspaces.remove(workspace);
     }
 
     public Workspace getPrecedingWorkspace(Workspace workspace) {
-        Workspace[] workspaces = getWorkspaces();
+        Workspace[] ws = getWorkspaces();
         int index = -1;
-        for (int i = 0; i < workspaces.length; i++) {
-            if (workspaces[i] == workspace) {
+        for (int i = 0; i < ws.length; i++) {
+            if (ws[i] == workspace) {
                 index = i;
             }
         }
         if (index != -1 && index >= 1) {
             //Get preceding
-            return workspaces[index - 1];
-        } else if (index == 0 && workspaces.length > 1) {
+            return ws[index - 1];
+        } else if (index == 0 && ws.length > 1) {
             //Get following
-            return workspaces[1];
+            return ws[1];
         }
         return null;
     }
@@ -87,8 +83,9 @@ public class WorkspaceProviderImpl implements WorkspaceProvider {
         return currentWorkspace;
     }
 
+    @Override
     public Workspace[] getWorkspaces() {
-        return lookup.lookupAll(Workspace.class).toArray(new Workspace[0]);
+        return workspaces.toArray(new Workspace[0]);
     }
 
     public void setCurrentWorkspace(Workspace currentWorkspace) {
@@ -97,9 +94,5 @@ public class WorkspaceProviderImpl implements WorkspaceProvider {
 
     public boolean hasCurrentWorkspace() {
         return currentWorkspace != null;
-    }
-
-    public Lookup getLookup() {
-        return lookup;
     }
 }

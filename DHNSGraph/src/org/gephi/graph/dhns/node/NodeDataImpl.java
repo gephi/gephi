@@ -22,8 +22,7 @@ package org.gephi.graph.dhns.node;
 
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.graph.api.Attributes;
-import org.gephi.graph.api.DynamicData;
-import org.gephi.graph.api.LayoutData;
+import org.gephi.graph.spi.LayoutData;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.GroupData;
@@ -36,7 +35,7 @@ import org.gephi.graph.dhns.utils.avl.ViewNodeTree;
  *
  * @author Mathieu Bastian
  */
-public class NodeDataImpl implements NodeData, GroupData, DynamicData {
+public class NodeDataImpl implements NodeData, GroupData {
 
     //Dhns
     protected final int ID;
@@ -57,8 +56,6 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
     protected Attributes attributes;
     protected TextData textData;
     protected Model hullModel;
-    protected float dynamicRangeFrom = -1;
-    protected float dynamicRangeTo = -1;
 
     public NodeDataImpl(int ID, AbstractNode rootNode) {
         this.nodes = new ViewNodeTree();
@@ -243,22 +240,5 @@ public class NodeDataImpl implements NodeData, GroupData, DynamicData {
 
     public void setHullModel(Model hullModel) {
         this.hullModel = hullModel;
-    }
-
-    public DynamicData getDynamicData() {
-        return this;
-    }
-
-    public float getRangeFrom() {
-        return dynamicRangeFrom;
-    }
-
-    public float getRangeTo() {
-        return dynamicRangeTo;
-    }
-
-    public void setRange(float from, float to) {
-        this.dynamicRangeFrom = from;
-        this.dynamicRangeTo = to;
     }
 }

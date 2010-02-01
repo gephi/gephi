@@ -30,21 +30,31 @@ public class MinimalDrawerSettings {
     private int lastWidth = 0;
     private int lastHeight = 0;
 
-    public class Zone {
+    public class Background {
 
         public Color top;
         public Color bottom;
         public Paint paint;
     }
-    public Zone background = new Zone();
+    public Background background = new Background();
 
-    public class Selection {
+    public class SelectionBox {
 
         public Color top;
         public Color bottom;
         public Paint paint;
+        public int visibleHookWidth; // the "visible hook" (mouse hook, to move the selection box)
+        public int invisibleHookMargin; // let the "invisible hook" be a bit larger on the left..
+
+        public Color mouseOverTopColor;
+        public Color activatedTopColor;
+        public Color mouseOverBottomColor;
+        public Color activatedBottomColor;
+        public Paint mouseOverPaint;
+        public Paint activatedPaint;
     }
-    public Zone selection = new Zone();
+    public SelectionBox selection = new SelectionBox();
+
 
     public class Informations {
 
@@ -73,7 +83,8 @@ public class MinimalDrawerSettings {
 
         background.paint = new GradientPaint(0, 0, background.top, 0, height, background.bottom, true);
         selection.paint = new GradientPaint(0, 0, selection.top, 0, height, selection.bottom, true);
-
+        selection.mouseOverPaint = new GradientPaint(0, 0, selection.mouseOverTopColor, 0, height, selection.mouseOverBottomColor, true);
+        selection.activatedPaint = new GradientPaint(0, 0, selection.activatedTopColor, 0, height, selection.activatedBottomColor, true);
     }
 
     public MinimalDrawerSettings() {
@@ -83,14 +94,22 @@ public class MinimalDrawerSettings {
         //background.top = new Color(131, 131, 131, 255);
         //background.bottom = new Color(77, 75, 73, 255);
         background.top = new Color(151, 151, 151, 255);
-        background.bottom = new Color(97, 105, 103, 255);
-        background.paint = new GradientPaint(0, 0, background.top, 0, 10, background.bottom, true);
+        background.bottom = new Color(97, 95, 93, 255);
+        background.paint = new GradientPaint(0, 0, background.top, 0, 20, background.bottom, true);
 
         //selection.top = new Color(89, 161, 235, 153);
         //selection.bottom = new Color(37, 104, 161, 153);
         selection.top = new Color(108, 151, 194, 255);
-        selection.bottom = new Color(67, 107, 141, 255);
-        selection.paint = new GradientPaint(0, 0, selection.top, 0, 10, selection.bottom, true);
+        selection.bottom = new Color(57, 97, 131, 255);
+        selection.paint = new GradientPaint(0, 0, selection.top, 0, 20, selection.bottom, true);
+        selection.visibleHookWidth = 15; // the "visible hook" (mouse hook, to move the selection box)
+        selection.invisibleHookMargin = 3; // let the "invisible hook" be a bit larger on the left..
+        selection.mouseOverTopColor = new Color(102,195, 145, 255);
+        selection.activatedTopColor = new Color(188, 118, 114, 255);
+        selection.mouseOverBottomColor = new Color(60, 143, 96, 255);
+        selection.activatedBottomColor = new Color(151, 79, 79, 255);
+        selection.mouseOverPaint = new GradientPaint(0, 0, selection.mouseOverTopColor, 0, 20, selection.mouseOverBottomColor, true);
+        selection.activatedPaint = new GradientPaint(0, 0, selection.activatedTopColor, 0, 20, selection.activatedBottomColor, true);
 
         informations.fontColor = new Color(235, 235, 235, 255);
         shadowColor = new Color(35, 35, 35, 105);

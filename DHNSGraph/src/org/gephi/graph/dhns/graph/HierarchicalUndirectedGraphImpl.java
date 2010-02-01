@@ -25,7 +25,6 @@ import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.HierarchicalUndirectedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
-import org.gephi.graph.api.GraphView;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphViewImpl;
 import org.gephi.graph.dhns.edge.AbstractEdge;
@@ -36,10 +35,10 @@ import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
 import org.gephi.graph.dhns.edge.iterators.MetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.MetaEdgeNodeIterator;
 import org.gephi.graph.dhns.edge.iterators.RangeEdgeIterator;
-import org.gephi.graph.dhns.filter.Tautology;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
+import org.gephi.graph.dhns.predicate.Tautology;
 
 /**
  *
@@ -65,7 +64,6 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
         if (!absEdge.hasAttributes()) {
             absEdge.setAttributes(dhns.factory().newEdgeAttributes());
         }
-        dhns.getDynamicManager().pushEdge(edge.getEdgeData());
         view.getStructureModifier().addEdge(absEdge);
         dhns.touchUndirected();
         return true;
@@ -79,7 +77,6 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
             return false;
         }
         AbstractEdge edge = dhns.factory().newEdge(absNode1, absNode2, 1.0f, false);
-        dhns.getDynamicManager().pushEdge(edge.getEdgeData());
         view.getStructureModifier().addEdge(edge);
         dhns.touchUndirected();
         return true;

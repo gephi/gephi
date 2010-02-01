@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.exporter.spi;
 
 import java.io.File;
-import org.gephi.workspace.api.Workspace;
+import org.gephi.project.api.Workspace;
 
 /**
  *

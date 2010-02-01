@@ -36,7 +36,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.gephi.project.io.GephiDataObject;
 import org.gephi.project.io.GephiFormatException;
 import org.gephi.project.io.GephiWriter;
-import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.awt.StatusDisplayer;

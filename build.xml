@@ -36,4 +36,22 @@
         <copy tofile="${nbdist-resources.dir}/${app.name}.icns" file="${app.name}.icns" />
     </target>
 
+    <target name="javadoc">
+        <javadoc destdir="dist/apiindex" windowtitle="Gephi API Index" encoding="UTF-8"  packagenames="org.gephi.**.api,org.gephi.**.spi,org.gephi.data.*,org.gephi.utils.progress">
+            <sourcepath>
+                <pathelement path="AttributesAPI/src"/>
+                <pathelement path="ProjectAPI/src"/>
+                <pathelement path="ExportAPI/src"/>
+                <pathelement path="ImportAPI/src"/>
+                <pathelement path="LayoutAPI/src"/>
+                <pathelement path="LongTaskAPI/src"/>
+                <pathelement path="StatisticsAPI/src"/>
+                <pathelement path="ToolsAPI/src"/>
+                <pathelement path="GraphAPi/src"/>
+                <pathelement path="ClusteringAPI/src"/>
+            </sourcepath>
+            <doctitle>Gephi API Index</doctitle>
+            <header>Gephi API Index</header>
+        </javadoc>
+    </target>
 </project>

@@ -23,7 +23,7 @@ package org.gephi.timeline.api;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
-import org.gephi.workspace.api.Workspace;
+import org.gephi.project.api.Workspace;
 
 /**
  *

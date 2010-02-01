@@ -23,14 +23,18 @@ package org.gephi.layout.spi;
 import org.gephi.graph.api.GraphModel;
 
 /**
- * A Layout algorithm should implement the Layout interface to allow the
- * LayoutController to run it properly.
- *
- * Note that a using a LayoutBuilder is the preferred way any Layout implementor
- * should be instanciated. See the LayoutBuilder interface for a more detailed
- * description.
+ * A Layout algorithm should implement the <code>Layout</code> interface to allow the
+ * <code>LayoutController</code> to run it properly.
+ * <p>
+ * See the <code>LayoutBuilder</code> documentation to know how layout should
+ * be instanciated.
+ * <p>
+ * To have fully integrated properties that can be changed in real-time by users,
+ * properly define the various <code>LayoutProperty</code> returned by the
+ * {@link #getProperties()} method and provide getter and setter for each.
  *
  * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * @see LayoutBuilder
  */
 public interface Layout {
 
@@ -41,7 +45,9 @@ public interface Layout {
 
     /**
      * Injects the graph model for the graph this Layout should operate on.
-     * @param graphModel
+     * <p>
+     * It's preferable to get <b>visible</b> graph to perform on visualization.
+     * @param graphModel    the graph model that the layout is to be working on
      */
     public void setGraphModel(GraphModel graphModel);
 
@@ -52,8 +58,9 @@ public interface Layout {
     public void goAlgo();
 
     /**
-     * Tests if the algorithm can run.
-     * @return
+     * Tests if the algorithm can run, called before each pass.
+     * @return              <code>true</code> if the algorithm can run, <code>
+     *                      false</code> otherwise
      */
     public boolean canAlgo();
 
@@ -63,8 +70,8 @@ public interface Layout {
     public void endAlgo();
 
     /**
-     * The property sets of the layout.
-     * @return
+     * The properties for this layout.
+     * @return              the layout properties
      * @throws NoSuchMethodException 
      */
     public LayoutProperty[] getProperties();
@@ -76,7 +83,7 @@ public interface Layout {
 
     /**
      * The reference to the LayoutBuilder that instanciated this Layout.
-     * @return
+     * @return              the reference to the builder that builts this instance
      */
     public LayoutBuilder getBuilder();
 }

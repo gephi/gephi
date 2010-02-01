@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.utils.progress;
 
 /**
- *
+ * Progress task following, must be used from {@link Progress} class.
  * @author Mathieu Bastian
  */
 public interface ProgressTicket {
@@ -29,57 +29,57 @@ public interface ProgressTicket {
     /**
      * Finish the progress task.
      */
-    public void finish();
+    void finish();
 
     /**
      * Notify the user about a new completed unit. Equivalent to incrementing workunits by one.
      */
-    public void progress();
+    void progress();
 
     /**
      * Notify the user about completed workunits.
-     * @param a cumulative number of workunits completed so far
+     * @param workunit  a cumulative number of workunits completed so far
      */
-    public void progress(int workunit);
+    void progress(int workunit);
 
     /**
      * Notify the user about progress by showing message with details.
-     * @param details about the status of the task
+     * @param message about the status of the task
      */
-    public void progress(String message);
+    void progress(String message);
 
     /**
      * Notify the user about completed workunits and show additional detailed message.
      * @param message details about the status of the task
      * @param workunit a cumulative number of workunits completed so far
      */
-    public void progress(String message, int workunit);
+    void progress(String message, int workunit);
 
     /**
      * Change the display name of the progress task. Use with care, please make sure the changed name is not completely different, or otherwise it might appear to the user as a different task.
      * @param newDisplayName the new display name
      */
-    public void setDisplayName(String newDisplayName);
+    void setDisplayName(String newDisplayName);
 
     /**
      * Start the progress indication for indeterminate task.
      */
-    public void start();
+    void start();
 
     /**
      * Start the progress indication for a task with known number of steps.
      * @param workunits total number of workunits that will be processed
      */
-    public void start(int workunits);
+    void start(int workunits);
 
     /**
      * Currently indeterminate task can be switched to show percentage completed.
      * @param workunits workunits total number of workunits that will be processed
      */
-    public void switchToDeterminate(int workunits);
+    void switchToDeterminate(int workunits);
 
     /**
      * Currently determinate task can be switched to indeterminate mode.
      */
-    public void switchToIndeterminate();
+    void switchToIndeterminate();
 }

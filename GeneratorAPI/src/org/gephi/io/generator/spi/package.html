@@ -1,0 +1,17 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+    <body bgcolor="white">
+        Generator interfaces that plugins implement to add new generators.
+        <h3>Create a new Generator</h3>
+        <ol><li>Create a new module, and set <code>GeneratorAPI</code> as a dependency.</li>
+            <li>Create a new class that implements <code>Generator</code>. Because
+                <code>Generator</code> interface extends <code>LongTask</code>, add
+                <code>LongTaskAPI</code> as another of your module dependency.</li>
+            <li>Add <b>@ServiceProvider</b> annotation to your class to declare
+                you are implementing a Generator service. Put <code>Generator.class</code>
+                as the annotation <b>service</b> parameter.</li>
+            <li>Implement <code>GeneratorUI</code> if your generator needs
+                a settings panel and return it from <code>getUI()</code>
+                method.</li></ol>
+    </body>
+</html>

@@ -5,8 +5,8 @@
 package org.gephi.data.attributes;
 
 import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.spi.WorkspaceDuplicateProvider;
+import org.gephi.project.api.Workspace;
+import org.gephi.project.spi.WorkspaceDuplicateProvider;
 import org.openide.util.lookup.ServiceProvider;
 
 /**

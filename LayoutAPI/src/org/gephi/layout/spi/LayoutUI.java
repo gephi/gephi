@@ -24,20 +24,21 @@ import javax.swing.Icon;
 import javax.swing.JPanel;
 
 /**
+ * Various information about a layout algorithm that allows UI integration.
  *
  * @author Mathieu Bastian
  */
 public interface LayoutUI {
 
     /**
-     * The description of the of the Layout's provided by this Builder.
-     * @return
+     * The description of the layout algorithm purpose.
+     * @return  a description snippet for the algorithm
      */
     public String getDescription();
 
     /**
-     * The icon that represents the Layout's provided by this Builder.
-     * @return
+     * The icon that represents the layout action.
+     * @return  a icon for this particular layout
      */
     public Icon getIcon();
 

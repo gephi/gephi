@@ -35,9 +35,10 @@ import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.io.exporter.api.FileType;
+import org.gephi.io.exporter.spi.GraphFileExporter;
 import org.gephi.io.exporter.spi.GraphFileExporterSettings;
 import org.gephi.io.exporter.spi.TextGraphFileExporter;
-import org.gephi.utils.longtask.LongTask;
+import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.NbBundle;
@@ -47,7 +48,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = TextGraphFileExporter.class)
+@ServiceProvider(service = GraphFileExporter.class)
 public class ExporterGDF implements TextGraphFileExporter, LongTask {
 
     private boolean cancel = false;

@@ -21,9 +21,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.graph.api;
 
+import org.gephi.graph.spi.LayoutData;
+
 /**
+ * Contains all extended data related to a node, including access to its
+ * attributes.
  *
  * @author Mathieu Bastian
+ * @see #getAttributes()
  */
 public interface NodeData extends Renderable {
 
@@ -46,6 +51,4 @@ public interface NodeData extends Renderable {
     public void setFixed(boolean fixed);
 
     public Attributes getAttributes();
-
-    public DynamicData getDynamicData();
 }

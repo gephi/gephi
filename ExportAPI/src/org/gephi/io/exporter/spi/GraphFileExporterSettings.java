@@ -20,10 +20,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.spi;
 
-import org.gephi.workspace.api.Workspace;
+import org.gephi.project.api.Workspace;
 
 /**
- *
+ * General settings class that is used by {@link GraphFileExporter} to get
+ * the export context.
+ * 
  * @author Mathieu Bastian
  */
 public final class GraphFileExporterSettings {
@@ -36,10 +38,20 @@ public final class GraphFileExporterSettings {
         this.exportVisible = exportVisible;
     }
 
+    /**
+     * Returns <code>true</code> if only the visible graph has to be exported.
+     * @return  <code>true</code> if only the visible graph has to be exported,
+     *          <code>false</code> for the complete graph.
+     */
     public boolean isExportVisible() {
         return exportVisible;
     }
 
+    /**
+     * The workspace the <code>GraphModel</code> has to be retrieved.
+     *
+     * @return  the workspace the graph is belonging
+     */
     public Workspace getWorkspace() {
         return workspace;
     }

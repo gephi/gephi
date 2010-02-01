@@ -22,6 +22,7 @@ package org.gephi.graph.api;
 
 
 /**
+ * All graphic attributes an element can have.
  *
  * @author Mathieu Bastian
  */

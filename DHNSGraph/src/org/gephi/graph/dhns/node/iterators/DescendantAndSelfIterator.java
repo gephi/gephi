@@ -24,8 +24,8 @@ import java.util.Iterator;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.predicate.Predicate;
 
 /**
  * {@link AbstractNode} iterator for descendant and self of a node or the whole structure.

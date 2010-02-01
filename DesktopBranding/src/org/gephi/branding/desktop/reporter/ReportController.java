@@ -66,16 +66,7 @@ public class ReportController {
                 ProgressHandle handle = ProgressHandleFactory.createHandle(NbBundle.getMessage(ReportController.class, "ReportController.status.sending"));
                 try {
                     handle.start();
-                    logMessageLog(report);
-                    logVersion(report);
-                    logScreenSize(report);
-                    logCPU(report);
-                    logMemoryInfo(report);
-                    logJavaInfo(report);
-                    logGLInfo(report);
-                    logModules(report);
-
-                    Document doc = buildXMLDocument(report);
+                    Document doc = buildReportDocument(report);
                     if (doc != null) {
                         if (sendDocument(doc)) {
                             handle.finish();
@@ -95,6 +86,18 @@ public class ReportController {
             }
         }, "Exception Reporter");
         thread.start();
+    }
+
+    public Document buildReportDocument(Report report) {
+        logMessageLog(report);
+        logVersion(report);
+        logScreenSize(report);
+        logCPU(report);
+        logMemoryInfo(report);
+        logJavaInfo(report);
+        logGLInfo(report);
+        logModules(report);
+        return buildXMLDocument(report);
     }
 
     private boolean sendDocument(Document document) {

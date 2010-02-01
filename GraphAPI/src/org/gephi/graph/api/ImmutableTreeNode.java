@@ -23,8 +23,11 @@ package org.gephi.graph.api;
 import javax.swing.tree.TreeNode;
 
 /**
+ * Wrapper for Java <code>TreeNode</code> to more easily build Tree models
+ * from hierarchical graph.
  *
  * @author Mathieu Bastian
+ * @see HierarchicalGraph
  */
 public interface ImmutableTreeNode extends TreeNode {
 

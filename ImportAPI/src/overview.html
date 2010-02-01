@@ -1,0 +1,20 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+    <body>
+        Import API/SPI provides the <b>import workflow</b> to import data form any
+        support.
+        <p>
+            API is providing a secure workflow, from importers that connects to
+            the data source (files, streams, databases...) to the processors that
+            append imported data to the workspace. It is based on the
+            <code>Container</code> interface, that has a loading and unloading
+            sub-interface. Importers are loading the container, then the controller
+            is checking it's consistency and finally processors are unloading it.
+        </p>
+        <p>
+            See <code>org.gephi.io.importer.spi</code> package to know how to define
+            new data importers.
+        </p>
+    </body>
+</html>
+

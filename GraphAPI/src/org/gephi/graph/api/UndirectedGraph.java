@@ -22,6 +22,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.api;
 
 /**
+ * Graph with only undirected edges. Note that undirected graph can be obtained
+ * even if all edges are directed. The graph is just taking care to ignore opposite
+ * edges.
  *
  * @author Mathieu Bastian
  */

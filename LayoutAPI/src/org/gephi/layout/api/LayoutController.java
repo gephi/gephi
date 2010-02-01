@@ -21,12 +21,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.layout.api;
 
 import org.gephi.layout.spi.Layout;
-import org.gephi.workspace.api.Workspace;
+import org.gephi.project.api.Workspace;
 
 /**
  * A LayoutController is the one responsible for controlling the states of
- * the {@link LayoutModel}
- * 
+ * the {@link LayoutModel}. It always controls the current workspace model.
+ * <p>
+ * This controller is a singleton and can therefore be found in Lookup:
+ * <pre>LayoutController lc = Lookup.getDefault().lookup(LayoutController.class);</pre>
  * @author Mathieu Bastian
  */
 public interface LayoutController {

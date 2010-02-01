@@ -12,7 +12,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Edge;
 import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
-import org.gephi.workspace.api.Workspace;
+import org.gephi.project.api.Workspace;
 import org.openide.util.lookup.ServiceProvider;
 
 /**

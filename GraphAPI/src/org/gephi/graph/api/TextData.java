@@ -23,6 +23,7 @@ package org.gephi.graph.api;
 import java.awt.Color;
 
 /**
+ * Contains all extended data related to text display.
  *
  * @author Mathieu Bastian
  */

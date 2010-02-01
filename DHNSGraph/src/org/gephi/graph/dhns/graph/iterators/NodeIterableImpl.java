@@ -25,8 +25,8 @@ import java.util.concurrent.locks.Lock;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.api.NodeIterator;
-import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
+import org.gephi.graph.dhns.predicate.Predicate;
 
 /**
  * Implementation of <code>NodeIterable</code> with automatic lock unlocking when <code>hasNext</code>

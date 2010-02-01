@@ -23,7 +23,7 @@ package org.gephi.layout.api;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import java.beans.PropertyChangeListener;
-import org.gephi.workspace.api.Workspace;
+import org.gephi.project.api.Workspace;
 
 /**
  * Layout model contains data and flags relative to the layout execution and

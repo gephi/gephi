@@ -21,12 +21,21 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.api;
 
 /**
+ * A graph node.
  *
  * @author Mathieu Bastian
  */
 public interface Node {
 
+    /**
+     * Returns the unique identifier.
+     * @return  the node id
+     */
     public int getId();
 
+    /**
+     * Returns the extended data that belongs to this node.
+     * @return  the node data instance
+     */
     public NodeData getNodeData();
 }

@@ -25,7 +25,7 @@ import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.project.api.Project;
-import org.gephi.workspace.api.WorkspaceInformation;
+import org.gephi.project.api.WorkspaceInformation;
 
 /**
  *

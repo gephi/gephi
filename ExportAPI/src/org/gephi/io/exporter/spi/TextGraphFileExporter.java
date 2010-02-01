@@ -23,6 +23,7 @@ package org.gephi.io.exporter.spi;
 import java.io.BufferedWriter;
 
 /**
+ * Graph exporter for text files.
  *
  * @author Mathieu Bastian
  */

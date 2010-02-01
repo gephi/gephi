@@ -24,14 +24,30 @@ import javax.swing.JComponent;
 import org.gephi.tools.spi.Tool;
 
 /**
- *
+ * Controller for visualization toolbar.
+ * <p>
+ * This controller is a service and can therefore be found in Lookup:
+ * <pre>ToolController tc = Lookup.getDefault().lookup(ToolController.class);</pre>
  * @author Mathieu Bastian
  */
 public interface ToolController {
 
+    /**
+     * Selects <code>tool</code> as the active tool and therefore unselect the
+     * current tool, if exists.
+     * @param tool  the tool that is to be selected
+     */
     public void select(Tool tool);
 
+    /**
+     * Returns the toolbar component, build from tools implementations.
+     * @return      the toolbar component
+     */
     public JComponent getToolbar();
 
+    /**
+     * Returns the properties bar component, that display tools settings.
+     * @return      the properties bar component
+     */
     public JComponent getPropertiesBar();
 }

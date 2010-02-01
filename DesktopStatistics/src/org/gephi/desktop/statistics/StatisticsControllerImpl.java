@@ -31,11 +31,11 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.statistics.spi.StatisticsUI;
-import org.gephi.utils.longtask.LongTask;
-import org.gephi.utils.longtask.LongTaskExecutor;
-import org.gephi.utils.longtask.LongTaskListener;
-import org.gephi.workspace.api.Workspace;
-import org.gephi.workspace.api.WorkspaceListener;
+import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.longtask.api.LongTaskExecutor;
+import org.gephi.utils.longtask.api.LongTaskListener;
+import org.gephi.project.api.Workspace;
+import org.gephi.project.api.WorkspaceListener;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 

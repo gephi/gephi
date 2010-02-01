@@ -77,6 +77,9 @@ public class RandomGraph implements Generator {
                 Progress.progress(progress, ++progressUnit);
             }
         }
+
+        Progress.finish(progress);
+        progress = null;
     }
 
     public String getName() {

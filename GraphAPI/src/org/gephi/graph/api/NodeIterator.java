@@ -23,9 +23,10 @@ package org.gephi.graph.api;
 import java.util.Iterator;
 
 /**
+ * Iterator wrapper for node elements
  *
  * @author Mathieu Bastian
+ * @see NodeIterable
  */
 public interface NodeIterator extends Iterator<Node> {
-
 }

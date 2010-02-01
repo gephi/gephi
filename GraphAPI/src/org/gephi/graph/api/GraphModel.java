@@ -20,9 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.api;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 /**
  *
  * @author Mathieu Bastian
@@ -30,8 +27,6 @@ import org.w3c.dom.Element;
 public interface GraphModel {
 
     public GraphFactory factory();
-
-    public DecoratorFactory decorators();
 
     public GraphSettings settings();
 
@@ -97,10 +92,6 @@ public interface GraphModel {
 
     public void clear();
 
-    public void readXML(Element element);
-
-    public Element writeXML(Document document);
-
     /**
      * Add <code>graphListener</code> as a listener to this graph, if it is not already.
      * To pass a <code>WeakReference</code>, use Netbeans <code>WeakListeners</code> utility class.
@@ -147,12 +138,4 @@ public interface GraphModel {
      * @see HierarchicalGraph
      */
     public boolean isHierarchical();
-
-    /**
-     * Returns <code>true</code> if the graph is <b>dynamical</b>. That means its structure is
-     * changing over time, elements have a life period.
-     * @return <code>true</code> if the graph is a dynamic graph
-     * @see DynamicGraph
-     */
-    public boolean isDynamic();
 }

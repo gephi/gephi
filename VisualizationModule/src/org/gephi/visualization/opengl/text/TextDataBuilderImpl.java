@@ -24,7 +24,7 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.TextData;
-import org.gephi.graph.api.TextDataFactory;
+import org.gephi.graph.spi.TextDataFactory;
 import org.openide.util.lookup.ServiceProvider;
 
 /**

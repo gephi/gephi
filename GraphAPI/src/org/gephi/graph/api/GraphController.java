@@ -20,15 +20,29 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.api;
 
-import org.gephi.workspace.api.Workspace;
+import org.gephi.project.api.Workspace;
 
 /**
- *
+ * Controller that maintain the graph models, one per Workspace.
+ * <p>
+ * This controller is a service and can therefore be found in Lookup:
+ * <pre>GraphController gc = Lookup.getDefault().lookup(GraphController.class);</pre>
+ * 
  * @author Mathieu Bastian
  */
 public interface GraphController {
 
+    /**
+     * Returns the graph model for the current workspace, or <code>null</code>
+     * if project is empty.
+     * @return          the current graph model
+     */
     public GraphModel getModel();
 
+    /**
+     * Returns the graph model for the given <code>workspace</code>.
+     * @param workspace the workspace that graph modl is to be returned
+     * @return          the <code>workspace</code>'s graph model
+     */
     public GraphModel getModel(Workspace workspace);
 }

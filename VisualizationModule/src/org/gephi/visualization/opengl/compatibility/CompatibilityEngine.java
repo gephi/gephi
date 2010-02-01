@@ -705,18 +705,27 @@ public class CompatibilityEngine extends AbstractEngine {
                     vizConfig.setLightenNonSelected(true);
                 }
             }
+        } else {
+            //Reset
+            for (ModelClass objClass : selectableClasses) {
+                for (Iterator<ModelImpl> itr = selectedObjects[objClass.getSelectionId()].iterator(); itr.hasNext();) {
+                    ModelImpl o = itr.next();
+                    itr.remove();
+                    o.setSelected(false);
+                }
+            }
         }
         for (Model r : objs) {
             if (r != null) {
                 ModelImpl mdl = (ModelImpl) r;
                 mdl.setSelected(true);
-                if (mdl instanceof NodeData) {
+                if (mdl.getObj() instanceof NodeData) {
                     selectedObjects[modelClasses[AbstractEngine.CLASS_NODE].getSelectionId()].add(mdl);
                 }
             }
         }
 
-        forceSelectRefresh(modelClasses[AbstractEngine.CLASS_EDGE].getClassId());
+        //forceSelectRefresh(modelClasses[AbstractEngine.CLASS_EDGE].getClassId());
     }
 
     public void forceSelectRefresh(int selectedClass) {

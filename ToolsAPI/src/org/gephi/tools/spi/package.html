@@ -1,0 +1,15 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+    <body bgcolor="white">
+        Interfaces for creating new tools.
+        <p>Tools are functions for interacting with user inputs on the visualization window.</p>
+        <h3>How-to create a tool implementation</h3>
+        <ol><li>Create a class which implement <code>Tool</code> interface</li>
+            <li>Add the following annotation to your class to be declared as a new
+                implementation <code>@ServiceProvider(service=Tool.class)</code></li>
+            <li>Declare <code>ToolEventListener</code> instances for specifying how the
+                tool is interacting with user input like node click or mouse drag.</li>
+            <li>Provide a <code>ToolUI</code> instance for giving a name and an icon to your
+                tool.</li></ol>
+    </body>
+</html>

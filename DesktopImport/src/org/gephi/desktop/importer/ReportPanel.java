@@ -140,11 +140,11 @@ public class ReportPanel extends javax.swing.JPanel {
                     busyLabel.setBusy(true);
                     final TreeModel treeMdl = new IssueTreeModel(issues);
                     final OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new IssueRowModel(), true);
-                    issuesOutline.setRootVisible(false);
-                    issuesOutline.setRenderDataProvider(new IssueRenderer());
-                    SwingUtilities.invokeLater(new Runnable() {
 
+                    SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
+                            issuesOutline.setRootVisible(false);
+                            issuesOutline.setRenderDataProvider(new IssueRenderer());
                             issuesOutline.setModel(mdl);
                             busyLabel.setBusy(false);
                         }

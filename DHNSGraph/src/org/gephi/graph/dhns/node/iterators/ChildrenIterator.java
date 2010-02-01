@@ -26,8 +26,8 @@ import org.gephi.graph.dhns.core.DurableTreeList.DurableAVLNode;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.datastructure.avl.ResetableIterator;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.predicate.Predicate;
 
 /**
  * {@link AbstractNode} iterator for children of a node, or the root.

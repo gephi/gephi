@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.importer.api;
 
+import org.gephi.io.importer.spi.FileFormatImporter;
+
 /**
  * File type definition. A simple class which contains a <b>name</b> and <b>extension</b> for a file type/
  *

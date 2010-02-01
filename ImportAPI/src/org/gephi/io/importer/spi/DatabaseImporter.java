@@ -38,7 +38,7 @@ public interface DatabaseImporter extends Importer {
      * @param container container loading interface
      * @param report the import report for logging informations and issues
      * @return <code>true</code> if the import is successfull and can be processed or <code>false</code> otherwise
-     * @throws java.lang.Exception for catching eventual exceptions
+     * @throws java.lang.Exception for catching potential exceptions
      */
     public boolean importData(Database database, ContainerLoader container, Report report) throws Exception;
 

@@ -26,7 +26,6 @@ package org.gephi.tools.spi;
  * A tool receive events from visualization window when it is currently the selected
  * tool. The visualization window toolbar presents all available tools implementations.
  * <p><b>Example:</b> A <i>Brush</i> tool colors clicked nodes.
- * <p>
  * <h3>How-to create a tool implementation</h3>
  * <ol><li>Create a class which implement <code>Tool</code> interface</li>
  * <li>Add the following annotation to your class to be declared as a new

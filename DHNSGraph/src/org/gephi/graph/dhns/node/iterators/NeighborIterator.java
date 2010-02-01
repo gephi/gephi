@@ -22,10 +22,10 @@ package org.gephi.graph.dhns.node.iterators;
 
 import java.util.Iterator;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.Predicate;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.predicate.Predicate;
 
 /**
  * Iterator on neighbour of a node. The edge iterator is given to the constructor.

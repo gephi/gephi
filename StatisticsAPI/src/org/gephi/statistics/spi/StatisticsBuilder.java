@@ -21,23 +21,32 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.statistics.spi;
 
 /**
- * The class that is responsible of instancing new Statistics
- * @author pjmcswee
+ * Statistics builder defines an statistics and is responsible for building
+ * new instances.
+ * <p>
+ * Builders must add <b>@ServiceProvider</b> annotation to be found by the system.
+ * <p>
+ * To be fully integrated, one must also also implement {@link StatisticsUI}.
+ *
+ * @author Patrick J. McSweeney
  */
 public interface StatisticsBuilder {
 
     /**
-     * @return The name of the Statistics
+     * Returns the name of statistics
+     * @return  the name of the statistics
      */
     public String getName();
 
     /**
-     * @return the statistic from this builder.
+     * Build a new statistics instance and return it
+     * @return  a new statistics instance
      */
     public Statistics getStatistics();
 
     /**
-     * @return the Statistics class this builder create
+     * Returns the statistics' class this UI belongs to.
+     * @return  the statistics' class this UI belongs to
      */
     public Class<? extends Statistics> getStatisticsClass();
 }

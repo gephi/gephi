@@ -25,54 +25,32 @@ import java.util.ArrayList;
 import java.util.List;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.Projects;
-import org.openide.util.Lookup;
-import org.openide.util.lookup.AbstractLookup;
-import org.openide.util.lookup.InstanceContent;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class ProjectsImpl implements Projects, Lookup.Provider, Serializable {
+public class ProjectsImpl implements Projects, Serializable {
 
     //Project
     private List<Project> projects = new ArrayList<Project>();
     private ProjectImpl currentProject;
-    //Lookup
-    private transient InstanceContent ic;
-    private transient AbstractLookup lookup;
 
     public ProjectsImpl() {
-        ic = new InstanceContent();
-        lookup = new AbstractLookup(ic);
     }
 
     public void addProject(Project project) {
         if (!projects.contains(project)) {
             projects.add(project);
-            ic.add(project);
         }
     }
 
     public void removeProject(Project project) {
         projects.remove(project);
-        ic.remove(project);
     }
 
-    public List<Project> getProjects() {
-        return projects;
-    }
-
-    public Lookup getLookup() {
-        if (lookup == null) {
-            ic = new InstanceContent();
-            lookup = new AbstractLookup(ic);
-        }
-        return lookup;
-    }
-
-    public void reinitLookup() {
-        ic.set(projects, null);
+    public Project[] getProjects() {
+        return projects.toArray(new Project[0]);
     }
 
     public ProjectImpl getCurrentProject() {
