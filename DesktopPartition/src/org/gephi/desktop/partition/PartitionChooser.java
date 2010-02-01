@@ -29,6 +29,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.PartitionController;
 import org.gephi.partition.api.PartitionModel;
@@ -38,13 +40,16 @@ import org.gephi.ui.components.JLazyComboBox;
 import org.gephi.ui.utils.BusyUtils;
 import org.gephi.ui.utils.BusyUtils.BusyLabel;
 import org.openide.util.Lookup;
+import org.openide.util.Lookup.Result;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 import org.openide.util.NbBundle;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class PartitionChooser extends javax.swing.JPanel implements PropertyChangeListener {
+public class PartitionChooser extends javax.swing.JPanel implements PropertyChangeListener, LookupListener {
 
     //Const
     private final String NO_SELECTION;
@@ -55,6 +60,8 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
     private final String HIDE_PIE;
     //Architecture
     private PartitionModel model;
+    private Lookup.Result<AttributeColumn> nodeResult;
+    private Lookup.Result<AttributeColumn> edgeResult;
 
     public PartitionChooser() {
         initComponents();
@@ -352,6 +359,16 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
         if (model != null) {
             this.model = model;
             model.addPropertyChangeListener(this);
+
+            if (nodeResult != null) {
+                nodeResult.removeLookupListener(this);
+                edgeResult.removeLookupListener(this);
+            }
+            AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
+            nodeResult = ac.getModel().getNodeTable().getLookup().lookupResult(AttributeColumn.class);
+            edgeResult = ac.getModel().getNodeTable().getLookup().lookupResult(AttributeColumn.class);
+            nodeResult.addLookupListener(this);
+            edgeResult.addLookupListener(this);
         }
         refreshModel();
     }
@@ -361,7 +378,17 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
             model.removePropertyChangeListener(this);
             model = null;
         }
+        if (nodeResult != null) {
+            nodeResult.removeLookupListener(this);
+            edgeResult.removeLookupListener(this);
+        }
         refreshModel();
+    }
+
+    public void resultChanged(LookupEvent ev) {
+        if(model!=null) {
+            ((JLazyComboBox.LazyComboBoxModel)partitionComboBox.getModel()).setReset(true);
+        }
     }
 
     private void setEnable(boolean enable) {

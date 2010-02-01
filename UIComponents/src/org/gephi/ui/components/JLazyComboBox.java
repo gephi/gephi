@@ -121,10 +121,10 @@ public class JLazyComboBox extends JComboBox {
         void populate() {
             final Object[] list = loadItems();
             reset = false;
+            removeAllElements();
             SwingUtilities.invokeLater(new Runnable() {
 
                 public void run() {
-                    removeAllElements();
                     addElement(getInitialSelection());
                     for (Object o : list) {
                         addElement(o);
