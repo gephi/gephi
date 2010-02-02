@@ -198,6 +198,9 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
     }
 
     public void endAlgo() {
+        for (Node n : graph.getNodes()) {
+            n.getNodeData().setLayoutData(null);
+        }
     }
 
     @Override

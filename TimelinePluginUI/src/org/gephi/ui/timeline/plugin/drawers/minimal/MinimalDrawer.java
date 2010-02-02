@@ -31,7 +31,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import org.gephi.timeline.api.TimelineAnimator;
+import org.gephi.timeline.api.TimelineAnimatorListener;
+import org.gephi.timeline.api.TimelineInterval;
+import org.gephi.timeline.api.TimelineIntervalListener;
 import org.gephi.timeline.api.TimelineModel;
+import org.gephi.timeline.api.TimelineModelListener;
 import org.gephi.timeline.spi.TimelineDrawer;
 import org.joda.time.DateTime;
 import org.joda.time.DateTime.Property;
@@ -50,7 +56,11 @@ import org.openide.util.lookup.ServiceProvider;
  * @author jbilcke
  */
 @ServiceProvider(service = TimelineDrawer.class)
-public class MinimalDrawer extends JPanel implements TimelineDrawer, MouseListener, MouseMotionListener {
+public class MinimalDrawer extends JPanel
+        implements TimelineDrawer,
+        MouseListener,
+        MouseMotionListener,
+        TimelineAnimatorListener {
 
     private static final long serialVersionUID = 1L;
     private MinimalDrawerSettings settings = new MinimalDrawerSettings();
@@ -65,17 +75,31 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer, MouseListen
         addMouseMotionListener(this);
         addMouseListener(this);
         setEnabled(true);
-
     }
+    
     private TimelineModel model = null;
 
     public void setModel(TimelineModel model) {
-        this.model = model;
+        if (model == null) {
+            return;
+        }
+
+            if (model != this.model) {
+            if (this.model != null) {
+                this.model.getAnimator().removeListener(this);
+            }
+            model.getAnimator().addListener(this);
+            this.model = model;
+
+        }
+
+
     }
 
     public TimelineModel getModel() {
         return model;
     }
+    
     private Integer mousex = null;
     private static Cursor CURSOR_DEFAULT = new Cursor(Cursor.DEFAULT_CURSOR);
     private static Cursor CURSOR_LEFT_HOOK = new Cursor(Cursor.E_RESIZE_CURSOR);
@@ -123,6 +147,10 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer, MouseListen
         highlightedComponent = HighlightedComponent.NONE;
         repaint();
         }
+    }
+
+    public void timelineAnimatorChanged(ChangeEvent event) {
+        repaint();
     }
 
     public enum TimelineLevel {
@@ -590,7 +618,7 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer, MouseListen
                 }
                  else if (Math.abs(st-sf+delta) > settings.selection.minimalWidth) {
                     sf += delta;
-                    model.selectFrom(((float) (sf + delta)) / w);
+                    model.getAnimator().setFrom(((float) (sf + delta)) / w);
                 } else {
                 }
                 break;
@@ -600,7 +628,7 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer, MouseListen
                     st = (int)w-1;
                 } else if (Math.abs((st+delta)-sf) > settings.selection.minimalWidth) {
                     st += delta;
-                    model.selectTo(((float) (st + delta)) / w);
+                    model.getAnimator().setTo(((float) (st + delta)) / w);
                 }
                 break;
             case MOVING:
@@ -612,7 +640,7 @@ public class MinimalDrawer extends JPanel implements TimelineDrawer, MouseListen
                     sf += delta;
                     st += delta;
                     // TODO
-                    model.selectInterval(((float) (sf + delta)) / w, ((float) (st + delta)) / w);
+                    model.getAnimator().setInterval(((float) (sf + delta)) / w, ((float) (st + delta)) / w);
                 }
                 break;
 

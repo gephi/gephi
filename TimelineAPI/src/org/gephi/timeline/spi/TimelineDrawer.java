@@ -15,7 +15,11 @@ import org.gephi.timeline.api.TimelineModel;
  *
  * @author jbilcke
  */
-public interface TimelineDrawer extends Accessible, ImageObserver, MenuContainer, Serializable {
+public interface TimelineDrawer
+        extends Accessible,
+        ImageObserver,
+        MenuContainer,
+        Serializable {
 
     public void setModel(TimelineModel model);
     public TimelineModel getModel();

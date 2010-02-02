@@ -182,6 +182,10 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     }
 
     public void endAlgo() {
+        for (Node node : graph.getTopNodes()) {
+            NodeData data = node.getNodeData();
+            data.setLayoutData(null);
+        }
     }
 
     public void goAlgo() {

@@ -21,10 +21,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.timeline.api;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 /**
  *
  * @author Julian Bilcke <julian.bilcke@gmail.com>
  */
-interface TimelineModelListener {
-
+public interface TimelineModelListener  {
+    public void timelineModelChanged(ChangeEvent event);
 }

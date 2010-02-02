@@ -15,6 +15,8 @@ import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.spi.TimelineDrawer;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.timeline.api.TimelineAnimatorListener;
+import org.gephi.timeline.api.TimelineModelListener;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -27,7 +29,10 @@ import org.openide.util.Lookup;
  */
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.timeline//Timeline//EN",
 autostore = false)
-public final class TimelineTopComponent extends TopComponent implements ChangeListener {
+public final class TimelineTopComponent
+        extends TopComponent
+        implements TimelineModelListener,
+        TimelineAnimatorListener {
 
     private static TimelineTopComponent instance;
     /** path to the icon used by the component and its open action */
@@ -214,28 +219,43 @@ public final class TimelineTopComponent extends TopComponent implements ChangeLi
     }
 
     private void refreshModel(TimelineModel model) {
-        if (model != null && model != this.model) {
-            if (this.model != null) {
-                this.model.removeChangeListener(this);
-            }
-            model.addChangeListener(this);
+
+        if (model == null) {
+            refreshEnable(false);
+            return;
         }
-        this.model = model;
-        drawerPanel.setModel(model);
-        refreshEnable(model != null);
 
+        if (model != this.model) {
+            if (this.model != null) {
+                this.model.removeListener(this);
+                this.model.getAnimator().removeListener(this);
+            }
+            model.addListener(this);
+            model.getAnimator().addListener(this);
+            this.model = model;
+            drawerPanel.setModel(model);
+        }
 
+        refreshEnable(true);
+
+        // repaint(); // drawerPanel will call the model itself
         // TODO repaint ?
     }
 
     private void refreshEnable(boolean enable) {
        // ((JPanel)drawerPanel).setEnabled(enable);
-        timelinePanel.setEnabled(enable);
-        timelineToolbar.setEnabled(enable);
-        settingsButton.setEnabled(enable);
+
+        if (!timelinePanel.isEnabled()) timelinePanel.setEnabled(enable);
+        if (!timelineToolbar.isEnabled()) timelineToolbar.setEnabled(enable);
+        if (!settingsButton.isEnabled()) settingsButton.setEnabled(enable);
     }
 
-    public void stateChanged(ChangeEvent e) {
-        refreshModel(model);
+
+    public void timelineModelChanged(ChangeEvent event) {
+        // ..
+    }
+
+    public void timelineAnimatorChanged(ChangeEvent event) {
+        // check animator value, to update the buttons etc..
     }
 }
