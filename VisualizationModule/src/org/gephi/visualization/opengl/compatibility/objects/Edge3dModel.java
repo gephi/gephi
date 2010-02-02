@@ -55,14 +55,15 @@ public class Edge3dModel extends Edge2dModel {
             m2.mark = true;
         }
 
+        float edgeScale = vizModel.getEdgeScale();
         float x1 = obj.getSource().x();
         float x2 = obj.getTarget().x();
         float y1 = obj.getSource().y();
         float y2 = obj.getTarget().y();
         float z1 = obj.getSource().z();
         float z2 = obj.getTarget().z();
-        float t1 = obj.getEdge().getWeight() / WEIGHT_DIV;
-        float t2 = obj.getEdge().getWeight() / WEIGHT_DIV;
+        float t1 = obj.getEdge().getWeight() * edgeScale;
+        float t2 = obj.getEdge().getWeight() * edgeScale;
 
         //CameraVector, from camera location to any point on the line
         float cameraVectorX = x1 - cameraLocation[0];
