@@ -89,6 +89,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
                 }
             }
         });
+        refreshModel();
     }
 
     public void refreshModel() {
