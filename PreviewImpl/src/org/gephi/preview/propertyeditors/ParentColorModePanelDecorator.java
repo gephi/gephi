@@ -13,7 +13,7 @@ class ParentColorModePanelDecorator extends ColorModePanelDecorator {
     }
 
     protected String getRadioButtonLabel() {
-        return "Parent Color";
+        return "Parent";
     }
 
     protected boolean isSelectedRadioButton() {

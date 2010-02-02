@@ -339,26 +339,26 @@ public abstract class DirectedEdgeSupervisorImpl extends EdgeSupervisorImpl
     }
 
     public SupervisorPropery[] getProperties() {
-        final String CATEGORY = "Unidirectional Edge Settings";
+        final String CATEGORY = "Directed";
         try {
             return new SupervisorPropery[]{
-                        SupervisorPropery.createProperty(this, Boolean.class, "curvedFlag", CATEGORY, "Curved Uni. Edges"),
-                        SupervisorPropery.createProperty(this, EdgeColorizer.class, "colorizer", CATEGORY, "Uni. Edge Color", EdgeColorizerPropertyEditor.class),
-                        SupervisorPropery.createProperty(this, Boolean.class, "showLabelsFlag", CATEGORY, "Show Uni. Edge Labels"),
-                        SupervisorPropery.createProperty(this, Boolean.class, "shortenLabelsFlag", CATEGORY, "Shorten Uni. Edge Labels"),
-                        SupervisorPropery.createProperty(this, Integer.class, "labelMaxChar", CATEGORY, "Uni. Edge Label Char Limit"),
-                        SupervisorPropery.createProperty(this, Font.class, "baseLabelFont", CATEGORY, "Uni. Edge Label Font"),
-                        SupervisorPropery.createProperty(this, EdgeChildColorizer.class, "labelColorizer", CATEGORY, "Uni. Edge Label Color", EdgeChildColorizerPropertyEditor.class),
-                        SupervisorPropery.createProperty(this, Boolean.class, "showMiniLabelsFlag", CATEGORY, "Show Uni. Edge Mini-Labels"),
-                        SupervisorPropery.createProperty(this, Float.class, "miniLabelAddedRadius", CATEGORY, "Uni. Edge Mini-Label Added Radius"),
-                        SupervisorPropery.createProperty(this, Boolean.class, "shortenMiniLabelsFlag", CATEGORY, "Shorten Uni. Edge Mini-Labels"),
-                        SupervisorPropery.createProperty(this, Integer.class, "miniLabelMaxChar", CATEGORY, "Uni. Edge Mini-Label Char Limit"),
-                        SupervisorPropery.createProperty(this, Font.class, "miniLabelFont", CATEGORY, "Uni. Edge Mini-Label Font"),
-                        SupervisorPropery.createProperty(this, EdgeChildColorizer.class, "miniLabelColorizer", CATEGORY, "Uni. Edge Mini-Label Color", EdgeChildColorizerPropertyEditor.class),
-                        SupervisorPropery.createProperty(this, Boolean.class, "showArrowsFlag", CATEGORY, "Show Uni. Edge Arrows"),
-                        SupervisorPropery.createProperty(this, Float.class, "arrowAddedRadius", CATEGORY, "Uni. Edge Arrow Added Radius"),
-                        SupervisorPropery.createProperty(this, Float.class, "arrowSize", CATEGORY, "Uni. Edge Arrow Size"),
-                        SupervisorPropery.createProperty(this, EdgeChildColorizer.class, "arrowColorizer", CATEGORY, "Uni. Edge Arrow Color", EdgeChildColorizerPropertyEditor.class)};
+                        SupervisorPropery.createProperty(this, Boolean.class, "curvedFlag", CATEGORY, "Curved"),
+                        SupervisorPropery.createProperty(this, EdgeColorizer.class, "colorizer", CATEGORY, "Color", EdgeColorizerPropertyEditor.class),
+                        SupervisorPropery.createProperty(this, Boolean.class, "showLabelsFlag", CATEGORY, "Labels"),
+                        SupervisorPropery.createProperty(this, Boolean.class, "shortenLabelsFlag", CATEGORY, "Shorten labels"),
+                        SupervisorPropery.createProperty(this, Integer.class, "labelMaxChar", CATEGORY, "Shorten limit"),
+                        SupervisorPropery.createProperty(this, Font.class, "baseLabelFont", CATEGORY, "Font"),
+                        SupervisorPropery.createProperty(this, EdgeChildColorizer.class, "labelColorizer", CATEGORY, "Label color", EdgeChildColorizerPropertyEditor.class),
+                        SupervisorPropery.createProperty(this, Boolean.class, "showMiniLabelsFlag", CATEGORY, "Mini-Labels"),
+                        SupervisorPropery.createProperty(this, Float.class, "miniLabelAddedRadius", CATEGORY, "Mini-Label radius"),
+                        SupervisorPropery.createProperty(this, Boolean.class, "shortenMiniLabelsFlag", CATEGORY, "Shorten Mini-Labels"),
+                        SupervisorPropery.createProperty(this, Integer.class, "miniLabelMaxChar", CATEGORY, "Mini-Label limit"),
+                        SupervisorPropery.createProperty(this, Font.class, "miniLabelFont", CATEGORY, "Mini-Label font"),
+                        SupervisorPropery.createProperty(this, EdgeChildColorizer.class, "miniLabelColorizer", CATEGORY, "Mini-Label color", EdgeChildColorizerPropertyEditor.class),
+                        SupervisorPropery.createProperty(this, Boolean.class, "showArrowsFlag", CATEGORY, "Arrows"),
+                        SupervisorPropery.createProperty(this, Float.class, "arrowAddedRadius", CATEGORY, "Arrow added radius"),
+                        SupervisorPropery.createProperty(this, Float.class, "arrowSize", CATEGORY, "Arrow size"),
+                        SupervisorPropery.createProperty(this, EdgeChildColorizer.class, "arrowColorizer", CATEGORY, "Arrow color", EdgeChildColorizerPropertyEditor.class)};
         } catch (Exception e) {
             e.printStackTrace();
         }

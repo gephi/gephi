@@ -39,27 +39,27 @@ public class PreviewNode extends AbstractNode {
             EdgeSupervisor bes = model.getBiEdgeSupervisor();
 
             Sheet.Set nodeSet = Sheet.createPropertiesSet();
-            nodeSet.setDisplayName("Node Settings");
+            nodeSet.setDisplayName("Node");
             nodeSet.setName("nodes");
 
             Sheet.Set edgeSet = Sheet.createPropertiesSet();
-            edgeSet.setDisplayName("Edge Global Settings");
+            edgeSet.setDisplayName("Edge");
             edgeSet.setName("edges");
 
             Sheet.Set selfLoopSet = Sheet.createPropertiesSet();
-            selfLoopSet.setDisplayName("Self-Loop Global Settings");
+            selfLoopSet.setDisplayName("Self-Loop");
             selfLoopSet.setName("selfLoops");
 
             Sheet.Set undirectedEdgeSet = Sheet.createPropertiesSet();
-            undirectedEdgeSet.setDisplayName("Undirected Edge Settings");
+            undirectedEdgeSet.setDisplayName("Undirected");
             undirectedEdgeSet.setName("undirectedEdges");
 
             Sheet.Set uniEdgeSet = Sheet.createPropertiesSet();
-            uniEdgeSet.setDisplayName("Unidirectional Edge Settings");
+            uniEdgeSet.setDisplayName("Directed");
             uniEdgeSet.setName("uniEdges");
 
             Sheet.Set biEdgeSet = Sheet.createPropertiesSet();
-            biEdgeSet.setDisplayName("Bidirectional Edge Settings");
+            biEdgeSet.setDisplayName("Mutual");
             biEdgeSet.setName("biEdges");
 
             for (SupervisorPropery p : ns.getProperties()) {

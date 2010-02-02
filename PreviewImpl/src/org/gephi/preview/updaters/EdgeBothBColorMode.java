@@ -15,7 +15,7 @@ import org.gephi.preview.util.color.MixedColor;
 public class EdgeBothBColorMode
         implements EdgeColorizer, EdgeChildColorizer {
 
-    private static final String IDENTIFIER = "both";
+    private static final String IDENTIFIER = "mixed";
 
     /**
      * Colors the given client.

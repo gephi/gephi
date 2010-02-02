@@ -50,12 +50,12 @@ public class NodeSupervisorImpl implements NodeSupervisor {
         nodeBorderWidth = 1f;
         nodeColorizer = new NodeOriginalColorMode();
         nodeBorderColorizer = new CustomColorMode(0, 0, 0);
-        showNodeLabels = true;
+        showNodeLabels = false;
         baseNodeLabelfont = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
         shortenLabelsFlag = false;
         nodeLabelMaxChar = 10;
         nodeLabelColorizer = new CustomColorMode(0, 0, 0);
-        showNodeLabelBorders = true;
+        showNodeLabelBorders = false;
         nodeLabelBorderColorizer = new CustomColorMode(255, 255, 255);
     }
 
@@ -341,20 +341,20 @@ public class NodeSupervisorImpl implements NodeSupervisor {
     }
 
     public SupervisorPropery[] getProperties() {
-        final String CATEGORY = "Node Settings";
+        final String CATEGORY = "Node";
         try {
             return new SupervisorPropery[]{
-                        SupervisorPropery.createProperty(this, Boolean.class, "showNodes", CATEGORY, "Show Nodes"),
-                        SupervisorPropery.createProperty(this, Float.class, "nodeBorderWidth", CATEGORY, "Node Border Width"),
-                        SupervisorPropery.createProperty(this, NodeColorizer.class, "nodeColorizer", CATEGORY, "Node Color", NodeColorizerPropertyEditor.class),
-                        SupervisorPropery.createProperty(this, GenericColorizer.class, "nodeBorderColorizer", CATEGORY, "Node Border Color", GenericColorizerPropertyEditor.class),
-                        SupervisorPropery.createProperty(this, Boolean.class, "showNodeLabels", CATEGORY, "Show Node Labels"),
-                        SupervisorPropery.createProperty(this, Font.class, "baseNodeLabelFont", CATEGORY, "Node Label Font"),
-                        SupervisorPropery.createProperty(this, Boolean.class, "shortenLabelsFlag", CATEGORY, "Shorten Node Labels"),
-                        SupervisorPropery.createProperty(this, Integer.class, "nodeLabelMaxChar", CATEGORY, "Node Label Char Limit"),
-                        SupervisorPropery.createProperty(this, NodeChildColorizer.class, "nodeLabelColorizer", CATEGORY, "Node Label Color", NodeChildColorizerPropertyEditor.class),
-                        SupervisorPropery.createProperty(this, Boolean.class, "showNodeLabelBorders", CATEGORY, "Bordered Node Labels"),
-                        SupervisorPropery.createProperty(this, NodeChildColorizer.class, "nodeLabelBorderColorizer", CATEGORY, "Node Label Border Color", NodeChildColorizerPropertyEditor.class)
+                        SupervisorPropery.createProperty(this, Boolean.class, "showNodes", CATEGORY, "Show"),
+                        SupervisorPropery.createProperty(this, Float.class, "nodeBorderWidth", CATEGORY, "Border width"),
+                        SupervisorPropery.createProperty(this, NodeColorizer.class, "nodeColorizer", CATEGORY, "Color", NodeColorizerPropertyEditor.class),
+                        SupervisorPropery.createProperty(this, GenericColorizer.class, "nodeBorderColorizer", CATEGORY, "Border color", GenericColorizerPropertyEditor.class),
+                        SupervisorPropery.createProperty(this, Boolean.class, "showNodeLabels", CATEGORY, "Show labels"),
+                        SupervisorPropery.createProperty(this, Font.class, "baseNodeLabelFont", CATEGORY, "Label font"),
+                        SupervisorPropery.createProperty(this, Boolean.class, "shortenLabelsFlag", CATEGORY, "Shorten labels"),
+                        SupervisorPropery.createProperty(this, Integer.class, "nodeLabelMaxChar", CATEGORY, "Shorten limit"),
+                        SupervisorPropery.createProperty(this, NodeChildColorizer.class, "nodeLabelColorizer", CATEGORY, "Label color", NodeChildColorizerPropertyEditor.class),
+                        SupervisorPropery.createProperty(this, Boolean.class, "showNodeLabelBorders", CATEGORY, "Label border"),
+                        SupervisorPropery.createProperty(this, NodeChildColorizer.class, "nodeLabelBorderColorizer", CATEGORY, "Label Border Color", NodeChildColorizerPropertyEditor.class)
                     };
         } catch (Exception e) {
             e.printStackTrace();

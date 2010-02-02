@@ -13,7 +13,7 @@ class EdgeB2ColorModePanelDecorator extends ColorModePanelDecorator {
     }
 
     protected String getRadioButtonLabel() {
-        return "Edge's Boundary 2";
+        return "Target";
     }
 
     protected boolean isSelectedRadioButton() {

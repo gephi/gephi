@@ -13,7 +13,7 @@ class EdgeBothBColorModePanelDecorator extends ColorModePanelDecorator {
     }
 
     protected String getRadioButtonLabel() {
-        return "Edge's Both Boundaries";
+        return "Mixed";
     }
 
     protected boolean isSelectedRadioButton() {
