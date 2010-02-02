@@ -1,4 +1,4 @@
-package org.gephi.ui.preview;
+package org.gephi.desktop.preview;
 
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;

@@ -1,4 +1,4 @@
-package org.gephi.ui.preview;
+package org.gephi.desktop.preview;
 
 import java.awt.Font;
 import java.util.HashMap;

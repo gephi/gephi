@@ -1,4 +1,4 @@
-package org.gephi.ui.preview;
+package org.gephi.desktop.preview;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -20,7 +20,7 @@ import org.openide.windows.WindowManager;
 final class PreviewTopComponent extends TopComponent {
 
     private static PreviewTopComponent instance;
-    static final String ICON_PATH = "org/gephi/ui/preview/resources/preview.png";
+    static final String ICON_PATH = "org/gephi/desktop/preview/resources/preview.png";
     private static final String PREFERRED_ID = "PreviewTopComponent";
     private final ProcessingPreview sketch = new ProcessingPreview();
 
@@ -95,7 +95,7 @@ final class PreviewTopComponent extends TopComponent {
         bannerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
         bannerPanel.setLayout(new java.awt.GridBagLayout());
 
-        bannerLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/preview/resources/info.png"))); // NOI18N
+        bannerLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/preview/resources/info.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(bannerLabel, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.bannerLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;

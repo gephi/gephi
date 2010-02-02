@@ -5,8 +5,8 @@ and open the template in the editor.
 -->
 <!DOCTYPE settings PUBLIC "-//NetBeans//DTD Session settings 1.0//EN" "http://www.netbeans.org/dtds/sessionsettings-1_0.dtd">
 <settings version="1.0">
-    <module name="org.gephi.ui.preview" spec="1.0"/>
+    <module name="org.gephi.desktop.preview" spec="1.0"/>
     <instanceof class="org.openide.windows.TopComponent"/>
-    <instanceof class="org.gephi.ui.preview.PreviewSettingsTopComponent"/>
-    <instance class="org.gephi.ui.preview.PreviewSettingsTopComponent" method="getDefault"/>
+    <instanceof class="org.gephi.desktop.preview.PreviewSettingsTopComponent"/>
+    <instance class="org.gephi.desktop.preview.PreviewSettingsTopComponent" method="getDefault"/>
 </settings>

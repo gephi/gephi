@@ -1,4 +1,4 @@
-package org.gephi.ui.preview;
+package org.gephi.desktop.preview;
 
 import java.awt.BorderLayout;
 import java.awt.event.ItemEvent;
@@ -29,7 +29,7 @@ import org.openide.windows.WindowManager;
 final class PreviewSettingsTopComponent extends TopComponent {
 
     private static PreviewSettingsTopComponent instance;
-    static final String ICON_PATH = "org/gephi/ui/preview/resources/settings.png";
+    static final String ICON_PATH = "org/gephi/desktop/preview/resources/settings.png";
     private static final String PREFERRED_ID = "PreviewSettingsTopComponent";
     private final String NO_SELECTION = "---";
     //Component
@@ -45,7 +45,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
         if (UIUtils.isAquaLookAndFeel()) {
             mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
-        
+
         // property sheet
         propertySheet = new PropertySheet();
         propertySheet.setNodes(new Node[]{new PreviewNode()});
@@ -68,7 +68,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
             public void stateChanged(ChangeEvent e) {
                 float val = ratioSlider.getValue() / 100f;
                 if (val == 0f) {
-                    ratioLabel.setText("Minimum");
+                    ratioLabel.setText(NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.ratio.minimum"));
                 } else {
                     ratioLabel.setText(formatter.format(val));
                 }
@@ -229,7 +229,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
         box.setMaximumSize(new java.awt.Dimension(32767, 32767));
         presetToolbar.add(box);
 
-        saveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/preview/resources/save.png"))); // NOI18N
+        saveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/preview/resources/save.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(saveButton, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.saveButton.text")); // NOI18N
         saveButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.saveButton.toolTipText")); // NOI18N
         saveButton.setEnabled(false);
@@ -249,7 +249,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
         gridBagConstraints.insets = new java.awt.Insets(3, 5, 0, 5);
         presetPanel.add(presetToolbar, gridBagConstraints);
 
-        labelPreset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/preview/resources/preset.png"))); // NOI18N
+        labelPreset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/preview/resources/preset.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(labelPreset, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.labelPreset.text")); // NOI18N
         labelPreset.setEnabled(false);
         labelPreset.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
@@ -266,7 +266,7 @@ final class PreviewSettingsTopComponent extends TopComponent {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         mainPanel.add(presetPanel, gridBagConstraints);
 
-        refreshButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/preview/resources/refresh.png"))); // NOI18N
+        refreshButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/preview/resources/refresh.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.refreshButton.text")); // NOI18N
         refreshButton.setEnabled(false);
         refreshButton.addActionListener(new java.awt.event.ActionListener() {

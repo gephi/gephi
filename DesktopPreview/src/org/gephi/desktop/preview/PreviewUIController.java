@@ -1,4 +1,4 @@
-package org.gephi.ui.preview;
+package org.gephi.desktop.preview;
 
 import javax.swing.SwingUtilities;
 import org.gephi.graph.api.GraphController;
