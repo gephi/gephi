@@ -62,7 +62,7 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
         NodeData nodeTo = edge.getTarget();
 
         //Edge size
-        float weight = edge.getEdge().getWeight();
+        float weight = edge.getEdge().getWeight() * vizModel.getEdgeScale();
         float arrowWidth = ARROW_WIDTH * weight * 2f;
         float arrowHeight = ARROW_HEIGHT * weight * 2f;
 

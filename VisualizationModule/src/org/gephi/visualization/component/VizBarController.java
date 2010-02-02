@@ -251,7 +251,7 @@ public class VizBarController {
         }
 
         public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[3];
+            JComponent[] components = new JComponent[4];
 
             //Show edges buttons
             VizModel vizModel = VizController.getInstance().getVizModel();
@@ -328,6 +328,32 @@ public class VizBarController {
             });
             components[2] = showLabelsButton;
 
+            //EdgeScale slider
+            final JSlider edgeScaleSlider = new JSlider(0, 100, (int) ((vizModel.getEdgeScale() - 0.1f) * 10));
+            edgeScaleSlider.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.edgeScale"));
+            edgeScaleSlider.addChangeListener(new ChangeListener() {
+
+                public void stateChanged(ChangeEvent e) {
+                    VizModel vizModel = VizController.getInstance().getVizModel();
+                    if (vizModel.getEdgeScale() != (edgeScaleSlider.getValue() / 10f + 0.1f)) {
+                        vizModel.setEdgeScale(edgeScaleSlider.getValue() / 10f + 0.1f);
+                    }
+                }
+            });
+            edgeScaleSlider.setPreferredSize(new Dimension(100, 20));
+            edgeScaleSlider.setMaximumSize(new Dimension(100, 20));
+            vizModel.addPropertyChangeListener(new PropertyChangeListener() {
+
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (evt.getPropertyName().equals("edgeScale")) {
+                        VizModel vizModel = VizController.getInstance().getVizModel();
+                        if (vizModel.getEdgeScale() != (edgeScaleSlider.getValue() / 10f + 0.1f)) {
+                            edgeScaleSlider.setValue((int) ((vizModel.getEdgeScale() - 0.1f) * 10));
+                        }
+                    }
+                }
+            });
+            components[3] = edgeScaleSlider;
             return components;
         }
 
@@ -435,6 +461,7 @@ public class VizBarController {
 
             //Font size
             final JSlider fontSizeSlider = new JSlider(0, 100, (int) (model.getNodeSizeFactor() * 100f));
+            fontSizeSlider.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.fontScale"));
             fontSizeSlider.addChangeListener(new ChangeListener() {
 
                 public void stateChanged(ChangeEvent e) {

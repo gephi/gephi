@@ -106,7 +106,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
 
             public void stateChanged(ChangeEvent e) {
                 TextModel model = VizController.getInstance().getVizModel().getTextModel();
-                if (model.getNodeSizeFactor() != nodeSizeSlider.getValue() + 100f) {
+                if (model.getNodeSizeFactor() != nodeSizeSlider.getValue() / 100f) {
                     model.setNodeSizeFactor(nodeSizeSlider.getValue() / 100f);
                 }
             }

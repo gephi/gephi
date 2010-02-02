@@ -64,6 +64,7 @@ public class VizModel {
     protected boolean adjustByText;
     protected String nodeModeler;
     protected boolean showHulls;
+    protected float edgeScale;
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
     private boolean defaultModel = false;
@@ -122,6 +123,7 @@ public class VizModel {
         edgeOutSelectionColor = config.getDefaultEdgeOutSelectedColor().getRGBComponents(null);
         edgeBothSelectionColor = config.getDefaultEdgeBothSelectedColor().getRGBComponents(null);
         showHulls = config.isDefaultShowHulls();
+        edgeScale = config.getDefaultEdgeScale();
     }
 
     //GETTERS
@@ -221,6 +223,10 @@ public class VizModel {
         return showHulls;
     }
 
+    public float getEdgeScale() {
+        return edgeScale;
+    }
+
     //SETTERS
     public void setAdjustByText(boolean adjustByText) {
         this.adjustByText = adjustByText;
@@ -305,6 +311,11 @@ public class VizModel {
     public void setShowHulls(boolean showHulls) {
         this.showHulls = showHulls;
         fireProperyChange("showHulls", null, showHulls);
+    }
+
+    public void setEdgeScale(float edgeScale) {
+        this.edgeScale = edgeScale;
+        fireProperyChange("edgeScale", null, edgeScale);
     }
 
     //EVENTS
@@ -442,6 +453,12 @@ public class VizModel {
             Element nodeModelerE = (Element) vizModelElement.getElementsByTagName("nodemodeler").item(0);
             nodeModeler = nodeModelerE.getAttribute("value");
         }
+
+        //Float
+        if (vizModelElement.getElementsByTagName("edgeScale").getLength() > 0) {
+            Element edgeScaleE = (Element) vizModelElement.getElementsByTagName("edgeScale").item(0);
+            edgeScale = Float.parseFloat(edgeScaleE.getAttribute("value"));
+        }
     }
 
     public Element writeXML(Document document) {
@@ -550,6 +567,11 @@ public class VizModel {
         Element nodeModelerE = document.createElement("nodemodeler");
         nodeModelerE.setAttribute("value", nodeModeler);
         vizModelE.appendChild(nodeModelerE);
+
+        //Float
+        Element edgeScaleE = document.createElement("edgeScale");
+        edgeScaleE.setAttribute("value", String.valueOf(edgeScale));
+        vizModelE.appendChild(edgeScaleE);
 
         return vizModelE;
     }

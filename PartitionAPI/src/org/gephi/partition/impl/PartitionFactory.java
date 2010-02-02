@@ -32,8 +32,10 @@ import java.util.Set;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 import org.gephi.partition.api.EdgePartition;
 import org.gephi.partition.api.NodePartition;
 import org.gephi.partition.api.Part;
@@ -140,13 +142,13 @@ public class PartitionFactory {
 
     private static class NodePartitionImpl implements NodePartition {
 
-        private HashMap<Node, Part<Node>> nodeMap;
+        private HashMap<NodeData, Part<Node>> nodeMap;
         private PartImpl<Node>[] parts;
         private AttributeColumn column;
 
         public NodePartitionImpl(AttributeColumn column) {
             this.column = column;
-            nodeMap = new HashMap<Node, Part<Node>>();
+            nodeMap = new HashMap<NodeData, Part<Node>>();
             parts = new PartImpl[0];
         }
 
@@ -158,12 +160,12 @@ public class PartitionFactory {
             return parts;
         }
 
-        public Map<Node, Part<Node>> getMap() {
+        public Map<NodeData, Part<Node>> getMap() {
             return nodeMap;
         }
 
         public Part<Node> getPart(Node element) {
-            return nodeMap.get(element);
+            return nodeMap.get(element.getNodeData());
         }
 
         public void setParts(PartImpl<Node>[] parts) {
@@ -172,7 +174,7 @@ public class PartitionFactory {
             int i = 0;
             for (PartImpl<Node> p : parts) {
                 for (Node n : p.objects) {
-                    nodeMap.put(n, p);
+                    nodeMap.put(n.getNodeData(), p);
                 }
                 p.setColor(colors.get(i));
                 i++;
@@ -187,17 +189,21 @@ public class PartitionFactory {
         public String toString() {
             return column.getTitle();
         }
+
+        public int getElementsCount() {
+            return nodeMap.size();
+        }
     }
 
     private static class EdgePartitionImpl implements EdgePartition {
 
-        private HashMap<Edge, Part<Edge>> edgeMap;
+        private HashMap<EdgeData, Part<Edge>> edgeMap;
         private PartImpl<Edge>[] parts;
         private AttributeColumn column;
 
         public EdgePartitionImpl(AttributeColumn column) {
             this.column = column;
-            edgeMap = new HashMap<Edge, Part<Edge>>();
+            edgeMap = new HashMap<EdgeData, Part<Edge>>();
             parts = new PartImpl[0];
         }
 
@@ -209,12 +215,12 @@ public class PartitionFactory {
             return parts;
         }
 
-        public Map<Edge, Part<Edge>> getMap() {
+        public Map<EdgeData, Part<Edge>> getMap() {
             return edgeMap;
         }
 
         public Part<Edge> getPart(Edge element) {
-            return edgeMap.get(element);
+            return edgeMap.get(element.getEdgeData());
         }
 
         public void setParts(PartImpl<Edge>[] parts) {
@@ -222,8 +228,8 @@ public class PartitionFactory {
             List<Color> colors = PaletteUtils.getSequenceColors(parts.length);
             int i = 0;
             for (PartImpl<Edge> p : parts) {
-                for (Edge n : p.objects) {
-                    edgeMap.put(n, p);
+                for (Edge e : p.objects) {
+                    edgeMap.put(e.getEdgeData(), p);
                 }
                 p.setColor(colors.get(i));
                 i++;
@@ -237,6 +243,10 @@ public class PartitionFactory {
         @Override
         public String toString() {
             return column.getTitle();
+        }
+
+        public int getElementsCount() {
+            return edgeMap.size();
         }
     }
 
@@ -279,7 +289,7 @@ public class PartitionFactory {
         }
 
         public float getPercentage() {
-            return objects.length / (float) partition.getMap().size();
+            return objects.length / (float) partition.getElementsCount();
         }
 
         public Partition getPartition() {
