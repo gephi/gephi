@@ -22,6 +22,13 @@ public interface SelfLoop {
     public Float getThickness();
 
     /**
+     * Returns the edge's thickness scale
+     *
+     * @return the edge's thickness
+     */
+    public Float getScale();
+
+    /**
      * Returns the self-loop's color.
      *
      * @return the self-loop's color

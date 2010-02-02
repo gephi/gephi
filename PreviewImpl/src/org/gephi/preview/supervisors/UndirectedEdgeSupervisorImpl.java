@@ -40,6 +40,7 @@ public class UndirectedEdgeSupervisorImpl extends EdgeSupervisorImpl
         labelMaxChar = 10;
         baseLabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
         labelColorizer = new ParentColorMode();
+        edgeScale = new Float(1f);
     }
 
     @Override
@@ -52,6 +53,7 @@ public class UndirectedEdgeSupervisorImpl extends EdgeSupervisorImpl
         try {
             return new SupervisorPropery[]{
                         SupervisorPropery.createProperty(this, Boolean.class, "curvedFlag", CATEGORY, "Curved"),
+                        SupervisorPropery.createProperty(this, Float.class, "edgeScale", CATEGORY, "Thickness"),
                         SupervisorPropery.createProperty(this, EdgeColorizer.class, "colorizer", CATEGORY, "Color", EdgeColorizerPropertyEditor.class),
                         SupervisorPropery.createProperty(this, Boolean.class, "showLabelsFlag", CATEGORY, "Show labels"),
                         SupervisorPropery.createProperty(this, Boolean.class, "shortenLabelsFlag", CATEGORY, "Shorten labels"),

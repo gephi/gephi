@@ -162,7 +162,7 @@ public class PreviewGraphFactory {
 
         SelfLoopImpl previewSelfLoop = new SelfLoopImpl(
                 previewGraph,
-                sourceEdgeData.getSize(),
+                sourceEdge.getWeight(),
                 nodeMap.get(sourceEdge.getSource().getId()));
 
         previewGraph.addSelfLoop(previewSelfLoop);
@@ -183,7 +183,7 @@ public class PreviewGraphFactory {
 
         UnidirectionalEdgeImpl previewEdge = new UnidirectionalEdgeImpl(
                 previewGraph,
-                sourceEdgeData.getSize(),
+                sourceEdge.getWeight(),
                 nodeMap.get(sourceEdge.getSource().getId()),
                 nodeMap.get(sourceEdge.getTarget().getId()),
                 sourceEdgeData.getLabel(),
@@ -207,7 +207,7 @@ public class PreviewGraphFactory {
 
         BidirectionalEdgeImpl previewEdge = new BidirectionalEdgeImpl(
                 previewGraph,
-                sourceEdgeData.getSize(),
+                sourceEdge.getWeight(),
                 nodeMap.get(sourceEdge.getSource().getId()),
                 nodeMap.get(sourceEdge.getTarget().getId()),
                 sourceEdgeData.getLabel(),
@@ -231,7 +231,7 @@ public class PreviewGraphFactory {
 
         UndirectedEdgeImpl previewEdge = new UndirectedEdgeImpl(
                 previewGraph,
-                sourceEdgeData.getSize(),
+                sourceEdge.getWeight(),
                 nodeMap.get(sourceEdge.getSource().getId()),
                 nodeMap.get(sourceEdge.getTarget().getId()),
                 sourceEdgeData.getLabel(),

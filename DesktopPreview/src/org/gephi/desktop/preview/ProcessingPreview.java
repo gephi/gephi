@@ -280,7 +280,7 @@ public class ProcessingPreview extends PApplet
     public void renderSelfLoop(SelfLoop selfLoop) {
         CubicBezierCurve curve = selfLoop.getCurve();
 
-        strokeWeight(selfLoop.getThickness());
+        strokeWeight(selfLoop.getThickness() * selfLoop.getScale());
         stroke(selfLoop.getColor().getRed(),
                 selfLoop.getColor().getGreen(),
                 selfLoop.getColor().getBlue());
@@ -301,7 +301,7 @@ public class ProcessingPreview extends PApplet
     }
 
     public void renderEdge(Edge edge) {
-        strokeWeight(edge.getThickness());
+        strokeWeight(edge.getThickness() * edge.getScale());
         stroke(edge.getColor().getRed(),
                 edge.getColor().getGreen(),
                 edge.getColor().getBlue());

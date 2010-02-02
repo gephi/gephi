@@ -38,5 +38,6 @@ public class UnidirectionalEdgeSupervisorImpl extends DirectedEdgeSupervisorImpl
         arrowAddedRadius = 65f;
         arrowSize = 20f;
         arrowColorizer = new ParentColorMode();
+        edgeScale = new Float(1f);
     }
 }

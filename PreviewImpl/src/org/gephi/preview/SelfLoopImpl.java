@@ -96,4 +96,8 @@ public class SelfLoopImpl extends AbstractEdge implements SelfLoop {
     public SelfLoopSupervisorImpl getSelfLoopSupervisor() {
         return (SelfLoopSupervisorImpl) parent.getModel().getSelfLoopSupervisor();
     }
+
+    public Float getScale() {
+        return getSelfLoopSupervisor().getEdgeScale();
+    }
 }

@@ -268,7 +268,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
                 curve.getPt3().getX(), curve.getPt3().getY(),
                 curve.getPt4().getX(), curve.getPt4().getY()));
         selfLoopElem.setAttribute("stroke", selfLoop.getColor().toHexString());
-        selfLoopElem.setAttribute("stroke-width", Float.toString(selfLoop.getThickness()));
+        selfLoopElem.setAttribute("stroke-width", Float.toString(selfLoop.getThickness() * selfLoop.getScale()));
         selfLoopElem.setAttribute("fill", "none");
         edgeGroupElem.appendChild(selfLoopElem);
     }
@@ -300,7 +300,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
                 boundary1.getX(), boundary1.getY(),
                 boundary2.getX(), boundary2.getY()));
         edgeElem.setAttribute("stroke", edge.getColor().toHexString());
-        edgeElem.setAttribute("stroke-width", Float.toString(edge.getThickness()));
+        edgeElem.setAttribute("stroke-width", Float.toString(edge.getThickness() * edge.getScale()));
         edgeGroupElem.appendChild(edgeElem);
     }
 
@@ -313,7 +313,7 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
                     curve.getPt3().getX(), curve.getPt3().getY(),
                     curve.getPt4().getX(), curve.getPt4().getY()));
             curveElem.setAttribute("stroke", edge.getColor().toHexString());
-            curveElem.setAttribute("stroke-width", Float.toString(edge.getThickness()));
+            curveElem.setAttribute("stroke-width", Float.toString(edge.getThickness() * edge.getScale()));
             curveElem.setAttribute("fill", "none");
             edgeGroupElem.appendChild(curveElem);
         }
