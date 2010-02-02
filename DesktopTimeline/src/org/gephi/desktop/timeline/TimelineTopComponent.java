@@ -15,6 +15,7 @@ import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.spi.TimelineDrawer;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.timeline.api.TimelineAnimator;
 import org.gephi.timeline.api.TimelineAnimatorListener;
 import org.gephi.timeline.api.TimelineModelListener;
 import org.openide.util.NbBundle;
@@ -40,6 +41,7 @@ public final class TimelineTopComponent
     private static final String PREFERRED_ID = "TimelineTopComponent";
     private TimelineModel model;
     private TimelineDrawer drawerPanel;
+    private TimelineAnimatorImpl animator;
 
     public TimelineTopComponent() {
         initComponents();
@@ -55,6 +57,12 @@ public final class TimelineTopComponent
             drawerPanel.setModel(model);
         }
         timelinePanel.add((JPanel) drawerPanel);
+
+        animator = new TimelineAnimatorImpl();
+        animator.addListener(this);
+        if (drawerPanel != null) {
+            drawerPanel.setAnimator(animator);
+        }
 
         //Workspace events
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -228,10 +236,8 @@ public final class TimelineTopComponent
         if (model != this.model) {
             if (this.model != null) {
                 this.model.removeListener(this);
-                this.model.getAnimator().removeListener(this);
             }
             model.addListener(this);
-            model.getAnimator().addListener(this);
             this.model = model;
             drawerPanel.setModel(model);
         }

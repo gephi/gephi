@@ -1,6 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+Copyright 2010 WebAtlas
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Patrick J. McSweeney
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.gephi.desktop.timeline;
@@ -29,57 +45,57 @@ public class TimelineAnimatorImpl
     //
     private Timer timer;
 
-    private Float relativeSelectionStart;
-    private Float relativeSelectionEnd;
+    private double relativeSelectionStart;
+    private double relativeSelectionEnd;
 
 
     private TimelinePlayMode playMode;
-    private float stepByTick;
+    private double stepByTick;
     private AtomicBoolean paused;
 
     public TimelineAnimatorImpl() {
         listeners = new ArrayList<TimelineAnimatorListener>();
         playMode = playMode.OLDEST;
-        stepByTick = 0.01f;
+        stepByTick = 0.01;
         paused = new AtomicBoolean(true);
 
-        relativeSelectionStart = 0.0f;
-        relativeSelectionEnd = 1.0f;
+        relativeSelectionStart = 0.0;
+        relativeSelectionEnd = 1.0;
     }
 
-    public synchronized void setInterval(Float from, Float to) {
+    public synchronized void setInterval(double from, double to) {
         setFrom(from);
         setTo(to);
     }
 
-    public synchronized void setTo(Float to) {
+    public synchronized void setTo(double to) {
 
-        if (to > 1.0f) {
-            relativeSelectionStart = 1.0f;
+        if (to > 1.0) {
+            relativeSelectionStart = 1.0;
         }
-        else if (to <= 0.0f) {
-            relativeSelectionStart = 0.0f;
+        else if (to <= 0.0) {
+            relativeSelectionStart = 0.0;
         } else {
         relativeSelectionStart = to;
         }
     }
 
-    public synchronized void setFrom(Float from) {
+    public synchronized void setFrom(double from) {
 
-        if (from > 1.0f) {
-            relativeSelectionEnd = 1.0f;
+        if (from > 1.0) {
+            relativeSelectionEnd = 1.0;
         }
-        else if (from <= 0.0f) {
-            relativeSelectionEnd = 0.0f;
+        else if (from <= 0.0) {
+            relativeSelectionEnd = 0.0;
         } else {
         relativeSelectionEnd = from;
         }
     }
-    public synchronized Float getFrom() {
+    public synchronized double getFrom() {
         return relativeSelectionStart;
     }
 
-    public synchronized Float getTo() {
+    public synchronized double getTo() {
         return relativeSelectionEnd;
     }
 
@@ -127,10 +143,10 @@ public class TimelineAnimatorImpl
 
 
     
-   public synchronized void setStepByTick(float s) {
+   public synchronized void setStepByTick(double s) {
         stepByTick = s;
     }
-    public synchronized float getStepByTick() {
+    public synchronized double getStepByTick() {
       return stepByTick;
     }
 
@@ -155,10 +171,10 @@ public class TimelineAnimatorImpl
     public synchronized void actionPerformed(ActionEvent ae) {
         if (paused.get()) return;
 
-        float s = getStepByTick();
+        double s = getStepByTick();
 
-        float f = getFrom();
-        float t = getTo();
+        double f = getFrom();
+        double t = getTo();
 
         switch(getTimelinePlayMode()) {
             case YOUNGEST:

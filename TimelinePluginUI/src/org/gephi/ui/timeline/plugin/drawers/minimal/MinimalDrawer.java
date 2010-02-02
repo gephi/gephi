@@ -1,54 +1,46 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+Copyright 2010 WebAtlas
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Patrick J. McSweeney
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * MinimalDrawer.java
- *
- * Created on Jan 27, 2010, 1:02:45 PM
- */
 package org.gephi.ui.timeline.plugin.drawers.minimal;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.awt.color.ColorSpace;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.GeneralPath;
-import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ColorConvertOp;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import org.gephi.timeline.api.TimelineAnimator;
 import org.gephi.timeline.api.TimelineAnimatorListener;
-import org.gephi.timeline.api.TimelineInterval;
-import org.gephi.timeline.api.TimelineIntervalListener;
 import org.gephi.timeline.api.TimelineModel;
-import org.gephi.timeline.api.TimelineModelListener;
 import org.gephi.timeline.spi.TimelineDrawer;
 import org.joda.time.DateTime;
-import org.joda.time.DateTime.Property;
 import org.joda.time.Days;
-import org.joda.time.Duration;
 import org.joda.time.Hours;
 import org.joda.time.Interval;
 import org.joda.time.Months;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
-import org.joda.time.chrono.ISOChronology;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -78,28 +70,30 @@ public class MinimalDrawer extends JPanel
     }
     
     private TimelineModel model = null;
-
+    private TimelineAnimator animator = null;
+    
     public void setModel(TimelineModel model) {
         if (model == null) {
             return;
         }
-
             if (model != this.model) {
             if (this.model != null) {
-                this.model.getAnimator().removeListener(this);
             }
-            model.getAnimator().addListener(this);
             this.model = model;
-
         }
-
-
     }
 
     public TimelineModel getModel() {
         return model;
     }
-    
+
+    public void setAnimator(TimelineAnimator animator) {
+        this.animator = animator;
+    }
+    public TimelineAnimator getAnimator() {
+        return animator;
+    }
+
     private Integer mousex = null;
     private static Cursor CURSOR_DEFAULT = new Cursor(Cursor.DEFAULT_CURSOR);
     private static Cursor CURSOR_LEFT_HOOK = new Cursor(Cursor.E_RESIZE_CURSOR);
@@ -133,7 +127,6 @@ public class MinimalDrawer extends JPanel
                 currentState = TimelineState.RESIZE_TO;
             }
         }
-
     }
 
     public void mouseEntered(MouseEvent e) {
@@ -154,7 +147,6 @@ public class MinimalDrawer extends JPanel
     }
 
     public enum TimelineLevel {
-
         MILLISECOND,
         SECOND,
         MINUTE,
@@ -170,7 +162,6 @@ public class MinimalDrawer extends JPanel
     }
 
     public enum TimelineState {
-
         IDLE,
         MOVING,
         RESIZE_FROM,
@@ -179,7 +170,6 @@ public class MinimalDrawer extends JPanel
     TimelineState currentState = TimelineState.IDLE;
 
     public enum HighlightedComponent {
-
         NONE,
         LEFT_HOOK,
         RIGHT_HOOK,
@@ -618,7 +608,8 @@ public class MinimalDrawer extends JPanel
                 }
                  else if (Math.abs(st-sf+delta) > settings.selection.minimalWidth) {
                     sf += delta;
-                    model.getAnimator().setFrom(((float) (sf + delta)) / w);
+                    animator.setFrom(((float) (sf + delta)) / w);
+
                 } else {
                 }
                 break;
@@ -628,7 +619,7 @@ public class MinimalDrawer extends JPanel
                     st = (int)w-1;
                 } else if (Math.abs((st+delta)-sf) > settings.selection.minimalWidth) {
                     st += delta;
-                    model.getAnimator().setTo(((float) (st + delta)) / w);
+                    animator.setTo(((float) (st + delta)) / w);
                 }
                 break;
             case MOVING:
@@ -640,7 +631,7 @@ public class MinimalDrawer extends JPanel
                     sf += delta;
                     st += delta;
                     // TODO
-                    model.getAnimator().setInterval(((float) (sf + delta)) / w, ((float) (st + delta)) / w);
+                    animator.setInterval(((float) (sf + delta)) / w, ((float) (st + delta)) / w);
                 }
                 break;
 

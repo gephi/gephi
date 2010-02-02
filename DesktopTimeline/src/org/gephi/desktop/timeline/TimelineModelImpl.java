@@ -9,15 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.event.ChangeEvent;
-
-import org.gephi.timeline.api.TimelineAnimator;
-import org.gephi.timeline.api.TimelineAnimatorListener;
-
-import org.gephi.timeline.api.TimelineInterval;
-import org.gephi.timeline.api.TimelineIntervalListener;
+import org.gephi.filters.api.FilterController;
+import org.gephi.filters.api.Range;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.project.api.ProjectController;
 
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.api.TimelineModelListener;
+import org.openide.util.Lookup;
 
 import org.openide.util.lookup.ServiceProvider;
 
@@ -28,22 +29,12 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = TimelineModel.class)
 public class TimelineModelImpl
         implements
-        TimelineModel,
-        TimelineIntervalListener,
-        TimelineAnimatorListener {
+        TimelineModel {
 
     private List<TimelineModelListener> listeners;
 
-    private TimelineInterval interval;
-    private TimelineAnimator animator;
-
-
     public TimelineModelImpl() {
         listeners = new ArrayList<TimelineModelListener>();
-        interval = new TimelineIntervalImpl();
-        animator = new TimelineAnimatorImpl();
-        interval.addListener(this);
-        animator.addListener(this);
     }
 
     public void fireChangeEvent() {
@@ -53,13 +44,6 @@ public class TimelineModelImpl
         }
     }
 
-    public TimelineInterval getInterval() {
-        return interval;
-    }
-
-    public TimelineAnimator getAnimator() {
-        return animator;
-    }
 
     public void addListener(TimelineModelListener listener) {
         if (!listeners.contains(listener)) {
@@ -71,10 +55,58 @@ public class TimelineModelImpl
         listeners.remove(listener);
     }
 
-    public void timelineIntervalChanged(ChangeEvent event) {
+
+        // for the future chart
+    public String getFirstAttributeLabel() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void timelineAnimatorChanged(ChangeEvent event) {
+    // for the future chart
+    public String getLastAttributeLabel() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    // for the future chart
+    public String getAttributeLabel(int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    // for the future chart
+    public String getAttributeLabel(int from, int to) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    // for the future chart
+    public double getAttributeValue(int i) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    // for the future chart
+    public double getAttributeValue(int from, int to) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    public int getLength() {
+         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+         GraphController gc = pc.getCurrentWorkspace().getLookup().lookup(GraphController.class);
+         gc.getModel(pc.getCurrentWorkspace());
+         GraphModel gm = gc.getModel();
+         if (gm == null) return 0;
+
+        Graph g = gm.getGraph();
+         if (g == null) return 0;
+
+        return g.getNodeCount();
+        // TODO get data from the current graph
+    }
+
+    public void setInterval(double from, double to) {
+          ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        FilterController fc = pc.getCurrentWorkspace().getLookup().lookup(FilterController.class);
+        Range range = new Range(from, to);
+        //
+    }
+
 
 }

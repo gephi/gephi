@@ -34,7 +34,7 @@ public interface TimelineController {
     public void pushSlice(Workspace workspace, String from, String to, Node node);
     public void pushSlice(Workspace workspace, String from, String to, Edge edge);
     public TimelineModel getModel(Workspace workspace);
-    public Double getFromDouble(Workspace workspace);
-    public Double getToDouble(Workspace workspace);
+    public double getFrom(Workspace workspace);
+    public double getTo(Workspace workspace);
     public TimeInterval getRangeTimeInterval(Workspace workspace);
 }

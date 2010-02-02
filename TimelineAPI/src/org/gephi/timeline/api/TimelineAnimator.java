@@ -11,15 +11,15 @@ package org.gephi.timeline.api;
  */
 public interface TimelineAnimator {
 
-    public void setInterval(Float from, Float to);
+    public void setInterval(double from, double to);
 
-    public void setTo(Float to);
+    public void setTo(double to);
 
-    public void setFrom(Float from);
+    public void setFrom(double from);
 
-    public Float getFrom();
+    public double getFrom();
 
-    public Float getTo();
+    public double getTo();
 
     /**
      * Play the timeline using the current playmode
@@ -90,14 +90,14 @@ public interface TimelineAnimator {
      *
      * @return
      */
-     public void setStepByTick(float s);
+     public void setStepByTick(double s);
 
     /**
      * get the timeline step by tick
      *
      * @return a float corresponding to the step by tick's value
      */
-    public float getStepByTick();
+    public double getStepByTick();
 
 
     public void addListener(TimelineAnimatorListener listener);

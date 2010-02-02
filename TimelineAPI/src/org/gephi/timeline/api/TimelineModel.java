@@ -26,10 +26,29 @@ package org.gephi.timeline.api;
  */
 public interface TimelineModel {
 
-    public TimelineInterval getInterval();
-    public TimelineAnimator getAnimator();
-
     public void addListener(TimelineModelListener listener);
     public void removeListener(TimelineModelListener listener);
+
+   
+        // for the future chart
+    public String getFirstAttributeLabel();
+
+    // for the future chart
+    public String getLastAttributeLabel();
+
+    // for the future chart
+    public String getAttributeLabel(int i);
+    // for the future chart
+    public String getAttributeLabel(int from, int to);
+
+    // for the future chart
+    public double getAttributeValue(int i);
+
+    // for the future chart
+    public double getAttributeValue(int from, int to);
+
+    public int getLength();
+
+    public void setInterval(double from, double to);
 
 }

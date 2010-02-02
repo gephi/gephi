@@ -9,6 +9,7 @@ import java.awt.MenuContainer;
 import java.awt.image.ImageObserver;
 import java.io.Serializable;
 import javax.accessibility.Accessible;
+import org.gephi.timeline.api.TimelineAnimator;
 import org.gephi.timeline.api.TimelineModel;
 
 /**
@@ -23,5 +24,7 @@ public interface TimelineDrawer
 
     public void setModel(TimelineModel model);
     public TimelineModel getModel();
-    
+
+    public void setAnimator(TimelineAnimator animator);
+
 }

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="Window">
+            <file name="org-gephi-desktop-preview-PreviewAction.instance">
+                <attr name="component" methodvalue="org.gephi.desktop.preview.PreviewTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="org.gephi.desktop.preview.Bundle#CTL_PreviewAction"/>
+                <attr name="iconBase" stringvalue="org/gephi/desktop/preview/resources/preview.png"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
+            <file name="org-gephi-desktop-preview-PreviewSettingsAction.instance">
+                <attr name="component" methodvalue="org.gephi.desktop.preview.PreviewSettingsTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="org.gephi.desktop.preview.Bundle#CTL_PreviewSettingsAction"/>
+                <attr name="iconBase" stringvalue="org/gephi/desktop/preview/resources/settings.png"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="PreviewAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-preview-PreviewAction.instance"/>
+            </file>
+            <file name="PreviewSettingsAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-preview-PreviewSettingsAction.instance"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+
+            <file name="PreviewSettingsTopComponent.settings" url="PreviewSettingsTopComponentSettings.xml"/>
+            <file name="PreviewTopComponent.settings" url="PreviewTopComponentSettings.xml"/>
+        </folder>
+        <folder name="Modes">
+            <folder name="graphmode">
+                <file name="PreviewTopComponent.wstcref" url="PreviewTopComponentWstcref.xml"/>
+            </folder>
+            <folder name="layoutmode">
+                <file name="PreviewSettingsTopComponent.wstcref" url="PreviewSettingsTopComponentWstcref.xml"/>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>
