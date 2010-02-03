@@ -111,7 +111,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             return;
         }
 
-        if (nodeDraftImpl.getDynamicFrom() != -1 || nodeDraftImpl.getDynamicTo() != -1) {
+        if (nodeDraftImpl.getSlices() != null) {
             dynamicGraph = true;
         }
 

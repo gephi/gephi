@@ -78,7 +78,5 @@ public interface NodeDraft {
 
     public void setParent(NodeDraft draft);
 
-    public void setDynamicFrom(float from);
-
-    public void setDynamicTo(float to);
+    public void addTimeSlice(String dateFrom, String dateTo);
 }

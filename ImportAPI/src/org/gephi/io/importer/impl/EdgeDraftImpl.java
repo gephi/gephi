@@ -56,6 +56,8 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
     private boolean labelVisible = true;
     //Attributes
     private List<AttributeValue> attributeValues = new ArrayList<AttributeValue>();
+    //Dynamic
+    private List<String[]> slices;
 
     public EdgeDraftImpl(ImportContainerImpl container, String id) {
         this.container = container;
@@ -152,11 +154,18 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
         attributeValues.add(attValue);
     }
 
+    public void addTimeSlice(String dateFrom, String dateTo) {
+        if (slices == null) {
+            slices = new ArrayList<String[]>();
+        }
+        slices.add(new String[]{dateFrom, dateTo});
+    }
+
+    //GETTERS
     public List<AttributeValue> getAttributeValues() {
         return attributeValues;
     }
 
-    //GETTERS
     public NodeDraftImpl getSource() {
         return source;
     }
@@ -199,6 +208,10 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
 
     public boolean isVisible() {
         return visible;
+    }
+
+    public List<String[]> getSlices() {
+        return slices;
     }
 
     @Override
