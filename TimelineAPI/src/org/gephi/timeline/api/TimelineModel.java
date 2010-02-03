@@ -29,26 +29,36 @@ public interface TimelineModel {
     public void addListener(TimelineModelListener listener);
     public void removeListener(TimelineModelListener listener);
 
-   
-        // for the future chart
+    // for the future chart
     public String getFirstAttributeLabel();
-
-    // for the future chart
     public String getLastAttributeLabel();
-
-    // for the future chart
     public String getAttributeLabel(int i);
-    // for the future chart
     public String getAttributeLabel(int from, int to);
-
-    // for the future chart
     public double getAttributeValue(int i);
-
-    // for the future chart
     public double getAttributeValue(int from, int to);
 
-    public int getLength();
+    public double getTotalSize();
+    public double getRangeSizeValue();
+    public double getRangeSizeFloat();
 
-    public void setInterval(double from, double to);
+    public void setMinValue(double min);
+    public void setMaxValue(double max);
+    public void setMinMax(double min, double max);
 
+    public double getMinValue();
+    public double getMaxValue();
+
+    // set the range using real values
+    public void setRangeFromRealValues(double from, double to);
+    public void setRangeFromFloatValues(double from, double to);
+
+    public void setFromFloat(double from);
+    public void setToFloat(double to);
+    public double getFromFloat();
+    public double getToFloat();
+
+    public void setFromValue(double from);
+    public void setToValue(double to);
+    public double getFromValue();
+    public double getToValue();
 }

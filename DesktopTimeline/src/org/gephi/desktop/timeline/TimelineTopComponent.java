@@ -40,7 +40,7 @@ public final class TimelineTopComponent
     static final String ICON_PATH = "org/gephi/desktop/timeline/resources/ui-status-bar.png";
     private static final String PREFERRED_ID = "TimelineTopComponent";
     private TimelineModel model;
-    private TimelineDrawer drawerPanel;
+    private JPanel drawerPanel;
     private TimelineAnimatorImpl animator;
 
     public TimelineTopComponent() {
@@ -52,17 +52,15 @@ public final class TimelineTopComponent
 
 
         model = (TimelineModel) Lookup.getDefault().lookup(TimelineModelImpl.class);
-        drawerPanel = Lookup.getDefault().lookup(TimelineDrawer.class);
-        if (drawerPanel != null) {
-            drawerPanel.setModel(model);
+        TimelineDrawer drawer = Lookup.getDefault().lookup(TimelineDrawer.class);
+        if (drawer != null && model != null) {
+            drawer.setModel(model);
         }
-        timelinePanel.add((JPanel) drawerPanel);
+        drawerPanel = (JPanel) drawer;
+        timelinePanel.add(drawerPanel);
 
         animator = new TimelineAnimatorImpl();
         animator.addListener(this);
-        if (drawerPanel != null) {
-            drawerPanel.setAnimator(animator);
-        }
 
         //Workspace events
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -239,7 +237,7 @@ public final class TimelineTopComponent
             }
             model.addListener(this);
             this.model = model;
-            drawerPanel.setModel(model);
+            ((TimelineDrawer)drawerPanel).setModel(model);
         }
 
         refreshEnable(true);
@@ -249,8 +247,7 @@ public final class TimelineTopComponent
     }
 
     private void refreshEnable(boolean enable) {
-       // ((JPanel)drawerPanel).setEnabled(enable);
-
+        if (!((JPanel)drawerPanel).isEnabled()) ((JPanel)drawerPanel).setEnabled(enable);
         if (!timelinePanel.isEnabled()) timelinePanel.setEnabled(enable);
         if (!timelineToolbar.isEnabled()) timelineToolbar.setEnabled(enable);
         if (!settingsButton.isEnabled()) settingsButton.setEnabled(enable);

@@ -25,6 +25,6 @@ public interface TimelineDrawer
     public void setModel(TimelineModel model);
     public TimelineModel getModel();
 
-    public void setAnimator(TimelineAnimator animator);
+    // public void setAnimator(TimelineAnimator animator);
 
 }
