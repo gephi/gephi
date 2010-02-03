@@ -1,10 +1,11 @@
 package org.gephi.desktop.preview;
 
-import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 import org.gephi.preview.api.*;
 import org.openide.util.Lookup;
 import processing.core.*;
@@ -16,6 +17,7 @@ import processing.core.*;
  */
 public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWheelListener {
 
+    private static final int WHEEL_TIMER = 500;
     private PVector ref = new PVector();
     private PVector trans = new PVector();
     private PVector lastMove = new PVector();
@@ -26,6 +28,8 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
     private final HashMap<Font, PFont> fontMap = new HashMap<Font, PFont>();
     private final static float MARGIN = 10f;
     private java.awt.Color background = java.awt.Color.WHITE;
+    private boolean moving = false;
+    private Timer wheelTimer;
 
     /**
      * Refreshes the preview using the current graph from the preview
@@ -63,8 +67,6 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
         // blank the applet
         background(background.getRGB());
 
-
-
         // user zoom
         PVector center = new PVector(width / 2f, height / 2f);
         PVector scaledCenter = PVector.mult(center, scaling);
@@ -87,22 +89,23 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
     @Override
     public void mousePressed() {
         ref.set(mouseX, mouseY, 0);
-        setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
     }
 
     @Override
     public void mouseDragged() {
+        moving = true;
         trans.set(mouseX, mouseY, 0);
         trans.sub(ref);
         trans.div(scaling); // ensure const. moving speed whatever the zoom is
         trans.add(lastMove);
         redraw();
-        setCursor(Cursor.getDefaultCursor());
     }
 
     @Override
     public void mouseReleased() {
         lastMove.set(trans);
+        moving = false;
+        redraw();
     }
 
     public void mouseWheelMoved(MouseWheelEvent e) {
@@ -111,6 +114,22 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
         }
         float way = -e.getUnitsToScroll() / Math.abs(e.getUnitsToScroll());
         scaling = scaling * (way > 0 ? 2f : 0.5f);
+        moving = true;
+        if (wheelTimer != null) {
+            wheelTimer.cancel();
+            wheelTimer = null;
+        }
+        wheelTimer = new Timer();
+        wheelTimer.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                moving = false;
+                redraw();
+                wheelTimer = null;
+            }
+        }, WHEEL_TIMER);
+
         redraw();
     }
 
@@ -186,7 +205,7 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
     }
 
     public void renderGraph(Graph graph) {
-        if (graph.showEdges()) {
+        if (graph.showEdges() && !moving) {
             renderGraphEdges(graph);
         }
 
