@@ -1,6 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+Copyright 2010 WebAtlas
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Patrick J. McSweeney
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.timeline;
 
@@ -8,17 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.event.ChangeEvent;
-import org.gephi.filters.api.FilterController;
+import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.filters.api.Range;
 import org.gephi.filters.spi.FilterProperty;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphModel;
-import org.gephi.project.api.ProjectController;
 
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.api.TimelineModelListener;
-import org.openide.util.Lookup;
 
 import org.openide.util.lookup.ServiceProvider;
 
@@ -195,5 +206,9 @@ public class TimelineModelImpl
 
     public synchronized double getToValue() {
         return toValue;
+    }
+
+    public synchronized TimeInterval getTimeInterval() {
+       return new TimeInterval(getFromValue(), getToValue());
     }
 }

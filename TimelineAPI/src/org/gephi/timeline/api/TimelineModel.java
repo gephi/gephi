@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.timeline.api;
 
+import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.filters.spi.FilterProperty;
 
 /**
@@ -31,10 +32,23 @@ public interface TimelineModel {
     public void addListener(TimelineModelListener listener);
     public void removeListener(TimelineModelListener listener);
 
+    /**
+     * Set the FilterProperty
+     */
     public void setFilterProperty(FilterProperty filter);
+
+    /**
+     * Get the FilterProperty
+     *
+     * @return a FilterProperty
+     */
     public FilterProperty getFilterProperty();
 
-    // for the future chart
+    /**
+     * Get the FilterProperty
+     *
+     * @return a FilterProperty
+     */
     public String getFirstAttributeLabel();
     public String getLastAttributeLabel();
     public String getAttributeLabel(int i);
@@ -66,4 +80,6 @@ public interface TimelineModel {
     public void setToValue(double to);
     public double getFromValue();
     public double getToValue();
+
+    public TimeInterval getTimeInterval();
 }

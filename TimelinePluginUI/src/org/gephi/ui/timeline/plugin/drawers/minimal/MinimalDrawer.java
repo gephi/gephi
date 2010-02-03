@@ -561,6 +561,7 @@ public class MinimalDrawer extends JPanel
     }
 
     public void mouseMoved(MouseEvent evt) {
+    if (model==null) return;
 
         //System.out.println("mouse moved");
         int x = evt.getX();

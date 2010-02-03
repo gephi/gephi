@@ -36,5 +36,11 @@ public interface TimelineController {
     public TimelineModel getModel(Workspace workspace);
     public double getFrom(Workspace workspace);
     public double getTo(Workspace workspace);
-    public TimeInterval getRangeTimeInterval(Workspace workspace);
+    public TimeInterval getTimeInterval(Workspace workspace);
+
+    // extends methods (will use the current workspace)
+    public TimelineModel getModel();
+    public TimeInterval getTimeInterval();
+    public double getFrom();
+    public double getTo();
 }

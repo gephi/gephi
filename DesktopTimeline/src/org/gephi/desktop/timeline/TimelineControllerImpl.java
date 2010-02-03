@@ -36,7 +36,6 @@ import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
-import org.joda.time.DateTime;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -123,23 +122,57 @@ public class TimelineControllerImpl implements TimelineController {
         } catch (ParseException ex) {
             Exceptions.printStackTrace(ex);
         }
-        edge.getEdgeData().getAttributes().setValue(col.getIndex(), new TimeInterval(0.0, 52.0));
+        edge.getEdgeData().getAttributes().setValue(col.getIndex(),  new TimeInterval(f, t));
     }
 
 
     public TimelineModel getModel(Workspace workspace) {
-        return model;
+        return  workspace.getLookup().lookup(TimelineModel.class);
     }
 
     public double getFrom(Workspace workspace) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TimelineModel m = workspace.getLookup().lookup(TimelineModel.class);
+        if (m!=null) {
+        return m.getFromValue();
+        }
+        return 0;
     }
 
     public double getTo(Workspace workspace) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TimelineModel m = workspace.getLookup().lookup(TimelineModel.class);
+        if (m!=null) {
+        return m.getToValue();
+        }
+        return 0;
     }
 
-    public TimeInterval getRangeTimeInterval(Workspace workspace) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public TimeInterval getTimeInterval(Workspace workspace) {
+        TimelineModel m = workspace.getLookup().lookup(TimelineModel.class);
+        if (m!=null) {
+            return m.getTimeInterval();
+        }
+        return null;
+    }
+
+
+    public TimelineModel getModel() {
+        return model;
+    }
+
+    public TimeInterval getTimeInterval() {
+        if (model!=null) {
+            return model.getTimeInterval();
+        }
+        return null;
+    }
+
+        public double getFrom() {
+        if (model!=null) return model.getFromValue();
+        return 0;
+    }
+
+    public double getTo() {
+        if (model!=null) return model.getToValue();
+        return 0;
     }
 }
