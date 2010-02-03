@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.timeline.api;
 
+import org.gephi.filters.spi.FilterProperty;
+
 /**
  *
  * @author Julian Bilcke <julian.bilcke@gmail.com>
@@ -28,6 +30,9 @@ public interface TimelineModel {
 
     public void addListener(TimelineModelListener listener);
     public void removeListener(TimelineModelListener listener);
+
+    public void setFilterProperty(FilterProperty filter);
+    public FilterProperty getFilterProperty();
 
     // for the future chart
     public String getFirstAttributeLabel();

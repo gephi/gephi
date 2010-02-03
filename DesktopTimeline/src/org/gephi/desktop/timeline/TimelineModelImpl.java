@@ -32,7 +32,7 @@ public class TimelineModelImpl
         TimelineModel {
 
     private List<TimelineModelListener> listeners;
-    private FilterProperty dateProperty;
+    private FilterProperty filter;
     private double fromFloat = 0.0f;
     private double toFloat = 1.0f;
     private double fromValue = 0.0f;
@@ -61,6 +61,9 @@ public class TimelineModelImpl
         listeners.remove(listener);
     }
 
+    public synchronized void setFilterProperty(FilterProperty filter) {
+        this.filter = filter;
+    }
     // Not used for the moment (will be used to generate charts)
     public String getFirstAttributeLabel() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -137,7 +140,7 @@ public class TimelineModelImpl
         if (from >= to) return;
         fromValue = from;
         toValue = to;
-        dateProperty.setValue(new Range(from, to));
+        filter.setValue(new Range(from, to));
     }
 
     public synchronized void setRangeFromFloatValues(double from, double to) {
@@ -146,7 +149,7 @@ public class TimelineModelImpl
         fromValue = getMinValue() + from * getTotalSize();
         toFloat = to;
         toValue = getMinValue() + to * getTotalSize();
-        dateProperty.setValue(new Range(getFromValue(), getToValue()));
+        filter.setValue(new Range(getFromValue(), getToValue()));
     }
 
     public synchronized void setFromFloat(double from) {
