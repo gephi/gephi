@@ -116,14 +116,12 @@ public class TimelineControllerImpl implements TimelineController {
             col = am.getEdgeTable().addColumn(COLUMN_KEY, COLUMN_TYPE);
         }
         DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-        double f = 0.0, t = 0.0;
+        double f = Double.NEGATIVE_INFINITY, t = Double.POSITIVE_INFINITY;
         try {
-            f = (from==null || from.isEmpty())
-                    ? Double.NEGATIVE_INFINITY
-                    : ((Date) formatter.parse(from)).getTime();
-            t = (to==null || to.isEmpty())
-                    ? Double.POSITIVE_INFINITY
-                    : ((Date) formatter.parse(to)).getTime();
+            if (from!=null && !from.isEmpty())
+                   f = ((Date) formatter.parse(from)).getTime();
+            if (to!=null && !to.isEmpty())
+                   t = ((Date) formatter.parse(to)).getTime();
         } catch (ParseException ex) {
             Exceptions.printStackTrace(ex);
         }
