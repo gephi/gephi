@@ -20,6 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.generator.plugin;
 
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.io.generator.spi.Generator;
 import org.gephi.io.generator.spi.GeneratorUI;
 import org.gephi.io.importer.api.ContainerLoader;
@@ -41,15 +44,15 @@ public class DynamicGraph implements Generator {
     public void generate(ContainerLoader container) {
 
         ContainerLoader.DraftFactory factory = container.factory();
+        AttributeColumn col = container.getAttributeModel().getNodeTable().addColumn("dynamicrange", AttributeType.TIME_INTERVAL);
 
         for (int i = 0; i < numberOfNodes; i++) {
             NodeDraft nodeDraft = factory.newNodeDraft();
             nodeDraft.setLabel("Node " + i);
             nodeDraft.setId("Node " + i);
-            float from = (float) Math.random();
-            float to = (float) (from + (1.0 - from) * Math.random());
-            nodeDraft.setDynamicFrom(from);
-            nodeDraft.setDynamicTo(to);
+            double from = (double) Math.random();
+            double to = (double) (from + (1.0 - from) * Math.random());
+            nodeDraft.addAttributeValue(col, new TimeInterval(from, to));
             container.addNode(nodeDraft);
         }
 

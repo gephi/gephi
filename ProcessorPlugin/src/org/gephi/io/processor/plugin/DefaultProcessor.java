@@ -37,6 +37,8 @@ import org.gephi.io.importer.api.EdgeDraft.EdgeType;
 import org.gephi.io.importer.api.EdgeDraftGetter;
 import org.gephi.io.importer.api.NodeDraftGetter;
 import org.gephi.io.processor.spi.Processor;
+import org.gephi.project.api.Workspace;
+import org.gephi.timeline.api.TimelineController;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -47,9 +49,15 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Processor.class)
 public class DefaultProcessor implements Processor {
 
-    public void process(ContainerUnloader container) {
+    private TimelineController timelineController;
+    private Workspace workspace;
+
+    public void process(Workspace workspace, ContainerUnloader container) {
         System.out.println("process " + container.getEdgeDefault());
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        timelineController = Lookup.getDefault().lookup(TimelineController.class);
+        this.workspace = workspace;
+
         HierarchicalGraph graph = null;
         switch (container.getEdgeDefault()) {
             case DIRECTED:
@@ -120,6 +128,8 @@ public class DefaultProcessor implements Processor {
         }
 
         System.out.println("# Nodes loaded: " + nodeCount + "\n# Edges loaded: " + edgeCount);
+        timelineController = null;
+        workspace = null;
     }
 
     private void flushToNode(NodeDraftGetter nodeDraft, Node node) {
@@ -171,10 +181,12 @@ public class DefaultProcessor implements Processor {
         }
 
         //Dynamic
-        if (nodeDraft.getDynamicFrom() != -1 && nodeDraft.getDynamicTo() != -1) {
-            float from = nodeDraft.getDynamicFrom();
-            float to = nodeDraft.getDynamicTo();
-           // node.getNodeData().getDynamicData().setRange(from, to);
+        if (timelineController != null && nodeDraft.getSlices() != null) {
+            for (String[] slice : nodeDraft.getSlices()) {
+                String from = slice[0];
+                String to = slice[1];
+                timelineController.pushSlice(workspace, from, to, node);
+            }
         }
 
         //Attributes

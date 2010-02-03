@@ -306,7 +306,7 @@ public class DesktopImportController implements ImportController {
                     scaler.doScale(container);
                 }
             }
-            Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
+            Lookup.getDefault().lookup(Processor.class).process(workspace, container.getUnloader());
 
             //StatusLine notify
             String source = container.getSource();

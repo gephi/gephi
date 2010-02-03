@@ -170,7 +170,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             exp = xpath.compile("./graph[@mode]");
             NodeList modeE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
             if (modeE != null && modeE.getLength() > 0) {
-                String mode = ((Element) modeE.item(0)).getAttribute("type");
+                String mode = ((Element) modeE.item(0)).getAttribute("mode");
                 if (mode.equals("dynamic")) {
                     isDynamicMode = true;
 
@@ -187,18 +187,18 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                     }
 
                     //Graph date from
-                    exp = xpath.compile("./graph[@datefrom]");
+                    exp = xpath.compile("./graph[@start]");
                     NodeList datefromE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
                     if (datefromE != null && datefromE.getLength() > 0) {
-                        String datefrom = ((Element) modeE.item(0)).getAttribute("datefrom");
+                        String start = ((Element) modeE.item(0)).getAttribute("start");
                         // TODO Graph date from
                     }
 
                     //Graph date to
-                    exp = xpath.compile("./graph[@dateto]");
+                    exp = xpath.compile("./graph[@end]");
                     NodeList datetoE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
                     if (datetoE != null && datetoE.getLength() > 0) {
-                        String dateto = ((Element) modeE.item(0)).getAttribute("dateto");
+                        String end = ((Element) modeE.item(0)).getAttribute("end");
                         // TODO Graph date to
                     }
                 } else if (!mode.isEmpty() && !mode.equals("static")) {
@@ -391,24 +391,20 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             }
 
             if (isDynamicMode) {
-                //Node date from
-                if (!nodeE.getAttribute("datefrom").isEmpty()) {
-                    String dateFrom = nodeE.getAttribute("datefrom");
-                    float f = Float.valueOf(dateFrom).floatValue();
-                    if (!Float.isNaN(f)) {
-                        node.setDynamicFrom(f);
-                    }
-                    // FIXME probleme de conversions de dates
+                String dateFrom = null;
+                String dateTo = null;
+                //Node start date
+                if (!nodeE.getAttribute("start").isEmpty()) {
+                    dateFrom = nodeE.getAttribute("start");
                 }
 
-                //Node date to
-                if (!nodeE.getAttribute("dateto").isEmpty()) {
-                    String dateTo = nodeE.getAttribute("dateto");
-                    float f = Float.valueOf(dateTo).floatValue();
-                    if (!Float.isNaN(f)) {
-                        node.setDynamicTo(f);
-                    }
-                    // FIXME probleme de conversions de dates
+                //Node end date
+                if (!nodeE.getAttribute("end").isEmpty()) {
+                    dateTo = nodeE.getAttribute("end");
+                }
+
+                if (dateFrom != null || dateTo != null) {
+                    node.addTimeSlice(dateFrom, dateTo);
                 }
             }
 
@@ -529,23 +525,23 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             }
 
 
-            /*                if(isDynamicMode) {
-            //Node date from
-            if (!edgeE.getAttribute("datefrom").isEmpty()) {
-            String dateFrom = edgeE.getAttribute("datefrom");
-            float f = Float.valueOf(dateFrom).floatValue();
-            edge.setDynamicFrom(f);
-            // FIXME probleme de conversions de dates
-            }
+            if (isDynamicMode) {
+                String dateFrom = null;
+                String dateTo = null;
+                //Edge start date
+                if (!edgeE.getAttribute("start").isEmpty()) {
+                    dateFrom = edgeE.getAttribute("start");
+                }
 
-            //Node date to
-            if (!edgeE.getAttribute("dateto").isEmpty()) {
-            String dateTo = edgeE.getAttribute("dateto");
-            float f = Float.valueOf(dateTo).floatValue();
-            edge.setDynamicTo(f);
-            // FIXME probleme de conversions de dates
+                //Edge end date
+                if (!edgeE.getAttribute("end").isEmpty()) {
+                    dateTo = edgeE.getAttribute("end");
+                }
+
+                if (dateFrom != null || dateTo != null) {
+                    edge.addTimeSlice(dateFrom, dateTo);
+                }
             }
-            }*/
 
             container.addEdge(edge);
         }

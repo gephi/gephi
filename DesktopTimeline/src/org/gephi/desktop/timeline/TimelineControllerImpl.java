@@ -94,8 +94,12 @@ public class TimelineControllerImpl implements TimelineController {
         DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
         double f = 0.0, t = 0.0;
         try {
-            f = ((Date) formatter.parse(from)).getTime();
-            t = ((Date) formatter.parse(to)).getTime();
+            f = (from==null || from.isEmpty())
+                    ? Double.NEGATIVE_INFINITY
+                    : ((Date) formatter.parse(from)).getTime();
+            t = (to==null || to.isEmpty())
+                    ? Double.POSITIVE_INFINITY
+                    : ((Date) formatter.parse(to)).getTime();
         } catch (ParseException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -114,8 +118,12 @@ public class TimelineControllerImpl implements TimelineController {
         DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
         double f = 0.0, t = 0.0;
         try {
-            f = ((Date) formatter.parse(from)).getTime();
-            t = ((Date) formatter.parse(to)).getTime();
+            f = (from==null || from.isEmpty())
+                    ? Double.NEGATIVE_INFINITY
+                    : ((Date) formatter.parse(from)).getTime();
+            t = (to==null || to.isEmpty())
+                    ? Double.POSITIVE_INFINITY
+                    : ((Date) formatter.parse(to)).getTime();
         } catch (ParseException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -195,7 +203,7 @@ public class TimelineControllerImpl implements TimelineController {
         TimelineModel tm = workspace.getLookup().lookup(TimelineModel.class);
         if (tm != null) {
             DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-            double f = 0.0;
+            double f = 1.0;
             try {
                 f = ((Date) formatter.parse(max)).getTime();
             } catch (ParseException ex) {

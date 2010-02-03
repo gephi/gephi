@@ -57,8 +57,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     private boolean labelVisible = true;
     private Color labelColor;
     //Dynamic
-    private float from = -1;
-    private float to = -1;
+    private List<String[]> slices;
     //Attributes
     private List<AttributeValue> attributeValues = new ArrayList<AttributeValue>();
     //Result
@@ -181,12 +180,11 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         attributeValues.add(attValue);
     }
 
-    public void setDynamicFrom(float from) {
-        this.from = from;
-    }
-
-    public void setDynamicTo(float to) {
-        this.to = to;
+    public void addTimeSlice(String dateFrom, String dateTo) {
+        if(slices==null) {
+            slices = new ArrayList<String[]>();
+        }
+        slices.add(new String[] {dateFrom, dateTo});
     }
 
     //GETTERS
@@ -242,20 +240,16 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         return labelColor;
     }
 
-    public float getDynamicFrom() {
-        return from;
-    }
-
-    public float getDynamicTo() {
-        return to;
-    }
-
     public int getHeight() {
         return height;
     }
 
     public NodeDraftGetter[] getParents() {
         return parents;
+    }
+
+    public List<String[]> getSlices() {
+        return slices;
     }
 
     @Override

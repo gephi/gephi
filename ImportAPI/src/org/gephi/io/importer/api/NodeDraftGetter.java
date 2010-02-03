@@ -63,7 +63,5 @@ public interface NodeDraftGetter extends NodeDraft {
 
     public NodeDraftGetter[] getParents();
 
-    public float getDynamicFrom();
-
-    public float getDynamicTo();
+    public List<String[]> getSlices();
 }

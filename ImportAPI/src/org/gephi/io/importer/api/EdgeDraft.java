@@ -76,4 +76,6 @@ public interface EdgeDraft {
     public void setTarget(NodeDraft nodeTarget);
 
     public void addAttributeValue(AttributeColumn column, Object value);
+
+    public void addTimeSlice(String dateFrom, String dateTo);
 }
