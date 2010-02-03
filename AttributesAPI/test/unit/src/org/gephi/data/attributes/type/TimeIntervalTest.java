@@ -95,4 +95,31 @@ public class TimeIntervalTest {
 
         assertEquals(t1.hashCode(), t2.hashCode());
     }
+
+    @Test
+    public void testInfinity() {
+        TimeInterval instance = new TimeInterval(2.0, Double.POSITIVE_INFINITY);
+        assertEquals(true, instance.isInRange(1.0, 10.0));
+        assertEquals(true, instance.isInRange(8.0, 10.0));
+
+         TimeInterval instance2 = new TimeInterval(Double.NEGATIVE_INFINITY, 5.0);
+        assertEquals(true, instance2.isInRange(1.0, 10.0));
+        assertEquals(true, instance2.isInRange(-8.0, -3.0));
+
+        TimeInterval instance3 = new TimeInterval(new double[][]{{Double.NEGATIVE_INFINITY, 4.0}, {7.0, Double.POSITIVE_INFINITY}});
+        assertEquals(true, instance3.isInRange(4.0, 8.0));
+        assertEquals(false, instance3.isInRange(5.0, 6.0));
+        assertEquals(Double.NEGATIVE_INFINITY, instance3.getMin(), 0);
+        assertEquals(Double.POSITIVE_INFINITY, instance3.getMax(), 0);
+
+        TimeInterval t1 = new TimeInterval("0.2, ");
+        assertEquals(0.2, t1.getStart(0), 0);
+        assertEquals(Double.POSITIVE_INFINITY, t1.getEnd(0), 0);
+        assertEquals(0.2, t1.getMin(), 0);
+        assertEquals(Double.POSITIVE_INFINITY, t1.getMax(), 0);
+
+        TimeInterval t2 = new TimeInterval("[0.2, ]");
+        assertEquals(0.2, t2.getStart(0), 0);
+        assertEquals(Double.POSITIVE_INFINITY, t2.getEnd(0), 0);
+    }
 }

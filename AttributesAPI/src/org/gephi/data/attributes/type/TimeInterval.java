@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  */
 //Brute-force implementation
 public final class TimeInterval {
-
+    private static final String INFINITY_CHAR = " ";
     private final double[][] array;
     private final double min;
     private final double max;
@@ -76,11 +76,16 @@ public final class TimeInterval {
                 int start = m.start();
                 int end = m.end();
                 if (start != end) {
-                    String data = str.substring(start + 1, end - 1).trim();
-                    data = data.trim();
+                    String data = str.substring(start + 1, end - 1);
                     String[] split = data.split(",");
-                    double begin = Double.parseDouble(split[0]);
-                    double close = Double.parseDouble(split[1]);
+                    double begin = Double.NEGATIVE_INFINITY;
+                    double close = Double.POSITIVE_INFINITY;
+                    if(!split[0].equals(INFINITY_CHAR)) {
+                        begin = Double.parseDouble(split[0]);
+                    }
+                    if(!split[1].equals(INFINITY_CHAR)) {
+                        close = Double.parseDouble(split[1]);
+                    }
                     array[i++] = new double[]{begin, close};
                     minimum = Math.min(minimum, begin);
                     maximum = Math.max(maximum, close);
@@ -94,12 +99,22 @@ public final class TimeInterval {
                 if (i % 2 == 0) {
                     slice = new double[2];
                     String s = split[i];
-                    slice[0] = Double.parseDouble(s);
-                    minimum = Math.min(minimum, slice[0]);
+                    if (s.equals(INFINITY_CHAR)) {
+                        slice[0] = Double.NEGATIVE_INFINITY;
+                        minimum = Double.NEGATIVE_INFINITY;
+                    } else {
+                        slice[0] = Double.parseDouble(s);
+                        minimum = Math.min(minimum, slice[0]);
+                    }
                 } else {
                     String s = split[i];
-                    slice[1] = Double.parseDouble(s);
-                    maximum = Math.max(maximum, slice[1]);
+                    if (s.equals(INFINITY_CHAR)) {
+                        slice[1] = Double.POSITIVE_INFINITY;
+                        maximum = Double.POSITIVE_INFINITY;
+                    } else {
+                        slice[1] = Double.parseDouble(s);
+                        maximum = Math.max(maximum, slice[1]);
+                    }
                     array[i / 2] = slice;
                 }
             }
