@@ -33,6 +33,7 @@ import javax.swing.event.ChangeEvent;
 import org.gephi.timeline.api.TimelineAnimator;
 import org.gephi.timeline.api.TimelineAnimatorListener;
 import org.gephi.timeline.api.TimelineModel;
+import org.gephi.timeline.api.TimelineModelListener;
 import org.gephi.timeline.spi.TimelineDrawer;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -52,7 +53,8 @@ public class MinimalDrawer extends JPanel
         implements TimelineDrawer,
         MouseListener,
         MouseMotionListener,
-        TimelineAnimatorListener {
+        TimelineAnimatorListener,
+        TimelineModelListener {
 
     private static final long serialVersionUID = 1L;
     private MinimalDrawerSettings settings = new MinimalDrawerSettings();
@@ -66,7 +68,7 @@ public class MinimalDrawer extends JPanel
         setVisible(true);
         addMouseMotionListener(this);
         addMouseListener(this);
-        setEnabled(true);
+        // setEnabled(true);
     }
     
     private TimelineModel model = null;
@@ -145,6 +147,16 @@ public class MinimalDrawer extends JPanel
     public void timelineAnimatorChanged(ChangeEvent event) {
         repaint();
     }
+
+    public void timelineModelChanged(ChangeEvent event) {
+
+        if (event!=null && event.getSource()!=null) {
+            selectedFrom = (int) (model.getFromFloat() * getWidth());
+            selectedTo = (int) (model.getToFloat() * getWidth());
+            repaint();
+        }
+    }
+
 
     public enum TimelineLevel {
         MILLISECOND,
@@ -539,8 +551,8 @@ public class MinimalDrawer extends JPanel
         int r = settings.selection.visibleHookWidth;
 
         // TODO
-        int sf = selectedFrom;//(int) (model.getSelectionFrom() * w); // FROM
-        int st = selectedTo;//(int) (model.getSelectionTo() * w); // TO
+        int sf = selectedFrom;
+        int st = selectedTo;
 
         HighlightedComponent old = highlightedComponent;
         Cursor newCursor = null;
@@ -608,7 +620,7 @@ public class MinimalDrawer extends JPanel
                 }
                  else if (Math.abs(st-sf+delta) > settings.selection.minimalWidth) {
                     sf += delta;
-                    animator.setFrom(((float) (sf + delta)) / w);
+                    if (model != null) model.setFromFloat(((float) (sf + delta)) / w);
 
                 } else {
                 }
@@ -619,7 +631,7 @@ public class MinimalDrawer extends JPanel
                     st = (int)w-1;
                 } else if (Math.abs((st+delta)-sf) > settings.selection.minimalWidth) {
                     st += delta;
-                    animator.setTo(((float) (st + delta)) / w);
+                    if (model != null) model.setToFloat(((float) (st + delta)) / w);
                 }
                 break;
             case MOVING:
@@ -631,7 +643,7 @@ public class MinimalDrawer extends JPanel
                     sf += delta;
                     st += delta;
                     // TODO
-                    animator.setInterval(((float) (sf + delta)) / w, ((float) (st + delta)) / w);
+                    if (model != null) model.setRangeFromFloatValues(((float) (sf + delta)) / w, ((float) (st + delta)) / w);
                 }
                 break;
 

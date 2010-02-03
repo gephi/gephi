@@ -64,6 +64,11 @@ public class TimelineModelImpl
     public synchronized void setFilterProperty(FilterProperty filter) {
         this.filter = filter;
     }
+
+    public synchronized FilterProperty getFilterProperty() {
+        return filter;
+    }
+
     // Not used for the moment (will be used to generate charts)
     public String getFirstAttributeLabel() {
         throw new UnsupportedOperationException("Not supported yet.");
