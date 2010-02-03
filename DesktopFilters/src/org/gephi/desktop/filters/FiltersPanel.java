@@ -143,6 +143,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     }
 
     public void refreshModel(FilterModel filterModel, FilterUIModel uiModel) {
+        System.out.println("refresh filter model thread=" + Thread.currentThread().getName());
         this.filterModel = filterModel;
         this.uiModel = uiModel;
         //Unsetup
@@ -172,12 +173,17 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         }
     }
 
-    private void updateEnabled(boolean enabled) {
-        resetButton.setEnabled(enabled);
-        selectButton.setEnabled(enabled);
-        filterButton.setEnabled(enabled);
-        exportColumnButton.setEnabled(enabled && uiModel.getSelectedQuery() != null);
-        exportWorkspaceButton.setEnabled(enabled && uiModel.getSelectedQuery() != null);
+    private void updateEnabled(final boolean enabled) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                resetButton.setEnabled(enabled);
+                selectButton.setEnabled(enabled);
+                filterButton.setEnabled(enabled);
+                exportColumnButton.setEnabled(enabled && uiModel.getSelectedQuery() != null);
+                exportWorkspaceButton.setEnabled(enabled && uiModel.getSelectedQuery() != null);
+            }
+        });
     }
 
     public void stateChanged(ChangeEvent e) {
