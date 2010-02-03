@@ -10,20 +10,19 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
+import javax.swing.Icon;
 import javax.swing.JToggleButton;
 import org.gephi.branding.desktop.group.ComponentGroup;
 import org.gephi.branding.desktop.group.LaboratoryGroup;
 import org.gephi.branding.desktop.group.OverviewGroup;
 import org.gephi.branding.desktop.group.PreviewGroup;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 //import org.openide.util.ImageUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
-import org.openide.util.NbPreferences;
+import org.openide.util.ImageUtilities;
 import org.openide.windows.TopComponentGroup;
 
 @ConvertAsProperties(dtd = "-//org.gephi.branding.desktop//Banner//EN",
@@ -34,7 +33,6 @@ public final class BannerTopComponent extends TopComponent {
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "BannerTopComponent";
-
     private String selectedGroup;
     private transient ComponentGroup[] groups;
     private transient JToggleButton[] buttons;
@@ -56,7 +54,7 @@ public final class BannerTopComponent extends TopComponent {
 
     @Override
     public Dimension getMinimumSize() {
-        return new Dimension(10,10);
+        return new Dimension(10, 10);
     }
 
     private void addGroupTabs() {
@@ -73,16 +71,12 @@ public final class BannerTopComponent extends TopComponent {
                 return ((Integer) o2.getPriority()).compareTo((Integer) o1.getPriority());
             }
         });
-        buttons = new JToggleButton[groups.length];
+        buttons = new JGroupButton[groups.length];
         int i = 0;
 
         //Add tabs
         for (final ComponentGroup group : groups) {
-            JToggleButton toggleButton = new JToggleButton();
-            toggleButton.setText(group.getDisplayName());
-            toggleButton.setFocusable(false);
-            toggleButton.setMargin(new java.awt.Insets(2, 10, 2, 10));
-            toggleButton.setIcon(group.getIcon());
+            JGroupButton toggleButton = new JGroupButton(group.getDisplayName(), group.getIcon());
             toggleButton.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
@@ -99,7 +93,7 @@ public final class BannerTopComponent extends TopComponent {
                 }
             });
             groupsButtonGroup.add(toggleButton);
-            toolbar.add(toggleButton);
+            buttonsPanel.add(toggleButton);
             buttons[i++] = toggleButton;
         }
 
@@ -130,30 +124,40 @@ public final class BannerTopComponent extends TopComponent {
         java.awt.GridBagConstraints gridBagConstraints;
 
         groupsButtonGroup = new javax.swing.ButtonGroup();
+        mainPanel = new javax.swing.JPanel();
+        logoLabel = new javax.swing.JLabel();
         groupsPanel = new javax.swing.JPanel();
-        toolbar = new javax.swing.JToolBar();
-        jLabel1 = new javax.swing.JLabel();
+        buttonsPanel = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setLayout(new java.awt.GridBagLayout());
+        setLayout(new java.awt.BorderLayout());
+
+        mainPanel.setBackground(new java.awt.Color(255, 255, 255));
+        mainPanel.setLayout(new java.awt.GridBagLayout());
+
+        logoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/branding/desktop/logo_about_2.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(logoLabel, org.openide.util.NbBundle.getMessage(BannerTopComponent.class, "BannerTopComponent.logoLabel.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.ipady = -100;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        mainPanel.add(logoLabel, gridBagConstraints);
 
         groupsPanel.setBackground(new java.awt.Color(255, 255, 255));
         groupsPanel.setLayout(new java.awt.GridBagLayout());
 
-        toolbar.setBorder(null);
-        toolbar.setFloatable(false);
-        toolbar.setRollover(true);
-        toolbar.setFocusable(false);
-        toolbar.setOpaque(false);
+        buttonsPanel.setOpaque(false);
+        buttonsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 0, 0);
-        groupsPanel.add(toolbar, gridBagConstraints);
+        groupsPanel.add(buttonsPanel, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -162,24 +166,16 @@ public final class BannerTopComponent extends TopComponent {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        add(groupsPanel, gridBagConstraints);
+        mainPanel.add(groupsPanel, gridBagConstraints);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/branding/desktop/logo_about_2.png"))); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(BannerTopComponent.class, "BannerTopComponent.jLabel1.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.ipady = -100;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
-        add(jLabel1, gridBagConstraints);
+        add(mainPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel buttonsPanel;
     private javax.swing.ButtonGroup groupsButtonGroup;
     private javax.swing.JPanel groupsPanel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JToolBar toolbar;
+    private javax.swing.JLabel logoLabel;
+    private javax.swing.JPanel mainPanel;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -252,5 +248,26 @@ public final class BannerTopComponent extends TopComponent {
     @Override
     protected String preferredID() {
         return PREFERRED_ID;
+    }
+
+    private static class JGroupButton extends JToggleButton {
+
+        public JGroupButton(String text, Icon icon) {
+            setText(text);
+            setBorder(null);
+            setBorderPainted(false);
+            setContentAreaFilled(false);
+            setFocusPainted(false);
+            setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+            if (UIUtils.isWindowsLookAndFeel()) {
+                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/vista-enabled.png"),
+                        ImageUtilities.icon2Image(icon), 6, 3)));
+                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/vista-mousover.png"),
+                        ImageUtilities.icon2Image(icon), 6, 3)));
+                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/vista-selected.png"),
+                        ImageUtilities.icon2Image(icon), 6, 3)));
+            }
+        }
     }
 }
