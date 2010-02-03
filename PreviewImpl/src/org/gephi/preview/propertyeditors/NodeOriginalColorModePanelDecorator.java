@@ -13,7 +13,7 @@ class NodeOriginalColorModePanelDecorator extends ColorModePanelDecorator {
     }
 
     protected String getRadioButtonLabel() {
-        return "Original Color";
+        return "Original";
     }
 
     protected boolean isSelectedRadioButton() {

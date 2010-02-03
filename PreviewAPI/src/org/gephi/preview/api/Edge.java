@@ -22,6 +22,13 @@ public interface Edge {
     public Float getThickness();
 
     /**
+     * Returns the edge's thickness scale
+     *
+     * @return the edge's thickness
+     */
+    public Float getScale();
+
+    /**
      * Returns the edge's color.
      *
      * @return the edge's color

@@ -19,6 +19,7 @@ public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
     //Properties
     private Boolean show;
     private EdgeColorizer colorizer;
+    private Float edgeScale;
     //Architecture
     private final Set<SelfLoopImpl> supervisedSelfLoops = new HashSet<SelfLoopImpl>();
 
@@ -29,6 +30,15 @@ public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
     public void defaultValues() {
         show = true;
         colorizer = new CustomColorMode(0, 0, 0);
+        edgeScale = new Float(1f);
+    }
+
+    public Float getEdgeScale() {
+        return edgeScale;
+    }
+
+    public void setEdgeScale(Float edgeScale) {
+        this.edgeScale = edgeScale;
     }
 
     /**
@@ -107,11 +117,12 @@ public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
     }
 
     public SupervisorPropery[] getProperties() {
-        final String CATEGORY = "Self-Loop Global Settings";
+        final String CATEGORY = "Self-Loop";
         try {
             return new SupervisorPropery[]{
-                        SupervisorPropery.createProperty(this, Boolean.class, "showFlag", CATEGORY, "Show Self-Loops"),
-                        SupervisorPropery.createProperty(this, EdgeColorizer.class, "colorizer", CATEGORY, "Self-Loop Color", EdgeColorizerPropertyEditor.class)};
+                        SupervisorPropery.createProperty(this, Boolean.class, "showFlag", CATEGORY, "Show"),
+                        SupervisorPropery.createProperty(this, Float.class, "edgeScale", CATEGORY, "Thickness"),
+                        SupervisorPropery.createProperty(this, EdgeColorizer.class, "colorizer", CATEGORY, "Color", EdgeColorizerPropertyEditor.class)};
         } catch (Exception e) {
             e.printStackTrace();
         }

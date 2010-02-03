@@ -16,22 +16,22 @@ public abstract class AbstractEdge implements EdgeColorizerClient {
     private final Float thickness;
     protected final HolderImpl<Color> colorHolder = new HolderImpl<Color>();
 
-	/**
-	 * Constructor.
-	 *
-	 * @param parent     the parent graph of the edge
-	 * @param thickness  the edge's thickness
-	 */
+    /**
+     * Constructor.
+     *
+     * @param parent     the parent graph of the edge
+     * @param thickness  the edge's thickness
+     */
     public AbstractEdge(GraphImpl parent, float thickness) {
         this.parent = parent;
         this.thickness = thickness;
     }
 
-	/**
-	 * Returns the edge's color.
-	 *
-	 * @return the edge's color
-	 */
+    /**
+     * Returns the edge's color.
+     *
+     * @return the edge's color
+     */
     public Color getColor() {
         return colorHolder.getComponent();
     }
@@ -45,20 +45,20 @@ public abstract class AbstractEdge implements EdgeColorizerClient {
         return colorHolder;
     }
 
-	/**
-	 * Returns the edge's thickness.
-	 *
-	 * @return the edge's thickness
-	 */
+    /**
+     * Returns the edge's thickness.
+     *
+     * @return the edge's thickness
+     */
     public Float getThickness() {
         return thickness;
     }
 
-	/**
-	 * Sets the edge's color.
-	 *
-	 * @return the color to set to the edge
-	 */
+    /**
+     * Sets the edge's color.
+     *
+     * @return the color to set to the edge
+     */
     public void setColor(Color color) {
         colorHolder.setComponent(color);
     }

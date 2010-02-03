@@ -105,6 +105,10 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
         return label;
     }
 
+    public Float getScale() {
+        return getEdgeSupervisor().getEdgeScale();
+    }
+
     /**
      * Returns the edge's base label font.
      *

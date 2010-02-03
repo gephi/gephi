@@ -1,7 +1,11 @@
 package org.gephi.desktop.preview;
 
 import java.awt.Font;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 import org.gephi.preview.api.*;
 import org.openide.util.Lookup;
 import processing.core.*;
@@ -11,9 +15,9 @@ import processing.core.*;
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
-public class ProcessingPreview extends PApplet
-        implements GraphRenderer {
+public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWheelListener {
 
+    private static final int WHEEL_TIMER = 500;
     private PVector ref = new PVector();
     private PVector trans = new PVector();
     private PVector lastMove = new PVector();
@@ -23,6 +27,9 @@ public class ProcessingPreview extends PApplet
     private GraphSheet graphSheet = null;
     private final HashMap<Font, PFont> fontMap = new HashMap<Font, PFont>();
     private final static float MARGIN = 10f;
+    private java.awt.Color background = java.awt.Color.WHITE;
+    private boolean moving = false;
+    private Timer wheelTimer;
 
     /**
      * Refreshes the preview using the current graph from the preview
@@ -41,18 +48,24 @@ public class ProcessingPreview extends PApplet
         redraw();
     }
 
+    public boolean isRedraw() {
+        return redraw;
+    }
+
     @Override
     public void setup() {
         size(500, 500, JAVA2D);
         rectMode(CENTER);
+        background(background.getRGB());
         smooth();
         noLoop(); // the preview is drawn once and then redrawn when necessary
+        addMouseWheelListener(this);
     }
 
     @Override
     public void draw() {
         // blank the applet
-        background(255);
+        background(background.getRGB());
 
         // user zoom
         PVector center = new PVector(width / 2f, height / 2f);
@@ -63,6 +76,9 @@ public class ProcessingPreview extends PApplet
 
         // user move
         translate(trans.x, trans.y);
+
+        //Draw grid
+        renderGrid();
 
         // draw graph
         if (null != graphSheet) {
@@ -77,6 +93,7 @@ public class ProcessingPreview extends PApplet
 
     @Override
     public void mouseDragged() {
+        moving = true;
         trans.set(mouseX, mouseY, 0);
         trans.sub(ref);
         trans.div(scaling); // ensure const. moving speed whatever the zoom is
@@ -87,6 +104,33 @@ public class ProcessingPreview extends PApplet
     @Override
     public void mouseReleased() {
         lastMove.set(trans);
+        moving = false;
+        redraw();
+    }
+
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        if (e.getUnitsToScroll() == 0) {
+            return;
+        }
+        float way = -e.getUnitsToScroll() / Math.abs(e.getUnitsToScroll());
+        scaling = scaling * (way > 0 ? 2f : 0.5f);
+        moving = true;
+        if (wheelTimer != null) {
+            wheelTimer.cancel();
+            wheelTimer = null;
+        }
+        wheelTimer = new Timer();
+        wheelTimer.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                moving = false;
+                redraw();
+                wheelTimer = null;
+            }
+        }, WHEEL_TIMER);
+
+        redraw();
     }
 
     @Override
@@ -116,6 +160,18 @@ public class ProcessingPreview extends PApplet
         initAppletLayout();
     }
 
+    public void resetZoom() {
+        if (graphSheet != null) {
+            scaling = 0;
+            initAppletLayout();
+            redraw();
+        }
+    }
+
+    public void setBackgroundColor(java.awt.Color c) {
+        this.background = c;
+    }
+
     /**
      * Initializes the preview applet layout according to the graph's dimension.
      */
@@ -126,21 +182,30 @@ public class ProcessingPreview extends PApplet
         PVector box = new PVector(graphSheet.getWidth(), graphSheet.getHeight());
         float ratioWidth = width / box.x;
         float ratioHeight = height / box.y;
-        scaling = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
+        if (scaling == 0) {
+            scaling = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
 
-        // initializes move
-        PVector semiBox = PVector.div(box, 2);
-        Point topLeftPosition = graphSheet.getTopLeftPosition();
-        PVector topLeftVector = new PVector(topLeftPosition.getX(), topLeftPosition.getY());
-        PVector center = new PVector(width / 2f, height / 2f);
-        PVector scaledCenter = PVector.add(topLeftVector, semiBox);
-        trans.set(center);
-        trans.sub(scaledCenter);
-        lastMove.set(trans);
+            // initializes move
+            PVector semiBox = PVector.div(box, 2);
+            Point topLeftPosition = graphSheet.getTopLeftPosition();
+            PVector topLeftVector = new PVector(topLeftPosition.getX(), topLeftPosition.getY());
+            PVector center = new PVector(width / 2f, height / 2f);
+            PVector scaledCenter = PVector.add(topLeftVector, semiBox);
+            trans.set(center);
+            trans.sub(scaledCenter);
+            lastMove.set(trans);
+        }
+    }
+
+    public void renderGrid() {
+//        gridWHC(width, height, 20, new java.awt.Color(0xCCCCCC));
+//        gridWH(4, 4, 130, 130, 20);
+//        gridMNC(8, 8, 4, 4, 20, new java.awt.Color(230, 60, 100, 80));
+//        gridMNC(110, 110, 5, 9, 20, new java.awt.Color(100, 220, 70, 180));
     }
 
     public void renderGraph(Graph graph) {
-        if (graph.showEdges()) {
+        if (graph.showEdges() && !moving) {
             renderGraphEdges(graph);
         }
 
@@ -280,7 +345,7 @@ public class ProcessingPreview extends PApplet
     public void renderSelfLoop(SelfLoop selfLoop) {
         CubicBezierCurve curve = selfLoop.getCurve();
 
-        strokeWeight(selfLoop.getThickness());
+        strokeWeight(selfLoop.getThickness() * selfLoop.getScale());
         stroke(selfLoop.getColor().getRed(),
                 selfLoop.getColor().getGreen(),
                 selfLoop.getColor().getBlue());
@@ -301,7 +366,7 @@ public class ProcessingPreview extends PApplet
     }
 
     public void renderEdge(Edge edge) {
-        strokeWeight(edge.getThickness());
+        strokeWeight(edge.getThickness() * edge.getScale());
         stroke(edge.getColor().getRed(),
                 edge.getColor().getGreen(),
                 edge.getColor().getBlue());
@@ -403,4 +468,86 @@ public class ProcessingPreview extends PApplet
         fontMap.put(font, pFont);
         return pFont;
     }
+
+//========================================================
+// grid of given width/height
+    void gridWHC(int x0, int y0, int w, int h, int cellw, java.awt.Color c) {
+        stroke(c.getRGB());
+        for (int iy = y0; iy <= y0 + h; iy += cellw) {
+            line(x0, iy, x0 + w, iy);
+        }
+        for (int ix = x0; ix <= x0 + w; ix += cellw) {
+            line(ix, y0, ix, y0 + h);
+        }
+    }//gridWHC()
+
+    void gridWHC(int w, int h, int cellw, java.awt.Color c) {
+        gridWHC(0, 0, w, h, cellw, c);
+    }//gridWHC()
+
+    void gridWHC(int x0, int y0, int w, int h, java.awt.Color c) {
+        gridWHC(x0, y0, w, h, 10, c);
+    }//gridWHC()
+
+    void gridWHC(int w, int h, java.awt.Color c) {
+        gridWHC(0, 0, w, h, 10, c);
+    }//gridWHC()
+
+    void gridWH(int x0, int y0, int w, int h, int cellw) {
+        gridWHC(x0, y0, w, h, cellw, new java.awt.Color(20, 100, 100, 80));
+    }//gridWH()
+
+    void gridWH(int w, int h, int cellw) {
+        gridWHC(0, 0, w, h, cellw, new java.awt.Color(20, 100, 100, 80));
+    }//gridWH()
+
+    void gridWH(int x0, int y0, int w, int h) {
+        gridWHC(x0, y0, w, h, 10, new java.awt.Color(20, 100, 100, 80));
+    }//gridWH()
+
+    void gridWH(int w, int h) {
+        gridWHC(0, 0, w, h, 10, new java.awt.Color(20, 100, 100, 80));
+    }//gridWH()
+
+//========================================================
+// grid of given #row/#column
+    void gridMNC(int x0, int y0, int mrow, int ncol, int cellw, java.awt.Color c) {
+        stroke(c.getRGB());
+        int x1 = x0 + ncol * cellw;
+        int y1 = y0 + mrow * cellw;
+        for (int i = 0, iy = y0; i <= mrow; i++, iy += cellw) {
+            line(x0, iy, x1, iy);
+        }
+        for (int i = 0, ix = x0; i <= ncol; i++, ix += cellw) {
+            line(ix, y0, ix, y1);
+        }
+    }//gridMNC()
+
+    void gridMNC(int mrow, int ncol, int cellw, java.awt.Color c) {
+        gridMNC(0, 0, mrow, ncol, cellw, c);
+    }//gridMNC()
+
+    void gridMNC(int x0, int y0, int mrow, int ncol, java.awt.Color c) {
+        gridMNC(x0, y0, mrow, ncol, 10, c);
+    }//gridMNC()
+
+    void gridMNC(int mrow, int ncol, java.awt.Color c) {
+        gridMNC(0, 0, mrow, ncol, 10, c);
+    }//gridMNC()
+
+    void gridMN(int x0, int y0, int mrow, int ncol, int cellw) {
+        gridMNC(x0, y0, mrow, ncol, cellw, new java.awt.Color(20, 100, 100, 80));
+    }//gridMN()
+
+    void gridMN(int mrow, int ncol, int cellw) {
+        gridMNC(0, 0, mrow, ncol, cellw, new java.awt.Color(20, 100, 100, 80));
+    }//gridMN()
+
+    void gridMN(int x0, int y0, int mrow, int ncol) {
+        gridMNC(x0, y0, mrow, ncol, 10, new java.awt.Color(20, 100, 100, 80));
+    }//gridMN()
+
+    void gridMN(int mrow, int ncol) {
+        gridMNC(0, 0, mrow, ncol, 10, new java.awt.Color(20, 100, 100, 80));
+    }//gridMN()
 }

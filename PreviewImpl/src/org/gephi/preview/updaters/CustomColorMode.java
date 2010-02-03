@@ -128,6 +128,6 @@ public class CustomColorMode
      * @return the colorizer's reference color
      */
     public java.awt.Color getAwtColor() {
-        return new java.awt.Color(color.getRed(), color.getBlue(), color.getGreen());
+        return new java.awt.Color(color.getRed(), color.getGreen(), color.getBlue());
     }
 }

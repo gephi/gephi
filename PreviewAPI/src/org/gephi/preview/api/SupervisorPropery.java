@@ -79,6 +79,7 @@ public final class SupervisorPropery {
                 supervisor, valueType, propertyName);
 
         property.setName(propertyName);
+        property.setDisplayName(propertyDescription);
         property.setShortDescription(propertyDescription);
         property.setPropertyEditorClass(editorClass);
 

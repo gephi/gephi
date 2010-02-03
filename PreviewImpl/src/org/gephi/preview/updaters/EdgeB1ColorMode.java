@@ -15,7 +15,7 @@ import org.gephi.preview.util.color.InheritedColor;
 public class EdgeB1ColorMode
         implements EdgeColorizer, EdgeChildColorizer {
 
-    private static final String IDENTIFIER = "boundary1";
+    private static final String IDENTIFIER = "source";
 
     /**
      * Colors the given client.

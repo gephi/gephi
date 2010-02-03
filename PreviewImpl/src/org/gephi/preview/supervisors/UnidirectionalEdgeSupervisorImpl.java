@@ -21,14 +21,14 @@ public class UnidirectionalEdgeSupervisorImpl extends DirectedEdgeSupervisorImpl
     }
 
     public void defaultValues() {
-        curvedFlag = false;
+        curvedFlag = true;
         colorizer = new EdgeB1ColorMode();
-        showLabelsFlag = true;
+        showLabelsFlag = false;
         shortenLabelsFlag = false;
         labelMaxChar = 10;
         baseLabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
         labelColorizer = new ParentColorMode();
-        showMiniLabelsFlag = true;
+        showMiniLabelsFlag = false;
         shortenMiniLabelsFlag = false;
         miniLabelMaxChar = 10;
         miniLabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 8);
@@ -38,5 +38,6 @@ public class UnidirectionalEdgeSupervisorImpl extends DirectedEdgeSupervisorImpl
         arrowAddedRadius = 65f;
         arrowSize = 20f;
         arrowColorizer = new ParentColorMode();
+        edgeScale = new Float(1f);
     }
 }

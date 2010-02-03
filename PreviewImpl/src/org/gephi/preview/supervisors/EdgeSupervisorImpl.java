@@ -27,6 +27,7 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
     protected Integer labelMaxChar;
     protected Font baseLabelFont;
     protected EdgeChildColorizer labelColorizer;
+    protected Float edgeScale;
 
     /**
      * Adds the given edge to the list of the supervised edges.
@@ -55,6 +56,14 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
     public GlobalEdgeSupervisor getGlobalEdgeSupervisor() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
         return controller.getModel().getGlobalEdgeSupervisor();
+    }
+
+    public Float getEdgeScale() {
+        return edgeScale;
+    }
+
+    public void setEdgeScale(Float scale) {
+        this.edgeScale = scale;
     }
 
     public Boolean getShowFlag() {

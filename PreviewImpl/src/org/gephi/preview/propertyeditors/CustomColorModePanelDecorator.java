@@ -1,16 +1,17 @@
 package org.gephi.preview.propertyeditors;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Color;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
-import javax.swing.JColorChooser;
 import javax.swing.JRadioButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import org.gephi.preview.api.Colorizer;
 import org.gephi.preview.api.GenericColorizer;
+import org.gephi.ui.components.JColorButton;
 
 /**
  *
@@ -32,8 +33,12 @@ class CustomColorModePanelDecorator extends ColorModePanelDecorator {
         this.addRadioButton(radioButton);
 
         // color chooser button
-        customColorButton = new JButton();
-        customColorButton.setText("Choose Color");
+        if (factory.isCustomColorMode((Colorizer) propertyEditor.getValue())) {
+            customColorButton = new JColorButton(((GenericColorizer) propertyEditor.getValue()).getAwtColor());
+        } else {
+            customColorButton = new JColorButton(Color.BLACK);
+        }
+
 
         // initialization
         radioButton.setSelected(isSelectedRadioButton());
@@ -49,16 +54,11 @@ class CustomColorModePanelDecorator extends ColorModePanelDecorator {
         });
 
         // button listener
-        customColorButton.addActionListener(new ActionListener() {
+        customColorButton.addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                java.awt.Color newColor = JColorChooser.showDialog(
-                        decoratedPanel,
-                        "Choose Color",
-                        ((GenericColorizer) propertyEditor.getValue()).getAwtColor());
-                if (null != newColor) {
-                    propertyEditor.setValue(factory.createCustomColorMode(newColor));
-                }
+            public void propertyChange(PropertyChangeEvent evt) {
+                Color newColor = (Color) evt.getNewValue();
+                propertyEditor.setValue(factory.createCustomColorMode(newColor));
             }
         });
 
@@ -82,7 +82,7 @@ class CustomColorModePanelDecorator extends ColorModePanelDecorator {
 
     @Override
     protected String getRadioButtonLabel() {
-        return "Custom Color";
+        return "Custom";
     }
 
     @Override

@@ -26,7 +26,7 @@ import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
-final class PreviewSettingsTopComponent extends TopComponent {
+public final class PreviewSettingsTopComponent extends TopComponent {
 
     private static PreviewSettingsTopComponent instance;
     static final String ICON_PATH = "org/gephi/desktop/preview/resources/settings.png";

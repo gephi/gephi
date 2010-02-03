@@ -63,10 +63,10 @@ public class GlobalEdgeSupervisorImpl implements GlobalEdgeSupervisor {
     }
 
     public SupervisorPropery[] getProperties() {
-        final String CATEGORY = "Edge Global Settings";
+        final String CATEGORY = "Edge";
         try {
             return new SupervisorPropery[]{
-                        SupervisorPropery.createProperty(this, Boolean.class, "showFlag", CATEGORY, "Show Edges")};
+                        SupervisorPropery.createProperty(this, Boolean.class, "showFlag", CATEGORY, "Show")};
         } catch (Exception e) {
             e.printStackTrace();
         }
