@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
@@ -60,6 +62,12 @@ public final class PreviewTopComponent extends TopComponent {
             }
         });
         southBusyLabel.setVisible(false);
+        resetZoomButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                sketch.resetZoom();
+            }
+        });
     }
 
     public void setRefresh(final boolean refresh) {
@@ -139,8 +147,8 @@ public final class PreviewTopComponent extends TopComponent {
         refreshPanel = new javax.swing.JPanel();
         busyLabel = new JXBusyLabel(new Dimension(20,20));
         southToolbar = new javax.swing.JToolBar();
-        labelBackground = new javax.swing.JLabel();
         backgroundButton = new JColorButton(Color.WHITE);
+        resetZoomButton = new javax.swing.JButton();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -217,14 +225,15 @@ public final class PreviewTopComponent extends TopComponent {
         southToolbar.setFloatable(false);
         southToolbar.setRollover(true);
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelBackground, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.labelBackground.text")); // NOI18N
-        southToolbar.add(labelBackground);
-
         org.openide.awt.Mnemonics.setLocalizedText(backgroundButton, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.backgroundButton.text")); // NOI18N
         backgroundButton.setFocusable(false);
-        backgroundButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        backgroundButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         southToolbar.add(backgroundButton);
+
+        org.openide.awt.Mnemonics.setLocalizedText(resetZoomButton, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.resetZoomButton.text")); // NOI18N
+        resetZoomButton.setFocusable(false);
+        resetZoomButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        resetZoomButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        southToolbar.add(resetZoomButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -237,16 +246,15 @@ public final class PreviewTopComponent extends TopComponent {
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
         PreviewUIController.findInstance().refreshPreview();
     }//GEN-LAST:event_refreshButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backgroundButton;
     private javax.swing.JLabel bannerLabel;
     private javax.swing.JPanel bannerPanel;
     private javax.swing.JLabel busyLabel;
-    private javax.swing.JLabel labelBackground;
     private javax.swing.JPanel previewPanel;
     private javax.swing.JButton refreshButton;
     private javax.swing.JPanel refreshPanel;
+    private javax.swing.JButton resetZoomButton;
     private javax.swing.JPanel sketchPanel;
     private javax.swing.JLabel southBusyLabel;
     private javax.swing.JToolBar southToolbar;
