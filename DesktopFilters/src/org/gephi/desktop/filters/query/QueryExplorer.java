@@ -59,20 +59,30 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
         }
     }
 
-    public void setup(ExplorerManager manager, FilterModel model, FilterUIModel uiModel) {
+    public void setup(final ExplorerManager manager, final FilterModel model, FilterUIModel uiModel) {
         this.manager = manager;
         this.model = model;
         this.uiModel = uiModel;
 
         if (model != null) {
             model.addChangeListener(this);
-            manager.setRootContext(new RootNode(new QueryChildren(model.getQueries())));
-        } else {
-            manager.setRootContext(new AbstractNode(Children.LEAF) {
+            SwingUtilities.invokeLater(new Runnable() {
 
-                @Override
-                public Action[] getActions(boolean context) {
-                    return new Action[0];
+                public void run() {
+                    manager.setRootContext(new RootNode(new QueryChildren(model.getQueries())));
+                }
+            });
+        } else {
+            SwingUtilities.invokeLater(new Runnable() {
+
+                public void run() {
+                    manager.setRootContext(new AbstractNode(Children.LEAF) {
+
+                        @Override
+                        public Action[] getActions(boolean context) {
+                            return new Action[0];
+                        }
+                    });
                 }
             });
         }
@@ -127,9 +137,14 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
         });
     }
 
-    private void updateEnabled(boolean enabled) {
-        setRootVisible(enabled);
-        setEnabled(enabled);
+    private void updateEnabled(final boolean enabled) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                setRootVisible(enabled);
+                setEnabled(enabled);
+            }
+        });
     }
 
     private void loadExpandStatus(Node node) {

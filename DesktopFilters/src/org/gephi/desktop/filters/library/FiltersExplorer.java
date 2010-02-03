@@ -23,6 +23,7 @@ package org.gephi.desktop.filters.library;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.Action;
+import javax.swing.SwingUtilities;
 import org.gephi.desktop.filters.FilterUIModel;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.FilterModel;
@@ -54,20 +55,30 @@ public class FiltersExplorer extends BeanTreeView {
     public FiltersExplorer() {
     }
 
-    public void setup(ExplorerManager manager, FilterModel model, FilterUIModel uiModel) {
+    public void setup(final ExplorerManager manager, FilterModel model, FilterUIModel uiModel) {
         this.manager = manager;
 
         this.uiModel = uiModel;
         if (model != null) {
             this.filterLibrary = model.getLibrary();
-            manager.setRootContext(new CategoryNode(new Utils(), null));
+            SwingUtilities.invokeLater(new Runnable() {
+
+                public void run() {
+                    manager.setRootContext(new CategoryNode(new Utils(), null));
+                }
+            });
         } else {
             this.filterLibrary = null;
-            manager.setRootContext(new AbstractNode(Children.LEAF) {
+            SwingUtilities.invokeLater(new Runnable() {
 
-                @Override
-                public Action[] getActions(boolean context) {
-                    return new Action[0];
+                public void run() {
+                    manager.setRootContext(new AbstractNode(Children.LEAF) {
+
+                        @Override
+                        public Action[] getActions(boolean context) {
+                            return new Action[0];
+                        }
+                    });
                 }
             });
         }
