@@ -36,6 +36,10 @@ public interface TimelineController {
     public TimelineModel getModel(Workspace workspace);
     public double getFrom(Workspace workspace);
     public double getTo(Workspace workspace);
+    public void setMin(Workspace workspace, String min);
+    public void setMax(Workspace workspace, String max);
+    public void setMin(Workspace workspace, double min);
+    public void setMax(Workspace workspace, double max);
     public TimeInterval getTimeInterval(Workspace workspace);
 
     // extends methods (will use the current workspace)
@@ -43,4 +47,8 @@ public interface TimelineController {
     public TimeInterval getTimeInterval();
     public double getFrom();
     public double getTo();
+    public void setMin(String min);
+    public void setMax(String max);
+    public void setMin(double min);
+    public void setMax(double max);
 }
