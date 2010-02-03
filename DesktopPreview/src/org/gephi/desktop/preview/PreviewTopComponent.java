@@ -4,12 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.gephi.preview.api.GraphSheet;
+import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.utils.UIUtils;
 import org.jdesktop.swingx.JXBusyLabel;
 import org.openide.util.ImageUtilities;
@@ -17,12 +20,13 @@ import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
-final class PreviewTopComponent extends TopComponent {
+public final class PreviewTopComponent extends TopComponent {
 
     private static PreviewTopComponent instance;
     static final String ICON_PATH = "org/gephi/desktop/preview/resources/preview.png";
     private static final String PREFERRED_ID = "PreviewTopComponent";
     private final ProcessingPreview sketch = new ProcessingPreview();
+    private final ProcessingListener processingListener = new ProcessingListener();
 
     private PreviewTopComponent() {
         initComponents();
@@ -32,15 +36,30 @@ final class PreviewTopComponent extends TopComponent {
         if (UIUtils.isAquaLookAndFeel()) {
             previewPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
+        if (UIUtils.isAquaLookAndFeel()) {
+            southToolbar.setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
 
         bannerPanel.setVisible(false);
 
         // inits the preview applet
         sketchPanel.add(sketch, BorderLayout.CENTER);
         sketch.init();
+        sketch.registerPost(processingListener);
+        sketch.registerPre(processingListener);
 
         // forces the controller instanciation
         PreviewUIController.findInstance();
+
+        //background color
+        ((JColorButton) backgroundButton).addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent evt) {
+                sketch.setBackgroundColor((Color) evt.getNewValue());
+                PreviewUIController.findInstance().setBackgroundColor((Color) evt.getNewValue());
+            }
+        });
+        southBusyLabel.setVisible(false);
     }
 
     public void setRefresh(final boolean refresh) {
@@ -54,6 +73,31 @@ final class PreviewTopComponent extends TopComponent {
         });
     }
 
+    public class ProcessingListener {
+
+        public void post() {
+            final boolean isRedraw = sketch.isRedraw();
+            SwingUtilities.invokeLater(new Runnable() {
+
+                public void run() {
+                    southBusyLabel.setVisible(isRedraw);
+                    ((JXBusyLabel) southBusyLabel).setBusy(isRedraw);
+                }
+            });
+        }
+
+        public void pre() {
+            final boolean isRedraw = sketch.isRedraw();
+            SwingUtilities.invokeLater(new Runnable() {
+
+                public void run() {
+                    southBusyLabel.setVisible(isRedraw);
+                    ((JXBusyLabel) southBusyLabel).setBusy(isRedraw);
+                }
+            });
+        }
+    }
+
     /**
      * Shows the banner panel.
      *
@@ -61,6 +105,11 @@ final class PreviewTopComponent extends TopComponent {
      */
     public void showBannerPanel() {
         bannerPanel.setVisible(true);
+    }
+
+    public void setBackgroundColor(Color color) {
+        ((JColorButton) backgroundButton).setColor(color);
+
     }
 
     /**
@@ -81,6 +130,7 @@ final class PreviewTopComponent extends TopComponent {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        southBusyLabel = new JXBusyLabel(new Dimension(14,14));
         bannerPanel = new javax.swing.JPanel();
         bannerLabel = new javax.swing.JLabel();
         refreshButton = new javax.swing.JButton();
@@ -88,8 +138,19 @@ final class PreviewTopComponent extends TopComponent {
         sketchPanel = new javax.swing.JPanel();
         refreshPanel = new javax.swing.JPanel();
         busyLabel = new JXBusyLabel(new Dimension(20,20));
+        southToolbar = new javax.swing.JToolBar();
+        labelBackground = new javax.swing.JLabel();
+        backgroundButton = new JColorButton(Color.WHITE);
 
         setLayout(new java.awt.GridBagLayout());
+
+        org.openide.awt.Mnemonics.setLocalizedText(southBusyLabel, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.southBusyLabel.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 0);
+        add(southBusyLabel, gridBagConstraints);
 
         bannerPanel.setBackground(new java.awt.Color(178, 223, 240));
         bannerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
@@ -152,19 +213,43 @@ final class PreviewTopComponent extends TopComponent {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         add(previewPanel, gridBagConstraints);
+
+        southToolbar.setFloatable(false);
+        southToolbar.setRollover(true);
+
+        org.openide.awt.Mnemonics.setLocalizedText(labelBackground, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.labelBackground.text")); // NOI18N
+        southToolbar.add(labelBackground);
+
+        org.openide.awt.Mnemonics.setLocalizedText(backgroundButton, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.backgroundButton.text")); // NOI18N
+        backgroundButton.setFocusable(false);
+        backgroundButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        backgroundButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        southToolbar.add(backgroundButton);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        add(southToolbar, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
         PreviewUIController.findInstance().refreshPreview();
     }//GEN-LAST:event_refreshButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton backgroundButton;
     private javax.swing.JLabel bannerLabel;
     private javax.swing.JPanel bannerPanel;
     private javax.swing.JLabel busyLabel;
+    private javax.swing.JLabel labelBackground;
     private javax.swing.JPanel previewPanel;
     private javax.swing.JButton refreshButton;
     private javax.swing.JPanel refreshPanel;
     private javax.swing.JPanel sketchPanel;
+    private javax.swing.JLabel southBusyLabel;
+    private javax.swing.JToolBar southToolbar;
     // End of variables declaration//GEN-END:variables
 
     /**

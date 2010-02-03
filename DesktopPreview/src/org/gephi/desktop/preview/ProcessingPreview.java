@@ -1,6 +1,9 @@
 package org.gephi.desktop.preview;
 
+import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.HashMap;
 import org.gephi.preview.api.*;
 import org.openide.util.Lookup;
@@ -11,8 +14,7 @@ import processing.core.*;
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
-public class ProcessingPreview extends PApplet
-        implements GraphRenderer {
+public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWheelListener {
 
     private PVector ref = new PVector();
     private PVector trans = new PVector();
@@ -23,6 +25,7 @@ public class ProcessingPreview extends PApplet
     private GraphSheet graphSheet = null;
     private final HashMap<Font, PFont> fontMap = new HashMap<Font, PFont>();
     private final static float MARGIN = 10f;
+    private java.awt.Color background = java.awt.Color.WHITE;
 
     /**
      * Refreshes the preview using the current graph from the preview
@@ -41,18 +44,24 @@ public class ProcessingPreview extends PApplet
         redraw();
     }
 
+    public boolean isRedraw() {
+        return redraw;
+    }
+
     @Override
     public void setup() {
         size(500, 500, JAVA2D);
         rectMode(CENTER);
+        background(background.getRGB());
         smooth();
         noLoop(); // the preview is drawn once and then redrawn when necessary
+        addMouseWheelListener(this);
     }
 
     @Override
     public void draw() {
         // blank the applet
-        background(255);
+        background(background.getRGB());
 
         // user zoom
         PVector center = new PVector(width / 2f, height / 2f);
@@ -73,6 +82,7 @@ public class ProcessingPreview extends PApplet
     @Override
     public void mousePressed() {
         ref.set(mouseX, mouseY, 0);
+        setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
     }
 
     @Override
@@ -82,11 +92,21 @@ public class ProcessingPreview extends PApplet
         trans.div(scaling); // ensure const. moving speed whatever the zoom is
         trans.add(lastMove);
         redraw();
+        setCursor(Cursor.getDefaultCursor());
     }
 
     @Override
     public void mouseReleased() {
         lastMove.set(trans);
+    }
+
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        if (e.getUnitsToScroll() == 0) {
+            return;
+        }
+        float way = -e.getUnitsToScroll() / Math.abs(e.getUnitsToScroll());
+        scaling = scaling * (way > 0 ? 2f : 0.5f);
+        redraw();
     }
 
     @Override
@@ -114,6 +134,11 @@ public class ProcessingPreview extends PApplet
     public void setGraphSheet(GraphSheet graphSheet) {
         this.graphSheet = graphSheet;
         initAppletLayout();
+    }
+
+
+    public void setBackgroundColor(java.awt.Color c) {
+        this.background = c;
     }
 
     /**

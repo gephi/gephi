@@ -1,5 +1,6 @@
 package org.gephi.desktop.preview;
 
+import java.awt.Color;
 import javax.swing.SwingUtilities;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphEvent;
@@ -23,6 +24,7 @@ public class PreviewUIController implements GraphListener {
     private static PreviewUIController instance;
     private GraphSheet graphSheet = null;
     private GraphModel graphModel = null;
+    private Color backgroundColor = Color.WHITE;
 
     /**
      * Private constructor.
@@ -89,6 +91,10 @@ public class PreviewUIController implements GraphListener {
      */
     public void graphChanged(GraphEvent event) {
         showRefreshNotification();
+    }
+
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 
     /**

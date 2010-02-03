@@ -140,6 +140,7 @@ public class PreviewControllerImpl implements PreviewController {
      * @see PreviewController#buildGraph()
      */
     public void buildGraph() {
+        System.out.println("preview build graph");
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
         model.clearSupervisors();
 
@@ -150,7 +151,7 @@ public class PreviewControllerImpl implements PreviewController {
         } else if (graphModel.isMixed()) {
             previewGraph = factory.createPreviewGraph(model, graphModel.getMixedGraph());
         }
-        model.setUpdateFlag(false);
+        model.setUpdateFlag(true);
     }
 
     public PreviewModel getModel() {
