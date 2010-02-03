@@ -20,10 +20,27 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.timeline.api;
 
+import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Node;
+import org.gephi.project.api.Workspace;
+
 /**
  *
  * @author Julian Bilcke <julian.bilcke@gmail.com>
  */
-public enum TimelinePlayMode {
-    OLDEST, YOUNGEST, BOTH
+public interface TimelineController {
+
+    public void pushSlice(Workspace workspace, String from, String to, Node node);
+    public void pushSlice(Workspace workspace, String from, String to, Edge edge);
+    public TimelineModel getModel(Workspace workspace);
+    public double getFrom(Workspace workspace);
+    public double getTo(Workspace workspace);
+    public TimeInterval getTimeInterval(Workspace workspace);
+
+    // extends methods (will use the current workspace)
+    public TimelineModel getModel();
+    public TimeInterval getTimeInterval();
+    public double getFrom();
+    public double getTo();
 }
