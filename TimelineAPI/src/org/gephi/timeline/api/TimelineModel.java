@@ -55,7 +55,7 @@ public interface TimelineModel {
 
     // set the range using real values
     public void setRangeFromRealValues(double from, double to);
-    public void setRangeFromFloatValues(double from, double to);
+    public void setRangeFromFloat(double from, double to);
 
     public void setFromFloat(double from);
     public void setToFloat(double to);

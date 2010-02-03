@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.ui.timeline.plugin.drawers.minimal;
 
 import java.awt.Cursor;
@@ -28,6 +27,7 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Date;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import org.gephi.timeline.api.TimelineAnimator;
@@ -61,24 +61,27 @@ public class MinimalDrawer extends JPanel
 
     /** Creates new form MinimalDrawer */
     public MinimalDrawer() {
-        //initComponents();
-        this.setSize(new Dimension(1000, 38));
+
+        // initComponents();
+        //setSize(new Dimension(800, 38));
+        //setPreferredSize(new Dimension(800, 38));
+
         System.out.println("width: " + getWidth());
         System.out.println("height: " + getHeight());
         setVisible(true);
         addMouseMotionListener(this);
         addMouseListener(this);
         // setEnabled(true);
+
     }
-    
     private TimelineModel model = null;
     private TimelineAnimator animator = null;
-    
+
     public void setModel(TimelineModel model) {
         if (model == null) {
             return;
         }
-            if (model != this.model) {
+        if (model != this.model) {
             if (this.model != null) {
             }
             this.model = model;
@@ -92,30 +95,34 @@ public class MinimalDrawer extends JPanel
     public void setAnimator(TimelineAnimator animator) {
         this.animator = animator;
     }
+
     public TimelineAnimator getAnimator() {
         return animator;
     }
-
     private Integer mousex = null;
     private static Cursor CURSOR_DEFAULT = new Cursor(Cursor.DEFAULT_CURSOR);
     private static Cursor CURSOR_LEFT_HOOK = new Cursor(Cursor.E_RESIZE_CURSOR);
     private static Cursor CURSOR_CENTRAL_HOOK = new Cursor(Cursor.MOVE_CURSOR);
     private static Cursor CURSOR_RIGHT_HOOK = new Cursor(Cursor.W_RESIZE_CURSOR);
-    private int selectedFrom = 200;
-    private int selectedTo = 800;
 
     public void mouseClicked(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void mousePressed(MouseEvent e) {
+        if (model == null) {
+            return;
+        }
+
         int x = e.getX();
         float w = getWidth();
         int r = 16;//skin.getSelectionHookSideLength();
 
-        // TODO
-        int sf = selectedFrom;//(int) (model.getSelectionFrom() * w); // FROM
-        int st = selectedTo;//(int) (model.getSelectionTo() * w); // TO
+        // SELECTED ZONE BEGIN POSITION, IN PIXELS
+        int sf = (int) (model.getFromFloat() * (double) w);
+
+        // SELECTED ZONE END POSITION, IN PIXELS
+        int st = (int) (model.getToFloat() * (double) w);
 
         if (currentState == TimelineState.IDLE) {
             if (inRange(x, sf - 1, sf + r + 1)) {
@@ -139,8 +146,8 @@ public class MinimalDrawer extends JPanel
     public void mouseExited(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet.");
         if (currentState == TimelineState.IDLE) {
-        highlightedComponent = HighlightedComponent.NONE;
-        repaint();
+            highlightedComponent = HighlightedComponent.NONE;
+            repaint();
         }
     }
 
@@ -150,15 +157,13 @@ public class MinimalDrawer extends JPanel
 
     public void timelineModelChanged(ChangeEvent event) {
 
-        if (event!=null && event.getSource()!=null) {
-            selectedFrom = (int) (model.getFromFloat() * getWidth());
-            selectedTo = (int) (model.getToFloat() * getWidth());
+        if (event != null && event.getSource() != null) {
             repaint();
         }
     }
 
-
     public enum TimelineLevel {
+
         MILLISECOND,
         SECOND,
         MINUTE,
@@ -174,6 +179,7 @@ public class MinimalDrawer extends JPanel
     }
 
     public enum TimelineState {
+
         IDLE,
         MOVING,
         RESIZE_FROM,
@@ -182,6 +188,7 @@ public class MinimalDrawer extends JPanel
     TimelineState currentState = TimelineState.IDLE;
 
     public enum HighlightedComponent {
+
         NONE,
         LEFT_HOOK,
         RIGHT_HOOK,
@@ -198,16 +205,8 @@ public class MinimalDrawer extends JPanel
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 776, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 88, Short.MAX_VALUE)
-        );
+        setMinimumSize(new java.awt.Dimension(300, 28));
+        setLayout(new java.awt.BorderLayout());
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
@@ -227,81 +226,99 @@ public class MinimalDrawer extends JPanel
         g2d.setPaint(settings.background.paint);
         g2d.fillRect(0, tmMarginTop + 1, width, height - tmMarginBottom - 2);
 
-        if (!this.isEnabled()) {
+        if (!this.isEnabled() || model == null) {
             return;
         }
 
         g2d.setRenderingHints(settings.renderingHints);
 
-        int selectedWidth = selectedTo - selectedFrom;
+        // SELECTED ZONE BEGIN POSITION, IN PIXELS
+        int sf = (int) (model.getFromFloat() * (double) width);
+
+        // SELECTED ZONE END POSITION, IN PIXELS
+        int st = (int) (model.getToFloat() * (double) width);
+
+        // VISIBLE HOOK (THE LITTLE GREEN RECTANGLE ON EACH SIDE) WIDTH
+        int vhw = settings.selection.visibleHookWidth;
+
+        // SELECTED ZONE WIDTH, IN PIXELS
+        int sw = st - sf;
 
         if (highlightedComponent != HighlightedComponent.NONE) {
             g2d.setPaint(settings.selection.mouseOverPaint);
             switch (highlightedComponent) {
                 case LEFT_HOOK:
                     g2d.fillRect(
-                            selectedFrom,
+                            sf,
                             tmMarginTop,
-                            settings.selection.visibleHookWidth,
+                            vhw,
                             height - tmMarginBottom - 1);
                     g2d.setPaint(settings.selection.paint);
                     g2d.fillRect(
-                            selectedFrom + settings.selection.visibleHookWidth,
+                            sf + vhw,
                             tmMarginTop,
-                            selectedWidth - settings.selection.visibleHookWidth,
+                            sw - vhw,
                             height - tmMarginBottom - 1);
                     break;
                 case CENTER_HOOK:
                     g2d.setPaint(settings.selection.paint);
                     g2d.fillRect(
-                            selectedFrom,
+                            sf,
                             tmMarginTop,
-                            settings.selection.visibleHookWidth,
+                            vhw,
                             height - tmMarginBottom - 1);
                     g2d.setPaint(settings.selection.mouseOverPaint);
                     g2d.fillRect(
-                            selectedFrom + settings.selection.visibleHookWidth,
+                            sf + vhw,
                             tmMarginTop,
-                            selectedWidth - settings.selection.visibleHookWidth * 2,
+                            sw - vhw * 2,
                             height - tmMarginBottom - 1);
                     g2d.setPaint(settings.selection.paint);
                     g2d.fillRect(
-                            selectedTo - settings.selection.visibleHookWidth,
+                            st - vhw,
                             tmMarginTop,
-                            settings.selection.visibleHookWidth,
+                            vhw,
                             height - tmMarginBottom - 1);
                     break;
                 case RIGHT_HOOK:
                     g2d.setPaint(settings.selection.paint);
                     g2d.fillRect(
-                            selectedFrom,
+                            sf,
                             tmMarginTop,
-                            selectedWidth - settings.selection.visibleHookWidth,
+                            sw - vhw,
                             height - tmMarginBottom - 1);
                     g2d.setPaint(settings.selection.mouseOverPaint);
                     g2d.fillRect(
-                            selectedTo - settings.selection.visibleHookWidth,
+                            st - vhw,
                             tmMarginTop,
-                            settings.selection.visibleHookWidth,
+                            vhw,
                             height - tmMarginBottom - 1);
                     break;
             }
         } else {
             g2d.setPaint(settings.selection.paint);
-            g2d.fillRect(selectedFrom, tmMarginTop, selectedWidth, height - tmMarginBottom - 1);
+            g2d.fillRect(sf, tmMarginTop, sw, height - tmMarginBottom - 1);
         }
 
         paintTimelineForDateTime(g2d);
 
         g2d.setColor(settings.defaultStrokeColor);
-        g2d.drawRect(selectedFrom, tmMarginTop, selectedWidth, height - tmMarginBottom - 1);
+        g2d.drawRect(sf, tmMarginTop, sw, height - tmMarginBottom - 1);
 
     }
 
     private void paintTimelineForDateTime(Graphics2D g2d) {
-        DateTime dtFrom = new DateTime(1455, 1, 1, 1, 1, 1, 1);
-        DateTime dtTo = new DateTime(1960, 2, 10, 1, 1, 1, 1);
-        paintUpperRulerForInterval(g2d, dtFrom, dtTo);
+        long min = (long) model.getMinValue();
+        long max = (long) model.getMaxValue();
+        if (max <= min && min < 0 && max <= 0) {
+            return;
+        }
+
+        //DateTime dtFrom = new DateTime(1455, 1, 1, 1, 1, 1, 1);
+        //DateTime dtTo = new DateTime(1960, 2, 10, 1, 1, 1, 1);
+        paintUpperRulerForInterval(g2d,
+                new DateTime(new Date(min)),
+                new DateTime(new Date(max)));
         // paintHoverTip(g2d);
     }
 
@@ -336,7 +353,7 @@ public class MinimalDrawer extends JPanel
         int n = p.getDays();
         int unitSize = (int) (settings.informations.fontMetrics.getStringBounds("wednesday  ", null)).getWidth();
         if (n < (width / unitSize)) {
-            System.out.println("jour");
+            //System.out.println("jour");
             for (int i = 0; i < n; i++) {
                 g2d.drawString(dtFrom.plusDays(i).dayOfMonth().getAsText(),
                         leftMargin + 2 + i * (width / n),
@@ -354,7 +371,7 @@ public class MinimalDrawer extends JPanel
 
         unitSize = (int) (settings.informations.fontMetrics.getStringBounds("wed ", null)).getWidth();
         if (n < (width / unitSize)) {
-            System.out.println("jou");
+            //System.out.println("jou");
             for (int i = 0; i < n; i++) {
                 g2d.drawString(dtFrom.plusDays(i).dayOfMonth().getAsShortText(),
                         leftMargin + 2 + i * (width / n),
@@ -374,7 +391,7 @@ public class MinimalDrawer extends JPanel
         n = p.getDays();
         unitSize = (int) (settings.informations.fontMetrics.getStringBounds("30", null)).getWidth();
         if (n < (width / unitSize)) {
-            System.out.println("j");
+            //System.out.println("j");
             for (int i = 0; i < n; i++) {
                 g2d.drawString("" + (dtFrom.getDayOfMonth() + i),
                         leftMargin + 2 + i * (width / n),
@@ -393,7 +410,7 @@ public class MinimalDrawer extends JPanel
         n = p.getMonths();
         unitSize = (int) (settings.informations.fontMetrics.getStringBounds("September  ", null)).getWidth();
         if (n < (width / unitSize)) {
-            System.out.println("mois");
+            //System.out.println("mois");
             for (int i = 0; i < n; i++) {
                 g2d.drawString(dtFrom.plusMonths(i).monthOfYear().getAsText(),
                         leftMargin + 2 + i * (width / n),
@@ -411,7 +428,7 @@ public class MinimalDrawer extends JPanel
 
         unitSize = (int) (settings.informations.fontMetrics.getStringBounds("dec ", null)).getWidth();
         if (n < (width / unitSize)) {
-            System.out.println("mo");
+            //System.out.println("mo");
             for (int i = 0; i < n; i++) {
                 g2d.drawString(dtFrom.plusMonths(i).monthOfYear().getAsShortText(),
                         leftMargin + 2 + i * (width / n),
@@ -427,7 +444,7 @@ public class MinimalDrawer extends JPanel
 
         unitSize = (int) (settings.informations.fontMetrics.getStringBounds("29 ", null)).getWidth();
         if (n < (width / unitSize)) {
-            System.out.println("m");
+            //System.out.println("m");
             for (int i = 0; i < n; i++) {
                 g2d.drawString("" + (dtFrom.getMonthOfYear() + i), leftMargin + 2 + i * (width / n),
                         textTopPosition);
@@ -444,7 +461,7 @@ public class MinimalDrawer extends JPanel
         n = p.getYears();
         unitSize = (int) (settings.informations.fontMetrics.getStringBounds("1980 ", null)).getWidth();
         if (n < (width / unitSize)) {
-            System.out.println("year");
+            //System.out.println("year");
             for (int i = 0; i < n; i++) {
                 g2d.drawString("" + (dtFrom.getYear() + i), leftMargin + 2 + i * (width / n),
                         textTopPosition);
@@ -460,7 +477,7 @@ public class MinimalDrawer extends JPanel
         int group = 10;
         n = p.getYears() / group;
         if (n < (width / unitSize)) {
-            System.out.println("10 years");
+            //System.out.println("10 years");
             for (int i = 0; i < n; i++) {
                 g2d.drawString("" + (dtFrom.getYear() + i * group), leftMargin + 2 + i * (width / n),
                         textTopPosition);
@@ -475,7 +492,7 @@ public class MinimalDrawer extends JPanel
         group = 20;
         n = p.getYears() / group;
         if (n < (width / unitSize)) {
-            System.out.println("20 years");
+            //System.out.println("20 years");
             for (int i = 0; i < n; i++) {
                 g2d.drawString("" + (dtFrom.getYear() + i * group), leftMargin + 2 + i * (width / n),
                         textTopPosition);
@@ -490,7 +507,7 @@ public class MinimalDrawer extends JPanel
         group = 50;
         n = p.getYears() / group;
         if (n < (width / unitSize)) {
-            System.out.println("50 years");
+            //System.out.println("50 years");
             for (int i = 0; i < n; i++) {
                 g2d.drawString("" + (dtFrom.getYear() + i * group), leftMargin + 2 + i * (width / n),
                         textTopPosition);
@@ -505,7 +522,7 @@ public class MinimalDrawer extends JPanel
         group = 100;
         n = p.getYears() / group;
         if (n / 100 < (width / unitSize)) {
-            System.out.println("100 years");
+            //System.out.println("100 years");
             for (int i = 0; i < n; i++) {
                 g2d.drawString("" + (dtFrom.getYear() + i * group), leftMargin + 2 + i * (width / n),
                         textTopPosition);
@@ -550,9 +567,11 @@ public class MinimalDrawer extends JPanel
         float w = getWidth();
         int r = settings.selection.visibleHookWidth;
 
-        // TODO
-        int sf = selectedFrom;
-        int st = selectedTo;
+        // SELECTED ZONE BEGIN POSITION, IN PIXELS
+        int sf = (int) (model.getFromFloat() * (double) w);
+
+        // SELECTED ZONE END POSITION, IN PIXELS
+        int st = (int) (model.getToFloat() * (double) w);
 
         HighlightedComponent old = highlightedComponent;
         Cursor newCursor = null;
@@ -586,27 +605,28 @@ public class MinimalDrawer extends JPanel
 
 
         int x = evt.getX();
-        float w = getWidth();
-        int r = 16;//skin.getSelectionHookSideLength();
+        double w = getWidth();
+        int r = settings.selection.visibleHookWidth;//skin.getSelectionHookSideLength();
 
-        // TODO 
-        int sf = selectedFrom;//(int) (model.getSelectionFrom() * w); // FROM
-        int st = selectedTo;//(int) (model.getSelectionTo() * w); // TO
+        // SELECTED ZONE BEGIN POSITION, IN PIXELS
+        double sf = (model.getFromFloat() * w);
+
+        // SELECTED ZONE END POSITION, IN PIXELS
+        double st = (model.getToFloat() * w);
 
         if (currentState == TimelineState.IDLE) {
-            if (inRange(x, sf - 1, sf + r + 1)) {
+            if (inRange(x, (int) sf - 1, (int) sf + r + 1)) {
                 highlightedComponent = HighlightedComponent.LEFT_HOOK;
                 currentState = TimelineState.RESIZE_FROM;
-            } else if (inRange(x, sf + r, st - r)) {
+            } else if (inRange(x, (int) sf + r, (int) st - r)) {
                 highlightedComponent = HighlightedComponent.CENTER_HOOK;
                 currentState = TimelineState.MOVING;
-            } else if (inRange(x, st - r - 1, st + 1)) {
+            } else if (inRange(x, (int) st - r - 1, (int) st + 1)) {
                 highlightedComponent = HighlightedComponent.RIGHT_HOOK;
                 currentState = TimelineState.RESIZE_TO;
             }
         }
-        System.out.println("x: " + x + " currentState: " + currentState);
-        int delta = 0;
+        double delta = 0;
         if (mousex != null) {
             delta = x - mousex;
         }
@@ -615,40 +635,37 @@ public class MinimalDrawer extends JPanel
         switch (currentState) {
             case RESIZE_FROM:
                 // TODO
-                 if ((sf + delta <= 0)) {
+                if ((sf + delta <= 0)) {
                     sf = 0;
-                }
-                 else if (Math.abs(st-sf+delta) > settings.selection.minimalWidth) {
+                } else if (Math.abs(st - sf + delta) > settings.selection.minimalWidth) {
                     sf += delta;
-                    if (model != null) model.setFromFloat(((float) (sf + delta)) / w);
-
                 } else {
                 }
                 break;
             case RESIZE_TO:
                 // TODO
-                  if ((st + delta >= w - 1)) {
-                    st = (int)w-1;
-                } else if (Math.abs((st+delta)-sf) > settings.selection.minimalWidth) {
+                if ((st + delta >= w)) {
+                    st = w;
+                } else if (Math.abs((st + delta) - sf) > settings.selection.minimalWidth) {
                     st += delta;
-                    if (model != null) model.setToFloat(((float) (st + delta)) / w);
                 }
                 break;
             case MOVING:
                 if ((sf + delta <= 0)) {
                     sf = 0;
-                } else if (st + delta >= w - 1) {
-                    st = (int)w-1;
-                }  else {
+                } else if (st + delta >= w) {
+                    st = w;
+                } else {
                     sf += delta;
                     st += delta;
-                    // TODO
-                    if (model != null) model.setRangeFromFloatValues(((float) (sf + delta)) / w, ((float) (st + delta)) / w);
                 }
                 break;
 
         }
 
+        if (model != null && w != 0) {
+            model.setRangeFromFloat(sf * (1.0 / w), st * (1.0 / w));
+        }
         this.repaint(); // so it will repaint all panels
 
     }

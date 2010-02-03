@@ -37,7 +37,7 @@ public class TimelineModelImpl
     private double toFloat = 1.0f;
     private double fromValue = 0.0f;
     private double toValue = 0.0f;
-    private double maxValue = 0.0f;
+    private double maxValue = 1.0f;
     private double minValue = 0.0f;
 
     public TimelineModelImpl() {
@@ -120,14 +120,14 @@ public class TimelineModelImpl
 
     // set the range using real values
     public synchronized void setMinValue(double min) {
-        if (min >= maxValue) return;
+        //if (min >= maxValue) return;
         this.minValue = min;
         setFromValue(getMinValue() + getFromFloat() * getTotalSize());
     }
     // set the range using real values
 
     public synchronized void setMaxValue(double max) {
-        if (max <= minValue) return;
+        //if (max <= minValue) return;
         this.maxValue = max;
         setFromValue(getMaxValue() + getToFloat() * getTotalSize());
     }
@@ -145,28 +145,30 @@ public class TimelineModelImpl
         if (from >= to) return;
         fromValue = from;
         toValue = to;
-        filter.setValue(new Range(from, to));
+        if (filter != null) filter.setValue(new Range(from, to));
     }
 
-    public synchronized void setRangeFromFloatValues(double from, double to) {
-        if (from >= from) return;
+    public synchronized void setRangeFromFloat(double from, double to) {
+        if (from >= to) return;
         fromFloat = from;
         fromValue = getMinValue() + from * getTotalSize();
         toFloat = to;
         toValue = getMinValue() + to * getTotalSize();
-        filter.setValue(new Range(getFromValue(), getToValue()));
+        if (filter != null) filter.setValue(new Range(getFromValue(), getToValue()));
     }
 
     public synchronized void setFromFloat(double from) {
-        if (from >= toFloat) return;
+        //if (from >= toFloat) return;
         fromFloat = from;
         setFromValue(getMinValue() + getFromFloat() * getTotalSize());
+        if (filter != null) filter.setValue(new Range(getFromValue(), getToValue()));
     }
 
     public synchronized void setToFloat(double to) {
-        if (to <= toFloat) return;
+        //if (to <= toFloat) return;
         toFloat = to;
         setToValue(getMinValue() + getFromFloat() * getTotalSize());
+        if (filter != null) filter.setValue(new Range(getFromValue(), getToValue()));
     }
 
     public synchronized double getFromFloat() {
@@ -178,12 +180,12 @@ public class TimelineModelImpl
     }
 
     public synchronized void setFromValue(double from) {
-        if (from >= toValue) return;
+        //if (from >= toValue) return;
         fromValue = from;
     }
 
     public synchronized void setToValue(double to) {
-        if (to <= fromValue) return;
+        //if (to <= fromValue) return;
         toValue = to;
     }
 

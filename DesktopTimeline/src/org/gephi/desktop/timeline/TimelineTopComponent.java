@@ -4,6 +4,8 @@
  */
 package org.gephi.desktop.timeline;
 
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Logger;
@@ -53,15 +55,13 @@ public final class TimelineTopComponent
 
         model = (TimelineModel) Lookup.getDefault().lookup(TimelineModelImpl.class);
         TimelineDrawer drawer = Lookup.getDefault().lookup(TimelineDrawer.class);
-        if (drawer != null && model != null) {
-            drawer.setModel(model);
-        }
         drawerPanel = (JPanel) drawer;
         timelinePanel.add(drawerPanel);
 
         animator = new TimelineAnimatorImpl();
         animator.addListener(this);
 
+        refreshModel(model);
         //Workspace events
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
@@ -134,17 +134,8 @@ public final class TimelineTopComponent
 
         add(timelineToolbar);
 
-        javax.swing.GroupLayout timelinePanelLayout = new javax.swing.GroupLayout(timelinePanel);
-        timelinePanel.setLayout(timelinePanelLayout);
-        timelinePanelLayout.setHorizontalGroup(
-            timelinePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 677, Short.MAX_VALUE)
-        );
-        timelinePanelLayout.setVerticalGroup(
-            timelinePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 119, Short.MAX_VALUE)
-        );
-
+        timelinePanel.setMinimumSize(new java.awt.Dimension(300, 28));
+        timelinePanel.setLayout(new java.awt.BorderLayout());
         add(timelinePanel);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
