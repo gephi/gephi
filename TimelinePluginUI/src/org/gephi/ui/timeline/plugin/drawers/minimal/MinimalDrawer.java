@@ -106,7 +106,7 @@ public class MinimalDrawer extends JPanel
     private static Cursor CURSOR_CENTRAL_HOOK = new Cursor(Cursor.MOVE_CURSOR);
     private static Cursor CURSOR_RIGHT_HOOK = new Cursor(Cursor.W_RESIZE_CURSOR);
 
-    private static Locale LOCALE = Locale.FRENCH;
+    private static Locale LOCALE = Locale.ENGLISH;
     
     public void mouseClicked(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet.");
