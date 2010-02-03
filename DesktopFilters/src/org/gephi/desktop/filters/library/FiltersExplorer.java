@@ -197,9 +197,14 @@ public class FiltersExplorer extends BeanTreeView {
             null,
             null);
 
-    private void updateEnabled(boolean enabled) {
-        setRootVisible(enabled);
-        setEnabled(enabled);
+    private void updateEnabled(final boolean enabled) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                setRootVisible(enabled);
+                setEnabled(enabled);
+            }
+        });
     }
 
     private void loadExpandStatus(CategoryNode node) {
