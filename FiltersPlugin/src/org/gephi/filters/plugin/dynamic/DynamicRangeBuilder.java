@@ -107,6 +107,8 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                     dynamicRangeFilter.refreshRange();
                     TimelineController timelineController = Lookup.getDefault().lookup(TimelineController.class);
                     timelineController.getModel().setFilterProperty(dynamicRangeFilter.getRangeProperty());
+                    timelineController.setMin(dynamicRangeFilter.getMinimum());
+                    timelineController.setMax(dynamicRangeFilter.getMaximum());
                 }
             });
             panel.add(button);
@@ -182,16 +184,28 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                 for (Node n : graph.getNodes()) {
                     Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
                     if (val != null) {
-                        min = Math.min(min, ((TimeInterval) val).getMin());
-                        max = Math.max(max, ((TimeInterval) val).getMax());
+                        Double valMin = ((TimeInterval) val).getMin();
+                        Double valMax = ((TimeInterval) val).getMax();
+                        if (valMin != Double.NEGATIVE_INFINITY) {
+                            min = Math.min(min, valMin);
+                        }
+                        if (valMax != Double.POSITIVE_INFINITY) {
+                            max = Math.max(max, valMax);
+                        }
                     }
                 }
             } else {
                 for (Edge e : graph.getEdges()) {
                     Object val = e.getEdgeData().getAttributes().getValue(column.getIndex());
                     if (val != null) {
-                        min = Math.min(min, ((TimeInterval) val).getMin());
-                        max = Math.max(max, ((TimeInterval) val).getMax());
+                        Double valMin = ((TimeInterval) val).getMin();
+                        Double valMax = ((TimeInterval) val).getMax();
+                        if (valMin != Double.NEGATIVE_INFINITY) {
+                            min = Math.min(min, valMin);
+                        }
+                        if (valMax != Double.POSITIVE_INFINITY) {
+                            max = Math.max(max, valMax);
+                        }
                     }
                 }
             }
