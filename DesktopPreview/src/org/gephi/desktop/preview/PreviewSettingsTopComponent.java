@@ -1,6 +1,8 @@
 package org.gephi.desktop.preview;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.Serializable;
@@ -8,8 +10,10 @@ import java.text.NumberFormat;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.gephi.desktop.io.export.api.VectorialFileExporterUI;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewPreset;
@@ -89,6 +93,15 @@ public final class PreviewSettingsTopComponent extends TopComponent {
                 }
             }
         });
+
+        //Export
+        svgExportButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                VectorialFileExporterUI ui = Lookup.getDefault().lookup(VectorialFileExporterUI.class);
+                ui.action();
+            }
+        });
         refreshModel();
     }
 
@@ -156,6 +169,8 @@ public final class PreviewSettingsTopComponent extends TopComponent {
         labelRatio.setEnabled(true);
         ratioLabel.setEnabled(true);
         ratioSlider.setEnabled(true);
+        labelExport.setEnabled(true);
+        svgExportButton.setEnabled(true);
     }
 
     /**
@@ -168,6 +183,8 @@ public final class PreviewSettingsTopComponent extends TopComponent {
         labelRatio.setEnabled(false);
         ratioLabel.setEnabled(false);
         ratioSlider.setEnabled(false);
+        labelExport.setEnabled(false);
+        svgExportButton.setEnabled(false);
     }
 
     private boolean isDefaultPreset(PreviewPreset preset) {
@@ -201,6 +218,9 @@ public final class PreviewSettingsTopComponent extends TopComponent {
         labelRatio = new javax.swing.JLabel();
         ratioLabel = new javax.swing.JLabel();
         ratioSlider = new javax.swing.JSlider();
+        southToolbar = new javax.swing.JToolBar();
+        labelExport = new javax.swing.JLabel();
+        svgExportButton = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -270,6 +290,7 @@ public final class PreviewSettingsTopComponent extends TopComponent {
         refreshButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/preview/resources/refresh.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(refreshButton, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.refreshButton.text")); // NOI18N
         refreshButton.setEnabled(false);
+        refreshButton.setMargin(new java.awt.Insets(10, 14, 10, 14));
         refreshButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 refreshButtonActionPerformed(evt);
@@ -278,7 +299,7 @@ public final class PreviewSettingsTopComponent extends TopComponent {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.gridheight = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(7, 5, 0, 10);
         mainPanel.add(refreshButton, gridBagConstraints);
@@ -324,6 +345,33 @@ public final class PreviewSettingsTopComponent extends TopComponent {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(0, 3, 5, 20);
         mainPanel.add(ratioSlider, gridBagConstraints);
+
+        southToolbar.setFloatable(false);
+        southToolbar.setRollover(true);
+        southToolbar.setOpaque(false);
+
+        labelExport.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelExport, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.labelExport.text")); // NOI18N
+        labelExport.setEnabled(false);
+        southToolbar.add(labelExport);
+
+        svgExportButton.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(svgExportButton, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.svgExportButton.text")); // NOI18N
+        svgExportButton.setEnabled(false);
+        svgExportButton.setFocusable(false);
+        svgExportButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        svgExportButton.setMargin(new java.awt.Insets(2, 8, 2, 8));
+        svgExportButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        southToolbar.add(svgExportButton);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
+        mainPanel.add(southToolbar, gridBagConstraints);
 
         add(mainPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -376,6 +424,7 @@ public final class PreviewSettingsTopComponent extends TopComponent {
     }//GEN-LAST:event_saveButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel box;
+    private javax.swing.JLabel labelExport;
     private javax.swing.JLabel labelPreset;
     private javax.swing.JLabel labelRatio;
     private javax.swing.JPanel mainPanel;
@@ -387,6 +436,8 @@ public final class PreviewSettingsTopComponent extends TopComponent {
     private javax.swing.JSlider ratioSlider;
     private javax.swing.JButton refreshButton;
     private javax.swing.JButton saveButton;
+    private javax.swing.JToolBar southToolbar;
+    private javax.swing.JButton svgExportButton;
     // End of variables declaration//GEN-END:variables
 
     /**

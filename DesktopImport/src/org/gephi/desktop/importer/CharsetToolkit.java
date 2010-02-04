@@ -18,6 +18,7 @@ package org.gephi.desktop.importer;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Collection;
+import org.openide.filesystems.FileObject;
 
 /**
  * <p>Utility class to guess the encoding of a given text file.</p>
@@ -53,7 +54,7 @@ public class CharsetToolkit {
     private Charset defaultCharset;
     private Charset charset;
     private boolean enforce8Bit = true;
-    private final File file;
+    private final FileObject file;
     private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
     /**
@@ -61,11 +62,11 @@ public class CharsetToolkit {
      *
      * @param file of which we want to know the encoding.
      */
-    public CharsetToolkit(File file) throws IOException {
+    public CharsetToolkit(FileObject file) throws IOException {
         this.file = file;
         this.defaultCharset = getDefaultSystemCharset();
         this.charset = null;
-        InputStream input = new FileInputStream(file);
+        InputStream input = file.getInputStream();
         try {
             byte[] bytes = new byte[4096];
             int bytesRead = input.read(bytes);
@@ -388,7 +389,7 @@ public class CharsetToolkit {
      * @throws FileNotFoundException if the file is not found.
      */
     public BufferedReader getReader() throws FileNotFoundException {
-        LineNumberReader reader = new LineNumberReader(new InputStreamReader(new FileInputStream(file), getCharset()));
+        LineNumberReader reader = new LineNumberReader(new InputStreamReader(file.getInputStream(), getCharset()));
         if (hasUTF8Bom() || hasUTF16LEBom() || hasUTF16BEBom()) {
             try {
                 reader.read();

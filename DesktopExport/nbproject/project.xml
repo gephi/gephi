@@ -81,6 +81,7 @@
             </module-dependencies>
             <public-packages>
                 <package>org.gephi.desktop.io.export.api</package>
+                <package>org.gephi.desktop.io.export.spi</package>
             </public-packages>
         </data>
     </configuration>

@@ -392,7 +392,7 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
     private Element createEdge(Document document, Edge e) throws Exception {
         Element edgeE = document.createElement("edge");
 
-        //edgeE.setAttribute("id", e.getEdgeData().getId());
+        edgeE.setAttribute("id", e.getEdgeData().getId());
         edgeE.setAttribute("source", e.getSource().getNodeData().getId());
         edgeE.setAttribute("target", e.getTarget().getNodeData().getId());
 

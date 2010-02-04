@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.desktop.io.export;
+package org.gephi.desktop.io.export.api;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -38,6 +38,8 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import org.gephi.desktop.io.export.GraphFileExporterUIPanel;
+import org.gephi.desktop.io.export.spi.ExporterClassUI;
 import org.gephi.desktop.io.export.spi.ExporterClassUI;
 import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.exporter.api.FileType;
@@ -60,7 +62,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = ExporterClassUI.class)
-public class GraphFileExporterUI implements ExporterClassUI {
+public final class GraphFileExporterUI implements ExporterClassUI {
 
     private GraphFileExporter selectedExporter;
     private File selectedFile;

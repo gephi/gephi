@@ -74,20 +74,20 @@ public class NodeSettingsPanel extends javax.swing.JPanel {
                 VizModel vizModel = VizController.getInstance().getVizModel();
                 NodeModeler modeler = (NodeModeler) comboModel.getSelectedItem();
                 if (modeler.is3d() && !vizModel.isUse3d()) {
-                    String msg = NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message3d");
-                    if (JOptionPane.showConfirmDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+//                    String msg = NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message3d");
+//                    if (JOptionPane.showConfirmDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                         //enable 3d
                         vizModel.setUse3d(true);
                         nodeClass.setCurrentModeler(modeler);
-                    }
+//                    }
 
                 } else if (!modeler.is3d() && vizModel.isUse3d()) {
-                    String msg = NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message2d");
-                    if (JOptionPane.showConfirmDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+//                    String msg = NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message2d");
+//                    if (JOptionPane.showConfirmDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(NodeSettingsPanel.class, "NodeSettingsPanel.defaultShape.message.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                         //disable 3d
                         vizModel.setUse3d(false);
                         nodeClass.setCurrentModeler(modeler);
-                    }
+//                    }
                 } else {
                     nodeClass.setCurrentModeler(modeler);
                 }
