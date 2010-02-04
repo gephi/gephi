@@ -50,6 +50,23 @@ public final class BannerTopComponent extends TopComponent {
         putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
 
         addGroupTabs();
+
+        logoButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+
+                if (desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
+                    try {
+                        java.net.URI uri = new java.net.URI("http://gephi.org");
+                        desktop.browse(uri);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+            }
+        });
     }
 
     @Override
@@ -125,25 +142,31 @@ public final class BannerTopComponent extends TopComponent {
 
         groupsButtonGroup = new javax.swing.ButtonGroup();
         mainPanel = new javax.swing.JPanel();
-        logoLabel = new javax.swing.JLabel();
+        logoButton = new javax.swing.JButton();
         groupsPanel = new javax.swing.JPanel();
         buttonsPanel = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(255, 255, 255));
+        setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         setLayout(new java.awt.BorderLayout());
 
         mainPanel.setBackground(new java.awt.Color(255, 255, 255));
         mainPanel.setLayout(new java.awt.GridBagLayout());
 
-        logoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/branding/desktop/logo_about_2.png"))); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(logoLabel, org.openide.util.NbBundle.getMessage(BannerTopComponent.class, "BannerTopComponent.logoLabel.text")); // NOI18N
+        logoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/branding/desktop/resources/logo_std.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(logoButton, org.openide.util.NbBundle.getMessage(BannerTopComponent.class, "BannerTopComponent.logoButton.text")); // NOI18N
+        logoButton.setToolTipText(org.openide.util.NbBundle.getMessage(BannerTopComponent.class, "BannerTopComponent.logoButton.toolTipText")); // NOI18N
+        logoButton.setBorder(null);
+        logoButton.setBorderPainted(false);
+        logoButton.setContentAreaFilled(false);
+        logoButton.setFocusPainted(false);
+        logoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        logoButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/branding/desktop/resources/logo_glow.png"))); // NOI18N
+        logoButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/branding/desktop/resources/logo_glow.png"))); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.ipady = -100;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
-        mainPanel.add(logoLabel, gridBagConstraints);
+        mainPanel.add(logoButton, gridBagConstraints);
 
         groupsPanel.setBackground(new java.awt.Color(255, 255, 255));
         groupsPanel.setLayout(new java.awt.GridBagLayout());
@@ -174,7 +197,7 @@ public final class BannerTopComponent extends TopComponent {
     private javax.swing.JPanel buttonsPanel;
     private javax.swing.ButtonGroup groupsButtonGroup;
     private javax.swing.JPanel groupsPanel;
-    private javax.swing.JLabel logoLabel;
+    private javax.swing.JButton logoButton;
     private javax.swing.JPanel mainPanel;
     // End of variables declaration//GEN-END:variables
 

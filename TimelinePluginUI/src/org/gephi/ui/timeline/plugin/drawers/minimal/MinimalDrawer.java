@@ -28,6 +28,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Date;
+import java.util.Locale;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import org.gephi.timeline.api.TimelineAnimator;
@@ -105,6 +106,8 @@ public class MinimalDrawer extends JPanel
     private static Cursor CURSOR_CENTRAL_HOOK = new Cursor(Cursor.MOVE_CURSOR);
     private static Cursor CURSOR_RIGHT_HOOK = new Cursor(Cursor.W_RESIZE_CURSOR);
 
+    private static Locale LOCALE = Locale.ENGLISH;
+    
     public void mouseClicked(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -355,7 +358,7 @@ public class MinimalDrawer extends JPanel
         if (n < (width / unitSize)) {
             //System.out.println("jour");
             for (int i = 0; i < n; i++) {
-                g2d.drawString(dtFrom.plusDays(i).dayOfMonth().getAsText(),
+                g2d.drawString(dtFrom.plusDays(i).dayOfMonth().getAsText(LOCALE),
                         leftMargin + 2 + i * (width / n),
                         textTopPosition);
                 g2d.drawLine(leftMargin + i * (width / n), 2, leftMargin + i * (width / n), height - settings.informations.textBottomMargin);
@@ -373,7 +376,7 @@ public class MinimalDrawer extends JPanel
         if (n < (width / unitSize)) {
             //System.out.println("jou");
             for (int i = 0; i < n; i++) {
-                g2d.drawString(dtFrom.plusDays(i).dayOfMonth().getAsShortText(),
+                g2d.drawString(dtFrom.plusDays(i).dayOfMonth().getAsShortText(LOCALE),
                         leftMargin + 2 + i * (width / n),
                         textTopPosition);
                 g2d.drawLine(leftMargin + i * (width / n), 2, leftMargin + i * (width / n), height - settings.informations.textBottomMargin);
@@ -412,7 +415,7 @@ public class MinimalDrawer extends JPanel
         if (n < (width / unitSize)) {
             //System.out.println("mois");
             for (int i = 0; i < n; i++) {
-                g2d.drawString(dtFrom.plusMonths(i).monthOfYear().getAsText(),
+                g2d.drawString(dtFrom.plusMonths(i).monthOfYear().getAsText(LOCALE),
                         leftMargin + 2 + i * (width / n),
                         textTopPosition);
                 g2d.drawLine(leftMargin + i * (width / n), 2, leftMargin + i * (width / n), height - settings.informations.textBottomMargin);
@@ -430,7 +433,7 @@ public class MinimalDrawer extends JPanel
         if (n < (width / unitSize)) {
             //System.out.println("mo");
             for (int i = 0; i < n; i++) {
-                g2d.drawString(dtFrom.plusMonths(i).monthOfYear().getAsShortText(),
+                g2d.drawString(dtFrom.plusMonths(i).monthOfYear().getAsShortText(LOCALE),
                         leftMargin + 2 + i * (width / n),
                         textTopPosition);
                 g2d.drawLine(leftMargin + i * (width / n), 2, leftMargin + i * (width / n), height - settings.informations.textBottomMargin);
@@ -541,6 +544,11 @@ public class MinimalDrawer extends JPanel
         int height = getHeight();
         int leftMargin = x;
         int topMargin = height - settings.informations.fontSize - 2;
+        int unitSize = 3;
+
+        if (numOfGrads > (width / unitSize)) {
+            return;
+        }
         for (int i = 1; i < numOfGrads; i++) {
             int xi = leftMargin + i * (width / numOfGrads);
             g2d.drawLine(xi, topMargin, xi, height - settings.informations.textBottomMargin);
@@ -604,6 +612,7 @@ public class MinimalDrawer extends JPanel
 
     public void mouseDragged(MouseEvent evt) {
 
+    if (model==null) return;
 
         int x = evt.getX();
         double w = getWidth();
