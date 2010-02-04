@@ -130,7 +130,7 @@ public class TextDataImpl implements TextData {
 
     public static class TextLine {
 
-        String text = "rien";
+        String text = "";
         Rectangle2D bounds = new Rectangle(20, 20);
 
         public TextLine() {

@@ -49,8 +49,9 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
     protected boolean undirected;
     protected Predicate<AbstractEdge> edgePredicate;
     protected Predicate<AbstractNode> nodePredicate;
+    protected int viewId;
 
-    public RangeEdgeIterator(TreeStructure treeStructure, AbstractNode nodeGroup, AbstractNode target, boolean inner, boolean undirected, Predicate<AbstractNode> nodePredicate, Predicate<AbstractEdge> edgePredicate) {
+    public RangeEdgeIterator(TreeStructure treeStructure, int viewId, AbstractNode nodeGroup, AbstractNode target, boolean inner, boolean undirected, Predicate<AbstractNode> nodePredicate, Predicate<AbstractEdge> edgePredicate) {
         nodeIterator = new DescendantAndSelfIterator(treeStructure, nodeGroup, nodePredicate);
         this.inner = inner;
         this.nodeGroup = nodeGroup;
@@ -60,6 +61,7 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
         this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
         this.nodePredicate = nodePredicate;
         this.edgePredicate = edgePredicate;
+        this.viewId = viewId;
     }
 
     @Override
@@ -89,10 +91,10 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
     }
 
     protected boolean testTarget(AbstractEdge edgeImpl) {
-        if (!undirected || edgeImpl.getUndirected(currentNode.getViewId()) == edgeImpl) {
+        if (!undirected || edgeImpl.getUndirected(viewId) == edgeImpl) {
             if (edgePredicate.evaluate(edgeImpl)) {
                 if (IN) {
-                    AbstractNode source = edgeImpl.getSource();
+                    AbstractNode source = edgeImpl.getSource(viewId);
                     if (!nodePredicate.evaluate(source)) {
                         return false;
                     }
@@ -101,7 +103,7 @@ public class RangeEdgeIterator extends AbstractEdgeIterator implements Iterator<
                         return pre < rangeStart || pre > rangeLimit;
                     }
                 } else {
-                    AbstractNode target = edgeImpl.getTarget();
+                    AbstractNode target = edgeImpl.getTarget(viewId);
                     if (!nodePredicate.evaluate(target)) {
                         return false;
                     }

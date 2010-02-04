@@ -237,14 +237,14 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
     public EdgeIterable getInnerEdges(Node nodeGroup) {
         readLock();
         AbstractNode absNode = checkNode(nodeGroup);
-        return dhns.newEdgeIterable(new RangeEdgeIterator(structure, absNode, absNode, true, false, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new RangeEdgeIterator(structure, view.getViewId(), absNode, absNode, true, false, Tautology.instance, Tautology.instance));
     }
 
     //ClusteredGraph
     public EdgeIterable getOuterEdges(Node nodeGroup) {
         readLock();
         AbstractNode absNode = checkNode(nodeGroup);
-        return dhns.newEdgeIterable(new RangeEdgeIterator(structure, absNode, absNode, false, false, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new RangeEdgeIterator(structure, view.getViewId(), absNode, absNode, false, false, Tautology.instance, Tautology.instance));
     }
 
     //ClusteredGraph

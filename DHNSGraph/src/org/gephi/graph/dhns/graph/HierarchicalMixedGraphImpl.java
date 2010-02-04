@@ -28,8 +28,11 @@ import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphViewImpl;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.iterators.EdgeAndMetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
+import org.gephi.graph.dhns.edge.iterators.MetaEdgeIterator;
+import org.gephi.graph.dhns.edge.iterators.MetaEdgeNodeIterator;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.NeighborIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
@@ -59,9 +62,6 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
 
     public boolean addEdge(Edge edge) {
         AbstractEdge absEdge = checkEdge(edge);
-        if (!edge.isDirected()) {
-            throw new IllegalArgumentException("Can't add an undirected egde");
-        }
         AbstractNode source = checkNode(edge.getSource());
         AbstractNode target = checkNode(edge.getTarget());
         if (checkEdgeExist(source, target)) {
@@ -181,10 +181,23 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
     }
 
     public int getDegree(Node node) {
-        readLock();
+//        readLock();
+//        AbstractNode absNode = checkNode(node);
+//        int count = absNode.getEdgesInTree().getCount() + absNode.getEdgesOutTree().getCount();
+//        readUnlock();
+//        return count;
+        //readLock();
         AbstractNode absNode = checkNode(node);
-        int count = absNode.getEdgesInTree().getCount() + absNode.getEdgesOutTree().getCount();
-        readUnlock();
+        int count = 0;
+        EdgeNodeIterator itr = new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, Tautology.instance, Tautology.instance);
+        for (; itr.hasNext();) {
+            AbstractEdge edge = itr.next();
+            if (edge.isSelfLoop()) {
+                count++;
+            }
+            count++;
+        }
+        //readUnlock();
         return count;
     }
 
@@ -233,19 +246,35 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
     }
 
     public EdgeIterable getMetaEdges() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        readLock();
+        return dhns.newEdgeIterable(new MetaEdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), true));
     }
 
     public EdgeIterable getEdgesAndMetaEdges() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        readLock();
+        return dhns.newEdgeIterable(new EdgeAndMetaEdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), true, enabledNodePredicate, Tautology.instance));
     }
 
     public EdgeIterable getMetaEdges(Node node) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        readLock();
+        AbstractNode absNode = checkNode(node);
+        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true));
     }
 
     public int getMetaDegree(Node node) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        readLock();
+        AbstractNode absNode = checkNode(node);
+        int count = 0;
+        MetaEdgeNodeIterator itr = new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
+        for (; itr.hasNext();) {
+            AbstractEdge edge = itr.next();
+            if (edge.isSelfLoop()) {
+                count++;
+            }
+            count++;
+        }
+        readUnlock();
+        return count;
     }
 
     @Override
