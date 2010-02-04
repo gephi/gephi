@@ -29,7 +29,16 @@ import org.gephi.filters.spi.FilterProperty;
  */
 public interface TimelineModel {
 
+    /**
+     *
+     * @param listener
+     */
     public void addListener(TimelineModelListener listener);
+
+    /**
+     *
+     * @param listener
+     */
     public void removeListener(TimelineModelListener listener);
 
     /**
@@ -50,36 +59,168 @@ public interface TimelineModel {
      * @return a FilterProperty
      */
     public String getFirstAttributeLabel();
+
+    /**
+     *
+     * @return
+     */
     public String getLastAttributeLabel();
+
+    /**
+     *
+     * @param i
+     * @return
+     */
     public String getAttributeLabel(int i);
+
+    /**
+     *
+     * @param from
+     * @param to
+     * @return
+     */
     public String getAttributeLabel(int from, int to);
+
+    /**
+     *
+     * @param i
+     * @return
+     */
     public double getAttributeValue(int i);
+
+    /**
+     *
+     * @param from
+     * @param to
+     * @return
+     */
     public double getAttributeValue(int from, int to);
 
+    /**
+     *
+     * @return
+     */
     public double getTotalSize();
+
+    /**
+     *
+     * @return
+     */
     public double getRangeSizeValue();
+
+    /**
+     *
+     * @return
+     */
     public double getRangeSizeFloat();
 
+    /**
+     *
+     * @param min
+     */
     public void setMinValue(double min);
+
+    /**
+     *
+     * @param max
+     */
     public void setMaxValue(double max);
+
+    /**
+     *
+     * @param min
+     * @param max
+     */
     public void setMinMax(double min, double max);
 
+
+    /**
+     *
+     * @return
+     */
     public double getMinValue();
+
+    /**
+     *
+     * @return
+     */
     public double getMaxValue();
 
-    // set the range using real values
+
+    /**
+     * Set the range using real values
+     *
+     * @param from
+     * @param to
+     */
     public void setRangeFromRealValues(double from, double to);
+
+    /**
+     *
+     * @param from
+     * @param to
+     */
     public void setRangeFromFloat(double from, double to);
 
+    /**
+     *
+     * @param from
+     */
     public void setFromFloat(double from);
+
+    /**
+     *
+     * @param to
+     */
     public void setToFloat(double to);
+
+    /**
+     *
+     * @return
+     */
     public double getFromFloat();
+
+    /**
+     *
+     * @return
+     */
     public double getToFloat();
 
+    /**
+     *
+     * @param from
+     */
     public void setFromValue(double from);
+
+    /**
+     *
+     * @param to
+     */
     public void setToValue(double to);
+
+    /**
+     *
+     * @return
+     */
     public double getFromValue();
+
+    /**
+     *
+     * @return
+     */
     public double getToValue();
 
+    /**
+     * Return the absolute value from a relative value
+     *
+     * @param position
+     * @return
+     */
+    public double getValueFromFloat(double position);
+
+    /**
+     *
+     * @return
+     */
     public TimeInterval getTimeInterval();
 }
