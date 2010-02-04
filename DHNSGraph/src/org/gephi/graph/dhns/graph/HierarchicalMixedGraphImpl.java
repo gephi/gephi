@@ -59,9 +59,6 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
 
     public boolean addEdge(Edge edge) {
         AbstractEdge absEdge = checkEdge(edge);
-        if (!edge.isDirected()) {
-            throw new IllegalArgumentException("Can't add an undirected egde");
-        }
         AbstractNode source = checkNode(edge.getSource());
         AbstractNode target = checkNode(edge.getTarget());
         if (checkEdgeExist(source, target)) {
@@ -181,10 +178,23 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
     }
 
     public int getDegree(Node node) {
-        readLock();
+//        readLock();
+//        AbstractNode absNode = checkNode(node);
+//        int count = absNode.getEdgesInTree().getCount() + absNode.getEdgesOutTree().getCount();
+//        readUnlock();
+//        return count;
+        //readLock();
         AbstractNode absNode = checkNode(node);
-        int count = absNode.getEdgesInTree().getCount() + absNode.getEdgesOutTree().getCount();
-        readUnlock();
+        int count = 0;
+        EdgeNodeIterator itr = new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, Tautology.instance, Tautology.instance);
+        for (; itr.hasNext();) {
+            AbstractEdge edge = itr.next();
+            if (edge.isSelfLoop()) {
+                count++;
+            }
+            count++;
+        }
+        //readUnlock();
         return count;
     }
 

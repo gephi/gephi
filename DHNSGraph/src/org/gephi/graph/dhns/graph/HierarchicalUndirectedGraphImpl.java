@@ -189,13 +189,13 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
     public EdgeIterable getInnerEdges(Node nodeGroup) {
         readLock();
         AbstractNode absNode = checkNode(nodeGroup);
-        return dhns.newEdgeIterable(new RangeEdgeIterator(structure, absNode, absNode, true, true, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new RangeEdgeIterator(structure, view.getViewId(), absNode, absNode, true, true, Tautology.instance, Tautology.instance));
     }
 
     public EdgeIterable getOuterEdges(Node nodeGroup) {
         readLock();
         AbstractNode absNode = checkNode(nodeGroup);
-        return dhns.newEdgeIterable(new RangeEdgeIterator(structure, absNode, absNode, false, true, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new RangeEdgeIterator(structure, view.getViewId(), absNode, absNode, false, true, Tautology.instance, Tautology.instance));
     }
 
     public int getMetaDegree(Node node) {

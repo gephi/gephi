@@ -133,6 +133,11 @@ public class TreeNodeWrapper {
         public Node getNode() {
             return node;
         }
+
+        @Override
+        public String toString() {
+            return node.toString();
+        }
     }
 
     private static class IteratorEnumeration implements Enumeration {

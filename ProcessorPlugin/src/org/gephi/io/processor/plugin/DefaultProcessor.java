@@ -69,15 +69,15 @@ public class DefaultProcessor implements Processor {
             case MIXED:
                 graph = graphModel.getHierarchicalMixedGraph();
                 break;
+            default:
+                graph = graphModel.getHierarchicalMixedGraph();
+                break;
         }
         GraphFactory factory = graphModel.factory();
 
         //Attributes - Creates columns for properties
         AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
         attributeModel.mergeModel(container.getAttributeModel());
-        //nodeLabelColumn = attributeController.getTemporaryAttributeManager().getNodeTable().addColumn("label", AttributeType.STRING);
-        //edgeLabelColumn = attributeController.getTemporaryAttributeManager().getEdgeTable().addColumn("label", AttributeType.STRING);
-        //edgeWeightColumn = attributeController.getTemporaryAttributeManager().getEdgeTable().addColumn("weight", AttributeType.FLOAT);
 
         int nodeCount = 0;
         //Create all nodes
