@@ -60,18 +60,15 @@ public class MinimalDrawer extends JPanel
 
     private static final long serialVersionUID = 1L;
     private MinimalDrawerSettings settings = new MinimalDrawerSettings();
-
     private TimelineModel model = null;
     private TimelineAnimator animator = null;
-
     private Integer latestMousePositionX = null;
+    private int currentMousePositionX = 0;
     private static Cursor CURSOR_DEFAULT = new Cursor(Cursor.DEFAULT_CURSOR);
     private static Cursor CURSOR_LEFT_HOOK = new Cursor(Cursor.E_RESIZE_CURSOR);
     private static Cursor CURSOR_CENTRAL_HOOK = new Cursor(Cursor.MOVE_CURSOR);
     private static Cursor CURSOR_RIGHT_HOOK = new Cursor(Cursor.W_RESIZE_CURSOR);
-
     private static Locale LOCALE = Locale.ENGLISH;
-    
 
     public enum TimelineLevel {
 
@@ -107,7 +104,6 @@ public class MinimalDrawer extends JPanel
     }
     HighlightedComponent highlightedComponent = HighlightedComponent.NONE;
 
-
     /** Creates new form MinimalDrawer */
     public MinimalDrawer() {
 
@@ -119,7 +115,8 @@ public class MinimalDrawer extends JPanel
         // setEnabled(true);
 
     }
-        public void setModel(TimelineModel model) {
+
+    public void setModel(TimelineModel model) {
         if (model == null) {
             return;
         }
@@ -141,7 +138,7 @@ public class MinimalDrawer extends JPanel
     public TimelineAnimator getAnimator() {
         return animator;
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -172,8 +169,18 @@ public class MinimalDrawer extends JPanel
         g2d.setPaint(settings.background.paint);
         g2d.fillRect(0, tmMarginTop + 1, width, height - tmMarginBottom - 2);
 
-        if (!this.isEnabled()) return;
-        if (model == null) return;
+        if (!this.isEnabled()) {
+            return;
+        }
+        if (model == null) {
+            return;
+        }
+        
+        long min = (long) model.getMinValue();
+        long max = (long) model.getMaxValue();
+        if (max <= min && min < 0 && max <= 0) {
+            return;
+        }
 
         g2d.setRenderingHints(settings.renderingHints);
 
@@ -245,47 +252,39 @@ public class MinimalDrawer extends JPanel
             g2d.fillRect(sf, tmMarginTop, sw, height - tmMarginBottom - 1);
         }
 
-        paintTimelineForDateTime(g2d);
 
-        g2d.setColor(settings.defaultStrokeColor);
-        g2d.drawRect(sf, tmMarginTop, sw, height - tmMarginBottom - 1);
-
-    }
-
-    private void paintTimelineForDateTime(Graphics2D g2d) {
-        long min = (long) model.getMinValue();
-        long max = (long) model.getMaxValue();
-        if (max <= min && min < 0 && max <= 0) {
-            return;
-        }
-
-        //DateTime dtFrom = new DateTime(1455, 1, 1, 1, 1, 1, 1);
+//DateTime dtFrom = new DateTime(1455, 1, 1, 1, 1, 1, 1);
         //DateTime dtTo = new DateTime(1960, 2, 10, 1, 1, 1, 1);
         paintUpperRulerForInterval(g2d,
                 new DateTime(new Date(min)),
                 new DateTime(new Date(max)));
 
-        int w = getWidth();
+        g2d.setColor(settings.defaultStrokeColor);
+        g2d.drawRect(sf, tmMarginTop, sw, height - tmMarginBottom - 1);
 
-        double v = model.getValueFromFloat(latestMousePositionX * (1.0 / w));
-        if (v == Double.NEGATIVE_INFINITY || v == Double.POSITIVE_INFINITY) return;
-             DateTime d = new DateTime(new Date((long)v));
-                    if (d==null) return;
+        double v = model.getValueFromFloat(currentMousePositionX * (1.0 / width));
+        if (v != Double.NEGATIVE_INFINITY && v != Double.POSITIVE_INFINITY) {
 
-              DateTimeFormatter fmt = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
-             String s = fmt.withLocale(LOCALE).print(d);
-             int sw = (int) (settings.tip.fontMetrics.getStringBounds(s, null)).getWidth() + 4;
-             int px = latestMousePositionX;
-             if (px + sw  >= w) px = w - sw;
+            DateTime d = new DateTime(new Date((long) v));
+            if (d != null) {
 
-            g2d.setPaint(settings.tip.backgroundColor);
-            g2d.fillRect(px, 1, sw, 18);
-            g2d.setColor(settings.tip.fontColor);
-            g2d.drawString(s,px+2, 16);
+                DateTimeFormatter fmt = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
+                String str = fmt.withLocale(LOCALE).print(d);
+                int strw = (int) (settings.tip.fontMetrics.getStringBounds(str, null)).getWidth() + 4;
+                int px = currentMousePositionX;
+                if (px + strw >= width) {
+                    px = width - strw;
+                }
 
-        // paintHoverTip(g2d);
+                g2d.setPaint(settings.tip.backgroundColor);
+                g2d.fillRect(px, 1, strw, 18);
+                g2d.setPaint(settings.tip.fontColor);
+                g2d.drawRect(px, 1, strw, 18);
+                g2d.setColor(settings.tip.fontColor);
+                g2d.drawString(str, px + 2, 16);
+            }
+        }
     }
-
 
     private void paintUpperRulerForInterval(Graphics2D g2d, DateTime dtFrom, DateTime dtTo) {
 
@@ -508,7 +507,7 @@ public class MinimalDrawer extends JPanel
         return (a < x && x < b);
     }
 
-        public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -544,6 +543,7 @@ public class MinimalDrawer extends JPanel
     public void mouseEntered(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet.");
         latestMousePositionX = e.getX();
+        currentMousePositionX = latestMousePositionX;
     }
 
     public void mouseExited(MouseEvent e) {
@@ -575,10 +575,13 @@ public class MinimalDrawer extends JPanel
     }
 
     public void mouseMoved(MouseEvent evt) {
-    if (model==null) return;
+        if (model == null) {
+            return;
+        }
 
         //System.out.println("mouse moved");
-        int x = evt.getX();
+        currentMousePositionX = evt.getX();
+        int x = currentMousePositionX;
         float w = getWidth();
         int r = settings.selection.visibleHookWidth;
 
@@ -610,17 +613,22 @@ public class MinimalDrawer extends JPanel
             setCursor(newCursor);
         }
         // only repaint if highlight has changed (save a lot of fps)
-        if (highlightedComponent != old) {
-            repaint();
-        }
+        //if (highlightedComponent != old) {
+        //    repaint();
+        //}
+        // now we always repaint, because of the tooltip
+        repaint();
 
     }
 
     public void mouseDragged(MouseEvent evt) {
 
-    if (model==null) return;
+        if (model == null) {
+            return;
+        }
 
-        int x = evt.getX();
+        currentMousePositionX = evt.getX();
+        int x = currentMousePositionX;
         double w = getWidth();
         int r = settings.selection.visibleHookWidth;//skin.getSelectionHookSideLength();
 

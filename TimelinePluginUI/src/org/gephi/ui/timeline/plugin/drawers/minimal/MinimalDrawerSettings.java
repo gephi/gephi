@@ -154,10 +154,10 @@ public class MinimalDrawerSettings {
 
         tip.fontSize = 12;
         tip.font = new Font("DejaVu Sans Mono", 0, graduations.fontSize);
-        tip.fontColor = new Color(25, 25, 25, 180);
+        tip.fontColor = new Color(25, 25, 25, 160);
         tip.fontMetrics = new FontMetrics(graduations.font) {
         };
-        tip.backgroundColor = new Color(255, 255, 255, 180);
+        tip.backgroundColor = new Color(255, 255, 255, 160);
 
         hookLength = 16;
 
