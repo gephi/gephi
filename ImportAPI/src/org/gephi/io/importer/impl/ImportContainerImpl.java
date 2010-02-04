@@ -317,6 +317,9 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         } else if (parameters.getEdgeDefault().equals(EdgeDefault.MIXED)) {
             //Clean undirected edges when graph is mixed
             for (EdgeDraftImpl edge : edgeMap.values().toArray(new EdgeDraftImpl[0])) {
+                if(edge.getType()==null) {
+                    edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
+                }
                 if (edge.getType().equals(EdgeDraft.EdgeType.UNDIRECTED)) {
                     String oppositekey = edge.getTarget().getId() + "-" + edge.getSource().getId();
                     EdgeDraftImpl opposite = edgeSourceTargetMap.get(oppositekey);
