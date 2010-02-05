@@ -70,6 +70,32 @@ public final class SupervisorPropery {
      * @param propertyCategory A category string or <code>null</code> for using
      * default category
      * @param propertyDescription A description string for the property
+     * @param getMethod the get method name
+     * @param setMethod the set method name
+     * @return the created property
+     * @throws NoSuchMethodException if the getter or setter methods cannot be found
+     */
+    public static SupervisorPropery createProperty(Supervisor supervisor, Class valueType, String propertyName, String propertyCategory, String propertyDescription, String getMethod, String setMethod) throws NoSuchMethodException {
+        PropertySupport.Reflection property = new PropertySupport.Reflection(
+                supervisor, valueType, getMethod, setMethod);
+
+        property.setName(propertyName);
+        property.setDisplayName(propertyDescription);
+        property.setShortDescription(propertyDescription);
+
+        return new SupervisorPropery(property, propertyCategory);
+    }
+
+    /**
+     * Create a property, with a particular {@link PropertyEditor}. A particular
+     * editor must be specified when the property type don't have a registered
+     * editor class.
+     * @param supervisor The supervisor instance
+     * @param valueType The type of the property value, ex: <code>Double.class</code>
+     * @param propertyName The display name of the property
+     * @param propertyCategory A category string or <code>null</code> for using
+     * default category
+     * @param propertyDescription A description string for the property
      * @param editorClass A <code>PropertyEditor</code> class for the given type
      * @return the created property
      * @throws NoSuchMethodException if the getter or setter methods cannot be found
@@ -77,6 +103,34 @@ public final class SupervisorPropery {
     public static SupervisorPropery createProperty(Supervisor supervisor, Class valueType, String propertyName, String propertyCategory, String propertyDescription, Class<? extends PropertyEditor> editorClass) throws NoSuchMethodException {
         PropertySupport.Reflection property = new PropertySupport.Reflection(
                 supervisor, valueType, propertyName);
+
+        property.setName(propertyName);
+        property.setDisplayName(propertyDescription);
+        property.setShortDescription(propertyDescription);
+        property.setPropertyEditorClass(editorClass);
+
+        return new SupervisorPropery(property, propertyCategory);
+    }
+
+    /**
+     * Create a property, with a particular {@link PropertyEditor}. A particular
+     * editor must be specified when the property type don't have a registered
+     * editor class.
+     * @param supervisor The supervisor instance
+     * @param valueType The type of the property value, ex: <code>Double.class</code>
+     * @param propertyName The display name of the property
+     * @param propertyCategory A category string or <code>null</code> for using
+     * default category
+     * @param propertyDescription A description string for the property
+     * @param editorClass A <code>PropertyEditor</code> class for the given type
+     * @param getMethod the get method name
+     * @param setMethod the set method name
+     * @return the created property
+     * @throws NoSuchMethodException if the getter or setter methods cannot be found
+     */
+    public static SupervisorPropery createProperty(Supervisor supervisor, Class valueType, String propertyName, String propertyCategory, String propertyDescription, String getMethod, String setMethod, Class<? extends PropertyEditor> editorClass) throws NoSuchMethodException {
+        PropertySupport.Reflection property = new PropertySupport.Reflection(
+                supervisor, valueType, getMethod, setMethod);
 
         property.setName(propertyName);
         property.setDisplayName(propertyDescription);

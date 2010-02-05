@@ -52,14 +52,14 @@ public class UndirectedEdgeSupervisorImpl extends EdgeSupervisorImpl
         final String CATEGORY = "Undirected";
         try {
             return new SupervisorPropery[]{
-                        SupervisorPropery.createProperty(this, Boolean.class, "curvedFlag", CATEGORY, "Curved"),
-                        SupervisorPropery.createProperty(this, Float.class, "edgeScale", CATEGORY, "Thickness"),
-                        SupervisorPropery.createProperty(this, EdgeColorizer.class, "colorizer", CATEGORY, "Color", EdgeColorizerPropertyEditor.class),
-                        SupervisorPropery.createProperty(this, Boolean.class, "showLabelsFlag", CATEGORY, "Show labels"),
-                        SupervisorPropery.createProperty(this, Boolean.class, "shortenLabelsFlag", CATEGORY, "Shorten labels"),
-                        SupervisorPropery.createProperty(this, Integer.class, "labelMaxChar", CATEGORY, "Shorten limit"),
-                        SupervisorPropery.createProperty(this, Font.class, "baseLabelFont", CATEGORY, "Font"),
-                        SupervisorPropery.createProperty(this, EdgeChildColorizer.class, "labelColorizer", CATEGORY, "Label color", EdgeChildColorizerPropertyEditor.class)};
+                        SupervisorPropery.createProperty(this, Boolean.class, "Undirected_curvedFlag", CATEGORY, "Curved", "getCurvedFlag", "setCurvedFlag"),
+                        SupervisorPropery.createProperty(this, Float.class, "Undirected_edgeScale", CATEGORY, "Thickness", "getEdgeScale", "setEdgeScale"),
+                        SupervisorPropery.createProperty(this, EdgeColorizer.class, "Undirected_colorizer", CATEGORY, "Color", "getColorizer", "setColorizer", EdgeColorizerPropertyEditor.class),
+                        SupervisorPropery.createProperty(this, Boolean.class, "Undirected_showLabelsFlag", CATEGORY, "Show labels", "getShowLabelsFlag", "setShowLabelsFlag"),
+                        SupervisorPropery.createProperty(this, Boolean.class, "Undirected_shortenLabelsFlag", CATEGORY, "Shorten labels", "getShortenLabelsFlag", "setShortenLabelsFlag"),
+                        SupervisorPropery.createProperty(this, Integer.class, "Undirected_labelMaxChar", CATEGORY, "Shorten limit", "getLabelMaxChar", "setLabelMaxChar"),
+                        SupervisorPropery.createProperty(this, Font.class, "Undirected_baseLabelFont", CATEGORY, "Font", "getBaseLabelFont", "setBaseLabelFont"),
+                        SupervisorPropery.createProperty(this, EdgeChildColorizer.class, "Undirected_labelColorizer", CATEGORY, "Label color", "getLabelColorizer", "setLabelColorizer", EdgeChildColorizerPropertyEditor.class)};
         } catch (Exception e) {
             e.printStackTrace();
         }

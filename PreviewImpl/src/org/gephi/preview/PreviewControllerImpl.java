@@ -111,7 +111,7 @@ public class PreviewControllerImpl implements PreviewController {
     }
 
     public GraphSheet getGraphSheet() {
-        if (model != null) {
+        if (model != null && previewGraph != null) {
             if (model.isUpdateFlag() || null == graphSheet || graphSheet.getGraph() != previewGraph) {
                 graphSheet = new GraphSheetImpl(getGraph());
             }
@@ -121,7 +121,7 @@ public class PreviewControllerImpl implements PreviewController {
     }
 
     public GraphSheet getPartialGraphSheet(float visibilityRatio) {
-        if (model != null) {
+        if (model != null && previewGraph != null) {
             if (model.isUpdateFlag() || null == partialGraphSheet
                     || ((PartialGraphImpl) partialGraphSheet.getGraph()).getVisibilityRatio() != visibilityRatio) {
                 partialGraphSheet = new GraphSheetImpl(getPartialGraph(visibilityRatio));
@@ -140,7 +140,6 @@ public class PreviewControllerImpl implements PreviewController {
      * @see PreviewController#buildGraph()
      */
     public void buildGraph() {
-        System.out.println("preview build graph");
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
         model.clearSupervisors();
 

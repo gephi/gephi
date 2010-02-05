@@ -120,9 +120,9 @@ public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
         final String CATEGORY = "Self-Loop";
         try {
             return new SupervisorPropery[]{
-                        SupervisorPropery.createProperty(this, Boolean.class, "showFlag", CATEGORY, "Show"),
-                        SupervisorPropery.createProperty(this, Float.class, "edgeScale", CATEGORY, "Thickness"),
-                        SupervisorPropery.createProperty(this, EdgeColorizer.class, "colorizer", CATEGORY, "Color", EdgeColorizerPropertyEditor.class)};
+                        SupervisorPropery.createProperty(this, Boolean.class, "SelfLoop_showFlag", CATEGORY, "Show", "getShowFlag", "setShowFlag"),
+                        SupervisorPropery.createProperty(this, Float.class, "SelfLoop_edgeScale", CATEGORY, "Thickness", "getEdgeScale", "setEdgeScale"),
+                        SupervisorPropery.createProperty(this, EdgeColorizer.class, "SelfLoop_colorizer", CATEGORY, "Color", "getColorizer", "setColorizer", EdgeColorizerPropertyEditor.class)};
         } catch (Exception e) {
             e.printStackTrace();
         }

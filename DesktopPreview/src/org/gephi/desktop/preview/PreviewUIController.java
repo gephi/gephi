@@ -112,11 +112,13 @@ public class PreviewUIController implements GraphListener {
                 disableRefresh();
                 hideRefreshNotification();
                 GraphSheet controllerGraphSheet = previewController.getPartialGraphSheet(visibilityRatio);
-                if (null == graphSheet || controllerGraphSheet != graphSheet) {
-                    graphSheet = controllerGraphSheet;
-                    previewTopComponent.setGraph(graphSheet);
+                if (controllerGraphSheet != null) {
+                    if (null == graphSheet || controllerGraphSheet != graphSheet) {
+                        graphSheet = controllerGraphSheet;
+                        previewTopComponent.setGraph(graphSheet);
+                    }
+                    previewTopComponent.refreshPreview();
                 }
-                previewTopComponent.refreshPreview();
 
                 previewTopComponent.setRefresh(false);
                 enableRefresh();

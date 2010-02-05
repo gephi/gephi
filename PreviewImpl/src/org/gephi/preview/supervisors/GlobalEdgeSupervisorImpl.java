@@ -66,7 +66,7 @@ public class GlobalEdgeSupervisorImpl implements GlobalEdgeSupervisor {
         final String CATEGORY = "Edge";
         try {
             return new SupervisorPropery[]{
-                        SupervisorPropery.createProperty(this, Boolean.class, "showFlag", CATEGORY, "Show")};
+                        SupervisorPropery.createProperty(this, Boolean.class, "GlobalEdge_showFlag", CATEGORY, "Show", "getShowFlag", "setShowFlag")};
         } catch (Exception e) {
             e.printStackTrace();
         }
