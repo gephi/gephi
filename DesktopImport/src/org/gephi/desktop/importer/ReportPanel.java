@@ -142,6 +142,7 @@ public class ReportPanel extends javax.swing.JPanel {
                     final OutlineModel mdl = DefaultOutlineModel.createOutlineModel(treeMdl, new IssueRowModel(), true);
 
                     SwingUtilities.invokeLater(new Runnable() {
+
                         public void run() {
                             issuesOutline.setRootVisible(false);
                             issuesOutline.setRenderDataProvider(new IssueRenderer());
@@ -206,8 +207,8 @@ public class ReportPanel extends javax.swing.JPanel {
                 }
 
                 //Dynamic & Hierarchical graph
-                dynamicLabel.setText(String.valueOf(container.isDynamicGraph()));
-                hierarchicalLabel.setText(String.valueOf(container.isHierarchicalGraph()));
+                dynamicLabel.setText(container.isDynamicGraph() ? "yes" : "no");
+                hierarchicalLabel.setText(container.isHierarchicalGraph() ? "yes" : "no");
             }
         });
 
