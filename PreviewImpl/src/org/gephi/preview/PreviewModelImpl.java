@@ -62,6 +62,7 @@ public class PreviewModelImpl implements PreviewModel, GraphListener {
         biEdgeSupervisor = new BidirectionalEdgeSupervisorImpl();
         undirectedEdgeSupervisor = new UndirectedEdgeSupervisorImpl();
         currentPreset = new DefaultPreset();
+        applyPreset(currentPreset);
     }
 
     public void select(Workspace workspace) {
