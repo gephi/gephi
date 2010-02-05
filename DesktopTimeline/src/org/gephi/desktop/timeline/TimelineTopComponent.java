@@ -107,7 +107,12 @@ public final class TimelineTopComponent
         });
 
         if (pc.getCurrentWorkspace() != null) {
-            refreshModel(pc.getCurrentWorkspace().getLookup().lookup(TimelineModelImpl.class));
+            TimelineModelImpl m = pc.getCurrentWorkspace().getLookup().lookup(TimelineModelImpl.class);
+            if (m == null) {
+                m = new TimelineModelImpl();
+                pc.getCurrentWorkspace().add(m);
+            }
+            refreshModel(m);
         } else {
             refreshModel(null);
         }
@@ -244,7 +249,7 @@ public final class TimelineTopComponent
             }
             model.addListener(this);
             this.model = model;
-            ((TimelineDrawer)drawerPanel).setModel(model);
+            ((TimelineDrawer) drawerPanel).setModel(model);
         }
 
         refreshEnable(true);
@@ -254,12 +259,19 @@ public final class TimelineTopComponent
     }
 
     private void refreshEnable(boolean enable) {
-        if (!((JPanel)drawerPanel).isEnabled()) ((JPanel)drawerPanel).setEnabled(enable);
-        if (!timelinePanel.isEnabled()) timelinePanel.setEnabled(enable);
-        if (!timelineToolbar.isEnabled()) timelineToolbar.setEnabled(enable);
-        if (!settingsButton.isEnabled()) settingsButton.setEnabled(enable);
+        if (!((JPanel) drawerPanel).isEnabled()) {
+            ((JPanel) drawerPanel).setEnabled(enable);
+        }
+        if (!timelinePanel.isEnabled()) {
+            timelinePanel.setEnabled(enable);
+        }
+        if (!timelineToolbar.isEnabled()) {
+            timelineToolbar.setEnabled(enable);
+        }
+        if (!settingsButton.isEnabled()) {
+            settingsButton.setEnabled(enable);
+        }
     }
-
 
     public void timelineModelChanged(ChangeEvent event) {
         // ..

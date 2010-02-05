@@ -64,6 +64,10 @@ public class TimelineControllerImpl implements TimelineController {
 
             public void select(Workspace workspace) {
                 model = workspace.getLookup().lookup(TimelineModelImpl.class);
+                if (model == null) {
+                    model = new TimelineModelImpl();
+                    workspace.add(model);
+                }
             }
 
             public void unselect(Workspace workspace) {
@@ -79,6 +83,10 @@ public class TimelineControllerImpl implements TimelineController {
 
         if (pc.getCurrentWorkspace() != null) {
             model = pc.getCurrentWorkspace().getLookup().lookup(TimelineModelImpl.class);
+            if (model == null) {
+                model = new TimelineModelImpl();
+                pc.getCurrentWorkspace().add(model);
+            }
         }
     }
 
@@ -94,10 +102,10 @@ public class TimelineControllerImpl implements TimelineController {
         DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
         double f = 0.0, t = 0.0;
         try {
-            f = (from==null || from.isEmpty())
+            f = (from == null || from.isEmpty())
                     ? Double.NEGATIVE_INFINITY
                     : ((Date) formatter.parse(from)).getTime();
-            t = (to==null || to.isEmpty())
+            t = (to == null || to.isEmpty())
                     ? Double.POSITIVE_INFINITY
                     : ((Date) formatter.parse(to)).getTime();
         } catch (ParseException ex) {
@@ -118,10 +126,12 @@ public class TimelineControllerImpl implements TimelineController {
         DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
         double f = Double.NEGATIVE_INFINITY, t = Double.POSITIVE_INFINITY;
         try {
-            if (from!=null && !from.isEmpty())
-                   f = ((Date) formatter.parse(from)).getTime();
-            if (to!=null && !to.isEmpty())
-                   t = ((Date) formatter.parse(to)).getTime();
+            if (from != null && !from.isEmpty()) {
+                f = ((Date) formatter.parse(from)).getTime();
+            }
+            if (to != null && !to.isEmpty()) {
+                t = ((Date) formatter.parse(to)).getTime();
+            }
         } catch (ParseException ex) {
             Exceptions.printStackTrace(ex);
         }
