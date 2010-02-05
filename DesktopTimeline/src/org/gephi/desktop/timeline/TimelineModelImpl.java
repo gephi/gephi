@@ -211,4 +211,8 @@ public class TimelineModelImpl
     public synchronized TimeInterval getTimeInterval() {
        return new TimeInterval(getFromValue(), getToValue());
     }
+
+    public synchronized double getValueFromFloat(double position) {
+        return position * getTotalSize();
+    }
 }

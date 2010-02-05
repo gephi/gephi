@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.ui.timeline.plugin.drawers.minimal;
 
 import java.awt.BasicStroke;
@@ -41,19 +40,33 @@ import java.util.Map;
  */
 public class MinimalDrawerSettings {
 
-    public RenderingHints renderingHints;
-    public Kernel convolutionKernel;
-    public ConvolveOp blurOperator;
-    private int lastWidth = 0;
-    private int lastHeight = 0;
-
     public class Background {
 
         public Color top;
         public Color bottom;
         public Paint paint;
     }
-    public Background background = new Background();
+
+    public class TimeTip {
+
+        public Font font;
+        public FontMetrics fontMetrics;
+        public int fontSize;
+        public Color fontColor;
+        public Color backgroundColor;
+    }
+
+    public class Graduations {
+
+        public Font font;
+        public FontMetrics fontMetrics;
+        public int fontSize;
+        public Color fontColor;
+        public int topMargin;
+        public int leftMargin;
+        public int textTopPosition;
+        public int textBottomMargin;
+    }
 
     public class SelectionBox {
 
@@ -63,7 +76,6 @@ public class MinimalDrawerSettings {
         public int visibleHookWidth; // the "visible hook" (mouse hook, to move the selection box)
         public int invisibleHookMargin; // let the "invisible hook" be a bit larger on the left..
         public int minimalWidth;
-
         public Color mouseOverTopColor;
         public Color activatedTopColor;
         public Color mouseOverBottomColor;
@@ -71,26 +83,19 @@ public class MinimalDrawerSettings {
         public Paint mouseOverPaint;
         public Paint activatedPaint;
     }
+    public Background background = new Background();
     public SelectionBox selection = new SelectionBox();
-
-
-    public class Informations {
-
-        public int fontSize;
-        public Font font;
-        public FontMetrics fontMetrics;
-        public Color fontColor;
-
-        public int topMargin;
-        public int leftMargin;
-        public int textTopPosition;
-        public int textBottomMargin;
-    }
-    public Informations informations = new Informations();
+    public TimeTip tip = new TimeTip();
+    public Graduations graduations = new Graduations();
     public Stroke defaultStroke;
     public Color defaultStrokeColor;
     public Color shadowColor;
     public int hookLength;
+    public RenderingHints renderingHints;
+    public Kernel convolutionKernel;
+    public ConvolveOp blurOperator;
+    private int lastWidth = 0;
+    private int lastHeight = 0;
 
     void update(int width, int height) {
         if (lastWidth == width && lastHeight == height) {
@@ -123,27 +128,36 @@ public class MinimalDrawerSettings {
         selection.visibleHookWidth = 12; // the "visible hook" (mouse hook, to move the selection box)
         selection.invisibleHookMargin = 3; // let the "invisible hook" be a bit larger on the left..
         selection.minimalWidth = 16;
-        selection.mouseOverTopColor = new Color(102,195, 145, 255);
+        selection.mouseOverTopColor = new Color(102, 195, 145, 255);
         selection.activatedTopColor = new Color(188, 118, 114, 255);
         selection.mouseOverBottomColor = new Color(60, 143, 96, 255);
         selection.activatedBottomColor = new Color(151, 79, 79, 255);
         selection.mouseOverPaint = new GradientPaint(0, 0, selection.mouseOverTopColor, 0, 20, selection.mouseOverBottomColor, true);
         selection.activatedPaint = new GradientPaint(0, 0, selection.activatedTopColor, 0, 20, selection.activatedBottomColor, true);
 
-        informations.fontColor = new Color(235, 235, 235, 255);
+
         shadowColor = new Color(35, 35, 35, 105);
 
         defaultStroke = new BasicStroke(1.0f);
         defaultStrokeColor = Color.black;
 
-        informations.fontSize = 12;
-        informations.font = new Font("DejaVu Sans Mono", 0, informations.fontSize);
-        informations.fontMetrics = new FontMetrics(informations.font) {
+        graduations.fontSize = 12;
+        graduations.font = new Font("DejaVu Sans Mono", 0, graduations.fontSize);
+        graduations.fontColor = new Color(235, 235, 235, 255);
+        graduations.fontMetrics = new FontMetrics(graduations.font) {
         };
-        informations.topMargin = 2;
-        informations.leftMargin = 2;
-        informations.textTopPosition = informations.topMargin + informations.fontSize;
-        informations.textBottomMargin = 3;
+        graduations.topMargin = 2;
+        graduations.leftMargin = 2;
+        graduations.textTopPosition = graduations.topMargin + graduations.fontSize;
+        graduations.textBottomMargin = 3;
+
+
+        tip.fontSize = 12;
+        tip.font = new Font("DejaVu Sans Mono", 0, graduations.fontSize);
+        tip.fontColor = new Color(25, 25, 25, 160);
+        tip.fontMetrics = new FontMetrics(graduations.font) {
+        };
+        tip.backgroundColor = new Color(255, 255, 255, 160);
 
         hookLength = 16;
 
