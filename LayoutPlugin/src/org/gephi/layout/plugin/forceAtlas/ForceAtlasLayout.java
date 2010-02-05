@@ -63,7 +63,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
 
     public void resetPropertiesValues() {
         inertia = 0.1;
-        setRepulsionStrength(5000d);
+        setRepulsionStrength(200d);
         setAttractionStrength(10d);
         setMaxDisplacement(10d);
         setFreezeBalance(true);
