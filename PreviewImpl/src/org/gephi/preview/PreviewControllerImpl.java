@@ -102,7 +102,11 @@ public class PreviewControllerImpl implements PreviewController {
     public Graph getPartialGraph(float visibilityRatio) {
         if (model != null) {
             if (model.isUpdateFlag() || null == partialPreviewGraph || partialPreviewGraph.getVisibilityRatio() != visibilityRatio) {
-                partialPreviewGraph = new PartialGraphImpl(getGraph(), visibilityRatio);
+                Graph graph = getGraph();
+                if (graph == null) {
+                    return null;
+                }
+                partialPreviewGraph = new PartialGraphImpl(graph, visibilityRatio);
                 model.setVisibilityRatio(visibilityRatio);
             }
             return partialPreviewGraph;
@@ -111,9 +115,13 @@ public class PreviewControllerImpl implements PreviewController {
     }
 
     public GraphSheet getGraphSheet() {
-        if (model != null && previewGraph != null) {
+        if (model != null) {
             if (model.isUpdateFlag() || null == graphSheet || graphSheet.getGraph() != previewGraph) {
-                graphSheet = new GraphSheetImpl(getGraph());
+                Graph graph = getGraph();
+                if (graph == null) {
+                    return null;
+                }
+                graphSheet = new GraphSheetImpl(graph);
             }
             return graphSheet;
         }
@@ -121,7 +129,7 @@ public class PreviewControllerImpl implements PreviewController {
     }
 
     public GraphSheet getPartialGraphSheet(float visibilityRatio) {
-        if (model != null && previewGraph != null) {
+        if (model != null) {
             if (model.isUpdateFlag() || null == partialGraphSheet
                     || ((PartialGraphImpl) partialGraphSheet.getGraph()).getVisibilityRatio() != visibilityRatio) {
                 partialGraphSheet = new GraphSheetImpl(getPartialGraph(visibilityRatio));
