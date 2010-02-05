@@ -1,27 +1,14 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
-Website : http://www.gephi.org
-
-This file is part of Gephi.
-
-Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-Gephi is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 package org.gephi.io.processor.plugin;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphFactory;
@@ -40,13 +27,13 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
- * @author  Mathieu Bastian
+ * @author Mathieu Bastian
  */
 @ServiceProvider(service = Processor.class)
-public class DefaultProcessor extends AbstractProcessor implements Processor {
+public class AppendProcessor extends AbstractProcessor implements Processor {
 
     public String getDisplayName() {
-        return "Add full graph";
+        return "Append graph";
     }
 
     public void process(Workspace workspace, ContainerUnloader container) {
@@ -76,10 +63,28 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
         attributeModel.mergeModel(container.getAttributeModel());
 
+        //Index existing graph
+        Map<String, Node> map = new HashMap<String, Node>();
+        for (Node n : graph.getNodes()) {
+            Object id = n.getNodeData().getAttributes().getValue(PropertiesColumn.NODE_ID.getIndex());
+            if (id != null) {
+                map.put((String) id, n);
+            }
+            if (n.getNodeData().getLabel() != null && !n.getNodeData().getLabel().isEmpty()) {
+                map.put(n.getNodeData().getLabel(), n);
+            }
+        }
+
         int nodeCount = 0;
         //Create all nodes
         for (NodeDraftGetter draftNode : container.getNodes()) {
-            Node n = factory.newNode();
+            Node n;
+            String id = draftNode.getId();
+            if (id != null && map.get(id) != null) {
+                n = map.get(id);
+            } else {
+                n = factory.newNode();
+            }
             flushToNode(draftNode, n);
             draftNode.setNode(n);
             nodeCount++;

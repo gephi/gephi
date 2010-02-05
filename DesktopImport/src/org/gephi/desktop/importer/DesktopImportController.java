@@ -307,7 +307,17 @@ public class DesktopImportController implements ImportController {
                     scaler.doScale(container);
                 }
             }
-            Lookup.getDefault().lookup(Processor.class).process(workspace, container.getUnloader());
+
+            //TODO dynamic processor list
+            for (Processor p : Lookup.getDefault().lookupAll(Processor.class)) {
+                if (p.getDisplayName().equals("Add full graph") && reportPanel.getProcessorStrategy().equals(ProcessorStrategyEnum.FULL)) {
+                    p.process(workspace, container.getUnloader());
+                    break;
+                } else if (p.getDisplayName().equals("Append graph") && reportPanel.getProcessorStrategy().equals(ProcessorStrategyEnum.APPEND)) {
+                    p.process(workspace, container.getUnloader());
+                    break;
+                }
+            }
 
             //StatusLine notify
             String source = container.getSource();
