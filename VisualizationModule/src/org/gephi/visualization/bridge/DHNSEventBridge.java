@@ -65,6 +65,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     public void initEvents() {
     }
 
+    //GROUPING
     public boolean canExpand() {
         this.graph = graphController.getModel().getHierarchicalGraphVisible();
         ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
@@ -92,11 +93,13 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     }
 
     public boolean canGroup() {
-        return true;
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+        return selectedNodeModels.length >= 1;
     }
 
     public boolean canUngroup() {
-        return true;
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+        return selectedNodeModels.length >= 1;
     }
 
     public void expand() {
@@ -231,28 +234,6 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
         }, "Ungroup nodes").start();
     }
 
-    public void mouseClick(ModelClass objClass, Model[] clickedObjects) {
-
-        /* switch (objClass.getClassId()) {
-        case AbstractEngine.CLASS_NODE:
-        for (int i = 0; i < clickedObjects.length; i++) {
-        Model obj = clickedObjects[i];
-        Node node = (Node) obj.getObj();
-        DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-        freeModifier.expand(node);
-        }
-        break;
-        case AbstractEngine.CLASS_POTATO:
-        for (int i = 0; i < clickedObjects.length; i++) {
-        Model obj = clickedObjects[i];
-        Potato potato = (Potato) obj.getObj();
-        DhnsController dhnsController = Lookup.getDefault().lookup(DhnsController.class);
-        freeModifier.retract(potato.getNode());
-        }
-        break;
-        }*/
-    }
-
     private void expandPositioning(Node node) {
         NodeData nodeData = node.getNodeData();
         float centroidX = 0;
@@ -284,5 +265,66 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
         ConvexHullModel model = (ConvexHullModel) hull.getModel();
         model.setScale(0.9f);
         model.setScaleQuantum(-0.1f);
+    }
+
+    //SETTLE AND FREE
+    public boolean canSettle() {
+        this.graph = graphController.getModel().getHierarchicalGraphVisible();
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+        for (ModelImpl metaModelImpl : selectedNodeModels) {
+            NodeData nodeData = (NodeData) metaModelImpl.getObj();
+            if (!nodeData.isFixed()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean canFree() {
+        this.graph = graphController.getModel().getHierarchicalGraphVisible();
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+        for (ModelImpl metaModelImpl : selectedNodeModels) {
+            NodeData nodeData = (NodeData) metaModelImpl.getObj();
+            if (nodeData.isFixed()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void settle() {
+        this.graph = graphController.getModel().getHierarchicalGraphVisible();
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+        for (ModelImpl metaModelImpl : selectedNodeModels) {
+            NodeData nodeData = (NodeData) metaModelImpl.getObj();
+            nodeData.setFixed(true);
+        }
+    }
+
+    public void free() {
+        this.graph = graphController.getModel().getHierarchicalGraphVisible();
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+        for (ModelImpl metaModelImpl : selectedNodeModels) {
+            NodeData nodeData = (NodeData) metaModelImpl.getObj();
+            nodeData.setFixed(false);
+        }
+    }
+
+    //DELETE
+    public boolean canDelete() {
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+        return selectedNodeModels.length >= 1;
+    }
+
+    public void delete() {
+        this.graph = graphController.getModel().getHierarchicalGraph();
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+        for (ModelImpl metaModelImpl : selectedNodeModels) {
+            NodeData nodeData = (NodeData) metaModelImpl.getObj();
+            graph.removeNode(nodeData.getRootNode());
+        }
+    }
+
+    public void mouseClick(ModelClass objectClass, Model[] clickedObjects) {
     }
 }

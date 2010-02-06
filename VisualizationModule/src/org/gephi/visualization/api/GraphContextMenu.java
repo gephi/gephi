@@ -23,10 +23,12 @@ package org.gephi.visualization.api;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.bridge.DHNSEventBridge;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 /**
@@ -45,7 +47,7 @@ public class GraphContextMenu {
 
     public JPopupMenu getMenu() {
         //Group
-        GraphContextMenuAction groupAction = new GraphContextMenuImpl("GraphContextMenu_Group") {
+        GraphContextMenuAction groupAction = new GraphContextMenuImpl("GraphContextMenu_Group", "org/gephi/visualization/api/resources/group.png") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -55,7 +57,7 @@ public class GraphContextMenu {
         groupAction.setEnabled(eventBridge.canGroup());
 
         //Ungroup
-        GraphContextMenuAction ungroupAction = new GraphContextMenuImpl("GraphContextMenu_Ungroup") {
+        GraphContextMenuAction ungroupAction = new GraphContextMenuImpl("GraphContextMenu_Ungroup", "org/gephi/visualization/api/resources/ungroup.png") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -65,7 +67,7 @@ public class GraphContextMenu {
         ungroupAction.setEnabled(eventBridge.canUngroup());
 
         //Expand
-        GraphContextMenuAction expandAction = new GraphContextMenuImpl("GraphContextMenu_Expand") {
+        GraphContextMenuAction expandAction = new GraphContextMenuImpl("GraphContextMenu_Expand", "org/gephi/visualization/api/resources/expand.png") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -75,7 +77,7 @@ public class GraphContextMenu {
         expandAction.setEnabled(eventBridge.canExpand());
 
         //Contract
-        GraphContextMenuAction contractAction = new GraphContextMenuImpl("GraphContextMenu_Contract") {
+        GraphContextMenuAction contractAction = new GraphContextMenuImpl("GraphContextMenu_Contract", "org/gephi/visualization/api/resources/contract.png") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -84,6 +86,39 @@ public class GraphContextMenu {
         };
         contractAction.setEnabled(eventBridge.canContract());
 
+        //Settle
+        GraphContextMenuAction settleAction = new GraphContextMenuImpl("GraphContextMenu_Settle", "org/gephi/visualization/api/resources/settle.png") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                eventBridge.settle();
+            }
+        };
+        settleAction.setEnabled(eventBridge.canSettle());
+
+        //Free
+        GraphContextMenuAction freeAction = new GraphContextMenuImpl("GraphContextMenu_Free") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                eventBridge.free();
+            }
+        };
+        freeAction.setEnabled(eventBridge.canFree());
+
+        //Free
+        GraphContextMenuAction deleteAction = new GraphContextMenuImpl("GraphContextMenu_Delete") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                NotifyDescriptor.Confirmation notifyDescriptor = new NotifyDescriptor.Confirmation("Nodes will be deleted, do you want to proceed?", "Delete nodes", NotifyDescriptor.YES_NO_OPTION);
+                if (DialogDisplayer.getDefault().notify(notifyDescriptor).equals(NotifyDescriptor.YES_OPTION)) {
+                    eventBridge.delete();
+                }
+            }
+        };
+        deleteAction.setEnabled(eventBridge.canDelete());
+
         //Popup
         JPopupMenu popupMenu = new JPopupMenu();
         popupMenu.add(groupAction);
@@ -91,6 +126,11 @@ public class GraphContextMenu {
         popupMenu.addSeparator();
         popupMenu.add(expandAction);
         popupMenu.add(contractAction);
+        popupMenu.addSeparator();
+        popupMenu.add(deleteAction);
+        popupMenu.addSeparator();
+        popupMenu.add(settleAction);
+        popupMenu.add(freeAction);
         return popupMenu;
     }
 
@@ -103,6 +143,11 @@ public class GraphContextMenu {
 
         public GraphContextMenuImpl(String key) {
             putValue(Action.NAME, NbBundle.getMessage(GraphContextMenu.class, key));
+        }
+
+        public GraphContextMenuImpl(String key, String icon) {
+            putValue(Action.NAME, NbBundle.getMessage(GraphContextMenu.class, key));
+            putValue(Action.SMALL_ICON, ImageUtilities.loadImageIcon(icon, false));
         }
 
         public void actionPerformed(ActionEvent e) {
