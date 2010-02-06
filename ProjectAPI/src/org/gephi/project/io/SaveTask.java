@@ -82,7 +82,7 @@ public class SaveTask implements LongTask, Runnable {
             }
 
             //Stream
-            int zipLevel = NbPreferences.forModule(SaveTask.class).getInt(ZIP_LEVEL_PREFERENCE, 0);
+            int zipLevel = NbPreferences.forModule(SaveTask.class).getInt(ZIP_LEVEL_PREFERENCE, 9);
             FileOutputStream outputStream = new FileOutputStream(writeFile);
             zipOut = new ZipOutputStream(outputStream);
             zipOut.setLevel(zipLevel);
