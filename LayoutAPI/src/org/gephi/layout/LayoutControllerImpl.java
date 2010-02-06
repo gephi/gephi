@@ -121,17 +121,21 @@ public class LayoutControllerImpl implements LayoutController {
 
         private Layout layout;
         private boolean stopRun = false;
+        private ProgressTicket progressTicket;
 
         public LayoutRun(Layout layout) {
             this.layout = layout;
         }
 
         public void run() {
+            progressTicket.setDisplayName(layout.getBuilder().getName());
+            progressTicket.start();
             layout.initAlgo();
             while (layout.canAlgo() && !stopRun) {
                 layout.goAlgo();
             }
             layout.endAlgo();
+            progressTicket.finish();
         }
 
         public boolean cancel() {
@@ -140,6 +144,7 @@ public class LayoutControllerImpl implements LayoutController {
         }
 
         public void setProgressTicket(ProgressTicket progressTicket) {
+            this.progressTicket = progressTicket;
         }
     }
 }
