@@ -4,6 +4,7 @@
  */
 package org.gephi.branding.desktop;
 
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -145,6 +146,7 @@ public final class BannerTopComponent extends TopComponent {
         logoButton = new javax.swing.JButton();
         groupsPanel = new javax.swing.JPanel();
         buttonsPanel = new javax.swing.JPanel();
+        bannerBackground = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -171,6 +173,8 @@ public final class BannerTopComponent extends TopComponent {
         groupsPanel.setBackground(new java.awt.Color(255, 255, 255));
         groupsPanel.setLayout(new java.awt.GridBagLayout());
 
+        buttonsPanel.setBackground(new java.awt.Color(255, 255, 255));
+        buttonsPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         buttonsPanel.setOpaque(false);
         buttonsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -181,6 +185,17 @@ public final class BannerTopComponent extends TopComponent {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         groupsPanel.add(buttonsPanel, gridBagConstraints);
+
+        bannerBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/branding/desktop/resources/bannerback.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(bannerBackground, org.openide.util.NbBundle.getMessage(BannerTopComponent.class, "BannerTopComponent.bannerBackground.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        groupsPanel.add(bannerBackground, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -194,6 +209,7 @@ public final class BannerTopComponent extends TopComponent {
         add(mainPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel bannerBackground;
     private javax.swing.JPanel buttonsPanel;
     private javax.swing.ButtonGroup groupsButtonGroup;
     private javax.swing.JPanel groupsPanel;
@@ -281,6 +297,7 @@ public final class BannerTopComponent extends TopComponent {
             setBorderPainted(false);
             setContentAreaFilled(false);
             setFocusPainted(false);
+            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
             if (UIUtils.isWindowsLookAndFeel()) {
