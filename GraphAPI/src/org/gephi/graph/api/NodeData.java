@@ -32,7 +32,9 @@ import org.gephi.graph.spi.LayoutData;
  */
 public interface NodeData extends Renderable {
 
-    public Node getNode();
+    public Node getRootNode();
+
+    public Node getNode(int viewId);
 
     public String getLabel();
 

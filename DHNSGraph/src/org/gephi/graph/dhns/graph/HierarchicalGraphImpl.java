@@ -219,6 +219,11 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
         return count;
     }
 
+    public int getDescendantCount(Node node) {
+        AbstractNode absNode = checkNode(node);
+        return absNode.size;
+    }
+
     public Node getParent(Node node) {
         AbstractNode absNode = checkNode(node);
         Node parent = null;

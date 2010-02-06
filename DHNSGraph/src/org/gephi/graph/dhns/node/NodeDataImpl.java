@@ -22,8 +22,8 @@ package org.gephi.graph.dhns.node;
 
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.graph.api.Attributes;
-import org.gephi.graph.spi.LayoutData;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.spi.LayoutData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.Model;
@@ -75,8 +75,12 @@ public class NodeDataImpl implements NodeData, GroupData {
         return nodes;
     }
 
-    public AbstractNode getNode() {
+    public AbstractNode getRootNode() {
         return nodes.get(0);
+    }
+
+    public Node getNode(int viewId) {
+        return nodes.get(viewId);
     }
 
     public LayoutData getLayoutData() {

@@ -20,7 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.bridge;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Node;
@@ -33,6 +37,8 @@ import org.gephi.visualization.api.objects.ModelClass;
 import org.gephi.visualization.hull.ConvexHull;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.compatibility.objects.ConvexHullModel;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
 
 /**
@@ -45,12 +51,13 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     private AbstractEngine engine;
     private HierarchicalGraph graph;
     private GraphIO graphIO;
+    private GraphController graphController;
 
     @Override
     public void initArchitecture() {
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         this.engine = VizController.getInstance().getEngine();
         this.graphIO = VizController.getInstance().getGraphIO();
+        this.graphController = Lookup.getDefault().lookup(GraphController.class);
         initEvents();
     }
 
@@ -59,21 +66,27 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     }
 
     public boolean canExpand() {
+        this.graph = graphController.getModel().getHierarchicalGraphVisible();
         ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
-        if (selectedNodeModels.length == 1) {
-            ModelImpl metaModel = selectedNodeModels[0];
-            //TODO check it is a metaNode
-            return true;
+        for (ModelImpl metaModelImpl : selectedNodeModels) {
+            NodeData nodeData = (NodeData) metaModelImpl.getObj();
+            Node node = nodeData.getNode(graph.getView().getViewId());
+            if (graph.getDescendantCount(node) > 0) {
+                return true;
+            }
         }
         return false;
     }
 
     public boolean canContract() {
-        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_POTATO);
-        if (selectedNodeModels.length == 1) {
-            ModelImpl metaModel = selectedNodeModels[0];
-            //TODO check it is a metaNode
-            return true;
+        this.graph = graphController.getModel().getHierarchicalGraphVisible();
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+        for (ModelImpl metaModelImpl : selectedNodeModels) {
+            NodeData nodeData = (NodeData) metaModelImpl.getObj();
+            Node node = nodeData.getNode(graph.getView().getViewId());
+            if (graph.getParent(node) != null) {
+                return true;
+            }
         }
         return false;
     }
@@ -87,66 +100,135 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     }
 
     public void expand() {
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        this.graph = graphController.getModel().getHierarchicalGraph();
+        this.graph = graphController.getModel().getHierarchicalGraphVisible();
         ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
-        if (selectedNodeModels.length == 1) {
-            ModelImpl metaModel = selectedNodeModels[0];
-            //TODO check it is a metaNode
-            NodeData node = (NodeData) metaModel.getObj();
-            expandPositioning(node);
-            graph.expand(node.getNode());
-        }
+        final ModelImpl[] models = Arrays.copyOf(selectedNodeModels, selectedNodeModels.length);
+        new Thread(new Runnable() {
+
+            public void run() {
+                try {
+                    for (ModelImpl metaModelImpl : models) {
+                        Node node = ((NodeData) metaModelImpl.getObj()).getNode(graph.getView().getViewId());
+                        if (graph.getDescendantCount(node) > 0) {
+                            expandPositioning(node);
+                            graph.expand(node);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    graph.readUnlockAll();
+                }
+            }
+        }, "Expand nodes").start();
     }
 
     public void contract() {
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        this.graph = graphController.getModel().getHierarchicalGraph();
-        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_POTATO);
-        if (selectedNodeModels.length == 1) {
-            ModelImpl metaModel = selectedNodeModels[0];
-            //TODO check it is a metaNode
-            ConvexHull hull = (ConvexHull) metaModel.getObj();
-            contractPositioning(hull);
-            graph.retract(hull.getMetaNode());
-        }
+        this.graph = graphController.getModel().getHierarchicalGraphVisible();
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+        final ModelImpl[] models = Arrays.copyOf(selectedNodeModels, selectedNodeModels.length);
+        new Thread(new Runnable() {
+
+            public void run() {
+                try {
+                    Set<Node> parents = new HashSet<Node>();
+                    for (ModelImpl metaModelImpl : models) {
+                        NodeData nodeData = (NodeData) metaModelImpl.getObj();
+                        Node node = nodeData.getNode(graph.getView().getViewId());
+                        Node nodeParent = graph.getParent(node);
+                        if (nodeParent != null) {
+                            parents.add(nodeParent);
+                        }
+                    }
+
+                    for (Node parent : parents) {
+                        GroupData gd = (GroupData) parent.getNodeData();
+                        if (gd.getHullModel() != null) {
+                            ConvexHull hull = ((ConvexHullModel) gd.getHullModel()).getObj();
+                            contractPositioning(hull);
+                        }
+                        graph.retract(parent);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    graph.readUnlockAll();
+                }
+            }
+        }, "Contract nodes").start();
     }
 
     public void group() {
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        this.graph = graphController.getModel().getHierarchicalGraph();
+        this.graph = graphController.getModel().getHierarchicalGraphVisible();
         ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
-        Node[] newGroup = new Node[selectedNodeModels.length];
+        final Node[] newGroup = new Node[selectedNodeModels.length];
         for (int i = 0; i < selectedNodeModels.length; i++) {
-            newGroup[i] = ((NodeData) selectedNodeModels[i].getObj()).getNode();
+            newGroup[i] = ((NodeData) selectedNodeModels[i].getObj()).getNode(graph.getView().getViewId());
         }
-        float centroidX = 0;
-        float centroidY = 0;
-        int len = 0;
-        Node group = graph.groupNodes(newGroup);
-        group.getNodeData().setLabel("Group");
-        group.getNodeData().setSize(10f);
-        for (Node child : newGroup) {
-            centroidX += child.getNodeData().x();
-            centroidY += child.getNodeData().y();
-            len++;
-        }
-        centroidX /= len;
-        centroidY /= len;
-        group.getNodeData().setX(centroidX);
-        group.getNodeData().setY(centroidY);
+        new Thread(new Runnable() {
+
+            public void run() {
+                try {
+                    float centroidX = 0;
+                    float centroidY = 0;
+                    int len = 0;
+                    float sizes = 0;
+                    float r = 0;
+                    float g = 0;
+                    float b = 0;
+                    Node group = graph.groupNodes(newGroup);
+                    group.getNodeData().setLabel("Group (" + newGroup.length + " nodes)");
+                    group.getNodeData().setSize(10f);
+                    for (Node child : newGroup) {
+                        centroidX += child.getNodeData().x();
+                        centroidY += child.getNodeData().y();
+                        len++;
+                        sizes += child.getNodeData().getSize() / 10f;
+                        r += child.getNodeData().r();
+                        g += child.getNodeData().g();
+                        b += child.getNodeData().b();
+                    }
+                    centroidX /= len;
+                    centroidY /= len;
+                    group.getNodeData().setSize(sizes);
+                    group.getNodeData().setColor(r / len, g / len, b / len);
+                    group.getNodeData().setX(centroidX);
+                    group.getNodeData().setY(centroidY);
+                } catch (Exception e) {
+                    graph.readUnlockAll();
+                    NotifyDescriptor.Message nd = new NotifyDescriptor.Message(e.getMessage());
+                    DialogDisplayer.getDefault().notifyLater(nd);
+                }
+            }
+        }, "Group nodes").start();
     }
 
     public void ungroup() {
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         this.graph = graphController.getModel().getHierarchicalGraph();
         ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
-        if (selectedNodeModels.length == 1) {
-            ModelImpl metaModel = selectedNodeModels[0];
-            //TODO check it is a metaNode
-            NodeData node = (NodeData) metaModel.getObj();
-            graph.ungroupNodes(node.getNode());
-        }
+        final ModelImpl[] models = Arrays.copyOf(selectedNodeModels, selectedNodeModels.length);
+        new Thread(new Runnable() {
+
+            public void run() {
+                try {
+                    Set<Node> parents = new HashSet<Node>();
+                    for (ModelImpl metaModelImpl : models) {
+                        NodeData nodeData = (NodeData) metaModelImpl.getObj();
+                        Node node = nodeData.getNode(graph.getView().getViewId());
+                        if (graph.getDescendantCount(node) > 0) {
+                            parents.add(node);
+                        } else if (graph.getParent(node) != null) {
+                            parents.add(graph.getParent(node));
+                        }
+                    }
+                    for (Node parent : parents) {
+                        graph.ungroupNodes(parent);
+                    }
+                } catch (Exception e) {
+                    graph.readUnlockAll();
+                    NotifyDescriptor.Message nd = new NotifyDescriptor.Message(e.getMessage());
+                    DialogDisplayer.getDefault().notifyLater(nd);
+                }
+            }
+        }, "Ungroup nodes").start();
     }
 
     public void mouseClick(ModelClass objClass, Model[] clickedObjects) {
@@ -171,8 +253,8 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
         }*/
     }
 
-    private void expandPositioning(NodeData nodeData) {
-        Node node = nodeData.getNode();
+    private void expandPositioning(Node node) {
+        NodeData nodeData = node.getNodeData();
         float centroidX = 0;
         float centroidY = 0;
         int len = 0;

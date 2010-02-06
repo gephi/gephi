@@ -50,6 +50,16 @@ public interface HierarchicalGraph extends Graph {
     public int getChildrenCount(Node node);
 
     /**
+     * Returns the number of descendant of <code>node</code>. Returns <code>zero</code> if <code>node</code> is a leaf.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
+     * @param node the node to be queried
+     * @return  the number of <code>node</code>'s descendant
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in the graph
+     */
+    public int getDescendantCount(Node node);
+
+    /**
      * Returns the parent of <code>node</code> or <code>null</code> if <code>node</code>'s parent is (virtual) root.
      * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
      * statement.

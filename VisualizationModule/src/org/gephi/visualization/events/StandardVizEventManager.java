@@ -98,7 +98,7 @@ public class StandardVizEventManager implements VizEventManager {
             if (modelArray.length > 0) {
                 Node[] nodeArray = new Node[modelArray.length];
                 for (int i = 0; i < modelArray.length; i++) {
-                    nodeArray[i] = ((NodeData) modelArray[i].getObj()).getNode();
+                    nodeArray[i] = ((NodeData) modelArray[i].getObj()).getRootNode();
                 }
                 nodeLeftHandler.dispatch(nodeArray);
             }
@@ -127,7 +127,7 @@ public class StandardVizEventManager implements VizEventManager {
             if (modelArray.length > 0) {
                 Node[] nodeArray = new Node[modelArray.length];
                 for (int i = 0; i < modelArray.length; i++) {
-                    nodeArray[i] = ((NodeData) modelArray[i].getObj()).getNode();
+                    nodeArray[i] = ((NodeData) modelArray[i].getObj()).getRootNode();
                 }
                 pressHandler.dispatch(nodeArray);
             }
@@ -166,7 +166,7 @@ public class StandardVizEventManager implements VizEventManager {
                 if (modelArray.length > 0) {
                     Node[] nodeArray = new Node[modelArray.length];
                     for (int i = 0; i < modelArray.length; i++) {
-                        nodeArray[i] = ((NodeData) modelArray[i].getObj()).getNode();
+                        nodeArray[i] = ((NodeData) modelArray[i].getObj()).getRootNode();
                     }
                     nodeHandler.dispatch(nodeArray);
                 }

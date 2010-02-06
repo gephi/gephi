@@ -100,7 +100,7 @@ public class DataSerializer {
 
     public Element writeNodeData(Document document, NodeDataImpl nodeData) {
         Element nodeDataE = document.createElement(ELEMENT_NODEDATA);
-        AbstractNode node = nodeData.getNode();
+        AbstractNode node = nodeData.getRootNode();
 
         nodeDataE.setAttribute("nodepre", String.valueOf(node.getPre()));
 
