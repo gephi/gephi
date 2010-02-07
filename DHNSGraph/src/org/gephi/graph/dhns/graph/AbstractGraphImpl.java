@@ -69,7 +69,7 @@ public abstract class AbstractGraphImpl {
                     break;
                 }
             }
-            System.err.println("WARNING: readLock() on the EDT - " + r.getStackTrace()[i].toString());
+            //System.err.println("WARNING: readLock() on the EDT - " + r.getStackTrace()[i].toString());
         }
         dhns.getReadLock().lock();
     }
@@ -96,7 +96,7 @@ public abstract class AbstractGraphImpl {
                     break;
                 }
             }
-            System.err.println("WARNING: readLock() on the EDT - " + r.getStackTrace()[i].toString());
+            //System.err.println("WARNING: readLock() on the EDT - " + r.getStackTrace()[i].toString());
         }
         //System.out.println(Thread.currentThread()+ "write lock");
         dhns.getWriteLock().lock();

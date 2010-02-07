@@ -221,8 +221,6 @@ public class RankingFactory {
 
     private static class NodeDegreeRanking extends AbstractRanking<Node, Integer> implements NodeRanking<Integer> {
 
-        protected Graph graph;
-
         public NodeDegreeRanking(Graph graph) {
             this.graph = graph;
         }
@@ -255,14 +253,12 @@ public class RankingFactory {
 
     private static class NodeInDegreeRanking extends AbstractRanking<Node, Integer> implements NodeRanking<Integer> {
 
-        private DirectedGraph graph;
-
         public NodeInDegreeRanking(DirectedGraph graph) {
             this.graph = graph;
         }
 
         public Integer getValue(Node element) {
-            return graph.getInDegree(element);
+            return ((DirectedGraph)graph).getInDegree(element);
         }
 
         public float normalize(Integer value) {
@@ -289,14 +285,12 @@ public class RankingFactory {
 
     private static class NodeOutDegreeRanking extends AbstractRanking<Node, Integer> implements NodeRanking<Integer> {
 
-        private DirectedGraph graph;
-
         public NodeOutDegreeRanking(DirectedGraph graph) {
             this.graph = graph;
         }
 
         public Integer getValue(Node element) {
-            return graph.getOutDegree(element);
+            return ((DirectedGraph)graph).getOutDegree(element);
         }
 
         public float normalize(Integer value) {
@@ -323,14 +317,12 @@ public class RankingFactory {
 
     private static class NodeChildrenCountRanking extends AbstractRanking<Node, Integer> implements NodeRanking<Integer> {
 
-        private HierarchicalGraph graph;
-
         public NodeChildrenCountRanking(HierarchicalGraph graph) {
             this.graph = graph;
         }
 
         public Integer getValue(Node element) {
-            return graph.getChildrenCount(element);
+            return ((HierarchicalGraph)graph).getChildrenCount(element);
         }
 
         public float normalize(Integer value) {

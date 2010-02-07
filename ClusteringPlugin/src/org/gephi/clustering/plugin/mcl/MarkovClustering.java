@@ -100,7 +100,7 @@ public class MarkovClustering implements Clusterer, LongTask {
         HashMap<Integer, Node> nodeMap = new HashMap<Integer, Node>();
         HashMap<Node, Integer> intMap = new HashMap<Node, Integer>();
 
-        Graph graph = graphModel.getGraph();
+        Graph graph = graphModel.getGraphVisible();
         graph.readLock();
 
         //Load matrix

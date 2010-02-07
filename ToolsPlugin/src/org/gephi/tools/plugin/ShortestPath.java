@@ -92,8 +92,8 @@ public class ShortestPath implements Tool {
                     Node targetNode = n;
                     GraphController gc = Lookup.getDefault().lookup(GraphController.class);
                     DirectedGraph graph = null;
-                    if (gc.getModel().getGraph() instanceof DirectedGraph) {
-                        graph = (DirectedGraph) gc.getModel().getGraph();
+                    if (gc.getModel().getGraphVisible() instanceof DirectedGraph) {
+                        graph = (DirectedGraph) gc.getModel().getGraphVisible();
                     } else {
                         return;
                     }

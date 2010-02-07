@@ -27,6 +27,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphViewImpl;
+import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantIterator;
@@ -148,29 +149,29 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     }
 
     public boolean isSelfLoop(Edge edge) {
-        checkEdge(edge);
-        return edge.getSource() == edge.getTarget();
+        AbstractEdge absEdge = checkEdge(edge);
+        return absEdge.getSource(view.getViewId()) == absEdge.getTarget(view.getViewId());
     }
 
     public boolean isAdjacent(Edge edge1, Edge edge2) {
         if (edge1 == edge2) {
             throw new IllegalArgumentException("Edges can't be the same");
         }
-        checkEdge(edge1);
-        checkEdge(edge2);
-        return edge1.getSource() == edge2.getSource()
-                || edge1.getSource() == edge2.getTarget()
-                || edge1.getTarget() == edge2.getSource()
-                || edge1.getTarget() == edge2.getTarget();
+        AbstractEdge absEdge1 = checkEdge(edge1);
+        AbstractEdge absEdge2 = checkEdge(edge2);
+        return absEdge1.getSource(view.getViewId()) == absEdge2.getSource(view.getViewId())
+                || absEdge1.getSource(view.getViewId()) == absEdge2.getTarget(view.getViewId())
+                || absEdge1.getTarget(view.getViewId()) == absEdge2.getSource(view.getViewId())
+                || absEdge1.getTarget(view.getViewId()) == absEdge2.getTarget(view.getViewId());
     }
 
     public Node getOpposite(Node node, Edge edge) {
         checkNode(node);
-        checkEdge(edge);
-        if (edge.getSource() == node) {
-            return edge.getTarget();
-        } else if (edge.getTarget() == node) {
-            return edge.getSource();
+        AbstractEdge absEdge = checkEdge(edge);
+        if (absEdge.getSource(view.getViewId()) == node) {
+            return absEdge.getTarget();
+        } else if (absEdge.getTarget(view.getViewId()) == node) {
+            return absEdge.getSource(view.getViewId());
         }
         throw new IllegalArgumentException("Node must be either source or target of the edge.");
     }

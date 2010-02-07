@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking.impl;
 
+import org.gephi.graph.api.Graph;
 import org.gephi.ranking.api.Ranking;
 
 /**
@@ -30,6 +31,7 @@ public abstract class AbstractRanking<Element, Type> implements Ranking<Element,
 
     protected Type minimum;
     protected Type maximum;
+    protected Graph graph;
 
     public Type getMinimumValue() {
         return minimum;
@@ -45,5 +47,13 @@ public abstract class AbstractRanking<Element, Type> implements Ranking<Element,
 
     public void setMaximumValue(Type value) {
         this.maximum = value;
+    }
+
+    public Graph getGraph() {
+        return graph;
+    }
+
+    public void setGraph(Graph graph) {
+        this.graph = graph;
     }
 }

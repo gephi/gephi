@@ -132,7 +132,7 @@ public class RankingModelImpl implements RankingModel, LookupListener {
 
     public EdgeRanking[] getEdgeRanking() {
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
-        Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
+        Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraphVisible();
         List<Ranking> rankingList = new ArrayList<Ranking>();
         for (AttributeColumn column : attributeController.getModel().getEdgeTable().getColumns()) {
             if (RankingFactory.isNumberColumn(column)) {
