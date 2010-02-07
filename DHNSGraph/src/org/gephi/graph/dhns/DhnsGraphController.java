@@ -46,18 +46,19 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = WorkspaceDuplicateProvider.class, position = 1000)})
 public class DhnsGraphController implements GraphController, WorkspaceDuplicateProvider {
 
+    private static final int EVENTBUS_BOUND = 30;
     //Common architecture
     protected IDGen iDGen;
     private Executor eventBus;
 
     public DhnsGraphController() {
         iDGen = new IDGen();
-        eventBus = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
+        eventBus = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(EVENTBUS_BOUND), new ThreadFactory() {
 
             public Thread newThread(Runnable r) {
                 return new Thread(r, "DHNS Event Bus");
             }
-        });
+        }, new ThreadPoolExecutor.DiscardOldestPolicy());
     }
 
     public Dhns newDhns(Workspace workspace) {
