@@ -41,7 +41,7 @@
               <Component id="labelColor" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
               <Component id="colorButton" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
               <Component id="labelIntensity" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
-              <Component id="intensitySpinner" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
+              <Component id="intensitySpinner" alignment="3" min="-2" max="-2" attributes="0"/>
               <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
           </Group>
           <Group type="103" alignment="0" groupAlignment="3" attributes="0">

@@ -110,7 +110,7 @@ public class Sizer implements Tool {
             }
 
             public Icon getIcon() {
-                return new ImageIcon(getClass().getResource("/org/gephi/tools/plugin/resources/painter.png"));
+                return new ImageIcon(getClass().getResource("/org/gephi/tools/plugin/resources/sizer.png"));
             }
 
             public String getDescription() {
