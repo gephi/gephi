@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+    <body>
+        This documents provides Gephi APIs documentation and gives details about
+        current status of each API. Each API is categorized by it's stability:
+        stable, <span class="unstable">under development</span>, <span class="deprecated">deprecated</span> or
+    <span class="friend">friend</span>.
+        <hr>
+        <p>
+        <h2>API Changes</h2>
+        <ul><li>(Feb 7 2010) Initial import, for 0.7alpha milestone. Half of
+                APIs are fully documented and the rest needs to be soon. Expose
+                only Core APIs, that plugins could need by now. Friend
+                packages exists, in particular between Plugin and PluginUI
+                modules but they are not shown here. Netbeans APIs documentation
+                dependencies are missing, thus see
+                <a href="http://bits.netbeans.org/dev/javadoc/index.html">Netbeans API Index</a>.
+                Due to early development status, most of APIs are still marked as
+                under development. Moreover APIs marked as stable are also suspected to
+                change, but with much less impact than ones marked as under development.</li></ul>
+    </p>
+    <hr>
+    <p>
+    <h2>API List</h2>
+    <ul><li><b>Attributes API</b> - Provides access to attributes values through an efficient column/row system.</li>
+        <li><span class="unstable"><b>Clustering API</b></span> - API/SPI for clustering algorithms (experimental).</li>
+        <li><span class="unstable"><b>Export API</b></span>  - Export API/SPI provides the infrastructure for exporting data to any support and define new exporters.</li>
+        <li><span class="unstable"><b>Filters API</b></span>  - API/SPI for filters, define and control current filtering.</li>
+        <li><b>Generator API</b> -  Generator API/SPI provides the way to create and execute graph generators.</li>
+        <li><b>Graph API</b> - API for accessing the graph.</li>
+        <li><b>Import API</b> - Import API/SPI provides the import workflow to import data form any support.</li>
+        <li><b>Layout API</b> - Layout API/SPI provides real-time layout algorithms execution.</li>
+        <li><b>LongTask API</b> - LongTask API provides utility features for long and asynchronous task execution.</li>
+        <li><span class="unstable"><b>Partition API</b></span>  - API for manipulating partition within data.</li>
+        <li><span class="unstable"><b>Preview API</b></span>  - API for building the graph preview structure.</li>
+        <li><b>Project API</b> - Project API/SPI for project and worskpaces manipulation.</li>
+        <li><span class="unstable"><b>Ranking API</b></span>  - API/SPI for ranking data values and create transformers.</li>
+        <li><b>Statistics API</b> - Statistics and Metrics API/SPI provides asynchronous algorithms execution and UI infrastructure.</li>
+        <li><span class="unstable"><b>Timeline API</b></span>  - Timeline API provides access to the timeline component.</li>
+        <li><b>Tools API</b> - Tool API/SPI defines interactive actions users can make with the visualization.</li>
+    </ul>
+</p>
+</body>
+</html>
