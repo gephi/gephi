@@ -36,11 +36,11 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = TransformerUI.class)
+@ServiceProvider(service = TransformerUI.class, position = 100)
 public class ColorTransformerUI implements TransformerUI {
 
     public Icon getIcon() {
-        return new ImageIcon(getClass().getResource("/org/gephi/ui/ranking/plugin/resourcescolor.png"));
+        return new ImageIcon(getClass().getResource("/org/gephi/ui/ranking/plugin/resources/color.png"));
     }
 
     public String getName() {

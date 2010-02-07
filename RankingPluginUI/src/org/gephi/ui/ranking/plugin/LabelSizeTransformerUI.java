@@ -36,7 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = TransformerUI.class)
+@ServiceProvider(service = TransformerUI.class, position = 400)
 public class LabelSizeTransformerUI implements TransformerUI {
 
     public Icon getIcon() {

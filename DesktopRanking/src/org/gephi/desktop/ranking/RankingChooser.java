@@ -338,7 +338,7 @@ public class RankingChooser extends javax.swing.JPanel {
         controlPanel.setOpaque(false);
         controlPanel.setLayout(new java.awt.GridBagLayout());
 
-        applyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/ranking/apply.gif"))); // NOI18N
+        applyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/ranking/resources/apply.gif"))); // NOI18N
         applyButton.setText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.applyButton.text")); // NOI18N
         applyButton.setToolTipText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.applyButton.toolTipText")); // NOI18N
         applyButton.setMargin(new java.awt.Insets(0, 14, 0, 14));
