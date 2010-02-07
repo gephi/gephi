@@ -126,39 +126,39 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
         try {
             properties.add(LayoutProperty.createProperty(
-                this, Float.class, "Optimal Distance", YIFANHU_CATEGORY,
-                "The natural length of the springs. Bigger values mean nodes will be farther apart.",
-                "getOptimalDistance", "setOptimalDistance"));
+                    this, Float.class, "Optimal Distance", YIFANHU_CATEGORY,
+                    "The natural length of the springs. Bigger values mean nodes will be farther apart.",
+                    "getOptimalDistance", "setOptimalDistance"));
             properties.add(LayoutProperty.createProperty(
-                this, Float.class, "Relative Strength", YIFANHU_CATEGORY,
-                "The relative strength between electrical force (repulsion) and spring force (attraction).",
-                "getRelativeStrength", "setRelativeStrength"));
+                    this, Float.class, "Relative Strength", YIFANHU_CATEGORY,
+                    "The relative strength between electrical force (repulsion) and spring force (attraction).",
+                    "getRelativeStrength", "setRelativeStrength"));
 
             properties.add(LayoutProperty.createProperty(
-                this, Float.class, "Initial Step size", YIFANHU_CATEGORY,
-                "The initial step size used in the integration phase. Set this value to a meaningful size compared to the optimal distance (10% is a good starting point).",
-                "getInitialStep", "setInitialStep"));
+                    this, Float.class, "Initial Step size", YIFANHU_CATEGORY,
+                    "The initial step size used in the integration phase. Set this value to a meaningful size compared to the optimal distance (10% is a good starting point).",
+                    "getInitialStep", "setInitialStep"));
             properties.add(LayoutProperty.createProperty(
-                this, Float.class, "Step ratio", YIFANHU_CATEGORY,
-                "The ratio used to update the step size across iterations.",
-                "getStepRatio", "setStepRatio"));
+                    this, Float.class, "Step ratio", YIFANHU_CATEGORY,
+                    "The ratio used to update the step size across iterations.",
+                    "getStepRatio", "setStepRatio"));
             properties.add(LayoutProperty.createProperty(
-                this, Boolean.class, "Adaptive Cooling", YIFANHU_CATEGORY,
-                "Controls the use of adaptive cooling. It is used help the layout algoritm to avoid energy local minima.",
-                "isAdaptiveCooling", "setAdaptiveCooling"));
+                    this, Boolean.class, "Adaptive Cooling", YIFANHU_CATEGORY,
+                    "Controls the use of adaptive cooling. It is used help the layout algoritm to avoid energy local minima.",
+                    "isAdaptiveCooling", "setAdaptiveCooling"));
             properties.add(LayoutProperty.createProperty(
-                this, Float.class, "Convergence Threshold", YIFANHU_CATEGORY,
-                "Relative energy convergence threshold. Smaller values mean more accuracy.",
-                "getConvergenceThreshold", "setConvergenceThreshold"));
+                    this, Float.class, "Convergence Threshold", YIFANHU_CATEGORY,
+                    "Relative energy convergence threshold. Smaller values mean more accuracy.",
+                    "getConvergenceThreshold", "setConvergenceThreshold"));
 
             properties.add(LayoutProperty.createProperty(
-                this, Integer.class, "Quadtree Max Level", BARNESHUT_CATEGORY,
-                "The maximun level to be used in the quadtree representation. Greater values mean more accuracy.",
-                "getQuadTreeMaxLevel", "setQuadTreeMaxLevel"));
+                    this, Integer.class, "Quadtree Max Level", BARNESHUT_CATEGORY,
+                    "The maximun level to be used in the quadtree representation. Greater values mean more accuracy.",
+                    "getQuadTreeMaxLevel", "setQuadTreeMaxLevel"));
             properties.add(LayoutProperty.createProperty(
-                this, Float.class, "Theta", BARNESHUT_CATEGORY,
-                "The theta parameter for Barnes-Hut opening criteria. Smaller values mean more accuracy.",
-                "getBarnesHutTheta", "setBarnesHutTheta"));
+                    this, Float.class, "Theta", BARNESHUT_CATEGORY,
+                    "The theta parameter for Barnes-Hut opening criteria. Smaller values mean more accuracy.",
+                    "getBarnesHutTheta", "setBarnesHutTheta"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -172,7 +172,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         }
         graph = graphModel.getHierarchicalGraphVisible();
         energy = Float.POSITIVE_INFINITY;
-        for (Node n : graph.getTopNodes()) {
+        for (Node n : graph.getNodes()) {
             NodeData data = n.getNodeData();
             data.setLayoutData(new ForceVector());
         }
@@ -182,13 +182,21 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
     }
 
     public void endAlgo() {
-        for (Node node : graph.getTopNodes()) {
+        for (Node node : graph.getNodes()) {
             NodeData data = node.getNodeData();
             data.setLayoutData(null);
         }
     }
 
     public void goAlgo() {
+        graph = graphModel.getHierarchicalGraphVisible();
+        Node[] nodes = graph.getNodes().toArray();
+        for (Node n : nodes) {
+            if (n.getNodeData().getLayoutData() == null || !(n.getNodeData().getLayoutData() instanceof ForceVector)) {
+                n.getNodeData().setLayoutData(new ForceVector());
+            }
+        }
+
         // Evaluates n^2 inter node forces using BarnesHut.
         QuadTree tree = QuadTree.buildTree(graph, getQuadTreeMaxLevel());
 
@@ -196,7 +204,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 //        double springEnergy = 0; ///////////////////////
         BarnesHut barnes = new BarnesHut(getNodeForce());
         barnes.setTheta(getBarnesHutTheta());
-        for (Node node : graph.getTopNodes()) {
+        for (Node node : nodes) {
             NodeData data = node.getNodeData();
             ForceVector layoutData = data.getLayoutData();
 
@@ -222,7 +230,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         energy0 = energy;
         energy = 0;
         double maxForce = 1;
-        for (Node n : graph.getTopNodes()) {
+        for (Node n : nodes) {
             NodeData data = n.getNodeData();
             ForceVector force = data.getLayoutData();
 
@@ -231,7 +239,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         }
 
         // Apply displacements on nodes.
-        for (Node n : graph.getTopNodes()) {
+        for (Node n : nodes) {
             NodeData data = n.getNodeData();
             ForceVector force = data.getLayoutData();
 
@@ -368,9 +376,9 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
         @Override
         public ForceVector calculateForce(Spatial node1, Spatial node2,
-                                          float distance) {
+                float distance) {
             ForceVector f = new ForceVector(node2.x() - node1.x(),
-                                            node2.y() - node1.y());
+                    node2.y() - node1.y());
             f.multiply(distance / optimalDistance);
             return f;
         }
@@ -400,9 +408,9 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
         @Override
         public ForceVector calculateForce(Spatial node1, Spatial node2,
-                                          float distance) {
+                float distance) {
             ForceVector f = new ForceVector(node2.x() - node1.x(),
-                                            node2.y() - node1.y());
+                    node2.y() - node1.y());
             float scale = -relativeStrength * optimalDistance * optimalDistance / (distance * distance);
             if (Float.isNaN(scale) || Float.isInfinite(scale)) {
                 scale = -1;

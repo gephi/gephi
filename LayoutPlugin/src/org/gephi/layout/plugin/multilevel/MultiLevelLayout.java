@@ -22,6 +22,7 @@ package org.gephi.layout.plugin.multilevel;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.SwingUtilities;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.Layout;
@@ -49,6 +50,9 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
     private int quadTreeMaxLevel;
     private float barnesHutTheta;
 
+    //Security
+    private int initedView;
+
     public MultiLevelLayout(LayoutBuilder layoutBuilder,
             CoarseningStrategy coarseningStrategy) {
         super(layoutBuilder);
@@ -59,6 +63,7 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
 
     public void initAlgo() {
         graph = graphModel.getHierarchicalGraphVisible();
+        initedView = graph.getView().getViewId();
         setConverged(false);
         level = 0;
 
@@ -93,7 +98,14 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
     }
 
     public void goAlgo() {
-        this.graph = graphModel.getHierarchicalGraphVisible();
+        HierarchicalGraph newGraph = graphModel.getHierarchicalGraphVisible();
+        if(newGraph.getView().getViewId()!=initedView) {
+            setConverged(true);
+            layout.endAlgo();
+            endAlgo();
+            return;
+        }
+        this.graph = newGraph;
         if (layout.canAlgo()) {
             layout.goAlgo();
         } else {

@@ -23,7 +23,6 @@ package org.gephi.layout.plugin.labelAdjust;
 import java.util.ArrayList;
 import java.util.List;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.plugin.ForceVectorNodeLayoutData;
@@ -54,11 +53,11 @@ public class LabelAdjust extends AbstractLayout implements Layout {
     public void goAlgo() {
         boolean somethingMoved = false;
         this.graph = graphModel.getGraphVisible();
-
         Node[] nodes = graph.getNodes().toArray();
+
         for (Node n : nodes) {
             ForceVectorNodeLayoutData layoutData = n.getNodeData().getLayoutData();
-            if (layoutData == null) {
+            if (layoutData == null || !(n.getNodeData().getLayoutData() instanceof ForceVectorNodeLayoutData)) {
                 layoutData = new ForceVectorNodeLayoutData();
                 n.getNodeData().setLayoutData(layoutData);
             }
