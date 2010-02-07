@@ -37,7 +37,7 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
     private GraphModel model;
     private ContextPieChart pieChart;
     private NumberFormat formatter;
-    private boolean showPie = false;
+    private boolean showPie = true;
 
     public ContextPanel() {
         initComponents();
@@ -50,6 +50,7 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
                 pieChart.setChartVisible(pieButton.isSelected());
             }
         });
+        pieChart.setChartVisible(pieButton.isSelected());
     }
 
     private void initDesign() {
@@ -144,7 +145,6 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         commandToolbar.setOpaque(false);
 
         pieButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/context/resources/pie.png"))); // NOI18N
-        pieButton.setSelected(true);
         pieButton.setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.pieButton.text")); // NOI18N
         pieButton.setFocusable(false);
         pieButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -164,7 +164,7 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -185,7 +185,7 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 0, 3);
+        gridBagConstraints.insets = new java.awt.Insets(7, 4, 0, 3);
         add(nodeLabel, gridBagConstraints);
 
         labelEdges.setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.labelEdges.text")); // NOI18N
@@ -203,7 +203,7 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(6, 4, 4, 3);
+        gridBagConstraints.insets = new java.awt.Insets(6, 4, 0, 3);
         add(edgeLabel, gridBagConstraints);
 
         graphTypeLabel.setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.graphTypeLabel.text")); // NOI18N
