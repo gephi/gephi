@@ -81,7 +81,6 @@ class ReportSelection implements Transferable {
         this.html = html;
         String newHTML = new String();
         String[] result = html.split("file:");
-        System.out.println(result.length);
         boolean first = true;
         for (int i = 0; i < result.length; i++) {
             if (result[i].contains("</IMG>")) {

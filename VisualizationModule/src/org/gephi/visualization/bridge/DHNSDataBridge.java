@@ -74,7 +74,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     }
 
     public void updateWorld() {
-        System.out.println("update world");
+        //System.out.println("update world");
         cacheMarker++;
 
         GraphModel graphModel = controller.getModel();

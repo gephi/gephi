@@ -23,7 +23,7 @@ public abstract class GLAbstractListener implements GLEventListener {
     protected GLAutoDrawable drawable;
     protected VizController vizController;
     public static final GLU glu = new GLU();
-    private static final boolean DEBUG = true;
+    private static boolean DEBUG = true;
     private long startTime = 0;
     protected float fps;
     protected float fpsAvg = 0;
@@ -254,6 +254,7 @@ public abstract class GLAbstractListener implements GLEventListener {
             reshape3DScene(drawable.getGL());
 
             if (DEBUG) {
+                DEBUG = false;
                 System.err.println("GL_VENDOR: " + gl.glGetString(GL.GL_VENDOR));
                 System.err.println("GL_RENDERER: " + gl.glGetString(GL.GL_RENDERER));
                 System.err.println("GL_VERSION: " + gl.glGetString(GL.GL_VERSION));

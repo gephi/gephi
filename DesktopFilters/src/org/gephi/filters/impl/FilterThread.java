@@ -91,8 +91,8 @@ public class FilterThread extends Thread {
         FilterProcessor processor = new FilterProcessor();
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
         Graph result = processor.process((AbstractQueryImpl) query, graphModel);
-        System.out.println("#Nodes: " + result.getNodeCount());
-        System.out.println("#Edges: " + result.getEdgeCount());
+//        System.out.println("#Nodes: " + result.getNodeCount());
+//        System.out.println("#Edges: " + result.getEdgeCount());
         if (running) {
             GraphView view = result.getView();
             graphModel.setVisibleView(view);
@@ -110,8 +110,8 @@ public class FilterThread extends Thread {
         FilterProcessor processor = new FilterProcessor();
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
         Graph result = processor.process((AbstractQueryImpl) query, graphModel);
-        System.out.println("#Nodes: " + result.getNodeCount());
-        System.out.println("#Edges: " + result.getEdgeCount());
+//        System.out.println("#Nodes: " + result.getNodeCount());
+//        System.out.println("#Edges: " + result.getEdgeCount());
         if (running) {
             VizController.getInstance().getVizModel().setAutoSelectNeighbor(false);
             VizController.getInstance().getSelectionManager().selectNodes(result.getNodes().toArray());
