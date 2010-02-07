@@ -30,7 +30,6 @@ import org.w3c.dom.Document;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = VectorialFileExporter.class)
 public class PDFExporter implements VectorialFileExporter, LongTask {
 
     private SVGExporter svgExporter;
