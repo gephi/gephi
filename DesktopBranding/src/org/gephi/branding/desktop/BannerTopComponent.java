@@ -307,19 +307,19 @@ public final class BannerTopComponent extends TopComponent {
                         ImageUtilities.icon2Image(icon), 6, 3)));
                 setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/vista-selected.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
-            } else if (UIUtils.isNimbus()) {
-                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/nimbus-enabled.png"),
-                        ImageUtilities.icon2Image(icon), 6, 3)));
-                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/nimbus-mousover.png"),
-                        ImageUtilities.icon2Image(icon), 6, 3)));
-                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/nimbus-selected.png"),
-                        ImageUtilities.icon2Image(icon), 6, 3)));
             } else if (UIUtils.isAquaLookAndFeel()) {
                 setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/aqua-enabled.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
                 setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/aqua-mousover.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
                 setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/aqua-selected.png"),
+                        ImageUtilities.icon2Image(icon), 6, 3)));
+            } else {
+                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/nimbus-enabled.png"),
+                        ImageUtilities.icon2Image(icon), 6, 3)));
+                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/nimbus-mousover.png"),
+                        ImageUtilities.icon2Image(icon), 6, 3)));
+                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/nimbus-selected.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
             }
         }
