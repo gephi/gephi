@@ -85,7 +85,16 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
 
     public void goAlgo() {
         this.graph = graphModel.getGraphVisible();
-        for (Node n : graph.getNodes()) {
+        Node[] nodes = graph.getNodes().toArray();
+        Edge[] edges = graph.getEdges().toArray();
+
+        for (Node n : nodes) {
+            if (n.getNodeData().getLayoutData() == null || !(n.getNodeData().getLayoutData() instanceof ForceVectorNodeLayoutData)) {
+                n.getNodeData().setLayoutData(new ForceVectorNodeLayoutData());
+            }
+        }
+
+        for (Node n : nodes) {
             ForceVectorNodeLayoutData layoutData = n.getNodeData().getLayoutData();
             layoutData.old_dx = layoutData.dx;
             layoutData.old_dy = layoutData.dy;
@@ -94,16 +103,16 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
         }
         // repulsion
         if (isAdjustSizes()) {
-            for (Node n1 : graph.getNodes()) {
-                for (Node n2 : graph.getNodes()) {
+            for (Node n1 : nodes) {
+                for (Node n2 : nodes) {
                     if (n1 != n2) {
                         ForceVectorUtils.fcBiRepulsor_noCollide(n1.getNodeData(), n2.getNodeData(), getRepulsionStrength() * (1 + graph.getDegree(n1)) * (1 + graph.getDegree(n2)));
                     }
                 }
             }
         } else {
-            for (Node n1 : graph.getNodes()) {
-                for (Node n2 : graph.getNodes()) {
+            for (Node n1 : nodes) {
+                for (Node n2 : nodes) {
                     if (n1 != n2) {
                         ForceVectorUtils.fcBiRepulsor(n1.getNodeData(), n2.getNodeData(), getRepulsionStrength() * (1 + graph.getDegree(n1)) * (1 + graph.getDegree(n2)));
                     }
@@ -113,7 +122,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
         // attraction
         if (isAdjustSizes()) {
             if (isOutboundAttractionDistribution()) {
-                for (Edge e : graph.getEdges()) {
+                for (Edge e : edges) {
                     Node nf = e.getSource();
                     Node nt = e.getTarget();
                     double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
@@ -121,7 +130,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                     ForceVectorUtils.fcBiAttractor_noCollide(nf.getNodeData(), nt.getNodeData(), bonus * getAttractionStrength() / (1 + graph.getDegree(nf)));
                 }
             } else {
-                for (Edge e : graph.getEdges()) {
+                for (Edge e : edges) {
                     Node nf = e.getSource();
                     Node nt = e.getTarget();
                     double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
@@ -131,7 +140,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
             }
         } else {
             if (isOutboundAttractionDistribution()) {
-                for (Edge e : graph.getEdges()) {
+                for (Edge e : edges) {
                     Node nf = e.getSource();
                     Node nt = e.getTarget();
                     double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
@@ -139,7 +148,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                     ForceVectorUtils.fcBiAttractor(nf.getNodeData(), nt.getNodeData(), bonus * getAttractionStrength() / (1 + graph.getDegree(nf)));
                 }
             } else {
-                for (Edge e : graph.getEdges()) {
+                for (Edge e : edges) {
                     Node nf = e.getSource();
                     Node nt = e.getTarget();
                     double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
@@ -149,7 +158,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
             }
         }
         // gravity
-        for (Node n : graph.getNodes()) {
+        for (Node n : nodes) {
 
             float nx = n.getNodeData().x();
             float ny = n.getNodeData().y();
@@ -161,20 +170,20 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
         }
         // speed
         if (isFreezeBalance()) {
-            for (Node n : graph.getNodes()) {
+            for (Node n : nodes) {
                 ForceVectorNodeLayoutData layoutData = n.getNodeData().getLayoutData();
                 layoutData.dx *= getSpeed() * 10f;
                 layoutData.dy *= getSpeed() * 10f;
             }
         } else {
-            for (Node n : graph.getNodes()) {
+            for (Node n : nodes) {
                 ForceVectorNodeLayoutData layoutData = n.getNodeData().getLayoutData();
                 layoutData.dx *= getSpeed();
                 layoutData.dy *= getSpeed();
             }
         }
         // apply forces
-        for (Node n : graph.getNodes()) {
+        for (Node n : nodes) {
             NodeData nData = n.getNodeData();
             ForceVectorNodeLayoutData nLayout = nData.getLayoutData();
             if (!nData.isFixed()) {
