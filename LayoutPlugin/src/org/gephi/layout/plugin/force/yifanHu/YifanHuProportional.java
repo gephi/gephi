@@ -70,7 +70,7 @@ public class YifanHuProportional implements LayoutBuilder {
         }
 
         public int getSpeedRank() {
-            return 3;
+            return 4;
         }
     }
 }
