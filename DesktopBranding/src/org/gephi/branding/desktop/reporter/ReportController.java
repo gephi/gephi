@@ -100,11 +100,11 @@ public class ReportController {
         logMemoryInfo(report);
         logJavaInfo(report);
         logGLInfo(report);
-        logModules(report);
+        //logModules(report);
         return buildXMLDocument(report);
     }
 
-    private boolean sendDocument(Document document) {
+    public boolean sendDocument(Document document) {
         try {
             //Get String from Document
             TransformerFactory factory = TransformerFactory.newInstance();
@@ -115,8 +115,7 @@ public class ReportController {
             StreamResult result = new StreamResult(sw);
             DOMSource source = new DOMSource(document);
             transformer.transform(source, result);
-            String xmlString = sw.toString();
-            System.out.println(xmlString);
+            String xmlString = "report=" + sw.toString();
 
             URL url = new URL(POST_URL);
             URLConnection con = url.openConnection();
@@ -129,7 +128,8 @@ public class ReportController {
             con.setDefaultUseCaches(false);
 
             // tell the web server what we are sending
-            con.setRequestProperty("Content-Type", "text/xml");
+            //con.setRequestProperty("Content-Type", "text/xml");
+            //con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
             OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
             writer.write(xmlString);
@@ -148,7 +148,7 @@ public class ReportController {
             }
 
             String serverResult = buf.toString();
-            //System.err.println("\nResponse from server after POST:\n" + result);
+            System.err.println("\nResponse from server:\n" + serverResult);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
