@@ -18,17 +18,28 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datastructure.avl.param;
+package org.gephi.utils.collection.avl;
 
 /**
- * Interface for specializing the <code>getNumber()</code> method. The tree key got from the <code>Item</code>
- * can vary.
+ * Node of the {@link ParamAVLTree}.
  * 
  * @author Mathieu Bastian
  * @param <Item> The type of Object in the tree
- * @see ParamAVLTree
  */
-public interface AVLItemAccessor<Item> {
+public class ParamAVLNode<Item> {
 
-    public int getNumber(Item item);
+    ParamAVLNode parent;
+    ParamAVLNode left;
+    ParamAVLNode right;
+    int balance;
+    Item item;
+
+    public ParamAVLNode(Item item) {
+        this.item = item;
+    }
+
+    public ParamAVLNode(Item item, ParamAVLNode parent) {
+        this.item = item;
+        this.parent = parent;
+    }
 }

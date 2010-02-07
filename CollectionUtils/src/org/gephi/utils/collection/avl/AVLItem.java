@@ -18,14 +18,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datastructure.avl;
+package org.gephi.utils.collection.avl;
 
 /**
- * Interface without methods, specify an iterator can be reset and used more than once.
- * <p>
- * Iterators implementing this interface possess a <code>setNode()</code> or <code>reset()</code> method. 
+ * Interface for {@link SimpleAVLTree} items. The <code>getNumber</code> must return a unique key for the
+ * tree.
  * 
  * @author Mathieu Bastian
  */
-public interface ResetableIterator {
+public interface AVLItem {
+
+    public int getNumber();
 }

@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
-import org.gephi.datastructure.avl.param.AVLItemAccessor;
-import org.gephi.datastructure.avl.param.ParamAVLTree;
-import org.gephi.datastructure.avl.simple.AVLItem;
+import org.gephi.utils.collection.avl.AVLItemAccessor;
+import org.gephi.utils.collection.avl.ParamAVLTree;
+import org.gephi.utils.collection.avl.AVLItem;
 import org.gephi.visualization.api.ModelImpl;
 
 /**

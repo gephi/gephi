@@ -3,7 +3,7 @@
     <type>org.netbeans.modules.apisupport.project</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
-            <code-name-base>org.gephi.datastructure</code-name-base>
+            <code-name-base>org.gephi.utils.collection</code-name-base>
             <suite-component/>
             <module-dependencies/>
             <public-packages>
@@ -13,9 +13,7 @@
                 <package>com.google.common.collect</package>
                 <package>gnu.trove</package>
                 <package>gnu.trove.decorator</package>
-                <package>org.gephi.datastructure.avl</package>
-                <package>org.gephi.datastructure.avl.param</package>
-                <package>org.gephi.datastructure.avl.simple</package>
+                <package>org.gephi.utils.collection.avl</package>
             </public-packages>
             <class-path-extension>
                 <runtime-relative-path>ext/trove-2.1.0.jar</runtime-relative-path>

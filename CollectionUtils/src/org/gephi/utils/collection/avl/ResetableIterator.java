@@ -18,28 +18,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datastructure.avl.param;
+package org.gephi.utils.collection.avl;
 
 /**
- * Node of the {@link ParamAVLTree}.
+ * Interface without methods, specify an iterator can be reset and used more than once.
+ * <p>
+ * Iterators implementing this interface possess a <code>setNode()</code> or <code>reset()</code> method. 
  * 
  * @author Mathieu Bastian
- * @param <Item> The type of Object in the tree
  */
-public class ParamAVLNode<Item> {
-
-    ParamAVLNode parent;
-    ParamAVLNode left;
-    ParamAVLNode right;
-    int balance;
-    Item item;
-
-    public ParamAVLNode(Item item) {
-        this.item = item;
-    }
-
-    public ParamAVLNode(Item item, ParamAVLNode parent) {
-        this.item = item;
-        this.parent = parent;
-    }
+public interface ResetableIterator {
 }

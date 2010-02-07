@@ -18,15 +18,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datastructure.avl.simple;
+package org.gephi.utils.collection.avl;
 
 /**
- * Interface for {@link SimpleAVLTree} items. The <code>getNumber</code> must return a unique key for the
- * tree.
+ * Interface for specializing the <code>getNumber()</code> method. The tree key got from the <code>Item</code>
+ * can vary.
  * 
  * @author Mathieu Bastian
+ * @param <Item> The type of Object in the tree
+ * @see ParamAVLTree
  */
-public interface AVLItem {
+public interface AVLItemAccessor<Item> {
 
-    public int getNumber();
+    public int getNumber(Item item);
 }

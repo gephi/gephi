@@ -1,4 +1,4 @@
-package org.gephi.datastructure.avl.param;
+package org.gephi.utils.collection.avl;
 
 import java.lang.reflect.Array;
 import java.util.Iterator;

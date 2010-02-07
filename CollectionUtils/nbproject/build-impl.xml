@@ -3,7 +3,7 @@
 *** GENERATED FROM project.xml - DO NOT EDIT  ***
 ***         EDIT ../build.xml INSTEAD         ***
 -->
-<project name="org.gephi.datastructure-impl" basedir="..">
+<project name="org.gephi.utils.collection-impl" basedir="..">
     <fail message="Please build using Ant 1.7.1 or higher.">
         <condition>
             <not>

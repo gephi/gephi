@@ -22,9 +22,9 @@ package org.gephi.visualization.api;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
-import org.gephi.datastructure.avl.param.AVLItemAccessor;
-import org.gephi.datastructure.avl.param.ParamAVLTree;
-import org.gephi.datastructure.avl.simple.AVLItem;
+import org.gephi.utils.collection.avl.AVLItemAccessor;
+import org.gephi.utils.collection.avl.ParamAVLTree;
+import org.gephi.utils.collection.avl.AVLItem;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.VizModel;

@@ -20,8 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.hull;
 
-import org.gephi.datastructure.avl.param.AVLItemAccessor;
-import org.gephi.datastructure.avl.param.ParamAVLTree;
+import org.gephi.utils.collection.avl.AVLItemAccessor;
+import org.gephi.utils.collection.avl.ParamAVLTree;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;

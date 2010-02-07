@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.utils.avl;
 
 import java.util.Iterator;
-import org.gephi.datastructure.avl.ResetableIterator;
+import org.gephi.utils.collection.avl.ResetableIterator;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 

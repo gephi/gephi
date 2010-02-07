@@ -21,8 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.utils.avl;
 
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
-import org.gephi.datastructure.avl.param.AVLItemAccessor;
-import org.gephi.datastructure.avl.param.ParamAVLTree;
+import org.gephi.utils.collection.avl.AVLItemAccessor;
+import org.gephi.utils.collection.avl.ParamAVLTree;
 import org.gephi.graph.dhns.node.AbstractNode;
 
 /**

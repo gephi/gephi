@@ -28,7 +28,7 @@ import java.util.Map.Entry;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.gephi.datastructure.avl.param.ParamAVLIterator;
+import org.gephi.utils.collection.avl.ParamAVLIterator;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphFactoryImpl;
 import org.gephi.graph.dhns.core.GraphStructure;

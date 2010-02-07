@@ -23,7 +23,7 @@ package org.gephi.graph.dhns.core;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.gephi.datastructure.avl.param.ParamAVLIterator;
+import org.gephi.utils.collection.avl.ParamAVLIterator;
 import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.graph.HierarchicalGraphImpl;

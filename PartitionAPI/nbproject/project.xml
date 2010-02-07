@@ -15,14 +15,6 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.gephi.datastructure</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.gephi.graph.api</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -40,6 +32,14 @@
                 </dependency>
                 <dependency>
                     <code-name-base>org.gephi.ui.utils</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>0.7</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.gephi.utils.collection</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>

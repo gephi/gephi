@@ -1,7 +1,7 @@
-package org.gephi.datastructure.avl.simple;
+package org.gephi.utils.collection.avl;
 
 import java.util.Iterator;
-import org.gephi.datastructure.avl.ResetableIterator;
+import org.gephi.utils.collection.avl.ResetableIterator;
 
 /**
  * Simple AVL Tree storing items of {@link AVLItem} class. It uses the <code>getNumber()</code> method to

@@ -22,8 +22,8 @@ package org.gephi.tools.plugin;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import org.gephi.datastructure.avl.param.AVLItemAccessor;
-import org.gephi.datastructure.avl.param.ParamAVLTree;
+import org.gephi.utils.collection.avl.AVLItemAccessor;
+import org.gephi.utils.collection.avl.ParamAVLTree;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;

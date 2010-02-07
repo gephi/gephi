@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.node;
 
-import org.gephi.datastructure.avl.simple.AVLItem;
+import org.gephi.utils.collection.avl.AVLItem;
 import org.gephi.graph.api.Group;
 import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.Node;

@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
-import org.gephi.datastructure.avl.param.ParamAVLIterator;
+import org.gephi.utils.collection.avl.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.HierarchicalDirectedGraph;

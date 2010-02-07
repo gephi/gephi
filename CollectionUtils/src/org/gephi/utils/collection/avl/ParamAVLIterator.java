@@ -18,10 +18,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datastructure.avl.param;
+package org.gephi.utils.collection.avl;
 
 import java.util.Iterator;
-import org.gephi.datastructure.avl.ResetableIterator;
+import org.gephi.utils.collection.avl.ResetableIterator;
 
 /**
  * Iterator for the {@link ParamAVLTree}. Return items in an ascending order.
