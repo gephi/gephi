@@ -32,6 +32,8 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphSettings;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.jdesktop.swingx.JXHyperlink;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -50,22 +52,6 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
     }
 
     private void initEvents() {
-        interButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                GraphModel model = Lookup.getDefault().lookup(GraphController.class).getModel();
-                model.settings().putClientProperty(GraphSettings.INTER_CLUSTER_EDGES, interButton.isSelected());
-            }
-        });
-
-        intraButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                GraphModel model = Lookup.getDefault().lookup(GraphController.class).getModel();
-                model.settings().putClientProperty(GraphSettings.INTRA_CLUSTER_EDGES, intraButton.isSelected());
-            }
-        });
-
         autoMetaEdgeButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -87,6 +73,26 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
                 }
             }
         });
+
+        metaEdgesSettings.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                GraphModel model = Lookup.getDefault().lookup(GraphController.class).getModel();
+                GraphSettings settings = model.settings();
+                MetaEdgesSettingsPanel pnl = new MetaEdgesSettingsPanel();
+                pnl.setAutoEdgesEnabled((Boolean) settings.getClientProperty(GraphSettings.AUTO_META_EDGES));
+                pnl.setSumBuilding(settings.getClientProperty(GraphSettings.METAEDGE_BUILDER).equals("sum"));
+                pnl.setMinimum((Float) settings.getClientProperty(GraphSettings.METAEDGE_BUILDER_MIN));
+                pnl.setMaximum((Float) settings.getClientProperty(GraphSettings.METAEDGE_BUILDER_MAX));
+                DialogDescriptor dd = new DialogDescriptor(pnl, NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.metaEdgesSettings.title"));
+                if (DialogDisplayer.getDefault().notify(dd) == DialogDescriptor.OK_OPTION) {
+                    settings.putClientProperty(GraphSettings.AUTO_META_EDGES, pnl.isAutoEdgesEnabled());
+                    settings.putClientProperty(GraphSettings.METAEDGE_BUILDER, pnl.isSumBuilding() ? "sum" : "average");
+                    settings.putClientProperty(GraphSettings.METAEDGE_BUILDER_MIN, pnl.getMinimum());
+                    settings.putClientProperty(GraphSettings.METAEDGE_BUILDER_MAX, pnl.getMaximum());
+                }
+            }
+        });
     }
 
     public void setup() {
@@ -96,8 +102,6 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
 
         //Init status
         GraphSettings settings = model.settings();
-        interButton.setSelected((Boolean) settings.getClientProperty(GraphSettings.INTER_CLUSTER_EDGES));
-        intraButton.setSelected((Boolean) settings.getClientProperty(GraphSettings.INTRA_CLUSTER_EDGES));
         autoMetaEdgeButton.setSelected((Boolean) settings.getClientProperty(GraphSettings.AUTO_META_EDGES));
 
         //Stats
@@ -164,19 +168,13 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
         heightLabel = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jPanel1 = new javax.swing.JPanel();
-        labelIntra = new javax.swing.JLabel();
-        labelInter = new javax.swing.JLabel();
-        labelAutoMetaEdge = new javax.swing.JTextArea();
-        jToolBar2 = new javax.swing.JToolBar();
-        intraButton = new javax.swing.JToggleButton();
-        jToolBar3 = new javax.swing.JToolBar();
-        interButton = new javax.swing.JToggleButton();
+        jLabel1 = new javax.swing.JLabel();
         jToolBar4 = new javax.swing.JToolBar();
         autoMetaEdgeButton = new javax.swing.JToggleButton();
+        metaEdgesSettings = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
         labelView = new javax.swing.JLabel();
         levelViewPanel = new javax.swing.JPanel();
-        jSeparator3 = new javax.swing.JSeparator();
 
         setPreferredSize(new java.awt.Dimension(214, 300));
 
@@ -194,71 +192,11 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
 
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
-        labelIntra.setText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.labelIntra.text")); // NOI18N
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.jLabel1.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weighty = 1.0;
-        jPanel1.add(labelIntra, gridBagConstraints);
-
-        labelInter.setText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.labelInter.text")); // NOI18N
-        labelInter.setMinimumSize(new java.awt.Dimension(180, 14));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weighty = 1.0;
-        jPanel1.add(labelInter, gridBagConstraints);
-
-        labelAutoMetaEdge.setColumns(20);
-        labelAutoMetaEdge.setEditable(false);
-        labelAutoMetaEdge.setFont(new java.awt.Font("Tahoma", 0, 11));
-        labelAutoMetaEdge.setLineWrap(true);
-        labelAutoMetaEdge.setRows(2);
-        labelAutoMetaEdge.setText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.labelAutoMetaEdge.text")); // NOI18N
-        labelAutoMetaEdge.setWrapStyleWord(true);
-        labelAutoMetaEdge.setBorder(null);
-        labelAutoMetaEdge.setOpaque(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        jPanel1.add(labelAutoMetaEdge, gridBagConstraints);
-
-        jToolBar2.setFloatable(false);
-        jToolBar2.setRollover(true);
-
-        intraButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/hierarchy/resources/on.png"))); // NOI18N
-        intraButton.setText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.intraButton.text")); // NOI18N
-        intraButton.setFocusable(false);
-        intraButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar2.add(intraButton);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        jPanel1.add(jToolBar2, gridBagConstraints);
-
-        jToolBar3.setFloatable(false);
-        jToolBar3.setRollover(true);
-
-        interButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/hierarchy/resources/on.png"))); // NOI18N
-        interButton.setText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.interButton.text")); // NOI18N
-        interButton.setFocusable(false);
-        interButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar3.add(interButton);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        jPanel1.add(jToolBar3, gridBagConstraints);
+        jPanel1.add(jLabel1, gridBagConstraints);
 
         jToolBar4.setFloatable(false);
         jToolBar4.setRollover(true);
@@ -269,14 +207,20 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
         autoMetaEdgeButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar4.add(autoMetaEdgeButton);
 
+        metaEdgesSettings.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/hierarchy/resources/gear.png"))); // NOI18N
+        metaEdgesSettings.setText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.metaEdgesSettings.text")); // NOI18N
+        metaEdgesSettings.setFocusable(false);
+        metaEdgesSettings.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        metaEdgesSettings.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar4.add(metaEdgesSettings);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
         jPanel1.add(jToolBar4, gridBagConstraints);
 
-        labelView.setFont(new java.awt.Font("Tahoma", 1, 11));
+        labelView.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         labelView.setText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.labelView.text")); // NOI18N
 
         levelViewPanel.setLayout(new java.awt.GridLayout(1, 0));
@@ -294,11 +238,11 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
                 .addContainerGap(132, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 198, Short.MAX_VALUE)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -312,10 +256,6 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
                 .addGap(20, 20, 20)
                 .addComponent(levelViewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jSeparator3, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
-                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -328,36 +268,28 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 5, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(labelView)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(levelViewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(148, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton autoMetaEdgeButton;
     private javax.swing.JLabel heightLabel;
-    private javax.swing.JToggleButton interButton;
-    private javax.swing.JToggleButton intraButton;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JToolBar jToolBar2;
-    private javax.swing.JToolBar jToolBar3;
     private javax.swing.JToolBar jToolBar4;
-    private javax.swing.JTextArea labelAutoMetaEdge;
     private javax.swing.JLabel labelHeight;
-    private javax.swing.JLabel labelInter;
-    private javax.swing.JLabel labelIntra;
     private javax.swing.JLabel labelView;
     private javax.swing.JPanel levelViewPanel;
+    private javax.swing.JButton metaEdgesSettings;
     private javax.swing.JLabel showTreeLabel;
     // End of variables declaration//GEN-END:variables
 }

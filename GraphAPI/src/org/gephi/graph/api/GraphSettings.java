@@ -34,8 +34,6 @@ public interface GraphSettings {
      public static final String METAEDGE_BUILDER_MIN = "metaEdgeBuilderMinimum";
      public static final String METAEDGE_BUILDER_MAX = "metaEdgeBuilderLimit";
      public static final String METAEDGE_BUILDER_NONDEEP_DIVISOR = "metaEdgeBuilderNonDeepDivisor";
-     public static final String INTER_CLUSTER_EDGES = "interClusterEdges";
-     public static final String INTRA_CLUSTER_EDGES = "intraClusterEdges";
 
      public void putClientProperty(String key, Object value);
 

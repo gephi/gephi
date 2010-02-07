@@ -96,13 +96,21 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         public JPanel getPanel(Filter filter) {
             final DynamicRangeFilter dynamicRangeFilter = (DynamicRangeFilter) filter;
             JPanel panel = new JPanel();
-            JButton button = new JButton("Open Timeline");
+            final TopComponent topComponent = WindowManager.getDefault().findTopComponent("TimelineTopComponent");
+            final JButton button = new JButton(topComponent.isOpened() ? "Close Timeline" : "Open Timeline");
             button.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    TopComponent topComponent = WindowManager.getDefault().findTopComponent("TimelineTopComponent");
-                    topComponent.open();
-                    topComponent.requestActive();
+
+                    if (!topComponent.isOpened()) {
+                        topComponent.open();
+                        topComponent.requestActive();
+                        button.setText("Close Timeline");
+                    } else {
+                        topComponent.close();
+                        button.setText("Open Timeline");
+                    }
+
                     //topComponent.close();
                     dynamicRangeFilter.refreshRange();
                     TimelineController timelineController = Lookup.getDefault().lookup(TimelineController.class);
