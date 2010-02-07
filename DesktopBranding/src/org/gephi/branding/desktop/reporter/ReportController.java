@@ -26,12 +26,16 @@ import java.awt.Toolkit;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.OperatingSystemMXBean;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import javax.xml.parsers.DocumentBuilder;
@@ -57,7 +61,7 @@ import org.w3c.dom.Document;
  */
 public class ReportController {
 
-    private static final String POST_URL = "";
+    private static final String POST_URL = "http://gephi.org/crashreporter/report.php";
 
     public void sendReport(final Report report) {
         Thread thread = new Thread(new Runnable() {
@@ -114,7 +118,7 @@ public class ReportController {
             String xmlString = sw.toString();
             System.out.println(xmlString);
 
-            /*URL url = new URL(POST_URL);
+            URL url = new URL(POST_URL);
             URLConnection con = url.openConnection();
 
             // specify that we will send output and accept input
@@ -140,11 +144,11 @@ public class ReportController {
             int num;
 
             while (-1 != (num = reader.read(cbuf))) {
-            buf.append(cbuf, 0, num);
+                buf.append(cbuf, 0, num);
             }
 
             String serverResult = buf.toString();
-            System.err.println("\nResponse from server after POST:\n" + result);*/
+            //System.err.println("\nResponse from server after POST:\n" + result);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
