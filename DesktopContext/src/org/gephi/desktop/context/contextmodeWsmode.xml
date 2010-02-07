@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mode version="2.3">
-    <name unique="filtersmode" />
+    <name unique="contextmode" />
   <kind type="editor" />
   <state type="joined" />
   <constraints>
-    <path orientation="horizontal" number="2" weight="0.1242672919109027"/>
-    <path orientation="vertical" number="1" weight="0.8974358974358975"/>
+    <path orientation="horizontal" number="2" weight="0.14302461899179367"/>
+    <path orientation="vertical" number="0" weight="0.09829059829059829"/>
   </constraints>
   <bounds x="0" y="0" width="0" height="0" />
   <frame state="0"/>
-    <active-tc  id="FiltersTopComponent" />
+    <active-tc  id="ContextTopComponent" />
     <empty-behavior permanent="false"/>
 </mode>

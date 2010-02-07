@@ -148,6 +148,7 @@
                 <file name="PartitionTopComponent.wstcgrp" url="PartitionTopComponent.wstcgrp"/>
                 <file name="HierarchyTopComponent.wstcgrp" url="HierarchyTopComponent.wstcgrp"/>
                 <file name="ClusteringTopComponent.wstcgrp" url="ClusteringTopComponent.wstcgrp"/>
+                <file name="ContextTopComponent.wstcgrp" url="ContextTopComponent.wstcgrp"/>
             </folder>
             <file name="PreviewGroup.wsgrp" url="PreviewGroup.wsgrp"/>
             <folder name="PreviewGroup">

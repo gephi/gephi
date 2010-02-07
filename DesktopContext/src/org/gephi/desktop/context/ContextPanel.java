@@ -9,13 +9,13 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
-import java.util.concurrent.ExecutorService;
 import javax.swing.SwingUtilities;
-import javax.swing.text.NumberFormatter;
+import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphEvent;
 import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.UndirectedGraph;
 
 /**
  *
@@ -23,10 +23,21 @@ import org.gephi.graph.api.GraphModel;
  */
 public class ContextPanel extends javax.swing.JPanel implements GraphListener {
 
+    private enum GraphType {
+
+        DIRECTED("Directed Graph"),
+        UNDIRECTED("Undirected Graph"),
+        MIXED("Mixed Graph");
+        protected final String type;
+
+        GraphType(String type) {
+            this.type = type;
+        }
+    }
     private GraphModel model;
     private ContextPieChart pieChart;
     private NumberFormat formatter;
-    private boolean showPie = true;
+    private boolean showPie = false;
 
     public ContextPanel() {
         initComponents();
@@ -71,6 +82,7 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         final int nodesVisible = visibleGraph.getNodeCount();
         final int edgesFull = fullGraph.getEdgeCount();
         final int edgesVisible = visibleGraph.getEdgeCount();
+        final GraphType graphType = visibleGraph instanceof DirectedGraph ? GraphType.DIRECTED : visibleGraph instanceof UndirectedGraph ? GraphType.UNDIRECTED : GraphType.MIXED;
         fullGraph.readUnlock();
         visibleGraph.readUnlock();
         SwingUtilities.invokeLater(new Runnable() {
@@ -80,6 +92,7 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
                 String edgePerc = edgesFull > 0 ? " (" + formatter.format(edgesVisible / (double) edgesFull) + ")" : "";
                 nodeLabel.setText(String.valueOf(nodesVisible) + nodePerc);
                 edgeLabel.setText(String.valueOf(edgesVisible) + edgePerc);
+                graphTypeLabel.setText(graphType.type);
                 double percentage = 0.5 * nodesVisible / (double) nodesFull + 0.5 * edgesVisible / (double) edgesFull;
                 pieChart.refreshChart(percentage);
             }
@@ -98,6 +111,7 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         if (!enable) {
             nodeLabel.setText("NaN");
             edgeLabel.setText("NaN");
+            graphTypeLabel.setText("");
         }
         pieButton.setEnabled(enable);
         piePanel.setVisible(showPie);
@@ -120,6 +134,7 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         nodeLabel = new javax.swing.JLabel();
         labelEdges = new javax.swing.JLabel();
         edgeLabel = new javax.swing.JLabel();
+        graphTypeLabel = new javax.swing.JLabel();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -139,15 +154,16 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.gridheight = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.weighty = 1.0;
         add(commandToolbar, gridBagConstraints);
 
         piePanel.setOpaque(false);
         piePanel.setLayout(new java.awt.BorderLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
@@ -158,15 +174,17 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 0, 5);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(7, 7, 0, 5);
         add(labelNodes, gridBagConstraints);
 
         nodeLabel.setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.nodeLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(4, 4, 0, 3);
         add(nodeLabel, gridBagConstraints);
 
@@ -175,20 +193,32 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 4, 4, 5);
+        gridBagConstraints.insets = new java.awt.Insets(6, 7, 0, 5);
         add(labelEdges, gridBagConstraints);
 
         edgeLabel.setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.edgeLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(6, 4, 4, 3);
         add(edgeLabel, gridBagConstraints);
+
+        graphTypeLabel.setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.graphTypeLabel.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 7, 5, 5);
+        add(graphTypeLabel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToolBar commandToolbar;
     private javax.swing.JLabel edgeLabel;
+    private javax.swing.JLabel graphTypeLabel;
     private javax.swing.JLabel labelEdges;
     private javax.swing.JLabel labelNodes;
     private javax.swing.JLabel nodeLabel;

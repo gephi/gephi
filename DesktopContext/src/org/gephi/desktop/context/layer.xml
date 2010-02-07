@@ -22,9 +22,10 @@
             <file name="ContextTopComponent.settings" url="ContextTopComponentSettings.xml"/>
         </folder>
         <folder name="Modes">
-            <folder name="filtersmode">
+            <folder name="contextmode">
                 <file name="ContextTopComponent.wstcref" url="ContextTopComponentWstcref.xml"/>
             </folder>
+             <file name="contextmode.wsmode" url="contextmodeWsmode.xml"/>
         </folder>
     </folder>
 </filesystem>

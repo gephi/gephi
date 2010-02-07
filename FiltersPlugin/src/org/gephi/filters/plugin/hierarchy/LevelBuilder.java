@@ -23,7 +23,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = FilterBuilder.class)
+//@ServiceProvider(service = FilterBuilder.class)
 public class LevelBuilder implements FilterBuilder {
 
     public Category getCategory() {

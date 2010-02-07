@@ -4,12 +4,15 @@
  */
 package org.gephi.desktop.context;
 
+import java.awt.BorderLayout;
 import java.util.logging.Logger;
+import javax.swing.UIManager;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -28,6 +31,7 @@ public final class ContextTopComponent extends TopComponent {
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "ContextTopComponent";
+    private ContextPanel contextPanel = new ContextPanel();
 
     public ContextTopComponent() {
         initComponents();
@@ -35,6 +39,10 @@ public final class ContextTopComponent extends TopComponent {
         setToolTipText(NbBundle.getMessage(ContextTopComponent.class, "HINT_ContextTopComponent"));
 //        setIcon(ImageUtilities.loadImage(ICON_PATH, true));
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
+        if (UIUtils.isAquaLookAndFeel()) {
+            setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
+        mainPanel.add(contextPanel, BorderLayout.CENTER);
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
@@ -45,7 +53,7 @@ public final class ContextTopComponent extends TopComponent {
             public void select(Workspace workspace) {
                 GraphController gc = Lookup.getDefault().lookup(GraphController.class);
                 GraphModel gm = gc.getModel();
-                ((ContextPanel) mainPanel).refreshModel(gm);
+                contextPanel.refreshModel(gm);
             }
 
             public void unselect(Workspace workspace) {
@@ -55,12 +63,12 @@ public final class ContextTopComponent extends TopComponent {
             }
 
             public void disable() {
-                ((ContextPanel) mainPanel).refreshModel(null);
+                contextPanel.refreshModel(null);
             }
         });
         if (pc.getCurrentWorkspace() != null) {
             GraphModel gm = pc.getCurrentWorkspace().getLookup().lookup(GraphModel.class);
-            ((ContextPanel) mainPanel).refreshModel(gm);
+            contextPanel.refreshModel(gm);
         }
     }
 
@@ -72,9 +80,11 @@ public final class ContextTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        mainPanel = new ContextPanel();
+        mainPanel = new javax.swing.JPanel();
 
         setLayout(new java.awt.BorderLayout());
+
+        mainPanel.setLayout(new java.awt.BorderLayout());
         add(mainPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
