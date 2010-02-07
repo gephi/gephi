@@ -92,6 +92,11 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
             }
 
             public void disable() {
+                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+                if (model.getCurrentResult() != null) {
+                    graphModel.destroyView(model.getCurrentResult());
+                    model.setCurrentResult(null);
+                }
                 model = null;
             }
         });
@@ -150,6 +155,10 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         } else {
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
             graphModel.setVisibleView(null);
+            if (model.getCurrentResult() != null) {
+                graphModel.destroyView(model.getCurrentResult());
+                model.setCurrentResult(null);
+            }
         }
     }
 
@@ -161,14 +170,20 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
             model.getFilterThread().setRunning(false);
             model.setFilterThread(null);
         }
+
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        graphModel.setVisibleView(null);
+        if (model.getCurrentResult() != null) {
+            graphModel.destroyView(model.getCurrentResult());
+            model.setCurrentResult(null);
+        }
+
         if (query != null) {
             FilterThread filterThread = new FilterThread(model);
             model.setFilterThread(filterThread);
             filterThread.setRootQuery((AbstractQueryImpl) query);
             filterThread.start();
         } else {
-            GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-            graphModel.setVisibleView(null);
         }
     }
 

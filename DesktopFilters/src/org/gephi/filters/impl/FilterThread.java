@@ -13,6 +13,7 @@ import org.gephi.filters.spi.FilterProperty;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.GraphView;
 import org.gephi.visualization.VizController;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -93,9 +94,15 @@ public class FilterThread extends Thread {
         System.out.println("#Nodes: " + result.getNodeCount());
         System.out.println("#Edges: " + result.getEdgeCount());
         if (running) {
-            graphModel.setVisibleView(result.getView());
+            GraphView view = result.getView();
+            graphModel.setVisibleView(view);
+            if(model.getCurrentResult()!=null) {
+                graphModel.destroyView(model.getCurrentResult());
+            }
+            model.setCurrentResult(view);
         } else {
             //destroy view
+            graphModel.destroyView(result.getView());
         }
     }
 
@@ -110,8 +117,9 @@ public class FilterThread extends Thread {
             VizController.getInstance().getSelectionManager().selectNodes(result.getNodes().toArray());
             VizController.getInstance().getSelectionManager().selectEdges(result.getEdges().toArray());
         } else {
-            //destroy view
+            //destroy view 
         }
+        graphModel.destroyView(result.getView());
     }
 
     public void setRootQuery(AbstractQueryImpl rootQuery) {

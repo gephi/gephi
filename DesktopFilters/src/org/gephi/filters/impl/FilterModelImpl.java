@@ -36,6 +36,7 @@ import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
+import org.gephi.graph.api.GraphView;
 import org.openide.util.Lookup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -53,6 +54,7 @@ public class FilterModelImpl implements FilterModel {
     private FilterThread filterThread;
     private Query currentQuery;
     private boolean filtering;
+    private GraphView currentResult;
     //Listeners
     private List<ChangeListener> listeners;
 
@@ -197,6 +199,15 @@ public class FilterModelImpl implements FilterModel {
         this.filterThread = filterThread;
     }
 
+    public void setCurrentResult(GraphView currentResult) {
+        this.currentResult = currentResult;
+    }
+
+    public GraphView getCurrentResult() {
+        return currentResult;
+    }
+
+    //EVENTS
     public void addChangeListener(ChangeListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
