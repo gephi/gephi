@@ -21,7 +21,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Helder Suzuki <heldersuzuki@gmail.com>
  */
-@ServiceProvider(service = LayoutBuilder.class)
+//@ServiceProvider(service = LayoutBuilder.class)
 public class Test implements LayoutBuilder {
 
     private TestLayoutUI ui = new TestLayoutUI();
