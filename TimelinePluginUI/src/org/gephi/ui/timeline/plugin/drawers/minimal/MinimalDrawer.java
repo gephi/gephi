@@ -107,8 +107,8 @@ public class MinimalDrawer extends JPanel
     /** Creates new form MinimalDrawer */
     public MinimalDrawer() {
 
-        System.out.println("width: " + getWidth());
-        System.out.println("height: " + getHeight());
+        //System.out.println("width: " + getWidth());
+        //System.out.println("height: " + getHeight());
         setVisible(true);
         addMouseMotionListener(this);
         addMouseListener(this);

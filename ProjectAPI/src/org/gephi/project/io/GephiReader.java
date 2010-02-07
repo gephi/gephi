@@ -86,7 +86,7 @@ public class GephiReader implements Cancellable {
         XPathExpression exp = xpath.compile("./core");
         Element coreE = (Element) exp.evaluate(root, XPathConstants.NODE);
         int max = Integer.parseInt(coreE.getAttribute("tasks"));
-        System.out.println(max);
+        //System.out.println(max);
     }
 
     public void readProject(XPath xpath, Element projectE) throws Exception {

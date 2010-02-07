@@ -79,7 +79,7 @@ public class QueryNode extends AbstractNode {
     }*/
     @Override
     public Action[] getActions(boolean context) {
-        System.out.println("getActions " + context);
+        //System.out.println("getActions " + context);
         return new Action[]{new RemoveAction(), new RenameAction()};
     }
 

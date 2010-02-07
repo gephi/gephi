@@ -66,7 +66,7 @@ public class SaveTask implements LongTask, Runnable {
     }
 
     public void run() {
-        System.out.println("Save " + dataObject.getName());
+        //System.out.println("Save " + dataObject.getName());
         ZipOutputStream zipOut = null;
         boolean useTempFile = false;
         File writeFile = null;

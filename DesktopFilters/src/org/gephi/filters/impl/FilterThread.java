@@ -68,7 +68,7 @@ public class FilterThread extends Thread {
                 select(q);
             }
             /*try {
-            System.out.println("filter query " + q.getName());
+            //System.out.println("filter query " + q.getName());
             Thread.sleep(5000);
             } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);

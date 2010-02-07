@@ -70,7 +70,7 @@ public class MaximalMatchingCoarsening implements MultiLevelLayout.CoarseningStr
                 graph.ungroupNodes(node);
             }
         }
-        System.out.println("COUNT = " + count);
-        System.out.println("REFINED = " + refined);
+        //System.out.println("COUNT = " + count);
+        //System.out.println("REFINED = " + refined);
     }
 }

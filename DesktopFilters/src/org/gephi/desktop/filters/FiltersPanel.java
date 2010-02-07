@@ -143,7 +143,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     }
 
     public void refreshModel(FilterModel filterModel, FilterUIModel uiModel) {
-        System.out.println("refresh filter model thread=" + Thread.currentThread().getName());
+        //System.out.println("refresh filter model thread=" + Thread.currentThread().getName());
         this.filterModel = filterModel;
         this.uiModel = uiModel;
         //Unsetup

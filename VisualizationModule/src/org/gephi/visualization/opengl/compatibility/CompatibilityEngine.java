@@ -872,7 +872,7 @@ public class CompatibilityEngine extends AbstractEngine {
     @Override
     public void initSelection() {
         if (vizConfig.isCustomSelection()) {
-            System.out.println("CustomSelection");
+            //System.out.println("CustomSelection");
             rectangleSelection = false;
             currentSelectionArea = null;
         } else if (vizConfig.isRectangleSelection()) {
