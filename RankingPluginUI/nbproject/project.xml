@@ -3,11 +3,11 @@
     <type>org.netbeans.modules.apisupport.project</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
-            <code-name-base>org.gephi.ranking.api</code-name-base>
+            <code-name-base>org.gephi.ui.ranking.plugin</code-name-base>
             <suite-component/>
             <module-dependencies>
                 <dependency>
-                    <code-name-base>org.gephi.data.attributes.api</code-name-base>
+                    <code-name-base>org.gephi.ranking.api</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -15,15 +15,7 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.gephi.graph.api</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>0.7</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.gephi.project.api</code-name-base>
+                    <code-name-base>org.gephi.ui.components</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -47,10 +39,7 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages>
-                <package>org.gephi.ranking.api</package>
-                <package>org.gephi.ranking.impl</package>
-            </public-packages>
+            <public-packages/>
         </data>
     </configuration>
 </project>

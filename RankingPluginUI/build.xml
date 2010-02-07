@@ -2,7 +2,7 @@
 <!-- You may freely edit this file. See harness/README in the NetBeans platform -->
 <!-- for some information on what you could do (e.g. targets to override). -->
 <!-- If you delete this file and reopen the project it will be recreated. -->
-<project name="org.gephi.desktop.ranking" default="netbeans" basedir=".">
-    <description>Builds, tests, and runs the project org.gephi.desktop.ranking.</description>
+<project name="org.gephi.ui.ranking.plugin" default="netbeans" basedir=".">
+    <description>Builds, tests, and runs the project org.gephi.ui.ranking.plugin.</description>
     <import file="nbproject/build-impl.xml"/>
 </project>
