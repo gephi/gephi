@@ -179,7 +179,9 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         edgeIterable = graph.getEdges();
 
         for (Edge edge : edgeIterable) {
-            assert edge.getSource().getNodeData().getModel() != null && edge.getTarget().getNodeData().getModel() != null;
+            if(edge.getSource().getNodeData().getModel() == null || edge.getTarget().getNodeData().getModel() == null) {
+                continue;
+            }
             Model obj = edge.getEdgeData().getModel();
             if (obj == null) {
                 //Model is null, ADD
