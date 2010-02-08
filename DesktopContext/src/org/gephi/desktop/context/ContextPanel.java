@@ -137,6 +137,7 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         edgeLabel = new javax.swing.JLabel();
         graphTypeLabel = new javax.swing.JLabel();
 
+        setOpaque(false);
         setLayout(new java.awt.GridBagLayout());
 
         commandToolbar.setFloatable(false);

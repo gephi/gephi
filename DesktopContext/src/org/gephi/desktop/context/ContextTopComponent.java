@@ -40,7 +40,7 @@ public final class ContextTopComponent extends TopComponent {
 //        setIcon(ImageUtilities.loadImage(ICON_PATH, true));
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
         if (UIUtils.isAquaLookAndFeel()) {
-            setBackground(UIManager.getColor("NbExplorerView.background"));
+            mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
         mainPanel.add(contextPanel, BorderLayout.CENTER);
 
