@@ -26,7 +26,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
-import javax.swing.UIManager;
+import javax.swing.SwingUtilities;
 import org.gephi.ui.utils.UIUtils;
 
 /**
@@ -51,10 +51,15 @@ public class Toolbar extends JToolBar {
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
-        for (Component c : getComponents()) {
-            c.setEnabled(enabled);
-        }
+    public void setEnabled(final boolean enabled) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                for (Component c : getComponents()) {
+                    c.setEnabled(enabled);
+                }
+            }
+        });
     }
 
     public void clearSelection() {

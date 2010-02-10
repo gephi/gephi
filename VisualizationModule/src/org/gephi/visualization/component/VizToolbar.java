@@ -25,6 +25,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.gephi.ui.utils.UIUtils;
 
@@ -54,11 +55,15 @@ public class VizToolbar extends JToolBar {
         }
     }
 
+    public void setEnable(final boolean enabled) {
+        SwingUtilities.invokeLater(new Runnable() {
 
-    public void setEnable(boolean enabled) {
-        for(Component c : getComponents()) {
-            c.setEnabled(enabled);
-        }
+            public void run() {
+                for (Component c : getComponents()) {
+                    c.setEnabled(enabled);
+                }
+            }
+        });
     }
 
     @Override

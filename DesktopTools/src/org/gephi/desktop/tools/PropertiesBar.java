@@ -34,6 +34,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -63,8 +64,8 @@ public class PropertiesBar extends JPanel {
         add(propertiesBar, BorderLayout.CENTER);
         propertiesBar.setOpaque(false);
         for (Component c : propertiesBar.getComponents()) {
-            if(c instanceof JPanel || c instanceof JToolBar) {
-                ((JComponent)c).setOpaque(false);
+            if (c instanceof JPanel || c instanceof JToolBar) {
+                ((JComponent) c).setOpaque(false);
             }
         }
         revalidate();
@@ -112,10 +113,16 @@ public class PropertiesBar extends JPanel {
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
-        for (Component c : getComponents()) {
-            c.setEnabled(enabled);
-        }
-        selectionBar.setEnabled(enabled);
+    public void setEnabled(final boolean enabled) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                for (Component c : getComponents()) {
+                    c.setEnabled(enabled);
+                }
+                selectionBar.setEnabled(enabled);
+            }
+        });
+
     }
 }

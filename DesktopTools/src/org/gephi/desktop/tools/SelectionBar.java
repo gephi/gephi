@@ -24,6 +24,7 @@ import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -150,9 +151,14 @@ public class SelectionBar extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void setEnabled(boolean enabled) {
-        for (Component c : getComponents()) {
-            c.setEnabled(enabled);
-        }
+    public void setEnabled(final boolean enabled) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                for (Component c : getComponents()) {
+                    c.setEnabled(enabled);
+                }
+            }
+        });
     }
 }

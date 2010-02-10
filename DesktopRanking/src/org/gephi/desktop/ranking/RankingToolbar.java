@@ -33,6 +33,7 @@ import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import org.gephi.ranking.api.RankingUIModel;
@@ -197,10 +198,15 @@ public class RankingToolbar extends JToolBar {
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
-        for (Component c : getComponents()) {
-            c.setEnabled(enabled);
-        }
+    public void setEnabled(final boolean enabled) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                for (Component c : getComponents()) {
+                    c.setEnabled(enabled);
+                }
+            }
+        });
     }
     private javax.swing.JLabel box;
     private javax.swing.JToggleButton edgeButton;

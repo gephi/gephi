@@ -32,6 +32,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import org.gephi.visualization.api.PropertiesBarAddon;
 
 /**
@@ -44,10 +45,15 @@ public class HierarchyPropertyBarAddon implements PropertiesBarAddon {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0)) {
 
             @Override
-            public void setEnabled(boolean enabled) {
-                for (Component c : getComponents()) {
-                    c.setEnabled(enabled);
-                }
+            public void setEnabled(final boolean enabled) {
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    public void run() {
+                        for (Component c : getComponents()) {
+                            c.setEnabled(enabled);
+                        }
+                    }
+                });
                 setOpaque(enabled);
             }
         };
