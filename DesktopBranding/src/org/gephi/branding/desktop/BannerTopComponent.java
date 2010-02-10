@@ -317,7 +317,7 @@ public final class BannerTopComponent extends TopComponent {
             } else {
                 setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/nimbus-enabled.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
-                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/nimbus-mousover.png"),
+                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/nimbus-mouseover.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
                 setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/nimbus-selected.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
