@@ -271,7 +271,7 @@ public class ReportPanel extends javax.swing.JPanel {
 
         labelGraphType.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelGraphType.text")); // NOI18N
 
-        labelNodeCount.setFont(new java.awt.Font("Tahoma", 1, 11));
+        labelNodeCount.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         labelNodeCount.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelNodeCount.text")); // NOI18N
 
         labelEdgeCount.setFont(new java.awt.Font("Tahoma", 1, 11));
@@ -279,7 +279,7 @@ public class ReportPanel extends javax.swing.JPanel {
 
         graphTypeCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Directed", "Undirected", "Mixed" }));
 
-        nodeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
+        nodeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         nodeCountLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.nodeCountLabel.text")); // NOI18N
 
         edgeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
@@ -307,11 +307,11 @@ public class ReportPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(tabbedPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(labelSrc)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(sourceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE))
@@ -355,8 +355,8 @@ public class ReportPanel extends javax.swing.JPanel {
                     .addComponent(labelSrc)
                     .addComponent(sourceLabel))
                 .addGap(18, 18, 18)
-                .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -383,7 +383,7 @@ public class ReportPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(fullGraphRadio)
                         .addGap(23, 23, 23)))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
