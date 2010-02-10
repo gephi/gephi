@@ -26,6 +26,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.swing.SwingUtilities;
 import org.gephi.ui.utils.ColorUtils;
 import org.gephi.visualization.api.GraphDrawable;
 import org.gephi.visualization.api.VizConfig;
@@ -79,10 +80,15 @@ public class VizModel {
     }
 
     public void init() {
-        PropertyChangeEvent evt = new PropertyChangeEvent(this, "init", null, null);
-        for (PropertyChangeListener l : listeners) {
-            l.propertyChange(evt);
-        }
+        final PropertyChangeEvent evt = new PropertyChangeEvent(this, "init", null, null);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                for (PropertyChangeListener l : listeners) {
+                    l.propertyChange(evt);
+                }
+            }
+        });
     }
 
     public boolean isDefaultModel() {
