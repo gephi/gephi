@@ -114,7 +114,7 @@ public class DefaultScaler implements Scaler {
             }
             averageSize /= container.getUnloader().getNodes().size();
         }
-
+/*
         float weightMin = Float.POSITIVE_INFINITY;
         float weightMax = Float.NEGATIVE_INFINITY;
         float weightRatio = 0f;
@@ -136,6 +136,6 @@ public class DefaultScaler implements Scaler {
             float weight = (edge.getWeight() - weightMin) * weightRatio + weightMinimum;
             assert !Float.isNaN(weight);
             edge.setWeight(weight);
-        }
+        }*/
     }
 }
