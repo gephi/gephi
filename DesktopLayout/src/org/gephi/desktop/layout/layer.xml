@@ -4,7 +4,7 @@
     <folder name="Actions">
         <folder name="Window">
             <file name="org-gephi-desktop-layout-LayoutAction.instance">
-                <attr name="component" methodvalue="org.gephi.dekstop.layout.LayoutTopComponent.findInstance"/>
+                <attr name="component" methodvalue="org.gephi.desktop.layout.LayoutTopComponent.findInstance"/>
                 <attr name="displayName" bundlevalue="org.gephi.desktop.layout.Bundle#CTL_LayoutAction"/>
                 <attr name="iconBase" stringvalue="org/gephi/desktop/layout/resources/icon.png"/>
                 <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
