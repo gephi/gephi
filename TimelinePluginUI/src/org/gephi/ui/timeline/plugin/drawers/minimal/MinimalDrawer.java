@@ -175,7 +175,7 @@ public class MinimalDrawer extends JPanel
         if (model == null) {
             return;
         }
-        
+
         long min = (long) model.getMinValue();
         long max = (long) model.getMaxValue();
         if (max <= min && min < 0 && max <= 0) {
@@ -253,7 +253,7 @@ public class MinimalDrawer extends JPanel
         }
 
 
-//DateTime dtFrom = new DateTime(1455, 1, 1, 1, 1, 1, 1);
+        //DateTime dtFrom = new DateTime(1455, 1, 1, 1, 1, 1, 1);
         //DateTime dtTo = new DateTime(1960, 2, 10, 1, 1, 1, 1);
         paintUpperRulerForInterval(g2d,
                 new DateTime(new Date(min)),
@@ -263,6 +263,9 @@ public class MinimalDrawer extends JPanel
         g2d.drawRect(sf, tmMarginTop, sw, height - tmMarginBottom - 1);
 
         double v = model.getValueFromFloat(currentMousePositionX * (1.0 / width));
+        
+        v += model.getMinValue();
+
         if (v != Double.NEGATIVE_INFINITY && v != Double.POSITIVE_INFINITY) {
 
             DateTime d = new DateTime(new Date((long) v));

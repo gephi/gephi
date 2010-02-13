@@ -109,7 +109,12 @@ public class TimelineControllerImpl implements TimelineController {
                     ? Double.POSITIVE_INFINITY
                     : ((Date) formatter.parse(to)).getTime();
         } catch (ParseException ex) {
-            Exceptions.printStackTrace(ex);
+            try {
+            f = Double.parseDouble(from);
+            t = Double.parseDouble(to);
+            } catch (NumberFormatException ex2) {
+                Exceptions.printStackTrace(ex);
+            }
         }
         node.getNodeData().getAttributes().setValue(col.getIndex(), new TimeInterval(f, t));
     }
