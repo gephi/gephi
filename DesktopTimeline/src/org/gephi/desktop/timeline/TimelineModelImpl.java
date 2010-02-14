@@ -48,8 +48,13 @@ public class TimelineModelImpl
     private double toFloat = 1.0f;
     private double fromValue = 0.0f;
     private double toValue = 0.0f;
-    private double maxValue = 1.0f;
-    private double minValue = 0.0f;
+
+    private double minValue = Double.POSITIVE_INFINITY;
+
+
+    private double maxValue = Double.NEGATIVE_INFINITY;
+
+    private Class unit = null;
 
     public TimelineModelImpl() {
         listeners = new ArrayList<TimelineModelListener>();
@@ -214,5 +219,13 @@ public class TimelineModelImpl
 
     public synchronized double getValueFromFloat(double position) {
         return position * getTotalSize();
+    }
+
+    public void setUnit(Class cl) {
+        this.unit = cl;
+    }
+
+    public Class getUnit() {
+        return unit;
     }
 }

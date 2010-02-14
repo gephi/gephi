@@ -35,6 +35,7 @@ import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.joda.time.DateTime;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -90,7 +91,7 @@ public class TimelineControllerImpl implements TimelineController {
         }
     }
 
-    public void pushSlice(Workspace workspace, String from, String to, Node node) {
+    public void pushSlice(Workspace workspace, String from, String to, Object obj) {
         AttributeModel am = workspace.getLookup().lookup(AttributeModel.class);
         AttributeColumn col = null;
         if (am.getNodeTable().hasColumn(COLUMN_KEY)) {
@@ -100,42 +101,54 @@ public class TimelineControllerImpl implements TimelineController {
         }
 
         DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-        double f = 0.0, t = 0.0;
-        try {
-            f = (from == null || from.isEmpty())
-                    ? Double.NEGATIVE_INFINITY
-                    : ((Date) formatter.parse(from)).getTime();
-            t = (to == null || to.isEmpty())
-                    ? Double.POSITIVE_INFINITY
-                    : ((Date) formatter.parse(to)).getTime();
-        } catch (ParseException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        node.getNodeData().getAttributes().setValue(col.getIndex(), new TimeInterval(f, t));
-    }
-
-    public void pushSlice(Workspace workspace, String from, String to, Edge edge) {
-        AttributeModel am = workspace.getLookup().lookup(AttributeModel.class);
-
-        AttributeColumn col = null;
-        if (am.getEdgeTable().hasColumn(COLUMN_KEY)) {
-            col = am.getEdgeTable().getColumn(COLUMN_KEY);
-        } else {
-            col = am.getEdgeTable().addColumn(COLUMN_KEY, COLUMN_TYPE);
-        }
-        DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
         double f = Double.NEGATIVE_INFINITY, t = Double.POSITIVE_INFINITY;
         try {
             if (from != null && !from.isEmpty()) {
-                f = ((Date) formatter.parse(from)).getTime();
+                f =
+                        ((Date) formatter.parse(from)).getTime();
             }
             if (to != null && !to.isEmpty()) {
-                t = ((Date) formatter.parse(to)).getTime();
+                t =
+                        ((Date) formatter.parse(to)).getTime();
             }
+            if (model.getUnit() == null) {
+                model.setUnit(DateTime.class);
+            }
+
         } catch (ParseException ex) {
-            Exceptions.printStackTrace(ex);
+            try {
+                if (from != null && !from.isEmpty()) {
+                    f = Double.parseDouble(from);
+                }
+                if (to != null && !to.isEmpty()) {
+                    t = Double.parseDouble(to);
+                }
+                if (model.getUnit() == null) {
+                    model.setUnit(Double.class);
+                }
+            } catch (NumberFormatException ex2) {
+                Exceptions.printStackTrace(ex);
+            }
         }
-        edge.getEdgeData().getAttributes().setValue(col.getIndex(), new TimeInterval(f, t));
+        TimeInterval ti = new TimeInterval(f, t);
+
+        if (f < model.getMinValue()) {
+            model.setMinValue(f);
+            //System.out.println("fixing min to " + f);
+        }
+        if (t > model.getMaxValue() && t != Double.POSITIVE_INFINITY) {
+            model.setMaxValue(t);
+            //System.out.println("fixing max to " + new DateTime(new Date((long)t)));
+        } else if (f+1>model.getMaxValue()) {
+            //System.out.println("fixing max to " + new DateTime(new Date((long)f+1)));
+            model.setMaxValue(f + 1);
+        }
+
+        if (obj instanceof Node) {
+            ((Node) obj).getNodeData().getAttributes().setValue(col.getIndex(), ti);
+        } else {
+            ((Edge) obj).getEdgeData().getAttributes().setValue(col.getIndex(), ti);
+        }
     }
 
     public TimelineModel getModel(Workspace workspace) {
@@ -197,13 +210,25 @@ public class TimelineControllerImpl implements TimelineController {
         TimelineModel tm = workspace.getLookup().lookup(TimelineModel.class);
         if (tm != null) {
             DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-            double f = 0.0;
+            double f = Double.POSITIVE_INFINITY;
             try {
-                f = ((Date) formatter.parse(min)).getTime();
+                if (min != null) {
+                    f = ((Date) formatter.parse(min)).getTime();
+                }
+                if (tm.getUnit() == null) {
+                    model.setUnit(DateTime.class);
+                }
             } catch (ParseException ex) {
-                Exceptions.printStackTrace(ex);
+                try {
+                    f = Double.parseDouble(min);
+                    if (tm.getUnit() == null) {
+                        model.setUnit(Double.class);
+                    }
+                } catch (NumberFormatException ex2) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
-            tm.setMinValue(f);
+            setMin(workspace, f);
         }
     }
 
@@ -211,26 +236,39 @@ public class TimelineControllerImpl implements TimelineController {
         TimelineModel tm = workspace.getLookup().lookup(TimelineModel.class);
         if (tm != null) {
             DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-            double f = 1.0;
+            double f = Double.NEGATIVE_INFINITY;
             try {
-                f = ((Date) formatter.parse(max)).getTime();
+                if (max != null) {
+                    f = ((Date) formatter.parse(max)).getTime();
+                }
+                if (tm.getUnit() == null) {
+                    tm.setUnit(DateTime.class);
+                }
             } catch (ParseException ex) {
-                Exceptions.printStackTrace(ex);
+                try {
+                    f = Double.parseDouble(max);
+                    if (model.getUnit() == null) {
+                        model.setUnit(Double.class);
+                    }
+                } catch (NumberFormatException ex2) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
-            tm.setMaxValue(f);
+
+            setMax(workspace, f);
         }
     }
 
     public void setMin(Workspace workspace, double min) {
         TimelineModel tm = workspace.getLookup().lookup(TimelineModel.class);
-        if (tm != null) {
+        if (tm != null && min < tm.getMinValue()) {
             tm.setMinValue(min);
         }
     }
 
     public void setMax(Workspace workspace, double max) {
         TimelineModel tm = workspace.getLookup().lookup(TimelineModel.class);
-        if (tm != null) {
+        if (tm != null && max > tm.getMaxValue()) {
             tm.setMaxValue(max);
         }
     }
@@ -238,38 +276,70 @@ public class TimelineControllerImpl implements TimelineController {
     public void setMin(String min) {
         if (model != null) {
             DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-            double f = 0.0;
+            double f = Double.POSITIVE_INFINITY;
             try {
-                f = ((Date) formatter.parse(min)).getTime();
+                if (min != null) {
+                    f = ((Date) formatter.parse(min)).getTime();
+                }
+                if (model.getUnit() == null) {
+                    model.setUnit(DateTime.class);
+                }
             } catch (ParseException ex) {
-                Exceptions.printStackTrace(ex);
+                try {
+                    f = Double.parseDouble(min);
+                    if (model.getUnit() == null) {
+                        model.setUnit(Double.class);
+                    }
+                } catch (NumberFormatException ex2) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
-            model.setMinValue(f);
+            setMin(f);
         }
     }
 
     public void setMax(String max) {
         if (model != null) {
             DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-            double f = 0.0;
+            double f = Double.NEGATIVE_INFINITY;
             try {
-                f = ((Date) formatter.parse(max)).getTime();
+                if (max != null) {
+                    f = ((Date) formatter.parse(max)).getTime();
+                }
+                if (model.getUnit() == null) {
+                    model.setUnit(DateTime.class);
+                }
             } catch (ParseException ex) {
-                Exceptions.printStackTrace(ex);
+                try {
+                    f = Double.parseDouble(max);
+                    if (model.getUnit() == null) {
+                        model.setUnit(Double.class);
+                    }
+                } catch (NumberFormatException ex2) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
-            model.setMaxValue(f);
+            setMax(f);
         }
     }
 
     public void setMin(double min) {
-        if (model != null) {
+        if (model != null && min < model.getMinValue()) {
             model.setMinValue(min);
         }
     }
 
     public void setMax(double max) {
-        if (model != null) {
+        if (model != null && max > model.getMaxValue()) {
             model.setMaxValue(max);
         }
+    }
+
+    public void pushSlice(Workspace workspace, String from, String to, Node node) {
+        pushSlice(workspace, from, to, (Object) node);
+    }
+
+    public void pushSlice(Workspace workspace, String from, String to, Edge edge) {
+        pushSlice(workspace, from, to, (Object) edge);
     }
 }
