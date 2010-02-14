@@ -35,6 +35,7 @@ import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.joda.time.DateTime;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -100,18 +101,23 @@ public class TimelineControllerImpl implements TimelineController {
         }
 
         DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-        double f = 0.0, t = 0.0;
+        double f = Double.NEGATIVE_INFINITY, t = Double.POSITIVE_INFINITY;
         try {
-            f = (from == null || from.isEmpty())
-                    ? Double.NEGATIVE_INFINITY
-                    : ((Date) formatter.parse(from)).getTime();
-            t = (to == null || to.isEmpty())
-                    ? Double.POSITIVE_INFINITY
-                    : ((Date) formatter.parse(to)).getTime();
+            if (from != null && !from.isEmpty()) f =
+                 ((Date) formatter.parse(from)).getTime();
+             if (to != null && !to.isEmpty()) t =
+                 ((Date) formatter.parse(to)).getTime();
+            if (model.getUnit() == null) {
+                model.setUnit(DateTime.class);
+            }
+
         } catch (ParseException ex) {
             try {
-            f = Double.parseDouble(from);
-            t = Double.parseDouble(to);
+                if (from != null) f = Double.parseDouble(from);
+               if (to != null) t = Double.parseDouble(to);
+                if (model.getUnit() == null) {
+                    model.setUnit(Double.class);
+                }
             } catch (NumberFormatException ex2) {
                 Exceptions.printStackTrace(ex);
             }
@@ -131,14 +137,23 @@ public class TimelineControllerImpl implements TimelineController {
         DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
         double f = Double.NEGATIVE_INFINITY, t = Double.POSITIVE_INFINITY;
         try {
-            if (from != null && !from.isEmpty()) {
-                f = ((Date) formatter.parse(from)).getTime();
-            }
-            if (to != null && !to.isEmpty()) {
-                t = ((Date) formatter.parse(to)).getTime();
+            if (from != null && !from.isEmpty()) f =
+                 ((Date) formatter.parse(from)).getTime();
+             if (to != null && !to.isEmpty()) t =
+                 ((Date) formatter.parse(to)).getTime();
+            if (model.getUnit() == null) {
+                model.setUnit(DateTime.class);
             }
         } catch (ParseException ex) {
-            Exceptions.printStackTrace(ex);
+            try {
+                if (from != null) f = Double.parseDouble(from);
+               if (to != null) t = Double.parseDouble(to);
+                if (model.getUnit() == null) {
+                    model.setUnit(Double.class);
+                }
+            } catch (NumberFormatException ex2) {
+                Exceptions.printStackTrace(ex);
+            }
         }
         edge.getEdgeData().getAttributes().setValue(col.getIndex(), new TimeInterval(f, t));
     }
@@ -204,9 +219,19 @@ public class TimelineControllerImpl implements TimelineController {
             DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
             double f = 0.0;
             try {
-                f = ((Date) formatter.parse(min)).getTime();
+                if (min != null) f = ((Date) formatter.parse(min)).getTime();
+                if (tm.getUnit() == null) {
+                    model.setUnit(DateTime.class);
+                }
             } catch (ParseException ex) {
-                Exceptions.printStackTrace(ex);
+                try {
+                    f = Double.parseDouble(min);
+                    if (tm.getUnit() == null) {
+                        model.setUnit(Double.class);
+                    }
+                } catch (NumberFormatException ex2) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
             tm.setMinValue(f);
         }
@@ -218,9 +243,19 @@ public class TimelineControllerImpl implements TimelineController {
             DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
             double f = 1.0;
             try {
-                f = ((Date) formatter.parse(max)).getTime();
+                if (max != null) f = ((Date) formatter.parse(max)).getTime();
+                if (tm.getUnit() == null) {
+                    tm.setUnit(DateTime.class);
+                }
             } catch (ParseException ex) {
-                Exceptions.printStackTrace(ex);
+                try {
+                    f = Double.parseDouble(max);
+                    if (model.getUnit() == null) {
+                        model.setUnit(Double.class);
+                    }
+                } catch (NumberFormatException ex2) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
             tm.setMaxValue(f);
         }
@@ -245,9 +280,19 @@ public class TimelineControllerImpl implements TimelineController {
             DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
             double f = 0.0;
             try {
-                f = ((Date) formatter.parse(min)).getTime();
+                if (min != null) f = ((Date) formatter.parse(min)).getTime();
+                if (model.getUnit() == null) {
+                    model.setUnit(DateTime.class);
+                }
             } catch (ParseException ex) {
-                Exceptions.printStackTrace(ex);
+                try {
+                    f = Double.parseDouble(min);
+                    if (model.getUnit() == null) {
+                        model.setUnit(Double.class);
+                    }
+                } catch (NumberFormatException ex2) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
             model.setMinValue(f);
         }
@@ -258,9 +303,19 @@ public class TimelineControllerImpl implements TimelineController {
             DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
             double f = 0.0;
             try {
-                f = ((Date) formatter.parse(max)).getTime();
+                if (max != null) f = ((Date) formatter.parse(max)).getTime();
+                if (model.getUnit() == null) {
+                    model.setUnit(DateTime.class);
+                }
             } catch (ParseException ex) {
-                Exceptions.printStackTrace(ex);
+                try {
+                    f = Double.parseDouble(max);
+                    if (model.getUnit() == null) {
+                        model.setUnit(Double.class);
+                    }
+                } catch (NumberFormatException ex2) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
             model.setMaxValue(f);
         }

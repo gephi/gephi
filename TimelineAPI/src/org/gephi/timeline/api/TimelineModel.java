@@ -223,4 +223,8 @@ public interface TimelineModel {
      * @return
      */
     public TimeInterval getTimeInterval();
+
+    public void setUnit(Class cl);
+
+    public Class getUnit();
 }
