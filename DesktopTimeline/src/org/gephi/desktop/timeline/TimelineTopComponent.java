@@ -124,7 +124,7 @@ public final class TimelineTopComponent
                 //
             }
         });
-
+        settingsButton.setVisible(false);
     }
 
     /** This method is called from within the constructor to
@@ -145,7 +145,7 @@ public final class TimelineTopComponent
         timelineToolbar.setFloatable(false);
         timelineToolbar.setOrientation(1);
         timelineToolbar.setRollover(true);
-        timelineToolbar.setMaximumSize(new java.awt.Dimension(64, 32767));
+        timelineToolbar.setMaximumSize(new java.awt.Dimension(0, 32767));
 
         org.openide.awt.Mnemonics.setLocalizedText(settingsButton, org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settingsButton.text")); // NOI18N
         settingsButton.setFocusable(false);
