@@ -29,7 +29,7 @@
         <Property name="orientation" type="int" value="1"/>
         <Property name="rollover" type="boolean" value="true"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[64, 32767]"/>
+          <Dimension value="[0, 32767]"/>
         </Property>
       </Properties>
 

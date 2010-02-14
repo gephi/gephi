@@ -152,7 +152,7 @@ public class MinimalDrawer extends JPanel
         addMouseMotionListener(this);
         addMouseListener(this);
         // setEnabled(true);
-        viewToModelSync = new Timer(500, updateModelAction);
+        viewToModelSync = new Timer(300, updateModelAction);
         viewToModelSync.setRepeats(true);
         viewToModelSync.start();
 
