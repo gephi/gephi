@@ -562,18 +562,17 @@ public class MinimalDrawer extends JPanel
     }
 
     private void paintSmallGraduations(Graphics2D g2d, int x, int y, int numOfGrads) {
-        int width = y - x;
+        double width = y - x;
         int height = getHeight();
-        int leftMargin = x;
         int topMargin = height - settings.graduations.fontSize - 2;
         int unitSize = 3;
 
         if (numOfGrads > (width / unitSize)) {
             return;
         }
-        for (int i = 1; i < numOfGrads; i++) {
-            int xi = leftMargin + i * (width / numOfGrads);
-            g2d.drawLine(xi, topMargin, xi, height - settings.graduations.textBottomMargin);
+        for (double i = 1; i < numOfGrads; i++) {
+            double xi = x + i * (width / (double)numOfGrads);
+            g2d.drawLine((int)xi, topMargin, (int)xi, height - settings.graduations.textBottomMargin);
         }
     }
 
