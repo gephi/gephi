@@ -9,6 +9,10 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import javax.swing.SwingUtilities;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
@@ -38,6 +42,7 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
     private ContextPieChart pieChart;
     private NumberFormat formatter;
     private boolean showPie = true;
+    private ThreadPoolExecutor consumerThread;
 
     public ContextPanel() {
         initComponents();
@@ -51,6 +56,14 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
             }
         });
         pieChart.setChartVisible(pieButton.isSelected());
+
+        //Event manager
+        consumerThread = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(2), new ThreadFactory() {
+
+            public Thread newThread(Runnable r) {
+                return new Thread(r, "Context Panel consumer thread");
+            }
+        }, new ThreadPoolExecutor.DiscardOldestPolicy());
     }
 
     private void initDesign() {
@@ -75,29 +88,36 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
     }
 
     private void refreshModelData() {
-        Graph visibleGraph = model.getGraphVisible();
-        Graph fullGraph = model.getGraph();
-        visibleGraph.readLock();
-        fullGraph.readLock();
-        final int nodesFull = fullGraph.getNodeCount();
-        final int nodesVisible = visibleGraph.getNodeCount();
-        final int edgesFull = fullGraph.getEdgeCount();
-        final int edgesVisible = visibleGraph.getEdgeCount();
-        final GraphType graphType = visibleGraph instanceof DirectedGraph ? GraphType.DIRECTED : visibleGraph instanceof UndirectedGraph ? GraphType.UNDIRECTED : GraphType.MIXED;
-        fullGraph.readUnlock();
-        visibleGraph.readUnlock();
-        SwingUtilities.invokeLater(new Runnable() {
+        if (consumerThread.getQueue().remainingCapacity() > 0) {
+            consumerThread.execute(new Runnable() {
 
-            public void run() {
-                String nodePerc = nodesFull > 0 ? " (" + formatter.format(nodesVisible / (double) nodesFull) + ")" : "";
-                String edgePerc = edgesFull > 0 ? " (" + formatter.format(edgesVisible / (double) edgesFull) + ")" : "";
-                nodeLabel.setText(String.valueOf(nodesVisible) + nodePerc);
-                edgeLabel.setText(String.valueOf(edgesVisible) + edgePerc);
-                graphTypeLabel.setText(graphType.type);
-                double percentage = 0.5 * nodesVisible / (double) nodesFull + 0.5 * edgesVisible / (double) edgesFull;
-                pieChart.refreshChart(percentage);
-            }
-        });
+                public void run() {
+                    Graph visibleGraph = model.getGraphVisible();
+                    Graph fullGraph = model.getGraph();
+                    visibleGraph.readLock();
+                    fullGraph.readLock();
+                    final int nodesFull = fullGraph.getNodeCount();
+                    final int nodesVisible = visibleGraph.getNodeCount();
+                    final int edgesFull = fullGraph.getEdgeCount();
+                    final int edgesVisible = visibleGraph.getEdgeCount();
+                    final GraphType graphType = visibleGraph instanceof DirectedGraph ? GraphType.DIRECTED : visibleGraph instanceof UndirectedGraph ? GraphType.UNDIRECTED : GraphType.MIXED;
+                    fullGraph.readUnlock();
+                    visibleGraph.readUnlock();
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        public void run() {
+                            String nodePerc = nodesFull > 0 ? " (" + formatter.format(nodesVisible / (double) nodesFull) + ")" : "";
+                            String edgePerc = edgesFull > 0 ? " (" + formatter.format(edgesVisible / (double) edgesFull) + ")" : "";
+                            nodeLabel.setText(String.valueOf(nodesVisible) + nodePerc);
+                            edgeLabel.setText(String.valueOf(edgesVisible) + edgePerc);
+                            graphTypeLabel.setText(graphType.type);
+                            double percentage = 0.5 * nodesVisible / (double) nodesFull + 0.5 * edgesVisible / (double) edgesFull;
+                            pieChart.refreshChart(percentage);
+                        }
+                    });
+                }
+            });
+        }
     }
 
     public void graphChanged(GraphEvent event) {
