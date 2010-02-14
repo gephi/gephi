@@ -63,10 +63,7 @@ public class MinimalDrawer extends JPanel
         TimelineModelListener {
 
     private static final long serialVersionUID = 1L;
-
     private MinimalDrawerSettings settings = new MinimalDrawerSettings();
-   
-
     private TimelineModel model = null;
     private TimelineAnimator animator = null;
     private Integer latestMousePositionX = null;
@@ -155,12 +152,12 @@ public class MinimalDrawer extends JPanel
         addMouseMotionListener(this);
         addMouseListener(this);
         // setEnabled(true);
-        viewToModelSync = new Timer(300, updateModelAction);
+        viewToModelSync = new Timer(500, updateModelAction);
         viewToModelSync.setRepeats(true);
         viewToModelSync.start();
 
         // setEnabled(true);
-       // modelToViewSync = new Timer(2000, updateViewAction);
+        // modelToViewSync = new Timer(2000, updateViewAction);
 
     }
 
@@ -210,8 +207,13 @@ public class MinimalDrawer extends JPanel
 
         // initialization
         if (st == 0) {
-            sf = 0.0;
-            st = (double) getWidth();
+            if (model != null) {
+                sf = model.getFromFloat() * (double) getWidth();
+                st = model.getToFloat() * (double) getWidth();
+            } else {
+                sf = 0.0;
+                st = (double) getWidth();
+            }
         }
 
         int tmMarginTop = 2;
@@ -235,10 +237,21 @@ public class MinimalDrawer extends JPanel
 
         long min = (long) model.getMinValue();
         long max = (long) model.getMaxValue();
-        if (max <= min && min < 0 && max <= 0) {
+
+        /*System.out.println("\nall min: " + min);
+        System.out.println("all max: " + max);
+        System.out.println("all date min: " + new DateTime(new Date(min)));
+        System.out.println("all date max: " + new DateTime(new Date(max)));
+        */
+        if (max <= min || min == Double.NEGATIVE_INFINITY || max == Double.POSITIVE_INFINITY) {
             return;
         }
-
+        /*
+        System.out.println("min: " + min);
+        System.out.println("max: " + max);
+        System.out.println("date min: " + new DateTime(new Date(min)));
+        System.out.println("date max: " + new DateTime(new Date(max)));
+        */
         g2d.setRenderingHints(settings.renderingHints);
 
 
@@ -304,7 +317,6 @@ public class MinimalDrawer extends JPanel
             g2d.fillRect((int) sf, tmMarginTop, sw, height - tmMarginBottom - 1);
         }
 
-
         //DateTime dtFrom = new DateTime(1455, 1, 1, 1, 1, 1, 1);
         //DateTime dtTo = new DateTime(1960, 2, 10, 1, 1, 1, 1);
         if (model.getUnit() == DateTime.class) {
@@ -328,22 +340,23 @@ public class MinimalDrawer extends JPanel
 
                     DateTimeFormatter fmt = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
                     str = fmt.withLocale(LOCALE).print(d);
-                } else {
-                    str = new Double(v).toString();
                 }
-                int strw = (int) (settings.tip.fontMetrics.getStringBounds(str, null)).getWidth() + 4;
-                int px = currentMousePositionX;
-                if (px + strw >= width) {
-                    px = width - strw;
-                }
-
-                g2d.setPaint(settings.tip.backgroundColor);
-                g2d.fillRect(px, 1, strw, 18);
-                g2d.setPaint(settings.tip.fontColor);
-                g2d.drawRect(px, 1, strw, 18);
-                g2d.setColor(settings.tip.fontColor);
-                g2d.drawString(str, px + 2, 16);
+            } else {
+                str = new Double(v).toString();
             }
+            int strw = (int) (settings.tip.fontMetrics.getStringBounds(str, null)).getWidth() + 4;
+            int px = currentMousePositionX;
+            if (px + strw >= width) {
+                px = width - strw;
+            }
+
+            g2d.setPaint(settings.tip.backgroundColor);
+            g2d.fillRect(px, 1, strw, 18);
+            g2d.setPaint(settings.tip.fontColor);
+            g2d.drawRect(px, 1, strw, 18);
+            g2d.setColor(settings.tip.fontColor);
+            g2d.drawString(str, px + 2, 16);
+
         }
     }
 
@@ -692,6 +705,8 @@ public class MinimalDrawer extends JPanel
         currentMousePositionX = evt.getX();
         int x = currentMousePositionX;
         double w = getWidth();
+        if (x > (int)w) x = (int)w;
+        if (x < 0) x = 0;
         int r = settings.selection.visibleHookWidth;//skin.getSelectionHookSideLength();
 
         // SELECTED ZONE BEGIN POSITION, IN PIXELS
