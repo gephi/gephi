@@ -119,32 +119,20 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
     //Directed
     public int getInDegree(Node node) {
         AbstractNode absNode = checkNode(node);
-        int count = absNode.getEdgesInTree().getCount();
+        int count = absNode.getEnabledInDegree();
         return count;
     }
 
     //Directed
     public int getOutDegree(Node node) {
         AbstractNode absNode = checkNode(node);
-        int count = absNode.getEdgesOutTree().getCount();
+        int count = absNode.getEnabledOutDegree();
         return count;
     }
 
     public int getMutualDegree(Node node) {
         AbstractNode absNode = checkNode(node);
-        int count = 0;
-        if (absNode.getEdgesOutTree().getCount() > 0 && absNode.getEdgesInTree().getCount() > 0) {
-            EdgeOppositeTree inTree = absNode.getEdgesInTree();
-            for (ParamAVLIterator<AbstractEdge> itr = new ParamAVLIterator<AbstractEdge>(absNode.getEdgesOutTree()); itr.hasNext();) {
-                AbstractEdge edge = itr.next();
-                if (!edge.isSelfLoop()) {
-                    if (inTree.hasNeighbour(edge.getTarget())) {
-                        count++;
-                    }
-                }
-            }
-        }
-
+        int count = absNode.getEnabledMutualDegree();
         return count;
     }
 

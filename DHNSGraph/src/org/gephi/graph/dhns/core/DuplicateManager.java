@@ -41,6 +41,9 @@ public class DuplicateManager {
             AbstractNode nodeCopy = factory.newNode();
             duplicateNodeData(node.getNodeData(), nodeCopy.getNodeData());
             nodeCopy.setEnabled(node.isEnabled());
+            nodeCopy.setEnabledInDegree(node.getEnabledInDegree());
+            nodeCopy.setEnabledOutDegree(node.getEnabledOutDegree());
+            nodeCopy.setEnabledMutualDegree(node.getEnabledMutualDegree());
             AbstractNode parentCopy = node.parent != null ? newStructure.getNodeAt(node.parent.getPre()) : null;
             newStructure.insertAsChild(nodeCopy, parentCopy);
             newGraphStructure.getNodeDictionnary().add(nodeCopy);

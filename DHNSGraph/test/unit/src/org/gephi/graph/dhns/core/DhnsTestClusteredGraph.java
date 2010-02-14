@@ -57,7 +57,7 @@ public class DhnsTestClusteredGraph {
     private Dhns dhnsGlobal2;
     private HierarchicalDirectedGraphImpl graphGlobal2Directed;
     private HierarchicalUndirectedGraphImpl graphGlobal2Undirected;
-    private Map<String, Node> nodeMap;
+    private Map<String, AbstractNode> nodeMap;
     private Map<String, Edge> edgeMap;
 
     @BeforeClass
@@ -73,7 +73,7 @@ public class DhnsTestClusteredGraph {
         DhnsGraphController controller = new DhnsGraphController();
         dhnsGlobal = new Dhns(controller, null);
         graphGlobal = new HierarchicalDirectedGraphImpl(dhnsGlobal, dhnsGlobal.getGraphStructure().getMainView());
-        nodeMap = new HashMap<String, Node>();
+        nodeMap = new HashMap<String, AbstractNode>();
         edgeMap = new HashMap<String, Edge>();
 
         TreeStructure treeStructure = dhnsGlobal.getGraphStructure().getMainView().getStructure();
@@ -81,7 +81,7 @@ public class DhnsTestClusteredGraph {
 
         //Nodes
         for (int i = 0; i < 15; i++) {
-            Node node = factory.newNode();
+            AbstractNode node = factory.newNode();
             node.getNodeData().setLabel("Node " + i);
             graphGlobal.addNode(node);
             nodeMap.put(node.getNodeData().getLabel(), node);
@@ -103,7 +103,7 @@ public class DhnsTestClusteredGraph {
 
         int i = 0;
         for (Node n : graphGlobal2Directed.getTopNodes().toArray()) {
-            Node newC = factory.newNode();
+            AbstractNode newC = factory.newNode();
             graphGlobal2Directed.addNode(newC, n);
             nodeMap.put("Leaf " + (i++), newC);
             newC = factory.newNode();
@@ -128,7 +128,6 @@ public class DhnsTestClusteredGraph {
         graphGlobal2Directed.addEdge(leaf9, leaf5);
         graphGlobal2Directed.addEdge(leaf5, leaf9);
         graphGlobal2Directed.addEdge(leaf9, leaf9);
-
     }
 
     @After
@@ -820,6 +819,62 @@ public class DhnsTestClusteredGraph {
         assertSame(nodeMap.get("Leaf 0"), uniqueEdge.getTarget());
         assertSame(nodeMap.get("Leaf 1"), uniqueEdge.getSource());
         assertEquals(5, graphGlobal2Directed.getEdgesAndMetaEdges().toArray().length);
+    }
+
+    @Test
+    public void testEdgesCounting() {
+        GraphViewImpl view = dhnsGlobal2.getGraphStructure().getMainView();
+        assertEquals(0, view.getEdgesCountEnabled());
+        assertEquals(10, view.getEdgesCountTotal());
+        Node n1 = graphGlobal2Directed.getTopNodes().toArray()[0];
+        graphGlobal2Directed.expand(n1);
+        assertEquals(1, view.getEdgesCountEnabled());
+        assertEquals(0, view.getMutualEdgesEnabled());
+        assertEquals(1, nodeMap.get("Leaf 0").getEnabledInDegree());
+        assertEquals(1, nodeMap.get("Leaf 1").getEnabledOutDegree());
+        graphGlobal2Directed.retract(n1);
+        assertEquals(0, view.getEdgesCountEnabled());
+        assertEquals(0, nodeMap.get("Leaf 0").getEnabledInDegree());
+        assertEquals(0, nodeMap.get("Leaf 1").getEnabledOutDegree());
+        assertEquals(0, view.getMutualEdgesEnabled());
+        Node n7 = graphGlobal2Directed.getTopNodes().toArray()[2];
+        graphGlobal2Directed.expand(n7);
+        assertEquals(3, view.getEdgesCountEnabled());
+        assertEquals(1, nodeMap.get("Leaf 4").getEnabledInDegree());
+        assertEquals(1, nodeMap.get("Leaf 4").getEnabledOutDegree());
+        assertEquals(2, nodeMap.get("Leaf 5").getEnabledOutDegree());
+        assertEquals(2, nodeMap.get("Leaf 5").getEnabledInDegree());
+        assertEquals(1, nodeMap.get("Leaf 4").getEnabledMutualDegree());
+        assertEquals(1, nodeMap.get("Leaf 5").getEnabledMutualDegree());
+        assertEquals(1, view.getMutualEdgesEnabled());
+        graphGlobal2Directed.retract(n7);
+        assertEquals(0, view.getEdgesCountEnabled());
+        assertEquals(0, nodeMap.get("Leaf 4").getEnabledInDegree());
+        assertEquals(0, nodeMap.get("Leaf 4").getEnabledOutDegree());
+        assertEquals(0, nodeMap.get("Leaf 5").getEnabledOutDegree());
+        assertEquals(0, nodeMap.get("Leaf 5").getEnabledInDegree());
+        assertEquals(0, nodeMap.get("Leaf 4").getEnabledMutualDegree());
+        assertEquals(0, nodeMap.get("Leaf 5").getEnabledMutualDegree());
+        assertEquals(0, view.getMutualEdgesEnabled());
+        Node n4 = graphGlobal2Directed.getTopNodes().toArray()[1];
+        graphGlobal2Directed.expand(n4);
+        graphGlobal2Directed.expand(n7);
+        assertEquals(1, nodeMap.get("Leaf 2").getEnabledInDegree());
+        assertEquals(1, nodeMap.get("Leaf 2").getEnabledOutDegree());
+        assertEquals(1, nodeMap.get("Leaf 2").getEnabledMutualDegree());
+        assertEquals(1, nodeMap.get("Leaf 3").getEnabledOutDegree());
+        assertEquals(0, nodeMap.get("Leaf 3").getEnabledInDegree());
+        assertEquals(1, nodeMap.get("Leaf 4").getEnabledOutDegree());
+        assertEquals(2, nodeMap.get("Leaf 4").getEnabledInDegree());
+        assertEquals(3, nodeMap.get("Leaf 5").getEnabledOutDegree());
+        assertEquals(3, nodeMap.get("Leaf 5").getEnabledInDegree());
+        assertEquals(2, nodeMap.get("Leaf 5").getEnabledMutualDegree());
+        assertEquals(1, nodeMap.get("Leaf 4").getEnabledMutualDegree());
+        assertEquals(2, view.getMutualEdgesEnabled());
+        assertEquals(6, view.getEdgesCountEnabled());
+        graphGlobal2Directed.expand(n1);
+        assertEquals(2, view.getMutualEdgesEnabled());
+        assertEquals(10, view.getEdgesCountEnabled());
     }
 
     @Test

@@ -80,6 +80,9 @@ public class GraphStructure {
             AbstractNode node = itr.next();
             AbstractNode nodeCopy = new AbstractNode(node.getNodeData(), view.getViewId());
             nodeCopy.setEnabled(node.isEnabled());
+            nodeCopy.setEnabledInDegree(node.getEnabledInDegree());
+            nodeCopy.setEnabledOutDegree(node.getEnabledOutDegree());
+            nodeCopy.setEnabledMutualDegree(node.getEnabledMutualDegree());
             AbstractNode parentCopy = node.parent != null ? newStructure.getNodeAt(node.parent.getPre()) : null;
             newStructure.insertAsChild(nodeCopy, parentCopy);
         }

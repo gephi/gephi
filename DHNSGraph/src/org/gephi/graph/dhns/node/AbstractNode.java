@@ -50,6 +50,10 @@ public class AbstractNode implements Node, Group, AVLItem {
     private EdgeOppositeTree edgesInTree;
     private MetaEdgeTree metaEdgesOutTree;
     private MetaEdgeTree metaEdgesInTree;
+    //Counting
+    private int enabledInDegree;
+    private int enabledOutDegree;
+    private int enabledMutualDegree;
 
     public AbstractNode(int ID, int viewId) {
         this(viewId, new NodeDataImpl(ID, null), 0, 0, 0, null);
@@ -179,5 +183,53 @@ public class AbstractNode implements Node, Group, AVLItem {
 
     public void removeFromView(int viewId) {
         nodeData.getNodes().remove(viewId);
+    }
+
+    public void incEnabledInDegree() {
+        enabledInDegree++;
+    }
+
+    public void incEnabledOutDegree() {
+        enabledOutDegree++;
+    }
+
+    public void incEnabledMutualDegree() {
+        enabledMutualDegree++;
+    }
+
+    public void decEnabledInDegree() {
+        enabledInDegree--;
+    }
+
+    public void decEnabledOutDegree() {
+        enabledOutDegree--;
+    }
+
+    public void decEnabledMutualDegree() {
+        enabledMutualDegree--;
+    }
+
+    public int getEnabledInDegree() {
+        return enabledInDegree;
+    }
+
+    public void setEnabledInDegree(int enabledInDegree) {
+        this.enabledInDegree = enabledInDegree;
+    }
+
+    public int getEnabledMutualDegree() {
+        return enabledMutualDegree;
+    }
+
+    public void setEnabledMutualDegree(int enabledMutualDegree) {
+        this.enabledMutualDegree = enabledMutualDegree;
+    }
+
+    public int getEnabledOutDegree() {
+        return enabledOutDegree;
+    }
+
+    public void setEnabledOutDegree(int enabledOutDegree) {
+        this.enabledOutDegree = enabledOutDegree;
     }
 }
