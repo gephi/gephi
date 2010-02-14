@@ -24,7 +24,9 @@ import org.gephi.utils.collection.avl.ParamAVLIterator;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
+import org.gephi.graph.dhns.predicate.Tautology;
 
 /**
  * Business class for managing Edges and MetaEdges.
@@ -37,6 +39,7 @@ public class EdgeProcessor {
     private final TreeStructure treeStructure;
     private final IDGen idGen;
     private final Dhns dhns;
+    private final GraphViewImpl view;
     private final int viewId;
     //Cache
     private ParamAVLIterator<AbstractEdge> edgeIterator;
@@ -45,6 +48,7 @@ public class EdgeProcessor {
         this.dhns = dhns;
         this.treeStructure = view.getStructure();
         this.idGen = dhns.getIdGen();
+        this.view = view;
         this.viewId = view.getViewId();
         this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
     }
@@ -55,17 +59,42 @@ public class EdgeProcessor {
             while (edgeIterator.hasNext()) {
                 AbstractEdge edge = edgeIterator.next();
                 removeEdgeFromMetaEdge(edge);
-                edge.getSource(viewId).getEdgesOutTree().remove(edge);
+                AbstractNode source = edge.getSource(viewId);
+                view.decEdgesCountTotal(1);
+                boolean mutual = !edge.isSelfLoop() && node.getEdgesOutTree().hasNeighbour(source);
+                if (node.isEnabled() && source.isEnabled()) {
+                    view.decEdgesCountEnabled(1);
+                    if (mutual) {
+                        source.decEnabledMutualDegree();
+                        view.decMutualEdgesEnabled(1);
+                    }
+                }
+                if (mutual) {
+                    view.decMutualEdgesTotal(1);
+                }
+
+                source.getEdgesOutTree().remove(edge);
                 dhns.getGraphStructure().getEdgeDictionnary().remove(edge);
             }
             node.getEdgesInTree().clear();
         }
+        node.setEnabledInDegree(0);
+        node.setEnabledOutDegree(0);
+        node.setEnabledMutualDegree(0);
 
         if (node.getEdgesOutTree().getCount() > 0) {
             edgeIterator.setNode(node.getEdgesOutTree());
             while (edgeIterator.hasNext()) {
                 AbstractEdge edge = edgeIterator.next();
                 removeEdgeFromMetaEdge(edge);
+
+                if (!edge.isSelfLoop()) {
+                    view.decEdgesCountTotal(1);
+                    if (node.isEnabled()) {
+                        view.decEdgesCountEnabled(1);
+                    }
+                }
+
                 edge.getTarget(viewId).getEdgesInTree().remove(edge);
                 dhns.getGraphStructure().getEdgeDictionnary().remove(edge);
             }
@@ -146,8 +175,15 @@ public class EdgeProcessor {
             AbstractNode node = itr.next();
             node.getEdgesInTree().clear();
             node.getEdgesOutTree().clear();
+            node.setEnabledInDegree(0);
+            node.setEnabledOutDegree(0);
+            node.setEnabledMutualDegree(0);
             node.clearMetaEdges();
         }
+        view.setEdgesCountTotal(0);
+        view.setEdgesCountEnabled(0);
+        view.setMutualEdgesEnabled(0);
+        view.setMutualEdgesTotal(0);
         dhns.getGraphStructure().getEdgeDictionnary().clear();
     }
 
@@ -315,5 +351,58 @@ public class EdgeProcessor {
             return getMetaEdge(sourceParent, targetParent);
         }
         return null;
+    }
+
+    public void incrementEdgesCounting(AbstractNode enabledNode, AbstractNode parent) {
+        for (edgeIterator.setNode(enabledNode.getEdgesOutTree()); edgeIterator.hasNext();) {
+            AbstractEdge edge = edgeIterator.next();
+            AbstractNode target = edge.getTarget(view.getViewId());
+            if (target.isEnabled()) {
+                view.incEdgesCountEnabled(1);
+                enabledNode.incEnabledOutDegree();
+                target.incEnabledInDegree();
+                if (target.getEdgesOutTree().hasNeighbour(enabledNode)) {
+                    if (parent == null || (parent != null && target.parent != parent) || (parent != null && target.parent == parent && target.getId() < enabledNode.getId())) {
+                        view.incMutualEdgesEnabled(1);
+                        enabledNode.incEnabledMutualDegree();
+                        target.incEnabledMutualDegree();
+                    }
+                }
+            }
+        }
+        for (edgeIterator.setNode(enabledNode.getEdgesInTree()); edgeIterator.hasNext();) {
+            AbstractEdge edge = edgeIterator.next();
+            AbstractNode source = edge.getSource(view.getViewId());
+            if (source.isEnabled() && (parent == null || source.parent != parent)) {
+                view.incEdgesCountEnabled(1);
+                enabledNode.incEnabledInDegree();
+                source.incEnabledOutDegree();
+            }
+        }
+    }
+
+    public void decrementEdgesCouting(AbstractNode disabledNode, AbstractNode parent) {
+        for (edgeIterator.setNode(disabledNode.getEdgesOutTree()); edgeIterator.hasNext();) {
+            AbstractEdge edge = edgeIterator.next();
+            AbstractNode target = edge.getTarget(view.getViewId());
+            if (target.isEnabled() || (parent != null && target.parent == parent)) {
+                target.decEnabledInDegree();
+                disabledNode.decEnabledOutDegree();
+                view.decEdgesCountEnabled(1);
+                if (target.getEdgesOutTree().hasNeighbour(disabledNode) && (parent == null || (parent != null && target.parent == parent && target.getId() < disabledNode.getId()))) {
+                    target.decEnabledMutualDegree();
+                    disabledNode.decEnabledMutualDegree();
+                    view.decMutualEdgesEnabled(1);
+                }
+            }
+        }
+        for (edgeIterator.setNode(disabledNode.getEdgesInTree()); edgeIterator.hasNext();) {
+            AbstractEdge edge = edgeIterator.next();
+            AbstractNode source = edge.getSource(view.getViewId());
+            if (source.isEnabled()) {
+                view.decEdgesCountEnabled(1);
+                source.decEnabledOutDegree();
+            }
+        }
     }
 }

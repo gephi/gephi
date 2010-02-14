@@ -259,6 +259,9 @@ public class DHNSSerializer {
             nodeE.setAttribute("enabled", String.valueOf(node.isEnabled()));
             nodeE.setAttribute("pre", String.valueOf(node.pre));
             nodeE.setAttribute("parent", String.valueOf(node.parent.pre));
+            nodeE.setAttribute("enabledindegree", String.valueOf(node.getEnabledInDegree()));
+            nodeE.setAttribute("enabledoutdegree", String.valueOf(node.getEnabledOutDegree()));
+            nodeE.setAttribute("enabledmutualdegree", String.valueOf(node.getEnabledMutualDegree()));
         }
 
         //Edges
@@ -291,6 +294,12 @@ public class DHNSSerializer {
                     AbstractNode mainNode = mainStructure.getNodeAt(Integer.parseInt(nodeViewE.getAttribute("mainpre")));
                     AbstractNode parentNode = treeStructure.getNodeAt(Integer.parseInt(nodeViewE.getAttribute("parent")));
                     AbstractNode node = new AbstractNode(mainNode.getNodeData(), graphView.getViewId(), 0, 0, 0, parentNode);
+                    Integer inDegree = Integer.parseInt(nodeViewE.getAttribute("enabledindegree"));
+                    Integer outDegree = Integer.parseInt(nodeViewE.getAttribute("enabledoutdegree"));
+                    Integer mutualDegree = Integer.parseInt(nodeViewE.getAttribute("enabledmutualdegree"));
+                    node.setEnabledInDegree(inDegree);
+                    node.setEnabledOutDegree(outDegree);
+                    node.setEnabledMutualDegree(mutualDegree);
                     node.setEnabled(enabled);
                     treeStructure.insertAsChild(node, parentNode);
                 } else if (((Element) nodesE.item(i)).getTagName().equals(ELEMENT_VIEW_EDGE)) {

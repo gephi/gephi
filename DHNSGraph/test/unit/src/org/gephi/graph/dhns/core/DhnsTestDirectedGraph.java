@@ -707,4 +707,69 @@ public class DhnsTestDirectedGraph {
         //Test2
         assertEquals(graphGlobal.getOutEdges(nodeMap.get("Node 4")).toArray()[0], edgeMap.get("4-4"));
     }
+
+    @Test
+    public void testMutualCount() {
+        DhnsGraphController controller = new DhnsGraphController();
+        Dhns dhns = new Dhns(controller, null);
+        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure().getMainView());
+        TreeStructure treeStructure = dhns.getGraphStructure().getMainView().getStructure();
+        GraphFactoryImpl factory = dhns.factory();
+
+        AbstractNode node1 = factory.newNode();
+        AbstractNode node2 = factory.newNode();
+        graph.addNode(node1);
+        graph.addNode(node2);
+        AbstractEdge edge1 = factory.newEdge(node1, node2);
+        AbstractEdge edge2 = factory.newEdge(node2, node1);
+        graph.addEdge(edge1);
+        graph.addEdge(edge2);
+
+    }
+
+    @Test
+    public void testEdgesCounting() {
+         DhnsGraphController controller = new DhnsGraphController();
+        Dhns dhns = new Dhns(controller, null);
+        GraphViewImpl view = dhns.getGraphStructure().getMainView();
+        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, view);
+        TreeStructure treeStructure = view.getStructure();
+        GraphFactoryImpl factory = dhns.factory();
+
+        AbstractNode node1 = factory.newNode();
+        AbstractNode node2 = factory.newNode();
+        AbstractNode node3 = factory.newNode();
+        graph.addNode(node1);
+        graph.addNode(node2);
+        graph.addNode(node3);
+        AbstractEdge edge1 = factory.newEdge(node1, node2);
+        AbstractEdge edge2 = factory.newEdge(node2, node1);
+        AbstractEdge edge3 = factory.newEdge(node3, node3);
+        graph.addEdge(edge1);
+        graph.addEdge(edge2);
+        graph.addEdge(edge3);
+
+        assertEquals(3, view.getEdgesCountTotal());
+        assertEquals(1, view.getMutualEdgesTotal());
+        assertEquals(3, view.getEdgesCountEnabled());
+        assertEquals(1, view.getMutualEdgesEnabled());
+
+        graph.clearEdges(node3);
+        assertEquals(2, view.getEdgesCountTotal());
+        assertEquals(1, view.getMutualEdgesTotal());
+
+        graph.clearEdges(node1);
+        assertEquals(0, view.getEdgesCountTotal());
+        assertEquals(0, view.getMutualEdgesTotal());
+
+        graph.addEdge(edge1);
+        graph.addEdge(edge2);
+        graph.addEdge(edge3);
+
+        graph.removeEdge(edge3);
+        assertEquals(2, view.getEdgesCountTotal());
+        assertEquals(1, view.getMutualEdgesTotal());
+        assertEquals(2, view.getEdgesCountEnabled());
+        assertEquals(1, view.getMutualEdgesEnabled());
+    }
 }

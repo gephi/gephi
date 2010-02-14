@@ -30,6 +30,7 @@ import org.gephi.graph.dhns.node.iterators.DescendantIterator;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.gephi.graph.dhns.predicate.Tautology;
+import org.gephi.utils.collection.avl.ParamAVLIterator;
 
 /**
  * Business class for external operations on the data structure. Propose blocking mechanism.
@@ -264,10 +265,17 @@ public class StructureModifier {
             //Enable children
             for (ChildrenIterator itr = new ChildrenIterator(treeStructure, absNode, Tautology.instance); itr.hasNext();) {
                 AbstractNode child = itr.next();
-
                 child.setEnabled(true);
                 edgeProcessor.computeMetaEdges(child, child);
             }
+
+            //Update counting
+            for (ChildrenIterator itr = new ChildrenIterator(treeStructure, absNode, Tautology.instance); itr.hasNext();) {
+                AbstractNode child = itr.next();
+                edgeProcessor.incrementEdgesCounting(child, absNode);
+            }
+
+            edgeProcessor.decrementEdgesCouting(absNode, null);
         }
 
         private void retract(AbstractNode parent) {
@@ -281,6 +289,13 @@ public class StructureModifier {
             //Enable node
             parent.setEnabled(true);
             edgeProcessor.computeMetaEdges(parent, parent);
+
+            //Edges counting
+            for (ChildrenIterator itr = new ChildrenIterator(treeStructure, parent, Tautology.instance); itr.hasNext();) {
+                AbstractNode child = itr.next();
+                edgeProcessor.decrementEdgesCouting(child, parent);
+            }
+            edgeProcessor.incrementEdgesCounting(parent, null);
         }
 
         private void addNode(AbstractNode node) {
@@ -292,9 +307,28 @@ public class StructureModifier {
             AbstractNode sourceNode = edge.getSource(view.getViewId());
             AbstractNode targetNode = edge.getTarget(view.getViewId());
 
+            boolean enabled = sourceNode.isEnabled() && targetNode.isEnabled();
+
             //Add Edges
             sourceNode.getEdgesOutTree().add(edge);
             targetNode.getEdgesInTree().add(edge);
+
+            if (!edge.isSelfLoop() && sourceNode.getEdgesInTree().hasNeighbour(targetNode)) {
+                //Mututal edge
+                view.incMutualEdgesTotal(1);
+                if (enabled) {
+                    sourceNode.incEnabledMutualDegree();
+                    targetNode.incEnabledMutualDegree();
+                    view.incMutualEdgesEnabled(1);
+                }
+            }
+
+            view.incEdgesCountTotal(1);
+            if (enabled) {
+                view.incEdgesCountEnabled(1);
+                sourceNode.incEnabledOutDegree();
+                sourceNode.incEnabledInDegree();
+            }
 
             dhns.getGraphStructure().getEdgeDictionnary().add(edge);
 
@@ -320,9 +354,29 @@ public class StructureModifier {
         }
 
         private boolean delEdge(AbstractEdge edge) {
+            AbstractNode source = edge.getSource(view.getViewId());
+            AbstractNode target = edge.getTarget(view.getViewId());
+
+            boolean enabled = source.isEnabled() && target.isEnabled();
+
+            if (!edge.isSelfLoop() && source.getEdgesInTree().hasNeighbour(target)) {
+                //mutual
+                if (enabled) {
+                    view.decMutualEdgesEnabled(1);
+                    source.decEnabledMutualDegree();
+                }
+            }
+
+            view.decEdgesCountTotal(1);
+            if (enabled) {
+                view.decEdgesCountEnabled(1);
+                source.decEnabledOutDegree();
+                target.decEnabledInDegree();
+            }
+
             //Remove edge
-            boolean res = edge.getSource(view.getViewId()).getEdgesOutTree().remove(edge);
-            res = res && edge.getTarget(view.getViewId()).getEdgesInTree().remove(edge);
+            boolean res = source.getEdgesOutTree().remove(edge);
+            res = res && target.getEdgesInTree().remove(edge);
 
             dhns.getGraphStructure().getEdgeDictionnary().remove(edge);
 
@@ -372,6 +426,9 @@ public class StructureModifier {
                         //Node is thus disabled
                         edgeProcessor.clearMetaEdges(node);
                         node.setEnabled(false);
+                        node.setEnabledInDegree(0);
+                        node.setEnabledOutDegree(0);
+                        node.setEnabledMutualDegree(0);//TODO
                         //DO
                     } else {
                         //The node is kept enabled
@@ -386,6 +443,7 @@ public class StructureModifier {
                             if (descendant.isEnabled()) {
                                 edgeProcessor.clearMetaEdges(descendant);
                                 descendant.setEnabled(false);
+                                //TODO
                             }
                         }
                         //DO

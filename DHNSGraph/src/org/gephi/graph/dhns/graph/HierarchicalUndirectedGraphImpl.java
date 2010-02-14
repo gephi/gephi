@@ -133,18 +133,8 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
     }
 
     public int getDegree(Node node) {
-        //readLock();
         AbstractNode absNode = checkNode(node);
-        int count = 0;
-        EdgeNodeIterator itr = new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, Tautology.instance, Tautology.instance);
-        for (; itr.hasNext();) {
-            AbstractEdge edge = itr.next();
-            if (edge.isSelfLoop()) {
-                count++;
-            }
-            count++;
-        }
-        //readUnlock();
+        int count = absNode.getEnabledInDegree() + absNode.getEnabledOutDegree() - absNode.getEnabledMutualDegree();
         return count;
     }
 
