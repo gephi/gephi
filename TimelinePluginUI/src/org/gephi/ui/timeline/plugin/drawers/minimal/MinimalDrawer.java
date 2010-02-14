@@ -171,6 +171,7 @@ public class MinimalDrawer extends JPanel
             this.model = model;
             sf = model.getFromFloat() * (double) getWidth();
             st = model.getToFloat() * (double) getWidth();
+            repaint();
         }
     }
 
@@ -205,22 +206,27 @@ public class MinimalDrawer extends JPanel
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        int width = getWidth();
+        int height = getHeight();
         // initialization
         if (st == 0) {
             if (model != null) {
-                sf = model.getFromFloat() * (double) getWidth();
-                st = model.getToFloat() * (double) getWidth();
-            } else {
-                sf = 0.0;
-                st = (double) getWidth();
-            }
+                sf = 0.0 * (double) width;
+                st = 1.0 * (double) width;
+                newfrom = sf * (1.0 / width);
+                newto = st * (1.0 / width);
+            } /*else {
+            sf = 0.0;
+            st = 1.0 * (double) getWidth();
+            newfrom = sf * (1.0 / width);
+            newto = st * (1.0 / width);
+            }*/
         }
 
         int tmMarginTop = 2;
         int tmMarginBottom = 4;
 
-        int width = getWidth();
-        int height = getHeight();
+
         settings.update(width, height);
         Graphics2D g2d = (Graphics2D) g;
 
@@ -242,7 +248,7 @@ public class MinimalDrawer extends JPanel
         System.out.println("all max: " + max);
         System.out.println("all date min: " + new DateTime(new Date(min)));
         System.out.println("all date max: " + new DateTime(new Date(max)));
-        */
+         */
         if (max <= min || min == Double.NEGATIVE_INFINITY || max == Double.POSITIVE_INFINITY) {
             return;
         }
@@ -251,7 +257,7 @@ public class MinimalDrawer extends JPanel
         System.out.println("max: " + max);
         System.out.println("date min: " + new DateTime(new Date(min)));
         System.out.println("date max: " + new DateTime(new Date(max)));
-        */
+         */
         g2d.setRenderingHints(settings.renderingHints);
 
 
@@ -334,17 +340,20 @@ public class MinimalDrawer extends JPanel
 
         if (v != Double.NEGATIVE_INFINITY && v != Double.POSITIVE_INFINITY) {
             String str = "";
+            int strw = 0;
             if (model.getUnit() == DateTime.class) {
                 DateTime d = new DateTime(new Date((long) v));
                 if (d != null) {
 
                     DateTimeFormatter fmt = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
                     str = fmt.withLocale(LOCALE).print(d);
+                    strw = (int) (settings.tip.fontMetrics.getStringBounds(str, null)).getWidth() + 4;
                 }
             } else {
                 str = new Double(v).toString();
+                strw = (int) (settings.tip.fontMetrics.getStringBounds(str, null)).getWidth() + 14;
             }
-            int strw = (int) (settings.tip.fontMetrics.getStringBounds(str, null)).getWidth() + 4;
+
             int px = currentMousePositionX;
             if (px + strw >= width) {
                 px = width - strw;
@@ -571,8 +580,8 @@ public class MinimalDrawer extends JPanel
             return;
         }
         for (double i = 1; i < numOfGrads; i++) {
-            double xi = x + i * (width / (double)numOfGrads);
-            g2d.drawLine((int)xi, topMargin, (int)xi, height - settings.graduations.textBottomMargin);
+            double xi = x + i * (width / (double) numOfGrads);
+            g2d.drawLine((int) xi, topMargin, (int) xi, height - settings.graduations.textBottomMargin);
         }
     }
 
@@ -699,13 +708,18 @@ public class MinimalDrawer extends JPanel
         if (model == null) {
             return;
         }
-
+        double w = getWidth();
 
         currentMousePositionX = evt.getX();
+        if (currentMousePositionX > (int) w) {
+            currentMousePositionX = (int) w;
+        }
+        if (currentMousePositionX < 0) {
+            currentMousePositionX = 0;
+        }
         int x = currentMousePositionX;
-        double w = getWidth();
-        if (x > (int)w) x = (int)w;
-        if (x < 0) x = 0;
+
+
         int r = settings.selection.visibleHookWidth;//skin.getSelectionHookSideLength();
 
         // SELECTED ZONE BEGIN POSITION, IN PIXELS
