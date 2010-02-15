@@ -387,20 +387,20 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             }
 
             if (isDynamicMode) {
-                String dateFrom = null;
-                String dateTo = null;
+                String nodeStart = null;
+                String nodeEnd = null;
                 //Node start date
                 if (!nodeE.getAttribute("start").isEmpty()) {
-                    dateFrom = nodeE.getAttribute("start");
+                    nodeStart = nodeE.getAttribute("start");
                 }
 
                 //Node end date
                 if (!nodeE.getAttribute("end").isEmpty()) {
-                    dateTo = nodeE.getAttribute("end");
+                    nodeEnd = nodeE.getAttribute("end");
                 }
 
-                if (dateFrom != null || dateTo != null) {
-                    node.addTimeSlice(dateFrom, dateTo);
+                if (nodeStart != null || nodeEnd != null) {
+                    node.addTimeSlice(nodeStart, nodeEnd);
                 }
             }
 
@@ -522,20 +522,20 @@ public class ImporterGEXF implements XMLImporter, LongTask {
 
 
             if (isDynamicMode) {
-                String dateFrom = null;
-                String dateTo = null;
+                String edgeStart = null;
+                String edgeEnd = null;
                 //Edge start date
                 if (!edgeE.getAttribute("start").isEmpty()) {
-                    dateFrom = edgeE.getAttribute("start");
+                    edgeStart = edgeE.getAttribute("start");
                 }
 
                 //Edge end date
                 if (!edgeE.getAttribute("end").isEmpty()) {
-                    dateTo = edgeE.getAttribute("end");
+                    edgeEnd = edgeE.getAttribute("end");
                 }
 
-                if (dateFrom != null || dateTo != null) {
-                    edge.addTimeSlice(dateFrom, dateTo);
+                if (edgeStart != null || edgeEnd != null) {
+                    edge.addTimeSlice(edgeStart, edgeEnd);
                 }
             }
 
@@ -638,25 +638,24 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 }
             }
 
-            /* ???
-            if(isDynamicMode) {
-            //Node date from
-            if (!columnE.getAttribute("datefrom").isEmpty()) {
-            String dateFrom = columnE.getAttribute("datefrom");
-            float f = Float.valueOf(dateFrom).floatValue();
-            node.setDynamicFrom(f);
-            // FIXME probleme de conversions de dates
-            }
+            /*if (isDynamicMode) {
+                String attrStart = null;
+                String attrEnd = null;
+                //Attribute start date
+                if (!columnE.getAttribute("start").isEmpty()) {
+                    attrStart = columnE.getAttribute("start");
+                }
 
-            //Node date to
-            if (!columnE.getAttribute("dateto").isEmpty()) {
-            String dateTo = columnE.getAttribute("dateto");
-            float f = Float.valueOf(dateTo).floatValue();
-            node.setDynamicTo(f);
-            // FIXME probleme de conversions de dates
-            }
+                //Attribute end date
+                if (!columnE.getAttribute("end").isEmpty()) {
+                    attrEnd = columnE.getAttribute("end");
+                }
+
+                if (attrStart != null || attrEnd != null) {
+                    columnE.addTimeSlice(attrStart, attrEnd);
+                }
             }*/
-
+            
             //Add as attribute
             if (colClass.equals("node")) {
                 AttributeTable nodeClass = container.getAttributeModel().getNodeTable();
