@@ -74,7 +74,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
     private boolean keepComplexAndEmptyAttributeTypes = true;
     private boolean isDynamicMode = false;
     private boolean isIdTypeInteger = false;
-    private boolean isDateTypeInteger = false;
+    private boolean isDateTypeFloat = false;
     //Attributes
     protected PropertiesAssociations properties = new PropertiesAssociations();
     private HashMap<String, NodeProperties> nodePropertiesAttributes;
@@ -125,7 +125,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
         this.optionsAttributes = null;
         this.cancel = false;
         this.isDynamicMode = false;
-        this.isDateTypeInteger = false;
+        this.isDateTypeFloat = false;
         this.unknownParents = null;
     }
 
@@ -151,7 +151,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 return;
             }
 
-            exp = xpath.compile("./graph/nodes/node[@id and normalize-space(@label)]");
+            exp = xpath.compile("./graph/nodes/node[@id]");
             NodeList nodeListE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
             if (cancel) {
                 return;
@@ -175,14 +175,14 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                     isDynamicMode = true;
 
                     //Date type
-                    exp = xpath.compile("./graph[@datetype]");
+                    exp = xpath.compile("./graph[@timetype]");
                     NodeList datetypeE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
                     if (datetypeE != null && datetypeE.getLength() > 0) {
-                        String datetype = ((Element) modeE.item(0)).getAttribute("datetype");
-                        if (datetype.equals("integer")) {
-                            isDateTypeInteger = true;
-                        } else if (!datetype.isEmpty() && !datetype.equals("date")) {
-                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_parsingdatetype", datetype), Issue.Level.SEVERE));
+                        String timetype = ((Element) modeE.item(0)).getAttribute("timetype");
+                        if (timetype.equals("float")) {
+                            isDateTypeFloat = true;
+                        } else if (!timetype.isEmpty() && !timetype.equals("date")) {
+                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_parsingdatetype", timetype), Issue.Level.SEVERE));
                         }
                     }
 
@@ -307,10 +307,6 @@ public class ImporterGEXF implements XMLImporter, LongTask {
 
             //Label
             String nodeLabel = nodeE.getAttribute("label");
-            if (nodeLabel.isEmpty()) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodelabel", nodeId), Issue.Level.SEVERE));
-                continue;
-            }
             node.setLabel(nodeLabel);
 
             //Get Attvalue child nodes, avoiding using descendants
@@ -631,11 +627,12 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             NodeList optionsList = columnE.getElementsByTagName("options");
             if (optionsList.getLength() > 0) {
                 Element optionE = (Element) optionsList.item(0);
-                String optionsValueStr = optionE.getTextContent();
+                String optionsValuesStr = optionE.getTextContent();
                 try {
-                    StringList optionValues = new StringList(optionsValueStr, "|");
-                    optionsAttributes.put(colId, optionValues);
-                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_options", optionsValueStr, colTitle));
+                    //String[] optionValues = optionsValueStr.split("\\|");
+                    StringList optionValuesList = new StringList(optionsValuesStr, "\\|");
+                    optionsAttributes.put(colId, optionValuesList);
+                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_options", optionsValuesStr, colTitle));
                 } catch (Exception e) {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributeoptions", colTitle, attributeType.getTypeString()), Issue.Level.SEVERE));
                 }
