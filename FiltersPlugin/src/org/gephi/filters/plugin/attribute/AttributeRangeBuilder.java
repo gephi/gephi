@@ -132,7 +132,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         }
 
         public String getName() {
-            return NbBundle.getMessage(AttributeRangeBuilder.class, "AttributeRangeBuilder.name");
+            return column.getTitle() + " " + NbBundle.getMessage(AttributeRangeBuilder.class, "AttributeRangeBuilder.name");
         }
 
         private void refreshRange() {
