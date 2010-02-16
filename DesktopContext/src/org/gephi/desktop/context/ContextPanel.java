@@ -94,15 +94,11 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
                 public void run() {
                     Graph visibleGraph = model.getGraphVisible();
                     Graph fullGraph = model.getGraph();
-                    visibleGraph.readLock();
-                    fullGraph.readLock();
                     final int nodesFull = fullGraph.getNodeCount();
                     final int nodesVisible = visibleGraph.getNodeCount();
                     final int edgesFull = fullGraph.getEdgeCount();
                     final int edgesVisible = visibleGraph.getEdgeCount();
                     final GraphType graphType = visibleGraph instanceof DirectedGraph ? GraphType.DIRECTED : visibleGraph instanceof UndirectedGraph ? GraphType.UNDIRECTED : GraphType.MIXED;
-                    fullGraph.readUnlock();
-                    visibleGraph.readUnlock();
                     SwingUtilities.invokeLater(new Runnable() {
 
                         public void run() {
