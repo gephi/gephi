@@ -56,9 +56,11 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
     //Settings
     private boolean normalize = false;
     private boolean simpleQuotes = false;
+    private boolean useQuotes = true;
     private boolean exportColors = true;
     private boolean exportPosition = true;
     private boolean exportAttributes = true;
+    private boolean exportVisibility = false;
     //Settings Helper
     private float minSize;
     private float maxSize;
@@ -143,7 +145,7 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
 
         //Attributes Node columns
         for (AttributeColumn c : nodeColumns) {
-            if (c.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+            if (!c.getOrigin().equals(AttributeOrigin.PROPERTY)) {
                 stringBuilder.append(c.getTitle());
                 stringBuilder.append(" ");
                 DataTypeGDF dataTypeGDF = getDataTypeGDF(c.getType());
@@ -184,22 +186,25 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
             for (NodeColumnsGDF c : defaultNodeColumnsGDFs) {
                 if (c.isEnable()) {
                     c.writeData(stringBuilder, node);
+                    stringBuilder.append(",");
                 }
-                stringBuilder.append(",");
             }
 
             //Attributes columns
             for (AttributeColumn c : nodeColumns) {
-                Object val = node.getNodeData().getAttributes().getValue(c.getIndex());
-                if (val != null) {
-                    if (c.getType().equals(AttributeType.STRING) || c.getType().equals(AttributeType.LIST_STRING)) {
-                        String quote = (simpleQuotes) ? "'" : "\"";
-                        stringBuilder.append(quote);
-                        stringBuilder.append(val.toString());
-                        stringBuilder.append(quote);
-                    } else {
-                        stringBuilder.append(val.toString());
+                if (!c.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+                    Object val = node.getNodeData().getAttributes().getValue(c.getIndex());
+                    if (val != null) {
+                        if (c.getType().equals(AttributeType.STRING) || c.getType().equals(AttributeType.LIST_STRING)) {
+                            String quote = !useQuotes ? "" : simpleQuotes ? "'" : "\"";
+                            stringBuilder.append(quote);
+                            stringBuilder.append(val.toString());
+                            stringBuilder.append(quote);
+                        } else {
+                            stringBuilder.append(val.toString());
+                        }
                     }
+                    stringBuilder.append(",");
                 }
             }
 
@@ -268,8 +273,8 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
             for (EdgeColumnsGDF c : defaultEdgeColumnsGDFs) {
                 if (c.isEnable()) {
                     c.writeData(stringBuilder, edge);
+                    stringBuilder.append(",");
                 }
-                stringBuilder.append(",");
             }
 
             //Attributes columns
@@ -277,7 +282,7 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
                 Object val = edge.getEdgeData().getAttributes().getValue(c.getIndex());
                 if (val != null) {
                     if (c.getType().equals(AttributeType.STRING) || c.getType().equals(AttributeType.LIST_STRING)) {
-                        String quote = (simpleQuotes) ? "'" : "\"";
+                        String quote = !useQuotes ? "" : simpleQuotes ? "'" : "\"";
                         stringBuilder.append(quote);
                         stringBuilder.append(val.toString());
                         stringBuilder.append(quote);
@@ -358,7 +363,7 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
             public void writeData(StringBuilder builder, Node node) {
                 String label = node.getNodeData().getLabel();
                 if (label != null) {
-                    String quote = (simpleQuotes) ? "'" : "\"";
+                    String quote = !useQuotes ? "" : simpleQuotes ? "'" : "\"";
                     builder.append(quote);
                     builder.append(label);
                     builder.append(quote);
@@ -370,7 +375,7 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return true;
+                return exportVisibility;
             }
 
             @Override
@@ -383,7 +388,7 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return true;
+                return exportVisibility;
             }
 
             @Override
@@ -396,7 +401,7 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return true;
+                return exportPosition;
             }
 
             @Override
@@ -413,7 +418,7 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return true;
+                return exportPosition;
             }
 
             @Override
@@ -469,7 +474,7 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Node node) {
-                String quote = (simpleQuotes) ? "'" : "\"";
+                String quote = "'";
                 builder.append(quote);
                 builder.append((int) (node.getNodeData().r() * 255f));
                 builder.append(",");
@@ -484,7 +489,7 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return true;
+                return exportVisibility;
             }
 
             @Override
@@ -497,7 +502,7 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return true;
+                return false;
             }
 
             @Override
@@ -530,7 +535,7 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
             public void writeData(StringBuilder builder, Edge edge) {
                 String label = edge.getEdgeData().getLabel();
                 if (label != null) {
-                    String quote = (simpleQuotes) ? "'" : "\"";
+                    String quote = !useQuotes ? "" : simpleQuotes ? "'" : "\"";
                     builder.append(quote);
                     builder.append(label);
                     builder.append(quote);
@@ -568,12 +573,12 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return true;
+                return exportColors;
             }
 
             @Override
             public void writeData(StringBuilder builder, Edge edge) {
-                String quote = (simpleQuotes) ? "'" : "\"";
+                String quote = "'";
                 builder.append(quote);
                 builder.append((int) (edge.getEdgeData().r() * 255f));
                 builder.append(",");
@@ -694,6 +699,22 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
 
     public boolean isSimpleQuotes() {
         return simpleQuotes;
+    }
+
+    public boolean isUseQuotes() {
+        return useQuotes;
+    }
+
+    public boolean isExportVisibility() {
+        return exportVisibility;
+    }
+
+    public void setExportVisibility(boolean exportVisibility) {
+        this.exportVisibility = exportVisibility;
+    }
+
+    public void setUseQuotes(boolean useQuotes) {
+        this.useQuotes = useQuotes;
     }
 
     private DataTypeGDF getDataTypeGDF(AttributeType type) {
