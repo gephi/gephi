@@ -78,6 +78,10 @@ public class DuplicateManager {
                 }
             }
         }
+        newGraphStructure.getMainView().setEdgesCountTotal(view.getEdgesCountTotal());
+        newGraphStructure.getMainView().setEdgesCountEnabled(view.getEdgesCountEnabled());
+        newGraphStructure.getMainView().setMutualEdgesTotal(view.getMutualEdgesTotal());
+        newGraphStructure.getMainView().setMutualEdgesEnabled(view.getMutualEdgesEnabled());
         destination.getWriteLock().unlock();
         dhns.getReadLock().unlock();
     }
