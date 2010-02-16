@@ -30,6 +30,10 @@ public class PreviewGraphFactory {
         // creates edges
         for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdges()) {
 
+            if (sourceEdge.getWeight() <= 0) {
+                continue;
+            }
+
             if (sourceEdge.isSelfLoop()) {
                 createPreviewSelfLoop(previewGraph, sourceEdge);
                 continue;
@@ -61,6 +65,10 @@ public class PreviewGraphFactory {
 
         // creates edges
         for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdges()) {
+
+            if (sourceEdge.getWeight() <= 0) {
+                continue;
+            }
 
             if (sourceEdge.isSelfLoop()) {
                 createPreviewSelfLoop(previewGraph, sourceEdge);
@@ -98,6 +106,10 @@ public class PreviewGraphFactory {
         // creates edges
         for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdges()) {
 
+            if (sourceEdge.getWeight() <= 0) {
+                continue;
+            }
+
             if (sourceEdge.isSelfLoop()) {
                 createPreviewSelfLoop(previewGraph, sourceEdge);
                 continue;
@@ -132,7 +144,7 @@ public class PreviewGraphFactory {
         org.gephi.graph.api.TextData sourceNodeTextData = sourceNodeData.getTextData();
 
         String label = sourceNodeTextData.getText();
-        if(label==null || label.isEmpty()) {
+        if (label == null || label.isEmpty()) {
             label = sourceNodeData.getLabel();
         }
 
@@ -187,7 +199,7 @@ public class PreviewGraphFactory {
         org.gephi.graph.api.TextData sourceEdgeTextData = sourceEdgeData.getTextData();
 
         String label = sourceEdgeTextData.getText();
-        if(label==null || label.isEmpty()) {
+        if (label == null || label.isEmpty()) {
             label = sourceEdgeData.getLabel();
         }
 
@@ -216,7 +228,7 @@ public class PreviewGraphFactory {
         org.gephi.graph.api.TextData sourceEdgeTextData = sourceEdgeData.getTextData();
 
         String label = sourceEdgeTextData.getText();
-        if(label==null || label.isEmpty()) {
+        if (label == null || label.isEmpty()) {
             label = sourceEdgeData.getLabel();
         }
 
@@ -245,7 +257,7 @@ public class PreviewGraphFactory {
         org.gephi.graph.api.TextData sourceEdgeTextData = sourceEdgeData.getTextData();
 
         String label = sourceEdgeTextData.getText();
-        if(label==null || label.isEmpty()) {
+        if (label == null || label.isEmpty()) {
             label = sourceEdgeData.getLabel();
         }
 

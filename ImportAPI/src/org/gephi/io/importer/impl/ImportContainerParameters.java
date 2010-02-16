@@ -32,6 +32,7 @@ public class ImportContainerParameters {
     private boolean parallelEdges = true;
     private boolean autoNode = true;
     private boolean autoScale = true;
+    private boolean removeEdgeWithWeightZero = false;
     private EdgeDefault edgeDefault = EdgeDefault.DIRECTED;
 
     public boolean isAutoNode() {
@@ -72,5 +73,13 @@ public class ImportContainerParameters {
 
     public void setAutoScale(boolean autoScale) {
         this.autoScale = autoScale;
+    }
+
+    public boolean isRemoveEdgeWithWeightZero() {
+        return removeEdgeWithWeightZero;
+    }
+
+    public void setRemoveEdgeWithWeightZero(boolean removeEdgeWithWeightZero) {
+        this.removeEdgeWithWeightZero = removeEdgeWithWeightZero;
     }
 }

@@ -292,6 +292,21 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     public boolean verify() {
 
+        //Edge weight 0
+        for (EdgeDraftImpl edge : edgeMap.values().toArray(new EdgeDraftImpl[0])) {
+            if (edge.getWeight() <= 0f) {
+                String id = edge.getId();
+                String sourceTargetId = edge.getSource().getId() + "-" + edge.getTarget().getId();
+                if (parameters.isRemoveEdgeWithWeightZero()) {
+                    edgeMap.remove(id);
+                    edgeSourceTargetMap.remove(sourceTargetId);
+                    report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Weight_Zero_Ignored", id), Level.SEVERE));
+                } else {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Weight_Zero", id), Level.WARNING));
+                }
+            }
+        }
+
         //Graph EdgeDefault
         if (directedEdgesCount > 0 && undirectedEdgesCount == 0) {
             parameters.setEdgeDefault(EdgeDefault.DIRECTED);
@@ -317,7 +332,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         } else if (parameters.getEdgeDefault().equals(EdgeDefault.MIXED)) {
             //Clean undirected edges when graph is mixed
             for (EdgeDraftImpl edge : edgeMap.values().toArray(new EdgeDraftImpl[0])) {
-                if(edge.getType()==null) {
+                if (edge.getType() == null) {
                     edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
                 }
                 if (edge.getType().equals(EdgeDraft.EdgeType.UNDIRECTED)) {
