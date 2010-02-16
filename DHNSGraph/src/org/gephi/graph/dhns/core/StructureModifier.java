@@ -339,7 +339,7 @@ public class StructureModifier {
             if (enabled) {
                 view.incEdgesCountEnabled(1);
                 sourceNode.incEnabledOutDegree();
-                sourceNode.incEnabledInDegree();
+                targetNode.incEnabledInDegree();
             }
 
             dhns.getGraphStructure().getEdgeDictionnary().add(edge);
@@ -376,7 +376,9 @@ public class StructureModifier {
                 if (enabled) {
                     view.decMutualEdgesEnabled(1);
                     source.decEnabledMutualDegree();
+                    target.decEnabledMutualDegree();
                 }
+                view.decMutualEdgesTotal(1);
             }
 
             view.decEdgesCountTotal(1);

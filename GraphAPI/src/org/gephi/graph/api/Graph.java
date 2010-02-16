@@ -154,8 +154,8 @@ public interface Graph {
      * Returns the number of nodes in the graph.
      * <p>
      * Special case of interest:
-     * <ul><li>For <b>clustered</b> graph, returns the number of nodes in the whole tree, not only
-     * the current view.</li>
+     * <ul><li>For <b>hierarchical</b> graph, returns the number of nodes in the
+     * current view only.</li>
      * </ul>
      * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
      * statement.
@@ -167,9 +167,9 @@ public interface Graph {
      * Returns the number of edges in the graph
      * <p>
      * Special case of interest:
-     * <ul><li>For <b>directed</b> graph, count self-loops twice.</li>
-     * <li>For <b>clustered</b> graph, count edges incident to any node in the tree regardless to the current
-     * view.</li></ul>
+     * <ul><li>Count self-loops once only.</li>
+     * <li>For <b>hierarchical</b> graph, count edges incident only to nodes
+     * in the current view.</li></ul>
      * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
      * statement.
      * @return the number of edges in the graph.

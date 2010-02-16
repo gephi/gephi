@@ -709,27 +709,8 @@ public class DhnsTestDirectedGraph {
     }
 
     @Test
-    public void testMutualCount() {
-        DhnsGraphController controller = new DhnsGraphController();
-        Dhns dhns = new Dhns(controller, null);
-        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure().getMainView());
-        TreeStructure treeStructure = dhns.getGraphStructure().getMainView().getStructure();
-        GraphFactoryImpl factory = dhns.factory();
-
-        AbstractNode node1 = factory.newNode();
-        AbstractNode node2 = factory.newNode();
-        graph.addNode(node1);
-        graph.addNode(node2);
-        AbstractEdge edge1 = factory.newEdge(node1, node2);
-        AbstractEdge edge2 = factory.newEdge(node2, node1);
-        graph.addEdge(edge1);
-        graph.addEdge(edge2);
-
-    }
-
-    @Test
     public void testEdgesCounting() {
-         DhnsGraphController controller = new DhnsGraphController();
+        DhnsGraphController controller = new DhnsGraphController();
         Dhns dhns = new Dhns(controller, null);
         GraphViewImpl view = dhns.getGraphStructure().getMainView();
         HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, view);
@@ -754,13 +735,32 @@ public class DhnsTestDirectedGraph {
         assertEquals(3, view.getEdgesCountEnabled());
         assertEquals(1, view.getMutualEdgesEnabled());
 
+        assertEquals(1, node1.getEnabledInDegree());
+        assertEquals(1, node1.getEnabledOutDegree());
+        assertEquals(1, node1.getEnabledMutualDegree());
+        assertEquals(1, node2.getEnabledInDegree());
+        assertEquals(1, node2.getEnabledOutDegree());
+        assertEquals(1, node2.getEnabledMutualDegree());
+        assertEquals(1, node3.getEnabledInDegree());
+        assertEquals(1, node3.getEnabledOutDegree());
+        assertEquals(0, node3.getEnabledMutualDegree());
+
         graph.clearEdges(node3);
         assertEquals(2, view.getEdgesCountTotal());
         assertEquals(1, view.getMutualEdgesTotal());
+        assertEquals(0, node3.getEnabledInDegree());
+        assertEquals(0, node3.getEnabledOutDegree());
+        assertEquals(0, node3.getEnabledMutualDegree());
 
         graph.clearEdges(node1);
         assertEquals(0, view.getEdgesCountTotal());
         assertEquals(0, view.getMutualEdgesTotal());
+        assertEquals(0, node1.getEnabledInDegree());
+        assertEquals(0, node1.getEnabledOutDegree());
+        assertEquals(0, node1.getEnabledMutualDegree());
+        assertEquals(0, node2.getEnabledInDegree());
+        assertEquals(0, node2.getEnabledOutDegree());
+        assertEquals(0, node2.getEnabledMutualDegree());
 
         graph.addEdge(edge1);
         graph.addEdge(edge2);
@@ -771,5 +771,32 @@ public class DhnsTestDirectedGraph {
         assertEquals(1, view.getMutualEdgesTotal());
         assertEquals(2, view.getEdgesCountEnabled());
         assertEquals(1, view.getMutualEdgesEnabled());
+        assertEquals(0, node3.getEnabledInDegree());
+        assertEquals(0, node3.getEnabledOutDegree());
+        assertEquals(0, node3.getEnabledMutualDegree());
+
+        graph.removeEdge(edge1);
+        assertEquals(1, view.getEdgesCountTotal());
+        assertEquals(0, view.getMutualEdgesTotal());
+        assertEquals(1, view.getEdgesCountEnabled());
+        assertEquals(0, view.getMutualEdgesEnabled());
+        assertEquals(1, node1.getEnabledInDegree());
+        assertEquals(0, node1.getEnabledOutDegree());
+        assertEquals(0, node1.getEnabledMutualDegree());
+        assertEquals(0, node2.getEnabledInDegree());
+        assertEquals(1, node2.getEnabledOutDegree());
+        assertEquals(0, node2.getEnabledMutualDegree());
+
+        graph.addEdge(edge1);
+        assertEquals(2, view.getEdgesCountTotal());
+        assertEquals(1, view.getMutualEdgesTotal());
+        assertEquals(2, view.getEdgesCountEnabled());
+        assertEquals(1, view.getMutualEdgesEnabled());
+        assertEquals(1, node1.getEnabledInDegree());
+        assertEquals(1, node1.getEnabledOutDegree());
+        assertEquals(1, node1.getEnabledMutualDegree());
+        assertEquals(1, node2.getEnabledInDegree());
+        assertEquals(1, node2.getEnabledOutDegree());
+        assertEquals(1, node2.getEnabledMutualDegree());
     }
 }

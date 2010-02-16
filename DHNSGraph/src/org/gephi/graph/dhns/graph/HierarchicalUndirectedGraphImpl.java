@@ -122,14 +122,7 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
     }
 
     public int getEdgeCount() {
-        //readLock();
-        int count = 0;
-        for (EdgeIterator itr = new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), true, enabledNodePredicate, Tautology.instance); itr.hasNext();) {
-            itr.next();
-            count++;
-        }
-        //readUnlock();
-        return count;
+        return view.getEdgesCountEnabled() - view.getMutualEdgesEnabled();
     }
 
     public int getDegree(Node node) {

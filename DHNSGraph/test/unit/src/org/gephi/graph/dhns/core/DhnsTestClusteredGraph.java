@@ -839,6 +839,8 @@ public class DhnsTestClusteredGraph {
         assertEquals(0, view.getEdgesCountEnabled());
         assertEquals(0, nodeMap.get("Leaf 0").getEnabledInDegree());
         assertEquals(0, nodeMap.get("Leaf 1").getEnabledOutDegree());
+        assertEquals(0, nodeMap.get("Leaf 0").getEnabledOutDegree());
+        assertEquals(0, nodeMap.get("Leaf 1").getEnabledInDegree());
         assertEquals(0, view.getMutualEdgesEnabled());
         Node n7 = graphGlobal2Directed.getTopNodes().toArray()[2];
         graphGlobal2Directed.expand(n7);
@@ -933,7 +935,11 @@ public class DhnsTestClusteredGraph {
         graphGlobal2Directed.ungroupNodes(n1);
         assertEquals(0, view.getMutualEdgesEnabled());
         assertEquals(1, view.getEdgesCountEnabled());
-
+        graphGlobal2Directed.groupNodes(new Node[] {nodeMap.get("Leaf 0"), nodeMap.get("Leaf 1")});
+        n1 = graphGlobal2Directed.getTopNodes().toArray()[2];
+        graphGlobal2Directed.expand(n1);
+        assertEquals(0, view.getMutualEdgesEnabled());
+        assertEquals(1, view.getEdgesCountEnabled());
     }
 
     @Test
