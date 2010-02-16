@@ -58,7 +58,7 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         pieChart.setChartVisible(pieButton.isSelected());
 
         //Event manager
-        consumerThread = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(2), new ThreadFactory() {
+        consumerThread = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(5), new ThreadFactory() {
 
             public Thread newThread(Runnable r) {
                 return new Thread(r, "Context Panel consumer thread");
@@ -89,28 +89,34 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
 
     private void refreshModelData() {
         if (consumerThread.getQueue().remainingCapacity() > 0) {
-            consumerThread.execute(new Runnable() {
+            consumerThread.execute(new RefreshRunnable());
+        }
+    }
+
+    private class RefreshRunnable implements Runnable {
+
+        public void run() {
+            Graph visibleGraph = model.getGraphVisible();
+            Graph fullGraph = model.getGraph();
+            final int nodesFull = fullGraph.getNodeCount();
+            final int nodesVisible = visibleGraph.getNodeCount();
+            final int edgesFull = fullGraph.getEdgeCount();
+            final int edgesVisible = visibleGraph.getEdgeCount();
+            final GraphType graphType = visibleGraph instanceof DirectedGraph ? GraphType.DIRECTED : visibleGraph instanceof UndirectedGraph ? GraphType.UNDIRECTED : GraphType.MIXED;
+            SwingUtilities.invokeLater(new Runnable() {
 
                 public void run() {
-                    Graph visibleGraph = model.getGraphVisible();
-                    Graph fullGraph = model.getGraph();
-                    final int nodesFull = fullGraph.getNodeCount();
-                    final int nodesVisible = visibleGraph.getNodeCount();
-                    final int edgesFull = fullGraph.getEdgeCount();
-                    final int edgesVisible = visibleGraph.getEdgeCount();
-                    final GraphType graphType = visibleGraph instanceof DirectedGraph ? GraphType.DIRECTED : visibleGraph instanceof UndirectedGraph ? GraphType.UNDIRECTED : GraphType.MIXED;
-                    SwingUtilities.invokeLater(new Runnable() {
-
-                        public void run() {
-                            String nodePerc = nodesFull > 0 ? " (" + formatter.format(nodesVisible / (double) nodesFull) + ")" : "";
-                            String edgePerc = edgesFull > 0 ? " (" + formatter.format(edgesVisible / (double) edgesFull) + ")" : "";
-                            nodeLabel.setText(String.valueOf(nodesVisible) + nodePerc);
-                            edgeLabel.setText(String.valueOf(edgesVisible) + edgePerc);
-                            graphTypeLabel.setText(graphType.type);
-                            double percentage = 0.5 * nodesVisible / (double) nodesFull + 0.5 * edgesVisible / (double) edgesFull;
-                            pieChart.refreshChart(percentage);
-                        }
-                    });
+                    String nodeText = String.valueOf(nodesVisible);
+                    String edgeText = String.valueOf(edgesVisible);
+                    if (nodesFull != nodesVisible || edgesFull != edgesVisible) {
+                        nodeText += nodesFull > 0 ? " (" + formatter.format(nodesVisible / (double) nodesFull) + " visible)" : "";
+                        edgeText += edgesFull > 0 ? " (" + formatter.format(edgesVisible / (double) edgesFull) + " visible)" : "";
+                    }
+                    nodeLabel.setText(nodeText);
+                    edgeLabel.setText(edgeText);
+                    graphTypeLabel.setText(graphType.type);
+                    double percentage = 0.5 * nodesVisible / (double) nodesFull + 0.5 * edgesVisible / (double) edgesFull;
+                    pieChart.refreshChart(percentage);
                 }
             });
         }
@@ -125,13 +131,25 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         labelEdges.setEnabled(enable);
         nodeLabel.setEnabled(enable);
         edgeLabel.setEnabled(enable);
+
+
+
+
         if (!enable) {
             nodeLabel.setText("NaN");
             edgeLabel.setText("NaN");
             graphTypeLabel.setText("");
+
+
+
+
         }
         pieButton.setEnabled(enable);
         piePanel.setVisible(showPie);
+
+
+
+
     }
 
     /** This method is called from within the constructor to
