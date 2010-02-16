@@ -162,10 +162,14 @@ public class StructureModifier {
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             node.setEnabled(node.size == 0);
+            edgeProcessor.resetEdgesCounting(node);
         }
+        view.setEdgesCountEnabled(0);
+        view.setMutualEdgesEnabled(0);
         for (TreeIterator itr = new TreeIterator(treeStructure, true, Tautology.instance); itr.hasNext();) {
             AbstractNode node = itr.next();
             edgeProcessor.computeMetaEdges(node, node);
+            edgeProcessor.computeEdgesCounting(node);
         }
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
@@ -178,10 +182,14 @@ public class StructureModifier {
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             node.setEnabled(node.parent == treeStructure.root);
+            edgeProcessor.resetEdgesCounting(node);
         }
+        view.setEdgesCountEnabled(0);
+        view.setMutualEdgesEnabled(0);
         for (TreeIterator itr = new TreeIterator(treeStructure, true, Tautology.instance); itr.hasNext();) {
             AbstractNode node = itr.next();
             edgeProcessor.computeMetaEdges(node, node);
+            edgeProcessor.computeEdgesCounting(node);
         }
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
@@ -194,10 +202,14 @@ public class StructureModifier {
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             node.setEnabled(node.level == level);
+            edgeProcessor.resetEdgesCounting(node);
         }
+        view.setEdgesCountEnabled(0);
+        view.setMutualEdgesEnabled(0);
         for (TreeIterator itr = new TreeIterator(treeStructure, true, Tautology.instance); itr.hasNext();) {
             AbstractNode node = itr.next();
             edgeProcessor.computeMetaEdges(node, node);
+            edgeProcessor.computeEdgesCounting(node);
         }
         graphVersion.incNodeAndEdgeVersion();
         dhns.getWriteLock().unlock();
@@ -426,9 +438,7 @@ public class StructureModifier {
                         //Node is thus disabled
                         edgeProcessor.clearMetaEdges(node);
                         node.setEnabled(false);
-                        node.setEnabledInDegree(0);
-                        node.setEnabledOutDegree(0);
-                        node.setEnabledMutualDegree(0);//TODO
+                        edgeProcessor.decrementEdgesCouting(node, null);
                         //DO
                     } else {
                         //The node is kept enabled
@@ -443,6 +453,7 @@ public class StructureModifier {
                             if (descendant.isEnabled()) {
                                 edgeProcessor.clearMetaEdges(descendant);
                                 descendant.setEnabled(false);
+                                edgeProcessor.decrementEdgesCouting(descendant, null);
                                 //TODO
                             }
                         }

@@ -210,6 +210,9 @@ public class DHNSSerializer {
             nodeE.setAttribute("enabled", String.valueOf(node.isEnabled()));
             nodeE.setAttribute("pre", String.valueOf(node.pre));
             nodeE.setAttribute("parent", String.valueOf(node.parent.pre));
+            nodeE.setAttribute("enabledindegree", String.valueOf(node.getEnabledInDegree()));
+            nodeE.setAttribute("enabledoutdegree", String.valueOf(node.getEnabledOutDegree()));
+            nodeE.setAttribute("enabledmutualdegree", String.valueOf(node.getEnabledMutualDegree()));
             treeE.appendChild(nodeE);
         }
         treeStructureE.appendChild(treeE);
@@ -237,6 +240,12 @@ public class DHNSSerializer {
                     AbstractNode parentNode = treeStructure.getNodeAt(Integer.parseInt(nodeE.getAttribute("parent")));
                     AbstractNode absNode = new AbstractNode(Integer.parseInt(nodeE.getAttribute("id")), 0, 0, 0, 0, parentNode);
                     absNode.setEnabled(enabled);
+                    Integer inDegree = Integer.parseInt(nodeE.getAttribute("enabledindegree"));
+                    Integer outDegree = Integer.parseInt(nodeE.getAttribute("enabledoutdegree"));
+                    Integer mutualDegree = Integer.parseInt(nodeE.getAttribute("enabledmutualdegree"));
+                    absNode.setEnabledInDegree(inDegree);
+                    absNode.setEnabledOutDegree(outDegree);
+                    absNode.setEnabledMutualDegree(mutualDegree);
                     absNode.getNodeData().setAttributes(factory.newNodeAttributes());
                     absNode.getNodeData().setTextData(factory.newTextData());
                     treeStructure.insertAsChild(absNode, parentNode);

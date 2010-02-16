@@ -405,4 +405,27 @@ public class EdgeProcessor {
             }
         }
     }
+
+    public void resetEdgesCounting(AbstractNode node) {
+        node.setEnabledInDegree(0);
+        node.setEnabledOutDegree(0);
+        node.setEnabledMutualDegree(0);
+    }
+
+    public void computeEdgesCounting(AbstractNode node) {
+        for (edgeIterator.setNode(node.getEdgesOutTree()); edgeIterator.hasNext();) {
+            AbstractEdge edge = edgeIterator.next();
+            AbstractNode target = edge.getTarget(view.getViewId());
+            if (target.isEnabled()) {
+                target.incEnabledInDegree();
+                node.incEnabledOutDegree();
+                view.incEdgesCountEnabled(1);
+                if (target.getEdgesOutTree().hasNeighbour(node) && target.getId() < node.getId()) {
+                    target.incEnabledMutualDegree();
+                    node.incEnabledMutualDegree();
+                    view.incMutualEdgesEnabled(1);
+                }
+            }
+        }
+    }
 }
