@@ -78,6 +78,7 @@ public class DuplicateManager {
                 }
             }
         }
+        newGraphStructure.getMainView().setNodesEnabled(view.getNodesEnabled());
         newGraphStructure.getMainView().setEdgesCountTotal(view.getEdgesCountTotal());
         newGraphStructure.getMainView().setEdgesCountEnabled(view.getEdgesCountEnabled());
         newGraphStructure.getMainView().setMutualEdgesTotal(view.getMutualEdgesTotal());

@@ -46,7 +46,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = WorkspaceDuplicateProvider.class, position = 1000)})
 public class DhnsGraphController implements GraphController, WorkspaceDuplicateProvider {
 
-    private static final int EVENTBUS_BOUND = 30;
+    private static final int EVENTBUS_BOUND = 10;
     //Common architecture
     protected IDGen iDGen;
     private Executor eventBus;
@@ -75,7 +75,7 @@ public class DhnsGraphController implements GraphController, WorkspaceDuplicateP
         return iDGen;
     }
 
-    private Dhns getCurrentDhns() {
+    private synchronized Dhns getCurrentDhns() {
         Workspace currentWorkspace = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace();
         if (currentWorkspace == null) {
             return null;

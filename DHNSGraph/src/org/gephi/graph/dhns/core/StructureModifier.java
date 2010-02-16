@@ -92,7 +92,9 @@ public class StructureModifier {
         boolean enabled = (treeStructure.getEnabledAncestor(node) == null);
         node.setEnabled(enabled);
         business.addNode(node);
-
+        if (node.isEnabled()) {
+            view.incNodesEnabled(1);
+        }
         graphVersion.incNodeVersion();
         dhns.getWriteLock().unlock();
         dhns.getEventManager().fireEvent(EventType.NODES_UPDATED);
@@ -159,9 +161,13 @@ public class StructureModifier {
     public void resetViewToLeaves() {
         dhns.getWriteLock().lock();
         edgeProcessor.clearAllMetaEdges();
+        view.setNodesEnabled(0);
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             node.setEnabled(node.size == 0);
+            if(node.isEnabled()) {
+                view.incNodesEnabled(1);
+            }
             edgeProcessor.resetEdgesCounting(node);
         }
         view.setEdgesCountEnabled(0);
@@ -179,9 +185,13 @@ public class StructureModifier {
     public void resetViewToTopNodes() {
         dhns.getWriteLock().lock();
         edgeProcessor.clearAllMetaEdges();
+        view.setNodesEnabled(0);
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             node.setEnabled(node.parent == treeStructure.root);
+            if(node.isEnabled()) {
+                view.incNodesEnabled(1);
+            }
             edgeProcessor.resetEdgesCounting(node);
         }
         view.setEdgesCountEnabled(0);
@@ -199,9 +209,13 @@ public class StructureModifier {
     public void resetViewToLevel(int level) {
         dhns.getWriteLock().lock();
         edgeProcessor.clearAllMetaEdges();
+        view.setNodesEnabled(0);
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             node.setEnabled(node.level == level);
+            if(node.isEnabled()) {
+                view.incNodesEnabled(1);
+            }
             edgeProcessor.resetEdgesCounting(node);
         }
         view.setEdgesCountEnabled(0);
@@ -228,6 +242,7 @@ public class StructureModifier {
         dhns.getWriteLock().lock();
         AbstractNode group = dhns.factory().newNode();
         group.setEnabled(true);
+        view.incNodesEnabled(1);
         AbstractNode parent = ((AbstractNode) nodes[0]).parent;
         group.parent = parent;
         business.addNode(group);
@@ -272,12 +287,14 @@ public class StructureModifier {
 
             //Disable parent
             absNode.setEnabled(false);
+            view.decNodesEnabled(1);
             edgeProcessor.clearMetaEdges(absNode);
 
             //Enable children
             for (ChildrenIterator itr = new ChildrenIterator(treeStructure, absNode, Tautology.instance); itr.hasNext();) {
                 AbstractNode child = itr.next();
                 child.setEnabled(true);
+                view.incNodesEnabled(1);
                 edgeProcessor.computeMetaEdges(child, child);
             }
 
@@ -295,11 +312,13 @@ public class StructureModifier {
             for (ChildrenIterator itr = new ChildrenIterator(treeStructure, parent, Tautology.instance); itr.hasNext();) {
                 AbstractNode child = itr.next();
                 child.setEnabled(false);
+                view.decNodesEnabled(1);
                 edgeProcessor.clearMetaEdges(child);
             }
 
             //Enable node
             parent.setEnabled(true);
+            view.incNodesEnabled(1);
             edgeProcessor.computeMetaEdges(parent, parent);
 
             //Edges counting
@@ -356,6 +375,7 @@ public class StructureModifier {
                 AbstractNode descendant = itr.next();
                 if (descendant.isEnabled()) {
                     edgeProcessor.clearMetaEdges(descendant);
+                    view.decNodesEnabled(1);
                 }
                 edgeProcessor.clearEdges(descendant);
 
@@ -405,6 +425,7 @@ public class StructureModifier {
 
         private void clearAllNodes() {
             treeStructure.clear();
+            view.setNodesEnabled(0);
             dhns.getGraphStructure().getNodeDictionnary().clear();
         }
 
@@ -440,6 +461,7 @@ public class StructureModifier {
                         //Node is thus disabled
                         edgeProcessor.clearMetaEdges(node);
                         node.setEnabled(false);
+                        view.decNodesEnabled(1);
                         edgeProcessor.decrementEdgesCouting(node, null);
                         //DO
                     } else {
@@ -455,6 +477,7 @@ public class StructureModifier {
                             if (descendant.isEnabled()) {
                                 edgeProcessor.clearMetaEdges(descendant);
                                 descendant.setEnabled(false);
+                                view.decNodesEnabled(1);
                                 edgeProcessor.decrementEdgesCouting(descendant, null);
                                 //TODO
                             }
