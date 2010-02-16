@@ -72,18 +72,16 @@ public class PageRankPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         directedButtonGroup = new javax.swing.ButtonGroup();
-        labelTitle = new javax.swing.JLabel();
         labelP = new javax.swing.JLabel();
         labelE = new javax.swing.JLabel();
         probTextField = new javax.swing.JTextField();
         epsilonTextField = new javax.swing.JTextField();
         undirectedRadioButton = new javax.swing.JRadioButton();
         directedRadioButton = new javax.swing.JRadioButton();
-        separator = new javax.swing.JSeparator();
         descriptionLabel = new org.jdesktop.swingx.JXLabel();
-
-        labelTitle.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        labelTitle.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.labelTitle.text")); // NOI18N
+        jXHeader1 = new org.jdesktop.swingx.JXHeader();
+        jXLabel1 = new org.jdesktop.swingx.JXLabel();
+        jXLabel2 = new org.jdesktop.swingx.JXLabel();
 
         labelP.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.labelP.text")); // NOI18N
 
@@ -105,49 +103,67 @@ public class PageRankPanel extends javax.swing.JPanel {
 
         descriptionLabel.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.descriptionLabel.text")); // NOI18N
 
+        jXHeader1.setDescription(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.jXHeader1.description")); // NOI18N
+        jXHeader1.setTitle(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.jXHeader1.title")); // NOI18N
+
+        jXLabel1.setForeground(new java.awt.Color(102, 102, 102));
+        jXLabel1.setLineWrap(true);
+        jXLabel1.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.jXLabel1.text")); // NOI18N
+        jXLabel1.setFont(jXLabel1.getFont().deriveFont(jXLabel1.getFont().getSize()-1f));
+
+        jXLabel2.setForeground(new java.awt.Color(102, 102, 102));
+        jXLabel2.setLineWrap(true);
+        jXLabel2.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.jXLabel2.text")); // NOI18N
+        jXLabel2.setFont(jXLabel2.getFont().deriveFont(jXLabel2.getFont().getSize()-1f));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addComponent(jXHeader1, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
-                    .addComponent(separator, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
-                    .addComponent(labelTitle, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(undirectedRadioButton)
-                            .addComponent(directedRadioButton))
-                        .addGap(33, 33, 33)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(labelP)
-                            .addComponent(labelE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(directedRadioButton)
+                            .addComponent(undirectedRadioButton))
+                        .addGap(45, 45, 45)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(probTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(labelP)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(probTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(labelE)
+                                .addGap(45, 45, 45)
+                                .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jXLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
+                            .addComponent(jXLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE))))
+                .addGap(10, 10, 10))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(labelTitle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jXHeader1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(directedRadioButton)
                     .addComponent(labelP)
-                    .addComponent(probTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(probTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(undirectedRadioButton)
-                    .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelE))
-                .addGap(18, 18, 18)
-                .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
+                    .addComponent(jXLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelE)
+                    .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jXLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(57, 57, 57)
+                .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 2, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -156,11 +172,12 @@ public class PageRankPanel extends javax.swing.JPanel {
     private javax.swing.ButtonGroup directedButtonGroup;
     protected javax.swing.JRadioButton directedRadioButton;
     protected javax.swing.JTextField epsilonTextField;
+    private org.jdesktop.swingx.JXHeader jXHeader1;
+    private org.jdesktop.swingx.JXLabel jXLabel1;
+    private org.jdesktop.swingx.JXLabel jXLabel2;
     private javax.swing.JLabel labelE;
     private javax.swing.JLabel labelP;
-    private javax.swing.JLabel labelTitle;
     protected javax.swing.JTextField probTextField;
-    private javax.swing.JSeparator separator;
     protected javax.swing.JRadioButton undirectedRadioButton;
     // End of variables declaration//GEN-END:variables
 }

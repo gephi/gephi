@@ -59,11 +59,10 @@ public class ClusteringCoefficientPanel extends javax.swing.JPanel {
         algorithmButtonGroup = new javax.swing.ButtonGroup();
         directedRadioButton = new javax.swing.JRadioButton();
         undirectedRadioButton = new javax.swing.JRadioButton();
-        labelTitle = new javax.swing.JLabel();
         bruteRadioButton = new javax.swing.JRadioButton();
         triangleRadioButton = new javax.swing.JRadioButton();
-        separator = new javax.swing.JSeparator();
-        descriptionPanel = new org.jdesktop.swingx.JXLabel();
+        header = new org.jdesktop.swingx.JXHeader();
+        labelAlgorithm = new javax.swing.JLabel();
 
         directedButtonGroup.add(directedRadioButton);
         directedRadioButton.setText(org.openide.util.NbBundle.getMessage(ClusteringCoefficientPanel.class, "ClusteringCoefficientPanel.directedRadioButton.text")); // NOI18N
@@ -71,69 +70,61 @@ public class ClusteringCoefficientPanel extends javax.swing.JPanel {
         directedButtonGroup.add(undirectedRadioButton);
         undirectedRadioButton.setText(org.openide.util.NbBundle.getMessage(ClusteringCoefficientPanel.class, "ClusteringCoefficientPanel.undirectedRadioButton.text")); // NOI18N
 
-        labelTitle.setFont(new java.awt.Font("Tahoma", 1, 18));
-        labelTitle.setText(org.openide.util.NbBundle.getMessage(ClusteringCoefficientPanel.class, "ClusteringCoefficientPanel.labelTitle.text")); // NOI18N
-
         algorithmButtonGroup.add(bruteRadioButton);
         bruteRadioButton.setText(org.openide.util.NbBundle.getMessage(ClusteringCoefficientPanel.class, "ClusteringCoefficientPanel.bruteRadioButton.text")); // NOI18N
 
         algorithmButtonGroup.add(triangleRadioButton);
+        triangleRadioButton.setSelected(true);
         triangleRadioButton.setText(org.openide.util.NbBundle.getMessage(ClusteringCoefficientPanel.class, "ClusteringCoefficientPanel.triangleRadioButton.text")); // NOI18N
 
-        descriptionPanel.setLineWrap(true);
-        descriptionPanel.setText(org.openide.util.NbBundle.getMessage(ClusteringCoefficientPanel.class, "ClusteringCoefficientPanel.descriptionPanel.text")); // NOI18N
-        descriptionPanel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        header.setDescription(org.openide.util.NbBundle.getMessage(ClusteringCoefficientPanel.class, "ClusteringCoefficientPanel.header.description")); // NOI18N
+        header.setTitle(org.openide.util.NbBundle.getMessage(ClusteringCoefficientPanel.class, "ClusteringCoefficientPanel.header.title")); // NOI18N
+
+        labelAlgorithm.setFont(labelAlgorithm.getFont().deriveFont(labelAlgorithm.getFont().getStyle() | java.awt.Font.BOLD));
+        labelAlgorithm.setText(org.openide.util.NbBundle.getMessage(ClusteringCoefficientPanel.class, "ClusteringCoefficientPanel.labelAlgorithm.text_1")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(descriptionPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
-                    .addComponent(separator, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(undirectedRadioButton)
-                            .addComponent(directedRadioButton))
-                        .addGap(34, 34, 34)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(triangleRadioButton)
-                            .addComponent(bruteRadioButton)))
-                    .addComponent(labelTitle, javax.swing.GroupLayout.Alignment.LEADING))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(undirectedRadioButton)
+                        .addGap(103, 103, 103)
+                        .addComponent(labelAlgorithm))
+                    .addComponent(directedRadioButton))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(bruteRadioButton)
+                    .addComponent(triangleRadioButton))
+                .addContainerGap(94, Short.MAX_VALUE))
+            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(labelTitle)
-                .addGap(8, 8, 8)
-                .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(bruteRadioButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(triangleRadioButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(directedRadioButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(undirectedRadioButton)))
-                .addGap(18, 18, 18)
-                .addComponent(descriptionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(directedRadioButton)
+                    .addComponent(labelAlgorithm)
+                    .addComponent(bruteRadioButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(undirectedRadioButton)
+                    .addComponent(triangleRadioButton))
+                .addContainerGap(103, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup algorithmButtonGroup;
     protected javax.swing.JRadioButton bruteRadioButton;
-    private org.jdesktop.swingx.JXLabel descriptionPanel;
     private javax.swing.ButtonGroup directedButtonGroup;
     private javax.swing.JRadioButton directedRadioButton;
-    private javax.swing.JLabel labelTitle;
-    private javax.swing.JSeparator separator;
+    private org.jdesktop.swingx.JXHeader header;
+    private javax.swing.JLabel labelAlgorithm;
     protected javax.swing.JRadioButton triangleRadioButton;
     private javax.swing.JRadioButton undirectedRadioButton;
     // End of variables declaration//GEN-END:variables

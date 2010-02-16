@@ -60,16 +60,13 @@ public class HitsPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         directedButtonGroup = new javax.swing.ButtonGroup();
-        labelTtitle = new javax.swing.JLabel();
         labelEpsilon = new javax.swing.JLabel();
         epsilonTextField = new javax.swing.JTextField();
         undirectedRadioButton = new javax.swing.JRadioButton();
         directedRadioButton = new javax.swing.JRadioButton();
-        separator = new javax.swing.JSeparator();
         descriptionLabel = new org.jdesktop.swingx.JXLabel();
-
-        labelTtitle.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        labelTtitle.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.labelTtitle.text")); // NOI18N
+        header = new org.jdesktop.swingx.JXHeader();
+        epsilonLabel = new org.jdesktop.swingx.JXLabel();
 
         labelEpsilon.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.labelEpsilon.text")); // NOI18N
 
@@ -87,44 +84,52 @@ public class HitsPanel extends javax.swing.JPanel {
         descriptionLabel.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.descriptionLabel.text")); // NOI18N
         descriptionLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
+        header.setDescription(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.header.description")); // NOI18N
+        header.setTitle(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.header.title")); // NOI18N
+
+        epsilonLabel.setForeground(new java.awt.Color(102, 102, 102));
+        epsilonLabel.setLineWrap(true);
+        epsilonLabel.setText(org.openide.util.NbBundle.getMessage(HitsPanel.class, "HitsPanel.epsilonLabel.text")); // NOI18N
+        epsilonLabel.setFont(epsilonLabel.getFont().deriveFont(epsilonLabel.getFont().getSize()-1f));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
-                    .addComponent(labelTtitle, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(undirectedRadioButton)
+                            .addComponent(directedRadioButton)
+                            .addComponent(undirectedRadioButton))
+                        .addGap(92, 92, 92)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(directedRadioButton)
-                                .addGap(59, 59, 59)
                                 .addComponent(labelEpsilon)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(106, 106, 106))
-                    .addComponent(separator, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE))
+                                .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(143, 143, 143))
+                            .addComponent(epsilonLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(labelTtitle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(13, 13, 13)
+                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(directedRadioButton)
                     .addComponent(labelEpsilon)
                     .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(undirectedRadioButton)
-                .addGap(18, 18, 18)
-                .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
+                .addGap(4, 4, 4)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(undirectedRadioButton)
+                    .addComponent(epsilonLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(59, 59, 59)
+                .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -132,10 +137,10 @@ public class HitsPanel extends javax.swing.JPanel {
     private org.jdesktop.swingx.JXLabel descriptionLabel;
     private javax.swing.ButtonGroup directedButtonGroup;
     protected javax.swing.JRadioButton directedRadioButton;
+    private org.jdesktop.swingx.JXLabel epsilonLabel;
     protected javax.swing.JTextField epsilonTextField;
+    private org.jdesktop.swingx.JXHeader header;
     private javax.swing.JLabel labelEpsilon;
-    private javax.swing.JLabel labelTtitle;
-    private javax.swing.JSeparator separator;
     protected javax.swing.JRadioButton undirectedRadioButton;
     // End of variables declaration//GEN-END:variables
 }

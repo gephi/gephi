@@ -48,14 +48,9 @@ public class GraphDensityPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         directedButtonGroup = new javax.swing.ButtonGroup();
-        labelTitle = new javax.swing.JLabel();
         directedRadioButton = new javax.swing.JRadioButton();
         undirectedRadioButton = new javax.swing.JRadioButton();
-        separator = new javax.swing.JSeparator();
-        descriptionLabel = new org.jdesktop.swingx.JXLabel();
-
-        labelTitle.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        labelTitle.setText(org.openide.util.NbBundle.getMessage(GraphDensityPanel.class, "GraphDensityPanel.labelTitle.text")); // NOI18N
+        header = new org.jdesktop.swingx.JXHeader();
 
         directedButtonGroup.add(directedRadioButton);
         directedRadioButton.setText(org.openide.util.NbBundle.getMessage(GraphDensityPanel.class, "GraphDensityPanel.directedRadioButton.text")); // NOI18N
@@ -63,46 +58,38 @@ public class GraphDensityPanel extends javax.swing.JPanel {
         directedButtonGroup.add(undirectedRadioButton);
         undirectedRadioButton.setText(org.openide.util.NbBundle.getMessage(GraphDensityPanel.class, "GraphDensityPanel.undirectedRadioButton.text")); // NOI18N
 
-        descriptionLabel.setLineWrap(true);
-        descriptionLabel.setText(org.openide.util.NbBundle.getMessage(GraphDensityPanel.class, "GraphDensityPanel.descriptionLabel.text")); // NOI18N
-        descriptionLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        header.setDescription(org.openide.util.NbBundle.getMessage(GraphDensityPanel.class, "GraphDensityPanel.header.description")); // NOI18N
+        header.setTitle(org.openide.util.NbBundle.getMessage(GraphDensityPanel.class, "GraphDensityPanel.header.title")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
-                    .addComponent(undirectedRadioButton, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(directedRadioButton, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelTitle, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(separator, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE))
-                .addContainerGap())
+                .addComponent(undirectedRadioButton)
+                .addContainerGap(358, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(directedRadioButton)
+                .addContainerGap(372, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(labelTitle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(directedRadioButton)
-                .addGap(18, 18, 18)
+                .addGap(7, 7, 7)
                 .addComponent(undirectedRadioButton)
-                .addGap(18, 18, 18)
-                .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(84, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.jdesktop.swingx.JXLabel descriptionLabel;
     private javax.swing.ButtonGroup directedButtonGroup;
     protected javax.swing.JRadioButton directedRadioButton;
-    private javax.swing.JLabel labelTitle;
-    private javax.swing.JSeparator separator;
+    private org.jdesktop.swingx.JXHeader header;
     protected javax.swing.JRadioButton undirectedRadioButton;
     // End of variables declaration//GEN-END:variables
 }
