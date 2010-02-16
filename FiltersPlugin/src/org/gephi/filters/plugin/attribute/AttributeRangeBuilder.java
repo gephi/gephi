@@ -68,8 +68,13 @@ public class AttributeRangeBuilder implements CategoryBuilder {
     public FilterBuilder[] getBuilders() {
         List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
         AttributeModel am = Lookup.getDefault().lookup(AttributeController.class).getModel();
-        AttributeColumn[] columns = am.getNodeTable().getColumns();
-        for (AttributeColumn c : columns) {
+        for (AttributeColumn c : am.getNodeTable().getColumns()) {
+            if (AttributeUtils.getDefault().isNumberColumn(c)) {
+                AttributeRangeFilterBuilder b = new AttributeRangeFilterBuilder(c);
+                builders.add(b);
+            }
+        }
+        for (AttributeColumn c : am.getEdgeTable().getColumns()) {
             if (AttributeUtils.getDefault().isNumberColumn(c)) {
                 AttributeRangeFilterBuilder b = new AttributeRangeFilterBuilder(c);
                 builders.add(b);
@@ -103,21 +108,38 @@ public class AttributeRangeBuilder implements CategoryBuilder {
             return null;
         }
 
-        public AttributeRangelFilter getFilter() {
-            AttributeRangelFilter f = new AttributeRangelFilter(column);
-            return f;
+        public AttributeRangeFilter getFilter() {
+            if (AttributeUtils.getDefault().isNodeColumn(column)) {
+                return new NodeAttributeRangeFilter(column);
+            } else {
+                return new EdgeAttributeRangeFilter(column);
+            }
         }
 
         public JPanel getPanel(Filter filter) {
             RangeUI ui = Lookup.getDefault().lookup(RangeUI.class);
             if (ui != null) {
-                return ui.getPanel((AttributeRangelFilter) filter);
+                return ui.getPanel((AttributeRangeFilter) filter);
             }
             return null;
         }
     }
 
-    public static class AttributeRangelFilter implements RangeFilter, NodeFilter, EdgeFilter {
+    public static class NodeAttributeRangeFilter extends AttributeRangeFilter implements NodeFilter {
+
+        public NodeAttributeRangeFilter(AttributeColumn column) {
+            super(column);
+        }
+    }
+
+    public static class EdgeAttributeRangeFilter extends AttributeRangeFilter implements EdgeFilter {
+
+        public EdgeAttributeRangeFilter(AttributeColumn column) {
+            super(column);
+        }
+    }
+
+    public static class AttributeRangeFilter implements RangeFilter, Filter {
 
         private FilterProperty[] filterProperties;
         private Range range;
@@ -127,7 +149,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         //States
         private List<Object> values;
 
-        public AttributeRangelFilter(AttributeColumn column) {
+        public AttributeRangeFilter(AttributeColumn column) {
             this.column = column;
         }
 

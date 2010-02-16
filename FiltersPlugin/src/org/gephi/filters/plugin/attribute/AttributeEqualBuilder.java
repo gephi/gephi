@@ -67,8 +67,19 @@ public class AttributeEqualBuilder implements CategoryBuilder {
     public FilterBuilder[] getBuilders() {
         List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
         AttributeModel am = Lookup.getDefault().lookup(AttributeController.class).getModel();
-        AttributeColumn[] columns = am.getNodeTable().getColumns();
-        for (AttributeColumn c : columns) {
+        for (AttributeColumn c : am.getNodeTable().getColumns()) {
+            if (AttributeUtils.getDefault().isStringColumn(c)) {
+                EqualStringFilterBuilder b = new EqualStringFilterBuilder(c);
+                builders.add(b);
+            } else if (AttributeUtils.getDefault().isNumberColumn(c)) {
+                EqualNumberFilterBuilder b = new EqualNumberFilterBuilder(c);
+                builders.add(b);
+            } else if (c.getType().equals(AttributeType.BOOLEAN)) {
+                EqualBooleanFilterBuilder b = new EqualBooleanFilterBuilder(c);
+                builders.add(b);
+            }
+        }
+        for (AttributeColumn c : am.getEdgeTable().getColumns()) {
             if (AttributeUtils.getDefault().isStringColumn(c)) {
                 EqualStringFilterBuilder b = new EqualStringFilterBuilder(c);
                 builders.add(b);
@@ -109,9 +120,15 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         public EqualStringFilter getFilter() {
-            EqualStringFilter f = new EqualStringFilter();
-            f.setColumn(column);
-            return f;
+            if (AttributeUtils.getDefault().isNodeColumn(column)) {
+                NodeEqualStringFilter f = new NodeEqualStringFilter();
+                f.setColumn(column);
+                return f;
+            } else {
+                EdgeEqualStringFilter f = new EdgeEqualStringFilter();
+                f.setColumn(column);
+                return f;
+            }
         }
 
         public JPanel getPanel(Filter filter) {
@@ -123,7 +140,13 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
     }
 
-    public static class EqualStringFilter implements NodeFilter, EdgeFilter {
+    public static class NodeEqualStringFilter extends EqualStringFilter implements NodeFilter {
+    }
+
+    public static class EdgeEqualStringFilter extends EqualStringFilter implements EdgeFilter {
+    }
+
+    public static class EqualStringFilter implements Filter {
 
         private FilterProperty[] filterProperties;
         private String pattern;
@@ -233,9 +256,11 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         public EqualNumberFilter getFilter() {
-            EqualNumberFilter f = new EqualNumberFilter(column);
-            f.setColumn(column);
-            return f;
+            if (AttributeUtils.getDefault().isNodeColumn(column)) {
+                return new NodeEqualNumberFilter(column);
+            } else {
+                return new EdgeEqualNumberFilter(column);
+            }
         }
 
         public JPanel getPanel(Filter filter) {
@@ -247,7 +272,21 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
     }
 
-    public static class EqualNumberFilter implements NodeFilter, EdgeFilter {
+    public static class NodeEqualNumberFilter extends EqualNumberFilter implements NodeFilter {
+
+        public NodeEqualNumberFilter(AttributeColumn column) {
+            super(column);
+        }
+    }
+
+    public static class EdgeEqualNumberFilter extends EqualNumberFilter implements EdgeFilter {
+
+        public EdgeEqualNumberFilter(AttributeColumn column) {
+            super(column);
+        }
+    }
+
+    public static class EqualNumberFilter implements Filter {
 
         private FilterProperty[] filterProperties;
         private Number match;
@@ -383,9 +422,15 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         public EqualBooleanFilter getFilter() {
-            EqualBooleanFilter f = new EqualBooleanFilter();
-            f.setColumn(column);
-            return f;
+            if (AttributeUtils.getDefault().isNodeColumn(column)) {
+                NodeEqualBooleanFilter f = new NodeEqualBooleanFilter();
+                f.setColumn(column);
+                return f;
+            } else {
+                EdgeEqualBooleanFilter f = new EdgeEqualBooleanFilter();
+                f.setColumn(column);
+                return f;
+            }
         }
 
         public JPanel getPanel(Filter filter) {
@@ -397,7 +442,13 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
     }
 
-    public static class EqualBooleanFilter implements NodeFilter, EdgeFilter {
+    public static class NodeEqualBooleanFilter extends EqualBooleanFilter implements NodeFilter {
+    }
+
+    public static class EdgeEqualBooleanFilter extends EqualBooleanFilter implements EdgeFilter {
+    }
+
+    public static class EqualBooleanFilter implements Filter {
 
         private FilterProperty[] filterProperties;
         private boolean match = false;

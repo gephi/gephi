@@ -9,6 +9,7 @@ import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.Range;
 import org.gephi.filters.plugin.RangeFilter;
@@ -102,7 +103,11 @@ public class PartitionCountBuilder implements CategoryBuilder {
         }
 
         public PartitionCountFilter getFilter() {
-            return new PartitionCountFilter(partition);
+            if (AttributeUtils.getDefault().isNodeColumn(column)) {
+                return new NodePartitionCountFilter(partition);
+            } else {
+                return new EdgePartitionCountFilter(partition);
+            }
         }
 
         public JPanel getPanel(Filter filter) {
@@ -114,7 +119,21 @@ public class PartitionCountBuilder implements CategoryBuilder {
         }
     }
 
-    public static class PartitionCountFilter implements NodeFilter, EdgeFilter, RangeFilter {
+    public static class NodePartitionCountFilter extends PartitionCountFilter implements NodeFilter {
+
+        public NodePartitionCountFilter(Partition partition) {
+            super(partition);
+        }
+    }
+
+    public static class EdgePartitionCountFilter extends PartitionCountFilter implements EdgeFilter {
+
+        public EdgePartitionCountFilter(Partition partition) {
+            super(partition);
+        }
+    }
+
+    public static class PartitionCountFilter implements Filter, RangeFilter {
 
         private Partition partition;
         private FilterProperty[] filterProperties;

@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.CategoryBuilder;
@@ -46,8 +47,11 @@ public class AttributeNonNullBuilder implements CategoryBuilder {
     public FilterBuilder[] getBuilders() {
         List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
         AttributeModel am = Lookup.getDefault().lookup(AttributeController.class).getModel();
-        AttributeColumn[] columns = am.getNodeTable().getColumns();
-        for (AttributeColumn c : columns) {
+        for (AttributeColumn c : am.getNodeTable().getColumns()) {
+            AttributeNonNullFilterBuilder b = new AttributeNonNullFilterBuilder(c);
+            builders.add(b);
+        }
+        for (AttributeColumn c : am.getEdgeTable().getColumns()) {
             AttributeNonNullFilterBuilder b = new AttributeNonNullFilterBuilder(c);
             builders.add(b);
         }
@@ -80,9 +84,15 @@ public class AttributeNonNullBuilder implements CategoryBuilder {
         }
 
         public AttributeNonNullFilter getFilter() {
-            AttributeNonNullFilter f = new AttributeNonNullFilter();
-            f.setColumn(column);
-            return f;
+            if (AttributeUtils.getDefault().isNodeColumn(column)) {
+                NodeAttributeNonNullFilter f = new NodeAttributeNonNullFilter();
+                f.setColumn(column);
+                return f;
+            } else {
+                EdgeAttributeNonNullFilter f = new EdgeAttributeNonNullFilter();
+                f.setColumn(column);
+                return f;
+            }
         }
 
         public JPanel getPanel(Filter filter) {
@@ -90,7 +100,13 @@ public class AttributeNonNullBuilder implements CategoryBuilder {
         }
     }
 
-    public static class AttributeNonNullFilter implements NodeFilter, EdgeFilter {
+    public static class NodeAttributeNonNullFilter extends AttributeNonNullFilter implements NodeFilter {
+    }
+
+    public static class EdgeAttributeNonNullFilter extends AttributeNonNullFilter implements EdgeFilter {
+    }
+
+    public static class AttributeNonNullFilter implements Filter {
 
         private FilterProperty[] filterProperties;
         private AttributeColumn column;

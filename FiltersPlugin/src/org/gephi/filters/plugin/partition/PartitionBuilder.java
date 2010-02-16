@@ -20,14 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.filters.plugin.partition;
 
-import java.beans.PropertyEditorSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringTokenizer;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.CategoryBuilder;
@@ -119,7 +118,11 @@ public class PartitionBuilder implements CategoryBuilder {
         }
 
         public PartitionFilter getFilter() {
-            return new PartitionFilter(partition);
+            if (AttributeUtils.getDefault().isNodeColumn(column)) {
+                return new NodePartitionFilter(partition);
+            } else {
+                return new EdgePartitionFilter(partition);
+            }
         }
 
         public JPanel getPanel(Filter filter) {
@@ -131,7 +134,21 @@ public class PartitionBuilder implements CategoryBuilder {
         }
     }
 
-    public static class PartitionFilter implements NodeFilter, EdgeFilter {
+    public static class NodePartitionFilter extends PartitionFilter implements NodeFilter {
+
+        public NodePartitionFilter(Partition partition) {
+            super(partition);
+        }
+    }
+
+    public static class EdgePartitionFilter extends PartitionFilter implements EdgeFilter {
+
+        public EdgePartitionFilter(Partition partition) {
+            super(partition);
+        }
+    }
+
+    public static class PartitionFilter implements Filter {
 
         private Partition partition;
         private FilterProperty[] filterProperties;
