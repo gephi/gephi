@@ -32,6 +32,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.project.api.ProjectController;
+import org.gephi.visualization.GraphLimits;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.ModelImpl;
@@ -57,6 +58,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     protected HierarchicalGraph graph;
     private VizConfig vizConfig;
     protected ModeManager modeManager;
+    protected GraphLimits limits;
     protected boolean undirected = false;
     //Version
     protected int nodeVersion = -1;
@@ -71,6 +73,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         controller = Lookup.getDefault().lookup(GraphController.class);
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.modeManager = VizController.getInstance().getModeManager();
+        this.limits = VizController.getInstance().getLimits();
     }
 
     public void updateWorld() {
@@ -178,10 +181,15 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         EdgeIterable edgeIterable;
         edgeIterable = graph.getEdges();
 
+        float minWeight = Float.POSITIVE_INFINITY;
+        float maxWeight = Float.NEGATIVE_INFINITY;
+
         for (Edge edge : edgeIterable) {
             if(edge.getSource().getNodeData().getModel() == null || edge.getTarget().getNodeData().getModel() == null) {
                 continue;
             }
+            minWeight = Math.min(minWeight, edge.getWeight());
+            maxWeight = Math.max(maxWeight, edge.getWeight());
             Model obj = edge.getEdgeData().getModel();
             if (obj == null) {
                 //Model is null, ADD
@@ -208,6 +216,9 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             }
             obj.setCacheMarker(cacheMarker);
         }
+
+        limits.setMinWeight(minWeight);
+        limits.setMaxWeight(maxWeight);
     }
 
     public void updateMetaEdges(HierarchicalGraph graph) {

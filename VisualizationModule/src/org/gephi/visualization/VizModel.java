@@ -41,6 +41,7 @@ import org.w3c.dom.Element;
 public class VizModel {
 
     protected VizConfig config;
+    protected GraphLimits limits;
     //Variable
     protected float[] cameraPosition;
     protected float[] cameraTarget;
@@ -72,11 +73,13 @@ public class VizModel {
 
     public VizModel() {
         defaultValues();
+        limits = VizController.getInstance().getLimits();
     }
 
     public VizModel(boolean defaultModel) {
         this.defaultModel = defaultModel;
         defaultValues();
+        limits = VizController.getInstance().getLimits();
     }
 
     public void init() {
@@ -322,6 +325,10 @@ public class VizModel {
     public void setEdgeScale(float edgeScale) {
         this.edgeScale = edgeScale;
         fireProperyChange("edgeScale", null, edgeScale);
+    }
+
+    public GraphLimits getLimits() {
+        return limits;
     }
 
     //EVENTS

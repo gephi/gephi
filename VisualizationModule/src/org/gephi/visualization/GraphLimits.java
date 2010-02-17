@@ -39,6 +39,8 @@ public class GraphLimits {
     private float minZoctree;
     private float maxZoctree;
     private Vec3f closestPoint = new Vec3f(0, 0, 0);
+    private float maxWeight;
+    private float minWeight;
 
     public synchronized float getMaxXoctree() {
         return maxXoctree;
@@ -140,5 +142,21 @@ public class GraphLimits {
 
     public void setClosestPoint(Vec3f closestPoint) {
         this.closestPoint = closestPoint;
+    }
+
+    public float getMaxWeight() {
+        return maxWeight;
+    }
+
+    public void setMaxWeight(float maxWeight) {
+        this.maxWeight = maxWeight;
+    }
+
+    public float getMinWeight() {
+        return minWeight;
+    }
+
+    public void setMinWeight(float minWeight) {
+        this.minWeight = minWeight;
     }
 }

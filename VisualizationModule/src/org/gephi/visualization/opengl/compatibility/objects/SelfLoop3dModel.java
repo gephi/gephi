@@ -27,6 +27,7 @@ import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.lib.gleem.linalg.Vec3f;
+import org.gephi.visualization.GraphLimits;
 import org.gephi.visualization.opengl.octree.Octant;
 
 /**
@@ -47,8 +48,20 @@ public class SelfLoop3dModel extends SelfLoop2dModel {
     public void display(GL gl, GLU glu, VizModel vizModel) {
         gl.glEnd();
 
-        //Params
+        //Edge weight
+        GraphLimits limits = vizModel.getLimits();
+        float weightRatio;
+        if (limits.getMinWeight() == limits.getMaxWeight()) {
+            weightRatio = Edge2dModel.WEIGHT_MINIMUM / limits.getMinWeight();
+        } else {
+            weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
+        }
         float weight = obj.getEdge().getWeight();
+        float edgeScale = vizModel.getEdgeScale();
+        weight = ((weight - limits.getMinWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
+        //
+
+        //Params
         NodeData node = obj.getSource();
         float x = node.x();
         float y = node.y();

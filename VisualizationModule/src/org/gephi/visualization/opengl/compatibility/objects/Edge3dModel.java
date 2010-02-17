@@ -23,6 +23,7 @@ package org.gephi.visualization.opengl.compatibility.objects;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.NodeData;
+import org.gephi.visualization.GraphLimits;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.ModelImpl;
@@ -55,15 +56,27 @@ public class Edge3dModel extends Edge2dModel {
             m2.mark = true;
         }
 
+        //Edge weight
+        GraphLimits limits = vizModel.getLimits();
+        float weightRatio;
+        if (limits.getMinWeight() == limits.getMaxWeight()) {
+            weightRatio = Edge2dModel.WEIGHT_MINIMUM / limits.getMinWeight();
+        } else {
+            weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
+        }
+        float weight = obj.getEdge().getWeight();
         float edgeScale = vizModel.getEdgeScale();
+        weight = ((weight - limits.getMinWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
+        //
+
         float x1 = obj.getSource().x();
         float x2 = obj.getTarget().x();
         float y1 = obj.getSource().y();
         float y2 = obj.getTarget().y();
         float z1 = obj.getSource().z();
         float z2 = obj.getTarget().z();
-        float t1 = obj.getEdge().getWeight() * edgeScale;
-        float t2 = obj.getEdge().getWeight() * edgeScale;
+        float t1 = weight;
+        float t2 = weight;
 
         //CameraVector, from camera location to any point on the line
         float cameraVectorX = x1 - cameraLocation[0];

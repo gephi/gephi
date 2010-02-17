@@ -29,6 +29,7 @@ import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.lib.gleem.linalg.Vec2f;
 import org.gephi.lib.gleem.linalg.Vecf;
+import org.gephi.visualization.GraphLimits;
 import org.gephi.visualization.opengl.octree.Octant;
 
 /**
@@ -61,8 +62,20 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
         NodeData nodeFrom = edge.getSource();
         NodeData nodeTo = edge.getTarget();
 
+        //Edge weight
+        GraphLimits limits = vizModel.getLimits();
+        float weightRatio;
+        if (limits.getMinWeight() == limits.getMaxWeight()) {
+            weightRatio = Edge2dModel.WEIGHT_MINIMUM / limits.getMinWeight();
+        } else {
+            weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
+        }
+        float weight = edge.getEdge().getWeight();
+        float edgeScale = vizModel.getEdgeScale();
+        weight = ((weight - limits.getMinWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
+        //
+
         //Edge size
-        float weight = edge.getEdge().getWeight() * vizModel.getEdgeScale();
         float arrowWidth = ARROW_WIDTH * weight * 2f;
         float arrowHeight = ARROW_HEIGHT * weight * 2f;
 
