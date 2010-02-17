@@ -76,7 +76,11 @@ public class FilterProcessor {
             } else {
                 FilterQueryImpl filterQuery = (FilterQueryImpl) q;
                 Filter filter = filterQuery.getFilter();
-                if (filter instanceof NodeFilter) {
+                if (filter instanceof NodeFilter && filter instanceof EdgeFilter) {
+                    processNodeFilter((NodeFilter) filter, input[0]);
+                    processEdgeFilter((EdgeFilter) filter, input[0]);
+                    q.setResult(input[0]);
+                } else if (filter instanceof NodeFilter) {
                     processNodeFilter((NodeFilter) filter, input[0]);
                     q.setResult(input[0]);
                 } else if (filter instanceof EdgeFilter) {

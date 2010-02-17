@@ -59,6 +59,12 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
         }
         GraphFactory factory = graphModel.factory();
 
+        //Dynamic
+        if (timelineController != null) {
+            timelineController.setMin(workspace, container.getTimeIntervalMin());
+            timelineController.setMax(workspace, container.getTimeIntervalMax());
+        }
+
         //Attributes - Creates columns for properties
         AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
         attributeModel.mergeModel(container.getAttributeModel());

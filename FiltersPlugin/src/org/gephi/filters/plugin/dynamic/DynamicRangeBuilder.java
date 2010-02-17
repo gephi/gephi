@@ -56,10 +56,23 @@ public class DynamicRangeBuilder implements CategoryBuilder {
     public FilterBuilder[] getBuilders() {
         List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
         AttributeModel am = Lookup.getDefault().lookup(AttributeController.class).getModel();
-        AttributeColumn[] columns = am.getNodeTable().getColumns();
-        for (AttributeColumn c : columns) {
+        AttributeColumn[] nodeColumns = am.getNodeTable().getColumns();
+        AttributeColumn[] edgeColumns = am.getEdgeTable().getColumns();
+        for (AttributeColumn c : nodeColumns) {
             if (c.getType().equals(AttributeType.TIME_INTERVAL)) {
-                builders.add(new DynamicRangeFilterBuilder(c));
+                if (am.getEdgeTable().getColumn(c.getId(), c.getType()) != null) {
+                    AttributeColumn edgeColumn = am.getEdgeTable().getColumn(c.getId(), c.getType());    //Edge column with same name
+                    builders.add(new DynamicRangeFilterBuilder(c, edgeColumn));
+                } else {
+                    builders.add(new DynamicRangeFilterBuilder(c, null));
+                }
+            }
+        }
+        for (AttributeColumn c : edgeColumns) {
+            if (c.getType().equals(AttributeType.TIME_INTERVAL)) {
+                if (am.getNodeTable().getColumn(c.getId(), c.getType()) == null) { //Column not already found
+                    builders.add(new DynamicRangeFilterBuilder(null, c));
+                }
             }
         }
         return builders.toArray(new FilterBuilder[0]);
@@ -67,10 +80,12 @@ public class DynamicRangeBuilder implements CategoryBuilder {
 
     private static class DynamicRangeFilterBuilder implements FilterBuilder {
 
-        private final AttributeColumn column;
+        private final AttributeColumn nodeColumn;
+        private final AttributeColumn edgeColumn;
 
-        public DynamicRangeFilterBuilder(AttributeColumn column) {
-            this.column = column;
+        public DynamicRangeFilterBuilder(AttributeColumn nodeColumn, AttributeColumn edgeColumn) {
+            this.nodeColumn = nodeColumn;
+            this.edgeColumn = edgeColumn;
         }
 
         public Category getCategory() {
@@ -78,7 +93,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         }
 
         public String getName() {
-            return column.getTitle();
+            return nodeColumn.getTitle();
         }
 
         public Icon getIcon() {
@@ -90,7 +105,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         }
 
         public DynamicRangeFilter getFilter() {
-            return new DynamicRangeFilter(column);
+            return new DynamicRangeFilter(nodeColumn, edgeColumn);
         }
 
         public JPanel getPanel(Filter filter) {
@@ -98,6 +113,13 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             JPanel panel = new JPanel();
             final TopComponent topComponent = WindowManager.getDefault().findTopComponent("TimelineTopComponent");
             final JButton button = new JButton(topComponent.isOpened() ? "Close Timeline" : "Open Timeline");
+            if (topComponent.isOpened()) {
+                dynamicRangeFilter.refreshRange();
+                TimelineController timelineController = Lookup.getDefault().lookup(TimelineController.class);
+                timelineController.getModel().setFilterProperty(dynamicRangeFilter.getRangeProperty());
+                timelineController.setMin(dynamicRangeFilter.getMinimum());
+                timelineController.setMax(dynamicRangeFilter.getMaximum());
+            }
             button.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
@@ -106,17 +128,16 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                         topComponent.open();
                         topComponent.requestActive();
                         button.setText("Close Timeline");
+                        //topComponent.close();
+                        dynamicRangeFilter.refreshRange();
+                        TimelineController timelineController = Lookup.getDefault().lookup(TimelineController.class);
+                        timelineController.getModel().setFilterProperty(dynamicRangeFilter.getRangeProperty());
+                        timelineController.setMin(dynamicRangeFilter.getMinimum());
+                        timelineController.setMax(dynamicRangeFilter.getMaximum());
                     } else {
                         topComponent.close();
                         button.setText("Open Timeline");
                     }
-
-                    //topComponent.close();
-                    dynamicRangeFilter.refreshRange();
-                    TimelineController timelineController = Lookup.getDefault().lookup(TimelineController.class);
-                    timelineController.getModel().setFilterProperty(dynamicRangeFilter.getRangeProperty());
-                    timelineController.setMin(dynamicRangeFilter.getMinimum());
-                    timelineController.setMax(dynamicRangeFilter.getMaximum());
                 }
             });
             panel.add(button);
@@ -126,14 +147,16 @@ public class DynamicRangeBuilder implements CategoryBuilder {
 
     public static class DynamicRangeFilter implements NodeFilter, EdgeFilter {
 
-        private AttributeColumn column;
+        private AttributeColumn nodeColumn;
+        private AttributeColumn edgeColumn;
         private Range range = new Range(0.0, 0.0);
         private FilterProperty[] filterProperties;
         private Double min;
         private Double max;
 
-        public DynamicRangeFilter(AttributeColumn column) {
-            this.column = column;
+        public DynamicRangeFilter(AttributeColumn nodeColumn, AttributeColumn edgeColumn) {
+            this.nodeColumn = nodeColumn;
+            this.edgeColumn = edgeColumn;
         }
 
         public boolean init(Graph graph) {
@@ -141,19 +164,23 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         }
 
         public boolean evaluate(Graph graph, Node node) {
-            Object obj = node.getNodeData().getAttributes().getValue(column.getIndex());
-            if (obj != null) {
-                TimeInterval timeInterval = (TimeInterval) obj;
-                return timeInterval.isInRange(range.getLowerDouble(), range.getUpperDouble());
+            if (nodeColumn != null) {
+                Object obj = node.getNodeData().getAttributes().getValue(nodeColumn.getIndex());
+                if (obj != null) {
+                    TimeInterval timeInterval = (TimeInterval) obj;
+                    return timeInterval.isInRange(range.getLowerDouble(), range.getUpperDouble());
+                }
             }
             return true;
         }
 
         public boolean evaluate(Graph graph, Edge edge) {
-            Object obj = edge.getEdgeData().getAttributes().getValue(column.getIndex());
-            if (obj != null) {
-                TimeInterval timeInterval = (TimeInterval) obj;
-                return timeInterval.isInRange(range.getLowerDouble(), range.getUpperDouble());
+            if (edgeColumn != null) {
+                Object obj = edge.getEdgeData().getAttributes().getValue(edgeColumn.getIndex());
+                if (obj != null) {
+                    TimeInterval timeInterval = (TimeInterval) obj;
+                    return timeInterval.isInRange(range.getLowerDouble(), range.getUpperDouble());
+                }
             }
             return true;
         }
@@ -188,9 +215,10 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             Graph graph = gm.getGraph();
             min = Double.POSITIVE_INFINITY;
             max = Double.NEGATIVE_INFINITY;
-            if (AttributeUtils.getDefault().isNodeColumn(column)) {
+            if (nodeColumn != null) {
+
                 for (Node n : graph.getNodes()) {
-                    Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
+                    Object val = n.getNodeData().getAttributes().getValue(nodeColumn.getIndex());
                     if (val != null) {
                         Double valMin = ((TimeInterval) val).getMin();
                         Double valMax = ((TimeInterval) val).getMax();
@@ -202,9 +230,10 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                         }
                     }
                 }
-            } else {
+            }
+            if (edgeColumn != null) {
                 for (Edge e : graph.getEdges()) {
-                    Object val = e.getEdgeData().getAttributes().getValue(column.getIndex());
+                    Object val = e.getEdgeData().getAttributes().getValue(edgeColumn.getIndex());
                     if (val != null) {
                         Double valMin = ((TimeInterval) val).getMin();
                         Double valMax = ((TimeInterval) val).getMax();
@@ -229,11 +258,11 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         }
 
         public AttributeColumn getColumn() {
-            return column;
+            return nodeColumn;
         }
 
         public void setColumn(AttributeColumn column) {
-            this.column = column;
+            this.nodeColumn = column;
         }
 
         public Range getRange() {
