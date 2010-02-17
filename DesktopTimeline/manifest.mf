@@ -3,5 +3,5 @@ AutoUpdate-Show-In-Client: false
 OpenIDE-Module: org.gephi.desktop.timeline
 OpenIDE-Module-Layer: org/gephi/desktop/timeline/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/timeline/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7
+OpenIDE-Module-Specification-Version: 0.7.0.1
 
