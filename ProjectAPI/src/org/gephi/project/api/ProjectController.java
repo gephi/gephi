@@ -45,7 +45,7 @@ public interface ProjectController {
 
     public void saveAsProject(Project project);
 
-    public void closeCurrentProject();
+    public boolean closeCurrentProject();
 
     public void removeProject(Project project);
 

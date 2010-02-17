@@ -48,7 +48,9 @@ public final class OpenProject extends SystemAction {
     public void actionPerformed(ActionEvent e) {
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.closeCurrentProject();
+        if(!pc.closeCurrentProject()) {
+            return;
+        }
 
         //Open Dialog
         DialogFileFilter filter = new DialogFileFilter(NbBundle.getMessage(OpenProject.class, "OpenProject_filechooser_filter"));

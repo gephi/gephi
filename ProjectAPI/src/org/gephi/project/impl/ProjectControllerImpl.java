@@ -163,10 +163,11 @@ public class ProjectControllerImpl implements ProjectController {
     }
 
     public void newProject() {
-        closeCurrentProject();
-        ProjectImpl project = new ProjectImpl();
-        projects.addProject(project);
-        openProject(project);
+        if (closeCurrentProject()) {
+            ProjectImpl project = new ProjectImpl();
+            projects.addProject(project);
+            openProject(project);
+        }
     }
 
     public void loadProject(DataObject dataObject) {
@@ -250,7 +251,7 @@ public class ProjectControllerImpl implements ProjectController {
         }
     }
 
-    public void closeCurrentProject() {
+    public boolean closeCurrentProject() {
         if (projects.hasCurrentProject()) {
             ProjectImpl currentProject = projects.getCurrentProject();
 
@@ -268,7 +269,7 @@ public class ProjectControllerImpl implements ProjectController {
             if (result == saveBundle) {
                 saveProject(currentProject);
             } else if (result == cancelBundle) {
-                return;
+                return false;
             }
 
             //Close
@@ -306,11 +307,14 @@ public class ProjectControllerImpl implements ProjectController {
             }
             fireWorkspaceEvent(EventType.DISABLE, null);
         }
+        return true;
     }
 
     public void removeProject(Project project) {
         if (projects.getCurrentProject() == project) {
-            closeCurrentProject();
+            if (!closeCurrentProject()) {
+                return;
+            }
         }
         projects.removeProject(project);
     }
@@ -365,13 +369,13 @@ public class ProjectControllerImpl implements ProjectController {
     public void deleteWorkspace(Workspace workspace) {
         //Event
         fireWorkspaceEvent(EventType.CLOSE, workspace);
-        
+
         WorkspaceInformation wi = workspace.getLookup().lookup(WorkspaceInformation.class);
         WorkspaceProviderImpl workspaceProvider = wi.getProject().getLookup().lookup(WorkspaceProviderImpl.class);
-        if(getCurrentWorkspace()==workspace) {
+        if (getCurrentWorkspace() == workspace) {
             //Select the one before, or after
             Workspace toSelectWorkspace = workspaceProvider.getPrecedingWorkspace(workspace);
-            if(toSelectWorkspace==null) {
+            if (toSelectWorkspace == null) {
                 closeCurrentProject();
                 return;
             } else {
@@ -387,7 +391,9 @@ public class ProjectControllerImpl implements ProjectController {
         final WorkspaceProviderImpl workspaceProviderImpl = project.getLookup().lookup(WorkspaceProviderImpl.class);
 
         if (projects.hasCurrentProject()) {
-            closeCurrentProject();
+            if (!closeCurrentProject()) {
+                return;
+            }
         }
         projects.addProject(projectImpl);
         projects.setCurrentProject(projectImpl);
