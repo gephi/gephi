@@ -123,11 +123,11 @@ public class DhnsTestSerializer {
     @Test
     public void testTreeStructureSerializer() {
         DHNSSerializer dHNSSerializer = new DHNSSerializer();
-        Element e1 = dHNSSerializer.writeTreeStructure(dHNSSerializer.createDocument(), dhns1.getGraphStructure().getMainView().getStructure());
+        Element e1 = dHNSSerializer.writeTreeStructure(dHNSSerializer.createDocument(), dhns1.getGraphStructure().getMainView());
         String s1 = printXML(e1);
         graph1.clear();
         dHNSSerializer.readTreeStructure(e1, dhns1.getGraphStructure(), dhns1.factory());
-        Element e2 = dHNSSerializer.writeTreeStructure(dHNSSerializer.createDocument(), dhns1.getGraphStructure().getMainView().getStructure());
+        Element e2 = dHNSSerializer.writeTreeStructure(dHNSSerializer.createDocument(), dhns1.getGraphStructure().getMainView());
         String s2 = printXML(e2);
         assertEquals(s1, s2);
     }

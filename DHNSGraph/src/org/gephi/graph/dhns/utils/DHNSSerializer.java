@@ -102,7 +102,7 @@ public class DHNSSerializer {
         dhnsE.appendChild(settingsE);
         Element graphVersionE = writeGraphVersion(document, dhns.getGraphVersion());
         dhnsE.appendChild(graphVersionE);
-        Element treeStructureE = writeTreeStructure(document, dhns.getGraphStructure().getMainView().getStructure());
+        Element treeStructureE = writeTreeStructure(document, dhns.getGraphStructure().getMainView());
         dhnsE.appendChild(treeStructureE);
         Element edgesE = writeEdges(document, dhns.getGraphStructure().getMainView().getStructure());
         dhnsE.appendChild(edgesE);
@@ -140,7 +140,6 @@ public class DHNSSerializer {
                     readGraphView(itemE, dhns.getGraphStructure());
                 }
             }
-
         }
     }
 
@@ -199,11 +198,16 @@ public class DHNSSerializer {
         }
     }
 
-    public Element writeTreeStructure(Document document, TreeStructure treeStructure) {
+    public Element writeTreeStructure(Document document, GraphViewImpl view) {
         Element treeStructureE = document.createElement(ELEMENT_TREESTRUCTURE);
+        treeStructureE.setAttribute("edgesenabled", String.valueOf(view.getEdgesCountEnabled()));
+        treeStructureE.setAttribute("edgestotal", String.valueOf(view.getEdgesCountTotal()));
+        treeStructureE.setAttribute("mutualedgesenabled", String.valueOf(view.getMutualEdgesEnabled()));
+        treeStructureE.setAttribute("mutualedgestotal", String.valueOf(view.getMutualEdgesTotal()));
+        treeStructureE.setAttribute("nodesenabled", String.valueOf(view.getNodesEnabled()));
 
         Element treeE = document.createElement(ELEMENT_TREESTRUCTURE_TREE);
-        for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
+        for (TreeListIterator itr = new TreeListIterator(view.getStructure().getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             Element nodeE = document.createElement(ELEMENT_TREESTRUCTURE_NODE);
             nodeE.setAttribute("id", String.valueOf(node.getId()));
@@ -221,6 +225,12 @@ public class DHNSSerializer {
     }
 
     public void readTreeStructure(Element treeStructureE, GraphStructure graphStructure, GraphFactoryImpl factory) {
+        graphStructure.getMainView().setEdgesCountEnabled(Integer.parseInt(treeStructureE.getAttribute("edgesenabled")));
+        graphStructure.getMainView().setEdgesCountTotal(Integer.parseInt(treeStructureE.getAttribute("edgestotal")));
+        graphStructure.getMainView().setMutualEdgesEnabled(Integer.parseInt(treeStructureE.getAttribute("mutualedgesenabled")));
+        graphStructure.getMainView().setMutualEdgesTotal(Integer.parseInt(treeStructureE.getAttribute("mutualedgestotal")));
+        graphStructure.getMainView().setNodesEnabled(Integer.parseInt(treeStructureE.getAttribute("nodesenabled")));
+
         NodeList nodesE = treeStructureE.getChildNodes();
         NodeList nodesListE = null;
         TreeStructure treeStructure = graphStructure.getMainView().getStructure();
@@ -250,7 +260,6 @@ public class DHNSSerializer {
                     absNode.getNodeData().setTextData(factory.newTextData());
                     treeStructure.insertAsChild(absNode, parentNode);
                     graphStructure.getNodeDictionnary().add(absNode);
-
                 }
             }
         }

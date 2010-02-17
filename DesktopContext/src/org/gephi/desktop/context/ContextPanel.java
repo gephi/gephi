@@ -132,24 +132,13 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         nodeLabel.setEnabled(enable);
         edgeLabel.setEnabled(enable);
 
-
-
-
         if (!enable) {
             nodeLabel.setText("NaN");
             edgeLabel.setText("NaN");
             graphTypeLabel.setText("");
-
-
-
-
         }
         pieButton.setEnabled(enable);
         piePanel.setVisible(showPie);
-
-
-
-
     }
 
     /** This method is called from within the constructor to
