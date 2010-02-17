@@ -57,6 +57,10 @@ public interface ContainerLoader {
 
     public DraftFactory factory();
 
+    public void setTimeIntervalMin(String min);
+
+    public void setTimeIntervalMax(String max);
+
     /**
      * Node and edge draft factory. Creates node and edge to push in the container.
      */

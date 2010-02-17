@@ -68,6 +68,9 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     //Counting
     private int directedEdgesCount = 0;
     private int undirectedEdgesCount = 0;
+    //Dynamic
+    private String timeIntervalMin;
+    private String timeIntervalMax;
 
     public ImportContainerImpl() {
         parameters = new ImportContainerParameters();
@@ -288,6 +291,22 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     public AttributeValueFactory getFactory() {
         return attributeModel.valueFactory();
+    }
+
+    public String getTimeIntervalMin() {
+        return timeIntervalMin;
+    }
+
+    public String getTimeIntervalMax() {
+        return timeIntervalMax;
+    }
+
+    public void setTimeIntervalMax(String timeIntervalMax) {
+        this.timeIntervalMax = timeIntervalMax;
+    }
+
+    public void setTimeIntervalMin(String timeIntervalMin) {
+        this.timeIntervalMin = timeIntervalMin;
     }
 
     public boolean verify() {
