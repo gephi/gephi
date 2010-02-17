@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mode version="2.3">
+    <name unique="timelinemode" />
+  <kind type="view" />
+  <state type="joined" />
+  <constraints>
+    <path orientation="vertical" number="1" weight="0.10319917440660474"/>
+  </constraints>
+  <frame state="0"/>
+    <active-tc  id="TimelineTopComponent" />
+    <empty-behavior permanent="false"/>
+</mode>

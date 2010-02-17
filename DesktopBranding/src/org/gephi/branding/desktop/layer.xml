@@ -152,6 +152,7 @@
                 <file name="HierarchyTopComponent.wstcgrp" url="HierarchyTopComponent.wstcgrp"/>
                 <file name="ClusteringTopComponent.wstcgrp" url="ClusteringTopComponent.wstcgrp"/>
                 <file name="ContextTopComponent.wstcgrp" url="ContextTopComponent.wstcgrp"/>
+                <file name="TimelineTopComponent.wstcgrp" url="TimelineTopComponent.wstcgrp"/>
             </folder>
             <file name="PreviewGroup.wsgrp" url="PreviewGroup.wsgrp"/>
             <folder name="PreviewGroup">
