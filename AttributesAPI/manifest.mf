@@ -3,4 +3,4 @@ OpenIDE-Module: org.gephi.data.attributes.api
 OpenIDE-Module-Layer: org/gephi/data/attributes/api/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/data/attributes/api/Bundle.properties
 OpenIDE-Module-Specification-Version: 0.7
-AutoUpdate-Show-In-Client: false
+AutoUpdate-Essential-Module: true

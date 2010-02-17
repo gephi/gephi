@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-AutoUpdate-Show-In-Client: false
+AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.desktop.timeline
 OpenIDE-Module-Layer: org/gephi/desktop/timeline/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/timeline/Bundle.properties

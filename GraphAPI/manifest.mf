@@ -3,4 +3,4 @@ OpenIDE-Module: org.gephi.graph.api
 OpenIDE-Module-Layer: org/gephi/graph/api/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/graph/api/Bundle.properties
 OpenIDE-Module-Specification-Version: 0.7.0.1
-AutoUpdate-Show-In-Client: false
+AutoUpdate-Essential-Module: true
