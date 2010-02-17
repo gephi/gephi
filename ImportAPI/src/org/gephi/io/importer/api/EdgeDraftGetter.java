@@ -53,4 +53,6 @@ public interface EdgeDraftGetter extends EdgeDraft {
     public NodeDraftGetter getSource();
 
     public NodeDraftGetter getTarget();
+
+    public List<String[]> getSlices();
 }

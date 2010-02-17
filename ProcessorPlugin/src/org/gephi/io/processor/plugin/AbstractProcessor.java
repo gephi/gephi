@@ -125,5 +125,14 @@ public abstract class AbstractProcessor {
                 }
             }
         }
+
+        //Dynamic
+        if (timelineController != null && edgeDraft.getSlices() != null) {
+            for (String[] slice : edgeDraft.getSlices()) {
+                String from = slice[0];
+                String to = slice[1];
+                timelineController.pushSlice(workspace, from, to, edge);
+            }
+        }
     }
 }
