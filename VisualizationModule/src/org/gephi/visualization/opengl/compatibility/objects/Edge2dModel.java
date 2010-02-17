@@ -27,6 +27,7 @@ import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.ModelImpl;
 import org.gephi.lib.gleem.linalg.Vecf;
+import org.gephi.visualization.GraphLimits;
 import org.gephi.visualization.opengl.octree.Octant;
 
 /**
@@ -35,6 +36,8 @@ import org.gephi.visualization.opengl.octree.Octant;
  */
 public class Edge2dModel extends ModelImpl<EdgeData> {
 
+    protected static final float WEIGHT_MINIMUM = 0.4f;
+    protected static final float WEIGHT_MAXIMUM = 8f;
     //An edge is set in both source node and target node octant. Hence edges are not drawn when none of
     //these octants are visible.
     protected ModelImpl arrow;
@@ -137,13 +140,26 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
             m1.mark = true;
             m2.mark = true;
         }
+
+        //Edge weight
+        GraphLimits limits = vizModel.getLimits();
+        float weightRatio;
+        if (limits.getMinWeight() == limits.getMaxWeight()) {
+            weightRatio = WEIGHT_MINIMUM / limits.getMinWeight();
+        } else {
+            weightRatio = Math.abs((WEIGHT_MAXIMUM - WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
+        }
+        float weight = obj.getEdge().getWeight();
         float edgeScale = vizModel.getEdgeScale();
+        weight = ((weight - limits.getMinWeight()) * weightRatio + WEIGHT_MINIMUM) * edgeScale;
+        //
+
         float x1 = obj.getSource().x();
         float x2 = obj.getTarget().x();
         float y1 = obj.getSource().y();
         float y2 = obj.getTarget().y();
-        float t1 = obj.getEdge().getWeight() * edgeScale;
-        float t2 = obj.getEdge().getWeight() * edgeScale;
+        float t1 = weight;
+        float t2 = weight;
 
         float sideVectorX = y1 - y2;
         float sideVectorY = x2 - x1;

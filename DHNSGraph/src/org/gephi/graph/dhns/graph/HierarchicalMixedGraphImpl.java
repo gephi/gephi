@@ -170,53 +170,26 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
     }
 
     public int getEdgeCount() {
-        readLock();
-        int count = 0;
-        for (EdgeIterator itr = new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), false, Tautology.instance, Tautology.instance); itr.hasNext();) {
-            itr.next();
-            count++;
-        }
-        readUnlock();
-        return count;
+        return view.getEdgesCountEnabled();
     }
 
     public int getDegree(Node node) {
-//        readLock();
-//        AbstractNode absNode = checkNode(node);
-//        int count = absNode.getEdgesInTree().getCount() + absNode.getEdgesOutTree().getCount();
-//        readUnlock();
-//        return count;
-        //readLock();
         AbstractNode absNode = checkNode(node);
-        int count = 0;
-        EdgeNodeIterator itr = new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, Tautology.instance, Tautology.instance);
-        for (; itr.hasNext();) {
-            AbstractEdge edge = itr.next();
-            if (edge.isSelfLoop()) {
-                count++;
-            }
-            count++;
-        }
-        //readUnlock();
+        int count = absNode.getEdgesInTree().getCount() + absNode.getEdgesOutTree().getCount();
         return count;
     }
 
     //Directed
     public int getInDegree(Node node) {
-        readLock();
-        AbstractNode absNode = checkNode(node);
+         AbstractNode absNode = checkNode(node);
         int count = absNode.getEdgesInTree().getCount();
-        readUnlock();
         return count;
     }
 
     //Directed
     public int getOutDegree(Node node) {
-        readLock();
-        AbstractNode absNode = checkNode(node);
-        int count = 0;
-        count = absNode.getEdgesOutTree().getCount();
-        readUnlock();
+         AbstractNode absNode = checkNode(node);
+        int count = absNode.getEdgesOutTree().getCount();
         return count;
     }
 

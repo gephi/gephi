@@ -36,8 +36,11 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.OperatingSystemMXBean;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -115,7 +118,7 @@ public class ReportController {
             StreamResult result = new StreamResult(sw);
             DOMSource source = new DOMSource(document);
             transformer.transform(source, result);
-            String xmlString = "report=" + sw.toString();
+            String xmlString = "report=" + URLEncoder.encode(sw.toString(), "UTF-8");
 
             URL url = new URL(POST_URL);
             URLConnection con = url.openConnection();
@@ -261,7 +264,8 @@ public class ReportController {
         if (ud == null || "memory".equals(ud)) { // NOI18N
             return;
         }
-
+        Handler[] handlers = Logger.getLogger("").getHandlers();
+        handlers[0].flush();
         File userDir = new File(ud); // NOI18N
         File directory = new File(new File(userDir, "var"), "log");
         File messagesLog = new File(directory, "messages.log");

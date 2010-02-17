@@ -89,6 +89,7 @@
             <file name="CloseAllButThisAction.shadow_hidden"/>
             <file name="CloseAllDocumentsAction.shadow_hidden"/>
             <file name="DocumentsAction.shadow_hidden"/>
+            <file name="Output_hidden"/>
             <file name="ProgressListAction.shadow_hidden"/>
             <file name="Separator4_1.instance" url="Separator4_1.instance">
                 <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
@@ -96,7 +97,9 @@
             </file>
             <file name="Separator5.instance_hidden"/>
             <file name="SwitchToRecentDocumentAction.shadow_hidden"/>
+            <file name="ViewFavoritesTabAction.shadow_hidden"/>
             <file name="org-netbeans-core-actions-GlobalPropertiesAction.shadow_hidden"/>
+            <file name="org-netbeans-core-windows-actions-GlobalPropertiesAction.shadow_hidden"/>
         </folder>
     </folder>
     <folder name="Services">
@@ -149,6 +152,7 @@
                 <file name="HierarchyTopComponent.wstcgrp" url="HierarchyTopComponent.wstcgrp"/>
                 <file name="ClusteringTopComponent.wstcgrp" url="ClusteringTopComponent.wstcgrp"/>
                 <file name="ContextTopComponent.wstcgrp" url="ContextTopComponent.wstcgrp"/>
+                <file name="TimelineTopComponent.wstcgrp" url="TimelineTopComponent.wstcgrp"/>
             </folder>
             <file name="PreviewGroup.wsgrp" url="PreviewGroup.wsgrp"/>
             <folder name="PreviewGroup">

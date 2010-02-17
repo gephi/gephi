@@ -76,6 +76,12 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
         attributeModel.mergeModel(container.getAttributeModel());
 
+        //Dynamic
+        if (timelineController != null) {
+            timelineController.setMin(workspace, container.getTimeIntervalMin());
+            timelineController.setMax(workspace, container.getTimeIntervalMax());
+        }
+
         int nodeCount = 0;
         //Create all nodes
         for (NodeDraftGetter draftNode : container.getNodes()) {

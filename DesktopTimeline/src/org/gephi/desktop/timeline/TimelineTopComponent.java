@@ -139,6 +139,9 @@ public final class TimelineTopComponent
         settingsButton = new javax.swing.JButton();
         timelinePanel = new javax.swing.JPanel();
 
+        setMaximumSize(new java.awt.Dimension(2147483647, 27));
+        setMinimumSize(new java.awt.Dimension(128, 16));
+        setPreferredSize(new java.awt.Dimension(800, 24));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         timelineToolbar.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 1, new java.awt.Color(5, 4, 3)));

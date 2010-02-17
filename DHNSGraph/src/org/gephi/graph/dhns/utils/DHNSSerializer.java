@@ -210,6 +210,9 @@ public class DHNSSerializer {
             nodeE.setAttribute("enabled", String.valueOf(node.isEnabled()));
             nodeE.setAttribute("pre", String.valueOf(node.pre));
             nodeE.setAttribute("parent", String.valueOf(node.parent.pre));
+            nodeE.setAttribute("enabledindegree", String.valueOf(node.getEnabledInDegree()));
+            nodeE.setAttribute("enabledoutdegree", String.valueOf(node.getEnabledOutDegree()));
+            nodeE.setAttribute("enabledmutualdegree", String.valueOf(node.getEnabledMutualDegree()));
             treeE.appendChild(nodeE);
         }
         treeStructureE.appendChild(treeE);
@@ -237,6 +240,12 @@ public class DHNSSerializer {
                     AbstractNode parentNode = treeStructure.getNodeAt(Integer.parseInt(nodeE.getAttribute("parent")));
                     AbstractNode absNode = new AbstractNode(Integer.parseInt(nodeE.getAttribute("id")), 0, 0, 0, 0, parentNode);
                     absNode.setEnabled(enabled);
+                    Integer inDegree = Integer.parseInt(nodeE.getAttribute("enabledindegree"));
+                    Integer outDegree = Integer.parseInt(nodeE.getAttribute("enabledoutdegree"));
+                    Integer mutualDegree = Integer.parseInt(nodeE.getAttribute("enabledmutualdegree"));
+                    absNode.setEnabledInDegree(inDegree);
+                    absNode.setEnabledOutDegree(outDegree);
+                    absNode.setEnabledMutualDegree(mutualDegree);
                     absNode.getNodeData().setAttributes(factory.newNodeAttributes());
                     absNode.getNodeData().setTextData(factory.newTextData());
                     treeStructure.insertAsChild(absNode, parentNode);
@@ -250,6 +259,11 @@ public class DHNSSerializer {
     public Element writeGraphView(Document document, GraphViewImpl graphView) {
         Element viewE = document.createElement(ELEMENT_VIEW);
         viewE.setAttribute("id", String.valueOf(graphView.getViewId()));
+        viewE.setAttribute("edgesenabled", String.valueOf(graphView.getEdgesCountEnabled()));
+        viewE.setAttribute("edgestotal", String.valueOf(graphView.getEdgesCountTotal()));
+        viewE.setAttribute("mutualedgesenabled", String.valueOf(graphView.getMutualEdgesEnabled()));
+        viewE.setAttribute("mutualedgestotal", String.valueOf(graphView.getMutualEdgesTotal()));
+        viewE.setAttribute("nodesenabled", String.valueOf(graphView.getNodesEnabled()));
 
         //Nodes
         for (TreeListIterator itr = new TreeListIterator(graphView.getStructure().getTree(), 1); itr.hasNext();) {
@@ -282,6 +296,12 @@ public class DHNSSerializer {
 
     public void readGraphView(Element graphViewE, GraphStructure graphStructure) {
         GraphViewImpl graphView = graphStructure.createView(Integer.parseInt(graphViewE.getAttribute("id")));
+        graphView.setEdgesCountEnabled(Integer.parseInt(graphViewE.getAttribute("edgesenabled")));
+        graphView.setEdgesCountTotal(Integer.parseInt(graphViewE.getAttribute("edgestotal")));
+        graphView.setMutualEdgesEnabled(Integer.parseInt(graphViewE.getAttribute("mutualedgesenabled")));
+        graphView.setMutualEdgesTotal(Integer.parseInt(graphViewE.getAttribute("mutualedgestotal")));
+        graphView.setNodesEnabled(Integer.parseInt(graphViewE.getAttribute("nodesenabled")));
+
         TreeStructure mainStructure = graphStructure.getMainView().getStructure();
         TreeStructure treeStructure = graphView.getStructure();
 

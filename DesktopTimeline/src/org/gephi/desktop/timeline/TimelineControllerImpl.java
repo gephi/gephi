@@ -24,6 +24,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeType;
@@ -50,7 +53,8 @@ public class TimelineControllerImpl implements TimelineController {
     private TimelineModel model;
     public static final String COLUMN_KEY = "dynamicrange";
     public static final AttributeType COLUMN_TYPE = AttributeType.TIME_INTERVAL;
-    public static final String DATE_FORMAT = "yyyy-MM-dd";
+
+        DatatypeFactory dateFactory = null;
 
     public TimelineControllerImpl() {
 
@@ -58,6 +62,14 @@ public class TimelineControllerImpl implements TimelineController {
 
         //Workspace events
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        
+        try {
+            dateFactory = DatatypeFactory.newInstance();
+        } catch (DatatypeConfigurationException ex) {
+            Exceptions.printStackTrace(ex);
+            return;
+        }
+
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
@@ -91,31 +103,38 @@ public class TimelineControllerImpl implements TimelineController {
         }
     }
 
-    public void pushSlice(Workspace workspace, String from, String to, Object obj) {
+    private void pushSlice(Workspace workspace, String from, String to, Object obj) {
         AttributeModel am = workspace.getLookup().lookup(AttributeModel.class);
         AttributeColumn col = null;
-        if (am.getNodeTable().hasColumn(COLUMN_KEY)) {
-            col = am.getNodeTable().getColumn(COLUMN_KEY);
+        if (obj instanceof Node) {
+            if (am.getNodeTable().hasColumn(COLUMN_KEY)) {
+                col = am.getNodeTable().getColumn(COLUMN_KEY);
+            } else {
+                col = am.getNodeTable().addColumn(COLUMN_KEY, COLUMN_TYPE);
+            }
         } else {
-            col = am.getNodeTable().addColumn(COLUMN_KEY, COLUMN_TYPE);
+            if (am.getEdgeTable().hasColumn(COLUMN_KEY)) {
+                col = am.getEdgeTable().getColumn(COLUMN_KEY);
+            } else {
+                col = am.getEdgeTable().addColumn(COLUMN_KEY, COLUMN_TYPE);
+            }
         }
 
-        DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+
+
         double f = Double.NEGATIVE_INFINITY, t = Double.POSITIVE_INFINITY;
         try {
             if (from != null && !from.isEmpty()) {
-                f =
-                        ((Date) formatter.parse(from)).getTime();
+                f = dateFactory.newXMLGregorianCalendar(from).toGregorianCalendar().getTimeInMillis();
             }
             if (to != null && !to.isEmpty()) {
-                t =
-                        ((Date) formatter.parse(to)).getTime();
+                t = dateFactory.newXMLGregorianCalendar(to).toGregorianCalendar().getTimeInMillis();
             }
             if (model.getUnit() == null) {
                 model.setUnit(DateTime.class);
             }
 
-        } catch (ParseException ex) {
+        } catch (IllegalArgumentException ex) {
             try {
                 if (from != null && !from.isEmpty()) {
                     f = Double.parseDouble(from);
@@ -127,19 +146,20 @@ public class TimelineControllerImpl implements TimelineController {
                     model.setUnit(Double.class);
                 }
             } catch (NumberFormatException ex2) {
-                Exceptions.printStackTrace(ex);
+                Exceptions.printStackTrace(ex2);
             }
         }
         TimeInterval ti = new TimeInterval(f, t);
+        
 
-        if (f < model.getMinValue()) {
+        if (f < model.getMinValue() && f != Double.NEGATIVE_INFINITY) {
             model.setMinValue(f);
-            //System.out.println("fixing min to " + f);
+           // System.out.println("fixing min to " + f);
         }
         if (t > model.getMaxValue() && t != Double.POSITIVE_INFINITY) {
             model.setMaxValue(t);
             //System.out.println("fixing max to " + new DateTime(new Date((long)t)));
-        } else if (f+1>model.getMaxValue()) {
+        } else if (f + 1 > model.getMaxValue()) {
             //System.out.println("fixing max to " + new DateTime(new Date((long)f+1)));
             model.setMaxValue(f + 1);
         }
@@ -209,16 +229,15 @@ public class TimelineControllerImpl implements TimelineController {
     public void setMin(Workspace workspace, String min) {
         TimelineModel tm = workspace.getLookup().lookup(TimelineModel.class);
         if (tm != null) {
-            DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
             double f = Double.POSITIVE_INFINITY;
             try {
                 if (min != null) {
-                    f = ((Date) formatter.parse(min)).getTime();
+                    f = dateFactory.newXMLGregorianCalendar(min).toGregorianCalendar().getTimeInMillis();
                 }
                 if (tm.getUnit() == null) {
                     model.setUnit(DateTime.class);
                 }
-            } catch (ParseException ex) {
+            } catch (IllegalArgumentException ex) {
                 try {
                     f = Double.parseDouble(min);
                     if (tm.getUnit() == null) {
@@ -235,16 +254,15 @@ public class TimelineControllerImpl implements TimelineController {
     public void setMax(Workspace workspace, String max) {
         TimelineModel tm = workspace.getLookup().lookup(TimelineModel.class);
         if (tm != null) {
-            DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
             double f = Double.NEGATIVE_INFINITY;
             try {
                 if (max != null) {
-                    f = ((Date) formatter.parse(max)).getTime();
+                    f = dateFactory.newXMLGregorianCalendar(max).toGregorianCalendar().getTimeInMillis();
                 }
                 if (tm.getUnit() == null) {
                     tm.setUnit(DateTime.class);
                 }
-            } catch (ParseException ex) {
+            } catch (IllegalArgumentException ex) {
                 try {
                     f = Double.parseDouble(max);
                     if (model.getUnit() == null) {
@@ -275,16 +293,15 @@ public class TimelineControllerImpl implements TimelineController {
 
     public void setMin(String min) {
         if (model != null) {
-            DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
             double f = Double.POSITIVE_INFINITY;
             try {
                 if (min != null) {
-                    f = ((Date) formatter.parse(min)).getTime();
+                    f = dateFactory.newXMLGregorianCalendar(min).toGregorianCalendar().getTimeInMillis();
                 }
                 if (model.getUnit() == null) {
                     model.setUnit(DateTime.class);
                 }
-            } catch (ParseException ex) {
+            } catch (IllegalArgumentException ex) {
                 try {
                     f = Double.parseDouble(min);
                     if (model.getUnit() == null) {
@@ -300,16 +317,15 @@ public class TimelineControllerImpl implements TimelineController {
 
     public void setMax(String max) {
         if (model != null) {
-            DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
             double f = Double.NEGATIVE_INFINITY;
             try {
                 if (max != null) {
-                    f = ((Date) formatter.parse(max)).getTime();
+                    f = dateFactory.newXMLGregorianCalendar(max).toGregorianCalendar().getTimeInMillis();
                 }
                 if (model.getUnit() == null) {
                     model.setUnit(DateTime.class);
                 }
-            } catch (ParseException ex) {
+            } catch (IllegalArgumentException ex) {
                 try {
                     f = Double.parseDouble(max);
                     if (model.getUnit() == null) {

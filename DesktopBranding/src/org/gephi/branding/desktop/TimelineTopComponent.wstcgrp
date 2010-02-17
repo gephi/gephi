@@ -3,7 +3,7 @@
   "http://www.netbeans.org/dtds/tc-group2_0.dtd">
 
 <tc-group version="2.0">
-    <module name="org.gephi.desktop.statistics" spec="1.0"/>
-    <tc-id id="StatisticsTopComponent" />
-    <open-close-behavior open="true" close="true" />
+    <module name="org.gephi.desktop.timeline" spec="1.0"/>
+    <tc-id id="TimelineTopComponent" />
+    <open-close-behavior open="false" close="true" />
 </tc-group>

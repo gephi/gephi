@@ -101,6 +101,11 @@ public class GraphStructure {
                 }
             }
         }
+        view.setNodesEnabled(mainView.getNodesEnabled());
+        view.setEdgesCountTotal(mainView.getEdgesCountTotal());
+        view.setEdgesCountEnabled(mainView.getEdgesCountEnabled());
+        view.setMutualEdgesTotal(mainView.getMutualEdgesTotal());
+        view.setMutualEdgesEnabled(mainView.getMutualEdgesEnabled());
         dhns.getReadLock().unlock();
         views.add(view);
         return view;

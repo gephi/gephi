@@ -122,7 +122,8 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     }
 
     public int getNodeCount() {
-        int count = structure.getTreeSize() - 1;// -1 Exclude virtual root
+        //int count = structure.getTreeSize() - 1;// -1 Exclude virtual root
+        int count = view.getNodesEnabled();
         return count;
     }
 

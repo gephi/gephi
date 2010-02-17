@@ -15,6 +15,7 @@ public class GraphViewImpl implements GraphView {
     private final int viewId;
     private final TreeStructure structure;
     private final StructureModifier structureModifier;
+    private int nodesEnabled;
     private int edgesCountTotal;
     private int mutualEdgesTotal;
     private int edgesCountEnabled;
@@ -40,6 +41,14 @@ public class GraphViewImpl implements GraphView {
 
     public boolean isMainView() {
         return viewId == 0;
+    }
+
+    public void incNodesEnabled(int shift) {
+        nodesEnabled += shift;
+    }
+
+    public void decNodesEnabled(int shift) {
+        nodesEnabled -= shift;
     }
 
     public void incEdgesCountTotal(int shift) {
@@ -104,5 +113,13 @@ public class GraphViewImpl implements GraphView {
 
     public void setMutualEdgesTotal(int mutualEdgesTotal) {
         this.mutualEdgesTotal = mutualEdgesTotal;
+    }
+
+    public int getNodesEnabled() {
+        return nodesEnabled;
+    }
+
+    public void setNodesEnabled(int nodesEnabled) {
+        this.nodesEnabled = nodesEnabled;
     }
 }

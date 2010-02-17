@@ -152,11 +152,11 @@ public class PreviewControllerImpl implements PreviewController {
         model.clearSupervisors();
 
         if (graphModel.isUndirected()) {
-            previewGraph = factory.createPreviewGraph(model, graphModel.getUndirectedGraph());
+            previewGraph = factory.createPreviewGraph(model, graphModel.getUndirectedGraphVisible());
         } else if (graphModel.isDirected()) {
-            previewGraph = factory.createPreviewGraph(model, graphModel.getDirectedGraph());
+            previewGraph = factory.createPreviewGraph(model, graphModel.getDirectedGraphVisible());
         } else if (graphModel.isMixed()) {
-            previewGraph = factory.createPreviewGraph(model, graphModel.getMixedGraph());
+            previewGraph = factory.createPreviewGraph(model, graphModel.getMixedGraphVisible());
         }
         model.setUpdateFlag(true);
     }

@@ -330,7 +330,6 @@ public final class PreviewTopComponent extends TopComponent {
      * Refresh the preview applet.
      */
     public void refreshPreview() {
-        System.out.println("sketch refresh "+sketch);
         sketch.refresh();
     }
 

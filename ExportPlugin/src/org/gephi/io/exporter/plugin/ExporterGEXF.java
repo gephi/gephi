@@ -249,7 +249,20 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
         Element attributeE = document.createElement("attribute");
         attributeE.setAttribute("id", column.getId());
         attributeE.setAttribute("title", column.getTitle());
-        attributeE.setAttribute("type", column.getType().getTypeString().toLowerCase());
+        switch(column.getType()) {
+            case INT:
+                attributeE.setAttribute("type", "integer");
+                break;
+            case LIST_STRING:
+                attributeE.setAttribute("type", "liststring");
+                break;
+            case TIME_INTERVAL:
+                // nothing to do
+                break;
+            default:
+                attributeE.setAttribute("type", column.getType().getTypeString().toLowerCase());
+                break;
+        }
         if(column.getDefaultValue() != null) {
             Element defaultE = document.createElement("default");
             Text defaultTextE = document.createTextNode(column.getDefaultValue().toString());

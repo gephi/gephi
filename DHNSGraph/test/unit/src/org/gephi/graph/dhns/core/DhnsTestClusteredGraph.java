@@ -30,14 +30,17 @@ import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphEvent;
 import org.gephi.graph.api.GraphListener;
-import org.gephi.graph.api.MetaEdge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.DhnsGraphController;
+import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImpl;
 import org.gephi.graph.dhns.graph.HierarchicalUndirectedGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.node.iterators.LevelIterator;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
+import org.gephi.graph.dhns.predicate.Tautology;
+import org.gephi.utils.collection.avl.ParamAVLIterator;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -822,7 +825,7 @@ public class DhnsTestClusteredGraph {
     }
 
     @Test
-    public void testEdgesCounting() {
+    public void testEdgesCountingExpandRetract() {
         GraphViewImpl view = dhnsGlobal2.getGraphStructure().getMainView();
         assertEquals(0, view.getEdgesCountEnabled());
         assertEquals(10, view.getEdgesCountTotal());
@@ -836,6 +839,8 @@ public class DhnsTestClusteredGraph {
         assertEquals(0, view.getEdgesCountEnabled());
         assertEquals(0, nodeMap.get("Leaf 0").getEnabledInDegree());
         assertEquals(0, nodeMap.get("Leaf 1").getEnabledOutDegree());
+        assertEquals(0, nodeMap.get("Leaf 0").getEnabledOutDegree());
+        assertEquals(0, nodeMap.get("Leaf 1").getEnabledInDegree());
         assertEquals(0, view.getMutualEdgesEnabled());
         Node n7 = graphGlobal2Directed.getTopNodes().toArray()[2];
         graphGlobal2Directed.expand(n7);
@@ -875,6 +880,66 @@ public class DhnsTestClusteredGraph {
         graphGlobal2Directed.expand(n1);
         assertEquals(2, view.getMutualEdgesEnabled());
         assertEquals(10, view.getEdgesCountEnabled());
+    }
+
+    @Test
+    public void testEdgesCountingReseting() {
+        GraphViewImpl view = dhnsGlobal2.getGraphStructure().getMainView();
+        graphGlobal2Directed.resetViewToLeaves();
+        assertEquals(2, view.getMutualEdgesEnabled());
+        assertEquals(10, view.getEdgesCountEnabled());
+        LevelIterator lvlIterator = new LevelIterator(view.getStructure(), 2, Tautology.instance);
+        for (; lvlIterator.hasNext();) {
+            AbstractNode node = lvlIterator.next();
+            assertEquals(node.getEdgesInTree().getCount(), node.getEnabledInDegree());
+            assertEquals(node.getEdgesOutTree().getCount(), node.getEnabledOutDegree());
+            int expectedMutual = 0;
+            ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
+            for (edgeIterator.setNode(node.getEdgesOutTree()); edgeIterator.hasNext();) {
+                AbstractEdge edge = edgeIterator.next();
+                AbstractNode target = edge.getTarget(view.getViewId());
+                if (node != target && target.getEdgesOutTree().hasNeighbour(node)) {
+                    expectedMutual++;
+                }
+            }
+            assertEquals(expectedMutual, node.getEnabledMutualDegree());
+        }
+        graphGlobal2Directed.resetViewToTopNodes();
+        assertEquals(0, view.getMutualEdgesEnabled());
+        assertEquals(0, view.getEdgesCountEnabled());
+        graphGlobal2Directed.resetViewToLevel(1);
+        assertEquals(2, view.getMutualEdgesEnabled());
+        assertEquals(10, view.getEdgesCountEnabled());
+        LevelIterator lvlIterator2 = new LevelIterator(view.getStructure(), 2, Tautology.instance);
+        for (; lvlIterator2.hasNext();) {
+            AbstractNode node = lvlIterator2.next();
+            assertEquals(node.getEdgesInTree().getCount(), node.getEnabledInDegree());
+            assertEquals(node.getEdgesOutTree().getCount(), node.getEnabledOutDegree());
+            int expectedMutual = 0;
+            ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
+            for (edgeIterator.setNode(node.getEdgesOutTree()); edgeIterator.hasNext();) {
+                AbstractEdge edge = edgeIterator.next();
+                AbstractNode target = edge.getTarget(view.getViewId());
+                if (node != target && target.getEdgesOutTree().hasNeighbour(node)) {
+                    expectedMutual++;
+                }
+            }
+            assertEquals(expectedMutual, node.getEnabledMutualDegree());
+        }
+    }
+
+    @Test
+    public void testEdgesCountingGrouping() {
+        GraphViewImpl view = dhnsGlobal2.getGraphStructure().getMainView();
+        Node n1 = graphGlobal2Directed.getTopNodes().toArray()[0];
+        graphGlobal2Directed.ungroupNodes(n1);
+        assertEquals(0, view.getMutualEdgesEnabled());
+        assertEquals(1, view.getEdgesCountEnabled());
+        graphGlobal2Directed.groupNodes(new Node[] {nodeMap.get("Leaf 0"), nodeMap.get("Leaf 1")});
+        n1 = graphGlobal2Directed.getTopNodes().toArray()[2];
+        graphGlobal2Directed.expand(n1);
+        assertEquals(0, view.getMutualEdgesEnabled());
+        assertEquals(1, view.getEdgesCountEnabled());
     }
 
     @Test

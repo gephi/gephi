@@ -64,8 +64,11 @@ public class EdgeProcessor {
                 boolean mutual = !edge.isSelfLoop() && node.getEdgesOutTree().hasNeighbour(source);
                 if (node.isEnabled() && source.isEnabled()) {
                     view.decEdgesCountEnabled(1);
+                    node.decEnabledInDegree();
+                    source.decEnabledOutDegree();
                     if (mutual) {
                         source.decEnabledMutualDegree();
+                        node.decEnabledMutualDegree();
                         view.decMutualEdgesEnabled(1);
                     }
                 }
@@ -78,19 +81,19 @@ public class EdgeProcessor {
             }
             node.getEdgesInTree().clear();
         }
-        node.setEnabledInDegree(0);
-        node.setEnabledOutDegree(0);
-        node.setEnabledMutualDegree(0);
 
         if (node.getEdgesOutTree().getCount() > 0) {
             edgeIterator.setNode(node.getEdgesOutTree());
             while (edgeIterator.hasNext()) {
                 AbstractEdge edge = edgeIterator.next();
                 removeEdgeFromMetaEdge(edge);
+                AbstractNode target = edge.getTarget(viewId);
 
                 if (!edge.isSelfLoop()) {
                     view.decEdgesCountTotal(1);
                     if (node.isEnabled()) {
+                        node.decEnabledOutDegree();
+                        target.decEnabledInDegree();
                         view.decEdgesCountEnabled(1);
                     }
                 }
@@ -401,7 +404,31 @@ public class EdgeProcessor {
             AbstractNode source = edge.getSource(view.getViewId());
             if (source.isEnabled()) {
                 view.decEdgesCountEnabled(1);
+                disabledNode.decEnabledInDegree();
                 source.decEnabledOutDegree();
+            }
+        }
+    }
+
+    public void resetEdgesCounting(AbstractNode node) {
+        node.setEnabledInDegree(0);
+        node.setEnabledOutDegree(0);
+        node.setEnabledMutualDegree(0);
+    }
+
+    public void computeEdgesCounting(AbstractNode node) {
+        for (edgeIterator.setNode(node.getEdgesOutTree()); edgeIterator.hasNext();) {
+            AbstractEdge edge = edgeIterator.next();
+            AbstractNode target = edge.getTarget(view.getViewId());
+            if (target.isEnabled()) {
+                target.incEnabledInDegree();
+                node.incEnabledOutDegree();
+                view.incEdgesCountEnabled(1);
+                if (target.getEdgesOutTree().hasNeighbour(node) && target.getId() < node.getId()) {
+                    target.incEnabledMutualDegree();
+                    node.incEnabledMutualDegree();
+                    view.incMutualEdgesEnabled(1);
+                }
             }
         }
     }

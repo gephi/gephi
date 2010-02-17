@@ -110,9 +110,8 @@ public class GraphFactoryImpl implements GraphFactory {
         } else {
             edge = new MixedEdgeImpl(idGen.newEdgeId(), nodeSource, nodeTarget, directed);
         }
-        if (weight != 0) {
-            edge.setWeight(weight);
-        }
+        edge.setWeight(weight);
+
         edge.setAttributes(newEdgeAttributes());
         edge.getEdgeData().setTextData(newTextData());
         return edge;

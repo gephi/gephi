@@ -192,12 +192,7 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
 
     //Graph
     public int getEdgeCount() {
-        int count = 0;
-        for (EdgeIterator itr = new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), false, enabledNodePredicate, Tautology.instance); itr.hasNext();) {
-            itr.next();
-            count++;
-        }
-        return count;
+        return view.getEdgesCountEnabled();
     }
 
     //Graph

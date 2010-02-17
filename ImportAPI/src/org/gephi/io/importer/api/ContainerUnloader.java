@@ -44,6 +44,10 @@ public interface ContainerUnloader {
 
     public AttributeModel getAttributeModel();
 
+    public String getTimeIntervalMin();
+
+    public String getTimeIntervalMax();
+
     public boolean allowSelfLoop();
 
     public boolean allowAutoNode();

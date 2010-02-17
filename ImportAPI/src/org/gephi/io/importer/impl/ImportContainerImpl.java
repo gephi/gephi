@@ -68,6 +68,9 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     //Counting
     private int directedEdgesCount = 0;
     private int undirectedEdgesCount = 0;
+    //Dynamic
+    private String timeIntervalMin;
+    private String timeIntervalMax;
 
     public ImportContainerImpl() {
         parameters = new ImportContainerParameters();
@@ -290,7 +293,38 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         return attributeModel.valueFactory();
     }
 
+    public String getTimeIntervalMin() {
+        return timeIntervalMin;
+    }
+
+    public String getTimeIntervalMax() {
+        return timeIntervalMax;
+    }
+
+    public void setTimeIntervalMax(String timeIntervalMax) {
+        this.timeIntervalMax = timeIntervalMax;
+    }
+
+    public void setTimeIntervalMin(String timeIntervalMin) {
+        this.timeIntervalMin = timeIntervalMin;
+    }
+
     public boolean verify() {
+
+        //Edge weight 0
+        for (EdgeDraftImpl edge : edgeMap.values().toArray(new EdgeDraftImpl[0])) {
+            if (edge.getWeight() <= 0f) {
+                String id = edge.getId();
+                String sourceTargetId = edge.getSource().getId() + "-" + edge.getTarget().getId();
+                if (parameters.isRemoveEdgeWithWeightZero()) {
+                    edgeMap.remove(id);
+                    edgeSourceTargetMap.remove(sourceTargetId);
+                    report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Weight_Zero_Ignored", id), Level.SEVERE));
+                } else {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Weight_Zero", id), Level.WARNING));
+                }
+            }
+        }
 
         //Graph EdgeDefault
         if (directedEdgesCount > 0 && undirectedEdgesCount == 0) {
@@ -317,7 +351,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         } else if (parameters.getEdgeDefault().equals(EdgeDefault.MIXED)) {
             //Clean undirected edges when graph is mixed
             for (EdgeDraftImpl edge : edgeMap.values().toArray(new EdgeDraftImpl[0])) {
-                if(edge.getType()==null) {
+                if (edge.getType() == null) {
                     edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
                 }
                 if (edge.getType().equals(EdgeDraft.EdgeType.UNDIRECTED)) {

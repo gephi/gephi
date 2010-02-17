@@ -244,20 +244,28 @@ public class MinimalDrawer extends JPanel
         long min = (long) model.getMinValue();
         long max = (long) model.getMaxValue();
 
-        /*System.out.println("\nall min: " + min);
+        /*
+        System.out.println("\nall min: " + min);
         System.out.println("all max: " + max);
         System.out.println("all date min: " + new DateTime(new Date(min)));
         System.out.println("all date max: " + new DateTime(new Date(max)));
          */
-        if (max <= min || min == Double.NEGATIVE_INFINITY || max == Double.POSITIVE_INFINITY) {
+
+        if (max <= min 
+                || min == Double.NEGATIVE_INFINITY
+                || max == Double.POSITIVE_INFINITY
+                || max == Double.NEGATIVE_INFINITY
+                || min == Double.POSITIVE_INFINITY) {
             return;
         }
+
         /*
         System.out.println("min: " + min);
         System.out.println("max: " + max);
         System.out.println("date min: " + new DateTime(new Date(min)));
         System.out.println("date max: " + new DateTime(new Date(max)));
          */
+
         g2d.setRenderingHints(settings.renderingHints);
 
 
@@ -574,6 +582,7 @@ public class MinimalDrawer extends JPanel
         double width = y - x;
         int height = getHeight();
         int topMargin = height - settings.graduations.fontSize - 2;
+        int bottomMargin = height - settings.graduations.textBottomMargin;
         int unitSize = 3;
 
         if (numOfGrads > (width / unitSize)) {
@@ -581,7 +590,7 @@ public class MinimalDrawer extends JPanel
         }
         for (double i = 1; i < numOfGrads; i++) {
             double xi = x + i * (width / (double) numOfGrads);
-            g2d.drawLine((int) xi, topMargin, (int) xi, height - settings.graduations.textBottomMargin);
+            g2d.drawLine((int) xi, topMargin, (int) xi, bottomMargin);
         }
     }
 

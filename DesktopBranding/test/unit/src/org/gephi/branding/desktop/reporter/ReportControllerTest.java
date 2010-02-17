@@ -43,7 +43,7 @@ public class ReportControllerTest {
     public void testSend() {
         ReportController reportController = new ReportController();
         Report report = new Report();
-        report.setUserDescription("test");
+        report.setUserDescription("test & more < >");
         Document doc = reportController.buildReportDocument(report);
         reportController.sendDocument(doc);
     }
