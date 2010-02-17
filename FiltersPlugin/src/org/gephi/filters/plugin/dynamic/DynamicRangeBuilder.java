@@ -113,6 +113,13 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             JPanel panel = new JPanel();
             final TopComponent topComponent = WindowManager.getDefault().findTopComponent("TimelineTopComponent");
             final JButton button = new JButton(topComponent.isOpened() ? "Close Timeline" : "Open Timeline");
+            if (topComponent.isOpened()) {
+                dynamicRangeFilter.refreshRange();
+                TimelineController timelineController = Lookup.getDefault().lookup(TimelineController.class);
+                timelineController.getModel().setFilterProperty(dynamicRangeFilter.getRangeProperty());
+                timelineController.setMin(dynamicRangeFilter.getMinimum());
+                timelineController.setMax(dynamicRangeFilter.getMaximum());
+            }
             button.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
@@ -121,17 +128,16 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                         topComponent.open();
                         topComponent.requestActive();
                         button.setText("Close Timeline");
+                        //topComponent.close();
+                        dynamicRangeFilter.refreshRange();
+                        TimelineController timelineController = Lookup.getDefault().lookup(TimelineController.class);
+                        timelineController.getModel().setFilterProperty(dynamicRangeFilter.getRangeProperty());
+                        timelineController.setMin(dynamicRangeFilter.getMinimum());
+                        timelineController.setMax(dynamicRangeFilter.getMaximum());
                     } else {
                         topComponent.close();
                         button.setText("Open Timeline");
                     }
-
-                    //topComponent.close();
-                    dynamicRangeFilter.refreshRange();
-                    TimelineController timelineController = Lookup.getDefault().lookup(TimelineController.class);
-                    timelineController.getModel().setFilterProperty(dynamicRangeFilter.getRangeProperty());
-                    timelineController.setMin(dynamicRangeFilter.getMinimum());
-                    timelineController.setMax(dynamicRangeFilter.getMaximum());
                 }
             });
             panel.add(button);
