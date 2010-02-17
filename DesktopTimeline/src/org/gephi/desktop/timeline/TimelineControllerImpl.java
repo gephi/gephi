@@ -94,11 +94,20 @@ public class TimelineControllerImpl implements TimelineController {
     public void pushSlice(Workspace workspace, String from, String to, Object obj) {
         AttributeModel am = workspace.getLookup().lookup(AttributeModel.class);
         AttributeColumn col = null;
-        if (am.getNodeTable().hasColumn(COLUMN_KEY)) {
-            col = am.getNodeTable().getColumn(COLUMN_KEY);
+        if (obj instanceof Node) {
+            if (am.getNodeTable().hasColumn(COLUMN_KEY)) {
+                col = am.getNodeTable().getColumn(COLUMN_KEY);
+            } else {
+                col = am.getNodeTable().addColumn(COLUMN_KEY, COLUMN_TYPE);
+            }
         } else {
-            col = am.getNodeTable().addColumn(COLUMN_KEY, COLUMN_TYPE);
+            if (am.getEdgeTable().hasColumn(COLUMN_KEY)) {
+                col = am.getEdgeTable().getColumn(COLUMN_KEY);
+            } else {
+                col = am.getEdgeTable().addColumn(COLUMN_KEY, COLUMN_TYPE);
+            }
         }
+
 
         DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
         double f = Double.NEGATIVE_INFINITY, t = Double.POSITIVE_INFINITY;
@@ -139,7 +148,7 @@ public class TimelineControllerImpl implements TimelineController {
         if (t > model.getMaxValue() && t != Double.POSITIVE_INFINITY) {
             model.setMaxValue(t);
             //System.out.println("fixing max to " + new DateTime(new Date((long)t)));
-        } else if (f+1>model.getMaxValue()) {
+        } else if (f + 1 > model.getMaxValue()) {
             //System.out.println("fixing max to " + new DateTime(new Date((long)f+1)));
             model.setMaxValue(f + 1);
         }
