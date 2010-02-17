@@ -191,7 +191,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                     NodeList datefromE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
                     if (datefromE != null && datefromE.getLength() > 0) {
                         String start = ((Element) modeE.item(0)).getAttribute("start");
-                        // TODO Graph date from
+                        container.setTimeIntervalMin(start);
                     }
 
                     //Graph date to
@@ -199,7 +199,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                     NodeList datetoE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
                     if (datetoE != null && datetoE.getLength() > 0) {
                         String end = ((Element) modeE.item(0)).getAttribute("end");
-                        // TODO Graph date to
+                        container.setTimeIntervalMin(end);
                     }
                 } else if (!mode.isEmpty() && !mode.equals("static")) {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_parsingmode", mode), Issue.Level.SEVERE));
