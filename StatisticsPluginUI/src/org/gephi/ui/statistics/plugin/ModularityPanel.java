@@ -47,13 +47,9 @@ public class ModularityPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        labelTitle = new javax.swing.JLabel();
-        separator = new javax.swing.JSeparator();
         randomizeCheckbox = new javax.swing.JCheckBox();
         desriptionLabel = new org.jdesktop.swingx.JXLabel();
-
-        labelTitle.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        labelTitle.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.labelTitle.text")); // NOI18N
+        header = new org.jdesktop.swingx.JXHeader();
 
         randomizeCheckbox.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.randomizeCheckbox.text")); // NOI18N
         randomizeCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
@@ -62,37 +58,35 @@ public class ModularityPanel extends javax.swing.JPanel {
         desriptionLabel.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.desriptionLabel.text")); // NOI18N
         desriptionLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
+        header.setDescription(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.header.description")); // NOI18N
+        header.setTitle(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.header.title")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(desriptionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
-                    .addComponent(labelTitle, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(randomizeCheckbox, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(separator, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(randomizeCheckbox)
+                    .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(labelTitle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(randomizeCheckbox)
-                .addGap(18, 18, 18)
-                .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                .addGap(46, 46, 46)
+                .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.jdesktop.swingx.JXLabel desriptionLabel;
-    private javax.swing.JLabel labelTitle;
+    private org.jdesktop.swingx.JXHeader header;
     private javax.swing.JCheckBox randomizeCheckbox;
-    private javax.swing.JSeparator separator;
     // End of variables declaration//GEN-END:variables
 }
