@@ -122,7 +122,7 @@ public class EdgeWeightBuilder implements FilterBuilder {
                 refreshRange();
                 return weights;
             } else {
-                return values.toArray(new Integer[0]);
+                return values.toArray(new Float[0]);
             }
         }
 
