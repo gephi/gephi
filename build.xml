@@ -57,8 +57,8 @@
                 <pathelement path="ToolsAPI/src"/>
             </sourcepath>
             <group title="Core" packages="org.gephi.**.api:org.gephi.**.spi:org.gephi.data.*:org.gephi.utils.progress"></group>
-            <doctitle>Gephi 0.7alpha API Index</doctitle>
-            <header>Gephi 0.7alpha Javadoc</header>
+            <doctitle>Gephi 0.7alpha2 API Index</doctitle>
+            <header>Gephi 0.7alpha2 Javadoc</header>
         </javadoc>
     </target>
 </project>

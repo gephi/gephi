@@ -8,7 +8,12 @@
         <hr>
         <p>
         <h2>API Changes</h2>
-        <ul><li>(Feb 7 2010) Initial import, for 0.7alpha milestone. Half of
+        <ul><li>(Feb 17 2010) Change in ImportAPI to support bounded time intervals. Add methods
+				that manage <code>TimeIntervalMin</code> and <code>TimeIntervalMax</code>. Changes in
+				GraphAPI about elements counting. Henceforth only enabled elements are counted, in node
+				and edge counting, but also in degree methods. This counting is more logical, as it match
+				with the number of elements returned by <code>getNodes()</code> and <code>getEdges()</code>.
+			<li>(Feb 7 2010) Initial import, for 0.7alpha milestone. Half of
                 APIs are fully documented and the rest needs to be soon. Expose
                 only Core APIs, that plugins could need by now. Friend
                 packages exists, in particular between Plugin and PluginUI
