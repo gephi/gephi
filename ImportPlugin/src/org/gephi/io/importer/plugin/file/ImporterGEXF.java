@@ -140,7 +140,9 @@ public class ImporterGEXF implements XMLImporter, LongTask {
         if (version.isEmpty() || version.equals("1.0")) {
             ImporterGEXF10 importer = new ImporterGEXF10();
             importer.importData(document, container, report);
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_version10"), Issue.Level.INFO));
         } else {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_version11"), Issue.Level.INFO));
             //XPath
             XPathFactory factory = XPathFactory.newInstance();
             XPath xpath = factory.newXPath();
