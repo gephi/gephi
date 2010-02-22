@@ -93,7 +93,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
 
             public void disable() {
                 GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-                if (model.getCurrentResult() != null) {
+                if (model.getCurrentResult() != null && graphModel != null) {
                     graphModel.destroyView(model.getCurrentResult());
                     model.setCurrentResult(null);
                 }
