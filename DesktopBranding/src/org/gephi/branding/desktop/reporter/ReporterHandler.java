@@ -23,9 +23,13 @@ package org.gephi.branding.desktop.reporter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
+import java.util.logging.Handler;
 import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import javax.swing.JButton;
+import org.openide.DialogDisplayer;
+import org.openide.LifecycleManager;
+import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 
 /**
@@ -35,6 +39,10 @@ import org.openide.util.NbBundle;
 public class ReporterHandler extends java.util.logging.Handler implements Callable<JButton>, ActionListener {
 
     private Throwable throwable;
+    private String MEMORY_ERROR;
+    public ReporterHandler() {
+        MEMORY_ERROR = NbBundle.getMessage(ReporterHandler.class, "OutOfMemoryError.message");
+    }
 
     @Override
     public void publish(LogRecord record) {
@@ -42,6 +50,16 @@ public class ReporterHandler extends java.util.logging.Handler implements Callab
             return;
         }
         throwable = record.getThrown();
+        if (throwable != null && throwable instanceof OutOfMemoryError) {
+            Handler[] handlers = Logger.getLogger("").getHandlers();
+            for (int i = 0; i < handlers.length; i++) {
+                Handler h = handlers[i];
+                h.close();
+            }
+            NotifyDescriptor nd = new NotifyDescriptor.Message(MEMORY_ERROR, NotifyDescriptor.ERROR_MESSAGE);
+            DialogDisplayer.getDefault().notify(nd);
+            LifecycleManager.getDefault().exit();
+        }
     }
 
     @Override

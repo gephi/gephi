@@ -137,6 +137,9 @@ public class DesktopImportController implements ImportController {
         final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
 
             public void fatalError(Throwable t) {
+                if (t instanceof OutOfMemoryError) {
+                    return;
+                }
                 Logger.getLogger("").log(Level.WARNING, "", t.getCause());
             }
         };
