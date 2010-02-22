@@ -156,6 +156,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         queriesExplorer.setup(queriesPanel.manager, filterModel, uiModel);
         filterPanelPanel.setup(uiModel);
         updateEnabled(filterModel != null);
+        updateControls();
     }
 
     private class QueriesPanel extends JPanel implements ExplorerManager.Provider {
@@ -186,6 +187,22 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         });
     }
 
+    private void updateControls() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                if (filterModel != null) {
+                    filterButton.setSelected(filterModel.isFiltering());
+                    selectButton.setSelected(filterModel.isSelecting());
+                } else {
+                    filterButton.setSelected(false);
+                    selectButton.setSelected(false);
+                }
+            }
+        });
+
+    }
+
     public void stateChanged(ChangeEvent e) {
         if (e.getSource() instanceof FilterUIModel) {
             if (uiModel.getSelectedQuery() != null && filterButton.isSelected()) {
@@ -196,14 +213,8 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 controller.select(uiModel.getSelectedRoot());
             }
         }
-        SwingUtilities.invokeLater(new Runnable() {
-
-            public void run() {
-                filterButton.setSelected(filterModel.isFiltering());
-                selectButton.setSelected(filterModel.isSelecting());
-                updateEnabled(true);
-            }
-        });
+        updateControls();
+        updateEnabled(true);
     }
 
     private void unsetup() {
