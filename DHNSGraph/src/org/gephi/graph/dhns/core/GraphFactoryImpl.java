@@ -28,6 +28,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.TextData;
 import org.gephi.graph.spi.TextDataFactory;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.edge.SelfLoopImpl;
 import org.gephi.graph.dhns.edge.MixedEdgeImpl;
@@ -112,6 +113,18 @@ public class GraphFactoryImpl implements GraphFactory {
         }
         edge.setWeight(weight);
 
+        edge.setAttributes(newEdgeAttributes());
+        edge.getEdgeData().setTextData(newTextData());
+        return edge;
+    }
+
+    public MetaEdgeImpl newMetaEdge(Node source, Node target) {
+        if (source == null || target == null) {
+            throw new NullPointerException();
+        }
+        AbstractNode nodeSource = (AbstractNode) source;
+        AbstractNode nodeTarget = (AbstractNode) target;
+        MetaEdgeImpl edge = new MetaEdgeImpl(idGen.newEdgeId(), nodeSource, nodeTarget);
         edge.setAttributes(newEdgeAttributes());
         edge.getEdgeData().setTextData(newTextData());
         return edge;

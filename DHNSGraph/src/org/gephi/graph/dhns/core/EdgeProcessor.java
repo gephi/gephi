@@ -276,7 +276,7 @@ public class EdgeProcessor {
         if (source == target) {
             return null;
         }
-        MetaEdgeImpl newEdge = new MetaEdgeImpl(idGen.newEdgeId(), source, target);
+        MetaEdgeImpl newEdge = dhns.factory().newMetaEdge(source, target);
         source.getMetaEdgesOutTree().add(newEdge);
         target.getMetaEdgesInTree().add(newEdge);
         return newEdge;

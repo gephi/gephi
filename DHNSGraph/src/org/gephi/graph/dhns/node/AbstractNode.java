@@ -232,4 +232,9 @@ public class AbstractNode implements Node, Group, AVLItem {
     public void setEnabledOutDegree(int enabledOutDegree) {
         this.enabledOutDegree = enabledOutDegree;
     }
+
+    @Override
+    public String toString() {
+        return nodeData.getId();
+    }
 }
