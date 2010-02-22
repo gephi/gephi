@@ -90,6 +90,9 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
 
         //Get collision distance between nodeTo and arrow point
         double angle = Math.atan2(y2 - y1, x2 - x1);
+        if (nodeTo.getModel() == null) {
+            return;
+        }
         float collisionDistance = ((ModelImpl) nodeTo.getModel()).getCollisionDistance(angle);
 
         //Point of the arrow
