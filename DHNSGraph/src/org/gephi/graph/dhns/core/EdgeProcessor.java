@@ -24,7 +24,7 @@ import org.gephi.utils.collection.avl.ParamAVLIterator;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
+import org.gephi.graph.dhns.node.iterators.TreeIterator;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.gephi.graph.dhns.predicate.Tautology;
 
@@ -248,6 +248,13 @@ public class EdgeProcessor {
 //                    }
                 }
             }
+        }
+    }
+
+    public void computeMetaEdges() {
+        for (TreeIterator itr = new TreeIterator(treeStructure, true, Tautology.instance); itr.hasNext();) {
+            AbstractNode node = itr.next();
+            computeMetaEdges(node, node);
         }
     }
 

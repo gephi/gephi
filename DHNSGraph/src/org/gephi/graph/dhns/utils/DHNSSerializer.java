@@ -196,6 +196,7 @@ public class DHNSSerializer {
                 graphStructure.getEdgeDictionnary().add(edge);
             }
         }
+        graphStructure.getMainView().getStructureModifier().getEdgeProcessor().computeMetaEdges();
     }
 
     public Element writeTreeStructure(Document document, GraphViewImpl view) {
@@ -299,6 +300,7 @@ public class DHNSSerializer {
                 edgeE.setAttribute("id", String.valueOf(edge.getId()));
             }
         }
+        graphView.getStructureModifier().getEdgeProcessor().computeMetaEdges();
 
         return viewE;
     }
