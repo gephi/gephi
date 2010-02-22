@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.importer.plugin.file;
 
+import static org.w3c.dom.Node.ELEMENT_NODE;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -260,6 +262,11 @@ public class ImporterGEXF implements XMLImporter, LongTask {
 
     private void parseNodes(NodeList nodeListE, String parent) throws Exception {
         for (int i = 0; i < nodeListE.getLength(); i++) {
+            //security
+            if(nodeListE.item(i).getNodeType() != ELEMENT_NODE) {
+                continue;
+            }
+
             Element nodeE = (Element) nodeListE.item(i);
 
             if (!nodeE.getNodeName().equals("node")) {
@@ -410,37 +417,41 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             container.addNode(node);
 
             //Hierarchy nodes
-            Node childNode = nodeE.getFirstChild();
-            if (childNode != null) {
+            Node childNodes = nodeE.getFirstChild();
+            if (childNodes != null) {
                 do {
-                    if (childNode.getNodeName().equals("nodes")) {
-                        Node childE = childNode.getFirstChild();
-                        NodeList childrenListE = childE.getChildNodes();
+                    if (childNodes.getNodeName().equals("nodes")) {
+                        // enter sub-hierarchy
+                        NodeList childrenListE = childNodes.getChildNodes();
                         if (childrenListE != null && childrenListE.getLength() > 0) {
                             parseNodes(childrenListE, nodeId);
                         }
                     }
-                } while ((childNode = childNode.getNextSibling()) != null);
+                } while ((childNodes = childNodes.getNextSibling()) != null);
             }
 
             //Hierarchy edges
-            Node childEdge = nodeE.getFirstChild();
-            if (childEdge != null) {
+            Node childEdges = nodeE.getFirstChild();
+            if (childEdges != null) {
                 do {
-                    if (childEdge.getNodeName().equals("edges")) {
-                        Node childE = childEdge.getFirstChild();
-                        NodeList childrenListE = childE.getChildNodes();
+                    if (childEdges.getNodeName().equals("edges")) {
+                        // enter sub-hierarchy
+                        NodeList childrenListE = childEdges.getChildNodes();
                         if (childrenListE != null && childrenListE.getLength() > 0) {
                             parseEdges(childrenListE, nodeId);
                         }
                     }
-                } while ((childEdge = childEdge.getNextSibling()) != null);
+                } while ((childEdges = childEdges.getNextSibling()) != null);
             }
         }
     }
 
     private void parseEdges(NodeList edgeListE, String parent) {
         for (int i = 0; i < edgeListE.getLength(); i++) {
+            //security
+            if(edgeListE.item(i).getNodeType() != ELEMENT_NODE) {
+                continue;
+            }
             Element edgeE = (Element) edgeListE.item(i);
 
             EdgeDraft edge = container.factory().newEdgeDraft();
