@@ -39,7 +39,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.gephi.desktop.io.export.spi.ExporterClassUI;
-import org.gephi.desktop.io.export.spi.ExporterClassUI;
 import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.spi.ExporterUI;
@@ -167,16 +166,20 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
         });
 
         //File filters
+        DialogFileFilter defaultFilter = null;
         for (FileExporter vectorialFileExporter : exportController.getVectorialFileExporters()) {
             for (FileType fileType : vectorialFileExporter.getFileTypes()) {
                 DialogFileFilter dialogFileFilter = new DialogFileFilter(fileType.getName());
                 dialogFileFilter.addExtensions(fileType.getExtensions());
+                if (defaultFilter == null) {
+                    defaultFilter = dialogFileFilter;
+                }
                 chooser.addChoosableFileFilter(dialogFileFilter);
             }
         }
         chooser.setAcceptAllFileFilterUsed(false);
-        String defaultExtention = ((DialogFileFilter) chooser.getFileFilter()).getExtensions().get(0);
-        selectedFile = new File(chooser.getCurrentDirectory(), "Untilted" + defaultExtention);
+        chooser.setFileFilter(defaultFilter);
+        selectedFile = new File(chooser.getCurrentDirectory(), "Untilted" + defaultFilter.getExtensions().get(0));
         chooser.setSelectedFile(selectedFile);
 
         //Show

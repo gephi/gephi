@@ -172,16 +172,20 @@ public final class GraphFileExporterUI implements ExporterClassUI {
         });
 
         //File filters
+        DialogFileFilter defaultFilter = null;
         for (FileExporter graphFileExporter : exportController.getGraphFileExporters()) {
             for (FileType fileType : graphFileExporter.getFileTypes()) {
                 DialogFileFilter dialogFileFilter = new DialogFileFilter(fileType.getName());
                 dialogFileFilter.addExtensions(fileType.getExtensions());
+                if(defaultFilter==null) {
+                    defaultFilter = dialogFileFilter;
+                }
                 chooser.addChoosableFileFilter(dialogFileFilter);
             }
         }
         chooser.setAcceptAllFileFilterUsed(false);
-        String defaultExtention = ((DialogFileFilter) chooser.getFileFilter()).getExtensions().get(0);
-        selectedFile = new File(chooser.getCurrentDirectory(), "Untilted" + defaultExtention);
+        chooser.setFileFilter(defaultFilter);
+        selectedFile = new File(chooser.getCurrentDirectory(), "Untilted" + defaultFilter.getExtensions().get(0));
         chooser.setSelectedFile(selectedFile);
 
         //Show
