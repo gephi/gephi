@@ -66,6 +66,11 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
             mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
         refreshModel();
+
+        final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        if (pc.getCurrentWorkspace() != null) {
+            ((RankingChooser) rankingChooser).refreshModel();
+        }
     }
 
     private void initSouth() {
@@ -140,6 +145,7 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
         });
 
         if (pc.getCurrentWorkspace() != null) {
+            enabled = true;
             RankingUIModel newModel = pc.getCurrentWorkspace().getLookup().lookup(RankingUIModel.class);
             if (newModel != null) {
                 model.loadModel(newModel);

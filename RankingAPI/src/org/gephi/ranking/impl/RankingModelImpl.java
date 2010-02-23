@@ -80,6 +80,12 @@ public class RankingModelImpl implements RankingModel, LookupListener {
             public void disable() {
             }
         });
+        if (pc.getCurrentWorkspace() != null) {
+            nodeColumnsResult = ac.getModel().getNodeTable().getLookup().lookupResult(AttributeColumn.class);
+            edgeColumnsResult = ac.getModel().getEdgeTable().getLookup().lookupResult(AttributeColumn.class);
+            nodeColumnsResult.addLookupListener(RankingModelImpl.this);
+            edgeColumnsResult.addLookupListener(RankingModelImpl.this);
+        }
     }
 
     public void resultChanged(LookupEvent le) {

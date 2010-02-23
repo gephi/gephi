@@ -63,8 +63,8 @@ public class RankingControllerImpl implements RankingController {
 
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraphVisible();
         if (ranking instanceof NodeRanking) {
-            ((AbstractRanking)ranking).setGraph(graph);
-            for (Node node : graph.getNodes().toArray()) {  
+            ((AbstractRanking) ranking).setGraph(graph);
+            for (Node node : graph.getNodes().toArray()) {
                 Object rank = ranking.getValue(node);
                 Object result = null;
                 if (rank != null) {
@@ -76,7 +76,7 @@ public class RankingControllerImpl implements RankingController {
                 rankingResult.addResult(node, rank, result);
             }
         } else {
-            ((AbstractRanking)ranking).setGraph(graph);
+            ((AbstractRanking) ranking).setGraph(graph);
             for (Edge edge : graph.getEdges().toArray()) {
                 Object rank = ranking.getValue(edge);
                 Object result = null;

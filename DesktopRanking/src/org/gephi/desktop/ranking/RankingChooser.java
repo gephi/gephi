@@ -140,7 +140,7 @@ public class RankingChooser extends javax.swing.JPanel {
         });
     }
 
-    private synchronized void refreshModel() {
+    public synchronized void refreshModel() {
         refreshSelectedRankings();
         Ranking[] rankings = new Ranking[0];
         if (modelUI.getRanking() == RankingUIModel.NODE_RANKING) {
