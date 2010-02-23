@@ -166,6 +166,10 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         }
 
         public boolean init(Graph graph) {
+            if (range == null) {
+                getValues();
+                refreshRange();
+            }
             values = new ArrayList<Object>();
             return true;
         }

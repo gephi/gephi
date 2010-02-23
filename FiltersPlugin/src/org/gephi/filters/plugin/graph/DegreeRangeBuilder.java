@@ -80,7 +80,7 @@ public class DegreeRangeBuilder implements FilterBuilder {
 
         private Integer min = 0;
         private Integer max = 0;
-        private Range range = new Range(0, 0);
+        private Range range;
         //States
         private List<Integer> values;
 
@@ -89,18 +89,18 @@ public class DegreeRangeBuilder implements FilterBuilder {
         }
 
         private void refreshRange() {
-            Integer lowerBound = range.getLowerInteger();
-            Integer upperBound = range.getUpperInteger();
-            if ((Integer) min > lowerBound || (Integer) max < lowerBound || lowerBound.equals(upperBound)) {
-                lowerBound = (Integer) min;
+            if (range == null) {
+                range = new Range(min, max);
+            } else {
+                range.trimBounds(min, max);
             }
-            if ((Integer) min > upperBound || (Integer) max < upperBound || lowerBound.equals(upperBound)) {
-                upperBound = (Integer) max;
-            }
-            range = new Range(lowerBound, upperBound);
         }
 
         public boolean init(Graph graph) {
+            if (range == null) {
+                getValues();
+                refreshRange();
+            }
             values = new ArrayList<Integer>(graph.getNodeCount());
             min = Integer.MAX_VALUE;
             max = Integer.MIN_VALUE;

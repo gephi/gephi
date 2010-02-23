@@ -66,7 +66,7 @@ public class EdgeWeightBuilder implements FilterBuilder {
 
         private Float min = 0f;
         private Float max = 0f;
-        private Range range = new Range(0f, 0f);
+        private Range range;
         //States
         private List<Float> values;
 
@@ -75,18 +75,18 @@ public class EdgeWeightBuilder implements FilterBuilder {
         }
 
         private void refreshRange() {
-            Float lowerBound = range.getLowerFloat();
-            Float upperBound = range.getUpperFloat();
-            if ((Float) min > lowerBound || (Float) max < lowerBound || lowerBound.equals(upperBound)) {
-                lowerBound = (Float) min;
+            if (range == null) {
+                range = new Range(min, max);
+            } else {
+                range.trimBounds(min, max);
             }
-            if ((Float) min > upperBound || (Float) max < upperBound || lowerBound.equals(upperBound)) {
-                upperBound = (Float) max;
-            }
-            range = new Range(lowerBound, upperBound);
         }
 
         public boolean init(Graph graph) {
+            if (range == null) {
+                getValues();
+                refreshRange();
+            }
             values = new ArrayList<Float>(graph.getEdgeCount());
             min = Float.POSITIVE_INFINITY;
             max = Float.NEGATIVE_INFINITY;
