@@ -310,7 +310,7 @@ public final class BannerTopComponent extends TopComponent {
             } else if (UIUtils.isAquaLookAndFeel()) {
                 setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/aqua-enabled.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
-                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/aqua-mousover.png"),
+                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/aqua-mouseover.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
                 setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/aqua-selected.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
