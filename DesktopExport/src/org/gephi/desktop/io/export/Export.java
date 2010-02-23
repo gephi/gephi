@@ -26,6 +26,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.gephi.desktop.io.export.spi.ExporterClassUI;
 import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
+import org.gephi.project.api.WorkspaceListener;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -36,6 +38,28 @@ import org.openide.util.actions.CallableSystemAction;
  * @author Mathieu Bastian
  */
 public class Export extends CallableSystemAction {
+
+    public Export() {
+        Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
+
+            public void initialize(Workspace workspace) {
+            }
+
+            public void select(Workspace workspace) {
+                setEnabled(true);
+            }
+
+            public void unselect(Workspace workspace) {
+            }
+
+            public void close(Workspace workspace) {
+            }
+
+            public void disable() {
+                setEnabled(false);
+            }
+        });
+    }
 
     @Override
     public void performAction() {
