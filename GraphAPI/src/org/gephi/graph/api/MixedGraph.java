@@ -25,6 +25,7 @@ package org.gephi.graph.api;
  * Graph that contains both directed and undirected edges.
  * 
  * @author Mathieu Bastian
+ * @see GraphModel
  */
 public interface MixedGraph extends Graph {
 

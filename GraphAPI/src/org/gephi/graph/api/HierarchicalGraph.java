@@ -21,8 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.api;
 
 /**
+ * Implementation of graphs within graphs concept, by proposing methods to manipulate
+ * the hierarchy of nodes.
  *
  * @author Mathieu Bastian
+ * @see GraphModel
  */
 public interface HierarchicalGraph extends Graph {
 

@@ -23,7 +23,33 @@ package org.gephi.graph.api;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- *
+ * Main interface for accessing the graph structure and develop algorithms.
+ * <p>
+ * A graph object belongs to a graph model, which really contains the data. Graph
+ * objects are therefore only accessors, with all convinient methods to read and
+ * modify the structure. Hence, <b>multiple</b> <code>Graph</code> objects can
+ * exists.
+ * <h3>Get current graph</h3>
+ * <pre>
+ * GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+ * GraphModel model = graphController.getModel();
+ * Graph graph = model.getGraph();
+ * </pre>
+ * <b>Note:</b> This shows how to get the complete graph, for getting only the
+ * currently visualized graph, call <code>model.getGraphVisible()</code> instead.
+ * <h3>Graph Locking</h3>
+ * Graph structure possess a locking mechanism that avoids multiple threads
+ * to modify the structure concurrently. However, several readers are allowed.
+ * <p>
+ * There is two different way to perform read locking:
+ * <ul><li>Manually by calling <code>readLock()</code> and <code>readUnlock()</code></li>
+ * <li>Structure is automatically locked when you read the various <code>NodeIterable</code>
+ * and <code>EdgeIterable</code></li></ul>
+ * Be always sure you don't leave the structure blocked. use <code>readUnlockAll()</code>
+ * to release all the locks.
+ * <p>
+ * <b>Note:</b> Write locking is automatically done when modifying th graph
+ * (add, remove, ...).
  * @author Mathieu Bastian
  */
 public interface Graph {
@@ -317,7 +343,15 @@ public interface Graph {
      */
     public void writeUnlock();
 
+    /**
+     * Returns the graph model this graph belongs to.
+     * @return the graph model this graph belongs to.
+     */
     public GraphModel getGraphModel();
 
+    /**
+     * Returns the graph view this graph belongs to.
+     * @return the graph view this graph belongs to.
+     */
     public GraphView getView();
 }

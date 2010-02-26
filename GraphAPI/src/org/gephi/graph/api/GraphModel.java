@@ -21,75 +21,281 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.api;
 
 /**
- *
+ * Root interface that contains the complete graph structure and build
+ * {@link Graph} objets on demand.
+ * <p>
+ * The graph structure contains several views. {@link GraphView} are sub-graphs with a unique
+ * identifier, the <b>viewId</b>. The model maintains all views, and especially:
+ * <ul><li><b>The Main View:</b> The complete graph, with a view id equal to zero.</li>
+ * <li><b>The Visible View:</b> The graph currently visualized. Can be the main view
+ * or an other view that expose a particular sub-graph.</li></ul>
+ * Different type of graph can be queried: <b>directed</b>,
+ * <b>undirected</b>, <b>mixed</b> and <b>hierarchical</b>. All types can be queried
+ * at any time, regardless how the structure is. Indeed even if only directed edges
+ * were appened to the graph, an <b>undirected</b> graph can be obtained.
+ * <p>
+ * It is preferable to use the main graph for performing updates (add, remove, ...).
+ * <p>
+ * <h3>Append data to an empty model</h3>
+ * The following code shows how to add two nodes an an edge to graph.
+ * <pre>
+ * Graph graph = model.getGraph();
+ * Node n1 = model.factory().newNode();
+ * Node n2 = model.factory().newNode();
+ * Edge e1 = model.factory().newEdge(n1, n2);
+ * graph.addNode(n1);
+ * graph.addNode(n2);
+ * graph.addEdge(e1);
+ * </pre>
+ * <h3>Set Visible view</h3>
+ * The following code shows how to set the visible view. This is useful if you
+ * need to visualize a sub-graph.
+ * <pre>
+ * GraphView newView = model.newView();     //Duplicate main view
+ * Graph subGraph = model.getGraph(newView);
+ * //Filter subgraph by removing nodes and edges
+ * model.setVisibleView(newView);       //Set the view as current visible view
+ * </pre>
+ * <b>Note:</b> Pay attention to destroy views when they are not used anymore.
  * @author Mathieu Bastian
+ * @see GraphController
  */
 public interface GraphModel {
 
+    /**
+     * Returns the factory that creates nodes and edges for this model.
+     * @return      the graph model factory
+     */
     public GraphFactory factory();
 
+    /**
+     * Returns the model settings.
+     * @return      the graph model settings
+     */
     public GraphSettings settings();
 
+    /**
+     * Create a new view by duplicating <b>main</b> view. The view contains all
+     * nodes and edges in the structure.
+     * @return      a new graph view, obtained from duplicating main view
+     */
     public GraphView newView();
 
+    /**
+     * Destroy <code>view</code>, if exists. Always destroy views that are not
+     * needed anymore to avoid memory overhead.
+     * @param view  the view that is to be destroyed
+     */
     public void destroyView(GraphView view);
 
+    /**
+     * Sets the current visible view and nofity listeners the visible view changed.
+     * @param view  the view that is to be set as the visible view
+     */
     public void setVisibleView(GraphView view);
 
+    /**
+     * Returns the current viisble view. By default, returns the <b>main</b>
+     * view.
+     * @return      the current visible view
+     */
     public GraphView getVisibleView();
 
+    /**
+     * Build a <code>Graph</code> to access the <b>main</b> view. If no undirected
+     * edges have been added, returns a <code>DirectedGraph</code>. If the graph
+     * only contains undirected edges, returns a <code>UndirectedGraph</code>.
+     * If both directed and undirected edges exists, returns a <code>MixedGraph</code>.
+     * @return      a graph object, directed by default
+     */
     public Graph getGraph();
 
+    /**
+     * Build a <code>DirectedGraph</code> to access the <b>main</b> view.
+     * @return      a directed graph object
+     */
     public DirectedGraph getDirectedGraph();
 
+    /**
+     * Build a <code>UndirectedGraph</code> to access the <b>main</b> view.
+     * @return      an undirected graph object
+     */
     public UndirectedGraph getUndirectedGraph();
 
+    /**
+     * Build a <code>MixedGraph</code> to access the <b>main</b> view.
+     * @return      a mixed graph object
+     */
     public MixedGraph getMixedGraph();
 
+    /**
+     * Build a <code>HierarchicalGraph</code> to access the <b>main</b> view.
+     * If no undirected edges have been added, returns a
+     * <code>HierarchicalDirectedGraph</code>. If the graph only contains undirected
+     * edges, returns a <code>HierarchicalUndirectedGraph</code>. If both directed
+     * and undirected edges exists, returns a <code>HierarchicalMixedGraph</code>.
+     * <p>
+     * Hierarchical graphs are normal graphs with more features to handle graphs
+     * within graphs.
+     * @return      a hierarchical graph object, directed by default
+     */
     public HierarchicalGraph getHierarchicalGraph();
 
+    /**
+     * Build a <code>HierarchicalDirectedGraph</code> to access the <b>main</b> view.
+     * @return      a hierarchical directed graph object
+     */
     public HierarchicalDirectedGraph getHierarchicalDirectedGraph();
 
+    /**
+     * Build a <code>HierarchicalUndirectedGraph</code> to access the <b>main</b> view.
+     * @return      a hierarchical undirected graph object
+     */
     public HierarchicalUndirectedGraph getHierarchicalUndirectedGraph();
 
+    /**
+     * Build a <code>HierarchicalMixedGraph</code> to access the <b>main</b> view.
+     * @return      a hierarchical mixed graph object
+     */
     public HierarchicalMixedGraph getHierarchicalMixedGraph();
 
+    /**
+     * Build a <code>Graph</code> to access the <b>visible</b> view. If no undirected
+     * edges have been added, returns a <code>DirectedGraph</code>. If the graph
+     * only contains undirected edges, returns a <code>UndirectedGraph</code>.
+     * If both directed and undirected edges exists, returns a <code>MixedGraph</code>.
+     * @return      a graph object, directed by default
+     */
     public Graph getGraphVisible();
 
+    /**
+     * Build a <code>DirectedGraph</code> to access the <b>visible</b> view.
+     * @return      a directed graph object
+     */
     public DirectedGraph getDirectedGraphVisible();
 
+    /**
+     * Build a <code>UndirectedGraph</code> to access the <b>visible</b> view.
+     * @return      an undirected graph object
+     */
     public UndirectedGraph getUndirectedGraphVisible();
 
+    /**
+     * Build a <code>MixedGraph</code> to access the <b>visible</b> view.
+     * @return      a mixed graph object
+     */
     public MixedGraph getMixedGraphVisible();
 
+    /**
+     * Build a <code>HierarchicalGraph</code> to access the <b>visible</b> view.
+     * If no undirected edges have been added, returns a
+     * <code>HierarchicalDirectedGraph</code>. If the graph only contains undirected
+     * edges, returns a <code>HierarchicalUndirectedGraph</code>. If both directed
+     * and undirected edges exists, returns a <code>HierarchicalMixedGraph</code>.
+     * <p>
+     * Hierarchical graphs are normal graphs with more features to handle graphs
+     * within graphs.
+     * @return      a hierarchical graph object, directed by default
+     */
     public HierarchicalGraph getHierarchicalGraphVisible();
 
+    /**
+     * Build a <code>HierarchicalDirectedGraph</code> to access the <b>visible</b> view.
+     * @return      a hierarchical directed graph object
+     */
     public HierarchicalDirectedGraph getHierarchicalDirectedGraphVisible();
 
+    /**
+     * Build a <code>HierarchicalUndirectedGraph</code> to access the <b>visible</b> view.
+     * @return      a hierarchical undirected graph object
+     */
     public HierarchicalUndirectedGraph getHierarchicalUndirectedGraphVisible();
 
+    /**
+     * Build a <code>HierarchicalMixedGraph</code> to access the <b>visible</b> view.
+     * @return      a hierarchical mixed graph object
+     */
     public HierarchicalMixedGraph getHierarchicalMixedGraphVisible();
 
+    /**
+     * Build a <code>Graph</code> to access <code>view/code>. If no undirected
+     * edges have been added, returns a <code>DirectedGraph</code>. If the graph
+     * only contains undirected edges, returns a <code>UndirectedGraph</code>.
+     * If both directed and undirected edges exists, returns a <code>MixedGraph</code>.
+     * @return      a graph object on <code>view</code>, directed by default
+     */
     public Graph getGraph(GraphView view);
 
+    /**
+     * Build a <code>DirectedGraph</code> to access <code>view</code>.
+     * @return      a directed graph object on <code>view</code>
+     */
     public DirectedGraph getDirectedGraph(GraphView view);
 
+    /**
+     * Build a <code>UndirectedGraph</code> to access <code>view</code>.
+     * @return      an undirected graph object on <code>view</code>
+     */
     public UndirectedGraph getUndirectedGraph(GraphView view);
 
+    /**
+     * Build a <code>MixedGraph</code> to access <code>view</code>.
+     * @return      a mixed graph object on <code>view</code>
+     */
     public MixedGraph getMixedGraph(GraphView view);
 
+    /**
+     * Build a <code>HierarchicalGraph</code> to access <code>view</code>.
+     * If no undirected edges have been added, returns a
+     * <code>HierarchicalDirectedGraph</code>. If the graph only contains undirected
+     * edges, returns a <code>HierarchicalUndirectedGraph</code>. If both directed
+     * and undirected edges exists, returns a <code>HierarchicalMixedGraph</code>.
+     * <p>
+     * Hierarchical graphs are normal graphs with more features to handle graphs
+     * within graphs.
+     * @return      a hierarchical graph object on <code>view</code>, directed by default
+     */
     public HierarchicalGraph getHierarchicalGraph(GraphView view);
 
+    /**
+     * Build a <code>HierarchicalDirectedGraph</code> to access <code>view</code>.
+     * @return      a hierarchical directed graph object on <code>view</code>
+     */
     public HierarchicalDirectedGraph getHierarchicalDirectedGraph(GraphView view);
 
+    /**
+     * Build a <code>HierarchicalUndirectedGraph</code> to access <code>view</code>.
+     * @return      a hierarchical undirected graph object on <code>view</code>
+     */
     public HierarchicalUndirectedGraph getHierarchicalUndirectedGraph(GraphView view);
 
+    /**
+     * Build a <code>HierarchicalMixedGraph</code> to access <code>view</code>.
+     * @return      a hierarchical mixed graph object on <code>view</code>
+     */
     public HierarchicalMixedGraph getHierarchicalMixedGraph(GraphView view);
 
+    /**
+     * Copy the graph structure from <code>graph</code> to this model. The
+     * given <code>graph</code>must come from a different <code>GraphModel</code>,
+     * i.e. a different workspace.
+     * @param graph the graph that is to be copied in this model
+     * @throws IllegalArgumentException if <code>graph</code> belongs to this
+     * graph model
+     */
     public void pushFrom(Graph graph);
 
+    /**
+     * Returns a complete copy of this model, including all views but not listeners.
+     * @return      a copy of this graph model
+     */
     public GraphModel copy();
 
+    /**
+     * Clears the model by deleting all views and reseting <code>main</code>
+     * view. Calling this method immediately makes all <code>Graph</code> on
+     * other views than <b>main</b> obsolete.
+     */
     public void clear();
 
     /**

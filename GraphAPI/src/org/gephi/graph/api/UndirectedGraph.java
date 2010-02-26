@@ -27,6 +27,7 @@ package org.gephi.graph.api;
  * edges.
  *
  * @author Mathieu Bastian
+ * @see GraphModel
  */
 public interface UndirectedGraph extends Graph {
 

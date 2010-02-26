@@ -23,6 +23,7 @@ package org.gephi.graph.api;
 /**
  *
  * @author Mathieu Bastian
+ * @see GraphModel
  */
 public interface HierarchicalDirectedGraph extends HierarchicalGraph, DirectedGraph {
 

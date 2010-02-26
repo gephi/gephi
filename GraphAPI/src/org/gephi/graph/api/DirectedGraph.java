@@ -24,6 +24,7 @@ package org.gephi.graph.api;
  * Graph with only directed edges.
  *
  * @author Mathieu Bastian
+ * @see GraphModel
  */
 public interface DirectedGraph extends Graph {
 
