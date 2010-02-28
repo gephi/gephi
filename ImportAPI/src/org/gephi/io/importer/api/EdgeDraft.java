@@ -41,6 +41,8 @@ public interface EdgeDraft {
 
     public void setWeight(float weight);
 
+    public float getWeight();
+
     public void setColor(Color color);
 
     public void setColor(String r, String g, String b);
