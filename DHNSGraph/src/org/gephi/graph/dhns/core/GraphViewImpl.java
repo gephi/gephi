@@ -4,6 +4,7 @@
  */
 package org.gephi.graph.dhns.core;
 
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 
 /**
@@ -12,6 +13,7 @@ import org.gephi.graph.api.GraphView;
  */
 public class GraphViewImpl implements GraphView {
 
+    private final Dhns dhns;
     private final int viewId;
     private final TreeStructure structure;
     private final StructureModifier structureModifier;
@@ -22,6 +24,7 @@ public class GraphViewImpl implements GraphView {
     private int mutualEdgesEnabled;
 
     public GraphViewImpl(Dhns dhns, int viewId) {
+        this.dhns = dhns;
         this.viewId = viewId;
         this.structure = new TreeStructure(viewId);
         this.structureModifier = new StructureModifier(dhns, this);
@@ -121,5 +124,9 @@ public class GraphViewImpl implements GraphView {
 
     public void setNodesEnabled(int nodesEnabled) {
         this.nodesEnabled = nodesEnabled;
+    }
+
+    public GraphModel getGraphModel() {
+        return dhns;
     }
 }

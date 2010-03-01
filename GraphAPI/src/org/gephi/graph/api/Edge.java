@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.api;
 
 /**
+ * Edge interface. An edge connects two nodes and can be <b>directed</b> or
+ * not.
  *
  * @author Mathieu Bastian
  */

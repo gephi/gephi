@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.api;
 
 /**
+ * Graphical 2D/3D model.
  *
  * @author Mathieu Bastian
  */

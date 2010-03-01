@@ -24,7 +24,7 @@ import org.gephi.graph.api.NodeData;
 
 /**
  * Interface that layout module extends to hosts temporary data to nodes when
- * performing layout algorithm. Included directely in elements for performance
+ * performing layout algorithm. Included directly in elements for performance
  * reasons.
  *
  * @author Mathieu Bastian

@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.api;
 
 /**
- * Graph with only directed edges.
+ * Graph with directed edges.
  *
  * @author Mathieu Bastian
  * @see GraphModel
@@ -42,7 +42,7 @@ public interface DirectedGraph extends Graph {
     public boolean addEdge(Node source, Node target);
 
     /**
-     * Find and returns an edge that connects <code>source</code> and <code>target</code>. Returns
+     * Finds and returns an edge that connects <code>source</code> and <code>target</code>. Returns
      * <code>null</code> if no such edge is found.
      * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
      * statement.

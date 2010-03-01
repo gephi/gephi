@@ -21,24 +21,61 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.api;
 
 /**
+ * Graph view define a <b>subgraph</b>, i.e. a subset of the original graph.
+ * <code>GraphModel</code> has at least a single view, called the <b>main</b>
+ * view, which contains 100% of the graph. Other views can be defined by users
+ * to define subgraphs with a reduced number of nodes and edges. This is typically
+ * used by filters, which returns filtered graphs.
+ * <p>
+ * <code>GraphModel</code> also contains the <b>visible</b> view, which is the
+ * main view by default but can be set to configure the view that is visualized.
+ * <p>
+ * What exactly contains the view? The complete hierarchy of nodes, the edges
+ * and meta-edges. Each view has separate hierarchy, therefore grouping and
+ * meta-edges are independent.
+ * <p>
+ * Note that nodes' id is unique, and is not touched by views.
+ * <h3>Main or Visible View?</h3>
+ * When you need to interact with the graph structure, you have the choice
+ * between working on the complete graph, i.e. the <b>main</b> view, or the
+ * <b>visible</b> view. In most cases, it's preferable to use the <b>visible</b>
+ * view because your action will use the graph currently visualized, which has
+ * been potentially filtered by users on purpose.
+ * <p>
+ * To get the graph in the visible view, see {@link GraphModel#getGraphVisible()}.
+ * <h3>Set the Visible View</h3>
+ * This is the typical workflow for filtering a graph and display the results,
+ * as done by <code>FiltersAPI</code>.
+ * <ul><li>Create a new view, which duplicates the <b>main</b> view, with all
+ * nodes and edges in it.</li>
+ * <li>Remove nodes and edges in the view.</li>
+ * <li>Set the view as the curently visible view.</li></ul>
+ * To set a view as the currently visible view, see
+ * {@link GraphModel#setVisibleView(org.gephi.graph.api.GraphView)}.
  *
  * @author Mathieu Bastian
  */
 public interface GraphView {
 
+    /**
+     * Returns this view unique identifier. The id is a positive integer. The
+     * main view always has it's id equal to zero.
+     * @return      the view identifier
+     */
     public int getViewId();
 
+    /**
+     * Returns <code>true</code> if this view is the main view. Each
+     * <code>GraphModel</code> has a single main view, which contains all nodes
+     * and edges in the model.
+     * @return      <code>true</code> if this is the main view, <code>false</code>
+     * otherwise.
+     */
     public boolean isMainView();
 
-    /*public enum HierarchyFiltering{FLAT, CHILDREN, FULL};
-
-    public void addPredicate(Predicate predicate);
-
-    public void removePredicate(Predicate predicate);
-
-    public void updatePredicate(Predicate oldPredicate, Predicate newPredicate);
-
-    public void updatePredicate(Predicate[] oldPredicate, Predicate[] newPredicate);
-
-    public void setHierarchyFiltering(HierarchyFiltering hierarchyFiltering);*/
+    /**
+     * Returns the graph model this view belongs.
+     * @return      the graph model this view belongs.
+     */
+    public GraphModel getGraphModel();
 }
