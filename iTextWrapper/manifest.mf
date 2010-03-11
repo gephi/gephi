@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.lib.itext
+OpenIDE-Module-Localizing-Bundle: org/gephi/lib/itext/Bundle.properties
+OpenIDE-Module-Specification-Version: 5.0.1
+
