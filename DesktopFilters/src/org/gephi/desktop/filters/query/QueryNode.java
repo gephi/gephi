@@ -23,6 +23,7 @@ package org.gephi.desktop.filters.query;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import org.gephi.desktop.filters.FiltersTopComponent;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.Query;
 import org.openide.DialogDisplayer;
@@ -42,10 +43,19 @@ public class QueryNode extends AbstractNode {
     public QueryNode(Query query) {
         super(new QueryChildren(query));
         this.query = query;
-        setName(query.getName());
+        //setName(query.getName());
         setIconBaseWithExtension("org/gephi/desktop/filters/query/resources/query.png");
     }
-    
+
+    @Override
+    public String getHtmlDisplayName() {
+        return isSelected() ? "<b>" + (query.getName()) + "</b>" : query.getName();
+    }
+
+    private boolean isSelected() {
+        return FiltersTopComponent.findInstance().getUiModel().getSelectedQuery() == query;
+    }
+
 
     /*@Override
     public PasteType getDropType(final Transferable t, int action, int index) {
