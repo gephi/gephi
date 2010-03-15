@@ -3,5 +3,5 @@ AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.desktop.filters
 OpenIDE-Module-Layer: org/gephi/desktop/filters/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/filters/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.0.3
+OpenIDE-Module-Specification-Version: 0.7.0.4
 
