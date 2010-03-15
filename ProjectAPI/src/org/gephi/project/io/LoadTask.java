@@ -32,6 +32,7 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.w3c.dom.Document;
 
 /**
@@ -52,6 +53,7 @@ public class LoadTask implements LongTask, Runnable {
     public void run() {
         try {
             Progress.start(progressTicket);
+            Progress.setDisplayName(progressTicket, NbBundle.getMessage(SaveTask.class, "LoadTask.name"));
             FileObject fileObject = dataObject.getPrimaryFile();
             if (FileUtil.isArchiveFile(fileObject)) {
                 //Unzip
@@ -71,6 +73,12 @@ public class LoadTask implements LongTask, Runnable {
             project.getLookup().lookup(ProjectInformationImpl.class).setDataObject(dataObject);
             dataObject.setProject(project);
 
+            //Version
+            String version = doc.getDocumentElement().getAttribute("version");
+            if (version == null || version.isEmpty() || Double.parseDouble(version) != 0.7) {
+                throw new GephiFormatException("Gephi project file version must be at least 0.7");
+            }
+
             //GephiReader
             gephiReader = new GephiReader();
             project = gephiReader.readAll(doc.getDocumentElement(), project);
@@ -83,6 +91,9 @@ public class LoadTask implements LongTask, Runnable {
             Progress.finish(progressTicket);
         } catch (Exception ex) {
             ex.printStackTrace();
+            if (ex instanceof GephiFormatException) {
+                throw (GephiFormatException) ex;
+            }
             throw new GephiFormatException(GephiReader.class, ex);
         }
     }

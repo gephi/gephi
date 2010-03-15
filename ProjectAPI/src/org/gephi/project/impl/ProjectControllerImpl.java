@@ -44,6 +44,7 @@ import org.gephi.utils.longtask.api.LongTaskListener;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.project.io.GephiFormatException;
 import org.gephi.workspace.impl.WorkspaceImpl;
 import org.gephi.workspace.impl.WorkspaceInformationImpl;
 import org.gephi.project.spi.WorkspaceDuplicateProvider;
@@ -95,6 +96,10 @@ public class ProjectControllerImpl implements ProjectController {
 
             public void fatalError(Throwable t) {
                 unlockProjectActions();
+                if(t instanceof GephiFormatException && t.getCause()==null) {
+                    NotifyDescriptor.Message msg = new NotifyDescriptor.Message(t.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
+                    DialogDisplayer.getDefault().notify(msg);
+                }
                 Logger.getLogger("").log(Level.WARNING, "", t.getCause());
             }
         });

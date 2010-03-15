@@ -72,6 +72,7 @@ public class SaveTask implements LongTask, Runnable {
         File writeFile = null;
         try {
             Progress.start(progressTicket);
+            Progress.setDisplayName(progressTicket, NbBundle.getMessage(SaveTask.class, "SaveTask.name"));
             FileObject fileObject = dataObject.getPrimaryFile();
             File outputFile = FileUtil.toFile(fileObject);
             writeFile = outputFile;
