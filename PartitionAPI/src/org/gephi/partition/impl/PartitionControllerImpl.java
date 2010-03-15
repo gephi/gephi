@@ -239,7 +239,9 @@ public class PartitionControllerImpl implements PartitionController, LookupListe
     }
 
     public void transform(Partition partition, Transformer transformer) {
-        transformer.transform(partition);
+        if (transformer != null && partition != null) {
+            transformer.transform(partition);
+        }
     }
 
     public boolean isGroupable(Partition partition) {
