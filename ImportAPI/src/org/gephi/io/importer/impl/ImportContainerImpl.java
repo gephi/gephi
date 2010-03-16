@@ -380,6 +380,13 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             sortedNodeMap.put(n.getId(), n);
         }
         nodeMap = sortedNodeMap;
+
+        //Set id as label for nodes that miss label
+        for (NodeDraftImpl node : nodeMap.values()) {
+            if (node.getLabel() == null) {
+                node.setLabel(node.getId());
+            }
+        }
     }
 
     /**
