@@ -36,6 +36,10 @@ public abstract class AttributeUtils {
 
     public abstract boolean isNumberColumn(AttributeColumn column);
 
+    public abstract AttributeColumn[] getNumberColumns(AttributeTable table);
+
+    public abstract AttributeColumn[] getStringColumns(AttributeTable table);
+
     public abstract Object getMin(AttributeColumn column, Object[] values);
 
     public abstract Object getMax(AttributeColumn column, Object[] values);

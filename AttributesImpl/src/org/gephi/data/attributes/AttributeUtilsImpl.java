@@ -20,8 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes;
 
-import java.lang.Number;
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.openide.util.lookup.ServiceProvider;
@@ -166,5 +168,27 @@ public class AttributeUtilsImpl extends AttributeUtils {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public AttributeColumn[] getNumberColumns(AttributeTable table) {
+        List<AttributeColumn> res = new ArrayList<AttributeColumn>();
+        for (AttributeColumn c : table.getColumns()) {
+            if (isNumberColumn(c)) {
+                res.add(c);
+            }
+        }
+        return res.toArray(new AttributeColumn[0]);
+    }
+
+    @Override
+    public AttributeColumn[] getStringColumns(AttributeTable table) {
+        List<AttributeColumn> res = new ArrayList<AttributeColumn>();
+        for (AttributeColumn c : table.getColumns()) {
+            if (isStringColumn(c)) {
+                res.add(c);
+            }
+        }
+        return res.toArray(new AttributeColumn[0]);
     }
 }
