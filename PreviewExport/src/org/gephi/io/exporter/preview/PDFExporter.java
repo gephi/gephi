@@ -122,10 +122,10 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     public void renderNode(Node node) {
-        int x = node.getPosition().getX().intValue();
-        int y = node.getPosition().getY().intValue();
-        int diameter = node.getDiameter().intValue();
-        pdfSketch.ellipse(x, y, diameter, diameter);
+        float x = node.getPosition().getX();
+        float y = node.getPosition().getY();
+        float r = node.getRadius();
+        pdfSketch.ellipse(x-r, y-r, x+r, y+r);
     }
 
     public void renderNodeLabel(NodeLabel label) {
@@ -219,6 +219,7 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         document.open();
         pdfSketch = writer.getDirectContent();
         pdfSketch.saveState();
+        pdfSketch.concatCTM(0f, 1f, -1f, 0f, 0f, 0f);
         pdfSketch.setColorStroke(BaseColor.BLACK);
         renderGraph(graphSheet.getGraph());
         pdfSketch.stroke();
