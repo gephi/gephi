@@ -95,7 +95,7 @@ public class ImporterDL implements TextImporter, LongTask {
 
         int i = 1;
         for (; i < lines.size(); i++) {
-            String line = lines.get(i);
+            String line = lines.get(i).toLowerCase();
             if (line.trim().endsWith("data:") || line.trim().endsWith("labels:")) {
                 break;
             } else {
@@ -105,13 +105,13 @@ public class ImporterDL implements TextImporter, LongTask {
 
         computeHeaders();
 
-        if (lines.get(i).trim().endsWith("labels:") && lines.size() > i + 1) {
+        if (lines.get(i).toLowerCase().trim().endsWith("labels:") && lines.size() > i + 1) {
             readLabels(lines.get(++i));
         }
 
         int dataLineStart = -1;
         for (; i < lines.size(); i++) {
-            String line = lines.get(i);
+            String line = lines.get(i).toLowerCase();
             if (line.trim().endsWith("data:")) {
                 dataLineStart = i + 1;
                 break;
@@ -134,7 +134,7 @@ public class ImporterDL implements TextImporter, LongTask {
     private void readHeaderLine(String line) {
         StringTokenizer firstLineTokenizer = new StringTokenizer(line, " ,;");
         while (firstLineTokenizer.hasMoreTokens()) {
-            String tag = firstLineTokenizer.nextToken();
+            String tag = firstLineTokenizer.nextToken().toLowerCase();
             if (tag.indexOf("=") != -1) {
                 headerMap.put(tag.substring(0, tag.indexOf("=")).trim(), tag.substring(tag.indexOf("=") + 1).trim());
             } else {
@@ -159,9 +159,6 @@ public class ImporterDL implements TextImporter, LongTask {
         // read number of nodes
         try {
             String nArg = (String) headerMap.get("n");
-            if (nArg == null) {
-                nArg = (String) headerMap.get("N");
-            }
             numNodes = Integer.parseInt(nArg);
         } catch (Exception e) {
             report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_nmissing"), Issue.Level.SEVERE));
