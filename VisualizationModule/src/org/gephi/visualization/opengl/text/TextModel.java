@@ -56,8 +56,8 @@ public class TextModel {
     protected float nodeSizeFactor = 0.5f;//Between 0 and 1
     protected float edgeSizeFactor = 0.5f;
     protected List<ChangeListener> listeners = new ArrayList<ChangeListener>();
-    protected AttributeColumn[] nodeTextColumns;
-    protected AttributeColumn[] edgeTextColumns;
+    protected AttributeColumn[] nodeTextColumns = new AttributeColumn[0];
+    protected AttributeColumn[] edgeTextColumns = new AttributeColumn[0];
 
     public TextModel() {
         defaultValues();
