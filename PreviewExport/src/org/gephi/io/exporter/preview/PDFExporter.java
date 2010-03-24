@@ -1,77 +1,52 @@
 package org.gephi.io.exporter.preview;
 
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.DefaultFontMapper;
 import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileOutputStream;
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.DocumentLoader;
-import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.UserAgent;
-import org.apache.batik.bridge.UserAgentAdapter;
-import org.apache.batik.gvt.GraphicsNode;
 import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.preview.util.LengthUnit;
 import org.gephi.io.exporter.preview.util.SupportSize;
 import org.gephi.io.exporter.spi.VectorialFileExporter;
+import org.gephi.preview.api.DirectedEdge;
+import org.gephi.preview.api.Edge;
+import org.gephi.preview.api.EdgeArrow;
+import org.gephi.preview.api.EdgeLabel;
+import org.gephi.preview.api.EdgeMiniLabel;
 import org.gephi.preview.api.Graph;
+import org.gephi.preview.api.GraphRenderer;
 import org.gephi.preview.api.GraphSheet;
+import org.gephi.preview.api.Node;
+import org.gephi.preview.api.NodeLabel;
+import org.gephi.preview.api.NodeLabelBorder;
 import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.SelfLoop;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Class exporting the preview graph as an SVG image.
  *
- * @author Mathieu Bastian
+ * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
-public class PDFExporter implements VectorialFileExporter, LongTask {
+@ServiceProvider(service = VectorialFileExporter.class)
+public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTask {
 
-    private SVGExporter svgExporter;
     private ProgressTicket progress;
     private boolean cancel = false;
+    private PdfContentByte pdfSketch;
 
     public boolean exportData(File file, Workspace workspace) throws Exception {
         try {
-            Progress.start(progress);
-
-            PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-            GraphSheet graphSheet = controller.getGraphSheet();
-            Graph graph = graphSheet.getGraph();
             SupportSize supportSize = new SupportSize(210, 297, LengthUnit.MILLIMETER);
-
-            // calculates progress units count
-            int max = 0;
-            if (graph.showNodes()) {
-                max += graph.countNodes();
-            }
-            if (graph.showEdges()) {
-                max += graph.countUnidirectionalEdges() + graph.countBidirectionalEdges();
-                if (graph.showSelfLoops()) {
-                    max += graph.countSelfLoops();
-                }
-            }
-
-            Progress.switchToDeterminate(progress, max);
-
-            svgExporter = new SVGExporter();
-            svgExporter.setProgressTicket(progress);
-            org.w3c.dom.Document svgDoc = svgExporter.buildDOM(graphSheet, supportSize);
-            svgExporter.clean();
-            svgExporter = null;
-
-            Progress.switchToIndeterminate(progress);
-            export(svgDoc, file);
-            Progress.finish(progress);
+            exportData(file, supportSize);
         } catch (Exception e) {
             clean();
             throw e;
@@ -79,46 +54,6 @@ public class PDFExporter implements VectorialFileExporter, LongTask {
         boolean c = cancel;
         clean();
         return !c;
-    }
-
-    private void clean() {
-        progress = null;
-        cancel = false;
-    }
-
-    private void export(org.w3c.dom.Document svgDoc, File file) throws Exception {
-        // Batik initializations
-        UserAgent userAgent = new UserAgentAdapter();
-        DocumentLoader loader = new DocumentLoader(userAgent);
-        BridgeContext ctx = new BridgeContext(userAgent, loader);
-        GVTBuilder builder = new GVTBuilder();
-        ctx.setDynamicState(BridgeContext.DYNAMIC);
-
-        // SVG rendered as graphics
-        GraphicsNode gn = builder.build(ctx, svgDoc);
-
-        // PDF size set
-        Rectangle pageSize = PageSize.A4;
-        float width = pageSize.getWidth();
-        float height = pageSize.getHeight();
-
-        // TODO SVG graphics resized according to the PDF size
-        gn.setTransform(AffineTransform.getScaleInstance(0.5, 0.5));
-
-        // PDF file initialization
-        Document pdfDoc = new Document();
-        PdfWriter writer = PdfWriter.getInstance(pdfDoc, new FileOutputStream(file));
-        pdfDoc.open();
-        PdfContentByte cb = writer.getDirectContent();
-        PdfTemplate tp = cb.createTemplate(width, height);
-        Graphics2D g2d = tp.createGraphics(width, height, new DefaultFontMapper());
-
-        // SVG added to PDF
-        gn.paint(g2d);
-        g2d.dispose();
-        cb.addTemplate(tp, 0, 0);
-
-        pdfDoc.close();
     }
 
     public FileType[] getFileTypes() {
@@ -131,13 +66,166 @@ public class PDFExporter implements VectorialFileExporter, LongTask {
 
     public boolean cancel() {
         cancel = true;
-        if (svgExporter != null) {
-            svgExporter.cancel();
-        }
         return true;
     }
 
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progress = progressTicket;
+    }
+
+    public void renderGraph(Graph graph) {
+        if (graph.showEdges()) {
+            renderGraphEdges(graph);
+        }
+
+        if (graph.showNodes()) {
+            renderGraphNodes(graph);
+        }
+
+        renderGraphLabels(graph);
+
+        renderGraphLabelBorders(graph);
+    }
+
+    public void renderGraphEdges(Graph graph) {
+
+    }
+
+    public void renderGraphSelfLoops(Graph graph) {
+
+    }
+
+    public void renderGraphUnidirectionalEdges(Graph graph) {
+
+    }
+
+    public void renderGraphBidirectionalEdges(Graph graph) {
+
+    }
+
+    public void renderGraphUndirectedEdges(Graph graph) {
+
+    }
+
+    public void renderGraphNodes(Graph graph) {
+        for (Node n : graph.getNodes()) {
+            renderNode(n);
+        }
+    }
+
+    public void renderGraphLabels(Graph graph) {
+
+    }
+
+    public void renderGraphLabelBorders(Graph graph) {
+
+    }
+
+    public void renderNode(Node node) {
+        float x = node.getPosition().getX();
+        float y = node.getPosition().getY();
+        float r = node.getRadius();
+        pdfSketch.ellipse(x-r, y-r, x+r, y+r);
+    }
+
+    public void renderNodeLabel(NodeLabel label) {
+
+    }
+
+    public void renderNodeLabelBorder(NodeLabelBorder border) {
+
+    }
+
+    public void renderSelfLoop(SelfLoop selfLoop) {
+
+    }
+
+    public void renderDirectedEdge(DirectedEdge edge) {
+
+    }
+
+    public void renderEdge(Edge edge) {
+
+    }
+
+    public void renderStraightEdge(Edge edge) {
+
+    }
+
+    public void renderCurvedEdge(Edge edge) {
+
+    }
+
+    public void renderEdgeArrows(DirectedEdge edge) {
+
+    }
+
+    public void renderEdgeMiniLabels(DirectedEdge edge) {
+
+    }
+
+    public void renderEdgeArrow(EdgeArrow arrow) {
+
+    }
+
+    public void renderEdgeLabel(EdgeLabel label) {
+
+    }
+
+    public void renderEdgeMiniLabel(EdgeMiniLabel miniLabel) {
+
+    }
+
+    /**
+     * Cleans all fields.
+     */
+    public void clean() {
+        progress = null;
+        cancel = false;
+        pdfSketch = null;
+    }
+
+    /**
+     * Does export the preview graph as an SVG image.
+     *
+     * @param file         the output SVG file
+     * @param supportSize  the support size of the exported image
+     * @throws Exception
+     */
+    private void exportData(File file, SupportSize supportSize) throws Exception {
+        // fetches the preview graph sheet
+        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+        GraphSheet graphSheet = controller.getGraphSheet();
+        Graph graph = graphSheet.getGraph();
+
+        Progress.start(progress);
+
+        // calculates progress units count
+        int max = 0;
+        if (graph.showNodes()) {
+            max += graph.countNodes();
+        }
+        if (graph.showEdges()) {
+            max += graph.countUnidirectionalEdges() + graph.countBidirectionalEdges();
+            if (graph.showSelfLoops()) {
+                max += graph.countSelfLoops();
+            }
+        }
+        Progress.switchToDeterminate(progress, max);
+
+        // export task
+        Document document = new Document(PageSize.A4);
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
+        document.open();
+        pdfSketch = writer.getDirectContent();
+        pdfSketch.saveState();
+        pdfSketch.concatCTM(0f, 1f, -1f, 0f, 0f, 0f);
+        pdfSketch.setColorStroke(BaseColor.BLACK);
+        renderGraph(graphSheet.getGraph());
+        pdfSketch.stroke();
+        pdfSketch.restoreState();
+        document.close();
+
+        Progress.finish(progress);
     }
 }
