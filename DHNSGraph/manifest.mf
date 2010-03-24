@@ -3,5 +3,5 @@ AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.graph.dhns
 OpenIDE-Module-Layer: org/gephi/graph/dhns/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/graph/dhns/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.0.3
+OpenIDE-Module-Specification-Version: 0.7.0.4
 
