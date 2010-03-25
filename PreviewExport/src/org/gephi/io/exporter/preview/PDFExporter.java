@@ -11,6 +11,7 @@ import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.preview.util.LengthUnit;
 import org.gephi.io.exporter.preview.util.SupportSize;
 import org.gephi.io.exporter.spi.VectorialFileExporter;
+import org.gephi.preview.api.Color;
 import org.gephi.preview.api.DirectedEdge;
 import org.gephi.preview.api.Edge;
 import org.gephi.preview.api.EdgeArrow;
@@ -22,6 +23,7 @@ import org.gephi.preview.api.GraphSheet;
 import org.gephi.preview.api.Node;
 import org.gephi.preview.api.NodeLabel;
 import org.gephi.preview.api.NodeLabelBorder;
+import org.gephi.preview.api.Point;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.SelfLoop;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -122,10 +124,14 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     public void renderNode(Node node) {
-        float x = node.getPosition().getX();
-        float y = node.getPosition().getY();
-        float r = node.getRadius();
-        pdfSketch.ellipse(x-r, y-r, x+r, y+r);
+        Point center = node.getPosition();node.getRadius();
+        Color c = node.getColor();
+        Color bc = node.getBorderColor();
+
+        pdfSketch.setRGBColorStroke(bc.getRed(), bc.getGreen(), bc.getBlue());
+        pdfSketch.setRGBColorFill(c.getRed(), c.getGreen(), c.getBlue());
+        pdfSketch.circle(center.getX(), center.getY(), node.getRadius());
+        pdfSketch.fillStroke();
     }
 
     public void renderNodeLabel(NodeLabel label) {
@@ -222,7 +228,6 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         pdfSketch.concatCTM(0f, 1f, -1f, 0f, 0f, 0f);
         pdfSketch.setColorStroke(BaseColor.BLACK);
         renderGraph(graphSheet.getGraph());
-        pdfSketch.stroke();
         pdfSketch.restoreState();
         document.close();
 
