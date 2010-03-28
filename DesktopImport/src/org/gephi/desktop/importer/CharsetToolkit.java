@@ -18,7 +18,6 @@ package org.gephi.desktop.importer;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Collection;
-import org.openide.filesystems.FileObject;
 
 /**
  * <p>Utility class to guess the encoding of a given text file.</p>
@@ -50,29 +49,29 @@ import org.openide.filesystems.FileObject;
  */
 public class CharsetToolkit {
 
-    private byte[] buffer;
+    private static final int BUFFER_SIZE = 4096;
+    private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+    private byte[] buffer = EMPTY_BYTE_ARRAY;
     private Charset defaultCharset;
     private Charset charset;
     private boolean enforce8Bit = true;
-    private final FileObject file;
-    private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+    private PushbackInputStream input;
 
     /**
      * Constructor of the <code>CharsetToolkit</code> utility class.
      *
      * @param file of which we want to know the encoding.
      */
-    public CharsetToolkit(FileObject file) throws IOException {
-        this.file = file;
+    public CharsetToolkit(InputStream stream) throws IOException {
         this.defaultCharset = getDefaultSystemCharset();
         this.charset = null;
-        InputStream input = file.getInputStream();
+        this.input = new PushbackInputStream(stream, BUFFER_SIZE);
         try {
-            byte[] bytes = new byte[4096];
+            byte[] bytes = new byte[BUFFER_SIZE];
             int bytesRead = input.read(bytes);
             if (bytesRead == -1) {
                 this.buffer = EMPTY_BYTE_ARRAY;
-            } else if (bytesRead < 4096) {
+            } else if (bytesRead < BUFFER_SIZE) {
                 byte[] bytesToGuess = new byte[bytesRead];
                 System.arraycopy(bytes, 0, bytesToGuess, 0, bytesRead);
                 this.buffer = bytesToGuess;
@@ -80,11 +79,7 @@ public class CharsetToolkit {
                 this.buffer = bytes;
             }
         } finally {
-            try {
-                input.close();
-            } catch (IOException e) {
-                // IGNORE
-            }
+            input.unread(buffer);
         }
     }
 
@@ -389,7 +384,7 @@ public class CharsetToolkit {
      * @throws FileNotFoundException if the file is not found.
      */
     public BufferedReader getReader() throws FileNotFoundException {
-        LineNumberReader reader = new LineNumberReader(new InputStreamReader(file.getInputStream(), getCharset()));
+        LineNumberReader reader = new LineNumberReader(new InputStreamReader(input, getCharset()));
         if (hasUTF8Bom() || hasUTF16LEBom() || hasUTF16BEBom()) {
             try {
                 reader.read();
