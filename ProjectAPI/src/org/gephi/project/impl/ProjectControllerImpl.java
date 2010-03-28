@@ -487,7 +487,7 @@ public class ProjectControllerImpl implements ProjectController {
     }
 
     public void renameProject(Project project, final String name) {
-        project.getLookup().lookup(ProjectInformationImpl.class);
+        project.getLookup().lookup(ProjectInformationImpl.class).setName(name);
 
         //Title bar
         SwingUtilities.invokeLater(new Runnable() {
