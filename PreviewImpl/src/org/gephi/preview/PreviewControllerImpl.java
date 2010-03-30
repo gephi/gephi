@@ -64,6 +64,8 @@ public class PreviewControllerImpl implements PreviewController {
             public void disable() {
                 graphSheet = null;
                 model = null;
+                partialGraphSheet=null;
+                previewGraph=null;
             }
         });
 
@@ -132,7 +134,10 @@ public class PreviewControllerImpl implements PreviewController {
         if (model != null) {
             if (model.isUpdateFlag() || null == partialGraphSheet
                     || ((PartialGraphImpl) partialGraphSheet.getGraph()).getVisibilityRatio() != visibilityRatio) {
-                partialGraphSheet = new GraphSheetImpl(getPartialGraph(visibilityRatio));
+                Graph graph = getPartialGraph(visibilityRatio);
+                if (graph != null) {
+                    partialGraphSheet = new GraphSheetImpl(graph);
+                }
             }
             return partialGraphSheet;
         }

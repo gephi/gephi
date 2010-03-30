@@ -59,7 +59,17 @@ public class PreviewUIController implements GraphListener {
             }
 
             public void disable() {
+                if (graphModel != null) {
+                    graphModel.removeGraphListener(PreviewUIController.this);
+                    graphModel = null;
+                    graphSheet = null;
+                }
                 disableRefresh();
+
+                //When project is closed, clear graph preview instead of keeping it:
+                PreviewTopComponent previewTopComponent=PreviewTopComponent.findInstance();
+                previewTopComponent.setGraph(null);
+                previewTopComponent.refreshPreview();
                 SwingUtilities.invokeLater(new Runnable() {
 
                     public void run() {

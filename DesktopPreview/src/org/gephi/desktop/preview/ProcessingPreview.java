@@ -41,8 +41,10 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
 
         // updates fonts
         fontMap.clear();
-        uniEdgeMiniLabelFont = getPFont(model.getUniEdgeSupervisor().getMiniLabelFont());
-        biEdgeMiniLabelFont = getPFont(model.getBiEdgeSupervisor().getMiniLabelFont());
+        if (model != null) {
+            uniEdgeMiniLabelFont = getPFont(model.getUniEdgeSupervisor().getMiniLabelFont());
+            biEdgeMiniLabelFont = getPFont(model.getBiEdgeSupervisor().getMiniLabelFont());
+        }
 
         // redraws the applet
         redraw();
@@ -176,24 +178,26 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
      * Initializes the preview applet layout according to the graph's dimension.
      */
     private void initAppletLayout() {
-        graphSheet.setMargin(MARGIN);
+        if (graphSheet != null) {
+            graphSheet.setMargin(MARGIN);
 
-        // initializes zoom
-        PVector box = new PVector(graphSheet.getWidth(), graphSheet.getHeight());
-        float ratioWidth = width / box.x;
-        float ratioHeight = height / box.y;
-        if (scaling == 0) {
-            scaling = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
+            // initializes zoom
+            PVector box = new PVector(graphSheet.getWidth(), graphSheet.getHeight());
+            float ratioWidth = width / box.x;
+            float ratioHeight = height / box.y;
+            if (scaling == 0) {
+                scaling = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
 
-            // initializes move
-            PVector semiBox = PVector.div(box, 2);
-            Point topLeftPosition = graphSheet.getTopLeftPosition();
-            PVector topLeftVector = new PVector(topLeftPosition.getX(), topLeftPosition.getY());
-            PVector center = new PVector(width / 2f, height / 2f);
-            PVector scaledCenter = PVector.add(topLeftVector, semiBox);
-            trans.set(center);
-            trans.sub(scaledCenter);
-            lastMove.set(trans);
+                // initializes move
+                PVector semiBox = PVector.div(box, 2);
+                Point topLeftPosition = graphSheet.getTopLeftPosition();
+                PVector topLeftVector = new PVector(topLeftPosition.getX(), topLeftPosition.getY());
+                PVector center = new PVector(width / 2f, height / 2f);
+                PVector scaledCenter = PVector.add(topLeftVector, semiBox);
+                trans.set(center);
+                trans.sub(scaledCenter);
+                lastMove.set(trans);
+            }
         }
     }
 
