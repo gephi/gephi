@@ -25,7 +25,7 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
     private PFont uniEdgeMiniLabelFont;
     private PFont biEdgeMiniLabelFont;
     private GraphSheet graphSheet = null;
-    private final HashMap<Font, PFont> fontMap = new HashMap<Font, PFont>();
+    private final HashMap<String, PFont> fontMap = new HashMap<String, PFont>();
     private final static float MARGIN = 10f;
     private java.awt.Color background = java.awt.Color.WHITE;
     private boolean moving = false;
@@ -469,12 +469,13 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
      * @return      the related Processing font
      */
     private PFont getPFont(Font font) {
-        if (fontMap.containsKey(font)) {
-            return fontMap.get(font);
+        String fontName=font.getName();
+        if (fontMap.containsKey(fontName)) {
+            return fontMap.get(fontName);
         }
 
         PFont pFont = createFont(font);
-        fontMap.put(font, pFont);
+        fontMap.put(fontName, pFont);
         return pFont;
     }
 
