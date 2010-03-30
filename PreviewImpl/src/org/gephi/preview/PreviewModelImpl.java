@@ -4,9 +4,9 @@
  */
 package org.gephi.preview;
 
+import java.awt.Font;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.graph.api.GraphEvent;
@@ -30,7 +30,6 @@ import org.gephi.preview.supervisors.UndirectedEdgeSupervisorImpl;
 import org.gephi.preview.supervisors.UnidirectionalEdgeSupervisorImpl;
 import org.gephi.project.api.Workspace;
 import org.openide.nodes.Node.Property;
-import org.openide.util.Exceptions;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -181,6 +180,9 @@ public class PreviewModelImpl implements PreviewModel, GraphListener {
                     String valueStr = propertiesMap.get(p.getName());
                     if (valueStr != null && !valueStr.isEmpty()) {
                         editor.setAsText(valueStr);
+                        if (p.getValueType().equals(Font.class)) { //bug 551877
+                            editor.setValue(Font.decode(valueStr));
+                        }
                         Object value = editor.getValue();
                         if (value != null) {
                             p.setValue(value);
