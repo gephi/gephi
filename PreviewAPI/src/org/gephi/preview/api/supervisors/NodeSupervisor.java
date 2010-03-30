@@ -151,4 +151,18 @@ public interface NodeSupervisor extends Supervisor {
      * @param value  the node label border colorizer to set
      */
     public void setNodeLabelBorderColorizer(NodeChildColorizer value);
+
+    /**
+     * Returns true if label size takes node size in account
+     *
+     * @return true if label size takes node size in account
+     */
+    public Boolean getProportionalLabelSize();
+
+    /**
+     * Defines if label size takes node size in account
+     * 
+     * @param proportionnalLabelSize true to set proportionnal label size
+     */
+    public void setProportionalLabelSize(Boolean proportionnalLabelSize);
 }

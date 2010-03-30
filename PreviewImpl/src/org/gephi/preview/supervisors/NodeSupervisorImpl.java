@@ -38,6 +38,8 @@ public class NodeSupervisorImpl implements NodeSupervisor {
     private NodeChildColorizer nodeLabelColorizer;
     private Boolean showNodeLabelBorders;
     private NodeChildColorizer nodeLabelBorderColorizer;
+    private Boolean proportionalLabelSize;
+
     //Architecture
     private final Set<NodeImpl> supervisedNodes = new HashSet<NodeImpl>();
 
@@ -57,6 +59,7 @@ public class NodeSupervisorImpl implements NodeSupervisor {
         nodeLabelColorizer = new CustomColorMode(0, 0, 0);
         showNodeLabelBorders = false;
         nodeLabelBorderColorizer = new CustomColorMode(255, 255, 255);
+        proportionalLabelSize = true;
     }
 
     /**
@@ -182,6 +185,14 @@ public class NodeSupervisorImpl implements NodeSupervisor {
     public void setNodeLabelBorderColorizer(NodeChildColorizer value) {
         nodeLabelBorderColorizer = value;
         colorNodeLabelBorders();
+    }
+
+    public Boolean getProportionalLabelSize() {
+        return proportionalLabelSize;
+    }
+
+    public void setProportionalLabelSize(Boolean proportionnalLabelSize) {
+        this.proportionalLabelSize = proportionnalLabelSize;
     }
 
     /**
@@ -349,6 +360,7 @@ public class NodeSupervisorImpl implements NodeSupervisor {
                         SupervisorPropery.createProperty(this, NodeColorizer.class, "nodeColorizer", CATEGORY, "Color", NodeColorizerPropertyEditor.class),
                         SupervisorPropery.createProperty(this, GenericColorizer.class, "nodeBorderColorizer", CATEGORY, "Border color", GenericColorizerPropertyEditor.class),
                         SupervisorPropery.createProperty(this, Boolean.class, "showNodeLabels", CATEGORY, "Show labels"),
+                        SupervisorPropery.createProperty(this, Boolean.class, "proportionalLabelSize", CATEGORY, "Proportional label size"),
                         SupervisorPropery.createProperty(this, Font.class, "baseNodeLabelFont", CATEGORY, "Label font"),
                         SupervisorPropery.createProperty(this, Boolean.class, "shortenLabelsFlag", CATEGORY, "Shorten labels"),
                         SupervisorPropery.createProperty(this, Integer.class, "nodeLabelMaxChar", CATEGORY, "Shorten limit"),
