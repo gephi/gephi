@@ -40,7 +40,7 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
         PreviewModel model = controller.getModel();
 
         // updates fonts
-        fontMap.clear();
+        //fontMap.clear(); Don't clear to prevent PFont memory leak from Processing library.
         if (model != null) {
             uniEdgeMiniLabelFont = getPFont(model.getUniEdgeSupervisor().getMiniLabelFont());
             biEdgeMiniLabelFont = getPFont(model.getBiEdgeSupervisor().getMiniLabelFont());
@@ -324,7 +324,7 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
     }
 
     public void renderNodeLabel(NodeLabel label) {
-        textFont(getPFont(label.getFont()));
+        textFont(label.getFont());
         textAlign(CENTER, CENTER);
 
         fill(label.getColor().getRed(),
@@ -422,7 +422,7 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
     }
 
     public void renderEdgeLabel(EdgeLabel label) {
-        textFont(getPFont(label.getFont()));
+        textFont(label.getFont());
         textAlign(CENTER, BASELINE);
 
         pushMatrix();
@@ -447,6 +447,11 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
         popMatrix();
     }
 
+    private void textFont(Font font){
+        PFont pFont=getPFont(font);
+        textFont(pFont, font.getSize());
+    }
+
     /**
      * Creates a Processing font from a classic font.
      *
@@ -454,7 +459,7 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
      * @return      a Processing font
      */
     private PFont createFont(Font font) {
-        return createFont(font.getName(), font.getSize());
+        return createFont(font.getName(), 1);
     }
 
     /**
