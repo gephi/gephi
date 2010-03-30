@@ -25,10 +25,11 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import org.gephi.project.api.ProjectController;
 import org.gephi.ui.utils.DialogFileFilter;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
-import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -48,7 +49,7 @@ public final class OpenProject extends SystemAction {
     public void actionPerformed(ActionEvent e) {
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        if(!pc.closeCurrentProject()) {
+        if (!pc.closeCurrentProject()) {
             return;
         }
 
@@ -79,7 +80,9 @@ public final class OpenProject extends SystemAction {
                 pc.loadProject(doe);
 
             } catch (Exception ew) {
-                Exceptions.printStackTrace(ew);
+                ew.printStackTrace();
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(OpenProject.class, "OpenProject.defaulterror"), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
             }
         }
     }
