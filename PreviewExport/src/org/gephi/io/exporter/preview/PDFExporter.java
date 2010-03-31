@@ -1,5 +1,6 @@
 package org.gephi.io.exporter.preview;
 
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
@@ -164,7 +165,12 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Color c = node.getColor();
         Color bc = node.getBorderColor();
 
-        pdfSketch.setRGBColorStroke(bc.getRed(), bc.getGreen(), bc.getBlue());
+        // node border rendering
+        pdfSketch.setRGBColorFill(bc.getRed(), bc.getGreen(), bc.getBlue());
+        pdfSketch.circle(center.getX(), center.getY(), node.getRadius() + node.getBorderWidth());
+        pdfSketch.fill();
+
+        // node content rendering
         pdfSketch.setRGBColorFill(c.getRed(), c.getGreen(), c.getBlue());
         pdfSketch.circle(center.getX(), center.getY(), node.getRadius());
         pdfSketch.fillStroke();
