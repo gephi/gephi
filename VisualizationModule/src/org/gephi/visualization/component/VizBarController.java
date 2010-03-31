@@ -83,12 +83,12 @@ public class VizBarController {
                 }
             }
         });
-
     }
 
     public VizToolbar getToolbar() {
+        VizModel model = VizController.getInstance().getVizModel();
         toolbar = new VizToolbar(groups);
-        toolbar.setEnable(false);
+        toolbar.setEnable(!model.isDefaultModel());
         return toolbar;
     }
 

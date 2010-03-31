@@ -59,10 +59,11 @@ final class GraphTopComponent extends TopComponent {
         setToolTipText(NbBundle.getMessage(GraphTopComponent.class, "HINT_GraphTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
 
+        engine = VizController.getInstance().getEngine();
+
         //Init
         initCollapsePanel();
         initToolPanels();
-        engine = VizController.getInstance().getEngine();
         final GraphDrawableImpl drawable = VizController.getInstance().getDrawable();
 
         //Request component activation and therefore initialize JOGL component
@@ -167,11 +168,12 @@ final class GraphTopComponent extends TopComponent {
             }
         });
 
-        toolbar.setEnabled(false);
-        propertiesBar.setEnabled(false);
-        actionsToolbar.setEnabled(false);
-        selectionToolbar.setEnabled(false);
-        addonsBar.setEnabled(false);
+        boolean hasWorkspace = projectController.getCurrentWorkspace() != null;
+        toolbar.setEnabled(hasWorkspace);
+        propertiesBar.setEnabled(hasWorkspace);
+        actionsToolbar.setEnabled(hasWorkspace);
+        selectionToolbar.setEnabled(hasWorkspace);
+        addonsBar.setEnabled(hasWorkspace);
     }
 
     /** This method is called from within the constructor to
