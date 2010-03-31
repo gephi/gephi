@@ -70,9 +70,9 @@ public class GraphDensity implements Statistics {
         Graph graph;
 
         if (mDirected) {
-            graph = graphModel.getDirectedGraph();
+            graph = graphModel.getDirectedGraphVisible();
         } else {
-            graph = graphModel.getUndirectedGraph();
+            graph = graphModel.getUndirectedGraphVisible();
         }
 
         this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";

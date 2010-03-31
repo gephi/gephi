@@ -127,7 +127,7 @@ public class DegreeDistribution implements Statistics, LongTask {
         if (this.mDirected) {
             graph = graphModel.getDirectedGraphVisible();
         } else {
-            graph = graphModel.getUndirectedGraph();
+            graph = graphModel.getUndirectedGraphVisible();
         }
 
         graph.readLock();
