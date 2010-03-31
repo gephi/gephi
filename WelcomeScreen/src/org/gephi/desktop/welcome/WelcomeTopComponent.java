@@ -123,11 +123,20 @@ public final class WelcomeTopComponent extends TopComponent {
         migLayout1.setColumnConstraints("[pref]");
         samplesPanel.setLayout(migLayout1);
 
-        String[] samplePath = new String[1];
+        String[] samplePath = new String[3];
         samplePath[0] = "/org/gephi/desktop/welcome/samples/Les Miserables.gexf";
+        samplePath[1] = "/org/gephi/desktop/welcome/samples/Java.gexf";
+        samplePath[2] = "/org/gephi/desktop/welcome/samples/Power Grid.gml";
+
+        String[] sampleTooltip = new String[3];
+        sampleTooltip[0] = "Coappearance Network of Characters in 'Les Miserables' (D. E. Knuth)";
+        sampleTooltip[1] = "Java Programming Language Dependency graph (V. Batagelj)";
+        sampleTooltip[2] = "Topology of the Western States Power Grid of the US (D. Watts & S. Strogatz)";
 
         try {
-            for (String s : samplePath) {
+            for (int i=0;i<samplePath.length;i++) {
+                String s = samplePath[i];
+                String tooltip = sampleTooltip[i];
                 final InputStream stream = WelcomeTopComponent.class.getResourceAsStream(s);
                 String fileName = s.substring(s.lastIndexOf('/') + 1, s.length());
                 final String importer = fileName.substring(fileName.lastIndexOf('.'), fileName.length());
@@ -140,6 +149,7 @@ public final class WelcomeTopComponent extends TopComponent {
                     }
                 });
                 fileLink.setText(fileName);
+                fileLink.setToolTipText(tooltip);
                 fileLink.putClientProperty(LINK_PATH, importer);
                 samplesPanel.add(fileLink, "wrap");
             }
@@ -217,34 +227,35 @@ public final class WelcomeTopComponent extends TopComponent {
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelRecent)
-                    .addComponent(recentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(recentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelRecent))
                 .addGap(18, 18, 18)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(labelNew)
+                    .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                    .addComponent(labelSamples)
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addComponent(newProjectLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(labelNew)
-                    .addComponent(labelSamples)
-                    .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE))
+                        .addComponent(newProjectLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(labelNew)
                     .addComponent(labelRecent))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(5, 5, 5)
                         .addComponent(newProjectLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(labelSamples)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE))
-                    .addComponent(recentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE))
+                    .addComponent(recentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
