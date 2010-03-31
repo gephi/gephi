@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="Window">
+            <file name="org-gephi-desktop-welcome-WelcomeAction.instance">
+                <attr name="component" methodvalue="org.gephi.desktop.welcome.WelcomeTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="org.gephi.desktop.welcome.Bundle#CTL_WelcomeAction"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="WelcomeAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-welcome-WelcomeAction.instance"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="WelcomeTopComponent.settings" url="WelcomeTopComponentSettings.xml"/>
+        </folder>
+        <folder name="Modes">
+            <folder name="welcomemode">
+                <file name="WelcomeTopComponent.wstcref" url="WelcomeTopComponentWstcref.xml"/>
+            </folder>
+            <file name="welcomemode.wsmode" url="welcomeWsmode.xml"/>
+        </folder>
+    </folder>
+</filesystem>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mode version="2.3">
+    <name unique="welcomemode" />
+    <kind type="view" />
+    <state type="separated" />
+    <constraints>
+        <path orientation="vertical" number="0" weight="0.5"/>
+        <path orientation="horizontal" number="1" weight="0.5"/>
+    </constraints>
+    <bounds x="312" y="237" width="679" height="378" />
+    <frame state="0"/>
+    <active-tc  id="WelcomeTopComponent" />
+    <empty-behavior permanent="true"/>
+</mode>
