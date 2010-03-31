@@ -77,10 +77,14 @@
             <attr name="position" intvalue="1250"/>
         </folder>
         <file name="GoTo_hidden"/>
+        <folder name="Tools">
+            <file name="org-netbeans-modules-favorites-templates-TemplatesAction.shadow_hidden"/>
+        </folder>
         <folder name="View">
             <file name="Separator1.instance_hidden"/>
             <file name="Separator2.instance_hidden"/>
             <file name="org-netbeans-core-actions-HTMLViewAction.instance_hidden"/>
+            <file name="org-netbeans-core-actions-HTMLViewAction.shadow_hidden"/>
             <file name="org-netbeans-core-actions-LogAction.shadow_hidden"/>
             <file name="org-netbeans-core-windows-actions-ToolbarsListAction.instance_hidden"/>
         </folder>
