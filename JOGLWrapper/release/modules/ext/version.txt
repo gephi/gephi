@@ -1,2 +1,2 @@
-gluegen-rt.jar		jogl-2.0-beta10
+gluegen-rt.jar		jogl-1.1.1a
 jogl.jar		jogl-1.1.1a
