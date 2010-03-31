@@ -23,7 +23,6 @@ package org.gephi.desktop.importer;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -34,6 +33,7 @@ import javax.swing.event.ChangeListener;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.gephi.desktop.mrufiles.api.MostRecentFiles;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerFactory;
 import org.gephi.io.importer.api.Database;
@@ -101,8 +101,14 @@ public class DesktopImportController implements ImportController {
             fileObject = getArchivedFile(fileObject);   //Unzip and return content file
             FileFormatImporter im = getMatchingImporter(fileObject);
             if (im == null) {
-                throw new RuntimeException(NbBundle.getMessage(getClass(), "error_no_matching_file_importer"));
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
+                return;
             }
+
+            //MRU
+            MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
+            mostRecentFiles.addFile(fileObject.getPath());
 
             //Create Container
             final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
@@ -124,11 +130,13 @@ public class DesktopImportController implements ImportController {
         }
     }
 
-     public void doImport(InputStream stream, String importer) {
+    public void doImport(InputStream stream, String importer) {
         try {
             FileFormatImporter im = getMatchingImporter(importer);
             if (im == null) {
-                throw new RuntimeException(NbBundle.getMessage(getClass(), "error_no_matching_stream_importer"));
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "error_no_matching_stream_importer"), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
+                return;
             }
 
             //Create Container
@@ -216,7 +224,7 @@ public class DesktopImportController implements ImportController {
     private void importStream(InputStream stream, Importer importer, final Container container) {
         if (importer instanceof XMLImporter) {
             importXML(stream, importer, container);
-        } else if(importer instanceof TextImporter) {
+        } else if (importer instanceof TextImporter) {
             importText(stream, importer, container);
         }
     }
@@ -225,11 +233,15 @@ public class DesktopImportController implements ImportController {
         try {
             DatabaseType type = getDatabaseType(database);
             if (type == null) {
-                throw new RuntimeException(NbBundle.getMessage(getClass(), "error_no_matching_db_importer"));
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "error_no_matching_db_importer"), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
+                return;
             }
             final DatabaseImporter importer = getMatchingImporter(type);
             if (importer == null) {
-                throw new RuntimeException(NbBundle.getMessage(getClass(), "error_no_matching_db_importer"));
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "error_no_matching_db_importer"), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
+                return;
             }
 
             DatabaseTypeUI ui = type.getUI();

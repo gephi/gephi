@@ -27,13 +27,17 @@ import java.io.IOException;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.TransferHandler;
+import org.gephi.branding.desktop.actions.OpenProject;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.project.api.ProjectController;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
 
 /**
@@ -71,8 +75,14 @@ public class DragNDropFrameAdapter {
 
                         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
                         pc.closeCurrentProject();
-                        DataObject doe = DataObject.find(fileObject);
-                        pc.loadProject(doe);
+                        try {
+                            DataObject doe = DataObject.find(fileObject);
+                            pc.loadProject(doe);
+                        } catch (Exception ew) {
+                            ew.printStackTrace();
+                            NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(DragNDropFrameAdapter.class, "DragNDropFrameAdapter.openGephiError"), NotifyDescriptor.WARNING_MESSAGE);
+                            DialogDisplayer.getDefault().notify(msg);
+                        }
                     } else {
                         ImportController importController = Lookup.getDefault().lookup(ImportController.class);
                         if (importController.isFileSupported(fileObject)) {
