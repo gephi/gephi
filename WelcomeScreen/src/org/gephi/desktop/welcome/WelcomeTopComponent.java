@@ -130,7 +130,7 @@ public final class WelcomeTopComponent extends TopComponent {
             for (String s : samplePath) {
                 final InputStream stream = WelcomeTopComponent.class.getResourceAsStream(s);
                 String fileName = s.substring(s.lastIndexOf('/') + 1, s.length());
-                final String importer = fileName.substring(fileName.lastIndexOf('.') + 1, fileName.length());
+                final String importer = fileName.substring(fileName.lastIndexOf('.'), fileName.length());
                 JXHyperlink fileLink = new JXHyperlink(new AbstractAction() {
 
                     public void actionPerformed(ActionEvent e) {
@@ -190,6 +190,7 @@ public final class WelcomeTopComponent extends TopComponent {
         header.setTitle(org.openide.util.NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.header.title")); // NOI18N
         header.setTitleFont(header.getTitleFont().deriveFont(header.getTitleFont().getSize()+4f));
         header.setTitleForeground(new java.awt.Color(39, 119, 198));
+        header.setBorder(new org.jdesktop.swingx.border.DropShadowBorder());
         add(header, java.awt.BorderLayout.PAGE_START);
 
         mainPanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -242,8 +243,8 @@ public final class WelcomeTopComponent extends TopComponent {
                         .addGap(18, 18, 18)
                         .addComponent(labelSamples)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE))
-                    .addComponent(recentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE))
+                        .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE))
+                    .addComponent(recentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE))
                 .addContainerGap())
         );
 

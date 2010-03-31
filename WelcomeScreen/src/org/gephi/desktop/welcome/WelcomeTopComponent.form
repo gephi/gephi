@@ -35,6 +35,9 @@
         <Property name="titleForeground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="c6" green="77" red="27" type="rgb"/>
         </Property>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+            <PropertyBean type="org.jdesktop.swingx.border.DropShadowBorder"/>
+        </Property>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
@@ -92,9 +95,9 @@
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="labelSamples" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="samplesPanel" pref="92" max="32767" attributes="0"/>
+                          <Component id="samplesPanel" pref="87" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="recentPanel" pref="151" max="32767" attributes="0"/>
+                      <Component id="recentPanel" pref="146" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>

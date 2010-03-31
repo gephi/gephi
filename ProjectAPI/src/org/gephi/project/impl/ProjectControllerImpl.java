@@ -29,6 +29,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import org.gephi.desktop.mrufiles.api.MostRecentFiles;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Projects;
@@ -180,6 +181,10 @@ public class ProjectControllerImpl implements ProjectController {
         LoadTask loadTask = new LoadTask(gephiDataObject);
         lockProjectActions();
         longTaskExecutor.execute(loadTask, loadTask);
+
+        //Save MRU
+        MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
+        mostRecentFiles.addFile(gephiDataObject.getPrimaryFile().getPath());
     }
 
     public void saveProject(DataObject dataObject) {
@@ -190,6 +195,10 @@ public class ProjectControllerImpl implements ProjectController {
         SaveTask saveTask = new SaveTask(gephiDataObject);
         lockProjectActions();
         longTaskExecutor.execute(saveTask, saveTask);
+
+        //Save MRU
+        MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
+        mostRecentFiles.addFile(gephiDataObject.getPrimaryFile().getPath());
     }
 
     public void saveProject(Project project) {
