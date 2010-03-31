@@ -122,7 +122,7 @@ public class PartitionControllerImpl implements PartitionController, LookupListe
             Thread t = new Thread(new Runnable() {
 
                 public void run() {
-                    if (partition != null && !PartitionFactory.isPartitionBuilt(partition)) {
+                    if (partition != null) {
                         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
                         PartitionFactory.buildNodePartition((NodePartition) partition, graphModel.getGraphVisible());
                     }
@@ -146,7 +146,7 @@ public class PartitionControllerImpl implements PartitionController, LookupListe
             Thread t = new Thread(new Runnable() {
 
                 public void run() {
-                    if (partition != null && !PartitionFactory.isPartitionBuilt(partition)) {
+                    if (partition != null) {
                         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
                         PartitionFactory.buildEdgePartition((EdgePartition) partition, graphModel.getGraphVisible());
                     }
