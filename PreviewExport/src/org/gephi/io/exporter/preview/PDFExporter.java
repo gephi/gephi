@@ -185,9 +185,11 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
 
         try {
             BaseFont bf = genBaseFont(font);
+            float ascent = bf.getAscentPoint(label.getValue(), font.getSize());
+
             pdfSketch.beginText();
             pdfSketch.setFontAndSize(bf, font.getSize());
-            pdfSketch.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX(), p.getY(), -90);
+            pdfSketch.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX() - ascent/2, p.getY(), -90);
             pdfSketch.endText();
         } catch (DocumentException ex) {
             Exceptions.printStackTrace(ex);
