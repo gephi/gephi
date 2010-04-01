@@ -1,5 +1,6 @@
 package org.gephi.io.exporter.plugin;
 
+import java.awt.Color;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -118,6 +119,8 @@ public class ExporterGraphML implements XMLGraphFileExporter, LongTask {
         Element root = document.createElementNS("http://graphml.graphdrawing.org/xmlns", "graphml");
         document.appendChild(root);
 
+        createKeys(document, root);
+
         Element graphE = createGraph(document, graph);
         root.appendChild(graphE);
 
@@ -126,10 +129,69 @@ public class ExporterGraphML implements XMLGraphFileExporter, LongTask {
     }
 
     private void createKeys(Document document, Element root) {
-        //Attributes
-        if (attributeModel != null) {
-            //Node attributes
+        Element nodeLabelKeyE = document.createElement("key");
+        nodeLabelKeyE.setAttribute("id", "label");
+        nodeLabelKeyE.setAttribute("attr.name", "label");
+        nodeLabelKeyE.setAttribute("attr.type", "string");
+        nodeLabelKeyE.setAttribute("for", "node");
+        root.appendChild(nodeLabelKeyE);
 
+        Element edgeLabelKeyE = document.createElement("key");
+        edgeLabelKeyE.setAttribute("id", "label");
+        edgeLabelKeyE.setAttribute("attr.name", "label");
+        edgeLabelKeyE.setAttribute("attr.type", "string");
+        edgeLabelKeyE.setAttribute("for", "edge");
+        root.appendChild(edgeLabelKeyE);
+
+        Element weightKeyE = document.createElement("key");
+        weightKeyE.setAttribute("id", "weight");
+        weightKeyE.setAttribute("attr.name", "weight");
+        weightKeyE.setAttribute("attr.type", "double");
+        weightKeyE.setAttribute("for", "edge");
+        root.appendChild(weightKeyE);
+
+        if (exportColors) {
+            Element colorKeyE = document.createElement("key");
+            colorKeyE.setAttribute("id", "color");
+            colorKeyE.setAttribute("attr.name", "color");
+            colorKeyE.setAttribute("attr.type", "integer");
+            colorKeyE.setAttribute("for", "node");
+            root.appendChild(colorKeyE);
+        }
+
+        if (exportPosition) {
+            Element positionKeyE = document.createElement("key");
+            positionKeyE.setAttribute("id", "x");
+            positionKeyE.setAttribute("attr.name", "x");
+            positionKeyE.setAttribute("attr.type", "float");
+            positionKeyE.setAttribute("for", "node");
+            root.appendChild(positionKeyE);
+            Element positionKey2E = document.createElement("key");
+            positionKey2E.setAttribute("id", "y");
+            positionKey2E.setAttribute("attr.name", "y");
+            positionKey2E.setAttribute("attr.type", "float");
+            positionKey2E.setAttribute("for", "node");
+            root.appendChild(positionKey2E);
+            Element positionKey3E = document.createElement("key");
+            positionKey3E.setAttribute("id", "z");
+            positionKey3E.setAttribute("attr.name", "z");
+            positionKey3E.setAttribute("attr.type", "float");
+            positionKey3E.setAttribute("for", "node");
+            root.appendChild(positionKey3E);
+        }
+
+        if (exportSize) {
+            Element sizeKeyE = document.createElement("key");
+            sizeKeyE.setAttribute("id", "size");
+            sizeKeyE.setAttribute("attr.name", "size");
+            sizeKeyE.setAttribute("attr.type", "float");
+            sizeKeyE.setAttribute("for", "node");
+            root.appendChild(sizeKeyE);
+        }
+
+        //Attributes
+        if (attributeModel != null && exportAttributes) {
+            //Node attributes
             for (AttributeColumn column : attributeModel.getNodeTable().getColumns()) {
                 if (!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
                     Element attributeE = createAttribute(document, column);
@@ -173,7 +235,7 @@ public class ExporterGraphML implements XMLGraphFileExporter, LongTask {
         attributeE.setAttribute("attr.name", column.getTitle());
         switch (column.getType()) {
             case INT:
-                attributeE.setAttribute("attr.type", "integer");
+                attributeE.setAttribute("attr.type", "int");
                 break;
             case LIST_STRING:
                 // nothing to do
@@ -258,8 +320,10 @@ public class ExporterGraphML implements XMLGraphFileExporter, LongTask {
         Element nodeE = document.createElement("node");
         nodeE.setAttribute("id", n.getNodeData().getId());
 
+        //Label
+
         //Attribute values
-        if (attributeModel != null) {
+        if (attributeModel != null && exportAttributes) {
             for (AttributeColumn column : attributeModel.getNodeTable().getColumns()) {
                 if (!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
                     //Data or computed
@@ -272,7 +336,7 @@ public class ExporterGraphML implements XMLGraphFileExporter, LongTask {
         }
 
         //Viz
-        /*if (exportSize) {
+        if (exportSize) {
             Element sizeE = createNodeSize(document, n);
             nodeE.appendChild(sizeE);
         }
@@ -281,9 +345,13 @@ public class ExporterGraphML implements XMLGraphFileExporter, LongTask {
             nodeE.appendChild(colorE);
         }
         if (exportPosition) {
-            Element positionE = createNodePosition(document, n);
-            nodeE.appendChild(positionE);
-        }*/
+            Element positionXE = createNodePositionX(document, n);
+            nodeE.appendChild(positionXE);
+            Element positionYE = createNodePositionY(document, n);
+            nodeE.appendChild(positionYE);
+            Element positionZE = createNodePositionZ(document, n);
+            nodeE.appendChild(positionZE);
+        }
 
         //Hierarchy
         if (graphModel.isHierarchical()) {
@@ -344,46 +412,66 @@ public class ExporterGraphML implements XMLGraphFileExporter, LongTask {
     }
 
     private Element createNodeSize(Document document, Node n) throws Exception {
-        Element sizeE = document.createElement("viz:size");
+        Element sizeE = document.createElement("data");
         float size = n.getNodeData().getSize();
         if (normalize) {
             size = (size - minSize) / (maxSize - minSize);
         }
-        sizeE.setAttribute("value", "" + size);
+        sizeE.setAttribute("key", "size");
+        sizeE.setTextContent("" + size);
 
         return sizeE;
     }
 
     private Element createNodeColors(Document document, Node n) throws Exception {
-        Element colorE = document.createElement("viz:color");
-        colorE.setAttribute("r", "" + (Math.round(n.getNodeData().r() * 255f)));
-        colorE.setAttribute("g", "" + (Math.round(n.getNodeData().g() * 255f)));
-        colorE.setAttribute("b", "" + (Math.round(n.getNodeData().b() * 255f)));
-
+        Element colorE = document.createElement("data");
+        Color color = new Color(n.getNodeData().r(), n.getNodeData().g(), n.getNodeData().b());
+        colorE.setAttribute("key", "color");
+        colorE.setTextContent("" + color.getRGB());
         return colorE;
     }
 
-    private Element createNodePosition(Document document, Node n) throws Exception {
-        Element positionE = document.createElement("viz:position");
+    private Element createNodePositionX(Document document, Node n) throws Exception {
+        Element positionXE = document.createElement("data");
         float x = n.getNodeData().x();
         if (normalize && x != 0.0) {
             x = (x - minX) / (maxX - minX);
         }
-        positionE.setAttribute("x", "" + x);
+        positionXE.setAttribute("id", "x");
+        positionXE.setTextContent("" + x);
+        return positionXE;
+    }
 
+    private Element createNodePositionY(Document document, Node n) throws Exception {
+        Element positionYE = document.createElement("data");
         float y = n.getNodeData().y();
         if (normalize && y != 0.0) {
             y = (y - minY) / (maxY - minY);
         }
-        positionE.setAttribute("y", "" + y);
+        positionYE.setAttribute("id", "y");
+        positionYE.setTextContent("" + y);
 
+        return positionYE;
+    }
+
+    private Element createNodePositionZ(Document document, Node n) throws Exception {
+        Element positionZE = document.createElement("data");
         float z = n.getNodeData().z();
         if (normalize && z != 0.0) {
             z = (z - minZ) / (maxZ - minZ);
         }
-        positionE.setAttribute("z", "" + z);
+        positionZE.setAttribute("id", "z");
+        positionZE.setTextContent("" + z);
 
-        return positionE;
+        return positionZE;
+    }
+
+    private Element createNodeLabel(Document document, Node n) throws Exception {
+        Element labelE = document.createElement("data");
+        labelE.setAttribute("id", "z");
+        labelE.setTextContent(n.getNodeData().getLabel());
+
+        return labelE;
     }
 
     private void calculateMinMax(Graph graph) {
@@ -419,11 +507,11 @@ public class ExporterGraphML implements XMLGraphFileExporter, LongTask {
     }
 
     public String getName() {
-        return NbBundle.getMessage(getClass(), "ExporterGEXF_name");
+        return NbBundle.getMessage(getClass(), "ExporterGraphML_name");
     }
 
     public FileType[] getFileTypes() {
-        FileType ft = new FileType(".gexf", NbBundle.getMessage(getClass(), "fileType_GEXF_Name"));
+        FileType ft = new FileType(".graphml", NbBundle.getMessage(getClass(), "fileType_GraphML_Name"));
         return new FileType[]{ft};
     }
 
