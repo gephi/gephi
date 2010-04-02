@@ -20,13 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Projects;
 import org.gephi.project.api.WorkspaceProvider;
-import org.gephi.project.io.GephiDataObject;
 import org.gephi.project.io.LoadTask;
 import org.gephi.project.io.SaveTask;
 import org.gephi.project.api.Workspace;
@@ -35,7 +35,6 @@ import org.gephi.project.api.WorkspaceListener;
 import org.gephi.workspace.impl.WorkspaceImpl;
 import org.gephi.workspace.impl.WorkspaceInformationImpl;
 import org.gephi.project.spi.WorkspaceDuplicateProvider;
-import org.openide.loaders.DataObject;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
@@ -79,28 +78,23 @@ public class ProjectControllerImpl implements ProjectController {
         ProjectImpl project = new ProjectImpl();
         projects.addProject(project);
         openProject(project);
-
     }
 
-    public Runnable openProject(DataObject dataObject) {
-        final GephiDataObject gephiDataObject = (GephiDataObject) dataObject;
-        LoadTask loadTask = new LoadTask(gephiDataObject);
-        return loadTask;
+    public Runnable openProject(File file) {
+        return new LoadTask(file);
     }
 
     public Runnable saveProject(Project project) {
         if (project.getLookup().lookup(ProjectInformationImpl.class).hasFile()) {
-            GephiDataObject gephiDataObject = project.getLookup().lookup(ProjectInformationImpl.class).getDataObject();
-            return saveProject(project, gephiDataObject);
+            File file = project.getLookup().lookup(ProjectInformationImpl.class).getFile();
+            return saveProject(project, file);
         }
         return null;
     }
 
-    public Runnable saveProject(Project project, DataObject dataObject) {
-        GephiDataObject gephiDataObject = (GephiDataObject) dataObject;
-        project.getLookup().lookup(ProjectInformationImpl.class).setDataObject(gephiDataObject);
-        gephiDataObject.setProject(project);
-        SaveTask saveTask = new SaveTask(gephiDataObject);
+    public Runnable saveProject(Project project, File file) {
+        project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
+        SaveTask saveTask = new SaveTask(project, file);
         return saveTask;
     }
 

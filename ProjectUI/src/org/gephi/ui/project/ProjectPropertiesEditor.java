@@ -41,8 +41,8 @@ public class ProjectPropertiesEditor extends javax.swing.JPanel {
         ProjectInformation info = project.getLookup().lookup(ProjectInformation.class);
         if (info != null) {
             nameTextField.setText(info.getName());
-            if (info.getDataObject() != null) {
-                fileLabel.setText(info.getDataObject().getName());
+            if (info.getFile() != null) {
+                fileLabel.setText(info.getFile().getName());
             }
         }
 

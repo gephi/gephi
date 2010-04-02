@@ -27,7 +27,6 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.loaders.DataObject;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
@@ -72,8 +71,7 @@ public final class WelcomeTopComponent extends TopComponent {
                 if (fileObject.hasExt(GEPHI_EXTENSION)) {
                     ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
                     try {
-                        DataObject doe = DataObject.find(fileObject);
-                        pc.openProject(doe);
+                        pc.openProject(file);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.openGephiError"), NotifyDescriptor.WARNING_MESSAGE);

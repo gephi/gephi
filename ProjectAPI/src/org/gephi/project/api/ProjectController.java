@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.api;
 
-import org.openide.loaders.DataObject;
+import java.io.File;
 
 /**
  * Project controller, manage projects and workspaces states.
@@ -37,11 +37,11 @@ public interface ProjectController {
 
     public void newProject();
 
-    public Runnable openProject(DataObject dataObject);
+    public Runnable openProject(File file);
 
     public Runnable saveProject(Project project);
 
-    public Runnable saveProject(Project project, DataObject dataObject);
+    public Runnable saveProject(Project project, File file);
 
     public void closeCurrentProject();
 

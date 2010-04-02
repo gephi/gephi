@@ -32,7 +32,6 @@ import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.loaders.DataObject;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -88,11 +87,11 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         });
     }
 
-    private void saveProject(Project project, DataObject dataObject) {
+    private void saveProject(Project project, File file) {
         lockProjectActions();
 
-        final Runnable saveTask = controller.saveProject(project, dataObject);
-        final String fileName = dataObject.getName();
+        final Runnable saveTask = controller.saveProject(project, file);
+        final String fileName = file.getName();
         Runnable saveRunnable = new Runnable() {
 
             public void run() {
@@ -109,14 +108,14 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
         //Save MRU
         MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
-        mostRecentFiles.addFile(dataObject.getPrimaryFile().getPath());
+        mostRecentFiles.addFile(file.getAbsolutePath());
     }
 
     public void saveProject() {
         Project project = controller.getCurrentProject();
         if (project.getLookup().lookup(ProjectInformation.class).hasFile()) {
-            DataObject gephiDataObject = project.getLookup().lookup(ProjectInformation.class).getDataObject();
-            saveProject(project, gephiDataObject);
+            File file = project.getLookup().lookup(ProjectInformation.class).getFile();
+            saveProject(project, file);
         } else {
             saveAsProject();
         }
@@ -165,12 +164,10 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                     }
                 }
                 file = FileUtil.normalizeFile(file);
-                FileObject fileObject = FileUtil.toFileObject(file);
 
                 //File exist now, Save project
                 Project project = controller.getCurrentProject();
-                DataObject dataObject = DataObject.find(fileObject);
-                saveProject(project, dataObject);
+                saveProject(project, file);
 
             } catch (Exception e) {
                 Logger.getLogger("").log(Level.WARNING, "", e);
@@ -224,14 +221,13 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         return true;
     }
 
-    public void openProject(DataObject dataObject) {
+    public void openProject(File file) {
         if (controller.getCurrentProject() != null) {
             if (!closeCurrentProject()) {
                 return;
             }
         }
-
-        loadProject(dataObject);
+        loadProject(file);
     }
 
     public void openProject() {
@@ -260,16 +256,12 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         if (returnFile == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
             file = FileUtil.normalizeFile(file);
-            FileObject fileObject = FileUtil.toFileObject(file);
 
             //Save last path
             NbPreferences.forModule(ProjectControllerUIImpl.class).put(LAST_PATH, file.getAbsolutePath());
 
             try {
-
-                DataObject dataObject = DataObject.find(fileObject);
-                loadProject(dataObject);
-
+                loadProject(file);
             } catch (Exception ew) {
                 ew.printStackTrace();
                 NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject.defaulterror"), NotifyDescriptor.WARNING_MESSAGE);
@@ -278,11 +270,11 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         }
     }
 
-    private void loadProject(DataObject dataObject) {
+    private void loadProject(File file) {
         lockProjectActions();
 
-        final Runnable loadTask = controller.openProject(dataObject);
-        final String fileName = dataObject.getName();
+        final Runnable loadTask = controller.openProject(file);
+        final String fileName = file.getName();
         Runnable loadRunnable = new Runnable() {
 
             public void run() {
@@ -307,7 +299,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
         //Save MRU
         MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
-        mostRecentFiles.addFile(dataObject.getPrimaryFile().getPath());
+        mostRecentFiles.addFile(file.getAbsolutePath());
     }
 
     public void renameProject(final String name) {

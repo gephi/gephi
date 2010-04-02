@@ -20,14 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectInformation;
-import org.gephi.project.io.GephiDataObject;
-import org.openide.loaders.DataObject;
 
 /**
  *
@@ -43,7 +42,7 @@ public class ProjectInformationImpl implements ProjectInformation {
     //Data
     private String name;
     private Status status = Status.CLOSED;
-    private GephiDataObject dataObject;
+    private File file;
     private Project project;
     //Event
     private transient List<ChangeListener> listeners;
@@ -57,12 +56,8 @@ public class ProjectInformationImpl implements ProjectInformation {
     public void init() {
         listeners = new ArrayList<ChangeListener>();
         status = Status.CLOSED;
-        if (dataObject != null) {
-            if (dataObject.isValid()) {
-                dataObject.setProject(project);
-            } else {
-                this.status = Status.INVALID;
-            }
+        if (file != null) {
+            // this.status = Status.INVALID;  if not valid
         }
     }
 
@@ -98,15 +93,15 @@ public class ProjectInformationImpl implements ProjectInformation {
 
     @Override
     public boolean hasFile() {
-        return dataObject != null;
+        return file != null;
     }
 
     @Override
     public String getFileName() {
-        if (dataObject == null) {
+        if (file == null) {
             return "";
         } else {
-            return dataObject.getPrimaryFile().getNameExt();
+            return file.getName();
         }
     }
 
@@ -120,13 +115,12 @@ public class ProjectInformationImpl implements ProjectInformation {
         return name;
     }
 
-    @Override
-    public GephiDataObject getDataObject() {
-        return dataObject;
+    public File getFile() {
+        return file;
     }
 
-    public void setDataObject(DataObject dataObject) {
-        this.dataObject = (GephiDataObject) dataObject;
+    public void setFile(File file) {
+        this.file = file;
         fireChangeEvent();
     }
 

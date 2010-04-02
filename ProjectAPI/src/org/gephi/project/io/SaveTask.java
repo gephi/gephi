@@ -32,6 +32,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.gephi.project.api.Project;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -50,13 +51,15 @@ import org.w3c.dom.Document;
 public class SaveTask implements LongTask, Runnable {
 
     private static final String ZIP_LEVEL_PREFERENCE = "ProjectIO_Save_ZipLevel_0_TO_9";
-    private GephiDataObject dataObject;
+    private File file;
+    private Project project;
     private GephiWriter gephiWriter;
     private boolean cancel = false;
     private ProgressTicket progressTicket;
 
-    public SaveTask(GephiDataObject dataObject) {
-        this.dataObject = dataObject;
+    public SaveTask(Project project, File file) {
+        this.project = project;
+        this.file = file;
     }
 
     public void run() {
@@ -67,9 +70,8 @@ public class SaveTask implements LongTask, Runnable {
         try {
             Progress.start(progressTicket);
             Progress.setDisplayName(progressTicket, NbBundle.getMessage(SaveTask.class, "SaveTask.name"));
-            FileObject fileObject = dataObject.getPrimaryFile();
-            File outputFile = FileUtil.toFile(fileObject);
-            writeFile = outputFile;
+            FileObject fileObject = FileUtil.toFileObject(file);
+            writeFile = file;
             if (writeFile.exists()) {
                 useTempFile = true;
                 String tempFileName = writeFile.getName() + "_temp";
@@ -86,7 +88,7 @@ public class SaveTask implements LongTask, Runnable {
             gephiWriter = new GephiWriter();
 
             //Write Document
-            Document document = gephiWriter.writeAll(dataObject.getProject());
+            Document document = gephiWriter.writeAll(project);
 
             //Write file output
             Source source = new DOMSource(document);

@@ -20,12 +20,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.io;
 
+import java.io.File;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.impl.ProjectInformationImpl;
 import org.gephi.project.api.Project;
-import org.gephi.project.api.ProjectController;
 import org.gephi.project.impl.ProjectControllerImpl;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -42,20 +42,20 @@ import org.w3c.dom.Document;
  */
 public class LoadTask implements LongTask, Runnable {
 
-    private GephiDataObject dataObject;
+    private File file;
     private GephiReader gephiReader;
     private boolean cancel = false;
     private ProgressTicket progressTicket;
 
-    public LoadTask(GephiDataObject dataObject) {
-        this.dataObject = dataObject;
+    public LoadTask(File file) {
+        this.file = file;
     }
 
     public void run() {
         try {
             Progress.start(progressTicket);
             Progress.setDisplayName(progressTicket, NbBundle.getMessage(SaveTask.class, "LoadTask.name"));
-            FileObject fileObject = dataObject.getPrimaryFile();
+            FileObject fileObject = FileUtil.toFileObject(file);
             if (FileUtil.isArchiveFile(fileObject)) {
                 //Unzip
                 fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
@@ -67,12 +67,8 @@ public class LoadTask implements LongTask, Runnable {
             Document doc = builder.parse(fileObject.getInputStream());
 
             //Project instance
-            Project project = dataObject.getProject();
-            if (project == null) {
-                project = new ProjectImpl();
-            }
-            project.getLookup().lookup(ProjectInformationImpl.class).setDataObject(dataObject);
-            dataObject.setProject(project);
+            Project project = new ProjectImpl();
+            project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
 
             //Version
             String version = doc.getDocumentElement().getAttribute("version");

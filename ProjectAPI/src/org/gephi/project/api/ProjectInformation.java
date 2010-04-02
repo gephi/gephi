@@ -20,8 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.api;
 
+import java.io.File;
 import javax.swing.event.ChangeListener;
-import org.openide.loaders.DataObject;
 
 /**
  * Hosts various information about a project the module is maintaining.
@@ -43,7 +43,7 @@ public interface ProjectInformation {
 
     public String getFileName();
 
-    public DataObject getDataObject();
+    public File getFile();
 
     public Project getProject();
 

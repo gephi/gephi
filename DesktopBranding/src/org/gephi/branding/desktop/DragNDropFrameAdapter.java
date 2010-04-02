@@ -33,7 +33,6 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.loaders.DataObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -69,13 +68,13 @@ public class DragNDropFrameAdapter {
                 }
                 try {
                     List data = (List) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-                    FileObject fileObject = FileUtil.toFileObject((File) data.get(0));
+                    File file = (File) data.get(0);
+                    FileObject fileObject = FileUtil.toFileObject(file);
                     if (fileObject.hasExt(GEPHI_EXTENSION)) {
 
                         ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
                         try {
-                            DataObject doe = DataObject.find(fileObject);
-                            pc.openProject(doe);
+                            pc.openProject(file);
                         } catch (Exception ew) {
                             ew.printStackTrace();
                             NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(DragNDropFrameAdapter.class, "DragNDropFrameAdapter.openGephiError"), NotifyDescriptor.WARNING_MESSAGE);

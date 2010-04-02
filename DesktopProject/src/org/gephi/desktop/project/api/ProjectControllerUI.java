@@ -2,10 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.gephi.desktop.project.api;
 
-import org.openide.loaders.DataObject;
+import java.io.File;
 
 /**
  *
@@ -19,7 +18,7 @@ public interface ProjectControllerUI {
 
     public void openProject();
 
-    public void openProject(DataObject dataObject);
+    public void openProject(File file);
 
     public void renameProject(final String name);
 
