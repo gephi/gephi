@@ -1,0 +1,101 @@
+msgid "CTL_BannerAction"
+msgstr "Banner"
+
+msgid "CTL_BannerTopComponent"
+msgstr "Banner"
+
+msgid "HINT_BannerTopComponent"
+msgstr ""
+
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Desktop initialization and management"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Desktop Branding"
+
+msgid "CTL_TopTabAction"
+msgstr "TopTab"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Desktop initialization and management"
+
+msgid "org_gephi_branding_desktop_update_center"
+msgstr "http://gephi.org/updates/official/0.7-alpha/catalog.xml"
+
+msgid "org_gephi_branding_desktop_update_center_1"
+msgstr "http://gephi.org/updates/thirdparty/0.7-alpha/catalog.xml"
+
+msgid ""
+"Services/AutoupdateType/org_gephi_branding_desktop_update_center.instance"
+msgstr "Gephi Update Center"
+
+msgid ""
+"Services/AutoupdateType/org_gephi_branding_desktop_update_center_1.instance"
+msgstr "Gephi Thirdparties Plugins"
+
+msgid "TopTabComponent.jLabel1.AccessibleContext.accessibleName"
+msgstr ""
+
+msgid "TopTabComponent.logoLabel.text"
+msgstr ""
+
+msgid "CommandLineProcessor.OutOfMemoryError.message"
+msgstr ""
+"Memory error. You need to increase the maximum memory settings (-Xmx) in the "
+"Gephi startup settings file."
+
+msgid "Actions/Edit/org-gephi-branding-desktop-actions-CleanWorkspace.instance"
+msgstr "Clean workspace"
+
+msgid ""
+"Actions/Edit/org-gephi-branding-desktop-actions-DeleteWorkspace.instance"
+msgstr "Delete workspace"
+
+msgid "Actions/Edit/org-gephi-branding-desktop-actions-NewWorkspace.instance"
+msgstr "New workspace"
+
+msgid "Actions/Edit/org-gephi-branding-desktop-actions-OpenProject.instance"
+msgstr "Open Project"
+
+msgid "Actions/Edit/org-gephi-branding-desktop-actions-SaveProject.instance"
+msgstr "Save Project"
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-CloseProject.instance"
+msgstr "Close Project"
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-NewProject.instance"
+msgstr "New Project"
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-OpenFile.instance"
+msgstr "Open..."
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-OpenProject.instance"
+msgstr "Open Project"
+
+msgid ""
+"Actions/File/org-gephi-branding-desktop-actions-ProjectProperties.instance"
+msgstr "Properties..."
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-ProjectTest.instance"
+msgstr "Project Test"
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-SaveAsProject.instance"
+msgstr "Save As..."
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-SaveProject.instance"
+msgstr "Save Project"
+
+msgid "BannerTopComponent.logoButton.text"
+msgstr ""
+
+msgid "BannerTopComponent.logoButton.toolTipText"
+msgstr "Go on Gephi website www.gephi.org"
+
+msgid "BannerTopComponent.bannerBackground.text"
+msgstr ""
+
+msgid "DragNDropFrameAdapter.openGephiError"
+msgstr "Impossible to open this file. It must he a compatible '.gephi' file."

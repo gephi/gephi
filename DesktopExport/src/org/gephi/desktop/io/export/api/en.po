@@ -1,0 +1,41 @@
+msgid "VectorialFileExporterUI_title"
+msgstr "SVG/EPS/PDF file..."
+
+msgid "VectorialFileExporterUI_filechooser_title"
+msgstr "Export"
+
+msgid "VectorialFileExporterUI_optionsButton_name"
+msgstr "Options..."
+
+msgid "VectorialFileExporterUI_optionsDialog_title"
+msgstr "Options {0}"
+
+msgid "VectorialFileExporterUI_SaveFailed"
+msgstr "Could not write to file {0}"
+
+msgid "VectorialFileExporterUI_overwriteDialog_message"
+msgstr "{0} exists.  Overwrite?"
+
+msgid "VectorialFileExporterUI_overwriteDialog_title"
+msgstr "Confirm"
+
+msgid "GraphFileExporterUI_title"
+msgstr "Graph file..."
+
+msgid "GraphFileExporterUI_filechooser_title"
+msgstr "Export"
+
+msgid "GraphFileExporterUI_optionsButton_name"
+msgstr "Options..."
+
+msgid "GraphFileExporterUI_optionsDialog_title"
+msgstr "Options {0}"
+
+msgid "GraphFileExporterUI_SaveFailed"
+msgstr "Could not write to file {0}"
+
+msgid "GraphFileExporterUI_overwriteDialog_message"
+msgstr "{0} exists.  Overwrite?"
+
+msgid "GraphFileExporterUI_overwriteDialog_title"
+msgstr "Confirm"

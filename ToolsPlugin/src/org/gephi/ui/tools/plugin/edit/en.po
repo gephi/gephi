@@ -1,0 +1,5 @@
+msgid "CTL_EditToolTopComponent"
+msgstr "Edit"
+
+msgid "HINT_EditToolTopComponent"
+msgstr ""

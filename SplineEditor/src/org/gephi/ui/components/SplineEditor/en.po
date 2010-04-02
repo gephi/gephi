@@ -1,0 +1,26 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Libraries"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Graphical Spline Editor"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Spline Editor"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Graphical Spline Editor"
+
+msgid "splineEditor_templates"
+msgstr "Templates"
+
+msgid "splineEditor_controls"
+msgstr "Controls"
+
+msgid "splineEditor_close"
+msgstr "Close"
+
+msgid "splineEditor_title"
+msgstr "Spline Editor"
+
+msgid "splineEditor_header"
+msgstr "Drag control points in the display to change the shape of the spline"

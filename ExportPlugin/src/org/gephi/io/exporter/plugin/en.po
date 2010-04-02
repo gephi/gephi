@@ -1,0 +1,29 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Plugin"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Standard exporters implementations"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Export Plugin"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Standard exporters"
+
+msgid "fileType_GDF_Name"
+msgstr "GDF Files (GUESS)"
+
+msgid "fileType_GEXF_Name"
+msgstr "GEXF Files"
+
+msgid "fileType_GraphML_Name"
+msgstr "GraphML Files"
+
+msgid "ExporterGDF_name"
+msgstr "GDF"
+
+msgid "ExporterGEXF_name"
+msgstr "GEXF"
+
+msgid "ExporterGraphML_name"
+msgstr "GraphML"

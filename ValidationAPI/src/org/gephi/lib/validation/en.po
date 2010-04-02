@@ -1,0 +1,20 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Libraries"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Simple Validation API"
+
+msgid "OpenIDE-Module-Name"
+msgstr "ValidationAPI"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Simple Validation API"
+
+msgid "PositiveNumberValidator_NOT_POSITIVE"
+msgstr "{0} must be a positive number"
+
+msgid "BetweenZeroAndOneValidator_NOT_IN_RANGE"
+msgstr "{0} must be a real number between 0 and 1"
+
+msgid "Multiple4NumberValidator_NOT_MULTIPLE"
+msgstr "{0} must be a multiple of 4 number"

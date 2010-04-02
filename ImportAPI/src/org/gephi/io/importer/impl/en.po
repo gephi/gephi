@@ -1,0 +1,38 @@
+msgid "OpenIDE-Module-Name"
+msgstr "Import Container Standard"
+
+msgid "ImportContainerException_nodeExist"
+msgstr "Duplicated node id=''{0}''"
+
+msgid "ImportContainerException_UnknowNodeId"
+msgstr "Unknow Node id"
+
+msgid "ImportContainerException_MissingNodeSource"
+msgstr "Missing Node Source, edge is ignored"
+
+msgid "ImportContainerException_MissingNodeTarget"
+msgstr "Missing Node Target, edge is ignored"
+
+msgid "ImportContainerException_MissingNodeId"
+msgstr "Missing Node Identifier"
+
+msgid "ImportContainerException_edgeExist"
+msgstr "Edge already exists"
+
+msgid "ImportContainerException_SelfLoop"
+msgstr "Self loop are not allowed"
+
+msgid "ImportContainerException_Bad_Edge_Type"
+msgstr "Edge type doesn't fit with default"
+
+msgid "ImportContainerException_Parallel_Edge"
+msgstr "Parallel edges are not supported yet, edge id=''{0}'' is ignored"
+
+msgid "ImportContainerException_Set_EdgeDefault"
+msgstr "Default edge type set as {0}"
+
+msgid "ImportContainerException_Weight_Zero_Ignored"
+msgstr "Edge weight is 0 or negative, edge id=''{0}'' is ignored"
+
+msgid "ImportContainerException_Weight_Zero"
+msgstr "Edge weight is 0 or negative, it may not be visible"

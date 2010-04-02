@@ -1,0 +1,11 @@
+msgid "counterclockwise.name"
+msgstr "Counter-Clockwise Rotate"
+
+msgid "counterclockwise.description"
+msgstr "Rotate the graph by -90 degrees"
+
+msgid "clockwise.name"
+msgstr "Clockwise Rotate"
+
+msgid "clockwise.description"
+msgstr "Rotate the graph by 90 degrees"

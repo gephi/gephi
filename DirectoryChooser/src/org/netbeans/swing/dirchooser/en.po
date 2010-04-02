@@ -1,0 +1,49 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Libraries"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Directory Chooser"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Replaces regular Swing file chooser in directory-only mode."
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr ""
+"Replaces regular Swing file chooser in directory-only mode with an enhanced "
+"UI."
+
+msgid "LBL_NewFolder"
+msgstr "New Folder"
+
+msgid "LBL_Rename"
+msgstr "Rename"
+
+msgid "LBL_Delete"
+msgstr "Delete"
+
+msgid "MSG_Delete"
+msgstr "Are you sure you want to delete {0}?"
+
+msgid "MSG_Delete_Multiple"
+msgstr "Are you sure you want to delete these {0} items?"
+
+msgid "MSG_Plur_Delete"
+msgstr "Files cannot be deleted."
+
+msgid "MSG_Sing_Delete"
+msgstr "File cannot be deleted."
+
+msgid "MSG_Confirm"
+msgstr "Please Confirm"
+
+msgid "TLTP_HomeFolder"
+msgstr "Open home directory"
+
+msgid "MSG_SlownessNote"
+msgstr ""
+"<html>Dialog seems to be slow, probably because of JDK bug. Please try to "
+"upgrade JDK, remove zip files from Desktop folder or run system with <b>-J-"
+"Dnb.FileChooser.useShellFolder=false</b> property.</html>"
+
+msgid "BTN_NotShow"
+msgstr "Do Not Show Again"

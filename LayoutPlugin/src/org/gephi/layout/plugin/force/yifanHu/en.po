@@ -1,0 +1,15 @@
+msgid "YifanHu.name"
+msgstr "Yifan Hu"
+
+msgid "YifanHu.description"
+msgstr ""
+"Original Yifan Hu's attraction-repulsion model. Reduce the computational "
+"cost by restricting force calculation to the neighborhood. The algorithm "
+"stops itself, as it has an adaptative cooling sheme."
+
+msgid "YifanHuProportional.name"
+msgstr "Yifan Hu Proportional"
+
+msgid "YifanHuProportional.description"
+msgstr ""
+"Modified version of Yifan Hu that uses proportional displacement scheme."

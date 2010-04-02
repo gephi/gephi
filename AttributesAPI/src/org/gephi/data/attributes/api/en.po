@@ -1,0 +1,22 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi Core"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr ""
+"Attributes API provides access to attributes values through an efficient "
+"column/row system."
+
+msgid "OpenIDE-Module-Name"
+msgstr "Attributes API"
+
+msgid "AttributeOrigin_property"
+msgstr "Property"
+
+msgid "AttributeOrigin_data"
+msgstr "Data"
+
+msgid "AttributeOrigin_computed_name"
+msgstr "Computed"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "API for storing and retrieving attributes"

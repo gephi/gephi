@@ -1,0 +1,53 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Data Table UI"
+
+msgid "CTL_DataTableAction"
+msgstr "Data Table"
+
+msgid "CTL_DataTableTopComponent"
+msgstr "Data Table"
+
+msgid "HINT_DataTableTopComponent"
+msgstr ""
+
+msgid "DataTableTopComponent.tableScrollPane.busyMessage"
+msgstr "Fetching data..."
+
+msgid "DataTableTopComponent.tableScrollPane.error"
+msgstr "An error occurend while feching data..."
+
+msgid "DataTableTopComponent.labelFilter.text"
+msgstr "Filter:"
+
+msgid "DataTableTopComponent.edgesButton.text"
+msgstr "Edges"
+
+msgid "DataTableTopComponent.nodesButton.text"
+msgstr "Nodes"
+
+msgid "DataTableTopComponent.refreshButton.text"
+msgstr "Refresh"
+
+msgid "DataTableTopComponent.labelBanner.text"
+msgstr "Data have been updated. Do you want to refresh the table?"
+
+msgid "DataTableTopComponent.filterTextField.text"
+msgstr ""
+
+msgid "DataTableTopComponent.boxGlue.text"
+msgstr ""
+
+msgid "DataTableTopComponent.visibleGraphCheckbox.text"
+msgstr "Visible graph only"
+
+msgid "DataTableTopComponent.filterTextField.toolTipText"
+msgstr "Regular expression use is permitted"
+
+msgid "NodeDataTable.popup.select"
+msgstr "Select on graph"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Data Laboratory table"

@@ -1,0 +1,12 @@
+msgid "graphicalConfiguration_currentConfig"
+msgstr ""
+"\"\n"
+"Current hardware:\n"
+"%s\n"
+"%s\n"
+"Version:%s;"
+
+msgid "graphicalConfiguration_exception"
+msgstr ""
+"\"Your OpenGL version (%s) is too low to display the graph.\n"
+"Update your graphical drivers or configuration.%s"

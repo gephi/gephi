@@ -1,0 +1,20 @@
+msgid "CTL_TimelineAction"
+msgstr "Timeline"
+
+msgid "CTL_TimelineTopComponent"
+msgstr "Timeline Window"
+
+msgid "HINT_TimelineTopComponent"
+msgstr "This is a Timeline window"
+
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Timeline UI"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Desktop Timeline"
+
+msgid "TimelineTopComponent.settingsButton.text"
+msgstr "settings"

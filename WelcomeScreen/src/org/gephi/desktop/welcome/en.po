@@ -1,0 +1,38 @@
+msgid "CTL_WelcomeAction"
+msgstr "Welcome"
+
+msgid "CTL_WelcomeTopComponent"
+msgstr "Welcome Window"
+
+msgid "HINT_WelcomeTopComponent"
+msgstr ""
+
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Welcome Screen"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Welcome screen component"
+
+msgid "WelcomeTopComponent.labelRecent.text"
+msgstr "Open recent"
+
+msgid "WelcomeTopComponent.labelNew.text"
+msgstr "New Project"
+
+msgid "WelcomeTopComponent.labelSamples.text"
+msgstr "Samples"
+
+msgid "WelcomeTopComponent.newProjectLink.text"
+msgstr "New Project"
+
+msgid "WelcomeTopComponent.header.title"
+msgstr "Welcome to Gephi"
+
+msgid "WelcomeTopComponent.openGephiError"
+msgstr "Impossible to open this file. It must he a compatible '.gephi' file."
+
+msgid "WelcomeTopComponent.openOnStartupCheckbox.text"
+msgstr "Open at startup"

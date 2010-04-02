@@ -1,0 +1,14 @@
+msgid "Actions/Window/org-gephi-visualization-component-GraphAction.instance"
+msgstr "Graph"
+
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi Core"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Visualization module, not modularized"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Visualization Module"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Visualization module, not modularized"

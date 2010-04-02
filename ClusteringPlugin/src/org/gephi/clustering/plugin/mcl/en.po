@@ -1,0 +1,27 @@
+msgid "MarkovClustering.description"
+msgstr ""
+"Markov Cluster Algorithm, a fast and scalable unsupervised cluster algorithm"
+
+msgid "MarkovClusteringPanel.jLabel4.text"
+msgstr "max-residual"
+
+msgid "MarkovClusteringPanel.jLabel1.text"
+msgstr "zero-Max"
+
+msgid "MarkovClusteringPanel.zeromax.text"
+msgstr "0.001"
+
+msgid "MarkovClusteringPanel.gamma.text"
+msgstr "2.0"
+
+msgid "MarkovClusteringPanel.jLabel2.text"
+msgstr "gamma"
+
+msgid "MarkovClusteringPanel.jLabel3.text"
+msgstr "loop"
+
+msgid "MarkovClusteringPanel.loop.text"
+msgstr "0"
+
+msgid "MarkovClusteringPanel.maxresidual.text"
+msgstr "0.001"

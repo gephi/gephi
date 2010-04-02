@@ -1,0 +1,65 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Desktop Layout"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Integrate layout UI"
+
+msgid "CTL_LayoutAction"
+msgstr "Layout"
+
+msgid "CTL_LayoutTopComponent"
+msgstr "Layout"
+
+msgid "HINT_LayoutTopComponent"
+msgstr ""
+
+msgid "LayoutPanel.infoLabel.text"
+msgstr ""
+
+msgid "LayoutPanel.choose.text"
+msgstr "---Choose a layout"
+
+msgid "LayoutPanel.runButton.text"
+msgstr "Run"
+
+msgid "LayoutPanel.runButton.tooltip"
+msgstr "Run the layout algorithm"
+
+msgid "LayoutPanel.stopButton.text"
+msgstr "Stop"
+
+msgid "LayoutPanel.stopButton.tooltip"
+msgstr "Stop the algorithm, could take a moment as it waits the pass to finish"
+
+msgid "LayoutPanel.resetButton.text"
+msgstr "Reset"
+
+msgid "LayoutPanel.tooltip.speed"
+msgstr "Speed"
+
+msgid "LayoutPanel.tooltip.quality"
+msgstr "Quality"
+
+msgid "LayoutPanel.presetsButton.text"
+msgstr "Presets..."
+
+msgid "LayoutPanel.presetsButton.savePreset"
+msgstr "Save preset..."
+
+msgid "LayoutPanel.presetsButton.savePreset.input"
+msgstr "Name"
+
+msgid "LayoutPanel.presetsButton.savePreset.input.name"
+msgstr "Preset name"
+
+msgid "LayoutPanel.presetsButton.nopreset"
+msgstr "No presets"
+
+msgid "LayoutPanel.status.savePreset"
+msgstr "{0} preset \"{1}\" saved"
+
+msgid "LayoutPanel.status.loadPreset"
+msgstr "{0} preset \"{1}\" loaded"

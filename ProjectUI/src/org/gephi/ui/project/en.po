@@ -1,0 +1,44 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Project UI"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Project management UI"
+
+msgid "ProjectPropertiesEditor.labelName.text"
+msgstr "Name:"
+
+msgid "ProjectPropertiesEditor.labelAuthor.text"
+msgstr "Author:"
+
+msgid "ProjectPropertiesEditor.authorTextField.text"
+msgstr ""
+
+msgid "ProjectPropertiesEditor.keywordsTextField.text"
+msgstr ""
+
+msgid "ProjectPropertiesEditor.labelKeywords.text"
+msgstr "Keywords:"
+
+msgid "ProjectPropertiesEditor.titleTextField.text"
+msgstr ""
+
+msgid "ProjectPropertiesEditor.labelDescription.text"
+msgstr "Description:"
+
+msgid "ProjectPropertiesEditor.labelTitle.text"
+msgstr "Title:"
+
+msgid "ProjectPropertiesEditor.nameTextField.text"
+msgstr ""
+
+msgid "ProjectPropertiesEditor.descriptionPanel.border.title"
+msgstr "Description"
+
+msgid "ProjectPropertiesEditor.fileLabel.text"
+msgstr ""
+
+msgid "ProjectPropertiesEditor.labelFile.text"
+msgstr "File:"

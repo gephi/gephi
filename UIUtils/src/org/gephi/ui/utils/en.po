@@ -1,0 +1,11 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Utils classes for UI"
+
+msgid "OpenIDE-Module-Name"
+msgstr "UI Utils"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Utils classes for UI"

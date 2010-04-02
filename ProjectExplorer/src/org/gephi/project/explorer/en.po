@@ -1,0 +1,59 @@
+msgid "Actions/Edit/org-gephi-project-explorer-NewProject.instance"
+msgstr "New Project"
+
+msgid "Actions/Window/org-gephi-project-explorer-ProjectAction.instance"
+msgstr "Project"
+
+msgid "CTL_ProjectAction"
+msgstr "Project"
+
+msgid "CTL_ProjectTopComponent"
+msgstr "Project Window"
+
+msgid "HINT_ProjectTopComponent"
+msgstr "This is a Project window"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Project Explorer"
+
+msgid "ProjectsNode_title"
+msgstr "Projects"
+
+msgid "ProjectsNode_addProject"
+msgstr "Add Project"
+
+msgid "ProjectNode_openProject"
+msgstr "Open Project"
+
+msgid "ProjectNode_closeProject"
+msgstr "Close Project"
+
+msgid "ProjectNode_removeProject"
+msgstr "Remove Project"
+
+msgid "ProjectNode_addWorkspace"
+msgstr "Add Workspace"
+
+msgid "ProjectNode_renameProject_dialogTitle"
+msgstr "Rename Project"
+
+msgid "ProjectNode_renameProject"
+msgstr "Rename Project"
+
+msgid "ProjectNode_projectProperties"
+msgstr "Properties..."
+
+msgid "ProjectNode_projectProperties_dialogTitle"
+msgstr "Project Properties"
+
+msgid "WorkspaceNode_closeWorkspace"
+msgstr "Close Workspace"
+
+msgid "WorkspaceNode_renameWorkspace"
+msgstr "Rename Workspace"
+
+msgid "WorkspaceNode_renameWorkspace_dialogTitle"
+msgstr "Rename Workspace"
+
+msgid "WorkspaceNode_openWorkspace"
+msgstr "Open"

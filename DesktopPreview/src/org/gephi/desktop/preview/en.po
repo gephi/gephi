@@ -1,0 +1,86 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Desktop Preview"
+
+msgid "CTL_PreviewAction"
+msgstr "Preview"
+
+msgid "CTL_PreviewSettingsAction"
+msgstr "Preview Settings"
+
+msgid "CTL_PreviewSettingsTopComponent"
+msgstr "Preview Settings"
+
+msgid "CTL_PreviewTopComponent"
+msgstr "Preview"
+
+msgid "HINT_PreviewSettingsTopComponent"
+msgstr "Preview Settings"
+
+msgid "HINT_PreviewTopComponent"
+msgstr "Preview"
+
+msgid "GenericColorizerPanel.CustomColorRadioButton.text"
+msgstr "Custom Color"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Preview and Preview settings components"
+
+msgid "PreviewSettingsTopComponent.savePreset.input"
+msgstr "Name"
+
+msgid "PreviewSettingsTopComponent.savePreset.input.title"
+msgstr "Preset"
+
+msgid "PreviewSettingsTopComponent.savePreset.status"
+msgstr "Preset {0} saved"
+
+msgid "PreviewTopComponent.bannerLabel.text"
+msgstr "Workspace has been updated. Do you want to refresh the preview?"
+
+msgid "PreviewTopComponent.refreshButton.text"
+msgstr "Refresh"
+
+msgid "PreviewTopComponent.busyLabel.text"
+msgstr "Refreshing..."
+
+msgid "PreviewSettingsTopComponent.box.text"
+msgstr ""
+
+msgid "PreviewSettingsTopComponent.saveButton.toolTipText"
+msgstr "Save preset"
+
+msgid "PreviewSettingsTopComponent.saveButton.text"
+msgstr ""
+
+msgid "PreviewSettingsTopComponent.ratioLabel.text"
+msgstr "0"
+
+msgid "PreviewSettingsTopComponent.labelRatio.text"
+msgstr "Preview ratio:"
+
+msgid "PreviewSettingsTopComponent.refreshButton.text"
+msgstr "Refresh"
+
+msgid "PreviewSettingsTopComponent.labelPreset.text"
+msgstr "Presets"
+
+msgid "PreviewSettingsTopComponent.ratio.minimum"
+msgstr "Minimum"
+
+msgid "PreviewTopComponent.southBusyLabel.text"
+msgstr "refr"
+
+msgid "PreviewTopComponent.backgroundButton.text"
+msgstr "Background"
+
+msgid "PreviewTopComponent.resetZoomButton.text"
+msgstr "Reset zoom"
+
+msgid "PreviewSettingsTopComponent.svgExportButton.text"
+msgstr "SVG"
+
+msgid "PreviewSettingsTopComponent.labelExport.text"
+msgstr "Export:"

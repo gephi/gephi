@@ -1,0 +1,5 @@
+msgid "CustomColorModePanelDecorator.radioButton.text"
+msgstr "Custom Color"
+
+msgid "CustomColorModePanelDecorator.customColorButton.text"
+msgstr "Choose Color"

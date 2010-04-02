@@ -1,0 +1,2 @@
+msgid "EdgeWeightBuilder.name"
+msgstr "Edge Weight"

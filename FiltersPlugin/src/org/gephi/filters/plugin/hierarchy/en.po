@@ -1,0 +1,2 @@
+msgid "LevelBuilder.name"
+msgstr "Level"

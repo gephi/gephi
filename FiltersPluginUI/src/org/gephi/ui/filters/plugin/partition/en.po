@@ -1,0 +1,8 @@
+msgid "PartitionPanel.action.refresh"
+msgstr "Refresh"
+
+msgid "PartitionPanel.action.selectall"
+msgstr "Select all"
+
+msgid "PartitionPanel.action.unselectall"
+msgstr "Unselect all"

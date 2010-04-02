@@ -1,0 +1,20 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Plugin"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Generator Plugin UI"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Standard generators UI"
+
+msgid "RandomGraphPanel.edgeField.text"
+msgstr ""
+
+msgid "RandomGraphPanel.nodeLabel.text"
+msgstr "Number of nodes:"
+
+msgid "RandomGraphPanel.nodeField.text"
+msgstr ""
+
+msgid "RandomGraphPanel.edgeLabel.text"
+msgstr "Wiring probability:"

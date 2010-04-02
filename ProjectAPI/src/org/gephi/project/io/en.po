@@ -1,0 +1,30 @@
+msgid "gephiFormatException_import"
+msgstr ""
+"Gephi failed importing the project.\n"
+"\n"
+"Exception: %s : %s\n"
+"File: %s\n"
+"Line : %d"
+
+msgid "gephiFormatException_export"
+msgstr ""
+"Gephi failed saving the project.\n"
+"\n"
+"Exception: %s : %s\n"
+"File: %s\n"
+"Line : %d"
+
+msgid "LBL_Gephi_loader_name"
+msgstr "Gephi Files"
+
+msgid "Services/MIMEResolver/GephiResolver.xml"
+msgstr "Gephi Files"
+
+msgid "Templates/Other/GephiTemplate.gephi"
+msgstr "Empty Gephi file"
+
+msgid "LoadTask.name"
+msgstr "Opening project"
+
+msgid "SaveTask.name"
+msgstr "Saving project"

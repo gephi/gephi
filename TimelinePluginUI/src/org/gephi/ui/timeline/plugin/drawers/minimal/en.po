@@ -1,0 +1,2 @@
+msgid "OpenIDE-Module-Name"
+msgstr "Timeline Plugin UI"

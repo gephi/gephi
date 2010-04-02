@@ -1,0 +1,20 @@
+msgid "GraphContextMenu_Group"
+msgstr "Group"
+
+msgid "GraphContextMenu_Ungroup"
+msgstr "Ungroup"
+
+msgid "GraphContextMenu_Expand"
+msgstr "Expand"
+
+msgid "GraphContextMenu_Contract"
+msgstr "Contract"
+
+msgid "GraphContextMenu_Settle"
+msgstr "Settle"
+
+msgid "GraphContextMenu_Free"
+msgstr "Free"
+
+msgid "GraphContextMenu_Delete"
+msgstr "Delete"

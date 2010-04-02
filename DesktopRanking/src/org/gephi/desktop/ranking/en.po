@@ -1,0 +1,73 @@
+msgid "Actions/Window/org-gephi-desktop-ranking-RankingAction.instance"
+msgstr "Ranking"
+
+msgid "CTL_RankingAction"
+msgstr "Ranking"
+
+msgid "CTL_RankingTopComponent"
+msgstr "Ranking"
+
+msgid "HINT_RankingTopComponent"
+msgstr "Ranking"
+
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Desktop Ranking"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Integrated ranking UI"
+
+msgid "RankingTopComponent.listButton.text"
+msgstr "Result list"
+
+msgid "RankingTopComponent.barchartButton.text"
+msgstr "Value chart"
+
+msgid "RankingChooser.rankingComboBox.toolTipText"
+msgstr "Choose rank"
+
+msgid "RankingChooser.applyButton.toolTipText"
+msgstr "Apply the current transformation to the graph"
+
+msgid "RankingChooser.applyButton.text"
+msgstr "Apply"
+
+msgid "RankingChooser.splineButton.toolTipText"
+msgstr "Configure rank interpolation"
+
+msgid "RankingChooser.splineButton.text"
+msgstr "Spline..."
+
+msgid "RankingToolbar.nodes.label"
+msgstr "Nodes"
+
+msgid "RankingToolbar.edges.label"
+msgstr "Edges"
+
+msgid "ResultListPanel.action.tablescreenshot"
+msgstr "Take screenshot"
+
+msgid "ResultListPanel.tablescreenshot.filechooser.title"
+msgstr "Save As..."
+
+msgid "ResultListPanel.tablescreenshot.filechooser.pngDescription"
+msgstr "PNG"
+
+msgid "ResultListPanel.tablescreenshot.error"
+msgstr ""
+"An error occured while taking screenshot.\n"
+"\n"
+"Exception: {0}: {1}\n"
+"File: {2}\n"
+"Line: {3}"
+
+msgid "ResultListPanel.tablescreenshot.error.title"
+msgstr "Error"
+
+msgid "RankingChooser.choose.text"
+msgstr "---Choose a rank parameter"
+
+msgid "RankingChooser.splineEditor.title"
+msgstr "Interpolate"

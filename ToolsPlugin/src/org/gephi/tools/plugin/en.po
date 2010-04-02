@@ -1,0 +1,101 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Plugin"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Tools Plugin"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Standard tools implementations"
+
+# Painter
+msgid "Painter.name"
+msgstr "Painter"
+
+msgid "Painter.description"
+msgstr "Color nodes by pressing mouse left button"
+
+# Sizer
+msgid "Sizer.name"
+msgstr "Sizer"
+
+msgid "Sizer.description"
+msgstr "Size nodes by pressing mouse left button and dragging up or down"
+
+# Brush
+msgid "Brush.name"
+msgstr "Brush"
+
+msgid "Brush.description"
+msgstr "Color nodes and its nearest neighbour by pressing mouse left button"
+
+msgid "DiffusionMethod.None"
+msgstr "None"
+
+msgid "DiffusionMethod.Neighbors"
+msgstr "Neighbors"
+
+msgid "DiffusionMethod.NeighborsOfNeighbors"
+msgstr "Neighbors of Neighbors"
+
+msgid "DiffusionMethod.Predecessors"
+msgstr "Predecessors"
+
+msgid "DiffusionMethod.Successors"
+msgstr "Successors"
+
+# NodePencil
+msgid "NodePencil.name"
+msgstr "Node Pencil"
+
+msgid "NodePencil.description"
+msgstr "Add new node on the graph where mouse is clicked"
+
+# EdgePencil
+msgid "EdgePencil.name"
+msgstr "Edge Pencil"
+
+msgid "EdgePencil.description"
+msgstr "Add new edge by clicking on source and then target"
+
+msgid "EdgePencil.status1"
+msgstr "Select a source node"
+
+msgid "EdgePencil.status2"
+msgstr "Select a target node"
+
+# ShortestPath
+msgid "ShortestPath.name"
+msgstr "Shortest Path"
+
+msgid "ShortestPath.description"
+msgstr "Display the shortest path if exist between two clicked nodes"
+
+msgid "ShortestPath.status1"
+msgstr "Select a source node"
+
+msgid "ShortestPath.status2"
+msgstr "Select a target node"
+
+msgid "ShortestPath.result"
+msgstr "A {0} distant path has been found"
+
+msgid "ShortestPath.noresult"
+msgstr "No path exist between these two nodes"
+
+# HeatMap
+msgid "HeatMap.name"
+msgstr "Heat Map"
+
+msgid "HeatMap.description"
+msgstr ""
+"Set color intensity on a node neigbourhood, by the distance (edge weight)"
+
+msgid "HeatMap.status.maxdistance"
+msgstr "Max distance is "
+
+# Edit
+msgid "Edit.name"
+msgstr "Edit"
+
+msgid "Edit.description"
+msgstr "Edit node attributes"
