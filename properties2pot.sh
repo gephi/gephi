@@ -7,7 +7,7 @@ for f in "$@"
 do
 if [ $f == 'Bundle.properties' ]; then
 echo `pwd`
-msgcat $f --properties-input --output-file=en.po
+msgcat $f --properties-input --output-file=template.pot
 fi
 if [[ -d "${f}" ]]; then
 cd "${f}"
