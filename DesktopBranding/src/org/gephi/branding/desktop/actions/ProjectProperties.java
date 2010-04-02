@@ -21,14 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
-import javax.swing.JPanel;
 import org.gephi.desktop.project.api.ProjectControllerUI;
-import org.gephi.project.api.Project;
-import org.gephi.project.api.ProjectController;
-import org.gephi.project.spi.ProjectPropertiesUI;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -58,6 +51,6 @@ public class ProjectProperties extends SystemAction {
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-        
+        Lookup.getDefault().lookup(ProjectControllerUI.class).projectProperties();
     }
 }

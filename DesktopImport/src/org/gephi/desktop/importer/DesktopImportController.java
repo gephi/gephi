@@ -34,6 +34,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.gephi.desktop.mrufiles.api.MostRecentFiles;
+import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerFactory;
 import org.gephi.io.importer.api.Database;
@@ -323,9 +324,10 @@ public class DesktopImportController implements ImportController {
             reportPanel.destroy();
 
             ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+            ProjectControllerUI pcui = Lookup.getDefault().lookup(ProjectControllerUI.class);
             Workspace workspace;
             if (pc.getCurrentProject() == null) {
-                pc.newProject();
+                pcui.newProject();
                 workspace = pc.getCurrentWorkspace();
             } else {
                 if (reportPanel.getProcessorStrategy().equals(ProcessorStrategyEnum.FULL)) {

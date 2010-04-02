@@ -287,7 +287,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
             public void run() {
                 loadTask.run();
-                //Title bar
                 SwingUtilities.invokeLater(new Runnable() {
 
                     public void run() {
@@ -386,6 +385,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             saveAsProject = true;
             closeProject = true;
             newWorkspace = true;
+            projectProperties = true;
             if (controller.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).hasCurrentWorkspace()) {
                 deleteWorkspace = true;
                 cleanWorkspace = true;
@@ -455,6 +455,18 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
     public void newProject() {
         if (closeCurrentProject()) {
             controller.newProject();
+            final Project project = controller.getCurrentProject();
+
+            SwingUtilities.invokeLater(new Runnable() {
+
+                public void run() {
+                    JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+                    String title = frame.getTitle() + " - " + project.getLookup().lookup(ProjectInformation.class).getName();
+                    frame.setTitle(title);
+                }
+            });
+
+            unlockProjectActions();
         }
     }
 
