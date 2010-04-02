@@ -27,9 +27,8 @@ import java.io.IOException;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.TransferHandler;
-import org.gephi.branding.desktop.actions.OpenProject;
+import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.importer.api.ImportController;
-import org.gephi.project.api.ProjectController;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
@@ -73,11 +72,10 @@ public class DragNDropFrameAdapter {
                     FileObject fileObject = FileUtil.toFileObject((File) data.get(0));
                     if (fileObject.hasExt(GEPHI_EXTENSION)) {
 
-                        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-                        pc.closeCurrentProject();
+                        ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
                         try {
                             DataObject doe = DataObject.find(fileObject);
-                            pc.loadProject(doe);
+                            pc.openProject(doe);
                         } catch (Exception ew) {
                             ew.printStackTrace();
                             NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(DragNDropFrameAdapter.class, "DragNDropFrameAdapter.openGephiError"), NotifyDescriptor.WARNING_MESSAGE);

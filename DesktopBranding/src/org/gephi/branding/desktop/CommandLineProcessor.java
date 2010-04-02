@@ -84,9 +84,8 @@ public class CommandLineProcessor extends OptionProcessor {
                 FileObject fileObject = FileUtil.toFileObject(file);
                 if (fileObject.hasExt(GEPHI_EXTENSION)) {
                     ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-                    pc.closeCurrentProject();
                     DataObject doe = DataObject.find(fileObject);
-                    pc.loadProject(doe);
+                    pc.openProject(doe).run();
                     return;
                 } else {
                     ImportController importController = Lookup.getDefault().lookup(ImportController.class);

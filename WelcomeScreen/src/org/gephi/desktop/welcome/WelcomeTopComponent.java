@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.gephi.desktop.mrufiles.api.MostRecentFiles;
+import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.importer.api.ImportController;
-import org.gephi.project.api.ProjectController;
 import org.jdesktop.swingx.JXHyperlink;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
@@ -70,11 +70,10 @@ public final class WelcomeTopComponent extends TopComponent {
                 File file = (File) link.getClientProperty(LINK_PATH);
                 FileObject fileObject = FileUtil.toFileObject(file);
                 if (fileObject.hasExt(GEPHI_EXTENSION)) {
-                    ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-                    pc.closeCurrentProject();
+                    ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
                     try {
                         DataObject doe = DataObject.find(fileObject);
-                        pc.loadProject(doe);
+                        pc.openProject(doe);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.openGephiError"), NotifyDescriptor.WARNING_MESSAGE);
@@ -92,10 +91,8 @@ public final class WelcomeTopComponent extends TopComponent {
         newProjectLink.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-                if (pc.canNewProject()) {
-                    pc.newProject();
-                }
+                ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
+                pc.newProject();
                 WelcomeTopComponent.this.close();
             }
         });
@@ -134,7 +131,7 @@ public final class WelcomeTopComponent extends TopComponent {
         sampleTooltip[2] = "Topology of the Western States Power Grid of the US (D. Watts & S. Strogatz)";
 
         try {
-            for (int i=0;i<samplePath.length;i++) {
+            for (int i = 0; i < samplePath.length; i++) {
                 String s = samplePath[i];
                 String tooltip = sampleTooltip[i];
                 final InputStream stream = WelcomeTopComponent.class.getResourceAsStream(s);

@@ -26,6 +26,7 @@ import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.impl.ProjectInformationImpl;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
+import org.gephi.project.impl.ProjectControllerImpl;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -85,7 +86,7 @@ public class LoadTask implements LongTask, Runnable {
 
             //Add project
             if (!cancel) {
-                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+                ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
                 pc.openProject(project);
             }
             Progress.finish(progressTicket);

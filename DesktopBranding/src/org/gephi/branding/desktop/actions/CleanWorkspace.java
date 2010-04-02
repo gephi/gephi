@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
-import org.gephi.project.api.ProjectController;
+import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -34,18 +34,17 @@ import org.openide.util.actions.SystemAction;
 public class CleanWorkspace extends SystemAction {
 
     public void actionPerformed(ActionEvent e) {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.cleanWorkspace(pc.getCurrentWorkspace());
+        Lookup.getDefault().lookup(ProjectControllerUI.class).cleanWorkspace();
     }
 
     @Override
     protected String iconResource() {
-        return "org/gephi/branding/desktop/actions/cleanWorkspace.gif";
+        return "org/gephi/branding/desktop/actions/resources/cleanWorkspace.gif";
     }
 
     @Override
     public boolean isEnabled() {
-        return Lookup.getDefault().lookup(ProjectController.class).canCleanWorkspace();
+        return Lookup.getDefault().lookup(ProjectControllerUI.class).canCleanWorkspace();
     }
 
     @Override

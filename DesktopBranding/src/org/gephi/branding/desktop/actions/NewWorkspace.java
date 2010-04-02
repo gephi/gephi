@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
-import org.gephi.project.api.ProjectController;
+import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -30,18 +30,17 @@ import org.openide.util.actions.SystemAction;
 public class NewWorkspace extends SystemAction {
 
     public void actionPerformed(ActionEvent e) {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.newWorkspace(pc.getCurrentProject());
+        Lookup.getDefault().lookup(ProjectControllerUI.class).newWorkspace();
     }
 
     @Override
     public boolean isEnabled() {
-        return Lookup.getDefault().lookup(ProjectController.class).canNewWorkspace();
+        return Lookup.getDefault().lookup(ProjectControllerUI.class).canNewWorkspace();
     }
 
     @Override
     protected String iconResource() {
-        return "org/gephi/branding/desktop/actions/newWorkspace.png";
+        return "org/gephi/branding/desktop/actions/resources/newWorkspace.png";
     }
 
     @Override

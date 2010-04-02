@@ -22,6 +22,7 @@ package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
+import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.spi.ProjectPropertiesUI;
@@ -46,28 +47,17 @@ public class ProjectProperties extends SystemAction {
     }
     @Override
     public boolean isEnabled() {
-        return Lookup.getDefault().lookup(ProjectController.class).canProjectProperties();
+        return Lookup.getDefault().lookup(ProjectControllerUI.class).canProjectProperties();
     }
 
 
     @Override
     protected String iconResource() {
-        return "org/gephi/branding/desktop/actions/projectProperties.gif";
+        return "org/gephi/branding/desktop/actions/resources/projectProperties.gif";
     }
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        Project project = pc.getCurrentProject();
-        ProjectPropertiesUI ui = Lookup.getDefault().lookup(ProjectPropertiesUI.class);
-        if (ui != null) {
-            JPanel panel = ui.getPanel();
-            ui.setup(project);
-            DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(ProjectProperties.class, "ProjectProperties_dialog_title"));
-            Object result = DialogDisplayer.getDefault().notify(dd);
-            if (result == NotifyDescriptor.OK_OPTION) {
-                ui.unsetup(project);
-            }
-        }
+        
     }
 }
