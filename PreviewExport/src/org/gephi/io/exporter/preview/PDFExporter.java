@@ -115,12 +115,21 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     public void renderGraphUnidirectionalEdges(Graph graph) {
+        for (UnidirectionalEdge edge : graph.getUnidirectionalEdges()) {
+            renderDirectedEdge(edge);
+        }
     }
 
     public void renderGraphBidirectionalEdges(Graph graph) {
+        for (BidirectionalEdge edge : graph.getBidirectionalEdges()) {
+            renderDirectedEdge(edge);
+        }
     }
 
     public void renderGraphUndirectedEdges(Graph graph) {
+        for (UndirectedEdge e : graph.getUndirectedEdges()) {
+            renderEdge(e);
+        }
     }
 
     public void renderGraphNodes(Graph graph) {
@@ -195,7 +204,7 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
 
             cb.beginText();
             cb.setFontAndSize(bf, font.getSize());
-            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX() - ascent/2, p.getY(), -90);
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX() - ascent / 2, p.getY(), -90);
             cb.endText();
         } catch (DocumentException ex) {
             Exceptions.printStackTrace(ex);
@@ -215,15 +224,37 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     public void renderDirectedEdge(DirectedEdge edge) {
+        renderEdge(edge);
+
+        if (!edge.isCurved() && edge.showArrows()) {
+            renderEdgeArrows(edge);
+        }
     }
 
     public void renderEdge(Edge edge) {
+        if (edge.isCurved()) {
+            renderCurvedEdge(edge);
+        } else {
+            renderStraightEdge(edge);
+        }
+
+        Progress.progress(progress);
     }
 
     public void renderStraightEdge(Edge edge) {
+        line(edge.getNode1().getPosition(), edge.getNode2().getPosition());
+        setStrokeColor(edge.getColor());
+        cb.setLineWidth(edge.getThickness() * edge.getScale());
+        cb.stroke();
     }
 
     public void renderCurvedEdge(Edge edge) {
+        for (CubicBezierCurve c : edge.getCurves()) {
+            cubicBezierCurve(c);
+            setStrokeColor(edge.getColor());
+            cb.setLineWidth(edge.getThickness() * edge.getScale());
+            cb.stroke();
+        }
     }
 
     public void renderEdgeArrows(DirectedEdge edge) {
@@ -319,5 +350,16 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
      */
     private void setStrokeColor(Color color) {
         cb.setRGBColorStroke(color.getRed(), color.getGreen(), color.getBlue());
+    }
+
+    /**
+     * Draws a line.
+     * 
+     * @param start  the start of the line to draw
+     * @param end    the end of the line to draw
+     */
+    private void line(Point start, Point end) {
+        cb.moveTo(start.getX(), start.getY());
+        cb.lineTo(end.getX(), end.getY());
     }
 }
