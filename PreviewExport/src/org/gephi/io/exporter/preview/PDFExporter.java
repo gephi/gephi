@@ -258,12 +258,26 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     public void renderEdgeArrows(DirectedEdge edge) {
+        for (EdgeArrow a : edge.getArrows()) {
+            renderEdgeArrow(a);
+        }
     }
 
     public void renderEdgeMiniLabels(DirectedEdge edge) {
     }
 
     public void renderEdgeArrow(EdgeArrow arrow) {
+        Point pt1 = arrow.getPt1();
+        Point pt2 = arrow.getPt2();
+        Point pt3 = arrow.getPt3();
+        
+        cb.moveTo(pt1.getX(), pt1.getY());
+        cb.lineTo(pt2.getX(), pt2.getY());
+        cb.lineTo(pt3.getX(), pt3.getY());
+        cb.closePath();
+
+        setFillColor(arrow.getColor());
+        cb.fill();
     }
 
     public void renderEdgeLabel(EdgeLabel label) {
@@ -329,6 +343,17 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     /**
+     * Draws a line.
+     * 
+     * @param start  the start of the line to draw
+     * @param end    the end of the line to draw
+     */
+    private void line(Point start, Point end) {
+        cb.moveTo(start.getX(), start.getY());
+        cb.lineTo(end.getX(), end.getY());
+    }
+
+    /**
      * Draws a cubic bezier curve.
      *
      * @param curve  the curve to draw
@@ -352,14 +377,13 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         cb.setRGBColorStroke(color.getRed(), color.getGreen(), color.getBlue());
     }
 
+    
     /**
-     * Draws a line.
-     * 
-     * @param start  the start of the line to draw
-     * @param end    the end of the line to draw
+     * Defines the filling color.
+     *
+     * @param color  the filling color to set
      */
-    private void line(Point start, Point end) {
-        cb.moveTo(start.getX(), start.getY());
-        cb.lineTo(end.getX(), end.getY());
+    private void setFillColor(Color color) {
+        cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
     }
 }
