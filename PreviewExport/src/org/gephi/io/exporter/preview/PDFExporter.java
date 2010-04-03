@@ -1,6 +1,5 @@
 package org.gephi.io.exporter.preview;
 
-import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
@@ -17,6 +16,7 @@ import org.gephi.io.exporter.preview.util.SupportSize;
 import org.gephi.io.exporter.spi.VectorialFileExporter;
 import org.gephi.preview.api.BidirectionalEdge;
 import org.gephi.preview.api.Color;
+import org.gephi.preview.api.CubicBezierCurve;
 import org.gephi.preview.api.DirectedEdge;
 import org.gephi.preview.api.Edge;
 import org.gephi.preview.api.EdgeArrow;
@@ -99,9 +99,19 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     public void renderGraphEdges(Graph graph) {
+        renderGraphUnidirectionalEdges(graph);
+        renderGraphBidirectionalEdges(graph);
+        renderGraphUndirectedEdges(graph);
+
+        if (graph.showSelfLoops()) {
+            renderGraphSelfLoops(graph);
+        }
     }
 
     public void renderGraphSelfLoops(Graph graph) {
+        for (SelfLoop sl : graph.getSelfLoops()) {
+            renderSelfLoop(sl);
+        }
     }
 
     public void renderGraphUnidirectionalEdges(Graph graph) {
@@ -202,6 +212,10 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     public void renderSelfLoop(SelfLoop selfLoop) {
+        cubicBezierCurve(selfLoop.getCurve());
+        setStrokeColor(selfLoop.getColor());
+        pdfSketch.setLineWidth(selfLoop.getThickness() * selfLoop.getScale());
+        pdfSketch.stroke();
     }
 
     public void renderDirectedEdge(DirectedEdge edge) {
@@ -285,5 +299,29 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
 
     private BaseFont genBaseFont(java.awt.Font font) throws DocumentException, IOException {
         return BaseFont.createFont();
+    }
+
+    /**
+     * Draws a cubic bezier curve.
+     *
+     * @param curve  the curve to draw
+     */
+    private void cubicBezierCurve(CubicBezierCurve curve) {
+        Point pt1 = curve.getPt1();
+        Point pt2 = curve.getPt2();
+        Point pt3 = curve.getPt3();
+        Point pt4 = curve.getPt4();
+
+        pdfSketch.moveTo(pt1.getX(), pt1.getY());
+        pdfSketch.curveTo(pt2.getX(), pt2.getY(), pt3.getX(), pt3.getY(), pt4.getX(), pt4.getY());
+    }
+
+    /**
+     * Defines the stroke color.
+     *
+     * @param color  the stroke color to set
+     */
+    private void setStrokeColor(Color color) {
+        pdfSketch.setRGBColorStroke(color.getRed(), color.getGreen(), color.getBlue());
     }
 }
