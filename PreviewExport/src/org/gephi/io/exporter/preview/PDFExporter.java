@@ -175,12 +175,8 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Color c = node.getColor();
         Color bc = node.getBorderColor();
 
-        // node border rendering
-        cb.setRGBColorFill(bc.getRed(), bc.getGreen(), bc.getBlue());
-        cb.circle(center.getX(), center.getY(), node.getRadius() + node.getBorderWidth());
-        cb.fill();
-
-        // node content rendering
+        cb.setRGBColorStroke(bc.getRed(), bc.getGreen(), bc.getBlue());
+        cb.setLineWidth(node.getBorderWidth());
         cb.setRGBColorFill(c.getRed(), c.getGreen(), c.getBlue());
         cb.circle(center.getX(), center.getY(), node.getRadius());
         cb.fillStroke();
