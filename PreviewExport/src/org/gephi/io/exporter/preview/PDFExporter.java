@@ -51,7 +51,7 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
 
     private ProgressTicket progress;
     private boolean cancel = false;
-    private PdfContentByte pdfSketch;
+    private PdfContentByte cb;
     private Document document;
 
     public boolean exportData(File file, Workspace workspace) throws Exception {
@@ -176,14 +176,14 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Color bc = node.getBorderColor();
 
         // node border rendering
-        pdfSketch.setRGBColorFill(bc.getRed(), bc.getGreen(), bc.getBlue());
-        pdfSketch.circle(center.getX(), center.getY(), node.getRadius() + node.getBorderWidth());
-        pdfSketch.fill();
+        cb.setRGBColorFill(bc.getRed(), bc.getGreen(), bc.getBlue());
+        cb.circle(center.getX(), center.getY(), node.getRadius() + node.getBorderWidth());
+        cb.fill();
 
         // node content rendering
-        pdfSketch.setRGBColorFill(c.getRed(), c.getGreen(), c.getBlue());
-        pdfSketch.circle(center.getX(), center.getY(), node.getRadius());
-        pdfSketch.fillStroke();
+        cb.setRGBColorFill(c.getRed(), c.getGreen(), c.getBlue());
+        cb.circle(center.getX(), center.getY(), node.getRadius());
+        cb.fillStroke();
     }
 
     public void renderNodeLabel(NodeLabel label) {
@@ -191,16 +191,16 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Point p = label.getPosition();
         Font font = label.getFont();
 
-        pdfSketch.setRGBColorFill(c.getRed(), c.getGreen(), c.getBlue());
+        cb.setRGBColorFill(c.getRed(), c.getGreen(), c.getBlue());
 
         try {
             BaseFont bf = genBaseFont(font);
             float ascent = bf.getAscentPoint(label.getValue(), font.getSize());
 
-            pdfSketch.beginText();
-            pdfSketch.setFontAndSize(bf, font.getSize());
-            pdfSketch.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX() - ascent/2, p.getY(), -90);
-            pdfSketch.endText();
+            cb.beginText();
+            cb.setFontAndSize(bf, font.getSize());
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX() - ascent/2, p.getY(), -90);
+            cb.endText();
         } catch (DocumentException ex) {
             Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
@@ -214,8 +214,8 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     public void renderSelfLoop(SelfLoop selfLoop) {
         cubicBezierCurve(selfLoop.getCurve());
         setStrokeColor(selfLoop.getColor());
-        pdfSketch.setLineWidth(selfLoop.getThickness() * selfLoop.getScale());
-        pdfSketch.stroke();
+        cb.setLineWidth(selfLoop.getThickness() * selfLoop.getScale());
+        cb.stroke();
     }
 
     public void renderDirectedEdge(DirectedEdge edge) {
@@ -251,7 +251,7 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     public void clean() {
         progress = null;
         cancel = false;
-        pdfSketch = null;
+        cb = null;
         document = null;
     }
 
@@ -287,11 +287,11 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         document = new Document(PageSize.A4);
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
         document.open();
-        pdfSketch = writer.getDirectContent();
-        pdfSketch.saveState();
-        pdfSketch.concatCTM(0f, 1f, -1f, 0f, 0f, 0f);
+        cb = writer.getDirectContent();
+        cb.saveState();
+        cb.concatCTM(0f, 1f, -1f, 0f, 0f, 0f);
         renderGraph(graphSheet.getGraph());
-        pdfSketch.restoreState();
+        cb.restoreState();
         document.close();
 
         Progress.finish(progress);
@@ -312,8 +312,8 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Point pt3 = curve.getPt3();
         Point pt4 = curve.getPt4();
 
-        pdfSketch.moveTo(pt1.getX(), pt1.getY());
-        pdfSketch.curveTo(pt2.getX(), pt2.getY(), pt3.getX(), pt3.getY(), pt4.getX(), pt4.getY());
+        cb.moveTo(pt1.getX(), pt1.getY());
+        cb.curveTo(pt2.getX(), pt2.getY(), pt3.getX(), pt3.getY(), pt4.getX(), pt4.getY());
     }
 
     /**
@@ -322,6 +322,6 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
      * @param color  the stroke color to set
      */
     private void setStrokeColor(Color color) {
-        pdfSketch.setRGBColorStroke(color.getRed(), color.getGreen(), color.getBlue());
+        cb.setRGBColorStroke(color.getRed(), color.getGreen(), color.getBlue());
     }
 }
