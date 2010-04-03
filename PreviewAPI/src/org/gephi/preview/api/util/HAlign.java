@@ -9,16 +9,23 @@ package org.gephi.preview.api.util;
 public interface HAlign {
 
     /**
-     * Formats the alignment as a string for a Processing target.
+     * Formats the alignment for a Processing target.
      *
-     * @return the alignment formatted as a string
+     * @return the formatted alignment
      */
     public int toProcessing();
 
     /**
-     * Formats the alignment as a string for a CSS target.
+     * Formats the alignment for a CSS target.
      *
-     * @return the alignment formatted as a string
+     * @return the formatted alignment
      */
     public String toCSS();
+
+    /**
+     * Formats the alignment for an iText target.
+     *
+     * @return the formatted alignment
+     */
+    public int toIText();
 }

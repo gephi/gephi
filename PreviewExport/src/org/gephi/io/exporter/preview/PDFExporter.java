@@ -192,11 +192,10 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     public void renderNodeLabel(NodeLabel label) {
-        Color c = label.getColor();
         Point p = label.getPosition();
         Font font = label.getFont();
 
-        cb.setRGBColorFill(c.getRed(), c.getGreen(), c.getBlue());
+        setFillColor(label.getColor());
 
         try {
             BaseFont bf = genBaseFont(font);
@@ -206,9 +205,7 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
             cb.setFontAndSize(bf, font.getSize());
             cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX() - ascent / 2, p.getY(), -90);
             cb.endText();
-        } catch (DocumentException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
         }
     }
@@ -264,6 +261,9 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     public void renderEdgeMiniLabels(DirectedEdge edge) {
+        for (EdgeMiniLabel ml : edge.getMiniLabels()) {
+            renderEdgeMiniLabel(ml);
+        }
     }
 
     public void renderEdgeArrow(EdgeArrow arrow) {
@@ -281,9 +281,39 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     public void renderEdgeLabel(EdgeLabel label) {
+        Point p = label.getPosition();
+        Font font = label.getFont();
+
+        setFillColor(label.getColor());
+
+        try {
+            BaseFont bf = genBaseFont(font);
+
+            cb.beginText();
+            cb.setFontAndSize(bf, font.getSize());
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX(), p.getY(), (float) (Math.toDegrees(label.getAngle()) + 180));
+            cb.endText();
+        } catch (Exception ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     public void renderEdgeMiniLabel(EdgeMiniLabel miniLabel) {
+        Point p = miniLabel.getPosition();
+        Font font = miniLabel.getFont();
+
+        setFillColor(miniLabel.getColor());
+
+        try {
+            BaseFont bf = genBaseFont(font);
+
+            cb.beginText();
+            cb.setFontAndSize(bf, font.getSize());
+            cb.showTextAligned(miniLabel.getHAlign().toIText(), miniLabel.getValue(), p.getX(), p.getY(), (float) (Math.toDegrees(miniLabel.getAngle()) + 180));
+            cb.endText();
+        } catch (Exception ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     /**
