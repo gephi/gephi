@@ -23,7 +23,6 @@ package org.gephi.desktop.importer;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -34,6 +33,8 @@ import javax.swing.event.ChangeListener;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.gephi.desktop.mrufiles.api.MostRecentFiles;
+import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerFactory;
 import org.gephi.io.importer.api.Database;
@@ -101,8 +102,14 @@ public class DesktopImportController implements ImportController {
             fileObject = getArchivedFile(fileObject);   //Unzip and return content file
             FileFormatImporter im = getMatchingImporter(fileObject);
             if (im == null) {
-                throw new RuntimeException(NbBundle.getMessage(getClass(), "error_no_matching_file_importer"));
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
+                return;
             }
+
+            //MRU
+            MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
+            mostRecentFiles.addFile(fileObject.getPath());
 
             //Create Container
             final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
@@ -113,9 +120,9 @@ public class DesktopImportController implements ImportController {
             container.setReport(report);
 
             if (im instanceof XMLImporter) {
-                importXML(fileObject, im, container);
+                importXML(fileObject.getInputStream(), im, container);
             } else if (im instanceof TextImporter) {
-                importText(fileObject, im, container);
+                importText(fileObject.getInputStream(), im, container);
             } else if (im instanceof StreamImporter) {
             }
 
@@ -124,8 +131,32 @@ public class DesktopImportController implements ImportController {
         }
     }
 
-    private void importXML(FileObject fileObject, Importer importer, final Container container) {
-        final Document document = getDocument(fileObject);
+    public void doImport(InputStream stream, String importer) {
+        try {
+            FileFormatImporter im = getMatchingImporter(importer);
+            if (im == null) {
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "error_no_matching_stream_importer"), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
+                return;
+            }
+
+            //Create Container
+            final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
+            container.setSource("Stream");
+
+            //Report
+            Report report = new Report();
+            container.setReport(report);
+
+            importStream(stream, im, container);
+
+        } catch (Exception ex) {
+            Logger.getLogger("").log(Level.WARNING, "", ex);
+        }
+    }
+
+    private void importXML(InputStream stream, Importer importer, final Container container) {
+        final Document document = getDocument(stream);
         final XMLImporter xmlImporter = (XMLImporter) importer;
         final Report report = container.getReport();
         LongTask task = null;
@@ -156,11 +187,11 @@ public class DesktopImportController implements ImportController {
                     throw new RuntimeException(ex);
                 }
             }
-        }, "Import " + fileObject.getNameExt(), errorHandler);
+        }, "Import " + container.getSource(), errorHandler);
     }
 
-    private void importText(FileObject fileObject, Importer importer, final Container container) {
-        final LineNumberReader reader = getTextReader(fileObject);
+    private void importText(InputStream stream, Importer importer, final Container container) {
+        final LineNumberReader reader = getTextReader(stream);
         final TextImporter textImporter = (TextImporter) importer;
         final Report report = container.getReport();
         LongTask task = null;
@@ -188,18 +219,30 @@ public class DesktopImportController implements ImportController {
                     throw new RuntimeException(ex);
                 }
             }
-        }, "Import " + fileObject.getNameExt(), errorHandler);
+        }, "Import " + container.getSource(), errorHandler);
+    }
+
+    private void importStream(InputStream stream, Importer importer, final Container container) {
+        if (importer instanceof XMLImporter) {
+            importXML(stream, importer, container);
+        } else if (importer instanceof TextImporter) {
+            importText(stream, importer, container);
+        }
     }
 
     public void doImport(Database database) {
         try {
             DatabaseType type = getDatabaseType(database);
             if (type == null) {
-                throw new RuntimeException(NbBundle.getMessage(getClass(), "error_no_matching_db_importer"));
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "error_no_matching_db_importer"), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
+                return;
             }
             final DatabaseImporter importer = getMatchingImporter(type);
             if (importer == null) {
-                throw new RuntimeException(NbBundle.getMessage(getClass(), "error_no_matching_db_importer"));
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "error_no_matching_db_importer"), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
+                return;
             }
 
             DatabaseTypeUI ui = type.getUI();
@@ -281,9 +324,10 @@ public class DesktopImportController implements ImportController {
             reportPanel.destroy();
 
             ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+            ProjectControllerUI pcui = Lookup.getDefault().lookup(ProjectControllerUI.class);
             Workspace workspace;
             if (pc.getCurrentProject() == null) {
-                pc.newProject();
+                pcui.newProject();
                 workspace = pc.getCurrentWorkspace();
             } else {
                 if (reportPanel.getProcessorStrategy().equals(ProcessorStrategyEnum.FULL)) {
@@ -333,20 +377,25 @@ public class DesktopImportController implements ImportController {
 
     private LineNumberReader getTextReader(FileObject fileObject) throws RuntimeException {
         try {
-            LineNumberReader reader;
-            CharsetToolkit charsetToolkit = new CharsetToolkit(fileObject);
-            reader = (LineNumberReader) charsetToolkit.getReader();
-            return reader;
+            return getTextReader(fileObject.getInputStream());
         } catch (FileNotFoundException ex) {
             throw new RuntimeException(NbBundle.getMessage(getClass(), "error_file_not_found"));
+        }
+    }
+
+    private LineNumberReader getTextReader(InputStream stream) throws RuntimeException {
+        try {
+            LineNumberReader reader;
+            CharsetToolkit charsetToolkit = new CharsetToolkit(stream);
+            reader = (LineNumberReader) charsetToolkit.getReader();
+            return reader;
         } catch (IOException ex) {
             throw new RuntimeException(NbBundle.getMessage(getClass(), "error_io"));
         }
     }
 
-    private Document getDocument(FileObject fileObject) throws RuntimeException {
+    private Document getDocument(InputStream stream) throws RuntimeException {
         try {
-            InputStream stream = fileObject.getInputStream();
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(stream);
@@ -362,6 +411,15 @@ public class DesktopImportController implements ImportController {
         }
     }
 
+    private Document getDocument(FileObject fileObject) throws RuntimeException {
+        try {
+            InputStream stream = fileObject.getInputStream();
+            return getDocument(stream);
+        } catch (FileNotFoundException ex) {
+            throw new RuntimeException(NbBundle.getMessage(getClass(), "error_file_not_found"));
+        }
+    }
+
     private FileObject getArchivedFile(FileObject fileObject) {
         if (FileUtil.isArchiveFile(fileObject)) {
             //Unzip
@@ -374,6 +432,19 @@ public class DesktopImportController implements ImportController {
         for (FileFormatImporter im : fileFormatImporters) {
             if (im.isMatchingImporter(fileObject)) {
                 return im;
+            }
+        }
+        return null;
+    }
+
+    private FileFormatImporter getMatchingImporter(String extension) {
+        for (FileFormatImporter im : fileFormatImporters) {
+            for (FileType ft : im.getFileTypes()) {
+                for (String ext : ft.getExtensions()) {
+                    if (ext.equalsIgnoreCase(extension)) {
+                        return im;
+                    }
+                }
             }
         }
         return null;

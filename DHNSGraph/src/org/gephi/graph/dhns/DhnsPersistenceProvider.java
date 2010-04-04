@@ -37,7 +37,8 @@ import org.w3c.dom.Element;
 public class DhnsPersistenceProvider implements WorkspacePersistenceProvider {
 
     public Element writeXML(Document document, Workspace workspace) {
-        Dhns dhns = workspace.getLookup().lookup(Dhns.class);
+        DhnsGraphController graphController = Lookup.getDefault().lookup(DhnsGraphController.class);
+        Dhns dhns = (Dhns)graphController.getModel(workspace);
         DHNSSerializer serializer = new DHNSSerializer();
         return serializer.writeDhns(document, dhns);
     }

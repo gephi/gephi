@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.project.io;
 
 import java.io.IOException;
-import org.gephi.project.impl.ProjectControllerImpl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.zip.ZipEntry;
@@ -33,18 +32,14 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.gephi.project.io.GephiDataObject;
-import org.gephi.project.io.GephiFormatException;
-import org.gephi.project.io.GephiWriter;
+import org.gephi.project.api.Project;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.w3c.dom.Document;
@@ -56,13 +51,15 @@ import org.w3c.dom.Document;
 public class SaveTask implements LongTask, Runnable {
 
     private static final String ZIP_LEVEL_PREFERENCE = "ProjectIO_Save_ZipLevel_0_TO_9";
-    private GephiDataObject dataObject;
+    private File file;
+    private Project project;
     private GephiWriter gephiWriter;
     private boolean cancel = false;
     private ProgressTicket progressTicket;
 
-    public SaveTask(GephiDataObject dataObject) {
-        this.dataObject = dataObject;
+    public SaveTask(Project project, File file) {
+        this.project = project;
+        this.file = file;
     }
 
     public void run() {
@@ -72,9 +69,9 @@ public class SaveTask implements LongTask, Runnable {
         File writeFile = null;
         try {
             Progress.start(progressTicket);
-            FileObject fileObject = dataObject.getPrimaryFile();
-            File outputFile = FileUtil.toFile(fileObject);
-            writeFile = outputFile;
+            Progress.setDisplayName(progressTicket, NbBundle.getMessage(SaveTask.class, "SaveTask.name"));
+            FileObject fileObject = FileUtil.toFileObject(file);
+            writeFile = file;
             if (writeFile.exists()) {
                 useTempFile = true;
                 String tempFileName = writeFile.getName() + "_temp";
@@ -91,7 +88,7 @@ public class SaveTask implements LongTask, Runnable {
             gephiWriter = new GephiWriter();
 
             //Write Document
-            Document document = gephiWriter.writeAll(dataObject.getProject());
+            Document document = gephiWriter.writeAll(project);
 
             //Write file output
             Source source = new DOMSource(document);
@@ -126,8 +123,6 @@ public class SaveTask implements LongTask, Runnable {
                 tempFileObject.delete();
             }
             Progress.finish(progressTicket);
-            //Status line
-            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectControllerImpl.class, "DesktoProjectController.status.saved", dataObject.getName()));
         } catch (Exception ex) {
             ex.printStackTrace();
             if (zipOut != null) {

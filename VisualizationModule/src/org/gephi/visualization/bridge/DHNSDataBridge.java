@@ -81,7 +81,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         cacheMarker++;
 
         GraphModel graphModel = controller.getModel();
-        if(graphModel==null) {
+        if (graphModel == null) {
             engine.worldUpdated(cacheMarker);
             return;
         }
@@ -96,8 +96,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             undirected = false;
             graph = graphModel.getHierarchicalMixedGraphVisible();
         } else {
-            //No visualized graph inited yet
-            return;
+            undirected = false;
+            graph = graphModel.getHierarchicalDirectedGraphVisible();
         }
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -185,7 +185,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         float maxWeight = Float.NEGATIVE_INFINITY;
 
         for (Edge edge : edgeIterable) {
-            if(edge.getSource().getNodeData().getModel() == null || edge.getTarget().getNodeData().getModel() == null) {
+            if (edge.getSource().getNodeData().getModel() == null || edge.getTarget().getNodeData().getModel() == null) {
                 continue;
             }
             minWeight = Math.min(minWeight, edge.getWeight());
@@ -284,11 +284,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             //Try to get a graph
             GraphModel graphModel = controller.getModel();
             if (graphModel != null) {
-                if (!graphModel.isDirected() && !graphModel.isUndirected() && !graphModel.isMixed()) {
-                    return false;
-                } else {
-                    graph = graphModel.getHierarchicalGraphVisible();
-                }
+                graph = graphModel.getHierarchicalGraphVisible();
             }
         }
         //Refresh reader if sight changed

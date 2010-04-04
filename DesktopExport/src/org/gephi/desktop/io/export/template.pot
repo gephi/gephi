@@ -1,0 +1,46 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Integrate and manage export features in UI."
+
+msgid "OpenIDE-Module-Name"
+msgstr "Desktop Export"
+
+msgid "CTL_Export"
+msgstr "Export"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Integrate export"
+
+msgid "error_no_matching_file_exporter"
+msgstr ""
+"Impossible to find a compatible Exporter.\n"
+"The file format is not supported."
+
+msgid "error_missing_document_instance_factory"
+msgstr "Impossible to obtain an instance of DocumentBuilder"
+
+msgid "error_transformer"
+msgstr "Impossible to write XML file due to Tranformer problem."
+
+msgid "error_io"
+msgstr "Impossible to write text file."
+
+msgid "GraphFileExporterUIPanel.labelVisibleOnly.text"
+msgstr "Only the current visualized graph is exported"
+
+msgid "GraphFileExporterUIPanel.labelFullgraph.text"
+msgstr "The complete graph is exported"
+
+msgid "GraphFileExporterUIPanel.visibleOnlyRadio.text"
+msgstr "Visible only"
+
+msgid "GraphFileExporterUIPanel.fullGraphRadio.text"
+msgstr "Full"
+
+msgid "GraphFileExporterUIPanel.labelGraph.text"
+msgstr "Graph:"
+
+msgid "DesktopExportController.status.exportSuccess"
+msgstr "{0} successfully exported"

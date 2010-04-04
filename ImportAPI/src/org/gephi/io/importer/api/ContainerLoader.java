@@ -29,36 +29,127 @@ import org.gephi.io.importer.spi.Importer;
  * are doing this job. 
  * <p>
  * Use the draft factory for getting <code>NodeDraft</code> and <code>EdgeDraft</code> instances.
- *
+ * <p>
+ * For pushing columns associated to nodes and edges, retrieve attribute model by
+ * calling {@link #getAttributeModel()}.
+ * <h3>How to push nodes with attributes</h3>
+ * There is two steps, first identify columns and then push values.
+ * <pre>//Add a URL column to nodes, must be done once only before importing nodes
+ * AttributeColumn col = getAttributeModel().getNodeTable().addColumn("url", AttributeType.STRING);
+ * //Write the URL value to a node draft
+ * nodeDraft.addAttributeValue(col, "http://gephi.org");
+ *</pre>
  * @author Mathieu Bastian
  * @see Importer
+ * @see AttributeModel
  */
 public interface ContainerLoader {
 
+    /**
+     * Adds an edge to the container. The edge must have <b>source</b> and
+     * <b>target</b> defined. If the edge already exist, it is ignored. Source
+     * and target nodes must be added to the container before pushing
+     * <code>edgeDraft</code>.
+     * @param edgeDraft         the edge that is to be pushed to the container
+     */
     public void addEdge(EdgeDraft edgeDraft);
 
+    /**
+     * Adds a node to the container. Identified by its <b>id</b>. If no id
+     * is present, a unique identifier is generated.
+     * @param nodeDraft         the node that is to be pushed to the container
+     */
     public void addNode(NodeDraft nodeDraft);
 
+    /**
+     * Returns the node with the given <code>id</code>, or create a new node
+     * with this id if not found.
+     * @param id                a node identifier
+     * @return                  the found node, or a new default node
+     */
     public NodeDraft getNode(String id);
 
+    /**
+     * Returns <code>true</code> if a node exists with the given <code>id</code>.
+     * @param id                a node identifier
+     * @return                  <code>true</code> if node exists, <code>false</code>
+     * otherwise
+     */
     public boolean nodeExists(String id);
 
+    /**
+     * Returns the edge with the given <code>id</code>, or <code>null</code> if
+     * not found.
+     * @param id                an edge identifier
+     * @return                  the edge with <code>id</code> as an identifier, or
+     * <code>null</code> if not found
+     */
     public EdgeDraft getEdge(String id);
 
+    /**
+     * Returns the edge with the given <code>source</code> and <code>target</code>
+     * or <code>null</code> if not found.
+     * @param source            the edge source node
+     * @param target            the edge target node
+     * @return                  the edge from <code>source</code> to
+     * <code>target</code> or <code>null</code> if not found
+     */
     public EdgeDraft getEdge(NodeDraft source, NodeDraft target);
 
+    /**
+     * Returns <code>true</code> if an edge exists with the given <code>id</code>.
+     * @param id                an edge identifier
+     * @return                  <code>true</code> if edge exists, <code>false</code>
+     * otherwise
+     */
     public boolean edgeExists(String id);
 
+    /**
+     * Returns <code>true</code> if an edge exists from <code>source</code> to
+     * <code>target</code>.
+     * @param source            the edge source node
+     * @param target            the edge target node
+     * @return                  <code>true</code> if edges exists, <code>false</code>
+     * otherwise
+     */
     public boolean edgeExists(NodeDraft source, NodeDraft target);
 
+    /**
+     * Set edge default type: <b>DIRECTED</b>, <b>UNDIRECTED</b> or <b>MIXED</b>.
+     * Default value is directed.
+     * @param edgeDefault       the edge default type value
+     */
     public void setEdgeDefault(EdgeDefault edgeDefault);
 
+    /**
+     * Returns the attribute model for this container. Columns can be manipulated
+     * from this model.
+     * @return                  the attribute model
+     */
     public AttributeModel getAttributeModel();
 
+    /**
+     * Returns the <b>factory</b> for building nodes and edges instances.
+     * @return                  the draft factory
+     */
     public DraftFactory factory();
 
+    /**
+     * Sets the time value where the interval starts. Nodes and edges can have
+     * time intervals that defines their lifetime, this method sets the time
+     * interval start. If not set by the user, default value is the yougest
+     * element.
+     * @param min
+     */
     public void setTimeIntervalMin(String min);
 
+    /**
+     * Sets the time value where the interval ends. Nodes and edges can have
+     * time intervals that defines their lifetime, this method sets the time
+     * interval end. If not set by the user, default value is the oldest
+     * element.
+     * @param max
+     */
     public void setTimeIntervalMax(String max);
 
     /**

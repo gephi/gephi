@@ -77,10 +77,14 @@
             <attr name="position" intvalue="1250"/>
         </folder>
         <file name="GoTo_hidden"/>
+        <folder name="Tools">
+            <file name="org-netbeans-modules-favorites-templates-TemplatesAction.shadow_hidden"/>
+        </folder>
         <folder name="View">
             <file name="Separator1.instance_hidden"/>
             <file name="Separator2.instance_hidden"/>
             <file name="org-netbeans-core-actions-HTMLViewAction.instance_hidden"/>
+            <file name="org-netbeans-core-actions-HTMLViewAction.shadow_hidden"/>
             <file name="org-netbeans-core-actions-LogAction.shadow_hidden"/>
             <file name="org-netbeans-core-windows-actions-ToolbarsListAction.instance_hidden"/>
         </folder>
@@ -111,6 +115,14 @@
                 <attr name="instanceCreate" methodvalue="org.netbeans.modules.autoupdate.updateprovider.AutoupdateCatalogFactory.createUpdateProvider"/>
                 <attr name="instanceOf" stringvalue="org.netbeans.spi.autoupdate.UpdateProvider"/>
                 <attr name="url_key" stringvalue="org_gephi_branding_desktop_update_center"/>
+            </file>
+            <file name="org_gephi_branding_desktop_update_center_1.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.Bundle#Services/AutoupdateType/org_gephi_branding_desktop_update_center_1.instance"/>
+                <attr name="enabled" boolvalue="true"/>
+                <attr name="instanceCreate" methodvalue="org.netbeans.modules.autoupdate.updateprovider.AutoupdateCatalogFactory.createUpdateProvider"/>
+                <attr name="instanceOf" stringvalue="org.netbeans.spi.autoupdate.UpdateProvider"/>
+                <attr name="url_key" stringvalue="org_gephi_branding_desktop_update_center_1"/>
             </file>
         </folder>
     </folder>

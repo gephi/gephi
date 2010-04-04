@@ -148,13 +148,18 @@ public class PreviewGraphFactory {
             label = sourceNodeData.getLabel();
         }
 
+        float labelSize = sourceNodeTextData.getSize();
+        if (previewGraph.getModel().getNodeSupervisor().getProportionalLabelSize()) {
+            labelSize *= sourceNodeData.getRadius() / 10f;
+        }
+
         NodeImpl previewNode = new NodeImpl(
                 previewGraph,
                 sourceNodeData.x(),
                 -sourceNodeData.y(), // different referential from the workspace one
                 sourceNodeData.getRadius(),
                 label,
-                sourceNodeTextData.getSize(),
+                labelSize,
                 sourceNodeData.r(),
                 sourceNodeData.g(),
                 sourceNodeData.b());

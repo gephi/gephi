@@ -101,6 +101,7 @@ public class SelectionManager implements VizArchitecture {
     public void setDraggingMouseSelection() {
         engine.setRectangleSelection(false);
         vizConfig.setDraggingEnable(true);
+        vizConfig.setMouseSelectionUpdateWhileDragging(false);
         vizConfig.setSelectionEnable(true);
         vizConfig.setCustomSelection(false);
         this.blocked = false;

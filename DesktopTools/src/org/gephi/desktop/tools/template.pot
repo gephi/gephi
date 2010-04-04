@@ -1,0 +1,29 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Desktop Tools"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Implement ToolController and integrate tools UI"
+
+msgid "SelectionBar.statusLabel.text"
+msgstr "jLabel1"
+
+msgid "PropertiesBar.fullScreenButton.tooltip"
+msgstr "Full Screen"
+
+msgid "MouseSelectionPopupPanel.labelDiameter.text"
+msgstr "Diameter"
+
+msgid "MouseSelectionPopupPanel.proportionnalZoomCheckbox.text"
+msgstr "Proportionnal to zoom"
+
+msgid "SelectionBar.statusLabel.rectangleSelection"
+msgstr "Rectangle selection"
+
+msgid "SelectionBar.statusLabel.mouseSelection"
+msgstr "Mouse selection"
+
+msgid "SelectionBar.statusLabel.dragging"
+msgstr "Dragging"

@@ -1,0 +1,35 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Plugin"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Partition Plugin"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Partition transformers implementations with UI"
+
+msgid "NodeColorTransformerBuilder.ui.name"
+msgstr "Color"
+
+msgid "NodeColorTransformerPanel.action.randomize"
+msgstr "Randomize colors"
+
+msgid "NodeColorTransformerPanel.action.allBlacks"
+msgstr "All Blacks"
+
+msgid "NodeSizeTransformerBuilder.ui.name"
+msgstr "Size"
+
+msgid "NodeSizeTransformerBuilder.action.randomize"
+msgstr "Randomize"
+
+msgid "EdgeColorTransformerBuilder.ui.name"
+msgstr "Color"
+
+msgid "EdgeColorTransformerPanel.action.randomize"
+msgstr "Randomize"
+
+msgid "EdgeColorTransformerPanel.action.allBlacks"
+msgstr "All Blacks"
+
+msgid "NodeGroupTransformerBuilder.ui.name"
+msgstr "Group"

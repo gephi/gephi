@@ -1,0 +1,38 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Workspace UI"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Workspace management UI"
+
+msgid "WorkspaceUISelectorPanel.workspaceLabel.text"
+msgstr "No workspace"
+
+msgid "WorkspacePanePanel.workspaceLabel.text"
+msgstr "workspaceLabel"
+
+msgid "WorkspacePanePanel.detailsLabel.text"
+msgstr "jLabel1"
+
+msgid "WorkspacePanePanel_closeWorkspace_Question"
+msgstr "Are you sure do yo want to delete this workspace ?"
+
+msgid "WorkspacePanePanel_closeWorkspace_Title"
+msgstr "Close workspace"
+
+msgid "WorkspaceUISelectorPanel.leftArrowButton.text"
+msgstr ""
+
+msgid "WorkspaceUISelectorPanel.rightArrowButton.text"
+msgstr ""
+
+msgid "WorkspacePanePanel.closeButton.toolTipText"
+msgstr "Close workspace"
+
+msgid "WorkspaceUISelectorPanel.leftArrowButton.toolTipText"
+msgstr "Precedent workspace"
+
+msgid "WorkspaceUISelectorPanel.rightArrowButton.toolTipText"
+msgstr "Next workspace"

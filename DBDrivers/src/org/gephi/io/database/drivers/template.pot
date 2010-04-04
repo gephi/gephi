@@ -1,0 +1,11 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Libraries"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Database Drivers (MySQL, SQLServer)"
+
+msgid "OpenIDE-Module-Name"
+msgstr "DBDrivers"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Database Drivers"

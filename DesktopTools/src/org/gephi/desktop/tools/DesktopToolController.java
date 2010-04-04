@@ -170,8 +170,14 @@ public class DesktopToolController implements ToolController {
             btn.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    select(tool);
-                    propertiesBar.select(toolUI.getPropertiesBar(tool));
+                    //Let the user unselect a tool (by clicking on it again) without having to select other tool:
+                    if (tool == currentTool) {
+                        toolbar.clearSelection();
+                        unselect();
+                    } else {
+                        select(tool);
+                        propertiesBar.select(toolUI.getPropertiesBar(tool));
+                    }
                 }
             });
             toolbar.add(btn);
@@ -182,10 +188,14 @@ public class DesktopToolController implements ToolController {
 
             public void stateChanged(ChangeEvent e) {
                 SelectionManager selectionManager = VizController.getInstance().getSelectionManager();
+
                 if (selectionManager.isRectangleSelection() && currentTool != null) {
                     toolbar.clearSelection();
                     unselect();
                 } else if (selectionManager.isSelectionEnabled() && currentTool != null && currentTool.getSelectionType() == ToolSelectionType.NONE) {
+                    toolbar.clearSelection();
+                    unselect();
+                } else if (selectionManager.isDraggingEnabled() && currentTool != null) {
                     toolbar.clearSelection();
                     unselect();
                 }

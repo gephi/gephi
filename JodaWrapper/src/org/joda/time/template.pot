@@ -1,0 +1,5 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Libraries"
+
+msgid "OpenIDE-Module-Name"
+msgstr "JodaWrapper"

@@ -1,0 +1,8 @@
+msgid "StatisticsUI.category.networkOverview"
+msgstr "Network Overview"
+
+msgid "StatisticsUI.category.nodeOverview"
+msgstr "Node Overview"
+
+msgid "StatisticsUI.category.edgeOverview"
+msgstr "Edge Overview"

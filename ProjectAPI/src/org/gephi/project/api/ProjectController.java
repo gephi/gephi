@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.api;
 
-import org.openide.loaders.DataObject;
+import java.io.File;
 
 /**
  * Project controller, manage projects and workspaces states.
@@ -37,15 +37,13 @@ public interface ProjectController {
 
     public void newProject();
 
-    public void loadProject(DataObject dataObject);
+    public Runnable openProject(File file);
 
-    public void saveProject(DataObject dataObject);
+    public Runnable saveProject(Project project);
 
-    public void saveProject(Project project);
+    public Runnable saveProject(Project project, File file);
 
-    public void saveAsProject(Project project);
-
-    public boolean closeCurrentProject();
+    public void closeCurrentProject();
 
     public void removeProject(Project project);
 
@@ -58,8 +56,6 @@ public interface ProjectController {
     public void deleteWorkspace(Workspace workspace);
 
     public void renameWorkspace(Workspace workspace, String name);
-
-    public void openProject(Project project);
 
     public Project getCurrentProject();
 
@@ -80,24 +76,4 @@ public interface ProjectController {
     public void addWorkspaceListener(WorkspaceListener workspaceListener);
 
     public void removeWorkspaceListener(WorkspaceListener workspaceListener);
-
-    public boolean canNewProject();
-
-    public boolean canOpenProject();
-
-    public boolean canCloseProject();
-
-    public boolean canOpenFile();
-
-    public boolean canSave();
-
-    public boolean canSaveAs();
-
-    public boolean canNewWorkspace();
-
-    public boolean canDeleteWorkspace();
-
-    public boolean canCleanWorkspace();
-
-    public boolean canProjectProperties();
 }

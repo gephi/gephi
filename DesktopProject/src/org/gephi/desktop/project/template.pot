@@ -1,0 +1,58 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Project management actions and user interaction"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Desktop Project"
+
+msgid "CloseProject_confirm_title"
+msgstr "\"Close Project\""
+
+msgid "CloseProject_confirm_message"
+msgstr ""
+"<html><b>Do you want to save your project?</b><br><font size=\"-2"
+"\">Modifications will be lost if you don't save them.</html>"
+
+msgid "CloseProject_confirm_save"
+msgstr "Save"
+
+msgid "CloseProject_confirm_doNotSave"
+msgstr "Do not save"
+
+msgid "CloseProject_confirm_cancel"
+msgstr "Cancel"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Project management actions and user interaction"
+
+msgid "SaveAsProject_filechooser_filter"
+msgstr "Gephi Files"
+
+msgid "SaveAsProject_SaveFailed"
+msgstr "Could not write to file {0}"
+
+msgid "SaveAsProject_Overwrite"
+msgstr "{0} exists.  Overwrite?"
+
+msgid "ProjectControllerUI.status.opened"
+msgstr "{0} opened"
+
+msgid "ProjectControllerUI.status.saved"
+msgstr "{0} saved"
+
+msgid "OpenProject_filechooser_filter"
+msgstr "Gephi Files"
+
+msgid "OpenProject.defaulterror"
+msgstr "Impossible to open this file. It must he a compatible '.gephi' file."
+
+msgid "ProjectProperties_dialog_title"
+msgstr "Project Properties"
+
+msgid "OpenFile_filechooser_graphfilter"
+msgstr "Graph Files"
+
+msgid "OpenFile_filechooser_zipfilter"
+msgstr "Archived ZIP Files"

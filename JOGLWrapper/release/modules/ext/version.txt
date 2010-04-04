@@ -1,0 +1,2 @@
+gluegen-rt.jar		jogl-1.1.1a
+jogl.jar		jogl-1.1.1a

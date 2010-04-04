@@ -1,0 +1,8 @@
+msgid "FiltersExplorer.UnsortedCategory"
+msgstr "Unsorted"
+
+msgid "FiltersExplorer.Queries"
+msgstr "Saved queries"
+
+msgid "RootNode.name"
+msgstr "Library"

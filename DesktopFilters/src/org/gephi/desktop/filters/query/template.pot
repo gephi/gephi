@@ -1,0 +1,23 @@
+msgid "QueryNode.actions.rename"
+msgstr "Rename"
+
+msgid "QueryNode.actions.rename.text"
+msgstr "Rename query"
+
+msgid "QueryNode.actions.rename.title"
+msgstr "Rename"
+
+msgid "QueryNode.actions.remove"
+msgstr "Remove"
+
+msgid "RootNode.name"
+msgstr "Queries"
+
+msgid "SlotNode.name"
+msgstr "<html><i>Drag subfilter here</i></html>"
+
+msgid "HelpNode.name"
+msgstr "<html><i>Drag filter here</i></html>"
+
+msgid "ParametersNode.name"
+msgstr "Parameters"

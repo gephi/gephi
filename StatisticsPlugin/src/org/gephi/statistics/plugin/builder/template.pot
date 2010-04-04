@@ -1,0 +1,23 @@
+msgid "GraphDensity.name"
+msgstr "Density"
+
+msgid "ClusteringCoefficent.name"
+msgstr "Clustering Coefficient"
+
+msgid "GraphDistance.name"
+msgstr "Graph Distance"
+
+msgid "DegreeDistribution.name"
+msgstr "Degree Distribution"
+
+msgid "Modularity.name"
+msgstr "Modularity"
+
+msgid "PageRank.name"
+msgstr "Page Rank"
+
+msgid "Hits.name"
+msgstr "HITS"
+
+msgid "InOutDegree.name"
+msgstr "InOut Degree"

@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Model;
@@ -67,6 +68,10 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
 
     //GROUPING
     public boolean canExpand() {
+        GraphModel graphModel = graphController.getModel();
+        if (graphModel == null) {
+            return false;
+        }
         this.graph = graphController.getModel().getHierarchicalGraphVisible();
         ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
         for (ModelImpl metaModelImpl : selectedNodeModels) {
@@ -80,6 +85,10 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     }
 
     public boolean canContract() {
+        GraphModel graphModel = graphController.getModel();
+        if (graphModel == null) {
+            return false;
+        }
         this.graph = graphController.getModel().getHierarchicalGraphVisible();
         ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
         for (ModelImpl metaModelImpl : selectedNodeModels) {
@@ -93,11 +102,19 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     }
 
     public boolean canGroup() {
+        GraphModel graphModel = graphController.getModel();
+        if (graphModel == null) {
+            return false;
+        }
         ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
         return selectedNodeModels.length >= 1;
     }
 
     public boolean canUngroup() {
+        GraphModel graphModel = graphController.getModel();
+        if (graphModel == null) {
+            return false;
+        }
         ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
         return selectedNodeModels.length >= 1;
     }
@@ -269,6 +286,10 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
 
     //SETTLE AND FREE
     public boolean canSettle() {
+        GraphModel graphModel = graphController.getModel();
+        if (graphModel == null) {
+            return false;
+        }
         this.graph = graphController.getModel().getHierarchicalGraphVisible();
         ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
         for (ModelImpl metaModelImpl : selectedNodeModels) {
@@ -281,6 +302,10 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     }
 
     public boolean canFree() {
+        GraphModel graphModel = graphController.getModel();
+        if (graphModel == null) {
+            return false;
+        }
         this.graph = graphController.getModel().getHierarchicalGraphVisible();
         ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
         for (ModelImpl metaModelImpl : selectedNodeModels) {
@@ -312,6 +337,10 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
 
     //DELETE
     public boolean canDelete() {
+        GraphModel graphModel = graphController.getModel();
+        if (graphModel == null) {
+            return false;
+        }
         ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
         return selectedNodeModels.length >= 1;
     }

@@ -37,7 +37,6 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.loaders.DataObject;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -84,9 +83,7 @@ public class CommandLineProcessor extends OptionProcessor {
                 FileObject fileObject = FileUtil.toFileObject(file);
                 if (fileObject.hasExt(GEPHI_EXTENSION)) {
                     ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-                    pc.closeCurrentProject();
-                    DataObject doe = DataObject.find(fileObject);
-                    pc.loadProject(doe);
+                    pc.openProject(file).run();
                     return;
                 } else {
                     ImportController importController = Lookup.getDefault().lookup(ImportController.class);
@@ -100,6 +97,7 @@ public class CommandLineProcessor extends OptionProcessor {
             NotifyDescriptor nd = new NotifyDescriptor.Message(MEMORY_ERROR, NotifyDescriptor.ERROR_MESSAGE);
             DialogDisplayer.getDefault().notify(nd);
         } catch (Exception ex) {
+            ex.printStackTrace();
             NotifyDescriptor nd = new NotifyDescriptor.Message("CommandLineParsing " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
             DialogDisplayer.getDefault().notify(nd);
         }

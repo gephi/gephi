@@ -1,0 +1,11 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi Core"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Custom collections and libraries utilities"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Collection Utils"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Custom collections and libraries utilities"

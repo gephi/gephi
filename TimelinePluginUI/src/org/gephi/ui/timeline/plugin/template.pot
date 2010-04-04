@@ -1,0 +1,8 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Plugin"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Timeline Plugin UI"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Standard timeline UI implementations"

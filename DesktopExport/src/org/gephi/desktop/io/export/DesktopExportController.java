@@ -38,6 +38,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.gephi.desktop.mrufiles.api.MostRecentFiles;
 import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.spi.Exporter;
@@ -97,6 +98,10 @@ public class DesktopExportController implements ExportController {
             Workspace workspace = projectController.getCurrentWorkspace();
             GraphFileExporterSettings settings = new GraphFileExporterSettings(workspace, visibleGraphOnly);
 
+            //Save MRU
+            MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
+            mostRecentFiles.addFile(fileObject.getPath());
+
             if (exporter instanceof TextGraphFileExporter) {
                 exportText(exporter, fileObject, settings);
             } else if (exporter instanceof XMLGraphFileExporter) {
@@ -121,8 +126,9 @@ public class DesktopExportController implements ExportController {
     public void doExport(FileObject fileObject) {
         FileExporter exporter = getMatchingExporter(fileObject);
         if (exporter == null) {
-            throw new RuntimeException(NbBundle.getMessage(getClass(), "error_no_matching_file_importer"));
+            throw new RuntimeException(NbBundle.getMessage(getClass(), "error_no_matching_file_exporter"));
         }
+
         if (exporter instanceof GraphFileExporter) {
             doExport((GraphFileExporter) exporter, fileObject, true);
         } else if (exporter instanceof VectorialFileExporter) {

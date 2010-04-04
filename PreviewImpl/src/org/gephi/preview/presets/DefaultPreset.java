@@ -22,9 +22,9 @@ public class DefaultPreset extends PreviewPreset {
         properties.put("Bidirectional_showArrowsFlag", "true");
         properties.put("Bidirectional_labelColorizer", "parent");
         properties.put("Bidirectional_arrowSize", "20.0");
-        properties.put("Bidirectional_miniLabelFont", "SansSerif 8 Plain");
+        properties.put("Bidirectional_miniLabelFont", "Arial Plain 6");
         properties.put("Bidirectional_arrowAddedRadius", "65.0");
-        properties.put("Bidirectional_baseLabelFont", "SansSerif 10 Plain");
+        properties.put("Bidirectional_baseLabelFont", "Arial Plain 10");
         properties.put("nodeLabelColorizer", "custom [0,0,0]");
         properties.put("nodeLabelBorderColorizer", "custom [255,255,255]");
         properties.put("Bidirectional_colorizer", "mixed");
@@ -34,18 +34,19 @@ public class DefaultPreset extends PreviewPreset {
         properties.put("GlobalEdge_showFlag", "true");
         properties.put("Directed_miniLabelAddedRadius", "15.0");
         properties.put("showNodeLabels", "false");
+        properties.put("proportionalLabelSize", "true");
         properties.put("Directed_colorizer", "source");
         properties.put("Directed_miniLabelMaxChar", "10");
         properties.put("Undirected_shortenLabelsFlag", "false");
         properties.put("Directed_shortenLabelsFlag", "false");
         properties.put("Bidirectional_curvedFlag", "false");
-        properties.put("baseNodeLabelFont", "SansSerif 14 Plain");
+        properties.put("baseNodeLabelFont", "Arial Plain 12");
         properties.put("Directed_showMiniLabelsFlag", "false");
         properties.put("Directed_arrowSize", "20.0");
         properties.put("SelfLoop_edgeScale", "1.0");
         properties.put("SelfLoop_colorizer", "custom [0,0,0]");
         properties.put("Directed_showArrowsFlag", "true");
-        properties.put("Undirected_baseLabelFont", "SansSerif 10 Plain");
+        properties.put("Undirected_baseLabelFont", "Arial Plain 10");
         properties.put("Undirected_showLabelsFlag", "false");
         properties.put("Directed_edgeScale", "1.0");
         properties.put("Undirected_labelMaxChar", "10");
@@ -70,9 +71,9 @@ public class DefaultPreset extends PreviewPreset {
         properties.put("Bidirectional_miniLabelAddedRadius", "15.0");
         properties.put("nodeColorizer", "original");
         properties.put("Undirected_edgeScale", "1.0");
-        properties.put("Directed_baseLabelFont", "SansSerif 10 Plain");
+        properties.put("Directed_baseLabelFont", "Arial Plain 8");
         properties.put("Bidirectional_showMiniLabelsFlag", "false");
         properties.put("Bidirectional_showLabelsFlag", "false");
-        properties.put("Directed_miniLabelFont", "SansSerif 8 Plain");
+        properties.put("Directed_miniLabelFont", "Arial Plain 6");
     }
 }

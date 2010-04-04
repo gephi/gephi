@@ -57,6 +57,7 @@ public final class LongTaskExecutor {
     private Timer cancelTimer;
     private LongTaskListener listener;
     private LongTaskErrorHandler errorHandler;
+    private LongTaskErrorHandler defaultErrorHandler;
 
     /**
      * Creates a new long task executor.
@@ -178,7 +179,7 @@ public final class LongTaskExecutor {
      */
     public void setDefaultErrorHandler(LongTaskErrorHandler errorHandler) {
         if (errorHandler != null) {
-            this.errorHandler = errorHandler;
+            this.defaultErrorHandler = errorHandler;
         }
     }
 
@@ -233,6 +234,8 @@ public final class LongTaskExecutor {
                 }
                 if (err != null) {
                     err.fatalError(e);
+                } else if(defaultErrorHandler != null) {
+                    defaultErrorHandler.fatalError(e);
                 } else {
                     Logger.getLogger("").log(Level.SEVERE, "", e);
                 }

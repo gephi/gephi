@@ -119,7 +119,7 @@ public class TextManager implements VizArchitecture {
                     TextManager.this.model = VizController.getInstance().getVizModel().getTextModel();
 
                     //Initialize columns if needed
-                    if (model.getNodeTextColumns() == null) {
+                    if (model.getNodeTextColumns() == null || model.getNodeTextColumns().length == 0) {
                         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
                         if (attributeController != null && attributeController.getModel() != null) {
                             AttributeModel attributeModel = attributeController.getModel();

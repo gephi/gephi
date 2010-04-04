@@ -1,0 +1,32 @@
+msgid "EqualStringPanel.regexCheckbox.text"
+msgstr "Use regex"
+
+msgid "EqualStringPanel.textField.text"
+msgstr ""
+
+msgid "EqualStringPanel.labelPattern.text"
+msgstr "Pattern:"
+
+msgid "EqualStringPanel.okButton.text"
+msgstr "OK"
+
+msgid "EqualBooleanPanel.trueButton.text"
+msgstr "True"
+
+msgid "EqualBooleanPanel.falseButton.text"
+msgstr "False"
+
+msgid "EqualNumberPanel.labelValue.text"
+msgstr "Value"
+
+msgid "EqualNumberPanel.jLabel1.text"
+msgstr "Minimum:"
+
+msgid "EqualNumberPanel.jLabel2.text"
+msgstr "Maximum:"
+
+msgid "EqualNumberPanel.minLabel.text"
+msgstr ""
+
+msgid "EqualNumberPanel.maxLabel.text"
+msgstr ""

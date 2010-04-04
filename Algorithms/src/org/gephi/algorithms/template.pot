@@ -1,0 +1,11 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi Core"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Basic graph theory algorithms"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Algorithms"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Basic graph theory algorithms"

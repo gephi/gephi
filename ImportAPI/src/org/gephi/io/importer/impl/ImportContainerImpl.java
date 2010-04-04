@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
@@ -340,12 +341,13 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     public void closeLoader() {
         //Clean undirected edges
         if (parameters.getEdgeDefault().equals(EdgeDefault.UNDIRECTED)) {
-            for (EdgeDraftImpl edge : edgeMap.values().toArray(new EdgeDraftImpl[0])) {
+            for (Iterator<EdgeDraftImpl> itr = edgeMap.values().iterator(); itr.hasNext();) {
+                EdgeDraftImpl edge = itr.next();
                 String oppositekey = edge.getTarget().getId() + "-" + edge.getSource().getId();
                 EdgeDraftImpl opposite = edgeSourceTargetMap.get(oppositekey);
                 if (opposite != null) {
-                    edgeMap.remove(opposite.getId());
-                    edgeSourceTargetMap.remove(oppositekey);
+                    itr.remove();
+                    edgeSourceTargetMap.remove(edge.getSource().getId() + "-" + edge.getTarget().getId());
                 }
             }
         } else if (parameters.getEdgeDefault().equals(EdgeDefault.MIXED)) {
@@ -378,6 +380,13 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             sortedNodeMap.put(n.getId(), n);
         }
         nodeMap = sortedNodeMap;
+
+        //Set id as label for nodes that miss label
+        for (NodeDraftImpl node : nodeMap.values()) {
+            if (node.getLabel() == null) {
+                node.setLabel(node.getId());
+            }
+        }
     }
 
     /**

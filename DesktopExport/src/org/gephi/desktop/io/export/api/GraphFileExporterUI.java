@@ -153,7 +153,7 @@ public final class GraphFileExporterUI implements ExporterClassUI {
                 }
 
                 //Selected file extension change
-                if (selectedFile != null) {
+                if (selectedFile != null && fileFilter != null) {
                     String filePath = selectedFile.getAbsolutePath();
                     filePath = filePath.substring(0, filePath.lastIndexOf("."));
                     filePath = filePath.concat(fileFilter.getExtensions().get(0));
@@ -177,7 +177,7 @@ public final class GraphFileExporterUI implements ExporterClassUI {
             for (FileType fileType : graphFileExporter.getFileTypes()) {
                 DialogFileFilter dialogFileFilter = new DialogFileFilter(fileType.getName());
                 dialogFileFilter.addExtensions(fileType.getExtensions());
-                if(defaultFilter==null) {
+                if (defaultFilter == null) {
                     defaultFilter = dialogFileFilter;
                 }
                 chooser.addChoosableFileFilter(dialogFileFilter);

@@ -1,0 +1,11 @@
+msgid "expand.name"
+msgstr "Expansion"
+
+msgid "expand.description"
+msgstr "Expands the layout around its center."
+
+msgid "contract.name"
+msgstr "Contraction"
+
+msgid "contract.description"
+msgstr "Contracts the layout around its center."

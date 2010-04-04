@@ -147,7 +147,7 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
                 }
 
                 //Selected file extension change
-                if (selectedFile != null) {
+                if (selectedFile != null && fileFilter != null) {
                     String filePath = selectedFile.getAbsolutePath();
                     filePath = filePath.substring(0, filePath.lastIndexOf("."));
                     filePath = filePath.concat(fileFilter.getExtensions().get(0));

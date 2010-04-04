@@ -1,0 +1,100 @@
+msgid "Actions/Window/org-gephi-desktop-hierarchy-HierarchyAction.instance"
+msgstr "Hierarchy"
+
+msgid "CTL_HierarchyAction"
+msgstr "Hierarchy"
+
+msgid "CTL_HierarchyTopComponent"
+msgstr "Hierarchy Window"
+
+msgid "HINT_HierarchyTopComponent"
+msgstr "This is a Hierarchy window"
+
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Desktop Hierarchy"
+
+msgid "HierarchyControlPanel.showTreeLabel.toolTipText"
+msgstr "Show Tree"
+
+msgid "HierarchyControlPanel.showTreeLabel.text"
+msgstr ""
+
+msgid "HierarchyControlPanel.labelView.text"
+msgstr "View:"
+
+msgid "HierarchyControlPanel.autoMetaEdgeButton.text"
+msgstr ""
+
+msgid "HierarchyControlPanel.linkLevel"
+msgstr "Level"
+
+msgid "HierarchyControlPanel.linkLevel.nodes"
+msgstr "nodes"
+
+msgid "HierarchyControlPanel.linkLevel.leaves"
+msgstr "Leaves..."
+
+msgid "HierarchyTopComponent.refreshButton.text"
+msgstr "Refresh"
+
+msgid "HierarchyTopComponent.busyLabel.text"
+msgstr "Refreshing..."
+
+msgid "HierarchyTopComponent.labelLevelLimit.text"
+msgstr "Cut leaves:"
+
+msgid "HierarchyTopComponent.bar.level"
+msgstr "Level"
+
+msgid "HierarchyTopComponent.bar.levelmax"
+msgstr "None"
+
+msgid "HierarchyControlPanel.labelHeight.text"
+msgstr "Height:"
+
+msgid "HierarchyControlPanel.heightLabel.text"
+msgstr "0"
+
+msgid "HierarchyControlPanel.metaEdgesSettings.text"
+msgstr ""
+
+msgid "HierarchyControlPanel.metaEdgesSettings.title"
+msgstr "Meta-edges settings"
+
+msgid "MetaEdgesSettingsPanel.jXHeader1.title"
+msgstr "Meta-edges settings"
+
+msgid "MetaEdgesSettingsPanel.jXHeader1.description"
+msgstr ""
+"Meta edges are edges between a group and a node or between two groups. They "
+"represents proper edges between groups' descendants."
+
+msgid "HierarchyControlPanel.jLabel1.text"
+msgstr "Auto meta-edges creation"
+
+msgid "MetaEdgesSettingsPanel.autoMetaEdgesCheckbox.text"
+msgstr ""
+
+msgid "MetaEdgesSettingsPanel.sumRadio.text"
+msgstr "Sum of edges weight"
+
+msgid "MetaEdgesSettingsPanel.avgRadio.text"
+msgstr "Average of edge weight"
+
+msgid "MetaEdgesSettingsPanel.labelMax.text"
+msgstr "Maximum weight"
+
+msgid "MetaEdgesSettingsPanel.labelMin.text"
+msgstr "Minimum weight"
+
+msgid "MetaEdgesSettingsPanel.labelBuilding.text"
+msgstr "Building"
+
+msgid "MetaEdgesSettingsPanel.labelEnable.text"
+msgstr "Enable Auto meta-edges"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Visualization addon for hierarchy navigation"

@@ -14,6 +14,9 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
+import org.gephi.utils.progress.Progress;
+import org.gephi.utils.progress.ProgressTicket;
+import org.gephi.utils.progress.ProgressTicketProvider;
 import org.gephi.visualization.VizController;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -41,6 +44,7 @@ public class FilterThread extends Thread {
 
     @Override
     public void run() {
+
         while (running) {
             AbstractQueryImpl q;
             while ((q = rootQuery.getAndSet(null)) == null) {
@@ -62,11 +66,22 @@ public class FilterThread extends Thread {
             if (propertyModified) {
                 model.updateParameters(q);
             }
+
+            //Progress
+            ProgressTicket progressTicket = null;
+            ProgressTicketProvider progressTicketProvider = Lookup.getDefault().lookup(ProgressTicketProvider.class);
+            if (progressTicketProvider != null) {
+                progressTicket = progressTicketProvider.createTicket("Filtering", null);
+                Progress.start(progressTicket);
+            }
+
             if (filtering) {
                 filter(q);
             } else {
                 select(q);
             }
+            
+            Progress.finish(progressTicket);
             /*try {
             //System.out.println("filter query " + q.getName());
             Thread.sleep(5000);
@@ -85,6 +100,7 @@ public class FilterThread extends Thread {
         if (q != null) {
             model.updateParameters(q);
         }
+
     }
 
     private void filter(AbstractQueryImpl query) {
@@ -96,7 +112,7 @@ public class FilterThread extends Thread {
         if (running) {
             GraphView view = result.getView();
             graphModel.setVisibleView(view);
-            if(model.getCurrentResult()!=null) {
+            if (model.getCurrentResult() != null) {
                 graphModel.destroyView(model.getCurrentResult());
             }
             model.setCurrentResult(view);

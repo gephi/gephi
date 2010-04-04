@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.branding.desktop.actions;
 
 import java.awt.event.ActionEvent;
+import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.openide.util.HelpCtx;
@@ -37,7 +38,7 @@ public class SaveProject extends SystemAction {
 
     @Override
     public boolean isEnabled() {
-        return Lookup.getDefault().lookup(ProjectController.class).canSave();
+        return Lookup.getDefault().lookup(ProjectControllerUI.class).canSave();
     }
 
     @Override
@@ -47,13 +48,11 @@ public class SaveProject extends SystemAction {
 
     @Override
     protected String iconResource() {
-        return "org/gephi/branding/desktop/actions/saveProject.png";
+        return "org/gephi/branding/desktop/actions/resources/saveProject.png";
     }
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        Project project = pc.getCurrentProject();
-        pc.saveProject(project);
+        Lookup.getDefault().lookup(ProjectControllerUI.class).saveProject();
     }
 }

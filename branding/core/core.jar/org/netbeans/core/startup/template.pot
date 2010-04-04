@@ -1,0 +1,17 @@
+msgid "currentVersion"
+msgstr "Gephi 0.7 alpha3 {0}"
+
+msgid "LBL_splash_window_title"
+msgstr "Starting Gephi 0.7 alpha3"
+
+msgid "SplashProgressBarBounds"
+msgstr "0,249,473,3"
+
+msgid "SplashProgressBarColor"
+msgstr "0xFF9933"
+
+msgid "SplashRunningTextBounds"
+msgstr "10,235,450,12"
+
+msgid "SplashRunningTextColor"
+msgstr "0x0"

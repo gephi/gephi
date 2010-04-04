@@ -70,7 +70,7 @@ public class GephiReader implements Cancellable {
         //XPath
         XPathFactory factory = XPathFactory.newInstance();
         XPath xpath = factory.newXPath();
-
+        
         //Calculate the task max
         readCore(xpath, root);
 

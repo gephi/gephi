@@ -1,0 +1,231 @@
+msgid "CTL_GraphAction"
+msgstr "Graph"
+
+msgid "CTL_GraphTopComponent"
+msgstr "Graph"
+
+msgid "HINT_GraphTopComponent"
+msgstr "Graph"
+
+msgid "GraphTopComponent.jToggleButton1.TabConstraints.tabTitle"
+msgstr "tab2"
+
+msgid "GraphTopComponent.jToggleButton2.TabConstraints.tabTitle"
+msgstr "tab2"
+
+msgid "CollapsePanel.extendButton.text"
+msgstr ""
+
+msgid "GraphTopComponent.waitingLabel.text"
+msgstr "Initializing..."
+
+msgid "VizToolbar.Global.background"
+msgstr "Background color"
+
+msgid "VizToolbar.Global.screenshot"
+msgstr "Take screenshot"
+
+msgid "VizToolbar.Global.screenshot.configure"
+msgstr "Configure..."
+
+msgid "VizToolbar.Nodes.showLabels"
+msgstr "Show Node Labels"
+
+msgid "VizToolbar.Nodes.showHulls"
+msgstr "Show Hulls"
+
+msgid "VizToolbar.Edges.showEdges"
+msgstr "Show Edges"
+
+msgid "VizToolbar.Edges.edgeNodeColor"
+msgstr "Edges have source node color"
+
+msgid "VizToolbar.Edges.showLabels"
+msgstr "Show Edge Labels"
+
+msgid "VizToolbar.Edges.edgeScale"
+msgstr "Edge weight scale"
+
+msgid "VizToolbar.Labels.font"
+msgstr "Font"
+
+msgid "VizToolbar.Labels.defaultColor"
+msgstr "Default color"
+
+msgid "VizToolbar.Labels.sizeMode"
+msgstr "Size mode"
+
+msgid "VizToolbar.Labels.colorMode"
+msgstr "Color mode"
+
+msgid "VizToolbar.Labels.attributes"
+msgstr "Attributes"
+
+msgid "VizToolbar.Labels.fontScale"
+msgstr "Font size scale"
+
+msgid "NodeSettingsPanel.adjustTextCheckbox.text"
+msgstr "Adjust to text"
+
+msgid "NodeSettingsPanel.labelShape.text"
+msgstr "Default shape:"
+
+msgid "NodeSettingsPanel.defaultShape.message3d"
+msgstr ""
+"This shape is a 3d shape, the engine will be reinitialized. Do you want to "
+"proceed ?"
+
+msgid "NodeSettingsPanel.defaultShape.message.title"
+msgstr "Default shape"
+
+msgid "NodeSettingsPanel.defaultShape.message2d"
+msgstr ""
+"This shape is a 2d shape, the engine will be reinitialized. Do you want to "
+"proceed ?"
+
+msgid "EdgeSettingsPanel.labelEdgeColor.text"
+msgstr "Edge default color:"
+
+msgid "EdgeSettingsPanel.edgeColorButton.text"
+msgstr ""
+
+msgid "EdgeSettingsPanel.sourceNodeColorCheckbox.text"
+msgstr "Source node color"
+
+msgid "EdgeSettingsPanel.showEdgesCheckbox.text"
+msgstr "Show"
+
+msgid "GlobalSettingsPanel.backgroundColorButton.text"
+msgstr ""
+
+msgid "GlobalSettingsPanel.hightlightCheckBox.text"
+msgstr "Highlight selection"
+
+msgid "GlobalSettingsPanel.labelBackgroundColor.text"
+msgstr "Background color:"
+
+msgid "GlobalSettingsPanel.autoSelectNeigborCheckbox.text"
+msgstr "Autoselect neighbor"
+
+msgid "LabelSettingsPanel.labelNodeFont.text"
+msgstr "Font:"
+
+msgid "LabelSettingsPanel.nodeColorButton.text"
+msgstr ""
+
+msgid "LabelSettingsPanel.showNodeLabelsCheckbox.text"
+msgstr "Node"
+
+msgid "LabelSettingsPanel.nodeFontButton.text"
+msgstr "jButton1"
+
+msgid "LabelSettingsPanel.showEdgeLabelsCheckbox.text"
+msgstr "Edge"
+
+msgid "LabelSettingsPanel.labelEdgeFont.text"
+msgstr "Font:"
+
+msgid "LabelSettingsPanel.edgeFontButton.text"
+msgstr "jButton1"
+
+msgid "LabelSettingsPanel.labelEdgeColor.text"
+msgstr "Color:"
+
+msgid "LabelSettingsPanel.labelNodeColor.text"
+msgstr "Color:"
+
+msgid "LabelSettingsPanel.labelNodeSize.text"
+msgstr "Size:"
+
+msgid "LabelSettingsPanel.labelEdgeSize.text"
+msgstr "Size:"
+
+msgid "LabelSettingsPanel.edgeColorButton.text"
+msgstr ""
+
+msgid "LabelSettingsPanel.labelSizeMode.text"
+msgstr "Size:"
+
+msgid "LabelSettingsPanel.labelColorMode.text"
+msgstr "Color:"
+
+msgid "LabelSettingsPanel.hideNonSelectedCheckbox.text"
+msgstr "Hide non-selected"
+
+msgid "SelectionToolbar.rectangle.tooltip"
+msgstr "Rectangle selection"
+
+msgid "SelectionToolbar.mouse.tooltip"
+msgstr "Direct selection"
+
+msgid "SelectionToolbar.drag.tooltip"
+msgstr "Drag"
+
+msgid "ActionsToolbar.centerOnGraph"
+msgstr "Center On Graph"
+
+msgid "ActionsToolbar.centerOnZero"
+msgstr "Center On Zero"
+
+msgid "ActionsToolbar.resetColors"
+msgstr "Reset colors"
+
+msgid "ActionsToolbar.resetSizes"
+msgstr "Reset size"
+
+msgid "ActionsToolbar.resetLabelColors"
+msgstr "Reset label color"
+
+msgid "ActionsToolbar.resetLabelSizes"
+msgstr "Reset label size"
+
+msgid "ActionsToolbar.resetLabelVisible"
+msgstr "Reset label visible"
+
+msgid "LabelAttributesPanel.title"
+msgstr "Label text settings"
+
+msgid "LabelAttributesPanel.nodesToggleButton.text"
+msgstr "Nodes"
+
+msgid "LabelAttributesPanel.edgesToggleButton.text"
+msgstr "Edges"
+
+msgid "LabelAttributesPanel.labelComment.text"
+msgstr "Select attributes to display as labels"
+
+msgid "LabelAttributesPanel.showPropertiesCheckbox.text"
+msgstr "Show properties"
+
+msgid "LabelSettingsPanel.configureLabelsButton.text"
+msgstr "Configure..."
+
+msgid "EdgeSettingsPanel.selectionColorCheckbox.toolTipText"
+msgstr "Draw particular color for selected edges"
+
+msgid "EdgeSettingsPanel.selectionColorCheckbox.text"
+msgstr "Selection color"
+
+msgid "EdgeSettingsPanel.edgeInSelectionColorChooser.toolTipText"
+msgstr "Edge IN<- Color"
+
+msgid "EdgeSettingsPanel.edgeOutSelectionColorChooser.toolTipText"
+msgstr "Edge Out-> Color"
+
+msgid "EdgeSettingsPanel.edgeBothSelectionColorChooser.toolTipText"
+msgstr "Edge Both<-> Color"
+
+msgid "NodeSettingsPanel.showHullsCheckbox.text"
+msgstr "Show hulls"
+
+msgid "EdgeSettingsPanel.labelScale.text"
+msgstr "Scale"
+
+msgid "EdgeSettingsPanel.labelIn.text"
+msgstr "In:"
+
+msgid "EdgeSettingsPanel.labelOut.text"
+msgstr "Out:"
+
+msgid "EdgeSettingsPanel.labelBoth.text"
+msgstr "Both:"

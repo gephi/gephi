@@ -1,0 +1,65 @@
+msgid "Actions/Window/org-gephi-desktop-partition-PartitionAction.instance"
+msgstr "Partition"
+
+msgid "CTL_PartitionAction"
+msgstr "Partition"
+
+msgid "CTL_PartitionTopComponent"
+msgstr "Partition"
+
+msgid "HINT_PartitionTopComponent"
+msgstr "Partition"
+
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Desktop Partition"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Partition UI"
+
+msgid "PartitionChooser.applyButton.text"
+msgstr "Apply"
+
+msgid "PartitionChooser.choose.text"
+msgstr "---Choose a partition parameter"
+
+msgid "PartitionChooser.busyMessage"
+msgstr "Building..."
+
+msgid "PartitionToolbar.nodes.label"
+msgstr "Nodes"
+
+msgid "PartitionToolbar.edges.label"
+msgstr "Edges"
+
+msgid "PartitionChooser.groupLink.text"
+msgstr "Group"
+
+msgid "PartitionChooser.group.label"
+msgstr "Group"
+
+msgid "PartitionChooser.ungroup.label"
+msgstr "Ungroup"
+
+msgid "PartitionChooser.groupLink.toolTipText"
+msgstr "Group the partition, one group per part"
+
+msgid "PartitionChooser.pieLink.text"
+msgstr "Show Pie"
+
+msgid "PartitionChooser.showpie.label"
+msgstr "Show Pie"
+
+msgid "PartitionChooser.hidepie.label"
+msgstr "Hide Pie"
+
+msgid "PartitionChooser.refreshBusyLabel.text"
+msgstr ""
+
+msgid "PartitionChooser.refreshButton.text"
+msgstr ""
+
+msgid "PartitionChooser.refreshButton.toolTipText"
+msgstr "Refresh"

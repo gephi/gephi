@@ -1,0 +1,176 @@
+msgid "AdvancedOption_DisplayName_Default"
+msgstr "Default"
+
+msgid "AdvancedOption_DisplayName_OpenGL"
+msgstr "OpenGL"
+
+msgid "AdvancedOption_Keywords_Default"
+msgstr "visualization, color"
+
+msgid "AdvancedOption_Keywords_OpenGL"
+msgstr "opengl, antialiasing"
+
+msgid "AdvancedOption_Tooltip_Default"
+msgstr "Default Visualization Settings"
+
+msgid "AdvancedOption_Tooltip_OpenGL"
+msgstr "OpenGL Engine Settings"
+
+msgid "OptionsCategory_Keywords_Visualization"
+msgstr "visualization, opengl"
+
+msgid "OptionsCategory_Name_Visualization"
+msgstr "Visualization"
+
+msgid "OptionsCategory_Title_Visualization"
+msgstr "Visualization"
+
+msgid "DefaultPanel.titleDesign.title"
+msgstr "Design"
+
+msgid "DefaultPanel.titleLabel.title"
+msgstr "Label"
+
+msgid "DefaultPanel.use3dCheckbox.text"
+msgstr "Use 3d Model (Sphere)"
+
+msgid "DefaultPanel.autoSelectNeighborCheckbox.text"
+msgstr "Auto-select Neighbor"
+
+msgid "DefaultPanel.highlightCheckbox.text"
+msgstr "Highlight Selection"
+
+msgid "DefaultPanel.labelDefaultSettings.text"
+msgstr "Default settings:"
+
+msgid "DefaultPanel.nodeFontButton.text"
+msgstr "jButton1"
+
+msgid "DefaultPanel.edgeFontButton.text"
+msgstr "jButton1"
+
+msgid "DefaultPanel.labelNodeFont.text"
+msgstr "Node Label Font"
+
+msgid "DefaultPanel.labelEdgeFont.text"
+msgstr "Edge Label Font"
+
+msgid "DefaultPanel.labelFont.text"
+msgstr "Font:"
+
+msgid "DefaultPanel.labelNodeLabelColor.text"
+msgstr "Node Label Color"
+
+msgid "DefaultPanel.labelEdgeLabelColor.text"
+msgstr "Edge Label Color"
+
+msgid "DefaultPanel.labelColor.text"
+msgstr "Color:"
+
+msgid "OpenGLPanel.jXTitledSeparator1.title"
+msgstr "OpenGL"
+
+msgid "DefaultPanel.labelBackground.text"
+msgstr "Background:"
+
+msgid "DefaultPanel.labelBackgroundColor.text"
+msgstr "Color"
+
+msgid "OpenGLPanel.labelShow.text"
+msgstr "Show:"
+
+msgid "OpenGLPanel.labelAntialiasing.text"
+msgstr "Antialiasing:"
+
+msgid "OpenGLPanel.fpsCheckbox.text"
+msgstr "FPS (Frames Per Second)"
+
+msgid "OpenGLPanel.jXTitledSeparator3.title"
+msgstr "Lighting"
+
+msgid "OpenGLPanel.labelAmbiant.text"
+msgstr "Ambiant:"
+
+msgid "OpenGLPanel.ambientDiffuseColorButton.text"
+msgstr "Diffuse"
+
+msgid "OpenGLPanel.ambientSpecularColorButton.text"
+msgstr "Specular"
+
+msgid "OpenGLPanel.ambientAmbiantColorButton.text"
+msgstr "Ambiant"
+
+msgid "OpenGLPanel.light1Checkbox.text"
+msgstr "1"
+
+msgid "OpenGLPanel.light2Checkbox.text"
+msgstr "2"
+
+msgid "OpenGLPanel.light3Checkbox.text"
+msgstr "3"
+
+msgid "OpenGLPanel.light1AmbiantColorButton.text"
+msgstr "Ambiant"
+
+msgid "OpenGLPanel.light1DiffuseColorButton.text"
+msgstr "Diffuse"
+
+msgid "OpenGLPanel.light1SpecularColorButton.text"
+msgstr "Specular"
+
+msgid "OpenGLPanel.light2DiffuseColorButton.text"
+msgstr "Diffuse"
+
+msgid "OpenGLPanel.light2SpecularColorButton.text"
+msgstr "Specular"
+
+msgid "OpenGLPanel.light3AmbiantColorButton.text"
+msgstr "Ambiant"
+
+msgid "OpenGLPanel.light3DiffuseColorButton.text"
+msgstr "Diffuse"
+
+msgid "OpenGLPanel.light3SpecularColorButton.text"
+msgstr "Specular"
+
+msgid "OpenGLPanel.labelDirectional.text"
+msgstr "Directional:"
+
+msgid "OpenGLPanel.jLabel1.text"
+msgstr "X"
+
+msgid "OpenGLPanel.jLabel2.text"
+msgstr "Y"
+
+msgid "OpenGLPanel.jLabel3.text"
+msgstr "Z"
+
+msgid "OpenGLPanel.jLabel4.text"
+msgstr "X"
+
+msgid "OpenGLPanel.jLabel6.text"
+msgstr "Z"
+
+msgid "OpenGLPanel.jLabel5.text"
+msgstr "Y"
+
+msgid "OpenGLPanel.jLabel9.text"
+msgstr "Z"
+
+msgid "OpenGLPanel.jLabel8.text"
+msgstr "Y"
+
+msgid "OpenGLPanel.jLabel7.text"
+msgstr "X"
+
+msgid "OpenGLPanel.light2AmbiantColorButton.text"
+msgstr "Ambiant"
+
+msgid "OpenGLPanel.resetButton.text"
+msgstr "Reset Default"
+
+msgid "DefaultPanel.resetButton.text"
+msgstr "Reset defaults"
+
+msgid "OpenGLPanel.jLabel10.text"
+msgstr "Lighting settings have effect only in 3d mode"

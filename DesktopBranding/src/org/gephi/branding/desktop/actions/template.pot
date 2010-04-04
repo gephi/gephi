@@ -1,0 +1,29 @@
+msgid "CTL_NewProject"
+msgstr "New Project"
+
+msgid "CTL_OpenProject"
+msgstr "Open Project..."
+
+msgid "CTL_SaveProject"
+msgstr "Save"
+
+msgid "CTL_SaveAsProject"
+msgstr "Save As..."
+
+msgid "CTL_OpenFile"
+msgstr "Open..."
+
+msgid "CTL_CloseProject"
+msgstr "Close Project"
+
+msgid "CTL_ProjectProperties"
+msgstr "Properties..."
+
+msgid "CTL_NewWorkspace"
+msgstr "New workspace"
+
+msgid "CTL_DeleteWorkspace"
+msgstr "Delete workspace"
+
+msgid "CTL_CleanWorkspace"
+msgstr "Clean workspace"

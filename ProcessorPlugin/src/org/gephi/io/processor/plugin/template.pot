@@ -1,0 +1,9 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Plugin"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Processor Plugin"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr ""
+"Processor implementations, control how data are appened from Import to Graph"

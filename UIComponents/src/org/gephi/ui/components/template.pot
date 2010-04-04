@@ -1,0 +1,38 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Sharable Swing components that can be used for different purposes."
+
+msgid "OpenIDE-Module-Name"
+msgstr "UI Components"
+
+msgid "HTMLTextArea_CutString"
+msgstr "Cut"
+
+msgid "HTMLTextArea_CopyString"
+msgstr "Copy"
+
+msgid "HTMLTextArea_PasteString"
+msgstr "Paste"
+
+msgid "HTMLTextArea_DeleteString"
+msgstr "Delete"
+
+msgid "HTMLTextArea_SelectAllString"
+msgstr "Select All"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Sharable Swing components"
+
+msgid "SwapListPanel.leftButton.text"
+msgstr ""
+
+msgid "SwapListPanel.rightButton.text"
+msgstr ""
+
+msgid "JRangeSliderPanel.lowerBoundTextField.text"
+msgstr "NaN"
+
+msgid "JRangeSliderPanel.upperBoundTextField.text"
+msgstr "NaN"

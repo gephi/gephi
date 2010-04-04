@@ -1,0 +1,11 @@
+msgid "DegreeRangeBuilder.name"
+msgstr "Degree Range"
+
+msgid "InDegreeRangeBuilder.name"
+msgstr "In Degree Range"
+
+msgid "OutDegreeRangeBuilder.name"
+msgstr "Out Degree Range"
+
+msgid "MutualDegreeRangeBuilder.name"
+msgstr "Mutual Degree Range"

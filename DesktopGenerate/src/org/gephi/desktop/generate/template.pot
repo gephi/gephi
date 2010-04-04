@@ -1,0 +1,11 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Desktop Generate"
+
+msgid "CTL_Generate"
+msgstr "Generate"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Integrate generators in UI"

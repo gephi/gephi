@@ -1,0 +1,8 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Plugin"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Preview Export"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Vectorial exporters implementations"

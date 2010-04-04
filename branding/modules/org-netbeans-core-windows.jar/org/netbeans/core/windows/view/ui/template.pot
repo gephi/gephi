@@ -1,0 +1,5 @@
+msgid "CTL_MainWindow_Title"
+msgstr "Gephi 0.7 alpha3 {0}"
+
+msgid "CTL_MainWindow_Title_No_Project"
+msgstr "Gephi 0.7 alpha3 {0}"

@@ -1,0 +1,11 @@
+msgid "AttributeRangeBuilder.name"
+msgstr "Range"
+
+msgid "AttributeEqualBuilder.name"
+msgstr "Equal"
+
+msgid "PartitionBuilder.name"
+msgstr "Partition"
+
+msgid "AttributeNonNullBuilder.name"
+msgstr "Non-null"

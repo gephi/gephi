@@ -23,6 +23,7 @@ package org.gephi.visualization.opengl.compatibility.objects;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.EdgeData;
+import org.gephi.graph.api.Model;
 import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizModel;
 import org.gephi.visualization.api.ModelImpl;
@@ -270,7 +271,12 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
 
     @Override
     public boolean isAutoSelected() {
-        return obj.getSource().getModel().isSelected() || obj.getTarget().getModel().isSelected();
+        Model nSource = obj.getSource().getModel();
+        Model nTarget = obj.getTarget().getModel();
+        if (nSource != null && nTarget != null) {
+            return obj.getSource().getModel().isSelected() || obj.getTarget().getModel().isSelected();
+        }
+        return false;
     }
 
     @Override

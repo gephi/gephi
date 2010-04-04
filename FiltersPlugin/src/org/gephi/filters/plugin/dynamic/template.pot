@@ -1,0 +1,5 @@
+msgid "DynamicRangeBuilder.category"
+msgstr "Dynamic"
+
+msgid "DynamicRangeBuilder.name"
+msgstr "Dynamic Range"

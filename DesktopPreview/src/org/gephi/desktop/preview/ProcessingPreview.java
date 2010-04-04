@@ -25,7 +25,7 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
     private PFont uniEdgeMiniLabelFont;
     private PFont biEdgeMiniLabelFont;
     private GraphSheet graphSheet = null;
-    private final HashMap<Font, PFont> fontMap = new HashMap<Font, PFont>();
+    private final HashMap<String, PFont> fontMap = new HashMap<String, PFont>();
     private final static float MARGIN = 10f;
     private java.awt.Color background = java.awt.Color.WHITE;
     private boolean moving = false;
@@ -40,9 +40,11 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
         PreviewModel model = controller.getModel();
 
         // updates fonts
-        fontMap.clear();
-        uniEdgeMiniLabelFont = getPFont(model.getUniEdgeSupervisor().getMiniLabelFont());
-        biEdgeMiniLabelFont = getPFont(model.getBiEdgeSupervisor().getMiniLabelFont());
+        //fontMap.clear(); Don't clear to prevent PFont memory leak from Processing library.
+        if (model != null) {
+            uniEdgeMiniLabelFont = getPFont(model.getUniEdgeSupervisor().getMiniLabelFont());
+            biEdgeMiniLabelFont = getPFont(model.getBiEdgeSupervisor().getMiniLabelFont());
+        }
 
         // redraws the applet
         redraw();
@@ -176,24 +178,26 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
      * Initializes the preview applet layout according to the graph's dimension.
      */
     private void initAppletLayout() {
-        graphSheet.setMargin(MARGIN);
+        if (graphSheet != null) {
+            graphSheet.setMargin(MARGIN);
 
-        // initializes zoom
-        PVector box = new PVector(graphSheet.getWidth(), graphSheet.getHeight());
-        float ratioWidth = width / box.x;
-        float ratioHeight = height / box.y;
-        if (scaling == 0) {
-            scaling = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
+            // initializes zoom
+            PVector box = new PVector(graphSheet.getWidth(), graphSheet.getHeight());
+            float ratioWidth = width / box.x;
+            float ratioHeight = height / box.y;
+            if (scaling == 0) {
+                scaling = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
 
-            // initializes move
-            PVector semiBox = PVector.div(box, 2);
-            Point topLeftPosition = graphSheet.getTopLeftPosition();
-            PVector topLeftVector = new PVector(topLeftPosition.getX(), topLeftPosition.getY());
-            PVector center = new PVector(width / 2f, height / 2f);
-            PVector scaledCenter = PVector.add(topLeftVector, semiBox);
-            trans.set(center);
-            trans.sub(scaledCenter);
-            lastMove.set(trans);
+                // initializes move
+                PVector semiBox = PVector.div(box, 2);
+                Point topLeftPosition = graphSheet.getTopLeftPosition();
+                PVector topLeftVector = new PVector(topLeftPosition.getX(), topLeftPosition.getY());
+                PVector center = new PVector(width / 2f, height / 2f);
+                PVector scaledCenter = PVector.add(topLeftVector, semiBox);
+                trans.set(center);
+                trans.sub(scaledCenter);
+                lastMove.set(trans);
+            }
         }
     }
 
@@ -320,7 +324,7 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
     }
 
     public void renderNodeLabel(NodeLabel label) {
-        textFont(getPFont(label.getFont()));
+        textFont(label.getFont());
         textAlign(CENTER, CENTER);
 
         fill(label.getColor().getRed(),
@@ -418,7 +422,7 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
     }
 
     public void renderEdgeLabel(EdgeLabel label) {
-        textFont(getPFont(label.getFont()));
+        textFont(label.getFont());
         textAlign(CENTER, BASELINE);
 
         pushMatrix();
@@ -443,6 +447,11 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
         popMatrix();
     }
 
+    private void textFont(Font font){
+        PFont pFont=getPFont(font);
+        textFont(pFont, font.getSize());
+    }
+
     /**
      * Creates a Processing font from a classic font.
      *
@@ -450,7 +459,7 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
      * @return      a Processing font
      */
     private PFont createFont(Font font) {
-        return createFont(font.getName(), font.getSize());
+        return createFont(font.getName(), 1);
     }
 
     /**
@@ -460,12 +469,13 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
      * @return      the related Processing font
      */
     private PFont getPFont(Font font) {
-        if (fontMap.containsKey(font)) {
-            return fontMap.get(font);
+        String fontName=font.getName();
+        if (fontMap.containsKey(fontName)) {
+            return fontMap.get(fontName);
         }
 
         PFont pFont = createFont(font);
-        fontMap.put(font, pFont);
+        fontMap.put(fontName, pFont);
         return pFont;
     }
 

@@ -1,0 +1,13 @@
+msgid "name"
+msgstr "Multilevel"
+
+msgid "description"
+msgstr "Multilevel Layout"
+
+msgid "YifanHuMultiLevel.name"
+msgstr "YifanHu's Multilevel"
+
+msgid "YifanHuMultiLevel.description"
+msgstr ""
+"YifanHu's Multilevel Algorithm is suitable for very large graphs. It coersen "
+"the graphs and therefore reduce computation."

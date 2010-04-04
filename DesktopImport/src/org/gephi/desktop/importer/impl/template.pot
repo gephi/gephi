@@ -1,0 +1,59 @@
+msgid "EdgeListPanel.configurationLabel.text"
+msgstr "Configuration:"
+
+msgid "EdgeListPanel.hostLabel.text"
+msgstr "Host:"
+
+msgid "EdgeListPanel.portLabel.text"
+msgstr "Port:"
+
+msgid "EdgeListPanel.dbLabel.text"
+msgstr "Database:"
+
+msgid "EdgeListPanel.userLabel.text"
+msgstr "User Name:"
+
+msgid "EdgeListPanel.pwdLabel.text"
+msgstr "Password:"
+
+msgid "EdgeListPanel.driverLabel.text"
+msgstr "Driver:"
+
+msgid "EdgeListPanel.nodeQueryLabel.text"
+msgstr "Node Query:"
+
+msgid "EdgeListPanel.edgeQueryLabel.text"
+msgstr "Edge Query:"
+
+msgid "EdgeListPanel.nodeAttQueyLabel.text"
+msgstr "Node Attributes Query:"
+
+msgid "EdgeListPanel.edgeAttQueryLabel.text"
+msgstr "Edge Attributes Query:"
+
+msgid "EdgeListPanel.nodeQueryTextField.text"
+msgstr "SELECT * FROM nodes"
+
+msgid "EdgeListPanel.nodeAttQueryTextField.text"
+msgstr "SELECT * FROM nodesAttributes"
+
+msgid "EdgeListPanel.edgeAttQueryTextField.text"
+msgstr "SELECT * FROM edgesAttributes"
+
+msgid "EdgeListPanel.testConnection.text"
+msgstr "Test Connection"
+
+msgid "EdgeListPanel.edgeQueryTextField.text"
+msgstr "SELECT * FROM edges"
+
+msgid "EdgeListPanel.port.text"
+msgstr ""
+
+msgid "EdgeListPanel.database.text"
+msgstr ""
+
+msgid "EdgeListPanel.user name.text"
+msgstr ""
+
+msgid "EdgeListPanel.password.text"
+msgstr ""

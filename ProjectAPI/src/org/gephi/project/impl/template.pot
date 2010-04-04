@@ -1,0 +1,8 @@
+msgid "OpenIDE-Module-Name"
+msgstr "Project Impl"
+
+msgid "Services/MIMEResolver/GephiResolver.xml"
+msgstr "Gephi Files"
+
+msgid "Templates/Other/GephiTemplate.gephi"
+msgstr "Empty Gephi file"

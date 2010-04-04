@@ -1,0 +1,5 @@
+msgid "PartitionBuilder.name"
+msgstr "Partition"
+
+msgid "PartitionCountBuilder.name"
+msgstr "Partition Count"

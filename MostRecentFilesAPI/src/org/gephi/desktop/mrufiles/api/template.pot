@@ -1,0 +1,8 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Name"
+msgstr "MostRecentFilesAPI"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Access most recent files opened"

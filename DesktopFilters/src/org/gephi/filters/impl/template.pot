@@ -1,0 +1,9 @@
+msgid "FilterController.exportToColumn.status"
+msgstr "The column \"{0}\" has been filled with the filtering result"
+
+msgid "FilterController.exportToNewWorkspace.task"
+msgstr "\"Export to workspace\""
+
+msgid "FilterController.exportToNewWorkspace.status"
+msgstr ""
+"The workspace \"{0}\" has been created and filled with the filtering result"

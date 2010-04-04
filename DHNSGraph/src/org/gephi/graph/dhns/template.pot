@@ -1,0 +1,11 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi Core"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "DHNS for Durable Hierarchical Network Structure"
+
+msgid "OpenIDE-Module-Name"
+msgstr "DHNS Graph"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Implement Graph API"

@@ -5,7 +5,8 @@
 package org.gephi.io.importer.plugin.file;
 
 import java.io.LineNumberReader;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDraft;
@@ -59,38 +60,53 @@ public class ImporterCSV implements TextImporter, LongTask {
     private void importData(LineNumberReader reader) throws Exception {
         Progress.start(progressTicket);        //Progress
 
-        String SEPARATOR = ",;|";
-        String line = "";
-        for (; reader.ready() && !cancel;) {
-            line = reader.readLine();
+        List<String> lines = new ArrayList<String>();
+        for (; reader.ready();) {
+            String line = reader.readLine();
             if (line != null && !line.isEmpty()) {
-                StringTokenizer tokenizer = new StringTokenizer(line, SEPARATOR);
-                String source = null;
-                String target;
-                for (int i = 0; tokenizer.hasMoreElements(); i++) {
-                    if (i == 0) {
-                        source = tokenizer.nextToken();
-                    } else {
-                        target = tokenizer.nextToken();
-                        addEdge(source, target);
-                    }
+                lines.add(line);
+            }
+        }
+
+        Progress.switchToDeterminate(progressTicket, lines.size());
+
+        String SEPARATOR = ",;|";
+        for (String line : lines) {
+            if (cancel) {
+                break;
+            }
+            StringTokenizer tokenizer = new StringTokenizer(line, SEPARATOR);
+            String source = null;
+            String target;
+            for (int i = 0; tokenizer.hasMoreElements(); i++) {
+                if (i == 0) {
+                    source = tokenizer.nextToken();
+                } else {
+                    target = tokenizer.nextToken();
+                    addEdge(source, target);
                 }
             }
+
+            Progress.progress(progressTicket);
         }
     }
 
     private void addEdge(String source, String target) {
-        NodeDraft sourceNode = container.getNode(source);
-        if (sourceNode == null) {
+        NodeDraft sourceNode;
+        if (!container.nodeExists(source)) {
             sourceNode = container.factory().newNodeDraft();
             sourceNode.setId(source);
             container.addNode(sourceNode);
+        } else {
+            sourceNode = container.getNode(source);
         }
-        NodeDraft targetNode = container.getNode(target);
-        if (targetNode == null) {
+        NodeDraft targetNode;
+        if (!container.nodeExists(target)) {
             targetNode = container.factory().newNodeDraft();
-            targetNode.setId(source);
+            targetNode.setId(target);
             container.addNode(targetNode);
+        } else {
+            targetNode = container.getNode(target);
         }
         EdgeDraft edge = container.getEdge(sourceNode, targetNode);
         if (edge == null) {

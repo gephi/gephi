@@ -144,6 +144,10 @@ public class VizController {
                 engine.reinit();
             }
         });
+
+        if (pc.getCurrentWorkspace() != null) {
+            engine.reinit();
+        }
     }
 
     public void refreshWorkspace() {
@@ -153,6 +157,10 @@ public class VizController {
             model = new VizModel(true);
         } else {
             model = pc.getCurrentWorkspace().getLookup().lookup(VizModel.class);
+            if (model == null) {
+                model = new VizModel();
+                pc.getCurrentWorkspace().add(model);
+            }
         }
         if (model != currentModel) {
             model.setListeners(currentModel.getListeners());

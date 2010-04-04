@@ -1,0 +1,38 @@
+msgid "ScreenshotMaker.finishedMessage.message"
+msgstr "Screenshot saved to ''{0}''"
+
+msgid "ScreenshotMaker.finishedMessage.title"
+msgstr "Take screenshot"
+
+msgid "ScreenshotMaker.filechooser.title"
+msgstr "Save As..."
+
+msgid "ScreenshotMaker.filechooser.pngDescription"
+msgstr "PNG"
+
+msgid "ScreenshotMaker.configure.title"
+msgstr "Screenshot settings"
+
+msgid "ScreenshotSettingsPanel.heightTextField.text"
+msgstr ""
+
+msgid "ScreenshotSettingsPanel.transparentBackgroundCheckBox.text"
+msgstr "Transparent background"
+
+msgid "ScreenshotSettingsPanel.autoSaveCheckBox.text"
+msgstr "Autosave"
+
+msgid "ScreenshotSettingsPanel.labelWidth.text"
+msgstr "Width:"
+
+msgid "ScreenshotSettingsPanel.labelHeight.text"
+msgstr "Height:"
+
+msgid "ScreenshotSettingsPanel.labelAntiAliasing.text"
+msgstr "Antialiasing:"
+
+msgid "ScreenshotSettingsPanel.selectDirectoryButton.text"
+msgstr "Select directory..."
+
+msgid "ScreenshotSettingsPanel.widthTextField.text"
+msgstr ""

@@ -39,14 +39,18 @@ import org.openide.util.actions.CallableSystemAction;
  */
 public class Export extends CallableSystemAction {
 
+    private JMenu menu;
+
     public Export() {
+        menu = new JMenu(NbBundle.getMessage(Export.class, "CTL_Export"));
+
         Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
             }
 
             public void select(Workspace workspace) {
-                setEnabled(true);
+                menu.setEnabled(true);
             }
 
             public void unselect(Workspace workspace) {
@@ -56,9 +60,11 @@ public class Export extends CallableSystemAction {
             }
 
             public void disable() {
-                setEnabled(false);
+                menu.setEnabled(false);
             }
         });
+        boolean enabled = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace()!=null;
+        menu.setEnabled(enabled);
     }
 
     @Override
@@ -78,14 +84,6 @@ public class Export extends CallableSystemAction {
 
     @Override
     public JMenuItem getMenuPresenter() {
-        JMenu menu = new JMenu(NbBundle.getMessage(Export.class, "CTL_Export")) {
-
-            @Override
-            public boolean isEnabled() {
-                return Export.this.isEnabled();
-            }
-        };
-
 
         for (final ExporterClassUI ui : Lookup.getDefault().lookupAll(ExporterClassUI.class)) {
             String menuName = ui.getName();
@@ -100,10 +98,4 @@ public class Export extends CallableSystemAction {
         }
         return menu;
     }
-
-    @Override
-    public boolean isEnabled() {
-        return Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace() != null;
-    }
 }
-

@@ -1,0 +1,5 @@
+msgid "Random.name"
+msgstr "Random Layout"
+
+msgid "Random.description"
+msgstr "A random distribution of the nodes"

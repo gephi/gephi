@@ -1,0 +1,53 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Plugin"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Ranking Plugin UI"
+
+msgid "ColorTransformerUI.name"
+msgstr "Color"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Ranking transformers implementations"
+
+msgid "SizeTransformerUI.name"
+msgstr "Size/Weight"
+
+msgid "LabelColorTransformerUI.name"
+msgstr "Label Color"
+
+msgid "LabelSizeTransformerUI.name"
+msgstr "Label Size"
+
+msgid "ColorTransformerPanel.labelColor.text"
+msgstr "Color:"
+
+msgid "ColorTransformerPanel.labelRange.text"
+msgstr "Range:"
+
+msgid "SizeTransformerPanel.labelMaxSize.text"
+msgstr "Max size:"
+
+msgid "SizeTransformerPanel.labelMinSize.text"
+msgstr "Min size:"
+
+msgid "SizeTransformerPanel.labelRange.text"
+msgstr "Range:"
+
+msgid "SizeTransformerPanel.lowerBoundLabel.text"
+msgstr "NaN"
+
+msgid "SizeTransformerPanel.upperBoundLabel.text"
+msgstr "NaN"
+
+msgid "ColorTransformerPanel.lowerBoundLabel.text"
+msgstr "NaN"
+
+msgid "ColorTransformerPanel.upperBoundLabel.text"
+msgstr "NaN"
+
+msgid "PalettePopup.default"
+msgstr "Default"
+
+msgid "PalettePopup.invert"
+msgstr "Invert"

@@ -1,0 +1,35 @@
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Desktop Context"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Contextal information about current graph"
+
+msgid "CTL_ContextAction"
+msgstr "Context"
+
+msgid "CTL_ContextTopComponent"
+msgstr "Context"
+
+msgid "HINT_ContextTopComponent"
+msgstr ""
+
+msgid "ContextPanel.labelNodes.text"
+msgstr "Nodes:"
+
+msgid "ContextPanel.nodeLabel.text"
+msgstr ""
+
+msgid "ContextPanel.labelEdges.text"
+msgstr "Edges:"
+
+msgid "ContextPanel.edgeLabel.text"
+msgstr ""
+
+msgid "ContextPanel.pieButton.text"
+msgstr ""
+
+msgid "ContextPanel.graphTypeLabel.text"
+msgstr ""
