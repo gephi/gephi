@@ -7,6 +7,7 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Font;
+import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -187,7 +188,7 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         cb.setRGBColorStroke(bc.getRed(), bc.getGreen(), bc.getBlue());
         cb.setLineWidth(node.getBorderWidth());
         cb.setRGBColorFill(c.getRed(), c.getGreen(), c.getBlue());
-        cb.circle(center.getX(), center.getY(), node.getRadius());
+        cb.circle(center.getX(), -center.getY(), node.getRadius());
         cb.fillStroke();
     }
 
@@ -203,7 +204,7 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
 
             cb.beginText();
             cb.setFontAndSize(bf, font.getSize());
-            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX() - ascent / 2, p.getY(), -90);
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX() - ascent / 2, -p.getY(), -90);
             cb.endText();
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
@@ -271,9 +272,9 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Point pt2 = arrow.getPt2();
         Point pt3 = arrow.getPt3();
 
-        cb.moveTo(pt1.getX(), pt1.getY());
-        cb.lineTo(pt2.getX(), pt2.getY());
-        cb.lineTo(pt3.getX(), pt3.getY());
+        cb.moveTo(pt1.getX(), -pt1.getY());
+        cb.lineTo(pt2.getX(), -pt2.getY());
+        cb.lineTo(pt3.getX(), -pt3.getY());
         cb.closePath();
 
         setFillColor(arrow.getColor());
@@ -291,7 +292,7 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
 
             cb.beginText();
             cb.setFontAndSize(bf, font.getSize());
-            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX(), p.getY(), (float) (Math.toDegrees(label.getAngle()) + 180));
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX(), -p.getY(), (float) (Math.toDegrees(-label.getAngle())));
             cb.endText();
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
@@ -309,7 +310,7 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
 
             cb.beginText();
             cb.setFontAndSize(bf, font.getSize());
-            cb.showTextAligned(miniLabel.getHAlign().toIText(), miniLabel.getValue(), p.getX(), p.getY(), (float) (Math.toDegrees(miniLabel.getAngle()) + 180));
+            cb.showTextAligned(miniLabel.getHAlign().toIText(), miniLabel.getValue(), p.getX(), -p.getY(), (float) (Math.toDegrees(-miniLabel.getAngle())));
             cb.endText();
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
@@ -360,7 +361,7 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         document.open();
         cb = writer.getDirectContent();
         cb.saveState();
-        cb.concatCTM(0f, 1f, -1f, 0f, 0f, 0f);
+        cb.transform(AffineTransform.getTranslateInstance(200, 400));
         renderGraph(graphSheet.getGraph());
         cb.restoreState();
         document.close();
@@ -387,8 +388,8 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
      * @param end    the end of the line to draw
      */
     private void line(Point start, Point end) {
-        cb.moveTo(start.getX(), start.getY());
-        cb.lineTo(end.getX(), end.getY());
+        cb.moveTo(start.getX(), -start.getY());
+        cb.lineTo(end.getX(), -end.getY());
     }
 
     /**
@@ -402,8 +403,8 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Point pt3 = curve.getPt3();
         Point pt4 = curve.getPt4();
 
-        cb.moveTo(pt1.getX(), pt1.getY());
-        cb.curveTo(pt2.getX(), pt2.getY(), pt3.getX(), pt3.getY(), pt4.getX(), pt4.getY());
+        cb.moveTo(pt1.getX(), -pt1.getY());
+        cb.curveTo(pt2.getX(), -pt2.getY(), pt3.getX(), -pt3.getY(), pt4.getX(), -pt4.getY());
     }
 
     /**
