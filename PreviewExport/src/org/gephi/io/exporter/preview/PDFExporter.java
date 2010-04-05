@@ -42,7 +42,7 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Class exporting the preview graph as an SVG image.
+ * Class exporting the preview graph as a PDF file.
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
@@ -270,7 +270,7 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Point pt1 = arrow.getPt1();
         Point pt2 = arrow.getPt2();
         Point pt3 = arrow.getPt3();
-        
+
         cb.moveTo(pt1.getX(), pt1.getY());
         cb.lineTo(pt2.getX(), pt2.getY());
         cb.lineTo(pt3.getX(), pt3.getY());
@@ -368,6 +368,14 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Progress.finish(progress);
     }
 
+    /**
+     * Generates an iText BaseFont object from a Java Font one.
+     *
+     * @param font  the reference font
+     * @return      the generated BaseFont
+     * @throws      DocumentException
+     * @throws      IOException
+     */
     private BaseFont genBaseFont(java.awt.Font font) throws DocumentException, IOException {
         return BaseFont.createFont();
     }
@@ -407,7 +415,6 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         cb.setRGBColorStroke(color.getRed(), color.getGreen(), color.getBlue());
     }
 
-    
     /**
      * Defines the filling color.
      *
